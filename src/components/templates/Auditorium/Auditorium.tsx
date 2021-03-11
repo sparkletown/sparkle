@@ -1,30 +1,18 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
+import { Switch, Route, useRouteMatch, useHistory } from "react-router";
 import classNames from "classnames";
+
+import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSizes } from "types/auditorium";
 
 import { SectionPreview } from "./components/SectionPreview";
 import { Section } from "./components/Section";
 import { Video } from "./components/Video";
 
-import { AuditoriumVenue } from "types/venues";
+import { useAuditoriumSections } from "hooks/auditoriumSections";
 
 import "./Auditorium.scss";
-
-export enum AuditoriumVideoPosition {
-  TOP = "top",
-  CENTER = "center",
-}
-
-export enum AuditoriumSizes {
-  SMALL = "small",
-  MEDIUM = "medium",
-  LARGE = "large",
-}
-
-const SECTION_PREVIEWS_PLACEHOLDER = Array(30)
-  .fill({ name: "Section" })
-  .map((section, index) => ({ ...section, id: index }));
-
-const EMPTY_CELLS = Array();
+import { useVenueId } from "hooks/useVenueId";
 
 export interface AuditoriumProps {
   venue: AuditoriumVenue;
@@ -40,34 +28,36 @@ export interface AuditoriumProps {
 */
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
-  // self-explainatory name. I wonder if I should have this both for FULL and SECTION view?
-  const {
-    videoPosition,
-    sections = SECTION_PREVIEWS_PLACEHOLDER,
-    iframeUrl,
-  } = venue;
+  const { iframeUrl } = venue;
 
-  const [chosenSection, setChosenSection] = useState<string | undefined>();
+  const venueId = useVenueId();
 
-  const hasChosenSection = chosenSection !== undefined;
+  const match = useRouteMatch();
+  const history = useHistory();
 
-  const sectionPreviews = SECTION_PREVIEWS_PLACEHOLDER.map((section) => (
-    <SectionPreview onClick={() => setChosenSection(section.id)} />
+  const sections = useAuditoriumSections(venueId);
+  const sectionsLength = sections.length;
+
+  const sectionPreviews = sections.map((section) => (
+    <SectionPreview
+      key={section.id}
+      onClick={() =>
+        history.push(`${history.location.pathname}/section/${section.id}`)
+      }
+    />
   ));
 
   const auditoriumSize: AuditoriumSizes = useMemo(() => {
-    const sectionsLength = sections.length;
-
     if (sectionsLength <= 4) return AuditoriumSizes.SMALL;
 
-    if (sectionsLength > 4 && sectionsLength <= 12)
+    if (sectionsLength > 4 && sectionsLength <= 10) {
       return AuditoriumSizes.MEDIUM;
+    }
 
     return AuditoriumSizes.LARGE;
-  }, []);
+  }, [sectionsLength]);
 
   const containerClasses = classNames("auditorium", {
-    "auditorium--section-view": hasChosenSection,
     "auditorium--small": auditoriumSize === AuditoriumSizes.SMALL,
     "auditorium--medium": auditoriumSize === AuditoriumSizes.MEDIUM,
     "auditorium--large": auditoriumSize === AuditoriumSizes.LARGE,
@@ -76,14 +66,20 @@ export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
   return (
     <div className={containerClasses}>
       <Video src={iframeUrl} />
-      {chosenSection ? (
-        // This section view will lookalike our Audience template(heavily refactored, but same functionality)
-        <Section sectionId={chosenSection} />
-      ) : (
-        sectionPreviews
-      )}
-      <div className="auditorium__left-empty-space" />
-      <div className="auditorium__right-empty-space" />
+      <Switch>
+        <Route path={`${match.path}/section/:sectionId`} component={Section} />
+        <Route
+          path={`${match.path}`}
+          strict
+          render={() => (
+            <>
+              {sectionPreviews}
+              <div className="auditorium__left-empty-space" />
+              <div className="auditorium__right-empty-space" />
+            </>
+          )}
+        />
+      </Switch>
     </div>
   );
 };

@@ -1,7 +1,50 @@
-.auditorium__section-preview {
-  height: 150px;
-  width: 100%;
-  background-color: green;
+$spacing: 15px;
 
+.section-preview {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   justify-self: center;
+  position: relative;
+
+  padding: $spacing;
+  height: 100%;
+  width: 100%;
+
+  background-color: #1a1d24;
+  border-radius: 16px;
+
+  cursor: pointer;
+
+  &--full,
+  &--locked {
+    cursor: not-allowed;
+  }
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &__status-icons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    justify-content: flex-end;
+
+    &__lock {
+      margin-left: 5px;
+    }
+  }
+
+  &__people-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__number {
+      font-size: 13px;
+      margin-left: 5px;
+    }
+  }
 }

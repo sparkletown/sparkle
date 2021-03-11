@@ -8,7 +8,7 @@ $spacing: 10px;
   display: grid;
   gap: $spacing;
 
-  grid-auto-rows: 150px;
+  grid-auto-rows: 120px;
   grid-auto-columns: 1fr;
 
   &--small {
@@ -34,9 +34,6 @@ $spacing: 10px;
       "     .          .      video video video video      .           .      "
       "     .          .      video video video video      .           .      "
       "     .          .        .     .     .     .        .           .      ";
-  }
-
-  &--section-view {
   }
 
   &__left-empty-space {

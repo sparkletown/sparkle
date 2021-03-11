@@ -1,3 +1,8 @@
 .auditorium__video {
   grid-area: video;
+
+  &__iframe {
+    height: 100%;
+    width: 100%;
+  }
 }
