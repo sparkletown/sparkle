@@ -9,6 +9,11 @@ import firebase from "firebase/app";
 
 import { CustomLoader, isCustomLoader } from "types/CustomLoader";
 
+import {
+  retrieveCustomLoaders as retrieveCachedCustomLoaders,
+  storeCustomLoaders as cacheCustomLoaders,
+} from "utils/localStorage";
+
 export interface CustomLoadersState {
   customLoaders: CustomLoader[];
 }
@@ -22,7 +27,9 @@ export const CustomLoadersContext = createContext<CustomLoadersState>(
 );
 
 export const CustomLoadersProvider: React.FC = ({ children }) => {
-  const [customLoaders, setCustomLoaders] = useState<CustomLoader[]>([]);
+  const [customLoaders, setCustomLoaders] = useState<CustomLoader[]>(
+    retrieveCachedCustomLoaders()
+  );
 
   // Fetch the loaders data on first load
   useEffect(() => {
@@ -37,6 +44,7 @@ export const CustomLoadersProvider: React.FC = ({ children }) => {
         .filter(isCustomLoader);
 
       setCustomLoaders(loaders);
+      cacheCustomLoaders(loaders);
     })();
   }, []);
 
