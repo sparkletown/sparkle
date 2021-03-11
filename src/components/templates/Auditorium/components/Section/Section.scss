@@ -1,0 +1,21 @@
+.section {
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  &__video-overlay {
+    top: 0;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__video-iframe {
+    height: 50%;
+    width: 50%;
+  }
+}

@@ -1,6 +1,6 @@
 $spacing: 10px;
 
-.auditorium {
+.section-previews {
   height: 100%;
   width: 100%;
   padding: $spacing;
@@ -39,7 +39,17 @@ $spacing: 10px;
   &__left-empty-space {
     grid-area: left-space;
   }
+
   &__right-empty-space {
     grid-area: right-space;
+  }
+
+  &__video-overlay {
+    grid-area: video;
+  }
+
+  &__video-iframe {
+    height: 100%;
+    width: 100%;
   }
 }
