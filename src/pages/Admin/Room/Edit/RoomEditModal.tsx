@@ -135,6 +135,11 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
                 placeholder="Description"
                 custom
               />
+              {errors.description && (
+                <span className="input-error">
+                  {errors.description.message}
+                </span>
+              )}
             </div>
           </Form.Row>
 
