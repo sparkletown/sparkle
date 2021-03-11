@@ -1,9 +1,10 @@
 $spacing: 10px;
 
 .section-previews {
+  overflow: auto;
   height: 100%;
   width: 100%;
-  padding: $spacing;
+  padding: 0 $spacing 50px;
 
   display: grid;
   gap: $spacing;

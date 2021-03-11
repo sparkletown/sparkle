@@ -10,7 +10,7 @@ export const useAuditoriumSection = (
 export const useAuditoriumSections = (
   venueId?: string
 ): AuditoriumSection[] => {
-  return Array(10)
+  return Array(32)
     .fill({ name: "Section" })
     .map((section, index) => ({ ...section, id: index }));
 };
