@@ -16,10 +16,12 @@ import {
 
 export interface CustomLoadersState {
   customLoaders: CustomLoader[];
+  hasCustomLoaders: boolean;
 }
 
 export const initialValue: CustomLoadersState = {
   customLoaders: [],
+  hasCustomLoaders: false,
 };
 
 export const CustomLoadersContext = createContext<CustomLoadersState>(
@@ -51,6 +53,7 @@ export const CustomLoadersProvider: React.FC = ({ children }) => {
   const providerData = useMemo(
     () => ({
       customLoaders,
+      hasCustomLoaders: customLoaders.length > 0,
     }),
     [customLoaders]
   );
