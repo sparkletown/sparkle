@@ -35,6 +35,8 @@ import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
 const AppRouter = () => {
   return (
     <Router basename="/">
@@ -43,6 +45,7 @@ const AppRouter = () => {
           path="/SparkleVerse"
           component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
         />
+        <Route path="/loadingTest" component={LoadingPage} />
         <Route path="/enter/step1" component={Step1} />
         <Route path="/enter/step2" component={Step2} />
         <Route path="/enter/step3" component={Step3} />
