@@ -23,6 +23,8 @@ $clickable-area-color: #ffffff11;
 $kotr-blue: #1d38ff;
 $kotr-orange: #fb8d39;
 $kotr-yellow: #fffb54;
+$kotr-font-larger: "CCZoinks-Regular";
+$kotr-font-smaller: "CCGeekSpeakTweak-Regular";
 
 $primary: #005ee5;
 $secondary: #6f43ff;
@@ -109,16 +111,6 @@ $z-layers: (
   user-profile-picture-reaction: 1000,
   venuepage-preview-indication: 1
 );
-
-@font-face {
-  font-family: "speakTweak";
-  src: url("../assets/fonts/speakTweak.ttf");
-}
-
-@font-face {
-  font-family: "zoinks";
-  src: url("../assets/fonts/zoinks.ttf");
-}
 
 @function z($layer) {
   @if not map-has-key($z-layers, $layer) {
