@@ -18,7 +18,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { CustomLoader } from "types/CustomLoader";
 import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
@@ -223,10 +222,6 @@ export const radioStationsSelector = (state: RootState) =>
 export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
-
-export const customLoadersSelector: SparkleSelector<
-  CustomLoader[] | undefined
-> = (state) => state.firestore.ordered.loaders;
 
 export const maybeSelector = <T extends SparkleSelector<U>, U>(
   ifTrue: boolean,

@@ -1,14 +1,58 @@
-import { useMemo } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import firebase from "firebase/app";
 
-import { customLoadersSelector } from "utils/selectors";
+import { CustomLoader, isCustomLoader } from "types/CustomLoader";
 
-import { useSelector } from "./useSelector";
-import { useFirestoreConnect } from "./useFirestoreConnect";
+export interface CustomLoadersState {
+  customLoaders: CustomLoader[];
+}
 
-export const useCustomLoaders = () => {
-  useFirestoreConnect("loaders");
-
-  const customLoaders = useSelector(customLoadersSelector);
-
-  return useMemo(() => customLoaders ?? [], [customLoaders]);
+export const initialValue: CustomLoadersState = {
+  customLoaders: [],
 };
+
+export const CustomLoadersContext = createContext<CustomLoadersState>(
+  initialValue
+);
+
+export const CustomLoadersProvider: React.FC = ({ children }) => {
+  const [customLoaders, setCustomLoaders] = useState<CustomLoader[]>([]);
+
+  // Fetch the loaders data on first load
+  useEffect(() => {
+    (async () => {
+      const loadersSnapshot = await firebase
+        .firestore()
+        .collection("loaders")
+        .get();
+
+      const loaders: CustomLoader[] = loadersSnapshot.docs
+        .map((d) => d.data())
+        .filter(isCustomLoader);
+
+      setCustomLoaders(loaders);
+    })();
+  }, []);
+
+  const providerData = useMemo(
+    () => ({
+      customLoaders,
+    }),
+    [customLoaders]
+  );
+
+  return (
+    <CustomLoadersContext.Provider value={providerData}>
+      {children}
+    </CustomLoadersContext.Provider>
+  );
+};
+
+export const useCustomLoaders = (): CustomLoadersState =>
+  useContext(CustomLoadersContext);

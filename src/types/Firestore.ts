@@ -11,7 +11,6 @@ import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
 import { AnyVenue, VenueEvent } from "./venues";
-import { CustomLoader } from "./CustomLoader";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
@@ -23,7 +22,6 @@ export interface UserVisit {
 }
 
 export type ValidFirestoreRootCollections =
-  | "loaders"
   | "customers"
   | "experiences"
   | "purchases"
@@ -102,5 +100,4 @@ export interface FirestoreOrdered {
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;
-  loaders?: Array<WithId<CustomLoader>>;
 }
