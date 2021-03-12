@@ -3,12 +3,15 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
-  MEASUREMENT_ID,
   BUCKET_URL,
-  PROJECT_ID,
   IS_BURN,
+  MEASUREMENT_ID,
+  PROJECT_ID,
 } from "secrets";
+
+import { CustomLoader } from "types/CustomLoader";
 import { VenueTemplate } from "types/venues";
+
 import { FIVE_MINUTES_MS } from "utils/time";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -491,6 +494,12 @@ export const FIREBASE_CONFIG = {
 
 export const DEFAULT_VENUE = "zilloween";
 export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
+
+export const DEFAULT_LOADER: CustomLoader = {
+  title: "Loading Sparkle",
+  text: "Loading Sparkle",
+  url: "",
+};
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
