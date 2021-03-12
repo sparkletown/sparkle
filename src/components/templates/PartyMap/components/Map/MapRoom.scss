@@ -14,8 +14,10 @@ $label-visible: flex;
 
   transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
 
+  cursor: pointer;
+
   &:hover {
-    z-index: z(map-room-hovered);
+    z-index: z(map-room--hovered);
     transform: scale(1.1);
 
     .maproom__label {
@@ -34,6 +36,19 @@ $label-visible: flex;
     .maproom__image {
       filter: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.4)) contrast(110%)
         saturate(110%);
+    }
+  }
+
+  &--unclickable {
+    cursor: default;
+    z-index: z(map-room--unclickable);
+
+    &:hover {
+      transform: none;
+
+      .maproom__image {
+        filter: none;
+      }
     }
   }
 
