@@ -50,9 +50,9 @@ const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
 const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
-// Always have an odd number of columns.
-const MIN_COLUMNS = 25;
-const MIN_ROWS = 19;
+// Always have an odd number of columns(because of the firelane delimiter).
+const DEFAULT_COLUMNS_NUMBER = 25;
+const DEFAULT_ROWS_NUMBER = 19;
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -67,12 +67,14 @@ const MIN_ROWS = 19;
 // Consumed by video (5/9) = +/- Math.floor(9/4) = [-2,2]
 // -4 -3  V  V  V  V  V  3  4
 
+// Example: if 17 columns, Math.ceil(17/2) = 9 of them are not available to leave room for the video.
+
 // The same logic applies to the rows.
 
-// capacity(n) = (((MIN_COLUMNS-1)+2n) * (MIN_ROWS+2n) * 0.75
+// capacity(n) = (((DEFAULT_COLUMNS_NUMBER-1)+2n) * (DEFAULT_ROWS_NUMBER+2n) * 0.75
 // Columns decreases by one because of the digital fire lane.
 // The video is 50% x 50% so it takes up 1/4 of the seats.
-// Because both MIN_COLUMNS-1 and MIN_ROWS are both even, we don't need Math.floor to guarantee integer result..
+// Because both DEFAULT_COLUMNS_NUMBER-1 and DEFAULT_ROWS_NUMBER are both even, we don't need Math.floor to guarantee integer result..
 // And we always add row above&below and a column left&right
 // So auditorium size 1 has 1 extra outlined row and column around its outside versus auditorium size 0.
 // The same is true for auditoriumn size 2 - it has an extra row and column around it versus auditorium size 1.
@@ -140,8 +142,8 @@ export const Audience: React.FunctionComponent = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const userUid = user?.uid;
-  const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
-  const minRows = venue?.auditoriumRows ?? MIN_ROWS;
+  const minColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
+  const minRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
 
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -214,9 +216,9 @@ export const Audience: React.FunctionComponent = () => {
     mode: "onSubmit",
   });
 
-  // Auditorium size 0 is MIN_COLUMNS x MIN_ROWS
-  // Size 1 is MIN_ROWSx2 x MIN_COLUMNS+2
-  // Size 2 is MIN_ROWSx4 x MIN_COLUMNS+4 and so on
+  // Auditorium size 0 is DEFAULT_COLUMNS_NUMBER x DEFAULT_ROWS_NUMBER
+  // Size 1 is MIN_ROWSx2 x DEFAULT_COLUMNS_NUMBER+2
+  // Size 2 is MIN_ROWSx4 x DEFAULT_COLUMNS_NUMBER+4 and so on
   const [auditoriumSize, setAuditoriumSize] = useState(0);
 
   // These are going to be translated (ie. into negative/positive per above)
