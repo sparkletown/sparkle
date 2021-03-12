@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import { CustomLoader } from "types/CustomLoader";
 
@@ -42,44 +42,30 @@ export const LoadingPage = () => {
     return customLoaders[randomIndex] ?? DEFAULT_LOADER;
   }, [rawRandomValue, customLoaders]);
 
-  // TODO: move these inline styles into scss
+  const containerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (containerRef.current) {
+      // Make the background image url accessible to our SCSS
+      containerRef.current.style.setProperty(
+        "--loading-page-background-image",
+        `url(${chosenLoader.url})`
+      );
+    }
+  }, [chosenLoader.url]);
+
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        backgroundColor: "#7c46fb", // $primary
-        backgroundImage: `url(${chosenLoader.url})`,
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-      }}
-    >
-      <div
-        className="loading-screen"
-        style={{ backgroundColor: "transparent", backdropFilter: "blur(15px)" }}
-      >
-        <div className="loading-content">
-          <div className="burningman-loading">
-            <div className="burningman-loading-anim" />
+    <div className="LoadingPage" ref={containerRef}>
+      <div className="LoadingPage__blur">
+        <div className="LoadingPage__image" />
+
+        {/* @debt Extract this loading icon into a standalone component */}
+        <div className="loading-icon">
+          <div className="loading-icon__mask">
+            <div className="loading-icon__fill" />
           </div>
-          {chosenLoader.url && (
-            // TODO: Unhardcode the width/height here
-            //   https://stackoverflow.com/questions/600743/how-to-get-div-height-to-auto-adjust-to-background-size/22211990#22211990
-            <div
-              style={{
-                backgroundImage: `url(${chosenLoader.url})`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                width: "600px",
-                height: "800px",
-                borderRadius: "20px",
-              }}
-            />
-          )}
-          <span className="loading-randomquote show">Loading...</span>
         </div>
+
+        <span className="LoadingPage__loading-text">Loading</span>
       </div>
     </div>
   );
