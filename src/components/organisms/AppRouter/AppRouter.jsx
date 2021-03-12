@@ -45,7 +45,6 @@ const AppRouter = () => {
           path="/SparkleVerse"
           component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
         />
-        <Route path="/loadingTest" component={LoadingPage} />
         <Route path="/enter/step1" component={Step1} />
         <Route path="/enter/step2" component={Step2} />
         <Route path="/enter/step3" component={Step3} />
@@ -77,6 +76,7 @@ const AppRouter = () => {
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
+        <Route path="/debug/loading" component={LoadingPage} />
         <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"
