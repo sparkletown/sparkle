@@ -1,41 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-
-import { DEFAULT_LOADER } from "settings";
-
-import { CustomLoader } from "types/CustomLoader";
+import React, { useEffect, useRef } from "react";
 
 import { useCustomLoaders } from "hooks/useCustomLoaders";
 
 import "./loading.scss";
 
-const getRandomInt = (max: number, randomValue: () => number = Math.random) => {
-  return Math.floor(randomValue() * Math.floor(max));
-};
-
-export const LoadingPage = () => {
-  const { customLoaders } = useCustomLoaders();
+export const LoadingPage: React.FC = () => {
+  const { chosenRandomLoader } = useCustomLoaders();
 
   // TODO: randomly choose one of the custom loaders to use
   //   This should be 'stable per load' and not change even if there are multiple re-renders
   // TODO: for some reason it seems to run at least twice, with changing int values.. which makes it 'flash' and change backgrounds
   // TODO: move all of this into useCustomLoaders or similar?
-
-  // Set the random integer once, but calculate how that maps to an index later
-  const [rawRandomValue] = useState<number>(Math.random());
-
-  const chosenLoader: CustomLoader = useMemo(() => {
-    if (customLoaders.length < 1) return DEFAULT_LOADER;
-
-    const randomIndex = getRandomInt(
-      customLoaders.length - 1,
-      () => rawRandomValue
-    );
-
-    // TODO: remove this debug logging
-    console.log({ rawRandomValue, randomIndex });
-
-    return customLoaders[randomIndex] ?? DEFAULT_LOADER;
-  }, [rawRandomValue, customLoaders]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -43,10 +18,10 @@ export const LoadingPage = () => {
       // Make the background image url accessible to our SCSS
       containerRef.current.style.setProperty(
         "--loading-page-background-image",
-        `url(${chosenLoader.url})`
+        `url(${chosenRandomLoader.url})`
       );
     }
-  }, [chosenLoader.url]);
+  }, [chosenRandomLoader.url]);
 
   return (
     <div className="LoadingPage" ref={containerRef}>
