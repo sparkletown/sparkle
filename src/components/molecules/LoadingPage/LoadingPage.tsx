@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 
+import { DEFAULT_LOADER } from "settings";
+
 import { CustomLoader } from "types/CustomLoader";
 
 import { useCustomLoaders } from "hooks/useCustomLoaders";
@@ -8,13 +10,6 @@ import "./loading.scss";
 
 const getRandomInt = (max: number, randomValue: () => number = Math.random) => {
   return Math.floor(randomValue() * Math.floor(max));
-};
-
-// TODO: move this into useCustomLoaders, or settings, or similar?
-export const DEFAULT_LOADER: CustomLoader = {
-  title: "Loading Sparkle",
-  text: "Loading Sparkle",
-  url: "",
 };
 
 export const LoadingPage = () => {
