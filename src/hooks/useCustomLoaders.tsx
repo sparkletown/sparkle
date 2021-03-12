@@ -5,11 +5,12 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import firebase from "firebase/app";
 
 import { DEFAULT_LOADER } from "settings";
 
-import { CustomLoader, isCustomLoader } from "types/CustomLoader";
+import { CustomLoader } from "types/CustomLoader";
+
+import { fetchCustomLoaders } from "api/loaders";
 
 import {
   retrieveCustomLoaders as retrieveCachedCustomLoaders,
@@ -44,19 +45,10 @@ export const CustomLoadersProvider: React.FC = ({ children }) => {
 
   // Fetch the loaders data on first load
   useEffect(() => {
-    (async () => {
-      const loadersSnapshot = await firebase
-        .firestore()
-        .collection("loaders")
-        .get();
-
-      const loaders: CustomLoader[] = loadersSnapshot.docs
-        .map((d) => d.data())
-        .filter(isCustomLoader);
-
+    fetchCustomLoaders().then((loaders) => {
       setCustomLoaders(loaders);
       cacheCustomLoaders(loaders);
-    })();
+    });
   }, []);
 
   // Set the random integer once, but calculate how that maps to an index later
