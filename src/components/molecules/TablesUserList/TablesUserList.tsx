@@ -11,8 +11,6 @@ import { useRecentVenueUsers } from "hooks/users";
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-
 interface PropsType {
   venueName: string;
   setSeatedAtTable: (value: string) => void;
@@ -68,8 +66,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const { user, profile } = useUser();
   const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
   const experience = useSelector(experienceSelector);
-
-  const { setUserProfile } = useProfileModalControls();
 
   useEffect(() => {
     if (!profile) return;
@@ -175,7 +171,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               users={recentVenueUsers}
               table={table}
               tableLocked={tableLocked}
-              setSelectedUserProfile={setUserProfile}
               onJoinClicked={onJoinClicked}
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />

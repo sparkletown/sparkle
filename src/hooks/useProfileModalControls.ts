@@ -14,20 +14,20 @@ export const useProfileModalControls = () => {
   const dispatch = useDispatch();
   const selectedUserProfile = useSelector(userProfileSelector);
 
-  const setUserProfile = useCallback(
-    (userProfile: WithId<User> | undefined) => {
+  const openUserProfileModal = useCallback(
+    (userProfile?: WithId<User>) => {
       dispatch(setUserProfileData(userProfile));
     },
     [dispatch]
   );
 
-  const unsetUserProfile = useCallback(() => {
+  const closeUserProfileModal = useCallback(() => {
     dispatch(setUserProfileData(undefined));
   }, [dispatch]);
 
   return {
     selectedUserProfile,
-    setUserProfile,
-    unsetUserProfile,
+    openUserProfileModal,
+    closeUserProfileModal,
   };
 };

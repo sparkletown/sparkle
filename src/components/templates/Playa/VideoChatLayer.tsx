@@ -11,7 +11,7 @@ import "./VideoChatLayer.scss";
 
 const ROOM_PREFIX = PROJECT_ID + "-";
 
-const VideoChatLayer: React.FunctionComponent = () => {
+const VideoChatLayer: React.FC = () => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
   const { worldUsersById } = useWorldUsersById();

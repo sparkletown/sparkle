@@ -7,7 +7,7 @@ export enum UserProfileActionTypes {
   SET_USER_PROFILE_DATA = "SET_USER_PROFILE_DATA",
 }
 
-export type SetUseProfileDataAction = ReduxAction<
+export type SetUserProfileDataAction = ReduxAction<
   UserProfileActionTypes.SET_USER_PROFILE_DATA,
   { userProfile?: WithId<User> }
 >;
@@ -17,4 +17,4 @@ export const setUserProfileData = (userProfile?: WithId<User>) => ({
   payload: { userProfile },
 });
 
-export type UserProfileActions = SetUseProfileDataAction;
+export type UserProfileActions = SetUserProfileDataAction;

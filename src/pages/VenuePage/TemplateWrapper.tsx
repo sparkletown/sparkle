@@ -5,6 +5,8 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
 import { ConversationSpace } from "components/templates/ConversationSpace";
@@ -16,11 +18,10 @@ import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
+import UserProfileModal from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 export interface TemplateWrapperProps {
   venue: AnyVenue;
@@ -28,8 +29,12 @@ export interface TemplateWrapperProps {
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
-  const { selectedUserProfile, unsetUserProfile } = useProfileModalControls();
   const match = useRouteMatch();
+
+  const {
+    selectedUserProfile,
+    closeUserProfileModal,
+  } = useProfileModalControls();
 
   let template;
   // @debt remove backButton from Navbar
@@ -132,7 +137,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
-        onHide={unsetUserProfile}
+        onHide={closeUserProfileModal}
       />
     </WithNavigationBar>
   );

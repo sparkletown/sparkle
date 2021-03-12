@@ -86,7 +86,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const dispatch = useDispatch();
@@ -192,7 +192,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       {
         text: "My Profile",
         onClick: () => {
-          if (selfUserProfile) setUserProfile(selfUserProfile);
+          if (selfUserProfile) openUserProfileModal(selfUserProfile);
         },
       },
       {
@@ -596,7 +596,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
         const viewProfileChoice = {
           text: `${avatarUser.partyName}'s profile`,
-          onClick: () => setUserProfile(avatarUser),
+          onClick: () => openUserProfileModal(avatarUser),
         };
         const askToJoinThemChoice = {
           text: `Ask to join ${avatarUser.partyName}'s chat`,
@@ -752,7 +752,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     firebase,
     recentVenueUsers,
     useProfilePicture,
-    setUserProfile,
+    openUserProfileModal,
     setMenu,
     menuRef,
     setShowMenu,

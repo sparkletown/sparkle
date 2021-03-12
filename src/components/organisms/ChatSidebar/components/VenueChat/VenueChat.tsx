@@ -8,7 +8,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import "./VenueChat.scss";
 
 export const VenueChat: React.FC = () => {
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
   const { sendMessage, deleteMessage, messagesToDisplay } = useVenueChat();
 
   return (
@@ -17,7 +17,7 @@ export const VenueChat: React.FC = () => {
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         deleteMessage={deleteMessage}
-        onAvatarClick={setUserProfile}
+        onAvatarClick={openUserProfileModal}
       />
     </div>
   );

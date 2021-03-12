@@ -76,7 +76,7 @@ const OnlineStats: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const venueName = venue?.name;
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
 
   useInterval(() => {
     firebase
@@ -303,7 +303,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => setUserProfile(user)}
+                          onClick={() => openUserProfileModal(user)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
@@ -335,7 +335,7 @@ const OnlineStats: React.FC = () => {
       allVenues,
       liveVenues,
       peopleByLastSeen,
-      setUserProfile,
+      openUserProfileModal,
     ]
   );
 

@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 import "./UserSearchBar.scss";
 
 interface UserSearchBarProps {
@@ -17,7 +17,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
 
   const { worldUsers } = useWorldUsers();
 
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -56,7 +56,7 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
               key={user.id}
               onClick={() => {
                 onSelect(user);
-                setUserProfile(user);
+                openUserProfileModal(user);
               }}
             >
               <div

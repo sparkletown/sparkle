@@ -9,12 +9,12 @@ export type UserProfileState = {
   userProfile?: WithId<User>;
 };
 
-const initialChatState: UserProfileState = {
+const initialState: UserProfileState = {
   userProfile: undefined,
 };
 
 export const userProfileReducer = (
-  state = initialChatState,
+  state = initialState,
   action: UserProfileActions
 ): UserProfileState => {
   switch (action.type) {

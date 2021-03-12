@@ -1,21 +1,16 @@
 import React, { useState } from "react";
 
-// Components
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-// Hooks
 import { useSelector } from "hooks/useSelector";
 
-// Utils | Settings | Constants
 import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 import { IS_BURN } from "secrets";
 
-// Typings
 import { User } from "types/User";
 
-// Styles
 import "./UserList.scss";
 
 interface PropsType {
@@ -43,7 +38,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
-  const usersSanitized = _users?.filter(
+  const usersSanitized = _users.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
 
@@ -64,6 +59,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
           {attendance === 1 ? "person" : "people"}{" "}
           {isCamp && IS_BURN ? "in the camp" : activity}
         </p>
+
         {!disableSeeAll && usersSanitized.length > limit && (
           <p
             className="clickable-text"
@@ -74,6 +70,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
           </p>
         )}
       </div>
+
       <div className="row no-margin">
         {usersToDisplay.map(
           (user) =>

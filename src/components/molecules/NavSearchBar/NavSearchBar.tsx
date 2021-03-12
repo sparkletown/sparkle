@@ -1,19 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { VenueEvent } from "types/venues";
-
 import { RoomModal } from "components/templates/PartyMap/components";
+import { NavSearchBarInput } from "./NavSearchBarInput";
+
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import { Room } from "types/rooms";
-import { User } from "types/User";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import "./NavSearchBar.scss";
-import { NavSearchBarInput } from "./NavSearchBarInput";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { Room } from "types/rooms";
+import { VenueEvent } from "types/venues";
+import { User } from "types/User";
+
+import "./NavSearchBar.scss";
 
 interface SearchResult {
   rooms: Room[];
@@ -37,7 +39,7 @@ const NavSearchBar = () => {
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
 
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -134,7 +136,7 @@ const NavSearchBar = () => {
                 className="row"
                 key={`user-${user.id}`}
                 onClick={() => {
-                  setUserProfile(user);
+                  openUserProfileModal(user);
                   clearSearchQuery();
                 }}
               >

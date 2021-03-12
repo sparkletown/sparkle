@@ -26,7 +26,7 @@ export const ChatSidebar: React.FC = () => {
   } = useChatSidebarControls();
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
@@ -74,7 +74,7 @@ export const ChatSidebar: React.FC = () => {
         {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
           <PrivateChats
             recipientId={chatSettings.recipientId}
-            onAvatarClick={setUserProfile}
+            onAvatarClick={openUserProfileModal}
           />
         )}
       </div>

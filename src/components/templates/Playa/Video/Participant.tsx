@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
@@ -29,7 +35,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   isHost,
   showName = true,
 }) => {
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
 
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -149,11 +155,16 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     ? " (host)"
     : "";
 
+  const selectUser = useCallback(() => openUserProfileModal(user), [
+    openUserProfileModal,
+    user,
+  ]);
+
   return (
     <div className="participant">
       {videos}
       {showName && (
-        <div className="name" onClick={() => setUserProfile(user)}>
+        <div className="name" onClick={selectUser}>
           {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
         </div>
       )}

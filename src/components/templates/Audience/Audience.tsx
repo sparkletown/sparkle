@@ -12,6 +12,13 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
+import { useDispatch } from "hooks/useDispatch";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
 import { User } from "types/User";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -24,14 +31,6 @@ import {
 import { currentVenueSelectorData } from "utils/selectors";
 
 import UserProfilePicture from "components/molecules/UserProfilePicture";
-
-// Hooks
-import { useDispatch } from "hooks/useDispatch";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-import { useRecentVenueUsers } from "hooks/users";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import "./Audience.scss";
 
@@ -151,7 +150,7 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const { setUserProfile } = useProfileModalControls();
+  const { openUserProfileModal } = useProfileModalControls();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -460,7 +459,7 @@ export const Audience: React.FunctionComponent = () => {
                               seat && seatedPartygoer === null
                                 ? takeSeat(row, column)
                                 : seatedPartygoer !== null
-                                ? setUserProfile(seatedPartygoer)
+                                ? openUserProfileModal(seatedPartygoer)
                                 : null
                             }
                           >
@@ -498,7 +497,6 @@ export const Audience: React.FunctionComponent = () => {
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-
     userUid,
     user,
     dispatch,
@@ -511,6 +509,6 @@ export const Audience: React.FunctionComponent = () => {
     reactionClicked,
     isSeat,
     partygoersBySeat,
-    setUserProfile,
+    openUserProfileModal,
   ]);
 };
