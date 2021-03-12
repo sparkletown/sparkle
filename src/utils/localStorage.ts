@@ -1,6 +1,6 @@
 import { CustomLoader, isCustomLoader } from "types/CustomLoader";
 
-export enum LocalStorageKeys {
+export enum StorageKeys {
   customLoaders = "customLoaders",
 }
 
@@ -18,15 +18,14 @@ export const removeLocalStorageToken = (venueId: string) =>
   localStorage.removeItem(accessTokenKey(venueId));
 
 export const storeCustomLoaders = (customLoaders: CustomLoader[]) =>
-  localStorage.setItem(
-    LocalStorageKeys.customLoaders,
+  sessionStorage.setItem(
+    StorageKeys.customLoaders,
     JSON.stringify(customLoaders)
   );
 
 export const retrieveCustomLoaders = (): CustomLoader[] => {
   const customLoadersJson =
-    localStorage.getItem(LocalStorageKeys.customLoaders) ??
-    JSON_STRINGIFIED_ARRAY;
+    sessionStorage.getItem(StorageKeys.customLoaders) ?? JSON_STRINGIFIED_ARRAY;
 
   try {
     const customLoaders = JSON.parse(customLoadersJson);
