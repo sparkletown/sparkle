@@ -11,7 +11,7 @@ export const useReactions = (venueId?: string) => {
   useEffect(() => {
     if (!venueId) return;
 
-    firebase
+    const unsubscribeListener = firebase
       .firestore()
       .collection("experiences")
       .doc(venueId)
@@ -31,6 +31,10 @@ export const useReactions = (venueId?: string) => {
           }
         });
       });
+
+    return () => {
+      unsubscribeListener();
+    };
   }, [firebase, setReactions, venueId]);
 
   return reactions;
