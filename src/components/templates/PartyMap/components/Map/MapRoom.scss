@@ -14,8 +14,6 @@ $label-visible: flex;
 
   transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
 
-  cursor: pointer;
-
   &:hover {
     z-index: z(map-room--hovered);
     transform: scale(1.1);
@@ -40,10 +38,13 @@ $label-visible: flex;
   }
 
   &--unclickable {
-    cursor: default;
     z-index: z(map-room--unclickable);
 
+    cursor: default;
+
     &:hover {
+      z-index: z(map-room--unclickable);
+
       transform: none;
 
       .maproom__image {
