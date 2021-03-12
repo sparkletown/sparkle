@@ -7,11 +7,6 @@ import "./loading.scss";
 export const LoadingPage: React.FC = () => {
   const { chosenRandomLoader } = useCustomLoaders();
 
-  // TODO: randomly choose one of the custom loaders to use
-  //   This should be 'stable per load' and not change even if there are multiple re-renders
-  // TODO: for some reason it seems to run at least twice, with changing int values.. which makes it 'flash' and change backgrounds
-  // TODO: move all of this into useCustomLoaders or similar?
-
   const containerRef = useRef<HTMLDivElement>(null);
   useLayoutEffect(() => {
     if (containerRef.current) {
