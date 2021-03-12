@@ -41,7 +41,7 @@ $label-visible: flex;
 
   &--unclickable {
     cursor: default;
-    z-index: revert;
+    z-index: auto;
 
     &:hover {
       transform: none;
