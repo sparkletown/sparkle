@@ -6,6 +6,8 @@ $primary: #7c46fb;
 $loading-icon-mask-image: url(../../../assets/masks/mask-sparkle-logo.png);
 $loading-page-background-image: var(--loading-page-background-image, none);
 $loading-text-size: 12vw;
+$loading-icon-height: 8vw;
+$loading-icon-width: $loading-icon-height / 2;
 
 $sparkleanim-duration: 4s;
 $sparkleanim-scale-min: 0.5;
@@ -86,11 +88,10 @@ $loadingburningman-bg-color: $white;
 .loading-icon {
   position: absolute;
   bottom: 1vw;
-  left: calc(50vw + 18vw);
+  left: calc(50vw + 19vw);
 
-  // @debt Make this resize responsively using vw/similar
-  height: 152px;
-  width: 76px;
+  width: $loading-icon-width;
+  height: $loading-icon-height;
 
   filter: drop-shadow(5px 5px 20px rgba($black, 1));
 
