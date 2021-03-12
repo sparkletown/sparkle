@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useLayoutEffect, useRef } from "react";
 
 import { useCustomLoaders } from "hooks/useCustomLoaders";
 
@@ -13,7 +13,7 @@ export const LoadingPage: React.FC = () => {
   // TODO: move all of this into useCustomLoaders or similar?
 
   const containerRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (containerRef.current) {
       // Make the background image url accessible to our SCSS
       containerRef.current.style.setProperty(
