@@ -88,9 +88,11 @@ $z-layers: (
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // Map
-  map-room-hovered: 3,
-  map-room: 2,
-  map-seat: 1,
+  map-room--hovered: 5,
+  map-room: 4,
+  map-grid: 3,
+  map-room--unclickable: 2,
+  map-background: 1,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,

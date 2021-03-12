@@ -17,7 +17,7 @@ $label-visible: flex;
   cursor: pointer;
 
   &:hover {
-    z-index: z(map-room-hovered);
+    z-index: z(map-room--hovered);
     transform: scale(1.1);
 
     .maproom__label {
@@ -41,7 +41,7 @@ $label-visible: flex;
 
   &--unclickable {
     cursor: default;
-    z-index: auto;
+    z-index: z(map-room--unclickable);
 
     &:hover {
       transform: none;
