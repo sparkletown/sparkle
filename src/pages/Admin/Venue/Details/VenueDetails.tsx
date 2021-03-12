@@ -211,14 +211,14 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       </S.Header>
 
       <S.Main>
-        <MapPreview
+        {/* <MapPreview
           isEditing={isEditing}
           setIsEditing={setIsEditing}
           venueId={venueId!}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
           rooms={rooms ?? []}
-        />
+        /> */}
 
         {!!mapBackgroundImageUrl && (
           <>

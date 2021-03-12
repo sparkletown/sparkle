@@ -297,7 +297,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                     ref={placementDivRef}
                     style={{ width: "100%", height: 1000, overflow: "scroll" }}
                   >
-                    <PlayaContainer
+                    {/* <PlayaContainer
                       rounded
                       interactive={false}
                       resizable={false}
@@ -329,7 +329,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                       }}
                       venueId={venue.id}
                       otherIconsStyle={{ opacity: 0.4 }}
-                    />
+                    /> */}
                   </div>
                 </div>
               </>

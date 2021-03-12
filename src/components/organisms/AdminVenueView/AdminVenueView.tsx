@@ -6,6 +6,7 @@ import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueDetails from "pages/Admin/Venue/Details";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
+import {Spaces} from "pages/Admin/Spaces"
 
 import { Venue_v2 } from "types/venues";
 
@@ -23,6 +24,7 @@ enum SidebarOptions {
   dashboard = "dashboard",
   basicInfo = "basic_info",
   entranceExperience = "entrance_experience",
+  spaces = "spaces",
   advancedMapSettings = "advanced_map_settings",
   ticketingAndAccess = "ticketing_and_access",
 }
@@ -35,6 +37,10 @@ const sidebarOptions: SidebarOption[] = [
   {
     id: SidebarOptions.entranceExperience,
     text: "Entrance",
+  },
+  {
+    id: SidebarOptions.spaces,
+    text: "Spaces",
   },
   {
     id: SidebarOptions.advancedMapSettings,
@@ -103,7 +109,7 @@ export const AdminVenueView: React.FC = () => {
         </Nav>
       </div>
       {selectedOption === SidebarOptions.basicInfo && (
-        <VenueWizard onSave={selectDashboard} />
+        <VenueWizard  />
       )}
       {selectedOption === SidebarOptions.entranceExperience && (
         <EntranceExperience
@@ -111,11 +117,14 @@ export const AdminVenueView: React.FC = () => {
           onSave={selectDashboard}
         />
       )}
+      {selectedOption === SidebarOptions.spaces && (
+        <Spaces venue={venue as Venue_v2} />
+      )}
       {selectedOption === SidebarOptions.advancedMapSettings && (
         <AdvancedSettings venue={venue as Venue_v2} onSave={selectDashboard} />
       )}
       {selectedOption === SidebarOptions.dashboard && (
-        <VenueDetails venue={venue as Venue_v2} />
+        <VenueDetails venue={venue as Venue_v2}  />
       )}
     </>
   );

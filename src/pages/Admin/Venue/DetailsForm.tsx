@@ -248,7 +248,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             ref={placementDivRef}
             style={{ width: "100%", height: 1000, overflow: "scroll" }}
           >
-            <PlayaContainer
+            {/* <PlayaContainer
               rounded
               interactive={!isAdminPlaced}
               resizable={false}
@@ -268,7 +268,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 width: PLAYA_WIDTH,
                 height: PLAYA_HEIGHT,
               }}
-            />
+            /> */}
           </div>
         </div>
       )}

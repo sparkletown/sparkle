@@ -1,0 +1,7 @@
+.map-preview {
+  &__room {
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+}

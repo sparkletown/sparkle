@@ -4,6 +4,8 @@ import React, {
   useMemo,
   CSSProperties,
   useEffect,
+  Dispatch,
+  SetStateAction,
 } from "react";
 import { useDrop } from "react-dnd";
 import { ItemTypes } from "./ItemTypes";
@@ -15,6 +17,7 @@ import { DEFAULT_MAP_ICON_URL } from "settings";
 import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
 import { Dimensions } from "types/utility";
+import { RoomData_v2 } from "types/rooms";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -54,6 +57,9 @@ interface PropsType {
   backgroundImageStyle?: CSSProperties;
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
+  rooms: RoomData_v2[];
+  selectedRoom: RoomData_v2 | undefined;
+  setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -73,11 +79,13 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImageStyle,
     containerStyle,
     lockAspectRatio,
+    rooms,
+    selectedRoom,
+    setSelectedRoom
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
 
-  // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
     if (!imageDims) return;
 
@@ -171,6 +179,7 @@ export const Container: React.FC<PropsType> = (props) => {
     },
     [boxes]
   );
+
   const resizeBox = useCallback(
     (id: string) => (dimensions: Dimensions) => {
       const { width, height } = dimensions;
@@ -204,6 +213,30 @@ export const Container: React.FC<PropsType> = (props) => {
     },
   });
 
+  const renderSelectedRoom = (index: number) => {
+    return (
+      <>
+        <DraggableSubvenue
+          isResizable={resizable}
+          key={index}
+          id={index.toString()}
+          imageStyle={iconImageStyle}
+          rounded={!!rounded}
+          {...boxes[index]}
+          onChangeSize={resizeBox(index.toString())}
+          lockAspectRatio={lockAspectRatio}
+        />
+      {imageDims && interactive && (
+        <CustomDragLayer
+          snapToGrid={!!snapToGrid}
+          rounded={!!rounded}
+          iconSize={boxes[Object.keys(boxes)[index]]} // @debt - this gets the size from the first box
+        />
+      )}
+      </>
+    )
+  }
+
   return (
     <>
       <div ref={drop} style={{ ...styles, ...containerStyle }}>
@@ -220,67 +253,44 @@ export const Container: React.FC<PropsType> = (props) => {
           }}
           src={backgroundImage}
         />
-        <div
-          style={{ position: "absolute", top: 0, left: 0, bottom: 0, right: 0 }}
-        >
-          {useMemo(
-            () =>
-              Object.keys(otherIcons).map((key, index) => (
-                <img
-                  key={`${otherIcons[key].top}-${otherIcons[key].left}-${otherIcons[key].url}-${index}`}
-                  src={otherIcons[key].url || DEFAULT_MAP_ICON_URL}
-                  style={{
-                    position: "absolute",
-                    top: `${
-                      (100 * otherIcons[key].top) / coordinatesBoundary.height
-                    }%`,
-                    left: `${
-                      (100 * otherIcons[key].left) / coordinatesBoundary.width
-                    }%`,
-                    width: resizable
-                      ? `${otherIcons[key].width}%`
-                      : otherIcons[key].width, //resizable dimensions are in percentages
-                    height: resizable
-                      ? `${otherIcons[key].height}%`
-                      : otherIcons[key].width,
-                    borderRadius: rounded ? "50%" : "none",
-                    ...otherIconsStyle,
-                  }}
-                  alt={`${otherIcons[key].url} map icon`}
-                  onClick={() => onOtherIconClick && onOtherIconClick(key)}
-                />
-              )),
-            [
-              otherIcons,
-              coordinatesBoundary.height,
-              coordinatesBoundary.width,
-              resizable,
-              rounded,
-              otherIconsStyle,
-              onOtherIconClick,
-            ]
-          )}
-        </div>
-        {Object.keys(boxes).map((key) => (
-          <DraggableSubvenue
-            isResizable={resizable}
-            key={key}
-            id={key}
-            imageStyle={iconImageStyle}
-            rounded={!!rounded}
-            {...boxes[key]}
-            onChangeSize={resizeBox(key)}
-            lockAspectRatio={lockAspectRatio}
-          />
-        ))}
+
+        {backgroundImage &&
+          rooms.map((room, index) => (
+            room === selectedRoom ? (
+              <>
+              {renderSelectedRoom(index)}
+              </>
+            ) : (
+              <div
+              className="map-preview__room"
+              key={room.title}
+              onClick={() => setSelectedRoom(room)}
+              style={{
+                position: "absolute",
+                top: `${room.y_percent}%`,
+                left: `${room.x_percent}%`,
+                width: `${room.width_percent}%`,
+                height: `${room.height_percent}%`,
+              }}
+            >
+              <img
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  filter: room.isEnabled ? "none" : "grayscale(100%)",
+                  opacity: room.isEnabled ? 1 : 0.5,
+                  transition: "filter .3s ease",
+                }}
+                src={room.image_url}
+                alt="room banner"
+                title={room.title}
+              />
+            </div>
+            )
+          ))}
+
       </div>
-      {imageDims && interactive && (
-        <CustomDragLayer
-          snapToGrid={!!snapToGrid}
-          rounded={!!rounded}
-          iconSize={boxes[Object.keys(boxes)[0]]} // @debt - this gets the size from the first box
-        />
-      )}
+
     </>
   );
 };

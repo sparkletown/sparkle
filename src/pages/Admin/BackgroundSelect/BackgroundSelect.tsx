@@ -47,14 +47,23 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
   };
 
   return (
+    <>
     <S.Wrapper hasImage={!!mapBackground}>
       {!mapBackground && (
         <>
           <FileButton onChange={handleUpload} />
 
-          <h3>Or choose a map</h3>
-          <S.MapBrowserGrid>
-            {mapBackgrounds.length > 0 &&
+          <div>
+              Or select one of our map backgrounds
+            </div>
+
+        </>
+      )}
+
+      {mapBackground && <S.Image src={mapBackground} />}
+    </S.Wrapper>
+    <S.MapBrowserGrid>
+          {mapBackgrounds.length > 0 &&
               mapBackgrounds.map((item, index) => (
                 <S.MapItem
                   backgroundImage={item}
@@ -64,11 +73,7 @@ const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
                 />
               ))}
           </S.MapBrowserGrid>
-        </>
-      )}
-
-      {mapBackground && <S.Image src={mapBackground} />}
-    </S.Wrapper>
+    </>
   );
 };
 

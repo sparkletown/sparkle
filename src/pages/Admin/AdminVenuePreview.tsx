@@ -73,7 +73,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
             <span className="title" style={{ fontSize: "20px" }}>
               This is a preview of your camp
             </span>
-            <PartyMapContainer
+            {/* <PartyMapContainer
               interactive={false}
               resizable
               coordinatesBoundary={{
@@ -85,7 +85,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
               draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
               venue={partyMapVenue}
-            />
+            /> */}
           </div>
         );
       default:

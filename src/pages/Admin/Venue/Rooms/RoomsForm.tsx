@@ -366,7 +366,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
             camp, then drag it around to position it
           </p>
           <div className="playa">
-            {venue.mapBackgroundImageUrl && (
+            {/* {venue.mapBackgroundImageUrl && (
               <PartyMapContainer
                 interactive
                 resizable
@@ -384,7 +384,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                 currentRoomIndex={editingRoomIndex}
                 otherIconsStyle={{ opacity: 0.4 }}
               />
-            )}
+            )} */}
           </div>
         </div>
       </div>

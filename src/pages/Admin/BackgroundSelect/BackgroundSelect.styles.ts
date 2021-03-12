@@ -9,21 +9,14 @@ export const Wrapper = styled.div<WrapperProps>`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: ${({ hasImage }) => (hasImage ? "0" : "5rem 0 4rem")};
-
-  position: relative;
-
-  background-size: cover;
-  background-color: #1a1d24;
-  background-image: url(${({ backgroundUrl }) => backgroundUrl ?? ""});
-  background-position: center;
+  padding: 1rem 0;
 `;
 
 export const MapBrowserGrid = styled.div`
-  display: grid;
-  width: 50%;
-  grid-gap: 1rem;
-  grid-template-columns: repeat(3, 1fr);
+display: -webkit-box;
+flex-flow: row;
+padding: 0.5em 0;
+overflow-x: scroll;
 `;
 
 type MapItemProps = {
@@ -31,11 +24,12 @@ type MapItemProps = {
   aspectRatio?: string;
 };
 export const MapItem = styled.div<MapItemProps>`
-  padding-bottom: calc(100% / (${({ aspectRatio }) => aspectRatio ?? 2 / 1}));
-
-  border-radius: 1.8em;
-
-  background: #000;
+  flex-grow: 0;
+  width: 58px;
+  height: 58px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 1em;
   background-size: cover;
   background-image: url(${({ backgroundImage }) => backgroundImage});
   background-position: center;

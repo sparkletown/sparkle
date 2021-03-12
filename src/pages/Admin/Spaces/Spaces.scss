@@ -1,0 +1,44 @@
+.spaces {
+  display: flex;
+  flex: 1;
+
+  &__rooms {
+    width: 20%;
+  }
+
+  &__map {
+    width: 80%;
+    background-color: #19181a;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
+  &__background {
+    padding: 20px;
+  }
+
+  &__upload-background-wrapper {
+    background-color: #19181a;
+    border-radius: 16px;
+    padding: 40px;
+  }
+
+  &__upload-background-button {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 26px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  &__backgrounds {
+    display: flex;
+    position: relative;
+    overflow-x: scroll;
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: bolder;
+  }
+}
