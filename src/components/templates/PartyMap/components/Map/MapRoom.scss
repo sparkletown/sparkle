@@ -44,6 +44,8 @@ $label-visible: flex;
     z-index: z(map-room--unclickable);
 
     &:hover {
+      z-index: z(map-room--unclickable);
+
       transform: none;
 
       .maproom__image {
