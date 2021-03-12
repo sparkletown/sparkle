@@ -5,6 +5,7 @@ export enum RoomTypes {
 // @debt We should end up with 1 canonical room type
 export interface Room {
   type?: RoomTypes;
+  zIndex?: number;
   title: string;
   subtitle: string;
   url: string;
@@ -22,6 +23,7 @@ export interface Room {
 // @debt We should end up with 1 canonical room type
 export interface RoomData_v2 {
   type?: RoomTypes;
+  zIndex?: number;
   title?: string;
   subtitle?: string;
   url?: string;

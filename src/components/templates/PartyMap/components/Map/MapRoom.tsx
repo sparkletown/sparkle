@@ -54,20 +54,27 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       !isUnclickable && venue.roomVisibility === RoomVisibility.count,
   });
 
-  const roomPositionStyles = useMemo(
+  const roomInlineStyles = useMemo(
     () => ({
       left: `${room.x_percent}%`,
       top: `${room.y_percent}%`,
       width: `${room.width_percent}%`,
       height: `${room.height_percent}%`,
+      zIndex: room.zIndex,
     }),
-    [room.height_percent, room.width_percent, room.x_percent, room.y_percent]
+    [
+      room.height_percent,
+      room.width_percent,
+      room.x_percent,
+      room.y_percent,
+      room.zIndex,
+    ]
   );
 
   return (
     <div
       className={containerClasses}
-      style={roomPositionStyles}
+      style={roomInlineStyles}
       onClick={isUnclickable ? noop : selectRoom}
       onMouseEnter={isUnclickable ? noop : handleRoomHovered}
       onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
