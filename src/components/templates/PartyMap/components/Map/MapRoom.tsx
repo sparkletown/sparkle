@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Room } from "types/rooms";
+import { Room, RoomTypes } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -13,7 +13,9 @@ import RoomAttendance from "../RoomAttendance";
 
 import "./MapRoom.scss";
 
-interface MapRoomProps {
+const noop = () => {};
+
+export interface MapRoomProps {
   venue: PartyMapVenue;
   room: Room;
   selectRoom: () => void;
@@ -27,6 +29,8 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
+  const isUnclickable = room.type === RoomTypes.unclickable;
+
   const dispatch = useDispatch();
 
   const handleRoomHovered = useCallback(() => {
@@ -38,39 +42,51 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
+    "maproom--unclickable": isUnclickable,
     "maproom--always-show-label":
-      venue.roomVisibility === RoomVisibility.nameCount ||
-      (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers),
+      !isUnclickable &&
+      (venue.roomVisibility === RoomVisibility.nameCount ||
+        (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
-    "maproom__title--count": venue.roomVisibility === RoomVisibility.count,
+    "maproom__title--count":
+      !isUnclickable && venue.roomVisibility === RoomVisibility.count,
   });
 
-  const roomPositionStyles = useMemo(
+  const roomInlineStyles = useMemo(
     () => ({
       left: `${room.x_percent}%`,
       top: `${room.y_percent}%`,
       width: `${room.width_percent}%`,
       height: `${room.height_percent}%`,
+      zIndex: room.zIndex,
     }),
-    [room.height_percent, room.width_percent, room.x_percent, room.y_percent]
+    [
+      room.height_percent,
+      room.width_percent,
+      room.x_percent,
+      room.y_percent,
+      room.zIndex,
+    ]
   );
 
   return (
     <div
       className={containerClasses}
-      style={roomPositionStyles}
-      onClick={selectRoom}
-      onMouseEnter={handleRoomHovered}
-      onMouseLeave={handleRoomUnhovered}
+      style={roomInlineStyles}
+      onClick={isUnclickable ? noop : selectRoom}
+      onMouseEnter={isUnclickable ? noop : handleRoomHovered}
+      onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
     >
       <img className="maproom__image" src={room.image_url} alt={room.title} />
 
-      <div className="maproom__label">
-        <span className={titleClasses}>{room.title}</span>
-        <RoomAttendance venue={venue} room={room} />
-      </div>
+      {!isUnclickable && (
+        <div className="maproom__label">
+          <span className={titleClasses}>{room.title}</span>
+          <RoomAttendance venue={venue} room={room} />
+        </div>
+      )}
     </div>
   );
 };
