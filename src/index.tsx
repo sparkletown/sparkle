@@ -45,15 +45,18 @@ import {
 import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
 
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import { useSelector } from "hooks/useSelector";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
+
+import { CustomSoundsProvider } from "hooks/useCustomSounds";
+import { useSelector } from "hooks/useSelector";
 
 import AppRouter from "components/organisms/AppRouter";
 
@@ -253,9 +256,11 @@ render(
         <DndProvider backend={HTML5Backend}>
           <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
-              <AuthIsLoaded>
-                <AppRouter />
-              </AuthIsLoaded>
+              <CustomSoundsProvider>
+                <AuthIsLoaded>
+                  <AppRouter />
+                </AuthIsLoaded>
+              </CustomSoundsProvider>
             </ReactReduxFirebaseProvider>
           </Provider>
         </DndProvider>
