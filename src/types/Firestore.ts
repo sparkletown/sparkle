@@ -11,6 +11,7 @@ import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
 import { AnyVenue, VenueEvent } from "./venues";
+import { AuditoriumSection } from "./auditorium";
 
 export interface Experience {
   reactions: Record<string, Reaction>;
@@ -58,6 +59,7 @@ export interface FirestoreData {
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
+  currentAuditoriumSections?: Record<string, AuditoriumSection | undefined>;
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience: Experience;
@@ -80,6 +82,7 @@ export interface FirestoreOrdered {
   currentVenue?: Array<WithId<AnyVenue>>;
   currentVenueEventsNG?: Array<WithId<VenueEvent>>;
   currentVenueNG?: Array<WithId<AnyVenue>>;
+  currentAuditoriumSections?: Array<WithId<AuditoriumSection>>;
   eventPurchase?: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experience: WithId<Experience>;

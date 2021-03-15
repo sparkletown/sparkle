@@ -24,20 +24,20 @@ export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
 
   const history = useHistory();
 
-  const sections = useAuditoriumSections(venueId);
-  const sectionsLength = sections.length;
+  const { auditoriumSections } = useAuditoriumSections(venueId);
+  const sectionsAmount = auditoriumSections.length;
 
   const auditoriumSize: AuditoriumSizes = useMemo(() => {
-    if (sectionsLength <= 4) return AuditoriumSizes.SMALL;
+    if (sectionsAmount <= 4) return AuditoriumSizes.SMALL;
 
-    if (sectionsLength > 4 && sectionsLength <= 10) {
+    if (sectionsAmount > 4 && sectionsAmount <= 10) {
       return AuditoriumSizes.MEDIUM;
     }
 
     return AuditoriumSizes.LARGE;
-  }, [sectionsLength]);
+  }, [sectionsAmount]);
 
-  const sectionPreviews = sections.map((section) => (
+  const sectionPreviews = auditoriumSections.map((section) => (
     <SectionPreview
       key={section.id}
       onClick={() =>

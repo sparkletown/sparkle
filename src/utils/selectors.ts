@@ -19,6 +19,7 @@ import {
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { MessageToTheBandReaction, Reaction } from "./reactions";
+import { AuditoriumSection } from "types/auditorium";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -235,6 +236,14 @@ export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
 
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
+
+export const currentAuditoriumSectionsSelector: SparkleSelector<
+  AuditoriumSection[] | undefined
+> = (state) => state.firestore.ordered.currentAuditoriumSections;
+
+export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
+  Record<string, AuditoriumSection | undefined> | undefined
+> = (state) => state.firestore.data.currentAuditoriumSections;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state

@@ -8,6 +8,7 @@ import { useAuditoriumSection } from "hooks/auditoriumSections";
 import { Video } from "../Video";
 
 import "./Section.scss";
+import { useVenueId } from "hooks/useVenueId";
 
 export interface SectionProps {
   venue: AuditoriumVenue;
@@ -15,8 +16,9 @@ export interface SectionProps {
 
 export const Section: React.FC<SectionProps> = () => {
   const { sectionId } = useParams<{ sectionId?: string }>();
+  const venueId = useVenueId();
 
-  const section = useAuditoriumSection(sectionId);
+  const section = useAuditoriumSection({ venueId, sectionId });
 
   if (!section) return <p>No such section was found</p>;
 
