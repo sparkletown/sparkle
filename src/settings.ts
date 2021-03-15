@@ -286,6 +286,11 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: ["Insert an iframe link"],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -446,6 +451,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: "Add an embeddable with an embedded iframe in the center",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -484,6 +502,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
+  VenueTemplate.embeddable,
 ];
 
 export const FIREBASE_CONFIG = {
