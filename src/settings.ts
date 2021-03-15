@@ -236,6 +236,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: ["Insert an iframe link"],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
