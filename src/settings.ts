@@ -39,6 +39,7 @@ export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+export const NEW_MESSAGE_SOUND = "/sounds/newmessage.m4a";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
 export const DEFAULT_PARTY_NAME = "Anon";
