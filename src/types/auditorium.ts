@@ -1,6 +1,7 @@
 export type AuditoriumSection = {
   name: string;
   id: string;
+  isLocked: boolean;
 };
 
 export enum AuditoriumSizes {

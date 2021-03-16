@@ -124,6 +124,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // DEVELOPMENT-MODE HACK
   template = <Auditorium venue={venue as AuditoriumVenue} />;
   fullscreen = true;
+  hasBackButton = false;
 
   return (
     // @debt remove backButton from Navbar

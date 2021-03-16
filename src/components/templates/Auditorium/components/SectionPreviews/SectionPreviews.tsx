@@ -40,6 +40,7 @@ export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
   const sectionPreviews = auditoriumSections.map((section) => (
     <SectionPreview
       key={section.id}
+      section={section}
       onClick={() =>
         history.push(`${history.location.pathname}/section/${section.id}`)
       }

@@ -7,17 +7,23 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { AuditoriumSection } from "types/auditorium";
+
 import "./SectionPreview.scss";
 
 export interface SectionPreviewProps {
   onClick?: () => void;
+  section: AuditoriumSection;
 }
 
 const noop = () => {};
 
-export const SectionPreview: React.FC<SectionPreviewProps> = ({ onClick }) => {
-  const isFull = Math.random() <= 0.5;
-  const isLocked = Math.random() <= 0.5;
+export const SectionPreview: React.FC<SectionPreviewProps> = ({
+  onClick,
+  section,
+}) => {
+  const { isLocked } = section;
+  const isFull = Math.random() <= 0.2;
 
   const isUnavailable = isFull || isLocked;
 

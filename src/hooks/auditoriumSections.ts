@@ -46,7 +46,7 @@ export const useAuditoriumSections = (venueId?: string) => {
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
-  console.log({ sections });
+  console.log({ sections, venueId });
 
   return {
     auditoriumSections: sections ?? [],
