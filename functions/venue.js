@@ -28,7 +28,7 @@ const VenueTemplate = {
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
-const VALID_TEMPLATES = [
+const VALID_CREATE_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.friendship,
   VenueTemplate.partymap,
@@ -58,7 +58,7 @@ const checkUserIsAdminOrOwner = async (venueId, uid) => {
 };
 
 const createVenueData = (data, context) => {
-  if (!VALID_TEMPLATES.includes(data.template)) {
+  if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
       "invalid-argument",
       `Template ${data.template} unknown`
