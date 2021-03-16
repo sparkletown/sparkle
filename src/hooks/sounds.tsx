@@ -89,13 +89,23 @@ export const useCustomSoundsContext = (): CustomSoundsState =>
  * @see ExposedData (from use-sound)
  */
 export const useCustomSound = (
-  soundRef: string | SoundConfigReference,
+  soundRef?: string | SoundConfigReference,
   options?: HookOptions
 ): [PlaySpriteFunction, ExposedDataWithPlay] => {
-  const { soundId, spriteName } =
-    typeof soundRef === "string"
-      ? { soundId: soundRef, spriteName: undefined }
-      : soundRef;
+  const { soundId, spriteName } = (() => {
+    switch (typeof soundRef) {
+      case "string":
+        return { soundId: soundRef, spriteName: undefined };
+
+      // This case won't actually allow us to play any sounds, and is only here to
+      // work around the inability to conditionally render hooks
+      case "undefined":
+        return { soundId: "", spriteName: undefined };
+
+      default:
+        return soundRef;
+    }
+  })();
 
   // Fetch all of our loaded sound configs
   const { soundConfigs } = useCustomSoundsContext();
