@@ -14,6 +14,7 @@ import {
   PlayFunction,
   PlayOptions,
 } from "use-sound/dist/types";
+import { HowlOptions } from "howler";
 
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
@@ -21,6 +22,8 @@ import { fetchSoundConfigs } from "api/sounds";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;
+
+export type UseCustomSoundOptions = HookOptions & HowlOptions;
 
 export interface ExposedDataWithPlay extends ExposedData {
   play: PlayFunction;
@@ -87,10 +90,13 @@ export const useCustomSoundsContext = (): CustomSoundsState =>
  * @see ReturnedValue (from use-sound)
  * @see PlayFunction (from use-sound)
  * @see ExposedData (from use-sound)
+ *
+ * @see https://github.com/goldfire/howler.js
+ * @see HowlOptions
  */
 export const useCustomSound = (
   soundRef?: string | SoundConfigReference,
-  options?: HookOptions
+  options?: UseCustomSoundOptions
 ): [PlaySpriteFunction, ExposedDataWithPlay] => {
   const { soundId, spriteName } = (() => {
     switch (typeof soundRef) {
@@ -116,13 +122,13 @@ export const useCustomSound = (
   // TODO: throw some kind of error/tracking/etc when we don't find a valid soundConfig
   // TODO: throw some kind of error/tracking/etc when we don't find soundRef.spriteName in soundConfig
 
-  const optionsWithSprites: HookOptions = {
+  const optionsWithSprites: UseCustomSoundOptions = {
     ...options,
     sprite: soundConfig?.sprites,
   };
 
   // If we didn't find a matching sound config then force the sound to be disabled
-  const optionsWithExtras =
+  const optionsWithExtras: UseCustomSoundOptions =
     soundConfig !== undefined
       ? optionsWithSprites
       : { ...optionsWithSprites, soundEnabled: false };
