@@ -239,7 +239,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.embeddable,
     name: "Embeddable",
-    description: ["Insert an iframe link"],
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
   },
 ];
 
@@ -289,7 +291,9 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.embeddable,
     name: "Embeddable",
-    description: ["Insert an iframe link"],
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
   },
 ];
 
@@ -454,8 +458,9 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.embeddable,
     name: "Embeddable",
-    description: "Add an embeddable with an embedded iframe in the center",
-    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
     customInputs: [
       {
         name: "iframeUrl",
@@ -502,7 +507,6 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
-  VenueTemplate.embeddable,
 ];
 
 export const FIREBASE_CONFIG = {
