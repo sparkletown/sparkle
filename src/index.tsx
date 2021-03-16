@@ -55,7 +55,7 @@ import { User } from "types/User";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
-import { CustomSoundsProvider } from "hooks/useCustomSounds";
+import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
 import AppRouter from "components/organisms/AppRouter";
