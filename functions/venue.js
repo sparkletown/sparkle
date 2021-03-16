@@ -19,6 +19,7 @@ const VenueTemplate = {
   audience: "audience",
   firebarrel: "firebarrel",
   conversationspace: "conversationspace",
+  embeddable: "embeddable",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
@@ -39,6 +40,7 @@ const VALID_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.firebarrel,
   VenueTemplate.conversationspace,
+  VenueTemplate.embeddable,
 ];
 
 const PlacementState = {
@@ -123,6 +125,7 @@ const createVenueData = (data, context) => {
     case VenueTemplate.performancevenue:
     case VenueTemplate.audience:
     case VenueTemplate.artpiece:
+    case VenueTemplate.embeddable:
     case VenueTemplate.firebarrel:
       venueData.iframeUrl = data.iframeUrl;
       break;
