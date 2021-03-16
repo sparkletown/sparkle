@@ -1,3 +1,5 @@
+import { SoundConfigReference } from "./sounds";
+
 export enum RoomTypes {
   unclickable = "UNCLICKABLE",
 }
@@ -16,6 +18,7 @@ export interface Room {
   height_percent: number;
   isEnabled: boolean;
   image_url: string;
+  enterSound?: SoundConfigReference;
   // Legacy?
   attendanceBoost?: number;
 }
@@ -33,7 +36,8 @@ export interface RoomData_v2 {
   width_percent?: number;
   height_percent?: number;
   isEnabled?: boolean;
-  template?: string;
   image_url?: string;
+  enterSound?: SoundConfigReference;
+  template?: string;
   roomIndex?: number;
 }
