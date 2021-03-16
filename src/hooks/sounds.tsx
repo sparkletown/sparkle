@@ -70,6 +70,9 @@ export const CustomSoundsProvider: React.FC = ({ children }) => {
 export const useCustomSoundsContext = (): CustomSoundsState =>
   useContext(CustomSoundsContext);
 
+const USE_SOUND_DISABLED_URL = "";
+const USE_SOUND_DISABLED_CONFIG = { soundEnabled: false };
+
 /**
  * Load a custom sound using a SoundConfigReference, and expose controls to play it/a sprite within it.
  *
@@ -121,23 +124,31 @@ export const useCustomSound = (
 
   // TODO: throw some kind of error/tracking/etc when we don't find a valid soundConfig
   // TODO: throw some kind of error/tracking/etc when we don't find soundRef.spriteName in soundConfig
+  // TODO: throw some kind of error/tracking/etc when we hasSprites but not wantsSprites, or when we wantsSprites but not hasSprites
+
+  const hasSoundConfig = soundConfig !== undefined;
+  const hasSprites = soundConfig?.sprites !== undefined;
+  const wantsSprites = spriteName !== undefined;
+
+  // We must both haveSprites && wantSprites or not have either for the config to be valid
+  const soundUrl =
+    (hasSprites && wantsSprites) || (!hasSprites && !wantsSprites)
+      ? soundConfig?.url ?? USE_SOUND_DISABLED_URL
+      : USE_SOUND_DISABLED_URL;
 
   const optionsWithSprites: UseCustomSoundOptions = {
     ...options,
-    sprite: soundConfig?.sprites,
+    // Only define the sprites when we're requesting to play a sprite (works around a Howler error)
+    sprite: hasSprites && wantsSprites ? soundConfig?.sprites : undefined,
   };
 
   // If we didn't find a matching sound config then force the sound to be disabled
-  const optionsWithExtras: UseCustomSoundOptions =
-    soundConfig !== undefined
-      ? optionsWithSprites
-      : { ...optionsWithSprites, soundEnabled: false };
+  const optionsWithExtras: UseCustomSoundOptions = hasSoundConfig
+    ? optionsWithSprites
+    : USE_SOUND_DISABLED_CONFIG;
 
   // @debt Figure out a nicer way to handle conditionally calling this hook when we don't have a valid config
-  const [play, exposedData] = useSound(
-    soundConfig?.url ?? "",
-    optionsWithExtras
-  );
+  const [play, exposedData] = useSound(soundUrl, optionsWithExtras);
 
   /**
    * Wrap use-sound's play function so that it plays the SoundConfigReference.spriteId sprite.
