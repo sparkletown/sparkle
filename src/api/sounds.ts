@@ -1,16 +1,26 @@
 import firebase from "firebase/app";
 
-import { SoundConfig, SoundConfigSchema } from "types/sounds";
+import { SoundConfig, SoundConfigMap, SoundConfigSchema } from "types/sounds";
 
-// TODO: do we want to just add sounds as part of the venue config..? That might make all of this easier to do.. At least while rooms exist on venue config still..
-export const fetchSoundConfigs = async (): Promise<SoundConfig[]> => {
-  const soundConfigsSnapshot = await firebase
-    .firestore()
-    .collection("sounds")
-    .withConverter(soundConfigConverter)
-    .get();
+import { withId } from "utils/id";
+import { itemsToObjectByIdReducer } from "utils/reducers";
 
-  return soundConfigsSnapshot.docs.map((d) => d.data());
+export const fetchSoundConfigs = async (): Promise<SoundConfigMap> => {
+  try {
+    const soundConfigsSnapshot = await firebase
+      .firestore()
+      .collection("sounds")
+      .withConverter(soundConfigConverter)
+      .get();
+
+    return soundConfigsSnapshot.docs
+      .map((docSnapshot) => withId(docSnapshot.data(), docSnapshot.id))
+      .reduce(itemsToObjectByIdReducer, {});
+  } catch (err) {
+    // TODO: properly log this with bugsnag or similar?
+    console.error("fetchSoundConfigs", err);
+    return {};
+  }
 };
 
 /**
