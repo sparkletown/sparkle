@@ -236,6 +236,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -280,6 +287,13 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
   },
 ];
 
@@ -437,6 +451,20 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       {
         name: "bannerMessage",
         title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
         type: "text",
       },
     ],
