@@ -140,6 +140,7 @@ export const ZOOM_URL_TEMPLATES = [
   VenueTemplate.zoomroom,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 // @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [

@@ -142,7 +142,7 @@ const createVenueData = (data, context) => {
     }
   }
 
-  if (IFRAME_TEMPLATES.includes(venueData.template)) {
+  if (IFRAME_TEMPLATES.includes(data.template)) {
     venueData.iframeUrl = data.iframeUrl;
   }
 
@@ -572,7 +572,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
-  if (IFRAME_TEMPLATES.includes(venueData.template) && data.iframeUrl) {
+  if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
   }
 
