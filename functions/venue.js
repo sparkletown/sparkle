@@ -58,6 +58,13 @@ const IFRAME_TEMPLATES = [
   VenueTemplate.performancevenue,
 ];
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+export const ZOOM_URL_TEMPLATES = [
+  VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
+];
+
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
@@ -139,17 +146,16 @@ const createVenueData = (data, context) => {
     venueData.iframeUrl = data.iframeUrl;
   }
 
+  if (ZOOM_URL_TEMPLATES.includes(data.template)) {
+    venueData.zoomUrl = data.zoomUrl;
+  }
+
   switch (data.template) {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
-      break;
-
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      venueData.zoomUrl = data.zoomUrl;
       break;
 
     case VenueTemplate.playa:
@@ -570,16 +576,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.iframeUrl = data.iframeUrl;
   }
 
-  switch (updated.template) {
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      if (data.zoomUrl) {
-        updated.zoomUrl = data.zoomUrl;
-      }
-      break;
-
-    default:
-      break;
+  if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
+    updated.zoomUrl = data.zoomUrl;
   }
 
   await admin.firestore().collection("venues").doc(venueId).update(updated);

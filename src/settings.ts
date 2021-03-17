@@ -132,10 +132,12 @@ export const IFRAME_ALLOW =
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.zoomroom,
   VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
