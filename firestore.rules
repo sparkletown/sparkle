@@ -38,6 +38,10 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth.uid != null;
     }
+    match /loaders/{loaderId} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /faq/{faqId} {
       allow read: if true;
     }
