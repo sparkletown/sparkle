@@ -98,6 +98,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           placeholder="Search for online people"
           value={userSearchQuery}
           onChange={onInputChage}
+          autoComplete="off"
         />
         <div className="private-chats__search-icon">
           <FontAwesomeIcon icon={faSearch} size="1x" />

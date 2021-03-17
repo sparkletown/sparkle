@@ -119,6 +119,7 @@ export interface VenueInput_v2
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
+  iframeUrl?: string;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
