@@ -73,6 +73,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 required: true,
                 maxLength: 16,
               })}
+              autoComplete="off"
             />
             <span className="input-info">
               This is your public name (max 16 characters)

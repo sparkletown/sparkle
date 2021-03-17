@@ -6,6 +6,7 @@ import { retainAttendance } from "store/actions/Attendance";
 import { Room, RoomTypes } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
+import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
@@ -71,11 +72,17 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     ]
   );
 
+  const [play] = useCustomSound(room.enterSound, { interrupt: true });
+  const selectRoomWithSound = useCallback(() => {
+    play();
+    selectRoom();
+  }, [play, selectRoom]);
+
   return (
     <div
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={isUnclickable ? noop : selectRoom}
+      onClick={isUnclickable ? noop : selectRoomWithSound}
       onMouseEnter={isUnclickable ? noop : handleRoomHovered}
       onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
     >

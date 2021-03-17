@@ -45,6 +45,7 @@ import {
 import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
 
@@ -55,6 +56,7 @@ import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
 import { CustomLoadersProvider } from "hooks/useCustomLoaders";
+import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
 import AppRouter from "components/organisms/AppRouter";
@@ -256,9 +258,11 @@ render(
           <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <CustomLoadersProvider>
-                <AuthIsLoaded>
-                  <AppRouter />
-                </AuthIsLoaded>
+                <CustomSoundsProvider>
+                  <AuthIsLoaded>
+                    <AppRouter />
+                  </AuthIsLoaded>
+                </CustomSoundsProvider>
               </CustomLoadersProvider>
             </ReactReduxFirebaseProvider>
           </Provider>
