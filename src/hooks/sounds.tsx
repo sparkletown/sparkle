@@ -16,9 +16,13 @@ import {
 } from "use-sound/dist/types";
 import { HowlOptions } from "howler";
 
-import { SoundConfigMap, SoundConfigReference } from "types/sounds";
+import Bugsnag from "@bugsnag/js";
 
 import { fetchSoundConfigs } from "api/sounds";
+
+import { SoundConfigMap, SoundConfigReference } from "types/sounds";
+
+import { isDefined } from "utils/types";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;
@@ -122,24 +126,92 @@ export const useCustomSound = (
   // Try to access just the one we want here
   const soundConfig = soundConfigs[soundId];
 
-  // TODO: throw some kind of error/tracking/etc when we don't find a valid soundConfig
-  // TODO: throw some kind of error/tracking/etc when we don't find soundRef.spriteName in soundConfig
-  // TODO: throw some kind of error/tracking/etc when we hasSprites but not wantsSprites, or when we wantsSprites but not hasSprites
+  const sprites = soundConfig?.sprites;
 
-  const hasSoundConfig = soundConfig !== undefined;
-  const hasSprites = soundConfig?.sprites !== undefined;
-  const wantsSprites = spriteName !== undefined;
+  const hasSoundRef = isDefined(soundRef);
+  const hasSoundConfig = isDefined(soundConfig);
+  const hasSprites = isDefined(sprites);
+  const wantsSprites = isDefined(spriteName);
+  const enableSprites = hasSprites && wantsSprites;
 
   // We must both haveSprites && wantSprites or not have either for the config to be valid
-  const soundUrl =
-    (hasSprites && wantsSprites) || (!hasSprites && !wantsSprites)
-      ? soundConfig?.url ?? USE_SOUND_DISABLED_URL
-      : USE_SOUND_DISABLED_URL;
+  const hasValidSpriteConfig = enableSprites || (!hasSprites && !wantsSprites);
+
+  // Track when we don't find the soundConfig that corresponds to soundRef. This will probably
+  // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
+  // break, as we should gracefully fall back to not playing any sound here in this case.
+  if (hasSoundRef && !hasSoundConfig) {
+    const msg = "[useCustomSound] Unable to find matching soundConfig";
+    const context = {
+      location: "hooks::sounds::useCustomSound",
+      soundRef,
+      soundConfigsKeys: Object.keys(soundConfigs),
+    };
+
+    console.warn(msg, context);
+    Bugsnag.notify(msg, (event) => {
+      event.severity = "warning";
+      event.addMetadata("context", context);
+    });
+  }
+
+  // Track when soundConfig.sprites doesn't contain soundRef.spriteName. This will probably
+  // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
+  // break, as we should gracefully fall back to not playing any sound here in this case.
+  //
+  // @debt we don't use hasSprites / wantsSprites here as TypeScript then seems to think spriteName can be undefined still
+  //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
+  if (
+    isDefined(sprites) &&
+    isDefined(spriteName) &&
+    !sprites.hasOwnProperty(spriteName)
+  ) {
+    const msg =
+      "[useCustomSound] requested sprite missing from soundConfig.sprites";
+    const context = {
+      location: "hooks::sounds::useCustomSound",
+      soundRef,
+      spritesKeys: Object.keys(sprites),
+    };
+
+    console.warn(msg, context);
+    Bugsnag.notify(msg, (event) => {
+      event.severity = "warning";
+      event.addMetadata("context", context);
+    });
+  }
+
+  // Track when "hasSprites but not wantsSprites", or when we "wantsSprites but not hasSprites".
+  // This will probably just mean that there is some stale/broken reference in our firestore DB.
+  // The app shouldn't break, as we should gracefully fall back to not playing any sound here in this case.
+  //
+  // @debt we don't use hasSoundRef / hasSoundConfig here as TypeScript then seems to think that they can be undefined still
+  //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
+  if (isDefined(soundRef) && isDefined(soundConfig) && !hasValidSpriteConfig) {
+    const msg = "[useCustomSound] invalid sprite configuration";
+    const context = {
+      location: "hooks::sounds::useCustomSound",
+      soundRef,
+      sprites,
+      hasSprites,
+      wantsSprites,
+    };
+
+    console.warn(msg, context);
+    Bugsnag.notify(msg, (event) => {
+      event.severity = "warning";
+      event.addMetadata("context", context);
+    });
+  }
+
+  const soundUrl = hasValidSpriteConfig
+    ? soundConfig?.url ?? USE_SOUND_DISABLED_URL
+    : USE_SOUND_DISABLED_URL;
 
   const optionsWithSprites: UseCustomSoundOptions = {
     ...options,
     // Only define the sprites when we're requesting to play a sprite (works around a Howler error)
-    sprite: hasSprites && wantsSprites ? soundConfig?.sprites : undefined,
+    sprite: enableSprites ? soundConfig?.sprites : undefined,
   };
 
   // If we didn't find a matching sound config then force the sound to be disabled
