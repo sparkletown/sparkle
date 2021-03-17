@@ -43,6 +43,16 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.embeddable,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
+const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.jazzbar,
+  VenueTemplate.performancevenue,
+];
+
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
@@ -120,16 +130,11 @@ const createVenueData = (data, context) => {
     }
   }
 
-  switch (data.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.audience:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.embeddable:
-    case VenueTemplate.firebarrel:
-      venueData.iframeUrl = data.iframeUrl;
-      break;
+  if (IFRAME_TEMPLATES.includes(venueData.template)) {
+    venueData.iframeUrl = data.iframeUrl;
+  }
 
+  switch (data.template) {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
@@ -556,17 +561,11 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
+  if (IFRAME_TEMPLATES.includes(venueData.template) && data.iframeUrl) {
+    updated.iframeUrl = data.iframeUrl;
+  }
+
   switch (updated.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.audience:
-    case VenueTemplate.embeddable:
-    case VenueTemplate.firebarrel:
-      if (data.iframeUrl) {
-        updated.iframeUrl = data.iframeUrl;
-      }
-      break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.artcar:
       if (data.zoomUrl) {
