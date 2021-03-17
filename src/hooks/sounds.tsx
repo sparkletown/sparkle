@@ -120,6 +120,8 @@ export const useCustomSound = (
     }
   })();
 
+  const { onend } = options ?? {};
+
   // Fetch all of our loaded sound configs
   const { soundConfigs } = useCustomSoundsContext();
 
@@ -228,8 +230,17 @@ export const useCustomSound = (
    * @param options
    */
   const playSprite: PlaySpriteFunction = useCallback(
-    (options = {}) => play({ ...options, id: spriteName }),
-    [play, spriteName]
+    (options = {}) => {
+      play({ ...options, id: spriteName });
+
+      // This works around the fact that onend isn't called when we disable the sound playback,
+      // yet it can be useful to use onend to trigger functionality (eg. changing rooms) after
+      // the sound playback has finished.
+      if (!hasSoundConfig || !hasValidSpriteConfig) {
+        onend && onend(-1);
+      }
+    },
+    [play, spriteName, hasSoundConfig, hasValidSpriteConfig, onend]
   );
 
   return [playSprite, { ...exposedData, play }];
