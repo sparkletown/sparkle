@@ -7,7 +7,7 @@ import advancedFormat from "dayjs/plugin/advancedFormat";
 import { VenueEvent } from "types/venues";
 import { Firestore } from "types/Firestore";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -26,10 +26,7 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import {
-  currentVenueSelectorData,
-  userPurchaseHistorySelector,
-} from "utils/selectors";
+import { userPurchaseHistorySelector } from "utils/selectors";
 
 import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { VenueJoinButton } from "components/molecules/VenueJoinButton/VenueJoinButton";
@@ -56,9 +53,8 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { user } = useUser();
 
   const isLoggedIn = !!user;
-  useConnectCurrentVenue();
 
-  const venue = useSelector(currentVenueSelectorData);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueRequestStatus = useSelector(
     (state) => state.firestore.status.requested.currentVenue
   );

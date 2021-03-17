@@ -18,10 +18,12 @@ import { getCurrentTimeInUTCSeconds, getTimeBeforeParty } from "utils/time";
 import { setLocalStorageToken } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 import { joinVenue } from "utils/url";
+import { WithId } from "utils/id";
 
 import "./VenueJoinButton.scss";
 
 export interface VenueJoinButtonProps {
+  venueId?: string;
   venue: WithId<AnyVenue>;
   onPasswordSubmit?: () => void;
 }
