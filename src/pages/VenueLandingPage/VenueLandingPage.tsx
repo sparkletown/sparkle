@@ -95,14 +95,16 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     false
   );
 
-  const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
   const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
     string | undefined
   >();
 
   const openPaymentModal = useCallback(() => {
-    setShouldOpenPaymentModal(true);
-  }, []);
+    // NOTE: Legacy logic. I guess we shouldn't have 2 modals opened at the same time?
+    if (!isAuthenticationModalOpen) return;
+
+    setPaymentModalOpen(true);
+  }, [isAuthenticationModalOpen]);
 
   const closePaymentModal = useCallback(() => {
     setPaymentModalOpen(false);
@@ -129,13 +131,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   );
 
   venue && updateTheme(venue);
-
-  useEffect(() => {
-    if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {
-      setPaymentModalOpen(true);
-      setShouldOpenPaymentModal(false);
-    }
-  }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
   useEffect(() => {
     if (venue?.showZendesk) {
