@@ -388,6 +388,7 @@ export const Audience: React.FunctionComponent = () => {
               placeholder="Shout out to the crowd"
               ref={register({ required: true })}
               disabled={isShoutSent}
+              autoComplete="off"
             />
             <input
               className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
