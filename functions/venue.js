@@ -5,21 +5,23 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
+// These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
+// @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
 const VenueTemplate = {
-  jazzbar: "jazzbar",
-  friendship: "friendship",
-  partymap: "partymap",
-  zoomroom: "zoomroom",
-  themecamp: "themecamp",
-  artpiece: "artpiece",
   artcar: "artcar",
-  performancevenue: "performancevenue",
-  preplaya: "preplaya",
-  playa: "playa",
+  artpiece: "artpiece",
   audience: "audience",
-  firebarrel: "firebarrel",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
+  firebarrel: "firebarrel",
+  friendship: "friendship",
+  jazzbar: "jazzbar",
+  partymap: "partymap",
+  performancevenue: "performancevenue",
+  playa: "playa",
+  preplaya: "preplaya",
+  themecamp: "themecamp",
+  zoomroom: "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?

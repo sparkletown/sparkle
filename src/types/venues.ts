@@ -10,21 +10,23 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
+// These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
+// @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  jazzbar = "jazzbar",
-  friendship = "friendship",
-  partymap = "partymap",
-  zoomroom = "zoomroom",
-  themecamp = "themecamp",
-  artpiece = "artpiece",
   artcar = "artcar",
-  performancevenue = "performancevenue",
-  preplaya = "preplaya",
-  playa = "playa",
+  artpiece = "artpiece",
   audience = "audience",
   conversationspace = "conversationspace",
-  firebarrel = "firebarrel",
   embeddable = "embeddable",
+  firebarrel = "firebarrel",
+  friendship = "friendship",
+  jazzbar = "jazzbar",
+  partymap = "partymap",
+  performancevenue = "performancevenue",
+  playa = "playa",
+  preplaya = "preplaya",
+  themecamp = "themecamp",
+  zoomroom = "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
