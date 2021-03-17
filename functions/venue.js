@@ -560,6 +560,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     case VenueTemplate.performancevenue:
     case VenueTemplate.artpiece:
     case VenueTemplate.audience:
+    case VenueTemplate.embeddable:
+    case VenueTemplate.firebarrel:
       if (data.iframeUrl) {
         updated.iframeUrl = data.iframeUrl;
       }
