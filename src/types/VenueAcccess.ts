@@ -1,7 +1,7 @@
 export enum VenueAccessMode {
-  Emails = "emails",
-  Codes = "codes",
-  Password = "password",
+  Emails = "Emails",
+  Codes = "Codes",
+  Password = "Password",
 }
 
 export type VenueAccessPassword = {
