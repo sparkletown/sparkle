@@ -89,6 +89,28 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
+
+      if (venue.access === VenueAccessMode.Emails) {
+        const AccessEmails = await firebase
+          .firestore()
+          .collection("venues")
+          .doc(venue.id)
+          .collection("access")
+          .doc("Emails")
+          .get();
+
+        const emails = AccessEmails.data();
+
+        if (!emails?.emails.includes(data.email.toLowerCase())) {
+          setError(
+            "email",
+            "validation",
+            "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
       const auth = await signUp(data);
 
       if (auth.user && venue.requiresDateOfBirth) {
