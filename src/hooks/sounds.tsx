@@ -142,20 +142,22 @@ export const useCustomSound = (
   // Track when we don't find the soundConfig that corresponds to soundRef. This will probably
   // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
   // break, as we should gracefully fall back to not playing any sound here in this case.
-  if (hasSoundRef && !hasSoundConfig) {
-    const msg = "[useCustomSound] Unable to find matching soundConfig";
-    const context = {
-      location: "hooks::sounds::useCustomSound",
-      soundRef,
-      soundConfigsKeys: Object.keys(soundConfigs),
-    };
+  useEffect(() => {
+    if (hasSoundRef && !hasSoundConfig) {
+      const msg = "[useCustomSound] Unable to find matching soundConfig";
+      const context = {
+        location: "hooks::sounds::useCustomSound",
+        soundRef,
+        soundConfigsKeys: Object.keys(soundConfigs),
+      };
 
-    console.warn(msg, context);
-    Bugsnag.notify(msg, (event) => {
-      event.severity = "warning";
-      event.addMetadata("context", context);
-    });
-  }
+      console.warn(msg, context);
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+      });
+    }
+  }, [hasSoundConfig, hasSoundRef, soundConfigs, soundRef]);
 
   // Track when soundConfig.sprites doesn't contain soundRef.spriteName. This will probably
   // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
@@ -163,25 +165,27 @@ export const useCustomSound = (
   //
   // @debt we don't use hasSprites / wantsSprites here as TypeScript then seems to think spriteName can be undefined still
   //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
-  if (
-    isDefined(sprites) &&
-    isDefined(spriteName) &&
-    !sprites.hasOwnProperty(spriteName)
-  ) {
-    const msg =
-      "[useCustomSound] requested sprite missing from soundConfig.sprites";
-    const context = {
-      location: "hooks::sounds::useCustomSound",
-      soundRef,
-      spritesKeys: Object.keys(sprites),
-    };
+  useEffect(() => {
+    if (
+      isDefined(sprites) &&
+      isDefined(spriteName) &&
+      !sprites.hasOwnProperty(spriteName)
+    ) {
+      const msg =
+        "[useCustomSound] requested sprite missing from soundConfig.sprites";
+      const context = {
+        location: "hooks::sounds::useCustomSound",
+        soundRef,
+        spritesKeys: Object.keys(sprites),
+      };
 
-    console.warn(msg, context);
-    Bugsnag.notify(msg, (event) => {
-      event.severity = "warning";
-      event.addMetadata("context", context);
-    });
-  }
+      console.warn(msg, context);
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+      });
+    }
+  }, [soundRef, spriteName, sprites]);
 
   // Track when "hasSprites but not wantsSprites", or when we "wantsSprites but not hasSprites".
   // This will probably just mean that there is some stale/broken reference in our firestore DB.
@@ -189,22 +193,35 @@ export const useCustomSound = (
   //
   // @debt we don't use hasSoundRef / hasSoundConfig here as TypeScript then seems to think that they can be undefined still
   //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
-  if (isDefined(soundRef) && isDefined(soundConfig) && !hasValidSpriteConfig) {
-    const msg = "[useCustomSound] invalid sprite configuration";
-    const context = {
-      location: "hooks::sounds::useCustomSound",
-      soundRef,
-      sprites,
-      hasSprites,
-      wantsSprites,
-    };
+  useEffect(() => {
+    if (
+      isDefined(soundRef) &&
+      isDefined(soundConfig) &&
+      !hasValidSpriteConfig
+    ) {
+      const msg = "[useCustomSound] invalid sprite configuration";
+      const context = {
+        location: "hooks::sounds::useCustomSound",
+        soundRef,
+        sprites,
+        hasSprites,
+        wantsSprites,
+      };
 
-    console.warn(msg, context);
-    Bugsnag.notify(msg, (event) => {
-      event.severity = "warning";
-      event.addMetadata("context", context);
-    });
-  }
+      console.warn(msg, context);
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+      });
+    }
+  }, [
+    hasSprites,
+    hasValidSpriteConfig,
+    soundConfig,
+    soundRef,
+    sprites,
+    wantsSprites,
+  ]);
 
   const soundUrl = hasValidSpriteConfig
     ? soundConfig?.url ?? USE_SOUND_DISABLED_URL
