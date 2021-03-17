@@ -46,7 +46,7 @@ interface ChatOutDataType {
 const SEAT_SIZE = "var(--seat-size)";
 const SEAT_SIZE_MIN = "var(--seat-size-min)";
 
-const VIDEO_MIN_WIDTH_IN_SEATS = 10;
+const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
 const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
