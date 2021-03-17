@@ -47,12 +47,12 @@ $header-height: 45px;
     }
 
     &--selected {
-      border-bottom: $white 2px solid;
+      border-bottom: $kotr-yellow 2px solid;
       color: $white;
 
       &:hover {
         color: $white;
-        border-bottom: $white 2px solid;
+        border-bottom: $kotr-yellow 2px solid;
       }
     }
   }
