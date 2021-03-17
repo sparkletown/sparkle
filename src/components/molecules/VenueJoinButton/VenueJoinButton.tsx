@@ -22,8 +22,7 @@ import { joinVenue } from "utils/url";
 import "./VenueJoinButton.scss";
 
 export interface VenueJoinButtonProps {
-  venueId?: string;
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
   onPasswordSubmit?: () => void;
 }
 
@@ -143,6 +142,7 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
               />
             </>
           )}
+
           <button
             className="btn btn-primary btn-block btn-centered"
             type="submit"
@@ -155,11 +155,12 @@ export const VenueJoinButton: React.FC<VenueJoinButtonProps> = ({
             )}
           </button>
           <div className="form-group">{message}</div>
-          {errors.password && errors.password.type === "required" && (
+          {errors.password?.type === "required" && (
             <span className="input-error">Password is required</span>
           )}
         </form>
       </div>
+
       <Modal show={isJoinVenueModalOpen} onHide={hideJoinVenueModal}>
         <Modal.Body>
           <div className="venue-join-modal__title">

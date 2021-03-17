@@ -34,6 +34,7 @@ export const Reaction = styled.div<ReactionProps>`
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
+  // @debt convert this to scss then use our z-index layer helper here
   z-index: 10;
 
   font-size: 50px;
@@ -48,8 +49,8 @@ export const Container = styled.div`
 
   background-position: center;
   background-size: cover;
-  // @debt Since this is not a css file, I can't use constants here
-  z-index: 10;
+  // @debt convert this to scss then use our z-index layer helper here
+  z-index: 11;
 
   ${Avatar} {
     border-radius: 10rem;
@@ -119,6 +120,8 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
     reactionPosition === "right" ? messageRight : messageLeft};
 
   background-color: rgba(255, 255, 255, 1);
+  // @debt convert this to scss then use our z-index layer helper here
+  z-index: 12;
 
   color: #000;
   font-size: 20px;

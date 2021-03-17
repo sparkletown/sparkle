@@ -1,5 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import React, { useState, useCallback } from "react";
+import classNames from "classnames";
+
+// NOTE: This functionality will probably be returned in the nearest future.
+// import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,9 +10,10 @@ import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
 import { User } from "types/User";
-import { Venue } from "types/venues";
+import { JazzbarVenue } from "types/venues";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
+import { openUrl, venueInsideUrl } from "utils/url";
 
 import {
   EmojiReactionType,
@@ -17,36 +21,35 @@ import {
   TextReactionType,
 } from "utils/reactions";
 
-import ChatDrawer from "components/organisms/ChatDrawer";
 import Room from "../components/JazzBarRoom";
 
-import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
+// NOTE: This functionality will probably be returned in the nearest future.
+// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
-// import UserList from "components/molecules/UserList";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-// import { useRecentVenueUsers } from "hooks/users";
 
 import { addReaction } from "store/actions/Reactions";
 
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
-import { useExperiences } from "hooks/useExperiences";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: Venue;
+  venue?: JazzbarVenue;
 }
 
-interface ChatOutDataType {
-  messageToTheBand: string;
-}
+// NOTE: This functionality will probably be returned in the nearest future.
+// interface ChatOutDataType {
+//   messageToTheBand: string;
+// }
 
 type ReactionType =
   | { reaction: EmojiReactionType }
@@ -64,13 +67,21 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
 
+  const parentVenueId = venueToUse?.parentId;
+  const parentVenue = useSelector(parentVenueSelector);
+
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    openUrl(venueInsideUrl(parentVenueId));
+  }, [parentVenueId]);
+
   useExperiences(venueToUse?.name);
 
   const { user } = useUser();
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
-
-  // const { recentVenueUsers } = useRecentVenueUsers();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -88,48 +99,62 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
   };
 
-  const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
+  // NOTE: This functionality will probably be returned in the nearest future.
 
-  useEffect(() => {
-    if (isMessageToTheBandSent) {
-      setTimeout(() => {
-        setIsMessageToTheBandSent(false);
-      }, 2000);
-    }
-  }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+  // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
-  const {
-    register: registerBandMessage,
-    handleSubmit: handleBandMessageSubmit,
-    reset,
-  } = useForm<ChatOutDataType>({
-    mode: "onSubmit",
+  // useEffect(() => {
+  //   if (isMessageToTheBandSent) {
+  //     setTimeout(() => {
+  //       setIsMessageToTheBandSent(false);
+  //     }, 2000);
+  //   }
+  // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
+
+  // const {
+  //   register: registerBandMessage,
+  //   handleSubmit: handleBandMessageSubmit,
+  //   reset,
+  // } = useForm<ChatOutDataType>({
+  //   mode: "onSubmit",
+  // });
+
+  // const onBandMessageSubmit = async (data: ChatOutDataType) => {
+  //   setIsMessageToTheBandSent(true);
+  //   user &&
+  //     dispatch(
+  //       addReaction({
+  //         venueId,
+  //         reaction: createReaction(
+  //           { reaction: "messageToTheBand", text: data.messageToTheBand },
+  //           user
+  //         ),
+  //       })
+  //     );
+  //   reset();
+  // };
+
+  const containerClasses = classNames("music-bar", {
+    "music-bar--tableview": seatedAtTable,
   });
-
-  const onBandMessageSubmit = async (data: ChatOutDataType) => {
-    setIsMessageToTheBandSent(true);
-    user &&
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createReaction(
-            { reaction: "messageToTheBand", text: data.messageToTheBand },
-            user
-          ),
-        })
-      );
-    reset();
-  };
 
   if (!venueToUse) return <>Loading...</>;
 
   return (
-    <div className="music-bar-container">
+    <div className={containerClasses}>
       {venueToUse.description?.text && (
         <div className="row">
           <div className="col">
             <div className="description">{venueToUse.description?.text}</div>
           </div>
+        </div>
+      )}
+
+      {/* @debt Move the logic of Back button into a separate reusable hook/component */}
+      {!seatedAtTable && parentVenueId && parentVenue && (
+        <div className="back-map-btn" onClick={backToParentVenue}>
+          <div className="back-icon" />
+          <span className="back-link">Back to {parentVenue.name}</span>
         </div>
       )}
 
@@ -143,8 +168,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       )}
 
       <div className="music-bar-content">
-        <div className="music-bar-top-left-grid-cell" />
-        <div className="music-bar-top-right-grid-cell" />
         <div className="video-container">
           {!venueToUse.hideVideo && (
             <>
@@ -164,39 +187,44 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              <div className="actions-container">
-                <div className="emoji-container">
-                  {Reactions.map((reaction) => (
+              {seatedAtTable && (
+                <div className="actions-container">
+                  <div className="emoji-container">
+                    {Reactions.map((reaction) => (
+                      <div
+                        key={reaction.name}
+                        className="reaction"
+                        onClick={() =>
+                          user && reactionClicked(user, reaction.type)
+                        }
+                        id={`send-reaction-${reaction.type}`}
+                      >
+                        <span role="img" aria-label={reaction.ariaLabel}>
+                          {reaction.text}
+                        </span>
+                      </div>
+                    ))}
                     <div
-                      key={reaction.name}
-                      className="reaction"
+                      className="mute-button"
                       onClick={() =>
-                        user && reactionClicked(user, reaction.type)
+                        setIsAudioEffectDisabled((state) => !state)
                       }
-                      id={`send-reaction-${reaction.type}`}
                     >
-                      <span role="img" aria-label={reaction.ariaLabel}>
-                        {reaction.text}
-                      </span>
+                      <FontAwesomeIcon
+                        className="reaction"
+                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
+                      />
                     </div>
-                  ))}
-                  <div
-                    className="mute-button"
-                    onClick={() => setIsAudioEffectDisabled((state) => !state)}
-                  >
-                    <FontAwesomeIcon
-                      className="reaction"
-                      icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-                    />
                   </div>
-                </div>
-                <CallOutMessageForm
+                  {/* NOTE: This functionality will probably be returned in the nearest future. */}
+                  {/* <CallOutMessageForm
                   onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                   ref={registerBandMessage({ required: true })}
                   isMessageToTheBandSent={isMessageToTheBandSent}
                   placeholder="Shout out..."
-                />
-              </div>
+                /> */}
+                </div>
+              )}
             </>
           )}
         </div>
@@ -208,13 +236,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             setSeatedAtTable={setSeatedAtTable}
           />
         )}
-        {/* // NOTE: Do we need userlist on this page? We don't have it on the designs */}
-        {/* <UserList
-          isAudioEffectDisabled={isAudioEffectDisabled}
-          users={recentVenueUsers}
-          activity={venue?.activity ?? "here"}
-          disableSeeAll={false}
-        /> */}
         <TablesUserList
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
@@ -222,15 +243,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           TableComponent={JazzBarTableComponent}
           joinMessage={!venueToUse?.hideVideo ?? true}
           customTables={jazzbarTables}
-        />
-      </div>
-
-      {/* @debt Will be replaced by Chat's refactor */}
-      <div className="chat-drawer">
-        <ChatDrawer
-          title={`${venueToUse.name} Chat`}
-          roomName={venueToUse.name}
-          chatInputPlaceholder="Chat to the bar"
         />
       </div>
     </div>

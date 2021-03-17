@@ -14,7 +14,7 @@ import { PartyMapVenue } from "types/venues";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { hasElements, isTruthy } from "utils/types";
-import { makeRoomHitFilter } from "utils/filter";
+import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { setLocationData } from "utils/userLocation";
 
@@ -27,8 +27,6 @@ import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
-
-import Sidebar from "components/molecules/Sidebar";
 
 import { MapRoom } from "./MapRoom";
 
@@ -214,14 +212,16 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
-        <MapRoom
-          key={room.title}
-          venue={venue}
-          room={room}
-          selectRoom={() => selectRoom(room)}
-        />
-      )),
+      venue?.rooms
+        ?.filter(filterEnabledRooms)
+        .map((room) => (
+          <MapRoom
+            key={room.title}
+            venue={venue}
+            room={room}
+            selectRoom={() => selectRoom(room)}
+          />
+        )),
     [selectRoom, venue]
   );
 
@@ -238,32 +238,26 @@ export const Map: React.FC<MapProps> = ({
   }
 
   return (
-    <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
-            alt=""
-          />
+    <div className="party-map-map-component">
+      <div className="party-map-map-content">
+        <img
+          width="100%"
+          className="party-map-background"
+          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          alt=""
+        />
 
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {mapGrid}
-            {partygoersOverlay}
-            {roomOverlay}
-          </div>
-
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={isUserProfileSelected}
-            onHide={deselectUserProfile}
-          />
+        <div className="party-map-grid-container" style={gridContainerStyles}>
+          {mapGrid}
+          {partygoersOverlay}
+          {roomOverlay}
         </div>
-      </div>
 
-      <div className="sidebar">
-        <Sidebar />
+        <UserProfileModal
+          userProfile={selectedUserProfile}
+          show={isUserProfileSelected}
+          onHide={deselectUserProfile}
+        />
       </div>
     </div>
   );

@@ -56,6 +56,7 @@ export const PLAYA_INFO_NAME = "Playa Info";
 export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
+export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
 export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
@@ -100,9 +101,6 @@ export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
 export const PLAYA_AVATAR_SIZE = 48;
 export const PLAYA_VENUE_SIZE = 40;
-export const PROFILE_IMAGE_SIZE = 30;
-export const REACTION_PROFILE_IMAGE_SIZE_SMALL = 40;
-export const REACTION_PROFILE_IMAGE_SIZE_LARGE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
 export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
@@ -128,7 +126,7 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 };
 
 export const ACCEPTED_IMAGE_TYPES =
-  "image/png,image/x-png,image/gif,image/jpeg";
+  "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif";
 
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
@@ -138,29 +136,39 @@ export const IFRAME_ALLOW =
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.zoomroom,
   VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
-  VenueTemplate.audience,
-  VenueTemplate.artpiece,
-  VenueTemplate.firebarrel,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
@@ -171,14 +179,18 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template {
   template: VenueTemplate;
   name: string;
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template_v2 {
   template?: VenueTemplate;
   name: string;
@@ -186,6 +198,7 @@ export interface Template_v2 {
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
@@ -232,8 +245,17 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
@@ -275,8 +297,16 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -309,6 +339,8 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -336,6 +368,7 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
 ];
 
+// @debt Refactor this into types/???
 export type CustomInputsType = {
   name: string;
   title: string;
@@ -344,6 +377,8 @@ export type CustomInputsType = {
   // ? if we want the field to be a zoom url
   // ? it must include `zoom.com/`
 };
+
+// @debt Refactor this into types/templates or similar?
 export type RoomTemplate = {
   template: VenueTemplate;
   name: string;
@@ -352,6 +387,8 @@ export type RoomTemplate = {
   url?: string;
   customInputs?: CustomInputsType[];
 };
+
+// @debt Refactor this constant into types/templates or similar?
 export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.artpiece,
@@ -427,23 +464,41 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.playa,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
@@ -451,6 +506,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artpiece,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
@@ -494,5 +550,6 @@ export const RANDOM_AVATARS = [
 ];
 
 export const REACTION_TIMEOUT = 5000; // time im ms
+export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
