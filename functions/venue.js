@@ -60,10 +60,7 @@ const IFRAME_TEMPLATES = [
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.zoomroom,
-];
+const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
