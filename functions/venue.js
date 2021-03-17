@@ -5,21 +5,23 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
+// These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
+// @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
 const VenueTemplate = {
-  jazzbar: "jazzbar",
-  friendship: "friendship",
-  partymap: "partymap",
-  zoomroom: "zoomroom",
-  themecamp: "themecamp",
-  artpiece: "artpiece",
   artcar: "artcar",
-  performancevenue: "performancevenue",
-  preplaya: "preplaya",
-  playa: "playa",
+  artpiece: "artpiece",
   audience: "audience",
-  firebarrel: "firebarrel",
   conversationspace: "conversationspace",
   embeddable: "embeddable",
+  firebarrel: "firebarrel",
+  friendship: "friendship",
+  jazzbar: "jazzbar",
+  partymap: "partymap",
+  performancevenue: "performancevenue",
+  playa: "playa",
+  preplaya: "preplaya",
+  themecamp: "themecamp",
+  zoomroom: "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
@@ -28,19 +30,39 @@ const VenueTemplate = {
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
-const VALID_TEMPLATES = [
-  VenueTemplate.jazzbar,
-  VenueTemplate.friendship,
-  VenueTemplate.partymap,
-  VenueTemplate.zoomroom,
-  VenueTemplate.themecamp,
-  VenueTemplate.artpiece,
+
+// These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
+const VALID_CREATE_TEMPLATES = [
   VenueTemplate.artcar,
+  VenueTemplate.artpiece,
   VenueTemplate.audience,
-  VenueTemplate.performancevenue,
-  VenueTemplate.firebarrel,
   VenueTemplate.conversationspace,
   VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
+];
+
+// These templates use iframeUrl (they should remain alphabetically sorted)
+// @debt unify this with IFRAME_TEMPLATES in src/settings.ts + share the same code between frontend/backend
+const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.jazzbar,
+  VenueTemplate.performancevenue,
+];
+
+// These templates use zoomUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+export const ZOOM_URL_TEMPLATES = [
+  VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
 const PlacementState = {
@@ -58,7 +80,7 @@ const checkUserIsAdminOrOwner = async (venueId, uid) => {
 };
 
 const createVenueData = (data, context) => {
-  if (!VALID_TEMPLATES.includes(data.template)) {
+  if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
       "invalid-argument",
       `Template ${data.template} unknown`
@@ -120,26 +142,20 @@ const createVenueData = (data, context) => {
     }
   }
 
-  switch (data.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.audience:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.embeddable:
-    case VenueTemplate.firebarrel:
-      venueData.iframeUrl = data.iframeUrl;
-      break;
+  if (IFRAME_TEMPLATES.includes(data.template)) {
+    venueData.iframeUrl = data.iframeUrl;
+  }
 
+  if (ZOOM_URL_TEMPLATES.includes(data.template)) {
+    venueData.zoomUrl = data.zoomUrl;
+  }
+
+  switch (data.template) {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
-      break;
-
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      venueData.zoomUrl = data.zoomUrl;
       break;
 
     case VenueTemplate.playa:
@@ -553,26 +569,15 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
-  switch (updated.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.audience:
-      if (data.iframeUrl) {
-        updated.iframeUrl = data.iframeUrl;
-      }
-      break;
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      if (data.zoomUrl) {
-        updated.zoomUrl = data.zoomUrl;
-      }
-      break;
+  if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
+    updated.iframeUrl = data.iframeUrl;
+  }
 
-    default:
-      break;
+  if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
+    updated.zoomUrl = data.zoomUrl;
   }
 
   await admin.firestore().collection("venues").doc(venueId).update(updated);
