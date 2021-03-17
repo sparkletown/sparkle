@@ -72,6 +72,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           ref={register({ required: true })}
           name="message"
           placeholder="Write your message..."
+          autoComplete="off"
         ></input>
         <button
           className="chatbox__submit-button"
