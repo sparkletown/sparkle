@@ -139,6 +139,7 @@ export const ZOOM_URL_TEMPLATES = [
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
@@ -171,6 +172,7 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 

@@ -48,6 +48,7 @@ const VALID_CREATE_TEMPLATES = [
 ];
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
+// @debt unify this with IFRAME_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
