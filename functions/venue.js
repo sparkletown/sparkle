@@ -30,19 +30,21 @@ const VenueTemplate = {
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
+
+// These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
 const VALID_CREATE_TEMPLATES = [
-  VenueTemplate.jazzbar,
-  VenueTemplate.friendship,
-  VenueTemplate.partymap,
-  VenueTemplate.zoomroom,
-  VenueTemplate.themecamp,
-  VenueTemplate.artpiece,
   VenueTemplate.artcar,
+  VenueTemplate.artpiece,
   VenueTemplate.audience,
-  VenueTemplate.performancevenue,
-  VenueTemplate.firebarrel,
   VenueTemplate.conversationspace,
   VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
 ];
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
