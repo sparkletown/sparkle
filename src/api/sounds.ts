@@ -24,7 +24,7 @@ export const fetchSoundConfigs = async (): Promise<SoundConfigMap> => {
       });
     });
 
-    return {};
+    throw err;
   }
 };
 
