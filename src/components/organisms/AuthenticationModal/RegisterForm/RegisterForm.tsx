@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
+import { checkIsEmailWhitelisted } from "api/auth";
+
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
@@ -91,17 +93,12 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
       setShowLoginModal(false);
 
       if (venue.access === VenueAccessMode.Emails) {
-        const AccessEmails = await firebase
-          .firestore()
-          .collection("venues")
-          .doc(venue.id)
-          .collection("access")
-          .doc("Emails")
-          .get();
+        const isEmailWhitelisted = await checkIsEmailWhitelisted({
+          venueId: venue.id,
+          email: data.email,
+        });
 
-        const emails = AccessEmails.data();
-
-        if (!emails?.emails.includes(data.email.toLowerCase())) {
+        if (!isEmailWhitelisted.data) {
           setError(
             "email",
             "validation",

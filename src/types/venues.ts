@@ -138,7 +138,6 @@ export interface BaseVenue {
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
-  emails?: string[];
   width: number;
   height: number;
   description?: {
