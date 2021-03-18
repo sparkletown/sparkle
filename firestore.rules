@@ -62,8 +62,7 @@ service cloud.firestore {
           isUpdateRestrictedToField(request, 'deleted');
       }
       match /access/{method} {
-        allow read: if true;
-				allow write: if false;
+        allow read, write: if false;
       }
       match /accessgranted/{userId} {
         allow read, write: if false;
