@@ -1,21 +1,107 @@
+@import "scss/constants";
+
+$light: #ffffff;
+
+// If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
+$seat-size: 4vh;
+$seat-size-min: 25px;
+$seat-spacing: 3px;
+
+$spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
+
 .section {
-  height: 100%;
-  width: 100%;
+  --seat-size: #{$seat-size};
+  --seat-size-min: #{$seat-size-min};
+  --seat-spacing: #{$seat-spacing};
+
+  background-attachment: fixed;
+  background-position: center 46%;
+
   position: relative;
+  overflow: auto;
+  height: 100%;
+  padding: $spacing;
+  min-width: fit-content;
 
   &__video-overlay {
-    top: 0;
-    height: 100%;
-    width: 100%;
     position: absolute;
+
+    width: 100%;
+    height: 100%;
 
     display: flex;
     justify-content: center;
     align-items: center;
+
+    pointer-events: none;
   }
 
-  &__video-iframe {
-    height: 50%;
-    width: 50%;
+  &__video {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    pointer-events: all;
+
+    width: 100%;
+    height: 100%;
+    border: 1px black;
+    border-radius: 15px;
+    box-shadow: 2px 2px 20px $light;
+  }
+
+  &__seats {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    overflow: auto;
+  }
+
+  &__seats-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__seat,
+  &__empty-circle,
+  .profile-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: var(--seat-size);
+    height: var(--seat-size);
+    min-width: var(--seat-size-min);
+    min-height: var(--seat-size-min);
+
+    font-size: calc(0.75 * min(var(--seat-size), var(--seat-size-min)));
+
+    border-radius: 100%;
+    margin: $seat-spacing;
+
+    color: $black;
+    user-select: none;
+  }
+
+  &__seat {
+    background-color: rgba(255, 255, 255, 0.2);
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.4);
+      cursor: pointer;
+    }
+
+    &:active {
+      background-color: rgba(255, 255, 255, 0.6);
+      cursor: pointer;
+    }
+  }
+
+  &__empty-circle {
+    background-color: rgba(0, 0, 0, 0);
   }
 }

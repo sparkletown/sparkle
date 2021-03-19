@@ -10,38 +10,41 @@ import { Video } from "../Video";
 import "./Section.scss";
 import { useVenueId } from "hooks/useVenueId";
 
-const ROWS = 20;
-const COLUMNS = 25;
+const DEFAULT_ROWS_NUMBER = 19;
+const DEFAULT_COLUMNS_NUMBER = 25;
+
+const VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
 // If you change this, make sure to also change it in Audience.scss's $seat-size
 const SEAT_SIZE = "var(--seat-size)";
 const SEAT_SIZE_MIN = "var(--seat-size-min)";
+const SEAT_SPACING = "var(--seat-spacing)";
 
-const VIDEO_MIN_WIDTH_IN_SEATS = 8;
-// We should keep the 16/9 ratio
-const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
-
-// We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
-const carvedOutWidthInSeats = Math.max(
-  Math.ceil(COLUMNS / (3 * 2)),
+// NOTE: Video should take third of the columns
+const videoWidthInSeats = Math.max(
+  Math.ceil(DEFAULT_COLUMNS_NUMBER / 3),
   VIDEO_MIN_WIDTH_IN_SEATS
 );
 
 // Keep a 16:9 ratio
-const carvedOutHeightInSeats = Math.max(
-  Math.ceil(carvedOutWidthInSeats * (9 / 16)),
-  VIDEO_MIN_HEIGHT_IN_SEATS
-);
+const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
-// Calculate the position/size for the central video container
-const videoContainerWidthInSeats = carvedOutWidthInSeats * 2 + 1;
-const videoContainerHeightInSeats = carvedOutHeightInSeats * 2 + 1;
+const translateIndex = (index: number, totalAmount: number) =>
+  index - Math.floor(totalAmount / 2);
 
-const translateRow = (untranslatedRowIndex: number) =>
-  untranslatedRowIndex - Math.floor(ROWS / 2);
+const checkIfSeat = (rowIndex: number, columnIndex: number) => {
+  const translatedRowIndex = translateIndex(rowIndex, DEFAULT_ROWS_NUMBER);
+  const translatedColumnIndex = translateIndex(
+    columnIndex,
+    DEFAULT_COLUMNS_NUMBER
+  );
 
-const translateColumn = (untranslatedColumnIndex: number) =>
-  untranslatedColumnIndex - Math.floor(COLUMNS / 2);
+  const isInVideoRow = Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
+  const isInVideoColumn =
+    Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
+
+  return !(isInVideoRow && isInVideoColumn);
+};
 
 export interface SectionProps {
   venue: AuditoriumVenue;
@@ -53,62 +56,41 @@ export const Section: React.FC<SectionProps> = () => {
 
   const section = useAuditoriumSection({ venueId, sectionId });
 
-  const isSeat = useCallback(
-    (translatedRow: number, translatedColumn: number) => {
-      const isInFireLaneColumn = translatedColumn === 0;
-      if (isInFireLaneColumn) return false;
-
-      const isInVideoRow = Math.abs(translatedRow) <= carvedOutHeightInSeats;
-      const isInVideoColumn =
-        Math.abs(translatedColumn) <= carvedOutWidthInSeats;
-
-      const isInVideoCarveOut = isInVideoRow && isInVideoColumn;
-
-      return !isInVideoCarveOut;
-    },
-    [carvedOutWidthInSeats, carvedOutHeightInSeats]
-  );
-
-  const videoContainerStyles = useMemo(
+  const iframeInlineStyles = useMemo(
     () => ({
-      width: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE})`,
-      height: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE})`,
-      minWidth: `calc(${videoContainerWidthInSeats} * ${SEAT_SIZE_MIN})`,
-      minHeight: `calc(${videoContainerHeightInSeats} * ${SEAT_SIZE_MIN})`,
+      width: `calc(${videoWidthInSeats} * (${SEAT_SIZE} + ${SEAT_SPACING}))`,
+      height: `calc(${videoHeightInSeats} * (${SEAT_SIZE} + ${SEAT_SPACING}))`,
+      minWidth: `calc(${videoWidthInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
+      minHeight: `calc(${videoHeightInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
     }),
-    [videoContainerHeightInSeats, videoContainerWidthInSeats]
+    [videoHeightInSeats, videoWidthInSeats]
   );
 
   if (!section) return <p>No such section was found</p>;
 
   return (
-    <div className="audience-container">
-      <div className="audience">
+    <div className="section">
+      <div className="section__seats">
         <Video
-          overlayClassname="audience-overlay"
-          iframeClassname="video-container"
-          iframeStyles={videoContainerStyles}
+          overlayClassname="section__video-overlay"
+          iframeClassname="section__video"
+          iframeStyles={iframeInlineStyles}
         />
-        {Array.from(Array(ROWS)).map((_, untranslatedRowIndex) => {
-          const row = translateRow(untranslatedRowIndex);
-          return (
-            <div key={untranslatedRowIndex} className="seat-row">
-              {Array.from(Array(COLUMNS)).map((_, untranslatedColumnIndex) => {
-                const column = translateColumn(untranslatedColumnIndex);
-                const seat = isSeat(row, column);
+        {Array.from(Array(DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
+          <div key={rowIndex} className="section__seats-row">
+            {Array.from(Array(DEFAULT_COLUMNS_NUMBER)).map((_, columnIndex) => {
+              const isSeat = checkIfSeat(rowIndex, columnIndex);
 
-                return (
-                  <div
-                    key={untranslatedColumnIndex}
-                    className={seat ? "seat" : "not-seat"}
-                  >
-                    {seat && <>+</>}
-                  </div>
-                );
-              })}
-            </div>
-          );
-        })}
+              return isSeat ? (
+                <div key={columnIndex} className="section__seat">
+                  +
+                </div>
+              ) : (
+                <div key={columnIndex} className="section__empty-circle" />
+              );
+            })}
+          </div>
+        ))}
       </div>
     </div>
   );
