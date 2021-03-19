@@ -1,17 +1,16 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
-const EMAIL = process.env.CYPRESS_TEST_STAGING_EMAIL;
-const PASSWORD = process.env.CYPRESS_TEST_STAGING_PASSWORD;
+const EMAIL = '';
+const PASSWORD = '';
 
 const logIn = () => {
   cy.get(".login-button")
     .click();
-
   cy.get(".form > .input-group:nth-child(1) > input")
-    .type('malaika.aiyar@gmail.com');
-
+    .type(EMAIL);
   cy.get(".form > .input-group:nth-child(2) > input")
-    .type('WER$wer4');
-
+    .type(PASSWORD);
   cy.get('.form > .btn')
     .click();
 }
@@ -19,23 +18,31 @@ const logIn = () => {
 const logOut = () => {
   cy.get('.navbar-link-profile')
     .click();
-
   cy.get(".popover-body > .profile-modal-container > input:nth-child(7)")
     .click();
-
-  cy.location('pathname')
-    .should('eq', '/v/devaliashacksville');
 }
 
-describe("Test staging.sparkle.space/in/devaliashacksville", function () {
+const getIframeDocument = () => {
+  return cy.get('.iframe-video')
+    .its('0.contentDocument').should('exist');
+}
+
+const getIframeBody = () => {
+  return getIframeDocument()
+    .its('body').should('not.be.undefined')
+    .then(cy.wrap);
+}
+
+describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzbar and auditorium", function () {
 
   it("can log in and out", () => {
     cy.visit("https://staging.sparkle.space/in/devaliashacksville");
     cy.clearCookies();
 
     logIn()
-
     logOut()
+    cy.location('pathname')
+      .should('eq', '/v/devaliashacksville');
   });
 
   it("can visit and interact with the jazzbar", () => {
@@ -55,22 +62,22 @@ describe("Test staging.sparkle.space/in/devaliashacksville", function () {
       .parent()
       .click();
 
-    // don't know why it requires two clicks? the modal seems to disappear before cypress can click on it
-    cy.get(".maproom")
-      .contains("jazzbar")
-      .parent()
-      .parent()
-      .click();
+    // don't know why but sometimes it requires two clicks? leaving this commented for convenience
+    // cy.get(".maproom")
+    //   .contains("jazzbar")
+    //   .parent()
+    //   .parent()
+    //   .click();
 
     cy.get('.room-modal-ongoing-event-container > .room-entry-button')
       .click();
-
     cy.location('pathname')
       .should('eq', '/in/devaliasjazzbar');
 
-    // // interact with video ...
+    // interact with video ...
+    // getIframeBody().get('body > #player > .html5-video-player');
 
-    // // go to a table
+    // visit tables
     cy.get('.music-bar-content > .jazzbar-table-component-container')
       .each(($table) => {
         cy.get('.chat-sidebar__controller')
@@ -85,11 +92,11 @@ describe("Test staging.sparkle.space/in/devaliashacksville", function () {
 
         // interact with table and video ...
 
+
         // leave table
         cy.get('.back-button-container > .back-button')
           .click();
     });
-
 
     // logging back out
     logOut()
@@ -103,7 +110,6 @@ describe("Test staging.sparkle.space/in/devaliashacksville", function () {
 
     // logging in
     logIn()
-
 
     // getting into auditorium
     cy.get(".maproom")
@@ -128,14 +134,12 @@ describe("Test staging.sparkle.space/in/devaliashacksville", function () {
     cy.get('.audience-container > .audience > div:nth-child(2) > div:nth-child(5)')
       .click();
 
-    // more interactions here ...
+    // interact with auditorium
 
     cy.get(".leave-seat-button")
       .click();
 
     // logging out
     logOut()
-
   });
-
 });
