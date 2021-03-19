@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   sendPrivateMessage,
@@ -6,7 +6,7 @@ import {
   deletePrivateMessage,
 } from "api/chat";
 
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
 
 import { privateChatMessagesSelector } from "utils/selectors";
 import {
@@ -18,15 +18,12 @@ import {
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
-import { ChatTypes } from "types/chat";
+import { useNotificationSound } from "hooks/useNotificationSound";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useUser } from "./useUser";
 import { useRecentWorldUsers, useWorldUsersById } from "./users";
-import useSound from "use-sound";
-import { NEW_MESSAGE_SOUND } from "settings";
 
 export const useConnectPrivateChatMessages = () => {
   const { user } = useUser();
@@ -49,60 +46,7 @@ export const usePrivateChatMessages = () => {
   useConnectPrivateChatMessages();
 
   const privateChatMessages = useSelector(privateChatMessagesSelector);
-  const { user } = useUser();
-  const userId = user?.uid;
-
-  const { chatSettings } = useChatSidebarControls();
-
-  const [play] = useSound(NEW_MESSAGE_SOUND, {
-    // `interrupt` ensures that if the sound starts again before it's
-    // ended, it will truncate it. Otherwise, the sound can overlap.
-    interrupt: true,
-  });
-
-  const [privateChatMessagesState, setPrivateChatMessagesState] = useState(
-    privateChatMessages
-  );
-
-  const chatWithUser =
-    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
-      ? chatSettings.recipientId
-      : undefined;
-
-  useEffect(() => {
-    const newMessage = privateChatMessages?.filter(
-      ({ id: id1 }) =>
-        !privateChatMessagesState?.some(({ id: id2 }) => id2 === id1)
-    );
-
-    if (privateChatMessagesState === undefined) {
-      setPrivateChatMessagesState(privateChatMessages);
-    }
-
-    if (
-      privateChatMessages !== undefined &&
-      privateChatMessagesState !== undefined &&
-      newMessage !== undefined &&
-      newMessage.length !== 0 &&
-      privateChatMessages.length !== privateChatMessagesState.length &&
-      !newMessage[0].isRead &&
-      newMessage[0].from !== userId
-    ) {
-      setPrivateChatMessagesState(privateChatMessages);
-
-      if (chatWithUser === undefined) {
-        play();
-      } else if (chatWithUser !== newMessage[0].from) {
-        play();
-      }
-    }
-  }, [
-    privateChatMessages,
-    chatWithUser,
-    play,
-    privateChatMessagesState,
-    userId,
-  ]);
+  useNotificationSound(privateChatMessages);
 
   return useMemo(
     () => ({
