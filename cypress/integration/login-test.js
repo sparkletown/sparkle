@@ -1,8 +1,6 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-undef */
-const EMAIL = '';
-const PASSWORD = '';
+const EMAIL = 'malaika.aiyar@gmail.com';
+const PASSWORD = 'WER$wer4';
 
 const logIn = () => {
   cy.get(".login-button")
@@ -20,17 +18,6 @@ const logOut = () => {
     .click();
   cy.get(".popover-body > .profile-modal-container > input:nth-child(7)")
     .click();
-}
-
-const getIframeDocument = () => {
-  return cy.get('.iframe-video')
-    .its('0.contentDocument').should('exist');
-}
-
-const getIframeBody = () => {
-  return getIframeDocument()
-    .its('body').should('not.be.undefined')
-    .then(cy.wrap);
 }
 
 describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzbar and auditorium", function () {
@@ -51,7 +38,7 @@ describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzba
     cy.visit("https://staging.sparkle.space/in/devaliashacksville");
     cy.clearCookies();
 
-    // logging in again
+    // logging in
     logIn()
 
     // getting into jazzbar
@@ -74,11 +61,10 @@ describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzba
     cy.location('pathname')
       .should('eq', '/in/devaliasjazzbar');
 
-    // interact with video ...
-    // getIframeBody().get('body > #player > .html5-video-player');
+    // interact with video (coming soon)
 
     // visit tables
-    cy.get('.music-bar-content > .jazzbar-table-component-container')
+    cy.get('.music-bar-content')
       .each(($table) => {
         cy.get('.chat-sidebar__controller')
           .click();
@@ -90,8 +76,7 @@ describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzba
         cy.get('.modal-container > .btn')
           .click();
 
-        // interact with table and video ...
-
+        // interact with table and video (coming soon)
 
         // leave table
         cy.get('.back-button-container > .back-button')
@@ -134,7 +119,7 @@ describe("Test staging.sparkle.space/in/devaliashacksville login, logout, jazzba
     cy.get('.audience-container > .audience > div:nth-child(2) > div:nth-child(5)')
       .click();
 
-    // interact with auditorium
+    // interact with auditorium (coming soon)
 
     cy.get(".leave-seat-button")
       .click();
