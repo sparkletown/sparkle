@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-const EMAIL = 'malaika.aiyar@gmail.com';
-const PASSWORD = 'WER$wer4';
+const EMAIL = '';
+const PASSWORD = '';
 
 const logIn = () => {
   cy.get(".login-button")
