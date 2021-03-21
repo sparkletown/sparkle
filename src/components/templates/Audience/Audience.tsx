@@ -174,13 +174,17 @@ export const Audience: React.FunctionComponent = () => {
   );
 
   useEffect(() => {
-    firebase
+    const unsubscribeListener = firebase
       .firestore()
       .collection("venues")
       .doc(venueId as string)
       .onSnapshot((doc) =>
         setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
       );
+
+    return () => {
+      unsubscribeListener();
+    };
   }, [venueId]);
 
   const dispatch = useDispatch();
@@ -384,6 +388,7 @@ export const Audience: React.FunctionComponent = () => {
               placeholder="Shout out to the crowd"
               ref={register({ required: true })}
               disabled={isShoutSent}
+              autoComplete="off"
             />
             <input
               className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
