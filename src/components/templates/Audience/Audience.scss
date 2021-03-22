@@ -3,7 +3,7 @@
 $light: #ffffff;
 
 // If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
-$seat-size: 4vh;
+$seat-size: max(4vh, 3vw);
 $seat-size-min: 25px;
 
 $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
@@ -34,12 +34,13 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     pointer-events: none;
 
     .video-container {
-      margin-top: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       padding: calc(1.5 * min(var(--seat-size), var(--seat-size-min)));
 
       display: flex;
       flex-direction: column;
       align-items: center;
+
+      pointer-events: all;
 
       .video {
         width: 100%;

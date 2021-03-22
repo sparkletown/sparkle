@@ -52,6 +52,7 @@ export const IframeAdmin: React.FC<IframeAdminProps> = ({ venueId, venue }) => {
                   setIframeUrl(e.target.value);
                 }}
                 placeholder="https://youtube.com/embed/..."
+                autoComplete="off"
               />
 
               {error && <span className="error">{error}</span>}

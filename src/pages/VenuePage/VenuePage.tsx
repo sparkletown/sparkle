@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
@@ -35,12 +35,12 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useVenueAccess } from "hooks/useVenueAccess";
+// import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
+// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
@@ -60,7 +60,7 @@ const VenuePage: React.FC = () => {
 
   const history = useHistory();
   const [currentTimestamp] = useState(Date.now() / 1000);
-  const [isAccessDenied, setIsAccessDenied] = useState(false);
+  // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
 
@@ -163,9 +163,9 @@ const VenuePage: React.FC = () => {
     }
   }, [venue]);
 
-  const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
+  // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
-  useVenueAccess(venue, handleAccessDenied);
+  // useVenueAccess(venue, handleAccessDenied);
 
   if (!user) {
     return <Login formType="initial" />;
@@ -179,9 +179,9 @@ const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (isAccessDenied) {
-    return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
-  }
+  // if (isAccessDenied) {
+  //   return <AccessDeniedModal venueId={venueId} venueName={venue.name} />;
+  // }
 
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
