@@ -7,13 +7,19 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 
+import { useVenueId } from "hooks/useVenueId";
+import { useSectionSeatedUsers } from "hooks/auditoriumSections";
+
+import UserList from "components/molecules/UserList";
+
 import { AuditoriumSection } from "types/auditorium";
 
 import "./SectionPreview.scss";
+import { WithId } from "utils/id";
 
 export interface SectionPreviewProps {
   onClick?: () => void;
-  section: AuditoriumSection;
+  section: WithId<AuditoriumSection>;
 }
 
 const noop = () => {};
@@ -22,14 +28,20 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   onClick,
   section,
 }) => {
-  const { isLocked } = section;
-  const isFull = Math.random() <= 0.2;
+  const { isLocked, title } = section;
+  const isFull = false;
+
+  const venueId = useVenueId();
+
+  const seatedUsers = useSectionSeatedUsers(venueId, section.id);
+  const seatedUsersNumber = seatedUsers.length;
 
   const isUnavailable = isFull || isLocked;
 
   const containerClasses = classNames("section-preview", {
     "section-preview--full": isFull,
     "section-preview--locked": isLocked,
+    "section-preview--empty": seatedUsersNumber === 0,
   });
   return (
     <div onClick={isUnavailable ? noop : onClick} className={containerClasses}>
@@ -45,13 +57,14 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
           )}
         </div>
       )}
+      <div className="section-preview__title">{title ?? "Empty section"}</div>
       <div className="section-preview__people-count">
         <FontAwesomeIcon icon={faUserFriends} size="sm" />
         <span className="section-preview__people-count__number">
-          {Math.ceil(Math.random() * 100)}
+          {seatedUsersNumber}
         </span>
       </div>
-      <div className="section-preview__people-icons"></div>
+      <UserList users={seatedUsers} hasTitle={false} />
     </div>
   );
 };

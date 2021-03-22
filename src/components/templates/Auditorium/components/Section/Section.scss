@@ -68,7 +68,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
   &__seat,
   &__empty-circle,
-  .profile-avatar {
+  &__user-avatar {
     display: flex;
     justify-content: center;
     align-items: center;

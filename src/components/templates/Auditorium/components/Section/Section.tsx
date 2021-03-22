@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
@@ -9,9 +9,10 @@ import { Video } from "../Video";
 
 import "./Section.scss";
 import { useVenueId } from "hooks/useVenueId";
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-const DEFAULT_ROWS_NUMBER = 19;
-const DEFAULT_COLUMNS_NUMBER = 25;
+const DEFAULT_ROWS_NUMBER = 17;
+const DEFAULT_COLUMNS_NUMBER = 23;
 
 const VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
@@ -22,7 +23,7 @@ const SEAT_SPACING = "var(--seat-spacing)";
 
 // NOTE: Video should take third of the columns
 const videoWidthInSeats = Math.max(
-  Math.ceil(DEFAULT_COLUMNS_NUMBER / 3),
+  Math.floor(DEFAULT_COLUMNS_NUMBER / 3),
   VIDEO_MIN_WIDTH_IN_SEATS
 );
 
@@ -50,11 +51,25 @@ export interface SectionProps {
   venue: AuditoriumVenue;
 }
 
-export const Section: React.FC<SectionProps> = () => {
+export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { sectionId } = useParams<{ sectionId?: string }>();
   const venueId = useVenueId();
 
-  const section = useAuditoriumSection({ venueId, sectionId });
+  const {
+    auditoriumSection,
+    getUserBySeat,
+    takeSeat,
+    leaveSeat,
+  } = useAuditoriumSection({
+    venueId,
+    sectionId,
+  });
+
+  useEffect(() => {
+    return () => {
+      leaveSeat();
+    };
+  }, []);
 
   const iframeInlineStyles = useMemo(
     () => ({
@@ -63,10 +78,10 @@ export const Section: React.FC<SectionProps> = () => {
       minWidth: `calc(${videoWidthInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
       minHeight: `calc(${videoHeightInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
     }),
-    [videoHeightInSeats, videoWidthInSeats]
+    []
   );
 
-  if (!section) return <p>No such section was found</p>;
+  if (!auditoriumSection) return <p>No such section was found</p>;
 
   return (
     <div className="section">
@@ -75,17 +90,43 @@ export const Section: React.FC<SectionProps> = () => {
           overlayClassname="section__video-overlay"
           iframeClassname="section__video"
           iframeStyles={iframeInlineStyles}
+          src={venue.iframeUrl}
         />
         {Array.from(Array(DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
           <div key={rowIndex} className="section__seats-row">
             {Array.from(Array(DEFAULT_COLUMNS_NUMBER)).map((_, columnIndex) => {
+              const user = getUserBySeat({
+                row: rowIndex,
+                column: columnIndex,
+              });
+
+              if (user) {
+                return (
+                  <UserProfilePicture
+                    user={user}
+                    avatarClassName={"section__user-avatar"}
+                    setSelectedUserProfile={() => {}}
+                  />
+                );
+              }
+
               const isSeat = checkIfSeat(rowIndex, columnIndex);
 
-              return isSeat ? (
-                <div key={columnIndex} className="section__seat">
-                  +
-                </div>
-              ) : (
+              if (isSeat) {
+                return (
+                  <div
+                    key={columnIndex}
+                    className="section__seat"
+                    onClick={() =>
+                      takeSeat({ row: rowIndex, column: columnIndex })
+                    }
+                  >
+                    +
+                  </div>
+                );
+              }
+
+              return (
                 <div key={columnIndex} className="section__empty-circle" />
               );
             })}

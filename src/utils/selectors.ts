@@ -238,7 +238,7 @@ export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
 export const currentAuditoriumSectionsSelector: SparkleSelector<
-  AuditoriumSection[] | undefined
+  WithId<AuditoriumSection>[] | undefined
 > = (state) => state.firestore.ordered.currentAuditoriumSections;
 
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<

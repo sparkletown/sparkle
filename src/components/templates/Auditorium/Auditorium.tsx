@@ -14,7 +14,10 @@ export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
 
   return (
     <Switch>
-      <Route path={`${match.path}/section/:sectionId`} component={Section} />
+      <Route
+        path={`${match.path}/section/:sectionId`}
+        render={() => <Section venue={venue} />}
+      />
       <Route
         path={`${match.path}`}
         strict

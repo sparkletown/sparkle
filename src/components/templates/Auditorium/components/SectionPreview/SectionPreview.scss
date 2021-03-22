@@ -3,7 +3,7 @@ $spacing: 15px;
 .section-preview {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   justify-self: center;
   position: relative;
@@ -37,10 +37,22 @@ $spacing: 15px;
     }
   }
 
+  &__title {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
+  &--empty {
+    .section-preview__title {
+      opacity: 0.7;
+    }
+  }
+
   &__people-count {
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 5px;
 
     &__number {
       font-size: 13px;

@@ -29,6 +29,7 @@ interface PropsType {
   isCamp?: boolean;
   attendanceBoost?: number;
   showEvenWhenNoUsers?: boolean;
+  hasTitle?: boolean;
 }
 
 const UserList: React.FunctionComponent<PropsType> = ({
@@ -41,6 +42,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isCamp,
   attendanceBoost,
   showEvenWhenNoUsers = false,
+  hasTitle = true,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<
@@ -63,23 +65,25 @@ const UserList: React.FunctionComponent<PropsType> = ({
   return (
     <>
       <div className="container userlist-container">
-        <div className="row header no-margin">
-          <p>
-            <span className="bold">{attendance}</span>{" "}
-            {attendance === 1 ? "person" : "people"}{" "}
-            {isCamp && IS_BURN ? "in the camp" : activity}
-          </p>
-
-          {!disableSeeAll && usersSanitized.length > limit && (
-            <p
-              className="clickable-text"
-              onClick={() => setIsExpanded(!isExpanded)}
-              id={`see-venue-information-${venue?.name}`}
-            >
-              See {isExpanded ? "less" : "all"}
+        {hasTitle && (
+          <div className="row header no-margin">
+            <p>
+              <span className="bold">{attendance}</span>{" "}
+              {attendance === 1 ? "person" : "people"}{" "}
+              {isCamp && IS_BURN ? "in the camp" : activity}
             </p>
-          )}
-        </div>
+
+            {!disableSeeAll && usersSanitized.length > limit && (
+              <p
+                className="clickable-text"
+                onClick={() => setIsExpanded(!isExpanded)}
+                id={`see-venue-information-${venue?.name}`}
+              >
+                See {isExpanded ? "less" : "all"}
+              </p>
+            )}
+          </div>
+        )}
 
         <div className="row no-margin">
           {usersToDisplay.map(
