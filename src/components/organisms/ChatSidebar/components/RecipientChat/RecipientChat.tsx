@@ -8,20 +8,17 @@ import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { useRecipientChat } from "hooks/privateChats";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useChatSidebarControls } from "hooks/chatSidebar";
-
-import { SetSelectedProfile } from "types/chat";
 
 import "./RecipientChat.scss";
 
 export interface RecipientChatProps {
   recipientId: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  onAvatarClick,
 }) => {
   const {
     messagesToDisplay,
@@ -31,9 +28,11 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     recipient,
   } = useRecipientChat(recipientId);
 
+  const { openUserProfileModal } = useProfileModalControls();
+
   const handleAvatarClick = useCallback(
-    () => onAvatarClick(withId(recipient, recipientId)),
-    [onAvatarClick, recipient, recipientId]
+    () => openUserProfileModal(withId(recipient, recipientId)),
+    [recipient, recipientId, openUserProfileModal]
   );
 
   useEffect(() => {
@@ -72,7 +71,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         messages={messagesToDisplay}
         sendMessage={sendMessageToSelectedRecipient}
         deleteMessage={deleteMessage}
-        onAvatarClick={onAvatarClick}
       />
     </div>
   );

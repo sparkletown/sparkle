@@ -7,7 +7,7 @@ export type ChatState = {
 };
 
 const initialChatState: ChatState = {
-  isChatSidebarVisible: true,
+  isChatSidebarVisible: false,
   settings: {
     openedChatType: ChatTypes.VENUE_CHAT,
   },

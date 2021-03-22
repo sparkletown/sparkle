@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
+import { checkIsEmailWhitelisted } from "api/auth";
+
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
@@ -89,6 +91,23 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
+
+      if (venue.access === VenueAccessMode.Emails) {
+        const isEmailWhitelisted = await checkIsEmailWhitelisted({
+          venueId: venue.id,
+          email: data.email,
+        });
+
+        if (!isEmailWhitelisted.data) {
+          setError(
+            "email",
+            "validation",
+            "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
       const auth = await signUp(data);
 
       if (auth.user && venue.requiresDateOfBirth) {

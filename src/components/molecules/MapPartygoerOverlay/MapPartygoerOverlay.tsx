@@ -15,8 +15,6 @@ interface MapPartygoerOverlayProps {
 
   /** @default false **/
   withMiniAvatars?: boolean;
-
-  setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
 export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
@@ -26,7 +24,6 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
   totalRows,
   totalColumns,
   withMiniAvatars = false,
-  setSelectedUserProfile,
 }) => {
   const isMe = partygoer.id === myUserUid;
   const position = partygoer?.data?.[venueId];

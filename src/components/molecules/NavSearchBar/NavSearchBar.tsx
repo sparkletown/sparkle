@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect, useState } from "react";
 
-import { RoomModal } from "components/templates/PartyMap/components";
-import { NavSearchBarInput } from "./NavSearchBarInput";
-
-import { useWorldUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { VenueEvent } from "types/venues";
+import { Room, RoomTypes } from "types/rooms";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
-import { Room } from "types/rooms";
-import { VenueEvent } from "types/venues";
-import { User } from "types/User";
+import { useWorldUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { RoomModal } from "components/templates/PartyMap/components";
+
+import { NavSearchBarInput } from "./NavSearchBarInput";
 
 import "./NavSearchBar.scss";
 
@@ -51,6 +52,7 @@ const NavSearchBar = () => {
       });
       return;
     }
+
     const venueUsersResults = worldUsers.filter((user) =>
       user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
@@ -59,9 +61,12 @@ const NavSearchBar = () => {
       event.name.toLowerCase().includes(normalizedSearchQuery)
     );
 
-    const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
-      room.title.toLowerCase().includes(normalizedSearchQuery)
-    ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
+    const roomsResults: Room[] =
+      venue?.rooms?.filter(
+        (room) =>
+          room.title.toLowerCase().includes(normalizedSearchQuery) &&
+          room.type !== RoomTypes.unclickable
+      ) ?? [];
 
     setSearchResult({
       rooms: roomsResults,

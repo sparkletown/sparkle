@@ -1013,6 +1013,7 @@ const Playa = () => {
                 placeholder={`Shout across ${PLAYA_VENUE_NAME}...`}
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
+                autoComplete="off"
               />
             </form>
           </div>

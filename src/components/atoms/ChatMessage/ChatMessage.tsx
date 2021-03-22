@@ -6,22 +6,23 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
 
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./ChatMessage.scss";
 
 export interface ChatProps {
   message: MessageToDisplay;
-  onAuthorClick: () => void;
   deleteMessage: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
   message,
-  onAuthorClick,
   deleteMessage,
 }) => {
   const { text, ts_utc, isMine, author, canBeDeleted } = message;
+  const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();
 
@@ -33,8 +34,14 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="chat-message__text">{text}</div>
       <div className="chat-message__info">
-        <UserAvatar onClick={onAuthorClick} avatarSrc={author.pictureUrl} />
-        <span onClick={onAuthorClick} className="chat-message__author">
+        <UserAvatar
+          onClick={() => openUserProfileModal(author)}
+          avatarSrc={author.pictureUrl}
+        />
+        <span
+          onClick={() => openUserProfileModal(author)}
+          className="chat-message__author"
+        >
           {author.partyName}
         </span>
         <span className="chat-message__time">

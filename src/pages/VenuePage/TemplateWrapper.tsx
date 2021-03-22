@@ -3,9 +3,11 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
-import { FriendShipPage } from "pages/FriendShipPage";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
@@ -17,11 +19,7 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { FriendShipPage } from "pages/FriendShipPage";
 
 export interface TemplateWrapperProps {
   venue: AnyVenue;
@@ -30,11 +28,6 @@ export interface TemplateWrapperProps {
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
   const match = useRouteMatch();
-
-  const {
-    selectedUserProfile,
-    closeUserProfileModal,
-  } = useProfileModalControls();
 
   let template;
   // @debt remove backButton from Navbar
@@ -134,11 +127,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={closeUserProfileModal}
-      />
+      <UserProfileModal />
     </WithNavigationBar>
   );
 };

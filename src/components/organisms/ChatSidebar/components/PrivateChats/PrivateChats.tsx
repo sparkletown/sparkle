@@ -85,9 +85,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipientId) {
-    return (
-      <RecipientChat recipientId={recipientId} onAvatarClick={onAvatarClick} />
-    );
+    return <RecipientChat recipientId={recipientId} />;
   }
 
   return (
@@ -98,6 +96,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           placeholder="Search for online people"
           value={userSearchQuery}
           onChange={onInputChage}
+          autoComplete="off"
         />
         <div className="private-chats__search-icon">
           <FontAwesomeIcon icon={faSearch} size="1x" />

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { TableComponentPropsType } from "types/Table";
 import { DEFAULT_PROFILE_IMAGE, DEFAULT_PARTY_NAME } from "settings";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -16,9 +16,13 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
-  const people = users.filter(
-    (u) => u.data?.[experienceName]?.table === table.reference
+
+  const people = useMemo(
+    () =>
+      users.filter((u) => u.data?.[experienceName]?.table === table.reference),
+    [users, experienceName, table]
   );
+
   return (
     <>
       <div className="profiles">
