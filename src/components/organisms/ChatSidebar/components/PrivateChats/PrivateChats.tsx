@@ -33,7 +33,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
 
-  const privateChatUsers = privateChatPreviews.map(
+  const privateChatUserIds = privateChatPreviews.map(
     (chatPreview) => chatPreview.counterPartyUser.id
   );
 
@@ -58,7 +58,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const renderedOnlineUsers = useMemo(
     () =>
       onlineUsers
-        .filter((user) => !privateChatUsers.includes(user.id))
+        .filter((user) => !privateChatUserIds.includes(user.id))
         .map((user) => (
           <OnlineUser
             key={user.id}
@@ -66,7 +66,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
             onClick={() => selectRecipientChat(user.id)}
           />
         )),
-    [onlineUsers, privateChatUsers, selectRecipientChat]
+    [onlineUsers, privateChatUserIds, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
@@ -87,7 +87,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   const numberOfSearchResults = renderedSearchResults.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
-  const numberOfOnline = renderedOnlineUsers.length;
+  const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
     return (
@@ -126,7 +126,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           )}
 
           <p className="private-chats__title-text">
-            {numberOfOnline} connected people
+            {numberOfOtherOnlineUsers} other online people
           </p>
 
           {renderedOnlineUsers}
