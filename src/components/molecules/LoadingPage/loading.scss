@@ -1,137 +1,179 @@
 @import "scss/constants";
 
-$side-padding: 30px;
+// @debt Ensure we can use this purple in the main constants.scss file then move it back there
 $primary: #7c46fb;
-$black: #000000;
-$white: #fff;
 
-$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+$loading-icon-mask-image: url(../../../assets/masks/mask-sparkle-logo.png);
+$loading-page-background-image: var(--loading-page-background-image, none);
+$loading-text-size: 12vw;
+$loading-icon-height: 8vw;
+$loading-icon-width: $loading-icon-height / 2;
 
-$dark: #1a1d24;
-$border-radius: 28px;
-$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
-$login-max-width: 540px;
-$modal-max-width: 540px;
-$page-max-width: 1240px;
+$sparkleanim-duration: 4s;
+$sparkleanim-scale-min: 0.5;
+$sparkleanim-scale-max: 1;
+$sparkleanim-bg-color: $white;
+$sparkleanim-bg-opacity: 0.5;
 
-body {
-  &.no-scroll {
-    overflow: hidden;
+$loadingburningman-duration: $sparkleanim-duration/2;
+$loadingburningman-opacity-min: 0;
+$loadingburningman-opacity-max: 1;
+$loadingburningman-bg-color: $white;
+
+.LoadingPage {
+  // Setting position here makes our container the 'nearest positioned ancestor' when positioning child elements
+  position: absolute;
+
+  width: 100vw;
+  height: 100vh;
+
+  background-color: $primary;
+  background-image: $loading-page-background-image;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+
+  &__blur {
+    width: inherit;
+    height: inherit;
+
+    // Gives us the blurred effect over the background image (when set)
+    background-color: transparent;
+    backdrop-filter: blur(15px);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  &__image {
+    // CSS ignores invalid property values
+    //   When this var is set to an image URL, the browser will ignore it
+    //   When this var isn't set, then we will use the default fallback for the var, which is 'none'
+    display: $loading-page-background-image;
+
+    border-radius: 20px;
+
+    // Background image size / aspect ratio hack (https://css-tricks.com/aspect-ratio-boxes/)
+    // @debt We can probably replace this with aspect-ratio when it's supported across more browsers
+    width: 30%;
+    height: 0;
+    padding-top: calc(800 / 600 * 30%);
+
+    // Fallback to showing the main container's background in case we don't load an image
+    background-color: transparent;
+
+    background-image: $loading-page-background-image;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+  }
+
+  &__loading-text {
+    position: absolute;
+    bottom: 0;
+
+    font-family: $kotr-font-larger;
+    font-size: $loading-text-size;
+
+    color: $white;
+    text-shadow: 5px 5px 20px rgba($black, 1);
+
+    user-select: none;
   }
 }
 
-.loading-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: $primary;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 1000ms cubic-bezier(0.23, 1, 0.32, 1);
-  opacity: 1;
-  &.hide {
-    opacity: 0;
+// @debt extract this loading icon into a standalone component
+.loading-icon {
+  position: absolute;
+  bottom: 1vw;
+  left: calc(50vw + 19vw);
+
+  width: $loading-icon-width;
+  height: $loading-icon-height;
+
+  filter: drop-shadow(5px 5px 20px rgba($black, 1));
+
+  &__mask {
+    width: inherit;
+    height: inherit;
+
+    mask-image: $loading-icon-mask-image;
+    mask-size: contain;
+
+    background-color: rgba($sparkleanim-bg-color, $sparkleanim-bg-opacity);
+    animation: sparkleanim $sparkleanim-duration cubic-bezier(0.77, 0, 0.175, 1)
+      infinite;
   }
 
-  .burningman-loading-container {
-    position: relative;
-  }
-  .loading-sparkle-1,
-  .loading-sparkle-2 {
+  &__fill {
     position: absolute;
-    display: block;
-    z-index: z(loading-page-sparkle);
-    height: 23px;
-    width: 15px;
-    opacity: 1;
-    left: 20%;
-    transform: scale(1);
-    background-image: url(./img/loading-sparkle-icon.png);
-    background-size: 15px 23px;
-    animation: pulse 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    opacity: 0;
-    &.loading-sparkle-2 {
-      right: 16%;
-      left: auto;
-      top: 20%;
-      animation-delay: 0.2s;
-    }
-  }
+    top: 0;
+    left: 0;
+    width: 100%;
 
-  .burningman-loading {
-    position: relative;
-    height: 152px;
-    width: 76px;
-    margin: 0 auto 30px;
-
-    -moz-mask-box-image: url(./img/burningman-logo-2.png);
-
-    -webkit-mask-box-image: url(./img/burningman-logo-2.png);
-    mask-box-image: url(./img/burningman-logo-2.png);
-    background-color: rgba($white, 0.2);
-    animation: sparkleanim 4s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-
-    .burningman-loading-anim {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: $white;
-      opacity: 1;
-      height: 0;
-      animation: loadingburningman 2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
-    }
-  }
-
-  .loading-randomquote {
-    display: block;
-    opacity: 0;
-    transform: translateY(40px);
-    transition: all 800ms cubic-bezier(0.23, 1, 0.32, 1);
-    &.show {
-      opacity: 1;
-      transform: translateY(0px);
-    }
+    // Animate the 'fill' effect
+    animation: loadingburningman $loadingburningman-duration
+      cubic-bezier(0.77, 0, 0.175, 1) infinite;
+    height: 0;
+    background-color: rgba(
+      $loadingburningman-bg-color,
+      $loadingburningman-opacity-min
+    );
   }
 }
 
 @keyframes sparkleanim {
   0% {
-    transform: scale(0.2);
+    transform: scale($sparkleanim-scale-min);
   }
 
   25% {
-    transform: scale(1) rotate(180deg);
+    transform: scale($sparkleanim-scale-max) rotate(180deg);
   }
+
   50% {
-    transform: scale(0.2);
+    transform: scale($sparkleanim-scale-min);
   }
 
   75% {
-    transform: scale(1) rotate(-180deg);
+    transform: scale($sparkleanim-scale-max) rotate(-180deg);
   }
+
   100% {
-    transform: scale(0.2);
+    transform: scale($sparkleanim-scale-min);
   }
 }
 
 @keyframes loadingburningman {
   0% {
-    opacity: 0;
+    background-color: rgba(
+      $loadingburningman-bg-color,
+      $loadingburningman-opacity-min
+    );
     height: 0;
   }
+
   4% {
-    opacity: 1;
+    background-color: rgba(
+      $loadingburningman-bg-color,
+      $loadingburningman-opacity-max
+    );
   }
+
   20% {
-    opacity: 1;
+    background-color: rgba(
+      $loadingburningman-bg-color,
+      $loadingburningman-opacity-max
+    );
   }
+
   100% {
-    opacity: 0;
+    background-color: rgba(
+      $loadingburningman-bg-color,
+      $loadingburningman-opacity-min
+    );
     height: 100%;
   }
 }

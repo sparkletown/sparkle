@@ -7,6 +7,16 @@
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./constants.scss";
 
+@font-face {
+  font-family: $kotr-font-larger;
+  src: url("../assets/fonts/CCZoinks-Regular.ttf");
+}
+
+@font-face {
+  font-family: $kotr-font-smaller;
+  src: url("../assets/fonts/CCGeekSpeakTweak-W00-Regular.ttf");
+}
+
 html,
 body,
 #root {
@@ -15,15 +25,14 @@ body,
 }
 
 body {
-  font: 1rem/1.3 "Rubik", "HelveticaNeue", "Helvetica Neue", Helvetica,
-    sans-serif;
+  font: 1rem/1.3 $kotr-font-smaller, "Rubik", "HelveticaNeue", "Helvetica Neue",
+    Helvetica, sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   background-color: $black;
   color: white;
   display: flex;
   justify-content: center;
-  font-family: "Rubik", sans-serif;
   overflow: auto;
 
   &::-webkit-scrollbar-track {
