@@ -21,11 +21,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerStyles}>
-      <img
+      <div
         onClick={onClick}
         className="user-avatar__image"
-        src={avatarSrc}
-        alt="user avatar"
+        style={{
+          backgroundImage: `url(${avatarSrc})`,
+        }}
       />
       {isOnline && <span className="user-avatar__status-dot" />}
     </div>
