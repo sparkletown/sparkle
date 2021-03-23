@@ -35,8 +35,6 @@ import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-
 const AppRouter = () => {
   return (
     <Router basename="/">
@@ -76,7 +74,6 @@ const AppRouter = () => {
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
-        <Route path="/debug/loading" component={LoadingPage} />
         <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"

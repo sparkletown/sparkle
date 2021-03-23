@@ -68,7 +68,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             <input
               name="partyName"
               className="input-block input-centered"
-              placeholder="Your first and last name"
+              placeholder="Your display name"
               ref={register({
                 required: true,
                 maxLength: 16,

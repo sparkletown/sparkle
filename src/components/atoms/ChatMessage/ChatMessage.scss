@@ -18,8 +18,7 @@ $my-text-border-radius: 28px 28px 4px 28px;
     word-wrap: break-word;
     word-break: break-word;
     hyphens: auto;
-    background-color: $kotr-orange;
-    color: $black;
+    background-color: $intermediate-grey;
     padding: 12px 16px;
     font-size: 0.9rem;
   }
@@ -62,8 +61,7 @@ $my-text-border-radius: 28px 28px 4px 28px;
 
     .chat-message__text {
       text-align: right;
-      background-color: $kotr-blue;
-      color: $white;
+      background-color: $primary;
       border-radius: $my-text-border-radius;
     }
 

@@ -55,7 +55,6 @@ import { User } from "types/User";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
-import { CustomLoadersProvider } from "hooks/useCustomLoaders";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
@@ -257,13 +256,11 @@ render(
         <DndProvider backend={HTML5Backend}>
           <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
-              <CustomLoadersProvider>
-                <CustomSoundsProvider>
-                  <AuthIsLoaded>
-                    <AppRouter />
-                  </AuthIsLoaded>
-                </CustomSoundsProvider>
-              </CustomLoadersProvider>
+              <CustomSoundsProvider>
+                <AuthIsLoaded>
+                  <AppRouter />
+                </AuthIsLoaded>
+              </CustomSoundsProvider>
             </ReactReduxFirebaseProvider>
           </Provider>
         </DndProvider>
