@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import "./UserAvatar.scss";
+
+import { DEFAULT_PROFILE_IMAGE } from "settings";
 
 export interface UserAvatarProps {
   isOnline?: boolean;
@@ -19,13 +21,21 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--clickable": onClick !== undefined,
   });
 
+  const userToShow = useMemo(() => {
+    if (avatarSrc === undefined) {
+      return DEFAULT_PROFILE_IMAGE;
+    }
+    return avatarSrc;
+  }, [avatarSrc]);
+
   return (
     <div className={containerStyles}>
-      <img
+      <div
         onClick={onClick}
         className="user-avatar__image"
-        src={avatarSrc}
-        alt="user avatar"
+        style={{
+          backgroundImage: `url(${userToShow})`,
+        }}
       />
       {isOnline && <span className="user-avatar__status-dot" />}
     </div>
