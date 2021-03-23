@@ -13,7 +13,6 @@ import { addReaction } from "store/actions/Reactions";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { useDispatch } from "hooks/useDispatch";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -150,7 +149,6 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const { openUserProfileModal } = useProfileModalControls();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -461,11 +459,9 @@ export const Audience: React.FunctionComponent = () => {
                             key={untranslatedColumnIndex}
                             className={seat ? "seat" : "not-seat"}
                             onClick={() =>
-                              seat && seatedPartygoer === null
-                                ? takeSeat(row, column)
-                                : seatedPartygoer !== null
-                                ? openUserProfileModal(seatedPartygoer)
-                                : null
+                              seat &&
+                              seatedPartygoer === null &&
+                              takeSeat(row, column)
                             }
                           >
                             {seat && seatedPartygoer && (
@@ -514,6 +510,5 @@ export const Audience: React.FunctionComponent = () => {
     reactionClicked,
     isSeat,
     partygoersBySeat,
-    openUserProfileModal,
   ]);
 };
