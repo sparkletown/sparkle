@@ -4,8 +4,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
-import { SetSelectedProfile } from "types/chat";
-
 import {
   usePrivateChatPreviews,
   useOnlineUsersToDisplay,
@@ -16,13 +14,9 @@ import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({
-  recipientId,
-  onAvatarClick,
-}) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const onInputChage = useCallback(
     (e) => setUserSearchQuery(e.target.value),

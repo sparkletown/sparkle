@@ -10,7 +10,6 @@ import {
 import { VenueChat, PrivateChats } from "./components";
 
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ChatTypes } from "types/chat";
 
@@ -26,7 +25,6 @@ export const ChatSidebar: React.FC = () => {
   } = useChatSidebarControls();
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
-  const { openUserProfileModal } = useProfileModalControls();
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
@@ -72,10 +70,7 @@ export const ChatSidebar: React.FC = () => {
       <div className="chat-sidebar__tab-content">
         {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
         {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
-          <PrivateChats
-            recipientId={chatSettings.recipientId}
-            onAvatarClick={openUserProfileModal}
-          />
+          <PrivateChats recipientId={chatSettings.recipientId} />
         )}
       </div>
     </div>

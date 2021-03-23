@@ -14,7 +14,6 @@ import { ChatMessage } from "types/chat";
 
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 
-import { UserProfileModal } from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -89,8 +88,6 @@ export const ReactionList: React.FC<ReactionListProps> = ({
       <div className={classNames("reaction-list", { small })}>
         {allReactions}
       </div>
-
-      <UserProfileModal />
     </>
   );
 };

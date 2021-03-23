@@ -1,7 +1,7 @@
 import {
   UserProfileActions,
-  UPDATE_USER_PROFILE_DATA,
-} from "../actions/UserProfile";
+  UserProfileActionTypes,
+} from "store/actions/UserProfile";
 
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -19,8 +19,10 @@ export const userProfileReducer = (
   action: UserProfileActions
 ): UserProfileState => {
   switch (action.type) {
-    case UPDATE_USER_PROFILE_DATA:
-      return { ...state, userProfile: action.payload };
+    case UserProfileActionTypes.UPDATE_USER_PROFILE_DATA:
+      const { userProfile } = action.payload;
+      return { ...state, userProfile };
+
     default:
       return state;
   }
