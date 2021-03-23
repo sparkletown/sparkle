@@ -1,58 +1,41 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { useAuditoriumSection } from "hooks/auditoriumSections";
+import { useVenueId } from "hooks/useVenueId";
+
+import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 import { Video } from "../Video";
 
+import {
+  DEFAULT_COLUMNS_NUMBER,
+  DEFAULT_ROWS_NUMBER,
+  SEAT_SIZE,
+  SEAT_SIZE_MIN,
+  SEAT_SPACING,
+  VIDEO_MIN_WIDTH_IN_SEATS,
+} from "./constants";
+
 import "./Section.scss";
-import { useVenueId } from "hooks/useVenueId";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-
-const DEFAULT_ROWS_NUMBER = 17;
-const DEFAULT_COLUMNS_NUMBER = 23;
-
-const VIDEO_MIN_WIDTH_IN_SEATS = 17;
-
-// If you change this, make sure to also change it in Audience.scss's $seat-size
-const SEAT_SIZE = "var(--seat-size)";
-const SEAT_SIZE_MIN = "var(--seat-size-min)";
-const SEAT_SPACING = "var(--seat-spacing)";
-
-// NOTE: Video should take third of the columns
-const videoWidthInSeats = Math.max(
-  Math.floor(DEFAULT_COLUMNS_NUMBER / 3),
-  VIDEO_MIN_WIDTH_IN_SEATS
-);
-
-// Keep a 16:9 ratio
-const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
 const translateIndex = (index: number, totalAmount: number) =>
   index - Math.floor(totalAmount / 2);
-
-const checkIfSeat = (rowIndex: number, columnIndex: number) => {
-  const translatedRowIndex = translateIndex(rowIndex, DEFAULT_ROWS_NUMBER);
-  const translatedColumnIndex = translateIndex(
-    columnIndex,
-    DEFAULT_COLUMNS_NUMBER
-  );
-
-  const isInVideoRow = Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
-  const isInVideoColumn =
-    Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
-
-  return !(isInVideoRow && isInVideoColumn);
-};
 
 export interface SectionProps {
   venue: AuditoriumVenue;
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const { sectionId } = useParams<{ sectionId?: string }>();
+  const {
+    iframeUrl,
+    rows = DEFAULT_ROWS_NUMBER,
+    columns = DEFAULT_COLUMNS_NUMBER,
+  } = venue;
+
+  const { sectionId } = useParams<{ sectionId: string }>();
   const venueId = useVenueId();
 
   const {
@@ -65,11 +48,38 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     sectionId,
   });
 
+  // NOTE: Video takes 1/3 of the seats
+  const videoWidthInSeats = useMemo(
+    () => Math.max(Math.floor(columns / 3), VIDEO_MIN_WIDTH_IN_SEATS),
+    [columns]
+  );
+
+  // NOTE: Keep the 16:9 ratio
+  const videoHeightInSeats = useMemo(
+    () => Math.ceil(videoWidthInSeats * (9 / 16)),
+    [videoWidthInSeats]
+  );
+
+  const checkIfSeat = useCallback(
+    (rowIndex: number, columnIndex: number) => {
+      const translatedRowIndex = translateIndex(rowIndex, rows);
+      const translatedColumnIndex = translateIndex(columnIndex, columns);
+
+      const isInVideoRow =
+        Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
+      const isInVideoColumn =
+        Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
+
+      return !(isInVideoRow && isInVideoColumn);
+    },
+    [rows, columns, videoHeightInSeats, videoWidthInSeats]
+  );
+
   useEffect(() => {
     return () => {
       leaveSeat();
     };
-  }, []);
+  }, [leaveSeat]);
 
   const iframeInlineStyles = useMemo(
     () => ({
@@ -78,10 +88,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       minWidth: `calc(${videoWidthInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
       minHeight: `calc(${videoHeightInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
     }),
-    []
+    [videoWidthInSeats, videoHeightInSeats]
   );
 
-  if (!auditoriumSection) return <p>No such section was found</p>;
+  if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
     <div className="section">
@@ -90,7 +100,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
           overlayClassname="section__video-overlay"
           iframeClassname="section__video"
           iframeStyles={iframeInlineStyles}
-          src={venue.iframeUrl}
+          src={iframeUrl}
         />
         {Array.from(Array(DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
           <div key={rowIndex} className="section__seats-row">

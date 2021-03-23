@@ -6,7 +6,7 @@ export interface MakeUpdateUserGridLocationProps {
   userUid: string;
 }
 
-// @debt Legacy way of updating grid location
+// @debt Legacy way of updating the grid location
 export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
@@ -54,7 +54,7 @@ export interface SetGridData {
   venueId: string;
   userId: string;
 
-  // NOTE: seat options should be defined as a type for every specific case
+  // TODO: seat options should be defined as a type for every specific case
   seatOptions: {
     row: number;
     column: number;

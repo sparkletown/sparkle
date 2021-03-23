@@ -1,8 +1,6 @@
 @import "scss/constants";
 
-$light: #ffffff;
-
-// If you change this, make sure to also change it in Audience.tsx's SEAT_SIZE
+// If you change this, make sure to also change it in constants.ts
 $seat-size: 4vh;
 $seat-size-min: 25px;
 $seat-spacing: 3px;
@@ -47,7 +45,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     height: 100%;
     border: 1px black;
     border-radius: 15px;
-    box-shadow: 2px 2px 20px $light;
+    box-shadow: 2px 2px 20px $white;
   }
 
   &__seats {
@@ -88,20 +86,20 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
   }
 
   &__seat {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba($white, 0.2);
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba($white, 0.4);
       cursor: pointer;
     }
 
     &:active {
-      background-color: rgba(255, 255, 255, 0.6);
+      background-color: rgba($white, 0.6);
       cursor: pointer;
     }
   }
 
   &__empty-circle {
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgba($black, 0);
   }
 }

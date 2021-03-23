@@ -5,11 +5,11 @@ import classNames from "classnames";
 import { AuditoriumSizes } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { SectionPreview } from "../SectionPreview";
-import { Video } from "../Video";
-
 import { useAuditoriumSections } from "hooks/auditoriumSections";
 import { useVenueId } from "hooks/useVenueId";
+
+import { SectionPreview } from "../SectionPreview";
+import { Video } from "../Video";
 
 import "./SectionPreviews.scss";
 
@@ -21,10 +21,9 @@ export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
   const { iframeUrl } = venue;
 
   const venueId = useVenueId();
-
   const history = useHistory();
-
   const { auditoriumSections } = useAuditoriumSections(venueId);
+
   const sectionsAmount = auditoriumSections.length;
 
   const auditoriumSize: AuditoriumSizes = useMemo(() => {

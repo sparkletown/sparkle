@@ -22,6 +22,7 @@ export enum VenueTemplate {
   preplaya = "preplaya",
   playa = "playa",
   audience = "audience",
+  auditorium = "auditorium",
   conversationspace = "conversationspace",
   firebarrel = "firebarrel",
   embeddable = "embeddable",
@@ -35,12 +36,16 @@ export enum VenueTemplate {
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
-  VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
+  | VenueTemplate.partymap
+  | VenueTemplate.embeddable
+  | VenueTemplate.jazzbar
+  | VenueTemplate.auditorium
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
 export type AnyVenue =
   | GenericVenue
+  | AuditoriumVenue
   | PartyMapVenue
   | JazzbarVenue
   | EmbeddableVenue;
@@ -207,9 +212,7 @@ export interface EmbeddableVenue extends BaseVenue {
 }
 
 export interface AuditoriumVenue extends BaseVenue {
-  template: VenueTemplate.audience;
-  videoPosition: string;
-  sections: [];
+  template: VenueTemplate.auditorium;
 }
 
 export interface Question {

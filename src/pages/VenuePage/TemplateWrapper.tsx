@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { AnyVenue, VenueTemplate, AuditoriumVenue } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -95,6 +95,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       fullscreen = true;
       break;
 
+    case VenueTemplate.auditorium:
+      template = <Auditorium venue={venue} />;
+      fullscreen = true;
+      hasBackButton = false;
+      break;
+
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
       break;
@@ -120,11 +126,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
-
-  // DEVELOPMENT-MODE HACK
-  template = <Auditorium venue={venue as AuditoriumVenue} />;
-  fullscreen = true;
-  hasBackButton = false;
 
   return (
     // @debt remove backButton from Navbar

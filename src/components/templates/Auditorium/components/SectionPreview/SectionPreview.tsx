@@ -1,11 +1,7 @@
 import React from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faUserFriends,
-  faBan,
-  faLock,
-} from "@fortawesome/free-solid-svg-icons";
+import { faUserFriends, faLock } from "@fortawesome/free-solid-svg-icons";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useSectionSeatedUsers } from "hooks/auditoriumSections";
@@ -14,12 +10,13 @@ import UserList from "components/molecules/UserList";
 
 import { AuditoriumSection } from "types/auditorium";
 
-import "./SectionPreview.scss";
 import { WithId } from "utils/id";
 
+import "./SectionPreview.scss";
+
 export interface SectionPreviewProps {
-  onClick?: () => void;
   section: WithId<AuditoriumSection>;
+  onClick?: () => void;
 }
 
 const noop = () => {};
@@ -29,25 +26,20 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   section,
 }) => {
   const { isLocked, title } = section;
-  const isFull = false;
 
   const venueId = useVenueId();
 
   const seatedUsers = useSectionSeatedUsers(venueId, section.id);
   const seatedUsersNumber = seatedUsers.length;
 
-  const isUnavailable = isFull || isLocked;
-
   const containerClasses = classNames("section-preview", {
-    "section-preview--full": isFull,
     "section-preview--locked": isLocked,
     "section-preview--empty": seatedUsersNumber === 0,
   });
   return (
-    <div onClick={isUnavailable ? noop : onClick} className={containerClasses}>
-      {isUnavailable && (
+    <div onClick={isLocked ? noop : onClick} className={containerClasses}>
+      {isLocked && (
         <div className="section-preview__status-icons">
-          {isFull && <FontAwesomeIcon icon={faBan} size="sm" />}
           {isLocked && (
             <FontAwesomeIcon
               icon={faLock}

@@ -1,15 +1,19 @@
+import { User } from "types/User";
+
+import { setGridData } from "api/profile";
+
 import {
   currentAuditoriumSectionsSelector,
   currentAuditoriumSectionsByIdSelector,
 } from "utils/selectors";
+import { WithId } from "utils/id";
+import { getPositionHash } from "utils/auditorium";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useRecentVenueUsers } from "./users";
-import { WithId } from "utils/id";
-import { User } from "types/User";
-import { takeSectionSeat } from "api/section";
 import { useUser } from "./useUser";
+import { useCallback, useMemo } from "react";
 
 const useConnectAuditoriumSections = (venueId?: string) => {
   useFirestoreConnect(() => {
@@ -26,67 +30,72 @@ const useConnectAuditoriumSections = (venueId?: string) => {
   });
 };
 
-export interface useAuditoriumSectionProps {
+export interface UseAuditoriumSectionProps {
+  sectionId: string;
   venueId?: string;
-  sectionId?: string;
 }
-
-const getPositionHash = ({ row, column }: { row: number; column: number }) => {
-  return `${row}|${column}`;
-};
 
 export const useAuditoriumSection = ({
   venueId,
   sectionId,
-}: useAuditoriumSectionProps) => {
+}: UseAuditoriumSectionProps) => {
   useConnectAuditoriumSections(venueId);
 
   const { userWithId } = useUser();
-
   const userId = userWithId?.id;
 
   const sections = useSelector(currentAuditoriumSectionsByIdSelector);
-
-  const section = sections?.[sectionId!];
+  const section = sections?.[sectionId];
 
   const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
 
-  const seatedUsersByHash = seatedUsers.reduce<
-    Record<string, WithId<User> | undefined>
-  >((acc, user) => {
-    if (!venueId) return acc;
+  const seatedUsersByHash = useMemo(
+    () =>
+      seatedUsers.reduce<Record<string, WithId<User> | undefined>>(
+        (acc, user) => {
+          if (!venueId) return acc;
 
-    const takenRow = user.data?.[venueId].row;
-    const takenColumn = user.data?.[venueId].column;
+          const takenRow = user.data?.[venueId].row;
+          const takenColumn = user.data?.[venueId].column;
 
-    if (takenRow === undefined || takenColumn === undefined) return acc;
+          if (takenRow === undefined || takenColumn === undefined) return acc;
 
-    const positionHash = getPositionHash({
-      row: takenRow,
-      column: takenColumn,
-    });
+          const positionHash = getPositionHash({
+            row: takenRow,
+            column: takenColumn,
+          });
 
-    return { ...acc, [positionHash]: user };
-  }, {});
+          return { ...acc, [positionHash]: user };
+        },
+        {}
+      ),
+    [seatedUsers, venueId]
+  );
 
-  const getUserBySeat = ({ row, column }: { row: number; column: number }) =>
-    seatedUsersByHash && seatedUsersByHash[getPositionHash({ row, column })];
+  const getUserBySeat = useCallback(
+    ({ row, column }: { row: number; column: number }) =>
+      seatedUsersByHash && seatedUsersByHash[getPositionHash({ row, column })],
+    [seatedUsersByHash]
+  );
 
-  const takeSeat = ({ row, column }: { row: number; column: number }) => {
-    if (!sectionId || !venueId || !userId) return;
+  const takeSeat = useCallback(
+    ({ row, column }: { row: number; column: number }) => {
+      if (!sectionId || !venueId || !userId) return;
 
-    takeSectionSeat({
-      venueId,
-      userId,
-      seatOptions: { sectionId, row, column },
-    });
-  };
+      setGridData({
+        venueId,
+        userId,
+        seatOptions: { sectionId, row, column },
+      });
+    },
+    [sectionId, venueId, userId]
+  );
 
-  const leaveSeat = () => {
+  const leaveSeat = useCallback(() => {
     if (!venueId || !userId) return;
 
-    takeSectionSeat({ venueId, userId, seatOptions: null });
-  };
+    setGridData({ venueId, userId, seatOptions: null });
+  }, [venueId, userId]);
 
   return {
     auditoriumSection: section,
@@ -100,9 +109,13 @@ export const useAuditoriumSection = ({
 export const useSectionSeatedUsers = (venueId?: string, sectionId?: string) => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  return recentVenueUsers.filter(
-    (user) =>
-      venueId && sectionId && user.data?.[venueId]?.sectionId === sectionId
+  return useMemo(
+    () =>
+      recentVenueUsers.filter(
+        (user) =>
+          venueId && sectionId && user.data?.[venueId]?.sectionId === sectionId
+      ),
+    [recentVenueUsers, venueId, sectionId]
   );
 };
 
@@ -111,8 +124,11 @@ export const useAuditoriumSections = (venueId?: string) => {
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
-  return {
-    auditoriumSections: sections ?? [],
-    isAuditoriumSectionsLoaded: isLoaded(sections),
-  };
+  return useMemo(
+    () => ({
+      auditoriumSections: sections ?? [],
+      isAuditoriumSectionsLoaded: isLoaded(sections),
+    }),
+    [sections]
+  );
 };
