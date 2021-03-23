@@ -1,5 +1,4 @@
 export type AuditoriumSection = {
-  id: string;
   title?: string;
   isLocked?: boolean;
   rowsNumber?: number;

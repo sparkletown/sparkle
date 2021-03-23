@@ -6,6 +6,7 @@ export interface MakeUpdateUserGridLocationProps {
   userUid: string;
 }
 
+// @debt Legacy way of updating grid location
 export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
@@ -47,4 +48,32 @@ export const makeUpdateUserGridLocation = ({
 
       firestore.doc(doc).set(newData);
     });
+};
+
+export interface SetGridData {
+  venueId: string;
+  userId: string;
+
+  // NOTE: seat options should be defined as a type for every specific case
+  seatOptions: {
+    row: number;
+    column: number;
+    sectionId: string;
+  } | null;
+}
+
+export const setGridData = ({ venueId, userId, seatOptions }: SetGridData) => {
+  const userProfile = firebase.firestore().collection("users").doc(userId);
+
+  const gridData = {
+    [`data.${venueId}`]: seatOptions,
+  };
+
+  userProfile.update(gridData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.severity = "error";
+
+      event.addMetadata("Profile::gridData", { seatOptions });
+    });
+  });
 };
