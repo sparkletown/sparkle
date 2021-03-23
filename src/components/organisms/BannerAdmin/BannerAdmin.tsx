@@ -59,6 +59,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
                 defaultValue={existingBannerMessage}
                 onChange={handleInputChange}
                 placeholder="Enter banner message here..."
+                autoComplete="off"
               />
 
               {error && <span className="error">{error}</span>}

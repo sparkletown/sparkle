@@ -189,6 +189,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search venues"
                     onChange={(e) => setFilterVenueText(e.target.value)}
                     value={filterVenueText}
+                    autoComplete="off"
                   />
                   <PotLuckButton
                     venues={venuesWithAttendance.map((v) => v.venue)}
@@ -295,6 +296,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search people"
                     onChange={(e) => setFilterUsersText(e.target.value)}
                     value={filterUsersText}
+                    autoComplete="off"
                   />
                 </div>
                 <div className="people">
