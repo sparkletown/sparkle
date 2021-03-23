@@ -258,11 +258,11 @@ render(
           <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <CustomLoadersProvider>
-                <CustomSoundsProvider>
-                  <AuthIsLoaded>
+                <AuthIsLoaded>
+                  <CustomSoundsProvider>
                     <AppRouter />
-                  </AuthIsLoaded>
-                </CustomSoundsProvider>
+                  </CustomSoundsProvider>
+                </AuthIsLoaded>
               </CustomLoadersProvider>
             </ReactReduxFirebaseProvider>
           </Provider>
