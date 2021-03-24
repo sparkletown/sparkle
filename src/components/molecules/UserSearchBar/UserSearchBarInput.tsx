@@ -24,6 +24,7 @@ export const UserSearchBarInput: FC<UserSearchBarInputProps> = ({
       value={value}
       onChange={handleOnChange}
       placeholder="Search for people"
+      autoComplete="off"
     />
   );
 };
