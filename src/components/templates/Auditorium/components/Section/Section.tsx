@@ -3,6 +3,8 @@ import { useParams } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
 
+import { translateIndex } from "utils/auditorium";
+
 import { useAuditoriumSection } from "hooks/auditoriumSections";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -20,9 +22,6 @@ import {
 } from "./constants";
 
 import "./Section.scss";
-
-const translateIndex = (index: number, totalAmount: number) =>
-  index - Math.floor(totalAmount / 2);
 
 export interface SectionProps {
   venue: AuditoriumVenue;
@@ -62,8 +61,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const checkIfSeat = useCallback(
     (rowIndex: number, columnIndex: number) => {
-      const translatedRowIndex = translateIndex(rowIndex, rows);
-      const translatedColumnIndex = translateIndex(columnIndex, columns);
+      const translatedRowIndex = translateIndex({
+        index: rowIndex,
+        totalAmount: rows,
+      });
+      const translatedColumnIndex = translateIndex({
+        index: columnIndex,
+        totalAmount: columns,
+      });
 
       const isInVideoRow =
         Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
