@@ -100,11 +100,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       <div className="room-modal__main">
-        {room.image_url ? (
-          <div className="room-modal__icon" style={iconStyle}></div>
-        ) : (
-          <span>{room.title}</span>
-        )}
+        <div className="room-modal__icon" style={iconStyle}></div>
 
         <RoomModalOngoingEvent
           roomEvents={roomEvents}
