@@ -24,11 +24,11 @@ $spacing: 20px;
   &__main {
     display: flex;
     flex-direction: row;
-    flex: auto 1;
     justify-content: space-around;
     align-items: center;
 
     > * {
+      flex: 1;
       height: fit-content;
       margin-left: $spacing;
 
@@ -42,10 +42,11 @@ $spacing: 20px;
     flex-shrink: 0;
     height: 180px;
     width: 180px;
-    border-radius: 18px;
-    background-color: #000;
-    background-size: cover;
+    border-radius: $border-radius;
+    background-color: transparent;
+    background-size: contain;
     background-repeat: no-repeat;
+    background-position: center;
   }
 
   .userlist-container {
