@@ -169,6 +169,7 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 UserProfilePicture.defaultProps = {
   avatarClassName: "profile-icon",
   miniAvatars: false,
+  isAudioEffectDisabled: true,
 };
 
 export default UserProfilePicture;
