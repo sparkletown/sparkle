@@ -24,6 +24,7 @@ export enum VenueTemplate {
   partymap = "partymap",
   performancevenue = "performancevenue",
   playa = "playa",
+  posters = "posters",
   preplaya = "preplaya",
   themecamp = "themecamp",
   zoomroom = "zoomroom",

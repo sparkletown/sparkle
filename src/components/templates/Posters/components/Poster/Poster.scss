@@ -1,0 +1,13 @@
+@import "scss/constants";
+
+.poster {
+  height: 350px;
+  width: 230px;
+  background-color: white;
+  margin: 10px;
+
+  &__title {
+    font-size: 13px;
+    color: $black;
+  }
+}
