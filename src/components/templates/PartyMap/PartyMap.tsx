@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 
 import { RootState } from "index";
 
-import { Room } from "types/rooms";
+import { Room, RoomTypes } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
@@ -31,6 +31,8 @@ export const PartyMap: React.FC = () => {
   const hasSelectedRoom = !!selectedRoom;
 
   const selectRoom = useCallback((room: Room) => {
+    if (room.type === RoomTypes.unclickable) return;
+
     setSelectedRoom(room);
   }, []);
 
