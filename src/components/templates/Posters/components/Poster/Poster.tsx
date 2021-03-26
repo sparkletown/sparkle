@@ -1,25 +1,43 @@
 import React from "react";
-import { Document, Page, pdfjs } from "react-pdf";
 
 import { TPoster } from "../../Posters";
 
 import "./Poster.scss";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 export interface PosterProps {
   poster: TPoster;
 }
 
 export const Poster: React.FC<PosterProps> = ({ poster }) => {
-  const { title, pdfUrl, authors } = poster;
+  const { title, pdfUrl, author, categories } = poster;
 
   return (
     <div className="poster">
-      <Document file={pdfUrl}>
-        <Page pageNumber={1} className="poster__pdf" height={200} />
-      </Document>
+      <div className="poster__pdf">
+        <embed src={pdfUrl} type="application/pdf" />
+
+        <div className="poster__pdf__actions">
+          <button className="poster__pdf__actions__join-btn">Join</button>
+        </div>
+      </div>
+
       <p className="poster__title">{title}</p>
+      <div className="poster__categories">
+        {categories.map((category) => (
+          <div
+            className="poster__category"
+            style={{
+              backgroundColor: category.color,
+            }}
+          >
+            {category.title}
+          </div>
+        ))}
+      </div>
+      <div className="poster__author">
+        <div className="poster__author__name">{author.name}</div>
+        <div className="poster__author__institution">{author.institution}</div>
+      </div>
     </div>
   );
 };
