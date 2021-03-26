@@ -14,7 +14,7 @@ export const Poster: React.FC<PosterProps> = ({ poster }) => {
   return (
     <div className="poster">
       <div className="poster__pdf">
-        <embed src={pdfUrl} type="application/pdf" />
+        <embed src={pdfUrl} type="application/pdf" width="100%" />
 
         <div className="poster__pdf__actions">
           <button className="poster__pdf__actions__join-btn">Join</button>
