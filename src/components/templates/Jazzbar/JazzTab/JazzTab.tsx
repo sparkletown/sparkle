@@ -83,6 +83,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
+  console.log(jazzbarTables);
+
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
