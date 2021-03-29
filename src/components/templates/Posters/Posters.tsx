@@ -1,5 +1,7 @@
 import React from "react";
 
+import { usePosterFilters, usePosters } from "hooks/posters";
+
 import { Poster } from "./components/Poster";
 import { Search } from "./components/Search";
 
@@ -40,6 +42,9 @@ const POSTERS: TPoster[] = Array(5).fill({
 export interface PostersProps {}
 
 export const Posters: React.FC<PostersProps> = () => {
+  const { filters, setFilterByCategory, setFilterByTitle } = usePosterFilters();
+
+  const {} = usePosters(filters);
   return (
     <div className="posterhall">
       <Search />
