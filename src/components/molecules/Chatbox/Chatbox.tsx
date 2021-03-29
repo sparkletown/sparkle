@@ -1,5 +1,6 @@
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
 import { useForm } from "react-hook-form";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -59,28 +60,42 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     [messages, deleteMessage]
   );
 
+  const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
+  const toggleEventSchedule = useCallback(() => {
+    setEventScheduleVisible(!isEventScheduleVisible);
+  }, [isEventScheduleVisible]);
+
   return (
     <div className="chatbox">
       <div className="chatbox__messages">{renderedMessages}</div>
+
       <form className="chatbox__form" onSubmit={onSubmit}>
-        <input
-          className="chatbox__input"
-          ref={register({ required: true })}
-          name="message"
-          placeholder="Write your message..."
-          autoComplete="off"
-        ></input>
-        <button
-          className="chatbox__submit-button"
-          type="submit"
-          disabled={!chatValue || isSendingMessage}
+        <div
+          className={`nav-chat-logo ${isEventScheduleVisible && "clicked"}`}
+          onClick={toggleEventSchedule}
         >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
+          Schedule
+        </div>
+        <div style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+          <input
+            className="chatbox__input"
+            ref={register({ required: true })}
+            name="message"
+            placeholder="Write your message..."
+            autoComplete="off"
+          ></input>
+          <button
+            className="chatbox__submit-button"
+            type="submit"
+            disabled={!chatValue || isSendingMessage}
+          >
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="chatbox__submit-button-icon"
+              size="lg"
+            />
+          </button>
+        </div>
       </form>
     </div>
   );
