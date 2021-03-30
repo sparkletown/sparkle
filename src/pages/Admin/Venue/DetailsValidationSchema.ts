@@ -59,6 +59,7 @@ export const validationSchema = Yup.object()
     name: Yup.string()
       .required("Required")
       .min(1, "Required")
+      .max(20, ({ max }) => `Name must be less than ${max} characters`)
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
