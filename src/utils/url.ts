@@ -51,11 +51,13 @@ export const openUrl = (url: string) => {
 export const isValidUrl = (url: string): boolean => {
   const checkUrl = (url: string): boolean =>
     VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+  const relativeLinksRegex = /^(\/in\/|\/v\/).*/;
+  const shortUrlRegex = /^\/\/.*/;
   try {
-    if (url.startsWith("/in") || url.startsWith("/v")) {
+    if (new RegExp(relativeLinksRegex).test(url)) {
       return checkUrl(window.location.origin + url);
     }
-    if (url.startsWith("//")) {
+    if (new RegExp(shortUrlRegex).test(url)) {
       return checkUrl(window.location.protocol + url);
     }
     return checkUrl(url);
