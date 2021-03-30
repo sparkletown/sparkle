@@ -26,7 +26,12 @@ export const validationSchema = Yup.object()
     title: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
     about: Yup.string().required("Required"),
-    url: Yup.string().required("Required"),
+    url: Yup.string()
+      .matches(
+        /((https?):\/\/)?(www.)?[a-z0-9]+(\.[a-z]{2,}){1,3}(#?\/?[a-zA-Z0-9#]+)*\/?(\?[a-zA-Z0-9-_]+=[a-zA-Z0-9-%]+&?)?$/,
+        "Enter correct url!"
+      )
+      .required("Required"),
     x_percent: Yup.number()
       .default(INITIAL_PERCENTAGE_POS)
       .required("Required")
