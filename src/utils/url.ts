@@ -40,6 +40,7 @@ export const openRoomUrl = (url: string) => {
 export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 export const openUrl = (url: string) => {
+  // TODO: remove when url is fixed
   if (!isValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
