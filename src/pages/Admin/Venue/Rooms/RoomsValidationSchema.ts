@@ -28,8 +28,8 @@ export const validationSchema = Yup.object()
     subtitle: Yup.string().required("Required"),
     about: Yup.string().required("Required"),
     url: Yup.string()
-      .test("url validation", "Enter correct url", isValidUrl)
-      .required("Required"),
+      .required("Required")
+      .test("url validation", "Enter correct url", isValidUrl),
     x_percent: Yup.number()
       .default(INITIAL_PERCENTAGE_POS)
       .required("Required")
