@@ -6,7 +6,7 @@ $spacing: 20px;
 .room-modal {
   padding: $spacing;
 
-  background-color: #19181a;
+  background-color: $saturated-black;
   background-repeat: no-repeat;
   background-size: cover;
 
@@ -43,7 +43,7 @@ $spacing: 20px;
     height: 180px;
     width: 180px;
     border-radius: $border-radius;
-    background-color: transparent;
+    background-color: $black;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
