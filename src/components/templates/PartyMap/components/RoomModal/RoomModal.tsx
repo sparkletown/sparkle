@@ -106,7 +106,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyle}></div>
+        <div className="room-modal__icon" style={iconStyles}></div>
 
         <RoomModalOngoingEvent
           roomEvents={roomEvents}
