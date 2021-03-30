@@ -41,19 +41,19 @@ export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 export const openUrl = (url: string) => {
   // TODO: remove when url is fixed
-  if (!isValidUrl(url)) {
-    Bugsnag.notify(
-      // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
-      new Error(
-        `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
-      ),
-      (event) => {
-        event.addMetadata("utils/url::openUrl", { url });
-      }
-    );
-    // @debt keep the checking in place so we can debug further, but don't block attempts to open
-    // return;
-  }
+  // if (!isValidUrl(url)) {
+  //   Bugsnag.notify(
+  //     // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
+  //     new Error(
+  //       `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
+  //     ),
+  //     (event) => {
+  //       event.addMetadata("utils/url::openUrl", { url });
+  //     }
+  //   );
+  //   // @debt keep the checking in place so we can debug further, but don't block attempts to open
+  //   // return;
+  // }
 
   if (isExternalUrl(url)) {
     window.open(url, "_blank", "noopener,noreferrer");
@@ -65,6 +65,16 @@ export const openUrl = (url: string) => {
 
 export const isValidUrl = (url: string): boolean => {
   try {
+    if (url.startsWith("/in") || url.startsWith("/v")) {
+      return VALID_URL_PROTOCOLS.includes(
+        new URL(window.location.origin + url).protocol
+      );
+    }
+    if (url.startsWith("//")) {
+      return VALID_URL_PROTOCOLS.includes(
+        new URL(window.location.protocol + url).protocol
+      );
+    }
     return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
   } catch (e) {
     if (e.name === "TypeError") {

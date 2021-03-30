@@ -28,7 +28,7 @@ export const validationSchema = Yup.object()
     subtitle: Yup.string().required("Required"),
     about: Yup.string().required("Required"),
     url: Yup.string()
-      .test("url test", "Enter correct url", isValidUrl)
+      .test("url validation", "Enter correct url", isValidUrl)
       .required("Required"),
     x_percent: Yup.number()
       .default(INITIAL_PERCENTAGE_POS)
