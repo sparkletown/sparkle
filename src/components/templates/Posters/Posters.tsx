@@ -38,8 +38,8 @@ export const Posters: React.FC<PostersProps> = () => {
       <Search />
 
       <div className="posterhall__posters">
-        {POSTERS.map((poster) => (
-          <Poster poster={poster} />
+        {posterVenues?.map((posterVenue) => (
+          <Poster posterVenue={posterVenue} />
         ))}
       </div>
     </div>
