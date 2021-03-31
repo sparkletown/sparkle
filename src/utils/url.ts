@@ -61,18 +61,10 @@ export const openUrl = (url: string) => {
 };
 
 export const isValidUrl = (url: string): boolean => {
-  const checkUrl = (url: string): boolean =>
-    VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
-  const relativeLinksRegex = /^(\/in\/|\/v\/).*/;
-  const shortUrlRegex = /^\/\/.*/;
   try {
-    if (new RegExp(relativeLinksRegex).test(url)) {
-      return checkUrl(window.location.origin + url);
-    }
-    if (new RegExp(shortUrlRegex).test(url)) {
-      return checkUrl(window.location.protocol + url);
-    }
-    return checkUrl(url);
+    return VALID_URL_PROTOCOLS.includes(
+      new URL(url, window.location.origin).protocol
+    );
   } catch (e) {
     if (e.name === "TypeError") {
       return false;
