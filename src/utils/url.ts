@@ -40,6 +40,18 @@ export const openRoomUrl = (url: string) => {
 export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
 
 export const openUrl = (url: string) => {
+  if (!isValidUrl(url)) {
+    Bugsnag.notify(
+      // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
+      new Error(
+        `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
+      ),
+      (event) => {
+        event.addMetadata("utils/url::openUrl", { url });
+      }
+    );
+    return;
+  }
   if (isExternalUrl(url)) {
     window.open(url, "_blank", "noopener,noreferrer");
   } else {

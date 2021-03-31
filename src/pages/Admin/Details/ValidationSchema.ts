@@ -125,10 +125,12 @@ export const validationSchema_v2 = Yup.object()
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
   .min(3, ({ min }) => `Name must be at least ${min} characters`);
-const roomUrlSchema = Yup.string()
+
+export const roomUrlSchema = Yup.string()
   .required("Url is required!")
   .min(3, ({ min }) => `Url must be at least ${min} characters`)
-  .test("url validation", "Enter correct url", isValidUrl);
+  .test("url validation", "Please enter a valid URL", isValidUrl);
+
 const roomImageUrlSchema = Yup.string().required("Room image is required");
 
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
