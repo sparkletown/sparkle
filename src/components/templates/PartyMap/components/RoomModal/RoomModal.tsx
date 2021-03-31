@@ -94,7 +94,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const hasRoomEvents = renderedRoomEvents?.length > 0;
 
   const iconStyles = {
-    backgroundImage: `url(${room.image_url})`,
+    backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
   return (
@@ -106,7 +106,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       <div className="room-modal__main">
-        <div className="room-modal__icon" style={iconStyles}></div>
+        <div className="room-modal__icon" style={iconStyles} />
 
         <RoomModalOngoingEvent
           roomEvents={roomEvents}
