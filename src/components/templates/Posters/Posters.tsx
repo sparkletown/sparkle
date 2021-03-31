@@ -2,25 +2,12 @@ import React from "react";
 
 import { usePosterFilters, usePosters } from "hooks/posters";
 
+import { TPoster } from "types/posters";
+
 import { Poster } from "./components/Poster";
 import { Search } from "./components/Search";
 
 import "./Posters.scss";
-
-export type TCategory = {
-  title: string;
-  color: string;
-};
-
-export type TPoster = {
-  title: string;
-  pdfUrl: string;
-  categories: TCategory[];
-  author: {
-    name: string;
-    institution: string;
-  };
-};
 
 const POSTERS: TPoster[] = Array(5).fill({
   title: "Skull aberration correction in ultrasound brain imaging",
@@ -42,9 +29,10 @@ const POSTERS: TPoster[] = Array(5).fill({
 export interface PostersProps {}
 
 export const Posters: React.FC<PostersProps> = () => {
-  const { filters, setFilterByCategory, setFilterByTitle } = usePosterFilters();
+  const { titleFilter, categoriesFilter } = usePosterFilters();
 
-  const {} = usePosters(filters);
+  const { posterVenues } = usePosters({ titleFilter, categoriesFilter });
+
   return (
     <div className="posterhall">
       <Search />

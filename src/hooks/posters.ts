@@ -1,6 +1,8 @@
 import { useCallback, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 
+import { posterVenuesSelector } from "utils/selectors";
+
 import { useFirestoreConnect } from "./useFirestoreConnect";
 
 export const usePosterFilters = () => {
@@ -40,7 +42,7 @@ export interface UsePostersProps {
 }
 
 export const usePosters = ({
-  titleFilter = '',
+  titleFilter = "",
   categoriesFilter = [],
 }: UsePostersProps) => {
   useFirestoreConnect(() => {
@@ -49,18 +51,26 @@ export const usePosters = ({
         collection: "venues",
         // NOTE: This filters out all venues that don't have poster object defined
         orderBy: ["poster", "asc"],
-        storeAs: "worldUsers",
+        storeAs: "posterVenues",
       },
     ];
   });
 
-  const unfilteredPosters = useSelector();
-
-
+  const posterVenues = useSelector(posterVenuesSelector);
 
   return {
-    posters: unfilteredPosters
-      .filter( poster => poster.includes(titleFilter) && categoriesFilter.every(category => poster.categories.includes(category)) )
-    isPostersLoaded: true
-  }
+    posterVenues: posterVenues?.filter((venue) => {
+      if (titleFilter && !venue.poster.title.includes(titleFilter)) {
+        return false;
+      }
+
+      return true;
+      // if (categoriesFilter?.length > 0) {
+      //   categoriesFilter.every((category) =>
+      //     venue.poster.categories.includes(category)
+      //   );
+      // }
+    }),
+    isPostersLoaded: true,
+  };
 };

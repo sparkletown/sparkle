@@ -19,6 +19,7 @@ import {
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { MessageToTheBandReaction, Reaction } from "./reactions";
+import { WithPoster } from "types/posters";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -210,6 +211,10 @@ export const userModalVisitsSelector = (state: RootState) =>
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
+
+export const posterVenuesSelector: SparkleSelector<
+  WithId<WithPoster<AnyVenue>>[] | undefined
+> = (state) => state.firestore.ordered.posterVenues;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.

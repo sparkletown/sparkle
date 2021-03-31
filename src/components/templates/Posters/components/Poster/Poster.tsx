@@ -1,6 +1,6 @@
 import React from "react";
 
-import { TPoster } from "../../Posters";
+import { TPoster } from "types/posters";
 
 import "./Poster.scss";
 
