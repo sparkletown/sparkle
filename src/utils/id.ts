@@ -1,3 +1,5 @@
+// @debt Move this file into types/ or possibly even merge it with types/utility.ts
+
 export type WithId<T extends object> = T & { id: string };
 
 export const withId = <T extends object>(obj: T, id: string): WithId<T> => ({
