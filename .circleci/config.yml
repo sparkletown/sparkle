@@ -143,6 +143,9 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/unesco" ]; then
               ENV=sparkle-unesco
             fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              ENV=sparkle-ohbm
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -265,6 +268,12 @@ jobs:
               TARGET=sparkle-unesco
               RELEASE_STAGE=env/unesco
             fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              PREFIX=OHBM_
+              ENV=sparkle-ohbm
+              TARGET=sparkle-ohbm
+              RELEASE_STAGE=env/ohbm
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -321,6 +330,7 @@ workflows:
                 - env/kotr
                 - env/memrise
                 - env/unesco
+                - env/ohbm
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -345,6 +355,7 @@ workflows:
                 - env/kotr
                 - env/memrise
                 - env/unesco
+                - env/ohbm
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
