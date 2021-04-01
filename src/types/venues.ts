@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
+import { TPoster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
@@ -160,6 +161,7 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+  poster?: TPoster;
 }
 
 export interface GenericVenue extends BaseVenue {

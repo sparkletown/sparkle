@@ -1,10 +1,21 @@
-import React from "react";
+import React, { ChangeEvent } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import "./Search.scss";
 
-export const Search = () => {
+export interface SearchProps {
+  titleValue?: string;
+  setTitleValue: (title: string) => void;
+}
+
+export const Search: React.FC<SearchProps> = ({
+  titleValue,
+  setTitleValue,
+}) => {
+  const onTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setTitleValue(e.target.value);
+  };
   return (
     <div className="posterhall__search">
       <div className="posterhall__search__input-box">
@@ -15,6 +26,8 @@ export const Search = () => {
         <input
           className="posterhall__search__input"
           placeholder="Search Posters/Demos"
+          value={titleValue}
+          onChange={onTitleChange}
         />
       </div>
     </div>

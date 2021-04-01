@@ -1,9 +1,9 @@
-import { useCallback, useState, useMemo } from "react";
-import { useSelector } from "react-redux";
+import { useState } from "react";
 
 import { posterVenuesSelector } from "utils/selectors";
 
 import { useFirestoreConnect } from "./useFirestoreConnect";
+import { useSelector } from "./useSelector";
 
 export const usePosterFilters = () => {
   const [titleFilter, setTitleFilter] = useState<string>();
@@ -60,7 +60,11 @@ export const usePosters = ({
 
   return {
     posterVenues: posterVenues?.filter((venue) => {
-      if (titleFilter && !venue.poster.title.includes(titleFilter)) {
+      const normalizedTitleFilter = titleFilter.toLowerCase().trim();
+      if (
+        normalizedTitleFilter &&
+        !venue.poster.title.includes(normalizedTitleFilter)
+      ) {
         return false;
       }
 

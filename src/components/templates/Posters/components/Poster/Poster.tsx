@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 
-import { TPoster, WithPoster } from "types/posters";
+import { WithPoster } from "types/posters";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -15,12 +15,14 @@ export interface PosterProps {
 export const Poster: React.FC<PosterProps> = ({ posterVenue }) => {
   const { title, pdfUrl, author, categories } = posterVenue.poster;
 
-  const enterPosterVenue = useCallback(() => enterVenue(posterVenue.id), []);
+  const enterPosterVenue = useCallback(() => enterVenue(posterVenue.id), [
+    posterVenue.id,
+  ]);
 
   return (
     <div className="poster">
       <div className="poster__pdf">
-        <iframe src={pdfUrl} width="100%" />
+        <iframe src={pdfUrl} width="100%" title={title} />
 
         <div className="poster__pdf__actions">
           <button
@@ -37,6 +39,7 @@ export const Poster: React.FC<PosterProps> = ({ posterVenue }) => {
         <div className="poster__categories">
           {categories.map((category) => (
             <div
+              key={category.title + category.color}
               className="poster__category"
               style={{
                 backgroundColor: category.color,

@@ -29,6 +29,13 @@
       ".  video video ."
       ".  video video  .";
 
+    &--poster {
+      grid-template-areas:
+        ".  video video ."
+        ".  video video  ."
+        ".  video video  .";
+    }
+
     @media (max-width: $small-laptop-width) {
       display: flex;
       flex-flow: wrap;
@@ -126,6 +133,16 @@
           ".  video video ."
           ".  video video  ."
           "items items items items";
+
+        &--poster {
+          grid-template-areas:
+            ".  video video ."
+            ".  video video  ."
+            ".  video video  ."
+            "items items items items";
+
+          grid-template-rows: repeat(3, $video-participant-optimal-height);
+        }
       }
     }
   }

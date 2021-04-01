@@ -134,9 +134,17 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
+  const hasPoster = venueToUse?.poster !== undefined;
+
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
   });
+
+  const contentClasses = classNames("music-bar-content", {
+    "music-bar-content--poster": hasPoster,
+  });
+
+  // console.log(contentClasses, venue?.poster);
 
   if (!venueToUse) return <>Loading...</>;
 
@@ -167,7 +175,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         />
       )}
 
-      <div className="music-bar-content">
+      <div className={contentClasses}>
         <div className="video-container">
           {!venueToUse.hideVideo && (
             <>
@@ -187,7 +195,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              {seatedAtTable && (
+              {!hasPoster && seatedAtTable && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {Reactions.map((reaction) => (
