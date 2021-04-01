@@ -74,6 +74,7 @@ export const validationSchema_v2 = Yup.object()
     name: Yup.string()
       .required("Name is required!")
       .min(3, ({ min }) => `Name must be at least ${min} characters`)
+      .max(20, ({ max }) => `Name must be less than ${max} characters`)
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -136,7 +137,8 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       is: false,
       then: Yup.string()
         .required("Venue name is required")
-        .min(3, ({ min }) => `Name must be at least ${min} characters`),
+        .min(3, ({ min }) => `Name must be at least ${min} characters`)
+        .max(20, ({ max }) => `Name must be less than ${max} characters`),
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl
