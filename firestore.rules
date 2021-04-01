@@ -68,7 +68,7 @@ service cloud.firestore {
         allow read, write: if false;
       }
       match /sections/{section} {
-        allow read: if true;
+        allow read: if request.auth.uid != null;;
         allow write: if request.auth.uid in venueData().owners;
       }
     }
