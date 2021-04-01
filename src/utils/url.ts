@@ -47,12 +47,13 @@ export const openUrl = (url: string) => {
         `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
       ),
       (event) => {
-        event.addMetadata("utils/url::openUrl", { url });
+        event.addMetadata("context", { func: "utils/url::openUrl", url });
       }
     );
     // @debt keep the checking in place so we can debug further, but don't block attempts to open
     // return;
   }
+
   if (isExternalUrl(url)) {
     window.open(url, "_blank", "noopener,noreferrer");
   } else {
