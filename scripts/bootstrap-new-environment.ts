@@ -87,6 +87,7 @@ app
     );
     if (!existingAdminRole.exists) {
       transaction.set(adminRoleRef, adminRoleData);
+      console.log("  Done");
     } else {
       console.warn(`  'admin' role already exists, skipping..`);
     }
@@ -95,6 +96,7 @@ app
     console.log(`\nCreating 'bootstrap' venue..`);
     if (!existingBootstrapVenue.exists) {
       transaction.set(bootstrapVenueRef, bootstrapVenueData);
+      console.log("  Done");
     } else {
       console.warn(`  'bootstrap' venue already exists, skipping..`);
     }
