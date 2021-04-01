@@ -1,5 +1,4 @@
 import React, { useCallback } from "react";
-import { Document, Page, pdfjs } from "react-pdf";
 
 import { WithPoster } from "types/posters";
 import { AnyVenue } from "types/venues";
@@ -8,8 +7,6 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import "./Poster.scss";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
 
 export interface PosterProps {
   posterVenue: WithId<WithPoster<AnyVenue>>;
@@ -25,9 +22,7 @@ export const Poster: React.FC<PosterProps> = ({ posterVenue }) => {
   return (
     <div className="poster">
       <div className="poster__pdf">
-        <Document file={pdfUrl}>
-          <Page pageNumber={1} width={270} />
-        </Document>
+        <iframe src={pdfUrl} width="100%" title={title} />
 
         <div className="poster__pdf__actions">
           <button
