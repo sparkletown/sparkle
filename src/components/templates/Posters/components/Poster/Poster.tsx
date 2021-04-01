@@ -26,7 +26,7 @@ export const Poster: React.FC<PosterProps> = ({ posterVenue }) => {
     <div className="poster">
       <div className="poster__pdf">
         <Document file={pdfUrl}>
-          <Page pageNumber={0} />
+          <Page pageNumber={1} width={270} />
         </Document>
 
         <div className="poster__pdf__actions">

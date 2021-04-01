@@ -61,9 +61,10 @@ export const usePosters = ({
   return {
     posterVenues: posterVenues?.filter((venue) => {
       const normalizedTitleFilter = titleFilter.toLowerCase().trim();
+
       if (
         normalizedTitleFilter &&
-        !venue.poster.title.includes(normalizedTitleFilter)
+        !venue.poster.title.toLowerCase().includes(normalizedTitleFilter)
       ) {
         return false;
       }
