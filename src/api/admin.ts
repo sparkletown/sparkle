@@ -444,6 +444,8 @@ export const upsertRoom = async (
     user
   );
 
+  console.log("firestoreVenueInput", firestoreVenueInput);
+
   return await firebase.functions().httpsCallable("venue-upsertRoom")({
     venueId,
     roomIndex,
