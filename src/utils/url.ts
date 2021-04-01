@@ -50,7 +50,8 @@ export const openUrl = (url: string) => {
         event.addMetadata("utils/url::openUrl", { url });
       }
     );
-    return;
+    // @debt keep the checking in place so we can debug further, but don't block attempts to open
+    // return;
   }
   if (isExternalUrl(url)) {
     window.open(url, "_blank", "noopener,noreferrer");
