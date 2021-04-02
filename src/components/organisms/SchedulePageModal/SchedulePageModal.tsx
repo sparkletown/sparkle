@@ -126,6 +126,18 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
       )),
     [date, orderedEvents, currentVenue]
   );
+
+  const roomsWithEvents = useMemo(() => {
+    let counter = 0;
+
+    orderedEvents[date]?.rooms.map((room, index) => {
+      if (room.events?.length !== 0) {
+        counter++;
+      }
+    });
+    return counter;
+  }, [date, orderedEvents]);
+
   const hasEvents = !!orderedEvents?.[date]?.events.length;
 
   // TODO: this was essentially used in the old logic, but the styles look
@@ -148,11 +160,11 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const descriptionText = hasParentVenue
     ? parentVenue?.config?.landingPageConfig.description
     : currentVenue?.config?.landingPageConfig.description;
-  const result = getMinutes(getCurrentTimeInUTCSeconds());
+  const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds()) - 60;
 
   const hours = hoursOfTheDay(
     eachHourOfInterval({
-      start: startOfDay(new Date()),
+      start: new Date().setHours(new Date().getHours() - 1),
       end: endOfDay(new Date()),
     })
   );
@@ -179,27 +191,40 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
           <div className="partyinfo-desc">
             <p>{descriptionText}</p>
           </div>
+          <div className="schedule-container">
+            <ul className="schedule-tabs">{scheduleTabs}</ul>
+          </div>
         </div>
 
         <div className="schedule-container">
-          <ul className="schedule-tabs">{scheduleTabs}</ul>
-
-          <div className="schedule-event-line">
-            <div className="schedule-time-line-container">
-              <div className="schedule-time-container">{dailyHours}</div>
-              <div
-                className="current-time-line"
-                style={{
-                  left: `${result * 3.45 + 200}px`,
-                }}
-              ></div>
-              {!hasEvents && (
-                <div>There are no events scheduled for this day.</div>
-              )}
+          {hasEvents && (
+            <div className="schedule-event-line">
+              <div className="schedule-time-line-container">
+                <div
+                  className="schedule-time-container"
+                  style={{
+                    height: `${roomsWithEvents * 160}px`,
+                  }}
+                >
+                  {dailyHours}
+                </div>
+                <div
+                  className="current-time-line"
+                  style={{
+                    left: `${currentMinutes * 0.3 + 390}px`,
+                    height: `${roomsWithEvents * 160 - 40}px`,
+                  }}
+                ></div>
+              </div>
+              {eventRooms}
             </div>
-            {eventRooms}
-          </div>
+          )}
 
+          {!hasEvents && (
+            <div className="schedule-time-line-container">
+              <div>There are no events scheduled for this day.</div>
+            </div>
+          )}
           {/* <div className="schedule-time-line">
             <div className="shcedule-time-line-room">{eventRooms}</div>
            

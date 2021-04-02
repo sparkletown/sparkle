@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { format } from "date-fns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
@@ -31,16 +32,21 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   });
 
   const starHour = formatHour(event.start_utc_seconds);
+  const oneHourBehind = format(
+    new Date().setHours(new Date().getHours() - 1),
+    "HH"
+  );
   const duration = Math.floor(event.duration_minutes / 60);
+  const beginnigToShow = Number(starHour) - Number(oneHourBehind);
 
   return (
     <div
       className={containerClasses}
       style={{
-        marginLeft: `${Number(starHour) * 200 + 280}px`,
+        marginLeft: `${beginnigToShow * 200 + 52}px`,
         width: `${
-          Number(starHour) * 200 + 100 + duration * 200 > 4800
-            ? 4800 - (Number(starHour) * 200 + 100)
+          beginnigToShow * 200 + 100 + duration * 200 > 4800
+            ? 4800 - (Number(beginnigToShow) * 200 + 100)
             : duration * 200
         }px`,
       }}

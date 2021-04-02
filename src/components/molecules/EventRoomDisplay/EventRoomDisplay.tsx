@@ -38,6 +38,10 @@ export const EventRoomDisplay: React.FC<EventRoomDisplayProps> = ({
     [events, venue]
   );
 
+  if (events?.length === 0) {
+    return <></>;
+  }
+
   return (
     <div
       className={"schedule-time-line"}

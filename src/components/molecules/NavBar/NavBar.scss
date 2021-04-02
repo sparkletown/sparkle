@@ -327,6 +327,8 @@ $border-radius: 28px;
   }
 
   .partyinfo-container {
+    position: sticky;
+    left: 0;
     flex: 1;
     margin-right: 60px;
     padding: 0 40px 0;
@@ -371,15 +373,15 @@ $border-radius: 28px;
   .schedule-time-container {
     display: flex;
     flex-direction: row;
-    width: 4800px;
+    // width: 4800px;
     position: absolute;
-    height: 800px;
+    height: 100%;
   }
 
   .current-time-line {
     position: absolute;
     width: 1px;
-    height: 760px;
+    height: calc(100% - 40px);
     margin-top: 40px;
     background-color: $primary;
   }
@@ -388,26 +390,28 @@ $border-radius: 28px;
     flex: 2;
     .schedule-tabs {
       height: 50px;
-      padding: 0 40px 0;
     }
 
     .schedule-time-line {
       display: flex;
       position: relative;
       flex-direction: row;
-      width: 4800px;
+      // width: 4800px;
       padding: 0 20px 0;
     }
     .shcedule-time-line-room {
       display: flex;
       flex-direction: column;
-      width: 5%;
-      margin-top: 30px;
+      width: 15%;
+      padding-top: 30px;
       box-shadow: 10px 0 30px rgb(0 0 0 / 50%);
+      z-index: 5;
+      background-color: black;
+      position: sticky;
+      left: 30px;
     }
 
     .schedule-event-row {
-      width: 4800px;
       display: flex;
       flex-direction: row;
       position: relative;
@@ -417,7 +421,7 @@ $border-radius: 28px;
       display: flex;
       flex-direction: column;
       height: calc(100% - 70px);
-      width: 95%;
+      width: 85%;
       margin-left: 200px;
       padding-bottom: 40px;
       overflow-y: scroll;
@@ -547,7 +551,7 @@ $border-radius: 28px;
     box-shadow: 0 5px 10px rgb(0 0 0 / 65%);
 
     &:hover {
-      z-index: 1000;
+      z-index: 2;
     }
 
     &.schedule-event-container--live {
