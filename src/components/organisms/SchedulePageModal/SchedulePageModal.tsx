@@ -1,22 +1,36 @@
 import React, { useState, useMemo, FC } from "react";
-import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
+import {
+  startOfDay,
+  addDays,
+  isWithinInterval,
+  endOfDay,
+  eachHourOfInterval,
+} from "date-fns";
 import { range } from "lodash";
+import { Room } from "types/rooms";
 
-import { AnyVenue, VenueEvent } from "types/venues";
+import { VenueEvent } from "types/venues";
 
-import { formatDate, formatDateToWeekday } from "utils/time";
-import { WithId, WithVenueId } from "utils/id";
-import { itemsToObjectByIdReducer } from "utils/reducers";
+import {
+  formatDate,
+  formatDateToWeekday,
+  hoursOfTheDay,
+  getMinutes,
+  getCurrentTimeInUTCSeconds,
+} from "utils/time";
+import { WithVenueId } from "utils/id";
 import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
+import { EventRoomDisplay } from "components/molecules/EventRoomDisplay/EventRoomDisplay";
+import { EventTimeSchedule } from "components/molecules/EventTimeSchedule/EventTimeSchedule";
 
 type DatedEvents = Array<{
   dateDay: Date;
   events: Array<WithVenueId<VenueEvent>>;
+  rooms: Array<Room>;
 }>;
 
 const DAYS_AHEAD = 7;
@@ -29,19 +43,15 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
   const venueId = useVenueId();
+
   const {
     parentVenue,
     currentVenue,
-    relatedVenues,
     relatedVenueEvents,
   } = useConnectRelatedVenues({
     venueId,
     withEvents: true,
   });
-
-  const relatedVenuesById: Partial<
-    Record<string, WithId<AnyVenue>>
-  > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
@@ -65,14 +75,25 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         })
         .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
 
+      let roomsWithEvents: Array<Room> = [];
+      if (currentVenue?.rooms) {
+        roomsWithEvents = currentVenue?.rooms?.map((room) => {
+          const events = todaysEvents.filter(
+            (event) => event?.room === room?.title
+          );
+          return { ...room, events };
+        });
+      }
+
       return {
         dateDay: day,
         events: hasEvents ? todaysEvents : [],
+        rooms: hasEvents ? roomsWithEvents : [],
       };
     });
 
     return dates;
-  }, [relatedVenueEvents]);
+  }, [relatedVenueEvents, currentVenue]);
 
   const [date, setDate] = useState(0);
 
@@ -93,18 +114,18 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     [date, orderedEvents]
   );
 
-  const events = useMemo(
+  const eventRooms = useMemo(
     () =>
-      orderedEvents[date]?.events.map((event, index) => (
-        <EventDisplay
-          key={event.id ?? `${index}-${event.name}`}
-          event={event}
-          venue={relatedVenuesById[event.venueId] ?? currentVenue}
+      orderedEvents[date]?.rooms.map((room, index) => (
+        <EventRoomDisplay
+          key={room.url ?? `${index}-${room.title}`}
+          title={room.title}
+          events={room.events}
+          venue={currentVenue}
         />
       )),
-    [currentVenue, date, orderedEvents, relatedVenuesById]
+    [date, orderedEvents, currentVenue]
   );
-
   const hasEvents = !!orderedEvents?.[date]?.events.length;
 
   // TODO: this was essentially used in the old logic, but the styles look
@@ -127,6 +148,19 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const descriptionText = hasParentVenue
     ? parentVenue?.config?.landingPageConfig.description
     : currentVenue?.config?.landingPageConfig.description;
+  const result = getMinutes(getCurrentTimeInUTCSeconds());
+
+  const hours = hoursOfTheDay(
+    eachHourOfInterval({
+      start: startOfDay(new Date()),
+      end: endOfDay(new Date()),
+    })
+  );
+  const dailyHours = useMemo(() => {
+    return hours.map((date, index) => (
+      <EventTimeSchedule key={`${index}-${date}`} time={date} />
+    ));
+  }, [hours]);
 
   return (
     <div>
@@ -149,12 +183,27 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
         <div className="schedule-container">
           <ul className="schedule-tabs">{scheduleTabs}</ul>
-          <div className="schedule-day-container">
-            {events}
-            {!hasEvents && (
-              <div>There are no events scheduled for this day.</div>
-            )}
+
+          <div className="schedule-event-line">
+            <div className="schedule-time-line-container">
+              <div className="schedule-time-container">{dailyHours}</div>
+              <div
+                className="current-time-line"
+                style={{
+                  left: `${result * 3.45 + 200}px`,
+                }}
+              ></div>
+              {!hasEvents && (
+                <div>There are no events scheduled for this day.</div>
+              )}
+            </div>
+            {eventRooms}
           </div>
+
+          {/* <div className="schedule-time-line">
+            <div className="shcedule-time-line-room">{eventRooms}</div>
+           
+          </div> */}
         </div>
       </div>
     </div>

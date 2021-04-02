@@ -169,6 +169,20 @@ export const formatHourAndMinute = (utcSeconds: number) => {
   return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
 };
 
+export const formatHour = (utcSeconds: number) => {
+  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
+  const hh = String(date.getHours()).padStart(2, "0");
+  return hh;
+};
+
+export const getMinutes = (utcSeconds: number) => {
+  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
+  const hh = date.getHours();
+  const mm = date.getMinutes();
+  const minutes = hh * 60 + mm;
+  return minutes;
+};
+
 export const daysFromEndOfEvent = (
   utcSeconds: number,
   durationMinutes: number
@@ -238,4 +252,11 @@ export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   return isTimestampInMilliSeconds
     ? timestamp
     : timestamp * ONE_SECOND_IN_MILLISECONDS;
+};
+
+export const hoursOfTheDay = (hours: Date[]) => {
+  const hour = hours.map((date) => {
+    return format(date, "h a");
+  });
+  return hour;
 };

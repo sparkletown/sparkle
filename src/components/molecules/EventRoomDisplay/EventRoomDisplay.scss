@@ -1,0 +1,45 @@
+@import "scss/constants.scss";
+
+$side-padding: 30px;
+
+$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+
+$dark: #1a1d24;
+$border-radius: 28px;
+$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+$login-max-width: 540px;
+$modal-max-width: 540px;
+$page-max-width: 1240px;
+
+$sand: #937c63;
+
+.event-room {
+  width: 100%;
+  padding: 5px;
+  margin-bottom: 30px;
+}
+
+.schedule-event-info-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.schedule-event-info-description {
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+.event-room-button-container {
+  display: flex;
+  text-align: center;
+  height: 40px;
+}
+.event-room-button {
+  width: 90%;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+}

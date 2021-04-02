@@ -162,6 +162,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     closeEditingModal();
   };
 
+  console.log("ROOMS ", rooms);
+
   return (
     <S.Container>
       <S.Header>

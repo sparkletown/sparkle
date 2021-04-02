@@ -1,13 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useState } from "react";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+
 import classNames from "classnames";
 
 import { AnyVenue, VenueEvent } from "types/venues";
-import { Room } from "types/rooms";
 
-import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
+import { getCurrentTimeInUTCSeconds, formatHour } from "utils/time";
 import { WithId } from "utils/id";
-
-import { useRoom } from "hooks/useRoom";
 
 import "./EventDisplay.scss";
 
@@ -17,14 +19,7 @@ export interface EventDisplayProps {
 }
 
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
-  const eventRoomTitle = event.room;
-
-  const room = useMemo(
-    () => venue?.rooms?.find((room) => room.title === eventRoomTitle),
-    [venue, eventRoomTitle]
-  );
-
-  const buttonText = `${event.room ?? "Enter"} ${venue && `- ${venue.name}`}`;
+  const [isBookmarked, setBookmark] = useState(false);
 
   const isLiveEvent =
     event.start_utc_seconds < getCurrentTimeInUTCSeconds() &&
@@ -35,49 +30,42 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
     "schedule-event-container--live": isLiveEvent,
   });
 
+  const starHour = formatHour(event.start_utc_seconds);
+  const duration = Math.floor(event.duration_minutes / 60);
+
   return (
-    <div className={containerClasses}>
-      <div className="schedule-event-time">
-        <div className="schedule-event-time-start">
-          {formatHourAndMinute(event.start_utc_seconds)}
-        </div>
-        <div className="schedule-event-time-end">
-          {formatHourAndMinute(
-            event.start_utc_seconds + event.duration_minutes * 60
-          )}
-        </div>
-        {isLiveEvent && <span className="schedule-event-time-live">Live</span>}
-      </div>
+    <div
+      className={containerClasses}
+      style={{
+        marginLeft: `${Number(starHour) * 200 + 280}px`,
+        width: `${
+          Number(starHour) * 200 + 100 + duration * 200 > 4800
+            ? 4800 - (Number(starHour) * 200 + 100)
+            : duration * 200
+        }px`,
+      }}
+    >
       <div className="schedule-event-info">
         <div className="schedule-event-info-title">{event.name}</div>
-        <div className="schedule-event-info-description">
-          {event.description}
-        </div>
-        <div className="schedule-event-info-room">
-          {event.room && room && venue ? (
-            <EnterRoomButton room={room} venue={venue}>
-              {buttonText}
-            </EnterRoomButton>
-          ) : (
-            <div>{buttonText}</div>
-          )}
-        </div>
+        <div className="schedule-event-info-description">by {event.host}</div>
+      </div>
+      <div
+        style={{
+          height: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+        onClick={(e) => {
+          e.stopPropagation();
+          setBookmark(!isBookmarked);
+        }}
+      >
+        <FontAwesomeIcon
+          icon={isBookmarked ? solidBookmark : regularBookmark}
+          style={{ cursor: "pointer", width: "15px", height: "20px" }}
+        />
       </div>
     </div>
   );
-};
-
-interface EnterRoomButtonProps {
-  room: Room;
-  venue: WithId<AnyVenue>;
-}
-
-const EnterRoomButton: React.FC<EnterRoomButtonProps> = ({
-  room,
-  venue,
-  children,
-}) => {
-  const { enterRoom } = useRoom({ room, venueName: venue.name });
-
-  return <div onClick={enterRoom}>{children}</div>;
 };

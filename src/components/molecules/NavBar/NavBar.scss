@@ -298,11 +298,10 @@ $border-radius: 28px;
   left: 0;
   width: 100%;
   height: 620px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 60px 40px 0;
+
+  padding: 60px 0;
   background-color: rgba($black, 0.9);
-  overflow: none;
+  overflow: auto;
 
   pointer-events: none;
   opacity: 0;
@@ -316,10 +315,21 @@ $border-radius: 28px;
     opacity: 1;
     transform: translateY(0px);
   }
+  &::-webkit-scrollbar {
+    width: 8px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+  .event-show-bar {
+    width: 100%;
+    &.event-show-bar--selected {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
 
   .partyinfo-container {
     flex: 1;
     margin-right: 60px;
+    padding: 0 40px 0;
     .partyinfo-main {
       display: flex;
       align-items: center;
@@ -358,25 +368,88 @@ $border-radius: 28px;
     }
   }
 
+  .schedule-time-container {
+    display: flex;
+    flex-direction: row;
+    width: 4800px;
+    position: absolute;
+    height: 800px;
+  }
+
+  .current-time-line {
+    position: absolute;
+    width: 1px;
+    height: 760px;
+    margin-top: 40px;
+    background-color: $primary;
+  }
   .schedule-container {
     position: relative;
     flex: 2;
     .schedule-tabs {
       height: 50px;
+      padding: 0 40px 0;
+    }
+
+    .schedule-time-line {
+      display: flex;
+      position: relative;
+      flex-direction: row;
+      width: 4800px;
+      padding: 0 20px 0;
+    }
+    .shcedule-time-line-room {
+      display: flex;
+      flex-direction: column;
+      width: 5%;
       margin-top: 30px;
-      position: fixed;
+      box-shadow: 10px 0 30px rgb(0 0 0 / 50%);
+    }
+
+    .schedule-event-row {
+      width: 4800px;
+      display: flex;
+      flex-direction: row;
+      position: relative;
+      overflow-x: auto;
+    }
+    .schedule-time-line-container {
+      display: flex;
+      flex-direction: column;
+      height: calc(100% - 70px);
+      width: 95%;
+      margin-left: 200px;
+      padding-bottom: 40px;
+      overflow-y: scroll;
+
+      // styling scrollbar
+      &::-webkit-scrollbar-track {
+        border-radius: 1px;
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      &::-webkit-scrollbar {
+        background-color: rgba(0, 0, 0, 0);
+      }
+
+      &::-webkit-scrollbar-thumb {
+        border-radius: 4px;
+        background-color: rgba($white, 0.1);
+      }
     }
     .schedule-day-container {
       @include scrollbar;
       position: absolute;
-      width: 100%;
+      // width: 100%;
       top: 70px;
+      width: 85%;
       height: calc(100% - 70px);
       overflow-y: scroll;
       padding-bottom: 20px;
 
       .schedule-event-container {
         border-radius: $border-radius/2;
+        background-color: rgba(0, 0, 0, 0.3);
       }
     }
   }
@@ -460,15 +533,27 @@ $border-radius: 28px;
 
   .schedule-event-container {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     padding: 12px;
     margin-bottom: 10px;
+    border-radius: 15px;
+    justify-content: space-between;
+    background-color: #ebebeb;
+    color: #4c494f;
+    z-index: 1;
+    max-width: 4800px;
+    position: absolute;
+    margin-top: 40px;
+    box-shadow: 0 5px 10px rgb(0 0 0 / 65%);
 
-    &:nth-child(odd) {
-      background-color: rgba($black, 0.3);
+    &:hover {
+      z-index: 1000;
     }
+
     &.schedule-event-container--live {
-      background-color: rgba($primary, 0.2);
+      background-color: $primary;
+
+      color: #ebebeb;
     }
 
     .schedule-event-time {
@@ -496,13 +581,17 @@ $border-radius: 28px;
       }
       .schedule-event-time-soon {
         box-shadow: none;
-
         background-color: rgba($primary, 0.5);
       }
     }
     .schedule-event-info {
+      .schedule-event-info--live {
+        background-color: $primary;
+      }
       .schedule-event-info-title {
         font-weight: 700;
+        text-overflow: ellipsis;
+        color: black;
       }
       .schedule-event-info-description {
         font-size: 0.9rem;
