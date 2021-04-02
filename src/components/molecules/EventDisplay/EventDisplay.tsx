@@ -31,14 +31,14 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
     "schedule-event-container--live": isLiveEvent,
   });
 
-  const starHour = formatHour(event.start_utc_seconds);
+  const starEventHour = formatHour(event.start_utc_seconds);
 
   const oneHourBehind = format(
     new Date().setHours(new Date().getHours() - 1),
     "HH"
   );
   const duration = Math.floor(event.duration_minutes / 60);
-  const beginnigToShow = Number(starHour) - Number(oneHourBehind);
+  const beginnigToShow = Number(starEventHour) - Number(oneHourBehind);
 
   const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds());
 
