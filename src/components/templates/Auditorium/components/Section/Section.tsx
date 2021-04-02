@@ -48,16 +48,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   });
 
   // NOTE: Video takes 1/3 of the seats
-  const videoWidthInSeats = useMemo(
-    () => Math.max(Math.floor(columns / 3), VIDEO_MIN_WIDTH_IN_SEATS),
-    [columns]
-  );
+  const videoWidthInSeats = Math.max(Math.floor(columns / 3), VIDEO_MIN_WIDTH_IN_SEATS);
 
   // NOTE: Keep the 16:9 ratio
-  const videoHeightInSeats = useMemo(
-    () => Math.ceil(videoWidthInSeats * (9 / 16)),
-    [videoWidthInSeats]
-  );
+  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
   const checkIfSeat = useCallback(
     (rowIndex: number, columnIndex: number) => {
@@ -80,6 +74,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     [rows, columns, videoHeightInSeats, videoWidthInSeats]
   );
 
+  // Ensure the user leaves their seat when they leave the section
+  // @debt We should handle/enforce this on the backend somehow
   useEffect(() => {
     return () => {
       leaveSeat();

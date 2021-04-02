@@ -50,7 +50,7 @@ export const makeUpdateUserGridLocation = ({
     });
 };
 
-export interface SetGridData {
+export interface SetGridDataProps {
   venueId: string;
   userId: string;
 
@@ -62,7 +62,7 @@ export interface SetGridData {
   } | null;
 }
 
-export const setGridData = ({ venueId, userId, seatOptions }: SetGridData) => {
+export const setGridData = async ({ venueId, userId, seatOptions }: SetGridDataProps): Promise<void> => {
   const userProfile = firebase.firestore().collection("users").doc(userId);
 
   const gridData = {
@@ -71,9 +71,12 @@ export const setGridData = ({ venueId, userId, seatOptions }: SetGridData) => {
 
   userProfile.update(gridData).catch((err) => {
     Bugsnag.notify(err, (event) => {
-      event.severity = "error";
-
-      event.addMetadata("Profile::gridData", { seatOptions });
+      event.addMetadata("context", {
+        location: "api::profile::setGridData"
+        venueId,
+        userId,
+        seatOptions
+      });
     });
   });
 };

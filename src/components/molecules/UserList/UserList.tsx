@@ -32,7 +32,7 @@ interface PropsType {
   hasTitle?: boolean;
 }
 
-const UserList: React.FunctionComponent<PropsType> = ({
+export const UserList: React.FC<UserListProps> = ({
   users: _users,
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
@@ -42,7 +42,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isCamp,
   attendanceBoost,
   showEvenWhenNoUsers = false,
-  hasTitle = true,
+  showTitle = true,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
   const [selectedUserProfile, setSelectedUserProfile] = useState<

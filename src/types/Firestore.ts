@@ -59,7 +59,7 @@ export interface FirestoreData {
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  currentAuditoriumSections?: Record<string, AuditoriumSection | undefined>;
+  currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience: Experience;
@@ -82,7 +82,7 @@ export interface FirestoreOrdered {
   currentVenue?: Array<WithId<AnyVenue>>;
   currentVenueEventsNG?: Array<WithId<VenueEvent>>;
   currentVenueNG?: Array<WithId<AnyVenue>>;
-  currentAuditoriumSections?: Array<WithId<AuditoriumSection>>;
+  currentAuditoriumSections?: WithId<AuditoriumSection>[];
   eventPurchase?: Array<WithId<Purchase>>;
   events?: Array<WithId<VenueEvent>>;
   experience: WithId<Experience>;

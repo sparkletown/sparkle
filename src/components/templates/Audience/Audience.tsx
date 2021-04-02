@@ -50,7 +50,7 @@ const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
 const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
 
-// Always have an odd number of columns(because of the firelane delimiter).
+// Always have an odd number of rows and columns (because of the firelane delimiter).
 const DEFAULT_COLUMNS_NUMBER = 25;
 const DEFAULT_ROWS_NUMBER = 19;
 
@@ -217,8 +217,8 @@ export const Audience: React.FunctionComponent = () => {
   });
 
   // Auditorium size 0 is DEFAULT_COLUMNS_NUMBER x DEFAULT_ROWS_NUMBER
-  // Size 1 is MIN_ROWSx2 x DEFAULT_COLUMNS_NUMBER+2
-  // Size 2 is MIN_ROWSx4 x DEFAULT_COLUMNS_NUMBER+4 and so on
+  // Size 1 is (DEFAULT_ROWS_NUMBER*2) x (DEFAULT_COLUMNS_NUMBER+2)
+  // Size 2 is (DEFAULT_ROWS_NUMBER*4) x (DEFAULT_COLUMNS_NUMBER+4) and so on
   const [auditoriumSize, setAuditoriumSize] = useState(0);
 
   // These are going to be translated (ie. into negative/positive per above)

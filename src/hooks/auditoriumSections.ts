@@ -44,7 +44,7 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const sections = useSelector(currentAuditoriumSectionsByIdSelector);
+  const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sections?.[sectionId];
 
   const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
@@ -55,8 +55,8 @@ export const useAuditoriumSection = ({
         (acc, user) => {
           if (!venueId) return acc;
 
-          const takenRow = user.data?.[venueId].row;
-          const takenColumn = user.data?.[venueId].column;
+          const takenRow = user.data?.[venueId]?.row;
+          const takenColumn = user.data?.[venueId]?.column;
 
           if (takenRow === undefined || takenColumn === undefined) return acc;
 
@@ -74,7 +74,7 @@ export const useAuditoriumSection = ({
 
   const getUserBySeat = useCallback(
     ({ row, column }: { row: number; column: number }) =>
-      seatedUsersByHash && seatedUsersByHash[getPositionHash({ row, column })],
+      seatedUsersByHash?.[getPositionHash({ row, column })],
     [seatedUsersByHash]
   );
 

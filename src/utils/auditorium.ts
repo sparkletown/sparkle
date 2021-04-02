@@ -3,7 +3,7 @@ export interface GetPositionHashProps {
   column: number;
 }
 
-export const getPositionHash = ({ row, column }: GetPositionHashProps) => {
+export const getPositionHash = ({ row, column }: GetPositionHashProps): string => {
   return `${row}|${column}`;
 };
 

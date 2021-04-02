@@ -3,7 +3,7 @@ import React from "react";
 import { IFRAME_ALLOW } from "settings";
 
 export interface VideoProps {
-  overlayClassname: string;
+  containerClassname: string;
   iframeClassname: string;
   iframeStyles?: {};
   src?: string;

@@ -30,14 +30,15 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const venueId = useVenueId();
 
   const seatedUsers = useSectionSeatedUsers(venueId, section.id);
-  const seatedUsersNumber = seatedUsers.length;
+  const seatedUsersCount = seatedUsers.length;
 
   const containerClasses = classNames("section-preview", {
     "section-preview--locked": isLocked,
     "section-preview--empty": seatedUsersNumber === 0,
   });
+
   return (
-    <div onClick={isLocked ? noop : onClick} className={containerClasses}>
+    <div onClick={isLocked ? undefined : onClick} className={containerClasses}>
       {isLocked && (
         <div className="section-preview__status-icons">
           {isLocked && (

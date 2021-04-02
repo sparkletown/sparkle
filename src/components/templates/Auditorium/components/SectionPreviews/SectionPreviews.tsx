@@ -24,7 +24,7 @@ export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
   const history = useHistory();
   const { auditoriumSections } = useAuditoriumSections(venueId);
 
-  const sectionsAmount = auditoriumSections.length;
+  const sectionsCount = auditoriumSections.length;
 
   const auditoriumSize: AuditoriumSizes = useMemo(() => {
     if (sectionsAmount <= 4) return AuditoriumSizes.SMALL;

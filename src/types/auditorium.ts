@@ -1,11 +1,11 @@
 export type AuditoriumSection = {
   title?: string;
   isLocked?: boolean;
-  rowsNumber?: number;
-  columnsNumber?: number;
+  rowsCount?: number;
+  columnsCount?: number;
 };
 
-export enum AuditoriumSizes {
+export enum AuditoriumSize {
   SMALL = "small",
   MEDIUM = "medium",
   LARGE = "large",
