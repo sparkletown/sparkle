@@ -4,6 +4,9 @@ Codebase for Sparkle, brought to you by Sparkle.
 
 ## Getting started
 
+You can get your first experience with Sparkle at staging: \
+https://staging.sparkle.space/in/devaliashacksville
+
 ### Frontend
 
 First, clone the repo and `cd` into it:
@@ -32,6 +35,10 @@ Now you're ready to start the server! ✨
 ```bash
 npm start
 ```
+
+Once the server is started, you will have the browser opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start surfing the app, you can use the following url http://localhost:3000/in/devaliashacksville.
+
+**Note**: Frontend won't work without the backend. To finish your setup, go through Firebase configuration steps.
 
 While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
@@ -62,12 +69,13 @@ firebase login
 firebase use staging
 
 # Copy the runtime config locally
-npm run firebase functions:config:get > .runtimeconfig.json
+firebase functions:config:get > .runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
 
 ```bash
+# Run the command in the root app directory
 npm run firebase:emulate-functions
 
 # Or if you don't want to use our helper scripts, you can do this directly:
