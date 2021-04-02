@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { format } from "date-fns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,7 +9,7 @@ import classNames from "classnames";
 
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { getCurrentTimeInUTCSeconds, formatHour } from "utils/time";
+import { getCurrentTimeInUTCSeconds, formatHour, getMinutes } from "utils/time";
 import { WithId } from "utils/id";
 
 import "./EventDisplay.scss";
@@ -32,6 +32,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   });
 
   const starHour = formatHour(event.start_utc_seconds);
+
   const oneHourBehind = format(
     new Date().setHours(new Date().getHours() - 1),
     "HH"
@@ -39,11 +40,21 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const duration = Math.floor(event.duration_minutes / 60);
   const beginnigToShow = Number(starHour) - Number(oneHourBehind);
 
+  const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds());
+
+  const timeToShow = useMemo(() => {
+    const minutesShowing =
+      currentMinutes >= 1020 ? 1020 : (new Date().getHours() - 1) * 60;
+    const startTime = getMinutes(event.start_utc_seconds);
+
+    return startTime - minutesShowing;
+  }, [currentMinutes, event.start_utc_seconds]);
+
   return (
     <div
       className={containerClasses}
       style={{
-        marginLeft: `${beginnigToShow * 200 + 52}px`,
+        marginLeft: `${timeToShow * 3.33 + 90}px`,
         width: `${
           beginnigToShow * 200 + 100 + duration * 200 > 4800
             ? 4800 - (Number(beginnigToShow) * 200 + 100)

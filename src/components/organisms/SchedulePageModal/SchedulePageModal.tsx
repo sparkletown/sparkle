@@ -160,14 +160,25 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const descriptionText = hasParentVenue
     ? parentVenue?.config?.landingPageConfig.description
     : currentVenue?.config?.landingPageConfig.description;
-  const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds()) - 60;
+
+  const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds());
 
   const hours = hoursOfTheDay(
     eachHourOfInterval({
-      start: new Date().setHours(new Date().getHours() - 1),
+      start: new Date().setHours(
+        currentMinutes >= 1020 ? 17 : new Date().getHours() - 1
+      ),
       end: endOfDay(new Date()),
     })
   );
+
+  const timeToShow = useMemo(() => {
+    const minutesShowing =
+      currentMinutes >= 1020 ? 1020 : (new Date().getHours() - 1) * 60;
+
+    return currentMinutes - minutesShowing;
+  }, [currentMinutes]);
+
   const dailyHours = useMemo(() => {
     return hours.map((date, index) => (
       <EventTimeSchedule key={`${index}-${date}`} time={date} />
@@ -211,7 +222,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
                 <div
                   className="current-time-line"
                   style={{
-                    left: `${currentMinutes * 0.3 + 390}px`,
+                    left: `${timeToShow * 3.33 + 300}px`,
                     height: `${roomsWithEvents * 160 - 40}px`,
                   }}
                 ></div>
