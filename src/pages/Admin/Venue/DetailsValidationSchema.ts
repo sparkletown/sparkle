@@ -57,8 +57,8 @@ export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
-      .required("Required")
-      .min(1, "Required")
+      .required("Venue name is required")
+      .min(1, ({ min }) => `Name must be at least ${min} characters`)
       .max(20, ({ max }) => `Name must be less than ${max} characters`)
       .when(
         "$editing",
@@ -112,8 +112,8 @@ export const validationSchema = Yup.object()
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    description: Yup.string().required("Required"),
-    subtitle: Yup.string().required("Required"),
+    description: Yup.string().required("Description required"),
+    subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
