@@ -1,41 +1,41 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
-import { AuditoriumVenue } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { translateIndex } from "utils/auditorium";
+import { WithId } from "utils/id";
 
 import { useAuditoriumSection } from "hooks/auditoriumSections";
-import { useVenueId } from "hooks/useVenueId";
 
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
-import { Video } from "../Video";
+import { IFrame } from "../IFrame";
 
 import {
-  DEFAULT_COLUMNS_NUMBER,
-  DEFAULT_ROWS_NUMBER,
-  SEAT_SIZE,
-  SEAT_SIZE_MIN,
-  SEAT_SPACING,
-  VIDEO_MIN_WIDTH_IN_SEATS,
-} from "./constants";
+  SECTION_DEFAULT_COLUMNS_NUMBER,
+  SECTION_DEFAULT_ROWS_NUMBER,
+  SECTION_SEAT_SIZE,
+  SECTION_SEAT_SIZE_MIN,
+  SECTION_SEAT_SPACING,
+  SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
+} from "settings";
 
 import "./Section.scss";
 
 export interface SectionProps {
-  venue: AuditoriumVenue;
+  venue: WithId<AnyVenue>;
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const {
     iframeUrl,
-    rows = DEFAULT_ROWS_NUMBER,
-    columns = DEFAULT_COLUMNS_NUMBER,
+    rows = SECTION_DEFAULT_ROWS_NUMBER,
+    columns = SECTION_DEFAULT_COLUMNS_NUMBER,
+    id: venueId,
   } = venue;
 
   const { sectionId } = useParams<{ sectionId: string }>();
-  const venueId = useVenueId();
 
   const {
     auditoriumSection,
@@ -48,7 +48,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   });
 
   // NOTE: Video takes 1/3 of the seats
-  const videoWidthInSeats = Math.max(Math.floor(columns / 3), VIDEO_MIN_WIDTH_IN_SEATS);
+  const videoWidthInSeats = Math.max(
+    Math.floor(columns / 3),
+    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
+  );
 
   // NOTE: Keep the 16:9 ratio
   const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
@@ -84,10 +87,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const iframeInlineStyles = useMemo(
     () => ({
-      width: `calc(${videoWidthInSeats} * (${SEAT_SIZE} + ${SEAT_SPACING}))`,
-      height: `calc(${videoHeightInSeats} * (${SEAT_SIZE} + ${SEAT_SPACING}))`,
-      minWidth: `calc(${videoWidthInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
-      minHeight: `calc(${videoHeightInSeats} * (${SEAT_SIZE_MIN} + ${SEAT_SPACING}))`,
+      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
     }),
     [videoWidthInSeats, videoHeightInSeats]
   );
@@ -97,50 +100,52 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   return (
     <div className="section">
       <div className="section__seats">
-        <Video
-          overlayClassname="section__video-overlay"
+        <IFrame
+          containerClassname="section__video-overlay"
           iframeClassname="section__video"
           iframeStyles={iframeInlineStyles}
           src={iframeUrl}
         />
-        {Array.from(Array(DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
+        {Array.from(Array(SECTION_DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
           <div key={rowIndex} className="section__seats-row">
-            {Array.from(Array(DEFAULT_COLUMNS_NUMBER)).map((_, columnIndex) => {
-              const user = getUserBySeat({
-                row: rowIndex,
-                column: columnIndex,
-              });
+            {Array.from(Array(SECTION_DEFAULT_COLUMNS_NUMBER)).map(
+              (_, columnIndex) => {
+                const user = getUserBySeat({
+                  row: rowIndex,
+                  column: columnIndex,
+                });
 
-              if (user) {
+                if (user) {
+                  return (
+                    <UserProfilePicture
+                      user={user}
+                      avatarClassName={"section__user-avatar"}
+                      setSelectedUserProfile={() => {}}
+                    />
+                  );
+                }
+
+                const isSeat = checkIfSeat(rowIndex, columnIndex);
+
+                if (isSeat) {
+                  return (
+                    <div
+                      key={columnIndex}
+                      className="section__seat"
+                      onClick={() =>
+                        takeSeat({ row: rowIndex, column: columnIndex })
+                      }
+                    >
+                      +
+                    </div>
+                  );
+                }
+
                 return (
-                  <UserProfilePicture
-                    user={user}
-                    avatarClassName={"section__user-avatar"}
-                    setSelectedUserProfile={() => {}}
-                  />
+                  <div key={columnIndex} className="section__empty-circle" />
                 );
               }
-
-              const isSeat = checkIfSeat(rowIndex, columnIndex);
-
-              if (isSeat) {
-                return (
-                  <div
-                    key={columnIndex}
-                    className="section__seat"
-                    onClick={() =>
-                      takeSeat({ row: rowIndex, column: columnIndex })
-                    }
-                  >
-                    +
-                  </div>
-                );
-              }
-
-              return (
-                <div key={columnIndex} className="section__empty-circle" />
-              );
-            })}
+            )}
           </div>
         ))}
       </div>

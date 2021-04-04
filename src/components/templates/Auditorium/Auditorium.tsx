@@ -1,13 +1,14 @@
 import React from "react";
 import { Switch, Route, useRouteMatch } from "react-router";
 
-import { AuditoriumVenue } from "types/venues";
+import { AnyVenue } from "types/venues";
+import { WithId } from "utils/id";
 
 import { Section } from "./components/Section";
 import { SectionPreviews } from "./components/SectionPreviews";
 
 export interface AuditoriumProps {
-  venue: AuditoriumVenue;
+  venue: WithId<AnyVenue>;
 }
 
 export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
@@ -18,10 +19,7 @@ export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
       <Route path={`${match.path}/section/:sectionId`}>
         <Section venue={venue} />
       </Route>
-      <Route
-        path={`${match.path}`}
-        strict
-      >
+      <Route path={`${match.path}`} strict>
         <SectionPreviews venue={venue} />
       </Route>
     </Switch>

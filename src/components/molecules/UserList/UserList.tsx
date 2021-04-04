@@ -19,7 +19,7 @@ import { User } from "types/User";
 // Styles
 import "./UserList.scss";
 
-interface PropsType {
+interface UserListProps {
   users: readonly WithId<User>[];
   limit?: number;
   imageSize?: number;
@@ -29,7 +29,7 @@ interface PropsType {
   isCamp?: boolean;
   attendanceBoost?: number;
   showEvenWhenNoUsers?: boolean;
-  hasTitle?: boolean;
+  showTitle?: boolean;
 }
 
 export const UserList: React.FC<UserListProps> = ({
@@ -65,7 +65,7 @@ export const UserList: React.FC<UserListProps> = ({
   return (
     <>
       <div className="container userlist-container">
-        {hasTitle && (
+        {showTitle && (
           <div className="row header no-margin">
             <p>
               <span className="bold">{attendance}</span>{" "}
@@ -109,4 +109,5 @@ export const UserList: React.FC<UserListProps> = ({
   );
 };
 
+/** @deprecated use named export instead **/
 export default UserList;

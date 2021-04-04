@@ -37,19 +37,19 @@ $spacing: 10px;
       "     .          .        .     .     .     .        .           .      ";
   }
 
-  &__left-empty-space {
+  &__empty-space--left {
     grid-area: left-space;
   }
 
-  &__right-empty-space {
+  &__empty-space--right {
     grid-area: right-space;
   }
 
-  &__video-overlay {
+  &__iframe-overlay {
     grid-area: video;
   }
 
-  &__video-iframe {
+  &__iframe {
     height: 100%;
     width: 100%;
   }

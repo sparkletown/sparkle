@@ -2,24 +2,26 @@ import React from "react";
 
 import { IFRAME_ALLOW } from "settings";
 
-export interface VideoProps {
-  containerClassname: string;
-  iframeClassname: string;
+export interface IFrameProps {
+  containerClassname?: string;
+  iframeClassname?: string;
   iframeStyles?: {};
   src?: string;
+  title?: string;
 }
 
-export const Video: React.FC<VideoProps> = ({
+export const IFrame: React.FC<IFrameProps> = ({
   src,
-  overlayClassname,
+  containerClassname,
   iframeClassname,
   iframeStyles,
+  title = "iframe",
 }) => (
-  <div className={overlayClassname}>
+  <div className={containerClassname}>
     <iframe
       className={iframeClassname}
       src={src}
-      title="Video"
+      title={title}
       frameBorder="0"
       allow={IFRAME_ALLOW}
       allowFullScreen

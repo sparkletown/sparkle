@@ -549,3 +549,15 @@ export const REACTION_TIMEOUT = 5000; // time im ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+export const SECTION_DEFAULT_ROWS_NUMBER = 17;
+export const SECTION_DEFAULT_COLUMNS_NUMBER = 23;
+
+export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
+
+// If you change this, make sure to also change it in Section.scss
+export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
+export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
+export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
+
+export const DEFAULT_SECTION_PREVIEW_TITLE = "Empty section";

@@ -5,13 +5,13 @@ import { Reaction } from "utils/reactions";
 
 import { AdminRole } from "hooks/roles";
 
+import { AuditoriumSection } from "./auditorium";
 import { ChatRequest } from "./ChatRequest";
 import { Purchase } from "./Purchase";
 import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
 import { AnyVenue, VenueEvent } from "./venues";
-import { AuditoriumSection } from "./auditorium";
 
 export interface Experience {
   reactions: Record<string, Reaction>;

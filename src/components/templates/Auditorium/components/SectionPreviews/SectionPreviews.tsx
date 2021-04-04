@@ -2,66 +2,65 @@ import React, { useMemo } from "react";
 import { useHistory } from "react-router";
 import classNames from "classnames";
 
-import { AuditoriumSizes } from "types/auditorium";
-import { AuditoriumVenue } from "types/venues";
+import { WithId } from "utils/id";
+import { chooseAuditoriumSize } from "utils/auditorium";
+
+import { AuditoriumSize } from "types/auditorium";
+import { AnyVenue } from "types/venues";
 
 import { useAuditoriumSections } from "hooks/auditoriumSections";
-import { useVenueId } from "hooks/useVenueId";
 
 import { SectionPreview } from "../SectionPreview";
-import { Video } from "../Video";
+import { IFrame } from "../IFrame";
 
 import "./SectionPreviews.scss";
 
 export interface SectionPreviewsProps {
-  venue: AuditoriumVenue;
+  venue: WithId<AnyVenue>;
 }
 
 export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
-  const { iframeUrl } = venue;
+  const { iframeUrl, id: venueId } = venue;
 
-  const venueId = useVenueId();
   const history = useHistory();
   const { auditoriumSections } = useAuditoriumSections(venueId);
 
   const sectionsCount = auditoriumSections.length;
 
-  const auditoriumSize: AuditoriumSizes = useMemo(() => {
-    if (sectionsAmount <= 4) return AuditoriumSizes.SMALL;
+  const auditoriumSize = chooseAuditoriumSize(sectionsCount);
 
-    if (sectionsAmount > 4 && sectionsAmount <= 10) {
-      return AuditoriumSizes.MEDIUM;
-    }
-
-    return AuditoriumSizes.LARGE;
-  }, [sectionsAmount]);
-
-  const sectionPreviews = auditoriumSections.map((section) => (
-    <SectionPreview
-      key={section.id}
-      section={section}
-      onClick={() =>
-        history.push(`${history.location.pathname}/section/${section.id}`)
-      }
-    />
-  ));
+  const sectionPreviews = useMemo(
+    () =>
+      auditoriumSections.map((section) => (
+        <SectionPreview
+          key={section.id}
+          section={section}
+          onClick={() =>
+            history.push(`${history.location.pathname}/section/${section.id}`)
+          }
+        />
+      )),
+    [auditoriumSections, history]
+  );
 
   const containerClasses = classNames("section-previews", {
-    "section-previews--small": auditoriumSize === AuditoriumSizes.SMALL,
-    "section-previews--medium": auditoriumSize === AuditoriumSizes.MEDIUM,
-    "section-previews--large": auditoriumSize === AuditoriumSizes.LARGE,
+    "section-previews--small": auditoriumSize === AuditoriumSize.SMALL,
+    "section-previews--medium": auditoriumSize === AuditoriumSize.MEDIUM,
+    "section-previews--large": auditoriumSize === AuditoriumSize.LARGE,
   });
 
   return (
     <div className={containerClasses}>
-      <Video
+      <div className="section-previews__empty-space--left" />
+      <div className="section-previews__empty-space--right" />
+
+      <IFrame
         src={iframeUrl}
-        overlayClassname="section-previews__video-overlay"
-        iframeClassname="section-previews__video-iframe"
+        containerClassname="section-previews__iframe-overlay"
+        iframeClassname="section-previews__iframe"
       />
+
       {sectionPreviews}
-      <div className="section-previews__left-empty-space" />
-      <div className="section-previews__right-empty-space" />
     </div>
   );
 };

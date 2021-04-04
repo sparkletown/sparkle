@@ -1,6 +1,8 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
+import { WithId } from "utils/id";
+
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
@@ -22,7 +24,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -84,7 +86,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       );
       break;
 
-    // Note: This is the template that is used for the Auditorium
+    // Note: This is the template that is used for Auditorium (v1)
     case VenueTemplate.audience:
       template = (
         <Switch>

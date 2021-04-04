@@ -6,7 +6,7 @@ export interface MakeUpdateUserGridLocationProps {
   userUid: string;
 }
 
-// @debt Legacy way of updating the grid location
+/** @deprecated use setGridData instead **/
 export const makeUpdateUserGridLocation = ({
   venueId,
   userUid,
@@ -14,68 +14,47 @@ export const makeUpdateUserGridLocation = ({
   row: number | null,
   column: number | null
 ) => {
-  const doc = `users/${userUid}`;
+  setGridData({
+    venueId,
+    userId: userUid,
+    gridData: { row: row as number, column: column as number },
+  });
+};
 
-  const newData = {
-    [`data.${venueId}`]: {
-      row,
-      column,
-    },
-  };
+export type GenericGridData = {
+  row: number;
+  column: number;
+};
 
-  const firestore = firebase.firestore();
-
-  // @debt refactor this to use a proper upsert pattern instead of error based try/catch logic
-  firestore
-    .doc(doc)
-    .update(newData)
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.severity = "info";
-
-        event.addMetadata(
-          "notes",
-          "TODO",
-          "refactor this to use a proper upsert pattern (eg. check that the doc exists, then insert or update accordingly), rather than using try/catch"
-        );
-
-        event.addMetadata("api::profile::makeUpdateUserGridLocation", {
-          venueId,
-          userUid,
-          doc,
-        });
-      });
-
-      firestore.doc(doc).set(newData);
-    });
+export type SectionGridData = GenericGridData & {
+  sectionId: string;
 };
 
 export interface SetGridDataProps {
   venueId: string;
   userId: string;
 
-  // TODO: seat options should be defined as a type for every specific case
-  seatOptions: {
-    row: number;
-    column: number;
-    sectionId: string;
-  } | null;
+  gridData: GenericGridData | SectionGridData | null;
 }
 
-export const setGridData = async ({ venueId, userId, seatOptions }: SetGridDataProps): Promise<void> => {
+export const setGridData = async ({
+  venueId,
+  userId,
+  gridData,
+}: SetGridDataProps): Promise<void> => {
   const userProfile = firebase.firestore().collection("users").doc(userId);
 
-  const gridData = {
-    [`data.${venueId}`]: seatOptions,
+  const newGridData = {
+    [`data.${venueId}`]: gridData,
   };
 
-  userProfile.update(gridData).catch((err) => {
+  userProfile.update(newGridData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api::profile::setGridData"
+        location: "api::profile::setGridData",
         venueId,
         userId,
-        seatOptions
+        gridData,
       });
     });
   });

@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 $spacing: 15px;
 
 .section-preview {
@@ -12,33 +14,17 @@ $spacing: 15px;
   height: 100%;
   width: 100%;
 
-  background-color: #1a1d24;
+  background-color: $dark;
   border-radius: 16px;
 
   cursor: pointer;
-
-  &--locked {
-    cursor: not-allowed;
-  }
 
   &:hover {
     opacity: 0.8;
   }
 
-  &__status-icons {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    justify-content: flex-end;
-
-    &__lock {
-      margin-left: 5px;
-    }
-  }
-
-  &__title {
-    font-size: 15px;
-    font-weight: 500;
+  &--locked {
+    cursor: not-allowed;
   }
 
   &--empty {
@@ -47,15 +33,31 @@ $spacing: 15px;
     }
   }
 
+  &__status-icons {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    justify-content: flex-end;
+  }
+
+  &__lock-icon {
+    margin-left: 5px;
+  }
+
+  &__title {
+    font-size: 15px;
+    font-weight: 500;
+  }
+
   &__people-count {
     display: flex;
     justify-content: center;
     align-items: center;
     margin: 5px;
+  }
 
-    &__number {
-      font-size: 13px;
-      margin-left: 5px;
-    }
+  &__people-count-number {
+    font-size: 13px;
+    margin-left: 5px;
   }
 }

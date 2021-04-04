@@ -2,6 +2,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
 
+import { AuditoriumSection } from "types/auditorium";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
@@ -19,7 +20,6 @@ import {
   makeOrderedSelector,
 } from "./firestoreSelectors";
 import { MessageToTheBandReaction, Reaction } from "./reactions";
-import { AuditoriumSection } from "types/auditorium";
 
 /**
  * Selector to retrieve Firebase auth from Redux.

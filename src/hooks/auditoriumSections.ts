@@ -1,6 +1,8 @@
-import { User } from "types/User";
+import { useCallback, useMemo } from "react";
 
 import { setGridData } from "api/profile";
+
+import { User } from "types/User";
 
 import {
   currentAuditoriumSectionsSelector,
@@ -13,7 +15,6 @@ import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useRecentVenueUsers } from "./users";
 import { useUser } from "./useUser";
-import { useCallback, useMemo } from "react";
 
 const useConnectAuditoriumSections = (venueId?: string) => {
   useFirestoreConnect(() => {
@@ -45,7 +46,7 @@ export const useAuditoriumSection = ({
   const userId = userWithId?.id;
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
-  const section = sections?.[sectionId];
+  const section = sectionsById?.[sectionId];
 
   const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
 
@@ -85,7 +86,7 @@ export const useAuditoriumSection = ({
       setGridData({
         venueId,
         userId,
-        seatOptions: { sectionId, row, column },
+        gridData: { sectionId, row, column },
       });
     },
     [sectionId, venueId, userId]
@@ -94,12 +95,12 @@ export const useAuditoriumSection = ({
   const leaveSeat = useCallback(() => {
     if (!venueId || !userId) return;
 
-    setGridData({ venueId, userId, seatOptions: null });
+    setGridData({ venueId, userId, gridData: null });
   }, [venueId, userId]);
 
   return {
     auditoriumSection: section,
-    isAuditoriumSectionLoaded: isLoaded(sections),
+    isAuditoriumSectionLoaded: isLoaded(sectionsById),
     getUserBySeat,
     takeSeat,
     leaveSeat,
