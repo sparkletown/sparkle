@@ -16,6 +16,7 @@
     justify-content: flex-start;
     z-index: z(recipient-chat-breadcrumbs);
     padding: 0 8px;
+    cursor: pointer;
   }
 
   &__back-icon {
