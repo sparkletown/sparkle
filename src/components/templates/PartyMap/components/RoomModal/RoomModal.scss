@@ -6,7 +6,7 @@ $spacing: 20px;
 .room-modal {
   padding: $spacing;
 
-  background-color: #19181a;
+  background-color: $saturated-black;
   background-repeat: no-repeat;
   background-size: cover;
 
@@ -27,13 +27,6 @@ $spacing: 20px;
     justify-content: space-around;
     align-items: center;
 
-    > img {
-      width: 60%;
-      height: auto;
-
-      border-radius: $border-radius;
-    }
-
     > * {
       flex: 1;
       height: fit-content;
@@ -43,6 +36,17 @@ $spacing: 20px;
         margin-left: 0;
       }
     }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    height: 180px;
+    width: 180px;
+    border-radius: $border-radius;
+    background-color: $black;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
   }
 
   .userlist-container {
