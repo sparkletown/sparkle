@@ -72,6 +72,7 @@
     "three": "^0.119.1",
     "three-obj-mtl-loader": "^1.0.3",
     "twilio-video": "^2.9.0",
+    "use-sound": "^2.0.1",
     "ws": "^7.4.2",
     "xhr2": "^0.2.0",
     "yup": "^0.29.2"
@@ -125,6 +126,7 @@
     "@babel/preset-typescript": "^7.12.7",
     "@types/classnames": "^2.2.11",
     "@types/jest": "^25.2.3",
+    "@types/howler": "^2.2.1",
     "@types/lodash": "^4.14.155",
     "@types/node": "^14.6.1",
     "@types/react": "^16.9.35",

@@ -20,6 +20,11 @@ export interface CredentialFile {
 }
 
 /**
+ * Re-export static helpers from Firestore to simplify usage.
+ */
+export const { FieldValue } = admin.firestore;
+
+/**
  * Initialise a new Firebase Admin App
  *
  * @param projectId Firebase project ID
