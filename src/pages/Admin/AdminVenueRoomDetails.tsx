@@ -59,8 +59,6 @@ export const AdminVenueRoomDetails = ({
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
     try {
-      // TODO: here we ought to have enterSound: { soundId: "q2RJSTA8kWowjNQ7l1TM", spriteName: "bearItShort", },
-      // looks like it just overwrites whole room
       await upsertRoom(
         { ...(room as RoomInput), isEnabled: newState },
         venue.id,

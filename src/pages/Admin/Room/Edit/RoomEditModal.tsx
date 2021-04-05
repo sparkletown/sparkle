@@ -67,8 +67,12 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   );
 
   const onSubmit = useCallback(() => {
-    return submitHandler(values, room.roomIndex!);
-  }, [room.roomIndex, submitHandler, values]);
+    const roomValues = {
+      ...room,
+      ...values,
+    };
+    return submitHandler(roomValues, room.roomIndex!);
+  }, [room, submitHandler, values]);
 
   const customInputFields = useMemo(
     () =>

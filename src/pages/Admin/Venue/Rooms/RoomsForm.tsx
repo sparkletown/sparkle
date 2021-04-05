@@ -137,9 +137,11 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
     async (vals: Partial<FormValues>) => {
       if (!user) return;
       try {
-        // TODO: here we ought to have enterSound: { soundId: "q2RJSTA8kWowjNQ7l1TM", spriteName: "bearItShort", },
-        // looks like it just overwrites whole room
-        await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
+        const roomValues = {
+          ...editingRoom,
+          ...vals,
+        } as RoomInput;
+        await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`/admin/${venueId}`);
       } catch (e) {
         setFormError(true);
@@ -152,7 +154,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         });
       }
     },
-    [user, history, venueId, editingRoomIndex]
+    [user, history, venueId, editingRoomIndex, editingRoom]
   );
 
   useEffect(() => {
