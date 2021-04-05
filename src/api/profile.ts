@@ -1,6 +1,8 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { AnyGridData } from "types/grid";
+
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userUid: string;
@@ -21,20 +23,11 @@ export const makeUpdateUserGridLocation = ({
   });
 };
 
-export type GenericGridData = {
-  row: number;
-  column: number;
-};
-
-export type SectionGridData = GenericGridData & {
-  sectionId: string;
-};
-
 export interface SetGridDataProps {
   venueId: string;
   userId: string;
 
-  gridData: GenericGridData | SectionGridData | null;
+  gridData: AnyGridData | null;
 }
 
 export const setGridData = async ({

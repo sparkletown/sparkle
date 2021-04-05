@@ -21,7 +21,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  &__video-overlay {
+  &__iframe-overlay {
     position: absolute;
 
     width: 100%;
@@ -34,7 +34,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     pointer-events: none;
   }
 
-  &__video {
+  &__iframe {
     display: flex;
     flex-direction: column;
     align-items: center;

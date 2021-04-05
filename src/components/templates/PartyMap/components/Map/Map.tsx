@@ -23,8 +23,8 @@ import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
 import { useMapGrid } from "./hooks/useMapGrid";
-import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
+import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
@@ -165,10 +165,12 @@ export const Map: React.FC<MapProps> = ({
     [checkForRoomHit, takeSeat]
   );
 
-  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+  const getUserBySeat = useGetUserByPosition({
     venueId,
-    partygoers,
+    positionedUsers: partygoers,
   });
+
+  const isSeatTaken = () => getUserBySeat !== undefined;
 
   useKeyboardControls({
     venueId,
@@ -194,7 +196,7 @@ export const Map: React.FC<MapProps> = ({
     userUid,
     columnsArray,
     rowsArray,
-    partygoersBySeat,
+    getUserBySeat,
     onSeatClick,
   });
 

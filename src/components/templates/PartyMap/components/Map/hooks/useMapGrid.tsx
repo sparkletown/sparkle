@@ -2,6 +2,7 @@ import React, { useMemo } from "react";
 
 import { User } from "types/User";
 import { ReactHook } from "types/utility";
+import { GridPosition } from "types/grid";
 
 import { WithId } from "utils/id";
 
@@ -12,7 +13,7 @@ interface UseMapGrid {
   userUid?: string;
   columnsArray: JSX.Element[];
   rowsArray: JSX.Element[];
-  partygoersBySeat?: WithId<User>[][];
+  getUserBySeat: (gridData: GridPosition) => WithId<User> | undefined;
   onSeatClick: (
     row: number,
     column: number,
@@ -27,7 +28,7 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
   userUid,
   columnsArray,
   rowsArray,
-  partygoersBySeat,
+  getUserBySeat,
   onSeatClick,
 }) => {
   return useMemo(
@@ -39,7 +40,7 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
             const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
             const row = rowIndex + 1; // TODO: do these need to be here, can we zero index?
 
-            const seatedPartygoer = partygoersBySeat?.[row]?.[column];
+            const seatedPartygoer = getUserBySeat({ row, column });
             const hasSeatedPartygoer = seatedPartygoer !== undefined;
 
             // TODO: our types imply that this shouldn't be able to be null, but it was..
@@ -60,6 +61,6 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
           })}
         </div>
       )),
-    [columnsArray, onSeatClick, partygoersBySeat, rowsArray, showGrid, userUid]
+    [columnsArray, onSeatClick, getUserBySeat, rowsArray, showGrid, userUid]
   );
 };

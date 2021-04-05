@@ -2,19 +2,18 @@ import { useCallback, useMemo } from "react";
 
 import { setGridData } from "api/profile";
 
-import { User } from "types/User";
+import { GridPosition } from "types/grid";
 
 import {
   currentAuditoriumSectionsSelector,
   currentAuditoriumSectionsByIdSelector,
 } from "utils/selectors";
-import { WithId } from "utils/id";
-import { getPositionHash } from "utils/auditorium";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useRecentVenueUsers } from "./users";
 import { useUser } from "./useUser";
+import { useGetUserByPosition } from "./useGetUserByPosition";
 
 const useConnectAuditoriumSections = (venueId?: string) => {
   useFirestoreConnect(() => {
@@ -32,7 +31,7 @@ const useConnectAuditoriumSections = (venueId?: string) => {
 };
 
 export interface UseAuditoriumSectionProps {
-  sectionId: string;
+  sectionId?: string;
   venueId?: string;
 }
 
@@ -46,41 +45,17 @@ export const useAuditoriumSection = ({
   const userId = userWithId?.id;
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
-  const section = sectionsById?.[sectionId];
+  const section = sectionId ? sectionsById?.[sectionId] : undefined;
 
   const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
 
-  const seatedUsersByHash = useMemo(
-    () =>
-      seatedUsers.reduce<Record<string, WithId<User> | undefined>>(
-        (acc, user) => {
-          if (!venueId) return acc;
-
-          const takenRow = user.data?.[venueId]?.row;
-          const takenColumn = user.data?.[venueId]?.column;
-
-          if (takenRow === undefined || takenColumn === undefined) return acc;
-
-          const positionHash = getPositionHash({
-            row: takenRow,
-            column: takenColumn,
-          });
-
-          return { ...acc, [positionHash]: user };
-        },
-        {}
-      ),
-    [seatedUsers, venueId]
-  );
-
-  const getUserBySeat = useCallback(
-    ({ row, column }: { row: number; column: number }) =>
-      seatedUsersByHash?.[getPositionHash({ row, column })],
-    [seatedUsersByHash]
-  );
+  const getUserBySeat = useGetUserByPosition({
+    venueId,
+    positionedUsers: seatedUsers,
+  });
 
   const takeSeat = useCallback(
-    ({ row, column }: { row: number; column: number }) => {
+    ({ row, column }: GridPosition) => {
       if (!sectionId || !venueId || !userId) return;
 
       setGridData({

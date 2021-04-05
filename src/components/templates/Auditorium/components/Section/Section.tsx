@@ -35,7 +35,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     id: venueId,
   } = venue;
 
-  const { sectionId } = useParams<{ sectionId: string }>();
+  const { sectionId } = useParams<{ sectionId?: string }>();
 
   const {
     auditoriumSection,
@@ -95,59 +95,61 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     [videoWidthInSeats, videoHeightInSeats]
   );
 
+  const seatsGrid = useMemo(
+    () =>
+      Array.from(Array(rows)).map((_, rowIndex) => (
+        <div key={rowIndex} className="section__seats-row">
+          {Array.from(Array(columns)).map((_, columnIndex) => {
+            const user = getUserBySeat({
+              row: rowIndex,
+              column: columnIndex,
+            });
+
+            if (user) {
+              return (
+                <UserProfilePicture
+                  user={user}
+                  avatarClassName={"section__user-avatar"}
+                  setSelectedUserProfile={() => {}}
+                />
+              );
+            }
+
+            const isSeat = checkIfSeat(rowIndex, columnIndex);
+
+            if (isSeat) {
+              return (
+                <div
+                  key={columnIndex}
+                  className="section__seat"
+                  onClick={() =>
+                    takeSeat({ row: rowIndex, column: columnIndex })
+                  }
+                >
+                  +
+                </div>
+              );
+            }
+
+            return <div key={columnIndex} className="section__empty-circle" />;
+          })}
+        </div>
+      )),
+    [rows, columns, checkIfSeat, takeSeat, getUserBySeat]
+  );
+
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
     <div className="section">
       <div className="section__seats">
         <IFrame
-          containerClassname="section__video-overlay"
-          iframeClassname="section__video"
+          containerClassname="section__iframe-overlay"
+          iframeClassname="section__iframe"
           iframeStyles={iframeInlineStyles}
           src={iframeUrl}
         />
-        {Array.from(Array(SECTION_DEFAULT_ROWS_NUMBER)).map((_, rowIndex) => (
-          <div key={rowIndex} className="section__seats-row">
-            {Array.from(Array(SECTION_DEFAULT_COLUMNS_NUMBER)).map(
-              (_, columnIndex) => {
-                const user = getUserBySeat({
-                  row: rowIndex,
-                  column: columnIndex,
-                });
-
-                if (user) {
-                  return (
-                    <UserProfilePicture
-                      user={user}
-                      avatarClassName={"section__user-avatar"}
-                      setSelectedUserProfile={() => {}}
-                    />
-                  );
-                }
-
-                const isSeat = checkIfSeat(rowIndex, columnIndex);
-
-                if (isSeat) {
-                  return (
-                    <div
-                      key={columnIndex}
-                      className="section__seat"
-                      onClick={() =>
-                        takeSeat({ row: rowIndex, column: columnIndex })
-                      }
-                    >
-                      +
-                    </div>
-                  );
-                }
-
-                return (
-                  <div key={columnIndex} className="section__empty-circle" />
-                );
-              }
-            )}
-          </div>
-        ))}
+        {seatsGrid}
       </div>
     </div>
   );

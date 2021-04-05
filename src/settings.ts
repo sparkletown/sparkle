@@ -550,6 +550,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+// NOTE: Keep them odd to have the video centered
 export const SECTION_DEFAULT_ROWS_NUMBER = 17;
 export const SECTION_DEFAULT_COLUMNS_NUMBER = 23;
 
