@@ -61,7 +61,7 @@ const getAccessDoc = async (venueId, method) => {
 const isValidPassword = async (venueId, password) => {
   if (!venueId || !password) return false;
 
-  const access = await getAccessDoc(venueId, "password");
+  const access = await getAccessDoc(venueId, "Password");
 
   if (!access || !access.exists || !access.data().password) {
     return false;
@@ -73,11 +73,13 @@ const isValidPassword = async (venueId, password) => {
 const isValidEmail = async (venueId, email) => {
   if (!venueId || !email) return false;
 
-  const access = await getAccessDoc(venueId, "emails");
+  const access = await getAccessDoc(venueId, "Emails");
 
   if (!access || !access.exists || !access.data().emails) {
     return false;
   }
+
+  console.log(access.data().emails);
 
   return access.data().emails.includes(email.trim().toLowerCase());
 };
@@ -85,7 +87,7 @@ const isValidEmail = async (venueId, email) => {
 const isValidCode = async (venueId, code) => {
   if (!venueId || !code) return false;
 
-  const access = getAccessDoc(venueId, "code");
+  const access = getAccessDoc(venueId, "Code");
 
   if (!access || !access.exists || !access.data().codes) {
     return false;
@@ -134,6 +136,10 @@ const createToken = async (venueId, uid, password, email, code) => {
       return undefined;
     });
 };
+
+exports.checkIsEmailWhitelisted = functions.https.onCall(async (data) =>
+  isValidEmail(data.venueId, data.email)
+);
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
   if (!data || !context) return { token: undefined };
