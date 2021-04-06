@@ -18,6 +18,8 @@ $header-height: 45px;
   &--expanded {
     transform: translateX(0);
     transition: transform 0.3s;
+    background-color: rgba($saturated-black, 0.9);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
   }
 
   &__header {

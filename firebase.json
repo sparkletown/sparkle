@@ -215,6 +215,17 @@
         }
       ],
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "sparkle-ohbm",
+      "public": "build",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
     }
   ],
   "functions": {

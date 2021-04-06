@@ -151,6 +151,7 @@ if (BUGSNAG_API_KEY) {
     "env/kotr",
     "env/memrise",
     "env/unesco",
+    "env/ohbm",
   ];
 
   const releaseStage = () => {
