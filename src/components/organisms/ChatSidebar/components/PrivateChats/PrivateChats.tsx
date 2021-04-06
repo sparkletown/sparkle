@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { IconInput } from "components/atoms/IconInput";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
@@ -24,7 +24,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   onAvatarClick,
 }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
-  const onInputChage = useCallback(
+  const onInputChange = useCallback(
     (e) => setUserSearchQuery(e.target.value),
     []
   );
@@ -99,18 +99,13 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   return (
     <div className="private-chats">
-      <div className="private-chats__search">
-        <input
-          className="private-chats__search-input"
-          placeholder="Search for online people"
-          value={userSearchQuery}
-          onChange={onInputChage}
-          autoComplete="off"
-        />
-        <div className="private-chats__search-icon">
-          <FontAwesomeIcon icon={faSearch} size="1x" />
-        </div>
-      </div>
+      <IconInput
+        className="private-chats__search"
+        placeholder="Search for online people"
+        value={userSearchQuery}
+        onChange={onInputChange}
+        icon={faSearch}
+      />
 
       {userSearchQuery ? (
         <>
