@@ -67,7 +67,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   );
 
   const onSubmit = useCallback(() => {
-    const roomValues = {
+    const roomValues: RoomData_v2 = {
       ...room,
       ...values,
     };
