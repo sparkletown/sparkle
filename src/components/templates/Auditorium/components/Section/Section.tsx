@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
 import { AnyVenue } from "types/venues";
 
-import { translateIndex } from "utils/auditorium";
 import { WithId } from "utils/id";
 
-import { useAuditoriumSection } from "hooks/auditoriumSections";
-
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import {
+  useAuditoriumSection,
+  useAuditoriumGrid,
+} from "hooks/auditoriumSections";
 
 import { IFrame } from "../IFrame";
 
@@ -37,16 +37,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const { sectionId } = useParams<{ sectionId?: string }>();
 
-  const {
-    auditoriumSection,
-    getUserBySeat,
-    takeSeat,
-    leaveSeat,
-  } = useAuditoriumSection({
-    venueId,
-    sectionId,
-  });
-
   // NOTE: Video takes 1/3 of the seats
   const videoWidthInSeats = Math.max(
     Math.floor(columns / 3),
@@ -56,26 +46,20 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   // NOTE: Keep the 16:9 ratio
   const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
-  const checkIfSeat = useCallback(
-    (rowIndex: number, columnIndex: number) => {
-      const translatedRowIndex = translateIndex({
-        index: rowIndex,
-        totalAmount: rows,
-      });
-      const translatedColumnIndex = translateIndex({
-        index: columnIndex,
-        totalAmount: columns,
-      });
-
-      const isInVideoRow =
-        Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
-      const isInVideoColumn =
-        Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
-
-      return !(isInVideoRow && isInVideoColumn);
-    },
-    [rows, columns, videoHeightInSeats, videoWidthInSeats]
-  );
+  const {
+    auditoriumSection,
+    getUserBySeat,
+    takeSeat,
+    leaveSeat,
+    checkIfSeat,
+  } = useAuditoriumSection({
+    venueId,
+    sectionId,
+    rows,
+    columns,
+    videoWidthInSeats,
+    videoHeightInSeats,
+  });
 
   // Ensure the user leaves their seat when they leave the section
   // @debt We should handle/enforce this on the backend somehow
@@ -95,48 +79,13 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     [videoWidthInSeats, videoHeightInSeats]
   );
 
-  const seatsGrid = useMemo(
-    () =>
-      Array.from(Array(rows)).map((_, rowIndex) => (
-        <div key={rowIndex} className="section__seats-row">
-          {Array.from(Array(columns)).map((_, columnIndex) => {
-            const user = getUserBySeat({
-              row: rowIndex,
-              column: columnIndex,
-            });
-
-            if (user) {
-              return (
-                <UserProfilePicture
-                  user={user}
-                  avatarClassName={"section__user-avatar"}
-                  setSelectedUserProfile={() => {}}
-                />
-              );
-            }
-
-            const isSeat = checkIfSeat(rowIndex, columnIndex);
-
-            if (isSeat) {
-              return (
-                <div
-                  key={columnIndex}
-                  className="section__seat"
-                  onClick={() =>
-                    takeSeat({ row: rowIndex, column: columnIndex })
-                  }
-                >
-                  +
-                </div>
-              );
-            }
-
-            return <div key={columnIndex} className="section__empty-circle" />;
-          })}
-        </div>
-      )),
-    [rows, columns, checkIfSeat, takeSeat, getUserBySeat]
-  );
+  const seatsGrid = useAuditoriumGrid({
+    rows,
+    columns,
+    checkIfSeat,
+    getUserBySeat,
+    takeSeat,
+  });
 
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 

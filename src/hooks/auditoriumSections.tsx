@@ -1,8 +1,14 @@
-import { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
+
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { setGridData } from "api/profile";
 
+import { WithId } from "utils/id";
+import { translateIndex } from "utils/auditorium";
+
 import { GridPosition } from "types/grid";
+import { User } from "types/User";
 
 import {
   currentAuditoriumSectionsSelector,
@@ -31,6 +37,10 @@ const useConnectAuditoriumSections = (venueId?: string) => {
 };
 
 export interface UseAuditoriumSectionProps {
+  rows: number;
+  columns: number;
+  videoWidthInSeats: number;
+  videoHeightInSeats: number;
   sectionId?: string;
   venueId?: string;
 }
@@ -38,6 +48,10 @@ export interface UseAuditoriumSectionProps {
 export const useAuditoriumSection = ({
   venueId,
   sectionId,
+  rows,
+  columns,
+  videoWidthInSeats,
+  videoHeightInSeats,
 }: UseAuditoriumSectionProps) => {
   useConnectAuditoriumSections(venueId);
 
@@ -67,6 +81,27 @@ export const useAuditoriumSection = ({
     [sectionId, venueId, userId]
   );
 
+  const checkIfSeat = useCallback(
+    ({ row, column }: GridPosition) => {
+      const translatedRowIndex = translateIndex({
+        index: row,
+        totalAmount: rows,
+      });
+      const translatedColumnIndex = translateIndex({
+        index: column,
+        totalAmount: columns,
+      });
+
+      const isInVideoRow =
+        Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
+      const isInVideoColumn =
+        Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
+
+      return !(isInVideoRow && isInVideoColumn);
+    },
+    [rows, columns, videoHeightInSeats, videoWidthInSeats]
+  );
+
   const leaveSeat = useCallback(() => {
     if (!venueId || !userId) return;
 
@@ -76,9 +111,11 @@ export const useAuditoriumSection = ({
   return {
     auditoriumSection: section,
     isAuditoriumSectionLoaded: isLoaded(sectionsById),
+
     getUserBySeat,
     takeSeat,
     leaveSeat,
+    checkIfSeat,
   };
 };
 
@@ -108,3 +145,62 @@ export const useAuditoriumSections = (venueId?: string) => {
     [sections]
   );
 };
+
+export interface UseAuditoriumGridProps {
+  rows: number;
+  columns: number;
+  getUserBySeat: (gridData: GridPosition) => WithId<User> | undefined;
+  checkIfSeat: (gridData: GridPosition) => boolean;
+  takeSeat: (gridData: GridPosition) => void;
+}
+
+export const useAuditoriumGrid = ({
+  rows,
+  columns,
+  checkIfSeat,
+  getUserBySeat,
+  takeSeat,
+}: UseAuditoriumGridProps) =>
+  useMemo(
+    () =>
+      Array.from(Array(rows)).map((_, rowIndex) => (
+        <div key={rowIndex} className="section__seats-row">
+          {Array.from(Array(columns)).map((_, columnIndex) => {
+            const user = getUserBySeat({
+              row: rowIndex,
+              column: columnIndex,
+            });
+
+            if (user) {
+              return (
+                <UserProfilePicture
+                  key={columnIndex}
+                  user={user}
+                  avatarClassName={"section__user-avatar"}
+                  setSelectedUserProfile={() => {}}
+                />
+              );
+            }
+
+            const isSeat = checkIfSeat({ row: rowIndex, column: columnIndex });
+
+            if (isSeat) {
+              return (
+                <div
+                  key={columnIndex}
+                  className="section__seat"
+                  onClick={() =>
+                    takeSeat({ row: rowIndex, column: columnIndex })
+                  }
+                >
+                  +
+                </div>
+              );
+            }
+
+            return <div key={columnIndex} className="section__empty-circle" />;
+          })}
+        </div>
+      )),
+    [rows, columns, checkIfSeat, takeSeat, getUserBySeat]
+  );
