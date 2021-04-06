@@ -1,8 +1,8 @@
 export interface Experience {
   bartender: User;
   table: string;
-  row?: number;
-  column?: number;
+  row: number;
+  column: number;
   sectionId?: string;
 }
 

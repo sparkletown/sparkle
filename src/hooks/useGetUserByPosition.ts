@@ -19,30 +19,31 @@ export const useGetUserByPosition: (
 }) => {
   const seatedUsersByHash = useMemo(
     () =>
-      positionedUsers.reduce<Record<string, WithId<User> | undefined>>(
+      positionedUsers.reduce<Map<string, WithId<User> | undefined>>(
         (acc, user) => {
           if (!venueId) return acc;
 
-          const takenRow = user.data?.[venueId]?.row;
-          const takenColumn = user.data?.[venueId]?.column;
+          const gridData = user.data?.[venueId];
 
-          if (takenRow === undefined || takenColumn === undefined) return acc;
+          if (!gridData) return acc;
+
+          const { row, column } = gridData;
 
           const positionHash = getPositionHash({
-            row: takenRow,
-            column: takenColumn,
+            row,
+            column,
           });
 
-          return { ...acc, [positionHash]: user };
+          return acc.set(positionHash, user);
         },
-        {}
+        new Map()
       ),
     [positionedUsers, venueId]
   );
 
   const getUserByPosition = useCallback(
     ({ row, column }: GridPosition) =>
-      seatedUsersByHash?.[getPositionHash({ row, column })],
+      seatedUsersByHash.get(getPositionHash({ row, column })),
     [seatedUsersByHash]
   );
 

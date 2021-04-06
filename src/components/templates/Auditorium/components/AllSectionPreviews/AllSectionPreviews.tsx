@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { useHistory } from "react-router";
 import classNames from "classnames";
 
 import { WithId } from "utils/id";
@@ -13,16 +12,17 @@ import { useAuditoriumSections } from "hooks/auditoriumSections";
 import { SectionPreview } from "../SectionPreview";
 import { IFrame } from "../IFrame";
 
-import "./SectionPreviews.scss";
+import "./AllSectionPreviews.scss";
 
 export interface SectionPreviewsProps {
   venue: WithId<AnyVenue>;
 }
 
-export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
+export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
+  venue,
+}) => {
   const { iframeUrl, id: venueId } = venue;
 
-  const history = useHistory();
   const { auditoriumSections } = useAuditoriumSections(venueId);
 
   const sectionsCount = auditoriumSections.length;
@@ -32,15 +32,9 @@ export const SectionPreviews: React.FC<SectionPreviewsProps> = ({ venue }) => {
   const sectionPreviews = useMemo(
     () =>
       auditoriumSections.map((section) => (
-        <SectionPreview
-          key={section.id}
-          section={section}
-          onClick={() =>
-            history.push(`${history.location.pathname}/section/${section.id}`)
-          }
-        />
+        <SectionPreview key={section.id} section={section} />
       )),
-    [auditoriumSections, history]
+    [auditoriumSections]
   );
 
   const containerClasses = classNames("section-previews", {

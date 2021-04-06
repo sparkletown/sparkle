@@ -5,7 +5,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { Section } from "./components/Section";
-import { SectionPreviews } from "./components/SectionPreviews";
+import { AllSectionPreviews } from "./components/AllSectionPreviews";
 
 export interface AuditoriumProps {
   venue: WithId<AnyVenue>;
@@ -20,7 +20,7 @@ export const Auditorium: React.FC<AuditoriumProps> = ({ venue }) => {
         <Section venue={venue} />
       </Route>
       <Route path={`${match.path}`} strict>
-        <SectionPreviews venue={venue} />
+        <AllSectionPreviews venue={venue} />
       </Route>
     </Switch>
   );

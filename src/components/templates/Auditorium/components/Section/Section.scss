@@ -13,7 +13,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   --section-seat-spacing: #{$section-seat-spacing};
 
   background-attachment: fixed;
-  background-position: center 46%;
+  background-position: center;
 
   position: relative;
   overflow: auto;
