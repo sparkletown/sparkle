@@ -4,9 +4,6 @@ Codebase for Sparkle, brought to you by Sparkle.
 
 ## Getting started
 
-You can get your first experience with Sparkle at staging: \
-https://staging.sparkle.space/in/devaliashacksville
-
 ### Frontend
 
 First, clone the repo and `cd` into it:
@@ -36,9 +33,7 @@ Now you're ready to start the server! ✨
 npm start
 ```
 
-Once the server is started, you will have the browser opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start surfing the app, you can use the following url http://localhost:3000/in/devaliashacksville.
-
-**Note**: Frontend won't work without the backend. To finish your setup, go through Firebase configuration steps.
+Once the server is started, you will have the browser opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start surfing the app, you can use the following url http://localhost:3000/in/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
 
 While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
@@ -84,6 +79,7 @@ npm run firebase:emulate-functions
 
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
+**Note**: If you're interested in setting up the project to run in your own environment but you're still unclear about how to do that feel free to open an issue asking for assistance.
 
 ### Stripe
 
