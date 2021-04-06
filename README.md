@@ -57,14 +57,17 @@ cd functions
 # Install the function dependencies
 npm install
 
+# Go back to the root app directory to use firebase package
+cd ..
+
 # Login to firebase with the account that has access to this project
-firebase login
+npm run firebase login
 
 # Switch to the 'staging' project in our local configuration (or whichever environment you are developing against)
-firebase use staging
+npm run firebase use staging
 
 # Copy the runtime config locally
-firebase functions:config:get > .runtimeconfig.json
+npm run --silent firebase functions:config:get > .runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
@@ -74,7 +77,7 @@ Now you're ready to launch the backend function emulator! ✨
 npm run firebase:emulate-functions
 
 # Or if you don't want to use our helper scripts, you can do this directly:
-# firebase emulators:start --only functions
+# npm run firebase emulators:start --only functions
 ```
 
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
