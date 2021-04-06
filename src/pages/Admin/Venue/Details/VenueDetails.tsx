@@ -154,6 +154,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
     const newData = {
+      ...editingRoom,
       ...values,
       x_percent: editingRoom?.x_percent,
       y_percent: editingRoom?.y_percent,

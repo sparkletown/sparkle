@@ -67,6 +67,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
   );
 
   const onSubmit = useCallback(() => {
+    if (typeof room.roomIndex !== "number") return;
     const roomValues: RoomData_v2 = {
       ...room,
       ...values,

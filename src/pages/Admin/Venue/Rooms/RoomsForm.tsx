@@ -135,7 +135,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
 
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
-      if (!user) return;
+      if (!user || !editingRoom) return;
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
