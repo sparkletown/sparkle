@@ -1,23 +1,18 @@
 import "./wdyr";
 
 import React, { useEffect } from "react";
+import { render } from "react-dom";
+
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
 
-import { render } from "react-dom";
 import { Provider } from "react-redux";
-
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
-import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/functions";
 import {
   ReactReduxFirebaseProvider,
   firebaseReducer,
@@ -25,6 +20,12 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension";
+
+import firebase from "firebase/app";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
