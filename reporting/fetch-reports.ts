@@ -48,8 +48,8 @@ const reportPageUrl = isAdmin
   ? `https://zoom.us/account/report/user?from=${from}&to=${to}`
   : `https://zoom.us/account/my/report?from=${from}&to=${to}`;
 
-const loginEmailFieldSelector = ".form > #login-form #email";
-const loginPasswordFieldSelector = ".form > #login-form #password";
+const loginEmailFieldSelector = "#login-form #email";
+const loginPasswordFieldSelector = "#login-form #password";
 const loginButtonSelector =
   "#login-form > .form-group > .controls > .signin > .btn";
 
