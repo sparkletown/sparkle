@@ -73,7 +73,6 @@
     "three-obj-mtl-loader": "^1.0.3",
     "twilio-video": "^2.9.0",
     "use-sound": "^2.0.1",
-    "web-vitals": "^1.1.1",
     "ws": "^7.4.2",
     "xhr2": "^0.2.0",
     "yup": "^0.29.2"
