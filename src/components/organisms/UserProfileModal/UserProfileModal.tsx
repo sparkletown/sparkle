@@ -2,7 +2,13 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
+import {
+  ENABLE_SUSPECTED_LOCATION,
+  RANDOM_AVATARS,
+  DEFAULT_PROFILE_PIC,
+  DEFAULT_PARTY_NAME,
+  DEFAULT_EDIT_PROFILE_TEXT,
+} from "settings";
 
 import {
   currentVenueSelector,
@@ -26,11 +32,11 @@ import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 
-type PropTypes = {
+export interface UserProfileModalProps {
   zIndex?: number;
-};
+}
 
-export const UserProfileModal: React.FunctionComponent<PropTypes> = ({
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   zIndex,
 }) => {
   const venue = useSelector(currentVenueSelector);
@@ -64,7 +70,7 @@ export const UserProfileModal: React.FunctionComponent<PropTypes> = ({
     <Modal
       show={hasSelectedProfile}
       onHide={closeUserProfileModal}
-      style={zIndex && { zIndex }}
+      style={{ zIndex }}
     >
       <Modal.Body>
         <div className="modal-container modal-container_profile">
@@ -72,9 +78,7 @@ export const UserProfileModal: React.FunctionComponent<PropTypes> = ({
             <div className="profile-basics">
               <div className="profile-pic">
                 <img
-                  src={
-                    selectedUserProfile.pictureUrl || "/default-profile-pic.png"
-                  }
+                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -90,7 +94,7 @@ export const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
               <div className="profile-text">
                 <h2 className="italic">
-                  {selectedUserProfile.partyName || "Captain Party"}
+                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
               </div>
             </div>
@@ -103,7 +107,7 @@ export const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                     // @debt typing - need to support known User interface with unknown question keys
                     // @ts-ignore */}
                     {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      "I haven't edited my profile to tell you yet"}
+                      DEFAULT_EDIT_PROFILE_TEXT}
                   </h6>
                 </React.Fragment>
               ))}

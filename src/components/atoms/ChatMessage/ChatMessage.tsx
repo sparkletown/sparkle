@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -30,20 +30,16 @@ export const ChatMessage: React.FC<ChatProps> = ({
     "chat-message--me": isMine,
   });
 
+  const onOpenUserProfile = useCallback(() => {
+    openUserProfileModal(author);
+  }, [openUserProfileModal, author]);
+
   return (
     <div className={containerStyles}>
       <div className="chat-message__text">{text}</div>
-      <div className="chat-message__info">
-        <UserAvatar
-          onClick={() => openUserProfileModal(author)}
-          avatarSrc={author.pictureUrl}
-        />
-        <span
-          onClick={() => openUserProfileModal(author)}
-          className="chat-message__author"
-        >
-          {author.partyName}
-        </span>
+      <div className="chat-message__info" onClick={onOpenUserProfile}>
+        <UserAvatar avatarSrc={author.pictureUrl} />
+        <span className="chat-message__author">{author.partyName}</span>
         <span className="chat-message__time">
           {dayjs(timestamp).format("h:mm A")}
         </span>

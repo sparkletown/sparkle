@@ -12,12 +12,6 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { useDispatch } from "hooks/useDispatch";
-import { useRecentVenueUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
 import { User } from "types/User";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -28,6 +22,12 @@ import {
   TextReactionType,
 } from "utils/reactions";
 import { currentVenueSelectorData } from "utils/selectors";
+
+import { useDispatch } from "hooks/useDispatch";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 

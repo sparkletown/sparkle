@@ -26,8 +26,6 @@ import { useMapGrid } from "./hooks/useMapGrid";
 import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
-import { UserProfileModal } from "components/organisms/UserProfileModal";
-
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -240,8 +238,6 @@ export const Map: React.FC<MapProps> = ({
           {partygoersOverlay}
           {roomOverlay}
         </div>
-
-        <UserProfileModal />
       </div>
     </div>
   );

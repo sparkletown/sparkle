@@ -3,11 +3,7 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { UserProfileModal } from "components/organisms/UserProfileModal";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
@@ -19,7 +15,11 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-import { FriendShipPage } from "pages/FriendShipPage";
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
   venue: AnyVenue;

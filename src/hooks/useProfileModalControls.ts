@@ -25,6 +25,7 @@ export const useProfileModalControls = () => {
     },
     [dispatch]
   );
+
   const closeUserProfileModal = useCallback(() => {
     dispatch(updateUserProfileData(undefined));
   }, [dispatch]);
