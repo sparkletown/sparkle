@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
 
-import { Venue, VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import useConnectUserPurchaseHistory from "hooks/useConnectUserPurchaseHistory";
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -35,7 +35,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
 }) => {
   useConnectUserPurchaseHistory();
   const { user } = useUser();
-  const venue = useSelector(currentVenueSelectorData) as Venue;
+  const venue = useSelector(currentVenueSelectorData) as AnyVenue;
   const purchaseHistory = useSelector(
     userPurchaseHistorySelector
   ) as Purchase[];

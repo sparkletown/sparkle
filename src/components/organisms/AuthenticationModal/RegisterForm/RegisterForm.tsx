@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { codeCheckUrl } from "utils/url";
+import { checkIsEmailWhitelisted } from "api/auth";
+
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
@@ -40,7 +42,6 @@ export interface CodeOfConductQuestion {
 }
 
 export interface RegisterData {
-  codes_used: string[];
   date_of_birth: string;
 }
 
@@ -90,17 +91,27 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
-      if (venue.requiresTicketCode) await axios.get(codeCheckUrl(data.code));
-      if (venue.requiresEmailVerification)
-        await axios.get(codeCheckUrl(data.email));
+
+      if (venue.access === VenueAccessMode.Emails) {
+        const isEmailWhitelisted = await checkIsEmailWhitelisted({
+          venueId: venue.id,
+          email: data.email,
+        });
+
+        if (!isEmailWhitelisted.data) {
+          setError(
+            "email",
+            "validation",
+            "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
 
       const auth = await signUp(data);
-      if (
-        auth.user &&
-        (venue.requiresTicketCode || venue.requiresEmailVerification)
-      ) {
+
+      if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
-          codes_used: [data.email],
           date_of_birth: data.date_of_birth,
         });
       }
@@ -206,7 +217,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           )}
         </div>
 
-        {venue.requiresTicketCode && (
+        {venue.access === VenueAccessMode.Codes && (
           <TicketCodeField register={register} error={errors?.code} />
         )}
 

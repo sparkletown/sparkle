@@ -13,6 +13,8 @@ import {
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
+  MINIMUM_COLUMNS,
+  MAXIMUM_COLUMNS,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -55,8 +57,9 @@ export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
-      .required("Required")
-      .min(1, "Required")
+      .required("Venue name is required")
+      .min(1, ({ min }) => `Name must be at least ${min} characters`)
+      .max(20, ({ max }) => `Name must be less than ${max} characters`)
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -86,7 +89,15 @@ export const validationSchema = Yup.object()
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
     showGrid: Yup.bool().notRequired(),
-    columns: Yup.number().notRequired().min(1).max(100),
+    columns: Yup.number().when("showGrid", {
+      is: true,
+      then: Yup.number()
+        .required(
+          `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        )
+        .min(MINIMUM_COLUMNS)
+        .max(MAXIMUM_COLUMNS),
+    }),
 
     mapBackgroundImageUrl: Yup.string().when(
       "$template.template",
@@ -101,8 +112,8 @@ export const validationSchema = Yup.object()
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    description: Yup.string().required("Required"),
-    subtitle: Yup.string().required("Required"),
+    description: Yup.string().required("Description required"),
+    subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>
@@ -158,7 +169,7 @@ export const validationSchema = Yup.object()
       then: Yup.string().required("Radio station (stream) is required!"),
     }),
 
-    owners: Yup.array<string>().required(),
+    owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
     adultContent: Yup.bool().required(),
     bannerMessage: Yup.string().notRequired(),

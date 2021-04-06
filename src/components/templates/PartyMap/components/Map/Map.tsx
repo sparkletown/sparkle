@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
+import {
+  DEFAULT_MAP_BACKGROUND,
+  MAXIMUM_COLUMNS,
+  MINIMUM_COLUMNS,
+} from "settings";
 
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
@@ -10,8 +14,9 @@ import { PartyMapVenue } from "types/venues";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { hasElements, isTruthy } from "utils/types";
-import { makeRoomHitFilter } from "utils/filter";
+import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
+import { setLocationData } from "utils/userLocation";
 
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -23,12 +28,9 @@ import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 
-import Sidebar from "components/molecules/Sidebar";
-
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
-import { trackLocationEntered } from "utils/userLocation";
 
 export const DEFAULT_COLUMNS = 40;
 export const DEFAULT_ROWS = 25;
@@ -55,7 +57,10 @@ export const Map: React.FC<MapProps> = ({
   const userUid = user?.uid;
   const showGrid = venue.showGrid;
 
-  const totalColumns = venue.columns ?? DEFAULT_COLUMNS;
+  const totalColumns = Math.max(
+    MINIMUM_COLUMNS,
+    Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
+  );
   const [totalRows, setTotalRows] = useState<number>(0);
 
   const { recentVenueUsers } = useRecentVenueUsers();
@@ -84,11 +89,13 @@ export const Map: React.FC<MapProps> = ({
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
       if (!userUid) return;
+
       makeUpdateUserGridLocation({
         venueId,
         userUid,
       })(row, column);
-      trackLocationEntered({ userId: userUid, locationName: venueName });
+
+      setLocationData({ userId: userUid, locationName: venueName });
     },
     [userUid, venueId, venueName]
   );
@@ -205,14 +212,16 @@ export const Map: React.FC<MapProps> = ({
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
-        <MapRoom
-          key={room.title}
-          venue={venue}
-          room={room}
-          selectRoom={() => selectRoom(room)}
-        />
-      )),
+      venue?.rooms
+        ?.filter(filterEnabledRooms)
+        .map((room) => (
+          <MapRoom
+            key={room.title}
+            venue={venue}
+            room={room}
+            selectRoom={() => selectRoom(room)}
+          />
+        )),
     [selectRoom, venue]
   );
 
@@ -229,32 +238,26 @@ export const Map: React.FC<MapProps> = ({
   }
 
   return (
-    <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
-            alt=""
-          />
+    <div className="party-map-map-component">
+      <div className="party-map-map-content">
+        <img
+          width="100%"
+          className="party-map-background"
+          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          alt=""
+        />
 
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {mapGrid}
-            {partygoersOverlay}
-            {roomOverlay}
-          </div>
-
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={isUserProfileSelected}
-            onHide={deselectUserProfile}
-          />
+        <div className="party-map-grid-container" style={gridContainerStyles}>
+          {mapGrid}
+          {partygoersOverlay}
+          {roomOverlay}
         </div>
-      </div>
 
-      <div className="sidebar">
-        <Sidebar />
+        <UserProfileModal
+          userProfile={selectedUserProfile}
+          show={isUserProfileSelected}
+          onHide={deselectUserProfile}
+        />
       </div>
     </div>
   );

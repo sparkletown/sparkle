@@ -135,6 +135,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             setSelectedUserProfile={() => setShowProfile(true)}
+            reactionPosition="right"
           />
         </div>
       )}

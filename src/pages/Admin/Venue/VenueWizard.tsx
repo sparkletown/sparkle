@@ -7,7 +7,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useQuery } from "hooks/useQuery";
 import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
 import { useFirestore } from "react-redux-firebase";
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { venueInsideUrl } from "utils/url";
 import { useVenueId } from "hooks/useVenueId";
@@ -23,7 +23,7 @@ interface WizardFormState {
     template: Template;
   };
   detailsPage?: {
-    venue: Venue;
+    venue: AnyVenue;
   };
 }
 type WizardActions =
@@ -33,7 +33,7 @@ type WizardActions =
     }
   | {
       type: "SUBMIT_DETAILS_PAGE";
-      payload: Venue;
+      payload: AnyVenue;
     };
 
 const initialState = {};
@@ -78,7 +78,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
         .doc(venueId)
         .get();
       if (!venueSnapshot.exists) return;
-      const data = venueSnapshot.data() as Venue;
+      const data = venueSnapshot.data() as AnyVenue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template

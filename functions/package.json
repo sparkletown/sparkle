@@ -2,7 +2,6 @@
   "name": "functions",
   "description": "Cloud Functions for Firebase",
   "scripts": {
-    "preinstall": "npx npm-force-resolutions",
     "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
   },
   "engines": {
@@ -13,19 +12,16 @@
     "firebase": "^8.2.4",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.1",
-    "npm-force-resolutions": "0.0.3",
-    "prettier": "^2.2.1",
     "stripe": "^8.71.0",
-    "twilio": "^3.45.0"
+    "twilio": "^3.45.0",
+    "uuidv4": "^6.2.6"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.3",
-    "firebase-tools": "^9.2.2"
-  },
-  "resolutions": {
-    "websocket-extensions": "0.1.4"
+    "firebase-tools": "^9.2.2",
+    "prettier": "^2.2.1"
   },
   "private": true
 }

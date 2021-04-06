@@ -103,7 +103,6 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="page-container code-of-conduct-container">
-      <div className="kansas-smittys-logo"></div>
       <div className="code-of-conduct-form">
         <div>
           <h2 className="final-step-title">Final step: agree to our terms</h2>

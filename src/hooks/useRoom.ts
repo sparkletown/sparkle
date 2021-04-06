@@ -2,38 +2,47 @@ import { useCallback, useMemo } from "react";
 
 import { Room } from "types/rooms";
 
-import { enterVenue, enterExternalRoom } from "utils/userLocation";
+import { enterExternalRoom } from "utils/userLocation";
 import { orderedVenuesSelector } from "utils/selectors";
+import { enterVenue } from "utils/url";
+import { getExternalRoomSlug } from "utils/room";
 
 import { useSelector } from "hooks/useSelector";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-export const useRoom = (room: Room) => {
+export interface UseRoomProps {
+  room: Room;
+  venueName: string;
+}
+
+export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
   const userId = user?.uid;
+
+  const roomUrl = room.url;
 
   const venues = useSelector(orderedVenuesSelector);
 
   const roomVenue = useMemo(
-    () => venues?.find((venue) => room.url.endsWith(`/${venue.id}`)),
-    [room, venues]
+    () => venues?.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
+    [roomUrl, venues]
   );
-  const roomId = roomVenue ? roomVenue.name : room.url;
 
-  const { recentLocationUsers } = useRecentLocationUsers(roomId);
+  // @debt we should replace externalRoomSlug with preferrably room id
+  const roomSlug = roomVenue
+    ? roomVenue.name
+    : getExternalRoomSlug({ roomTitle: room.title, venueName });
+
+  const { recentLocationUsers } = useRecentLocationUsers(roomSlug);
 
   const enterRoom = useCallback(() => {
     if (!userId) return;
 
-    if (roomVenue) {
-      enterVenue(roomVenue.id);
-
-      return;
-    }
-
-    enterExternalRoom({ userId, room });
-  }, [room, userId, roomVenue]);
+    roomVenue
+      ? enterVenue(roomVenue.id)
+      : enterExternalRoom({ userId, roomUrl, locationName: roomSlug });
+  }, [roomSlug, roomUrl, userId, roomVenue]);
 
   return {
     enterRoom,

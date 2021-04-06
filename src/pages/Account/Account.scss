@@ -1,4 +1,5 @@
 @import "scss/constants";
+
 $sand: #937c63;
 
 $top-margin: 20px;
@@ -120,6 +121,7 @@ $page-max-width: 1240px;
   justify-content: center;
   flex: 1;
   background-color: #1a1d24;
+  height: 100vh;
 
   .logo-container {
     width: $login-max-width / 2;
@@ -171,7 +173,7 @@ $page-max-width: 1240px;
 .profile-picture-preview-container {
   display: flex;
   justify-content: center;
-  z-index: 1;
+  z-index: z(account-profile-picture-preview);
 }
 
 .profile-picture-input {

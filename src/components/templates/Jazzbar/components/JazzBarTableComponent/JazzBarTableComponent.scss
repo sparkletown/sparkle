@@ -1,0 +1,103 @@
+@import "scss/constants.scss";
+
+$seat-margin: 6px;
+
+.jazzbar-table-component-container {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  .table-title-container {
+    margin: 20px 0;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    padding-top: 8px;
+  }
+
+  .table-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .table-subtitle {
+    color: $dark;
+  }
+
+  .table-item {
+    display: flex;
+
+    height: 100%;
+    width: 100%;
+    background: $dark;
+    border-radius: 22px;
+
+    color: $white;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 50px 15px 15px;
+    position: relative;
+    &:hover {
+      background-color: lighten($dark, 10%);
+      transform: scale(1.05);
+    }
+  }
+
+  .table-occupancy-information {
+    top: 11px;
+    right: 11px;
+    position: absolute;
+    font-size: 10px;
+  }
+
+  .red-text {
+    color: $primaryColor;
+  }
+
+  .table-participant-picture {
+    background: $black;
+  }
+
+  .table-number {
+    top: 12px;
+    position: absolute;
+    text-align: center;
+    font-style: italic;
+    font-weight: 600;
+  }
+
+  .profile-icon {
+    margin: $seat-margin;
+  }
+
+  .add-participant-button {
+    cursor: pointer;
+
+    width: 50px;
+    height: 50px;
+    display: flex;
+    font-size: 25px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin: $seat-margin;
+    background-color: rgba(black, 0.4);
+    color: rgba(black, 0);
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    font-size: 2rem;
+    &:hover {
+      background-color: white;
+      transform: scale(1.05) rotate(90deg);
+      color: rgba(black, 0.7);
+      box-shadow: 2px 0px 10px rgba($white, 0.6);
+    }
+    &:active {
+      transform: scale(0.95) rotate(90deg);
+      box-shadow: 2px 0px 10px rgba($white, 0.2);
+    }
+  }
+}

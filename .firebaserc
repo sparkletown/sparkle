@@ -15,7 +15,11 @@
     "sparkle9": "sparkle-9",
     "sparkle10": "sparkle-10",
     "bigtop": "sparkle-bigtop",
-    "deloitte": "sparkle-deloitte"
+    "deloitte": "sparkle-deloitte",
+    "kotr": "sparkle-kotr",
+    "memrise": "sparkle-memrise",
+    "unesco": "sparkle-unesco",
+    "ohbm": "sparkle-ohbm"
   },
   "targets": {
     "co-reality-map": {
@@ -133,6 +137,34 @@
       "hosting": {
         "sparkle-deloitte": [
           "sparkle-deloitte"
+        ]
+      }
+    },
+    "sparkle-kotr": {
+      "hosting": {
+        "sparkle-kotr": [
+          "sparkle-kotr"
+        ]
+      }
+    },
+    "sparkle-memrise": {
+      "hosting": {
+        "sparkle-memrise": [
+          "sparkle-memrise"
+        ]
+      }
+    },
+    "sparkle-unesco": {
+      "hosting": {
+        "sparkle-unesco": [
+          "sparkle-unesco"
+        ]
+      }
+    },
+    "sparkle-ohbm": {
+      "hosting": {
+        "sparkle-ohbm": [
+          "sparkle-ohbm"
         ]
       }
     }

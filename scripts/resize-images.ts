@@ -42,6 +42,8 @@ import p from "phin";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
+import { ACCEPTED_IMAGE_TYPES } from "../src/settings";
+
 const usage = makeScriptUsage({
   description: "Backup or resize images (see code comments for further usage)",
   usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
@@ -66,15 +68,6 @@ const BACKUP = false;
 const SELECTIVELY_PROCESS_FILE_NAME_PARTS: string[] = [
   // "BIGFILE.png",
   // "HUGE_ANIMATED_GIF.gif",
-];
-
-const ACCEPTED_MIME_TYPES = [
-  "image/png",
-  "image/jpg",
-  "image/jpeg",
-  "image/tiff",
-  "image/bmp",
-  "image/gif",
 ];
 
 initFirebaseAdminApp(projectId, {
@@ -160,7 +153,7 @@ const main = async () => {
     });
     console.log("\n\n");
 
-    if (!ACCEPTED_MIME_TYPES.includes(file.metadata.contentType)) {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.metadata.contentType)) {
       console.log(
         `Skipping - ${file.metadata.contentType} Not a processible file type`
       );

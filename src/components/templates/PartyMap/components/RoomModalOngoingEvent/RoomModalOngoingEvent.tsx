@@ -1,5 +1,7 @@
 import React, { useCallback } from "react";
 
+import { SPARKLE_ICON } from "settings";
+
 import { retainAttendance } from "store/actions/Attendance";
 
 import { VenueEvent } from "types/venues";
@@ -11,14 +13,12 @@ import { useDispatch } from "hooks/useDispatch";
 import "./RoomModalOngoingEvent.scss";
 
 interface RoomModalOngoingEventProps {
-  roomTitle: string;
   roomEvents: VenueEvent[];
   onRoomEnter: () => void;
   joinButtonText?: string;
 }
 
 export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
-  roomTitle,
   roomEvents,
   onRoomEnter,
   joinButtonText,
@@ -44,7 +44,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
         <>
           <div className="title-container">
             <img
-              src="/sparkle-icon.png"
+              src={SPARKLE_ICON}
               className="sparkle-icon"
               alt="sparkle-icon"
             />
@@ -57,18 +57,6 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
             </div>
           </div>
           <div className="event-description">{eventToDisplay.description}</div>
-        </>
-      )}
-      {!eventToDisplay && (
-        <>
-          <div className="event-description">
-            <img
-              src="/sparkle-icon.png"
-              className="sparkle-icon"
-              alt="sparkle-icon"
-            />
-            Please check the Live Schedule for events in this room.
-          </div>
         </>
       )}
       <button

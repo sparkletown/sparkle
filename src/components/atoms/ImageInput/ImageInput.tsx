@@ -1,5 +1,9 @@
 import React, { useState } from "react";
-import { GIF_RESIZER_URL, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+import {
+  GIF_RESIZER_URL,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  ACCEPTED_IMAGE_TYPES,
+} from "settings";
 
 // Typings
 import { ImageInputProps } from "./ImageInput.types";
@@ -51,7 +55,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         as="label"
       >
         <input
-          accept="image/x-png,image/gif,image/jpeg"
+          accept={ACCEPTED_IMAGE_TYPES}
           className={customClass}
           hidden
           id={name}

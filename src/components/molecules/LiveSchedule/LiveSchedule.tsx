@@ -10,7 +10,7 @@ import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
-import { LiveEvent } from "./LiveEvent";
+import { EventDisplay } from "../EventDisplay";
 
 import "./LiveSchedule.scss";
 import { hasElements } from "utils/types";
@@ -43,8 +43,8 @@ const LiveSchedule: FC = () => {
     if (!hasEvents) return null;
 
     return events.map((event, index) => (
-      <LiveEvent
-        key={`live-event-${index}`}
+      <EventDisplay
+        key={event.id ?? `${index}-${event.name}`}
         venue={relatedVenueFor(event)}
         event={event}
       />

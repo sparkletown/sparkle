@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
 import { getLinkFromText } from "utils/getLinkFromText";
+
+import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import "./AnnouncementMessage.scss";
 
@@ -14,6 +17,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
+  const { isExpanded } = useChatSidebarControls();
 
   const hideAnnouncement = useCallback(() => {
     setVisibility(false);
@@ -28,8 +32,12 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   if (!isVisible || !message) return null;
 
   return (
-    <div className="announcement-container">
-      {getLinkFromText(message)}
+    <div
+      className={classNames("announcement-container", {
+        centered: !isExpanded,
+      })}
+    >
+      <div className="announcement-message">{getLinkFromText(message)}</div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>

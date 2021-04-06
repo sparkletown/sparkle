@@ -82,7 +82,10 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
         <li
           key={formatDate(day.dateDay.getTime())}
           className={`button ${idx === date ? "active" : ""}`}
-          onClick={() => setDate(idx)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setDate(idx);
+          }}
         >
           {formatDateToWeekday(day.dateDay.getTime() / 1000)}
         </li>
@@ -92,9 +95,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
   const events = useMemo(
     () =>
-      orderedEvents[date]?.events.map((event) => (
+      orderedEvents[date]?.events.map((event, index) => (
         <EventDisplay
-          key={event.id}
+          key={event.id ?? `${index}-${event.name}`}
           event={event}
           venue={relatedVenuesById[event.venueId] ?? currentVenue}
         />

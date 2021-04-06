@@ -112,11 +112,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   );
 
   useEffect(() => {
-    firebase
+    const unsubscribeListener = firebase
       .firestore()
       .collection(`experiences/playa/shouts`)
       .where("created_at", ">", new Date().getTime())
-      .onSnapshot(function (snapshot) {
+      .onSnapshot((snapshot) => {
         snapshot.docChanges().forEach(function (change) {
           if (change.type === "added") {
             const newShout = change.doc.data() as Shout;
@@ -129,6 +129,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           }
         });
       });
+
+    return () => {
+      unsubscribeListener();
+    };
   }, [firebase, setShouts]);
 
   const wsInitedRef = useRef(false);

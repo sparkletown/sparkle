@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import "./ArtPiece.scss";
-import InformationLeftColumn from "components/organisms/InformationLeftColumn";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
-import ChatDrawer from "components/organisms/ChatDrawer";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
@@ -17,7 +16,6 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
 
-  const [isLeftColumnExpanded, setIsLeftColumnExpanded] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
@@ -31,11 +29,7 @@ export const ArtPiece = () => {
   return (
     <WithNavigationBar>
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn
-          venueLogoPath={venue?.host?.icon ?? ""}
-          isLeftColumnExpanded={isLeftColumnExpanded}
-          setIsLeftColumnExpanded={setIsLeftColumnExpanded}
-        >
+        <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
             <p className="title-sidebar">{venue.name}</p>
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
@@ -55,7 +49,7 @@ export const ArtPiece = () => {
               frameBorder="0"
               allow={IFRAME_ALLOW}
               allowFullScreen
-            ></iframe>
+            />
           </div>
           <div className="video-chat-wrapper">
             <Room
@@ -64,14 +58,6 @@ export const ArtPiece = () => {
               setUserList={() => null}
               hasChairs={false}
               defaultMute={true}
-            />
-          </div>
-          <div className="chat-pop-up" style={{ zIndex: 100 }}>
-            <ChatDrawer
-              title={`${venue.name ?? "Art Piece"} Chat`}
-              roomName={venue.name}
-              chatInputPlaceholder="Chat"
-              defaultShow={true}
             />
           </div>
         </div>

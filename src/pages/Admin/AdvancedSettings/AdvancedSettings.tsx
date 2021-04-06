@@ -1,8 +1,10 @@
 import React from "react";
 import * as Yup from "yup";
+import { updateVenue_v2 } from "api/admin";
 
 // Hooks
 import { useForm } from "react-hook-form";
+import { useUser } from "hooks/useUser";
 
 // Components
 import { Button, Form } from "react-bootstrap";
@@ -10,12 +12,12 @@ import ToggleSwitch from "components/atoms/ToggleSwitch";
 
 // Typings
 import { AdvancedSettingsProps } from "./AdvancedSettings.types";
+import { Venue_v2_AdvancedConfig } from "types/venues";
+
+import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
 
 // Styles
 import * as S from "../Admin.styles";
-import { updateVenue_v2 } from "api/admin";
-import { Venue_v2_AdvancedConfig } from "types/venues";
-import { useUser } from "hooks/useUser";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
@@ -58,7 +60,12 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   showGrid: Yup.boolean().notRequired(),
   columns: Yup.number().when("showGrid", {
     is: true,
-    then: Yup.number().required("Columns are required!").min(1),
+    then: Yup.number()
+      .required(
+        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+      )
+      .min(MINIMUM_COLUMNS)
+      .max(MAXIMUM_COLUMNS),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,

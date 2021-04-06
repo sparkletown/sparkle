@@ -1,18 +1,22 @@
 import React, { useCallback, useEffect, useState } from "react";
 
 import { VenueEvent } from "types/venues";
+import { Room, RoomTypes } from "types/rooms";
+import { User } from "types/User";
 
 import UserProfileModal from "components/organisms/UserProfileModal";
 import { RoomModal } from "components/templates/PartyMap/components";
+
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import { Room } from "types/rooms";
-import { User } from "types/User";
+
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import "./NavSearchBar.scss";
+
 import { NavSearchBarInput } from "./NavSearchBarInput";
+
+import "./NavSearchBar.scss";
 
 interface SearchResult {
   rooms: Room[];
@@ -34,6 +38,7 @@ const NavSearchBar = () => {
   >();
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
+  const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
 
@@ -50,6 +55,7 @@ const NavSearchBar = () => {
       });
       return;
     }
+
     const venueUsersResults = worldUsers.filter((user) =>
       user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
     );
@@ -58,9 +64,12 @@ const NavSearchBar = () => {
       event.name.toLowerCase().includes(normalizedSearchQuery)
     );
 
-    const roomsResults: Room[] = (venue?.rooms?.filter((room) =>
-      room.title.toLowerCase().includes(normalizedSearchQuery)
-    ) ?? []) as Room[]; // @debt Clean up this hack properly once old templates are deleted
+    const roomsResults: Room[] =
+      venue?.rooms?.filter(
+        (room) =>
+          room.title.toLowerCase().includes(normalizedSearchQuery) &&
+          room.type !== RoomTypes.unclickable
+      ) ?? [];
 
     setSearchResult({
       rooms: roomsResults,
@@ -99,7 +108,10 @@ const NavSearchBar = () => {
               <div
                 className="row"
                 key={`room-${room.title}-${index}`}
-                onClick={() => setSelectedRoom(room)}
+                onClick={() => {
+                  setSelectedRoom(room);
+                  clearSearchQuery();
+                }}
               >
                 <div
                   className="result-avatar"
@@ -131,7 +143,10 @@ const NavSearchBar = () => {
               <div
                 className="row"
                 key={`user-${user.id}`}
-                onClick={() => setSelectedUserProfile(user)}
+                onClick={() => {
+                  setSelectedUserProfile(user);
+                  clearSearchQuery();
+                }}
               >
                 <div
                   className="result-avatar"
@@ -148,18 +163,19 @@ const NavSearchBar = () => {
         </div>
       )}
 
+      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
       <UserProfileModal
         userProfile={selectedUserProfile}
         show={selectedUserProfile !== undefined}
         onHide={() => setSelectedUserProfile(undefined)}
       />
-
-      {selectedRoom && (
-        <RoomModal
-          room={selectedRoom}
-          onHide={() => setSelectedRoom(undefined)}
-        />
-      )}
+      {/* @debt use only one RoomModal instance with state controlled with redux */}
+      <RoomModal
+        show={hasSelectedRoom}
+        room={selectedRoom}
+        venue={venue}
+        onHide={() => setSelectedRoom(undefined)}
+      />
     </div>
   );
 };

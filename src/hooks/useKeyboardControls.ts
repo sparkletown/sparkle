@@ -10,7 +10,6 @@ export const MovementKeys = {
   down: ["down", "s"],
   left: ["left", "a"],
   right: ["right", "d"],
-  enter: ["enter"],
 };
 
 interface UseKeyboardControlsProps {

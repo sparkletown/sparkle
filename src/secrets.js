@@ -11,7 +11,6 @@ export const MIXPANEL_PROJECT_TOKEN =
   process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;
 
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
-export const CODE_CHECK_URL = process.env.REACT_APP_CODE_CHECK_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
 // Build environment data from CI

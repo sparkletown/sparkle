@@ -7,7 +7,6 @@
 
   border-top: 1px solid rgba(255, 255, 255, 0.2);
   position: fixed;
-  height: $footer-height;
   bottom: 0;
   left: 0;
   z-index: z(footer);
@@ -15,6 +14,9 @@
   background-color: $black;
   padding-left: 30px;
   padding-right: 30px;
+  font-size: 0.7rem;
+  height: $footer-height;
+  color: #889;
 
   & > * {
     padding: 0 0.5em;
