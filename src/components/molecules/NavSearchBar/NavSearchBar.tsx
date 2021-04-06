@@ -14,9 +14,9 @@ import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
-import { NavSearchBarInput } from "./NavSearchBarInput";
-
 import "./NavSearchBar.scss";
+import { IconInput } from "components/atoms/IconInput";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface SearchResult {
   rooms: Room[];
@@ -26,6 +26,10 @@ interface SearchResult {
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const onSearchInputChange = useCallback(
+    (e) => setSearchQuery(e.target.value),
+    []
+  );
 
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
@@ -89,8 +93,13 @@ const NavSearchBar = () => {
 
   return (
     <div className="nav-search-links">
-      <div className="nav-search-icon" />
-      <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
+      <IconInput
+        className="nav__search"
+        value={searchQuery}
+        onChange={onSearchInputChange}
+        placeholder="Search for people, rooms, events..."
+        icon={faSearch}
+      />
 
       {isTruthy(searchQuery) && (
         <div className="nav-search-close-icon" onClick={clearSearchQuery} />
