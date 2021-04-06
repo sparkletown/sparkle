@@ -115,7 +115,8 @@ const makeHandleLogin = (page: Page) => async (
   await page.waitForSelector(loginButtonSelector);
   await page.click(loginButtonSelector);
 
-  await page.waitForNavigation();
+  // Note: the user may have to solve a captcha at this point, so don't timeout while they are doing so
+  await page.waitForNavigation({ timeout: 0 });
 };
 
 const makeGetNumberOfReportsTotal = (
