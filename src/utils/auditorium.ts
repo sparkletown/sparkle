@@ -5,8 +5,11 @@ export interface TranslateIndexProps {
   totalAmount: number;
 }
 
-export const translateIndex = ({ index, totalAmount }: TranslateIndexProps) =>
-  index - Math.floor(totalAmount / 2);
+// NOTE: Converts coordinate
+export const convertCoordinate = ({
+  index,
+  totalAmount,
+}: TranslateIndexProps) => index - Math.floor(totalAmount / 2);
 
 export const chooseAuditoriumSize = (sectionsCount: number) => {
   if (sectionsCount <= 4) return AuditoriumSize.SMALL;

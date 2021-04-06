@@ -10,7 +10,7 @@ $spacing: 10px;
   gap: $spacing;
 
   grid-auto-rows: 120px;
-  grid-auto-columns: 1fr;
+  grid-auto-columns: minmax(250px, 1fr);
 
   &--small {
     grid-template-areas:
@@ -30,6 +30,7 @@ $spacing: 10px;
   }
 
   &--large {
+    grid-auto-columns: minmax(150px, 1fr);
     grid-template-areas:
       " left-space left-space video video video video right-space right-space "
       "     .          .      video video video video      .           .      "

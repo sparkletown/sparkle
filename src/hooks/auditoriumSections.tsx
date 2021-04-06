@@ -5,7 +5,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { setGridData } from "api/profile";
 
 import { WithId } from "utils/id";
-import { translateIndex } from "utils/auditorium";
+import { convertCoordinate } from "utils/auditorium";
 
 import { GridPosition } from "types/grid";
 import { User } from "types/User";
@@ -83,19 +83,19 @@ export const useAuditoriumSection = ({
 
   const checkIfSeat = useCallback(
     ({ row, column }: GridPosition) => {
-      const translatedRowIndex = translateIndex({
+      const covertedRowCoordinate = convertCoordinate({
         index: row,
         totalAmount: rows,
       });
-      const translatedColumnIndex = translateIndex({
+      const convertedColumnCoordinate = convertCoordinate({
         index: column,
         totalAmount: columns,
       });
 
       const isInVideoRow =
-        Math.abs(translatedRowIndex) <= videoHeightInSeats / 2;
+        Math.abs(covertedRowCoordinate) <= videoHeightInSeats / 2;
       const isInVideoColumn =
-        Math.abs(translatedColumnIndex) <= videoWidthInSeats / 2;
+        Math.abs(convertedColumnCoordinate) <= videoWidthInSeats / 2;
 
       return !(isInVideoRow && isInVideoColumn);
     },
