@@ -84,7 +84,7 @@ export const SchedulePage = () => {
   }, [openVenues]);
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar>
       <div className="schedule-page">
         <h3>Sparkleverse Schedule</h3>
         <div className="schedule-container">

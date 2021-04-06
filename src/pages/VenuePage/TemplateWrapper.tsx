@@ -34,7 +34,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
-  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
@@ -43,6 +42,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Jazzbar} />
         </Switch>
       );
+      // NOTE: Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
@@ -62,7 +62,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PlayaRouter />;
-      fullscreen = true;
       break;
 
     case VenueTemplate.zoomroom:
@@ -94,13 +93,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Audience} />
         </Switch>
       );
-      fullscreen = true;
       break;
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
-      fullscreen = true;
-      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
@@ -109,7 +105,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.embeddable:
       template = <Embeddable venue={venue} />;
-      fullscreen = true;
       break;
 
     case VenueTemplate.firebarrel:
@@ -131,7 +126,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     // @debt remove backButton from Navbar
-    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
+    <WithNavigationBar hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />

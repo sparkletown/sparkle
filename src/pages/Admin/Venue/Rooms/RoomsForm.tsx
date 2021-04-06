@@ -83,7 +83,7 @@ export const RoomsForm: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar>
       <RoomInnerForm
         venueId={venueId}
         venue={venue}
