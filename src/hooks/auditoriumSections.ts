@@ -70,7 +70,7 @@ export const useAuditoriumSection = ({
   const leaveSeat = useCallback(() => {
     if (!venueId || !userId) return;
 
-    setGridData({ venueId, userId, gridData: null });
+    setGridData({ venueId, userId, gridData: undefined });
   }, [venueId, userId]);
 
   return {

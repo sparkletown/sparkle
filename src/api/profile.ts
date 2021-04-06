@@ -16,10 +16,18 @@ export const makeUpdateUserGridLocation = ({
   row: number | null,
   column: number | null
 ) => {
-  setGridData({
+  if (row === null || column === null) {
+    return setGridData({
+      venueId,
+      userId: userUid,
+      gridData: undefined,
+    });
+  }
+
+  return setGridData({
     venueId,
     userId: userUid,
-    gridData: { row: row as number, column: column as number },
+    gridData: { row, column },
   });
 };
 
@@ -27,7 +35,7 @@ export interface SetGridDataProps {
   venueId: string;
   userId: string;
 
-  gridData: AnyGridData | null;
+  gridData?: AnyGridData;
 }
 
 export const setGridData = async ({
@@ -38,10 +46,10 @@ export const setGridData = async ({
   const userProfile = firebase.firestore().collection("users").doc(userId);
 
   const newGridData = {
-    [`data.${venueId}`]: gridData,
+    [`data.${venueId}`]: gridData ?? firebase.firestore.FieldValue.delete(),
   };
 
-  userProfile.update(newGridData).catch((err) => {
+  return userProfile.update(newGridData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
         location: "api::profile::setGridData",

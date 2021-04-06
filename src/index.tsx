@@ -90,7 +90,8 @@ const rrfConfig = {
 firebase.initializeApp(FIREBASE_CONFIG);
 firebase.analytics();
 firebase.auth();
-firebase.firestore();
+const firestore = firebase.firestore();
+firestore.settings({ ignoreUndefinedProperties: true });
 
 if (window.location.hostname === "localhost") {
   firebase.functions().useFunctionsEmulator("http://localhost:5001");
