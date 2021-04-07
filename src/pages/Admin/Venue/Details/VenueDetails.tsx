@@ -153,7 +153,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   if (!user) return null;
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
-    const newData = {
+    const newData: RoomData_v2 = {
       ...editingRoom,
       ...values,
     };
