@@ -156,11 +156,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     const newData = {
       ...editingRoom,
       ...values,
-      x_percent: editingRoom?.x_percent,
-      y_percent: editingRoom?.y_percent,
-      width_percent: editingRoom?.width_percent,
-      height_percent: editingRoom?.height_percent,
-      isEnabled: editingRoom?.isEnabled,
     };
 
     await updateRoom(newData, venueId!, user, index);
