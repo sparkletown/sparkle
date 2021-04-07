@@ -12,9 +12,10 @@ import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
 import { PartyMapVenue, AnyVenue } from "types/venues";
 import { useHistory } from "react-router-dom";
+import { Form } from "react-bootstrap";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
-import { Room } from "types/rooms";
+import { Room, RoomTypes } from "types/rooms";
 import { validationSchema } from "./RoomsValidationSchema";
 import { ErrorMessage, useForm } from "react-hook-form";
 import { ImageInput } from "components/molecules/ImageInput";
@@ -312,6 +313,22 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                       />
                       <span className="slider round"></span>
                     </label>
+                  </div>
+                  <div className="toggle-room">
+                    <div className="input-title">Room Type</div>
+                    <Form.Control
+                      disabled={disable}
+                      as="select"
+                      custom
+                      name="type"
+                      ref={register}
+                      defaultValue={values.type}
+                    >
+                      <option />
+                      {Object.values(RoomTypes).map((roomType) => (
+                        <option key={roomType}>{roomType}</option>
+                      ))}
+                    </Form.Control>
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

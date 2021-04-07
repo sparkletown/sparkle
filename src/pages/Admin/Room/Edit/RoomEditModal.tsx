@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback, useMemo } from "react";
 import { Form, Modal, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
-import { RoomData_v2 } from "types/rooms";
+import { RoomData_v2, RoomTypes } from "types/rooms";
 
 import { CustomInputsType, RoomTemplate, ROOM_TEMPLATES } from "settings";
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
@@ -178,6 +178,24 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
               >
                 {ROOM_TEMPLATES.map((template) => (
                   <option key={template.name}>{template.template}</option>
+                ))}
+              </Form.Control>
+            </div>
+          </Form.Row>
+
+          <Form.Row>
+            <div className="room-edit-modal__input">
+              <Form.Label>Change room type</Form.Label>
+              <Form.Control
+                as="select"
+                custom
+                name="type"
+                ref={register}
+                defaultValue={room.type}
+              >
+                <option />
+                {Object.values(RoomTypes).map((roomType) => (
+                  <option key={roomType}>{roomType}</option>
                 ))}
               </Form.Control>
             </div>
