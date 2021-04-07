@@ -19,25 +19,22 @@ export const useGetUserByPosition: (
 }) => {
   const seatedUsersByHash = useMemo(
     () =>
-      positionedUsers.reduce<Map<string, WithId<User> | undefined>>(
-        (acc, user) => {
-          if (!venueId) return acc;
+      positionedUsers.reduce<Map<string, WithId<User>>>((acc, user) => {
+        if (!venueId) return acc;
 
-          const gridData = user.data?.[venueId];
+        const gridData = user.data?.[venueId];
 
-          if (!gridData) return acc;
+        if (!gridData) return acc;
 
-          const { row, column } = gridData;
+        const { row, column } = gridData;
 
-          const positionHash = getPositionHash({
-            row,
-            column,
-          });
+        const positionHash = getPositionHash({
+          row,
+          column,
+        });
 
-          return acc.set(positionHash, user);
-        },
-        new Map()
-      ),
+        return acc.set(positionHash, user);
+      }, new Map()),
     [positionedUsers, venueId]
   );
 

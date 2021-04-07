@@ -1,4 +1,6 @@
 @import "scss/constants";
+// @debt These styles are mostly taken/copy-pasted from Audience.scss
+// Eventually, we we get rid of Audience template, these will be the only styles available
 
 // If you change this, make sure to also change it in ./constants.ts
 $section-seat-size: 4vh;

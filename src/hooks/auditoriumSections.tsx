@@ -177,6 +177,7 @@ export const useAuditoriumGrid = ({
                   key={columnIndex}
                   user={user}
                   avatarClassName={"section__user-avatar"}
+                  isAudioEffectDisabled
                   setSelectedUserProfile={() => {}}
                 />
               );
