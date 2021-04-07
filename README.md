@@ -1,8 +1,12 @@
 # Sparkle Web App
 
-Codebase for Sparkle, brought to you by Sparkle.
+Codebase for the Sparkle Platform, brought to you by [Sparkle](https://sparklespaces.com/).
 
 ## Getting started
+
+The instructions below assume you already have a Firebase project setup and configured appropriately.
+
+**Note**: If you're interested in setting up the project to run in your own environment but you're not sure how to go about it, feel free to [open an issue](https://github.com/sparkletown/sparkle/issues/new) asking for assistance.
 
 ### Frontend
 
@@ -33,7 +37,7 @@ Now you're ready to start the server! ✨
 npm start
 ```
 
-Once the server is started, you will have the browser opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start surfing the app, you can use the following url http://localhost:3000/in/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
+Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start using the app, navigate to a URL such as http://localhost:3000/v/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
 
 While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
@@ -44,6 +48,8 @@ npm run build
 ### Firebase functions
 
 **Note:** Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
+
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
 In a new terminal, from the directory you cloned the code to, enter the following commands:
 
@@ -80,10 +86,6 @@ npm run firebase:emulate-functions
 # npm run firebase emulators:start --only functions
 ```
 
-**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
-
-**Note**: If you're interested in setting up the project to run in your own environment but you're still unclear about how to do that feel free to open an issue asking for assistance.
-
 ### Stripe
 
 **Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
@@ -114,11 +116,11 @@ const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
 
 To contribute to the code base, please follow these steps:
 
-- create a branch from staging
+- create a branch from `staging`
 - code
-- create a pull request on staging
+- create a pull request on `staging`
 
-Then, to deploy to production, **merge staging into master**.
+Then, to deploy to production, **merge staging into `master`**.
 
 > When adding a quick fix to production:
 >
@@ -133,8 +135,9 @@ Then, to deploy to production, **merge staging into master**.
 
 Deploys are handled by CircleCI.
 
-- Merging to staging will deploy to staging
-- Merging to master will deploy to production
+- Merging to `staging` will deploy to staging
+- Merging to `master` will deploy to production
+- Pushing the `master` branch to any of our other configured production branches will deploy to that environment
 
 ## Obtaining email addresses from firebase
 
