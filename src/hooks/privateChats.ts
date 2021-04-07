@@ -1,4 +1,5 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useEffect, useRef } from "react";
+import useSound from "use-sound";
 
 import {
   sendPrivateMessage,
@@ -6,7 +7,13 @@ import {
   deletePrivateMessage,
 } from "api/chat";
 
-import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
+import newMessageSound from "assets/sounds/newmessage.m4a";
+
+import {
+  PreviewChatMessageMap,
+  PrivateChatMessage,
+  ChatTypes,
+} from "types/chat";
 
 import { privateChatMessagesSelector } from "utils/selectors";
 import {
@@ -18,7 +25,7 @@ import {
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
 
-import { useNotificationSound } from "hooks/useNotificationSound";
+import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -46,7 +53,7 @@ export const usePrivateChatMessages = () => {
   useConnectPrivateChatMessages();
 
   const privateChatMessages = useSelector(privateChatMessagesSelector);
-  useNotificationSound(privateChatMessages);
+  usePrivateChatNotification(privateChatMessages || []);
 
   return useMemo(
     () => ({
@@ -217,4 +224,62 @@ export const useRecipientChat = (recipientId: string) => {
     messagesToDisplay,
     recipient,
   };
+};
+
+export const usePrevious = <T>(value: T) => {
+  const ref = useRef<T>(value);
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+};
+
+export const usePrivateChatNotification = (
+  privateChatMessages: WithId<PrivateChatMessage>[]
+) => {
+  const { user } = useUser();
+  const userId = user?.uid;
+
+  const { chatSettings } = useChatSidebarControls();
+
+  const [play] = useSound(newMessageSound, {
+    // `interrupt` ensures that if the sound starts again before it's
+    // ended, it will truncate it. Otherwise, the sound can overlap.
+    interrupt: true,
+  });
+
+  const privateChateMessagesSorted = useMemo(
+    () => Object.values(privateChatMessages).sort(chatSort),
+    [privateChatMessages]
+  );
+
+  const prevPrivateChatMessages = usePrevious(privateChateMessagesSorted[0]);
+
+  const currentChatUserId =
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipientId
+      : undefined;
+
+  return useMemo(() => {
+    const shouldPlaySound = privateChateMessagesSorted
+      .filter((message) => {
+        return (
+          message?.ts_utc.seconds > prevPrivateChatMessages?.ts_utc.seconds
+        );
+      })
+      .some(
+        (message) =>
+          !message.isRead && ![userId, currentChatUserId].includes(message.from)
+      );
+
+    if (shouldPlaySound) {
+      play();
+    }
+  }, [
+    privateChateMessagesSorted,
+    currentChatUserId,
+    play,
+    prevPrivateChatMessages,
+    userId,
+  ]);
 };
