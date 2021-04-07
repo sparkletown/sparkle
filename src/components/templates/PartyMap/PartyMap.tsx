@@ -9,6 +9,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useCustomSoundsContext } from "hooks/sounds";
 
 import { Map, RoomModal } from "./components";
 
@@ -23,6 +24,7 @@ export const PartyMap: React.FC = () => {
   useConnectCurrentVenue();
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
+  const { isLoaded } = useCustomSoundsContext();
 
   const currentVenue = useSelector(partyMapVenueSelector);
 
@@ -40,7 +42,7 @@ export const PartyMap: React.FC = () => {
     setSelectedRoom(undefined);
   }, []);
 
-  if (!user || !profile) return <>Loading..</>;
+  if (!user || !profile || !isLoaded) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">

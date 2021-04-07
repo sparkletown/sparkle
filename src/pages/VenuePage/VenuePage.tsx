@@ -35,6 +35,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { CustomSoundsProvider } from "hooks/sounds";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
@@ -230,7 +231,11 @@ const VenuePage: React.FC = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  return <TemplateWrapper venue={venue} />;
+  return (
+    <CustomSoundsProvider>
+      <TemplateWrapper venue={venue} />
+    </CustomSoundsProvider>
+  );
 };
 
 export default VenuePage;
