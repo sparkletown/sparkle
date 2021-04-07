@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.icon-input {
+.input-field {
   position: relative;
 
   &__input {
@@ -14,7 +14,7 @@
       padding-right: 2.5rem;
     }
 
-    &:focus + .icon-input__icon {
+    &:focus + .input-field__icon {
       opacity: 0.6;
     }
   }

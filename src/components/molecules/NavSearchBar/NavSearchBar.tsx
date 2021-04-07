@@ -15,7 +15,7 @@ import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import "./NavSearchBar.scss";
-import { IconInput } from "components/atoms/IconInput";
+import { InputField } from "components/atoms/InputField";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface SearchResult {
@@ -93,7 +93,7 @@ const NavSearchBar = () => {
 
   return (
     <div className="nav-search-links">
-      <IconInput
+      <InputField
         className="nav__search"
         value={searchQuery}
         onChange={onSearchInputChange}

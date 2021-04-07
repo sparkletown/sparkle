@@ -2,9 +2,9 @@ import React, { ChangeEvent } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import "./IconInput.scss";
+import "./InputField.scss";
 
-export interface IconInputProps {
+export interface InputFieldProps {
   className?: string;
   icon?: IconProp;
   onChange?: (e?: ChangeEvent<HTMLInputElement>) => void;
@@ -14,11 +14,11 @@ export interface IconInputProps {
   iconPosition?: "right" | "left";
 }
 
-const ICON_INPUT_CLASS_NAME = "icon-input";
+const ICON_INPUT_CLASS_NAME = "input-field";
 const ICON_CLASS_NAME = `${ICON_INPUT_CLASS_NAME}__icon`;
 const INPUT_CLASS_NAME = `${ICON_INPUT_CLASS_NAME}__input`;
 
-export const IconInput: React.FC<IconInputProps> = ({
+export const InputField: React.FC<InputFieldProps> = ({
   className,
   icon,
   onChange,

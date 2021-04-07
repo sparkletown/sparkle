@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { IconInput } from "components/atoms/IconInput";
+import { InputField } from "components/atoms/InputField";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
@@ -99,7 +99,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   return (
     <div className="private-chats">
-      <IconInput
+      <InputField
         className="private-chats__search"
         placeholder="Search for online people"
         value={userSearchQuery}
