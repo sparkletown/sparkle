@@ -157,7 +157,6 @@ export const useCustomSound = (
         soundRef,
         soundConfigsKeys: Object.keys(soundConfigs),
       };
-      console.log("context: ", context);
 
       console.warn(msg, context);
       Bugsnag.notify(msg, (event) => {
