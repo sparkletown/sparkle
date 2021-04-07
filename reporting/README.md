@@ -48,7 +48,10 @@ $ pip3 install -r requirements.txt
 # $ pip3 install holoviews matplotlib
 
 # Finally, run the script
-$ python3 makegraphs.py ~/Downloads/My\ Event\ CSVs/*.csv # python 3 compatible, unsure about python2
+$ ./makegraphs.py ~/Downloads/My\ Event\ CSVs/*.csv # python 3 compatible, unsure about python2
+
+# Or if that doesn't work for you, you can try:
+#   python3 makegraphs.py ~/Downloads/My\ Event\ CSVs/*.csv
 ```
 
 14. Open the report:
