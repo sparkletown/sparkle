@@ -68,8 +68,6 @@ const PlacementState = {
   Hidden: "HIDDEN",
 };
 
-const UNCLICKABLE_ROOM_TYPE = "UNCLICKABLE";
-
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
     return await checkUserIsOwner(venueId, uid);
@@ -115,7 +113,6 @@ const createVenueData = (data, context) => {
     profile_questions: data.profile_questions,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
-    type: data.type === UNCLICKABLE_ROOM_TYPE,
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
@@ -517,10 +514,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showLiveSchedule = data.showLiveSchedule;
   }
 
-  if (typeof data.type === "boolean") {
-    updated.type = data.type ? UNCLICKABLE_ROOM_TYPE : null;
-  }
-
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
   }
@@ -635,10 +628,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showLiveSchedule === "boolean") {
     updated.showLiveSchedule = data.showLiveSchedule;
-  }
-
-  if (typeof data.type === "boolean") {
-    updated.type = data.type ? UNCLICKABLE_ROOM_TYPE : null;
   }
 
   if (typeof data.showBadges === "boolean") {

@@ -72,7 +72,6 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     then: Yup.string().required("Radio stream is required!"),
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
-  type: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
@@ -100,7 +99,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       columns: venue.columns,
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
-      type: venue.type,
       showBadges: venue.showBadges,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
@@ -285,13 +283,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         {renderChatTitleInput()}
 
         {renderShowGridToggle()}
-
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.type}
-          name="type"
-          title="Set room un-clickable"
-        />
 
         <ToggleElement
           forwardRef={register}

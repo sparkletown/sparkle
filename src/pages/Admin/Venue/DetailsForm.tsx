@@ -551,16 +551,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderRoomTypeToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">set room un-clickable</h4>
-      <label id={"type"} className="switch">
-        <input type="checkbox" id={"type"} name={"type"} ref={register} />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
@@ -874,7 +864,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         <EntranceInput register={register} fieldName="entrance" />
 
-        {renderRoomTypeToggle()}
         {renderLiveScheduleToggle()}
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&

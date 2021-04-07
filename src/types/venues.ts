@@ -83,7 +83,6 @@ export interface Venue_v2_AdvancedConfig {
   radioStations?: string | string[]; // single string on form, array in DB
   requiresDateOfBirth?: boolean;
   roomVisibility?: RoomVisibility;
-  type?: boolean;
   showBadges?: boolean;
   showGrid?: boolean;
   showRadio?: boolean;
@@ -138,7 +137,6 @@ export interface BaseVenue {
   profileAvatars?: boolean;
   hideVideo?: boolean;
   showLiveSchedule?: boolean;
-  type?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
