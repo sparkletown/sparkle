@@ -22,6 +22,8 @@ import { fetchSoundConfigs } from "api/sounds";
 
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
+import { useUser } from "hooks/useUser";
+
 import { isDefined } from "utils/types";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
@@ -35,12 +37,10 @@ export interface ExposedDataWithPlay extends ExposedData {
 
 export interface CustomSoundsState {
   soundConfigs: SoundConfigMap;
-  isLoaded: boolean;
 }
 
 export const initialValue: CustomSoundsState = {
   soundConfigs: {},
-  isLoaded: false,
 };
 
 export const CustomSoundsContext = createContext<CustomSoundsState>(
@@ -48,27 +48,24 @@ export const CustomSoundsContext = createContext<CustomSoundsState>(
 );
 
 export const CustomSoundsProvider: React.FC = ({ children }) => {
-  const [isLoaded, setIsLoaded] = useState<boolean>(initialValue.isLoaded);
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
     initialValue.soundConfigs
   );
+  const { user } = useUser();
 
   // Fetch the sound configs data on first load
   useEffect(() => {
-    fetchSoundConfigs()
-      .then((soundConfigs) => {
-        setSoundConfigs(soundConfigs);
-        setIsLoaded(true);
-      })
-      .catch(() => setIsLoaded(true));
-  }, []);
+    if (!user?.uid) return;
+    fetchSoundConfigs().then((soundConfigs) => {
+      setSoundConfigs(soundConfigs);
+    });
+  }, [user]);
 
   const providerData = useMemo(
     () => ({
       soundConfigs,
-      isLoaded,
     }),
-    [soundConfigs, isLoaded]
+    [soundConfigs]
   );
 
   return (

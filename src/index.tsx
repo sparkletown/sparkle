@@ -65,6 +65,7 @@ import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
+import { CustomSoundsProvider } from "hooks/sounds";
 
 activatePolyFills();
 initializeZendesk();
@@ -257,7 +258,9 @@ render(
           <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <AuthIsLoaded>
-                <AppRouter />
+                <CustomSoundsProvider>
+                  <AppRouter />
+                </CustomSoundsProvider>
               </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
           </Provider>
