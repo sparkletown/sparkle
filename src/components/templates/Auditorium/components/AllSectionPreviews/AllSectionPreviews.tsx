@@ -9,8 +9,9 @@ import { AnyVenue } from "types/venues";
 
 import { useAuditoriumSections } from "hooks/auditoriumSections";
 
+import { IFrame } from "components/atoms/IFrame";
+
 import { SectionPreview } from "../SectionPreview";
-import { IFrame } from "../IFrame";
 
 import "./AllSectionPreviews.scss";
 

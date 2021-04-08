@@ -9,6 +9,7 @@ import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
+import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { FireBarrel } from "components/templates/FireBarrel";
@@ -16,7 +17,6 @@ import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
-import { Auditorium } from "components/templates/Auditorium";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";

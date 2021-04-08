@@ -20,12 +20,12 @@ export const IFrame: React.FC<IFrameProps> = ({
   <div className={containerClassname}>
     <iframe
       className={iframeClassname}
+      style={iframeStyles}
       src={src}
       title={title}
       frameBorder="0"
       allow={IFRAME_ALLOW}
       allowFullScreen
-      style={iframeStyles}
     />
   </div>
 );

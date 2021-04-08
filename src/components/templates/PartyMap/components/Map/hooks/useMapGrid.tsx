@@ -2,9 +2,10 @@ import React, { useMemo } from "react";
 
 import { User } from "types/User";
 import { ReactHook } from "types/utility";
-import { GridPosition } from "types/grid";
 
 import { WithId } from "utils/id";
+
+import { GetUserByPostion } from "hooks/useGetUserByPosition";
 
 import { MapCell } from "components/molecules/MapCell";
 
@@ -13,7 +14,7 @@ interface UseMapGrid {
   userUid?: string;
   columnsArray: JSX.Element[];
   rowsArray: JSX.Element[];
-  getUserBySeat: (gridData: GridPosition) => WithId<User> | undefined;
+  getUserBySeat: GetUserByPostion;
   onSeatClick: (
     row: number,
     column: number,

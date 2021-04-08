@@ -10,7 +10,7 @@ import {
   useAuditoriumGrid,
 } from "hooks/auditoriumSections";
 
-import { IFrame } from "../IFrame";
+import { IFrame } from "components/atoms/IFrame";
 
 import {
   SECTION_DEFAULT_COLUMNS_NUMBER,

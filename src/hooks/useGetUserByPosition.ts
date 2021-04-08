@@ -6,18 +6,19 @@ import { GridPosition } from "types/grid";
 import { WithId } from "utils/id";
 import { getPositionHash } from "utils/grid";
 
-export interface UseGetUserByPosition {
+export interface UseGetUserByPositionProps {
   positionedUsers: readonly WithId<User>[];
   venueId?: string;
 }
 
+export type GetUserByPostion = (
+  gridPosition: GridPosition
+) => WithId<User> | undefined;
+
 export const useGetUserByPosition: (
-  props: UseGetUserByPosition
-) => (gridPosition: GridPosition) => WithId<User> | undefined = ({
-  positionedUsers,
-  venueId,
-}) => {
-  const seatedUsersByHash = useMemo(
+  props: UseGetUserByPositionProps
+) => GetUserByPostion = ({ positionedUsers, venueId }) => {
+  const seatedUsersByHash: Map<string, WithId<User>> = useMemo(
     () =>
       positionedUsers.reduce<Map<string, WithId<User>>>((acc, user) => {
         if (!venueId) return acc;
