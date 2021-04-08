@@ -33,9 +33,9 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const sectionPreviews = useMemo(
     () =>
       auditoriumSections.map((section) => (
-        <SectionPreview key={section.id} section={section} />
+        <SectionPreview key={section.id} section={section} venueId={venueId} />
       )),
-    [auditoriumSections]
+    [auditoriumSections, venueId]
   );
 
   const containerClasses = classNames("section-previews", {

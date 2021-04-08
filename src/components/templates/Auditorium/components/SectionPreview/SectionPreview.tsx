@@ -6,25 +6,27 @@ import { faUserFriends, faLock } from "@fortawesome/free-solid-svg-icons";
 
 import { DEFAULT_SECTION_PREVIEW_TITLE } from "settings";
 
-import { useVenueId } from "hooks/useVenueId";
+import { WithId } from "utils/id";
+
 import { useSectionSeatedUsers } from "hooks/auditoriumSections";
 
 import { UserList } from "components/molecules/UserList";
 
 import { AuditoriumSection } from "types/auditorium";
 
-import { WithId } from "utils/id";
-
 import "./SectionPreview.scss";
 
 export interface SectionPreviewProps {
   section: WithId<AuditoriumSection>;
+  venueId: string;
 }
 
-export const SectionPreview: React.FC<SectionPreviewProps> = ({ section }) => {
+export const SectionPreview: React.FC<SectionPreviewProps> = ({
+  section,
+  venueId,
+}) => {
   const { isLocked, title } = section;
 
-  const venueId = useVenueId();
   const history = useHistory();
 
   const handleClick = () => {

@@ -4,11 +4,9 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { setGridData } from "api/profile";
 
-import { WithId } from "utils/id";
 import { convertCoordinate } from "utils/auditorium";
 
 import { GridPosition } from "types/grid";
-import { User } from "types/User";
 
 import {
   currentAuditoriumSectionsSelector,
@@ -19,7 +17,7 @@ import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useRecentVenueUsers } from "./users";
 import { useUser } from "./useUser";
-import { useGetUserByPosition } from "./useGetUserByPosition";
+import { GetUserByPostion, useGetUserByPosition } from "./useGetUserByPosition";
 
 const useConnectAuditoriumSections = (venueId?: string) => {
   useFirestoreConnect(() => {
@@ -68,11 +66,13 @@ export const useAuditoriumSection = ({
     positionedUsers: seatedUsers,
   });
 
-  const takeSeat = useCallback(
+  const takeSeat: (
+    gridPosition: GridPosition
+  ) => Promise<void> | undefined = useCallback(
     ({ row, column }: GridPosition) => {
       if (!sectionId || !venueId || !userId) return;
 
-      setGridData({
+      return setGridData({
         venueId,
         userId,
         gridData: { sectionId, row, column },
@@ -80,6 +80,12 @@ export const useAuditoriumSection = ({
     },
     [sectionId, venueId, userId]
   );
+
+  const leaveSeat: () => Promise<void> | undefined = useCallback(() => {
+    if (!venueId || !userId) return;
+
+    return setGridData({ venueId, userId, gridData: undefined });
+  }, [venueId, userId]);
 
   const checkIfSeat = useCallback(
     ({ row, column }: GridPosition) => {
@@ -101,12 +107,6 @@ export const useAuditoriumSection = ({
     },
     [rows, columns, videoHeightInSeats, videoWidthInSeats]
   );
-
-  const leaveSeat = useCallback(() => {
-    if (!venueId || !userId) return;
-
-    setGridData({ venueId, userId, gridData: undefined });
-  }, [venueId, userId]);
 
   return {
     auditoriumSection: section,
@@ -149,9 +149,9 @@ export const useAuditoriumSections = (venueId?: string) => {
 export interface UseAuditoriumGridProps {
   rows: number;
   columns: number;
-  getUserBySeat: (gridData: GridPosition) => WithId<User> | undefined;
+  getUserBySeat: GetUserByPostion;
   checkIfSeat: (gridData: GridPosition) => boolean;
-  takeSeat: (gridData: GridPosition) => void;
+  takeSeat: (gridData: GridPosition) => Promise<void> | undefined;
 }
 
 export const useAuditoriumGrid = ({

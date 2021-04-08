@@ -10,8 +10,9 @@ import {
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
+import { GridPosition } from "types/grid";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+import { setGridData } from "api/profile";
 
 import { hasElements, isTruthy } from "utils/types";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
@@ -87,15 +88,16 @@ export const Map: React.FC<MapProps> = ({
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
   const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
+    (gridPosition: GridPosition) => {
       if (!userUid) return;
 
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid,
-      })(row, column);
-
       setLocationData({ userId: userUid, locationName: venueName });
+
+      return setGridData({
+        venueId,
+        userId: userUid,
+        gridData: gridPosition,
+      });
     },
     [userUid, venueId, venueName]
   );
@@ -157,7 +159,7 @@ export const Map: React.FC<MapProps> = ({
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
-        takeSeat(row, column);
+        takeSeat({ row, column });
       } else {
         checkForRoomHit(row, column);
       }
@@ -170,7 +172,8 @@ export const Map: React.FC<MapProps> = ({
     positionedUsers: partygoers,
   });
 
-  const isSeatTaken = () => getUserBySeat !== undefined;
+  const isSeatTaken = (gridPosition: GridPosition) =>
+    getUserBySeat(gridPosition) !== undefined;
 
   useKeyboardControls({
     venueId,
