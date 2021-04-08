@@ -34,8 +34,8 @@ export interface UserProfilePictureProp {
 // @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled,
-  miniAvatars,
-  avatarClassName,
+  miniAvatars = false,
+  avatarClassName = "profile-icon",
   avatarStyle,
   containerStyle,
   setSelectedUserProfile,
@@ -164,12 +164,6 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     muteReactions,
     isAudioEffectDisabled,
   ]);
-};
-
-UserProfilePicture.defaultProps = {
-  avatarClassName: "profile-icon",
-  miniAvatars: false,
-  isAudioEffectDisabled: true,
 };
 
 export default UserProfilePicture;
