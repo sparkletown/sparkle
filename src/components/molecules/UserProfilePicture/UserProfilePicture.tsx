@@ -33,7 +33,7 @@ export interface UserProfilePictureProp {
 // @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
 // @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
-  isAudioEffectDisabled,
+  isAudioEffectDisabled = true,
   miniAvatars = false,
   avatarClassName = "profile-icon",
   avatarStyle,
