@@ -9,7 +9,7 @@ export interface ConvertCoordinateProps {
 export const convertCoordinate = ({
   index,
   totalAmount,
-}: TranslateIndexProps) => index - Math.floor(totalAmount / 2);
+}: ConvertCoordinateProps) => index - Math.floor(totalAmount / 2);
 
 export const chooseAuditoriumSize = (sectionsCount: number) => {
   if (sectionsCount <= 4) return AuditoriumSize.SMALL;
