@@ -35,7 +35,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
