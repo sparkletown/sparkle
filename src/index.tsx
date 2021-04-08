@@ -81,23 +81,23 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
+const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+firebaseApp.analytics();
+firebaseApp.auth();
+firebaseApp.firestore();
+const firebaseFunctions = firebase.functions();
+
+// If running locally, enable the functions emulator
+if (window.location.hostname === "localhost") {
+  firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
+}
+
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
 
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
-
-firebase.initializeApp(FIREBASE_CONFIG);
-firebase.analytics();
-firebase.auth();
-firebase.firestore();
-
-if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5001");
-} else {
-  firebase.functions();
-}
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
