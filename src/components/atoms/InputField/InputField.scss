@@ -1,41 +1,51 @@
 @import "scss/constants";
 
+$icon-width: 2.5rem;
+
 .input-field {
   position: relative;
+
+  &--icon-start {
+    input {
+      padding-left: $icon-width;
+    }
+  }
+
+  &--icon-end {
+    input {
+      padding-right: $icon-width;
+    }
+  }
 
   &__input {
     height: 100%;
 
-    &--icon-from-left {
-      padding-left: 2.5rem;
-    }
-
-    &--icon-from-right {
-      padding-right: 2.5rem;
-    }
-
-    &:focus + .input-field__icon {
+    &:focus + .input-field__icon > * {
       opacity: 0.6;
     }
   }
 
   &__icon {
     display: flex;
+    justify-content: center;
+    align-items: center;
     position: absolute;
     top: 0;
     height: 100%;
-    width: 40px;
-    justify-content: center;
-    align-items: center;
+    width: $icon-width;
     z-index: z(input-icon);
-    opacity: 0.2;
 
-    &--left {
+    &--start {
       left: 0;
     }
 
-    &--right {
+    &--end {
       right: 0;
+    }
+
+    & > * {
+      opacity: 0.2;
+      width: 100%;
     }
   }
 }

@@ -4,41 +4,14 @@
   display: flex;
   position: relative;
 
-  .nav-search-close-icon {
-    position: absolute;
-    align-self: center;
-    z-index: z(navbar-nav-search-close-icon);
+  .nav__clear-search {
     cursor: pointer;
-    right: 5px;
-    height: 30px;
-    width: 30px;
-    background-image: url(/icons/nav-dropdown-close.png);
-    background-size: 30px 30px;
     opacity: 0.4;
-    &:hover {
-      opacity: 0.6;
-    }
-    &:active {
-      opacity: 0.8;
-    }
-  }
 
-  .input-close-btn {
-    display: none;
-    content: "";
-    position: absolute;
-    z-index: z(navbar-nav-search-input-close-btn);
-    cursor: pointer;
-    right: 5px;
-    top: 5px;
-    height: 30px;
-    width: 30px;
-    background-image: url(/icons/nav-dropdown-close.png);
-    background-size: 30px 30px;
-    opacity: 0.4;
     &:hover {
       opacity: 0.6;
     }
+
     &:active {
       opacity: 0.8;
     }

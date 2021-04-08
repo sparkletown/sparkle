@@ -104,7 +104,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
         placeholder="Search for online people"
         value={userSearchQuery}
         onChange={onInputChange}
-        icon={faSearch}
+        iconStart={faSearch}
       />
 
       {userSearchQuery ? (

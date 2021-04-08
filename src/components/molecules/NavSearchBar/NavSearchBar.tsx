@@ -98,12 +98,18 @@ const NavSearchBar = () => {
         value={searchQuery}
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
-        icon={faSearch}
+        iconStart={faSearch}
+        iconEnd={
+          isTruthy(searchQuery) && (
+            <img
+              className="nav__clear-search"
+              src="/icons/nav-dropdown-close.png"
+              alt="close button"
+              onClick={clearSearchQuery}
+            />
+          )
+        }
       />
-
-      {isTruthy(searchQuery) && (
-        <div className="nav-search-close-icon" onClick={clearSearchQuery} />
-      )}
 
       {numberOfSearchResults > 0 && (
         <div className="nav-search-results">
