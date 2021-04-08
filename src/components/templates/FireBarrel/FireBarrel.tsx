@@ -95,7 +95,6 @@ export const FireBarrel: React.FC = () => {
                   showLeave={false}
                   participant={room.localParticipant}
                   user={userWithId}
-                  setSelectedUserProfile={() => {}}
                   isHost={false}
                   leave={leave}
                   useFontAwesome
@@ -119,7 +118,6 @@ export const FireBarrel: React.FC = () => {
                 <RemoteParticipant
                   participant={participant}
                   user={participantUserData}
-                  setSelectedUserProfile={() => {}}
                   isHost={false}
                   showHostControls={false}
                   remove={() => removeParticipant(participant.identity)}
