@@ -25,7 +25,7 @@ export const useGetUserByPosition: (
 
         const gridData = user.data?.[venueId];
 
-        if (!gridData) return acc;
+        if (!gridData?.row || !gridData?.column) return acc;
 
         const { row, column } = gridData;
 

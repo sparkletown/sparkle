@@ -4,7 +4,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { setGridData } from "api/profile";
 
-import { convertCoordinate } from "utils/auditorium";
+import { convertToCartesianCoordinate } from "utils/auditorium";
 
 import { GridPosition } from "types/grid";
 
@@ -89,11 +89,11 @@ export const useAuditoriumSection = ({
 
   const checkIfSeat = useCallback(
     ({ row, column }: GridPosition) => {
-      const covertedRowCoordinate = convertCoordinate({
+      const covertedRowCoordinate = convertToCartesianCoordinate({
         index: row,
         totalAmount: rows,
       });
-      const convertedColumnCoordinate = convertCoordinate({
+      const convertedColumnCoordinate = convertToCartesianCoordinate({
         index: column,
         totalAmount: columns,
       });

@@ -142,8 +142,8 @@ export const Audience: React.FunctionComponent = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const userUid = user?.uid;
-  const minColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
-  const minRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
+  const baseColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
+  const baseRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
 
   const [selectedUserProfile, setSelectedUserProfile] = useState<
     WithId<User>
@@ -247,12 +247,12 @@ export const Audience: React.FunctionComponent = () => {
 
   useEffect(() => {
     setAuditoriumSize(
-      requiredAuditoriumSize(seatedPartygoers, minColumns, minRows)
+      requiredAuditoriumSize(seatedPartygoers, baseColumns, baseRows)
     );
-  }, [minColumns, minRows, seatedPartygoers]);
+  }, [baseColumns, baseRows, seatedPartygoers]);
 
-  const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
-  const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
+  const rowsForSizedAuditorium = baseRows + auditoriumSize * 2;
+  const columnsForSizedAuditorium = baseColumns + auditoriumSize * 2;
 
   // We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
   const carvedOutWidthInSeats = Math.max(

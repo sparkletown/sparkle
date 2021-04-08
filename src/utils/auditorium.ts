@@ -5,8 +5,7 @@ export interface ConvertCoordinateProps {
   totalAmount: number;
 }
 
-// NOTE: Converts coordinate
-export const convertCoordinate = ({
+export const convertToCartesianCoordinate = ({
   index,
   totalAmount,
 }: ConvertCoordinateProps) => index - Math.floor(totalAmount / 2);
