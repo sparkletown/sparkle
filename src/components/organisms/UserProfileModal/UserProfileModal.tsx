@@ -32,13 +32,7 @@ import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 
-export interface UserProfileModalProps {
-  zIndex?: number;
-}
-
-export const UserProfileModal: React.FC<UserProfileModalProps> = ({
-  zIndex,
-}) => {
+export const UserProfileModal: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
 
   const { user } = useUser();
@@ -62,16 +56,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
   if (!selectedUserProfile || !chosenUserId || !user) {
-    return <></>;
+    return null;
   }
 
-  // REVISIT: remove the hack to cast to any below
   return (
-    <Modal
-      show={hasSelectedProfile}
-      onHide={closeUserProfileModal}
-      style={{ zIndex }}
-    >
+    <Modal show={hasSelectedProfile} onHide={closeUserProfileModal}>
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">

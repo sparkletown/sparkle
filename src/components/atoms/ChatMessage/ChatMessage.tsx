@@ -30,14 +30,14 @@ export const ChatMessage: React.FC<ChatProps> = ({
     "chat-message--me": isMine,
   });
 
-  const onOpenUserProfile = useCallback(() => {
+  const openAuthorProfile = useCallback(() => {
     openUserProfileModal(author);
   }, [openUserProfileModal, author]);
 
   return (
     <div className={containerStyles}>
       <div className="chat-message__text">{text}</div>
-      <div className="chat-message__info" onClick={onOpenUserProfile}>
+      <div className="chat-message__info" onClick={openAuthorProfile}>
         <UserAvatar avatarSrc={author.pictureUrl} />
         <span className="chat-message__author">{author.partyName}</span>
         <span className="chat-message__time">
