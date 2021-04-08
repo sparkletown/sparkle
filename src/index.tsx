@@ -54,6 +54,7 @@ import { activatePolyFills } from "./polyfills";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
+import { createPerformanceTrace, PerformanceTrace } from "utils/performance";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
@@ -94,7 +95,16 @@ if (process.env.NODE_ENV === "development") {
   firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
 }
 
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
+// Load Stripe
+const traceStripeLoad = createPerformanceTrace(
+  PerformanceTrace.initStripeLoad,
+  {
+    startNow: true,
+  }
+);
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "").finally(() => {
+  traceStripeLoad.stop();
+});
 
 const rrfConfig = {
   userProfile: "users",

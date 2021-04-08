@@ -11,7 +11,9 @@ import firebase from "firebase/app";
  * @see createPerformanceTrace
  * @see https://firebase.google.com/docs/perf-mon/custom-code-traces?platform=web#add-custom-code-traces
  */
-export enum PerformanceTrace {}
+export enum PerformanceTrace {
+  initStripeLoad = "INIT_STRIPE_LOAD",
+}
 
 export type CreatePerformanceTraceOptions = {
   /**
