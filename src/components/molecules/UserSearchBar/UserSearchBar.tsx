@@ -1,6 +1,6 @@
-import UserProfileModal from "components/organisms/UserProfileModal";
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { UserSearchBarInput } from "./UserSearchBarInput";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useWorldUsers } from "hooks/users";
 import { User } from "types/User";
 import { WithId } from "utils/id";
@@ -14,11 +14,10 @@ interface UserSearchBarProps {
 const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<WithId<User>[]>([]);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const { worldUsers } = useWorldUsers();
+
+  const { openUserProfileModal } = useProfileModalControls();
 
   useEffect(() => {
     if (!searchQuery) {
@@ -39,11 +38,6 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
     setSearchQuery("");
   }, []);
 
-  const clearSelectedUserProfile = useCallback(
-    () => setSelectedUserProfile(undefined),
-    []
-  );
-
   return (
     <div className="user-search-links">
       <div className="user-search-icon" />
@@ -60,7 +54,10 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
             <div
               className="row result-user"
               key={user.id}
-              onClick={() => onSelect(user)}
+              onClick={() => {
+                onSelect(user);
+                openUserProfileModal(user);
+              }}
             >
               <div
                 className="result-avatar"
@@ -75,11 +72,6 @@ const UserSearchBar: FC<UserSearchBarProps> = ({ onSelect }) => {
           ))}
         </div>
       )}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={!!selectedUserProfile}
-        onHide={clearSelectedUserProfile}
-      />
     </div>
   );
 };

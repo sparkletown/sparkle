@@ -24,12 +24,11 @@ import {
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
+import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRecentVenueUsers } from "hooks/users";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
@@ -150,9 +149,6 @@ export const Audience: React.FunctionComponent = () => {
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
   const [iframeUrl, setIframeUrl] = useState<string>("");
@@ -463,11 +459,9 @@ export const Audience: React.FunctionComponent = () => {
                             key={untranslatedColumnIndex}
                             className={seat ? "seat" : "not-seat"}
                             onClick={() =>
-                              seat && seatedPartygoer === null
-                                ? takeSeat(row, column)
-                                : seatedPartygoer !== null
-                                ? setSelectedUserProfile(seatedPartygoer)
-                                : null
+                              seat &&
+                              seatedPartygoer === null &&
+                              takeSeat(row, column)
                             }
                           >
                             {seat && seatedPartygoer && (
@@ -478,9 +472,6 @@ export const Audience: React.FunctionComponent = () => {
                                     isOnRight ? "left" : "right"
                                   }
                                   avatarClassName={"profile-avatar"}
-                                  setSelectedUserProfile={
-                                    setSelectedUserProfile
-                                  }
                                   miniAvatars={venue.miniAvatars}
                                   isAudioEffectDisabled={isAudioEffectDisabled}
                                 />
@@ -496,11 +487,6 @@ export const Audience: React.FunctionComponent = () => {
               }
             )}
           </div>
-          <UserProfileModal
-            show={selectedUserProfile !== undefined}
-            onHide={() => setSelectedUserProfile(undefined)}
-            userProfile={selectedUserProfile}
-          />
         </div>
       </>
     );
@@ -512,7 +498,6 @@ export const Audience: React.FunctionComponent = () => {
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-    selectedUserProfile,
     userUid,
     user,
     dispatch,

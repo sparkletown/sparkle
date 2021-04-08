@@ -18,7 +18,6 @@ type LocalParticipantProps = ParticipantProps & {
 const LocalParticipant: React.FC<LocalParticipantProps> = ({
   participant,
   user,
-  setSelectedUserProfile,
   isHost,
   showLeave = true,
   leave,
@@ -106,7 +105,6 @@ const LocalParticipant: React.FC<LocalParticipantProps> = ({
     <Participant
       participant={participant}
       user={user}
-      setSelectedUserProfile={setSelectedUserProfile}
       isHost={isHost}
       local
       showName={showName}
