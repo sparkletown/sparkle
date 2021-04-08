@@ -35,7 +35,7 @@ const renderIcon = (
 const InputField: React.ForwardRefRenderFunction<
   HTMLDivElement,
   InputFieldProps
-> = ({ className, iconStart, iconEnd, ...inputProps }, ref) => {
+> = ({ className, iconStart, iconEnd, ...extraInputProps }, ref) => {
   const wrapperClassNames = classNames(
     "input-field",
     {
@@ -47,7 +47,7 @@ const InputField: React.ForwardRefRenderFunction<
 
   return (
     <div ref={ref} className={wrapperClassNames}>
-      <input className="input-field__input" {...inputProps} />
+      <input className="input-field__input" {...extraInputProps} />
 
       {iconStart && renderIcon(iconStart, "start")}
       {iconEnd && renderIcon(iconEnd, "end")}
