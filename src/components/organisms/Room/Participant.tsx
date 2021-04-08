@@ -16,6 +16,7 @@ export interface ParticipantProps {
   profileData: User;
   profileDataId: string;
   showIcon?: boolean;
+  isAudioEffectDisabled?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -29,6 +30,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   children,
   defaultMute = false,
   showIcon = true,
+  isAudioEffectDisabled,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -133,6 +135,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             reactionPosition="right"
+            isAudioEffectDisabled={isAudioEffectDisabled}
           />
         </div>
       )}
