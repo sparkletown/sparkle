@@ -89,8 +89,8 @@ firebaseApp.firestore();
 const firebaseFunctions = firebase.functions();
 firebase.performance();
 
-// If running locally, enable the functions emulator
-if (window.location.hostname === "localhost") {
+// Enable the functions emulator when running in development
+if (process.env.NODE_ENV === "development") {
   firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
 }
 
