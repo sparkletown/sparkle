@@ -3,6 +3,7 @@ import { TableComponentPropsType } from "types/Table";
 import "./TableComponent.scss";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { currentVenueSelectorData } from "utils/selectors";
 
 const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
@@ -11,10 +12,10 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   nameOfVideoRoom,
   experienceName,
   imageSize = 50,
-  setSelectedUserProfile,
   table,
   tableLocked,
 }) => {
+  const { openUserProfileModal } = useProfileModalControls();
   const venue = useSelector(currentVenueSelectorData);
   const locked = tableLocked(table.reference);
   const usersSeatedAtTable = users.filter(
@@ -41,7 +42,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
           usersSeatedAtTable.length >= 0 &&
           usersSeatedAtTable.map((user) => (
             <img
-              onClick={() => setSelectedUserProfile(user)}
+              onClick={() => openUserProfileModal(user)}
               key={user.id}
               className="profile-icon table-participant-picture"
               src={(!user.anonMode && user.pictureUrl) || DEFAULT_PROFILE_IMAGE}

@@ -244,6 +244,9 @@ export const currentAuditoriumSectionsSelector: SparkleSelector<
 export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
   Partial<Record<string, AuditoriumSection>> | undefined
 > = (state) => state.firestore.data.currentAuditoriumSections;
+export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
+  state
+) => state.userProfile.userProfile;
 
 export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
