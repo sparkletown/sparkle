@@ -4,15 +4,15 @@ import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
 import { User } from "types/User";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { RoomModal } from "components/templates/PartyMap/components";
-
-import { useWorldUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+
+import { useWorldUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { RoomModal } from "components/templates/PartyMap/components";
 
 import { NavSearchBarInput } from "./NavSearchBarInput";
 
@@ -33,17 +33,14 @@ const NavSearchBar = () => {
     events: [],
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
-
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
+
+  const { openUserProfileModal } = useProfileModalControls();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -144,7 +141,7 @@ const NavSearchBar = () => {
                 className="row"
                 key={`user-${user.id}`}
                 onClick={() => {
-                  setSelectedUserProfile(user);
+                  openUserProfileModal(user);
                   clearSearchQuery();
                 }}
               >
@@ -163,12 +160,6 @@ const NavSearchBar = () => {
         </div>
       )}
 
-      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
         show={hasSelectedRoom}
