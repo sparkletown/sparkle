@@ -176,7 +176,7 @@ export const useAuditoriumGrid = ({
                 <UserProfilePicture
                   key={columnIndex}
                   user={user}
-                  avatarClassName={"section__user-avatar"}
+                  avatarClassName="section__user-avatar"
                   isAudioEffectDisabled
                   setSelectedUserProfile={() => {}}
                 />

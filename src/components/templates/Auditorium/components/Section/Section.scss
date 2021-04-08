@@ -83,7 +83,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     );
 
     border-radius: 100%;
-    margin: $section-seat-spacing;
+    margin: var(--section-seat-spacing);
 
     color: $black;
     user-select: none;

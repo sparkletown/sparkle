@@ -41,7 +41,7 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
 >;
 
-// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
 export type AnyVenue =
   | GenericVenue
   | EmbeddableVenue
