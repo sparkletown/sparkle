@@ -9,11 +9,11 @@ import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
 import { User } from "types/User";
 import { WithId } from "utils/id";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 export interface ParticipantProps {
   participant: Video.Participant;
   user: WithId<User>;
-  setSelectedUserProfile: (user: WithId<User>) => void;
   audio?: boolean;
   video?: boolean;
   local?: boolean;
@@ -29,13 +29,14 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   participant,
   user,
   children,
-  setSelectedUserProfile,
   audio,
   video,
   local,
   isHost,
   showName = true,
 }) => {
+  const { openUserProfileModal } = useProfileModalControls();
+
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
 
@@ -154,8 +155,8 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     ? " (host)"
     : "";
 
-  const onNameClick = useCallback(() => setSelectedUserProfile(user), [
-    setSelectedUserProfile,
+  const selectUser = useCallback(() => openUserProfileModal(user), [
+    openUserProfileModal,
     user,
   ]);
 
@@ -163,7 +164,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
     <div className="participant">
       {videos}
       {showName && (
-        <div className="name" onClick={onNameClick}>
+        <div className="name" onClick={selectUser}>
           {user.anonMode ? DEFAULT_PARTY_NAME : user.partyName} {detail}
         </div>
       )}

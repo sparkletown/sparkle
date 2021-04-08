@@ -153,13 +153,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   if (!user) return null;
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
-    const newData = {
+    const newData: RoomData_v2 = {
+      ...editingRoom,
       ...values,
-      x_percent: editingRoom?.x_percent,
-      y_percent: editingRoom?.y_percent,
-      width_percent: editingRoom?.width_percent,
-      height_percent: editingRoom?.height_percent,
-      isEnabled: editingRoom?.isEnabled,
     };
 
     await updateRoom(newData, venueId!, user, index);
