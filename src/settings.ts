@@ -556,9 +556,4 @@ export const SECTION_DEFAULT_COLUMNS_NUMBER = 23;
 
 export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
-// If you change this, make sure to also change it in Section.scss
-export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
-export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
-export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
-
 export const DEFAULT_SECTION_PREVIEW_TITLE = "Empty section";

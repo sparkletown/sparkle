@@ -5,7 +5,7 @@ import { IFRAME_ALLOW } from "settings";
 export interface IFrameProps {
   containerClassname?: string;
   iframeClassname?: string;
-  iframeStyles?: {};
+  iframeStyles?: React.CSSProperties;
   src?: string;
   title?: string;
 }

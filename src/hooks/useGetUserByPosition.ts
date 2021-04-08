@@ -39,8 +39,8 @@ export const useGetUserByPosition: (
     [positionedUsers, venueId]
   );
 
-  const getUserByPosition = useCallback(
-    ({ row, column }: GridPosition) =>
+  const getUserByPosition: GetUserByPostion = useCallback(
+    ({ row, column }) =>
       seatedUsersByHash.get(getPositionHash({ row, column })),
     [seatedUsersByHash]
   );

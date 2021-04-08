@@ -15,13 +15,15 @@ import { IFrame } from "components/atoms/IFrame";
 import {
   SECTION_DEFAULT_COLUMNS_NUMBER,
   SECTION_DEFAULT_ROWS_NUMBER,
-  SECTION_SEAT_SIZE,
-  SECTION_SEAT_SIZE_MIN,
-  SECTION_SEAT_SPACING,
   SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
 } from "settings";
 
 import "./Section.scss";
+
+// If you change this, make sure to also change it in Section.scss
+export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
+export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
+export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
 
 export interface SectionProps {
   venue: WithId<AnyVenue>;
@@ -69,12 +71,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     };
   }, [leaveSeat]);
 
-  const iframeInlineStyles = useMemo(
+  const iframeInlineStyles: React.CSSProperties = useMemo(
     () => ({
-      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + (${SECTION_SEAT_SPACING} * 2)))`,
+      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + (${SECTION_SEAT_SPACING} * 2)))`,
+      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + (${SECTION_SEAT_SPACING} * 2)))`,
+      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + (${SECTION_SEAT_SPACING} * 2)))`,
     }),
     [videoWidthInSeats, videoHeightInSeats]
   );
