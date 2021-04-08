@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 
+export { unstable_trace as traceReactScheduler } from "scheduler/tracing";
+
 /**
  * A centralised location to track all custom code trace names used within the app.
  *
