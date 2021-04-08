@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
@@ -32,12 +32,10 @@ const renderIcon = (
   return <div className={iconClassNames(position)}>{iconComponent}</div>;
 };
 
-export const InputField: React.FC<InputFieldProps> = ({
-  className,
-  iconStart,
-  iconEnd,
-  ...inputProps
-}) => {
+const InputField: React.ForwardRefRenderFunction<
+  HTMLDivElement,
+  InputFieldProps
+> = ({ className, iconStart, iconEnd, ...inputProps }, ref) => {
   const wrapperClassNames = classNames(
     "input-field",
     {
@@ -48,7 +46,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   );
 
   return (
-    <div className={wrapperClassNames}>
+    <div ref={ref} className={wrapperClassNames}>
       <input className="input-field__input" {...inputProps} />
 
       {iconStart && renderIcon(iconStart, "start")}
@@ -56,3 +54,5 @@ export const InputField: React.FC<InputFieldProps> = ({
     </div>
   );
 };
+
+export default forwardRef(InputField);
