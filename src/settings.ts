@@ -548,7 +548,9 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const REACTION_TIMEOUT = 5000; // time im ms
+export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+export const LARGE_SCREEN_WIDTH = 1200; // width in px

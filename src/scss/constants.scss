@@ -37,6 +37,7 @@ $danger-gradient: linear-gradient(
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
 $map-sidebar-width: 20%;
+$sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $chat-input-height: 114px;
@@ -50,6 +51,7 @@ $profile-image-bg-color: #999999;
 $room-info-bg: #6f43ff;
 
 $small-laptop-width: 980px;
+$large-laptop-width: 1200px;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)

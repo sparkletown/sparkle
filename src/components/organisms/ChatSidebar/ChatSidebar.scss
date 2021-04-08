@@ -10,7 +10,7 @@ $header-height: 45px;
   flex-flow: column;
   top: 66px;
   right: 0;
-  width: 360px;
+  width: $sidebar-width;
   height: calc(100vh - 96px);
   background-color: $saturated-black;
   z-index: z(sidebar);
@@ -68,9 +68,6 @@ $header-height: 45px;
     background-color: $intermediate-grey;
     border-radius: 16px 0 0 16px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
     position: absolute;
     top: 0;
@@ -82,6 +79,10 @@ $header-height: 45px;
 
     &__second-icon {
       margin-left: 5px;
+    }
+
+    @media (min-width: $large-laptop-width) {
+      display: none;
     }
   }
 
