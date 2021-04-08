@@ -26,6 +26,7 @@ import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
+import "firebase/performance";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -86,6 +87,7 @@ firebaseApp.analytics();
 firebaseApp.auth();
 firebaseApp.firestore();
 const firebaseFunctions = firebase.functions();
+firebase.performance();
 
 // If running locally, enable the functions emulator
 if (window.location.hostname === "localhost") {
