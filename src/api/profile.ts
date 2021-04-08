@@ -43,7 +43,7 @@ export const setGridData = async ({
   userId,
   gridData,
 }: SetGridDataProps): Promise<void> => {
-  const userProfile = firebase.firestore().collection("users").doc(userId);
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
 
   const newGridData = {
     [`data.${venueId}`]: gridData ?? firebase.firestore.FieldValue.delete(),
@@ -52,7 +52,7 @@ export const setGridData = async ({
   return userProfile.update(newGridData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api::profile::setGridData",
+        location: "api/profile::setGridData",
         venueId,
         userId,
         gridData,

@@ -1,6 +1,6 @@
 import { AuditoriumSize } from "types/auditorium";
 
-export interface TranslateIndexProps {
+export interface ConvertCoordinateProps {
   index: number;
   totalAmount: number;
 }

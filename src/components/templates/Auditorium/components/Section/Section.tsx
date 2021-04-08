@@ -37,13 +37,13 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const { sectionId } = useParams<{ sectionId?: string }>();
 
-  // NOTE: Video takes 1/3 of the seats
+  // Video takes 1/3 of the seats
   const videoWidthInSeats = Math.max(
     Math.floor(columns / 3),
     SECTION_VIDEO_MIN_WIDTH_IN_SEATS
   );
 
-  // NOTE: Keep the 16:9 ratio
+  // Keep the 16:9 ratio
   const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
   const {

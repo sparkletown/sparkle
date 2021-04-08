@@ -45,7 +45,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({ section }) => {
   });
 
   return (
-    <div onClick={handleClick} className={containerClasses}>
+    <div className={containerClasses} onClick={handleClick}>
       <div className="section-preview__status-icons">
         {isLocked && (
           <FontAwesomeIcon

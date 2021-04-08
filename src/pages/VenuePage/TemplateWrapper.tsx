@@ -1,9 +1,9 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { WithId } from "utils/id";
-
 import { AnyVenue, VenueTemplate } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
