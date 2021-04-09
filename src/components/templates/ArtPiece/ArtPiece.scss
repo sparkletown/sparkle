@@ -9,6 +9,11 @@
     flex-grow: 1;
     flex-direction: column;
     overflow: auto;
+
+    @media (min-width: $large-laptop-width) {
+      padding-right: 70px;
+      margin-right: 10px;
+    }
   }
 
   .aspect-container {

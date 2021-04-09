@@ -6,6 +6,12 @@ export const Wrapper = styled.div`
   margin: 6rem auto;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1rem;
+
+  @media (min-width: 1200px) {
+    width: calc(100% - 360px);
+    margin: 0;
+    padding: 3rem;
+  }
 `;
 
 export const Barrel = styled.iframe.attrs({
@@ -22,10 +28,6 @@ export const Barrel = styled.iframe.attrs({
   justify-self: center;
 
   border-radius: 28px;
-
-  @media (min-width: $large-laptop-width) {
-    width: calc(100% - #{$sidebar-width});
-  }
 `;
 
 type ChairProps = {

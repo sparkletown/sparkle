@@ -206,5 +206,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
   @media (min-width: $large-laptop-width) {
     width: calc(100% - #{$sidebar-width});
+    min-width: initial;
   }
 }
