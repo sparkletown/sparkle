@@ -1,14 +1,8 @@
 import React from "react";
 
-import { SetSelectedProfile } from "types/chat";
-
 import "./Twitter.scss";
 
-export interface VenueChatProps {
-  onAvatarClick: SetSelectedProfile;
-}
-
-export const Twitter: React.FC<VenueChatProps> = ({ onAvatarClick }) => {
+export const Twitter: React.FC = () => {
   return (
     <div className="venue-chat">
       <a
