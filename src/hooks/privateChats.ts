@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useEffect, useRef } from "react";
+import { useCallback, useMemo, useEffect } from "react";
 import useSound from "use-sound";
 
 import {
@@ -26,6 +26,7 @@ import {
 import { WithId, withId } from "utils/id";
 
 import { useChatSidebarControls } from "hooks/chatSidebar";
+import { usePrevious } from "hooks/usePrevious";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -226,14 +227,6 @@ export const useRecipientChat = (recipientId: string) => {
   };
 };
 
-export const usePrevious = <T>(value: T) => {
-  const ref = useRef<T>(value);
-  useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
-};
-
 export const usePrivateChatNotification = (
   privateChatMessages: WithId<PrivateChatMessage>[]
 ) => {
@@ -248,38 +241,39 @@ export const usePrivateChatNotification = (
     interrupt: true,
   });
 
-  const privateChateMessagesSorted = useMemo(
+  const privateChatMessagesSorted = useMemo(
     () => Object.values(privateChatMessages).sort(chatSort),
     [privateChatMessages]
   );
 
-  const prevPrivateChatMessages = usePrevious(privateChateMessagesSorted[0]);
+  const lastMessageTimestampSec = usePrevious(
+    privateChatMessagesSorted[0]?.ts_utc.seconds
+  );
 
   const currentChatUserId =
     chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
       ? chatSettings.recipientId
       : undefined;
 
-  return useMemo(() => {
-    const shouldPlaySound = privateChateMessagesSorted
-      .filter((message) => {
-        return (
-          message?.ts_utc.seconds > prevPrivateChatMessages?.ts_utc.seconds
-        );
-      })
-      .some(
-        (message) =>
-          !message.isRead && ![userId, currentChatUserId].includes(message.from)
+  useEffect(() => {
+    const shouldPlaySound = privateChatMessagesSorted.some((message) => {
+      const isNewMessage = message?.ts_utc.seconds > lastMessageTimestampSec;
+      const notRead = !message.isRead;
+      const notFromMeOrCurrentChat = ![userId, currentChatUserId].includes(
+        message.from
       );
+
+      return isNewMessage && notRead && notFromMeOrCurrentChat;
+    });
 
     if (shouldPlaySound) {
       play();
     }
   }, [
-    privateChateMessagesSorted,
+    privateChatMessagesSorted,
     currentChatUserId,
     play,
-    prevPrivateChatMessages,
+    lastMessageTimestampSec,
     userId,
   ]);
 };
