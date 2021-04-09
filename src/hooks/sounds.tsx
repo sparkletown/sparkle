@@ -57,7 +57,7 @@ export const CustomSoundsProvider: React.FC = ({ children }) => {
   // Fetch the sound configs data on first load
   useEffect(() => {
     if (!userId) return;
-    
+
     fetchSoundConfigs().then((soundConfigs) => {
       setSoundConfigs(soundConfigs);
     });
