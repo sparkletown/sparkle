@@ -475,6 +475,10 @@ $playa-profile-name-size: 60px;
       background-position: center;
     }
   }
+
+  @media (min-width: $large-laptop-width) {
+    width: calc(100% - #{$sidebar-width});
+  }
 }
 
 .playa-venue-text {

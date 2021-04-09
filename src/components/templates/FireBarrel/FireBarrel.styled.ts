@@ -22,6 +22,10 @@ export const Barrel = styled.iframe.attrs({
   justify-self: center;
 
   border-radius: 28px;
+
+  @media (min-width: $large-laptop-width) {
+    width: calc(100% - #{$sidebar-width});
+  }
 `;
 
 type ChairProps = {

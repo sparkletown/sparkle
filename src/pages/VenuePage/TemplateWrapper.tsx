@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -18,27 +18,17 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-import { useWindowDimensions } from "hooks/useWindowDimensions";
-import { setChatSidebarVisibility } from "store/actions/Chat";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { LARGE_SCREEN_WIDTH } from "settings";
-import { useDispatch } from "hooks/useDispatch";
+import { useChatVisibility } from "hooks/chatSidebar";
 
 export interface TemplateWrapperProps {
   venue: AnyVenue;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const { width } = useWindowDimensions();
-  const dispatch = useDispatch();
+  useChatVisibility();
   const history = useHistory();
   const match = useRouteMatch();
-
-  useEffect(() => {
-    if (width > LARGE_SCREEN_WIDTH) {
-      dispatch(setChatSidebarVisibility(true));
-    }
-  }, [dispatch, width]);
 
   let template;
   // @debt remove backButton from Navbar

@@ -15,4 +15,8 @@
     border: none;
     background-color: $light-grey;
   }
+
+  @media (min-width: $large-laptop-width) {
+    width: calc(100% - #{$sidebar-width});
+  }
 }

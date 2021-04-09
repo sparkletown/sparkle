@@ -2,6 +2,10 @@
 
 .full-page-container.jazz-bar-container {
   padding: 0;
+
+  @media (min-width: $large-laptop-width) {
+    width: calc(100% - #{$sidebar-width});
+  }
 }
 .content-container {
   display: flex;

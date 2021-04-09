@@ -32,4 +32,8 @@
       margin-right: 20px;
     }
   }
+
+  @media (min-width: $large-laptop-width) {
+    width: calc(100% - #{$sidebar-width});
+  }
 }
