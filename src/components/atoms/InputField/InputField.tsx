@@ -2,16 +2,15 @@ import React, { forwardRef } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+
 import { isTruthy } from "utils/types";
+
 import "./InputField.scss";
 
 export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
   iconStart?: IconProp | JSX.Element | false;
   iconEnd?: IconProp | JSX.Element | false;
 }
-
-const iconClassNames = (position: string) =>
-  classNames("input-field__icon", `input-field__icon--${position}`);
 
 const isJsxElement = (
   component: IconProp | JSX.Element
@@ -21,7 +20,7 @@ const isJsxElement = (
 
 const renderIcon = (
   icon: IconProp | JSX.Element,
-  position: string
+  modifiedClassName: string
 ): JSX.Element => {
   const iconComponent = isJsxElement(icon) ? (
     icon
@@ -29,7 +28,11 @@ const renderIcon = (
     <FontAwesomeIcon icon={icon} />
   );
 
-  return <div className={iconClassNames(position)}>{iconComponent}</div>;
+  return (
+    <div className={classNames("input-field__icon", modifiedClassName)}>
+      {iconComponent}
+    </div>
+  );
 };
 
 const InputField: React.ForwardRefRenderFunction<
@@ -49,8 +52,8 @@ const InputField: React.ForwardRefRenderFunction<
     <div ref={ref} className={wrapperClassNames}>
       <input className="input-field__input" {...extraInputProps} />
 
-      {iconStart && renderIcon(iconStart, "start")}
-      {iconEnd && renderIcon(iconEnd, "end")}
+      {iconStart && renderIcon(iconStart, "input-field__icon--start")}
+      {iconEnd && renderIcon(iconEnd, "input-field__icon--end")}
     </div>
   );
 };
