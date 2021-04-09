@@ -6,13 +6,13 @@ $icon-width: 2.5rem;
   position: relative;
 
   &--icon-start {
-    input {
+    .input-field__input {
       padding-left: $icon-width;
     }
   }
 
   &--icon-end {
-    input {
+    .input-field__input {
       padding-right: $icon-width;
     }
   }
@@ -45,7 +45,7 @@ $icon-width: 2.5rem;
 
     & > * {
       opacity: 0.2;
-      width: 100%;
+      max-width: 100%;
     }
   }
 }
