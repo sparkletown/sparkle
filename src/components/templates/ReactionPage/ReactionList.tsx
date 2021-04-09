@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
@@ -8,14 +8,12 @@ import {
   Reaction,
   ReactionsTextMap,
 } from "utils/reactions";
-import { withId, WithId } from "utils/id";
+import { withId } from "utils/id";
 
-import { User } from "types/User";
 import { ChatMessage } from "types/chat";
 
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -32,10 +30,6 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 }) => {
   // @debt see comments in useWorldUsersByIdWorkaround
   const { worldUsersById } = useWorldUsersByIdWorkaround();
-
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const allReactions = useMemo(() => {
     const chatsAsBandMessages =
@@ -68,10 +62,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
         >
           {/* @debt Ideally we would only have one type of 'user avatar' component that would work for all of our needs */}
           {messageSenderWithId !== undefined ? (
-            <UserProfilePicture
-              user={messageSenderWithId}
-              setSelectedUserProfile={setSelectedUserProfile}
-            />
+            <UserProfilePicture user={messageSenderWithId} />
           ) : (
             <UserAvatar avatarSrc={messageSenderImage} />
           )}
@@ -97,12 +88,6 @@ export const ReactionList: React.FC<ReactionListProps> = ({
       <div className={classNames("reaction-list", { small })}>
         {allReactions}
       </div>
-
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
     </>
   );
 };

@@ -345,14 +345,15 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const docData = doc.data();
+  let rooms = docData.rooms;
 
   if (typeof roomIndex !== "number") {
-    docData.rooms = [...docData.rooms, room];
+    rooms = [...rooms, room];
   } else {
-    docData.rooms[roomIndex] = room;
+    rooms[roomIndex] = room;
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
+  admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
 exports.deleteRoom = functions.https.onCall(async (data, context) => {

@@ -4,19 +4,19 @@ import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
 import { User } from "types/User";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { RoomModal } from "components/templates/PartyMap/components";
-
-import { useWorldUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
-
 import { WithId } from "utils/id";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
-import { NavSearchBarInput } from "./NavSearchBarInput";
+import { useWorldUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { RoomModal } from "components/templates/PartyMap/components";
 
 import "./NavSearchBar.scss";
+import { InputField } from "components/atoms/InputField";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 interface SearchResult {
   rooms: Room[];
@@ -26,6 +26,10 @@ interface SearchResult {
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const onSearchInputChange = useCallback(
+    (e) => setSearchQuery(e.target.value),
+    []
+  );
 
   const [searchResult, setSearchResult] = useState<SearchResult>({
     rooms: [],
@@ -33,17 +37,14 @@ const NavSearchBar = () => {
     events: [],
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
 
   const venue = useSelector(currentVenueSelectorData);
-
   const venueEvents = useSelector(venueEventsSelector) ?? [];
   const { worldUsers } = useWorldUsers();
+
+  const { openUserProfileModal } = useProfileModalControls();
 
   useEffect(() => {
     const normalizedSearchQuery = searchQuery.toLowerCase();
@@ -87,14 +88,26 @@ const NavSearchBar = () => {
     setSearchQuery("");
   }, []);
 
+  const clearSearchIcon = (
+    <img
+      className="nav__clear-search"
+      src="/icons/nav-dropdown-close.png"
+      alt="close button"
+      onClick={clearSearchQuery}
+    />
+  );
+
   return (
     <div className="nav-search-links">
-      <div className="nav-search-icon" />
-      <NavSearchBarInput value={searchQuery} onChange={setSearchQuery} />
-
-      {isTruthy(searchQuery) && (
-        <div className="nav-search-close-icon" onClick={clearSearchQuery} />
-      )}
+      <InputField
+        className="nav__search"
+        value={searchQuery}
+        onChange={onSearchInputChange}
+        placeholder="Search for people, rooms, events..."
+        autoComplete="off"
+        iconStart={faSearch}
+        iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
+      />
 
       {numberOfSearchResults > 0 && (
         <div className="nav-search-results">
@@ -144,7 +157,7 @@ const NavSearchBar = () => {
                 className="row"
                 key={`user-${user.id}`}
                 onClick={() => {
-                  setSelectedUserProfile(user);
+                  openUserProfileModal(user);
                   clearSearchQuery();
                 }}
               >
@@ -163,12 +176,6 @@ const NavSearchBar = () => {
         </div>
       )}
 
-      {/* @debt use only one UserProfileModal instance with state controlled with redux  */}
-      <UserProfileModal
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
         show={hasSelectedRoom}
