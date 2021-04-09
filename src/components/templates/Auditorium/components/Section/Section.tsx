@@ -73,10 +73,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   const iframeInlineStyles: React.CSSProperties = useMemo(
     () => ({
-      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + (${SECTION_SEAT_SPACING} * 2)))`,
-      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + (${SECTION_SEAT_SPACING} * 2)))`,
-      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + (${SECTION_SEAT_SPACING} * 2)))`,
-      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + (${SECTION_SEAT_SPACING} * 2)))`,
+      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
     }),
     [videoWidthInSeats, videoHeightInSeats]
   );
