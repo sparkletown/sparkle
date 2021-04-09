@@ -8,18 +8,14 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import { useRecipientChat } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
-import { SetSelectedProfile } from "types/chat";
-
 import "./RecipientChat.scss";
 
 export interface RecipientChatProps {
   recipientId: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  onAvatarClick,
 }) => {
   const {
     messagesToDisplay,
@@ -58,7 +54,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         messages={messagesToDisplay}
         sendMessage={sendMessageToSelectedRecipient}
         deleteMessage={deleteMessage}
-        onAvatarClick={onAvatarClick}
       />
     </div>
   );
