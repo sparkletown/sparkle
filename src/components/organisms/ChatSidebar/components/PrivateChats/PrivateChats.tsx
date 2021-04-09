@@ -4,8 +4,6 @@ import { InputField } from "components/atoms/InputField";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
 
-import { SetSelectedProfile } from "types/chat";
-
 import {
   usePrivateChatPreviews,
   useOnlineUsersToDisplay,
@@ -16,13 +14,9 @@ import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({
-  recipientId,
-  onAvatarClick,
-}) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const onInputChange = useCallback(
     (e) => setUserSearchQuery(e.target.value),
@@ -92,9 +86,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
-    return (
-      <RecipientChat recipientId={recipientId} onAvatarClick={onAvatarClick} />
-    );
+    return <RecipientChat recipientId={recipientId} />;
   }
 
   return (

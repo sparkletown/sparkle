@@ -2,7 +2,13 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
-import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
+import {
+  ENABLE_SUSPECTED_LOCATION,
+  RANDOM_AVATARS,
+  DEFAULT_PROFILE_PIC,
+  DEFAULT_PARTY_NAME,
+  DEFAULT_EDIT_PROFILE_TEXT,
+} from "settings";
 
 import {
   currentVenueSelector,
@@ -16,6 +22,7 @@ import { User } from "types/User";
 import { isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
@@ -25,49 +32,42 @@ import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 
-type PropTypes = {
-  show: boolean;
-  onHide: () => void;
-  zIndex?: number;
-  userProfile?: WithId<User>;
-};
-
-const UserProfileModal: React.FunctionComponent<PropTypes> = ({
-  show,
-  onHide,
-  zIndex,
-  userProfile,
-}) => {
+export const UserProfileModal: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
 
   const { user } = useUser();
 
-  const chosenUserId = userProfile?.id;
-
   const { selectRecipientChat } = useChatSidebarControls();
+
+  const {
+    selectedUserProfile,
+    hasSelectedProfile,
+    closeUserProfileModal,
+  } = useProfileModalControls();
+
+  const chosenUserId = selectedUserProfile?.id;
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
     selectRecipientChat(chosenUserId);
     // NOTE: Hide the modal, after the chat is opened;
-    onHide();
-  }, [selectRecipientChat, onHide, chosenUserId]);
+    closeUserProfileModal();
+  }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  if (!userProfile || !chosenUserId || !user) {
-    return <></>;
+  if (!selectedUserProfile || !chosenUserId || !user) {
+    return null;
   }
 
-  // REVISIT: remove the hack to cast to any below
   return (
-    <Modal show={show} onHide={onHide} style={zIndex && { zIndex }}>
+    <Modal show={hasSelectedProfile} onHide={closeUserProfileModal}>
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
             <div className="profile-basics">
               <div className="profile-pic">
                 <img
-                  src={userProfile.pictureUrl || "/default-profile-pic.png"}
+                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -83,7 +83,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
               <div className="profile-text">
                 <h2 className="italic">
-                  {userProfile.partyName || "Captain Party"}
+                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
               </div>
             </div>
@@ -95,8 +95,8 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                     {/*
                     // @debt typing - need to support known User interface with unknown question keys
                     // @ts-ignore */}
-                    {userProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      "I haven't edited my profile to tell you yet"}
+                    {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
+                      DEFAULT_EDIT_PROFILE_TEXT}
                   </h6>
                 </React.Fragment>
               ))}
@@ -105,13 +105,13 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={userProfile} />
+                  <SuspectedLocation user={selectedUserProfile} />
                 </h6>
               </div>
             )}
           </div>
           {venue?.showBadges && (
-            <Badges user={userProfile} currentVenue={venue} />
+            <Badges user={selectedUserProfile} currentVenue={venue} />
           )}
           {chosenUserId !== user.uid && (
             <Button onClick={openChosenUserChat}>Send message</Button>
@@ -164,5 +164,3 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
   return <>This user has gone walkabout. Location unguessable</>;
 };
-
-export default UserProfileModal;
