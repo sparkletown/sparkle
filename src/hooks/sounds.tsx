@@ -61,7 +61,7 @@ export const CustomSoundsProvider: React.FC = ({ children }) => {
     fetchSoundConfigs().then((soundConfigs) => {
       setSoundConfigs(soundConfigs);
     });
-  }, [user]);
+  }, [userId]);
 
   const providerData = useMemo(
     () => ({
