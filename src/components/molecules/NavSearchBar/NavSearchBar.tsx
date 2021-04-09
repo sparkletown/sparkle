@@ -98,6 +98,7 @@ const NavSearchBar = () => {
         value={searchQuery}
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
+        autoComplete="off"
         iconStart={faSearch}
         iconEnd={
           isTruthy(searchQuery) && (

@@ -105,6 +105,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
         value={userSearchQuery}
         onChange={onInputChange}
         iconStart={faSearch}
+        autoComplete="off"
       />
 
       {userSearchQuery ? (
