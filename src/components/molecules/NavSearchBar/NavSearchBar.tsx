@@ -91,6 +91,15 @@ const NavSearchBar = () => {
     setSearchQuery("");
   }, []);
 
+  const clearSearchIcon = (
+    <img
+      className="nav__clear-search"
+      src="/icons/nav-dropdown-close.png"
+      alt="close button"
+      onClick={clearSearchQuery}
+    />
+  );
+
   return (
     <div className="nav-search-links">
       <InputField
@@ -100,16 +109,7 @@ const NavSearchBar = () => {
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
         iconStart={faSearch}
-        iconEnd={
-          isTruthy(searchQuery) && (
-            <img
-              className="nav__clear-search"
-              src="/icons/nav-dropdown-close.png"
-              alt="close button"
-              onClick={clearSearchQuery}
-            />
-          )
-        }
+        iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
       />
 
       {numberOfSearchResults > 0 && (

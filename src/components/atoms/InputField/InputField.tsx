@@ -8,8 +8,8 @@ import { isTruthy } from "utils/types";
 import "./InputField.scss";
 
 export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
-  iconStart?: IconProp | JSX.Element | false;
-  iconEnd?: IconProp | JSX.Element | false;
+  iconStart?: IconProp | JSX.Element;
+  iconEnd?: IconProp | JSX.Element;
 }
 
 const isJsxElement = (
