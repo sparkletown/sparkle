@@ -16,7 +16,6 @@ import { useDispatch } from "./useDispatch";
 import { useNumberOfUnreadChats } from "./privateChats";
 import { useVenueId } from "./useVenueId";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
-import { useWindowDimensions } from "hooks/useWindowDimensions";
 import { LARGE_SCREEN_WIDTH } from "settings";
 
 export const useChatSidebarControls = () => {
@@ -87,11 +86,10 @@ export const useChatSidebarInfo = () => {
 };
 
 export const useChatVisibility = () => {
-  const { width } = useWindowDimensions();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (width > LARGE_SCREEN_WIDTH) {
+    if (window.innerWidth > LARGE_SCREEN_WIDTH) {
       dispatch(setChatSidebarVisibility(true));
     }
-  }, [dispatch, width]);
+  }, [dispatch]);
 };
