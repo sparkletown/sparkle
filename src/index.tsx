@@ -54,7 +54,11 @@ import { activatePolyFills } from "./polyfills";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
-import { createPerformanceTrace, PerformanceTrace } from "utils/performance";
+import {
+  createPerformanceTrace,
+  PerformanceTrace,
+  traceReactScheduler,
+} from "utils/performance";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
@@ -263,26 +267,28 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
-render(
-  <BugsnagErrorBoundary>
-    <ThemeProvider theme={theme}>
-      <Elements stripe={stripePromise}>
-        <DndProvider backend={HTML5Backend}>
-          <Provider store={store}>
-            <ReactReduxFirebaseProvider {...rrfProps}>
-              <AuthIsLoaded>
-                <CustomSoundsProvider>
-                  <AppRouter />
-                </CustomSoundsProvider>
-              </AuthIsLoaded>
-            </ReactReduxFirebaseProvider>
-          </Provider>
-        </DndProvider>
-      </Elements>
-    </ThemeProvider>
-  </BugsnagErrorBoundary>,
-  document.getElementById("root")
-);
+traceReactScheduler("initial render", performance.now(), () => {
+  render(
+    <BugsnagErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <Elements stripe={stripePromise}>
+          <DndProvider backend={HTML5Backend}>
+            <Provider store={store}>
+              <ReactReduxFirebaseProvider {...rrfProps}>
+                <AuthIsLoaded>
+                  <CustomSoundsProvider>
+                    <AppRouter />
+                  </CustomSoundsProvider>
+                </AuthIsLoaded>
+              </ReactReduxFirebaseProvider>
+            </Provider>
+          </DndProvider>
+        </Elements>
+      </ThemeProvider>
+    </BugsnagErrorBoundary>,
+    document.getElementById("root")
+  );
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
