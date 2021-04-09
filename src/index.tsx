@@ -62,6 +62,7 @@ import {
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
+import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
 import AppRouter from "components/organisms/AppRouter";
@@ -72,7 +73,6 @@ import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
-import { CustomSoundsProvider } from "hooks/sounds";
 
 activatePolyFills();
 initializeZendesk();
