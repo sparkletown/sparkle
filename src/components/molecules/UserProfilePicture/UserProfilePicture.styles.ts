@@ -32,12 +32,12 @@ type ReactionProps = {
 };
 
 export const Reaction = styled.div<ReactionProps>`
+  position: relative;
   // @debt convert this to scss then use our z-index layer helper here
   z-index: 10;
 
   width: 50px;
 
-  position: absolute;
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
@@ -49,8 +49,6 @@ export const Reaction = styled.div<ReactionProps>`
 
 // --- Reaction Container
 export const Container = styled.div`
-  position: relative;
-
   // @debt convert this to scss then use our z-index layer helper here
   z-index: 11;
 
@@ -120,6 +118,7 @@ const messageRight = css`
 
 export const ShoutOutMessage = styled.div<ReactionProps>`
   bottom: 0;
+  position: relative;
 
   // @debt convert this to scss then use our z-index layer helper here
   z-index: 12;
@@ -128,7 +127,6 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
   max-width: 20em;
   padding: 6px 10px;
 
-  position: absolute;
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? messageRight : messageLeft};
 
