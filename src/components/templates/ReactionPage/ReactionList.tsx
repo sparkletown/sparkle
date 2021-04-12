@@ -14,7 +14,7 @@ import { ChatMessage } from "types/chat";
 
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 export interface ReactionListProps {

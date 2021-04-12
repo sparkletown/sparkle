@@ -53,7 +53,7 @@ $small-laptop-width: 980px;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
-//   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
+//   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10, 12)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;

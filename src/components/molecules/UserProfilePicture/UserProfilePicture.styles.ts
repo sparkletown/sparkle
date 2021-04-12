@@ -15,7 +15,13 @@ export const Avatar = styled.div<AvatarProps>`
     backgroundImage ?? DEFAULT_PROFILE_IMAGE});
 `;
 
-// --- Reaction
+// --- Reaction Emoji
+type ReactionProps = {
+  reactionPosition?: "right" | "left" | undefined;
+};
+
+const reactionZIndex = 12;
+
 const reactionOffset = "-20px";
 const reactionLeft = css`
   left: ${reactionOffset};
@@ -24,9 +30,6 @@ const reactionRight = css`
   right: ${reactionOffset};
 `;
 
-type ReactionProps = {
-  reactionPosition?: "right" | "left" | undefined;
-};
 export const Reaction = styled.div<ReactionProps>`
   width: 50px;
 
@@ -35,36 +38,14 @@ export const Reaction = styled.div<ReactionProps>`
     reactionPosition === "right" ? reactionRight : reactionLeft};
   top: -25px;
   // @debt convert this to scss then use our z-index layer helper here
-  z-index: 10;
+  z-index: ${reactionZIndex};
 
   font-size: 50px;
 
   animation: pulse 4s ease-in-out infinite;
 `;
 
-// --- Reaction Container
-export const Container = styled.div`
-  height: 100%;
-  position: relative;
-
-  background-position: center;
-  background-size: cover;
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 11;
-
-  ${Avatar} {
-    border-radius: 10rem;
-  }
-
-  .on-right {
-    ${Reaction} {
-      right: unset;
-      left: -20px;
-    }
-  }
-`;
-
-// --- Shout-out message
+// --- Reaction Shout-out message
 const translateXOffset = "5vh"; // 5vh = imageWidth (4vh) + 1v (padding)
 const expandBounceRight = keyframes`
   0%,
@@ -121,9 +102,29 @@ export const ShoutOutMessage = styled.div<ReactionProps>`
 
   background-color: rgba(255, 255, 255, 1);
   // @debt convert this to scss then use our z-index layer helper here
-  z-index: 12;
+  z-index: ${reactionZIndex};
 
   color: #000;
   font-size: 20px;
   border-radius: 10px;
+`;
+
+// --- Reaction Container
+export const Container = styled.div`
+  height: 100%;
+  position: relative;
+
+  background-position: center;
+  background-size: cover;
+
+  ${Avatar} {
+    border-radius: 10rem;
+  }
+
+  .on-right {
+    ${Reaction} {
+      right: unset;
+      left: -20px;
+    }
+  }
 `;

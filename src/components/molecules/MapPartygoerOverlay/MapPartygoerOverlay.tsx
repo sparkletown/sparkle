@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 interface MapPartygoerOverlayProps {
   partygoer: WithId<User>;
@@ -43,6 +43,7 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
       top: `${avatarHeight * (currentRow - 1)}%`,
       left: `${avatarWidth * (currentCol - 1)}%`,
       justifyContent: "center",
+      zIndex: "12",
     }),
     [avatarHeight, avatarWidth, currentCol, currentRow]
   );

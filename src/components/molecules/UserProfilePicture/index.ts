@@ -1,1 +1,1 @@
-export { default } from "./UserProfilePicture";
+export { UserProfilePicture } from "./UserProfilePicture";
