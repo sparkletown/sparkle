@@ -9,11 +9,6 @@
     flex-grow: 1;
     flex-direction: column;
     overflow: auto;
-
-    @media (min-width: $large-laptop-width) {
-      padding-right: 70px;
-      margin-right: 10px;
-    }
   }
 
   .aspect-container {
@@ -50,10 +45,6 @@
   .short-description-sidebar {
     font-size: 15px;
     font-weight: bold;
-  }
-
-  @media (min-width: $large-laptop-width) {
-    width: calc(100% - #{$sidebar-width});
   }
 }
 .sparkle-fairies {

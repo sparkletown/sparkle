@@ -23,10 +23,6 @@
   .userlist-container {
     margin: 0 80px;
   }
-
-  @media (min-width: $large-laptop-width) {
-    width: calc(100% - #{$sidebar-width});
-  }
 }
 
 body {
