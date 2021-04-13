@@ -43,6 +43,7 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
       top: `${avatarHeight * (currentRow - 1)}%`,
       left: `${avatarWidth * (currentCol - 1)}%`,
       justifyContent: "center",
+      zIndex: "11",
     }),
     [avatarHeight, avatarWidth, currentCol, currentRow]
   );
