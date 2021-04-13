@@ -62,9 +62,9 @@ export const useAuditoriumSection = ({
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
 
   const baseRowsCount =
-    venueRowsCount ?? section?.rowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
+    section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
   const baseColumnsCount =
-    venueColumnsCount ?? section?.columnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
+    section?.columnsCount ?? venueColumnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
 
   // Video takes 1/3 of the seats
   const videoWidthInSeats = Math.max(
