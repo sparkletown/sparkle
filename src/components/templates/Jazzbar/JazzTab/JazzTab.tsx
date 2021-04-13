@@ -41,6 +41,39 @@ import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
 
+export const generateTables: (props: {
+  num: number;
+  capacity: number;
+  rows?: number;
+  columns?: number;
+  titlePrefix?: string;
+  appendTableNumber?: boolean;
+  startFrom?: number;
+}) => {} = ({
+  num,
+  capacity,
+  rows = 2,
+  columns = 3,
+  titlePrefix = "Table",
+  appendTableNumber = true,
+  startFrom = 1,
+}) =>
+  Array.from(Array(num)).map((_, idx) => {
+    const tableNumber = startFrom + idx;
+
+    const title = appendTableNumber
+      ? `${titlePrefix} ${tableNumber}`
+      : titlePrefix;
+
+    return {
+      title,
+      reference: title,
+      capacity,
+      rows,
+      columns,
+    };
+  });
+
 interface JazzProps {
   setUserList: (value: User[]) => void;
   venue?: JazzbarVenue;
