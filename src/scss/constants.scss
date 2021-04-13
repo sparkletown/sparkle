@@ -78,7 +78,7 @@ $z-layers: (
   user-search-input-close-btn: 1,
   user-search-results: 380,
   // Nav
-  navbar-map-back-button: 3,
+  navbar-map-back-button: $z-layer-sidebar,
   navbar-nav-search-results: 380,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
