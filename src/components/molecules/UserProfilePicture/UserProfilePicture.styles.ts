@@ -33,8 +33,6 @@ type ReactionProps = {
 
 export const Reaction = styled.div<ReactionProps>`
   position: absolute;
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 10;
 
   width: 50px;
 
@@ -120,9 +118,6 @@ const messageRight = css`
 export const ShoutOutMessage = styled.div<ReactionProps>`
   bottom: 0;
   position: absolute;
-
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 12;
 
   width: max-content;
   max-width: 20em;
