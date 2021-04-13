@@ -38,7 +38,7 @@ export const Reaction = styled.div<ReactionProps>`
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
-  top: -25px;
+  bottom: 0;
 
   font-size: 50px;
 
@@ -118,6 +118,7 @@ const messageRight = css`
 export const ShoutOutMessage = styled.div<ReactionProps>`
   bottom: 0;
   position: absolute;
+  z-index: 1;
 
   width: max-content;
   max-width: 20em;
