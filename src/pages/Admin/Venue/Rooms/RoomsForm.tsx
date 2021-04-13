@@ -319,7 +319,6 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     <Form.Control
                       disabled={disable}
                       as="select"
-                      custom
                       name="type"
                       ref={register}
                       defaultValue={values.type}

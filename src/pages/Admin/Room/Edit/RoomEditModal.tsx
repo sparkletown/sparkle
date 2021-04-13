@@ -188,7 +188,6 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
               <Form.Label>Change room type</Form.Label>
               <Form.Control
                 as="select"
-                custom
                 name="type"
                 ref={register}
                 defaultValue={room.type}
