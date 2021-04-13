@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from "react";
-
+import { useWindowSize } from "react-use";
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -87,9 +87,11 @@ export const useChatSidebarInfo = () => {
 
 export const useChatVisibility = () => {
   const dispatch = useDispatch();
+  const { width } = useWindowSize();
+
   useEffect(() => {
-    if (window.innerWidth > LARGE_SCREEN_WIDTH) {
+    if (width > LARGE_SCREEN_WIDTH) {
       dispatch(setChatSidebarVisibility(true));
     }
-  }, [dispatch]);
+  }, [dispatch, width]);
 };
