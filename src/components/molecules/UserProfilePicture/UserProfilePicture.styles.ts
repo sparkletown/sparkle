@@ -32,15 +32,13 @@ type ReactionProps = {
 };
 
 export const Reaction = styled.div<ReactionProps>`
-  position: relative;
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 10;
+  position: absolute;
 
   width: 50px;
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
-  top: -25px;
+  bottom: 0;
 
   font-size: 50px;
 
@@ -49,13 +47,14 @@ export const Reaction = styled.div<ReactionProps>`
 
 // --- Reaction Container
 export const Container = styled.div`
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 11;
-
   height: 100%;
 
   background-position: center;
   background-size: cover;
+
+  .reaction-container {
+    position: relative;
+  }
 
   ${Avatar} {
     border-radius: 10rem;
@@ -118,10 +117,8 @@ const messageRight = css`
 
 export const ShoutOutMessage = styled.div<ReactionProps>`
   bottom: 0;
-  position: relative;
-
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 12;
+  position: absolute;
+  z-index: 1;
 
   width: max-content;
   max-width: 20em;
