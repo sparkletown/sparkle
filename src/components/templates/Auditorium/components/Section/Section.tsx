@@ -12,12 +12,6 @@ import {
 
 import { IFrame } from "components/atoms/IFrame";
 
-import {
-  SECTION_DEFAULT_COLUMNS_NUMBER,
-  SECTION_DEFAULT_ROWS_NUMBER,
-  SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
-} from "settings";
-
 import "./Section.scss";
 
 // If you change this, make sure to also change it in Section.scss
@@ -32,24 +26,22 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const {
     iframeUrl,
-    rows = SECTION_DEFAULT_ROWS_NUMBER,
-    columns = SECTION_DEFAULT_COLUMNS_NUMBER,
+    rows: venueRowsCount,
+    columns: venueColumnsCount,
     id: venueId,
   } = venue;
 
   const { sectionId } = useParams<{ sectionId?: string }>();
 
-  // Video takes 1/3 of the seats
-  const videoWidthInSeats = Math.max(
-    Math.floor(columns / 3),
-    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
-  );
-
-  // Keep the 16:9 ratio
-  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
-
   const {
     auditoriumSection,
+
+    baseRowsCount,
+    baseColumnsCount,
+
+    videoWidthInSeats,
+    videoHeightInSeats,
+
     getUserBySeat,
     takeSeat,
     leaveSeat,
@@ -57,10 +49,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   } = useAuditoriumSection({
     venueId,
     sectionId,
-    rows,
-    columns,
-    videoWidthInSeats,
-    videoHeightInSeats,
+    venueRowsCount,
+    venueColumnsCount,
   });
 
   // Ensure the user leaves their seat when they leave the section
@@ -82,8 +72,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   );
 
   const seatsGrid = useAuditoriumGrid({
-    rows,
-    columns,
+    rows: baseRowsCount,
+    columns: baseColumnsCount,
     checkIfSeat,
     getUserBySeat,
     takeSeat,
