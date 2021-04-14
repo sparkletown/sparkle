@@ -4,6 +4,12 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { setGridData } from "api/profile";
 
+import {
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
+  SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
+} from "settings";
+
 import { convertToCartesianCoordinate } from "utils/auditorium";
 
 import { GridPosition } from "types/grid";
@@ -35,10 +41,8 @@ const useConnectAuditoriumSections = (venueId?: string) => {
 };
 
 export interface UseAuditoriumSectionProps {
-  rows: number;
-  columns: number;
-  videoWidthInSeats: number;
-  videoHeightInSeats: number;
+  venueRowsCount?: number;
+  venueColumnsCount?: number;
   sectionId?: string;
   venueId?: string;
 }
@@ -46,10 +50,8 @@ export interface UseAuditoriumSectionProps {
 export const useAuditoriumSection = ({
   venueId,
   sectionId,
-  rows,
-  columns,
-  videoWidthInSeats,
-  videoHeightInSeats,
+  venueRowsCount,
+  venueColumnsCount,
 }: UseAuditoriumSectionProps) => {
   useConnectAuditoriumSections(venueId);
 
@@ -58,6 +60,20 @@ export const useAuditoriumSection = ({
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
+
+  const baseRowsCount =
+    section?.rowsCount ?? venueRowsCount ?? SECTION_DEFAULT_ROWS_COUNT;
+  const baseColumnsCount =
+    section?.columnsCount ?? venueColumnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
+
+  // Video takes 1/3 of the seats
+  const videoWidthInSeats = Math.max(
+    Math.floor(baseColumnsCount / 3),
+    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
+  );
+
+  // Keep the 16:9 ratio
+  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
   const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
 
@@ -91,11 +107,11 @@ export const useAuditoriumSection = ({
     ({ row, column }: GridPosition) => {
       const covertedRowCoordinate = convertToCartesianCoordinate({
         index: row,
-        totalAmount: rows,
+        totalAmount: baseRowsCount,
       });
       const convertedColumnCoordinate = convertToCartesianCoordinate({
         index: column,
-        totalAmount: columns,
+        totalAmount: baseColumnsCount,
       });
 
       const isInVideoRow =
@@ -105,12 +121,18 @@ export const useAuditoriumSection = ({
 
       return !(isInVideoRow && isInVideoColumn);
     },
-    [rows, columns, videoHeightInSeats, videoWidthInSeats]
+    [baseRowsCount, baseColumnsCount, videoHeightInSeats, videoWidthInSeats]
   );
 
   return {
     auditoriumSection: section,
     isAuditoriumSectionLoaded: isLoaded(sectionsById),
+
+    baseRowsCount,
+    baseColumnsCount,
+
+    videoWidthInSeats,
+    videoHeightInSeats,
 
     getUserBySeat,
     takeSeat,

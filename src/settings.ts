@@ -554,8 +554,8 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
 // These must both be odd, otherwise the video won't be centered properly
-export const SECTION_DEFAULT_ROWS_NUMBER = 17;
-export const SECTION_DEFAULT_COLUMNS_NUMBER = 23;
+export const SECTION_DEFAULT_ROWS_COUNT = 17;
+export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
 
 export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
