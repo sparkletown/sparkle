@@ -1,19 +1,22 @@
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import { useUser } from "hooks/useUser";
 import React from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { DEFAULT_PROFILE_IMAGE } from "settings";
 
-export const NavbarProfile = () => {
+import { useUser } from "hooks/useUser";
+
+import { ProfilePopoverContent } from "components/organisms/ProfileModal";
+
+export const NavbarProfile: React.FC = () => {
   const { profile } = useUser();
 
-  const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
+  const profileImage = profile?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
 
   return (
     <OverlayTrigger
       trigger="click"
       placement="bottom-end"
+      rootClose={true}
       overlay={
         <Popover id="profile-popover">
           <Popover.Content>
@@ -21,7 +24,6 @@ export const NavbarProfile = () => {
           </Popover.Content>
         </Popover>
       }
-      rootClose={true}
     >
       <div className="navbar-link-profile">
         <img

@@ -1,10 +1,10 @@
 .radio-trigger {
   position: relative;
   padding: 0.5em;
-}
 
-.radio-wrapper {
-  position: absolute;
-  top: 100%;
-  right: 0;
+  &__iframe {
+    position: absolute;
+    top: 100%;
+    right: 0;
+  }
 }

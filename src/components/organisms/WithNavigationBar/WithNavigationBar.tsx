@@ -1,22 +1,23 @@
 import React, { useCallback } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
+import { useHistory } from "react-router";
+import classNames from "classnames";
 
-import { currentVenueSelectorData } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import NavBar from "components/molecules/NavBar";
-import NavSearchBar from "components/molecules/NavSearchBar";
+import { NavBar } from "components/molecules/NavBar";
+import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { Footer } from "components/molecules/Footer";
 import { NavbarSchedule } from "components/molecules/NavbarSchedule";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { NavbarRadio } from "components/molecules/NavbarRadio";
 import { NavbarProfile } from "components/molecules/NavbarProfile";
 import { NavBarLogin } from "components/molecules/NavBar/NavBarLogin";
-import { GiftTicketModal } from "../GiftTicketModal/GiftTicketModal";
+import { GiftTicketModal } from "components/molecules/GiftTicketModal/GiftTicketModal";
 
 import "./WithNavigationBar.scss";
 
@@ -34,18 +35,22 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user } = useUser();
   const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelectorData);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const history = useHistory();
   const navigateToHomepage = useCallback(() => {
     const venueLink =
       redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
 
-    window.location.href = venueLink;
-  }, [redirectionUrl, venueId]);
+    history.push(venueLink);
+  }, [history, redirectionUrl, venueId]);
 
   const leftComponent = (
     <div className="nav-logos">
-      <div className="nav-sparkle-logo">
-        <div className="nav-sparkle-logo_small" onClick={navigateToHomepage} />
+      <div className="nav-sparkle-logo" onClick={navigateToHomepage}>
+        <div />
+      </div>
+      <div className="nav-sparkle-logo_small">
+        <div />
       </div>
       {venue && (
         <>
@@ -86,10 +91,16 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
     <NavBarLogin />
   );
 
+  const navBarProps = { leftComponent, rightComponent };
+
   return (
     <>
-      <NavBar leftComponent={leftComponent} rightComponent={rightComponent} />
-      <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
+      <NavBar {...navBarProps} />
+      <div
+        className={classNames("navbar-margin", {
+          fullscreen: fullscreen,
+        })}
+      >
         {children}
       </div>
       <Footer />

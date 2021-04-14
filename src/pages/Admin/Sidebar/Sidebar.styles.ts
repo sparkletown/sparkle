@@ -2,10 +2,8 @@ import styled from "styled-components";
 
 export const Wrapper = styled.div`
   display: flex;
-  height: 100vh;
   padding: 0.5rem 0.5rem 2rem;
   flex-direction: column;
-
   position: sticky;
   top: 0;
 

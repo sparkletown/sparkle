@@ -8,12 +8,12 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import "./NavBar.scss";
 import "./playa.scss";
 
-interface NavBarPropsType {
+export interface NavBarPropsType {
   leftComponent?: ReactNode;
   rightComponent?: ReactNode;
 }
 
-const NavBar: React.FC<NavBarPropsType> = ({
+export const NavBar: React.FC<NavBarPropsType> = ({
   leftComponent,
   rightComponent,
 }) => {
@@ -43,6 +43,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
+      {/* @debt Remove back button from Navbar */}
       {venue?.parentId && parentVenue?.name && (
         <div className="back-map-btn">
           <div className="back-icon" />

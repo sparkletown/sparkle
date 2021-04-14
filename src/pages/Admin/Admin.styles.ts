@@ -12,7 +12,6 @@ export const Wrapper = styled.div<WrapperProps>`
     hasSelectedVenue ? "240px auto" : "auto"};
 
   position: relative;
-  overflow-y: scroll;
   scrollbar-width: thin;
 
   input:disabled {

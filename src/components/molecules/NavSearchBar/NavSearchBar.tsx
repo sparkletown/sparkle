@@ -24,7 +24,7 @@ interface SearchResult {
   events: VenueEvent[];
 }
 
-const NavSearchBar = () => {
+export const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const onSearchInputChange = useCallback(
     (e) => setSearchQuery(e.target.value),

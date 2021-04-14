@@ -138,25 +138,25 @@ const Admin_v2: React.FC = () => {
     }
   };
 
+  const hasSelectedVenue = !!selectedVenue;
+
   return (
-    <WithNavigationBar fullscreen>
-      <S.Wrapper>
-        <AdminSidebar
-          sidebarOptions={sidebarOptions}
-          selected={selectedOption}
-          onClick={setSelectedOption}
-        />
+    <WithNavigationBar>
+      <S.Wrapper hasSelectedVenue={hasSelectedVenue}>
+        {selectedVenue && (
+          <AdminSidebar
+            sidebarOptions={sidebarOptions}
+            selected={selectedOption}
+            onClick={setSelectedOption}
+          />
+        )}
 
         <S.ViewWrapper>
           {selectedVenue ? renderVenueView() : <AdminVenues venues={venues} />}
         </S.ViewWrapper>
       </S.Wrapper>
 
-      <AuthenticationModal
-        show={!user}
-        onHide={() => {}}
-        showAuth={AuthOptions.login}
-      />
+      <AuthenticationModal show={!user} showAuth={AuthOptions.login} />
     </WithNavigationBar>
   );
 };

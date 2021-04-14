@@ -1,31 +1,36 @@
 import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 
-export const NavbarSchedule = () => {
+import { useSelector } from "hooks/useSelector";
+
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+
+import "./NavbarSchedule.scss";
+
+export const NavbarSchedule: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
   const parentVenue = useSelector(parentVenueSelector);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
 
   const toggleEventSchedule = useCallback(() => {
-    setEventScheduleVisible(!isEventScheduleVisible);
-  }, [isEventScheduleVisible]);
+    setEventScheduleVisible((scheduleVisible) => !scheduleVisible);
+  }, []);
 
   const hideEventSchedule = useCallback(() => {
     setEventScheduleVisible(false);
   }, []);
 
-  const navbarTitle = parentVenue?.name ?? venue?.name;
+  // TODO: ideally this would find the top most parent of parents and use those details
+  const navbarTitle = parentVenue?.name ?? venue?.name ?? "";
 
   return (
     <>
       <div
         className={classNames("nav-party-logo", {
-          clicked: isEventScheduleVisible,
+          "nav-party-logo--visible": isEventScheduleVisible,
         })}
         onClick={toggleEventSchedule}
       >
@@ -33,7 +38,7 @@ export const NavbarSchedule = () => {
       </div>
       <div
         className={classNames("schedule-dropdown-backdrop", {
-          show: isEventScheduleVisible,
+          "schedule-dropdown-backdrop--visible": isEventScheduleVisible,
         })}
         onClick={hideEventSchedule}
       >

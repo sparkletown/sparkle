@@ -15,7 +15,7 @@ export enum AuthOptions {
 
 interface PropsType {
   show: boolean;
-  onHide: () => void;
+  onHide?: () => void;
   afterUserIsLoggedIn?: () => void;
   showAuth: AuthOptions;
 }
@@ -42,7 +42,7 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
 
   const closeAuthenticationModal = () => {
     setFormToDisplay(showAuth);
-    onHide();
+    onHide && onHide();
   };
 
   return (

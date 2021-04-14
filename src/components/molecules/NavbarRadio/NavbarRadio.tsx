@@ -1,26 +1,29 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
+import classNames from "classnames";
 
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-
-import "./NavbarRadio.scss";
-import { useSelector } from "hooks/useSelector";
 import {
   currentVenueSelectorData,
   radioStationsSelector,
 } from "utils/selectors";
 import { hasElements } from "utils/types";
+
+import { useSelector } from "hooks/useSelector";
 import { useRadio } from "hooks/useRadio";
 
-export const NavbarRadio = () => {
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
+
+import "./NavbarRadio.scss";
+
+export const NavbarRadio: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
 
-  const radioStations = useSelector(radioStationsSelector);
+  const radioStations = useSelector(radioStationsSelector) ?? [];
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const hasRadioStations = radioStations && radioStations.length;
-  const radioStation = !!hasRadioStations && radioStations![0];
+  const radioStation = !!hasRadioStations && radioStations[0];
   const isSoundCloud =
-    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+    !!hasRadioStations && RegExp("soundcloud").test(radioStations[0]);
 
   const sound = useMemo(
     () =>
@@ -57,49 +60,53 @@ export const NavbarRadio = () => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
+  if (showNormalRadio) {
+    return (
+      <OverlayTrigger
+        trigger="click"
+        placement="bottom-end"
+        rootClose={true}
+        defaultShow={showRadioOverlay}
+        overlay={
+          <Popover id="radio-popover">
+            <Popover.Content>
+              <RadioModal
+                {...{
+                  volume,
+                  setVolume,
+                  title: venue?.radioTitle,
+                }}
+                onEnableHandler={handleRadioEnable}
+                isRadioPlaying={isRadioPlaying}
+              />
+            </Popover.Content>
+          </Popover>
+        }
+      >
+        <div
+          className={classNames("profile-icon navbar-link-radio", {
+            off: volume === 0,
+          })}
+        />
+      </OverlayTrigger>
+    );
+  }
+
+  const soundCloudIframeSrc = `https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`;
+
   return (
     <>
-      {showNormalRadio && (
-        <OverlayTrigger
-          trigger="click"
-          placement="bottom-end"
-          overlay={
-            <Popover id="radio-popover">
-              <Popover.Content>
-                <RadioModal
-                  {...{
-                    volume,
-                    setVolume,
-                    title: venue?.radioTitle,
-                  }}
-                  onEnableHandler={handleRadioEnable}
-                  isRadioPlaying={isRadioPlaying}
-                />
-              </Popover.Content>
-            </Popover>
-          }
-          rootClose={true}
-          defaultShow={showRadioOverlay}
-        >
-          <div
-            className={`profile-icon navbar-link-radio ${
-              volume === 0 && "off"
-            }`}
-          />
-        </OverlayTrigger>
-      )}
-
       {showSoundCloudRadio && (
         <div className="radio-trigger">
           <div
-            className={`profile-icon navbar-link-radio ${
-              volume === 0 && "off"
-            }`}
+            className={classNames("profile-icon navbar-link-radio", {
+              off: volume === 0,
+            })}
             onClick={toggleShowRadioPopover}
           />
 
           <div
-            className="radio-wrapper"
+            className="radio-trigger__iframe"
             style={{
               visibility: showRadioPopover ? "visible" : "hidden",
               userSelect: showRadioPopover ? "auto" : "none",
@@ -107,10 +114,9 @@ export const NavbarRadio = () => {
           >
             <iframe
               title="venueRadio"
-              id="sound-cloud-player"
               scrolling="no"
               allow="autoplay"
-              src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+              src={soundCloudIframeSrc}
             />
           </div>
         </div>
