@@ -29,6 +29,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
+import Reaction from "components/atoms/Reaction";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
@@ -352,16 +353,11 @@ export const Audience: React.FunctionComponent = () => {
       <>
         <div className="emoji-container">
           {burningReactions.map((reaction) => (
-            <button
+            <Reaction
               key={reaction.name}
-              className="reaction"
-              onClick={() => user && reactionClicked(user, reaction.type)}
-              id={`send-reaction-${reaction.type}`}
-            >
-              <span role="img" aria-label={reaction.ariaLabel}>
-                {reaction.text}
-              </span>
-            </button>
+              reaction={reaction}
+              reactionClicked={reactionClicked}
+            />
           ))}
           <div
             className="mute-button"

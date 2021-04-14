@@ -1,0 +1,19 @@
+.reaction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 20px;
+  animation: sway 2200ms 1200ms ease-in-out;
+
+  &:focus {
+    outline: none;
+  }
+
+  & > span {
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+  }
+}

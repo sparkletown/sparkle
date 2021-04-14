@@ -26,13 +26,13 @@ import Room from "../components/JazzBarRoom";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import Reaction from "components/atoms/Reaction";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { addReaction } from "store/actions/Reactions";
@@ -78,8 +78,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   }, [parentVenueId]);
 
   useExperiences(venueToUse?.name);
-
-  const { user } = useUser();
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
@@ -191,18 +189,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 <div className="actions-container">
                   <div className="emoji-container">
                     {Reactions.map((reaction) => (
-                      <div
+                      <Reaction
                         key={reaction.name}
-                        className="reaction"
-                        onClick={() =>
-                          user && reactionClicked(user, reaction.type)
-                        }
-                        id={`send-reaction-${reaction.type}`}
-                      >
-                        <span role="img" aria-label={reaction.ariaLabel}>
-                          {reaction.text}
-                        </span>
-                      </div>
+                        reaction={reaction}
+                        reactionClicked={reactionClicked}
+                      />
                     ))}
                     <div
                       className="mute-button"
@@ -211,7 +202,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       }
                     >
                       <FontAwesomeIcon
-                        className="reaction"
                         icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
                       />
                     </div>

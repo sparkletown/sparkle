@@ -76,14 +76,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
           justify-content: space-around;
           margin: 5px 0;
 
-          .reaction {
-            background-color: transparent;
-            border-color: transparent;
-            font-size: 20px;
-            width: 50px;
-            animation: sway 2200ms 1200ms ease-in-out;
-          }
-
           .mute-button {
             display: flex;
             align-items: center;
