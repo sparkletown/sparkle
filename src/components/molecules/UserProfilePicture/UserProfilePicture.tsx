@@ -1,12 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 
-import { MessageToTheBandReaction, Reactions } from "utils/reactions";
 import { WithId } from "utils/id";
 
-import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useReactions } from "hooks/useReactions";
 import { useVenueId } from "hooks/useVenueId";
 
 import {
@@ -16,6 +13,8 @@ import {
 } from "settings";
 
 import { User } from "types/User";
+
+import { UserReactions } from "./UserReactions";
 
 import "./UserProfilePicture.scss";
 
@@ -71,15 +70,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  // TODO: extract this logic into a generic custom reactions component + improve it?
-  const reactions = useReactions(venueId);
-  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
-  const muteReactions = useSelector((state) => state.room.mute);
-  const typedReaction = reactions ?? [];
-  const messagesToBand = typedReaction.find(
-    (r) => r.reaction === "messageToTheBand" && r.created_by === user.id
-  ) as MessageToTheBandReaction | undefined;
-
   // TODO: I believe we only need this state to support the imageErrorHandler functionality.. can we just remove it?
   const [pictureUrl, setPictureUrl] = useState(
     avatarUrl(user.id, user.anonMode, user.pictureUrl, miniAvatars)
@@ -108,11 +98,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   //   [user.id]
   // );
 
-  const containerClasses = classNames(
-    "UserProfilePicture",
-    `UserProfilePicture--reaction-${reactionPosition}`
-  );
-
   const avatarClasses = classNames(
     "UserProfilePicture__avatar",
     avatarClassName
@@ -129,7 +114,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (
-    <div className={containerClasses} style={containerStyle}>
+    <div className="UserProfilePicture" style={containerStyle}>
       {/* TODO: extract this logic into a generic custom component + improve it? Or just remove it entirely? */}
       {/* Hidden image, used to handle error if image is not loaded */}
       {/*<img*/}
@@ -149,39 +134,14 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         onClick={openProfileModal}
       />
 
-      {/* TODO: refactor this to be more performant and potentially memo it if required */}
-      <div className="UserProfilePicture__reaction-container">
-        {Reactions.map(
-          (reaction, index) =>
-            reactions.find(
-              (r) => r.created_by === user.id && r.reaction === reaction.type
-            ) && (
-              // TODO: don't use index as a key
-              // TODO: should we extract reactions into their own sub-components?
-              // TODO: is reaction-container even defined in our styles here..?
-              <React.Fragment key={index}>
-                <div
-                  className="UserProfilePicture__reaction"
-                  role="img"
-                  aria-label={reaction.ariaLabel}
-                >
-                  {reaction.text}
-                </div>
-
-                {/* TODO: replace this with useSound or similar */}
-                {!muteReactions && !isAudioEffectDisabled && (
-                  <audio autoPlay loop>
-                    <source src={reaction.audioPath} />
-                  </audio>
-                )}
-              </React.Fragment>
-            )
-        )}
-
-        {messagesToBand && (
-          <div className="UserProfilePicture__shout">{messagesToBand.text}</div>
-        )}
-      </div>
+      {venueId && (
+        <UserReactions
+          venueId={venueId}
+          user={user}
+          isMuted={isAudioEffectDisabled}
+          reactionPosition={reactionPosition}
+        />
+      )}
     </div>
   );
 };
