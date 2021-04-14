@@ -376,14 +376,14 @@ const Playa = () => {
     return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
   };
 
-  const { camp } = useParams();
+  const { camp } = useParams<{ camp?: string }>();
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
       if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
-        if (camp.placement) {
-          setCenterX(camp.placement.x);
-          setCenterY(camp.placement.y);
+        if (campVenue.placement !== undefined) {
+          setCenterX(campVenue.placement.x);
+          setCenterY(campVenue.placement.y);
         }
         showVenue(campVenue);
       }
