@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import firebase from "firebase/app";
-import { Reaction } from "utils/reactions";
+import { Reaction } from "types/reactions";
 
 export const ADD_REACTION: string = "ADD_REACTION";
 

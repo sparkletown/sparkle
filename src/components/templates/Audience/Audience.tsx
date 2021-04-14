@@ -12,15 +12,15 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { User } from "types/User";
-
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { WithId } from "utils/id";
 import {
   EmojiReactionType,
   Reactions,
   TextReactionType,
-} from "utils/reactions";
+} from "types/reactions";
+import { User } from "types/User";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";

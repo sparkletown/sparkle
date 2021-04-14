@@ -2,12 +2,13 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
 
+import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
+import { MessageToTheBandReaction, Reaction } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -18,7 +19,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
  * Selector to retrieve Firebase auth from Redux.

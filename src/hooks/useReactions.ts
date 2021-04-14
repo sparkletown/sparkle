@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { REACTION_TIMEOUT } from "settings";
-import { Reaction } from "utils/reactions";
+import { Reaction } from "types/reactions";
 
 // @debt refactor this to use useConnect like in src/components/templates/ReactionPage/ReactionPage.tsx ?
 export const useReactions = (venueId?: string) => {

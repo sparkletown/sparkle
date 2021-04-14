@@ -1,14 +1,14 @@
 import React from "react";
 import classNames from "classnames";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
 import {
   Reactions,
   isMessageToTheBandReaction,
   isReactionCreatedBy,
-} from "utils/reactions";
+} from "types/reactions";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
 
 import { useReactions } from "hooks/useReactions";
 import { useSelector } from "hooks/useSelector";

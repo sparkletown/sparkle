@@ -3,14 +3,14 @@ import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
+import { ChatMessage } from "types/chat";
 import {
   chatMessageAsMessageToTheBand,
   Reaction,
   ReactionsTextMap,
-} from "utils/reactions";
-import { withId } from "utils/id";
+} from "types/reactions";
 
-import { ChatMessage } from "types/chat";
+import { withId } from "utils/id";
 
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 

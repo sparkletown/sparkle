@@ -9,17 +9,16 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { IFRAME_ALLOW } from "settings";
 import { UserInfo } from "firebase/app";
 
+import {
+  EmojiReactionType,
+  Reactions,
+  TextReactionType,
+} from "types/reactions";
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
-
-import {
-  EmojiReactionType,
-  Reactions,
-  TextReactionType,
-} from "utils/reactions";
 
 import Room from "../components/JazzBarRoom";
 
