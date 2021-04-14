@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from "react";
 import { useWindowSize } from "react-use";
 
+import { LARGE_SCREEN_WIDTH } from "settings";
+
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -17,7 +19,6 @@ import { useDispatch } from "./useDispatch";
 import { useNumberOfUnreadChats } from "./privateChats";
 import { useVenueId } from "./useVenueId";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
-import { LARGE_SCREEN_WIDTH } from "settings";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -86,7 +87,7 @@ export const useChatSidebarInfo = () => {
   };
 };
 
-export const useChatVisibility = () => {
+export const useChatSidebarLockedOpen = () => {
   const dispatch = useDispatch();
   const { width } = useWindowSize();
 

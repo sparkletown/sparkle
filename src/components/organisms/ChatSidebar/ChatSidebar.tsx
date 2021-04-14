@@ -9,13 +9,18 @@ import {
 
 import { VenueChat, PrivateChats } from "./components";
 
-import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
+import {
+  useChatSidebarControls,
+  useChatSidebarInfo,
+  useChatSidebarLockedOpen,
+} from "hooks/chatSidebar";
 
 import { ChatTypes } from "types/chat";
 
 import "./ChatSidebar.scss";
 
 export const ChatSidebar: React.FC = () => {
+  useChatSidebarLockedOpen();
   const {
     isExpanded,
     toggleSidebar,
