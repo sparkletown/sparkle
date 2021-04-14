@@ -11,7 +11,7 @@ import { UserInfo } from "firebase/app";
 
 import {
   EmojiReactionType,
-  Reactions,
+  ReactionsData,
   TextReactionType,
 } from "types/reactions";
 import { User } from "types/User";
@@ -189,7 +189,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {seatedAtTable && (
                 <div className="actions-container">
                   <div className="emoji-container">
-                    {Reactions.map((reaction) => (
+                    {ReactionsData.map((reaction) => (
                       <div
                         key={reaction.name}
                         className="reaction"

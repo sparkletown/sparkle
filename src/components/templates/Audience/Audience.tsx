@@ -14,7 +14,7 @@ import { makeUpdateUserGridLocation } from "api/profile";
 
 import {
   EmojiReactionType,
-  Reactions,
+  ReactionsData,
   TextReactionType,
 } from "types/reactions";
 import { User } from "types/User";
@@ -329,7 +329,7 @@ export const Audience: React.FunctionComponent = () => {
 
     if (!venue || !profile || !venueId) return <></>;
 
-    const burningReactions = Reactions.filter(
+    const burningReactions = ReactionsData.filter(
       (reaction) =>
         reaction.type !== EmojiReactionType.boo &&
         reaction.type !== EmojiReactionType.thatsjazz
