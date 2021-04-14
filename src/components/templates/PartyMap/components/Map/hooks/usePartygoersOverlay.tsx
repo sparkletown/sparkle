@@ -15,7 +15,6 @@ interface UsePartygoersOverlay {
   rows: number;
   columns: number;
   partygoers: readonly WithId<User>[];
-  setSelectedUserProfile: (user: WithId<User>) => void;
 }
 
 export type UsePartygoersReturn =
@@ -34,7 +33,6 @@ export const usePartygoersOverlay: ReactHook<
   rows,
   columns,
   partygoers,
-  setSelectedUserProfile,
 }) => {
   return useMemo(() => {
     // @debt partygoers can be undefined because our types are broken so check explicitly
@@ -52,17 +50,7 @@ export const usePartygoersOverlay: ReactHook<
         totalRows={rows}
         totalColumns={columns}
         withMiniAvatars={withMiniAvatars}
-        setSelectedUserProfile={setSelectedUserProfile}
       />
     ));
-  }, [
-    showGrid,
-    partygoers,
-    venueId,
-    userUid,
-    rows,
-    columns,
-    withMiniAvatars,
-    setSelectedUserProfile,
-  ]);
+  }, [showGrid, partygoers, venueId, userUid, rows, columns, withMiniAvatars]);
 };

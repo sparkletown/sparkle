@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef, useMemo } from "react";
 // Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import UserProfileModal from "components/organisms/UserProfileModal";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 
@@ -17,6 +16,7 @@ export interface ParticipantProps {
   profileData: User;
   profileDataId: string;
   showIcon?: boolean;
+  isAudioEffectDisabled?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -30,10 +30,10 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   children,
   defaultMute = false,
   showIcon = true,
+  isAudioEffectDisabled,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
-  const [showProfile, setShowProfile] = useState(false);
   const [muted, setMuted] = useState(defaultMute);
 
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -134,16 +134,11 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
         <div className="profile-icon">
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
-            setSelectedUserProfile={() => setShowProfile(true)}
             reactionPosition="right"
+            isAudioEffectDisabled={isAudioEffectDisabled}
           />
         </div>
       )}
-      <UserProfileModal
-        show={showProfile}
-        onHide={() => setShowProfile(false)}
-        userProfile={{ ...profileData, id: participant.identity }}
-      />
       {children}
       <div className="mute-other-container">
         <div onClick={() => setMuted(!muted)} id="mute-myself">

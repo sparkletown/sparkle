@@ -1,23 +1,18 @@
 import "./wdyr";
 
 import React, { useEffect } from "react";
+import { render } from "react-dom";
+
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
 
-import { render } from "react-dom";
 import { Provider } from "react-redux";
-
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
 import thunkMiddleware from "redux-thunk";
 import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
-import firebase from "firebase/app";
-import "firebase/firestore";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/functions";
 import {
   ReactReduxFirebaseProvider,
   firebaseReducer,
@@ -25,6 +20,13 @@ import {
   FirebaseReducer,
 } from "react-redux-firebase";
 import { composeWithDevTools } from "redux-devtools-extension";
+
+import firebase from "firebase/app";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
+import "firebase/performance";
 
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
@@ -52,6 +54,11 @@ import { activatePolyFills } from "./polyfills";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
+import {
+  createPerformanceTrace,
+  PerformanceTrace,
+  traceReactScheduler,
+} from "utils/performance";
 import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
@@ -80,23 +87,33 @@ if (LOGROCKET_APP_ID) {
   });
 }
 
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "");
+const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
+firebaseApp.analytics();
+firebaseApp.auth();
+firebaseApp.firestore();
+const firebaseFunctions = firebase.functions();
+firebase.performance();
+
+// Enable the functions emulator when running in development
+if (process.env.NODE_ENV === "development") {
+  firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
+}
+
+// Load Stripe
+const traceStripeLoad = createPerformanceTrace(
+  PerformanceTrace.initStripeLoad,
+  {
+    startNow: true,
+  }
+);
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "").finally(() => {
+  traceStripeLoad.stop();
+});
 
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
-
-firebase.initializeApp(FIREBASE_CONFIG);
-firebase.analytics();
-firebase.auth();
-firebase.firestore();
-
-if (window.location.hostname === "localhost") {
-  firebase.functions().useFunctionsEmulator("http://localhost:5001");
-} else {
-  firebase.functions();
-}
 
 // Add firebase to reducers
 const rootReducer = combineReducers({
@@ -151,6 +168,7 @@ if (BUGSNAG_API_KEY) {
     "env/kotr",
     "env/memrise",
     "env/unesco",
+    "env/ohbm",
   ];
 
   const releaseStage = () => {
@@ -249,26 +267,28 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   return <>{children}</>;
 };
 
-render(
-  <BugsnagErrorBoundary>
-    <ThemeProvider theme={theme}>
-      <Elements stripe={stripePromise}>
-        <DndProvider backend={HTML5Backend}>
-          <Provider store={store}>
-            <ReactReduxFirebaseProvider {...rrfProps}>
-              <CustomSoundsProvider>
-                <AuthIsLoaded>
-                  <AppRouter />
-                </AuthIsLoaded>
-              </CustomSoundsProvider>
-            </ReactReduxFirebaseProvider>
-          </Provider>
-        </DndProvider>
-      </Elements>
-    </ThemeProvider>
-  </BugsnagErrorBoundary>,
-  document.getElementById("root")
-);
+traceReactScheduler("initial render", performance.now(), () => {
+  render(
+    <BugsnagErrorBoundary>
+      <ThemeProvider theme={theme}>
+        <Elements stripe={stripePromise}>
+          <DndProvider backend={HTML5Backend}>
+            <Provider store={store}>
+              <ReactReduxFirebaseProvider {...rrfProps}>
+                <CustomSoundsProvider>
+                  <AuthIsLoaded>
+                    <AppRouter />
+                  </AuthIsLoaded>
+                </CustomSoundsProvider>
+              </ReactReduxFirebaseProvider>
+            </Provider>
+          </DndProvider>
+        </Elements>
+      </ThemeProvider>
+    </BugsnagErrorBoundary>,
+    document.getElementById("root")
+  );
+});
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

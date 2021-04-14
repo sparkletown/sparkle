@@ -25,6 +25,7 @@ interface RoomProps {
   onBack?: () => void;
   hasChairs?: boolean;
   defaultMute?: boolean;
+  isAudioEffectDisabled: boolean;
 }
 
 // @debt THIS COMPONENT IS THE COPY OF components/molecules/TableComponent
@@ -39,6 +40,7 @@ const Room: React.FC<RoomProps> = ({
   setSeatedAtTable,
   hasChairs = true,
   defaultMute,
+  isAudioEffectDisabled,
 }) => {
   const [room, setRoom] = useState<Video.Room>();
   const [videoError, setVideoError] = useState<string>("");
@@ -289,10 +291,11 @@ const Room: React.FC<RoomProps> = ({
           profileDataId={room.localParticipant.identity}
           bartender={meIsBartender}
           defaultMute={defaultMute}
+          isAudioEffectDisabled={isAudioEffectDisabled}
         />
       </div>
     ) : null;
-  }, [meIsBartender, room, profileData, defaultMute]);
+  }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
 
   if (!token) return null;
 

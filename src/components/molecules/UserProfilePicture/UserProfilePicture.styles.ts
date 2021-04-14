@@ -6,6 +6,7 @@ import { DEFAULT_PROFILE_IMAGE } from "settings";
 type AvatarProps = {
   backgroundImage?: string;
 };
+
 export const Avatar = styled.div<AvatarProps>`
   background-position: center;
   background-size: cover;
@@ -17,9 +18,11 @@ export const Avatar = styled.div<AvatarProps>`
 
 // --- Reaction
 const reactionOffset = "-20px";
+
 const reactionLeft = css`
   left: ${reactionOffset};
 `;
+
 const reactionRight = css`
   right: ${reactionOffset};
 `;
@@ -27,15 +30,15 @@ const reactionRight = css`
 type ReactionProps = {
   reactionPosition?: "right" | "left" | undefined;
 };
+
 export const Reaction = styled.div<ReactionProps>`
+  position: absolute;
+
   width: 50px;
 
-  position: absolute;
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? reactionRight : reactionLeft};
-  top: -25px;
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 10;
+  bottom: 0;
 
   font-size: 50px;
 
@@ -45,12 +48,13 @@ export const Reaction = styled.div<ReactionProps>`
 // --- Reaction Container
 export const Container = styled.div`
   height: 100%;
-  position: relative;
 
   background-position: center;
   background-size: cover;
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 11;
+
+  .reaction-container {
+    position: relative;
+  }
 
   ${Avatar} {
     border-radius: 10rem;
@@ -66,6 +70,7 @@ export const Container = styled.div`
 
 // --- Shout-out message
 const translateXOffset = "5vh"; // 5vh = imageWidth (4vh) + 1v (padding)
+
 const expandBounceRight = keyframes`
   0%,
   100% {
@@ -81,6 +86,7 @@ const expandBounceRight = keyframes`
     transform: scale(1) translateX(${translateXOffset});
   }
 `;
+
 const expandBounceLeft = keyframes`
   0%,
   100% {
@@ -102,6 +108,7 @@ const messageLeft = css`
   transform-origin: right center;
   animation: ${expandBounceLeft} 5s ease;
 `;
+
 const messageRight = css`
   left: 0;
   transform-origin: 2vh center;
@@ -109,19 +116,18 @@ const messageRight = css`
 `;
 
 export const ShoutOutMessage = styled.div<ReactionProps>`
+  bottom: 0;
+  position: absolute;
+  z-index: 1;
+
   width: max-content;
   max-width: 20em;
   padding: 6px 10px;
-
-  position: absolute;
-  bottom: 0;
 
   ${({ reactionPosition }) =>
     reactionPosition === "right" ? messageRight : messageLeft};
 
   background-color: rgba(255, 255, 255, 1);
-  // @debt convert this to scss then use our z-index layer helper here
-  z-index: 12;
 
   color: #000;
   font-size: 20px;
