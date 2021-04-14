@@ -4,10 +4,11 @@ import { useHistory } from "react-router";
 import classNames from "classnames";
 
 import { venueInsideUrl } from "utils/url";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSelector } from "hooks/useSelector";
 
 import { NavBar } from "components/molecules/NavBar";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
@@ -35,7 +36,7 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
 }) => {
   const { user } = useUser();
   const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const venue = useSelector(currentVenueSelectorData);
   const history = useHistory();
   const navigateToHomepage = useCallback(() => {
     const venueLink =
