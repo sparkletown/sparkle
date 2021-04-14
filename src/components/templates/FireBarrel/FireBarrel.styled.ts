@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { LARGE_SCREEN_WIDTH } from "settings";
 
 export const Wrapper = styled.div`
   display: grid;
@@ -7,7 +8,7 @@ export const Wrapper = styled.div`
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 1rem;
 
-  @media (min-width: 1200px) {
+  @media (min-width: ${LARGE_SCREEN_WIDTH}) {
     width: calc(100% - 360px);
     margin: 0;
     padding: 3rem;

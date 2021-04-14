@@ -1,13 +1,11 @@
 @import "scss/constants.scss";
 
 .navbar-margin {
+  display: flex;
+  justify-content: space-between;
+
   padding-top: $navbar-height;
   padding-bottom: $footer-height;
-
-  @media (min-width: $large-laptop-width) {
-    display: flex;
-    justify-content: space-between;
-  }
 }
 .navbar-margin.fullscreen {
   height: 100%;
