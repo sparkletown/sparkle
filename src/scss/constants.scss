@@ -76,9 +76,7 @@ $z-layers: (
   user-search-input-close-btn: 1,
   user-search-results: 380,
   // Nav
-  navbar-map-back-button: 3,
-  navbar-nav-search-close-icon: 1,
-  navbar-nav-search-input-close-btn: 1,
+  navbar-map-back-button: $z-layer-sidebar,
   navbar-nav-search-results: 380,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
@@ -88,8 +86,11 @@ $z-layers: (
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // Map
-  map-room-hovered: 3,
-  map-room: 2,
+  map-room--hovered: 5,
+  map-room: 4,
+  map-grid: 3,
+  map-room--unclickable: 2,
+  map-background: 1,
   // Legacy
   account-profile-picture-preview: 1,
   duststorm-container: 100,
@@ -99,7 +100,7 @@ $z-layers: (
   footer: $z-layer-sidebar,
   global-profile-icon: 1,
   user-avatar-status-dot: 1,
-  private-chat-input-search-icon: 1,
+  input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,

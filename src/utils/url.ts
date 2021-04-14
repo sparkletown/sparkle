@@ -19,7 +19,7 @@ export const venueEntranceUrl = (venueId: string, step?: number) => {
 
 export const isExternalUrl = (url: string) => {
   try {
-    return new URL(url).host !== window.location.host;
+    return new URL(url, window.location.origin).host !== window.location.host;
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";
@@ -47,7 +47,7 @@ export const openUrl = (url: string) => {
         `Invalid URL ${url} on page ${window.location.href}; allowing for now (workaround)`
       ),
       (event) => {
-        event.addMetadata("utils/url::openUrl", { url });
+        event.addMetadata("context", { func: "utils/url::openUrl", url });
       }
     );
     // @debt keep the checking in place so we can debug further, but don't block attempts to open
@@ -64,7 +64,9 @@ export const openUrl = (url: string) => {
 
 export const isValidUrl = (url: string): boolean => {
   try {
-    return VALID_URL_PROTOCOLS.includes(new URL(url).protocol);
+    return VALID_URL_PROTOCOLS.includes(
+      new URL(url, window.location.origin).protocol
+    );
   } catch (e) {
     if (e.name === "TypeError") {
       return false;

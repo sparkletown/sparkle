@@ -11,6 +11,7 @@ import {
   ONE_MINUTE_IN_SECONDS,
 } from "utils/time";
 
+import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
@@ -53,6 +54,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
+  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
+    interrupt: true,
+    onend: enterRoom,
+  });
+
   const roomEvents = useMemo(
     () =>
       venueEvents.filter(
@@ -78,14 +84,18 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           key={event.id ?? `${event.room}-${event.name}-${index}`}
           event={event}
           isCurrentEvent={currentEvent && event.name === currentEvent.name}
-          onRoomEnter={enterRoom}
+          onRoomEnter={enterRoomWithSound}
           roomUrl={room.url}
         />
       )),
-    [currentEvent, enterRoom, room.url, roomEvents]
+    [currentEvent, enterRoomWithSound, room.url, roomEvents]
   );
 
   const hasRoomEvents = renderedRoomEvents?.length > 0;
+
+  const iconStyles = {
+    backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
+  };
 
   return (
     <>
@@ -96,15 +106,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       )}
 
       <div className="room-modal__main">
-        {room.image_url ? (
-          <img src={room.image_url} alt={room.title} />
-        ) : (
-          <span>{room.title}</span>
-        )}
+        <div className="room-modal__icon" style={iconStyles} />
 
         <RoomModalOngoingEvent
           roomEvents={roomEvents}
-          onRoomEnter={enterRoom}
+          onRoomEnter={enterRoomWithSound}
         />
       </div>
 
