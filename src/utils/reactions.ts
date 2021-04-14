@@ -100,6 +100,10 @@ export interface MessageToTheBandReaction extends BaseReaction {
 
 export type Reaction = EmojiReaction | MessageToTheBandReaction;
 
+export const isMessageToTheBandReaction = (
+  r: Reaction
+): r is MessageToTheBandReaction => r.reaction === "messageToTheBand";
+
 export const chatMessageAsMessageToTheBand = (
   chat: ChatMessage
 ): MessageToTheBandReaction => ({
