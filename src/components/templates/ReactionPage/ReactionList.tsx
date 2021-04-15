@@ -6,9 +6,9 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { ChatMessage } from "types/chat";
 import {
   chatMessageAsTextReaction,
+  isEmojiReaction,
   Reaction,
   ReactionsTextMap,
-  TextReactionType,
 } from "types/reactions";
 
 import { withId } from "utils/id";
@@ -72,10 +72,10 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 
           <div
             className={classNames("message-bubble", {
-              emoji: message.reaction !== TextReactionType,
+              emoji: isEmojiReaction(message),
             })}
           >
-            {message.reaction !== TextReactionType
+            {isEmojiReaction(message)
               ? ReactionsTextMap[message.reaction]
               : message.text}
           </div>

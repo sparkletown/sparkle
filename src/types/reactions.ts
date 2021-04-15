@@ -112,6 +112,9 @@ export const AllReactions: ReactionData<EmojiReactionType>[] = [
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
+export const isEmojiReaction = (r: Reaction): r is EmojiReaction =>
+  EmojiReactionType[r.reaction as EmojiReactionType] !== undefined;
+
 export const isTextReaction = (r: Reaction): r is TextReaction =>
   r.reaction === TextReactionType;
 
