@@ -1,6 +1,7 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useCallback } from "react";
 
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
+import { venueInsideUrl } from "utils/url";
 
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -20,6 +21,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const venue = useSelector(currentVenueSelectorData);
   const venueParentId = venue?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
+
+  const parentVenueId = venue?.parentId ?? "";
+  const backToParentVenue = useCallback(() => {
+    window.location.href = venueInsideUrl(parentVenueId);
+  }, [parentVenueId]);
 
   // @debt Move connect from Navbar to a hook
   useFirestoreConnect(
@@ -45,7 +51,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn">
+        <div className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
           <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}
