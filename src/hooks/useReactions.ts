@@ -1,41 +1,64 @@
 import { useEffect, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
+
 import { REACTION_TIMEOUT } from "settings";
+
 import { Reaction } from "types/reactions";
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
+
+export interface UseReactionsProps {
+  venueId?: string;
+  user?: WithId<User>;
+}
 
 // @debt refactor this to use useConnect like in src/components/templates/ReactionPage/ReactionPage.tsx ?
-export const useReactions = (venueId?: string) => {
+export const useReactions = ({ venueId, user }: UseReactionsProps) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const firebase = useFirebase();
 
   useEffect(() => {
     if (!venueId) return;
 
-    const unsubscribeListener = firebase
+    const reactionsCollectionRef = firebase
       .firestore()
       .collection("experiences")
       .doc(venueId)
-      .collection("reactions")
-      .where("created_at", ">", Date.now())
-      .onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            const newReaction = change.doc.data() as Reaction;
-            setReactions((prevReactions) => [...prevReactions, newReaction]);
+      .collection("reactions");
 
-            setTimeout(() => {
-              setReactions((prevReactions) =>
-                prevReactions.filter((r) => r !== newReaction)
-              );
-            }, REACTION_TIMEOUT);
-          }
-        });
+    // We only want to retrieve new reactions
+    const baseReactionsQuery = reactionsCollectionRef.where(
+      "created_at",
+      ">",
+      Date.now()
+    );
+
+    // When we provide a user, only retrieve their reactions
+    const reactionsQuery = user
+      ? baseReactionsQuery.where("created_by", "==", user.id)
+      : baseReactionsQuery;
+
+    const unsubscribeListener = reactionsQuery.onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          const newReaction = change.doc.data() as Reaction;
+
+          setReactions((prevReactions) => [...prevReactions, newReaction]);
+
+          setTimeout(() => {
+            setReactions((prevReactions) =>
+              prevReactions.filter((r) => r !== newReaction)
+            );
+          }, REACTION_TIMEOUT);
+        }
       });
+    });
 
     return () => {
       unsubscribeListener();
     };
-  }, [firebase, setReactions, venueId]);
+  }, [firebase, setReactions, user, venueId]);
 
   return reactions;
 };

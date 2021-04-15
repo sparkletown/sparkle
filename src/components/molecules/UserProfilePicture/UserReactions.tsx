@@ -34,7 +34,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   const isMutedGlobally = useSelector((state) => state.room.mute);
   const isMuted = isMutedLocally || isMutedGlobally;
 
-  const reactions = useReactions(venueId);
+  const reactions = useReactions({ venueId });
 
   const userReactions = reactions.filter(isReactionCreatedBy(user.id));
 
