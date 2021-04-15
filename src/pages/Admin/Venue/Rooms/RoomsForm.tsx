@@ -135,11 +135,13 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
 
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
-      if (!user || !editingRoom) return;
+      if (!user) return;
+
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
-          ...vals,
+          // @debt remove as, when properly implement room values
+          ...(vals as RoomInput),
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`/admin/${venueId}`);
