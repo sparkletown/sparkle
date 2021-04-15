@@ -4,7 +4,7 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import firebase, { UserInfo } from "firebase/app";
+import firebase from "firebase/app";
 
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 
@@ -12,15 +12,12 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import {
-  EmojiReactionType,
-  AllReactions,
-  TextReactionType,
-} from "types/reactions";
+import { AllReactions, EmojiReactionType } from "types/reactions";
 import { User } from "types/User";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
+import { createEmojiReaction, createTextReaction } from "utils/reactions";
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -32,10 +29,6 @@ import { useVenueId } from "hooks/useVenueId";
 import UserProfilePicture from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
-
-type ReactionType =
-  | { reaction: EmojiReactionType }
-  | { reaction: TextReactionType; text: string };
 
 interface ChatOutDataType {
   text: string;
@@ -138,12 +131,6 @@ const requiredAuditoriumSize = (
   return size;
 };
 
-const createReaction = (reaction: ReactionType, user: UserInfo) => ({
-  created_at: Date.now(),
-  created_by: user.uid,
-  ...reaction,
-});
-
 const burningReactions = AllReactions.filter(
   (reaction) =>
     reaction.type !== EmojiReactionType.boo &&
@@ -153,11 +140,11 @@ const burningReactions = AllReactions.filter(
 // Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
-  const { user, profile } = useUser();
+  const { userWithId, profile } = useUser();
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const userUid = user?.uid;
+  const userUid = userWithId?.id;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
@@ -197,17 +184,22 @@ export const Audience: React.FunctionComponent = () => {
 
   const dispatch = useDispatch();
 
+  // @debt de-duplicate this with version in src/components/templates/Jazzbar/JazzTab/JazzTab.tsx
   const reactionClicked = useCallback(
-    (user: UserInfo, reaction: EmojiReactionType) => {
+    (emojiReaction: EmojiReactionType) => {
+      if (!venueId || !userWithId) return;
+
       dispatch(
         addReaction({
           venueId,
-          reaction: createReaction({ reaction }, user),
+          reaction: createEmojiReaction(emojiReaction, userWithId),
         })
       );
+
+      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
       setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
     },
-    [venueId, dispatch]
+    [venueId, userWithId, dispatch]
   );
 
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -320,17 +312,17 @@ export const Audience: React.FunctionComponent = () => {
     };
 
     const onSubmit = async (data: ChatOutDataType) => {
+      if (!venueId || !userWithId) return;
+
       setIsShoutSent(true);
-      user &&
-        dispatch(
-          addReaction({
-            venueId,
-            reaction: createReaction(
-              { reaction: "messageToTheBand", text: data.text },
-              user
-            ),
-          })
-        );
+
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createTextReaction(data.text, userWithId),
+        })
+      );
+
       reset();
     };
 
@@ -357,7 +349,7 @@ export const Audience: React.FunctionComponent = () => {
             <button
               key={reaction.name}
               className="reaction"
-              onClick={() => user && reactionClicked(user, reaction.type)}
+              onClick={() => reactionClicked(reaction.type)}
               id={`send-reaction-${reaction.type}`}
             >
               <span role="img" aria-label={reaction.ariaLabel}>
@@ -501,7 +493,7 @@ export const Audience: React.FunctionComponent = () => {
     iframeUrl,
     rowsForSizedAuditorium,
     userUid,
-    user,
+    userWithId,
     dispatch,
     reset,
     columnsForSizedAuditorium,
