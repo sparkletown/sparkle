@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-
 import "./TablesUserList.scss";
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
-import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
@@ -57,9 +54,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   TableComponent,
   joinMessage,
 }) => {
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
   const [showLockedMessage, setShowLockedMessage] = useState(false);
   const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [joiningTable, setJoiningTable] = useState("");
@@ -172,23 +166,18 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         <>
           {tables.map((table: Table, i: number) => (
             <TableComponent
-              key={table.title}
+              key={table.reference}
               experienceName={venueName}
               users={recentVenueUsers}
               table={table}
               tableLocked={tableLocked}
-              setSelectedUserProfile={setSelectedUserProfile}
               onJoinClicked={onJoinClicked}
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />
           ))}
         </>
       )}
-      <UserProfileModal
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-        userProfile={selectedUserProfile}
-      />
+
       <Modal
         show={showLockedMessage}
         onHide={() => setShowLockedMessage(false)}

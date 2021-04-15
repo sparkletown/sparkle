@@ -99,6 +99,8 @@ export interface Venue_v2_EntranceConfig {
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
+// @debt The following keys are marked as required on this type, but i'm not sure they should be:
+//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
 export interface BaseVenue {
   template: VenueTemplate;
   parentId?: string;
@@ -169,18 +171,24 @@ export interface GenericVenue extends BaseVenue {
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
+// @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
   id: string;
   template: VenueTemplate.partymap;
+
+  // @debt The following keys are marked as required on this type, but i'm not sure they should be:
+  //   url, name (we seem to be using icon to hold the URL of the image)
   host?: {
     url: string;
     icon: string;
     name: string;
   };
+
   description?: {
     text: string;
     program_url?: string;
   };
+
   start_utc_seconds?: number;
   duration_hours?: number;
   entrance_hosted_hours?: number;
@@ -235,7 +243,7 @@ export interface VenueConfig {
     backgroundColor?: string;
   };
 
-  // @debt landingPageConfig should probably be undefined, or is it guaranteed to exist everywhere?
+  // @debt landingPageConfig should probably be 'potentially undefined', or is it guaranteed to exist everywhere?
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
@@ -243,6 +251,8 @@ export interface VenueConfig {
   tables?: Table[];
 }
 
+// @debt The following keys are marked as required on this type, but i'm not sure they should be:
+//   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
   subtitle: string;

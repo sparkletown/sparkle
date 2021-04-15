@@ -17,6 +17,7 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { Posters } from "components/templates/Posters";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
@@ -131,6 +132,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar />
+      <UserProfileModal />
     </WithNavigationBar>
   );
 };

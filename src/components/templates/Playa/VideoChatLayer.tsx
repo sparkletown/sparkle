@@ -5,20 +5,13 @@ import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
 
 import Room from "./Video/Room";
-import { User, VideoState } from "types/User";
-import { WithId } from "utils/id";
+import { VideoState } from "types/User";
 import { PROJECT_ID } from "secrets";
 import "./VideoChatLayer.scss";
 
-type PropsType = {
-  setSelectedUserProfile: (user: WithId<User>) => void;
-};
-
 const ROOM_PREFIX = PROJECT_ID + "-";
 
-const VideoChatLayer: React.FunctionComponent<PropsType> = ({
-  setSelectedUserProfile,
-}) => {
+const VideoChatLayer: React.FC = () => {
   const firebase = useFirebase();
   const { user, profile } = useUser();
   const { worldUsersById } = useWorldUsersById();
@@ -81,7 +74,6 @@ const VideoChatLayer: React.FunctionComponent<PropsType> = ({
         <Room
           roomName={roomName}
           hostUid={profile.video.inRoomOwnedBy}
-          setSelectedUserProfile={setSelectedUserProfile}
           leave={leave}
           removeParticipant={removeParticipant}
         />
