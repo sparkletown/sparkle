@@ -2,7 +2,7 @@ import React from "react";
 import classNames from "classnames";
 
 import {
-  AllReactions,
+  EmojiReactions,
   isTextReaction,
   isReactionCreatedBy,
 } from "types/reactions";
@@ -46,7 +46,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   // TODO: refactor this to be more performant and potentially memo it if required
   return (
     <div className={containerClasses}>
-      {AllReactions.map(
+      {EmojiReactions.map(
         (reaction, index) =>
           reactions.find(
             (r) => r.created_by === user.id && r.reaction === reaction.type

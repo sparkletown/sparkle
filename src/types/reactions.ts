@@ -50,7 +50,7 @@ export const ReactionsTextMap = {
   [EmojiReactionType.sparkle]: "✨",
 };
 
-export const AllReactions: ReactionData<EmojiReactionType>[] = [
+export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
   {
     type: EmojiReactionType.heart,
     name: "heart",

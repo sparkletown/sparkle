@@ -12,7 +12,7 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { AllReactions, EmojiReactionType } from "types/reactions";
+import { EmojiReactions, EmojiReactionType } from "types/reactions";
 import { User } from "types/User";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -131,7 +131,7 @@ const requiredAuditoriumSize = (
   return size;
 };
 
-const burningReactions = AllReactions.filter(
+const burningReactions = EmojiReactions.filter(
   (reaction) =>
     reaction.type !== EmojiReactionType.boo &&
     reaction.type !== EmojiReactionType.thatsjazz

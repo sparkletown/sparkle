@@ -10,7 +10,7 @@ import { IFRAME_ALLOW } from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
-import { EmojiReactionType, AllReactions } from "types/reactions";
+import { EmojiReactionType, EmojiReactions } from "types/reactions";
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
@@ -181,7 +181,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {seatedAtTable && (
                 <div className="actions-container">
                   <div className="emoji-container">
-                    {AllReactions.map((reaction) => (
+                    {EmojiReactions.map((reaction) => (
                       <div
                         key={reaction.name}
                         className="reaction"
