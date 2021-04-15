@@ -1,118 +1,55 @@
-import { ChatMessage } from "types/chat";
+import {
+  EmojiReactionsMap,
+  EmojiReactionType,
+  isEmojiReaction,
+  Reaction,
+  ReactionData,
+  TextReactionType,
+} from "types/reactions";
+import { User } from "types/User";
 
-export enum EmojiReactionType {
-  heart = "heart",
-  clap = "clap",
-  wolf = "wolf",
-  laugh = "laugh",
-  thatsjazz = "thatsjazz",
-  boo = "boo",
-  burn = "burn",
-  sparkle = "sparkle",
-}
+import { WithId } from "utils/id";
 
-export type TextReactionType = "messageToTheBand";
+export type CreateReactionReactionProps =
+  | { reaction: EmojiReactionType }
+  | { reaction: TextReactionType; text: string };
 
-export type ReactionType = EmojiReactionType | TextReactionType;
+export const createEmojiReaction = (
+  emojiReaction: EmojiReactionType,
+  user: WithId<User>
+): Reaction => createReaction({ reaction: emojiReaction }, user);
 
-export const ReactionsTextMap = {
-  [EmojiReactionType.heart]: "❤️",
-  [EmojiReactionType.clap]: "👏",
-  [EmojiReactionType.wolf]: "🐺",
-  [EmojiReactionType.laugh]: "😂",
-  [EmojiReactionType.thatsjazz]: "🎹",
-  [EmojiReactionType.boo]: "👻",
-  [EmojiReactionType.burn]: "🔥",
-  [EmojiReactionType.sparkle]: "✨",
-};
+export const createTextReaction = (
+  text: string,
+  user: WithId<User>
+): Reaction => createReaction({ reaction: TextReactionType, text }, user);
 
-export type ReactionsType = {
-  name: string;
-  text: string;
-  type: EmojiReactionType;
-  ariaLabel: string;
-  audioPath: string;
-};
-
-export const Reactions: ReactionsType[] = [
-  {
-    name: "heart",
-    text: ReactionsTextMap[EmojiReactionType.heart],
-    type: EmojiReactionType.heart,
-    ariaLabel: "heart-emoji",
-    audioPath: "/sounds/woo.mp3",
-  },
-  {
-    name: "clap",
-    text: ReactionsTextMap[EmojiReactionType.clap],
-    type: EmojiReactionType.clap,
-    ariaLabel: "clap-emoji",
-    audioPath: "/sounds/clap.mp3",
-  },
-  {
-    name: "wolf",
-    text: ReactionsTextMap[EmojiReactionType.wolf],
-    type: EmojiReactionType.wolf,
-    ariaLabel: "wolf-emoji",
-    audioPath: "/sounds/wolf.mp3",
-  },
-  {
-    name: "laugh",
-    text: ReactionsTextMap[EmojiReactionType.laugh],
-    type: EmojiReactionType.laugh,
-    ariaLabel: "laugh-emoji",
-    audioPath: "/sounds/laugh.mp3",
-  },
-  {
-    name: "thatsjazz",
-    text: ReactionsTextMap[EmojiReactionType.thatsjazz],
-    type: EmojiReactionType.thatsjazz,
-    ariaLabel: "piano-emoji",
-    audioPath: "/sounds/thatsjazz.mp3",
-  },
-  {
-    name: "boo",
-    text: ReactionsTextMap[EmojiReactionType.boo],
-    type: EmojiReactionType.boo,
-    ariaLabel: "boo-emoji",
-    audioPath: "/sounds/boo.mp3",
-  },
-  {
-    name: "burn",
-    text: ReactionsTextMap[EmojiReactionType.burn],
-    type: EmojiReactionType.burn,
-    ariaLabel: "burn-emoji",
-    audioPath: "/sounds/burn.mpeg",
-  },
-  {
-    name: "sparkle",
-    text: ReactionsTextMap[EmojiReactionType.sparkle],
-    type: EmojiReactionType.sparkle,
-    ariaLabel: "sparkle-emoji",
-    audioPath: "/sounds/sparkle.mpeg",
-  },
-];
-
-interface BaseReaction {
-  created_at: number;
-  created_by: string;
-}
-
-export interface EmojiReaction extends BaseReaction {
-  reaction: EmojiReactionType;
-}
-export interface MessageToTheBandReaction extends BaseReaction {
-  reaction: TextReactionType;
-  text: string;
-}
-
-export type Reaction = EmojiReaction | MessageToTheBandReaction;
-
-export const chatMessageAsMessageToTheBand = (
-  chat: ChatMessage
-): MessageToTheBandReaction => ({
-  created_at: chat.ts_utc.toMillis() / 1000,
-  created_by: chat.from,
-  reaction: "messageToTheBand",
-  text: chat.text,
+export const createReaction = (
+  reaction: CreateReactionReactionProps,
+  user: WithId<User>
+): Reaction => ({
+  created_at: Date.now(),
+  created_by: user.id,
+  ...reaction,
 });
+
+export const uniqueEmojiReactionsDataMapReducer = (
+  emojiReactionsDataMap: Map<
+    EmojiReactionType,
+    ReactionData<EmojiReactionType>
+  >,
+  reaction: Reaction
+): Map<EmojiReactionType, ReactionData<EmojiReactionType>> => {
+  if (
+    isEmojiReaction(reaction) &&
+    !emojiReactionsDataMap.has(reaction.reaction)
+  ) {
+    const emojiReactionData = EmojiReactionsMap.get(reaction.reaction);
+
+    if (emojiReactionData !== undefined) {
+      emojiReactionsDataMap.set(reaction.reaction, emojiReactionData);
+    }
+  }
+
+  return emojiReactionsDataMap;
+};

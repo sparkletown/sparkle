@@ -3,18 +3,19 @@ import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import {
-  chatMessageAsMessageToTheBand,
-  Reaction,
-  ReactionsTextMap,
-} from "utils/reactions";
-import { withId } from "utils/id";
-
 import { ChatMessage } from "types/chat";
+import {
+  chatMessageAsTextReaction,
+  EmojiReactionsMap,
+  isEmojiReaction,
+  Reaction,
+} from "types/reactions";
+
+import { withId } from "utils/id";
 
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 export interface ReactionListProps {
@@ -33,7 +34,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 
   const allReactions = useMemo(() => {
     const chatsAsBandMessages =
-      chatMessages?.map(chatMessageAsMessageToTheBand) ?? [];
+      chatMessages?.map(chatMessageAsTextReaction) ?? [];
 
     const allReactionsSorted = [
       ...(reactions ?? []),
@@ -71,11 +72,11 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 
           <div
             className={classNames("message-bubble", {
-              emoji: message.reaction !== "messageToTheBand",
+              emoji: isEmojiReaction(message),
             })}
           >
-            {message.reaction !== "messageToTheBand"
-              ? ReactionsTextMap[message.reaction]
+            {isEmojiReaction(message)
+              ? EmojiReactionsMap.get(message.reaction)?.text ?? null
               : message.text}
           </div>
         </div>

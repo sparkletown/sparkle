@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { useSelector } from "hooks/useSelector";
 
