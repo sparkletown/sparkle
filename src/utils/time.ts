@@ -1,4 +1,4 @@
-import { format, formatDuration } from "date-fns";
+import { format, formatDuration, isToday, isTomorrow } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -104,6 +104,7 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
   event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
   ONE_HOUR_IN_SECONDS;
 
+// example: formatDate(1618509600) === 'Apr 15th'
 export function formatDate(utcSeconds: number) {
   return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
 }
@@ -112,6 +113,7 @@ export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
+// example: formatUtcSeconds(1618509600) === '9:00 PM'
 export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds
     ? format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "p")
@@ -136,6 +138,7 @@ export function getDaysAgoInSeconds(days: number) {
   return getHoursAgoInSeconds(days * 24);
 }
 
+// example: formatHourAndMinute(1618509600) === '21:00'
 export const formatHourAndMinute = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const hh = String(date.getHours()).padStart(2, "0");
@@ -182,9 +185,20 @@ export const roundToNearestHour = (seconds: number) => {
   return Math.floor(seconds / oneHour) * oneHour;
 };
 
+// output: Mon..Sun
 export function formatDateToWeekday(utcSeconds: number) {
   return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "E");
 }
+
+// output: Today|Tomorrow|Monday..Sunday
+export const formatToWeekdayFullname = (utcSeconds: number) => {
+  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
+  if (isToday(date)) {
+    return "Today";
+  } else if (isTomorrow(date)) {
+    return "Tomorrow";
+  } else return format(date, "EEEE");
+};
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   const isTimestampInMilliSeconds = timestamp > SECONDS_TIMESTAMP_MAX_VALUE;

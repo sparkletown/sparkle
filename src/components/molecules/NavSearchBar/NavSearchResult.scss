@@ -1,0 +1,38 @@
+@import "scss/constants.scss";
+
+.nav-dropdown--search-result {
+  cursor: pointer;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: space-between;
+
+  .nav-dropdown--search-result-image {
+    flex-shrink: 0;
+    height: 32px;
+    width: 32px;
+    margin-right: 10px;
+    border-radius: $border-radius--small;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: $black;
+  }
+
+  .nav-dropdown--search-result-avatar {
+    height: 26px;
+    width: 26px;
+    border-radius: 50%;
+    background-size: cover;
+  }
+
+  &:hover {
+    background-color: rgba($white, 0.1);
+  }
+
+  &:last-child {
+    border-radius: 0 0 $border-radius--input $border-radius--input;
+  }
+}
