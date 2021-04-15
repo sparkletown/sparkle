@@ -10,6 +10,7 @@ interface PropsType {
   isMessageToTheBandSent: boolean;
 }
 
+// @debt This file doesn't appear to be used anywhere anymore. We can probably remove it in our next tech-debt cleanup pass
 // eslint-disable-next-line react/display-name
 const CallOutMessageForm = React.forwardRef<HTMLInputElement, PropsType>(
   ({ onSubmit, placeholder, isMessageToTheBandSent }, ref) => {
