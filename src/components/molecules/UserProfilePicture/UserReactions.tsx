@@ -2,13 +2,15 @@ import React from "react";
 import classNames from "classnames";
 
 import {
-  EmojiReactions,
   isTextReaction,
   isReactionCreatedBy,
+  ReactionData,
+  EmojiReactionType,
 } from "types/reactions";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
+import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
 import { useReactions } from "hooks/useReactions";
 import { useSelector } from "hooks/useSelector";
@@ -32,6 +34,10 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
 
   // TODO: memo/etc these as required
   const userReactions = reactions.filter(isReactionCreatedBy(user.id));
+  const userUniqueEmojiReactions = userReactions.reduce(
+    uniqueEmojiReactionsDataMapReducer,
+    new Map()
+  );
   const userShoutout = userReactions.find(isTextReaction);
 
   // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
@@ -43,38 +49,45 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     `UserReactions--reaction-${reactionPosition}`
   );
 
-  // TODO: refactor this to be more performant and potentially memo it if required
+  const renderedEmojiReactions = Array.from(
+    userUniqueEmojiReactions.values()
+  ).map((emojiReaction) => (
+    <DisplayEmojiReaction
+      key={emojiReaction.type}
+      emojiReaction={emojiReaction}
+      isMuted={isMuted}
+    />
+  ));
   return (
     <div className={containerClasses}>
-      {EmojiReactions.map(
-        (reaction, index) =>
-          reactions.find(
-            (r) => r.created_by === user.id && r.reaction === reaction.type
-          ) && (
-            // TODO: don't use index as a key
-            // TODO: should we extract reactions into their own sub-components?
-            // TODO: is reaction-container even defined in our styles here..?
-            <React.Fragment key={index}>
-              <div
-                className="UserReactions__reaction"
-                role="img"
-                aria-label={reaction.ariaLabel}
-              >
-                {reaction.text}
-              </div>
-
-              {/* TODO: replace this with useSound or similar */}
-              {!isMuted && (
-                <audio autoPlay loop>
-                  <source src={reaction.audioPath} />
-                </audio>
-              )}
-            </React.Fragment>
-          )
-      )}
+      {renderedEmojiReactions}
 
       {userShoutout && (
         <div className="UserReactions__shout">{userShoutout.text}</div>
+      )}
+    </div>
+  );
+};
+
+export interface EmojiReactionProps {
+  emojiReaction: ReactionData<EmojiReactionType>;
+  isMuted?: boolean;
+}
+
+export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
+  emojiReaction,
+  isMuted = false,
+}) => {
+  const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+
+  return (
+    <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
+      {emojiText}
+
+      {!isMuted && (
+        <audio autoPlay loop>
+          <source src={audioPath} />
+        </audio>
       )}
     </div>
   );
