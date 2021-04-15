@@ -38,13 +38,11 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
 
   const userReactions = reactions.filter(isReactionCreatedBy(user.id));
 
-  const { userShoutout, renderedEmojiReactions } = useMemo(() => {
+  const { renderedEmojiReactions, userShoutout } = useMemo(() => {
     const userUniqueEmojiReactions = userReactions.reduce(
       uniqueEmojiReactionsDataMapReducer,
       new Map()
     );
-
-    const userShoutout = userReactions.find(isTextReaction);
 
     const renderedEmojiReactions = Array.from(
       userUniqueEmojiReactions.values()
@@ -56,7 +54,9 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
       />
     ));
 
-    return { userShoutout, renderedEmojiReactions };
+    const userShoutout = userReactions.find(isTextReaction);
+
+    return { renderedEmojiReactions, userShoutout };
   }, [isMuted, userReactions]);
 
   const containerClasses = classNames(
