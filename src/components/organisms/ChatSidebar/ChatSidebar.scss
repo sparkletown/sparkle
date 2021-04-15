@@ -8,11 +8,11 @@ $header-height: 45px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: 66px;
+  top: $navbar-height;
   right: 0;
   width: $sidebar-width;
   min-width: $sidebar-width;
-  height: calc(100vh - 96px);
+  height: calc(100% - $navbar-height - $footer-height);
   background-color: $saturated-black;
   z-index: z(sidebar);
 
