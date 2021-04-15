@@ -109,6 +109,16 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
   },
 ];
 
+export const reactionsDataMapReducer = <T extends ReactionType = ReactionType>(
+  acc: Map<T, ReactionData<T>>,
+  reactionData: ReactionData<T>
+) => acc.set(reactionData.type, reactionData);
+
+export const EmojiReactionsMap: Map<
+  EmojiReactionType,
+  ReactionData<EmojiReactionType>
+> = EmojiReactions.reduce(reactionsDataMapReducer, new Map());
+
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
