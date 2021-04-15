@@ -144,6 +144,12 @@ const createReaction = (reaction: ReactionType, user: UserInfo) => ({
   ...reaction,
 });
 
+const burningReactions = AllReactions.filter(
+  (reaction) =>
+    reaction.type !== EmojiReactionType.boo &&
+    reaction.type !== EmojiReactionType.thatsjazz
+);
+
 // Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
@@ -330,11 +336,6 @@ export const Audience: React.FunctionComponent = () => {
 
     if (!venue || !profile || !venueId) return <></>;
 
-    const burningReactions = AllReactions.filter(
-      (reaction) =>
-        reaction.type !== EmojiReactionType.boo &&
-        reaction.type !== EmojiReactionType.thatsjazz
-    );
     const userSeated =
       typeof profile.data?.[venueId]?.row === "number" &&
       typeof profile.data?.[venueId]?.row === "number";
