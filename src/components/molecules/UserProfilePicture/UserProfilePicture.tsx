@@ -114,31 +114,31 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           style={{ ...avatarStyle }}
         />
 
-        {Reactions.map(
-          (reaction, index) =>
-            reactions.find(
-              (r) => r.created_by === user.id && r.reaction === reaction.type
-            ) && (
-              <div key={index} className="reaction-container">
-                <S.Reaction
-                  role="img"
-                  aria-label={reaction.ariaLabel}
-                  className={reaction.name}
-                  reactionPosition={reactionPosition}
-                >
-                  {reaction.text}
-                </S.Reaction>
+        <div className="reaction-container">
+          {Reactions.map(
+            (reaction, index) =>
+              reactions.find(
+                (r) => r.created_by === user.id && r.reaction === reaction.type
+              ) && (
+                <>
+                  <S.Reaction
+                    role="img"
+                    aria-label={reaction.ariaLabel}
+                    className={reaction.name}
+                    reactionPosition={reactionPosition}
+                  >
+                    {reaction.text}
+                  </S.Reaction>
 
-                {!muteReactions && !isAudioEffectDisabled && (
-                  <audio autoPlay loop>
-                    <source src={reaction.audioPath} />
-                  </audio>
-                )}
-              </div>
-            )
-        )}
-        {messagesToBand && (
-          <div className="reaction-container">
+                  {!muteReactions && !isAudioEffectDisabled && (
+                    <audio autoPlay loop>
+                      <source src={reaction.audioPath} />
+                    </audio>
+                  )}
+                </>
+              )
+          )}
+          {messagesToBand && (
             <S.ShoutOutMessage
               role="img"
               aria-label="messageToTheBand"
@@ -146,8 +146,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
             >
               {messagesToBand.text}
             </S.ShoutOutMessage>
-          </div>
-        )}
+          )}
+        </div>
       </S.Container>
     );
   }, [
