@@ -71,7 +71,7 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
       <Nav.Link
         key={option.id}
         className={classNames("AdminVenueView__tab", {
-          selected: selectedOption === option.id,
+          "AdminVenueView__tab--selected": selectedOption === option.id,
         })}
         eventKey={option.id}
       >
