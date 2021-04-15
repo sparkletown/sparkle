@@ -15,7 +15,7 @@ export const createEmojiReaction = (
 export const createTextReaction = (
   text: string,
   user: WithId<User>
-): Reaction => createReaction({ reaction: "messageToTheBand", text }, user);
+): Reaction => createReaction({ reaction: TextReactionType, text }, user);
 
 export const createReaction = (
   reaction: CreateReactionReactionProps,

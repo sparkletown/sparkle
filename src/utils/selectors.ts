@@ -5,7 +5,7 @@ import { RootState } from "index";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
-import { TextReaction, Reaction } from "types/reactions";
+import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -165,7 +165,7 @@ export const messagesToTheBandSelector: SparkleSelector<
 > = (state) =>
   reactionsSelector(state)?.filter(
     (reaction): reaction is WithId<TextReaction> =>
-      reaction.reaction === "messageToTheBand"
+      reaction.reaction === TextReactionType
   );
 
 export const venueSelector = (state: RootState) =>

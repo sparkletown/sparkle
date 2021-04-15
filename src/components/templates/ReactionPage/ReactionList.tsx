@@ -8,6 +8,7 @@ import {
   chatMessageAsTextReaction,
   Reaction,
   ReactionsTextMap,
+  TextReactionType,
 } from "types/reactions";
 
 import { withId } from "utils/id";
@@ -71,10 +72,10 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 
           <div
             className={classNames("message-bubble", {
-              emoji: message.reaction !== "messageToTheBand",
+              emoji: message.reaction !== TextReactionType,
             })}
           >
-            {message.reaction !== "messageToTheBand"
+            {message.reaction !== TextReactionType
               ? ReactionsTextMap[message.reaction]
               : message.text}
           </div>

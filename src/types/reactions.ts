@@ -11,7 +11,8 @@ export enum EmojiReactionType {
   sparkle = "sparkle",
 }
 
-export type TextReactionType = "messageToTheBand";
+export const TextReactionType = "messageToTheBand" as const;
+export type TextReactionType = typeof TextReactionType;
 
 export type ReactionType = EmojiReactionType | TextReactionType;
 
@@ -104,11 +105,11 @@ export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
 export const isTextReaction = (r: Reaction): r is TextReaction =>
-  r.reaction === "messageToTheBand";
+  r.reaction === TextReactionType;
 
 export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
   created_at: chat.ts_utc.toMillis() / 1000,
   created_by: chat.from,
-  reaction: "messageToTheBand",
+  reaction: TextReactionType,
   text: chat.text,
 });

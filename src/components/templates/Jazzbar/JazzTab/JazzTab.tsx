@@ -117,7 +117,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //       addReaction({
   //         venueId,
   //         reaction: createReaction(
-  //           { reaction: "messageToTheBand", text: data.messageToTheBand },
+  //           { reaction: TextReactionType, text: data.messageToTheBand },
   //           user
   //         ),
   //       })
