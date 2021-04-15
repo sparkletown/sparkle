@@ -6,9 +6,9 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { ChatMessage } from "types/chat";
 import {
   chatMessageAsTextReaction,
+  EmojiReactionsMap,
   isEmojiReaction,
   Reaction,
-  ReactionsTextMap,
 } from "types/reactions";
 
 import { withId } from "utils/id";
@@ -76,7 +76,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
             })}
           >
             {isEmojiReaction(message)
-              ? ReactionsTextMap[message.reaction]
+              ? EmojiReactionsMap.get(message.reaction)?.text ?? null
               : message.text}
           </div>
         </div>

@@ -39,71 +39,61 @@ export type ReactionData<T extends ReactionType = ReactionType> = {
   ariaLabel: string;
   audioPath: string;
 };
-export const ReactionsTextMap = {
-  [EmojiReactionType.heart]: "❤️",
-  [EmojiReactionType.clap]: "👏",
-  [EmojiReactionType.wolf]: "🐺",
-  [EmojiReactionType.laugh]: "😂",
-  [EmojiReactionType.thatsjazz]: "🎹",
-  [EmojiReactionType.boo]: "👻",
-  [EmojiReactionType.burn]: "🔥",
-  [EmojiReactionType.sparkle]: "✨",
-};
 
 export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
-    text: ReactionsTextMap[EmojiReactionType.heart],
+    text: "❤️",
     ariaLabel: "heart-emoji",
     audioPath: "/sounds/woo.mp3",
   },
   {
     type: EmojiReactionType.clap,
     name: "clap",
-    text: ReactionsTextMap[EmojiReactionType.clap],
+    text: "👏",
     ariaLabel: "clap-emoji",
     audioPath: "/sounds/clap.mp3",
   },
   {
     type: EmojiReactionType.wolf,
     name: "wolf",
-    text: ReactionsTextMap[EmojiReactionType.wolf],
+    text: "🐺",
     ariaLabel: "wolf-emoji",
     audioPath: "/sounds/wolf.mp3",
   },
   {
     type: EmojiReactionType.laugh,
     name: "laugh",
-    text: ReactionsTextMap[EmojiReactionType.laugh],
+    text: "😂",
     ariaLabel: "laugh-emoji",
     audioPath: "/sounds/laugh.mp3",
   },
   {
     type: EmojiReactionType.thatsjazz,
     name: "thatsjazz",
-    text: ReactionsTextMap[EmojiReactionType.thatsjazz],
+    text: "🎹",
     ariaLabel: "piano-emoji",
     audioPath: "/sounds/thatsjazz.mp3",
   },
   {
     type: EmojiReactionType.boo,
     name: "boo",
-    text: ReactionsTextMap[EmojiReactionType.boo],
+    text: "👻",
     ariaLabel: "boo-emoji",
     audioPath: "/sounds/boo.mp3",
   },
   {
     type: EmojiReactionType.burn,
     name: "burn",
-    text: ReactionsTextMap[EmojiReactionType.burn],
+    text: "🔥",
     ariaLabel: "burn-emoji",
     audioPath: "/sounds/burn.mpeg",
   },
   {
     type: EmojiReactionType.sparkle,
     name: "sparkle",
-    text: ReactionsTextMap[EmojiReactionType.sparkle],
+    text: "✨",
     ariaLabel: "sparkle-emoji",
     audioPath: "/sounds/sparkle.mpeg",
   },
