@@ -138,6 +138,12 @@ const requiredAuditoriumSize = (
   return size;
 };
 
+const createReaction = (reaction: ReactionType, user: UserInfo) => ({
+  created_at: Date.now(),
+  created_by: user.uid,
+  ...reaction,
+});
+
 // Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
@@ -185,11 +191,6 @@ export const Audience: React.FunctionComponent = () => {
 
   const dispatch = useDispatch();
 
-  const createReaction = (reaction: ReactionType, user: UserInfo) => ({
-    created_at: new Date().getTime(),
-    created_by: user.uid,
-    ...reaction,
-  });
   const reactionClicked = useCallback(
     (user: UserInfo, reaction: EmojiReactionType) => {
       dispatch(
