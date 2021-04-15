@@ -145,8 +145,3 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     </div>
   );
 };
-
-/**
- * @deprecated Prefer using named exports instead of default exports
- */
-export default UserProfilePicture;

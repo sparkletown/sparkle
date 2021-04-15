@@ -26,7 +26,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
 

@@ -3,7 +3,7 @@ import React, { useMemo } from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 interface MapPartygoerOverlayProps {
   partygoer: WithId<User>;
