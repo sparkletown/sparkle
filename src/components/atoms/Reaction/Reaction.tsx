@@ -1,19 +1,16 @@
 import React, { useCallback } from "react";
-import { UserInfo } from "firebase/app";
-import { useUser } from "hooks/useUser";
 import "./Reaction.scss";
-import { ReactionsType, EmojiReactionType } from "utils/reactions";
+import { EmojiReactionType, ReactionData } from "types/reactions";
 
 interface PropsType {
-  reaction: ReactionsType;
-  reactionClicked: (user: UserInfo, reaction: EmojiReactionType) => void;
+  reaction: ReactionData<EmojiReactionType>;
+  reactionClicked: (emojiReaction: EmojiReactionType) => void;
 }
 
 const Reaction: React.FC<PropsType> = ({ reaction, reactionClicked }) => {
-  const { user } = useUser();
   const handleReactionClick = useCallback(() => {
-    user && reactionClicked(user, reaction.type);
-  }, [user, reactionClicked, reaction]);
+    reactionClicked(reaction.type);
+  }, [reactionClicked, reaction]);
 
   return (
     <button
