@@ -22,7 +22,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
   [VenueTemplate.embeddable]: undefined,
-  [VenueTemplate.posterHall]: undefined,
+  [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.poster]: undefined,
 
   // Legacy
@@ -47,7 +47,7 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
     "/venues/pickspace-thumbnail_conversation.png",
   [VenueTemplate.firebarrel]: undefined,
   [VenueTemplate.embeddable]: undefined,
-  [VenueTemplate.posterHall]: undefined,
+  [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.poster]: undefined,
 
   // Legacy
