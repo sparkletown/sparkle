@@ -2,17 +2,27 @@ import React from "react";
 
 import { usePosterFilters, usePosters } from "hooks/posters";
 
+import { GenericVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import { Poster } from "./components/Poster";
 import { Search } from "./components/Search";
 
-import "./Posters.scss";
+import "./PosterHall.scss";
 
-export interface PostersProps {}
+export interface PosterHallProps {
+  venue: WithId<GenericVenue>;
+}
 
-export const Posters: React.FC<PostersProps> = () => {
+export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const { titleFilter, categoriesFilter, setTitleFilter } = usePosterFilters();
 
-  const { posterVenues } = usePosters({ titleFilter, categoriesFilter });
+  const { posterVenues } = usePosters({
+    titleFilter,
+    categoriesFilter,
+    posterHallId: venue.id,
+  });
 
   return (
     <div className="posterhall">

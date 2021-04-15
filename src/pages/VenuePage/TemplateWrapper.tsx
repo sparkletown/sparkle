@@ -3,6 +3,8 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
+import { WithId } from "utils/id";
+
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -14,7 +16,7 @@ import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
-import { Posters } from "components/templates/Posters";
+import { PosterHall } from "components/templates/PosterHall";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
@@ -23,7 +25,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -109,8 +111,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <FireBarrel />;
       break;
 
-    case VenueTemplate.posters:
-      template = <Posters />;
+    case VenueTemplate.posterHall:
+      template = <PosterHall venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:

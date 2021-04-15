@@ -1,1 +1,0 @@
-export { Posters } from "./Posters";

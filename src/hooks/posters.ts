@@ -37,6 +37,7 @@ export type CategoriesPosterFilter = {
 export type PosterFilters = TitlePosterFilter | CategoriesPosterFilter;
 
 export interface UsePostersProps {
+  posterHallId: string;
   titleFilter?: string;
   categoriesFilter?: [];
 }
