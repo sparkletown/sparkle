@@ -10,9 +10,10 @@ $header-height: 45px;
   flex-flow: column;
   top: $navbar-height;
   right: 0;
+  bottom: 0;
   width: $sidebar-width;
   min-width: $sidebar-width;
-  height: calc(100% - $navbar-height - $footer-height);
+  min-height: calc(100% - #{$navbar-height + $footer-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
 
