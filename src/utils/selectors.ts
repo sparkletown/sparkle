@@ -5,7 +5,7 @@ import { RootState } from "index";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
-import { MessageToTheBandReaction, Reaction } from "types/reactions";
+import { TextReaction, Reaction } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -161,10 +161,10 @@ export const reactionsSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.reactions;
 
 export const messagesToTheBandSelector: SparkleSelector<
-  WithId<MessageToTheBandReaction>[] | undefined
+  WithId<TextReaction>[] | undefined
 > = (state) =>
   reactionsSelector(state)?.filter(
-    (reaction): reaction is WithId<MessageToTheBandReaction> =>
+    (reaction): reaction is WithId<TextReaction> =>
       reaction.reaction === "messageToTheBand"
   );
 

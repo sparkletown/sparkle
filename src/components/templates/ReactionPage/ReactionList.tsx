@@ -5,7 +5,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { ChatMessage } from "types/chat";
 import {
-  chatMessageAsMessageToTheBand,
+  chatMessageAsTextReaction,
   Reaction,
   ReactionsTextMap,
 } from "types/reactions";
@@ -33,7 +33,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
 
   const allReactions = useMemo(() => {
     const chatsAsBandMessages =
-      chatMessages?.map(chatMessageAsMessageToTheBand) ?? [];
+      chatMessages?.map(chatMessageAsTextReaction) ?? [];
 
     const allReactionsSorted = [
       ...(reactions ?? []),

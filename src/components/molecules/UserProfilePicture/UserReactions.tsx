@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import {
   AllReactions,
-  isMessageToTheBandReaction,
+  isTextReaction,
   isReactionCreatedBy,
 } from "types/reactions";
 import { User } from "types/User";
@@ -32,7 +32,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
 
   // TODO: memo/etc these as required
   const userReactions = reactions.filter(isReactionCreatedBy(user.id));
-  const userShoutout = userReactions.find(isMessageToTheBandReaction);
+  const userShoutout = userReactions.find(isTextReaction);
 
   // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
   const isMutedGlobally = useSelector((state) => state.room.mute);

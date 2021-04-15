@@ -93,23 +93,21 @@ interface BaseReaction {
 export interface EmojiReaction extends BaseReaction {
   reaction: EmojiReactionType;
 }
-export interface MessageToTheBandReaction extends BaseReaction {
+
+export interface TextReaction extends BaseReaction {
   reaction: TextReactionType;
   text: string;
 }
 
-export type Reaction = EmojiReaction | MessageToTheBandReaction;
+export type Reaction = EmojiReaction | TextReaction;
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
-export const isMessageToTheBandReaction = (
-  r: Reaction
-): r is MessageToTheBandReaction => r.reaction === "messageToTheBand";
+export const isTextReaction = (r: Reaction): r is TextReaction =>
+  r.reaction === "messageToTheBand";
 
-export const chatMessageAsMessageToTheBand = (
-  chat: ChatMessage
-): MessageToTheBandReaction => ({
+export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
   created_at: chat.ts_utc.toMillis() / 1000,
   created_by: chat.from,
   reaction: "messageToTheBand",
