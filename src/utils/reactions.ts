@@ -1,4 +1,11 @@
-import { EmojiReactionType, Reaction, TextReactionType } from "types/reactions";
+import {
+  EmojiReactionsMap,
+  EmojiReactionType,
+  isEmojiReaction,
+  Reaction,
+  ReactionData,
+  TextReactionType,
+} from "types/reactions";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
@@ -25,3 +32,24 @@ export const createReaction = (
   created_by: user.id,
   ...reaction,
 });
+
+export const uniqueEmojiReactionsDataMapReducer = (
+  emojiReactionsDataMap: Map<
+    EmojiReactionType,
+    ReactionData<EmojiReactionType>
+  >,
+  reaction: Reaction
+): Map<EmojiReactionType, ReactionData<EmojiReactionType>> => {
+  if (
+    isEmojiReaction(reaction) &&
+    !emojiReactionsDataMap.has(reaction.reaction)
+  ) {
+    const emojiReactionData = EmojiReactionsMap.get(reaction.reaction);
+
+    if (emojiReactionData !== undefined) {
+      emojiReactionsDataMap.set(reaction.reaction, emojiReactionData);
+    }
+  }
+
+  return emojiReactionsDataMap;
+};
