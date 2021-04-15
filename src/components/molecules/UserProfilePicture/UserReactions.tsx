@@ -30,6 +30,10 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   isMuted: isMutedLocally = false,
   reactionPosition,
 }) => {
+  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
+  const isMutedGlobally = useSelector((state) => state.room.mute);
+  const isMuted = isMutedLocally || isMutedGlobally;
+
   const reactions = useReactions(venueId);
 
   // TODO: memo/etc these as required
@@ -39,10 +43,6 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     new Map()
   );
   const userShoutout = userReactions.find(isTextReaction);
-
-  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
-  const isMutedGlobally = useSelector((state) => state.room.mute);
-  const isMuted = isMutedLocally || isMutedGlobally;
 
   const containerClasses = classNames(
     "UserReactions",
