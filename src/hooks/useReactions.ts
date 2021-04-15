@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 
 import { REACTION_TIMEOUT } from "settings";
 
-import { Reaction } from "types/reactions";
+import { isReactionCreatedBy, Reaction } from "types/reactions";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
@@ -35,14 +35,22 @@ export const useReactions = ({ venueId, user }: UseReactionsProps) => {
     );
 
     // When we provide a user, only retrieve their reactions
-    const reactionsQuery = user
-      ? baseReactionsQuery.where("created_by", "==", user.id)
-      : baseReactionsQuery;
+    // TODO: for this to work with filtering users we need to create a composite index on created_by + created_at
+    //   I feel like we can handle this in a better way by using our more standard patterns
+    // const reactionsQuery = user
+    //   ? baseReactionsQuery.where("created_by", "==", user.id)
+    //   : baseReactionsQuery;
+    const reactionsQuery = baseReactionsQuery;
 
     const unsubscribeListener = reactionsQuery.onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           const newReaction = change.doc.data() as Reaction;
+
+          // When we provide a user, if this reaction isn't by them, don't update our state
+          // @debt This is an interim workaround to avoid creating the composite index mentioned above
+          //   I feel like we can handle this in a better way by using our more standard patterns
+          if (user && !isReactionCreatedBy(user.id)(newReaction)) return;
 
           setReactions((prevReactions) => [...prevReactions, newReaction]);
 
