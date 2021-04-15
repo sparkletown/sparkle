@@ -31,6 +31,14 @@ export interface TextReaction extends BaseReaction {
 }
 
 export type Reaction = EmojiReaction | TextReaction;
+
+export type ReactionData<T extends ReactionType = ReactionType> = {
+  type: T;
+  name: string;
+  text: string;
+  ariaLabel: string;
+  audioPath: string;
+};
 export const ReactionsTextMap = {
   [EmojiReactionType.heart]: "❤️",
   [EmojiReactionType.clap]: "👏",
@@ -42,7 +50,7 @@ export const ReactionsTextMap = {
   [EmojiReactionType.sparkle]: "✨",
 };
 
-export const AllReactions: ReactionData[] = [
+export const AllReactions: ReactionData<EmojiReactionType>[] = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
