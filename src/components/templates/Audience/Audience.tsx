@@ -168,6 +168,7 @@ export const Audience: React.FunctionComponent = () => {
     [hasAlreadyFocussed]
   );
 
+  // @debt I don't think we even need to do this..? It should get updated automagically already from the venue config + our firebase subscription to it?
   useEffect(() => {
     const unsubscribeListener = firebase
       .firestore()
