@@ -9,6 +9,9 @@
   align-items: center;
 
   &__iframe {
+    height: 90%;
+    width: 90%;
+
     border: none;
     background-color: $light-grey;
   }

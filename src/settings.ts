@@ -41,7 +41,10 @@ export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
+export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_PARTY_NAME = "Anon";
+export const DEFAULT_EDIT_PROFILE_TEXT =
+  "I haven't edited my profile to tell you yet";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
@@ -132,13 +135,17 @@ export const IFRAME_ALLOW =
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.zoomroom,
   VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
@@ -171,6 +178,7 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
@@ -236,6 +244,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -280,6 +295,13 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
   },
 ];
 
@@ -437,6 +459,20 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       {
         name: "bannerMessage",
         title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
         type: "text",
       },
     ],
