@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import {
@@ -36,28 +36,34 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
 
   const reactions = useReactions(venueId);
 
-  // TODO: memo/etc these as required
   const userReactions = reactions.filter(isReactionCreatedBy(user.id));
-  const userUniqueEmojiReactions = userReactions.reduce(
-    uniqueEmojiReactionsDataMapReducer,
-    new Map()
-  );
-  const userShoutout = userReactions.find(isTextReaction);
+
+  const { userShoutout, renderedEmojiReactions } = useMemo(() => {
+    const userUniqueEmojiReactions = userReactions.reduce(
+      uniqueEmojiReactionsDataMapReducer,
+      new Map()
+    );
+
+    const userShoutout = userReactions.find(isTextReaction);
+
+    const renderedEmojiReactions = Array.from(
+      userUniqueEmojiReactions.values()
+    ).map((emojiReaction) => (
+      <DisplayEmojiReaction
+        key={emojiReaction.type}
+        emojiReaction={emojiReaction}
+        isMuted={isMuted}
+      />
+    ));
+
+    return { userShoutout, renderedEmojiReactions };
+  }, [isMuted, userReactions]);
 
   const containerClasses = classNames(
     "UserReactions",
     `UserReactions--reaction-${reactionPosition}`
   );
 
-  const renderedEmojiReactions = Array.from(
-    userUniqueEmojiReactions.values()
-  ).map((emojiReaction) => (
-    <DisplayEmojiReaction
-      key={emojiReaction.type}
-      emojiReaction={emojiReaction}
-      isMuted={isMuted}
-    />
-  ));
   return (
     <div className={containerClasses}>
       {renderedEmojiReactions}
