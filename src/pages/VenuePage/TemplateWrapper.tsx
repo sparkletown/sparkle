@@ -17,6 +17,7 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { ReactionPage } from "components/templates/ReactionPage";
 import { PosterHall } from "components/templates/PosterHall";
+import { Poster } from "components/templates/Poster";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
@@ -113,6 +114,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.posterhall:
       template = <PosterHall venue={venue} />;
+      break;
+
+    case VenueTemplate.poster:
+      template = <Poster venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:

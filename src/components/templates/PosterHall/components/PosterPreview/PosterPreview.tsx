@@ -6,13 +6,13 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import "./Poster.scss";
+import "./PosterPreview.scss";
 
 export interface PosterProps {
   posterVenue: WithId<WithPoster<AnyVenue>>;
 }
 
-export const Poster: React.FC<PosterProps> = ({ posterVenue }) => {
+export const PosterPreview: React.FC<PosterProps> = ({ posterVenue }) => {
   const { title, pdfUrl, author, categories } = posterVenue.poster;
 
   const enterPosterVenue = useCallback(() => enterVenue(posterVenue.id), [

@@ -6,7 +6,7 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { Poster } from "./components/Poster";
+import { PosterPreview } from "./components/PosterPreview";
 import { Search } from "./components/Search";
 
 import "./PosterHall.scss";
@@ -30,7 +30,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
       <div className="posterhall__posters">
         {posterVenues?.map((posterVenue) => (
-          <Poster posterVenue={posterVenue} key={posterVenue.id} />
+          <PosterPreview posterVenue={posterVenue} key={posterVenue.id} />
         ))}
       </div>
     </div>
