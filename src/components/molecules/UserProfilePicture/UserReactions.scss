@@ -1,7 +1,5 @@
 @import "scss/constants";
 
-$fadedWhite: rgba(255, 255, 255, 0.8);
-
 // TODO: this was copied from Audience.scss (do we want to move the variable to constants?)
 $avatarSize: max(4vh, 3vw);
 
@@ -71,11 +69,7 @@ $shoutBounceTranslateXOffset: calc(#{$avatarSize} / 2);
     max-width: 20em;
     padding: 6px 10px;
 
-    // TODO: this is how the old styled-components had it
-    //background-color: rgba(255, 255, 255, 1);
-    // TODO: this is how the old (potentially unused) scss had it
-    background-color: $fadedWhite;
-
+    background-color: rgba(255, 255, 255, 1);
     color: $black;
     font-size: 20px;
     border-radius: 10px;
