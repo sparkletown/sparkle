@@ -15,6 +15,7 @@ import { Map, RoomModal } from "./components";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
 import "./PartyMap.scss";
+import { useCustomSound } from "hooks/sounds";
 
 const partyMapVenueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
@@ -23,6 +24,7 @@ export const PartyMap: React.FC = () => {
   useConnectCurrentVenue();
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
+  const [, , isCustomSoundsLoaded] = useCustomSound();
 
   const currentVenue = useSelector(partyMapVenueSelector);
 
@@ -40,7 +42,7 @@ export const PartyMap: React.FC = () => {
     setSelectedRoom(undefined);
   }, []);
 
-  if (!user || !profile) return <>Loading..</>;
+  if (!user || !profile || !isCustomSoundsLoaded) return <>Loading..</>;
 
   return (
     <div className="party-venue-container">

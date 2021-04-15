@@ -37,10 +37,12 @@ export interface ExposedDataWithPlay extends ExposedData {
 
 export interface CustomSoundsState {
   soundConfigs: SoundConfigMap;
+  isCustomSoundsLoaded: boolean;
 }
 
 export const initialValue: CustomSoundsState = {
   soundConfigs: {},
+  isCustomSoundsLoaded: false,
 };
 
 export const CustomSoundsContext = createContext<CustomSoundsState>(
@@ -51,6 +53,9 @@ export const CustomSoundsProvider: React.FC = ({ children }) => {
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
     initialValue.soundConfigs
   );
+  const [isCustomSoundsLoaded, setIsCustomSoundsLoaded] = useState<boolean>(
+    initialValue.isCustomSoundsLoaded
+  );
   const { user } = useUser();
   const userId = user?.uid;
 
@@ -58,16 +63,19 @@ export const CustomSoundsProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (!userId) return;
 
-    fetchSoundConfigs().then((soundConfigs) => {
-      setSoundConfigs(soundConfigs);
-    });
+    fetchSoundConfigs()
+      .then((soundConfigs) => {
+        setSoundConfigs(soundConfigs);
+      })
+      .finally(() => setIsCustomSoundsLoaded(true));
   }, [userId]);
 
   const providerData = useMemo(
     () => ({
       soundConfigs,
+      isCustomSoundsLoaded,
     }),
-    [soundConfigs]
+    [soundConfigs, isCustomSoundsLoaded]
   );
 
   return (
@@ -110,7 +118,7 @@ const USE_SOUND_DISABLED_CONFIG = { soundEnabled: false };
 export const useCustomSound = (
   soundRef?: string | SoundConfigReference,
   options?: UseCustomSoundOptions
-): [PlaySpriteFunction, ExposedDataWithPlay] => {
+): [PlaySpriteFunction, ExposedDataWithPlay, boolean] => {
   const { soundId, spriteName } = (() => {
     switch (typeof soundRef) {
       case "string":
@@ -129,7 +137,7 @@ export const useCustomSound = (
   const { onend } = options ?? {};
 
   // Fetch all of our loaded sound configs
-  const { soundConfigs } = useCustomSoundsContext();
+  const { soundConfigs, isCustomSoundsLoaded } = useCustomSoundsContext();
 
   // Try to access just the one we want here
   const soundConfig = soundConfigs[soundId];
@@ -266,5 +274,5 @@ export const useCustomSound = (
     [play, spriteName, hasSoundConfig, hasValidSpriteConfig, onend]
   );
 
-  return [playSprite, { ...exposedData, play }];
+  return [playSprite, { ...exposedData, play }, isCustomSoundsLoaded];
 };
