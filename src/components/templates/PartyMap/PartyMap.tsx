@@ -23,6 +23,7 @@ export const PartyMap: React.FC = () => {
   useConnectCurrentVenue();
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
+
   const currentVenue = useSelector(partyMapVenueSelector);
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
