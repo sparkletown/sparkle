@@ -72,7 +72,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     ]
   );
 
-  const [play] = useCustomSound(room.enterSound, { interrupt: true });
+  const { play } = useCustomSound(room.enterSound, { interrupt: true });
   const selectRoomWithSound = useCallback(() => {
     play();
     selectRoom();

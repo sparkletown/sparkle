@@ -24,7 +24,7 @@ export const PartyMap: React.FC = () => {
   useConnectCurrentVenue();
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
-  const [, , isCustomSoundsLoaded] = useCustomSound();
+  const { isLoaded: isCustomSoundsLoaded } = useCustomSound();
 
   const currentVenue = useSelector(partyMapVenueSelector);
 
