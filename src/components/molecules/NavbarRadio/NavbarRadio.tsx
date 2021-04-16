@@ -104,13 +104,11 @@ export const NavbarRadio: React.FC = () => {
             })}
             onClick={toggleShowRadioPopover}
           />
-
           <div
-            className="radio-trigger__iframe"
-            style={{
-              visibility: showRadioPopover ? "visible" : "hidden",
-              userSelect: showRadioPopover ? "auto" : "none",
-            }}
+            className={classNames("radio-trigger__iframe", {
+              "radio-trigger__iframe--visible": showRadioPopover,
+              "radio-trigger__iframe--hidden": !showRadioPopover,
+            })}
           >
             <iframe
               title="venueRadio"

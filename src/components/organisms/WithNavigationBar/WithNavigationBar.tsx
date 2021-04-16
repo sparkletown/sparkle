@@ -7,7 +7,6 @@ import { venueInsideUrl } from "utils/url";
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 
 import { NavBar } from "components/molecules/NavBar";
@@ -15,9 +14,6 @@ import { NavSearchBar } from "components/molecules/NavSearchBar";
 import { Footer } from "components/molecules/Footer";
 import { NavbarSchedule } from "components/molecules/NavbarSchedule";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
-import { NavbarRadio } from "components/molecules/NavbarRadio";
-import { NavbarProfile } from "components/molecules/NavbarProfile";
-import { NavBarLogin } from "components/molecules/NavBar/NavBarLogin";
 import { GiftTicketModal } from "components/molecules/GiftTicketModal/GiftTicketModal";
 
 import "./WithNavigationBar.scss";
@@ -34,7 +30,6 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
   fullscreen,
   children,
 }) => {
-  const { user } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const history = useHistory();
@@ -42,28 +37,20 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
     const venueLink =
       redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
 
-    history.push(venueLink);
+    if (history.location.pathname !== venueLink) {
+      history.push(venueLink);
+    }
   }, [history, redirectionUrl, venueId]);
 
-  const leftComponent = (
-    <div className="nav-logos">
-      <div className="nav-sparkle-logo" onClick={navigateToHomepage}>
-        <div />
-      </div>
-      <div className="nav-sparkle-logo_small">
-        <div />
-      </div>
-      {venue && (
-        <>
-          <NavbarSchedule />
-          <VenuePartygoers />
-        </>
-      )}
-    </div>
+  const leftSlot = venue && (
+    <>
+      <NavbarSchedule />
+      <VenuePartygoers />
+    </>
   );
 
-  const rightComponent = user ? (
-    <div className="navbar-links">
+  const rightSlot = (
+    <>
       {venue && <NavSearchBar />}
 
       {venue?.showGiftATicket && (
@@ -84,19 +71,14 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
           </span>
         </OverlayTrigger>
       )}
-
-      <NavbarRadio />
-      <NavbarProfile />
-    </div>
-  ) : (
-    <NavBarLogin />
+    </>
   );
 
-  const navBarProps = { leftComponent, rightComponent };
+  const navBarProps = { leftSlot, rightSlot };
 
   return (
     <>
-      <NavBar {...navBarProps} />
+      <NavBar {...navBarProps} onClickLogo={navigateToHomepage} />
       <div
         className={classNames("navbar-margin", {
           fullscreen: fullscreen,

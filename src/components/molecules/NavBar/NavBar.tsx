@@ -5,22 +5,30 @@ import { venueInsideUrl } from "utils/url";
 
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useUser } from "hooks/useUser";
+
+import { NavBarLogin } from "./NavBarLogin";
+import { NavbarRadio } from "../NavbarRadio";
+import { NavbarProfile } from "../NavbarProfile";
 
 import "./NavBar.scss";
 import "./playa.scss";
 
 export interface NavBarPropsType {
-  leftComponent?: ReactNode;
-  rightComponent?: ReactNode;
+  leftSlot?: ReactNode;
+  rightSlot?: ReactNode;
+  onClickLogo?: () => void;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
-  leftComponent,
-  rightComponent,
+  leftSlot,
+  rightSlot,
+  onClickLogo,
 }) => {
   const venue = useSelector(currentVenueSelectorData);
   const venueParentId = venue?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
+  const { user } = useUser();
 
   const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
@@ -43,8 +51,25 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       <header>
         <div className={`navbar navbar_playa nonplaya`}>
           <div className="navbar-container">
-            {leftComponent}
-            {rightComponent}
+            <div className="nav-logos">
+              <div className="nav-sparkle-logo" onClick={onClickLogo}>
+                <div />
+              </div>
+              <div className="nav-sparkle-logo_small">
+                <div />
+              </div>
+
+              {leftSlot}
+            </div>
+            {user ? (
+              <div className="navbar-links">
+                {rightSlot}
+                <NavbarRadio />
+                <NavbarProfile />
+              </div>
+            ) : (
+              <NavBarLogin />
+            )}
           </div>
         </div>
       </header>
