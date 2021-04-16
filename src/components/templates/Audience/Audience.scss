@@ -173,9 +173,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       justify-content: center;
       align-items: center;
 
-      overflow: hidden;
-      object-fit: cover;
-
       width: var(--seat-size);
       height: var(--seat-size);
       min-width: var(--seat-size-min);
