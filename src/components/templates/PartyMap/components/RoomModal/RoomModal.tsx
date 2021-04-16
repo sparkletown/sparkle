@@ -54,7 +54,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
-  const { play: enterRoomWithSound } = useCustomSound(room.enterSound, {
+  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });

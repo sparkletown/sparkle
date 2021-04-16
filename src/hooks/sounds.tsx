@@ -100,11 +100,6 @@ export const useCustomSoundsContext = (): CustomSoundsState =>
 const USE_SOUND_DISABLED_URL = "";
 const USE_SOUND_DISABLED_CONFIG = { soundEnabled: false };
 
-type UseCustomSoundType = {
-  play: PlaySpriteFunction;
-  data: ExposedDataWithPlay;
-};
-
 /**
  * Load a custom sound using a SoundConfigReference, and expose controls to play it/a sprite within it.
  *
@@ -132,7 +127,7 @@ type UseCustomSoundType = {
 export const useCustomSound = (
   soundRef?: string | SoundConfigReference,
   options?: UseCustomSoundOptions
-): UseCustomSoundType => {
+): [PlaySpriteFunction, ExposedDataWithPlay] => {
   const { soundId, spriteName } = (() => {
     switch (typeof soundRef) {
       case "string":
@@ -288,8 +283,5 @@ export const useCustomSound = (
     [play, spriteName, hasSoundConfig, hasValidSpriteConfig, onend]
   );
 
-  return {
-    play: playSprite,
-    data: { ...exposedData, play },
-  };
+  return [playSprite, { ...exposedData, play }];
 };
