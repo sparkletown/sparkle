@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { useWindowSize } from "react-use";
 
 import { LARGE_SCREEN_WIDTH } from "settings";
@@ -87,13 +87,18 @@ export const useChatSidebarInfo = () => {
   };
 };
 
-export const useChatSidebarLockedOpen = () => {
+export const useChatSidebarPinned = () => {
   const dispatch = useDispatch();
   const { width } = useWindowSize();
+  const isPinned = useMemo(() => width > LARGE_SCREEN_WIDTH, [width]);
 
   useEffect(() => {
-    if (width > LARGE_SCREEN_WIDTH) {
+    if (isPinned) {
       dispatch(setChatSidebarVisibility(true));
     }
-  }, [dispatch, width]);
+  }, [dispatch, isPinned, width]);
+
+  return {
+    isPinned,
+  };
 };

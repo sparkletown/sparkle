@@ -22,12 +22,11 @@ $header-height: 45px;
     transition: transform 0.3s;
     background-color: rgba($saturated-black, 0.9);
     box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+  }
 
-    // change position to relative -> it starts its calculation from container top and it should be top: 0
-    @media (min-width: $large-laptop-width) {
-      position: relative;
-      top: 0;
-    }
+  &--pinned {
+    position: relative;
+    top: 0;
   }
 
   &__header {

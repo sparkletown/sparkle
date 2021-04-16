@@ -12,7 +12,7 @@ import { VenueChat, PrivateChats } from "./components";
 import {
   useChatSidebarControls,
   useChatSidebarInfo,
-  useChatSidebarLockedOpen,
+  useChatSidebarPinned,
 } from "hooks/chatSidebar";
 
 import { ChatTypes } from "types/chat";
@@ -20,7 +20,7 @@ import { ChatTypes } from "types/chat";
 import "./ChatSidebar.scss";
 
 export const ChatSidebar: React.FC = () => {
-  useChatSidebarPinned();
+  const { isPinned } = useChatSidebarPinned();
   const {
     isExpanded,
     toggleSidebar,
@@ -33,6 +33,7 @@ export const ChatSidebar: React.FC = () => {
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--pinned": isPinned,
   });
 
   const venueChatTabStyles = classNames("chat-sidebar__tab", {
