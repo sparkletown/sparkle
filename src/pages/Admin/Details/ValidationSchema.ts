@@ -17,6 +17,9 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
 
+const minNameLength = 3;
+const maxNameLength = 50;
+
 export interface SchemaShape {
   name: string;
   subtitle: string;
@@ -74,8 +77,14 @@ export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
     name: Yup.string()
       .required("Name is required!")
-      .min(3, ({ min }) => `Name must be at least ${min} characters`)
-      .max(20, ({ max }) => `Name must be less than ${max} characters`)
+      .min(
+        minNameLength,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        maxNameLength,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -124,7 +133,10 @@ export const validationSchema_v2 = Yup.object()
 
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
-  .min(3, ({ min }) => `Name must be at least ${min} characters`);
+  .min(
+    minNameLength,
+    ({ min }) => `Name must be at least ${minNameLength} characters`
+  );
 
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
@@ -141,8 +153,14 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       is: false,
       then: Yup.string()
         .required("Venue name is required")
-        .min(3, ({ min }) => `Name must be at least ${min} characters`)
-        .max(20, ({ max }) => `Name must be less than ${max} characters`),
+        .min(
+          minNameLength,
+          ({ min }) => `Name must be at least ${min} characters`
+        )
+        .max(
+          maxNameLength,
+          ({ max }) => `Name must be less than ${max} characters`
+        ),
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl
