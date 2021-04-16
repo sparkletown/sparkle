@@ -37,44 +37,55 @@ export interface ExposedDataWithPlay extends ExposedData {
 
 export interface CustomSoundsState {
   soundConfigs: SoundConfigMap;
-  isLoaded: boolean;
+  isLoading: boolean;
 }
 
 export const initialValue: CustomSoundsState = {
   soundConfigs: {},
-  isLoaded: false,
+  isLoading: false,
 };
 
 export const CustomSoundsContext = createContext<CustomSoundsState>(
   initialValue
 );
 
-export const CustomSoundsProvider: React.FC = ({ children }) => {
+export type CustomSoundsType = {
+  loadingComponent: React.ReactNode;
+  waitTillConfigLoaded: boolean;
+};
+
+export const CustomSoundsProvider: React.FC<CustomSoundsType> = ({
+  loadingComponent,
+  waitTillConfigLoaded,
+  children,
+}) => {
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
     initialValue.soundConfigs
   );
-  const [isLoaded, setIsLoaded] = useState<boolean>(initialValue.isLoaded);
+  const [isLoading, setIsLoading] = useState<boolean>(initialValue.isLoading);
   const { user } = useUser();
   const userId = user?.uid;
 
   // Fetch the sound configs data on first load
   useEffect(() => {
     if (!userId) return;
-
+    setIsLoading(true);
     fetchSoundConfigs()
-      .then((soundConfigs) => {
-        setSoundConfigs(soundConfigs);
-      })
-      .finally(() => setIsLoaded(true));
+      .then((soundConfigs) => setSoundConfigs(soundConfigs))
+      .finally(() => setIsLoading(false));
   }, [userId]);
 
   const providerData = useMemo(
     () => ({
       soundConfigs,
-      isLoaded,
+      isLoading,
     }),
-    [soundConfigs, isLoaded]
+    [soundConfigs, isLoading]
   );
+
+  if (isLoading && waitTillConfigLoaded) {
+    return <>{loadingComponent}</>;
+  }
 
   return (
     <CustomSoundsContext.Provider value={providerData}>
@@ -92,7 +103,6 @@ const USE_SOUND_DISABLED_CONFIG = { soundEnabled: false };
 type UseCustomSoundType = {
   play: PlaySpriteFunction;
   data: ExposedDataWithPlay;
-  isLoaded: boolean;
 };
 
 /**
@@ -141,7 +151,7 @@ export const useCustomSound = (
   const { onend } = options ?? {};
 
   // Fetch all of our loaded sound configs
-  const { soundConfigs, isLoaded } = useCustomSoundsContext();
+  const { soundConfigs } = useCustomSoundsContext();
 
   // Try to access just the one we want here
   const soundConfig = soundConfigs[soundId];
@@ -281,6 +291,5 @@ export const useCustomSound = (
   return {
     play: playSprite,
     data: { ...exposedData, play },
-    isLoaded,
   };
 };

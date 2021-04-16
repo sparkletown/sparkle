@@ -276,7 +276,10 @@ traceReactScheduler("initial render", performance.now(), () => {
             <Provider store={store}>
               <ReactReduxFirebaseProvider {...rrfProps}>
                 <AuthIsLoaded>
-                  <CustomSoundsProvider>
+                  <CustomSoundsProvider
+                    loadingComponent={LoadingPage}
+                    waitTillConfigLoaded
+                  >
                     <AppRouter />
                   </CustomSoundsProvider>
                 </AuthIsLoaded>
