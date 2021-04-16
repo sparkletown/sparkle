@@ -42,7 +42,7 @@ export interface CustomSoundsState {
 
 export const initialValue: CustomSoundsState = {
   soundConfigs: {},
-  isCustomSoundsLoaded: false,
+  isLoaded: false,
 };
 
 export const CustomSoundsContext = createContext<CustomSoundsState>(
