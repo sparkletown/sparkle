@@ -1,0 +1,105 @@
+@import "scss/constants";
+
+$poster-cell-optimal-width: 260px;
+$poster-cell-optimal-height: 145px;
+$poster-grid-gap: 5px;
+
+.poster {
+  padding: 0 20px 0;
+
+  &__header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    padding: 5px;
+
+    &--middle-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      font-size: 18px;
+      font-weight: 500;
+    }
+    &--right-cell {
+      display: flex;
+      justify-content: flex-end;
+      padding: 0 40px;
+    }
+  }
+
+  &__content {
+    display: grid;
+    grid-template-columns: $poster-cell-optimal-width 1fr 1fr $poster-cell-optimal-width;
+    grid-template-rows: repeat(auto-fill, $poster-cell-optimal-height);
+    gap: $poster-grid-gap;
+
+    grid-template-areas:
+      ".  iframe iframe ."
+      ".  iframe iframe ."
+      ".  iframe iframe ."
+      ".    .     .   ."
+      "listeners listeners listeners listeners";
+  }
+
+  &__control {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    height: 65px;
+    width: 65px;
+    margin: 5px;
+    border-radius: 10px;
+
+    background-color: $dark-grey;
+    cursor: pointer;
+
+    opacity: 0.6;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__control-text {
+    margin-top: 7px;
+    font-size: 11px;
+  }
+
+  &__iframe {
+    grid-area: iframe;
+    width: 100%;
+    height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$poster-grid-gap});
+  }
+
+  &__video-participant {
+    width: $poster-cell-optimal-width;
+    height: $poster-cell-optimal-height;
+  }
+
+  &__join-video-participants-btn {
+    width: $poster-cell-optimal-width;
+    height: $poster-cell-optimal-height;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-size: 25px;
+
+    cursor: pointer;
+
+    border: dashed grey thin;
+    border-radius: 10px;
+
+    &:hover {
+      background-color: $dark;
+    }
+  }
+  &__listeners {
+    grid-area: listeners;
+  }
+}

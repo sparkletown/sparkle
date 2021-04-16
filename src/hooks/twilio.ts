@@ -1,140 +1,142 @@
-import { useCallback, useEffect, useState } from "react";
-import {
-  AudioTrack,
-  LocalParticipant,
-  RemoteParticipant,
-  Track,
-  VideoTrack,
-} from "twilio-video";
+export default () => {};
 
-import {
-  appendTrack,
-  filterTrack,
-  isAudioTrack,
-  isLocalAudioTrack,
-  isLocalVideoTrack,
-  isVideoTrack,
-  trackMapToAudioTracks,
-  trackMapToVideoTracks,
-} from "utils/twilio";
+// import { useCallback, useEffect, useState } from "react";
+// import {
+//   AudioTrack,
+//   LocalParticipant,
+//   RemoteParticipant,
+//   Track,
+//   VideoTrack,
+// } from "twilio-video";
 
-export interface UseParticipantStateProps {
-  participant: LocalParticipant | RemoteParticipant;
-  defaultMute: boolean;
-  defaultVideoHidden: boolean;
-}
+// import {
+//   appendTrack,
+//   filterTrack,
+//   isAudioTrack,
+//   isLocalAudioTrack,
+//   isLocalVideoTrack,
+//   isVideoTrack,
+//   trackMapToAudioTracks,
+//   trackMapToVideoTracks,
+// } from "utils/twilio";
 
-/**
- * Manage the state of the audio/video tracks (including mute, hiding video, etc) for
- * the provided Twilio Participant.
- *
- * @param participant
- * @param defaultMute
- * @param defaultVideoHidden
- *
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/Participant.html
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalParticipant.html
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteParticipant.html
- *
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalVideoTrack.html
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteVideoTrack.html
- *
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalAudioTrack.html
- * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteAudioTrack.html
- */
-export const useParticipantState = ({
-  participant,
-  defaultMute,
-  defaultVideoHidden,
-}: UseParticipantStateProps) => {
-  // Audio / Video tracks
-  const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
-  const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
+// export interface UseParticipantStateProps {
+//   participant: LocalParticipant | RemoteParticipant;
+//   defaultMute: boolean;
+//   defaultVideoHidden: boolean;
+// }
 
-  useEffect(() => {
-    setVideoTracks(trackMapToVideoTracks(participant.videoTracks));
-    setAudioTracks(trackMapToAudioTracks(participant.audioTracks));
+// /**
+//  * Manage the state of the audio/video tracks (including mute, hiding video, etc) for
+//  * the provided Twilio Participant.
+//  *
+//  * @param participant
+//  * @param defaultMute
+//  * @param defaultVideoHidden
+//  *
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/Participant.html
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalParticipant.html
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteParticipant.html
+//  *
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalVideoTrack.html
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteVideoTrack.html
+//  *
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/LocalAudioTrack.html
+//  * @see https://media.twiliocdn.com/sdk/js/video/releases/2.9.0/docs/RemoteAudioTrack.html
+//  */
+// export const useParticipantState = ({
+//   participant,
+//   defaultMute,
+//   defaultVideoHidden,
+// }: UseParticipantStateProps) => {
+//   // Audio / Video tracks
+//   const [videoTracks, setVideoTracks] = useState<VideoTrack[]>([]);
+//   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
 
-    const trackSubscribed = (track: Track) => {
-      if (isVideoTrack(track)) {
-        setVideoTracks(appendTrack(track));
-      } else if (isAudioTrack(track)) {
-        setAudioTracks(appendTrack(track));
-      }
-    };
+//   useEffect(() => {
+//     setVideoTracks(trackMapToVideoTracks(participant.videoTracks));
+//     setAudioTracks(trackMapToAudioTracks(participant.audioTracks));
 
-    const trackUnsubscribed = (track: Track) => {
-      if (isVideoTrack(track)) {
-        setVideoTracks(filterTrack(track));
-      } else if (isAudioTrack(track)) {
-        setAudioTracks(filterTrack(track));
-      }
-    };
+//     const trackSubscribed = (track: Track) => {
+//       if (isVideoTrack(track)) {
+//         setVideoTracks(appendTrack(track));
+//       } else if (isAudioTrack(track)) {
+//         setAudioTracks(appendTrack(track));
+//       }
+//     };
 
-    participant.on("trackSubscribed", trackSubscribed);
-    participant.on("trackUnsubscribed", trackUnsubscribed);
+//     const trackUnsubscribed = (track: Track) => {
+//       if (isVideoTrack(track)) {
+//         setVideoTracks(filterTrack(track));
+//       } else if (isAudioTrack(track)) {
+//         setAudioTracks(filterTrack(track));
+//       }
+//     };
 
-    return () => {
-      participant.off("trackSubscribed", trackSubscribed);
-      participant.off("trackUnsubscribed", trackUnsubscribed);
+//     participant.on("trackSubscribed", trackSubscribed);
+//     participant.on("trackUnsubscribed", trackUnsubscribed);
 
-      setVideoTracks([]);
-      setAudioTracks([]);
-    };
-  }, [participant]);
+//     return () => {
+//       participant.off("trackSubscribed", trackSubscribed);
+//       participant.off("trackUnsubscribed", trackUnsubscribed);
 
-  // Mute/unmute audio
-  const [isMuted, setMuted] = useState<boolean>(defaultMute);
-  const toggleMuted = useCallback(
-    () => setMuted((prevIsMuted) => !prevIsMuted),
-    []
-  );
+//       setVideoTracks([]);
+//       setAudioTracks([]);
+//     };
+//   }, [participant]);
 
-  useEffect(() => {
-    if (isMuted) {
-      // Mute all of our localAudioTracks
-      audioTracks
-        .filter(isLocalAudioTrack)
-        .forEach((localAudioTrack) => localAudioTrack.disable());
-    } else {
-      // Unmute all of our localAudioTracks
-      audioTracks
-        .filter(isLocalAudioTrack)
-        .forEach((localAudioTrack) => localAudioTrack.enable());
-    }
-  }, [audioTracks, isMuted]);
+//   // Mute/unmute audio
+//   const [isMuted, setMuted] = useState<boolean>(defaultMute);
+//   const toggleMuted = useCallback(
+//     () => setMuted((prevIsMuted) => !prevIsMuted),
+//     []
+//   );
 
-  // Show/hide video
-  const [isVideoHidden, setVideoHidden] = useState<boolean>(defaultVideoHidden);
-  const toggleVideoHidden = useCallback(
-    () => setVideoHidden((prevIsVideoHidden) => !prevIsVideoHidden),
-    []
-  );
+//   useEffect(() => {
+//     if (isMuted) {
+//       // Mute all of our localAudioTracks
+//       audioTracks
+//         .filter(isLocalAudioTrack)
+//         .forEach((localAudioTrack) => localAudioTrack.disable());
+//     } else {
+//       // Unmute all of our localAudioTracks
+//       audioTracks
+//         .filter(isLocalAudioTrack)
+//         .forEach((localAudioTrack) => localAudioTrack.enable());
+//     }
+//   }, [audioTracks, isMuted]);
 
-  useEffect(() => {
-    if (isVideoHidden) {
-      // Pause all of our localVideoTracks
-      videoTracks
-        .filter(isLocalVideoTrack)
-        .forEach((localVideoTrack) => localVideoTrack.disable());
-    } else {
-      // Unpause all of our localVideoTracks
-      videoTracks
-        .filter(isLocalVideoTrack)
-        .forEach((localVideoTrack) => localVideoTrack.enable());
-    }
-  }, [videoTracks, isVideoHidden]);
+//   // Show/hide video
+//   const [isVideoHidden, setVideoHidden] = useState<boolean>(defaultVideoHidden);
+//   const toggleVideoHidden = useCallback(
+//     () => setVideoHidden((prevIsVideoHidden) => !prevIsVideoHidden),
+//     []
+//   );
 
-  return {
-    videoTracks,
-    audioTracks,
+//   useEffect(() => {
+//     if (isVideoHidden) {
+//       // Pause all of our localVideoTracks
+//       videoTracks
+//         .filter(isLocalVideoTrack)
+//         .forEach((localVideoTrack) => localVideoTrack.disable());
+//     } else {
+//       // Unpause all of our localVideoTracks
+//       videoTracks
+//         .filter(isLocalVideoTrack)
+//         .forEach((localVideoTrack) => localVideoTrack.enable());
+//     }
+//   }, [videoTracks, isVideoHidden]);
 
-    isMuted,
-    setMuted,
-    toggleMuted,
+//   return {
+//     videoTracks,
+//     audioTracks,
 
-    isVideoHidden,
-    setVideoHidden,
-    toggleVideoHidden,
-  };
-};
+//     isMuted,
+//     setMuted,
+//     toggleMuted,
+
+//     isVideoHidden,
+//     setVideoHidden,
+//     toggleVideoHidden,
+//   };
+// };
