@@ -13,7 +13,7 @@ $header-height: 45px;
   bottom: 0;
   width: $sidebar-width;
   min-width: $sidebar-width;
-  min-height: calc(100% - #{$navbar-height + $footer-height});
+  min-height: calc(100% - #{$navbar-height} - #{$footer-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
 
