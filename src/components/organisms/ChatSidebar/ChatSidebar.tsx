@@ -20,7 +20,7 @@ import { ChatTypes } from "types/chat";
 import "./ChatSidebar.scss";
 
 export const ChatSidebar: React.FC = () => {
-  useChatSidebarLockedOpen();
+  useChatSidebarPinned();
   const {
     isExpanded,
     toggleSidebar,
