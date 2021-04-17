@@ -166,7 +166,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
         <>
           {tables.map((table: Table, i: number) => (
             <TableComponent
-              key={table.title}
+              key={table.reference}
               experienceName={venueName}
               users={recentVenueUsers}
               table={table}
