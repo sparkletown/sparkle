@@ -28,6 +28,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
   const [isSaving, setSaving] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
     if (
@@ -94,14 +95,21 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 
   const handleBackgroundRemove = async () => {
     if (!user) return;
+    // Removes any already existing errors from the UI when called.
+    setError("");
 
-    await updateVenue_v2(
-      {
-        name: venueName,
-        mapBackgroundImageUrl: "",
-      },
-      user
-    );
+    try {
+      await updateVenue_v2(
+        {
+          name: venueName,
+          mapBackgroundImageUrl: "",
+        },
+        user
+      );
+    } catch (error) {
+      console.error("Failed to remove venue background");
+      setError("Failed to remove venue background, please try again.");
+    }
   };
 
   const handleEditButton = async () => {
@@ -116,6 +124,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 
   return (
     <DndProvider backend={HTML5Backend}>
+      {error && <div className="error">Error: {error}</div>}
+
       <S.Wrapper>
         <Legend text={`${venueName}'s Map`} />
 

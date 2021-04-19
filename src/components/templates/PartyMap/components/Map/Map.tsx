@@ -1,11 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
-import {
-  DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_COLUMNS,
-  MINIMUM_COLUMNS,
-} from "settings";
+import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
 
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
@@ -70,9 +66,7 @@ export const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     const img = new Image();
-    img.src = !!venue.mapBackgroundImageUrl
-      ? venue.mapBackgroundImageUrl
-      : DEFAULT_MAP_BACKGROUND;
+    img.src = !!venue.mapBackgroundImageUrl ? venue.mapBackgroundImageUrl : "";
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
 
