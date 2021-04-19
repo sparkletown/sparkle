@@ -268,6 +268,19 @@ const removeAdmin = async (adminId) => {
     });
 };
 
+/** Builds room to be inserted
+ *
+ * @param {Room} room
+ */
+const buildRoom = (room) => {
+  const { type, ...newRoom } = room;
+  if (type) {
+    return type ? room : newRoom;
+  } else {
+    return newRoom;
+  }
+};
+
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -338,6 +351,7 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
   const { venueId, roomIndex, room } = data;
+  const newRoom = buildRoom(room);
   await checkUserIsOwner(venueId, context.auth.token.user_id);
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
@@ -347,9 +361,9 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
   const docData = doc.data();
 
   if (typeof roomIndex !== "number") {
-    docData.rooms = [...docData.rooms, room];
+    docData.rooms = [...docData.rooms, newRoom];
   } else {
-    docData.rooms[roomIndex] = room;
+    docData.rooms[roomIndex] = newRoom;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(docData);
