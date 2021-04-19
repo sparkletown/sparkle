@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo } from "react";
+import { startCase } from "lodash";
 import { Form, Modal, Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import ImageInput from "components/atoms/ImageInput";
@@ -194,7 +195,9 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
               >
                 <option />
                 {Object.values(RoomTypes).map((roomType) => (
-                  <option key={roomType}>{roomType}</option>
+                  <option key={roomType} value={roomType}>
+                    {startCase(roomType)}
+                  </option>
                 ))}
               </Form.Control>
             </div>

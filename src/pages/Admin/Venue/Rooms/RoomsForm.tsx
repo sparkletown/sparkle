@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import Bugsnag from "@bugsnag/js";
+import { startCase } from "lodash";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import {
   ALL_VENUE_TEMPLATES,
@@ -325,7 +326,9 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                     >
                       <option />
                       {Object.values(RoomTypes).map((roomType) => (
-                        <option key={roomType}>{roomType}</option>
+                        <option key={roomType} value={roomType}>
+                          {startCase(roomType)}
+                        </option>
                       ))}
                     </Form.Control>
                   </div>
