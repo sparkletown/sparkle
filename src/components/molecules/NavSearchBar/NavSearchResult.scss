@@ -1,8 +1,9 @@
 @import "scss/constants.scss";
+@import "./navSearchBarConstants.scss";
 
 .nav-dropdown--search-result {
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 8px $search-result-padding;
   font-size: 0.9rem;
   display: flex;
   flex-direction: row;

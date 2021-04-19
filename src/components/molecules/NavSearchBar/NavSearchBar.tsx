@@ -105,17 +105,21 @@ const NavSearchBar = () => {
 
   const clearSearchIcon = (
     <img
-      className="nav__clear-search"
+      className="NavSearchBar__clear-search"
       src="/icons/nav-dropdown-close.png"
       alt="close button"
       onClick={clearSearchQuery}
     />
   );
 
+  const navDropdownClassnames = classNames("NavSearchBar__nav-dropdown", {
+    "NavSearchBar__nav-dropdown--show": searchQuery,
+  });
+
   return (
-    <div className="nav-search-links">
+    <div className="NavSearchBar">
       <InputField
-        className="nav-search-input"
+        className="NavSearchBar__search-input"
         value={searchQuery}
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
@@ -124,16 +128,15 @@ const NavSearchBar = () => {
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
       />
 
-      <div
-        className={classNames("nav-dropdown nav-dropdown--search", {
-          show: searchQuery,
-        })}
-      >
-        <div className="nav-dropdown-title mb-05 mt-05">
-          <b>{numberOfSearchResults}</b> search results
+      <div className={navDropdownClassnames}>
+        <div className="NavSearchBar__nav-dropdown__title mb--05 mt--05 font-size--small">
+          <b className="NavSearchBar__search-results-number">
+            {numberOfSearchResults}
+          </b>{" "}
+          search results
         </div>
 
-        <div className="nav-dropdown--search-results">
+        <div className="NavSearchBar__search-results">
           {/* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */}
           {foundRooms.map((room, index) => (
             <NavSearchResult

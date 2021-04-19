@@ -761,26 +761,28 @@ span.link {
 }
 
 // font size
-.font-size--small {
-  font-size: 0.9rem;
+.font-size {
+  &--small {
+    font-size: 0.9rem;
+  }
 }
 
 // opacity
-.opacity-8 {
-  opacity: 0.8;
-}
-.opacity-6 {
-  opacity: 0.6;
-}
-.opacity-3 {
-  opacity: 0.3;
+.opacity {
+  &--06 {
+    opacity: 0.6;
+  }
 }
 
 // margins & paddings
-.mt-05 {
-  margin-top: 0.5rem;
+.mt {
+  &--05 {
+    margin-top: 0.5rem;
+  }
 }
 
-.mb-05 {
-  margin-bottom: 0.5rem;
+.mb {
+  &--05 {
+    margin-bottom: 0.5rem;
+  }
 }

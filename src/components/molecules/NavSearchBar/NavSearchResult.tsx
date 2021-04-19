@@ -30,7 +30,7 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
       />
       <div className="nav-dropdown--search-result-title">
         <div className="result-title">{title}</div>
-        <div className="font-size--small opacity-6">{description}</div>
+        <div className="font-size--small opacity--06">{description}</div>
       </div>
     </div>
   );

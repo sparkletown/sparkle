@@ -1,21 +1,20 @@
 @import "scss/constants.scss";
+@import "./navSearchBarConstants.scss";
 
-$search-results-width: 18.125rem;
-
-.nav-search-links {
+.NavSearchBar {
   position: relative;
   width: $search-results-width;
-
-  .nav-search-input {
-    z-index: 2;
-  }
 
   .input-field__input {
     text-align: left;
     font-size: 0.9em;
   }
 
-  .nav__clear-search {
+  &__search-input {
+    z-index: z(navbar__search-input);
+  }
+
+  &__clear-search {
     cursor: pointer;
     opacity: 0.4;
 
@@ -27,68 +26,59 @@ $search-results-width: 18.125rem;
       opacity: 0.8;
     }
   }
-}
 
-.nav-dropdown {
-  position: fixed;
-  z-index: 1;
-  top: 0;
-  height: auto;
-  width: $search-results-width;
-  margin-top: 66px;
-  width: 290px;
-  background-color: $saturated-black;
-  text-align: left;
-  box-shadow: 0 10px 30px 0 rgba($black, 0.5);
-  border-radius: 0 0 $border-radius--input $border-radius--input;
-  transform: translateY(-100px);
-  transform-origin: top right;
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-  pointer-events: none;
+  &__nav-dropdown {
+    position: fixed;
+    top: 0;
+    width: $search-results-width;
+    max-height: $search-results-height--max;
+    margin-top: $navbar-height;
+    background-color: $saturated-black;
+    box-shadow: 0 10px 30px 0 rgba($black, 0.5);
+    border-radius: 0 0 $border-radius--input $border-radius--input;
+    transform: translateY(-$navbar-height - $search-results-height--empty);
+    transform-origin: top right;
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
 
-  &.show {
-    transform: scale(1) translateY(0px);
-    opacity: 1;
-    pointer-events: all;
-  }
+    &--show {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: all;
+    }
 
-  .nav-dropdown-title {
-    padding: 0 12px;
-    opacity: 0.5;
-    font-size: 0.9rem;
-    b {
-      font-weight: 500;
+    &__title {
+      padding: 0 $search-result-padding;
+      opacity: 0.5;
     }
   }
 
-  &.nav-dropdown--search {
-    width: 290px;
-    max-height: 480px;
-    border-radius: 0 0 $border-radius--input $border-radius--input;
-  }
-}
-
-.nav-dropdown--search-results {
-  overflow-y: auto;
-  max-height: 385px;
-
-  // body scrollbar
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
+  &__search-results-number {
+    font-weight: 500;
   }
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
+  &__search-results {
+    overflow-y: auto;
+    max-height: 385px;
 
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
+    // body scrollbar
+    &::-webkit-scrollbar-track {
+      border-radius: 3px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+
+    &::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+      background-color: rgba($black, 0);
+    }
+
+    &::-webkit-scrollbar-thumb {
+      border-radius: 4px;
+      background-color: rgba($white, 0.3);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: rgba($white, 0.5);
+    }
   }
 }
