@@ -166,8 +166,6 @@ export function getDaysAgoInSeconds(days: number) {
  *   // '21:00'
  *
  * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
  */
 export const formatHourAndMinute = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
