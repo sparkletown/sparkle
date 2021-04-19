@@ -359,6 +359,7 @@ $border-radius: 28px;
       position: fixed;
     }
     .schedule-day-container {
+      @include scrollbar;
       position: absolute;
       width: 100%;
       top: 70px;
@@ -368,22 +369,6 @@ $border-radius: 28px;
 
       .schedule-event-container {
         border-radius: $border-radius/2;
-      }
-
-      // styling scrollbar
-      &::-webkit-scrollbar-track {
-        border-radius: 3px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar {
-        width: 8px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        border-radius: 4px;
-        background-color: rgba($white, 0.1);
       }
     }
   }
@@ -444,20 +429,8 @@ $border-radius: 28px;
 }
 
 .schedule-container {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
+  @include scrollbar;
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.1);
-  }
   .schedule-tabs {
     li {
       display: inline;

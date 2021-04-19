@@ -124,3 +124,25 @@ $z-layers: (
 @function box-shadow--large($transparency: 0.5) {
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
+
+@mixin scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($black, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
+}
