@@ -1,20 +1,23 @@
 @import "scss/constants.scss";
 @import "./navSearchBarConstants.scss";
 
-.nav-dropdown--search-result {
+.NavSearchResult {
   cursor: pointer;
-  padding: 8px $search-result-padding;
-  font-size: 0.9rem;
+  padding: $search-result-padding--vertical $search-result-padding--horizontal;
   display: flex;
   flex-direction: row;
   align-items: center;
   align-content: space-between;
 
-  .nav-dropdown--search-result-image {
+  .user-avatar {
+    margin-right: $search-result-image--right-margin;
+  }
+
+  &__image {
     flex-shrink: 0;
-    height: 32px;
-    width: 32px;
-    margin-right: 10px;
+    height: $search-result-image--size;
+    width: $search-result-image--size;
+    margin-right: $search-result-image--right-margin;
     border-radius: $border-radius--small;
     background-size: contain;
     background-repeat: no-repeat;
@@ -22,11 +25,8 @@
     background-color: $black;
   }
 
-  .nav-dropdown--search-result-avatar {
-    height: 26px;
-    width: 26px;
-    border-radius: 50%;
-    background-size: cover;
+  &__description {
+    opacity: 0.6;
   }
 
   &:hover {

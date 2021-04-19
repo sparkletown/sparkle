@@ -1,5 +1,6 @@
 import React from "react";
-import classNames from "classnames";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./NavSearchResult.scss";
 
@@ -18,19 +19,23 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
   isAvatar,
   onClick,
 }) => {
+  const imageStyles = {
+    backgroundImage: image ? `url(${image})` : undefined,
+  };
+
   return (
-    <div className="nav-dropdown--search-result" onClick={onClick}>
-      <div
-        className={classNames("nav-dropdown--search-result-image", {
-          "nav-dropdown--search-result-avatar": isAvatar,
-        })}
-        style={{
-          backgroundImage: image ? `url(${image})` : "",
-        }}
-      />
-      <div className="nav-dropdown--search-result-title">
-        <div className="result-title">{title}</div>
-        <div className="font-size--small opacity--06">{description}</div>
+    <div className="NavSearchResult font-size--small" onClick={onClick}>
+      {isAvatar ? (
+        <UserAvatar avatarSrc={image} />
+      ) : (
+        <div className="NavSearchResult__image" style={imageStyles} />
+      )}
+
+      <div>
+        <div>{title}</div>
+        <div className="font-size--small NavSearchResult__description">
+          {description}
+        </div>
       </div>
     </div>
   );
