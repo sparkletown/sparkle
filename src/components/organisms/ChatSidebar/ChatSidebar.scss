@@ -87,10 +87,6 @@ $header-height: 45px;
     &__second-icon {
       margin-left: 5px;
     }
-
-    @media (min-width: $large-laptop-width) {
-      display: none;
-    }
   }
 
   &__tab-content {

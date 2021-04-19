@@ -49,20 +49,22 @@ export const ChatSidebar: React.FC = () => {
   return (
     <div className={containerStyles}>
       <div className="chat-sidebar__header">
-        <div className="chat-sidebar__controller" onClick={toggleSidebar}>
-          {isExpanded ? (
-            <FontAwesomeIcon icon={faChevronRight} size="sm" />
-          ) : (
-            <>
-              <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon
-                className="chat-sidebar__controller__second-icon"
-                icon={faCommentDots}
-                size="lg"
-              />
-            </>
-          )}
-        </div>
+        {!isPinned && (
+          <div className="chat-sidebar__controller" onClick={toggleSidebar}>
+            {isExpanded ? (
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                <FontAwesomeIcon
+                  className="chat-sidebar__controller__second-icon"
+                  icon={faCommentDots}
+                  size="lg"
+                />
+              </>
+            )}
+          </div>
+        )}
 
         <div className="chat-sidebar__tabs">
           <div className={venueChatTabStyles} onClick={selectVenueChat}>
