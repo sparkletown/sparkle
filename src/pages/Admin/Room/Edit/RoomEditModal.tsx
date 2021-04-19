@@ -193,7 +193,7 @@ export const RoomEditModal: React.FC<RoomEditModalProps> = ({
                 ref={register}
                 defaultValue={room.type}
               >
-                <option />
+                <option value="">Default</option>
                 {Object.values(RoomTypes).map((roomType) => (
                   <option key={roomType} value={roomType}>
                     {startCase(roomType)}

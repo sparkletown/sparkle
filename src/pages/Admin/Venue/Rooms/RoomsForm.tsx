@@ -324,7 +324,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                       ref={register}
                       defaultValue={values.type}
                     >
-                      <option />
+                      <option value="">Default</option>
                       {Object.values(RoomTypes).map((roomType) => (
                         <option key={roomType} value={roomType}>
                           {startCase(roomType)}
