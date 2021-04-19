@@ -34,7 +34,7 @@
     max-height: $search-results-height--max;
     margin-top: $navbar-height;
     background-color: $saturated-black;
-    box-shadow: 0 10px 30px 0 rgba($black, 0.5);
+    box-shadow: box-shadow--large();
     border-radius: 0 0 $border-radius--input $border-radius--input;
     transform: translateY(-$navbar-height - $search-results-height--empty);
     transform-origin: top right;

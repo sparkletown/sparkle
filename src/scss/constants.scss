@@ -120,3 +120,7 @@ $z-layers: (
 
   @return map-get($z-layers, $layer);
 }
+
+@function box-shadow--large($transparency: 0.5) {
+  @return 0 10px 30px 0 rgba($black, $transparency);
+}

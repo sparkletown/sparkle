@@ -383,7 +383,7 @@ h4 {
   border: none;
   border-radius: 22px;
   background: $black;
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+  box-shadow: box-shadow--large(0.34);
 }
 
 .centered-flex {
