@@ -19,7 +19,7 @@ export const venueEntranceUrl = (venueId: string, step?: number) => {
 
 export const isExternalUrl = (url: string) => {
   try {
-    return new URL(url).host !== window.location.host;
+    return new URL(url, window.location.origin).host !== window.location.host;
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";

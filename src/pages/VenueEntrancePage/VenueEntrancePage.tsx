@@ -16,7 +16,7 @@ import { showZendeskWidget } from "utils/zendesk";
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
   const history = useHistory();
-  const { step } = useParams();
+  const { step } = useParams<{ step?: string }>();
   const venueId = useVenueId();
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
@@ -32,6 +32,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (
+    step === undefined ||
     !(parseInt(step) > 0) ||
     !venue.entrance ||
     !venue.entrance.length ||
