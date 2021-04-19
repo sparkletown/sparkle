@@ -17,8 +17,9 @@ import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { InputField } from "components/atoms/InputField";
 import { RoomModal } from "components/templates/PartyMap/components";
+
+import { InputField } from "components/atoms/InputField";
 
 import { NavSearchResult } from "./NavSearchResult";
 
