@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, ChangeEvent } from "react";
+import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -28,7 +28,11 @@ type WithImageUrl<T extends object> = T & { image_url?: string };
 
 const emptyEventsArray: VenueEvent[] = [];
 
-const buildEventDescripiton = (startUtcSeconds: number) => {
+const normalizeSearchQuery = (searchQuery: string): string => {
+  return searchQuery.toLowerCase();
+};
+
+const buildEventDescription = (startUtcSeconds: number) => {
   const eventTime = formatUtcSecondsRelativeToToday(startUtcSeconds);
   return `Event - ${uppercaseFirstChar(eventTime)}`;
 };
@@ -37,12 +41,6 @@ const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value),
-    []
-  );
-
-  const [foundRooms, setFoundRooms] = useState<Room[]>([]);
-  const [foundUsers, setFoundUsers] = useState<readonly WithId<User>[]>([]);
-  const [foundEvents, setFoundEvents] = useState<WithImageUrl<VenueEvent>[]>(
     []
   );
 
@@ -55,20 +53,39 @@ const NavSearchBar = () => {
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  useEffect(() => {
-    const normalizedSearchQuery = searchQuery.toLowerCase();
+  const foundRooms = useMemo<readonly Room[]>(() => {
+    const normalizedSearchQuery = normalizeSearchQuery(searchQuery);
     if (!normalizedSearchQuery) {
-      setFoundRooms([]);
-      setFoundUsers([]);
-      setFoundEvents([]);
-      return;
+      return [];
     }
 
-    const venueUsersResults = worldUsers.filter((user) =>
-      user.partyName?.toLowerCase()?.includes(normalizedSearchQuery)
+    return (
+      venue?.rooms?.filter(
+        (room) =>
+          room.title.toLowerCase().includes(normalizedSearchQuery) &&
+          room.type !== RoomTypes.unclickable
+      ) ?? []
     );
+  }, [searchQuery, venue]);
 
-    const venueEventsResults: WithImageUrl<VenueEvent>[] = venueEvents
+  const foundUsers = useMemo<readonly WithId<User>[]>(() => {
+    const normalizedSearchQuery = normalizeSearchQuery(searchQuery);
+    if (!normalizedSearchQuery) {
+      return [];
+    }
+
+    return worldUsers.filter((user) =>
+      user.partyName?.toLowerCase().includes(normalizedSearchQuery)
+    );
+  }, [searchQuery, worldUsers]);
+
+  const foundEvents = useMemo<readonly WithImageUrl<VenueEvent>[]>(() => {
+    const normalizedSearchQuery = normalizeSearchQuery(searchQuery);
+    if (!normalizedSearchQuery) {
+      return [];
+    }
+
+    return venueEvents
       .filter((event) =>
         event.name.toLowerCase().includes(normalizedSearchQuery)
       )
@@ -77,18 +94,7 @@ const NavSearchBar = () => {
         const room = venue?.rooms?.find((room) => room.title === event.room);
         return { ...event, image_url: room?.image_url };
       });
-
-    const roomsResults: Room[] =
-      venue?.rooms?.filter(
-        (room) =>
-          room.title.toLowerCase().includes(normalizedSearchQuery) &&
-          room.type !== RoomTypes.unclickable
-      ) ?? [];
-
-    setFoundRooms(roomsResults);
-    setFoundUsers(venueUsersResults);
-    setFoundEvents(venueEventsResults);
-  }, [searchQuery, venue, venueEvents, worldUsers]);
+  }, [searchQuery, venueEvents, venue]);
 
   const numberOfSearchResults =
     foundRooms.length + foundEvents.length + foundUsers.length;
@@ -131,10 +137,10 @@ const NavSearchBar = () => {
           {/* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */}
           {foundRooms.map((room, index) => (
             <NavSearchResult
+              key={`room-${room.title}-${index}`}
               title={room.title}
               description="Room"
               image={room.image_url}
-              key={`room-${room.title}-${index}`}
               onClick={() => {
                 setSelectedRoom(room);
                 clearSearchQuery();
@@ -144,19 +150,19 @@ const NavSearchBar = () => {
 
           {foundEvents.map((event) => (
             <NavSearchResult
-              title={event.name}
-              description={buildEventDescripiton(event.start_utc_seconds)}
-              image={event.image_url}
               key={`event-${event.id ?? event.name}`}
+              title={event.name}
+              description={buildEventDescription(event.start_utc_seconds)}
+              image={event.image_url}
             />
           ))}
 
           {foundUsers.map((user) => (
             <NavSearchResult
+              key={`user-${user.id}`}
               title={user.partyName as string}
               image={user.pictureUrl}
               isAvatar={true}
-              key={`user-${user.id}`}
               onClick={() => {
                 openUserProfileModal(user);
                 clearSearchQuery();
