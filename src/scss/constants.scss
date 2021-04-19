@@ -54,6 +54,8 @@ $room-info-bg: #6f43ff;
 
 $small-laptop-width: 980px;
 
+$transition-function: cubic-bezier(0.23, 1, 0.32, 1);
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
