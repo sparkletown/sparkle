@@ -15,6 +15,8 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   MINIMUM_COLUMNS,
   MAXIMUM_COLUMNS,
+  VENUE_NAME_MAX_CHAR_COUNT,
+  VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -58,8 +60,14 @@ export const validationSchema = Yup.object()
     template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Venue name is required")
-      .min(1, ({ min }) => `Name must be at least ${min} characters`)
-      .max(20, ({ max }) => `Name must be less than ${max} characters`)
+      .min(
+        VENUE_NAME_MIN_CHAR_COUNT,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        VENUE_NAME_MAX_CHAR_COUNT,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>

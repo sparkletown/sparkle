@@ -1,10 +1,13 @@
 import * as Yup from "yup";
 
 import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
+
 import firebase from "firebase/app";
 import "firebase/functions";
 import {
   PLAYA_VENUE_SIZE,
+  VENUE_NAME_MIN_CHAR_COUNT,
+  VENUE_NAME_MAX_CHAR_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
@@ -16,9 +19,6 @@ const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
   y: (PLAYA_HEIGHT - PLAYA_VENUE_SIZE) / 2,
 };
-
-const minNameLength = 3;
-const maxNameLength = 50;
 
 export interface SchemaShape {
   name: string;
@@ -78,11 +78,11 @@ export const validationSchema_v2 = Yup.object()
     name: Yup.string()
       .required("Name is required!")
       .min(
-        minNameLength,
+        VENUE_NAME_MIN_CHAR_COUNT,
         ({ min }) => `Name must be at least ${min} characters`
       )
       .max(
-        maxNameLength,
+        VENUE_NAME_MAX_CHAR_COUNT,
         ({ max }) => `Name must be less than ${max} characters`
       )
       .when(
@@ -134,8 +134,8 @@ export const validationSchema_v2 = Yup.object()
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
   .min(
-    minNameLength,
-    ({ min }) => `Name must be at least ${minNameLength} characters`
+    VENUE_NAME_MIN_CHAR_COUNT,
+    ({ min }) => `Name must be at least ${min} characters`
   );
 
 export const roomUrlSchema = Yup.string()
@@ -154,11 +154,11 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       then: Yup.string()
         .required("Venue name is required")
         .min(
-          minNameLength,
+          VENUE_NAME_MIN_CHAR_COUNT,
           ({ min }) => `Name must be at least ${min} characters`
         )
         .max(
-          maxNameLength,
+          VENUE_NAME_MAX_CHAR_COUNT,
           ({ max }) => `Name must be less than ${max} characters`
         ),
     })
