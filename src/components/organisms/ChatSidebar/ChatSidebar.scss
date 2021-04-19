@@ -25,6 +25,7 @@ $header-height: 45px;
   &--pinned {
     position: relative;
     top: 0;
+    min-width: $sidebar-width;
   }
 
   &__header {
