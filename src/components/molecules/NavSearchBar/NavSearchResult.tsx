@@ -4,7 +4,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./NavSearchResult.scss";
 
-interface NavSearchResultProps {
+export interface NavSearchResultProps {
   title: string;
   description?: string;
   image?: string;
