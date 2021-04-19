@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
-import { SetSelectedProfile } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -16,13 +15,11 @@ export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: (text: string) => void;
   deleteMessage: (messageId: string) => void;
-  onAvatarClick: SetSelectedProfile;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
   messages,
   sendMessage,
-  onAvatarClick,
   deleteMessage,
 }) => {
   const [isSendingMessage, setMessageSending] = useState(false);
@@ -57,10 +54,9 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           key={`${message.ts_utc}-${message.from}`}
           message={message}
           deleteMessage={() => deleteMessage(message.id)}
-          onAuthorClick={() => onAvatarClick(message.author)}
         />
       )),
-    [messages, onAvatarClick, deleteMessage]
+    [messages, deleteMessage]
   );
 
   return (
@@ -72,6 +68,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           ref={register({ required: true })}
           name="message"
           placeholder="Write your message..."
+          autoComplete="off"
         ></input>
         <button
           className="chatbox__submit-button"

@@ -1,15 +1,19 @@
 import * as Yup from "yup";
 
 import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
+
 import firebase from "firebase/app";
 import "firebase/functions";
 import {
   PLAYA_VENUE_SIZE,
+  VENUE_NAME_MIN_CHAR_COUNT,
+  VENUE_NAME_MAX_CHAR_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
 } from "settings";
+import { isValidUrl } from "utils/url";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -73,7 +77,14 @@ export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
     name: Yup.string()
       .required("Name is required!")
-      .min(3, ({ min }) => `Name must be at least ${min} characters`)
+      .min(
+        VENUE_NAME_MIN_CHAR_COUNT,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        VENUE_NAME_MAX_CHAR_COUNT,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -122,10 +133,16 @@ export const validationSchema_v2 = Yup.object()
 
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
-  .min(3, ({ min }) => `Name must be at least ${min} characters`);
-const roomUrlSchema = Yup.string()
+  .min(
+    VENUE_NAME_MIN_CHAR_COUNT,
+    ({ min }) => `Name must be at least ${min} characters`
+  );
+
+export const roomUrlSchema = Yup.string()
   .required("Url is required!")
-  .min(3, ({ min }) => `Url must be at least ${min} characters`);
+  .min(3, ({ min }) => `Url must be at least ${min} characters`)
+  .test("url validation", "Please enter a valid URL", isValidUrl);
+
 const roomImageUrlSchema = Yup.string().required("Room image is required");
 
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
@@ -136,7 +153,14 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       is: false,
       then: Yup.string()
         .required("Venue name is required")
-        .min(3, ({ min }) => `Name must be at least ${min} characters`),
+        .min(
+          VENUE_NAME_MIN_CHAR_COUNT,
+          ({ min }) => `Name must be at least ${min} characters`
+        )
+        .max(
+          VENUE_NAME_MAX_CHAR_COUNT,
+          ({ max }) => `Name must be less than ${max} characters`
+        ),
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl

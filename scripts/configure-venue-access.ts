@@ -29,7 +29,7 @@ if (!projectId || !venueId || !method || !accessDetail) {
   usage();
 }
 
-if (!VenueAccessMode[method]) {
+if (!VenueAccessMode[method as keyof typeof VenueAccessMode]) {
   console.error(`Invalid access method ${method}`);
   process.exit(1);
 }
@@ -89,7 +89,7 @@ initFirebaseAdminApp(projectId, {
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach((line) => {
-          access.codes.push(line.trim());
+          access?.codes?.push(line.trim());
         });
       console.log(`Setting venues/${venueId}/access/${method}...`);
       await accessDocRef.set(

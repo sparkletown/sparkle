@@ -55,7 +55,6 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import UserProfileModal from "components/organisms/UserProfileModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -131,9 +130,6 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
@@ -380,14 +376,14 @@ const Playa = () => {
     return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
   };
 
-  const { camp } = useParams();
+  const { camp } = useParams<{ camp?: string }>();
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
       if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
-        if (camp.placement) {
-          setCenterX(camp.placement.x);
-          setCenterY(camp.placement.y);
+        if (campVenue.placement !== undefined) {
+          setCenterX(campVenue.placement.x);
+          setCenterY(campVenue.placement.y);
         }
         showVenue(campVenue);
       }
@@ -803,7 +799,6 @@ const Playa = () => {
         movingLeft={movingLeft}
         movingRight={movingRight}
         setMyLocation={setMyLocation}
-        setSelectedUserProfile={setSelectedUserProfile}
         setShowUserTooltip={setShowUserTooltip}
         setHoveredUser={setHoveredUser}
         setShowMenu={setShowMenu}
@@ -1018,6 +1013,7 @@ const Playa = () => {
                 placeholder={`Shout across ${PLAYA_VENUE_NAME}...`}
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
+                autoComplete="off"
               />
             </form>
           </div>
@@ -1043,7 +1039,7 @@ const Playa = () => {
           className={`playa-videochat ${inVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
-          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
+          <VideoChatLayer />
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
@@ -1054,11 +1050,6 @@ const Playa = () => {
             />
           )}
         </Modal>
-        <UserProfileModal
-          show={selectedUserProfile !== undefined}
-          onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile}
-        />
         <Modal
           show={showEventSchedule}
           onHide={() => setShowEventSchedule(false)}
@@ -1088,7 +1079,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    selectedUserProfile,
     showEventSchedule,
     inVideoChat,
     videoChatHeight,

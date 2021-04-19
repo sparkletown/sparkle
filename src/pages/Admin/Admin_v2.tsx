@@ -3,30 +3,31 @@ import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-// Components
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import VenueDetails from "./Venue/Details";
+import { Venue_v2 } from "types/venues";
 
-// Hooks
+import { orderedVenuesSelector } from "utils/selectors";
+
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-
-// Styles
-import "./Admin.scss";
-import { Venue_v2 } from "types/venues";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import AdminSidebar from "./Sidebar/Sidebar";
-import { useVenueId } from "hooks/useVenueId";
-import { orderedVenuesSelector } from "utils/selectors";
 import { useAdminVenues } from "hooks/useAdminVenues";
+import { useVenueId } from "hooks/useVenueId";
+
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
+import { LoadingPage } from "components/molecules/LoadingPage";
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import BasicInfo from "./BasicInfo";
+import AdminSidebar from "./Sidebar/Sidebar";
 import EntranceExperience from "./EntranceExperience";
 import AdvancedSettings from "./AdvancedSettings";
+import VenueDetails from "./Venue/Details";
+// @debt Introduce this when the ticket concept is to be added.
 // import TicketingAndAccess from "./TicketingAndAccess";
 
+import "./Admin.scss";
 import * as S from "./Admin.styles";
-import BasicInfo from "./BasicInfo";
 
 dayjs.extend(advancedFormat);
 
@@ -85,7 +86,7 @@ const Admin_v2: React.FC = () => {
   const { isAdminUser } = useIsAdminUser(user?.uid);
 
   if (!venues || !roles) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   if (!user) {
@@ -135,21 +136,17 @@ const Admin_v2: React.FC = () => {
 
   return (
     <>
-      <S.Wrapper>
-        <AdminSidebar
-          sidebarOptions={sidebarOptions}
-          selected={selectedOption}
-          onClick={setSelectedOption}
-        />
+      <S.Wrapper hasSelectedVenue={!!selectedVenue}>
+        {selectedVenue && (
+          <AdminSidebar
+            sidebarOptions={sidebarOptions}
+            selected={selectedOption}
+            onClick={setSelectedOption}
+          />
+        )}
 
         <S.ViewWrapper>
-          {selectedVenue ? (
-            renderVenueView()
-          ) : (
-            <span className="no-venue-selected">
-              Select a venue to see its details
-            </span>
-          )}
+          {selectedVenue ? renderVenueView() : <AdminVenues venues={venues} />}
         </S.ViewWrapper>
       </S.Wrapper>
 

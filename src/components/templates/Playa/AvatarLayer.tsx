@@ -21,7 +21,7 @@ import { Avatar } from "./Avatar";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { WithId } from "utils/id";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { User } from "types/User";
 import MyAvatar from "./MyAvatar";
 import { useFirebase } from "react-redux-firebase";
@@ -49,7 +49,6 @@ interface PropsType {
   movingLeft: boolean;
   movingRight: boolean;
   setMyLocation(x: number, y: number): void;
-  setSelectedUserProfile: (user: WithId<User>) => void;
   setShowUserTooltip: (showUserTooltip: boolean) => void;
   setHoveredUser: (hoveredUser: User) => void;
   setShowMenu: (showMenu: boolean) => void;
@@ -70,7 +69,6 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   movingLeft,
   movingRight,
   setMyLocation,
-  setSelectedUserProfile,
   setShowUserTooltip,
   setHoveredUser,
   setMenu,
@@ -88,6 +86,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const wsRef = useRef<WebSocket>();
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
+  const { openUserProfileModal } = useProfileModalControls();
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const dispatch = useDispatch();
@@ -112,11 +111,11 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   );
 
   useEffect(() => {
-    firebase
+    const unsubscribeListener = firebase
       .firestore()
       .collection(`experiences/playa/shouts`)
       .where("created_at", ">", new Date().getTime())
-      .onSnapshot(function (snapshot) {
+      .onSnapshot((snapshot) => {
         snapshot.docChanges().forEach(function (change) {
           if (change.type === "added") {
             const newShout = change.doc.data() as Shout;
@@ -129,6 +128,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
           }
         });
       });
+
+    return () => {
+      unsubscribeListener();
+    };
   }, [firebase, setShouts]);
 
   const wsInitedRef = useRef(false);
@@ -193,7 +196,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       {
         text: "My Profile",
         onClick: () => {
-          if (selfUserProfile) setSelectedUserProfile(selfUserProfile);
+          if (selfUserProfile) openUserProfileModal(selfUserProfile);
         },
       },
       {
@@ -597,7 +600,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
 
         const viewProfileChoice = {
           text: `${avatarUser.partyName}'s profile`,
-          onClick: () => setSelectedUserProfile(avatarUser),
+          onClick: () => openUserProfileModal(avatarUser),
         };
         const askToJoinThemChoice = {
           text: `Ask to join ${avatarUser.partyName}'s chat`,
@@ -753,7 +756,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     firebase,
     recentVenueUsers,
     useProfilePicture,
-    setSelectedUserProfile,
+    openUserProfileModal,
     setMenu,
     menuRef,
     setShowMenu,
