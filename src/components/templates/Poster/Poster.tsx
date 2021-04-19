@@ -7,6 +7,10 @@ import { PosterVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
 
+import { VideoParticipant } from "components/organisms/Video";
+
+import { usePosterVideo } from "./usePosterVideo";
+
 import { WithId } from "utils/id";
 
 import "./Poster.scss";
@@ -20,9 +24,15 @@ export interface PosterProps {
 export const Poster: React.FC<PosterProps> = ({ venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const videoParticipants = Array(0).fill(
-    <div className="poster__video-participant" />
-  );
+  const { participants } = usePosterVideo(venue.id);
+
+  const videoParticipants = participants.map((participant) => (
+    <VideoParticipant
+      participant={participant}
+      additionalClassNames="poster__video-participant"
+    />
+  ));
+
   const hasFreeSpace = videoParticipants.length < POSTER_CELL_COUNT_MAX;
 
   return (
