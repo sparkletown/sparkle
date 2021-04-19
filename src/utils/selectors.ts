@@ -6,7 +6,7 @@ import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterVenue, VenueEvent } from "types/venues";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
@@ -213,7 +213,7 @@ export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
 export const posterVenuesSelector: SparkleSelector<
-  WithId<WithPoster<AnyVenue>>[] | undefined
+  WithId<WithPoster<PosterVenue>>[] | undefined
 > = (state) => state.firestore.ordered.posterVenues;
 
 /**

@@ -227,6 +227,8 @@ export interface EmbeddableVenue extends BaseVenue {
 export interface PosterVenue extends BaseVenue {
   template: VenueTemplate.poster;
   categories: TPosterCategory[];
+  title: string;
+  introVideoUrl: string;
   presenter: {
     name: string;
     institution: string;

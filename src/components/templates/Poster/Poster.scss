@@ -101,5 +101,10 @@ $poster-grid-gap: 5px;
   }
   &__listeners {
     grid-area: listeners;
+
+    .userlist-container {
+      margin-left: unset;
+      margin-right: unset;
+    }
   }
 }

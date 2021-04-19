@@ -10,7 +10,7 @@ import { Purchase } from "./Purchase";
 import { Role } from "./Role";
 import { Table } from "./Table";
 import { User } from "./User";
-import { AnyVenue, VenueEvent } from "./venues";
+import { AnyVenue, PosterVenue, VenueEvent } from "./venues";
 import { WithPoster } from "./posters";
 
 export interface Experience {
@@ -97,7 +97,7 @@ export interface FirestoreOrdered {
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
   privateChatMessages?: Array<WithId<PrivateChatMessage>>;
-  posterVenues?: Array<WithId<WithPoster<AnyVenue>>>;
+  posterVenues?: Array<WithId<WithPoster<PosterVenue>>>;
   worldUsers?: Array<WithId<User>>;
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;

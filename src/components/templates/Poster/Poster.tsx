@@ -3,8 +3,6 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCog, faShare, faTv } from "@fortawesome/free-solid-svg-icons";
 
-import { User } from "types/User";
-
 import { PosterVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
@@ -51,7 +49,11 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
         </div>
       </div>
       <div className="poster__content">
-        <iframe className="poster__iframe" src={venue.iframeUrl} />
+        <iframe
+          className="poster__iframe"
+          src={venue.iframeUrl}
+          title="poster-iframe"
+        />
         {videoParticipants}
         {hasFreeSpace && (
           <div className="poster__join-video-participants-btn">
