@@ -1,4 +1,4 @@
-import { format, formatDuration, isToday, isTomorrow } from "date-fns";
+import { format, formatDuration, formatRelative } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -104,7 +104,17 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
   event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
   ONE_HOUR_IN_SECONDS;
 
-// example: formatDate(1618509600) === 'Apr 15th'
+/**
+ * Format UTC seconds as a string representing date
+ *
+ * @example
+ *   formatDate(1618509600)
+ *   // 'Apr 15th'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatDate(utcSeconds: number) {
   return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
 }
@@ -113,7 +123,17 @@ export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
-// example: formatUtcSeconds(1618509600) === '9:00 PM'
+/**
+ * Format UTC seconds as a string representing time
+ *
+ * @example
+ *   formatUtcSeconds(1618509600)
+ *   // '9:00 PM'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds
     ? format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "p")
@@ -138,7 +158,17 @@ export function getDaysAgoInSeconds(days: number) {
   return getHoursAgoInSeconds(days * 24);
 }
 
-// example: formatHourAndMinute(1618509600) === '21:00'
+/**
+ * Format UTC seconds as a string representing time in the format hh:mm
+ *
+ * @example
+ *   formatHourAndMinute(1618509600)
+ *   // '21:00'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export const formatHourAndMinute = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const hh = String(date.getHours()).padStart(2, "0");
@@ -185,19 +215,35 @@ export const roundToNearestHour = (seconds: number) => {
   return Math.floor(seconds / oneHour) * oneHour;
 };
 
-// output: Mon..Sun
+/**
+ * Format UTC seconds as a string representing weekday abbreviation
+ *
+ * @example
+ *   formatDateToWeekday(1618509600)
+ *   // 'Thu'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatDateToWeekday(utcSeconds: number) {
   return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "E");
 }
 
-// output: Today|Tomorrow|Monday..Sunday
-export const formatToWeekdayFullname = (utcSeconds: number) => {
+/**
+ * Format UTC seconds as a string representing relative date
+ *
+ * @example
+ *   formatUtcSecondsRelativeToToday(1618509600)
+ *   // 'today at 9:00 PM'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/v2.21.1/docs/formatRelative
+ */
+export const formatUtcSecondsRelativeToToday = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  if (isToday(date)) {
-    return "Today";
-  } else if (isTomorrow(date)) {
-    return "Tomorrow";
-  } else return format(date, "EEEE");
+  return formatRelative(date, new Date());
 };
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {

@@ -9,7 +9,8 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
-import { formatToWeekdayFullname, formatUtcSeconds } from "utils/time";
+import { uppercaseFirstChar } from "utils/string";
+import { formatUtcSecondsRelativeToToday } from "utils/time";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 
 import { useWorldUsers } from "hooks/users";
@@ -26,6 +27,11 @@ import "./NavSearchBar.scss";
 type WithImageUrl<T extends object> = T & { image_url?: string };
 
 const emptyEventsArray: VenueEvent[] = [];
+
+const buildEventDescripiton = (startUtcSeconds: number) => {
+  const eventTime = formatUtcSecondsRelativeToToday(startUtcSeconds);
+  return `Event - ${uppercaseFirstChar(eventTime)}`;
+};
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,12 +105,6 @@ const NavSearchBar = () => {
       onClick={clearSearchQuery}
     />
   );
-
-  const buildEventDescripiton = (startUtcSeconds: number) => {
-    const weekDay = formatToWeekdayFullname(startUtcSeconds);
-    const time = formatUtcSeconds(startUtcSeconds);
-    return `Event - ${weekDay} at ${time}`;
-  };
 
   return (
     <div className="nav-search-links">
