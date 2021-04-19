@@ -203,8 +203,4 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
       background-color: rgba(0, 0, 0, 0);
     }
   }
-
-  @media (min-width: $large-laptop-width) {
-    min-width: initial;
-  }
 }
