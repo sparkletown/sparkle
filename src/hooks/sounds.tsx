@@ -22,9 +22,9 @@ import { fetchSoundConfigs } from "api/sounds";
 
 import { SoundConfigMap, SoundConfigReference } from "types/sounds";
 
-import { useUser } from "hooks/useUser";
-
 import { isDefined } from "utils/types";
+
+import { useUser } from "hooks/useUser";
 
 export type PlaySpriteFunction = (options?: PlaySpriteOptions) => void;
 export type PlaySpriteOptions = Omit<PlayOptions, "id">;
@@ -63,6 +63,7 @@ export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
     initialValue.soundConfigs
   );
   const [isLoading, setIsLoading] = useState<boolean>(initialValue.isLoading);
+
   const { user } = useUser();
   const userId = user?.uid;
 
