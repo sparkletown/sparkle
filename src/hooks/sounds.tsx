@@ -49,13 +49,13 @@ export const CustomSoundsContext = createContext<CustomSoundsState>(
   initialValue
 );
 
-export interface CustomSoundsProviderProps = {
+export interface CustomSoundsProviderProps {
   waitTillConfigLoaded?: boolean;
   loadingComponent?: React.ReactNode;
-};
+}
 
 export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
-  loadingComponent = 'Loading...',
+  loadingComponent = "Loading...",
   waitTillConfigLoaded = false,
   children,
 }) => {
@@ -84,13 +84,9 @@ export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
     [soundConfigs, isLoading]
   );
 
-  if (isLoading && waitTillConfigLoaded) {
-    return <>{loadingComponent}</>;
-  }
-
   return (
     <CustomSoundsContext.Provider value={providerData}>
-      {children}
+      {waitTillConfigLoaded && isLoading ? loadingComponent : children}
     </CustomSoundsContext.Provider>
   );
 };
