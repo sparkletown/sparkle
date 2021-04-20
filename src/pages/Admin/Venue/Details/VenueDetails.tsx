@@ -158,7 +158,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       ...values,
     };
 
-    await updateRoom(roomValues, venueId!, user, index);
+    await updateRoom(roomValues, venueId, user, index);
     closeEditingModal();
   };
 
