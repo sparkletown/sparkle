@@ -6,7 +6,11 @@ on:
     types:
       - opened
       - reopened
-      - edited
+      - synchronize
+      # Note: `edited` is required to have deploys made when the base branch is changed.. but it
+      # also occurs whenever the description/title/etc are changed. Keeping commented here for
+      # now, but I think we are probably fine without it.
+      #- edited
     branches:
       - staging
     paths:
