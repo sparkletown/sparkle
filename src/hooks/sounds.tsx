@@ -54,9 +54,9 @@ export interface CustomSoundsProviderProps = {
   loadingComponent?: React.ReactNode;
 };
 
-export const CustomSoundsProvider: React.FC<CustomSoundsType> = ({
-  loadingComponent,
-  waitTillConfigLoaded,
+export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
+  loadingComponent = 'Loading...',
+  waitTillConfigLoaded = false,
   children,
 }) => {
   const [soundConfigs, setSoundConfigs] = useState<SoundConfigMap>(
