@@ -199,7 +199,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
                 }`}
                 onClick={toggleEventSchedule}
               >
-                {navbarTitle} Schedule
+                {navbarTitle} <span className="schedule-text">Schedule</span>
               </div>
               <VenuePartygoers />
             </div>
