@@ -49,9 +49,9 @@ export const CustomSoundsContext = createContext<CustomSoundsState>(
   initialValue
 );
 
-export type CustomSoundsType = {
-  loadingComponent: React.ReactNode;
-  waitTillConfigLoaded: boolean;
+export interface CustomSoundsProviderProps = {
+  waitTillConfigLoaded?: boolean;
+  loadingComponent?: React.ReactNode;
 };
 
 export const CustomSoundsProvider: React.FC<CustomSoundsType> = ({
