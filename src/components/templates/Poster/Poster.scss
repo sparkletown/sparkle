@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 $poster-cell-optimal-width: 260px;
-$poster-cell-optimal-height: 145px;
+$poster-cell-optimal-height: 195px;
 $poster-grid-gap: 5px;
 
 .poster {
@@ -60,6 +60,12 @@ $poster-grid-gap: 5px;
 
     &:hover {
       opacity: 1;
+    }
+
+    &--stop {
+      background-color: $red;
+      color: $white;
+      opacity: 0.8;
     }
   }
 

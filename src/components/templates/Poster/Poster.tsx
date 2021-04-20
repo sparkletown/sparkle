@@ -1,19 +1,23 @@
-import { UserList } from "components/molecules/UserList";
-import React from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCog, faShare, faTv } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCog,
+  faShare,
+  faTv,
+  faStop,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { PosterVenue } from "types/venues";
 
-import { useRecentVenueUsers } from "hooks/users";
-
 import { VideoParticipant } from "components/organisms/Video";
+import { UserList } from "components/molecules/UserList";
 
 import { usePosterVideo } from "./usePosterVideo";
 
 import { WithId } from "utils/id";
 
 import "./Poster.scss";
+import Participant from "components/organisms/Room/Participant";
 
 const POSTER_CELL_COUNT_MAX = 10;
 
@@ -22,11 +26,17 @@ export interface PosterProps {
 }
 
 export const Poster: React.FC<PosterProps> = ({ venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const {
+    activeParticipants,
+    passiveListerens,
 
-  const { participants } = usePosterVideo(venue.id);
+    isMeActiveParticipant,
 
-  const videoParticipants = participants.map((participant) => (
+    turnVideoOff,
+    turnVideoOn,
+  } = usePosterVideo(venue.id);
+
+  const videoParticipants = activeParticipants.map((participant) => (
     <VideoParticipant
       participant={participant}
       additionalClassNames="poster__video-participant"
@@ -44,6 +54,15 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
           <div className="poster__categories" />
         </div>
         <div className="poster__header--right-cell">
+          {isMeActiveParticipant && (
+            <div
+              className="poster__control poster__control--stop"
+              onClick={turnVideoOff}
+            >
+              <FontAwesomeIcon icon={faStop} size="lg" />
+              <span className="poster__control-text">Stop video</span>
+            </div>
+          )}
           <div className="poster__control">
             <FontAwesomeIcon icon={faCog} size="lg" />
             <span className="poster__control-text">Settings</span>
@@ -65,15 +84,18 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
           title="poster-iframe"
         />
         {videoParticipants}
-        {hasFreeSpace && (
-          <div className="poster__join-video-participants-btn">
+        {hasFreeSpace && !isMeActiveParticipant && (
+          <div
+            className="poster__join-video-participants-btn"
+            onClick={turnVideoOn}
+          >
             Join with video
           </div>
         )}
       </div>
 
       <div className="poster__listeners">
-        <UserList users={recentVenueUsers} activity="listening" />
+        <UserList users={passiveListerens} activity="listening" />
       </div>
     </div>
   );

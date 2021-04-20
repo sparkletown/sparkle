@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {
+import React, { useEffect, useMemo, useState } from "react";
+import Video, {
   Room,
   Participant,
   connect,
@@ -10,6 +10,8 @@ import { useFirebase } from "react-redux-firebase";
 
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
+import { withId, WithId } from "utils/id";
+import { User } from "types/User";
 
 export const usePosterVideo = (venueId: string) => {
   const [room, setRoom] = useState<Room>();
@@ -18,38 +20,32 @@ export const usePosterVideo = (venueId: string) => {
     Array<LocalParticipant | RemoteParticipant>
   >([]);
 
+  const [hasVideo, setHasVideo] = useState(false);
+
   const { user, profile } = useUser();
   const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
+  const userId = user?.uid;
+
+  const localParticipant = room?.localParticipant;
+
   useEffect(() => {
     (async () => {
-      if (!user) return;
+      if (!userId) return;
 
       // @ts-ignore
       const getToken = firebase.functions().httpsCallable("video-getToken");
       const response = await getToken({
-        identity: user.uid,
+        identity: userId,
         room: venueId,
       });
       setToken(response.data.token);
     })();
-  }, [firebase, venueId, user]);
-
-  const connectToVideoRoom = () => {
-    if (!token) return;
-    setVideoError("");
-
-    connect(token, {
-      name: venueId,
-    }).then((room) => {
-      setRoom(room);
-    });
-  };
+  }, [firebase, venueId, userId]);
 
   useEffect(() => {
-    const localParticipant = room?.localParticipant;
     if (!localParticipant) return;
 
     setParticipants((prevParticipants) => [
@@ -59,12 +55,10 @@ export const usePosterVideo = (venueId: string) => {
       ),
       localParticipant,
     ]);
-  }, [room?.localParticipant]);
+  }, [localParticipant]);
 
   useEffect(() => {
     if (!token) return;
-
-    let localRoom: Room;
 
     const participantConnected = (participant: RemoteParticipant) => {
       setParticipants((prevParticipants) => [
@@ -79,26 +73,73 @@ export const usePosterVideo = (venueId: string) => {
       });
     };
 
-    connect(token, {
+    Video.connect(token, {
       name: venueId,
+      video: hasVideo,
     })
       .then((room) => {
         setRoom(room);
-        localRoom = room;
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
       })
       .catch((error) => setVideoError(error.message));
-  }, [venueId, token]);
+  }, [venueId, token, hasVideo]);
 
-  console.log({
-    token,
-    room,
-    participants,
-  });
+  const turnVideoOn = () => {
+    setHasVideo(true);
+  };
+
+  const turnVideoOff = () => {
+    setHasVideo(false);
+  };
+
+  const { passiveListerens, activeParticipants } = useMemo(
+    () =>
+      participants.reduce<{
+        passiveListerens: WithId<User>[];
+        activeParticipants: (RemoteParticipant | LocalParticipant)[];
+      }>(
+        (acc, participant) => {
+          if (participant.videoTracks.size === 0) {
+            return {
+              ...acc,
+              passiveListerens: [
+                ...acc.passiveListerens,
+                withId(
+                  worldUsersById[participant.identity],
+                  participant.identity
+                ),
+              ],
+            };
+          }
+
+          return {
+            ...acc,
+            activeParticipants: [...acc.activeParticipants, participant],
+          };
+        },
+        {
+          passiveListerens: [],
+          activeParticipants: [],
+        }
+      ),
+    [participants, worldUsersById]
+  );
+
+  const isMeActiveParticipant = !!activeParticipants.find(
+    (participant) => participant.identity === userId
+  );
+
+  console.log({ participants, activeParticipants, passiveListerens });
 
   return {
-    participants: [...participants],
+    activeParticipants,
+    passiveListerens,
+
+    isMeActiveParticipant,
+
+    turnVideoOn,
+    turnVideoOff,
   };
 };
