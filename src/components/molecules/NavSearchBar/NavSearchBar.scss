@@ -5,12 +5,12 @@
   position: relative;
   width: $search-results-width;
 
-  .input-field__input {
+  &__search-input {
     text-align: left;
     font-size: 0.9em;
   }
 
-  &__search-input {
+  &__search-input-container {
     z-index: z(navbar__search-input);
   }
 

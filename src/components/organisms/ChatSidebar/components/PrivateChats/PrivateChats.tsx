@@ -92,7 +92,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   return (
     <div className="private-chats">
       <InputField
-        className="private-chats__search"
+        containerClassName="private-chats__search"
         placeholder="Search for online people"
         value={userSearchQuery}
         onChange={onInputChange}

@@ -137,7 +137,8 @@ const NavSearchBar = () => {
   return (
     <div className="NavSearchBar">
       <InputField
-        className="NavSearchBar__search-input"
+        containerClassName="NavSearchBar__search-input-container"
+        inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
