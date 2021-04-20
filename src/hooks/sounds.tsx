@@ -72,7 +72,7 @@ export const CustomSoundsProvider: React.FC<CustomSoundsProviderProps> = ({
 
     setIsLoading(true);
     fetchSoundConfigs()
-      .then((soundConfigs) => setSoundConfigs(soundConfigs))
+      .then(setSoundConfigs)
       .finally(() => setIsLoading(false));
   }, [userId]);
 
