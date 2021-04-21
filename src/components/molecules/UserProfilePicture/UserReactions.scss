@@ -40,6 +40,8 @@ $shoutBounceTranslateXOffset: 50%;
     position: absolute;
     top: $reactionOffset;
 
+    z-index: z(user-reactions-emoji);
+
     // Note: emoji reactions are sized with font-size
     font-size: $reactionSize;
 
@@ -49,6 +51,8 @@ $shoutBounceTranslateXOffset: 50%;
   &__shout {
     position: absolute;
     bottom: 0;
+
+    z-index: z(user-reactions-shout);
 
     width: max-content;
     max-width: 20em;
