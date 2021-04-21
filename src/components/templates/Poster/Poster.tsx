@@ -6,6 +6,9 @@ import {
   faTv,
   faStop,
 } from "@fortawesome/free-solid-svg-icons";
+import { OverlayTrigger, Popover, InputGroup } from "react-bootstrap";
+
+import { setVenueLiveStatus } from "api/venue";
 
 import { PosterVenue } from "types/venues";
 
@@ -35,6 +38,14 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
     turnVideoOn,
   } = usePosterVideo(venue.id);
 
+  const setVenueLiveOn = () => {
+    setVenueLiveStatus(venue.id, true);
+  };
+
+  const setVenueLiveOff = () => {
+    setVenueLiveStatus(venue.id, false);
+  };
+
   const videoParticipants = activeParticipants.map((participant) => (
     <VideoParticipant
       participant={participant}
@@ -42,6 +53,10 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
       additionalClassNames="poster__video-participant"
     />
   ));
+
+  const isPosterLive = venue.isLive;
+
+  console.log(venue.isLive);
 
   const hasFreeSpace = videoParticipants.length < POSTER_CELL_COUNT_MAX;
 
@@ -63,10 +78,35 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
               <span className="poster__control-text">Stop video</span>
             </div>
           )}
-          <div className="poster__control">
-            <FontAwesomeIcon icon={faCog} size="lg" />
-            <span className="poster__control-text">Settings</span>
-          </div>
+          <OverlayTrigger
+            trigger="click"
+            placement="bottom-end"
+            overlay={
+              <Popover id="popover-basic" className="poster__settings-popover">
+                <Popover.Content className="poster__settings-popover-content">
+                  <div className="lock-table-checbox-indication">
+                    {isPosterLive ? "Poster is live" : "Make poster live"}
+                  </div>
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      className="switch-hidden-input"
+                      checked={!!isPosterLive}
+                      onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
+                    />
+                    <span className="slider" />
+                  </label>
+                </Popover.Content>
+              </Popover>
+            }
+            rootClose={true}
+          >
+            <div className="poster__control">
+              <FontAwesomeIcon icon={faCog} size="lg" />
+              <span className="poster__control-text">Settings</span>
+            </div>
+          </OverlayTrigger>
+
           <div className="poster__control">
             <FontAwesomeIcon icon={faShare} size="lg" />
             <span className="poster__control-text">Share</span>

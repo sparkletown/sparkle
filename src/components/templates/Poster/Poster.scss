@@ -69,6 +69,24 @@ $poster-grid-gap: 5px;
     }
   }
 
+  &__settings-popover {
+    height: 100px !important;
+  }
+
+  &__settings-popover-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+
+    .switch {
+      margin: 0;
+      margin-left: 10px;
+    }
+  }
+
   &__control-text {
     margin-top: 7px;
     font-size: 11px;

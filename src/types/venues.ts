@@ -169,6 +169,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showZendesk?: boolean;
   poster?: TPoster;
+  isLive?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

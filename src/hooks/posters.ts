@@ -10,12 +10,16 @@ export const usePosterFilters = () => {
 
   const [categoriesFilter, setCategoriesFilter] = useState<[]>();
 
+  const [isLiveFilter, setLiveFilter] = useState<boolean>(false);
+
   return {
     titleFilter,
     categoriesFilter,
+    isLiveFilter,
 
     setTitleFilter,
     setCategoriesFilter,
+    setLiveFilter,
   };
 };
 
@@ -40,11 +44,13 @@ export interface UsePostersProps {
   posterHallId: string;
   titleFilter?: string;
   categoriesFilter?: [];
+  isLiveFilter?: boolean;
 }
 
 export const usePosters = ({
   titleFilter = "",
   categoriesFilter = [],
+  isLiveFilter = false,
 }: UsePostersProps) => {
   useFirestoreConnect(() => {
     return [
@@ -69,6 +75,8 @@ export const usePosters = ({
       ) {
         return false;
       }
+
+      if (isLiveFilter && !venue.isLive) return false;
 
       return true;
       // if (categoriesFilter?.length > 0) {

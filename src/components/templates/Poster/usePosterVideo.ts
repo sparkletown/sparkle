@@ -124,8 +124,6 @@ export const usePosterVideo = (venueId: string) => {
     (participant) => participant.identity === userId
   );
 
-  console.log({ participants, activeParticipants, passiveListerens });
-
   return {
     activeParticipants,
     passiveListerens,

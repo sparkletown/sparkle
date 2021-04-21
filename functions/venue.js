@@ -826,6 +826,20 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   return user;
 });
 
+exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
+  console.log("setting venue live status");
+  const venueId = data.venueId;
+  checkAuth(context);
+  const doc = await admin.firestore().collection("venues").doc(venueId).get();
+
+  if (!doc || !doc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+  const updated = doc.data();
+  updated.isLive = data.isLive;
+  admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
   (updated &&
