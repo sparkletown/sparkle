@@ -1,5 +1,6 @@
 import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
+import { debounce } from "lodash";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -27,11 +28,17 @@ import "./NavSearchBar.scss";
 
 const emptyEventsArray: VenueEvent[] = [];
 
+const DEBOUNCE_TIME = 200;
+
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const onSearchInputChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) =>
-      setSearchQuery(e.target.value.toLowerCase()),
+
+  const debouncedSearch = useMemo(
+    () =>
+      debounce(
+        (str: string) => setSearchQuery(str.toLowerCase()),
+        DEBOUNCE_TIME
+      ),
     []
   );
 
@@ -150,7 +157,9 @@ const NavSearchBar = () => {
 
       <InputField
         inputClassName="NavSearchBar__search-input"
-        onChange={onSearchInputChange}
+        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+          debouncedSearch(e.target.value)
+        }
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
         iconStart={faSearch}
