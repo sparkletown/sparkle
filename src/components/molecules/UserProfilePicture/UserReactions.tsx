@@ -28,6 +28,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   user,
   isMuted: isMutedLocally = false,
   reactionPosition,
+  children,
 }) => {
   // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
   const isMutedGlobally = useSelector((state) => state.room.mute);
@@ -63,6 +64,8 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
 
   return (
     <div className={containerClasses}>
+      {children}
+
       {renderedEmojiReactions}
 
       {userShoutout && (

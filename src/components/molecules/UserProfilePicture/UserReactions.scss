@@ -1,15 +1,16 @@
 @import "scss/constants";
 
-// TODO: this was copied from Audience.scss (do we want to move the variable to constants?)
-$avatarSize: max(4vh, 3vw);
-
 // TODO: should we move these to using CSS --variables rather than these SCSS vars
-$reactionSize: calc(#{$avatarSize / 1.5});
+$reactionSize: max(2.5vh, 2vw);
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
-$shoutBounceTranslateXOffset: calc(#{$avatarSize} / 2);
+$shoutBounceTranslateXOffset: 50%;
 
 .UserReactions {
+  // Note: we need this to ensure the reactions use this container for their positioning
   position: relative;
+
+  width: fit-content;
+  height: fit-content;
 
   &--reaction-left {
     .UserReactions__reaction {
@@ -17,7 +18,7 @@ $shoutBounceTranslateXOffset: calc(#{$avatarSize} / 2);
     }
 
     .UserReactions__shout {
-      right: 0;
+      right: 50%;
       transform-origin: right center;
       animation: shout-bounce--left 5s ease;
     }
@@ -29,8 +30,8 @@ $shoutBounceTranslateXOffset: calc(#{$avatarSize} / 2);
     }
 
     .UserReactions__shout {
-      left: 0;
-      transform-origin: calc(#{$avatarSize} / 2) center;
+      left: 50%;
+      transform-origin: left center;
       animation: shout-bounce--right 5s ease;
     }
   }

@@ -107,17 +107,17 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           user={user}
           isMuted={isAudioEffectDisabled}
           reactionPosition={reactionPosition}
-        />
+        >
+          {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
+          <div
+            role="img"
+            aria-label={`${userDisplayName}'s avatar`}
+            className={avatarClasses}
+            style={avatarStyles}
+            onClick={openProfileModal}
+          />
+        </UserReactions>
       )}
-
-      {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
-      <div
-        role="img"
-        aria-label={`${userDisplayName}'s avatar`}
-        className={avatarClasses}
-        style={avatarStyles}
-        onClick={openProfileModal}
-      />
     </div>
   );
 };
