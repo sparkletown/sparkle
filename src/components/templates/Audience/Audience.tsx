@@ -74,7 +74,7 @@ const MIN_ROWS = 19;
 // Because both MIN_COLUMNS-1 and MIN_ROWS are both even, we don't need Math.floor to guarantee integer result..
 // And we always add row above&below and a column left&right
 // So auditorium size 1 has 1 extra outlined row and column around its outside versus auditorium size 0.
-// The same is true for auditoriumn size 2 - it has an extra row and column around it versus auditorium size 1.
+// The same is true for auditorium size 2 - it has an extra row and column around it versus auditorium size 1.
 
 // Example:
 
@@ -118,6 +118,7 @@ const capacity = (
   minRows: number
 ) =>
   (minColumns - 1 + auditoriumSize * 2) * (minRows + auditoriumSize * 2) * 0.75;
+
 // Never let the auditorium get more than 80% full
 const requiredAuditoriumSize = (
   occupants: number,
