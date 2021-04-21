@@ -90,6 +90,7 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
     <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
       {emojiText}
 
+      {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
       {!isMuted && (
         <audio autoPlay loop>
           <source src={audioPath} />
