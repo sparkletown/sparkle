@@ -44,6 +44,8 @@
     }
 
     &__title {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
       padding: 0 $search-result-padding--horizontal;
       opacity: 0.5;
     }

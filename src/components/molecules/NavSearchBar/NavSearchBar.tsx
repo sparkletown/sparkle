@@ -143,7 +143,7 @@ const NavSearchBar = () => {
   return (
     <div className="NavSearchBar">
       <div className={navDropdownClassnames}>
-        <div className="NavSearchBar__nav-dropdown__title mb--05 mt--05 font-size--small">
+        <div className="NavSearchBar__nav-dropdown__title font-size--small">
           <b className="NavSearchBar__search-results-number">
             {numberOfSearchResults}
           </b>{" "}
