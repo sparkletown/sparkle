@@ -99,8 +99,9 @@ const NavSearchBar = () => {
     return venueEvents
       .filter((event) => event.name.toLowerCase().includes(searchQuery))
       .map((event) => {
-        // @debt event can be related to the current venue as well but we don't receive its icon
-        const room = venue?.rooms?.find((room) => room.title === event.room);
+        const imageUrl =
+          venue?.rooms?.find((room) => room.title === event.room)?.image_url ??
+          venue?.host?.icon;
         return (
           <NavSearchResult
             key={`event-${event.id ?? event.name}`}
@@ -108,7 +109,7 @@ const NavSearchBar = () => {
             description={`Event - ${uppercaseFirstChar(
               formatUtcSecondsRelativeToToday(event.start_utc_seconds)
             )}`}
-            image={room?.image_url}
+            image={imageUrl}
           />
         );
       });
