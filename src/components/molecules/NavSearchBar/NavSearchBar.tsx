@@ -3,6 +3,8 @@ import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+import { DEFAULT_PARTY_NAME } from "settings";
+
 import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
 
@@ -47,17 +49,15 @@ const NavSearchBar = () => {
   const { openUserProfileModal } = useProfileModalControls();
 
   const foundRooms = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) {
-      return [];
-    }
+    if (!searchQuery) return [];
 
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
     return (
       venue?.rooms
         ?.filter(
           (room) =>
-            room.title.toLowerCase().includes(searchQuery) &&
-            room.type !== RoomTypes.unclickable
+            room.type !== RoomTypes.unclickable &&
+            room.title.toLowerCase().includes(searchQuery)
         )
         .map((room, index) => (
           <NavSearchResult
@@ -75,16 +75,14 @@ const NavSearchBar = () => {
   }, [searchQuery, venue, clearSearchQuery]);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) {
-      return [];
-    }
+    if (!searchQuery) return [];
 
     return worldUsers
       .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
       .map((user) => (
         <NavSearchResult
           key={`user-${user.id}`}
-          title={user.partyName as string}
+          title={user.partyName ?? DEFAULT_PARTY_NAME}
           image={user.pictureUrl}
           isAvatar={true}
           onClick={() => {
@@ -96,9 +94,7 @@ const NavSearchBar = () => {
   }, [searchQuery, worldUsers, clearSearchQuery, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) {
-      return [];
-    }
+    if (!searchQuery) return [];
 
     return venueEvents
       .filter((event) => event.name.toLowerCase().includes(searchQuery))
