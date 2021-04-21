@@ -136,16 +136,6 @@ const NavSearchBar = () => {
 
   return (
     <div className="NavSearchBar">
-      <InputField
-        containerClassName="NavSearchBar__search-input-container"
-        inputClassName="NavSearchBar__search-input"
-        onChange={onSearchInputChange}
-        placeholder="Search for people, rooms, events..."
-        autoComplete="off"
-        iconStart={faSearch}
-        iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
-      />
-
       <div className={navDropdownClassnames}>
         <div className="NavSearchBar__nav-dropdown__title mb--05 mt--05 font-size--small">
           <b className="NavSearchBar__search-results-number">
@@ -160,6 +150,15 @@ const NavSearchBar = () => {
           {foundUsers}
         </div>
       </div>
+
+      <InputField
+        inputClassName="NavSearchBar__search-input"
+        onChange={onSearchInputChange}
+        placeholder="Search for people, rooms, events..."
+        autoComplete="off"
+        iconStart={faSearch}
+        iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
+      />
 
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal

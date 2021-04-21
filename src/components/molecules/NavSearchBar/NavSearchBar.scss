@@ -10,10 +10,6 @@
     font-size: 0.9em;
   }
 
-  &__search-input-container {
-    z-index: z(navbar__search-input);
-  }
-
   &__clear-search {
     cursor: pointer;
     opacity: 0.4;
