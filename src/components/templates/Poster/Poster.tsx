@@ -6,7 +6,7 @@ import {
   faTv,
   faStop,
 } from "@fortawesome/free-solid-svg-icons";
-import { OverlayTrigger, Popover, InputGroup } from "react-bootstrap";
+import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { setVenueLiveStatus } from "api/venue";
 

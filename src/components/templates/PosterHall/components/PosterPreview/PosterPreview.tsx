@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 import { WithPoster } from "types/posters";
 import { PosterVenue } from "types/venues";
@@ -18,8 +19,12 @@ export const PosterPreview: React.FC<PosterProps> = ({
 }) => {
   const { title, pdfUrl, author, categories } = posterVenue.poster;
 
+  const posterClassnames = classNames("poster-preview", {
+    "poster-preview--live": posterVenue.isLive,
+  });
+
   return (
-    <div className="poster-preview" onClick={onClick}>
+    <div className={posterClassnames} onClick={onClick}>
       <div className="poster-preview__pdf">
         <iframe
           src={pdfUrl}

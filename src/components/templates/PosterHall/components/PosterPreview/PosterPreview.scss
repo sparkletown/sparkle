@@ -17,7 +17,11 @@
   cursor: pointer;
 
   &:hover {
-    background-color: $light-grey;
+    opacity: 0.8;
+  }
+
+  &--live {
+    background-color: $primary;
   }
 
   &__pdf {
