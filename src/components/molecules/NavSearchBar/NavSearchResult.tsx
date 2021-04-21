@@ -26,7 +26,10 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
   return (
     <div className="NavSearchResult font-size--small" onClick={onClick}>
       {isAvatar ? (
-        <UserAvatar avatarSrc={image} />
+        <UserAvatar
+          avatarSrc={image}
+          containerClassName="NavSearchResult__avatar"
+        />
       ) : (
         <div className="NavSearchResult__image" style={imageStyles} />
       )}
