@@ -116,7 +116,7 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
  * @see https://date-fns.org/docs/format
  */
 export function formatDate(utcSeconds: number) {
-  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "MMM do");
 }
 
 export function oneHourAfterTimestamp(timestamp: number) {
@@ -136,7 +136,7 @@ export function oneHourAfterTimestamp(timestamp: number) {
  */
 export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds
-    ? format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "p")
+    ? format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "p")
     : "(unknown)";
 }
 
@@ -166,12 +166,11 @@ export function getDaysAgoInSeconds(days: number) {
  *   // '21:00'
  *
  * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
  */
 export const formatHourAndMinute = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
 };
 
 export const daysFromEndOfEvent = (
@@ -198,9 +197,7 @@ export const daysFromStartOfEvent = (utcSeconds: number) => {
 };
 
 export const dateEventTimeFormat = (date: Date) => {
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
+  return format(date, "HH:mm");
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
@@ -225,7 +222,7 @@ export const roundToNearestHour = (seconds: number) => {
  * @see https://date-fns.org/docs/format
  */
 export function formatDateToWeekday(utcSeconds: number) {
-  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "E");
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "E");
 }
 
 /**
@@ -237,11 +234,10 @@ export function formatDateToWeekday(utcSeconds: number) {
  *
  * @param utcSeconds
  *
- * @see https://date-fns.org/v2.21.1/docs/formatRelative
+ * @see https://date-fns.org/docs/formatRelative
  */
 export const formatUtcSecondsRelativeToToday = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  return formatRelative(date, new Date());
+  return formatRelative(utcSeconds * ONE_SECOND_IN_MILLISECONDS, Date.now());
 };
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
