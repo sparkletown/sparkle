@@ -22,13 +22,14 @@ const randomAvatarUrl = (id: string) =>
   "/avatars/" +
   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
-// TODO: refactor this to accept named props instead of positional args
-const avatarUrl = (
-  id: string,
-  anonMode?: boolean,
-  pictureUrl?: string,
-  miniAvatars?: boolean
-): string => {
+export interface AvatarUrlProps {
+  user: WithId<User>;
+  miniAvatars?: boolean;
+}
+
+const avatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
+  const { id, anonMode, pictureUrl } = user;
+
   if (anonMode || !id) {
     return DEFAULT_PROFILE_IMAGE;
   }
@@ -72,13 +73,11 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   // TODO: I believe we only need this state to support the imageErrorHandler functionality.. can we just remove it?
   const [pictureUrl, setPictureUrl] = useState(
-    avatarUrl(user.id, user.anonMode, user.pictureUrl, miniAvatars)
+    avatarUrl({ user, miniAvatars })
   );
   useEffect(() => {
-    setPictureUrl(
-      avatarUrl(user.id, user.anonMode, user.pictureUrl, miniAvatars)
-    );
-  }, [miniAvatars, user.anonMode, user.id, user.pictureUrl]);
+    setPictureUrl(avatarUrl({ user, miniAvatars }));
+  }, [miniAvatars, user]);
 
   const openProfileModal = useCallback(() => openUserProfileModal(user), [
     openUserProfileModal,
