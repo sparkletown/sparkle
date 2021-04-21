@@ -4,22 +4,12 @@
 $avatarSize: max(4vh, 3vw);
 
 // TODO: should we move these to using CSS --variables rather than these SCSS vars
-$reactionContainerOffset: calc(-1 * #{$avatarSize});
 $reactionSize: calc(#{$avatarSize / 1.5});
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: calc(#{$avatarSize} / 2);
 
 .UserReactions {
   position: relative;
-
-  top: $reactionContainerOffset;
-
-  //width: $avatarSize;
-  //height: $avatarSize;
-
-  // TODO: remove this
-  background-color: rgba(255, 0, 0, 0.2);
-  border: 1px solid #f00;
 
   &--reaction-left {
     .UserReactions__reaction {

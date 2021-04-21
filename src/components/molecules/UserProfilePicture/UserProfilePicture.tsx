@@ -38,7 +38,7 @@ const avatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
     return pictureUrl;
   }
 
-  // TODO: how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
+  // @debt how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
   if (miniAvatars) {
     return randomAvatarUrl(id);
   }
@@ -101,15 +101,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className="UserProfilePicture" style={containerStyle}>
-      {/* TODO: can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
-      <div
-        role="img"
-        aria-label={`${userDisplayName}'s avatar`}
-        className={avatarClasses}
-        style={avatarStyles}
-        onClick={openProfileModal}
-      />
-
       {venueId && (
         <UserReactions
           venueId={venueId}
@@ -118,6 +109,15 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           reactionPosition={reactionPosition}
         />
       )}
+
+      {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
+      <div
+        role="img"
+        aria-label={`${userDisplayName}'s avatar`}
+        className={avatarClasses}
+        style={avatarStyles}
+        onClick={openProfileModal}
+      />
     </div>
   );
 };
