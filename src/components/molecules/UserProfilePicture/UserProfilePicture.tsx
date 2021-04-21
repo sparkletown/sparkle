@@ -14,7 +14,6 @@ import {
 
 import { User } from "types/User";
 
-import { useImage } from "./useImage";
 import { UserReactions } from "./UserReactions";
 
 import "./UserProfilePicture.scss";
@@ -77,10 +76,13 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     user,
   ]);
 
-  const { loadedImageUrl: pictureUrl } = useImage({
-    src: avatarUrl({ user, miniAvatars }),
-    fallbackSrc: () => randomAvatarUrl(user.id),
-  });
+  const pictureUrl = avatarUrl({ user, miniAvatars });
+  // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
+  //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
+  // const { loadedImageUrl: pictureUrl } = useImage({
+  //   src: avatarUrl({ user, miniAvatars }),
+  //   fallbackSrc: () => randomAvatarUrl(user.id),
+  // });
 
   const avatarClasses = classNames(
     "UserProfilePicture__avatar",
