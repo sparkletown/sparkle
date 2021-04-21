@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
 import { WithId } from "utils/id";
@@ -14,6 +14,7 @@ import {
 
 import { User } from "types/User";
 
+import { useImage } from "./useImage";
 import { UserReactions } from "./UserReactions";
 
 import "./UserProfilePicture.scss";
@@ -71,31 +72,15 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  // TODO: I believe we only need this state to support the imageErrorHandler functionality.. can we just remove it?
-  const [pictureUrl, setPictureUrl] = useState(
-    avatarUrl({ user, miniAvatars })
-  );
-  useEffect(() => {
-    setPictureUrl(avatarUrl({ user, miniAvatars }));
-  }, [miniAvatars, user]);
-
   const openProfileModal = useCallback(() => openUserProfileModal(user), [
     openUserProfileModal,
     user,
   ]);
 
-  // // TODO: extract this logic into a generic custom component + improve it?
-  // const imageErrorHandler = useCallback(
-  //   (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-  //     const randomAvatar = randomAvatarUrl(user.id);
-  //     setPictureUrl(randomAvatar);
-  //
-  //     // TODO: this isn't very reacty.. is it even needed..?
-  //     // event.currentTarget.onerror = null;
-  //     // event.currentTarget.src = randomAvatar;
-  //   },
-  //   [user.id]
-  // );
+  const { loadedImageUrl: pictureUrl } = useImage({
+    src: avatarUrl({ user, miniAvatars }),
+    fallbackSrc: () => randomAvatarUrl(user.id),
+  });
 
   const avatarClasses = classNames(
     "UserProfilePicture__avatar",
@@ -104,7 +89,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const avatarStyles = useMemo(
     () => ({
-      backgroundImage: `url(${pictureUrl})`,
+      backgroundImage: pictureUrl ? `url(${pictureUrl})` : undefined,
       ...avatarStyle,
     }),
     [avatarStyle, pictureUrl]
@@ -114,16 +99,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className="UserProfilePicture" style={containerStyle}>
-      {/* TODO: extract this logic into a generic custom component + improve it? Or just remove it entirely? */}
-      {/* Hidden image, used to handle error if image is not loaded */}
-      {/*<img*/}
-      {/*  src={pictureUrl}*/}
-      {/*  onError={(event) => imageErrorHandler(event)}*/}
-      {/*  hidden*/}
-      {/*  style={{ display: "none" }}*/}
-      {/*  alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}*/}
-      {/*/>*/}
-
       {/* TODO: can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
       <div
         role="img"
