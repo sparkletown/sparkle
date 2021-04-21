@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import {
   faEye,

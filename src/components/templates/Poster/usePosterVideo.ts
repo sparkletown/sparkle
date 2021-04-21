@@ -1,28 +1,23 @@
-import React, { useEffect, useMemo, useState } from "react";
-import Video, {
-  Room,
-  Participant,
-  connect,
-  LocalParticipant,
-  RemoteParticipant,
-} from "twilio-video";
+import { useEffect, useMemo, useState } from "react";
+import Video, { Room, LocalParticipant, RemoteParticipant } from "twilio-video";
 import { useFirebase } from "react-redux-firebase";
+
+import { withId, WithId } from "utils/id";
+
+import { User } from "types/User";
 
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
-import { withId, WithId } from "utils/id";
-import { User } from "types/User";
 
 export const usePosterVideo = (venueId: string) => {
   const [room, setRoom] = useState<Room>();
-  const [videoError, setVideoError] = useState<string>("");
   const [participants, setParticipants] = useState<
     Array<LocalParticipant | RemoteParticipant>
   >([]);
 
   const [hasVideo, setHasVideo] = useState(false);
 
-  const { user, profile } = useUser();
+  const { user } = useUser();
   const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
@@ -76,14 +71,12 @@ export const usePosterVideo = (venueId: string) => {
     Video.connect(token, {
       name: venueId,
       video: hasVideo,
-    })
-      .then((room) => {
-        setRoom(room);
-        room.on("participantConnected", participantConnected);
-        room.on("participantDisconnected", participantDisconnected);
-        room.participants.forEach(participantConnected);
-      })
-      .catch((error) => setVideoError(error.message));
+    }).then((room) => {
+      setRoom(room);
+      room.on("participantConnected", participantConnected);
+      room.on("participantDisconnected", participantDisconnected);
+      room.participants.forEach(participantConnected);
+    });
   }, [venueId, token, hasVideo]);
 
   const turnVideoOn = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCog,
@@ -17,7 +17,6 @@ import { usePosterVideo } from "./usePosterVideo";
 import { WithId } from "utils/id";
 
 import "./Poster.scss";
-import Participant from "components/organisms/Room/Participant";
 
 const POSTER_CELL_COUNT_MAX = 10;
 
@@ -39,6 +38,7 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
   const videoParticipants = activeParticipants.map((participant) => (
     <VideoParticipant
       participant={participant}
+      key={participant.identity}
       additionalClassNames="poster__video-participant"
     />
   ));
