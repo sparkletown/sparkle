@@ -18,6 +18,8 @@ export const useReactions = ({ venueId, user }: UseReactionsProps) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const firebase = useFirebase();
 
+  const userId = user?.id;
+
   useEffect(() => {
     if (!venueId) return;
 
@@ -50,7 +52,7 @@ export const useReactions = ({ venueId, user }: UseReactionsProps) => {
           // When we provide a user, if this reaction isn't by them, don't update our state
           // @debt This is an interim workaround to avoid creating the composite index mentioned above
           //   I feel like we can handle this in a better way by using our more standard patterns
-          if (user && !isReactionCreatedBy(user.id)(newReaction)) return;
+          if (userId && !isReactionCreatedBy(userId)(newReaction)) return;
 
           setReactions((prevReactions) => [...prevReactions, newReaction]);
 
@@ -66,7 +68,7 @@ export const useReactions = ({ venueId, user }: UseReactionsProps) => {
     return () => {
       unsubscribeListener();
     };
-  }, [firebase, setReactions, user, venueId]);
+  }, [firebase, setReactions, userId, venueId]);
 
   return reactions;
 };
