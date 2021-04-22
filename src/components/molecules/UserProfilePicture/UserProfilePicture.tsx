@@ -51,7 +51,6 @@ export interface UserProfilePictureProp {
   isAudioEffectDisabled?: boolean;
   miniAvatars?: boolean;
   avatarClassName?: string;
-  avatarStyle?: object;
   containerStyle?: object;
   reactionPosition?: "left" | "right";
 }
@@ -60,7 +59,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   miniAvatars = false,
   avatarClassName = "UserProfilePicture__avatar",
-  avatarStyle, // TODO: do we need this prop? Can we remove it? Or at least rename it? Only seems to be used in MapPartygoersOverlay
   containerStyle, // TODO: do we need this prop? Can we remove it? Or at least rename it? Only seems to be used in MapPartygoersOverlay
   reactionPosition = "right",
   user,
@@ -90,9 +88,8 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const avatarStyles = useMemo(
     () => ({
       backgroundImage: pictureUrl ? `url(${pictureUrl})` : undefined,
-      ...avatarStyle,
     }),
-    [avatarStyle, pictureUrl]
+    [pictureUrl]
   );
 
   const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;

@@ -48,25 +48,11 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
     [avatarHeight, avatarWidth, currentCol, currentRow]
   );
 
-  const pictureUrl = partygoer?.pictureUrl;
-  const avatarStyle = useMemo(
-    () => ({
-      width: "80%",
-      height: "80%",
-      borderRadius: "100%",
-      alignSelf: "center",
-      backgroundImage: `url(${pictureUrl})`,
-      backgroundSize: "cover",
-    }),
-    [pictureUrl]
-  );
-
   return (
     <UserProfilePicture
       user={partygoer}
       avatarClassName={`${isMe ? "me profile-avatar" : "profile-avatar"}`}
       containerStyle={containerStyle}
-      avatarStyle={avatarStyle}
       miniAvatars={withMiniAvatars}
     />
   );
