@@ -1,4 +1,5 @@
 import { ChatMessage } from "types/chat";
+import { isTruthy } from "utils/types";
 
 export enum EmojiReactionType {
   heart = "heart",
@@ -114,7 +115,7 @@ export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
 export const isBaseReaction = (r: unknown): r is BaseReaction =>
-  r && typeof r === "object" && r.hasOwnProperty("reaction");
+  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("reaction");
 
 export const isEmojiReaction = (r: unknown): r is EmojiReaction => {
   if (!isBaseReaction(r)) return false;
