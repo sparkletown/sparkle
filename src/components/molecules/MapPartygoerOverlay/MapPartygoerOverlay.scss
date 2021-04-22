@@ -1,13 +1,25 @@
 @import "scss/constants";
 
+$gridTotalRows: var(--map-partygoer-overlay-total-rows, 1);
+$gridTotalColumns: var(--map-partygoer-overlay-total-columns, 1);
+$row: var(--map-partygoer-overlay-row, 0);
+$column: var(--map-partygoer-overlay-column, 0);
+
+$avatarWidth: calc(100% / #{$gridTotalRows});
+$avatarHeight: calc(100% / #{$gridTotalColumns});
+$avatarTop: calc((#{$row} - 1) * #{$avatarWidth});
+$avatarLeft: calc((#{$column} - 1) * #{$avatarHeight});
+
 .MapPartygoerOverlay {
   &__avatar-container {
     position: absolute;
+    top: $avatarTop;
+    left: $avatarLeft;
+
+    width: $avatarWidth;
+    height: $avatarHeight;
 
     z-index: z(map-avatar);
-
-    display: flex;
-    justify-content: center;
 
     transition: all 1400ms cubic-bezier(0.23, 1, 0.32, 1);
   }

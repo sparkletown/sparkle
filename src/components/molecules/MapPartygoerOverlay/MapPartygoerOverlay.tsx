@@ -1,8 +1,10 @@
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
+import { useCss } from "react-use";
+
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { User } from "types/User";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -29,28 +31,28 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
   withMiniAvatars = false,
 }) => {
   const isMe = partygoer.id === myUserUid;
-  const position = partygoer?.data?.[venueId];
-  const currentRow = position?.row ?? 0;
-  const currentCol = position?.column ?? 0;
-  const avatarWidth = 100 / totalColumns;
-  const avatarHeight = 100 / totalRows;
 
-  const containerStyle = useMemo(
-    () => ({
-      width: `${avatarWidth}%`,
-      height: `${avatarHeight}%`,
-      top: `${avatarHeight * (currentRow - 1)}%`,
-      left: `${avatarWidth * (currentCol - 1)}%`,
-    }),
-    [avatarHeight, avatarWidth, currentCol, currentRow]
+  const { row = 0, column = 0 } = partygoer?.data?.[venueId] ?? {};
+
+  const containerVars = useCss({
+    "--map-partygoer-overlay-total-rows": totalRows,
+    "--map-partygoer-overlay-total-columns": totalColumns,
+    "--map-partygoer-overlay-row": row,
+    "--map-partygoer-overlay-column": column,
+  });
+
+  const containerClasses = classNames(
+    "MapPartygoerOverlay__avatar-container",
+    containerVars
   );
+
+  const avatarClasses = classNames({ "MapPartygoerOverlay__avatar--me": isMe });
 
   return (
     <UserProfilePicture
       user={partygoer}
-      containerClassName="MapPartygoerOverlay__avatar-container"
-      avatarClassName={classNames({ "MapPartygoerOverlay__avatar--me": isMe })}
-      containerStyle={containerStyle}
+      containerClassName={containerClasses}
+      avatarClassName={avatarClasses}
       miniAvatars={withMiniAvatars}
     />
   );
