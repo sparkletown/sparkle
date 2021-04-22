@@ -1,0 +1,48 @@
+@import "scss/constants";
+
+.pollbox {
+  &__form {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__section {
+    display: flex;
+    padding-bottom: 10px;
+  }
+
+  &__input {
+    // @debt Workaround to avoid styles set by src/scss/global.scss (fix this when when clean that up)
+    all: unset;
+    outline: none;
+    background-color: $saturated-black;
+    flex: 1;
+    cursor: pointer;
+    font-size: 0.9em;
+    padding: 12px 12px;
+    border-radius: 28px;
+    color: $white;
+  }
+
+  &__submit-button {
+    outline: none;
+    border: none;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+
+    background-color: $primary;
+
+    &:disabled {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__submit-button-icon {
+    color: $white;
+  }
+}

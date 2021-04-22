@@ -1,13 +1,11 @@
-import React, { useMemo, useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-
+import React, { useMemo, useState } from "react";
 import { MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
+import ChatMessageBox from "../ChatMessageBox";
+import PollBox from "../PollBox";
 
 import "./Chatbox.scss";
 
@@ -22,30 +20,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   deleteMessage,
 }) => {
-  const [isSendingMessage, setMessageSending] = useState(false);
-
-  // This logic dissallows users to spam into the chat. There should be a delay, between each message
-  useEffect(() => {
-    if (isSendingMessage) {
-      setTimeout(() => {
-        setMessageSending(false);
-      }, 500);
-    }
-  }, [isSendingMessage]);
-
-  const { register, handleSubmit, reset, watch } = useForm<{
-    message: string;
-  }>({
-    mode: "onSubmit",
-  });
-
-  const onSubmit = handleSubmit(({ message }) => {
-    setMessageSending(true);
-    sendMessage(message);
-    reset();
-  });
-
-  const chatValue = watch("message");
+  const [isOpenPoll, setOpenPoll] = useState(false);
 
   const renderedMessages = useMemo(
     () =>
@@ -62,26 +37,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   return (
     <div className="chatbox">
       <div className="chatbox__messages">{renderedMessages}</div>
-      <form className="chatbox__form" onSubmit={onSubmit}>
-        <input
-          className="chatbox__input"
-          ref={register({ required: true })}
-          name="message"
-          placeholder="Write your message..."
-          autoComplete="off"
-        ></input>
-        <button
-          className="chatbox__submit-button"
-          type="submit"
-          disabled={!chatValue || isSendingMessage}
-        >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
-      </form>
+      <div className="chatbox__container">
+        <div onClick={() => setOpenPoll(!isOpenPoll)}>
+          {!isOpenPoll ? "create poll" : "cancel poll"}
+        </div>
+        {!isOpenPoll && <ChatMessageBox sendMessage={sendMessage} />}
+        {isOpenPoll && <PollBox />}
+      </div>
     </div>
   );
 };
