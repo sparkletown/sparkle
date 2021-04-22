@@ -404,7 +404,11 @@ export const Audience: React.FunctionComponent = () => {
       <>
         <div
           className="audience-container"
-          style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
+          style={{
+            backgroundImage: venue.mapBackgroundImageUrl
+              ? `url(${venue.mapBackgroundImageUrl})`
+              : undefined,
+          }}
         >
           <div className="audience">
             <div className="audience-overlay">
