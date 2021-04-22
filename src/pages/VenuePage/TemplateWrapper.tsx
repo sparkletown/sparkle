@@ -3,6 +3,8 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
+import { WithId } from "utils/id";
+
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -22,7 +24,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -124,7 +126,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     // @debt remove backButton from Navbar
     <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
-      <AnnouncementMessage message={venue?.bannerMessage} />
+      <AnnouncementMessage message={venue.bannerMessage} />
       {template}
       <ChatSidebar />
       <UserProfileModal />
