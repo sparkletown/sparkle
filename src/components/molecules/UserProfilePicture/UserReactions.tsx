@@ -11,7 +11,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
-import { useReactions } from "hooks/useReactions";
+import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
 
 import "./UserReactions.scss";

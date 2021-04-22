@@ -5,7 +5,7 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { ReactionsProvider } from "hooks/useReactions";
+import { ReactionsProvider } from "hooks/reactions";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
