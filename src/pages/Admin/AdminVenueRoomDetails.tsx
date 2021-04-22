@@ -58,13 +58,13 @@ export const AdminVenueRoomDetails = ({
 
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
+
     try {
-      await upsertRoom(
-        { ...(room as RoomInput), isEnabled: newState },
-        venue.id,
-        user,
-        index
-      );
+      const roomValues: RoomInput = {
+        ...room,
+        isEnabled: newState,
+      };
+      await upsertRoom(roomValues, venue.id, user, index);
       history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
