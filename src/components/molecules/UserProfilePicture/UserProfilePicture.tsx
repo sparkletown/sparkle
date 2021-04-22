@@ -50,6 +50,7 @@ export interface UserProfilePictureProp {
   user: WithId<User>;
   isAudioEffectDisabled?: boolean;
   miniAvatars?: boolean;
+  containerClassName?: string;
   avatarClassName?: string;
   containerStyle?: object;
   reactionPosition?: "left" | "right";
@@ -58,7 +59,8 @@ export interface UserProfilePictureProp {
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   miniAvatars = false,
-  avatarClassName = "UserProfilePicture__avatar",
+  containerClassName,
+  avatarClassName,
   containerStyle, // TODO: do we need this prop? Can we remove it? Or at least rename it? Only seems to be used in MapPartygoersOverlay
   reactionPosition = "right",
   user,
@@ -80,6 +82,8 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   //   fallbackSrc: () => randomAvatarUrl(user.id),
   // });
 
+  const containerClasses = classNames("UserProfilePicture", containerClassName);
+
   const avatarClasses = classNames(
     "UserProfilePicture__avatar",
     avatarClassName
@@ -95,7 +99,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (
-    <div className="UserProfilePicture" style={containerStyle}>
+    <div className={containerClasses} style={containerStyle}>
       {venueId && (
         <UserReactions
           venueId={venueId}

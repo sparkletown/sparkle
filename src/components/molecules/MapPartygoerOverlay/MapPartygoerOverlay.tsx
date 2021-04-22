@@ -1,11 +1,14 @@
 import React, { useMemo } from "react";
+import classNames from "classnames";
 
 import { WithId } from "utils/id";
 import { User } from "types/User";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
-interface MapPartygoerOverlayProps {
+import "./MapPartygoerOverlay.scss";
+
+export interface MapPartygoerOverlayProps {
   partygoer: WithId<User>;
 
   venueId: string;
@@ -34,16 +37,10 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
 
   const containerStyle = useMemo(
     () => ({
-      display: "flex",
       width: `${avatarWidth}%`,
       height: `${avatarHeight}%`,
-      position: "absolute",
-      cursor: "pointer",
-      transition: "all 1400ms cubic-bezier(0.23, 1 ,0.32, 1)",
       top: `${avatarHeight * (currentRow - 1)}%`,
       left: `${avatarWidth * (currentCol - 1)}%`,
-      justifyContent: "center",
-      zIndex: "11",
     }),
     [avatarHeight, avatarWidth, currentCol, currentRow]
   );
@@ -51,7 +48,8 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
   return (
     <UserProfilePicture
       user={partygoer}
-      avatarClassName={`${isMe ? "me profile-avatar" : "profile-avatar"}`}
+      containerClassName="MapPartygoerOverlay__avatar-container"
+      avatarClassName={classNames({ "MapPartygoerOverlay__avatar--me": isMe })}
       containerStyle={containerStyle}
       miniAvatars={withMiniAvatars}
     />
