@@ -78,8 +78,8 @@ const mustBeMaximum = (fieldName: string, max: number) =>
 
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
-  .min(VENUE_NAME_MIN_CHAR_COUNT, ({ min }) => mustBeMinimum("Room name", min))
-  .max(VENUE_NAME_MAX_CHAR_COUNT, ({ max }) => mustBeMaximum("Room name", max));
+  .min(VENUE_NAME_MIN_CHAR_COUNT, ({ min }) => mustBeMinimum("Name", min))
+  .max(VENUE_NAME_MAX_CHAR_COUNT, ({ max }) => mustBeMaximum("Name", max));
 
 export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
