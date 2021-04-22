@@ -11,7 +11,7 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
-import { useReactions } from "hooks/useReactions";
+import { useReactionsLegacy } from "hooks/useReactions";
 import { useSelector } from "hooks/useSelector";
 
 import "./UserReactions.scss";
@@ -34,7 +34,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   const isMutedGlobally = useSelector((state) => state.room.mute);
   const isMuted = isMutedLocally || isMutedGlobally;
 
-  const userReactions = useReactions({ venueId, user });
+  const userReactions = useReactionsLegacy({ venueId, userId: user?.id });
 
   const { renderedEmojiReactions, userShoutout } = useMemo(() => {
     const userUniqueEmojiReactions = userReactions.reduce(

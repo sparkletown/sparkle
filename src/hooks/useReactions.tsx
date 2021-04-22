@@ -4,21 +4,19 @@ import { useFirebase } from "react-redux-firebase";
 import { REACTION_TIMEOUT } from "settings";
 
 import { isReactionCreatedBy, Reaction } from "types/reactions";
-import { User } from "types/User";
 
-import { WithId } from "utils/id";
-
-export interface UseReactionsProps {
+export interface UseReactionsLegacyProps {
   venueId?: string;
-  user?: WithId<User>;
+  userId?: string;
 }
 
 // @debt refactor this to use useConnect like in src/components/templates/ReactionPage/ReactionPage.tsx ?
-export const useReactions = ({ venueId, user }: UseReactionsProps) => {
+export const useReactionsLegacy = ({
+  venueId,
+  userId,
+}: UseReactionsLegacyProps) => {
   const [reactions, setReactions] = useState<Reaction[]>([]);
   const firebase = useFirebase();
-
-  const userId = user?.id;
 
   useEffect(() => {
     if (!venueId) return;
