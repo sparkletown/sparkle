@@ -76,7 +76,7 @@ const mustBeMinimum = (fieldName: string, min: number) =>
 const mustBeMaximum = (fieldName: string, max: number) =>
   `${fieldName} must be at least ${max} characters`;
 
-const roomTitleSchema = Yup.string()
+export const roomTitleSchema = Yup.string()
   .required("Room name is required")
   .min(VENUE_NAME_MIN_CHAR_COUNT, ({ min }) => mustBeMinimum("Name", min))
   .max(VENUE_NAME_MAX_CHAR_COUNT, ({ max }) => mustBeMaximum("Name", max));
