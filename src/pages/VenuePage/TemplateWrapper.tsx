@@ -5,6 +5,8 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { ReactionsProvider } from "hooks/useReactions";
+
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -125,12 +127,14 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     // @debt remove backButton from Navbar
-    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
-      <AnnouncementMessage message={venue.bannerMessage} />
-      {template}
-      <ChatSidebar />
-      <UserProfileModal />
-    </WithNavigationBar>
+    <ReactionsProvider venueId={venue.id}>
+      <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
+        <AnnouncementMessage message={venue.bannerMessage} />
+        {template}
+        <ChatSidebar />
+        <UserProfileModal />
+      </WithNavigationBar>
+    </ReactionsProvider>
   );
 };
 
