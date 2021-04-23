@@ -5,7 +5,6 @@ import classNames from "classnames";
 import { WithId } from "utils/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useVenueId } from "hooks/useVenueId";
 
 import {
   DEFAULT_PARTY_NAME,
@@ -64,8 +63,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   reactionPosition = "right",
   user,
 }) => {
-  const venueId = useVenueId();
-
   const { openUserProfileModal } = useProfileModalControls();
 
   const openProfileModal = useCallback(() => openUserProfileModal(user), [
@@ -99,22 +96,19 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   return (
     <div className={containerClasses}>
-      {venueId && (
-        <UserReactions
-          venueId={venueId}
-          user={user}
-          isMuted={isAudioEffectDisabled}
-          reactionPosition={reactionPosition}
-        >
-          {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
-          <div
-            role="img"
-            aria-label={`${userDisplayName}'s avatar`}
-            className={avatarClasses}
-            onClick={openProfileModal}
-          />
-        </UserReactions>
-      )}
+      <UserReactions
+        user={user}
+        isMuted={isAudioEffectDisabled}
+        reactionPosition={reactionPosition}
+      >
+        {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
+        <div
+          role="img"
+          aria-label={`${userDisplayName}'s avatar`}
+          className={avatarClasses}
+          onClick={openProfileModal}
+        />
+      </UserReactions>
     </div>
   );
 };

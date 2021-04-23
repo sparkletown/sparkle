@@ -17,14 +17,12 @@ import { useSelector } from "hooks/useSelector";
 import "./UserReactions.scss";
 
 export interface UserReactionsProps {
-  venueId: string;
   user: WithId<User>;
   isMuted?: boolean;
   reactionPosition?: "left" | "right";
 }
 
 export const UserReactions: React.FC<UserReactionsProps> = ({
-  venueId,
   user,
   isMuted: isMutedLocally = false,
   reactionPosition,
