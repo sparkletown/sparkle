@@ -19,9 +19,10 @@
     flex: 1;
     cursor: pointer;
     font-size: 0.9em;
-    padding: 12px 12px;
+    padding: 12px;
     border-radius: 28px;
     color: $white;
+    max-width: 285px;
   }
 
   &__submit-button {
@@ -42,7 +43,22 @@
     }
   }
 
-  &__submit-button-icon {
+  &__append-button {
+    outline: none;
+    border: none;
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  svg {
     color: $white;
   }
 }

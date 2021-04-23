@@ -2,9 +2,9 @@
 
 .ChatMessageBox {
   &__form {
-    height: 74px;
     display: flex;
     align-items: center;
+    padding-bottom: 5px;
   }
 
   &__input {

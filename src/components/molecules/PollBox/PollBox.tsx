@@ -70,11 +70,8 @@ export const PollBox: React.FC<PollBoxProps> = () => {
               ref={register(isRequired)}
             />
             {showAppend(index) && (
-              <button className="PollBox__submit-button" onClick={addChoice}>
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  className="PollBox__submit-button-icon"
-                />
+              <button className="PollBox__append-button" onClick={addChoice}>
+                <FontAwesomeIcon icon={faPlus} />
               </button>
             )}
           </section>
@@ -90,7 +87,7 @@ export const PollBox: React.FC<PollBoxProps> = () => {
           className="PollBox__input"
           ref={register(isRequired)}
           name="topic"
-          placeholder="Your topic..."
+          placeholder="Your question..."
           autoComplete="off"
         />
         <button
