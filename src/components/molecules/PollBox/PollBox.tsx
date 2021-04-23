@@ -59,40 +59,40 @@ export const PollBox: React.FC<PollBoxProps> = () => {
 
   return (
     <form className="PollBox" onSubmit={onSubmit}>
-      <section className="pollbox__section">
+      <section className="PollBox__section">
         <input
-          className="pollbox__input"
+          className="PollBox__input"
           ref={register(isRequired)}
           name="question"
           placeholder="Your question..."
           autoComplete="off"
         />
         <button
-          className="pollbox__submit-button"
+          className="PollBox__submit-button"
           type="submit"
           disabled={isDisabled}
         >
           <FontAwesomeIcon
             icon={faPaperPlane}
-            className="pollbox__submit-button-icon"
+            className="PollBox__submit-button-icon"
           />
         </button>
       </section>
       {fields.map((field, index) => {
         return (
-          <section className="pollbox__section" key={field.id}>
+          <section className="PollBox__section" key={field.id}>
             <input
-              className="pollbox__input"
+              className="PollBox__input"
               autoComplete="off"
               placeholder={`Choice ${index + 1}`}
               name={`choice.${index}.name`}
               ref={register(isRequired)}
             />
             {showAppend(index) && (
-              <button className="pollbox__submit-button" onClick={addChoice}>
+              <button className="PollBox__submit-button" onClick={addChoice}>
                 <FontAwesomeIcon
                   icon={faPlus}
-                  className="pollbox__submit-button-icon"
+                  className="PollBox__submit-button-icon"
                 />
               </button>
             )}

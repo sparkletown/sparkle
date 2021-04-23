@@ -1,1 +1,1 @@
-export { default } from "./PollBox";
+export { PollBox as default } from "./PollBox";
