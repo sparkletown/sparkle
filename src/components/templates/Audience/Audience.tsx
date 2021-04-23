@@ -327,7 +327,7 @@ export const Audience: React.FunctionComponent = () => {
       reset();
     };
 
-    if (!venue || !profile || !venueId) return <></>;
+    if (!venue || !userWithId || !venueId) return null;
 
     const userSeated =
       typeof userWithId.data?.[venueId]?.row === "number" &&
