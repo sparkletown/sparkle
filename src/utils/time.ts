@@ -15,7 +15,7 @@ export const ONE_HOUR_IN_MILLISECONDS =
 export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
 
 /**
- * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
+ * Convert totalSeconds to a Duration object (days, hours, minutes, seconds).
  *
  * @param totalSeconds
  *
@@ -105,7 +105,7 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
   ONE_HOUR_IN_SECONDS;
 
 /**
- * Format UTC seconds as a string representing date
+ * Format UTC seconds as a string representing date.
  *
  * @example
  *   formatDate(1618509600)
@@ -124,7 +124,7 @@ export function oneHourAfterTimestamp(timestamp: number) {
 }
 
 /**
- * Format UTC seconds as a string representing time
+ * Format UTC seconds as a string representing time.
  *
  * @example
  *   formatUtcSeconds(1618509600)
@@ -148,10 +148,6 @@ export function getHoursAgoInSeconds(hours: number) {
 export const getHoursAgoInMilliseconds = (hours: number) =>
   Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
-// @debt this is a duplicate of getCurrentTimeInUTCSeconds
-export const getCurrentTimeInUnixEpochSeconds = () =>
-  Date.now() / ONE_SECOND_IN_MILLISECONDS;
-
 export const getCurrentTimeInMilliseconds = () => Date.now();
 
 export function getDaysAgoInSeconds(days: number) {
@@ -159,7 +155,7 @@ export function getDaysAgoInSeconds(days: number) {
 }
 
 /**
- * Format UTC seconds as a string representing time in the format hh:mm
+ * Format UTC seconds as a string representing time in the format hh:mm.
  *
  * @example
  *   formatHourAndMinute(1618509600)
@@ -196,10 +192,6 @@ export const daysFromStartOfEvent = (utcSeconds: number) => {
   return Math.round(differenceInDays);
 };
 
-export const dateEventTimeFormat = (date: Date) => {
-  return format(date, "HH:mm");
-};
-
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
 //   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 export const getCurrentTimeInUTCSeconds = () =>
@@ -211,7 +203,7 @@ export const roundToNearestHour = (seconds: number) => {
 };
 
 /**
- * Format UTC seconds as a string representing weekday abbreviation
+ * Format UTC seconds as a string representing weekday abbreviation.
  *
  * @example
  *   formatDateToWeekday(1618509600)
@@ -226,17 +218,17 @@ export function formatDateToWeekday(utcSeconds: number) {
 }
 
 /**
- * Format UTC seconds as a string representing relative date
+ * Format UTC seconds as a string representing relative date from now.
  *
  * @example
- *   formatUtcSecondsRelativeToToday(1618509600)
+ *   formatUtcSecondsRelativeToNow(1618509600)
  *   // 'today at 9:00 PM'
  *
  * @param utcSeconds
  *
  * @see https://date-fns.org/docs/formatRelative
  */
-export const formatUtcSecondsRelativeToToday = (utcSeconds: number) => {
+export const formatUtcSecondsRelativeToNow = (utcSeconds: number) => {
   return formatRelative(utcSeconds * ONE_SECOND_IN_MILLISECONDS, Date.now());
 };
 

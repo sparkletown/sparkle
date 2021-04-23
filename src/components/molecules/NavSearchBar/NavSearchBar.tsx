@@ -11,7 +11,7 @@ import { Room, RoomTypes } from "types/rooms";
 
 import { isTruthy } from "utils/types";
 import { uppercaseFirstChar } from "utils/string";
-import { formatUtcSecondsRelativeToToday } from "utils/time";
+import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 
 import { useWorldUsers } from "hooks/users";
@@ -124,7 +124,7 @@ const NavSearchBar = () => {
             key={`event-${event.id ?? event.name}`}
             title={event.name}
             description={`Event - ${uppercaseFirstChar(
-              formatUtcSecondsRelativeToToday(event.start_utc_seconds)
+              formatUtcSecondsRelativeToNow(event.start_utc_seconds)
             )}`}
             image={imageUrl}
           />
