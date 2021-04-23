@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -19,9 +19,12 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
   isAvatar,
   onClick,
 }) => {
-  const imageStyles = {
-    backgroundImage: image ? `url(${image})` : undefined,
-  };
+  const imageStyles = useMemo(
+    () => ({
+      backgroundImage: image ? `url(${image})` : undefined,
+    }),
+    [image]
+  );
 
   return (
     <div className="NavSearchResult font-size--small" onClick={onClick}>
@@ -34,11 +37,9 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
         <div className="NavSearchResult__image" style={imageStyles} />
       )}
 
-      <div>
+      <div className="NavSearchResult__content">
         <div>{title}</div>
-        <div className="font-size--small NavSearchResult__description">
-          {description}
-        </div>
+        <div className="NavSearchResult__description">{description}</div>
       </div>
     </div>
   );
