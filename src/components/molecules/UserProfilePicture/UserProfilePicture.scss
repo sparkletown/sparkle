@@ -3,6 +3,8 @@
 // TODO: this was copied from Audience.scss (do we want to move the variable to constants?)
 $avatarSize: max(4vh, 3vw);
 
+$avatarUrl: var(--user-profile-picture-avatar-url, none);
+
 .UserProfilePicture {
   width: 100%;
   height: 100%;
@@ -14,9 +16,8 @@ $avatarSize: max(4vh, 3vw);
     width: $avatarSize;
     height: $avatarSize;
 
-    background-color: transparent;
-    // TODO: how can we use a default image here if none set? Can we use CSS --variables here? I think we could..
-    //background-image: url(${({ backgroundImage }) => backgroundImage ?? DEFAULT_PROFILE_IMAGE});
+    background-color: $black;
+    background-image: $avatarUrl;
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;

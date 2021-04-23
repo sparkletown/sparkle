@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 
 import { WithId } from "utils/id";
@@ -82,16 +83,16 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
 
   const containerClasses = classNames("UserProfilePicture", containerClassName);
 
+  const avatarVars = useCss({
+    "--user-profile-picture-avatar-url": pictureUrl
+      ? `url(${pictureUrl})`
+      : `url(${DEFAULT_PROFILE_IMAGE})`,
+  });
+
   const avatarClasses = classNames(
     "UserProfilePicture__avatar",
-    avatarClassName
-  );
-
-  const avatarStyles = useMemo(
-    () => ({
-      backgroundImage: pictureUrl ? `url(${pictureUrl})` : undefined,
-    }),
-    [pictureUrl]
+    avatarClassName,
+    avatarVars
   );
 
   const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
@@ -110,7 +111,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
             role="img"
             aria-label={`${userDisplayName}'s avatar`}
             className={avatarClasses}
-            style={avatarStyles}
             onClick={openProfileModal}
           />
         </UserReactions>
