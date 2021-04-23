@@ -11,7 +11,7 @@ import "./PrivateChatPreview.scss";
 export interface PrivateChatPreviewProps {
   message: PreviewChatMessageToDisplay;
   isOnline: boolean;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
@@ -23,13 +23,13 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 
   const timestamp = ts_utc.toMillis();
 
-  const containerStyles = classNames("chat-preview", {
+  const containerClasses = classNames("chat-preview", {
     "chat-preview--highlight": !isRead && !isMine,
   });
 
   return (
-    <div className={containerStyles} onClick={onClick}>
-      <UserAvatar avatarSrc={counterPartyUser.pictureUrl} isOnline={isOnline} />
+    <div className={containerClasses} onClick={onClick}>
+      <UserAvatar user={counterPartyUser} isOnline={isOnline} />
       <div className="chat-preview__content">
         <div className="chat-preview__username">
           {counterPartyUser.partyName}

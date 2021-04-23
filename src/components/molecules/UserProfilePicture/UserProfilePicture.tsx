@@ -23,12 +23,12 @@ const generateRandomAvatarUrl = (id: string) =>
   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
 export interface AvatarUrlProps {
-  user: WithId<User>;
+  user?: WithId<User>;
   miniAvatars?: boolean;
 }
 
 const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
-  const { id: userId, anonMode, pictureUrl } = user;
+  const { id: userId, anonMode, pictureUrl } = user ?? {};
 
   if (!userId || anonMode) {
     return DEFAULT_PROFILE_IMAGE;
@@ -47,7 +47,7 @@ const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
 };
 
 export interface UserProfilePictureProp {
-  user: WithId<User>;
+  user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
   miniAvatars?: boolean;
   containerClassName?: string;
@@ -56,12 +56,12 @@ export interface UserProfilePictureProp {
 }
 
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
+  user,
   isAudioEffectDisabled = true,
   miniAvatars = false,
   containerClassName,
   avatarClassName,
   reactionPosition = "right",
-  user,
 }) => {
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -92,23 +92,26 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     avatarVars
   );
 
-  const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+  const userDisplayName =
+    user === undefined || user?.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
 
   return (
     <div className={containerClasses}>
-      <UserReactions
-        user={user}
-        isMuted={isAudioEffectDisabled}
-        reactionPosition={reactionPosition}
-      >
-        {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
-        <div
-          role="img"
-          aria-label={`${userDisplayName}'s avatar`}
-          className={avatarClasses}
-          onClick={openProfileModal}
-        />
-      </UserReactions>
+      {user && (
+        <UserReactions
+          user={user}
+          isMuted={isAudioEffectDisabled}
+          reactionPosition={reactionPosition}
+        >
+          {/* @debt can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
+          <div
+            role="img"
+            aria-label={`${userDisplayName}'s avatar`}
+            className={avatarClasses}
+            onClick={openProfileModal}
+          />
+        </UserReactions>
+      )}
     </div>
   );
 };
