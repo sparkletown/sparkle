@@ -58,7 +58,7 @@ export const PollBox: React.FC<PollBoxProps> = () => {
   );
 
   return (
-    <form className="pollbox__form" onSubmit={onSubmit}>
+    <form className="PollBox" onSubmit={onSubmit}>
       <section className="pollbox__section">
         <input
           className="pollbox__input"
