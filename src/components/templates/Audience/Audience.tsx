@@ -437,6 +437,7 @@ export const Audience: React.FunctionComponent = () => {
               </div>
             </div>
 
+            {/* @debt can we refactor this to re-use useMapGrid, MapCell, usePartygoersOverlay, MapPartygoerOverlay, usePartygoersbySeat, etc? */}
             {Array.from(Array(rowsForSizedAuditorium)).map(
               (_, untranslatedRowIndex) => {
                 const row = translateRow(untranslatedRowIndex);
