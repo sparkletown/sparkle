@@ -3,7 +3,7 @@
 
 .NavSearchBar {
   position: relative;
-  width: $search-results-width;
+  width: $search-dropdown-width;
 
   &__search-input {
     text-align: left;
@@ -26,13 +26,13 @@
   &__nav-dropdown {
     position: fixed;
     top: 0;
-    width: $search-results-width;
-    max-height: $search-results-height--max;
+    width: $search-dropdown-width;
+    max-height: $search-dropdown-height--max;
     margin-top: $navbar-height;
     background-color: $saturated-black;
     box-shadow: box-shadow--large();
     border-radius: 0 0 $border-radius--input $border-radius--input;
-    transform: translateY(-$navbar-height - $search-results-height--empty);
+    transform: translateY(-$navbar-height - $search-dropdown-height--empty);
     transform-origin: top right;
     transition: all 400ms $transition-function;
     pointer-events: none;
@@ -58,6 +58,6 @@
   &__search-results {
     @include scrollbar;
     overflow-y: auto;
-    max-height: 385px;
+    max-height: $search-results-height--max;
   }
 }

@@ -30,18 +30,25 @@ import "./NavSearchBar.scss";
 
 const emptyEventsArray: VenueEvent[] = [];
 
-const DEBOUNCE_TIME = 200;
+const DEBOUNCE_TIME = 200; // ms
 
 const NavSearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
   const debouncedSearch = useMemo(
     () =>
-      debounce(
-        (str: string) => setSearchQuery(str.toLowerCase()),
-        DEBOUNCE_TIME
-      ),
+      debounce((value: string) => {
+        setSearchQuery(value.toLowerCase());
+      }, DEBOUNCE_TIME),
     []
+  );
+
+  const onSearchInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      debouncedSearch(value);
+    },
+    [debouncedSearch]
   );
 
   const clearSearchQuery = useCallback(() => {
@@ -111,6 +118,7 @@ const NavSearchBar = () => {
         const imageUrl =
           venue?.rooms?.find((room) => room.title === event.room)?.image_url ??
           venue?.host?.icon;
+
         return (
           <NavSearchResult
             key={`event-${event.id ?? event.name}`}
@@ -136,17 +144,21 @@ const NavSearchBar = () => {
     />
   );
 
-  const navDropdownClassnames = classNames("NavSearchBar__nav-dropdown", {
-    "NavSearchBar__nav-dropdown--show": searchQuery,
-  });
+  const navDropdownClassnames = useMemo(
+    () =>
+      classNames("NavSearchBar__nav-dropdown", {
+        "NavSearchBar__nav-dropdown--show": isTruthy(searchQuery),
+      }),
+    [searchQuery]
+  );
 
   return (
     <div className="NavSearchBar">
       <div className={navDropdownClassnames}>
         <div className="NavSearchBar__nav-dropdown__title font-size--small">
-          <b className="NavSearchBar__search-results-number">
+          <strong className="NavSearchBar__search-results-number">
             {numberOfSearchResults}
-          </b>{" "}
+          </strong>{" "}
           search results
         </div>
 
@@ -159,9 +171,7 @@ const NavSearchBar = () => {
 
       <InputField
         inputClassName="NavSearchBar__search-input"
-        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-          debouncedSearch(e.target.value)
-        }
+        onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
         iconStart={faSearch}
