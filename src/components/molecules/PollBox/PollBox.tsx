@@ -102,5 +102,3 @@ const PollBox: React.FC<PollBoxProps> = () => {
     </form>
   );
 };
-
-export default PollBox;
