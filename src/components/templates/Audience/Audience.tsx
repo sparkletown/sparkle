@@ -141,11 +141,10 @@ const burningReactions = EmojiReactions.filter(
 // Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
-  const { userWithId, profile } = useUser();
+  const { userId, userWithId } = useUser();
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const userUid = userWithId?.id;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
@@ -301,11 +300,11 @@ export const Audience: React.FunctionComponent = () => {
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     const takeSeat = (row: number | null, column: number | null) => {
-      if (!venueId || !userUid) return;
+      if (!venueId || !userId) return;
 
       makeUpdateUserGridLocation({
         venueId,
-        userUid,
+        userUid: userId,
       })(row, column);
     };
 
@@ -331,8 +330,8 @@ export const Audience: React.FunctionComponent = () => {
     if (!venue || !profile || !venueId) return <></>;
 
     const userSeated =
-      typeof profile.data?.[venueId]?.row === "number" &&
-      typeof profile.data?.[venueId]?.row === "number";
+      typeof userWithId.data?.[venueId]?.row === "number" &&
+      typeof userWithId.data?.[venueId]?.row === "number";
 
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
@@ -492,13 +491,12 @@ export const Audience: React.FunctionComponent = () => {
     );
   }, [
     venue,
-    profile,
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-    userUid,
+    userId,
     userWithId,
     dispatch,
     reset,
