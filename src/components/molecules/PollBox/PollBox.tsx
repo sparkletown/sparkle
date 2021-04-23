@@ -20,7 +20,7 @@ const defaultChoice: Choice = { name: "" };
 const isRequired = { required: true };
 const MAX_CHOICES_NUMBER: Number = 8;
 
-const PollBox: React.FC<PollBoxProps> = () => {
+export const PollBox: React.FC<PollBoxProps> = () => {
   const { register, control, handleSubmit, reset, watch } = useForm<FormValues>(
     {
       defaultValues: {
