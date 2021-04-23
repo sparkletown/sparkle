@@ -18,7 +18,7 @@ import { UserReactions } from "components/molecules/UserReactions";
 
 import "./UserProfilePicture.scss";
 
-const randomAvatarUrl = (id: string) =>
+const generateRandomAvatarUrl = (id: string) =>
   "/avatars/" +
   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
@@ -27,10 +27,10 @@ export interface AvatarUrlProps {
   miniAvatars?: boolean;
 }
 
-const avatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
-  const { id, anonMode, pictureUrl } = user;
+const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
+  const { id: userId, anonMode, pictureUrl } = user;
 
-  if (anonMode || !id) {
+  if (!userId || anonMode) {
     return DEFAULT_PROFILE_IMAGE;
   }
 
@@ -40,7 +40,7 @@ const avatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
 
   // @debt how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
   if (miniAvatars) {
-    return randomAvatarUrl(id);
+    return generateRandomAvatarUrl(userId);
   }
 
   return DEFAULT_PROFILE_IMAGE;
@@ -72,7 +72,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     user,
   ]);
 
-  const pictureUrl = avatarUrl({ user, miniAvatars });
+  const pictureUrl = getAvatarUrl({ user, miniAvatars });
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
   //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
   // const { loadedImageUrl: pictureUrl } = useImage({
