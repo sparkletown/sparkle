@@ -14,7 +14,7 @@ import {
 
 import { User } from "types/User";
 
-import { UserReactions } from "./UserReactions";
+import { UserReactions } from "components/molecules/UserReactions";
 
 import "./UserProfilePicture.scss";
 
