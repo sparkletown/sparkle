@@ -76,7 +76,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
             })}
           >
             {isEmojiReaction(message)
-              ? EmojiReactionsMap.get(message.reaction)?.text ?? null
+              ? EmojiReactionsMap.get(message.reaction)?.text
               : message.text}
           </div>
         </div>
