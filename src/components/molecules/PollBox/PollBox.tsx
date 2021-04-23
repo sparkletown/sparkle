@@ -2,37 +2,37 @@ import React, { useCallback, useMemo } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
-
+import { MAX_QUESTIONS_NUMBER } from "settings";
 import "./PollBox.scss";
 
 export interface PollBoxProps {}
 
-type Choice = {
+type Question = {
   name: string;
 };
 
 type FormValues = {
-  question: string;
-  choice: Choice[];
+  topic: string;
+  questions: Question[];
 };
 
-const defaultChoice: Choice = { name: "" };
+const defaultQuestion: Question = { name: "" };
+const defaultValues = {
+  topic: "",
+  questions: [defaultQuestion, defaultQuestion],
+};
 const isRequired = { required: true };
-const MAX_CHOICES_NUMBER: Number = 8;
 
 export const PollBox: React.FC<PollBoxProps> = () => {
   const { register, control, handleSubmit, reset, watch } = useForm<FormValues>(
     {
-      defaultValues: {
-        question: "",
-        choice: [defaultChoice, defaultChoice],
-      },
+      defaultValues,
       mode: "onSubmit",
     }
   );
 
   const { fields, append } = useFieldArray({
-    name: "choice",
+    name: "questions",
     control,
   });
 
@@ -41,20 +41,46 @@ export const PollBox: React.FC<PollBoxProps> = () => {
     reset();
   });
 
-  const addChoice = useCallback(() => append(defaultChoice), [append]);
+  const addChoice = useCallback(() => append(defaultQuestion), [append]);
   const showAppend = useCallback(
     (index) =>
-      index + 1 === fields.length && MAX_CHOICES_NUMBER > fields.length,
+      index + 1 === fields.length && MAX_QUESTIONS_NUMBER > fields.length,
     [fields]
   );
   const isDisabled = useMemo(
     () =>
       !(
-        watch("question") &&
-        watch("choice")[0].name &&
-        watch("choice")[1].name
+        watch("topic") &&
+        watch("questions")[0].name &&
+        watch("questions")[1].name
       ),
     [watch]
+  );
+
+  const renderChoiceFields = useMemo(
+    () =>
+      fields.map((field, index) => {
+        return (
+          <section className="PollBox__section" key={field.id}>
+            <input
+              className="PollBox__input"
+              autoComplete="off"
+              placeholder={`Choice ${index + 1}`}
+              name={`questions.${index}.name`}
+              ref={register(isRequired)}
+            />
+            {showAppend(index) && (
+              <button className="PollBox__submit-button" onClick={addChoice}>
+                <FontAwesomeIcon
+                  icon={faPlus}
+                  className="PollBox__submit-button-icon"
+                />
+              </button>
+            )}
+          </section>
+        );
+      }),
+    [addChoice, fields, register, showAppend]
   );
 
   return (
@@ -63,8 +89,8 @@ export const PollBox: React.FC<PollBoxProps> = () => {
         <input
           className="PollBox__input"
           ref={register(isRequired)}
-          name="question"
-          placeholder="Your question..."
+          name="topic"
+          placeholder="Your topic..."
           autoComplete="off"
         />
         <button
@@ -78,27 +104,7 @@ export const PollBox: React.FC<PollBoxProps> = () => {
           />
         </button>
       </section>
-      {fields.map((field, index) => {
-        return (
-          <section className="PollBox__section" key={field.id}>
-            <input
-              className="PollBox__input"
-              autoComplete="off"
-              placeholder={`Choice ${index + 1}`}
-              name={`choice.${index}.name`}
-              ref={register(isRequired)}
-            />
-            {showAppend(index) && (
-              <button className="PollBox__submit-button" onClick={addChoice}>
-                <FontAwesomeIcon
-                  icon={faPlus}
-                  className="PollBox__submit-button-icon"
-                />
-              </button>
-            )}
-          </section>
-        );
-      })}
+      {renderChoiceFields}
     </form>
   );
 };
