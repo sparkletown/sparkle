@@ -12,6 +12,9 @@ $shoutBounceTranslateXOffset: 50%;
   width: 100%;
   height: 100%;
 
+  // Ensure reactions are positioned 'on top' of the element rendered before it (eg. UserAvatar)
+  top: -100%;
+
   &--reaction-left {
     .UserReactions__reaction {
       left: $reactionOffset;
