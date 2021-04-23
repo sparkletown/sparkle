@@ -8,9 +8,10 @@ import { authSelector, profileSelector } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 
 type UseUserResult = {
-  user: FirebaseReducer.AuthState | undefined;
-  profile: FirebaseReducer.Profile<User> | undefined;
+  user?: FirebaseReducer.AuthState;
+  profile?: FirebaseReducer.Profile<User>;
   userWithId?: WithId<User>;
+  userId?: string;
 };
 
 export const useUser = (): UseUserResult => {
@@ -21,5 +22,6 @@ export const useUser = (): UseUserResult => {
     user: !auth.isEmpty ? auth : undefined,
     profile: !profile.isEmpty ? profile : undefined,
     userWithId: auth && profile ? { ...profile, id: auth.uid } : undefined,
+    userId: auth && profile ? auth.uid : undefined,
   };
 };
