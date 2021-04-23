@@ -166,8 +166,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
     }
 
     .seat,
-    .not-seat,
-    .profile-avatar {
+    .not-seat {
       display: flex;
       justify-content: center;
       align-items: center;

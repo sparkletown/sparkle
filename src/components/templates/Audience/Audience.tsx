@@ -464,17 +464,12 @@ export const Audience: React.FunctionComponent = () => {
                             }
                           >
                             {seat && seatedPartygoer && (
-                              <div className="user">
-                                <UserProfilePicture
-                                  user={seatedPartygoer}
-                                  reactionPosition={
-                                    isOnRight ? "left" : "right"
-                                  }
-                                  avatarClassName={"profile-avatar"}
-                                  miniAvatars={venue.miniAvatars}
-                                  isAudioEffectDisabled={isAudioEffectDisabled}
-                                />
-                              </div>
+                              <UserProfilePicture
+                                user={seatedPartygoer}
+                                reactionPosition={isOnRight ? "left" : "right"}
+                                miniAvatars={venue.miniAvatars}
+                                isAudioEffectDisabled={isAudioEffectDisabled}
+                              />
                             )}
                             {seat && !seatedPartygoer && <>+</>}
                           </div>

@@ -9,8 +9,8 @@ $shoutBounceTranslateXOffset: 50%;
   // Note: we need this to ensure the reactions use this container for their positioning
   position: relative;
 
-  width: fit-content;
-  height: fit-content;
+  width: 100%;
+  height: 100%;
 
   &--reaction-left {
     .UserReactions__reaction {

@@ -22,6 +22,7 @@ export interface MapPartygoerOverlayProps {
   withMiniAvatars?: boolean;
 }
 
+// @debt rename this something like MapAvatar?
 export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
   partygoer,
   venueId,
@@ -43,16 +44,14 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
 
   const containerClasses = classNames(
     "MapPartygoerOverlay__avatar-container",
-    containerVars
+    containerVars,
+    { "MapPartygoerOverlay__avatar--me": isMe }
   );
-
-  const avatarClasses = classNames({ "MapPartygoerOverlay__avatar--me": isMe });
 
   return (
     <UserProfilePicture
       user={partygoer}
       containerClassName={containerClasses}
-      avatarClassName={avatarClasses}
       miniAvatars={withMiniAvatars}
     />
   );

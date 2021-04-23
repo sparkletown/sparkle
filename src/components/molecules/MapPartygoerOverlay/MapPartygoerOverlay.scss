@@ -5,19 +5,16 @@ $gridTotalColumns: var(--map-partygoer-overlay-total-columns, 1);
 $row: var(--map-partygoer-overlay-row, 0);
 $column: var(--map-partygoer-overlay-column, 0);
 
-$avatarWidth: calc(100% / #{$gridTotalRows});
-$avatarHeight: calc(100% / #{$gridTotalColumns});
-$avatarTop: calc((#{$row} - 1) * #{$avatarWidth});
-$avatarLeft: calc((#{$column} - 1) * #{$avatarHeight});
+$gridCellWidth: calc(100% / #{$gridTotalRows});
+$gridCellHeight: calc(100% / #{$gridTotalColumns});
+$avatarTop: calc((#{$row} - 1) * #{$gridCellWidth});
+$avatarLeft: calc((#{$column} - 1) * #{$gridCellHeight});
 
 .MapPartygoerOverlay {
   &__avatar-container {
     position: absolute;
     top: $avatarTop;
     left: $avatarLeft;
-
-    width: $avatarWidth;
-    height: $avatarHeight;
 
     z-index: z(map-avatar);
 
