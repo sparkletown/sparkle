@@ -8,7 +8,7 @@ import { useSelector } from "hooks/useSelector";
 import VenueEventDetails from "pages/Admin/VenueEventDetails";
 import { Card } from "react-bootstrap";
 import { useUser } from "hooks/useUser";
-import { updateRoom } from "api/admin";
+import { RoomInput_v2, updateRoom } from "api/admin";
 import ToggleSwitch from "components/atoms/ToggleSwitch";
 
 const RoomCard: React.FC<RoomCardProps> = ({
@@ -47,12 +47,12 @@ const RoomCard: React.FC<RoomCardProps> = ({
   const handleRoomVisibilityChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const roomData = {
+    const roomValues: RoomInput_v2 = {
       ...room,
       isEnabled: e.target.checked,
     };
 
-    updateRoom(roomData, venueId, user, roomIndex);
+    updateRoom(roomValues, venueId, user, roomIndex);
   };
 
   return (

@@ -101,7 +101,7 @@ interface RoomInnerForm {
   editingRoomIndex?: number;
 }
 
-export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
+export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
@@ -134,14 +134,13 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   const [formError, setFormError] = useState(false);
 
   const onSubmit = useCallback(
-    async (vals: Partial<FormValues>) => {
+    async (vals: FormValues) => {
       if (!user) return;
 
       try {
         const roomValues: RoomInput = {
           ...editingRoom,
-          // @debt remove as, when properly implement room values
-          ...(vals as RoomInput),
+          ...vals,
         };
         await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`/admin/${venueId}`);
