@@ -3,9 +3,12 @@ import { useWindowSize } from "react-use";
 
 import { LARGE_SCREEN_WIDTH } from "settings";
 
+import { VenueTemplate } from "types/venues";
+
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
+  currentVenueSelectorData,
 } from "utils/selectors";
 
 import {
@@ -90,7 +93,12 @@ export const useChatSidebarInfo = () => {
 export const useChatSidebarPinned = () => {
   const dispatch = useDispatch();
   const { width } = useWindowSize();
-  const isPinned = useMemo(() => width > LARGE_SCREEN_WIDTH, [width]);
+  const venue = useSelector(currentVenueSelectorData);
+  const isPinned = useMemo(
+    () =>
+      width > LARGE_SCREEN_WIDTH && venue?.template !== VenueTemplate.audience,
+    [width, venue]
+  );
 
   useEffect(() => {
     if (isPinned) {

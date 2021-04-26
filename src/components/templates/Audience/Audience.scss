@@ -20,6 +20,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
   height: 100%;
   padding: $spacing;
   min-width: fit-content;
+  width: 100%;
 
   .audience-overlay {
     position: absolute;
