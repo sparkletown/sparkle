@@ -7,11 +7,11 @@ import "./PollBox.scss";
 
 export interface PollBoxProps {}
 
-type Question = {
+export type Question = {
   name: string;
 };
 
-type FormValues = {
+export type PollValues = {
   topic: string;
   questions: Question[];
 };
@@ -24,7 +24,7 @@ const defaultValues = {
 const isRequired = { required: true };
 
 export const PollBox: React.FC<PollBoxProps> = () => {
-  const { register, control, handleSubmit, reset, watch } = useForm<FormValues>(
+  const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
     {
       defaultValues,
       mode: "onSubmit",

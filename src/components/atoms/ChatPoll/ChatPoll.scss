@@ -1,0 +1,126 @@
+@import "scss/constants";
+
+$counterparty-text-border-radius: 28px 28px 28px 4px;
+$my-text-border-radius: 28px 28px 4px 28px;
+
+.poll {
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-bottom: 16px;
+  width: 100%;
+
+  &__topic {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__question {
+    display: block;
+    height: auto;
+    width: auto;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    font-weight: initial;
+    padding: 0;
+    margin-bottom: 16px;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__details {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    p {
+      margin: 0 10px 0 0;
+    }
+  }
+
+  &__container {
+    position: relative;
+    margin-bottom: 6px;
+    width: 100%;
+    border-radius: $counterparty-text-border-radius;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    background-color: $intermediate-grey;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+  }
+
+  &__author {
+    opacity: 0.8;
+    color: $white;
+    margin: 0 8px 0 4px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__time {
+    opacity: 0.6;
+    font-weight: 300;
+  }
+
+  &__icon {
+    position: absolute;
+    top: 10px;
+  }
+
+  &__delete-button {
+    margin-left: 10px;
+    height: auto;
+    width: auto;
+    background: none;
+    border: none;
+    color: #fff;
+    text-decoration: underline;
+    font-size: 14px;
+    font-weight: initial;
+    padding: 0;
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &--me {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    &__container {
+      background-color: $primary;
+    }
+
+    .poll__text {
+      text-align: right;
+      background-color: $primary;
+      border-radius: $my-text-border-radius;
+    }
+
+    .poll__info {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .poll__author {
+      margin: 0 4px 0 8px;
+    }
+  }
+}
