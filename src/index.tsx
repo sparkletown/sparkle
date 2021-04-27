@@ -169,6 +169,7 @@ if (BUGSNAG_API_KEY) {
     "env/memrise",
     "env/unesco",
     "env/ohbm",
+    "env/pa",
   ];
 
   const releaseStage = () => {
