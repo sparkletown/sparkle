@@ -32,6 +32,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
+  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
@@ -50,6 +51,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = <PartyMap />;
+      fullscreen = true;
       break;
 
     case VenueTemplate.artpiece:
@@ -59,6 +61,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PlayaRouter />;
+      fullscreen = true;
       break;
 
     case VenueTemplate.zoomroom:
@@ -90,6 +93,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Audience} />
         </Switch>
       );
+      fullscreen = true;
       break;
 
     case VenueTemplate.conversationspace:
@@ -98,6 +102,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.embeddable:
       template = <Embeddable venue={venue} />;
+      fullscreen = true;
       break;
 
     case VenueTemplate.firebarrel:
@@ -115,11 +120,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     default:
       // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
+      fullscreen = true;
   }
 
   return (
     // @debt remove backButton from Navbar
-    <WithNavigationBar fullscreen hasBackButton={hasBackButton}>
+    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
       <ChatSidebar venue={venue} />
