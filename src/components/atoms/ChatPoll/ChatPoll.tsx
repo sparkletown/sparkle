@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPollH } from "@fortawesome/free-solid-svg-icons";
+import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -65,7 +65,7 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
   return (
     <div className={containerStyles}>
       <div className="poll__container">
-        <FontAwesomeIcon className="poll__icon" icon={faPollH} size="lg" />
+        <FontAwesomeIcon className="poll__icon" icon={faPoll} size="lg" />
         <div className="poll__topic">{topic}</div>
         {isMine ? renderTexts : renderQuestions}
         <div className="poll__details">

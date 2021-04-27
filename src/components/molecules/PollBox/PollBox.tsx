@@ -57,6 +57,14 @@ export const PollBox: React.FC<PollBoxProps> = () => {
     [watch]
   );
 
+  const formatPlaceholder = useCallback(
+    (index) =>
+      index === 0
+        ? `Choice ${index + 1} (Max ${MAX_QUESTIONS_NUMBER} choices)`
+        : `Choice ${index + 1}`,
+    []
+  );
+
   const renderChoiceFields = useMemo(
     () =>
       fields.map((field, index) => {
@@ -65,7 +73,7 @@ export const PollBox: React.FC<PollBoxProps> = () => {
             <input
               className="PollBox__input"
               autoComplete="off"
-              placeholder={`Choice ${index + 1}`}
+              placeholder={formatPlaceholder(index)}
               name={`questions.${index}.name`}
               ref={register(isRequired)}
             />
@@ -77,7 +85,7 @@ export const PollBox: React.FC<PollBoxProps> = () => {
           </section>
         );
       }),
-    [addChoice, fields, register, showAppend]
+    [addChoice, fields, register, showAppend, formatPlaceholder]
   );
 
   return (
