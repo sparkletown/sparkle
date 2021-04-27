@@ -104,7 +104,7 @@ export const useChatSidebarPinned = () => {
     if (isPinned) {
       dispatch(setChatSidebarVisibility(true));
     }
-  }, [dispatch, isPinned, width]);
+  }, [dispatch, isPinned]);
 
   return {
     isPinned,
