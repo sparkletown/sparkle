@@ -6,8 +6,8 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
 .audience-container {
   // If you change the names of these properties, make sure to also change it in Audience.tsx's SEAT_SIZE / SEAT_SIZE_MIN
-  --seat-size: #{$seat-size};
-  --seat-size-min: #{$seat-size-min};
+  --seat-size: #{$avatarSize};
+  --seat-size-min: #{$avatarSizeMin};
 
   background-attachment: fixed;
   background-position: center 46%;

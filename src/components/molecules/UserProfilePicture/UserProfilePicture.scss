@@ -1,8 +1,5 @@
 @import "scss/constants.scss";
 
-// TODO: this was copied from Audience.scss (do we want to move the variable to constants?)
-$avatarSize: max(4vh, 3vw);
-
 $avatarUrl: var(--user-profile-picture-avatar-url, none);
 
 .UserProfilePicture {
