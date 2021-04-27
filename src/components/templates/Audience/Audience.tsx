@@ -34,7 +34,7 @@ interface ChatOutDataType {
   text: string;
 }
 
-// If you change this, make sure to also change it in Audience.scss's $seat-size
+// If you change the name of these properties, make sure to also change it in Audience.scss
 const SEAT_SIZE = "var(--seat-size)";
 const SEAT_SIZE_MIN = "var(--seat-size-min)";
 

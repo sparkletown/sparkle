@@ -1,7 +1,5 @@
 @import "scss/constants";
 
-// TODO: should we move these to using CSS --variables rather than these SCSS vars
-$reactionSize: max(2.5vh, 2vw);
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: 50%;
 $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
