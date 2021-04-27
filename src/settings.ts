@@ -554,3 +554,5 @@ export const REACTION_TIMEOUT = 5000; // time im ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+export const POSTER_CELL_COUNT_MAX = 10;

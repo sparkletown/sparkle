@@ -10,18 +10,18 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { setVenueLiveStatus } from "api/venue";
 
+import { POSTER_CELL_COUNT_MAX } from "settings";
+
 import { PosterVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
 
 import { usePosterVideo } from "./usePosterVideo";
 
-import { WithId } from "utils/id";
-
 import "./Poster.scss";
-
-const POSTER_CELL_COUNT_MAX = 10;
 
 export interface PosterProps {
   venue: WithId<PosterVenue>;
@@ -37,6 +37,8 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
     turnVideoOff,
     turnVideoOn,
   } = usePosterVideo(venue.id);
+
+  const isPosterLive = venue.isLive;
 
   const setVenueLiveOn = () => {
     setVenueLiveStatus(venue.id, true);
@@ -54,20 +56,18 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
     />
   ));
 
-  const isPosterLive = venue.isLive;
-
-  console.log(venue.isLive);
-
   const hasFreeSpace = videoParticipants.length < POSTER_CELL_COUNT_MAX;
 
   return (
     <div className="poster">
       <div className="poster__header">
         <div />
+
         <div className="poster__header--middle-cell">
-          <p className="poster__title">Very serious topic</p>
+          <p className="poster__title">{venue.title}</p>
           <div className="poster__categories" />
         </div>
+
         <div className="poster__header--right-cell">
           {isMeActiveParticipant && (
             <div
@@ -78,6 +78,7 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
               <span className="poster__control-text">Stop video</span>
             </div>
           )}
+
           <OverlayTrigger
             trigger="click"
             placement="bottom-end"
@@ -111,19 +112,23 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
             <FontAwesomeIcon icon={faShare} size="lg" />
             <span className="poster__control-text">Share</span>
           </div>
+
           <div className="poster__control">
             <FontAwesomeIcon icon={faTv} size="lg" />
             <span className="poster__control-text">Intro Video</span>
           </div>
         </div>
       </div>
+
       <div className="poster__content">
         <iframe
           className="poster__iframe"
           src={venue.iframeUrl}
           title="poster-iframe"
         />
+
         {videoParticipants}
+
         {hasFreeSpace && !isMeActiveParticipant && (
           <div
             className="poster__join-video-participants-btn"

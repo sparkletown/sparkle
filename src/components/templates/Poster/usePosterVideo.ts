@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import Video, { Room, LocalParticipant, RemoteParticipant } from "twilio-video";
-import { useFirebase } from "react-redux-firebase";
+import firebase from "firebase/app";
 
 import { withId, WithId } from "utils/id";
 
@@ -14,15 +14,11 @@ export const usePosterVideo = (venueId: string) => {
   const [participants, setParticipants] = useState<
     Array<LocalParticipant | RemoteParticipant>
   >([]);
-
+  const [token, setToken] = useState<string>();
   const [hasVideo, setHasVideo] = useState(false);
 
-  const { user } = useUser();
+  const { userId } = useUser();
   const { worldUsersById } = useWorldUsersById();
-  const [token, setToken] = useState<string>();
-  const firebase = useFirebase();
-
-  const userId = user?.uid;
 
   const localParticipant = room?.localParticipant;
 
@@ -30,7 +26,6 @@ export const usePosterVideo = (venueId: string) => {
     (async () => {
       if (!userId) return;
 
-      // @ts-ignore
       const getToken = firebase.functions().httpsCallable("video-getToken");
       const response = await getToken({
         identity: userId,
@@ -38,7 +33,7 @@ export const usePosterVideo = (venueId: string) => {
       });
       setToken(response.data.token);
     })();
-  }, [firebase, venueId, userId]);
+  }, [venueId, userId]);
 
   useEffect(() => {
     if (!localParticipant) return;
