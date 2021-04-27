@@ -1,11 +1,12 @@
 import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Purchase } from "types/Purchase";
+import { WithPoster } from "types/posters";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 

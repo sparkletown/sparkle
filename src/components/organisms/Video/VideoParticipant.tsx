@@ -21,7 +21,7 @@ import { isLocalParticipant } from "utils/twilio";
 
 import { useParticipantState } from "hooks/twilio";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./VideoParticipant.scss";
 

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { usePosterFilters, usePosters } from "hooks/posters";
+import { usePosters } from "hooks/posters";
 
 import { GenericVenue, PosterVenue } from "types/venues";
 
@@ -17,8 +17,6 @@ export interface PosterHallProps {
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
-  const { titleFilter, categoriesFilter, setTitleFilter } = usePosterFilters();
-
   const [chosenPosterVenue, setChosenPosterVenue] = useState<
     WithId<PosterVenue> | undefined
   >();
@@ -29,15 +27,24 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const hasChosenPosterVenue = chosenPosterVenue !== undefined;
 
-  const { posterVenues } = usePosters({
+  const {
+    posterVenues,
     titleFilter,
-    categoriesFilter,
+    setTitleFilter,
+    liveFilter,
+    setLiveFilter,
+  } = usePosters({
     posterHallId: venue.id,
   });
 
   return (
     <div className="posterhall">
-      <Search setTitleValue={setTitleFilter} titleValue={titleFilter} />
+      <Search
+        setTitleValue={setTitleFilter}
+        titleFilterValue={titleFilter}
+        liveFilterValue={liveFilter}
+        setLiveValue={setLiveFilter}
+      />
 
       <div className="posterhall__posters">
         {posterVenues?.map((posterVenue) => (

@@ -1,30 +1,41 @@
 import { useState } from "react";
+import { VenueTemplate } from "types/venues";
 
 import { posterVenuesSelector } from "utils/selectors";
 
-import { useFirestoreConnect } from "./useFirestoreConnect";
+import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
+
+export const useConnectPosters = (posterHallId: string) => {
+  useFirestoreConnect(() => {
+    return [
+      {
+        collection: "venues",
+        where: [
+          ["template", "==", VenueTemplate.poster],
+          ["parentId", "==", posterHallId],
+        ],
+        storeAs: "posterVenues",
+      },
+    ];
+  });
+};
 
 export const usePosterFilters = () => {
   const [titleFilter, setTitleFilter] = useState<string>();
 
-  const [categoriesFilter, setCategoriesFilter] = useState<[]>();
-
-  const [isLiveFilter, setLiveFilter] = useState<boolean>(false);
+  const [liveFilter, setLiveFilter] = useState<boolean>(false);
 
   return {
     titleFilter,
-    categoriesFilter,
-    isLiveFilter,
+    liveFilter,
 
     setTitleFilter,
-    setCategoriesFilter,
     setLiveFilter,
   };
 };
 
 export enum PosterFilterTypes {
-  CATEGORY = "category",
   TITLE = "title",
 }
 
@@ -33,58 +44,58 @@ export type TitlePosterFilter = {
   title: string;
 };
 
-export type CategoriesPosterFilter = {
-  type: PosterFilterTypes.CATEGORY;
-  categories: [];
-};
-
-export type PosterFilters = TitlePosterFilter | CategoriesPosterFilter;
+export type PosterFilters = TitlePosterFilter;
 
 export interface UsePostersProps {
   posterHallId: string;
   titleFilter?: string;
   categoriesFilter?: [];
-  isLiveFilter?: boolean;
+  liveFilter?: boolean;
 }
 
-export const usePosters = ({
-  titleFilter = "",
-  categoriesFilter = [],
-  isLiveFilter = false,
-}: UsePostersProps) => {
-  useFirestoreConnect(() => {
-    return [
-      {
-        collection: "venues",
-        // NOTE: This filters out all venues that don't have poster object defined
-        orderBy: ["poster", "asc"],
-        storeAs: "posterVenues",
-      },
-    ];
-  });
+export const usePosters = ({ posterHallId }: UsePostersProps) => {
+  useConnectPosters(posterHallId);
 
   const posterVenues = useSelector(posterVenuesSelector);
 
+  const {
+    titleFilter,
+    liveFilter,
+
+    setTitleFilter,
+    setLiveFilter,
+  } = usePosterFilters();
+
   return {
     posterVenues: posterVenues?.filter((venue) => {
-      const normalizedTitleFilter = titleFilter.toLowerCase().trim();
+      let isValid = true;
+      const normalizedTitleFilter = titleFilter?.toLowerCase().trim();
 
-      if (
-        normalizedTitleFilter &&
-        !venue.poster.title.toLowerCase().includes(normalizedTitleFilter)
-      ) {
-        return false;
+      if (normalizedTitleFilter) {
+        const {
+          title,
+          author: { name, institution },
+          categories,
+        } = venue.poster;
+        isValid =
+          isValid &&
+          (title.toLowerCase().includes(normalizedTitleFilter) ||
+            institution.toLowerCase().includes(normalizedTitleFilter) ||
+            name.toLowerCase().includes(normalizedTitleFilter) ||
+            categories?.some((category) =>
+              category.title.toLowerCase().includes(normalizedTitleFilter)
+            ));
       }
 
-      if (isLiveFilter && !venue.isLive) return false;
+      if (liveFilter) isValid = isValid && !!venue.isLive;
 
-      return true;
-      // if (categoriesFilter?.length > 0) {
-      //   categoriesFilter.every((category) =>
-      //     venue.poster.categories.includes(category)
-      //   );
-      // }
+      return isValid;
     }),
-    isPostersLoaded: true,
+    titleFilter,
+    liveFilter,
+
+    setTitleFilter,
+    setLiveFilter,
+    isPostersLoaded: isLoaded(posterVenues),
   };
 };
