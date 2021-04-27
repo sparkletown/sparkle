@@ -18,7 +18,7 @@ import { useSelector } from "hooks/useSelector";
 
 import "./UserReactions.scss";
 
-const REACTION_SHOUT_BOUNCE_TIME = `${
+const REACTION_TIMEOUT_CSS = `${
   REACTION_TIMEOUT / ONE_SECOND_IN_MILLISECONDS
 }s`;
 
@@ -64,7 +64,7 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   }, [isMuted, userReactions]);
 
   const containerVars = useCss({
-    "--user-reactions-shout-bounce-time": REACTION_SHOUT_BOUNCE_TIME,
+    "--user-reactions-reaction-timeout": REACTION_TIMEOUT_CSS,
   });
 
   const containerClasses = classNames(

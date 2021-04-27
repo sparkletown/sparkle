@@ -4,7 +4,7 @@
 $reactionSize: max(2.5vh, 2vw);
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: 50%;
-$shoutBounceTime: var(--user-reactions-shout-bounce-time, 5s);
+$reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
 
 .UserReactions {
   // Note: we need this to ensure the reactions use this container for their positioning
@@ -24,7 +24,7 @@ $shoutBounceTime: var(--user-reactions-shout-bounce-time, 5s);
     .UserReactions__shout {
       right: 50%;
       transform-origin: right center;
-      animation: shout-bounce--left $shoutBounceTime ease;
+      animation: shout-bounce--left $reactionTimeout ease;
     }
   }
 
@@ -36,7 +36,7 @@ $shoutBounceTime: var(--user-reactions-shout-bounce-time, 5s);
     .UserReactions__shout {
       left: 50%;
       transform-origin: left center;
-      animation: shout-bounce--right $shoutBounceTime ease;
+      animation: shout-bounce--right $reactionTimeout ease;
     }
   }
 
@@ -49,7 +49,7 @@ $shoutBounceTime: var(--user-reactions-shout-bounce-time, 5s);
     // Note: emoji reactions are sized with font-size
     font-size: $reactionSize;
 
-    animation: reaction-pulse 4s ease-in-out infinite;
+    animation: reaction-pulse $reactionTimeout ease-in-out infinite;
   }
 
   &__shout {
