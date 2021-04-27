@@ -240,7 +240,7 @@ $border-radius: 28px;
   position: relative;
   background-color: rgba($white, 0.08);
   height: 60px;
-  padding: 0 50px 0 10px;
+  padding: 0 50px 0 20px;
   text-align: center;
   cursor: pointer;
   display: flex;
@@ -250,7 +250,6 @@ $border-radius: 28px;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: transform 400ms $transition-function;
-  text-indent: 20px;
   img {
     height: 40px;
   }
@@ -281,6 +280,15 @@ $border-radius: 28px;
   &.slide {
     transform: translateX(110px);
   }
+}
+
+.schedule-text {
+  background-color: $primary;
+  border-radius: 10px;
+  margin-left: 8px;
+  padding: 0px 10px;
+  display: inline-block;
+  text-shadow: 0 2px 3px rgb(0 0 0 / 35%);
 }
 
 .schedule-dropdown-body {
@@ -547,5 +555,17 @@ $border-radius: 28px;
         }
       }
     }
+  }
+}
+
+@media (max-width: 600px) {
+  .schedule-text {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .nav-search-links {
+    display: none;
   }
 }

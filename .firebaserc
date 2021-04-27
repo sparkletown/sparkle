@@ -19,7 +19,8 @@
     "kotr": "sparkle-kotr",
     "memrise": "sparkle-memrise",
     "unesco": "sparkle-unesco",
-    "ohbm": "sparkle-ohbm"
+    "ohbm": "sparkle-ohbm",
+    "sparkle-pa": "sparkle-pa"
   },
   "targets": {
     "co-reality-map": {
@@ -165,6 +166,13 @@
       "hosting": {
         "sparkle-ohbm": [
           "sparkle-ohbm"
+        ]
+      }
+    },
+    "sparkle-pa": {
+      "hosting": {
+        "sparkle-pa": [
+          "sparkle-pa"
         ]
       }
     }
