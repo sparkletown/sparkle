@@ -2,12 +2,13 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
 
+import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
+import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -18,7 +19,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -161,11 +161,11 @@ export const reactionsSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.reactions;
 
 export const messagesToTheBandSelector: SparkleSelector<
-  WithId<MessageToTheBandReaction>[] | undefined
+  WithId<TextReaction>[] | undefined
 > = (state) =>
   reactionsSelector(state)?.filter(
-    (reaction): reaction is WithId<MessageToTheBandReaction> =>
-      reaction.reaction === "messageToTheBand"
+    (reaction): reaction is WithId<TextReaction> =>
+      reaction.reaction === TextReactionType
   );
 
 export const venueSelector = (state: RootState) =>
