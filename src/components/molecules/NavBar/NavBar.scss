@@ -211,7 +211,7 @@ $border-radius: 28px;
       background-image: url(/icons/sparkle-nav-logo-text.png);
       background-size: 108px 35px;
       transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      transition: opacity 200ms, transform 400ms $transition-function;
     }
     @keyframes sparklelogoanimate {
       100% {
@@ -249,7 +249,7 @@ $border-radius: 28px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: transform 400ms $transition-function;
   img {
     height: 40px;
   }
@@ -270,7 +270,7 @@ $border-radius: 28px;
     background-size: 20px;
     opacity: 0.4;
     transform: rotate(0deg);
-    transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 400ms $transition-function;
   }
   &.clicked {
     &:after {
@@ -309,7 +309,7 @@ $border-radius: 28px;
   transform: translateY(-800px);
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 400ms $transition-function;
 
   &.show {
     pointer-events: all;
@@ -333,7 +333,7 @@ $border-radius: 28px;
         border-radius: 46px;
         margin-right: 20px;
         cursor: pointer;
-        transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+        transition: all 400ms $transition-function;
         box-shadow: 0 8px 16px rgba($black, 0.3);
         &:hover {
           transform: scale(1.1);
@@ -367,6 +367,7 @@ $border-radius: 28px;
       position: fixed;
     }
     .schedule-day-container {
+      @include scrollbar;
       position: absolute;
       width: 100%;
       top: 70px;
@@ -376,22 +377,6 @@ $border-radius: 28px;
 
       .schedule-event-container {
         border-radius: $border-radius/2;
-      }
-
-      // styling scrollbar
-      &::-webkit-scrollbar-track {
-        border-radius: 3px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar {
-        width: 8px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        border-radius: 4px;
-        background-color: rgba($white, 0.1);
       }
     }
   }
@@ -406,8 +391,8 @@ $border-radius: 28px;
   height: 100%;
   background-color: rgba($black, 0.8);
   cursor: pointer;
-  transition: opacity 600ms cubic-bezier(0.23, 1, 0.32, 1),
-    transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 600ms $transition-function,
+    transform 600ms $transition-function;
   opacity: 0;
   pointer-events: none;
 
@@ -452,20 +437,8 @@ $border-radius: 28px;
 }
 
 .schedule-container {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
+  @include scrollbar;
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.1);
-  }
   .schedule-tabs {
     li {
       display: inline;

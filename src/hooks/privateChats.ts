@@ -153,7 +153,7 @@ export const useRecipientChat = (recipientId: string) => {
   const { user } = useUser();
 
   const userId = user?.uid;
-  const recipient = worldUsersById[recipientId];
+  const recipient = withId(worldUsersById[recipientId], recipientId);
 
   const sendMessageToSelectedRecipient = useCallback(
     (text: string) => {

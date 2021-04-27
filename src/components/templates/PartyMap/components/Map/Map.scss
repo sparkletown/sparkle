@@ -105,14 +105,6 @@ $border-radius: 28px;
       opacity: 0.025;
       background-color: $white;
     }
-
-    .profile-avatar {
-      background-size: cover;
-      background-position: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 100%;
-    }
   }
 
   .not-seat {
@@ -156,11 +148,6 @@ $border-radius: 28px;
       background-color: $primary;
       box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
     }
-  }
-
-  .me {
-    box-shadow: 0 0 0 5px $primary;
-    animation: avatarpulse 2s infinite;
   }
 
   .chat-drawer-container {

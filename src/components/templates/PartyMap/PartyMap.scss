@@ -26,24 +26,10 @@
 }
 
 body {
+  @include scrollbar;
+
   &.no-scroll {
     overflow: hidden;
-  }
-  // styling scrollbar
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.1);
   }
 
   &.modal-open {
