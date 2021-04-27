@@ -13,6 +13,7 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
   bartender,
   defaultMute = false,
   showIcon = true,
+  isAudioEffectDisabled,
 }) => {
   const [muted, setMuted] = useState(defaultMute);
 
@@ -39,6 +40,7 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
       profileDataId={profileDataId}
       bartender={bartender}
       showIcon={showIcon}
+      isAudioEffectDisabled={isAudioEffectDisabled}
     >
       <div className="mute-container">
         <div onClick={() => setMuted(!muted)} id="mute-person">

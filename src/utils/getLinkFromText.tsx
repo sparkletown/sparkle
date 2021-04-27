@@ -1,9 +1,12 @@
 import React from "react";
 
+import { isExternalUrl, getExtraLinkProps } from "./url";
+
 export const getLinkFromText = (text: string) => {
   const urlRegex = /[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/g;
   return text.split(" ").map((word, index) => {
-    if (new RegExp(urlRegex).test(word))
+    if (new RegExp(urlRegex).test(word)) {
+      const extraProps = getExtraLinkProps(isExternalUrl(word));
       return (
         <a
           href={
@@ -15,10 +18,13 @@ export const getLinkFromText = (text: string) => {
               : `https://${word}`
           }
           key={index}
+          {...extraProps}
         >
           {word}{" "}
         </a>
       );
-    else return <span key={index}>{word} </span>;
+    } else {
+      return <React.Fragment key={index}>{word} </React.Fragment>;
+    }
   });
 };

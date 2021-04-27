@@ -13,8 +13,8 @@ import { PartyMapVenue } from "types/venues";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { hasElements, isTruthy } from "utils/types";
-import { makeRoomHitFilter } from "utils/filter";
+import { hasElements } from "utils/types";
+import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { setLocationData } from "utils/userLocation";
 
@@ -25,10 +25,6 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useMapGrid } from "./hooks/useMapGrid";
 import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
-
-import UserProfileModal from "components/organisms/UserProfileModal";
-
-import Sidebar from "components/molecules/Sidebar";
 
 import { MapRoom } from "./MapRoom";
 
@@ -156,6 +152,9 @@ export const Map: React.FC<MapProps> = ({
     }
   }, [roomsHit, selectRoom, unselectRoom]);
 
+  // @debt It seems seatedPartygoer is only passed in here so we don't try and take an already occupied seat
+  //  Instead of threading this all the way down into useMapGrid -> MapCell, can we just close over partygoersBySeat here,
+  //  and/or handle it in a better way?
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
@@ -180,17 +179,6 @@ export const Map: React.FC<MapProps> = ({
     takeSeat,
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
-  const deselectUserProfile = useCallback(
-    () => setSelectedUserProfile(undefined),
-    []
-  );
-
-  const isUserProfileSelected = isTruthy(selectedUserProfile);
-
   const mapGrid = useMapGrid({
     showGrid,
     userUid,
@@ -209,19 +197,20 @@ export const Map: React.FC<MapProps> = ({
     rows: totalRows,
     columns: totalColumns,
     partygoers: recentVenueUsers,
-    setSelectedUserProfile,
   });
 
   const roomOverlay = useMemo(
     () =>
-      venue.rooms?.map((room) => (
-        <MapRoom
-          key={room.title}
-          venue={venue}
-          room={room}
-          selectRoom={() => selectRoom(room)}
-        />
-      )),
+      venue?.rooms
+        ?.filter(filterEnabledRooms)
+        .map((room) => (
+          <MapRoom
+            key={room.title}
+            venue={venue}
+            room={room}
+            selectRoom={() => selectRoom(room)}
+          />
+        )),
     [selectRoom, venue]
   );
 
@@ -238,32 +227,20 @@ export const Map: React.FC<MapProps> = ({
   }
 
   return (
-    <div className="party-map-content-container">
-      <div className="party-map-container">
-        <div className="party-map-content">
-          <img
-            width="100%"
-            className="party-map-background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
-            alt=""
-          />
+    <div className="party-map-map-component">
+      <div className="party-map-map-content">
+        <img
+          width="100%"
+          className="party-map-background"
+          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          alt=""
+        />
 
-          <div className="party-map-grid-container" style={gridContainerStyles}>
-            {mapGrid}
-            {partygoersOverlay}
-            {roomOverlay}
-          </div>
-
-          <UserProfileModal
-            userProfile={selectedUserProfile}
-            show={isUserProfileSelected}
-            onHide={deselectUserProfile}
-          />
+        <div className="party-map-grid-container" style={gridContainerStyles}>
+          {mapGrid}
+          {partygoersOverlay}
+          {roomOverlay}
         </div>
-      </div>
-
-      <div className="sidebar">
-        <Sidebar />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import { Room } from "types/rooms";
 import { WithId } from "utils/id";
 
@@ -17,7 +17,7 @@ import "./Admin.scss";
 
 interface Props {
   index: number;
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   room: Room;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
@@ -58,13 +58,13 @@ export const AdminVenueRoomDetails = ({
 
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
+
     try {
-      await upsertRoom(
-        { ...(room as RoomInput), isEnabled: newState },
-        venue.id,
-        user,
-        index
-      );
+      const roomValues: RoomInput = {
+        ...room,
+        isEnabled: newState,
+      };
+      await upsertRoom(roomValues, venue.id, user, index);
       history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {

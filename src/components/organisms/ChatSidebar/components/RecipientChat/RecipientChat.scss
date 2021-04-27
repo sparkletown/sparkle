@@ -1,0 +1,43 @@
+@import "scss/constants";
+
+.recipient-chat {
+  height: 100%;
+  width: 100%;
+  position: relative;
+
+  &__breadcrumbs {
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 45px;
+    background-color: $almost-black;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    z-index: z(recipient-chat-breadcrumbs);
+    padding: 0 8px;
+    cursor: pointer;
+  }
+
+  &__back-icon {
+    cursor: pointer;
+    margin-right: 8px;
+    opacity: 0.8;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__nickname {
+    cursor: pointer;
+    margin-left: 6px;
+    color: $white;
+    font-size: 0.8rem;
+    font-weight: 500;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}

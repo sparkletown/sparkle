@@ -10,7 +10,7 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { PartyMapVenue, Venue } from "types/venues";
+import { PartyMapVenue, AnyVenue } from "types/venues";
 import { useHistory } from "react-router-dom";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -50,7 +50,7 @@ export const RoomsForm: React.FC = () => {
 
       if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as Venue;
+      const data = venueSnapshot.data() as AnyVenue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
@@ -101,7 +101,7 @@ interface RoomInnerForm {
   editingRoomIndex?: number;
 }
 
-export type FormValues = Partial<Yup.InferType<typeof validationSchema>>;
+export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
@@ -134,10 +134,15 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
   const [formError, setFormError] = useState(false);
 
   const onSubmit = useCallback(
-    async (vals: Partial<FormValues>) => {
+    async (vals: FormValues) => {
       if (!user) return;
+
       try {
-        await upsertRoom(vals as RoomInput, venueId, user, editingRoomIndex);
+        const roomValues: RoomInput = {
+          ...editingRoom,
+          ...vals,
+        };
+        await upsertRoom(roomValues, venueId, user, editingRoomIndex);
         history.push(`/admin/${venueId}`);
       } catch (e) {
         setFormError(true);
@@ -150,7 +155,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
         });
       }
     },
-    [user, history, venueId, editingRoomIndex]
+    [user, history, venueId, editingRoomIndex, editingRoom]
   );
 
   useEffect(() => {

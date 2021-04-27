@@ -6,11 +6,9 @@ import { AnyVenue } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
 import { venueEventsSelector } from "utils/selectors";
-import {
-  getCurrentTimeInUnixEpochSeconds,
-  ONE_MINUTE_IN_SECONDS,
-} from "utils/time";
+import { getCurrentTimeInUTCSeconds, ONE_MINUTE_IN_SECONDS } from "utils/time";
 
+import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
@@ -39,7 +37,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   venue,
 }) => (
   <Modal show={show} onHide={onHide}>
-    <div className="container room-modal-container">
+    <div className="room-modal">
       {room && venue && <RoomModalContent room={room} venueName={venue.name} />}
     </div>
   </Modal>
@@ -53,6 +51,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
+  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
+    interrupt: true,
+    onend: enterRoom,
+  });
+
   const roomEvents = useMemo(
     () =>
       venueEvents.filter(
@@ -60,48 +63,52 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
           event.room === room.title &&
           event.start_utc_seconds +
             event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-            getCurrentTimeInUnixEpochSeconds()
+            getCurrentTimeInUTCSeconds()
       ),
     [room, venueEvents]
   );
 
-  const currentEvent = roomEvents && getCurrentEvent(roomEvents);
+  const currentEvent = getCurrentEvent(roomEvents);
+
+  const renderedRoomEvents = useMemo(
+    () =>
+      roomEvents.map((event, index: number) => (
+        <ScheduleItem
+          // @debt Ideally event.id would always be a unique identifier, but our types suggest it
+          //   can be undefined. Because we can't use index as a key by itself (as that is unstable
+          //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
+          //   is far less likely to clash
+          key={event.id ?? `${event.room}-${event.name}-${index}`}
+          event={event}
+          isCurrentEvent={currentEvent && event.name === currentEvent.name}
+          onRoomEnter={enterRoomWithSound}
+          roomUrl={room.url}
+        />
+      )),
+    [currentEvent, enterRoomWithSound, room.url, roomEvents]
+  );
+
+  const hasRoomEvents = renderedRoomEvents?.length > 0;
+
+  const iconStyles = {
+    backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
+  };
 
   return (
     <>
-      <div className="room-description">
-        <div className="title-container">
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              flexWrap: "wrap",
-              marginTop: 10,
-            }}
-          >
-            <h2 className="room-modal-title">{room.title}</h2>
-            <div className="room-modal-subtitle">{room.subtitle}</div>
-          </div>
+      <h2>{room.title}</h2>
 
-          <div className="row ongoing-event-row">
-            <div className="col">
-              {room.image_url && (
-                <img
-                  src={room.image_url}
-                  className="room-page-image"
-                  alt={room.title}
-                />
-              )}
-              {!room.image_url && room.title}
-            </div>
-            <div className="col">
-              <RoomModalOngoingEvent
-                roomEvents={roomEvents}
-                onRoomEnter={enterRoom}
-              />
-            </div>
-          </div>
-        </div>
+      {room.subtitle && (
+        <div className="room-modal__title">{room.subtitle}</div>
+      )}
+
+      <div className="room-modal__main">
+        <div className="room-modal__icon" style={iconStyles} />
+
+        <RoomModalOngoingEvent
+          roomEvents={roomEvents}
+          onRoomEnter={enterRoomWithSound}
+        />
       </div>
 
       <UserList
@@ -111,30 +118,17 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         attendanceBoost={room.attendanceBoost}
       />
 
-      {room.about && <div className="about-this-room">{room.about}</div>}
+      {room.about && (
+        <div className="room-modal__description">{room.about}</div>
+      )}
 
-      <div className="row">
-        {roomEvents && roomEvents.length > 0 && (
-          <div className="col schedule-container">
-            <div className="schedule-title">Room Schedule</div>
-            {roomEvents.map((event, index: number) => (
-              <ScheduleItem
-                // @debt Ideally event.id would always be a unique identifier, but our types suggest it
-                //   can be undefined. Because we can't use index as a key by itself (as that is unstable
-                //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
-                //   is far less likely to clash
-                key={event.id ?? `${event.room}-${event.name}-${index}`}
-                event={event}
-                isCurrentEvent={
-                  currentEvent && event.name === currentEvent.name
-                }
-                onRoomEnter={enterRoom}
-                roomUrl={room.url}
-              />
-            ))}
-          </div>
-        )}
-      </div>
+      {hasRoomEvents && (
+        <div className="room-modal__events">
+          <div className="room-modal__title">Room Schedule</div>
+
+          {renderedRoomEvents}
+        </div>
+      )}
     </>
   );
 };

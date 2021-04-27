@@ -1,25 +1,27 @@
-@import "scss/constants.scss";
+@import "scss/constants";
+
 $sand: #937c63;
 $white: #ffffff;
 $border-radius: 28px;
 
-.party-map-content-container {
+.party-map-map-component {
   display: flex;
   flex-direction: row;
-  margin-top: 20;
 
-  .party-map-container {
-    width: 80%;
+  .party-map-map-content {
+    display: flex;
+    position: relative;
+    box-sizing: content-box;
 
-    .party-map-content {
-      flex: 1;
-      display: flex;
-      margin: 20px auto 20px auto;
-    }
+    flex: 1;
+    margin: 20px;
+
+    width: calc(100% - 300px);
   }
 
-  .sidebar {
-    width: 20%;
+  .party-map-map-sidebar {
+    min-width: $map-sidebar-width;
+    box-shadow: 0 0 60px 10px rgba(0, 0, 0, 0.8);
   }
 }
 
@@ -29,6 +31,7 @@ $border-radius: 28px;
 }
 
 .party-map-background {
+  z-index: z(map-background);
   border-radius: 15px;
   height: 100%;
 }
@@ -40,7 +43,8 @@ $border-radius: 28px;
 
 .party-map-grid-container {
   position: absolute;
-  width: 80%;
+  width: 100%;
+  height: 100%;
   display: grid;
 
   &:before {
@@ -55,6 +59,7 @@ $border-radius: 28px;
   .seat-column {
     width: 100%;
     height: 100%;
+    z-index: z(map-grid);
   }
 
   .seat-row {
@@ -105,14 +110,6 @@ $border-radius: 28px;
       opacity: 0.025;
       background-color: $white;
     }
-
-    .profile-avatar {
-      background-size: cover;
-      background-position: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 100%;
-    }
   }
 
   .not-seat {
@@ -158,11 +155,6 @@ $border-radius: 28px;
     }
   }
 
-  .me {
-    box-shadow: 0 0 0 5px $primary;
-    animation: avatarpulse 2s infinite;
-  }
-
   .chat-drawer-container {
     position: fixed;
     display: flex;
@@ -186,7 +178,7 @@ $border-radius: 28px;
   position: fixed;
   top: 70px;
   left: 0px;
-  z-index: 2;
+  z-index: z(left-column);
 }
 
 .info-drawer-camp {

@@ -1,7 +1,12 @@
 notify-on-fail: &notify-on-fail
   when:
-    condition: always
+    condition: on_fail
     steps:
+      - run:
+          command: |
+            if [ -z "$SLACK_ACCESS_TOKEN" ]; then
+              circleci-agent step halt
+            fi
       - slack/notify:
           event: fail
           custom: |
@@ -129,6 +134,21 @@ jobs:
             if [ $CIRCLE_BRANCH = "deloitte" ]; then
               ENV=sparkle-deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              ENV=sparkle-kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              ENV=sparkle-memrise
+            fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              ENV=sparkle-unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              ENV=sparkle-ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              ENV=sparkle-pa
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -233,6 +253,36 @@ jobs:
               TARGET=sparkle-deloitte
               RELEASE_STAGE=deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              PREFIX=KOTR_
+              ENV=sparkle-kotr
+              TARGET=sparkle-kotr
+              RELEASE_STAGE=env/kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              PREFIX=MEMRISE_
+              ENV=sparkle-memrise
+              TARGET=sparkle-memrise
+              RELEASE_STAGE=env/memrise
+            fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              PREFIX=UNESCO_
+              ENV=sparkle-unesco
+              TARGET=sparkle-unesco
+              RELEASE_STAGE=env/unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              PREFIX=OHBM_
+              ENV=sparkle-ohbm
+              TARGET=sparkle-ohbm
+              RELEASE_STAGE=env/ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              PREFIX=PA_
+              ENV=sparkle-pa
+              TARGET=sparkle-pa
+              RELEASE_STAGE=env/pa
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -286,6 +336,11 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -307,6 +362,11 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

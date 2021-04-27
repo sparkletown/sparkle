@@ -1,9 +1,11 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "index";
-import { VENUE_CHAT_AGE_DAYS } from "settings";
 
+import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
+import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -17,7 +19,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { getDaysAgoInSeconds, roundToNearestHour } from "./time";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -140,34 +141,32 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
-const DAYS_AGO = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-const HIDE_BEFORE = roundToNearestHour(DAYS_AGO);
+export const venueChatMessagesSelector: SparkleSelector<
+  WithId<VenueChatMessage>[] | undefined
+> = (state) => state.firestore.ordered.venueChatMessages;
 
-export const unreadMessagesSelector = (state: RootState) => {
-  const user = authSelector(state);
-  const privateChats = privateChatsSelector(state) ?? [];
+export const privateChatMessagesSelector: SparkleSelector<
+  WithId<PrivateChatMessage>[] | undefined
+> = (state) => state.firestore.ordered.privateChatMessages;
 
-  return privateChats.some(
-    (message) =>
-      message.from !== user?.uid &&
-      message.deleted !== true &&
-      message.type === "private" &&
-      message.ts_utc.seconds > HIDE_BEFORE &&
-      message.isRead === false
-  );
-};
+export const chatUsersByIdSelector: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.chatUsers;
 
-export const venueChatsSelector = (state: RootState) =>
-  state.firestore.ordered.venueChats;
-
-export const privateChatsSelector = (state: RootState) =>
-  state.firestore.ordered.privatechats;
-
-export const chatUsersSelector = (state: RootState) =>
-  state.firestore.data.chatUsers;
-
-export const experienceSelector = (state: RootState) =>
+export const experienceSelector: SparkleSelector<Experience> = (state) =>
   state.firestore.data.experience;
+
+export const reactionsSelector: SparkleSelector<
+  WithId<Reaction>[] | undefined
+> = (state) => state.firestore.ordered.reactions;
+
+export const messagesToTheBandSelector: SparkleSelector<
+  WithId<TextReaction>[] | undefined
+> = (state) =>
+  reactionsSelector(state)?.filter(
+    (reaction): reaction is WithId<TextReaction> =>
+      reaction.reaction === TextReactionType
+  );
 
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
@@ -233,6 +232,17 @@ export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
   ifTrue: boolean,
   selector: SparkleSelector<U[]>
 ) => (ifTrue ? selector : emptyArraySelector);
+
+export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
+  state.chat.isChatSidebarVisible;
+
+export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
+  state
+) => state.userProfile.userProfile;
+
+export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
+  state
+) => state.chat.settings;
 
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 
