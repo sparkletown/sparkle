@@ -25,10 +25,7 @@ const isRequired = { required: true };
 
 export const PollBox: React.FC<PollBoxProps> = () => {
   const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
-    {
-      defaultValues,
-      mode: "onSubmit",
-    }
+    { defaultValues }
   );
 
   const { fields, append } = useFieldArray({
@@ -41,12 +38,6 @@ export const PollBox: React.FC<PollBoxProps> = () => {
     reset();
   });
 
-  const addChoice = useCallback(() => append(defaultQuestion), [append]);
-  const showAppend = useCallback(
-    (index) =>
-      index + 1 === fields.length && MAX_QUESTIONS_NUMBER > fields.length,
-    [fields]
-  );
   const isDisabled = useMemo(
     () =>
       !(
@@ -57,6 +48,12 @@ export const PollBox: React.FC<PollBoxProps> = () => {
     [watch]
   );
 
+  const addChoice = useCallback(() => append(defaultQuestion), [append]);
+  const showAppend = useCallback(
+    (index) =>
+      index + 1 === fields.length && MAX_QUESTIONS_NUMBER > fields.length,
+    [fields]
+  );
   const formatPlaceholder = useCallback(
     (index) =>
       index === 0
@@ -64,27 +61,24 @@ export const PollBox: React.FC<PollBoxProps> = () => {
         : `Choice ${index + 1}`,
     []
   );
-
   const renderChoiceFields = useMemo(
     () =>
-      fields.map((field, index) => {
-        return (
-          <section className="PollBox__section" key={field.id}>
-            <input
-              className="PollBox__input"
-              autoComplete="off"
-              placeholder={formatPlaceholder(index)}
-              name={`questions.${index}.name`}
-              ref={register(isRequired)}
-            />
-            {showAppend(index) && (
-              <button className="PollBox__append-button" onClick={addChoice}>
-                <FontAwesomeIcon icon={faPlus} />
-              </button>
-            )}
-          </section>
-        );
-      }),
+      fields.map((field, index) => (
+        <section className="PollBox__section" key={field.id}>
+          <input
+            className="PollBox__input"
+            autoComplete="off"
+            placeholder={formatPlaceholder(index)}
+            name={`questions.${index}.name`}
+            ref={register(isRequired)}
+          />
+          {showAppend(index) && (
+            <button className="PollBox__append-button" onClick={addChoice}>
+              <FontAwesomeIcon icon={faPlus} />
+            </button>
+          )}
+        </section>
+      )),
     [addChoice, fields, register, showAppend, formatPlaceholder]
   );
 

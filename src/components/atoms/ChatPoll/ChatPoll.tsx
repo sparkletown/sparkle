@@ -4,6 +4,8 @@ import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
+import { WithId } from "utils/id";
+import { User } from "types/User";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -16,8 +18,7 @@ export interface ChatProps {
     poll: PollValues;
     ts_utc: number;
     isMine: boolean;
-    // eslint-disable-next-line
-    author: any;
+    author: WithId<User>;
     canBeDeleted: boolean;
     votes: number;
   };
@@ -81,7 +82,7 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
         </div>
       </div>
       <div className="poll__info" onClick={openAuthorProfile}>
-        <UserAvatar avatarSrc={author.pictureUrl} />
+        <UserAvatar user={author} />
         <span className="poll__author">{author.partyName}</span>
         <span className="poll__time">{dayjs(ts_utc).format("h:mm A")}</span>
       </div>
