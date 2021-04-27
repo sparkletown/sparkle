@@ -13,15 +13,18 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
+// @debt This miniAvatars/'random avatar url' feature is currently disabled, it might be legacy code to be deleted?
 // const generateRandomAvatarUrl = (id: string) =>
 //   "/avatars/" +
 //   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
+// @debt This code may no longer be needed if we remove the miniAvatars feature + handle anonMode in a similar way to
+//   how it is currently being handled in UserAvatar
 // export interface AvatarUrlProps {
 //   user?: WithId<User>;
 //   miniAvatars?: boolean;
 // }
-
+//
 // const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
 //   const { id: userId, anonMode, pictureUrl } = user ?? {};
 //
@@ -58,6 +61,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   containerClassName,
   reactionPosition = "right",
+  // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
 }) => {
   const userId = user?.id;
@@ -69,8 +73,6 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     user,
   ]);
 
-  // const pictureUrl = getAvatarUrl({ user, miniAvatars });
-
   // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
   //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
   // const { loadedImageUrl: pictureUrl } = useImage({
@@ -78,6 +80,10 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   //   fallbackSrc: () => randomAvatarUrl(user.id),
   // });
 
+  // @debt For some reason when using this the image seems to be re-fetched every time the component is re-rendered
+  //   even though it seemed to be working fine earlier)
+  // const pictureUrl = getAvatarUrl({ user, miniAvatars });
+  //
   // const containerVars = useCss({
   //   "--user-profile-picture-avatar-url": pictureUrl
   //     ? `url(${pictureUrl})`
@@ -90,6 +96,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     // containerVars
   );
 
+  // @debt This is currently being handled within UserAvatar, so we may not need to keep it here anymore
   // const userDisplayName: string = user?.anonMode
   //   ? DEFAULT_PARTY_NAME
   //   : user?.partyName ?? DEFAULT_PARTY_NAME;
@@ -97,9 +104,10 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   return (
     <div
       className={containerClasses}
+      onClick={openProfileModal}
+      // @debt This is cuyrrently being handled within UserAvatar, so we may not need to keep it here anymore
       // role="img"
       // aria-label={`${userDisplayName}'s avatar`}
-      onClick={openProfileModal}
     >
       <UserAvatar user={user} containerClassName="UserProfilePicture__avatar" />
 
