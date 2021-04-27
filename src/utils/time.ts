@@ -1,4 +1,4 @@
-import { format, formatDuration } from "date-fns";
+import { format, formatDuration, formatRelative } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -15,7 +15,7 @@ export const ONE_HOUR_IN_MILLISECONDS =
 export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
 
 /**
- * Convert totalSeconds to a Duration object (days, hours, minutes, seconds)
+ * Convert totalSeconds to a Duration object (days, hours, minutes, seconds).
  *
  * @param totalSeconds
  *
@@ -104,17 +104,39 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
   event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
   ONE_HOUR_IN_SECONDS;
 
+/**
+ * Format UTC seconds as a string representing date.
+ *
+ * @example
+ *   formatDate(1618509600)
+ *   // 'Apr 15th'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatDate(utcSeconds: number) {
-  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "MMM do");
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "MMM do");
 }
 
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
+/**
+ * Format UTC seconds as a string representing time.
+ *
+ * @example
+ *   formatUtcSeconds(1618509600)
+ *   // '9:00 PM'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds
-    ? format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "p")
+    ? format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "p")
     : "(unknown)";
 }
 
@@ -126,21 +148,25 @@ export function getHoursAgoInSeconds(hours: number) {
 export const getHoursAgoInMilliseconds = (hours: number) =>
   Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
-// @debt this is a duplicate of getCurrentTimeInUTCSeconds
-export const getCurrentTimeInUnixEpochSeconds = () =>
-  Date.now() / ONE_SECOND_IN_MILLISECONDS;
-
 export const getCurrentTimeInMilliseconds = () => Date.now();
 
 export function getDaysAgoInSeconds(days: number) {
   return getHoursAgoInSeconds(days * 24);
 }
 
+/**
+ * Format UTC seconds as a string representing time in the format hh:mm.
+ *
+ * @example
+ *   formatHourAndMinute(1618509600)
+ *   // '21:00'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export const formatHourAndMinute = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
 };
 
 export const daysFromEndOfEvent = (
@@ -166,12 +192,6 @@ export const daysFromStartOfEvent = (utcSeconds: number) => {
   return Math.round(differenceInDays);
 };
 
-export const dateEventTimeFormat = (date: Date) => {
-  const hh = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  return hh + ":" + mm;
-};
-
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
 //   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 export const getCurrentTimeInUTCSeconds = () =>
@@ -182,9 +202,35 @@ export const roundToNearestHour = (seconds: number) => {
   return Math.floor(seconds / oneHour) * oneHour;
 };
 
+/**
+ * Format UTC seconds as a string representing weekday abbreviation.
+ *
+ * @example
+ *   formatDateToWeekday(1618509600)
+ *   // 'Thu'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/format
+ */
 export function formatDateToWeekday(utcSeconds: number) {
-  return format(new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS), "E");
+  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "E");
 }
+
+/**
+ * Format UTC seconds as a string representing relative date from now.
+ *
+ * @example
+ *   formatUtcSecondsRelativeToNow(1618509600)
+ *   // 'today at 9:00 PM'
+ *
+ * @param utcSeconds
+ *
+ * @see https://date-fns.org/docs/formatRelative
+ */
+export const formatUtcSecondsRelativeToNow = (utcSeconds: number) => {
+  return formatRelative(utcSeconds * ONE_SECOND_IN_MILLISECONDS, Date.now());
+};
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   const isTimestampInMilliSeconds = timestamp > SECONDS_TIMESTAMP_MAX_VALUE;

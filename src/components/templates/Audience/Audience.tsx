@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-
-import firebase, { UserInfo } from "firebase/app";
 
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 
@@ -12,15 +16,12 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
+import { EmojiReactions, EmojiReactionType } from "types/reactions";
 import { User } from "types/User";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-import {
-  EmojiReactionType,
-  Reactions,
-  TextReactionType,
-} from "utils/reactions";
+import { createEmojiReaction, createTextReaction } from "utils/reactions";
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -29,19 +30,15 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
-
-type ReactionType =
-  | { reaction: EmojiReactionType }
-  | { reaction: TextReactionType; text: string };
 
 interface ChatOutDataType {
   text: string;
 }
 
-// If you change this, make sure to also change it in Audience.scss's $seat-size
+// If you change the name of these properties, make sure to also change it in Audience.scss
 const SEAT_SIZE = "var(--seat-size)";
 const SEAT_SIZE_MIN = "var(--seat-size-min)";
 
@@ -81,7 +78,7 @@ const MIN_ROWS = 19;
 // Because both MIN_COLUMNS-1 and MIN_ROWS are both even, we don't need Math.floor to guarantee integer result..
 // And we always add row above&below and a column left&right
 // So auditorium size 1 has 1 extra outlined row and column around its outside versus auditorium size 0.
-// The same is true for auditoriumn size 2 - it has an extra row and column around it versus auditorium size 1.
+// The same is true for auditorium size 2 - it has an extra row and column around it versus auditorium size 1.
 
 // Example:
 
@@ -125,6 +122,7 @@ const capacity = (
   minRows: number
 ) =>
   (minColumns - 1 + auditoriumSize * 2) * (minRows + auditoriumSize * 2) * 0.75;
+
 // Never let the auditorium get more than 80% full
 const requiredAuditoriumSize = (
   occupants: number,
@@ -138,20 +136,31 @@ const requiredAuditoriumSize = (
   return size;
 };
 
+// @debt Why are we filtering the reactions here? Presumably these should all be the same wherever they are used?
+const burningReactions = EmojiReactions.filter(
+  (reaction) =>
+    reaction.type !== EmojiReactionType.boo &&
+    reaction.type !== EmojiReactionType.thatsjazz
+);
+
 // Note: This is the component that is used for the Auditorium
 export const Audience: React.FunctionComponent = () => {
   const venueId = useVenueId();
-  const { user, profile } = useUser();
+  const { userId, userWithId } = useUser();
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const userUid = user?.uid;
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
   const minRows = venue?.auditoriumRows ?? MIN_ROWS;
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
-  const [iframeUrl, setIframeUrl] = useState<string>("");
+  const [iframeUrl, setIframeUrl] = useState("");
+  useLayoutEffect(() => {
+    if (!venue) return;
+
+    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+  }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
   const focusElementOnLoad = useCallback(
@@ -169,38 +178,24 @@ export const Audience: React.FunctionComponent = () => {
     [hasAlreadyFocussed]
   );
 
-  useEffect(() => {
-    const unsubscribeListener = firebase
-      .firestore()
-      .collection("venues")
-      .doc(venueId as string)
-      .onSnapshot((doc) =>
-        setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
-      );
-
-    return () => {
-      unsubscribeListener();
-    };
-  }, [venueId]);
-
   const dispatch = useDispatch();
 
-  const createReaction = (reaction: ReactionType, user: UserInfo) => ({
-    created_at: new Date().getTime(),
-    created_by: user.uid,
-    ...reaction,
-  });
+  // @debt de-duplicate this with version in src/components/templates/Jazzbar/JazzTab/JazzTab.tsx
   const reactionClicked = useCallback(
-    (user: UserInfo, reaction: EmojiReactionType) => {
+    (emojiReaction: EmojiReactionType) => {
+      if (!venueId || !userWithId) return;
+
       dispatch(
         addReaction({
           venueId,
-          reaction: createReaction({ reaction }, user),
+          reaction: createEmojiReaction(emojiReaction, userWithId),
         })
       );
+
+      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
       setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
     },
-    [venueId, dispatch]
+    [venueId, userWithId, dispatch]
   );
 
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -300,11 +295,11 @@ export const Audience: React.FunctionComponent = () => {
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     const takeSeat = (row: number | null, column: number | null) => {
-      if (!venueId || !userUid) return;
+      if (!venueId || !userId) return;
 
       makeUpdateUserGridLocation({
         venueId,
-        userUid,
+        userUid: userId,
       })(row, column);
     };
 
@@ -313,30 +308,25 @@ export const Audience: React.FunctionComponent = () => {
     };
 
     const onSubmit = async (data: ChatOutDataType) => {
+      if (!venueId || !userWithId) return;
+
       setIsShoutSent(true);
-      user &&
-        dispatch(
-          addReaction({
-            venueId,
-            reaction: createReaction(
-              { reaction: "messageToTheBand", text: data.text },
-              user
-            ),
-          })
-        );
+
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createTextReaction(data.text, userWithId),
+        })
+      );
+
       reset();
     };
 
-    if (!venue || !profile || !venueId) return <></>;
+    if (!venue || !userWithId || !venueId) return null;
 
-    const burningReactions = Reactions.filter(
-      (reaction) =>
-        reaction.type !== EmojiReactionType.boo &&
-        reaction.type !== EmojiReactionType.thatsjazz
-    );
     const userSeated =
-      typeof profile.data?.[venueId]?.row === "number" &&
-      typeof profile.data?.[venueId]?.row === "number";
+      typeof userWithId.data?.[venueId]?.row === "number" &&
+      typeof userWithId.data?.[venueId]?.row === "number";
 
     const translateRow = (untranslatedRowIndex: number) =>
       untranslatedRowIndex - Math.floor(rowsForSizedAuditorium / 2);
@@ -355,7 +345,7 @@ export const Audience: React.FunctionComponent = () => {
             <button
               key={reaction.name}
               className="reaction"
-              onClick={() => user && reactionClicked(user, reaction.type)}
+              onClick={() => reactionClicked(reaction.type)}
               id={`send-reaction-${reaction.type}`}
             >
               <span role="img" aria-label={reaction.ariaLabel}>
@@ -408,7 +398,11 @@ export const Audience: React.FunctionComponent = () => {
       <>
         <div
           className="audience-container"
-          style={{ backgroundImage: `url(${venue.mapBackgroundImageUrl})` }}
+          style={{
+            backgroundImage: venue.mapBackgroundImageUrl
+              ? `url(${venue.mapBackgroundImageUrl})`
+              : undefined,
+          }}
         >
           <div className="audience">
             <div className="audience-overlay">
@@ -438,6 +432,7 @@ export const Audience: React.FunctionComponent = () => {
               </div>
             </div>
 
+            {/* @debt can we refactor this to re-use useMapGrid, MapCell, usePartygoersOverlay, MapPartygoerOverlay, usePartygoersbySeat, etc? */}
             {Array.from(Array(rowsForSizedAuditorium)).map(
               (_, untranslatedRowIndex) => {
                 const row = translateRow(untranslatedRowIndex);
@@ -465,17 +460,12 @@ export const Audience: React.FunctionComponent = () => {
                             }
                           >
                             {seat && seatedPartygoer && (
-                              <div className="user">
-                                <UserProfilePicture
-                                  user={seatedPartygoer}
-                                  reactionPosition={
-                                    isOnRight ? "left" : "right"
-                                  }
-                                  avatarClassName={"profile-avatar"}
-                                  miniAvatars={venue.miniAvatars}
-                                  isAudioEffectDisabled={isAudioEffectDisabled}
-                                />
-                              </div>
+                              <UserProfilePicture
+                                user={seatedPartygoer}
+                                reactionPosition={isOnRight ? "left" : "right"}
+                                miniAvatars={venue.miniAvatars}
+                                isAudioEffectDisabled={isAudioEffectDisabled}
+                              />
                             )}
                             {seat && !seatedPartygoer && <>+</>}
                           </div>
@@ -492,14 +482,13 @@ export const Audience: React.FunctionComponent = () => {
     );
   }, [
     venue,
-    profile,
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-    userUid,
-    user,
+    userId,
+    userWithId,
     dispatch,
     reset,
     columnsForSizedAuditorium,

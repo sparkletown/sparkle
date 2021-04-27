@@ -22,6 +22,6 @@ export const useUser = (): UseUserResult => {
     user: !auth.isEmpty ? auth : undefined,
     profile: !profile.isEmpty ? profile : undefined,
     userWithId: auth && profile ? { ...profile, id: auth.uid } : undefined,
-    userId: auth?.uid,
+    userId: auth && profile ? auth.uid : undefined,
   };
 };

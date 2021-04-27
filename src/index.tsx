@@ -169,6 +169,7 @@ if (BUGSNAG_API_KEY) {
     "env/memrise",
     "env/unesco",
     "env/ohbm",
+    "env/pa",
   ];
 
   const releaseStage = () => {
@@ -277,7 +278,7 @@ traceReactScheduler("initial render", performance.now(), () => {
               <ReactReduxFirebaseProvider {...rrfProps}>
                 <AuthIsLoaded>
                   <CustomSoundsProvider
-                    loadingComponent={LoadingPage}
+                    loadingComponent={<LoadingPage />}
                     waitTillConfigLoaded
                   >
                     <AppRouter />
