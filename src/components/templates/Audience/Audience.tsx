@@ -132,6 +132,7 @@ const requiredAuditoriumSize = (
   return size;
 };
 
+// @debt Why are we filtering the reactions here? Presumably these should all be the same wherever they are used?
 const burningReactions = EmojiReactions.filter(
   (reaction) =>
     reaction.type !== EmojiReactionType.boo &&
