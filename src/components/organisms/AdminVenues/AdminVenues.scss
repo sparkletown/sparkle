@@ -30,11 +30,11 @@
       flex-direction: column;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: $small-desktop-width) {
       grid-template-columns: repeat(4, 1fr);
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: $normal-tablet-width) {
       grid-template-columns: repeat(1, 1fr);
     }
   }

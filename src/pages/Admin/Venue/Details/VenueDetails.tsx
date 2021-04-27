@@ -13,7 +13,7 @@ import { useUser } from "hooks/useUser";
 import { Room, RoomData_v2 } from "types/rooms";
 import { VenueDetailsProps } from "./VenueDetails.types";
 
-import { VenueHero } from "components/molecules/VenueHero";
+import { VenueCard } from "components/molecules/VenueCard";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
 import { RoomEditModal } from "pages/Admin/Room/Edit";
@@ -165,7 +165,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   return (
     <S.Container>
       <S.Header>
-        <VenueHero
+        <VenueCard
           bannerImageUrl={
             !!coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER
           }

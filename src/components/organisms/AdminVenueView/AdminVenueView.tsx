@@ -12,9 +12,8 @@ import { Venue_v2 } from "types/venues";
 
 import "./AdminVenueView.scss";
 
-export interface SidebarOption {
-  id: string;
-  text: string;
+export interface SidebarOptionType {
+  [key: string]: string;
 }
 
 export enum SidebarOptions {
@@ -25,57 +24,36 @@ export enum SidebarOptions {
   ticketingAndAccess = "ticketing_and_access",
 }
 
-const sidebarOptions: SidebarOption[] = [
-  {
-    id: SidebarOptions.basicInfo,
-    text: "Start",
-  },
-  {
-    id: SidebarOptions.entranceExperience,
-    text: "Entrance",
-  },
-  {
-    id: SidebarOptions.advancedMapSettings,
-    text: "Advanced",
-  },
-  {
-    id: SidebarOptions.dashboard,
-    text: "Dashboard",
-  },
-  // TODO: Reintroduce when field is decided what to include
-  // {
-  //   id: SidebarOptions.ticketingAndAccess,
-  //   text: "Ticketing and access",
-  // },
-];
+const sidbarOptions: SidebarOptionType = {
+  [SidebarOptions.basicInfo]: "Start",
+  [SidebarOptions.entranceExperience]: "Entrance",
+  [SidebarOptions.advancedMapSettings]: "Advanced",
+  [SidebarOptions.dashboard]: "Dashboard",
+};
 
-const DEFAULT_TAB = sidebarOptions.findIndex(
-  (option) => option.id === SidebarOptions.dashboard
-);
+const DEFAULT_TAB = SidebarOptions.dashboard;
 
 export interface AdminVenueViewProps {
   venue: Venue_v2;
 }
 
 export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
-  const [selectedOption, setSelectedOption] = useState(
-    sidebarOptions[DEFAULT_TAB].id
-  );
+  const [selectedOption, setSelectedOption] = useState<string>(DEFAULT_TAB);
 
   const selectDefaultTab = useCallback(() => {
-    setSelectedOption(sidebarOptions[DEFAULT_TAB].id);
+    setSelectedOption(DEFAULT_TAB);
   }, []);
 
   const renderSidebarOptions = useMemo(() => {
-    return sidebarOptions.map((option: SidebarOption) => (
+    return Object.entries(sidbarOptions).map(([id, text]) => (
       <Nav.Link
-        key={option.id}
+        key={id}
         className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedOption === option.id,
+          "AdminVenueView__tab--selected": selectedOption === id,
         })}
-        eventKey={option.id}
+        eventKey={id}
       >
-        {option.text}
+        {text}
       </Nav.Link>
     ));
   }, [selectedOption]);

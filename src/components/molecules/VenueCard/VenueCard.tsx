@@ -1,8 +1,8 @@
 import React from "react";
 
-import * as S from "./VenueHero.styles";
+import * as S from "./VenueCard.styles";
 
-export interface DetailsPreviewProps {
+export interface VenueCardProps {
   bannerImageUrl?: string;
   logoImageUrl?: string;
   name?: string;
@@ -11,15 +11,15 @@ export interface DetailsPreviewProps {
   large?: boolean;
 }
 
-export const VenueHero: React.FC<DetailsPreviewProps> = ({
+export const VenueCard: React.FC<VenueCardProps> = ({
   bannerImageUrl,
   logoImageUrl,
   name,
   subtitle,
   description,
-  large = false,
+  large: isLarge = false,
 }) => (
-  <S.Container backgroundImage={bannerImageUrl} large={large}>
+  <S.Container backgroundImage={bannerImageUrl} large={isLarge}>
     <S.Logo backgroundImage={logoImageUrl} />
     <S.TitleWrapper>
       <S.Title>{name}</S.Title>

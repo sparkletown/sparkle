@@ -5,11 +5,11 @@
   justify-content: space-around;
   padding: 20px 0;
 
-  @media (max-width: 1024px) {
+  @media (max-width: $small-desktop-width) {
     align-items: center;
   }
 
-  @media (max-width: 800px) {
+  @media (max-width: $normal-tablet-width) {
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -32,11 +32,11 @@
     color: rgba($white, 0.6);
     text-decoration: none;
 
-    @media (max-width: 1024px) {
+    @media (max-width: $small-desktop-width) {
       width: 50%;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: $normal-tablet-width) {
       width: 100%;
     }
 
