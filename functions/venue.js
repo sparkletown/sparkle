@@ -827,17 +827,14 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
 });
 
 exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
-  console.log("setting venue live status");
-  const venueId = data.venueId;
   checkAuth(context);
-  const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
-  if (!doc || !doc.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-  const updated = doc.data();
-  updated.isLive = data.isLive;
-  admin.firestore().collection("venues").doc(venueId).update(updated);
+  const update = {
+    isLive: data.isLive,
+  };
+
+  await admin.firestore().collection("venues").doc(data.venueId).update(update);
+  // TODO: Throw an error
 });
 
 const dataOrUpdateKey = (data, updated, key) =>
