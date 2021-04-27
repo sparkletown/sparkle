@@ -1,6 +1,5 @@
 import React, { useMemo } from "react";
-
-import { UserAvatar } from "components/atoms/UserAvatar";
+import classNames from "classnames";
 
 import "./NavSearchResult.scss";
 
@@ -26,16 +25,17 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
     [image]
   );
 
+  const imageClasses = useMemo(
+    () =>
+      classNames("NavSearchResult__image", {
+        NavSearchResult__avatar: isAvatar,
+      }),
+    [isAvatar]
+  );
+
   return (
     <div className="NavSearchResult font-size--small" onClick={onClick}>
-      {isAvatar ? (
-        <UserAvatar
-          avatarSrc={image}
-          containerClassName="NavSearchResult__avatar"
-        />
-      ) : (
-        <div className="NavSearchResult__image" style={imageStyles} />
-      )}
+      <div className={imageClasses} style={imageStyles} />
 
       <div className="NavSearchResult__content">
         <div>{title}</div>

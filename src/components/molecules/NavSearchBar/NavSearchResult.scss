@@ -9,10 +9,6 @@
   align-items: center;
   align-content: space-between;
 
-  &__avatar {
-    margin-right: $search-result-image--right-margin;
-  }
-
   &__image {
     flex-shrink: 0;
     height: $search-result-image--size;
@@ -23,6 +19,10 @@
     background-repeat: no-repeat;
     background-position: center;
     background-color: $black;
+  }
+
+  &__avatar {
+    border-radius: 50%;
   }
 
   &__description {
