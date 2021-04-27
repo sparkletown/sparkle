@@ -2,7 +2,7 @@ import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useUser } from "./useUser";
 import { useSelector } from "./useSelector";
 
-const useRoles = () => {
+export const useRoles = () => {
   const { user } = useUser();
   useFirestoreConnect({
     collection: "roles",

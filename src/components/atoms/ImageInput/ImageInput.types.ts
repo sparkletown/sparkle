@@ -8,7 +8,7 @@ export interface ImageInputProps {
   imgUrl?: string;
   error?: FieldError;
   small?: boolean;
-  forwardRef: (
+  forwardRef?: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
   ) => void;
   title?: string;

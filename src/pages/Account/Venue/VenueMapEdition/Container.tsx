@@ -13,7 +13,6 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL } from "settings";
 import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
 import { Dimensions } from "types/utility";
@@ -69,19 +68,16 @@ export const Container: React.FC<PropsType> = (props) => {
     backgroundImage,
     iconImageStyle,
     onChange,
-    otherIcons,
-    onOtherIconClick,
     coordinatesBoundary,
     interactive,
     resizable,
     rounded,
-    otherIconsStyle,
     backgroundImageStyle,
     containerStyle,
     lockAspectRatio,
     rooms,
     selectedRoom,
-    setSelectedRoom
+    setSelectedRoom,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
@@ -226,16 +222,16 @@ export const Container: React.FC<PropsType> = (props) => {
           onChangeSize={resizeBox(index.toString())}
           lockAspectRatio={lockAspectRatio}
         />
-      {imageDims && interactive && (
-        <CustomDragLayer
-          snapToGrid={!!snapToGrid}
-          rounded={!!rounded}
-          iconSize={boxes[Object.keys(boxes)[index]]} // @debt - this gets the size from the first box
-        />
-      )}
+        {imageDims && interactive && (
+          <CustomDragLayer
+            snapToGrid={!!snapToGrid}
+            rounded={!!rounded}
+            iconSize={boxes[Object.keys(boxes)[index]]} // @debt - this gets the size from the first box
+          />
+        )}
       </>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -255,42 +251,56 @@ export const Container: React.FC<PropsType> = (props) => {
         />
 
         {backgroundImage &&
-          rooms.map((room, index) => (
+          rooms.map((room, index) =>
             room === selectedRoom ? (
-              <>
-              {renderSelectedRoom(index)}
-              </>
+              <>{renderSelectedRoom(index)}</>
             ) : (
               <div
-              className="map-preview__room"
-              key={room.title}
-              onClick={() => setSelectedRoom(room)}
-              style={{
-                position: "absolute",
-                top: `${room.y_percent}%`,
-                left: `${room.x_percent}%`,
-                width: `${room.width_percent}%`,
-                height: `${room.height_percent}%`,
-              }}
-            >
-              <img
+                className="map-preview__room"
+                key={room.title}
+                onClick={() => !selectedRoom && setSelectedRoom(room)}
                 style={{
-                  width: "100%",
-                  height: "100%",
-                  filter: room.isEnabled ? "none" : "grayscale(100%)",
-                  opacity: room.isEnabled ? 1 : 0.5,
-                  transition: "filter .3s ease",
+                  position: "absolute",
+                  top: `${room.y_percent}%`,
+                  left: `${room.x_percent}%`,
+                  width: `${room.width_percent}%`,
+                  height: `${room.height_percent}%`,
                 }}
-                src={room.image_url}
-                alt="room banner"
-                title={room.title}
-              />
-            </div>
+              >
+                <img
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    filter: room.isEnabled ? "none" : "grayscale(100%)",
+                    opacity: room.isEnabled ? 1 : 0.5,
+                    transition: "filter .3s ease",
+                  }}
+                  src={room.image_url}
+                  alt="room banner"
+                  title={room.title}
+                />
+                <div
+                  style={{
+                    position: "absolute",
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    display: "flex",
+                    alignContent: "center",
+                    justifyContent: "center",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                    borderRadius: "22px",
+                    padding: "6px 8px",
+                    fontSize: "0.8rem",
+                    transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {room.title}
+                </div>
+              </div>
             )
-          ))}
-
+          )}
       </div>
-
     </>
   );
 };

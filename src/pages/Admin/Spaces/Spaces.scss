@@ -1,3 +1,5 @@
+@import "scss/constants.scss";
+
 .spaces {
   display: flex;
   flex: 1;
@@ -40,5 +42,77 @@
   &__title {
     font-size: 2rem;
     font-weight: bolder;
+  }
+
+  &__venue-rooms {
+    padding: 10px;
+    background-color: $saturated-black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background-color: lighten($saturated-black, 5%);
+    }
+  }
+
+  &__venue-room {
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__venue-room-logo {
+    height: 34px;
+    width: 34px;
+    margin-right: 10px;
+    background-size: contain;
+    background-position: center;
+    border-radius: 4px;
+    box-shadow: 0 0 0 3px $primary;
+  }
+
+  &__room-external-link {
+    height: 34px;
+    width: 34px;
+    margin-right: 10px;
+    background-size: contain;
+    background-position: center;
+    border-radius: 4px;
+    box-shadow: 0 0 0 3px $primary;
+  }
+
+  &__footer {
+    display: flex;
+    position: fixed;
+    bottom: 0px;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 20%;
+    padding: 12px;
+    background-color: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  &__appearance {
+    padding: 20px;
+  }
+
+  &__room-appearance-title {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  &__room-appearance-description {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8em;
+    opacity: 0.6;
   }
 }

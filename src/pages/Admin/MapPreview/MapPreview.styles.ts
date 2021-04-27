@@ -15,10 +15,10 @@ export const EditButton = styled(Button).attrs({
   hasGradient: true,
 })`
   position: absolute;
-  bottom: 0;
+  top: 0;
   right: 0;
 
-  border-radius: ${(props) => props.theme.dimensions.borderRadius} 0 0 0;
+  border-radius: 0 0 0 ${(props) => props.theme.dimensions.borderRadius};
 
   &:hover {
     transform: none;

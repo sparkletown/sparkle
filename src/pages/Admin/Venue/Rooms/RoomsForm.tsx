@@ -10,7 +10,7 @@ import {
 } from "settings";
 import { useFirestore } from "react-redux-firebase";
 import "../Venue.scss";
-import { PartyMapVenue, Venue } from "types/venues";
+import { AnyVenue, PartyMapVenue } from "types/venues";
 import { useHistory } from "react-router-dom";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import * as Yup from "yup";
@@ -50,7 +50,7 @@ export const RoomsForm: React.FC = () => {
 
       if (!venueSnapshot.exists) return history.replace("/admin");
 
-      const data = venueSnapshot.data() as Venue;
+      const data = venueSnapshot.data() as AnyVenue;
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
@@ -366,7 +366,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
             camp, then drag it around to position it
           </p>
           <div className="playa">
-            {/* {venue.mapBackgroundImageUrl && (
+            {venue.mapBackgroundImageUrl && (
               <PartyMapContainer
                 interactive
                 resizable
@@ -374,6 +374,9 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                   width: 100,
                   height: 100,
                 }}
+                rooms={[]}
+                selectedRoom={undefined}
+                setSelectedRoom={() => {}}
                 onChange={onBoxChange}
                 snapToGrid={false}
                 iconsMap={currentRoomIcon}
@@ -384,7 +387,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                 currentRoomIndex={editingRoomIndex}
                 otherIconsStyle={{ opacity: 0.4 }}
               />
-            )} */}
+            )}
           </div>
         </div>
       </div>

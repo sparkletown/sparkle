@@ -10,6 +10,7 @@ import {
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
 import { venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
 
 export interface EventInput {
   name: string;
@@ -118,6 +119,7 @@ export interface VenueInput_v2
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
+  iframeUrl?: string;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -312,7 +314,10 @@ export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   );
 };
 
-export const updateVenue = async (input: VenueInput, user: UserInfo) => {
+export const updateVenue = async (
+  input: WithId<VenueInput>,
+  user: UserInfo
+) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
   return await firebase.functions().httpsCallable("venue-updateVenue")(
@@ -417,9 +422,10 @@ const createFirestoreRoomInput_v2 = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: input.useUrl
-      ? input.url
-      : window.origin + venueInsideUrl(input.venueName!),
+    url:
+      input.useUrl || !input.venueName
+        ? input.url
+        : window.origin + venueInsideUrl(input.venueName!),
     ...imageInputData,
   };
 

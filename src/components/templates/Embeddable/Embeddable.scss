@@ -1,0 +1,18 @@
+@import "scss/constants.scss";
+
+.embeddable {
+  height: 100%;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &__iframe {
+    height: 90%;
+    width: 90%;
+
+    border: none;
+    background-color: $light-grey;
+  }
+}

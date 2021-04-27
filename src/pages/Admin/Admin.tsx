@@ -23,18 +23,13 @@ import { IS_BURN } from "secrets";
 import {
   DEFAULT_VENUE,
   PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_HEIGHT,
-  PLAYA_IMAGE,
   PLAYA_VENUE_NAME,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_WIDTH,
 } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import {
   isVenueWithRooms,
-  Venue,
+  AnyVenue,
   VenueEvent,
   VenueTemplate,
 } from "types/venues";
@@ -56,8 +51,6 @@ import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -228,7 +221,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 };
 
 export type VenueInfoComponentProps = {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
@@ -266,10 +259,16 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const visitText =
     venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const editText =
     venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
+
+  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const deleteText =
     venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
 

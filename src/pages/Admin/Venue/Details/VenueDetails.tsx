@@ -16,10 +16,9 @@ import { VenueDetailsProps } from "./VenueDetails.types";
 import VenueHero from "components/molecules/VenueHero";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
-import RoomEdit from "pages/Admin/Room/Edit";
+import { RoomEditModal } from "pages/Admin/Room/Edit";
 import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
-import MapPreview from "pages/Admin/MapPreview";
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 import RoomDeleteModal from "../Rooms/RoomDeleteModal";
 
@@ -61,7 +60,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const [editingRoom, setEditingRoom] = useState<EditRoomType | null>(null);
   const [showEventModal, setShowEventModal] = useState(false);
@@ -142,7 +140,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   const handleNewRoom = useCallback(() => {
     setModalOpen(false);
-    setIsEditing(true);
   }, []);
 
   const closeDeleteModals = useCallback(() => {
@@ -153,12 +150,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   if (!user) return null;
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
-    const newData = {
+    const newData: RoomData_v2 = {
+      ...editingRoom,
       ...values,
-      x_percent: editingRoom?.x_percent,
-      y_percent: editingRoom?.y_percent,
-      width_percent: editingRoom?.width_percent,
-      height_percent: editingRoom?.height_percent,
     };
 
     await updateRoom(newData, venueId!, user, index);
@@ -211,15 +205,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       </S.Header>
 
       <S.Main>
-        {/* <MapPreview
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-          venueId={venueId!}
-          venueName={name}
-          mapBackground={mapBackgroundImageUrl}
-          rooms={rooms ?? []}
-        /> */}
-
         {!!mapBackgroundImageUrl && (
           <>
             <S.RoomActions>
@@ -255,7 +240,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       />
 
       {editingRoom && (
-        <RoomEdit
+        <RoomEditModal
           isVisible={!!editingRoom && !showDeleteModal}
           onClickOutsideHandler={closeEditingModal}
           room={editingRoom}

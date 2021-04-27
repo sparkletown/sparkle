@@ -1,38 +1,49 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 
-// Typings
-import { UserProfilePictureProp } from "./UserProfilePicture.types";
-
-// Components
 import { MessageToTheBandReaction, Reactions } from "utils/reactions";
+import { WithId } from "utils/id";
 
-// Hooks
 import { useSelector } from "hooks/useSelector";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useReactions } from "hooks/useReactions";
+import { useVenueId } from "hooks/useVenueId";
 
-// Utils | Settings
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_PROFILE_IMAGE,
   RANDOM_AVATARS,
 } from "settings";
 
-// Styles
-import "./UserProfilePicture.scss";
-import * as S from "./UserProfilePicture.styles";
-import { useReactions } from "hooks/useReactions";
-import { useVenueId } from "hooks/useVenueId";
+import { User } from "types/User";
 
+// @debt remove styled-components in favour of using our standard scss patterns
+import * as S from "./UserProfilePicture.styles";
+import "./UserProfilePicture.scss";
+
+export interface UserProfilePictureProp {
+  user: WithId<User>;
+  isAudioEffectDisabled?: boolean;
+  miniAvatars?: boolean;
+  avatarClassName?: string;
+  avatarStyle?: object;
+  containerStyle?: object;
+  reactionPosition?: "right" | "left" | undefined;
+}
+
+// @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
+// @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
-  isAudioEffectDisabled,
-  miniAvatars,
-  avatarClassName,
+  isAudioEffectDisabled = true,
+  miniAvatars = false,
+  avatarClassName = "profile-icon",
   avatarStyle,
   containerStyle,
-  setSelectedUserProfile,
   reactionPosition,
   user,
 }) => {
+  // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment
   const muteReactions = useSelector((state) => state.room.mute);
+  const { openUserProfileModal } = useProfileModalControls();
 
   const [pictureUrl, setPictureUrl] = useState("");
 
@@ -97,37 +108,37 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
           alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}
         />
         <S.Avatar
-          onClick={() => setSelectedUserProfile(user)}
+          onClick={() => openUserProfileModal(user)}
           className={avatarClassName}
           backgroundImage={pictureUrl}
           style={{ ...avatarStyle }}
         />
 
-        {Reactions.map(
-          (reaction, index) =>
-            reactions.find(
-              (r) => r.created_by === user.id && r.reaction === reaction.type
-            ) && (
-              <div key={index} className="reaction-container">
-                <S.Reaction
-                  role="img"
-                  aria-label={reaction.ariaLabel}
-                  className={reaction.name}
-                  reactionPosition={reactionPosition}
-                >
-                  {reaction.text}
-                </S.Reaction>
+        <div className="reaction-container">
+          {Reactions.map(
+            (reaction, index) =>
+              reactions.find(
+                (r) => r.created_by === user.id && r.reaction === reaction.type
+              ) && (
+                <>
+                  <S.Reaction
+                    role="img"
+                    aria-label={reaction.ariaLabel}
+                    className={reaction.name}
+                    reactionPosition={reactionPosition}
+                  >
+                    {reaction.text}
+                  </S.Reaction>
 
-                {!muteReactions && !isAudioEffectDisabled && (
-                  <audio autoPlay loop>
-                    <source src={reaction.audioPath} />
-                  </audio>
-                )}
-              </div>
-            )
-        )}
-        {messagesToBand && (
-          <div className="reaction-container">
+                  {!muteReactions && !isAudioEffectDisabled && (
+                    <audio autoPlay loop>
+                      <source src={reaction.audioPath} />
+                    </audio>
+                  )}
+                </>
+              )
+          )}
+          {messagesToBand && (
             <S.ShoutOutMessage
               role="img"
               aria-label="messageToTheBand"
@@ -135,8 +146,8 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
             >
               {messagesToBand.text}
             </S.ShoutOutMessage>
-          </div>
-        )}
+          )}
+        </div>
       </S.Container>
     );
   }, [
@@ -148,16 +159,11 @@ const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
     messagesToBand,
     reactionPosition,
     imageErrorHandler,
-    setSelectedUserProfile,
+    openUserProfileModal,
     reactions,
     muteReactions,
     isAudioEffectDisabled,
   ]);
-};
-
-UserProfilePicture.defaultProps = {
-  avatarClassName: "profile-icon",
-  miniAvatars: false,
 };
 
 export default UserProfilePicture;

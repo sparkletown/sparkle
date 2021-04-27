@@ -13,10 +13,21 @@ export const Wrapper = styled.div<WrapperProps>`
 `;
 
 export const MapBrowserGrid = styled.div`
-display: -webkit-box;
-flex-flow: row;
-padding: 0.5em 0;
-overflow-x: scroll;
+  display: -webkit-box;
+  flex-flow: row;
+  padding: 0.5em 0;
+  overflow-x: scroll;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0, 0, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 type MapItemProps = {

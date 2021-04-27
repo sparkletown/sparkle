@@ -30,21 +30,14 @@ import { venueLandingUrl } from "utils/url";
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
   HAS_ROOMS_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
 } from "settings";
 import "./Venue.scss";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ExtractProps } from "types/utility";
 import { IS_BURN } from "secrets";
 import { useQuery } from "hooks/useQuery";
 import { Form } from "react-bootstrap";
@@ -56,8 +49,7 @@ interface DetailsFormProps extends WizardPage {
   venueId?: string;
 }
 
-const iconPositionFieldName = "iconPosition";
-
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -129,11 +121,12 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue(vals as VenueInput, user);
+        if (!!venueId)
+          await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
         else await createVenue(vals as VenueInput, user);
 
         vals.name
-          ? history.push(`/admin/${createUrlSafeName(vals.name)}`)
+          ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
           : history.push(`/admin`);
       } catch (e) {
         setFormError(true);
@@ -146,42 +139,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       }
     },
     [user, venueId, history]
-  );
-
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
-  const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
-  );
-
-  const onBoxMove: ExtractProps<
-    typeof PlayaContainer
-  >["onChange"] = useCallback(
-    (val) => {
-      if (!(iconPositionFieldName in val)) return;
-      const iconPos = val[iconPositionFieldName];
-      setValue("placement", {
-        x: iconPos.left,
-        y: iconPos.top,
-      });
-    },
-    [setValue]
   );
 
   if (!state.templatePage) {

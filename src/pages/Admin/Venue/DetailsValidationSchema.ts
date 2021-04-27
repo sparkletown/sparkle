@@ -15,6 +15,8 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   MINIMUM_COLUMNS,
   MAXIMUM_COLUMNS,
+  VENUE_NAME_MAX_CHAR_COUNT,
+  VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -57,8 +59,15 @@ export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
-      .required("Required")
-      .min(1, "Required")
+      .required("Venue name is required")
+      .min(
+        VENUE_NAME_MIN_CHAR_COUNT,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        VENUE_NAME_MAX_CHAR_COUNT,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -111,8 +120,8 @@ export const validationSchema = Yup.object()
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    description: Yup.string().required("Required"),
-    subtitle: Yup.string().required("Required"),
+    description: Yup.string().required("Description required"),
+    subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>

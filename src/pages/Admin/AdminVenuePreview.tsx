@@ -1,21 +1,16 @@
 import React, { CSSProperties, useMemo } from "react";
-import { PartyMapVenue, Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import {
-  IFRAME_ALLOW,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_NAME,
-  PLAYA_VENUE_STYLES,
-} from "settings";
+import { IFRAME_ALLOW, PLAYA_VENUE_NAME } from "settings";
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 interface AdminVenuePreview {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   containerStyle: CSSProperties;
 }
 
+// @debt Refactor this into settings, or types/templates, or similar?
 const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.themecamp]: "Camp Info:",
   [VenueTemplate.artpiece]: "Art Piece Info:",
@@ -67,7 +62,6 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
         );
       case VenueTemplate.partymap:
       case VenueTemplate.themecamp:
-        const partyMapVenue = venue as WithId<PartyMapVenue>;
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>

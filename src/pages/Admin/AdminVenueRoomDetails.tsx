@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import { Room } from "types/rooms";
 import { WithId } from "utils/id";
 
@@ -17,7 +17,7 @@ import "./Admin.scss";
 
 interface Props {
   index: number;
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   room: Room;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;

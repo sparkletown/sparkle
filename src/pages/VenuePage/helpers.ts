@@ -1,6 +1,6 @@
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 
-export const updateTheme = (venue: Venue) => {
+export const updateTheme = (venue: AnyVenue) => {
   venue?.config?.theme?.primaryColor &&
     document.documentElement.style.setProperty(
       "--primary-color",

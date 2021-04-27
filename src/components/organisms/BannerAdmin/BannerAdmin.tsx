@@ -9,6 +9,8 @@ interface BannerAdminProps {
   venue: AnyVenue;
 }
 
+// @debt This component is almost exactly the same as IframeAdmin, we should refactor them both to use the same generic base component
+//   BannerAdmin is the 'canonical example' to follow when we do this
 export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
   const existingBannerMessage = venue?.bannerMessage ?? "";
 
@@ -57,6 +59,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
                 defaultValue={existingBannerMessage}
                 onChange={handleInputChange}
                 placeholder="Enter banner message here..."
+                autoComplete="off"
               />
 
               {error && <span className="error">{error}</span>}
