@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useForm } from "react-hook-form";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
-
-import firebase from "firebase/app";
 
 import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
 
@@ -151,7 +155,12 @@ export const Audience: React.FunctionComponent = () => {
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
-  const [iframeUrl, setIframeUrl] = useState<string>("");
+  const [iframeUrl, setIframeUrl] = useState("");
+  useLayoutEffect(() => {
+    if (!venue) return;
+
+    setIframeUrl(ConvertToEmbeddableUrl(venue.iframeUrl, true));
+  }, [venue]);
 
   const [hasAlreadyFocussed, setAlreadyFocussed] = useState(false);
   const focusElementOnLoad = useCallback(
@@ -168,21 +177,6 @@ export const Audience: React.FunctionComponent = () => {
     },
     [hasAlreadyFocussed]
   );
-
-  // @debt I don't think we even need to do this..? It should get updated automagically already from the venue config + our firebase subscription to it?
-  useEffect(() => {
-    const unsubscribeListener = firebase
-      .firestore()
-      .collection("venues")
-      .doc(venueId as string)
-      .onSnapshot((doc) =>
-        setIframeUrl(ConvertToEmbeddableUrl(doc.data()?.iframeUrl || "", true))
-      );
-
-    return () => {
-      unsubscribeListener();
-    };
-  }, [venueId]);
 
   const dispatch = useDispatch();
 
