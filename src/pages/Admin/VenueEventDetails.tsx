@@ -1,10 +1,14 @@
-import dayjs from "dayjs";
 import React from "react";
+import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { dateEventTimeFormat } from "utils/time";
+import {
+  formatHourAndMinute,
+  ONE_MINUTE_IN_SECONDS,
+  ONE_SECOND_IN_MILLISECONDS,
+} from "utils/time";
 
 interface Props {
   venueEvent: WithId<VenueEvent>;
@@ -21,18 +25,19 @@ const VenueEventDetails = ({
   setShowDeleteEventModal,
   className,
 }: Props) => {
-  const startingDate = new Date(venueEvent.start_utc_seconds * 1000);
-  const endingDate = new Date(
-    (venueEvent.start_utc_seconds + 60 * venueEvent.duration_minutes) * 1000
+  const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
+  const endTime = formatHourAndMinute(
+    venueEvent.start_utc_seconds +
+      ONE_MINUTE_IN_SECONDS * venueEvent.duration_minutes
   );
+  const startDay = format(
+    venueEvent.start_utc_seconds * ONE_SECOND_IN_MILLISECONDS,
+    "EEEE LLLL do"
+  );
+
   return (
     <div className={className}>
-      <div className="date">
-        {`${dateEventTimeFormat(startingDate)}-${dateEventTimeFormat(
-          endingDate
-        )}
-      ${dayjs(startingDate).format("dddd MMMM Do")}`}
-      </div>
+      <div className="date">{`${startTime}-${endTime} ${startDay}`}</div>
       <div className="event-description">
         <div style={!className ? { display: "none" } : {}}>
           <span

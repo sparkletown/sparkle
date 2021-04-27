@@ -1,0 +1,46 @@
+# Lines starting with '#' are comments.
+# Each line is a file pattern followed by one or more owners.
+
+# More details are here: https://docs.github.com/en/github/creating-cloning-and-archiving-repositories/about-code-owners
+
+# The '*' pattern is global owners.
+
+# Order is important. The last matching pattern has the most precedence.
+# The folders are ordered as follows:
+
+# In each subsection folders are ordered first by depth, then alphabetically.
+# This should make it easy to add new rules without breaking existing ones.
+
+# Global rule
+*                          @sparkletown/engineering
+
+# Dependencies
+**/package.json            @sparkletown/engineering-leads
+**/package-lock.json       @sparkletown/engineering-leads
+
+# CI, GitHub config, etc
+**/.circleci               @sparkletown/engineering-leads
+**/.github                 @sparkletown/engineering-leads
+
+# Firebase
+**/.firebaserc             @sparkletown/engineering-leads
+**/firebase.json           @sparkletown/engineering-leads
+**/firestore.indexes.json  @sparkletown/engineering-leads
+**/*.rules                 @sparkletown/engineering-leads
+
+# Testing
+**/cypress.json            @sparkletown/engineering-leads
+**/jest.config.js          @sparkletown/engineering-leads
+
+# Transpilation, etc
+**/tsconfig.json           @sparkletown/engineering-leads
+
+# Linting, etc
+**/.codeclimate.yml        @sparkletown/engineering-leads
+**/.eslintignore           @sparkletown/engineering-leads
+**/.eslintrc*              @sparkletown/engineering-leads
+**/.prettierignore         @sparkletown/engineering-leads
+
+# Misc
+LICENSE.agpl               @sparkletown/engineering-leads
+SECURITY.md                @sparkletown/engineering-leads
