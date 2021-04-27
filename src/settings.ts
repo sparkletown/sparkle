@@ -47,6 +47,8 @@ export const DEFAULT_EDIT_PROFILE_TEXT =
   "I haven't edited my profile to tell you yet";
 export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const VENUE_CHAT_AGE_DAYS = 30;
+export const VENUE_NAME_MIN_CHAR_COUNT = 3;
+export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
@@ -548,7 +550,7 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const REACTION_TIMEOUT = 5000; // time im ms
+export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];

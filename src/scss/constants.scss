@@ -46,6 +46,14 @@ $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
+$border-radius--small: 8px;
+$border-radius--input: 22px;
+
+$font-size--small: 0.9rem;
+$avatarSize: max(4vh, 3vw);
+$avatarSizeMin: 25px;
+$reactionSize: max(2.5vh, 2vw);
+
 $profile-image-bg-color: #999999;
 $room-info-bg: #6f43ff;
 
@@ -55,9 +63,10 @@ $small-desktop-width: 1024px;
 
 $normal-tablet-width: 800px;
 
+$transition-function: cubic-bezier(0.23, 1, 0.32, 1);
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
-//   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
@@ -81,7 +90,6 @@ $z-layers: (
   user-search-results: 380,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
-  navbar-nav-search-results: 380,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
@@ -89,8 +97,12 @@ $z-layers: (
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
+  // UserReactions
+  user-reactions-shout: 2,
+  user-reactions-emoji: 1,
   // Map
-  map-room--hovered: 5,
+  map-room--hovered: 6,
+  map-avatar: 5,
   map-room: 4,
   map-grid: 3,
   map-room--unclickable: 2,
@@ -108,8 +120,6 @@ $z-layers: (
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
-  user-profile-picture-heart: 99999,
-  user-profile-picture-reaction: 1000,
   venuepage-preview-indication: 1
 );
 
@@ -119,4 +129,30 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
+}
+
+@function box-shadow--large($transparency: 0.5) {
+  @return 0 10px 30px 0 rgba($black, $transparency);
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($black, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
 }
