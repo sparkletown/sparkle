@@ -1,5 +1,8 @@
 import React, { useMemo } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
+
+import { REACTION_TIMEOUT } from "settings";
 
 import {
   isTextReaction,
@@ -8,11 +11,16 @@ import {
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
+import { ONE_SECOND_IN_MILLISECONDS } from "utils/time";
 
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
 
 import "./UserReactions.scss";
+
+const REACTION_SHOUT_BOUNCE_TIME = `${
+  REACTION_TIMEOUT / ONE_SECOND_IN_MILLISECONDS
+}s`;
 
 export interface UserReactionsProps {
   userId: string;
@@ -55,9 +63,14 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     return { renderedEmojiReactions, userShoutout };
   }, [isMuted, userReactions]);
 
+  const containerVars = useCss({
+    "--user-reactions-shout-bounce-time": REACTION_SHOUT_BOUNCE_TIME,
+  });
+
   const containerClasses = classNames(
     "UserReactions",
-    `UserReactions--reaction-${reactionPosition}`
+    `UserReactions--reaction-${reactionPosition}`,
+    containerVars
   );
 
   return (

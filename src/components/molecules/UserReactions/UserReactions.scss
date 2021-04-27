@@ -4,6 +4,7 @@
 $reactionSize: max(2.5vh, 2vw);
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: 50%;
+$shoutBounceTime: var(--user-reactions-shout-bounce-time, 5s);
 
 .UserReactions {
   // Note: we need this to ensure the reactions use this container for their positioning
@@ -23,7 +24,7 @@ $shoutBounceTranslateXOffset: 50%;
     .UserReactions__shout {
       right: 50%;
       transform-origin: right center;
-      animation: shout-bounce--left 5s ease;
+      animation: shout-bounce--left $shoutBounceTime ease;
     }
   }
 
@@ -35,7 +36,7 @@ $shoutBounceTranslateXOffset: 50%;
     .UserReactions__shout {
       left: 50%;
       transform-origin: left center;
-      animation: shout-bounce--right 5s ease;
+      animation: shout-bounce--right $shoutBounceTime ease;
     }
   }
 
