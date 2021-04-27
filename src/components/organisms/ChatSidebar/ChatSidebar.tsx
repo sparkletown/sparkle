@@ -15,12 +15,17 @@ import {
   useChatSidebarPinned,
 } from "hooks/chatSidebar";
 
+import { AnyVenue } from "types/venues";
 import { ChatTypes } from "types/chat";
 
 import "./ChatSidebar.scss";
 
-export const ChatSidebar: React.FC = () => {
-  const { isPinned } = useChatSidebarPinned();
+export interface ChatSidebarProps {
+  venue: AnyVenue;
+}
+
+export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
+  const { isPinned } = useChatSidebarPinned(venue);
   const {
     isExpanded,
     toggleSidebar,

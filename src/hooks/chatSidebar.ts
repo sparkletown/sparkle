@@ -1,14 +1,13 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useWindowSize } from "react-use";
 
-import { LARGE_SCREEN_WIDTH } from "settings";
+import { LARGE_SCREEN_WIDTH, FLOATED_CHATBAR_TEMPLATES } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
-  currentVenueSelectorData,
 } from "utils/selectors";
 
 import {
@@ -90,13 +89,13 @@ export const useChatSidebarInfo = () => {
   };
 };
 
-export const useChatSidebarPinned = () => {
+export const useChatSidebarPinned = (venue: AnyVenue) => {
   const dispatch = useDispatch();
   const { width } = useWindowSize();
-  const venue = useSelector(currentVenueSelectorData);
   const isPinned = useMemo(
     () =>
-      width > LARGE_SCREEN_WIDTH && venue?.template !== VenueTemplate.audience,
+      width > LARGE_SCREEN_WIDTH &&
+      !FLOATED_CHATBAR_TEMPLATES.includes(venue?.template),
     [width, venue]
   );
 

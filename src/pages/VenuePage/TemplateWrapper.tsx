@@ -122,7 +122,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     <WithNavigationBar fullscreen hasBackButton={hasBackButton}>
       <AnnouncementMessage message={venue?.bannerMessage} />
       {template}
-      <ChatSidebar />
+      <ChatSidebar venue={venue} />
       <UserProfileModal />
     </WithNavigationBar>
   );
