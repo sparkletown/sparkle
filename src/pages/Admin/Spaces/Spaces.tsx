@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-import { Button } from "react-bootstrap";
 import { updateRoom } from "api/admin";
 import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
@@ -198,12 +197,12 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
                 />
               ))}
             <div className="spaces__footer">
-              <div>
-                <Button>Home</Button>
+              <div className="spaces__home-button">
+                <div className="spaces__home-icon" />
               </div>
-              <div>
-                <Button>Back</Button>
-                <Button>Next</Button>
+              <div className="spaces__nav-buttons">
+                <div className="spaces__back-button">Back</div>
+                <div className="spaces__next-button">Next</div>
               </div>
             </div>
           </>

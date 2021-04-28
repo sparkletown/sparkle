@@ -93,7 +93,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   return (
     <DndProvider backend={HTML5Backend}>
       <S.Wrapper>
-        <Legend text={`${venueName}'s Map`} />
+        <Legend text={`Preview of your space’s map`} />
         <Container
           interactive
           resizable

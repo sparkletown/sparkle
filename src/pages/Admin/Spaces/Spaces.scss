@@ -100,6 +100,72 @@
     border-top: 1px solid rgba(255, 255, 255, 0.2);
   }
 
+  &__home-button {
+    cursor: pointer;
+    display: flex;
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    background-color: lighten($color: $saturated-black, $amount: 10);
+
+    &:hover {
+      background-color: lighten($color: $saturated-black, $amount: 20);
+    }
+  }
+
+  &__nav-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__back-button {
+    cursor: pointer;
+    display: flex;
+    height: 50px;
+    font-weight: 400;
+    font-size: 1rem;
+    border-radius: 22px;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 0 5px;
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    background-color: lighten($color: $saturated-black, $amount: 10);
+
+    &:hover {
+      background-color: lighten($color: $saturated-black, $amount: 20);
+    }
+  }
+
+  &__next-button {
+    cursor: pointer;
+    display: flex;
+    height: 50px;
+    font-weight: 400;
+    font-size: 1rem;
+    border-radius: 22px;
+    justify-content: center;
+    align-items: center;
+    padding: 12px 16px;
+    margin: 0 5px;
+    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    background-color: $primary;
+
+    &:hover {
+      background-color: lighten($color: $primary, $amount: 10);
+    }
+  }
+
+  &__home-icon {
+    width: 20px;
+    height: 20px;
+    background-image: url(/icons/icon-home.svg);
+    background-size: 20px 20px;
+  }
+
   &__appearance {
     padding: 20px;
   }

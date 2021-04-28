@@ -22,6 +22,7 @@ export const Legend = styled.div<LegendProps>`
   z-index: 5;
 
   background: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.5);
 
   font-size: 0.9rem;
 
