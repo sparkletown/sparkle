@@ -1,4 +1,10 @@
-import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  ChangeEvent,
+  useMemo,
+  useEffect,
+} from "react";
 import classNames from "classnames";
 import { debounce } from "lodash";
 
@@ -46,17 +52,18 @@ const NavSearchBar = () => {
 
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setSearchInputValue(value);
-      debouncedSearch(value);
+      setSearchInputValue(e.target.value);
     },
-    [debouncedSearch]
+    []
   );
 
   const clearSearchQuery = useCallback(() => {
     setSearchInputValue("");
-    setSearchQuery("");
   }, []);
+
+  useEffect(() => {
+    debouncedSearch(searchInputValue);
+  }, [debouncedSearch, searchInputValue]);
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
