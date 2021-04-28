@@ -12,51 +12,46 @@ import { Venue_v2 } from "types/venues";
 
 import "./AdminVenueView.scss";
 
-export interface SidebarOptionType {
-  [key: string]: string;
-}
-
-export enum SidebarOptions {
+export enum AdminVenueTab {
   dashboard = "dashboard",
   basicInfo = "basic_info",
   entranceExperience = "entrance_experience",
   advancedMapSettings = "advanced_map_settings",
-  ticketingAndAccess = "ticketing_and_access",
 }
 
-const sidbarOptions: SidebarOptionType = {
-  [SidebarOptions.basicInfo]: "Start",
-  [SidebarOptions.entranceExperience]: "Entrance",
-  [SidebarOptions.advancedMapSettings]: "Advanced",
-  [SidebarOptions.dashboard]: "Dashboard",
+const adminVenueTabs: Record<AdminVenueTab, String> = {
+  [AdminVenueTab.basicInfo]: "Start",
+  [AdminVenueTab.entranceExperience]: "Entrance",
+  [AdminVenueTab.advancedMapSettings]: "Advanced",
+  [AdminVenueTab.dashboard]: "Dashboard",
 };
 
-const DEFAULT_TAB = SidebarOptions.dashboard;
+const DEFAULT_TAB = AdminVenueTab.dashboard;
 
 export interface AdminVenueViewProps {
   venue: Venue_v2;
 }
 
 export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
-  const [selectedOption, setSelectedOption] = useState<string>(DEFAULT_TAB);
+  const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
 
   const selectDefaultTab = useCallback(() => {
-    setSelectedOption(DEFAULT_TAB);
+    setSelectedTab(DEFAULT_TAB);
   }, []);
 
-  const renderSidebarOptions = useMemo(() => {
-    return Object.entries(sidbarOptions).map(([id, text]) => (
+  const renderAdminVenueTabs = useMemo(() => {
+    return Object.entries(adminVenueTabs).map(([id, text]) => (
       <Nav.Link
         key={id}
         className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedOption === id,
+          "AdminVenueView__tab--selected": selectedTab === id,
         })}
         eventKey={id}
       >
         {text}
       </Nav.Link>
     ));
-  }, [selectedOption]);
+  }, [selectedTab]);
 
   return (
     <>
@@ -67,23 +62,23 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
 
         <Nav
           className="AdminVenueView__options"
-          activeKey={selectedOption}
-          onSelect={setSelectedOption}
+          activeKey={selectedTab}
+          onSelect={setSelectedTab}
         >
-          {renderSidebarOptions}
+          {renderAdminVenueTabs}
         </Nav>
       </div>
-      {selectedOption === SidebarOptions.basicInfo && (
+      {selectedTab === AdminVenueTab.basicInfo && (
         <BasicInfo venue={venue} onSave={selectDefaultTab} />
       )}
-      {selectedOption === SidebarOptions.entranceExperience && (
+      {selectedTab === AdminVenueTab.entranceExperience && (
         <EntranceExperience venue={venue} onSave={selectDefaultTab} />
       )}
-      {selectedOption === SidebarOptions.advancedMapSettings && (
+      {selectedTab === AdminVenueTab.advancedMapSettings && (
         <AdvancedSettings venue={venue} onSave={selectDefaultTab} />
       )}
-      {selectedOption === SidebarOptions.dashboard && (
-        <VenueDetails venue={venue} onSave={selectDefaultTab} />
+      {selectedTab === AdminVenueTab.dashboard && (
+        <VenueDetails venue={venue} />
       )}
     </>
   );
