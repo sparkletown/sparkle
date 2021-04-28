@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 import { useWindowSize } from "react-use";
 
-import { LARGE_SCREEN_WIDTH, FLOATED_CHATBAR_TEMPLATES } from "settings";
+import { LARGE_SCREEN_WIDTH, CHATBAR_NEVER_PINNED_TEMPLATES } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -95,7 +95,7 @@ export const useChatSidebarPinned = (venue: AnyVenue) => {
   const isPinned = useMemo(
     () =>
       width > LARGE_SCREEN_WIDTH &&
-      !FLOATED_CHATBAR_TEMPLATES.includes(venue?.template),
+      !CHATBAR_NEVER_PINNED_TEMPLATES.includes(venue?.template),
     [width, venue]
   );
 
