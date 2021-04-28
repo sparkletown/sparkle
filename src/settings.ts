@@ -11,6 +11,9 @@ import {
 import { VenueTemplate } from "types/venues";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapIcon from "assets/icons/default-map-icon.png";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
@@ -40,16 +43,17 @@ export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
-export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
+export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
+export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DEFAULT_EDIT_PROFILE_TEXT =
   "I haven't edited my profile to tell you yet";
-export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
-export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;

@@ -22,7 +22,7 @@ import { RoomModal } from "components/templates/PartyMap/components";
 
 import { InputField } from "components/atoms/InputField";
 
-import CloseIcon from "assets/icons/nav-dropdown-close.png";
+import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import { NavSearchResult } from "./NavSearchResult";
 
@@ -138,7 +138,7 @@ const NavSearchBar = () => {
   const clearSearchIcon = (
     <img
       className="NavSearchBar__clear-search"
-      src={CloseIcon}
+      src={navDropdownCloseIcon}
       alt="close button"
       onClick={clearSearchQuery}
     />
