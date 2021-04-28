@@ -37,7 +37,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
 
   const containerStyles = classNames("chat-sidebar", {
-    "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--expanded": isExpanded || isPinned,
     "chat-sidebar--pinned": isPinned,
   });
 
