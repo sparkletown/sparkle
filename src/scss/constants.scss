@@ -59,6 +59,15 @@ $room-info-bg: #6f43ff;
 
 $small-laptop-width: 980px;
 
+$small-desktop-width: 1024px;
+
+$normal-tablet-width: 800px;
+
+$media-breakpoint--sm: 576px;
+$media-breakpoint--md: 768px;
+$media-breakpoint--lg: 992px;
+$media-breakpoint--xl: 1200px;
+
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
