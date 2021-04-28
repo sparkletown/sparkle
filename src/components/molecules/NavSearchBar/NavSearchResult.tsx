@@ -1,5 +1,11 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
+
+import { User } from "types/User";
+
+import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./NavSearchResult.scss";
 
@@ -7,7 +13,7 @@ export interface NavSearchResultProps {
   title: string;
   description?: string;
   image?: string;
-  isAvatar?: boolean;
+  user?: WithId<User>;
   onClick?: (e?: React.MouseEvent) => void;
 }
 
@@ -15,7 +21,7 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
   title,
   description,
   image,
-  isAvatar,
+  user,
   onClick,
 }) => {
   const imageStyles = useMemo(
@@ -25,17 +31,13 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
     [image]
   );
 
-  const imageClasses = useMemo(
-    () =>
-      classNames("NavSearchResult__image", {
-        NavSearchResult__avatar: isAvatar,
-      }),
-    [isAvatar]
-  );
-
   return (
     <div className="NavSearchResult font-size--small" onClick={onClick}>
-      <div className={imageClasses} style={imageStyles} />
+      {isTruthy(user) ? (
+        <UserAvatar user={user} containerClassName="NavSearchResult__avatar" />
+      ) : (
+        <div className="NavSearchResult__image" style={imageStyles} />
+      )}
 
       <div className="NavSearchResult__content">
         <div>{title}</div>
