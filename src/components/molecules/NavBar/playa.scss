@@ -83,14 +83,14 @@ $sand: #937c63;
           box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
         }
         &.navbar-link-message {
-          background-image: url(./navbar-link-message.png);
+          background-image: url(/assets/icons/navbar-link-message.png);
           background-size: 40px 40px;
         }
         &.navbar-link-profile {
           background-size: 40px 40px;
         }
         &.navbar-link-menu {
-          background-image: url(./navbar-link-menu.png);
+          background-image: url(/assets/icons/navbar-link-menu.png);
           background-size: 40px 40px;
           background-color: rgba($black, 0);
 
@@ -99,12 +99,12 @@ $sand: #937c63;
           }
         }
         &.navbar-link-radio {
-          background-image: url(/navbar-link-radio.png);
+          background-image: url(/assets/icons/navbar-link-radio.png);
           background-size: 80px 40px;
           animation: radioanim 2s steps(2) infinite;
 
           &.off {
-            background-image: url(/navbar-link-radio-off.png);
+            background-image: url(/assets/icons/navbar-link-radio-off.png);
             background-size: 40px 40px;
             animation: none;
           }
@@ -120,7 +120,7 @@ $sand: #937c63;
           text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
         }
         &.navbar-link-gift {
-          background-image: url(/navbar-link-gift.png);
+          background-image: url(/assets/icons/navbar-link-gift.png);
           background-size: 40px 40px;
         }
       }
@@ -160,7 +160,7 @@ $sand: #937c63;
         bottom: -16px;
         left: 50%;
         transform: translateX(-50%);
-        background-image: url(./navbar-dropdown-middle-after.png);
+        background-image: url(/assets/icons/navbar-dropdown-middle-after.png);
         background-size: 74px 64px;
       }
       &:hover {
