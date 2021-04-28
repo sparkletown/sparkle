@@ -4,6 +4,7 @@
 .NavSearchBar {
   position: relative;
   width: $search-dropdown-width;
+  background-color: inherit;
 
   &__search-input {
     text-align: left;
@@ -36,6 +37,7 @@
     transform-origin: top right;
     transition: all 400ms $transition-function;
     pointer-events: none;
+    z-index: z(navbar__dropdown);
 
     &--show {
       transform: translateY(0);
