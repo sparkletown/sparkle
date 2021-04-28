@@ -33,6 +33,7 @@ const emptyEventsArray: VenueEvent[] = [];
 const DEBOUNCE_TIME = 200; // ms
 
 const NavSearchBar = () => {
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const debouncedSearch = useMemo(
@@ -46,12 +47,14 @@ const NavSearchBar = () => {
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
+      setSearchInputValue(value);
       debouncedSearch(value);
     },
     [debouncedSearch]
   );
 
   const clearSearchQuery = useCallback(() => {
+    setSearchInputValue("");
     setSearchQuery("");
   }, []);
 
@@ -170,6 +173,7 @@ const NavSearchBar = () => {
       </div>
 
       <InputField
+        value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
