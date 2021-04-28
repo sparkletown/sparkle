@@ -1,11 +1,10 @@
 import React, { useCallback, useMemo } from "react";
-import { useForm, useFieldArray } from "react-hook-form";
+import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { InputField } from "components/atoms/InputField";
 import { MAX_QUESTIONS_NUMBER } from "settings";
 import "./PollBox.scss";
-
-export interface PollBoxProps {}
 
 export type Question = {
   name: string;
@@ -16,37 +15,31 @@ export type PollValues = {
   questions: Question[];
 };
 
+export interface PollBoxProps {
+  onSubmit: (args: PollValues) => void;
+}
+
 const defaultQuestion: Question = { name: "" };
 const defaultValues = {
   topic: "",
   questions: [defaultQuestion, defaultQuestion],
 };
-const isRequired = { required: true };
 
-export const PollBox: React.FC<PollBoxProps> = () => {
-  const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
-    { defaultValues }
-  );
-
-  const { fields, append } = useFieldArray({
-    name: "questions",
-    control,
+export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
+  const { control, handleSubmit, reset, watch } = useForm<PollValues>({
+    defaultValues,
   });
+  const { fields, append } = useFieldArray({ name: "questions", control });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const onCustomSubmit = handleSubmit((data) => {
+    onSubmit(data);
     reset();
   });
 
-  const isDisabled = useMemo(
-    () =>
-      !(
-        watch("topic") &&
-        watch("questions")[0].name &&
-        watch("questions")[1].name
-      ),
-    [watch]
-  );
+  const isDisabled = useMemo(() => {
+    const [question1, question2] = watch("questions");
+    return !(watch("topic") && question1.name && question2.name);
+  }, [watch]);
 
   const addChoice = useCallback(() => append(defaultQuestion), [append]);
   const showAppend = useCallback(
@@ -65,12 +58,16 @@ export const PollBox: React.FC<PollBoxProps> = () => {
     () =>
       fields.map((field, index) => (
         <section className="PollBox__section" key={field.id}>
-          <input
-            className="PollBox__input"
-            autoComplete="off"
-            placeholder={formatPlaceholder(index)}
+          <Controller
+            as={
+              <InputField
+                containerClassName="PollBox__input"
+                autoComplete="off"
+                placeholder={formatPlaceholder(index)}
+              />
+            }
+            control={control}
             name={`questions.${index}.name`}
-            ref={register(isRequired)}
           />
           {showAppend(index) && (
             <button className="PollBox__append-button" onClick={addChoice}>
@@ -79,18 +76,23 @@ export const PollBox: React.FC<PollBoxProps> = () => {
           )}
         </section>
       )),
-    [addChoice, fields, register, showAppend, formatPlaceholder]
+    [addChoice, fields, showAppend, formatPlaceholder, control]
   );
 
   return (
-    <form className="PollBox" onSubmit={onSubmit}>
+    <form className="PollBox" onSubmit={onCustomSubmit}>
       <section className="PollBox__section">
-        <input
-          className="PollBox__input"
-          ref={register(isRequired)}
+        <Controller
+          as={
+            <InputField
+              containerClassName="PollBox__input"
+              name="topic"
+              placeholder="Your question..."
+              autoComplete="off"
+            />
+          }
+          control={control}
           name="topic"
-          placeholder="Your question..."
-          autoComplete="off"
         />
         <button
           className="PollBox__submit-button"

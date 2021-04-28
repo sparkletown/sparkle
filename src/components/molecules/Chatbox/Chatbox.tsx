@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -92,15 +92,17 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     activeOption,
   ]);
 
+  const handleSubmit = useCallback((data) => console.log(data), []);
+
   const renderForms = useMemo(() => {
     switch (activeOption?.name) {
       case OPTIONS[0].name:
-        return <PollBox />;
+        return <PollBox onSubmit={handleSubmit} />;
 
       default:
         return <ChatMessageBox sendMessage={sendMessage} />;
     }
-  }, [activeOption, sendMessage]);
+  }, [activeOption, sendMessage, handleSubmit]);
 
   return (
     <div className="chatbox">
@@ -130,7 +132,6 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             onClick={() => setActiveOption(null)}
           >
             Cancel Poll
-            <FontAwesomeIcon icon={faPoll} />
           </div>
         )}
         {renderForms}
