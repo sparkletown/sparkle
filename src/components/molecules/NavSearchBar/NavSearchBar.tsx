@@ -110,7 +110,7 @@ const NavSearchBar = () => {
           key={`user-${user.id}`}
           title={user.partyName ?? DEFAULT_PARTY_NAME}
           image={user.pictureUrl}
-          isAvatar={true}
+          user={user}
           onClick={() => {
             openUserProfileModal(user);
             clearSearchQuery();
