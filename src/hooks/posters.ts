@@ -35,17 +35,6 @@ export const usePosterFilters = () => {
   };
 };
 
-export enum PosterFilterTypes {
-  TITLE = "title",
-}
-
-export type TitlePosterFilter = {
-  type: PosterFilterTypes.TITLE;
-  title: string;
-};
-
-export type PosterFilters = TitlePosterFilter;
-
 export interface UsePostersProps {
   posterHallId: string;
   titleFilter?: string;
@@ -68,6 +57,7 @@ export const usePosters = ({ posterHallId }: UsePostersProps) => {
 
   return {
     posterVenues: posterVenues?.filter((venue) => {
+      // TODO: Find a more neat way to filter out posters
       let isValid = true;
       const normalizedTitleFilter = titleFilter?.toLowerCase().trim();
 

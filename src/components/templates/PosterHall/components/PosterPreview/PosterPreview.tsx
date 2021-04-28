@@ -17,6 +17,7 @@ export const PosterPreview: React.FC<PosterProps> = ({
   posterVenue,
   onClick,
 }) => {
+  // TODO: Remove poster object and put all of its properties into the venue itself
   const { title, pdfUrl, author, categories } = posterVenue.poster;
 
   const posterClassnames = classNames("poster-preview", {

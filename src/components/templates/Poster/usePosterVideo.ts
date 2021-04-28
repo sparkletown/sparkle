@@ -9,6 +9,7 @@ import { User } from "types/User";
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
 
+// TODO: create useVideoRoom hook and divide this into two hooks & refactor it
 export const usePosterVideo = (venueId: string) => {
   const [room, setRoom] = useState<Room>();
   const [participants, setParticipants] = useState<

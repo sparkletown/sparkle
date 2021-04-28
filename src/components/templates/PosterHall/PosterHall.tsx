@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
+
+import { GenericVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+import { enterVenue } from "utils/url";
 
 import { usePosters } from "hooks/posters";
 
-import { GenericVenue, PosterVenue } from "types/venues";
-
-import { WithId } from "utils/id";
-
 import { PosterPreview } from "./components/PosterPreview";
 import { Search } from "./components/Search";
-import { PosterPreviewModal } from "./components/PosterPreviewModal";
 
 import "./PosterHall.scss";
 
@@ -17,16 +17,6 @@ export interface PosterHallProps {
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
-  const [chosenPosterVenue, setChosenPosterVenue] = useState<
-    WithId<PosterVenue> | undefined
-  >();
-
-  const hidePosterPreviewModal = () => {
-    setChosenPosterVenue(undefined);
-  };
-
-  const hasChosenPosterVenue = chosenPosterVenue !== undefined;
-
   const {
     posterVenues,
     titleFilter,
@@ -51,16 +41,10 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
           <PosterPreview
             posterVenue={posterVenue}
             key={posterVenue.id}
-            onClick={() => setChosenPosterVenue(posterVenue)}
+            onClick={() => enterVenue(posterVenue.id)}
           />
         ))}
       </div>
-
-      <PosterPreviewModal
-        isVisible={hasChosenPosterVenue}
-        onHide={hidePosterPreviewModal}
-        posterVenue={chosenPosterVenue}
-      />
     </div>
   );
 };

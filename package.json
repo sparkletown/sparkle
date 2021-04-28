@@ -134,7 +134,6 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "@types/react-mic": "^12.4.2",
-    "@types/react-pdf": "^5.0.2",
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/scheduler": "^0.16.1",

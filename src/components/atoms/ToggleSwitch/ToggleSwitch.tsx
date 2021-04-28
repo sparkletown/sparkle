@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 
-// Typings
-import { SwitchProps } from "./ToggleSwitch.types";
-
 // Styles
 import * as S from "./ToggleSwitch.styles";
 
-const ToggleSwitch: React.FC<SwitchProps> = ({
+export interface SwitchProps {
+  name: string;
+  forwardRef?: (
+    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
+  ) => void;
+  isChecked?: boolean;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  withText?: boolean;
+  isLarge?: boolean;
+}
+
+// @deprecate Use atoms/toggler instead
+export const ToggleSwitch: React.FC<SwitchProps> = ({
   name,
   forwardRef,
   isChecked = false,
@@ -42,4 +51,5 @@ const ToggleSwitch: React.FC<SwitchProps> = ({
   );
 };
 
+// @deprecate Use atoms/toggler instead
 export default ToggleSwitch;

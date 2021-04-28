@@ -35,6 +35,7 @@ export const Search: React.FC<SearchProps> = ({
         value={titleFilterValue}
         onChange={onTitleChange}
       />
+      {/* TODO: Create a generic checkbox component */}
       <Form>
         <Form.Check
           className="posterhall-search__checkbox"
