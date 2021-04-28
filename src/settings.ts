@@ -519,7 +519,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
 ];
 
-export const FLOATED_CHATBAR_TEMPLATES = [VenueTemplate.audience];
+export const CHATBAR_NEVER_PINNED_TEMPLATES = [VenueTemplate.audience];
 
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
