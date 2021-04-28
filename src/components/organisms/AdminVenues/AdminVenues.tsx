@@ -7,9 +7,9 @@ import { AnyVenue, isPartyMapVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
+import { CreateVenueModal } from "components/molecules/CreateVenueModal";
 
 import "./AdminVenues.scss";
-import { CreateVenueModal } from "components/molecules/CreateVenueModal";
 
 export interface AdminVenuesProps {
   venues: WithId<AnyVenue>[];
