@@ -16,8 +16,10 @@
     "plugin:react-hooks/recommended"
   ],
   "rules": {
-    // note you must disable the base rule as it can report incorrect errors
+    // these base rules can report incorrect errors when using TypeScript, see the corresponding @typescript-eslint versions
     "no-use-before-define": "off",
+    "no-redeclare": "off",
+    "@typescript-eslint/no-redeclare": "warn",
     "@typescript-eslint/no-use-before-define": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "error",
