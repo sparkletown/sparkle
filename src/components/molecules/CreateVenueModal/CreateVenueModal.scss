@@ -1,0 +1,81 @@
+@import "scss/constants.scss";
+
+.modal-backdrop {
+  opacity: 0.9 !important;
+  background-color: black !important;
+}
+
+.modal-content {
+  background-color: $saturated-black !important;
+}
+
+.create-venue-modal {
+  background-color: $saturated-black;
+  padding: 20px;
+
+  &__content {
+    padding: 10px 20px;
+  }
+
+  &__title {
+    text-align: center;
+    padding-bottom: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+
+  &__url-info {
+    padding: 1rem 0;
+    font-size: 1rem;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  &__url {
+    padding: 1rem 0;
+    font-size: 1rem;
+    font-weight: bold;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-direction: row;
+
+    &--back {
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      background-color: lighten($color: $saturated-black, $amount: 10);
+      color: $white;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border-width: 0px;
+      outline: none !important;
+
+      &:hover {
+        background-color: lighten($color: $saturated-black, $amount: 20);
+      }
+    }
+
+    &--next {
+      display: flex;
+      flex: 4;
+      justify-content: center;
+      background-color: $primary;
+      color: $white;
+      margin-left: 10px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border-width: 0px;
+      outline: none !important;
+
+      &:hover {
+        background-color: lighten($color: $primary, $amount: 10);
+      }
+    }
+  }
+}
