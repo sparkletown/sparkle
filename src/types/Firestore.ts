@@ -1,12 +1,11 @@
 import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Purchase } from "types/Purchase";
-import { WithPoster } from "types/posters";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { AnyVenue, PosterVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -96,7 +95,7 @@ export interface FirestoreOrdered {
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
   privateChatMessages?: Array<WithId<PrivateChatMessage>>;
-  posterVenues?: WithId<WithPoster<PosterVenue>>[];
+  posterVenues?: WithId<PosterPageVenue>[];
   worldUsers?: Array<WithId<User>>;
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;

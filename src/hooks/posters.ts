@@ -12,7 +12,7 @@ export const useConnectPosterVenues = (posterHallId: string) => {
       {
         collection: "venues",
         where: [
-          ["template", "==", VenueTemplate.poster],
+          ["template", "==", VenueTemplate.posterpage],
           ["parentId", "==", posterHallId],
         ],
         storeAs: "posterVenues",
@@ -44,19 +44,31 @@ export const usePosters = ({ posterHallId }: UsePostersProps) => {
       const normalizedTitleFilter = titleFilter?.toLowerCase().trim();
 
       if (normalizedTitleFilter) {
-        const {
-          title,
-          author: { name, institution },
-          categories,
-        } = venue.poster;
+        const { title, author, categories } = venue.poster ?? {};
+
+        const { name, institution } = author ?? {};
+
         isValid =
-          isValid &&
-          (title.toLowerCase().includes(normalizedTitleFilter) ||
-            institution.toLowerCase().includes(normalizedTitleFilter) ||
-            name.toLowerCase().includes(normalizedTitleFilter) ||
-            categories?.some((category) =>
-              category.title.toLowerCase().includes(normalizedTitleFilter)
-            ));
+          isValid && title
+            ? title.toLowerCase().includes(normalizedTitleFilter)
+            : true;
+
+        isValid =
+          isValid && institution
+            ? institution.toLowerCase().includes(normalizedTitleFilter)
+            : true;
+
+        isValid =
+          isValid && name
+            ? name.toLowerCase().includes(normalizedTitleFilter)
+            : true;
+
+        isValid =
+          isValid && categories
+            ? categories.some((category) =>
+                category.title.toLowerCase().includes(normalizedTitleFilter)
+              )
+            : true;
       }
 
       if (liveFilter) isValid = isValid && !!venue.isLive;

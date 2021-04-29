@@ -1,16 +1,14 @@
-export type TPosterCategory = {
+export type PosterCategory = {
   title: string;
   color: string;
 };
 
-export type TPoster = {
+export type Poster = {
   title: string;
-  pdfUrl: string;
-  categories: TPosterCategory[];
+  categories: PosterCategory[];
+  introVideoUrl: string;
   author: {
     name: string;
     institution: string;
   };
 };
-
-export type WithPoster<T extends object> = T & { poster: TPoster };

@@ -19,6 +19,8 @@ const VenueTemplate = {
   partymap: "partymap",
   performancevenue: "performancevenue",
   playa: "playa",
+  posterhall: "posterhall",
+  posterpage: "posterpage",
   preplaya: "preplaya",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
@@ -830,7 +832,7 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const update = {
-    isLive: !!data.isLive,
+    isLive: Boolean(data.isLive),
   };
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);

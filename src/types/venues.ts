@@ -3,7 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
-import { TPoster, TPosterCategory } from "./posters";
+import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
@@ -26,7 +26,7 @@ export enum VenueTemplate {
   performancevenue = "performancevenue",
   playa = "playa",
   posterhall = "posterhall",
-  poster = "poster",
+  posterpage = "posterpage",
   preplaya = "preplaya",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -43,7 +43,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
-  | VenueTemplate.poster
+  | VenueTemplate.posterpage
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
@@ -52,7 +52,7 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterVenue;
+  | PosterPageVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -168,8 +168,6 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
-  poster?: TPoster;
-  isLive?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -225,15 +223,10 @@ export interface EmbeddableVenue extends BaseVenue {
   iframeOptions?: Record<string, string>;
 }
 
-export interface PosterVenue extends BaseVenue {
-  template: VenueTemplate.poster;
-  categories: TPosterCategory[];
-  title: string;
-  introVideoUrl: string;
-  presenter: {
-    name: string;
-    institution: string;
-  };
+export interface PosterPageVenue extends BaseVenue {
+  template: VenueTemplate.posterpage;
+  poster?: Poster;
+  isLive?: boolean;
 }
 
 export interface Question {

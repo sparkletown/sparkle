@@ -12,7 +12,7 @@ import { setVenueLiveStatus } from "api/venue";
 
 import { POSTER_CELL_COUNT_MAX } from "settings";
 
-import { PosterVenue } from "types/venues";
+import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -27,17 +27,13 @@ import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import "./Poster.scss";
 
 export interface PosterProps {
-  venue: WithId<PosterVenue>;
+  venue: WithId<PosterPageVenue>;
 }
 
 export const Poster: React.FC<PosterProps> = ({ venue }) => {
-  const {
-    id: venueId,
-    isLive: isPosterLive,
-    title,
-    introVideoUrl,
-    iframeUrl,
-  } = venue;
+  const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
+
+  const { title, introVideoUrl } = poster ?? {};
 
   const [isIntroVideoShown, setIntroVideoShown] = useState<boolean>(false);
 

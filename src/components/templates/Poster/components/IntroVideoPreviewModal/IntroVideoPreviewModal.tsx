@@ -1,7 +1,7 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 
-import { PosterVenue } from "types/venues";
+import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -10,7 +10,7 @@ import "./IntroVideoPreviewModal.scss";
 export interface IntroVideoPreviewModalProps {
   isVisible: boolean;
   onHide: () => void;
-  posterVenue?: WithId<PosterVenue>;
+  posterVenue?: WithId<PosterPageVenue>;
 }
 
 export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
@@ -27,28 +27,14 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
       size="lg"
       modal
     >
-      {posterVenue && (
-        <IntroVideoPreviewModalContent posterVenue={posterVenue} />
-      )}
-    </Modal>
-  );
-};
-
-export interface IntroVideoPreviewModalContentProps {
-  posterVenue: WithId<PosterVenue>;
-}
-
-export const IntroVideoPreviewModalContent: React.FC<IntroVideoPreviewModalContentProps> = ({
-  posterVenue,
-}) => {
-  return (
-    <>
-      <p className="IntroVideoPreviewModal__title">{posterVenue.title}</p>
+      <p className="IntroVideoPreviewModal__title">
+        {posterVenue?.poster?.title}
+      </p>
       <iframe
         className="IntroVideoPreviewModal__iframe"
         title="IntroVideoPreviewModal-iframe"
-        src={posterVenue.introVideoUrl}
+        src={posterVenue?.poster?.introVideoUrl}
       />
-    </>
+    </Modal>
   );
 };
