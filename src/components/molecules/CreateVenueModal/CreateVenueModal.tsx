@@ -3,12 +3,10 @@ import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import Bugsnag from "@bugsnag/js";
 
-import { createUrlSafeName, createVenue_v2 } from "api/admin";
+import { createVenue_v2, generateVenueLandingUrl } from "api/admin";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { venueLandingUrl } from "utils/url";
 
 import { VenueTemplate } from "types/venues";
 
@@ -76,11 +74,7 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
 
   const values = watch();
 
-  const urlSafeName = values.name
-    ? `${window.location.host}${venueLandingUrl(
-        createUrlSafeName(values.name)
-      )}`
-    : undefined;
+  const venueUrl = generateVenueLandingUrl(values.name);
 
   return (
     <Modal
@@ -107,7 +101,7 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
           )}
           <div className="create-venue-modal__url-info">
             The url of your party will be:{" "}
-            <span className="create-venue-modal__url">{urlSafeName}</span>
+            <span className="create-venue-modal__url">{venueUrl}</span>
           </div>
           <div className="create-venue-modal__buttons">
             <button

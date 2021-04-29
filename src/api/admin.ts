@@ -9,7 +9,7 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
-import { venueInsideUrl } from "utils/url";
+import { venueInsideUrl, venueLandingUrl } from "utils/url";
 import { WithId } from "utils/id";
 
 export interface EventInput {
@@ -152,6 +152,11 @@ const randomPrefix = () => Math.random().toString();
 
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
+
+export const generateVenueLandingUrl = (value?: string) =>
+  value
+    ? `${window.location.host}${venueLandingUrl(createUrlSafeName(value))}`
+    : undefined;
 
 const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
