@@ -31,8 +31,8 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
 
   const { openUserProfileModal } = useProfileModalControls();
 
-  const containerStyles = classNames("poll", {
-    "poll--me": isMine,
+  const containerStyles = classNames("ChatPoll", {
+    "ChatPoll--me": isMine,
   });
 
   const renderQuestions = useMemo(
@@ -40,7 +40,7 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
       questions.map((question: Question) => (
         <button
           key={question.name}
-          className="poll__question"
+          className="ChatPoll__question"
           onClick={() => console.log(question)}
         >
           {question.name}
@@ -52,7 +52,7 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
   const renderTexts = useMemo(
     () =>
       questions.map((question: Question) => (
-        <div key={question.name} className="poll__question">
+        <div key={question.name} className="ChatPoll__question">
           {question.name}
         </div>
       )),
@@ -65,26 +65,26 @@ export const ChatPoll: React.FC<ChatProps> = ({ pollData, deletePoll }) => {
 
   return (
     <div className={containerStyles}>
-      <div className="poll__container">
-        <FontAwesomeIcon className="poll__icon" icon={faPoll} size="lg" />
-        <div className="poll__topic">{topic}</div>
+      <div className="ChatPoll__container">
+        <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
+        <div className="ChatPoll__topic">{topic}</div>
         {isMine ? renderTexts : renderQuestions}
-        <div className="poll__details">
-          <p>{`${votes} votes`}</p>
+        <div className="ChatPoll__details">
+          <p className="ChatPoll__votes">{`${votes} votes`}</p>
           {canBeDeleted && (
             <>
               -
-              <button onClick={deletePoll} className="poll__delete-button">
+              <button onClick={deletePoll} className="ChatPoll__delete-button">
                 Delete Poll
               </button>
             </>
           )}
         </div>
       </div>
-      <div className="poll__info" onClick={openAuthorProfile}>
+      <div className="ChatPoll__info" onClick={openAuthorProfile}>
         <UserAvatar user={author} />
-        <span className="poll__author">{author.partyName}</span>
-        <span className="poll__time">{dayjs(ts_utc).format("h:mm A")}</span>
+        <span className="ChatPoll__author">{author.partyName}</span>
+        <span className="ChatPoll__time">{dayjs(ts_utc).format("h:mm A")}</span>
       </div>
     </div>
   );

@@ -60,7 +60,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   deleteMessage,
 }) => {
-  const [activeOption, setActiveOption] = useState<Option | null>(null);
+  const [activeOption, setActiveOption] = useState<Option>();
 
   const renderedMessages = useMemo(
     () =>
@@ -129,7 +129,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         ) : (
           <div
             className="chatbox__cancel-poll"
-            onClick={() => setActiveOption(null)}
+            onClick={() => setActiveOption(undefined)}
           >
             Cancel Poll
           </div>

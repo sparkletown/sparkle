@@ -3,7 +3,7 @@
 $counterparty-text-border-radius: 28px 28px 28px 4px;
 $my-text-border-radius: 28px 28px 4px 28px;
 
-.poll {
+.ChatPoll {
   align-self: flex-start;
   display: flex;
   align-items: flex-start;
@@ -35,10 +35,10 @@ $my-text-border-radius: 28px 28px 4px 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
 
-    p {
-      margin: 0 10px 0 0;
-    }
+  &__votes {
+    margin: 0 10px 0 0;
   }
 
   &__container {
@@ -102,22 +102,22 @@ $my-text-border-radius: 28px 28px 4px 28px;
     align-self: flex-end;
     align-items: flex-end;
 
-    .poll__container {
+    .ChatPoll__container {
       background-color: $primary;
     }
 
-    .poll__text {
+    .ChatPoll__text {
       text-align: right;
       background-color: $primary;
       border-radius: $my-text-border-radius;
     }
 
-    .poll__info {
+    .ChatPoll__info {
       flex-direction: row-reverse;
       align-self: flex-end;
     }
 
-    .poll__author {
+    .ChatPoll__author {
       margin: 0 4px 0 8px;
     }
   }

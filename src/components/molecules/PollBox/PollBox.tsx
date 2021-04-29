@@ -2,8 +2,11 @@ import React, { useCallback, useMemo } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
-import { InputField } from "components/atoms/InputField";
+
 import { MAX_POLL_CHOICES } from "settings";
+
+import { InputField } from "components/atoms/InputField";
+
 import "./PollBox.scss";
 
 export type Question = {
