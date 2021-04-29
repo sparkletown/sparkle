@@ -31,8 +31,8 @@ const BasicInfo: React.FC<BasicInfoProps> = ({ venue, onSave }) => {
     },
     defaultValues: {
       name: venue.name,
-      subtitle: venue.config.landingPageConfig.subtitle,
-      description: venue.config.landingPageConfig.description,
+      subtitle: venue.config?.landingPageConfig?.subtitle,
+      description: venue.config?.landingPageConfig?.description,
     },
   });
 
@@ -128,7 +128,7 @@ const BasicInfo: React.FC<BasicInfoProps> = ({ venue, onSave }) => {
           name="bannerImage"
           error={errors.bannerImageFile || errors.bannerImageUrl}
           forwardRef={register}
-          imgUrl={venue.config.landingPageConfig.coverImageUrl}
+          imgUrl={venue.config?.landingPageConfig?.coverImageUrl}
         />
       </S.ItemBody>
     </S.ItemWrapper>
@@ -147,7 +147,7 @@ const BasicInfo: React.FC<BasicInfoProps> = ({ venue, onSave }) => {
           name="logoImage"
           error={errors.logoImageFile || errors.logoImageUrl}
           forwardRef={register}
-          imgUrl={venue.host.icon}
+          imgUrl={venue.host?.icon}
         />
       </S.ItemBody>
     </S.ItemWrapper>
