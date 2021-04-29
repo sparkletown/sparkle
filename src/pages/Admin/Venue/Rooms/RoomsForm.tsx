@@ -385,7 +385,7 @@ const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
                 backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
                 iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
                 draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-                venue={venue}
+                rooms={venue.rooms ?? []}
                 currentRoomIndex={editingRoomIndex}
                 otherIconsStyle={{ opacity: 0.4 }}
               />

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
+import { Room } from "types/rooms";
 
 import { ExtractProps } from "types/utility";
-import { PartyMapVenue } from "types/venues";
 
 import { Container, SubVenueIconMap } from "./Container";
 
@@ -9,16 +9,16 @@ type PartyMapContainerProps = Omit<
   ExtractProps<typeof Container>,
   "otherIcons"
 > & {
-  venue: PartyMapVenue;
+  rooms: Room[];
   currentRoomIndex?: number;
 };
 
 export const PartyMapContainer: React.FC<PartyMapContainerProps> = (props) => {
-  const { currentRoomIndex, venue, ...rest } = props;
+  const { currentRoomIndex, rooms, ...rest } = props;
 
   const otherIcons: SubVenueIconMap = useMemo(() => {
     return (
-      venue.rooms
+      rooms
         ?.filter((r, idx) => idx !== currentRoomIndex)
         .reduce((acc, r) => {
           return {
@@ -33,7 +33,7 @@ export const PartyMapContainer: React.FC<PartyMapContainerProps> = (props) => {
           };
         }, {}) ?? {}
     );
-  }, [venue, currentRoomIndex]);
+  }, [rooms, currentRoomIndex]);
 
   return <Container {...rest} otherIcons={otherIcons} />;
 };

@@ -85,7 +85,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
               backgroundImage={venue.mapBackgroundImageUrl || PLAYA_IMAGE}
               iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
               draggableIconImageStyle={PLAYA_VENUE_STYLES.draggableIconImage}
-              venue={partyMapVenue}
+              rooms={partyMapVenue.rooms ?? []}
             />
           </div>
         );

@@ -34,6 +34,7 @@ import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+import { AdminTemplates } from "pages/AdminTemplates";
 
 const AppRouter = () => {
   return (
@@ -60,6 +61,11 @@ const AppRouter = () => {
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
+        <Route
+          exact
+          path="/admin_v2/templates/:venueId"
+          component={AdminTemplates}
+        />
         <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
         <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
 
