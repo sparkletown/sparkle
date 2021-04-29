@@ -106,12 +106,6 @@ $my-text-border-radius: 28px 28px 4px 28px;
       background-color: $primary;
     }
 
-    .ChatPoll__text {
-      text-align: right;
-      background-color: $primary;
-      border-radius: $my-text-border-radius;
-    }
-
     .ChatPoll__info {
       flex-direction: row-reverse;
       align-self: flex-end;

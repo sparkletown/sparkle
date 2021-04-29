@@ -14,7 +14,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 }) => {
   const [isSendingMessage, setMessageSending] = useState(false);
 
-  // This logic dissallows users to spam into the chat. There should be a delay, between each message
+  // This logic disallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
     if (isSendingMessage) {
       setTimeout(() => {
