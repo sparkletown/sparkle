@@ -54,7 +54,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
         : `Choice ${index + 1}`,
     []
   );
-  const renderChoiceFields = useMemo(
+  const renderedChoices = useMemo(
     () =>
       fields.map((field, index) => (
         <section className="PollBox__section" key={field.id}>
