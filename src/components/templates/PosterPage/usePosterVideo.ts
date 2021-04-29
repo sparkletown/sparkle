@@ -51,8 +51,12 @@ export const usePosterVideo = (venueId: string) => {
     [participants, worldUsersById]
   );
 
-  const isMeActiveParticipant = !!activeParticipants.find(
-    (participant) => participant.identity === userId
+  const isMeActiveParticipant = useMemo(
+    () =>
+      !!activeParticipants.find(
+        (participant) => participant.identity === userId
+      ),
+    [activeParticipants, userId]
   );
 
   return {
