@@ -44,7 +44,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const {
     activeParticipants,
-    passiveListerens,
+    passiveListeners,
 
     isMeActiveParticipant,
 
@@ -132,7 +132,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <div className="PosterPage__listeners">
-        <UserList users={passiveListerens} activity="listening" />
+        <UserList users={passiveListeners} activity="listening" />
       </div>
 
       <IntroVideoPreviewModal
