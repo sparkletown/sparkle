@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { GenericVenue } from "types/venues";
 
@@ -27,6 +27,16 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     posterHallId: venue.id,
   });
 
+  const renderedPosterVenues = useMemo(() => {
+    return posterVenues?.map((posterVenue) => (
+      <PosterPreview
+        key={posterVenue.id}
+        posterVenue={posterVenue}
+        onClick={() => enterVenue(posterVenue.id)}
+      />
+    ));
+  }, [posterVenues]);
+
   return (
     <div className="PosterHall">
       <PosterHallSearch
@@ -36,15 +46,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         setLiveValue={setLiveFilter}
       />
 
-      <div className="PosterHall__posters">
-        {posterVenues?.map((posterVenue) => (
-          <PosterPreview
-            posterVenue={posterVenue}
-            key={posterVenue.id}
-            onClick={() => enterVenue(posterVenue.id)}
-          />
-        ))}
-      </div>
+      <div className="PosterHall__posters">{renderedPosterVenues}</div>
     </div>
   );
 };
