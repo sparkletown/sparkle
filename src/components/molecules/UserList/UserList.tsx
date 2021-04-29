@@ -25,7 +25,7 @@ interface PropsType {
   showEvenWhenNoUsers?: boolean;
 }
 
-export const UserList: React.FunctionComponent<PropsType> = ({
+export const UserList: React.FC<UserListProps> = ({
   users: _users,
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,

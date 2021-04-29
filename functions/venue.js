@@ -830,7 +830,7 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   const update = {
-    isLive: data.isLive,
+    isLive: !!data.isLive,
   };
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);

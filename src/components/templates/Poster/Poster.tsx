@@ -51,7 +51,7 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
     turnVideoOn,
   } = usePosterVideo(venue.id);
 
-  const isPosterLive = venue.isLive;
+  const { id: venueId, isLive: isPosterLive } = venue;
 
   const setVenueLiveOn = () => {
     setVenueLiveStatus(venue.id, true);
@@ -130,7 +130,7 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
             {venue.introVideoUrl && (
               <div className="poster__control" onClick={showIntroVideoModal}>
                 <FontAwesomeIcon icon={faTv} size="lg" />
-                <span className="poster__control-text">Intro Video</span>
+                <span className="poster__control-text">Intro video</span>
               </div>
             )}
           </div>
@@ -158,12 +158,12 @@ export const Poster: React.FC<PosterProps> = ({ venue }) => {
         <div className="poster__listeners">
           <UserList users={passiveListerens} activity="listening" />
         </div>
+
+        <IntroVideoPreviewModal
+          isVisible={isIntroVideoShown}
+          onHide={hideIntroVideoModal}
+          posterVenue={venue}
+        />
       </div>
-      <IntroVideoPreviewModal
-        isVisible={isIntroVideoShown}
-        onHide={hideIntroVideoModal}
-        posterVenue={venue}
-      />
-    </>
   );
 };

@@ -10,7 +10,7 @@ import "./PosterPreview.scss";
 
 export interface PosterProps {
   posterVenue: WithId<WithPoster<PosterVenue>>;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 export const PosterPreview: React.FC<PosterProps> = ({

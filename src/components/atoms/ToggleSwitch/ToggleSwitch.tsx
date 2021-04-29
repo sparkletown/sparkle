@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
-// Styles
 import * as S from "./ToggleSwitch.styles";
 
-export interface SwitchProps {
+export interface ToggleSwitchProps {
   name: string;
   forwardRef?: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
@@ -14,7 +13,9 @@ export interface SwitchProps {
   isLarge?: boolean;
 }
 
-// @deprecate Use atoms/toggler instead
+/**
+ * @deprecated Use components/atoms/Toggler instead
+ */
 export const ToggleSwitch: React.FC<SwitchProps> = ({
   name,
   forwardRef,
@@ -51,5 +52,7 @@ export const ToggleSwitch: React.FC<SwitchProps> = ({
   );
 };
 
-// @deprecate Use atoms/toggler instead
+/**
+ * @deprecated Use components/atoms/Toggler instead
+ */
 export default ToggleSwitch;

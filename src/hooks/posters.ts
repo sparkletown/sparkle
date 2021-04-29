@@ -6,7 +6,7 @@ import { posterVenuesSelector } from "utils/selectors";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
-export const useConnectPosters = (posterHallId: string) => {
+export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
     return [
       {
@@ -21,7 +21,7 @@ export const useConnectPosters = (posterHallId: string) => {
   });
 };
 
-export const usePosterFilters = () => {
+export const usePosterFilterState = () => {
   const [titleFilter, setTitleFilter] = useState<string>();
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);

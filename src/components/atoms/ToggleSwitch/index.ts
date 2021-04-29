@@ -1,2 +1,4 @@
-// @deprecate Use atoms/toggler instead
+/**
+ * @deprecated Use components/atoms/Toggler instead
+ */
 export { default } from "./ToggleSwitch";

@@ -1,9 +1,9 @@
-import classNames from "classnames";
 import React, {
   DetailedHTMLProps,
   forwardRef,
   InputHTMLAttributes,
 } from "react";
+import classNames from "classnames";
 import { v4 as uuidv4 } from "uuid";
 
 import "./Toggler.scss";
@@ -35,10 +35,11 @@ const Toggler: React.ForwardRefRenderFunction<HTMLDivElement, TogglerProps> = (
 
   return (
     <div ref={ref} className="Toggler">
-      <label className="Toggler__input" htmlFor={id}>
+      <label className="Toggler__input">
         <span className={sliderClasses} />
+        <input hidden type="checkbox" {...extraInputProps} />
       </label>
-      <input hidden type="checkbox" {...extraInputProps} id={id} />
+
       {title && <div className="Toggler__title">{title}</div>}
     </div>
   );

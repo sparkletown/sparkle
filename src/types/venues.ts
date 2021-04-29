@@ -40,19 +40,19 @@ export enum VenueTemplate {
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
-  | VenueTemplate.partymap
-  | VenueTemplate.poster
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
+  | VenueTemplate.partymap
+  | VenueTemplate.poster
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
 export type AnyVenue =
   | GenericVenue
-  | PartyMapVenue
-  | PosterVenue
+  | EmbeddableVenue
   | JazzbarVenue
-  | EmbeddableVenue;
+  | PartyMapVenue
+  | PosterVenue;
 
 // --- VENUE V2
 export interface Venue_v2

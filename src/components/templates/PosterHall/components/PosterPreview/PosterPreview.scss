@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.poster-preview {
+.PosterPreview {
   display: flex;
   flex-direction: column;
 
@@ -25,9 +25,9 @@
   }
 
   &__pdf {
+    position: relative;
     border-radius: 10px;
     overflow: hidden;
-    position: relative;
     background-color: lightgray;
     height: 50%;
     overflow: hidden;

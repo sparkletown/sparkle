@@ -34,11 +34,11 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
   );
 };
 
-interface IntroVideoPreviewModalContentProps {
+export interface IntroVideoPreviewModalContentProps {
   posterVenue: WithId<PosterVenue>;
 }
 
-const IntroVideoPreviewModalContent: React.FC<IntroVideoPreviewModalContentProps> = ({
+export const IntroVideoPreviewModalContent: React.FC<IntroVideoPreviewModalContentProps> = ({
   posterVenue,
 }) => {
   return (

@@ -17,9 +17,9 @@ import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
-import { ReactionPage } from "components/templates/ReactionPage";
 import { PosterHall } from "components/templates/PosterHall";
 import { Poster } from "components/templates/Poster";
+import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
