@@ -109,7 +109,6 @@ const NavSearchBar = () => {
         <NavSearchResult
           key={`user-${user.id}`}
           title={user.partyName ?? DEFAULT_PARTY_NAME}
-          image={user.pictureUrl}
           user={user}
           onClick={() => {
             openUserProfileModal(user);
