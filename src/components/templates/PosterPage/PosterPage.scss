@@ -2,10 +2,8 @@
 
 $poster-cell-optimal-width: 260px;
 $poster-cell-optimal-height: 195px;
-$poster-control-btn-height: 65px;
-$poster-control-btn-width: 65px;
 
-.poster {
+.PosterPage {
   padding: 0 $spacing--xl 0;
 
   &__header {
@@ -44,50 +42,10 @@ $poster-control-btn-width: 65px;
       "listeners listeners listeners listeners";
   }
 
-  &__control {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    height: $poster-control-btn-height;
-    width: $poster-control-btn-width;
-    margin: $spacing--xs;
-    border-radius: $border-radius--md;
-
-    background-color: $dark-grey;
-    cursor: pointer;
-
-    opacity: 0.6;
-
-    &:hover {
-      opacity: 1;
-    }
-
-    &--stop {
-      background-color: $red;
-      color: $white;
-      opacity: 0.8;
-    }
-  }
-
-  &__settings-popover {
-    // This must overwrite default popover height
-    height: 100px !important;
-  }
-
-  &__settings-popover-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    height: 100%;
-    width: 100%;
-  }
-
-  &__control-text {
-    margin-top: $spacing--sm;
-    font-size: $font-size--sm;
+  &__control--stop {
+    background-color: $red;
+    color: $white;
+    opacity: 0.8;
   }
 
   &__iframe {

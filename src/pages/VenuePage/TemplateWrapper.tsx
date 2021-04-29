@@ -18,7 +18,7 @@ import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PosterHall } from "components/templates/PosterHall";
-import { Poster } from "components/templates/Poster";
+import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
@@ -119,7 +119,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.posterpage:
-      template = <Poster venue={venue} />;
+      template = <PosterPage venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:

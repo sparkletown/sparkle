@@ -555,4 +555,4 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
-export const POSTER_CELL_COUNT_MAX = 10;
+export const POSTERPAGE_VENUE_MAX_VIDEO_PARTICIPANTS = 10;
