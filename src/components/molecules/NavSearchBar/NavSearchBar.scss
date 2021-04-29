@@ -36,7 +36,7 @@
     transform-origin: top right;
     transition: all 400ms $transition-function;
     pointer-events: none;
-    z-index: z(navbar__dropdown);
+    z-index: z(navbar__drawer);
 
     &--show {
       transform: translateY(0);

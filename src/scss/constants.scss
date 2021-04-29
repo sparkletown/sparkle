@@ -76,6 +76,7 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+$z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
   admin-venue-card-bg: -1,
@@ -98,7 +99,7 @@ $z-layers: (
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
-  navbar__dropdown: -1,
+  navbar__drawer: $z-layer-navbar-drawer,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
