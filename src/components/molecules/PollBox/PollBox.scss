@@ -1,7 +1,8 @@
 @import "scss/constants";
 
+$spacing: 10px;
+
 .PollBox {
-  $spacing: 10px;
   &__form {
     display: flex;
     flex-direction: column;

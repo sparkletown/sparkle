@@ -9,28 +9,28 @@ import { InputField } from "components/atoms/InputField";
 
 import "./PollBox.scss";
 
-export type Question = {
+export type PollQuestion = {
   name: string;
 };
 
 export type PollValues = {
   topic: string;
-  questions: Question[];
+  questions: PollQuestion[];
 };
 
 export interface PollBoxProps {
-  onSubmit: (args: PollValues) => void;
+  onSubmit: (props: PollValues) => void;
 }
 
-const defaultQuestion: Question = { name: "" };
-const defaultValues = {
+const DEFAULT_QUESTION: PollQuestion = { name: "" };
+const DEFAULT_VALUES = {
   topic: "",
-  questions: [defaultQuestion, defaultQuestion],
+  questions: [DEFAULT_QUESTION, DEFAULT_QUESTION],
 };
 
 export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
   const { control, handleSubmit, reset, watch } = useForm<PollValues>({
-    defaultValues,
+    defaultValues: DEFAULT_VALUES,
   });
   const { fields, append } = useFieldArray({ name: "questions", control });
   const [question1, question2] = watch("questions");
@@ -43,7 +43,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
 
   const isDisabled = !(topic && question1.name && question2.name);
 
-  const addChoice = useCallback(() => append(defaultQuestion), [append]);
+  const addChoice = useCallback(() => append(DEFAULT_QUESTION), [append]);
   const showAppend = useCallback(
     (index) => index + 1 === fields.length && MAX_POLL_CHOICES > fields.length,
     [fields]

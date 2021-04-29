@@ -10,7 +10,7 @@ import { User } from "types/User";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { PollValues, Question } from "components/molecules/PollBox/PollBox";
+import { PollValues, PollQuestion } from "components/molecules/PollBox/PollBox";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 import Button from "components/atoms/Button";
@@ -41,7 +41,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
 
   const renderQuestions = useMemo(
     () =>
-      questions.map((question: Question) =>
+      questions.map((question: PollQuestion) =>
         isMine ? (
           <div key={question.name} className="ChatPoll__text">
             {question.name}
