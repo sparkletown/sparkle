@@ -16,7 +16,7 @@ export interface ToggleSwitchProps {
 /**
  * @deprecated Use components/atoms/Toggler instead
  */
-export const ToggleSwitch: React.FC<SwitchProps> = ({
+export const ToggleSwitch: React.FC<ToggleSwitchProps> = ({
   name,
   forwardRef,
   isChecked = false,

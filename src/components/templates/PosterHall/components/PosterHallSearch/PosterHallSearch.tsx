@@ -4,9 +4,9 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { InputField } from "components/atoms/InputField";
 
-import "./Search.scss";
+import "./PosterHallSearch.scss";
 
-export interface SearchProps {
+export interface PosterHallSearchProps {
   titleFilterValue?: string;
   setTitleValue: (title: string) => void;
 
@@ -14,7 +14,7 @@ export interface SearchProps {
   setLiveValue: (isLive: boolean) => void;
 }
 
-export const Search: React.FC<SearchProps> = ({
+export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
   titleFilterValue,
   setTitleValue,
 
@@ -26,10 +26,10 @@ export const Search: React.FC<SearchProps> = ({
   };
 
   return (
-    <div className="posterhall-search">
+    <div className="PosterHallSearch">
       <InputField
-        containerClassName="posterhall-search__input-container"
-        inputClassName="posterhall-search__input"
+        containerClassName="PosterHallSearch__input-container"
+        inputClassName="PosterHallSearch__input"
         iconStart={faSearch}
         placeholder="Search Posters/Demos"
         value={titleFilterValue}
@@ -38,7 +38,7 @@ export const Search: React.FC<SearchProps> = ({
       {/* TODO: Create a generic checkbox component */}
       <Form>
         <Form.Check
-          className="posterhall-search__checkbox"
+          className="PosterHallSearch__checkbox"
           type="checkbox"
           label="Presenter is online"
           checked={liveFilterValue}

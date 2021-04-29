@@ -13,7 +13,7 @@ import { User } from "types/User";
 
 import "./UserList.scss";
 
-interface PropsType {
+interface UserListProps {
   users: readonly WithId<User>[];
   limit?: number;
   imageSize?: number;

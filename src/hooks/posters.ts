@@ -21,20 +21,6 @@ export const useConnectPosterVenues = (posterHallId: string) => {
   });
 };
 
-export const usePosterFilterState = () => {
-  const [titleFilter, setTitleFilter] = useState<string>();
-
-  const [liveFilter, setLiveFilter] = useState<boolean>(false);
-
-  return {
-    titleFilter,
-    liveFilter,
-
-    setTitleFilter,
-    setLiveFilter,
-  };
-};
-
 export interface UsePostersProps {
   posterHallId: string;
   titleFilter?: string;
@@ -43,17 +29,13 @@ export interface UsePostersProps {
 }
 
 export const usePosters = ({ posterHallId }: UsePostersProps) => {
-  useConnectPosters(posterHallId);
+  useConnectPosterVenues(posterHallId);
 
   const posterVenues = useSelector(posterVenuesSelector);
 
-  const {
-    titleFilter,
-    liveFilter,
+  const [titleFilter, setTitleFilter] = useState<string>();
 
-    setTitleFilter,
-    setLiveFilter,
-  } = usePosterFilters();
+  const [liveFilter, setLiveFilter] = useState<boolean>(false);
 
   return {
     posterVenues: posterVenues?.filter((venue) => {

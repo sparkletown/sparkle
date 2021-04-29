@@ -8,7 +8,7 @@ import { enterVenue } from "utils/url";
 import { usePosters } from "hooks/posters";
 
 import { PosterPreview } from "./components/PosterPreview";
-import { Search } from "./components/Search";
+import { PosterHallSearch } from "./components/PosterHallSearch";
 
 import "./PosterHall.scss";
 
@@ -28,15 +28,15 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   });
 
   return (
-    <div className="posterhall">
-      <Search
+    <div className="PosterHall">
+      <PosterHallSearch
         setTitleValue={setTitleFilter}
         titleFilterValue={titleFilter}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
       />
 
-      <div className="posterhall__posters">
+      <div className="PosterHall__posters">
         {posterVenues?.map((posterVenue) => (
           <PosterPreview
             posterVenue={posterVenue}

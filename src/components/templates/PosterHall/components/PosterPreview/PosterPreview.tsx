@@ -18,30 +18,21 @@ export const PosterPreview: React.FC<PosterProps> = ({
   onClick,
 }) => {
   // TODO: Remove poster object and put all of its properties into the venue itself
-  const { title, pdfUrl, author, categories } = posterVenue.poster;
+  const { title, author, categories } = posterVenue.poster;
 
-  const posterClassnames = classNames("poster-preview", {
-    "poster-preview--live": posterVenue.isLive,
+  const posterClassnames = classNames("PosterPreview", {
+    "PosterPreview--live": posterVenue.isLive,
   });
 
   return (
     <div className={posterClassnames} onClick={onClick}>
-      <div className="poster-preview__pdf">
-        <iframe
-          src={pdfUrl}
-          width="100%"
-          title={title}
-          className="poster-preview__pdf-iframe"
-        />
-      </div>
-
-      <p className="poster-preview__title">{title}</p>
+      <p className="PosterPreview__title">{title}</p>
       {categories?.length > 0 && (
-        <div className="poster-preview__categories">
+        <div className="PosterPreview__categories">
           {categories.map((category) => (
             <div
               key={category.title + category.color}
-              className="poster-preview__category"
+              className="PosterPreview__category"
               style={{
                 backgroundColor: category.color,
               }}
@@ -52,9 +43,9 @@ export const PosterPreview: React.FC<PosterProps> = ({
         </div>
       )}
       {author && (
-        <div className="poster-preview__author">
-          <div className="poster-preview__author__name">{author.name}</div>
-          <div className="poster-preview__author__institution">
+        <div className="PosterPreview__author">
+          <div className="PosterPreview__author__name">{author.name}</div>
+          <div className="PosterPreview__author__institution">
             {author.institution}
           </div>
         </div>
