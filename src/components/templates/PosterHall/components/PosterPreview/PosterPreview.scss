@@ -51,12 +51,14 @@ $poster-preview-width: 300px;
 
   &__author {
     margin-top: auto;
-    &__name {
-      font-size: $font-size--sm;
-      font-weight: $font-weight--500;
-    }
-    &__institution {
-      font-size: $font-size--xs;
-    }
+  }
+
+  &__author-name {
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+  }
+
+  &__author-institution {
+    font-size: $font-size--xs;
   }
 }
