@@ -4,7 +4,6 @@ import React, {
   InputHTMLAttributes,
 } from "react";
 import classNames from "classnames";
-import { v4 as uuidv4 } from "uuid";
 
 import "./Toggler.scss";
 
@@ -18,15 +17,11 @@ export interface TogglerProps
   inputClassName?: string;
 }
 
-const Toggler: React.ForwardRefRenderFunction<HTMLDivElement, TogglerProps> = (
-  {
-    containerClassName,
-    inputClassName,
-    title,
-    // In case id is not provided, generate one. It's requires so that htmlFor works correctly
-    id = uuidv4(),
-    ...extraInputProps
-  },
+const Toggler: React.ForwardRefRenderFunction<
+  HTMLLabelElement,
+  TogglerProps
+> = (
+  { containerClassName, inputClassName, title, ...extraInputProps },
   ref
 ) => {
   const sliderClasses = classNames("Toggler__slider", {
@@ -34,14 +29,13 @@ const Toggler: React.ForwardRefRenderFunction<HTMLDivElement, TogglerProps> = (
   });
 
   return (
-    <div ref={ref} className="Toggler">
-      <label className="Toggler__input">
+    <label ref={ref} className="Toggler">
+      <div className="Toggler__input">
         <span className={sliderClasses} />
         <input hidden type="checkbox" {...extraInputProps} />
-      </label>
-
+      </div>
       {title && <div className="Toggler__title">{title}</div>}
-    </div>
+    </label>
   );
 };
 

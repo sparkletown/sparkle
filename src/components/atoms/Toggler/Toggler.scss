@@ -11,6 +11,8 @@ $toggler-transition: ease 0.4s;
   justify-content: space-between;
   align-items: center;
 
+  cursor: pointer;
+
   &__input {
     position: relative;
 
@@ -26,8 +28,6 @@ $toggler-transition: ease 0.4s;
     right: 0;
     bottom: 0;
     left: 0;
-
-    cursor: pointer;
 
     border-radius: $border-radius--xl;
     background-color: $dark-grey;
