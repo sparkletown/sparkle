@@ -3,7 +3,6 @@ import "./ArtPiece.scss";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
@@ -27,7 +26,7 @@ export const ArtPiece = () => {
   }`;
 
   return (
-    <WithNavigationBar>
+    <>
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
@@ -76,7 +75,7 @@ export const ArtPiece = () => {
           <SchedulePageModal />
         </Modal.Body>
       </Modal>
-    </WithNavigationBar>
+    </>
   );
 };
 

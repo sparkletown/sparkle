@@ -102,6 +102,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
+      fullscreen = true;
       break;
 
     case VenueTemplate.embeddable:
