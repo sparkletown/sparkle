@@ -14,7 +14,7 @@ import { WithId } from "utils/id";
 import { ChatMessage } from "components/atoms/ChatMessage";
 // import { ChatPoll } from "components/atoms/ChatPoll";
 import ChatMessageBox from "../ChatMessageBox";
-import PollBox from "../PollBox";
+import { PollBox } from "../PollBox";
 
 import "./Chatbox.scss";
 

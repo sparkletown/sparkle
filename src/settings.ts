@@ -556,4 +556,4 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
 // Max questions number for Poll inside Chat
-export const MAX_POLL_CHOICES: Number = 8;
+export const MAX_POLL_CHOICES = 8;

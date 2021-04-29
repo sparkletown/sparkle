@@ -3,7 +3,7 @@ import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { InputField } from "components/atoms/InputField";
-import { MAX_QUESTIONS_NUMBER } from "settings";
+import { MAX_POLL_CHOICES } from "settings";
 import "./PollBox.scss";
 
 export type Question = {
@@ -30,27 +30,25 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
     defaultValues,
   });
   const { fields, append } = useFieldArray({ name: "questions", control });
+  const [question1, question2] = watch("questions");
+  const topic = watch("topic");
 
   const onCustomSubmit = handleSubmit((data) => {
     onSubmit(data);
     reset();
   });
 
-  const isDisabled = useMemo(() => {
-    const [question1, question2] = watch("questions");
-    return !(watch("topic") && question1.name && question2.name);
-  }, [watch]);
+  const isDisabled = !(topic && question1.name && question2.name);
 
   const addChoice = useCallback(() => append(defaultQuestion), [append]);
   const showAppend = useCallback(
-    (index) =>
-      index + 1 === fields.length && MAX_QUESTIONS_NUMBER > fields.length,
+    (index) => index + 1 === fields.length && MAX_POLL_CHOICES > fields.length,
     [fields]
   );
   const formatPlaceholder = useCallback(
     (index) =>
       index === 0
-        ? `Choice ${index + 1} (Max ${MAX_QUESTIONS_NUMBER} choices)`
+        ? `Choice ${index + 1} (Max ${MAX_POLL_CHOICES} choices)`
         : `Choice ${index + 1}`,
     []
   );
@@ -105,7 +103,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
           />
         </button>
       </section>
-      {renderChoiceFields}
+      {renderedChoices}
     </form>
   );
 };
