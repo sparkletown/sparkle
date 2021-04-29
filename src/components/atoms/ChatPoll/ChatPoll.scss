@@ -2,6 +2,7 @@
 
 $counterparty-text-border-radius: 28px 28px 28px 4px;
 $my-text-border-radius: 28px 28px 4px 28px;
+$spacing: 16px;
 
 .ChatPoll {
   align-self: flex-start;
@@ -13,22 +14,19 @@ $my-text-border-radius: 28px 28px 4px 28px;
 
   &__topic {
     text-align: center;
+    font-size: $spacing;
     font-weight: bold;
     margin-bottom: 10px;
+  }
+
+  &__text {
+    margin-bottom: $spacing;
   }
 
   &__question {
     display: block;
     background: none;
-    border: none;
-    color: $white;
-    font-size: 14px;
-    font-weight: initial;
-    padding: 0;
-    margin-bottom: 16px;
-    &:focus {
-      outline: none;
-    }
+    margin-bottom: $spacing;
   }
 
   &__details {
@@ -41,24 +39,19 @@ $my-text-border-radius: 28px 28px 4px 28px;
     margin: 0 10px 0 0;
   }
 
-  &__container {
+  &__wrapper {
     position: relative;
     margin-bottom: 6px;
     width: 100%;
     border-radius: $counterparty-text-border-radius;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
     background-color: $intermediate-grey;
-    padding: 12px 16px;
-    font-size: 0.9rem;
+    padding: 12px $spacing;
+    font-size: 14px;
   }
 
   &__info {
     display: flex;
     align-items: center;
-    font-size: 0.8rem;
   }
 
   &__author {
@@ -79,18 +72,16 @@ $my-text-border-radius: 28px 28px 4px 28px;
 
   &__icon {
     position: absolute;
-    top: 10px;
+    top: 5px;
+    left: 5px;
   }
 
   &__delete-button {
     margin-left: 10px;
-    height: auto;
-    width: auto;
     background: none;
     border: none;
     color: #fff;
     text-decoration: underline;
-    font-size: 14px;
     font-weight: initial;
     padding: 0;
     &:focus {
@@ -102,7 +93,7 @@ $my-text-border-radius: 28px 28px 4px 28px;
     align-self: flex-end;
     align-items: flex-end;
 
-    .ChatPoll__container {
+    .ChatPoll__wrapper {
       background-color: $primary;
     }
 

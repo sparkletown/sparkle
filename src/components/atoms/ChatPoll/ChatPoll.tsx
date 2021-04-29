@@ -5,12 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
 import { WithId } from "utils/id";
+
 import { User } from "types/User";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { PollValues, Question } from "components/molecules/PollBox/PollBox";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
+import Button from "components/atoms/Button";
 
 import "./ChatPoll.scss";
 
@@ -40,17 +43,19 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
     () =>
       questions.map((question: Question) =>
         isMine ? (
-          <div key={question.name} className="ChatPoll__question">
+          <div key={question.name} className="ChatPoll__text">
             {question.name}
           </div>
         ) : (
-          <button
-            key={question.name}
-            className="ChatPoll__question"
-            onClick={() => console.log(question)}
-          >
-            {question.name}
-          </button>
+          // TODO: finish button for voting
+          <Button onClick={console.log}>Send message</Button>
+          // <button
+          //   key={question.name}
+          //   className="ChatPoll__question"
+          //   onClick={() => console.log(question)}
+          // >
+          //   {question.name}
+          // </button>
         )
       ),
     [questions, isMine]
@@ -62,7 +67,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
 
   return (
     <div className={containerStyles}>
-      <div className="ChatPoll__container">
+      <div className="ChatPoll__wrapper">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
         {renderQuestions}
