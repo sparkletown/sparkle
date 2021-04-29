@@ -1,15 +1,18 @@
 @import "scss/constants";
 
+$poster-preview-height: 200px;
+$poster-preview-width: 300px;
+
 .PosterPreview {
   display: flex;
   flex-direction: column;
 
-  height: 200px;
-  width: 300px;
+  height: $poster-preview-height;
+  width: $poster-preview-width;
 
-  padding: 15px;
-  margin: 10px;
-  border-radius: 10px;
+  padding: $spacing--lg;
+  margin: $spacing--md;
+  border-radius: $border-radius--md;
 
   background-color: $saturated-black-alt;
   color: $white;
@@ -24,26 +27,11 @@
     background-color: $primary;
   }
 
-  &__pdf {
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    background-color: lightgray;
-    height: 50%;
-    overflow: hidden;
-  }
-
-  &__pdf-iframe {
-    height: 100%;
-    width: 100%;
-    border: none;
-  }
-
   &__title {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: $font-size--md;
+    font-weight: $font-weight--600;
 
-    margin: 10px 0;
+    margin: $spacing--md 0;
   }
 
   &__categories {
@@ -53,22 +41,22 @@
 
   &__category {
     display: flex;
-    font-size: 10px;
+    font-size: $font-size--xs;
     color: $white;
     cursor: pointer;
-    padding: 7px;
-    margin: 3px;
-    border-radius: 15px;
+    padding: $spacing--sm;
+    margin: $spacing--xs;
+    border-radius: $border-radius--lg;
   }
 
   &__author {
     margin-top: auto;
     &__name {
-      font-size: 12px;
-      font-weight: 500;
+      font-size: $font-size--sm;
+      font-weight: $font-weight--500;
     }
     &__institution {
-      font-size: 10px;
+      font-size: $font-size--xs;
     }
   }
 }

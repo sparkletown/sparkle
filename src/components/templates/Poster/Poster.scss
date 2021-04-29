@@ -2,32 +2,31 @@
 
 $poster-cell-optimal-width: 260px;
 $poster-cell-optimal-height: 195px;
-$poster-grid-gap: 5px;
 $poster-control-btn-height: 65px;
 $poster-control-btn-width: 65px;
 
 .poster {
-  padding: 0 20px 0;
+  padding: 0 $spacing--xl 0;
 
   &__header {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
 
-    padding: 5px;
+    padding: $spacing--xs;
 
     &--middle-cell {
       display: flex;
       justify-content: center;
       align-items: center;
 
-      font-size: 18px;
-      font-weight: 500;
+      font-size: $font-size--lg;
+      font-weight: $font-weight--500;
     }
 
     &--right-cell {
       display: flex;
       justify-content: flex-end;
-      padding: 0 40px;
+      padding: 0 $spacing--xxl;
     }
   }
 
@@ -35,7 +34,7 @@ $poster-control-btn-width: 65px;
     display: grid;
     grid-template-columns: $poster-cell-optimal-width 1fr 1fr $poster-cell-optimal-width;
     grid-template-rows: repeat(auto-fill, $poster-cell-optimal-height);
-    gap: $poster-grid-gap;
+    gap: $spacing--xs;
 
     grid-template-areas:
       ".  iframe iframe ."
@@ -53,8 +52,8 @@ $poster-control-btn-width: 65px;
 
     height: $poster-control-btn-height;
     width: $poster-control-btn-width;
-    margin: 5px;
-    border-radius: 10px;
+    margin: $spacing--xs;
+    border-radius: $border-radius--md;
 
     background-color: $dark-grey;
     cursor: pointer;
@@ -87,15 +86,15 @@ $poster-control-btn-width: 65px;
   }
 
   &__control-text {
-    margin-top: 7px;
-    font-size: 11px;
+    margin-top: $spacing--sm;
+    font-size: $font-size--sm;
   }
 
   &__iframe {
     grid-area: iframe;
     width: 100%;
     // Take exactly the same amount of space as 3 participants would take
-    height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$poster-grid-gap});
+    height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
   }
 
   &__video-participant {
@@ -111,13 +110,13 @@ $poster-control-btn-width: 65px;
     justify-content: center;
     align-items: center;
 
-    color: white;
-    font-size: 25px;
+    color: $white;
+    font-size: $font-size--xxl;
 
     cursor: pointer;
 
-    border: dashed grey thin;
-    border-radius: 10px;
+    border: dashed $dark-grey thin;
+    border-radius: $border-radius--md;
 
     &:hover {
       background-color: $dark;

@@ -1,9 +1,11 @@
+@import "scss/constants";
+
 .PosterHallSearch {
   display: flex;
   width: 100%;
 
   justify-content: center;
-  margin: 30px 0;
+  margin: $spacing--xxl 0;
 
   &__input-container {
     width: 40%;
@@ -29,12 +31,12 @@
       width: 30px;
       margin: 0;
 
-      border-radius: 50%;
+      border-radius: $border-radius--max;
       -webkit-appearance: checkbox;
     }
 
     .form-check-label {
-      margin-left: 5px;
+      margin-left: $spacing--xs;
     }
   }
 }

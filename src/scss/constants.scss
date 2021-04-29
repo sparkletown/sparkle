@@ -2,6 +2,7 @@ $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
 
 $primary: #6f43ff;
+$dimmer-primary: #3f247d;
 
 $dark-grey: #1a1d23;
 $intermediate-grey: #333035;
@@ -64,14 +65,22 @@ $spacing--sm: 8px;
 $spacing--md: 12px;
 $spacing--lg: 16px;
 $spacing--xl: 24px;
+$spacing--xxl: 30px;
 
 $font-size--xs: 10px;
 $font-size--sm: 12px;
 $font-size--md: 14px;
 $font-size--lg: 16px;
 $font-size--xl: 20px;
+// Not sure this is the best naming for these
 $font-size--xxl: 30px;
 $font-size--xxxl: 50px;
+
+// Placeholders, until we can find meaningful names for them
+$font-weight--400: 400;
+$font-weight--500: 500;
+$font-weight--600: 600;
+$font-weight--700: 700;
 
 $media-breakpoint--sm: 576px;
 $media-breakpoint--md: 768px;

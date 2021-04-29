@@ -1,5 +1,11 @@
 @import "scss/constants";
 
+$toggler-width: 56px;
+$toggler-height: 30px;
+$toggler-slider-width: 22px;
+$toggler-slider-height: 22px;
+$toggler-transition: ease 0.4s;
+
 .Toggler {
   display: flex;
   justify-content: space-between;
@@ -7,53 +13,57 @@
 
   &__input {
     position: relative;
-    width: 40px;
-    height: 23px;
+
+    width: $toggler-width;
+    height: $toggler-height;
     margin: 0;
   }
 
   &__slider {
     position: absolute;
+
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
 
-    border-radius: 22px;
-
     cursor: pointer;
 
-    transition: 0.4s;
+    border-radius: $border-radius--xl;
+    background-color: $dark-grey;
 
-    background-color: #f6e652;
+    transition: $toggler-transition;
 
     &::before {
       content: "";
-
-      width: 17px;
-      height: 17px;
-
       position: absolute;
-      bottom: 3px;
-      left: 3px;
 
-      background-color: $white;
-      border-radius: 50%;
+      width: $toggler-slider-width;
+      height: $toggler-slider-height;
 
-      transition: transform ease 0.4s;
+      bottom: $spacing--xs;
+      left: $spacing--xs;
+
+      background-color: $lighter-intermediate-grey;
+      border-radius: $border-radius--max;
+
+      transition: $toggler-transition;
     }
 
     &--checked {
-      background-color: #4bcc4b;
+      background-color: $dimmer-primary;
 
       &::before {
         left: initial;
-        right: 3px;
+        right: $spacing--xs;
+
+        background-color: $primary;
       }
     }
   }
 
   &__title {
-    margin-left: 10px;
+    margin-left: $spacing--md;
+    font-size: $font-size--lg;
   }
 }
