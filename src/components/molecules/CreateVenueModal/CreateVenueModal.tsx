@@ -86,10 +86,10 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
     <Modal
       show={isVisible}
       onHide={hide}
-      dialogClassName="modal-dialog modal-dialog-centered no-border"
-      backdropClassName="create-venue-modal-backdrop"
+      centered
+      backdropClassName="modal-backdrop in"
     >
-      <Modal.Body className="create-venue-modal">
+      <Modal.Body className="create-venue-modal modal-content in">
         <Form
           onSubmit={handleSubmit(onSubmit)}
           className="create-venue-modal__content"
