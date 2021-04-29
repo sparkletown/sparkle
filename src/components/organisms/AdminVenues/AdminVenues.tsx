@@ -1,10 +1,12 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import classNames from "classnames";
 
-import { AnyVenue, isPartyMapVenue } from "types/venues";
+import { useModalControls } from "hooks/useModalControls";
 
 import { WithId } from "utils/id";
+
+import { AnyVenue, isPartyMapVenue } from "types/venues";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 import { CreateVenueModal } from "components/molecules/CreateVenueModal";
@@ -16,15 +18,7 @@ export interface AdminVenuesProps {
 }
 
 export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
-  const [showCreateModal, setShowCreateModal] = useState<boolean>(false);
-
-  const showModal = useCallback(() => {
-    setShowCreateModal(true);
-  }, []);
-
-  const hideModal = useCallback(() => {
-    setShowCreateModal(false);
-  }, []);
+  const { isModalVisible, showModal, hideModal } = useModalControls();
 
   const renderedPartyVenues = useMemo(
     () =>
@@ -57,7 +51,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
         )}
         {hasVenues && renderedPartyVenues}
       </div>
-      <CreateVenueModal isVisible={showCreateModal} onHide={hideModal} />
+      <CreateVenueModal isVisible={isModalVisible} onHide={hideModal} />
     </div>
   );
 };

@@ -170,16 +170,16 @@ const createVenueData_v2 = (data, context) => ({
   name: data.name,
   config: {
     landingPageConfig: {
-      coverImageUrl: data.bannerImageUrl || "",
-      subtitle: data.subtitle || "",
-      description: data.description || "",
+      coverImageUrl: data.bannerImageUrl,
+      subtitle: data.subtitle,
+      description: data.description,
     },
   },
   theme: {
     primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
   },
   host: {
-    icon: data.logoImageUrl || "",
+    icon: data.logoImageUrl,
   },
   owners: [context.auth.token.user_id],
   showGrid: data.showGrid || false,

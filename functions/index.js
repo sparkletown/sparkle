@@ -30,6 +30,7 @@ admin.initializeApp({
     ),
   }),
 });
+admin.firestore().settings({ ignoreUndefinedProperties: true });
 
 const video = require("./video");
 const payment = require("./payment");

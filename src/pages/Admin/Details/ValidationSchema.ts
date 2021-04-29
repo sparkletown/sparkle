@@ -44,6 +44,37 @@ export interface RoomSchemaShape {
   image_url: string;
 }
 
+const venueNameLengthValidation = Yup.string()
+  .required("Venue name is required!")
+  .min(
+    VENUE_NAME_MIN_CHAR_COUNT,
+    ({ min }) => `Name must be at least ${min} characters`
+  )
+  .max(
+    VENUE_NAME_MAX_CHAR_COUNT,
+    ({ max }) => `Name must be less than ${max} characters`
+  );
+
+const venueNameValidation = venueNameLengthValidation
+  .test(
+    "name",
+    "Must have alphanumeric characters",
+    (val: string) => createUrlSafeName(val).length > 0
+  )
+  .test(
+    "name",
+    "This venue name is already taken",
+    async (val: string) =>
+      !val ||
+      !(
+        await firebase
+          .firestore()
+          .collection("venues")
+          .doc(createUrlSafeName(val))
+          .get()
+      ).exists
+  );
+
 const createFileSchema = (
   name: string,
   required: boolean,
@@ -79,41 +110,31 @@ const mustBeMinimum = (fieldName: string, min: number) =>
 
 export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
-    name: Yup.string()
-      .required("Name is required!")
-      .min(
-        VENUE_NAME_MIN_CHAR_COUNT,
-        ({ min }) => `Name must be at least ${min} characters`
-      )
-      .max(
-        VENUE_NAME_MAX_CHAR_COUNT,
-        ({ max }) => `Name must be less than ${max} characters`
-      )
-      .when(
-        "$editing",
-        (editing: boolean, schema: Yup.StringSchema) =>
-          !editing
-            ? schema
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
-                )
-                .test(
-                  "name",
-                  "This venue name is already taken",
-                  async (val: string) =>
-                    !val ||
-                    !(
-                      await firebase
-                        .firestore()
-                        .collection("venues")
-                        .doc(createUrlSafeName(val))
-                        .get()
-                    ).exists
-                )
-            : schema //will be set from the data from the api. Does not need to be unique
-      ),
+    name: venueNameLengthValidation.when(
+      "$editing",
+      (editing: boolean, schema: Yup.StringSchema) =>
+        !editing
+          ? schema
+              .test(
+                "name",
+                "Must have alphanumeric characters",
+                (val: string) => createUrlSafeName(val).length > 0
+              )
+              .test(
+                "name",
+                "This venue name is already taken",
+                async (val: string) =>
+                  !val ||
+                  !(
+                    await firebase
+                      .firestore()
+                      .collection("venues")
+                      .doc(createUrlSafeName(val))
+                      .get()
+                  ).exists
+              )
+          : schema //will be set from the data from the api. Does not need to be unique
+    ),
     subtitle: Yup.string()
       .required("Subtitle is required!")
       .min(3, ({ min }) => mustBeMinimum("Subtitle", min)),
@@ -137,34 +158,7 @@ export const validationSchema_v2 = Yup.object()
 
 export const newVenueSchema = Yup.object()
   .shape<NewVenueSchema>({
-    name: Yup.string()
-      .required("Name is required!")
-      .min(
-        VENUE_NAME_MIN_CHAR_COUNT,
-        ({ min }) => `Name must be at least ${min} characters`
-      )
-      .max(
-        VENUE_NAME_MAX_CHAR_COUNT,
-        ({ max }) => `Name must be less than ${max} characters`
-      )
-      .test(
-        "name",
-        "Must have alphanumeric characters",
-        (val: string) => createUrlSafeName(val).length > 0
-      )
-      .test(
-        "name",
-        "This venue name is already taken",
-        async (val: string) =>
-          !val ||
-          !(
-            await firebase
-              .firestore()
-              .collection("venues")
-              .doc(createUrlSafeName(val))
-              .get()
-          ).exists
-      ),
+    name: venueNameValidation,
   })
   .required();
 
@@ -188,16 +182,7 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   venueName: Yup.string()
     .when("useUrl", {
       is: false,
-      then: Yup.string()
-        .required("Venue name is required")
-        .min(
-          VENUE_NAME_MIN_CHAR_COUNT,
-          ({ min }) => `Name must be at least ${min} characters`
-        )
-        .max(
-          VENUE_NAME_MAX_CHAR_COUNT,
-          ({ max }) => `Name must be less than ${max} characters`
-        ),
+      then: venueNameLengthValidation,
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl

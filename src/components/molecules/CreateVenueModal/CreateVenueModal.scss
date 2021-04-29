@@ -1,12 +1,8 @@
 @import "scss/constants.scss";
 
-.modal-backdrop {
+.create-venue-modal-backdrop {
   opacity: 0.9 !important;
   background-color: black !important;
-}
-
-.modal-content {
-  background-color: $saturated-black !important;
 }
 
 .create-venue-modal {

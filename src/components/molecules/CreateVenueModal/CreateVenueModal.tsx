@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import Bugsnag from "@bugsnag/js";
 
 import { createUrlSafeName, createVenue_v2 } from "api/admin";
 
@@ -41,18 +42,25 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
       if (!user || isLoading) return;
       setLoading(true);
 
-      try {
-        const venue = {
-          name: vals.name,
-          template: VenueTemplate.partymap,
-        };
-        await createVenue_v2(venue, user);
-        hide();
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      const venue = {
+        name: vals.name,
+        template: VenueTemplate.partymap,
+      };
+
+      createVenue_v2(venue, user)
+        .then(() => {
+          hide();
+        })
+        .catch((e) => {
+          Bugsnag.notify(e, (event) => {
+            event.addMetadata("CreateVenueModal::createVenue_v2", {
+              venueName: vals.name,
+            });
+          });
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     },
     [hide, isLoading, user]
   );
@@ -78,7 +86,8 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
     <Modal
       show={isVisible}
       onHide={hide}
-      dialogClassName="modal-dialog modal-dialog-centered"
+      dialogClassName="modal-dialog modal-dialog-centered no-border"
+      backdropClassName="create-venue-modal-backdrop"
     >
       <Modal.Body className="create-venue-modal">
         <Form
