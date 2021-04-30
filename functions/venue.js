@@ -68,6 +68,54 @@ const PlacementState = {
   Hidden: "HIDDEN",
 };
 
+const checkUserIsOwner = async (venueId, uid) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then(async (doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
+      }
+      const venue = doc.data();
+      if (venue.owners && venue.owners.includes(uid)) return;
+
+      if (venue.parentId) {
+        const doc = await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
+      }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
+};
+
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
     return await checkUserIsOwner(venueId, uid);
@@ -192,53 +240,6 @@ const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
 };
 
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
-};
 
 /** Add a user to the list of admins
  *
