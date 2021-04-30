@@ -59,11 +59,9 @@ $sand: #937c63;
     }
 
     .navbar-links {
-      padding: 11px 20px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      align-content: space-between;
       justify-content: flex-end;
 
       // @debt hack-fix to hide dropdown under navbar replacing transparent color by inherited black
