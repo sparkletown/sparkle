@@ -38,7 +38,7 @@ const renderIcon = (
 };
 
 const InputField: React.ForwardRefRenderFunction<
-  HTMLDivElement,
+  HTMLInputElement,
   InputFieldProps
 > = (
   {
@@ -62,8 +62,8 @@ const InputField: React.ForwardRefRenderFunction<
   const inputClassNames = classNames("input-field__input", inputClassName);
 
   return (
-    <div ref={ref} className={containerClassNames}>
-      <input className={inputClassNames} {...extraInputProps} />
+    <div className={containerClassNames}>
+      <input ref={ref} className={inputClassNames} {...extraInputProps} />
 
       {iconStart && renderIcon(iconStart, "input-field__icon--start")}
       {iconEnd && renderIcon(iconEnd, "input-field__icon--end")}
