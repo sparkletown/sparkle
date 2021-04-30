@@ -65,6 +65,9 @@ $sand: #937c63;
       align-items: center;
       align-content: space-between;
       justify-content: flex-end;
+
+      // @debt hack-fix to hide dropdown under navbar replacing transparent color by inherited black
+      //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
       background-color: inherit;
 
       .navbar-link-message,

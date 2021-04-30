@@ -78,6 +78,9 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+
+// @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
+//       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
 $z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
