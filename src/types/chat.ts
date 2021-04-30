@@ -15,7 +15,11 @@ export type PrivateChatMessage = BaseChatMessage & {
 
 export type VenueChatMessage = BaseChatMessage & {};
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage;
+export type PollMessage = {
+  // TODO: add poll data
+};
+
+export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;

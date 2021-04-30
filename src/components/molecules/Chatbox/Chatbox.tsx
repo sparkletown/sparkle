@@ -16,41 +16,24 @@ import { PollBox } from "components/molecules/PollBox";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
 // import { ChatPoll } from "components/atoms/ChatPoll";
-import ChatMessageBox from "../ChatMessageBox";
-import { PollBox } from "../PollBox";
 
 import "./Chatbox.scss";
 
-type Option = {
+export type Option = {
   icon: IconDefinition;
   name: string;
 };
 
-export const OPTIONS: Option[] = [
+export const ChatMessageOption: Option[] = [
   {
     icon: faPoll,
     name: "Create Poll",
   },
   {
     icon: faQuestion,
-    name: "Ask question",
+    name: "Ask Question",
   },
 ];
-
-// const pollData = {
-//   votes: 8,
-//   poll: {
-//     topic: 'test topic',
-//     questions: [{ name: 'test1' }, { name: 'test2' }, { name: 'test3' }]
-//   },
-//   ts_utc: 1619444131,
-//   isMine: true,
-//   author: {
-//     pictureUrl: "/avatars/default-profile-pic-1.png",
-//     partyName: "test",
-//   },
-//   canBeDeleted: true
-// }
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -79,7 +62,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const dropdownOptions = useMemo(
     () =>
-      OPTIONS.map((option) => (
+      ChatMessageOption.map((option) => (
         <Dropdown.Item
           key={option.name}
           onClick={() => setActiveOption(option)}
@@ -91,16 +74,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     []
   );
 
-  const showPoll = useMemo(() => activeOption?.name !== OPTIONS[0].name, [
-    activeOption,
-  ]);
-  const showPoll = activeOption?.name !== OPTIONS[0].name;
+  const showPoll = activeOption?.name !== ChatMessageOption[0].name;
 
   const handleSubmit = useCallback((data) => console.log(data), []);
 
   const renderForms = useMemo(() => {
     switch (activeOption?.name) {
-      case OPTIONS[0].name:
+      case ChatMessageOption[0].name:
         return <PollBox onSubmit={handleSubmit} />;
 
       default:
