@@ -4,6 +4,7 @@
 .NavSearchBar {
   position: relative;
   width: $search-dropdown-width;
+  margin-right: $margin-right--navbar-links;
 
   &__search-input {
     text-align: left;
