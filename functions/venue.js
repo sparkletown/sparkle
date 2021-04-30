@@ -240,6 +240,12 @@ const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
 };
 
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);
 
 /** Add a user to the list of admins
  *
@@ -826,10 +832,3 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
 
   return user;
 });
-
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);
