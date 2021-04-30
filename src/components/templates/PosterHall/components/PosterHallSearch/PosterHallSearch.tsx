@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useCallback } from "react";
+import React, { useCallback } from "react";
 import Form from "react-bootstrap/Form";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -21,7 +21,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
   liveFilterValue,
   setLiveValue,
 }) => {
-  const onTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitleValue(e.target.value);
   };
 

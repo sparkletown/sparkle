@@ -836,7 +836,6 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
   };
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
-  // TODO: Throw an error?
 });
 
 const dataOrUpdateKey = (data, updated, key) =>
