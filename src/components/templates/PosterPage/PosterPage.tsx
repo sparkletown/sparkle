@@ -1,12 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { faShare, faTv, faStop } from "@fortawesome/free-solid-svg-icons";
 
 import { setVenueLiveStatus } from "api/venue";
 
-import {
-  POSTERPAGE_VENUE_MAX_VIDEO_PARTICIPANTS,
-  IFRAME_ALLOW,
-} from "settings";
+import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -60,16 +57,20 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     setVenueLiveStatus(venueId, false);
   }, [venueId]);
 
-  const videoParticipants = activeParticipants.map((participant, index) => (
-    <VideoParticipant
-      key={participant.identity ?? `participant-${index}`}
-      participant={participant}
-      additionalClassNames="PosterPage__video-participant"
-    />
-  ));
+  const videoParticipants = useMemo(
+    () =>
+      activeParticipants.map((participant, index) => (
+        <VideoParticipant
+          key={participant.identity ?? `participant-${index}`}
+          participant={participant}
+          additionalClassNames="PosterPage__video-participant"
+        />
+      )),
+    [activeParticipants]
+  );
 
   const hasFreeSpace =
-    videoParticipants.length < POSTERPAGE_VENUE_MAX_VIDEO_PARTICIPANTS;
+    videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
   return (
     <div className="PosterPage">

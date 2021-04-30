@@ -24,6 +24,7 @@
 
     height: 100%;
 
+    // Override third-party react-bootstrap's Form.Check
     .form-check-input {
       position: static;
 

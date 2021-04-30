@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useCallback } from "react";
 import Form from "react-bootstrap/Form";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -25,6 +25,11 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
     setTitleValue(e.target.value);
   };
 
+  const onCheckboxChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setLiveValue(e.target.checked),
+    [setLiveValue]
+  );
+
   return (
     <div className="PosterHallSearch">
       <InputField
@@ -42,9 +47,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
           type="checkbox"
           label="Presenter is online"
           checked={liveFilterValue}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setLiveValue(e.target.checked)
-          }
+          onChange={onCheckboxChange}
         />
       </Form>
     </div>
