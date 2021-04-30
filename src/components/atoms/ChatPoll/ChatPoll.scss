@@ -3,6 +3,8 @@
 $counterparty-text-border-radius: 28px 28px 28px 4px;
 $my-text-border-radius: 28px 28px 4px 28px;
 $spacing: 16px;
+$author-margin--left-aligned: 4px;
+$author-margin--right-aligned: 8px;
 
 .ChatPoll {
   align-self: flex-start;
@@ -11,6 +13,24 @@ $spacing: 16px;
   flex-direction: column;
   margin-bottom: 16px;
   width: 100%;
+
+  &--me {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .ChatPoll__wrapper {
+      background-color: $primary;
+    }
+
+    .ChatPoll__info {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .ChatPoll__author {
+      margin: 0 $author-margin--left-aligned 0 $author-margin--right-aligned;
+    }
+  }
 
   &__topic {
     text-align: center;
@@ -57,7 +77,7 @@ $spacing: 16px;
   &__author {
     opacity: 0.8;
     color: $white;
-    margin: 0 8px 0 4px;
+    margin: 0 $author-margin--right-aligned 0 $author-margin--left-aligned;
     cursor: pointer;
 
     &:hover {
@@ -86,24 +106,6 @@ $spacing: 16px;
     padding: 0;
     &:focus {
       outline: none;
-    }
-  }
-
-  &--me {
-    align-self: flex-end;
-    align-items: flex-end;
-
-    .ChatPoll__wrapper {
-      background-color: $primary;
-    }
-
-    .ChatPoll__info {
-      flex-direction: row-reverse;
-      align-self: flex-end;
-    }
-
-    .ChatPoll__author {
-      margin: 0 4px 0 8px;
     }
   }
 }

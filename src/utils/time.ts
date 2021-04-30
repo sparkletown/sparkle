@@ -165,8 +165,14 @@ export function getDaysAgoInSeconds(days: number) {
  *
  * @see https://date-fns.org/docs/format
  */
-export const formatHourAndMinute = (utcSeconds: number) => {
-  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
+export const formatHourAndMinute = (
+  utcSeconds: number,
+  isAmPm: boolean = false
+) => {
+  return format(
+    utcSeconds * ONE_SECOND_IN_MILLISECONDS,
+    isAmPm ? "HH:mm a" : "HH:mm"
+  );
 };
 
 export const daysFromEndOfEvent = (

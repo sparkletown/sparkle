@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
-import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
 import { WithId } from "utils/id";
+import { formatHourAndMinute } from "utils/time";
 
 import { User } from "types/User";
 
@@ -87,7 +87,9 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
       <div className="ChatPoll__info" onClick={openAuthorProfile}>
         <UserAvatar user={author} />
         <span className="ChatPoll__author">{author.partyName}</span>
-        <span className="ChatPoll__time">{dayjs(ts_utc).format("h:mm A")}</span>
+        <span className="ChatPoll__time">
+          {formatHourAndMinute(ts_utc, true)}
+        </span>
       </div>
     </div>
   );

@@ -64,7 +64,7 @@
 
     .dropdown-menu {
       background-color: $primary;
-      border-radius: 22px;
+      border-radius: $border-radius--input;
     }
 
     .dropdown-item {

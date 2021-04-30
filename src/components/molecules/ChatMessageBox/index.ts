@@ -1,1 +1,1 @@
-export { ChatMessageBox as default } from "./ChatMessageBox";
+export { ChatMessageBox } from "./ChatMessageBox";

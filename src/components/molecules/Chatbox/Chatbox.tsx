@@ -11,6 +11,9 @@ import { MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { ChatMessageBox } from "components/molecules/ChatMessageBox";
+import { PollBox } from "components/molecules/PollBox";
+
 import { ChatMessage } from "components/atoms/ChatMessage";
 // import { ChatPoll } from "components/atoms/ChatPoll";
 import ChatMessageBox from "../ChatMessageBox";
@@ -91,6 +94,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const showPoll = useMemo(() => activeOption?.name !== OPTIONS[0].name, [
     activeOption,
   ]);
+  const showPoll = activeOption?.name !== OPTIONS[0].name;
 
   const handleSubmit = useCallback((data) => console.log(data), []);
 
