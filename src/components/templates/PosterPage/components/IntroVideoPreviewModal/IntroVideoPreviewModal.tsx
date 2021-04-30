@@ -27,9 +27,6 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
       size="lg"
       modal
     >
-      <p className="IntroVideoPreviewModal__title">
-        {posterVenue?.poster?.title}
-      </p>
       <iframe
         className="IntroVideoPreviewModal__iframe"
         title="IntroVideoPreviewModal-iframe"
