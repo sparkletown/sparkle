@@ -54,6 +54,8 @@ $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
+$margin-right--navbar-links: 8px;
+
 $border-radius--sm: 8px;
 $border-radius--md: 12px;
 $border-radius--lg: 16px;
@@ -95,6 +97,10 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+
+// @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
+//       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
+$z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
   admin-venue-card-bg: -1,
@@ -117,6 +123,7 @@ $z-layers: (
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
+  navbar__drawer: $z-layer-navbar-drawer,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
