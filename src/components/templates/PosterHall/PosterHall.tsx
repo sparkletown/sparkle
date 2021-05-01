@@ -23,9 +23,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setTitleFilter,
     liveFilter,
     setLiveFilter,
-  } = usePosters({
-    posterHallId: venue.id,
-  });
+  } = usePosters(venue.id);
 
   const renderedPosterVenues = useMemo(() => {
     return posterVenues?.map((posterVenue) => (

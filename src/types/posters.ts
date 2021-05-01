@@ -1,14 +1,6 @@
-export type PosterCategory = {
-  title: string;
-  color: string;
-};
-
 export type Poster = {
   title: string;
-  categories: PosterCategory[];
+  categories: string[];
   introVideoUrl: string;
-  author: {
-    name: string;
-    institution: string;
-  };
+  authorName: string;
 };

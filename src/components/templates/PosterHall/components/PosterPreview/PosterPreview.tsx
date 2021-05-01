@@ -16,7 +16,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
   onClick,
 }) => {
-  const { title, author, categories } = posterVenue.poster ?? {};
+  const { title, authorName, categories } = posterVenue.poster ?? {};
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
@@ -27,15 +27,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const renderedCategories = useMemo(
     () => (
       <div className="PosterPreview__categories">
-        {categories?.map((category) => (
-          <div
-            key={category.title + category.color}
-            className="PosterPreview__category"
-            style={{
-              backgroundColor: category.color,
-            }}
-          >
-            {category.title}
+        {categories?.map((category, index) => (
+          <div key={`category_${index}`} className="PosterPreview__category">
+            {category}
           </div>
         ))}
       </div>
@@ -49,14 +43,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       {hasCategories && renderedCategories}
 
-      {author && (
-        <div className="PosterPreview__author">
-          <div className="PosterPreview__author-name">{author.name}</div>
-          <div className="PosterPreview__author-institution">
-            {author.institution}
-          </div>
-        </div>
-      )}
+      <div className="PosterPreview__author">{authorName}</div>
     </div>
   );
 };
