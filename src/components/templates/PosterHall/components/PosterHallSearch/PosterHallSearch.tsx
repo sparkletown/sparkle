@@ -1,8 +1,8 @@
 import React, { useCallback } from "react";
-import Form from "react-bootstrap/Form";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { InputField } from "components/atoms/InputField";
+import { Checkbox } from "components/atoms/Checkbox";
 
 import "./PosterHallSearch.scss";
 
@@ -40,16 +40,12 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
         value={titleFilterValue}
         onChange={onTitleChange}
       />
-      {/* TODO: Create a generic checkbox component */}
-      <Form>
-        <Form.Check
-          className="PosterHallSearch__checkbox"
-          type="checkbox"
-          label="Presenter is online"
-          checked={liveFilterValue}
-          onChange={onCheckboxChange}
-        />
-      </Form>
+      <Checkbox
+        checked={liveFilterValue}
+        onChange={onCheckboxChange}
+        title="Presenter is online"
+        containerClassName="PosterHallSearch__checkbox"
+      />
     </div>
   );
 };

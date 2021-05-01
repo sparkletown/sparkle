@@ -11,7 +11,7 @@ import { useUser } from "hooks/useUser";
 import VenueEventDetails from "pages/Admin/VenueEventDetails";
 
 import Button from "components/atoms/Button";
-import { Toggler } from "components/atoms/Toggler";
+import { Checkbox } from "components/atoms/Checkbox";
 
 import * as S from "./RoomCard.styles";
 
@@ -84,11 +84,12 @@ const RoomCard: React.FC<RoomCardProps> = ({
               marginTop: "1rem",
             }}
           >
-            <Toggler
+            <Checkbox
               name="showGrid"
               checked={room.isEnabled}
               onChange={handleRoomVisibilityChange}
               title={room.isEnabled ? "Room Enabled" : "Room Disabled"}
+              toggler
             />
           </div>
         </S.ButtonWrapper>

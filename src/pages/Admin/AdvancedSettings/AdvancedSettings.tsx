@@ -11,7 +11,7 @@ import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
-import { Toggler } from "components/atoms/Toggler";
+import { Checkbox } from "components/atoms/Checkbox";
 
 import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
@@ -41,7 +41,12 @@ const ToggleElement: React.FC<ToggleElementProps> = ({
     </S.ItemHeader>
 
     <S.ItemBody>
-      <Toggler name={name} forwardRef={forwardRef} defaultChecked={isChecked} />
+      <Checkbox
+        name={name}
+        forwardRef={forwardRef}
+        defaultChecked={isChecked}
+        toggler
+      />
 
       {children}
     </S.ItemBody>

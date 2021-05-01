@@ -16,28 +16,7 @@
     width: 100%;
   }
 
-  // The following styles will be removed, once we implement our own Checkbox component
   &__checkbox {
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-
-    height: 100%;
-
-    // Override third-party react-bootstrap's Form.Check
-    .form-check-input {
-      position: static;
-
-      height: 30px;
-      width: 30px;
-      margin: 0;
-
-      border-radius: $border-radius--max;
-      -webkit-appearance: checkbox;
-    }
-
-    .form-check-label {
-      margin-left: $spacing--xs;
-    }
+    margin-left: $spacing--md;
   }
 }
