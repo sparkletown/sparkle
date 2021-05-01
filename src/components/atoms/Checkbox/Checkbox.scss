@@ -2,6 +2,9 @@
 
 $checkbox-diameter: 32px;
 
+$checkbox-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+$checkbox-shadow-preset: inset 0 0 0 1px;
+
 $toggler-width: 56px;
 $toggler-height: 30px;
 
@@ -10,10 +13,6 @@ $toggler-circle-spacing: 2px;
 
 $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
   $toggler-circle-spacing;
-
-$checkbox-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
-
-$toggler-box-shadow-preset: inset 0 0 0 1px;
 
 .Checkbox {
   display: flex;
@@ -56,14 +55,14 @@ $toggler-box-shadow-preset: inset 0 0 0 1px;
     width: $checkbox-diameter;
     height: $checkbox-diameter;
 
-    box-shadow: $toggler-box-shadow-preset grey-color(0.1);
+    box-shadow: $checkbox-shadow-preset grey-color(0.1);
     background-color: grey-color(0.12);
 
     border-radius: $border-radius--max;
 
     &:hover {
       background-color: grey-color(0.16);
-      box-shadow: $toggler-box-shadow-preset grey-color(0.4);
+      box-shadow: $checkbox-shadow-preset grey-color(0.4);
     }
 
     .Checkbox__tick-icon {
