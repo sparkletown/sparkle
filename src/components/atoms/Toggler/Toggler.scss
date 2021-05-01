@@ -2,68 +2,74 @@
 
 $toggler-width: 56px;
 $toggler-height: 30px;
-$toggler-slider-width: 22px;
-$toggler-slider-height: 22px;
-$toggler-transition: ease 0.4s;
+
+$toggler-circle-diameter: 26px;
+$toggler-circle-spacing: 2px;
+
+$toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
+  $toggler-circle-spacing;
+
+$toggler-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+$toggler-box-shadow-preset: inset 0 0 0 1px;
 
 .Toggler {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
+  position: relative;
+
   cursor: pointer;
 
-  &__input {
-    position: relative;
-
-    width: $toggler-width;
-    height: $toggler-height;
-    margin: 0;
-  }
-
-  &__slider {
-    position: absolute;
-
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-
-    border-radius: $border-radius--xl;
-    background-color: $dark-grey;
-
-    transition: $toggler-transition;
-
-    &::before {
-      content: "";
-      position: absolute;
-
-      width: $toggler-slider-width;
-      height: $toggler-slider-height;
-
-      bottom: $spacing--xs;
-      left: $spacing--xs;
-
-      background-color: $lighter-intermediate-grey;
-      border-radius: $border-radius--max;
-
-      transition: $toggler-transition;
-    }
-
-    &--checked {
+  &__native-input {
+    &:checked + .Toggler__slider {
       background-color: $dimmer-primary;
 
-      &::before {
-        left: initial;
-        right: $spacing--xs;
+      &::after {
+        left: $toggler-circle-moving-delta;
 
         background-color: $primary;
       }
     }
   }
 
+  &__slider {
+    box-shadow: $toggler-box-shadow-preset grey-color(0.1);
+    background-color: grey-color(0.12);
+
+    width: $toggler-width;
+    height: $toggler-height;
+
+    border-radius: $border-radius--xl;
+
+    transition: $toggler-transition;
+
+    &:hover {
+      background-color: grey-color(0.16);
+      box-shadow: $toggler-box-shadow-preset grey-color(0.4);
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+
+      height: $toggler-circle-diameter;
+      width: $toggler-circle-diameter;
+
+      border-radius: $border-radius--max;
+
+      background-color: grey-color(0.3);
+
+      left: $toggler-circle-spacing;
+      top: $toggler-circle-spacing;
+
+      transform: scale(1);
+    }
+  }
+
   &__title {
     margin-left: $spacing--md;
-    font-size: $font-size--lg;
+    font-size: $font-size--md;
   }
 }

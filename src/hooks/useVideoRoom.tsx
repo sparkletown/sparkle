@@ -24,6 +24,8 @@ export const useVideoRoom = ({ userId, roomName }: UseVideoRoomProps) => {
         roomName,
       });
 
+      if (!response) return;
+
       setToken(response.data.token);
     })();
   }, [userId, roomName, token]);

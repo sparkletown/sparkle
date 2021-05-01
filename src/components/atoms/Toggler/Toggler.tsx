@@ -1,9 +1,5 @@
-import React, {
-  DetailedHTMLProps,
-  forwardRef,
-  InputHTMLAttributes,
-} from "react";
 import classNames from "classnames";
+import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
 
 import "./Toggler.scss";
 
@@ -14,29 +10,38 @@ export interface TogglerProps
   > {
   title?: string;
   containerClassName?: string;
-  inputClassName?: string;
+  togglerClassName?: string;
+  titleClassName?: string;
+  forwardRef?: (
+    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
+  ) => void;
 }
 
-const Toggler: React.ForwardRefRenderFunction<
-  HTMLLabelElement,
-  TogglerProps
-> = (
-  { containerClassName, inputClassName, title, ...extraInputProps },
-  ref
-) => {
-  const sliderClasses = classNames("Toggler__slider", {
-    "Toggler__slider--checked": extraInputProps.checked,
-  });
+export const Toggler: React.FC<TogglerProps> = ({
+  title,
+
+  containerClassName,
+  togglerClassName,
+  titleClassName,
+
+  forwardRef,
+  ...extraInputProps
+}) => {
+  const containerClasses = classNames("Toggler", containerClassName);
+  const sliderClasses = classNames("Toggler__slider", togglerClassName);
+  const titleClasses = classNames("Toggler__title", titleClassName);
 
   return (
-    <label ref={ref} className="Toggler">
-      <div className="Toggler__input">
-        <span className={sliderClasses} />
-        <input hidden type="checkbox" {...extraInputProps} />
-      </div>
-      {title && <div className="Toggler__title">{title}</div>}
+    <label className={containerClasses}>
+      <input
+        className="Toggler__native-input"
+        hidden
+        type="checkbox"
+        ref={forwardRef}
+        {...extraInputProps}
+      />
+      <div className={sliderClasses} />
+      {title && <div className={titleClasses}>{title}</div>}
     </label>
   );
 };
-
-export default forwardRef(Toggler);

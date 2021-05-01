@@ -1,1 +1,1 @@
-export { default as Toggler } from "./Toggler";
+export { Toggler } from "./Toggler";

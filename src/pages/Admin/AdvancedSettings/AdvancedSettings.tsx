@@ -1,22 +1,20 @@
 import React from "react";
 import * as Yup from "yup";
-import { updateVenue_v2 } from "api/admin";
-
-// Hooks
-import { useForm } from "react-hook-form";
-import { useUser } from "hooks/useUser";
-
-// Components
 import { Button, Form } from "react-bootstrap";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
-
-// Typings
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
-import { Venue_v2_AdvancedConfig } from "types/venues";
+import { useForm } from "react-hook-form";
 
 import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
 
-// Styles
+import { updateVenue_v2 } from "api/admin";
+
+import { Venue_v2_AdvancedConfig } from "types/venues";
+
+import { useUser } from "hooks/useUser";
+
+import { Toggler } from "components/atoms/Toggler";
+
+import { AdvancedSettingsProps } from "./AdvancedSettings.types";
+
 import * as S from "../Admin.styles";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
@@ -43,13 +41,7 @@ const ToggleElement: React.FC<ToggleElementProps> = ({
     </S.ItemHeader>
 
     <S.ItemBody>
-      <ToggleSwitch
-        name={name}
-        forwardRef={forwardRef}
-        withText
-        isChecked={isChecked}
-        isLarge
-      />
+      <Toggler name={name} forwardRef={forwardRef} defaultChecked={isChecked} />
 
       {children}
     </S.ItemBody>
