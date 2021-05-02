@@ -18,17 +18,15 @@ import { makeUpdateUserGridLocation } from "api/profile";
 
 import { EmojiReactions, EmojiReactionType } from "types/reactions";
 import { User } from "types/User";
+import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createEmojiReaction, createTextReaction } from "utils/reactions";
-import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -143,11 +141,15 @@ const burningReactions = EmojiReactions.filter(
     reaction.type !== EmojiReactionType.thatsjazz
 );
 
+export interface AudienceProps {
+  venue: WithId<GenericVenue>;
+}
+
 // Note: This is the component that is used for the Auditorium
-export const Audience: React.FunctionComponent = () => {
-  const venueId = useVenueId();
+export const Audience: React.FC<AudienceProps> = ({ venue }) => {
+  const venueId = venue.id;
+
   const { userId, userWithId } = useUser();
-  const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
