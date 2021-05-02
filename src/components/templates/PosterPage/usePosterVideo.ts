@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
 import { withId, WithId } from "utils/id";
@@ -6,17 +6,28 @@ import { withId, WithId } from "utils/id";
 import { User } from "types/User";
 
 import { useUser } from "hooks/useUser";
-import { useWorldUsersById } from "hooks/users";
+import { useWorldUsersByIdWorkaround } from "hooks/users";
 import { useVideoRoom } from "hooks/useVideoRoom";
 
 export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();
-  const { worldUsersById } = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
 
   const { participants, turnVideoOff, turnVideoOn } = useVideoRoom({
     userId,
     roomName: venueId,
   });
+
+  const getUserById = useCallback(
+    (id: string) => {
+      const user = worldUsersById[id];
+
+      if (!user) return;
+
+      return withId(user, id);
+    },
+    [worldUsersById]
+  );
 
   const { passiveListeners, activeParticipants } = useMemo(
     () =>
@@ -25,16 +36,15 @@ export const usePosterVideo = (venueId: string) => {
         activeParticipants: (RemoteParticipant | LocalParticipant)[];
       }>(
         (acc, participant) => {
+          // If participant is not broadcasting video, put him into passiveListeners
           if (participant.videoTracks.size === 0) {
+            const user = getUserById(participant.identity);
+
+            if (!user) return acc;
+
             return {
               ...acc,
-              passiveListeners: [
-                ...acc.passiveListeners,
-                withId(
-                  worldUsersById[participant.identity],
-                  participant.identity
-                ),
-              ],
+              passiveListeners: [...acc.passiveListeners, user],
             };
           }
 
@@ -48,7 +58,7 @@ export const usePosterVideo = (venueId: string) => {
           activeParticipants: [],
         }
       ),
-    [participants, worldUsersById]
+    [participants, getUserById]
   );
 
   const isMeActiveParticipant = useMemo(
