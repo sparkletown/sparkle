@@ -21,9 +21,12 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
   liveFilterValue,
   setLiveValue,
 }) => {
-  const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchInputValue(e.target.value);
-  };
+  const onTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInputValue(e.target.value);
+    },
+    [setSearchInputValue]
+  );
 
   const onCheckboxChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setLiveValue(e.target.checked),

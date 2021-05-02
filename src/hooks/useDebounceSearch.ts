@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import debounce from "lodash/debounce";
 
 const SEARCH_DEBOUNCE_TIME = 200; // ms
@@ -13,17 +13,21 @@ export const useDebounceSearch = () => {
     setSearchQuery("");
   }, []);
 
-  useEffect(() => {
-    const debouncedSearch = debounce((value: string) => {
-      setSearchQuery(value.toLowerCase());
-    }, SEARCH_DEBOUNCE_TIME);
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchQuery(value.toLowerCase());
+      }, SEARCH_DEBOUNCE_TIME),
+    []
+  );
 
+  useEffect(() => {
     debouncedSearch(searchInputValue);
 
     return () => {
       debouncedSearch.cancel();
     };
-  }, [searchInputValue]);
+  }, [searchInputValue, debouncedSearch]);
 
   return {
     searchQuery,
