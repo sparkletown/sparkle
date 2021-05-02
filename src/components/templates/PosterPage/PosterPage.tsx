@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faShare, faTv, faStop } from "@fortawesome/free-solid-svg-icons";
 
 import { setVenueLiveStatus } from "api/venue";
@@ -8,6 +8,8 @@ import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+
+import { useShowHide } from "hooks/useShowHide";
 
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
@@ -29,15 +31,12 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const { title, introVideoUrl } = poster ?? {};
 
-  const [isIntroVideoShown, setIntroVideoShown] = useState<boolean>(false);
+  const {
+    isShown: isIntroVideoShown,
 
-  const showIntroVideoModal = () => {
-    setIntroVideoShown(true);
-  };
-
-  const hideIntroVideoModal = () => {
-    setIntroVideoShown(false);
-  };
+    show: showIntroVideoModal,
+    hide: hideIntroVideoModal,
+  } = useShowHide();
 
   const {
     activeParticipants,
