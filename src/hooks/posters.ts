@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { VenueTemplate } from "types/venues";
 import Fuse from "fuse.js";
 
@@ -42,8 +42,6 @@ export const usePosters = (posterHallId: string) => {
     searchQuery,
     setSearchInputValue,
   } = useDebounceSearch();
-
-  useEffect(() => {});
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
 
