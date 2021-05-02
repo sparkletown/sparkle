@@ -19,8 +19,8 @@ export interface PosterHallProps {
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
-    titleFilter,
-    setTitleFilter,
+    searchInputValue,
+    setSearchInputValue,
     liveFilter,
     setLiveFilter,
   } = usePosters(venue.id);
@@ -38,8 +38,8 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   return (
     <div className="PosterHall">
       <PosterHallSearch
-        setTitleValue={setTitleFilter}
-        titleFilterValue={titleFilter}
+        setSearchInputValue={setSearchInputValue}
+        searchInputValue={searchInputValue}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
       />

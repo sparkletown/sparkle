@@ -7,22 +7,22 @@ import { Checkbox } from "components/atoms/Checkbox";
 import "./PosterHallSearch.scss";
 
 export interface PosterHallSearchProps {
-  titleFilterValue?: string;
-  setTitleValue: (title: string) => void;
+  searchInputValue?: string;
+  setSearchInputValue: (title: string) => void;
 
   liveFilterValue: boolean;
   setLiveValue: (isLive: boolean) => void;
 }
 
 export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
-  titleFilterValue,
-  setTitleValue,
+  searchInputValue,
+  setSearchInputValue,
 
   liveFilterValue,
   setLiveValue,
 }) => {
   const onTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTitleValue(e.target.value);
+    setSearchInputValue(e.target.value);
   };
 
   const onCheckboxChange = useCallback(
@@ -37,7 +37,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
         inputClassName="PosterHallSearch__input"
         iconStart={faSearch}
         placeholder="Search Posters/Demos"
-        value={titleFilterValue}
+        value={searchInputValue}
         onChange={onTitleChange}
       />
       <Checkbox

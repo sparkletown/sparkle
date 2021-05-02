@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { VenueTemplate } from "types/venues";
 import Fuse from "fuse.js";
 
@@ -6,6 +6,7 @@ import { posterVenuesSelector } from "utils/selectors";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
+import { useDebounceSearch } from "./useDebounceSearch";
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -36,26 +37,42 @@ export const usePosterVenues = (posterHallId: string) => {
 export const usePosters = (posterHallId: string) => {
   const { posterVenues } = usePosterVenues(posterHallId);
 
-  const [titleFilter, setTitleFilter] = useState<string>();
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+  } = useDebounceSearch();
+
+  useEffect(() => {});
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
 
-  const fusePosterVenues = new Fuse(posterVenues, {
-    keys: ["poster.title", "poster.authorName", "poster.categories"],
-  });
+  const hasFilters = searchQuery || liveFilter;
+
+  const searchResultPosterVenues = useMemo(() => {
+    const searchedPosterVenues = (() => {
+      if (!searchQuery) return posterVenues;
+
+      return new Fuse(posterVenues, {
+        keys: ["poster.title", "poster.authorName", "poster.categories"],
+      })
+        .search(searchQuery)
+        .map((fuseSeachItem) => fuseSeachItem.item);
+    })();
+
+    if (liveFilter)
+      return searchedPosterVenues.filter((posterVenue) => posterVenue.isLive);
+
+    return searchedPosterVenues;
+  }, [posterVenues, searchQuery, liveFilter]);
 
   return {
-    posterVenues: titleFilter
-      ? fusePosterVenues
-          .search(titleFilter)
-          .map((fuseItem) => fuseItem.item)
-          .filter((venue) => (liveFilter ? venue.isLive : true))
-      : posterVenues,
+    posterVenues: hasFilters ? searchResultPosterVenues : posterVenues,
 
-    titleFilter,
+    searchInputValue,
     liveFilter,
 
-    setTitleFilter,
+    setSearchInputValue,
     setLiveFilter,
   };
 };
