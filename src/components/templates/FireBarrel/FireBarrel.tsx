@@ -9,7 +9,7 @@ import { currentVenueSelector } from "utils/selectors";
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import { useVideoRoom } from "hooks/useVideoRoom";
+import { useVideoRoomState } from "hooks/twilio";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -31,7 +31,7 @@ export const FireBarrel: React.FC = () => {
 
   const { userId, profile, userWithId } = useUser();
 
-  const { room, participants } = useVideoRoom({
+  const { room, participants } = useVideoRoomState({
     userId,
     roomName: venue?.name,
   });

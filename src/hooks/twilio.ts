@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   AudioTrack,
+  connect,
   LocalParticipant,
+  LocalVideoTrack,
   RemoteParticipant,
+  Room,
   Track,
   VideoTrack,
 } from "twilio-video";
+
+import { getVideoToken } from "api/video";
 
 import {
   appendTrack,
@@ -18,8 +23,10 @@ import {
   trackMapToVideoTracks,
 } from "utils/twilio";
 
+import { useShowHide } from "./useShowHide";
+
 export interface UseParticipantStateProps {
-  participant: LocalParticipant | RemoteParticipant;
+  participant?: LocalParticipant | RemoteParticipant;
   defaultMute: boolean;
   defaultVideoHidden: boolean;
 }
@@ -52,6 +59,8 @@ export const useParticipantState = ({
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
 
   useEffect(() => {
+    if (!participant) return;
+
     setVideoTracks(trackMapToVideoTracks(participant.videoTracks));
     setAudioTracks(trackMapToAudioTracks(participant.audioTracks));
 
@@ -105,14 +114,16 @@ export const useParticipantState = ({
   }, [audioTracks, isMuted]);
 
   // Show/hide video
-  const [isVideoHidden, setVideoHidden] = useState<boolean>(defaultVideoHidden);
-  const toggleVideoHidden = useCallback(
-    () => setVideoHidden((prevIsVideoHidden) => !prevIsVideoHidden),
-    []
-  );
+  const {
+    isShown: isVideoShown,
+
+    show: showVideo,
+    hide: hideVideo,
+    toggle: toggleVideo,
+  } = useShowHide(!defaultVideoHidden);
 
   useEffect(() => {
-    if (isVideoHidden) {
+    if (!isVideoShown) {
       // Pause all of our localVideoTracks
       videoTracks
         .filter(isLocalVideoTrack)
@@ -123,7 +134,7 @@ export const useParticipantState = ({
         .filter(isLocalVideoTrack)
         .forEach((localVideoTrack) => localVideoTrack.enable());
     }
-  }, [videoTracks, isVideoHidden]);
+  }, [videoTracks, isVideoShown]);
 
   return {
     videoTracks,
@@ -133,8 +144,118 @@ export const useParticipantState = ({
     setMuted,
     toggleMuted,
 
-    isVideoHidden,
-    setVideoHidden,
-    toggleVideoHidden,
+    isVideoShown,
+    hideVideo,
+    showVideo,
+    toggleVideo,
+  };
+};
+
+export interface UseVideoRoomStateProps {
+  userId?: string;
+  roomName?: string;
+  showVideoByDefault?: boolean;
+}
+
+export const useVideoRoomState = ({
+  userId,
+  roomName,
+  showVideoByDefault = true,
+}: UseVideoRoomStateProps) => {
+  const [token, setToken] = useState<string>();
+
+  useEffect(() => {
+    (async () => {
+      if (!userId || !!token || !roomName) return;
+
+      const response = await getVideoToken({
+        userId,
+        roomName,
+      });
+
+      if (!response) return;
+
+      setToken(response.data.token);
+    })();
+  }, [userId, roomName, token]);
+
+  const [room, setRoom] = useState<Room>();
+  const [participants, setParticipants] = useState<
+    (LocalParticipant | RemoteParticipant)[]
+  >([]);
+
+  const disconnect = useCallback(() => {
+    setRoom((currentRoom) => {
+      if (currentRoom && currentRoom.localParticipant.state === "connected") {
+        currentRoom.localParticipant.tracks.forEach((trackPublication) => {
+          (trackPublication.track as LocalVideoTrack).stop();
+        });
+        currentRoom.disconnect();
+        return undefined;
+      } else {
+        return currentRoom;
+      }
+    });
+  }, []);
+
+  const {
+    isShown: hasVideo,
+
+    show: turnVideoOn,
+    hide: turnVideoOff,
+  } = useShowHide(showVideoByDefault);
+
+  const localParticipant = room?.localParticipant;
+
+  useEffect(() => {
+    if (!localParticipant) return;
+
+    setParticipants((prevParticipants) => [
+      // Hopefully prevents duplicate users in the participant list
+      ...prevParticipants.filter(
+        (p) => p.identity !== localParticipant.identity
+      ),
+      localParticipant,
+    ]);
+  }, [localParticipant]);
+
+  useEffect(() => {
+    if (!token || !roomName) return;
+
+    const participantConnected = (participant: RemoteParticipant) => {
+      setParticipants((prevParticipants) => [...prevParticipants, participant]);
+    };
+
+    const participantDisconnected = (participant: RemoteParticipant) => {
+      setParticipants((prevParticipants) =>
+        prevParticipants.filter((p) => p !== participant)
+      );
+    };
+    // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
+    connect(token, {
+      name: roomName,
+      video: hasVideo,
+      enableDscp: true,
+    }).then((room) => {
+      setRoom(room);
+      room.on("participantConnected", participantConnected);
+      room.on("participantDisconnected", participantDisconnected);
+      room.participants.forEach(participantConnected);
+    });
+
+    return () => {
+      disconnect();
+    };
+  }, [disconnect, roomName, token, hasVideo]);
+
+  return {
+    token,
+
+    room,
+    participants,
+
+    disconnect,
+    turnVideoOff,
+    turnVideoOn,
   };
 };

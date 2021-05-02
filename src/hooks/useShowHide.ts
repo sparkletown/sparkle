@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react";
 
-export const useShowHide = () => {
-  const [isShown, setShown] = useState<boolean>(false);
+export const useShowHide = (isShownByDefault: boolean = false) => {
+  const [isShown, setShown] = useState<boolean>(isShownByDefault);
 
   const show = useCallback(() => {
     setShown(true);

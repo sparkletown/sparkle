@@ -7,15 +7,16 @@ import { User } from "types/User";
 
 import { useUser } from "hooks/useUser";
 import { useWorldUsersByIdWorkaround } from "hooks/users";
-import { useVideoRoom } from "hooks/useVideoRoom";
+import { useVideoRoomState } from "hooks/twilio";
 
 export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();
   const { worldUsersById } = useWorldUsersByIdWorkaround();
 
-  const { participants, turnVideoOff, turnVideoOn } = useVideoRoom({
+  const { participants, turnVideoOff, turnVideoOn } = useVideoRoomState({
     userId,
     roomName: venueId,
+    showVideoByDefault: false,
   });
 
   const getUserById = useCallback(
