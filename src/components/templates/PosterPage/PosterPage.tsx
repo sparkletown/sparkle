@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { faShare, faTv, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faTv, faStop } from "@fortawesome/free-solid-svg-icons";
 
 import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 
@@ -82,13 +82,13 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
             />
           )}
 
-          {/* TODO: Implement poster sharing on social media */}
           <PosterPageSettingsControl
             isPosterLive={isPosterLive}
             venueId={venueId}
           />
 
-          <PosterPageControl label="Share" icon={faShare} />
+          {/* TODO: Implement poster sharing on social media */}
+          {/* <PosterPageControl label="Share" icon={faShare} /> */}
 
           {introVideoUrl && (
             <PosterPageControl
