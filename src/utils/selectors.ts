@@ -223,16 +223,6 @@ export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
 
-export const maybeSelector = <T extends SparkleSelector<U>, U>(
-  ifTrue: boolean,
-  selector: T
-) => (ifTrue ? selector : noopSelector);
-
-export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
-  ifTrue: boolean,
-  selector: T
-) => (ifTrue ? selector : emptyArraySelector);
-
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
@@ -244,7 +234,18 @@ export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
 ) => state.chat.settings;
 
+export const maybeSelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T>
+): SparkleSelector<T> | SparkleSelector<undefined> =>
+  ifTrue ? selector : noopSelector;
+
+export const maybeArraySelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T[]>
+): SparkleSelector<T[]> => (ifTrue ? selector : emptyArraySelector);
+
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 
 export const emptyArray = [];
-export const emptyArraySelector = <T>() => emptyArray as T[];
+export const emptyArraySelector = <T>(): T[] => emptyArray;
