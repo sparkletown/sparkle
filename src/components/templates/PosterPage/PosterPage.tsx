@@ -82,6 +82,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
             />
           )}
 
+          {/* TODO: Implement poster sharing on social media */}
           <PosterPageSettingsControl
             isPosterLive={isPosterLive}
             venueId={venueId}
