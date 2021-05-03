@@ -6,10 +6,14 @@ export interface GetVideoTokenProps {
   roomName: string;
 }
 
+export interface VideoTokenResponse {
+  data: { token: string };
+}
+
 export const getVideoToken = async ({
   userId,
   roomName,
-}: GetVideoTokenProps): Promise<void | firebase.functions.HttpsCallableResult> => {
+}: GetVideoTokenProps): Promise<void | VideoTokenResponse> => {
   return firebase
     .functions()
     .httpsCallable("video-getToken")({
