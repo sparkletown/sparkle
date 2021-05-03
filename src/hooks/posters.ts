@@ -28,10 +28,13 @@ export const usePosterVenues = (posterHallId: string) => {
 
   const posterVenues = useSelector(posterVenuesSelector);
 
-  return {
-    posterVenues: posterVenues ?? [],
-    isPostersLoaded: isLoaded(posterVenues),
-  };
+  return useMemo(
+    () => ({
+      posterVenues: posterVenues ?? [],
+      isPostersLoaded: isLoaded(posterVenues),
+    }),
+    [posterVenues]
+  );
 };
 
 export const usePosters = (posterHallId: string) => {
@@ -45,26 +48,32 @@ export const usePosters = (posterHallId: string) => {
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
 
-  const hasFilters = searchQuery || liveFilter;
-
-  const searchResultPosterVenues = useMemo(() => {
-    const searchedPosterVenues = (() => {
-      if (!searchQuery) return posterVenues;
-
-      return new Fuse(posterVenues, {
+  const fuseVenues = useMemo(
+    () =>
+      new Fuse(posterVenues, {
         keys: ["poster.title", "poster.authorName", "poster.categories"],
-      })
-        .search(searchQuery)
-        .map((fuseSearchItem) => fuseSearchItem.item);
-    })();
+      }),
+    [posterVenues]
+  );
 
-    return liveFilter
-      ? searchedPosterVenues.filter((posterVenue) => posterVenue.isLive)
-      : searchedPosterVenues;
-  }, [posterVenues, searchQuery, liveFilter]);
+  const searchedPosterVenues = useMemo(() => {
+    if (!searchQuery) return posterVenues;
+
+    return fuseVenues
+      .search(searchQuery)
+      .map((fuseSearchItem) => fuseSearchItem.item);
+  }, [searchQuery, fuseVenues, posterVenues]);
+
+  const filteredPosterVenues = useMemo(
+    () =>
+      liveFilter
+        ? searchedPosterVenues.filter((posterVenue) => posterVenue.isLive)
+        : searchedPosterVenues,
+    [searchedPosterVenues, liveFilter]
+  );
 
   return {
-    posterVenues: hasFilters ? searchResultPosterVenues : posterVenues,
+    posterVenues: filteredPosterVenues,
 
     searchInputValue,
     liveFilter,
