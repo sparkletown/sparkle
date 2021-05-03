@@ -1,22 +1,20 @@
 import React from "react";
 import Modal from "react-bootstrap/Modal";
 
-import { PosterPageVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { IFRAME_ALLOW } from "settings";
 
 import "./IntroVideoPreviewModal.scss";
 
 export interface IntroVideoPreviewModalProps {
   isVisible: boolean;
   onHide: () => void;
-  posterVenue?: WithId<PosterPageVenue>;
+  introVideoUrl: string;
 }
 
 export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
   isVisible,
   onHide,
-  posterVenue,
+  introVideoUrl,
 }) => {
   return (
     <Modal
@@ -30,7 +28,9 @@ export const IntroVideoPreviewModal: React.FC<IntroVideoPreviewModalProps> = ({
       <iframe
         className="IntroVideoPreviewModal__iframe"
         title="IntroVideoPreviewModal-iframe"
-        src={posterVenue?.poster?.introVideoUrl}
+        src={introVideoUrl}
+        allow={IFRAME_ALLOW}
+        allowFullScreen
       />
     </Modal>
   );

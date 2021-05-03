@@ -21,5 +21,6 @@ export const useShowHide = (isShownByDefault: boolean = false) => {
     show,
     hide,
     toggle,
+    setShown,
   };
 };

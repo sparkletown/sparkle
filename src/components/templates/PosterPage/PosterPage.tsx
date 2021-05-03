@@ -135,11 +135,13 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <UserList users={passiveListeners} activity="listening" />
       </div>
 
-      <IntroVideoPreviewModal
-        isVisible={isIntroVideoShown}
-        onHide={hideIntroVideoModal}
-        posterVenue={venue}
-      />
+      {introVideoUrl && (
+        <IntroVideoPreviewModal
+          isVisible={isIntroVideoShown}
+          onHide={hideIntroVideoModal}
+          introVideoUrl={introVideoUrl}
+        />
+      )}
     </div>
   );
 };

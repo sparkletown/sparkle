@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
 import debounce from "lodash/debounce";
 
-const SEARCH_DEBOUNCE_TIME = 200; // ms
+import { SEARCH_DEBOUNCE_TIME } from "settings";
 
 export const useDebounceSearch = () => {
   const [searchInputValue, setSearchInputValue] = useState("");

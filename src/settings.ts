@@ -556,3 +556,5 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
+
+export const SEARCH_DEBOUNCE_TIME = 200; // ms
