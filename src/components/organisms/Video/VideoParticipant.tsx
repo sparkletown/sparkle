@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import {
   faEye,
@@ -21,8 +21,7 @@ import { isLocalParticipant } from "utils/twilio";
 
 import { useParticipantState } from "hooks/twilio";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./VideoParticipant.scss";
 
@@ -48,11 +47,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const isMe = isLocalParticipant(participant);
 
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
-
-  // Show/hide UserProfileModal
-  const [isProfileVisible, setProfileVisible] = useState<boolean>(false);
-  const showProfileModal = useCallback(() => setProfileVisible(true), []);
-  const hideProfileModal = useCallback(() => setProfileVisible(false), []);
 
   const {
     videoTracks,
@@ -151,16 +145,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       {showIcon && participantUser && (
         <div className="video-participant__profile">
-          <UserProfilePicture
-            user={participantUser}
-            setSelectedUserProfile={showProfileModal}
-          />
-
-          <UserProfileModal
-            userProfile={participantUser}
-            show={isProfileVisible}
-            onHide={hideProfileModal}
-          />
+          <UserProfilePicture user={participantUser} />
         </div>
       )}
 
