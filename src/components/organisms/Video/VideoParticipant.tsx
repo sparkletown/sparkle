@@ -56,7 +56,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     setMuted,
     toggleMuted,
 
-    isVideoShown,
+    isVideoHidden,
     toggleVideo,
     showVideo,
     hideVideo,
@@ -120,10 +120,10 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
   const micIcon = isMe ? micIconMe : micIconOther;
   const micIconColor = isMuted ? "red" : undefined;
 
-  const videoIconMe = !isVideoShown ? faVideoSlash : faVideo;
-  const videoIconOther = !isVideoShown ? faEyeSlash : faEye;
+  const videoIconMe = isVideoHidden ? faVideoSlash : faVideo;
+  const videoIconOther = isVideoHidden ? faEyeSlash : faEye;
   const videoIcon = isMe ? videoIconMe : videoIconOther;
-  const videoIconColor = !isVideoShown ? "red" : undefined;
+  const videoIconColor = isVideoHidden ? "red" : undefined;
 
   return (
     <div

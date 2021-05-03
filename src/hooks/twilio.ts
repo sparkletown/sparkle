@@ -122,8 +122,10 @@ export const useParticipantState = ({
     toggle: toggleVideo,
   } = useShowHide(!defaultVideoHidden);
 
+  const isVideoHidden = !isVideoShown;
+
   useEffect(() => {
-    if (!isVideoShown) {
+    if (isVideoHidden) {
       // Pause all of our localVideoTracks
       videoTracks
         .filter(isLocalVideoTrack)
@@ -134,7 +136,7 @@ export const useParticipantState = ({
         .filter(isLocalVideoTrack)
         .forEach((localVideoTrack) => localVideoTrack.enable());
     }
-  }, [videoTracks, isVideoShown]);
+  }, [videoTracks, isVideoHidden]);
 
   return {
     videoTracks,
@@ -144,7 +146,7 @@ export const useParticipantState = ({
     setMuted,
     toggleMuted,
 
-    isVideoShown,
+    isVideoHidden,
     hideVideo,
     showVideo,
     toggleVideo,
@@ -186,14 +188,15 @@ export const useVideoRoomState = ({
 
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
-      if (!currentRoom || currentRoom?.localParticipant?.state !== "connected") return currentRoom
-      
+      if (!currentRoom || currentRoom?.localParticipant?.state !== "connected")
+        return currentRoom;
+
       currentRoom.localParticipant.tracks.forEach((trackPublication) => {
         (trackPublication.track as LocalVideoTrack).stop();
       });
-      
+
       currentRoom.disconnect();
-      
+
       return undefined;
     });
   }, []);
