@@ -55,13 +55,12 @@ export const usePosters = (posterHallId: string) => {
         keys: ["poster.title", "poster.authorName", "poster.categories"],
       })
         .search(searchQuery)
-        .map((fuseSeachItem) => fuseSeachItem.item);
+        .map((fuseSearchItem) => fuseSearchItem.item);
     })();
 
-    if (liveFilter)
-      return searchedPosterVenues.filter((posterVenue) => posterVenue.isLive);
-
-    return searchedPosterVenues;
+    return liveFilter
+      ? searchedPosterVenues.filter((posterVenue) => posterVenue.isLive)
+      : searchedPosterVenues;
   }, [posterVenues, searchQuery, liveFilter]);
 
   return {

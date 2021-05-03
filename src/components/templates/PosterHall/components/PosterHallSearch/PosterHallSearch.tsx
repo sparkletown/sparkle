@@ -21,7 +21,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
   liveFilterValue,
   setLiveValue,
 }) => {
-  const onTitleChange = useCallback(
+  const onInputFieldChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchInputValue(e.target.value);
     },

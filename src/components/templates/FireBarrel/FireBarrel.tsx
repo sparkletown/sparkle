@@ -44,6 +44,7 @@ export const FireBarrel: React.FC = () => {
   const updateVideoState = useCallback(
     (update: VideoState) => {
       if (!userId) return;
+
       firebase.firestore().doc(`users/${userId}`).update({ video: update });
     },
     [userId]

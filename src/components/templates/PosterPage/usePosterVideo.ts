@@ -37,7 +37,7 @@ export const usePosterVideo = (venueId: string) => {
         activeParticipants: (RemoteParticipant | LocalParticipant)[];
       }>(
         (acc, participant) => {
-          // If participant is not broadcasting video, put him into passiveListeners
+          // If participant is not broadcasting video, put them into passiveListeners
           if (participant.videoTracks.size === 0) {
             const user = getUserById(participant.identity);
 

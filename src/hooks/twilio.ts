@@ -186,15 +186,15 @@ export const useVideoRoomState = ({
 
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
-      if (currentRoom && currentRoom.localParticipant.state === "connected") {
-        currentRoom.localParticipant.tracks.forEach((trackPublication) => {
-          (trackPublication.track as LocalVideoTrack).stop();
-        });
-        currentRoom.disconnect();
-        return undefined;
-      } else {
-        return currentRoom;
-      }
+      if (!currentRoom || currentRoom?.localParticipant?.state !== "connected") return currentRoom
+      
+      currentRoom.localParticipant.tracks.forEach((trackPublication) => {
+        (trackPublication.track as LocalVideoTrack).stop();
+      });
+      
+      currentRoom.disconnect();
+      
+      return undefined;
     });
   }, []);
 
@@ -231,6 +231,7 @@ export const useVideoRoomState = ({
         prevParticipants.filter((p) => p !== participant)
       );
     };
+
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
     connect(token, {
       name: roomName,

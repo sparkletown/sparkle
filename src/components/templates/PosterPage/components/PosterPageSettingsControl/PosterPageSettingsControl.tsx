@@ -15,7 +15,7 @@ export interface PosterPageSettingsControlProps {
 }
 
 export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps> = ({
-  isPosterLive,
+  isPosterLive = false,
   setVenueLiveOff,
   setVenueLiveOn,
 }) => (
@@ -30,7 +30,7 @@ export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps>
         <Popover.Content className="PosterPageSettingsControl__popover-content">
           <Checkbox
             type="checkbox"
-            checked={!!isPosterLive}
+            checked={isPosterLive}
             onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
             title={isPosterLive ? "Poster is live" : "Make poster live"}
             toggler

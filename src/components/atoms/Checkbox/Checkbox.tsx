@@ -1,5 +1,5 @@
-import classNames from "classnames";
 import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 

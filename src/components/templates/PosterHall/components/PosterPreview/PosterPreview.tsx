@@ -27,8 +27,8 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const renderedCategories = useMemo(
     () => (
       <div className="PosterPreview__categories">
-        {categories?.map((category, index) => (
-          <div key={`category_${index}`} className="PosterPreview__category">
+        {new Set(categories).map((category) => (
+          <div key={category} className="PosterPreview__category">
             {category}
           </div>
         ))}
@@ -41,7 +41,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     <div className={posterClassnames} onClick={onClick}>
       <p className="PosterPreview__title">{title}</p>
 
-      {hasCategories && renderedCategories}
+      <div className="PosterPreview__categories">
+        {renderedCategories}
+      </div>
 
       <div className="PosterPreview__author">{authorName}</div>
     </div>
