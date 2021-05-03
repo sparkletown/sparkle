@@ -41,12 +41,12 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
         iconStart={faSearch}
         placeholder="Search Posters/Demos"
         value={searchInputValue}
-        onChange={onTitleChange}
+        onChange={onInputFieldChange}
       />
       <Checkbox
         checked={liveFilterValue}
         onChange={onCheckboxChange}
-        title="Presenter is online"
+        label="Presenter is online"
         containerClassName="PosterHallSearch__checkbox"
       />
     </div>

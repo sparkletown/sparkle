@@ -10,22 +10,22 @@ export interface CheckboxProps
     InputHTMLAttributes<HTMLInputElement>,
     HTMLInputElement
   > {
-  title?: string;
+  label?: string;
   toggler?: boolean;
   containerClassName?: string;
-  titleClassName?: string;
+  labelClassName?: string;
   forwardRef?: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
   ) => void;
 }
 
 export const Checkbox: React.FC<CheckboxProps> = ({
-  title,
+  label,
 
   toggler: isToggler = false,
 
   containerClassName,
-  titleClassName,
+  labelClassName,
 
   forwardRef,
   ...extraInputProps
@@ -34,7 +34,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   const checkboxClasses = classNames("Checkbox__custom-input", {
     "Checkbox__custom-input--toggler": isToggler,
   });
-  const titleClasses = classNames("Checkbox__title", titleClassName);
+  const labelClasses = classNames("Checkbox__label", labelClassName);
 
   return (
     <label className={containerClasses}>
@@ -52,7 +52,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
           className="Checkbox__tick-icon"
         />
       </div>
-      {title && <div className={titleClasses}>{title}</div>}
+      {label && <div className={labelClasses}>{label}</div>}
     </label>
   );
 };

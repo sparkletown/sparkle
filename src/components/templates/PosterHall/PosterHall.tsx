@@ -44,7 +44,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         setLiveValue={setLiveFilter}
       />
 
-      <div className="PosterHall__posters">{renderedPosterVenues}</div>
+      <div className="PosterHall__posters">{renderedPosterPreviews}</div>
     </div>
   );
 };

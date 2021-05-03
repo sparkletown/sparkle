@@ -88,7 +88,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
               name="showGrid"
               checked={room.isEnabled}
               onChange={handleRoomVisibilityChange}
-              title={room.isEnabled ? "Room Enabled" : "Room Disabled"}
+              label={room.isEnabled ? "Room Enabled" : "Room Disabled"}
               toggler
             />
           </div>

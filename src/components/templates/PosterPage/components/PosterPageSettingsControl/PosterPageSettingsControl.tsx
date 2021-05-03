@@ -32,7 +32,7 @@ export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps>
             type="checkbox"
             checked={isPosterLive}
             onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
-            title={isPosterLive ? "Poster is live" : "Make poster live"}
+            label={isPosterLive ? "Poster is live" : "Make poster live"}
             toggler
           />
         </Popover.Content>

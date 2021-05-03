@@ -22,18 +22,13 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
-  const hasCategories = categories?.length && categories.length > 0;
-
   const renderedCategories = useMemo(
-    () => (
-      <div className="PosterPreview__categories">
-        {new Set(categories).map((category) => (
-          <div key={category} className="PosterPreview__category">
-            {category}
-          </div>
-        ))}
-      </div>
-    ),
+    () =>
+      Array.from(new Set(categories)).map((category) => (
+        <div key={category} className="PosterPreview__category">
+          {category}
+        </div>
+      )),
     [categories]
   );
 
@@ -41,9 +36,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     <div className={posterClassnames} onClick={onClick}>
       <p className="PosterPreview__title">{title}</p>
 
-      <div className="PosterPreview__categories">
-        {renderedCategories}
-      </div>
+      <div className="PosterPreview__categories">{renderedCategories}</div>
 
       <div className="PosterPreview__author">{authorName}</div>
     </div>
