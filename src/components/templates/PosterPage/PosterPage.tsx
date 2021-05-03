@@ -1,7 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { faShare, faTv, faStop } from "@fortawesome/free-solid-svg-icons";
-
-import { setVenueLiveStatus } from "api/venue";
 
 import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 
@@ -48,14 +46,6 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     turnVideoOn,
   } = usePosterVideo(venueId);
 
-  const setVenueLiveOn = useCallback(() => {
-    setVenueLiveStatus(venueId, true);
-  }, [venueId]);
-
-  const setVenueLiveOff = useCallback(() => {
-    setVenueLiveStatus(venueId, false);
-  }, [venueId]);
-
   const videoParticipants = useMemo(
     () =>
       activeParticipants.map((participant, index) => (
@@ -94,8 +84,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
           <PosterPageSettingsControl
             isPosterLive={isPosterLive}
-            setVenueLiveOff={setVenueLiveOff}
-            setVenueLiveOn={setVenueLiveOn}
+            venueId={venueId}
           />
 
           <PosterPageControl label="Share" icon={faShare} />
