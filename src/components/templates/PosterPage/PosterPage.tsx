@@ -14,11 +14,11 @@ import { useShowHide } from "hooks/useShowHide";
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
 
-import { usePosterVideo } from "./usePosterVideo";
-
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
 import { PosterPageSettingsControl } from "./components/PosterPageSettingsControl";
+
+import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
 

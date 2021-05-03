@@ -12,7 +12,7 @@ $modal-height: calc(#{$modal-width} * 9 / 16);
     background-color: $lighter-intermediate-grey;
   }
 
-  // @debt replace .modal-content with ContentClassName, when we upgrade to a version of react-bootstrap that supports it
+  // @debt use contentClassName prop instead of this .modal-content override when we upgrade to a version of react-bootstrap that supports it
   .modal-content {
     display: flex;
     flex-direction: column;
