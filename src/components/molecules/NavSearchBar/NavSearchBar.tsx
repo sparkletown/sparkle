@@ -1,4 +1,10 @@
-import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  ChangeEvent,
+  useMemo,
+  useEffect,
+} from "react";
 import classNames from "classnames";
 import { debounce } from "lodash";
 
@@ -33,6 +39,7 @@ const emptyEventsArray: VenueEvent[] = [];
 const DEBOUNCE_TIME = 200; // ms
 
 const NavSearchBar = () => {
+  const [searchInputValue, setSearchInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
   const debouncedSearch = useMemo(
@@ -45,15 +52,18 @@ const NavSearchBar = () => {
 
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      debouncedSearch(value);
+      setSearchInputValue(e.target.value);
     },
-    [debouncedSearch]
+    []
   );
 
   const clearSearchQuery = useCallback(() => {
-    setSearchQuery("");
+    setSearchInputValue("");
   }, []);
+
+  useEffect(() => {
+    debouncedSearch(searchInputValue);
+  }, [debouncedSearch, searchInputValue]);
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
@@ -99,8 +109,7 @@ const NavSearchBar = () => {
         <NavSearchResult
           key={`user-${user.id}`}
           title={user.partyName ?? DEFAULT_PARTY_NAME}
-          image={user.pictureUrl}
-          isAvatar={true}
+          user={user}
           onClick={() => {
             openUserProfileModal(user);
             clearSearchQuery();
@@ -170,6 +179,7 @@ const NavSearchBar = () => {
       </div>
 
       <InputField
+        value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."

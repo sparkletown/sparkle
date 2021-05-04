@@ -1,0 +1,52 @@
+@import "scss/constants.scss";
+
+.AdminVenueView {
+  display: flex;
+  justify-content: space-around;
+  padding: 20px 0;
+
+  @media (max-width: $small-desktop-width) {
+    align-items: center;
+  }
+
+  @media (max-width: $normal-tablet-width) {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  &__options {
+    display: flex;
+    width: 80%;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  &__tab {
+    position: relative;
+    display: flex;
+    flex-grow: 1;
+    text-align: center;
+    align-self: center;
+    cursor: pointer;
+    color: rgba($white, 0.6);
+    text-decoration: none;
+
+    @media (max-width: $small-desktop-width) {
+      width: 50%;
+    }
+
+    @media (max-width: $normal-tablet-width) {
+      width: 100%;
+    }
+
+    &:hover {
+      color: $white;
+    }
+
+    &--selected {
+      color: $white;
+      background-color: $primary;
+    }
+  }
+}

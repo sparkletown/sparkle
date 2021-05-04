@@ -8,8 +8,7 @@ interface WrapperProps {
 export const Wrapper = styled.div<WrapperProps>`
   display: grid;
   height: 100vh;
-  grid-template-columns: ${({ hasSelectedVenue }) =>
-    hasSelectedVenue ? "240px auto" : "auto"};
+  grid-template-columns: auto;
 
   position: relative;
   overflow-y: scroll;
