@@ -206,35 +206,6 @@ export const useVideoRoomState = ({
     hide: turnVideoOff,
   } = useShowHide(showVideoByDefault);
 
-  const localParticipant = room?.localParticipant;
-
-  useEffect(() => {
-    if (!localParticipant) return;
-
-    // Add local participant to participants, but remove any duplicates
-    setParticipants((prevParticipants) => [
-      ...prevParticipants.filter(
-        (p) => p.identity !== localParticipant.identity
-      ),
-      localParticipant,
-    ]);
-  }, [localParticipant]);
-
-  useEffect(() => {
-    if (!token || !roomName) return;
-
-    // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
-    connect(token, {
-      name: roomName,
-      video: hasVideo,
-      enableDscp: true,
-    }).then(setRoom);
-
-    return () => {
-      disconnect();
-    };
-  }, [disconnect, roomName, token, hasVideo]);
-
   const participantConnected = useCallback((participant: RemoteParticipant) => {
     setParticipants((prevParticipants) => [...prevParticipants, participant]);
   }, []);
@@ -249,11 +220,36 @@ export const useVideoRoomState = ({
   );
 
   useEffect(() => {
+    if (!token || !roomName) return;
+
+    // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
+    connect(token, {
+      name: roomName,
+      video: hasVideo,
+      enableDscp: true,
+    }).then(setRoom);
+
+    return () => {
+      disconnect();
+    };
+  }, [
+    disconnect,
+    roomName,
+    token,
+    hasVideo,
+    participantConnected,
+    participantDisconnected,
+  ]);
+
+  useEffect(() => {
     if (!room) return;
 
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
-    room.participants.forEach(participantConnected);
+    setParticipants([
+      room?.localParticipant,
+      ...Array.from(room.participants.values()),
+    ]);
   }, [room, participantConnected, participantDisconnected]);
 
   return {
