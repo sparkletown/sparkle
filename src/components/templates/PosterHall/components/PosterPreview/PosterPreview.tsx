@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
 import { PosterPageVenue } from "types/venues";
@@ -9,18 +9,25 @@ import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
-  onClick?: () => void;
+  enterVenue: (venueId: string) => void;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
-  onClick,
+  enterVenue,
 }) => {
   const { title, authorName, categories } = posterVenue.poster ?? {};
+
+  const venueId = posterVenue.id;
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
   });
+
+  const handleEnterVenue = useCallback(() => enterVenue(venueId), [
+    enterVenue,
+    venueId,
+  ]);
 
   const renderedCategories = useMemo(
     () =>
@@ -33,7 +40,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   return (
-    <div className={posterClassnames} onClick={onClick}>
+    <div className={posterClassnames} onClick={handleEnterVenue}>
       <p className="PosterPreview__title">{title}</p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>

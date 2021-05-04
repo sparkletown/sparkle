@@ -30,7 +30,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       <PosterPreview
         key={posterVenue.id}
         posterVenue={posterVenue}
-        onClick={() => enterVenue(posterVenue.id)}
+        enterVenue={enterVenue}
       />
     ));
   }, [posterVenues]);
