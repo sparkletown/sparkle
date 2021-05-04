@@ -16,8 +16,8 @@ export interface PosterPageSettingsControlProps {
 }
 
 export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps> = ({
-  isPosterLive = false,
   venueId,
+  isPosterLive = false,
 }) => (
   <OverlayTrigger
     trigger="click"
