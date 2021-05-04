@@ -92,12 +92,12 @@ export const useParticipantState = ({
     };
   }, [participant]);
 
-  // Mute/unmute audio
-  const [isMuted, setMuted] = useState<boolean>(defaultMute);
-  const toggleMuted = useCallback(
-    () => setMuted((prevIsMuted) => !prevIsMuted),
-    []
-  );
+  const {
+    isShown: isMuted,
+
+    setShown: setMuted,
+    toggle: toggleMuted,
+  } = useShowHide(defaultMute);
 
   useEffect(() => {
     if (isMuted) {
