@@ -292,21 +292,24 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     [carvedOutWidthInSeats, carvedOutHeightInSeats]
   );
 
-  // @debt this return useMemo antipattern should be rewritten
-  return useMemo(() => {
-    const takeSeat = (row: number | null, column: number | null) => {
+  const takeSeat = useCallback(
+    (row: number | null, column: number | null) => {
       if (!venueId || !userId) return;
 
       makeUpdateUserGridLocation({
         venueId,
         userUid: userId,
       })(row, column);
-    };
+    },
+    [venueId, userId]
+  );
 
-    const leaveSeat = () => {
-      takeSeat(null, null);
-    };
+  const leaveSeat = useCallback(() => {
+    takeSeat(null, null);
+  }, [takeSeat]);
 
+  // @debt this return useMemo antipattern should be rewritten
+  return useMemo(() => {
     const onSubmit = async (data: ChatOutDataType) => {
       if (!venueId || !userWithId) return;
 
@@ -449,6 +452,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                         ]
                           ? partygoersBySeat[row][column]
                           : null;
+
                         return (
                           <div
                             key={untranslatedColumnIndex}
@@ -482,22 +486,23 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     );
   }, [
     venue,
+    userWithId,
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-    userId,
-    userWithId,
     dispatch,
     reset,
     columnsForSizedAuditorium,
     isAudioEffectDisabled,
+    leaveSeat,
     handleSubmit,
     register,
     isShoutSent,
     reactionClicked,
     isSeat,
     partygoersBySeat,
+    takeSeat,
   ]);
 };
