@@ -14,7 +14,7 @@ export interface CheckboxProps
   toggler?: boolean;
   containerClassName?: string;
   labelClassName?: string;
-  forwardRef?: (
+  forwardedRef?: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
   ) => void;
 }
@@ -27,7 +27,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   containerClassName,
   labelClassName,
 
-  forwardRef,
+  forwardedRef,
   ...extraInputProps
 }) => {
   const containerClasses = classNames("Checkbox", containerClassName);
@@ -42,7 +42,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         className="Checkbox__native-input"
         hidden
         type="checkbox"
-        ref={forwardRef}
+        ref={forwardedRef}
         {...extraInputProps}
       />
       <div className={checkboxClasses}>
