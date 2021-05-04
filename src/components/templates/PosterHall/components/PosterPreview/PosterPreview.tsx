@@ -5,6 +5,8 @@ import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { PosterCategory } from "components/atoms/PosterCategory";
+
 import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
@@ -32,9 +34,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const renderedCategories = useMemo(
     () =>
       Array.from(new Set(categories)).map((category) => (
-        <div key={category} className="PosterPreview__category">
-          {category}
-        </div>
+        <PosterCategory key={category} category={category} />
       )),
     [categories]
   );

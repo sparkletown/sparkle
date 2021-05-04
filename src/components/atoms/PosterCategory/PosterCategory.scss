@@ -1,0 +1,12 @@
+@import "scss/constants";
+
+.PosterCategory {
+  display: flex;
+  font-size: $font-size--xs;
+  color: $white;
+  padding: $spacing--xs $spacing--sm;
+  margin: $spacing--xs;
+  border-radius: $border-radius--lg;
+  background-color: $primary;
+  font-weight: $font-weight--500;
+}

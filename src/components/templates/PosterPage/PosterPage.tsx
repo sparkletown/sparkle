@@ -11,6 +11,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
+import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
@@ -32,7 +33,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     iframeUrl,
   } = venue;
 
-  const { title, introVideoUrl } = poster ?? {};
+  const { title, introVideoUrl, categories } = poster ?? {};
 
   const {
     isShown: isIntroVideoShown,
@@ -63,6 +64,14 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     [activeParticipants]
   );
 
+  const renderedCategories = useMemo(
+    () =>
+      Array.from(new Set(categories)).map((category) => (
+        <PosterCategory key={category} category={category} />
+      )),
+    [categories]
+  );
+
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
@@ -74,7 +83,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
         <div className="PosterPage__header--middle-cell">
           <p className="PosterPage__title">{title}</p>
-          <div className="PosterPage__categories" />
+          <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 
         <div className="PosterPage__header--right-cell">
@@ -126,9 +135,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         )}
       </div>
 
-      <div className="PosterPage__listeners">
-        <UserList users={passiveListeners} activity="listening" />
-      </div>
+      <UserList
+        users={passiveListeners}
+        activity="listening"
+        containerClassName="PosterPage__listeners"
+      />
 
       {introVideoUrl && (
         <IntroVideoPreviewModal

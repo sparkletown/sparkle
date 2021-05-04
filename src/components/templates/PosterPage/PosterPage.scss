@@ -16,6 +16,7 @@ $poster-cell-optimal-height: 195px;
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-flow: column;
 
       font-size: $font-size--lg;
       font-weight: $font-weight--500;
@@ -26,6 +27,14 @@ $poster-cell-optimal-height: 195px;
       justify-content: flex-end;
       padding: 0 $spacing--xxl;
     }
+  }
+
+  &__title {
+    margin: 0 0 $spacing--xs;
+  }
+
+  &__categories {
+    display: flex;
   }
 
   &__content {
@@ -80,12 +89,11 @@ $poster-cell-optimal-height: 195px;
       background-color: $dark;
     }
   }
-  &__listeners {
-    grid-area: listeners;
 
-    .userlist-container {
-      margin-left: unset;
-      margin-right: unset;
-    }
+  div.PosterPage__listeners {
+    grid-area: listeners;
+    margin-left: unset;
+    margin-right: unset;
+    margin-bottom: $spacing--lg;
   }
 }
