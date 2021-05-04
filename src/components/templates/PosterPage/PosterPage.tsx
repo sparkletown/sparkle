@@ -25,7 +25,12 @@ export interface PosterPageProps {
 }
 
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
-  const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
+  const {
+    id: venueId,
+    isLive: isPosterLive = false,
+    poster,
+    iframeUrl,
+  } = venue;
 
   const { title, introVideoUrl } = poster ?? {};
 
