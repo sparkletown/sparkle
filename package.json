@@ -83,6 +83,7 @@
     "start": "react-scripts start",
     "init": "node scripts/init.js",
     "build": "react-scripts build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "lint": "npm run prettier:check && npm run eslint:check",
     "eslint:check": "eslint src scripts functions --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "eslint src scripts functions --fix --ext .js,.jsx,.ts,.tsx",
