@@ -186,7 +186,7 @@ export const useVideoRoomState = ({
 
   const disconnect = useCallback(() => {
     setRoom((currentRoom) => {
-      if (!currentRoom || currentRoom?.localParticipant?.state !== "connected")
+      if (currentRoom?.localParticipant?.state !== "connected")
         return currentRoom;
 
       currentRoom.localParticipant.tracks.forEach((trackPublication) => {
