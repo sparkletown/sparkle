@@ -27,7 +27,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
   margin: 0;
 
   &__native-input {
-    &:checked + .Checkbox__custom-input {
+    &:checked ~ .Checkbox__custom-input {
       background-color: $primary;
 
       .Checkbox__tick-icon {
@@ -65,12 +65,6 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
       box-shadow: $checkbox-shadow-preset opaque-white(0.4);
     }
 
-    .Checkbox__tick-icon {
-      opacity: 0;
-      transform: scale(0.2);
-      transition: $checkbox-transition;
-    }
-
     &--toggler {
       width: $toggler-width;
       height: $toggler-height;
@@ -99,6 +93,12 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
         display: none;
       }
     }
+  }
+
+  &__tick-icon {
+    opacity: 0;
+    transform: scale(0.2);
+    transition: $checkbox-transition;
   }
 
   &__label {
