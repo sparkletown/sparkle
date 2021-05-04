@@ -1,72 +1,60 @@
 @import "scss/constants.scss";
 
-$side-padding: 30px;
-
-$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
-
-$dark: #1a1d24;
-$border-radius: 28px;
-$large-shadow: box-shadow--large(0.34);
-$login-max-width: 540px;
-$modal-max-width: 540px;
-$page-max-width: 1240px;
-
-$sand: #937c63;
-
-.modal-content {
+.SchedulePageModal {
+  @include scrollbar;
+  position: fixed;
+  z-index: z(navbar-schedule);
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: $modal-max-width;
-  margin: 0 auto;
-  padding: 20px 0 0 0;
-  background-color: $black;
-  box-shadow: $large-shadow;
-  text-align: left;
-  border-radius: $border-radius;
-  overflow: hidden;
+  height: 620px;
 
-  h3 {
-    margin-bottom: 1rem;
-    padding: 0 $side-padding;
+  padding-top: $navbar-height;
+  padding-left: 20px;
+
+  background-color: rgba($black, 0.9);
+  overflow: auto;
+
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-800px);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
+  transition: all 400ms $transition-function;
+
+  &--show {
+    pointer-events: all;
+    opacity: 1;
+    transform: translateY(0px);
   }
-  .modal-tabs {
+
+  &__weekdays {
     display: flex;
-    flex-wrap: nowrap;
-    width: 100%;
-    align-items: center; /* Align Items Vertically */
-    justify-content: space-around;
-    margin-bottom: 2rem;
-    border-bottom: 1px solid rgba($white, 0.2);
-    overflow-x: auto;
-    overflow-y: hidden;
-    button {
-      background-color: transparent;
-      border: none;
-      display: block;
-      position: relative;
-      color: white;
-      text-align: center;
-      padding: 4px 10px;
-      opacity: 0.7;
-      font-weight: 400;
-      &:hover {
-        opacity: 1;
-      }
-      &.selected {
-        opacity: 1;
-        font-weight: bold;
-        color: yellow;
-        outline: none;
-        &:after {
-          content: "";
-          position: absolute;
-          height: 2px;
-          border-radius: 4px;
-          width: 100%;
-          background-color: white;
-          left: 0;
-          bottom: -1px;
-        }
-      }
+    padding-left: 20px;
+  }
+
+  &__weekday {
+    display: inline;
+    cursor: pointer;
+    padding: 8px 10px;
+    margin-right: 10px;
+    border-radius: 22px; // consider variable
+    opacity: 0.8;
+
+    &--active {
+      opacity: 1;
+      background-color: $primary;
+      text-shadow: 0 2px 4px rgba($black, 0.3);
+      box-shadow: 0 3px 6px rgba($black, 0.2);
     }
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__no-events {
+    padding: 40px;
+    padding-left: 20px;
   }
 }

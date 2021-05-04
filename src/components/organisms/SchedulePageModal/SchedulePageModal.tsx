@@ -1,37 +1,30 @@
-import React, { useState, useMemo, FC } from "react";
-import {
-  startOfDay,
-  addDays,
-  isWithinInterval,
-  endOfDay,
-  eachHourOfInterval,
-} from "date-fns";
+import React, {
+  useState,
+  useMemo,
+  FC,
+  useEffect,
+  useCallback,
+  MouseEventHandler,
+} from "react";
+import { startOfDay } from "date-fns";
 import { range } from "lodash";
+import classNames from "classnames";
+
 import { Room } from "types/rooms";
 
-import { VenueEvent } from "types/venues";
-
-import {
-  formatDate,
-  formatDateToWeekday,
-  hoursOfTheDay,
-  getMinutes,
-  getCurrentTimeInUTCSeconds,
-} from "utils/time";
-import { WithVenueId } from "utils/id";
+import { formatDate } from "utils/time";
 import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { EventRoomDisplay } from "components/molecules/EventRoomDisplay/EventRoomDisplay";
-import { EventTimeSchedule } from "components/molecules/EventTimeSchedule/EventTimeSchedule";
+import { Schedule } from "components/molecules/Schedule";
+import { ScheduleDay } from "components/molecules/Schedule/Schedule";
+import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-type DatedEvents = Array<{
-  dateDay: Date;
-  events: Array<WithVenueId<VenueEvent>>;
-  rooms: Array<Room>;
-}>;
+import { scheduleDayBuilder } from "./SchedulePageModal.utils";
+
+import "./SchedulePageModal.scss";
 
 const DAYS_AHEAD = 7;
 
@@ -44,204 +37,82 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const {
-    parentVenue,
-    currentVenue,
-    relatedVenueEvents,
-  } = useConnectRelatedVenues({
+  const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
     venueId,
     withEvents: true,
   });
 
-  const orderedEvents: DatedEvents = useMemo(() => {
+  const [relatedRooms, setRelatedRooms] = useState<Room[]>([]);
+
+  useEffect(() => {
+    const rooms: Room[] = [];
+    relatedVenues
+      .map((venue) => venue.rooms || [])
+      .forEach((venueRooms) => rooms.push(...venueRooms));
+    setRelatedRooms(rooms);
+  }, [relatedVenues]);
+
+  const schedule: ScheduleDay[] = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
-    const hasEvents = liveAndFutureEvents.length > 0;
+    const today = startOfDay(Date.now());
+    const buildScheduleEvent = scheduleDayBuilder(
+      today,
+      liveAndFutureEvents,
+      relatedRooms
+    );
 
-    const nowDay = startOfDay(new Date());
+    return range(0, DAYS_AHEAD).map((dayIndex) => buildScheduleEvent(dayIndex));
+  }, [relatedVenueEvents, relatedRooms]);
 
-    const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
-      const day = addDays(nowDay, idx);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
-      const todaysEvents = liveAndFutureEvents
-        .filter((event) => {
-          return isWithinInterval(day, {
-            start: startOfDay(new Date(event.start_utc_seconds * 1000)),
-            end: endOfDay(
-              new Date(
-                (event.start_utc_seconds + event.duration_minutes * 60) * 1000
-              )
-            ),
-          });
-        })
-        .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+  const onWeekdayClick = useCallback(
+    (index: number): MouseEventHandler<HTMLLIElement> => (e) => {
+      e.stopPropagation();
+      setSelectedDayIndex(index);
+    },
+    []
+  );
 
-      let roomsWithEvents: Array<Room> = [];
-      if (currentVenue?.rooms) {
-        roomsWithEvents = currentVenue?.rooms?.map((room) => {
-          const events = todaysEvents.filter(
-            (event) => event?.room === room?.title
-          );
-          return { ...room, events };
-        });
-      }
+  const weekdayClasses = useCallback(
+    (index) =>
+      classNames("SchedulePageModal__weekday", {
+        "SchedulePageModal__weekday--active": index === selectedDayIndex,
+      }),
+    [selectedDayIndex]
+  );
 
-      return {
-        dateDay: day,
-        events: hasEvents ? todaysEvents : [],
-        rooms: hasEvents ? roomsWithEvents : [],
-      };
-    });
-
-    return dates;
-  }, [relatedVenueEvents, currentVenue]);
-
-  const [date, setDate] = useState(0);
-
-  const scheduleTabs = useMemo(
+  const weekdays = useMemo(
     () =>
-      orderedEvents.map((day, idx) => (
+      schedule.map((day, index) => (
         <li
-          key={formatDate(day.dateDay.getTime())}
-          className={`button ${idx === date ? "active" : ""}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            setDate(idx);
-          }}
+          key={formatDate(day.dayStartUtcSeconds)}
+          className={weekdayClasses(index)}
+          onClick={onWeekdayClick(index)}
         >
-          {formatDateToWeekday(day.dateDay.getTime() / 1000)}
+          {day.isToday ? "Today" : day.weekday}
         </li>
       )),
-    [date, orderedEvents]
+    [schedule, weekdayClasses, onWeekdayClick]
   );
 
-  const eventRooms = useMemo(
+  const containerClasses = useMemo(
     () =>
-      orderedEvents[date]?.rooms.map((room, index) => (
-        <EventRoomDisplay
-          key={room.url ?? `${index}-${room.title}`}
-          title={room.title}
-          events={room.events}
-          venue={currentVenue}
-        />
-      )),
-    [date, orderedEvents, currentVenue]
+      classNames("SchedulePageModal", { "SchedulePageModal--show": isVisible }),
+    [isVisible]
   );
-
-  const roomsWithEvents = useMemo(() => {
-    let counter = 0;
-
-    orderedEvents[date]?.rooms.map((room, index) => {
-      if (room.events?.length !== 0) {
-        counter++;
-      }
-    });
-    return counter;
-  }, [date, orderedEvents]);
-
-  const hasEvents = !!orderedEvents?.[date]?.events.length;
-
-  // TODO: this was essentially used in the old logic, but the styles look
-  //  as though they will hide it anyway, so I think it's better without this?
-  // if (!isVisible) return <div />;
-
-  // TODO: ideally this would find the top most parent of parents and use those details
-  const hasParentVenue = !!parentVenue;
-
-  const partyinfoImage = hasParentVenue
-    ? parentVenue?.host?.icon
-    : currentVenue?.host?.icon;
-
-  const titleText = hasParentVenue ? parentVenue?.name : currentVenue?.name;
-
-  const subtitleText = hasParentVenue
-    ? parentVenue?.config?.landingPageConfig.subtitle
-    : currentVenue?.config?.landingPageConfig.subtitle;
-
-  const descriptionText = hasParentVenue
-    ? parentVenue?.config?.landingPageConfig.description
-    : currentVenue?.config?.landingPageConfig.description;
-
-  const currentMinutes = getMinutes(getCurrentTimeInUTCSeconds());
-
-  const hours = hoursOfTheDay(
-    eachHourOfInterval({
-      start: new Date().setHours(
-        currentMinutes >= 1020 ? 17 : new Date().getHours() - 1
-      ),
-      end: endOfDay(new Date()),
-    })
-  );
-
-  const timeToShow = useMemo(() => {
-    const minutesShowing =
-      currentMinutes >= 1020 ? 1020 : (new Date().getHours() - 1) * 60;
-
-    return currentMinutes - minutesShowing;
-  }, [currentMinutes]);
-
-  const dailyHours = useMemo(() => {
-    return hours.map((date, index) => (
-      <EventTimeSchedule key={`${index}-${date}`} time={date} />
-    ));
-  }, [hours]);
 
   return (
-    <div>
-      <div className={`schedule-dropdown-body ${isVisible ? "show" : ""}`}>
-        <div className="partyinfo-container">
-          <div className="partyinfo-main">
-            <div
-              className="partyinfo-pic"
-              style={{ backgroundImage: `url(${partyinfoImage})` }}
-            />
-            <div className="partyinfo-title">
-              <h2>{titleText}</h2>
-              <h3>{subtitleText}</h3>
-            </div>
-          </div>
-          <div className="partyinfo-desc">
-            <p>{descriptionText}</p>
-          </div>
-          <div className="schedule-container">
-            <ul className="schedule-tabs">{scheduleTabs}</ul>
-          </div>
-        </div>
+    <div className={containerClasses}>
+      <ScheduleVenueDescription />
 
-        <div className="schedule-container">
-          {hasEvents && (
-            <div className="schedule-event-line">
-              <div className="schedule-time-line-container">
-                <div
-                  className="schedule-time-container"
-                  style={{
-                    height: `${roomsWithEvents * 160}px`,
-                  }}
-                >
-                  {dailyHours}
-                </div>
-                <div
-                  className="current-time-line"
-                  style={{
-                    left: `${timeToShow * 3.33 + 300}px`,
-                    height: `${roomsWithEvents * 160 - 40}px`,
-                  }}
-                ></div>
-              </div>
-              {eventRooms}
-            </div>
-          )}
+      <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
 
-          {!hasEvents && (
-            <div className="schedule-time-line-container">
-              <div>There are no events scheduled for this day.</div>
-            </div>
-          )}
-          {/* <div className="schedule-time-line">
-            <div className="shcedule-time-line-room">{eventRooms}</div>
-           
-          </div> */}
-        </div>
-      </div>
+      {schedule[selectedDayIndex].rooms.length > 0 ? (
+        <Schedule scheduleDay={schedule[selectedDayIndex]} />
+      ) : (
+        <div className="SchedulePageModal__no-events">No events scheduled</div>
+      )}
     </div>
   );
 };

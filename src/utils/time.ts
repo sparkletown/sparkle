@@ -1,9 +1,17 @@
-import { format, formatDuration, formatRelative } from "date-fns";
+import {
+  format,
+  formatDuration,
+  formatRelative,
+  getHours,
+  getMinutes as getLibMinutes,
+  getSeconds,
+} from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 export const ONE_SECOND_IN_MILLISECONDS = 1000;
 export const ONE_MINUTE_IN_SECONDS = 60;
+export const ONE_HOUR_IN_MINUTES = 60;
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
 export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
@@ -169,18 +177,41 @@ export const formatHourAndMinute = (utcSeconds: number) => {
   return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
 };
 
+// TODO: do we need it?
 export const formatHour = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const hh = String(date.getHours()).padStart(2, "0");
   return hh;
 };
 
+// TODO: do we need it?
 export const getMinutes = (utcSeconds: number) => {
   const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
   const hh = date.getHours();
   const mm = date.getMinutes();
   const minutes = hh * 60 + mm;
   return minutes;
+};
+
+export const getSecondsFromStartOfDay = (utcSeconds: number) => {
+  const utcMilliseconds = utcSeconds * ONE_SECOND_IN_MILLISECONDS;
+
+  return (
+    getHours(utcMilliseconds) * ONE_HOUR_IN_SECONDS +
+    getLibMinutes(utcMilliseconds) * ONE_MINUTE_IN_SECONDS +
+    getSeconds(utcMilliseconds)
+  );
+};
+
+export const isLiveEvent = (
+  startUtcSeconds: number,
+  minutesDuration: number
+) => {
+  const now = getCurrentTimeInUTCSeconds();
+  return (
+    startUtcSeconds <= now &&
+    now <= startUtcSeconds + minutesDuration * ONE_MINUTE_IN_SECONDS
+  );
 };
 
 export const daysFromEndOfEvent = (
@@ -252,11 +283,4 @@ export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   return isTimestampInMilliSeconds
     ? timestamp
     : timestamp * ONE_SECOND_IN_MILLISECONDS;
-};
-
-export const hoursOfTheDay = (hours: Date[]) => {
-  const hour = hours.map((date) => {
-    return format(date, "h a");
-  });
-  return hour;
 };

@@ -1,0 +1,74 @@
+@import "scss/constants.scss";
+@import "./Schedule.constants.scss";
+
+.ScheduledEvents {
+  padding-top: 20px;
+  display: flex;
+  position: relative;
+
+  &__rooms {
+    flex-basis: 215px;
+    flex-shrink: 0;
+    margin-top: 36px;
+    padding-right: 20px;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    font-size: 0.8rem;
+  }
+
+  &__room {
+    margin-bottom: 1rem;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+  }
+
+  &__schedule {
+    @include scrollbar;
+    flex-grow: 1;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  &__room-title {
+    margin-bottom: 0;
+    font-weight: 600;
+  }
+
+  &__timeline {
+    height: 36px;
+    font-size: 0.9rem;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  &__hour {
+    width: $hour-width;
+    text-align: center;
+    display: inline-block;
+
+    &::after {
+      content: "";
+      display: block;
+      height: calc((65px + 1rem) * #{$room-count});
+      border-left: 1px solid white;
+      margin-left: 100px;
+      margin-top: 18px;
+    }
+  }
+
+  &__user-schedule {
+    height: 70px;
+    margin-bottom: 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    width: calc(#{$hours-count} * #{$hour-width} + #{$hour-width} / 2);
+  }
+
+  &__current-time-line {
+    position: absolute;
+    width: 2px;
+    height: calc((65px + 1rem) * #{$room-count});
+    left: calc(#{$current-time--position} * 1px);
+    background-color: $primary;
+  }
+}
