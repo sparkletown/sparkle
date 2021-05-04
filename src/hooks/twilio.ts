@@ -228,9 +228,7 @@ export const useVideoRoomState = ({
       name: roomName,
       video: hasVideo,
       enableDscp: true,
-    }).then((room) => {
-      setRoom(room);
-    });
+    }).then(setRoom);
 
     return () => {
       disconnect();
