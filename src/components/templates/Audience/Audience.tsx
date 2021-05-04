@@ -17,7 +17,7 @@ import { addReaction } from "store/actions/Reactions";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { EmojiReactions, EmojiReactionType } from "types/reactions";
-import { User } from "types/User";
+
 import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -27,6 +27,8 @@ import { createEmojiReaction, createTextReaction } from "utils/reactions";
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+
+import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -222,32 +224,28 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
 
-  // FIXME: This is really bad, needs to be fixed ASAP
-  const partygoersBySeat: WithId<User>[][] = [];
-  let seatedPartygoers = 0;
-  recentVenueUsers?.forEach((user) => {
-    if (
-      !venueId ||
-      !user?.data ||
-      user.data[venueId] === undefined ||
-      user.data[venueId].row === undefined ||
-      user.data[venueId].column === undefined
-    )
-      return;
-    const row = user.data[venueId].row || 0;
-    const column = user.data[venueId].column || 0;
-    if (!(row in partygoersBySeat)) {
-      partygoersBySeat[row] = [];
-    }
-    partygoersBySeat[row][column] = user;
-    seatedPartygoers++;
+  const seatedVenueUsers = useMemo(() => {
+    if (!venueId) return [];
+
+    return recentVenueUsers.filter((user) => {
+      const { row, column } = user.data?.[venueId] ?? {};
+
+      return row && column;
+    });
+  }, [recentVenueUsers, venueId]);
+
+  const { partygoersBySeat } = usePartygoersbySeat({
+    venueId,
+    partygoers: seatedVenueUsers,
   });
+
+  const seatedVenueUsersCount = seatedVenueUsers.length;
 
   useEffect(() => {
     setAuditoriumSize(
-      requiredAuditoriumSize(seatedPartygoers, minColumns, minRows)
+      requiredAuditoriumSize(seatedVenueUsersCount, minColumns, minRows)
     );
-  }, [minColumns, minRows, seatedPartygoers]);
+  }, [minColumns, minRows, seatedVenueUsersCount]);
 
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
