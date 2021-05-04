@@ -43,7 +43,7 @@ const ToggleElement: React.FC<ToggleElementProps> = ({
     <S.ItemBody>
       <Checkbox
         name={name}
-        forwardRef={forwardRef}
+        forwardedRef={forwardRef}
         defaultChecked={isChecked}
         toggler
       />
