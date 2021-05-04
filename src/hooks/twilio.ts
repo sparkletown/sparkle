@@ -167,18 +167,16 @@ export const useVideoRoomState = ({
   const [token, setToken] = useState<string>();
 
   useEffect(() => {
-    (async () => {
-      if (!userId || !!token || !roomName) return;
+    if (!userId || !!token || !roomName) return;
 
-      const videoToken = await getVideoToken({
-        userId,
-        roomName,
-      });
+    getVideoToken({
+      userId,
+      roomName,
+    }).then((token) => {
+      if (!token) return;
 
-      if (!videoToken) return;
-
-      setToken(videoToken);
-    })();
+      setToken(token);
+    });
   }, [userId, roomName, token]);
 
   const [room, setRoom] = useState<Room>();
@@ -213,8 +211,8 @@ export const useVideoRoomState = ({
   useEffect(() => {
     if (!localParticipant) return;
 
+    // Add local participant to participants, but remove any duplicates
     setParticipants((prevParticipants) => [
-      // Hopefully prevents duplicate users in the participant list
       ...prevParticipants.filter(
         (p) => p.identity !== localParticipant.identity
       ),
@@ -225,16 +223,6 @@ export const useVideoRoomState = ({
   useEffect(() => {
     if (!token || !roomName) return;
 
-    const participantConnected = (participant: RemoteParticipant) => {
-      setParticipants((prevParticipants) => [...prevParticipants, participant]);
-    };
-
-    const participantDisconnected = (participant: RemoteParticipant) => {
-      setParticipants((prevParticipants) =>
-        prevParticipants.filter((p) => p !== participant)
-      );
-    };
-
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
     connect(token, {
       name: roomName,
@@ -242,15 +230,33 @@ export const useVideoRoomState = ({
       enableDscp: true,
     }).then((room) => {
       setRoom(room);
-      room.on("participantConnected", participantConnected);
-      room.on("participantDisconnected", participantDisconnected);
-      room.participants.forEach(participantConnected);
     });
 
     return () => {
       disconnect();
     };
   }, [disconnect, roomName, token, hasVideo]);
+
+  const participantConnected = useCallback((participant: RemoteParticipant) => {
+    setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  }, []);
+
+  const participantDisconnected = useCallback(
+    (participant: RemoteParticipant) => {
+      setParticipants((prevParticipants) =>
+        prevParticipants.filter((p) => p !== participant)
+      );
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!room) return;
+
+    room.on("participantConnected", participantConnected);
+    room.on("participantDisconnected", participantDisconnected);
+    room.participants.forEach(participantConnected);
+  }, [room, participantConnected, participantDisconnected]);
 
   return {
     token,

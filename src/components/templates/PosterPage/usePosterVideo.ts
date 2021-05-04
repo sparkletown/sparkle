@@ -13,7 +13,11 @@ export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();
   const { worldUsersById } = useWorldUsersByIdWorkaround();
 
-  const { participants, turnVideoOff, turnVideoOn } = useVideoRoomState({
+  const {
+    participants,
+    turnVideoOff: leaveVideoSeat,
+    turnVideoOn: takeVideoSeat,
+  } = useVideoRoomState({
     userId,
     roomName: venueId,
     showVideoByDefault: false,
@@ -76,7 +80,7 @@ export const usePosterVideo = (venueId: string) => {
 
     isMeActiveParticipant,
 
-    turnVideoOn,
-    turnVideoOff,
+    takeVideoSeat,
+    leaveVideoSeat,
   };
 };
