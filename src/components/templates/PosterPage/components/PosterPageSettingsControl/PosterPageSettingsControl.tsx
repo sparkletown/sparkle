@@ -44,11 +44,11 @@ export const PosterPageSettingsControlOverlay: React.FC<PosterPageSettingsContro
   venueId,
 }) => {
   const setVenueLiveOn = useCallback(() => {
-    setVenueLiveStatus(venueId, true);
+    setVenueLiveStatus({ venueId, isLive: true });
   }, [venueId]);
 
   const setVenueLiveOff = useCallback(() => {
-    setVenueLiveStatus(venueId, false);
+    setVenueLiveStatus({ venueId, isLive: false });
   }, [venueId]);
 
   return (

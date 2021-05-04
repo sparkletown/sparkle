@@ -170,14 +170,14 @@ export const useVideoRoomState = ({
     (async () => {
       if (!userId || !!token || !roomName) return;
 
-      const response = await getVideoToken({
+      const videoToken = await getVideoToken({
         userId,
         roomName,
       });
 
-      if (!response) return;
+      if (!videoToken) return;
 
-      setToken(response.data.token);
+      setToken(videoToken);
     })();
   }, [userId, roomName, token]);
 

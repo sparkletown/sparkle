@@ -1,10 +1,19 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-export const setVenueLiveStatus = async (
-  venueId: string,
-  isLive: boolean
-): Promise<void | firebase.functions.HttpsCallableResult> => {
+export interface SetVenueLiveStatusProps {
+  venueId: string;
+  isLive: boolean;
+  onError?: (msg: string) => void;
+  onFinish?: () => void;
+}
+
+export const setVenueLiveStatus = async ({
+  venueId,
+  isLive,
+  onError,
+  onFinish,
+}: SetVenueLiveStatusProps): Promise<void | firebase.functions.HttpsCallableResult> => {
   const params = {
     isLive,
     venueId,
@@ -20,5 +29,8 @@ export const setVenueLiveStatus = async (
           venueId,
         });
       });
-    });
+
+      if (onError) onError(err);
+    })
+    .finally(onFinish);
 };
