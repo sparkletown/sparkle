@@ -35,7 +35,7 @@ const NavSearchBar = () => {
     searchInputValue,
     searchQuery,
     setSearchInputValue,
-    clearSearchInput,
+    clearSearch,
   } = useDebounceSearch();
 
   const onSearchInputChange = useCallback(
@@ -73,12 +73,12 @@ const NavSearchBar = () => {
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
-              clearSearchInput();
+              clearSearch();
             }}
           />
         )) ?? []
     );
-  }, [searchQuery, venue, clearSearchInput]);
+  }, [searchQuery, venue, clearSearch]);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -92,11 +92,11 @@ const NavSearchBar = () => {
           user={user}
           onClick={() => {
             openUserProfileModal(user);
-            clearSearchInput();
+            clearSearch();
           }}
         />
       ));
-  }, [searchQuery, worldUsers, clearSearchInput, openUserProfileModal]);
+  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -129,7 +129,7 @@ const NavSearchBar = () => {
       className="NavSearchBar__clear-search"
       src={CloseIcon}
       alt="close button"
-      onClick={clearSearchInput}
+      onClick={clearSearch}
     />
   );
 

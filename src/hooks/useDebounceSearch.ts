@@ -7,7 +7,7 @@ export const useDebounceSearch = () => {
   const [searchInputValue, setSearchInputValue] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const clearSearchInput = useCallback(() => {
+  const clearSearch = useCallback(() => {
     setSearchInputValue("");
     // To instantly remove the options
     setSearchQuery("");
@@ -35,6 +35,6 @@ export const useDebounceSearch = () => {
     searchInputValue,
     setSearchInputValue,
 
-    clearSearchInput,
+    clearSearch,
   };
 };
