@@ -162,7 +162,7 @@ $z-layers: (
   @return map-get($z-layers, $layer);
 }
 
-@function grey-color($opacity: 0.1) {
+@function opaque-white($opacity: 0.1) {
   @return rgba($white, $opacity);
 }
 

@@ -55,14 +55,14 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
     width: $checkbox-diameter;
     height: $checkbox-diameter;
 
-    box-shadow: $checkbox-shadow-preset grey-color(0.1);
-    background-color: grey-color(0.12);
+    box-shadow: $checkbox-shadow-preset opaque-white(0.1);
+    background-color: opaque-white(0.12);
 
     border-radius: $border-radius--max;
 
     &:hover {
-      background-color: grey-color(0.16);
-      box-shadow: $checkbox-shadow-preset grey-color(0.4);
+      background-color: opaque-white(0.16);
+      box-shadow: $checkbox-shadow-preset opaque-white(0.4);
     }
 
     .Checkbox__tick-icon {
@@ -86,7 +86,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
 
         border-radius: $border-radius--max;
 
-        background-color: grey-color(0.3);
+        background-color: opaque-white(0.3);
 
         left: $toggler-circle-spacing;
         top: $toggler-circle-spacing;

@@ -18,30 +18,6 @@ export interface PosterPageSettingsControlProps {
 export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps> = ({
   venueId,
   isPosterLive = false,
-}) => (
-  <OverlayTrigger
-    trigger="click"
-    placement="bottom-end"
-    overlay={
-      <PosterPageSettingsControlOverlay
-        isPosterLive={isPosterLive}
-        venueId={venueId}
-      />
-    }
-    rootClose={true}
-  >
-    <PosterPageControl label="Settings" icon={faCog} />
-  </OverlayTrigger>
-);
-
-export interface PosterPageSettingsControlOverlayProps {
-  isPosterLive?: boolean;
-  venueId: string;
-}
-
-export const PosterPageSettingsControlOverlay: React.FC<PosterPageSettingsControlProps> = ({
-  isPosterLive,
-  venueId,
 }) => {
   const setVenueLiveOn = useCallback(() => {
     setVenueLiveStatus({ venueId, isLive: true });
@@ -52,19 +28,28 @@ export const PosterPageSettingsControlOverlay: React.FC<PosterPageSettingsContro
   }, [venueId]);
 
   return (
-    <Popover
-      id="poster-page-settings-popover"
-      className="PosterPageSettingsControl__popover"
+    <OverlayTrigger
+      trigger="click"
+      placement="bottom-end"
+      overlay={
+        <Popover
+          id="poster-page-settings-popover"
+          className="PosterPageSettingsControl__popover"
+        >
+          <Popover.Content className="PosterPageSettingsControl__popover-content">
+            <Checkbox
+              type="checkbox"
+              checked={isPosterLive}
+              onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
+              label={isPosterLive ? "Poster is live" : "Make poster live"}
+              toggler
+            />
+          </Popover.Content>
+        </Popover>
+      }
+      rootClose
     >
-      <Popover.Content className="PosterPageSettingsControl__popover-content">
-        <Checkbox
-          type="checkbox"
-          checked={isPosterLive}
-          onChange={isPosterLive ? setVenueLiveOff : setVenueLiveOn}
-          label={isPosterLive ? "Poster is live" : "Make poster live"}
-          toggler
-        />
-      </Popover.Content>
-    </Popover>
+      <PosterPageControl label="Settings" icon={faCog} />
+    </OverlayTrigger>
   );
 };
