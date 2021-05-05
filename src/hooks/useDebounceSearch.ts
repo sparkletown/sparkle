@@ -23,10 +23,6 @@ export const useDebounceSearch = () => {
 
   useEffect(() => {
     debouncedSearch(searchInputValue);
-
-    return () => {
-      debouncedSearch.cancel();
-    };
   }, [searchInputValue, debouncedSearch]);
 
   return {
