@@ -92,6 +92,7 @@ export const useParticipantState = ({
     };
   }, [participant]);
 
+  // Mute/unmute audio
   const {
     isShown: isMuted,
 
@@ -232,24 +233,26 @@ export const useVideoRoomState = ({
     return () => {
       disconnect();
     };
-  }, [
-    disconnect,
-    roomName,
-    token,
-    hasVideo,
-    participantConnected,
-    participantDisconnected,
-  ]);
+  }, [disconnect, roomName, token, hasVideo]);
 
   useEffect(() => {
     if (!room) return;
 
     room.on("participantConnected", participantConnected);
     room.on("participantDisconnected", participantDisconnected);
-    setParticipants([
-      room?.localParticipant,
-      ...Array.from(room.participants.values()),
-    ]);
+
+    const remoteParticipants = Array.from(room.participants.values());
+    setParticipants(
+      room.localParticipant
+        ? [room.localParticipant, ...remoteParticipants]
+        : remoteParticipants
+    );
+
+    // Do we need `.off`? It looks like it's not in the docs
+    return () => {
+      room.off("participantConnected", participantConnected);
+      room.off("participantDisconnected", participantDisconnected);
+    };
   }, [room, participantConnected, participantDisconnected]);
 
   return {

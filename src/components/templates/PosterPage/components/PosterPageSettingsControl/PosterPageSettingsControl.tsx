@@ -12,12 +12,12 @@ import "./PosterPageSettingsControl.scss";
 
 export interface PosterPageSettingsControlProps {
   venueId: string;
-  isPosterLive: boolean;
+  isPosterLive?: boolean;
 }
 
 export const PosterPageSettingsControl: React.FC<PosterPageSettingsControlProps> = ({
   venueId,
-  isPosterLive,
+  isPosterLive = false,
 }) => {
   const setVenueLiveOn = useCallback(() => {
     setVenueLiveStatus({ venueId, isLive: true });
