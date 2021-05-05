@@ -1,10 +1,10 @@
 @import "scss/constants";
 
 .user-avatar {
-  height: 25px;
-  width: 25px;
   position: relative;
 
+  width: 25px;
+  height: 25px;
   &__image {
     height: 100%;
     width: 100%;

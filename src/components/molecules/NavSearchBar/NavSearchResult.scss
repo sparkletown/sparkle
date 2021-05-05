@@ -1,0 +1,40 @@
+@import "scss/constants.scss";
+@import "./navSearchBarConstants.scss";
+
+.NavSearchResult {
+  cursor: pointer;
+  padding: $search-result-padding--vertical $search-result-padding--horizontal;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-content: space-between;
+
+  &__image {
+    flex-shrink: 0;
+    height: $search-result-image--size;
+    width: $search-result-image--size;
+    margin-right: $search-result-image--right-margin;
+    border-radius: $border-radius--small;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: $black;
+  }
+
+  &__avatar {
+    margin-right: $search-result-image--right-margin;
+  }
+
+  &__description {
+    font-size: $font-size--small;
+    opacity: 0.6;
+  }
+
+  &:hover {
+    background-color: rgba($white, 0.1);
+  }
+
+  &:last-child {
+    border-radius: 0 0 $border-radius--input $border-radius--input;
+  }
+}
