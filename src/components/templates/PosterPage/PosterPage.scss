@@ -90,6 +90,7 @@ $poster-cell-optimal-height: 195px;
     }
   }
 
+  // Increase specificity to override third-party lib styles
   div.PosterPage__listeners {
     grid-area: listeners;
     margin-left: unset;
