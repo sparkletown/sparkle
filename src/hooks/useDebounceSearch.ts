@@ -15,9 +15,13 @@ export const useDebounceSearch = () => {
 
   const debouncedSearch = useMemo(
     () =>
-      debounce((value: string) => {
-        setSearchQuery(value.toLowerCase());
-      }, SEARCH_DEBOUNCE_TIME),
+      debounce(
+        (value: string) => {
+          setSearchQuery(value.toLowerCase());
+        },
+        SEARCH_DEBOUNCE_TIME,
+        { maxWait: SEARCH_DEBOUNCE_TIME * 3 }
+      ),
     []
   );
 
