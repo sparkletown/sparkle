@@ -8,7 +8,7 @@ import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -210,6 +210,10 @@ export const userModalVisitsSelector = (state: RootState) =>
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
+
+export const posterVenuesSelector: SparkleSelector<
+  WithId<PosterPageVenue>[] | undefined
+> = (state) => state.firestore.ordered.posterVenues;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.
