@@ -48,15 +48,18 @@
       display: flex;
       flex: 1;
       justify-content: center;
-      background-color: lighten($color: $saturated-black, $amount: 10);
+      background-color: $cancel-button-background;
       color: $white;
       padding: 16px 18px;
       border-radius: 22px;
       border-width: 0px;
-      outline: none !important;
+
+      &:focus {
+        outline: none;
+      }
 
       &:hover {
-        background-color: lighten($color: $saturated-black, $amount: 20);
+        background-color: $cancel-button-hover-background;
       }
     }
 
@@ -70,10 +73,13 @@
       padding: 16px 18px;
       border-radius: 22px;
       border-width: 0px;
-      outline: none !important;
+
+      &:focus {
+        outline: none;
+      }
 
       &:hover {
-        background-color: lighten($color: $primary, $amount: 10);
+        background-color: $confirm-button-hover-background;
       }
     }
   }

@@ -50,11 +50,10 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     id: venueId,
     rooms,
     mapBackgroundImageUrl = DEFAULT_MAP_BACKGROUND,
-    config,
   } = venue;
-  const subtitle = config?.landingPageConfig?.subtitle;
-  const description = config?.landingPageConfig?.description;
-  const coverImageUrl = config?.landingPageConfig?.coverImageUrl;
+
+  const { subtitle, description, coverImageUrl } =
+    venue.config?.landingPageConfig ?? {};
 
   const icon = venue.host?.icon;
   const { user } = useUser();

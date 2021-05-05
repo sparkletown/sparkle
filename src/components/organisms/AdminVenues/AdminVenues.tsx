@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 import { Button } from "react-bootstrap";
 import classNames from "classnames";
 
+import { AnyVenue, isPartyMapVenue } from "types/venues";
+
 import { useModalControls } from "hooks/useModalControls";
 
 import { WithId } from "utils/id";
-
-import { AnyVenue, isPartyMapVenue } from "types/venues";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 import { CreateVenueModal } from "components/molecules/CreateVenueModal";

@@ -55,6 +55,7 @@ const venueNameLengthValidation = Yup.string()
     ({ max }) => `Name must be less than ${max} characters`
   );
 
+// @debt Firebase check should be moved out of here because it can be very expensive when the form revalidateMode is onChange
 const venueNameValidation = venueNameLengthValidation
   .test(
     "name",
@@ -160,6 +161,7 @@ export const newVenueSchema = Yup.object()
   .shape<NewVenueSchema>({
     name: venueNameValidation,
   })
+  .noUnknown()
   .required();
 
 const roomTitleSchema = Yup.string()
@@ -179,34 +181,10 @@ const roomImageUrlSchema = Yup.string().required("Room image is required");
 export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   useUrl: Yup.boolean().required(),
   title: roomTitleSchema,
-  venueName: Yup.string()
-    .when("useUrl", {
-      is: false,
-      then: venueNameLengthValidation,
-    })
-    .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
-      !useUrl
-        ? schema
-            .test(
-              "name",
-              "Must have alphanumeric characters",
-              (val: string) => createUrlSafeName(val).length > 0
-            )
-            .test(
-              "name",
-              "This venue name is already taken",
-              async (val: string) =>
-                !val ||
-                !(
-                  await firebase
-                    .firestore()
-                    .collection("venues")
-                    .doc(createUrlSafeName(val))
-                    .get()
-                ).exists
-            )
-        : schema
-    ),
+  venueName: Yup.string().when("useUrl", {
+    is: false,
+    then: venueNameLengthValidation,
+  }),
   url: Yup.string().when("useUrl", {
     is: true,
     then: roomUrlSchema,

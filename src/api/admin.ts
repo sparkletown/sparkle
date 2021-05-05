@@ -153,10 +153,15 @@ const randomPrefix = () => Math.random().toString();
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-export const generateVenueLandingUrl = (value?: string) =>
-  value
-    ? `${window.location.host}${venueLandingUrl(createUrlSafeName(value))}`
-    : undefined;
+export const generateVenueLandingUrl = (
+  venueName?: string
+): string | undefined => {
+  if (!venueName) return undefined;
+
+  const path = venueLandingUrl(createUrlSafeName(venueName));
+
+  return new URL(path, "https://" + window.location.host).toString();
+};
 
 const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (

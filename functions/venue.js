@@ -2,6 +2,9 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+
+admin.firestore().settings({ ignoreUndefinedProperties: true });
+
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 

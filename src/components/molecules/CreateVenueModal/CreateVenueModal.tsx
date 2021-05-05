@@ -5,16 +5,16 @@ import Bugsnag from "@bugsnag/js";
 
 import { createVenue_v2, generateVenueLandingUrl } from "api/admin";
 
+import { VenueTemplate } from "types/venues";
+
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { VenueTemplate } from "types/venues";
 
 import { newVenueSchema } from "pages/Admin/Details/ValidationSchema";
 
 import "./CreateVenueModal.scss";
 
-interface CreateVenueModalProps {
+export interface CreateVenueModalProps {
   isVisible: boolean;
   onHide?: () => void;
 }
@@ -28,6 +28,7 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
   onHide,
 }) => {
   const [isLoading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>();
   const venueId = useVenueId();
   const { user } = useUser();
 
@@ -38,21 +39,22 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
   const onSubmit = useCallback(
     async (vals: FormValues) => {
       if (!user || isLoading) return;
-      setLoading(true);
 
       const venue = {
         name: vals.name,
         template: VenueTemplate.partymap,
       };
 
+      setLoading(true);
       createVenue_v2(venue, user)
         .then(() => {
           hide();
         })
         .catch((e) => {
+          setError(e);
           Bugsnag.notify(e, (event) => {
-            event.addMetadata("CreateVenueModal::createVenue_v2", {
-              venueName: vals.name,
+            event.addMetadata("context", {
+              location: "api::createVenueModal::createVenue_v2",
             });
           });
         })
@@ -88,7 +90,9 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
           onSubmit={handleSubmit(onSubmit)}
           className="create-venue-modal__content"
         >
-          <div className="create-venue-modal__title">Name your new space</div>
+          <label className="create-venue-modal__title">
+            Name your new space
+          </label>
           <Form.Control
             name="name"
             placeholder="Enter the name of your new space"
@@ -99,10 +103,17 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
           {errors.name && (
             <span className="input-error">{errors.name.message}</span>
           )}
+          {error && (
+            <span className="input-error">
+              An error occurred, please try again!
+            </span>
+          )}
+
           <div className="create-venue-modal__url-info">
             The url of your party will be:{" "}
             <span className="create-venue-modal__url">{venueUrl}</span>
           </div>
+
           <div className="create-venue-modal__buttons">
             <button
               className="create-venue-modal__buttons--back"
