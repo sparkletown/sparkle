@@ -48,3 +48,39 @@ export const makeUpdateUserGridLocation = ({
       firestore.doc(doc).set(newData);
     });
 };
+
+export interface SaveEventToProfileProps {
+  venueId: string;
+  userId: string;
+  eventId: string;
+  removeMode?: boolean;
+}
+
+export const saveEventToProfile = async ({
+  venueId,
+  userId,
+  eventId,
+  removeMode = false,
+}: SaveEventToProfileProps): Promise<void> => {
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+
+  const modify = removeMode
+    ? firebase.firestore.FieldValue.arrayRemove
+    : firebase.firestore.FieldValue.arrayUnion;
+
+  const newSavedEvents = {
+    [`myPersonalizedSchedule.${venueId}`]: modify(eventId),
+  };
+
+  return userProfileRef.update(newSavedEvents).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::saveEventToProfile",
+        venueId,
+        userId,
+        eventId,
+        removeMode,
+      });
+    });
+  });
+};

@@ -17,10 +17,12 @@ import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
 
 import { Schedule } from "components/molecules/Schedule";
-import { ScheduleDay } from "components/molecules/Schedule/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
+
+import { ScheduleDay } from "components/molecules/Schedule/Schedule.types";
 
 import { scheduleDayBuilder } from "./SchedulePageModal.utils";
 
@@ -32,10 +34,15 @@ interface SchedulePageModalProps {
   isVisible?: boolean;
 }
 
+export const emptyPersonalizedSchedule = {};
+
 export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
   const venueId = useVenueId();
+  const { userWithId } = useUser();
+  const userEventIds =
+    userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
   const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
     venueId,
@@ -58,11 +65,12 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     const buildScheduleEvent = scheduleDayBuilder(
       today,
       liveAndFutureEvents,
-      relatedRooms
+      relatedRooms,
+      userEventIds
     );
 
     return range(0, DAYS_AHEAD).map((dayIndex) => buildScheduleEvent(dayIndex));
-  }, [relatedVenueEvents, relatedRooms]);
+  }, [relatedVenueEvents, relatedRooms, userEventIds]);
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 

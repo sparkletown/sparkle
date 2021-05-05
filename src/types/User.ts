@@ -14,6 +14,8 @@ export type VideoState = {
   removedParticipantUids?: string[];
 };
 
+export type MyPersonalizedSchedule = Record<string, string[]>;
+
 export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
@@ -32,4 +34,5 @@ export interface User {
   kidsMode: boolean;
   anonMode: boolean;
   enteredVenueIds?: string[];
+  myPersonalizedSchedule?: MyPersonalizedSchedule;
 }

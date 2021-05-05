@@ -298,6 +298,10 @@ export interface VenueEvent {
   id?: string;
 }
 
+export interface PersonalizedVenueEvent extends VenueEvent {
+  isSaved: boolean;
+}
+
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 

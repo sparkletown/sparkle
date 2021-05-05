@@ -9,12 +9,14 @@ import {
 } from "date-fns";
 
 import { Room } from "types/rooms";
-import { VenueEvent } from "types/venues";
+import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
+import { MyPersonalizedSchedule } from "types/User";
 
 import { WithVenueId } from "utils/id";
 import { ONE_MINUTE_IN_SECONDS, ONE_SECOND_IN_MILLISECONDS } from "utils/time";
+import { isTruthy } from "utils/types";
 
-import { RoomWithEvents } from "components/molecules/Schedule/Schedule";
+import { RoomWithEvents } from "components/molecules/Schedule/Schedule.types";
 
 export const isEventThisDay = (date: Date) => {
   return (event: VenueEvent) => {
@@ -53,24 +55,35 @@ export const adjustEventTiming = (date: Date) => {
 
 export const extendRoomsWithDaysEvents = (
   rooms: Room[],
-  daysEvents: WithVenueId<VenueEvent>[]
+  daysEvents: WithVenueId<PersonalizedVenueEvent>[]
 ): RoomWithEvents[] => {
   return rooms.map((room) => {
-    const events = daysEvents.filter((event) => event?.room === room?.title);
+    const events: WithVenueId<PersonalizedVenueEvent>[] = daysEvents.filter(
+      (event) => event?.room === room?.title
+    );
     return { ...room, events };
   });
 };
 
+export const bookmarkPersonalizedEvents = (
+  usersEvents: MyPersonalizedSchedule
+) => (event: WithVenueId<VenueEvent>): WithVenueId<PersonalizedVenueEvent> => ({
+  ...event,
+  isSaved: isTruthy(event.id && usersEvents[event.venueId]?.includes(event.id)),
+});
+
 export const scheduleDayBuilder = (
   today: Date,
   events: WithVenueId<VenueEvent>[],
-  rooms: Room[]
+  rooms: Room[],
+  usersEvents: MyPersonalizedSchedule
 ) => (dayIndex: number) => {
   const day = addDays(today, dayIndex);
 
-  const daysEvents = events
+  const daysEvents: WithVenueId<PersonalizedVenueEvent>[] = events
     .filter(isEventThisDay(day))
-    .map(adjustEventTiming(day));
+    .map(adjustEventTiming(day))
+    .map(bookmarkPersonalizedEvents(usersEvents));
 
   const roomsWithEvents = extendRoomsWithDaysEvents(rooms, daysEvents);
 
@@ -79,5 +92,6 @@ export const scheduleDayBuilder = (
     weekday: format(day, "E"),
     dayStartUtcSeconds: Math.floor(day.getTime() / ONE_SECOND_IN_MILLISECONDS),
     rooms: roomsWithEvents.filter((room) => room.events.length > 0),
+    personalEvents: daysEvents.filter((event) => event.isSaved),
   };
 };

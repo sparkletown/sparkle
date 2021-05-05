@@ -1,71 +1,97 @@
-import React, { useState } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
-import { VenueEvent } from "types/venues";
+import { PersonalizedVenueEvent } from "types/venues";
+
+import { WithVenueId } from "utils/id";
 import { isTruthy } from "utils/types";
 
-import {
-  getSecondsFromStartOfDay,
-  ONE_HOUR_IN_SECONDS,
-  isLiveEvent,
-} from "utils/time";
+import { isLiveEvent, ONE_HOUR_IN_MINUTES } from "utils/time";
+
+import { saveEventToProfile } from "api/profile";
+import { useUser } from "hooks/useUser";
+
+import { calcStartPosition, HOUR_WIDTH } from "../Schedule/Schedule.utils";
 
 import "./ScheduleEvent.scss";
 
 export interface ScheduleEventProps {
-  event: VenueEvent;
+  event: WithVenueId<PersonalizedVenueEvent>;
   scheduleStartHour: number;
-  onEventBookmarked: Function;
   isUsers?: boolean;
 }
-
-const HOUR_WIDTH = 200; // px
 
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
   scheduleStartHour,
-  onEventBookmarked,
   isUsers,
 }) => {
-  const [isBookmarked, setBookmark] = useState(isTruthy(isUsers));
+  const [isBookmarked, setBookmark] = useState(event.isSaved);
 
-  const containerClasses = classNames(
-    "ScheduleEvent",
-    {
-      "ScheduleEvent--live": isLiveEvent(
-        event.start_utc_seconds,
-        event.duration_minutes
+  useEffect(() => {
+    setBookmark(event.isSaved);
+  }, [event.isSaved]);
+
+  const { userId } = useUser();
+
+  const containerClasses = useMemo(
+    () =>
+      classNames(
+        "ScheduleEvent",
+        {
+          "ScheduleEvent--live": isLiveEvent(
+            event.start_utc_seconds,
+            event.duration_minutes
+          ),
+        },
+        { "ScheduleEvent--users": isTruthy(isUsers) }
       ),
-    },
-    { "ScheduleEvent--users": isTruthy(isUsers) }
+    [event, isUsers]
   );
 
-  const calcStartPosition = (startTimeUtcSeconds: number) => {
-    const startTimeTodaySeconds = getSecondsFromStartOfDay(startTimeUtcSeconds);
+  const eventWidth = useMemo(
+    () => (event.duration_minutes * HOUR_WIDTH) / ONE_HOUR_IN_MINUTES,
+    [event]
+  );
+  const bookmarkEvent = useCallback(() => {
+    event.isSaved = !event.isSaved;
 
-    return (
-      HOUR_WIDTH / 2 +
-      (startTimeTodaySeconds / ONE_HOUR_IN_SECONDS - scheduleStartHour) *
-        HOUR_WIDTH
-    );
-  };
+    if (userId && event.id) {
+      saveEventToProfile({
+        venueId: event.venueId,
+        userId: userId,
+        removeMode: !event.isSaved,
+        eventId: event.id,
+      });
+    }
+  }, [userId, event]);
 
-  const eventWidth = (event.duration_minutes * 200) / 60;
-
-  const bookmarkEvent = () => {
-    setBookmark(!isBookmarked);
-    onEventBookmarked(!isBookmarked, event);
-  };
+  const onBookmark: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.stopPropagation();
+      bookmarkEvent();
+    },
+    [bookmarkEvent]
+  );
 
   return (
     <div
       className={containerClasses}
       style={{
-        marginLeft: `${calcStartPosition(event.start_utc_seconds)}px`,
+        marginLeft: `${calcStartPosition(
+          event.start_utc_seconds,
+          scheduleStartHour
+        )}px`,
         width: `${eventWidth}px`,
       }}
     >
@@ -74,16 +100,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
         <div className="ScheduleEvent__description">by {event.host}</div>
       </div>
 
-      <div
-        className="ScheduleEvent__bookmark"
-        onClick={(e) => {
-          e.stopPropagation();
-          bookmarkEvent();
-        }}
-      >
+      <div className="ScheduleEvent__bookmark" onClick={onBookmark}>
         <FontAwesomeIcon
           icon={isBookmarked ? solidBookmark : regularBookmark}
-          style={{ cursor: "pointer", width: "15px", height: "20px" }}
         />
       </div>
     </div>

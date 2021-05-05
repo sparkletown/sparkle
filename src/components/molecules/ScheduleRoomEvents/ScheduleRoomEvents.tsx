@@ -1,32 +1,32 @@
 import React from "react";
-import { VenueEvent } from "types/venues";
+
+import { PersonalizedVenueEvent } from "types/venues";
+
+import { WithVenueId } from "utils/id";
 
 import { ScheduleEvent } from "../ScheduleEvent";
 
 import "./ScheduleRoomEvents.scss";
 
 export interface ScheduleRoomEventsProps {
-  events: VenueEvent[];
+  events: WithVenueId<PersonalizedVenueEvent>[];
   scheduleStartHour: number;
-  onEventBookmarked: Function;
   isUsers?: boolean;
 }
 
 export const ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
   events,
   scheduleStartHour,
-  onEventBookmarked,
   isUsers,
 }) => {
   return (
     <div className="RoomEvents">
       {events.map((event, index) => (
         <ScheduleEvent
-          key={`event-${index}`}
+          key={`event-${event.id}-${index}`}
           isUsers={isUsers}
           event={event}
           scheduleStartHour={scheduleStartHour}
-          onEventBookmarked={onEventBookmarked}
         />
       ))}
     </div>
