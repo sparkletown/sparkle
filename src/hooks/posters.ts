@@ -2,13 +2,13 @@ import { useState, useMemo, useCallback } from "react";
 import { VenueTemplate } from "types/venues";
 import Fuse from "fuse.js";
 
+import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+
 import { posterVenuesSelector } from "utils/selectors";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
-
-const POSTERS_PER_PAGE = 12;
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -49,13 +49,14 @@ export const usePosters = (posterHallId: string) => {
   } = useDebounceSearch();
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
-  const [posterDisplayedNumber, setPosterDisplayedNumber] = useState(
-    POSTERS_PER_PAGE
+  const [displayedPostersCount, setDisplayedPostersAmount] = useState(
+    DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
   );
 
-  const increaseDisplayedPosters = useCallback(() => {
-    setPosterDisplayedNumber(
-      (prevPostersNumber) => prevPostersNumber + POSTERS_PER_PAGE
+  const increaseDisplayedPosterCount = useCallback(() => {
+    setDisplayedPostersAmount(
+      (prevPostersNumber) =>
+        prevPostersNumber + DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
     );
   }, []);
 
@@ -77,13 +78,13 @@ export const usePosters = (posterHallId: string) => {
 
   const searchedPosterVenues = useMemo(() => {
     if (!searchQuery)
-      return filteredPosterVenues.slice(0, posterDisplayedNumber);
+      return filteredPosterVenues.slice(0, displayedPostersCount);
 
     return fuseVenues
       .search(searchQuery)
-      .slice(0, posterDisplayedNumber)
+      .slice(0, displayedPostersCount)
       .map((fuseSearchItem) => fuseSearchItem.item);
-  }, [searchQuery, fuseVenues, filteredPosterVenues, posterDisplayedNumber]);
+  }, [searchQuery, fuseVenues, filteredPosterVenues, displayedPostersCount]);
 
   return {
     posterVenues: searchedPosterVenues,
@@ -92,7 +93,7 @@ export const usePosters = (posterHallId: string) => {
     searchInputValue,
     liveFilter,
 
-    increaseDisplayedPosters,
+    increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
   };

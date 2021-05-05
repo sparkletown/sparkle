@@ -23,7 +23,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     posterVenues,
     isPostersLoaded,
 
-    increaseDisplayedPosters,
+    increaseDisplayedPosterCount,
 
     searchInputValue,
     setSearchInputValue,
@@ -56,7 +56,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
       <div className="PosterHall__more-button">
         {isPostersLoaded && (
-          <Button onClick={increaseDisplayedPosters}>Show more posters</Button>
+          <Button onClick={increaseDisplayedPosterCount}>
+            Show more posters
+          </Button>
         )}
       </div>
     </div>
