@@ -193,6 +193,7 @@ button.btn {
 // Inputs
 input,
 textarea {
+  // @debt remove style auto-setting for inputs
   -webkit-appearance: none;
   border: none;
   outline: none;

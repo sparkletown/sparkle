@@ -57,8 +57,9 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     toggleMuted,
 
     isVideoHidden,
-    toggleVideoHidden,
-    setVideoHidden,
+    toggleVideo,
+    showVideo,
+    hideVideo,
   } = useParticipantState({
     participant,
     defaultMute,
@@ -77,10 +78,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       ? videoTrack.attach(videoRef.current)
       : videoTrack.detach();
 
-    // TODO: can we move this into useParticipantState()?
-    const hideVideo = () => setVideoHidden(true);
-    const showVideo = () => setVideoHidden(false);
-
     videoTrack.on("enabled", showVideo);
     videoTrack.on("disabled", hideVideo);
 
@@ -90,7 +87,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       videoTrack.detach();
     };
-  }, [videoTrack, setVideoHidden]);
+  }, [videoTrack, showVideo, hideVideo]);
 
   // @debt should we be handling the other audio tracks?
   const audioTrack = audioTracks[0];
@@ -154,7 +151,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           size="lg"
           icon={videoIcon}
           color={videoIconColor}
-          onClick={toggleVideoHidden}
+          onClick={toggleVideo}
         />
 
         <FontAwesomeIcon
