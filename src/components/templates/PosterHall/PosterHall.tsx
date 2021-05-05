@@ -7,6 +7,8 @@ import { enterVenue } from "utils/url";
 
 import { usePosters } from "hooks/posters";
 
+import { Button } from "components/atoms/Button";
+
 import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 
@@ -19,6 +21,10 @@ export interface PosterHallProps {
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
+    isPostersLoaded,
+
+    increaseDisplayedPosters,
+
     searchInputValue,
     setSearchInputValue,
     liveFilter,
@@ -26,7 +32,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   } = usePosters(venue.id);
 
   const renderedPosterPreviews = useMemo(() => {
-    return posterVenues?.map((posterVenue) => (
+    return posterVenues.map((posterVenue) => (
       <PosterPreview
         key={posterVenue.id}
         posterVenue={posterVenue}
@@ -44,7 +50,15 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         setLiveValue={setLiveFilter}
       />
 
-      <div className="PosterHall__posters">{renderedPosterPreviews}</div>
+      <div className="PosterHall__posters">
+        {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
+      </div>
+
+      <div className="PosterHall__more-button">
+        {isPostersLoaded && (
+          <Button onClick={increaseDisplayedPosters}>Show more posters</Button>
+        )}
+      </div>
     </div>
   );
 };
