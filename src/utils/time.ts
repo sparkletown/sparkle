@@ -194,53 +194,10 @@ export const isLiveEvent = (
   return isWithinInterval(Date.now(), { start, end });
 };
 
-export const daysFromEndOfEvent = (
-  utcSeconds: number,
-  durationMinutes: number
-) => {
-  const dateNow = new Date();
-  const dateOfFinish = new Date(
-    (utcSeconds + durationMinutes * 60) * ONE_SECOND_IN_MILLISECONDS
-  );
-  const differenceInTime = dateOfFinish.getTime() - dateNow.getTime();
-  const differenceInDays =
-    differenceInTime / (ONE_SECOND_IN_MILLISECONDS * 3600 * 24);
-  return Math.round(differenceInDays);
-};
-
-export const daysFromStartOfEvent = (utcSeconds: number) => {
-  const dateNow = new Date();
-  const dateOfStart = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  const differenceInTime = dateNow.getTime() - dateOfStart.getTime();
-  const differenceInDays =
-    differenceInTime / (ONE_SECOND_IN_MILLISECONDS * 3600 * 24);
-  return Math.round(differenceInDays);
-};
-
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
 //   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
 export const getCurrentTimeInUTCSeconds = () =>
   Date.now() / ONE_SECOND_IN_MILLISECONDS;
-
-export const roundToNearestHour = (seconds: number) => {
-  const oneHour = 60 * 60;
-  return Math.floor(seconds / oneHour) * oneHour;
-};
-
-/**
- * Format UTC seconds as a string representing weekday abbreviation.
- *
- * @example
- *   formatDateToWeekday(1618509600)
- *   // 'Thu'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export function formatDateToWeekday(utcSeconds: number) {
-  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "E");
-}
 
 /**
  * Format UTC seconds as a string representing relative date from now.
