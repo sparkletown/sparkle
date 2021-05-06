@@ -1,10 +1,11 @@
 import {
+  addMinutes,
+  differenceInSeconds,
   format,
   formatDuration,
   formatRelative,
-  getHours,
-  getMinutes,
-  getSeconds,
+  isWithinInterval,
+  startOfDay,
 } from "date-fns";
 
 import { VenueEvent } from "types/venues";
@@ -180,22 +181,17 @@ export const formatHourAndMinute = (utcSeconds: number) => {
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const utcMilliseconds = utcSeconds * ONE_SECOND_IN_MILLISECONDS;
 
-  return (
-    getHours(utcMilliseconds) * ONE_HOUR_IN_SECONDS +
-    getMinutes(utcMilliseconds) * ONE_MINUTE_IN_SECONDS +
-    getSeconds(utcMilliseconds)
-  );
+  return differenceInSeconds(utcMilliseconds, startOfDay(utcMilliseconds));
 };
 
 export const isLiveEvent = (
   startUtcSeconds: number,
   minutesDuration: number
 ) => {
-  const now = getCurrentTimeInUTCSeconds();
-  return (
-    startUtcSeconds <= now &&
-    now <= startUtcSeconds + minutesDuration * ONE_MINUTE_IN_SECONDS
-  );
+  const start = startUtcSeconds * ONE_SECOND_IN_MILLISECONDS;
+  const end = addMinutes(start, minutesDuration);
+
+  return isWithinInterval(Date.now(), { start, end });
 };
 
 export const daysFromEndOfEvent = (
