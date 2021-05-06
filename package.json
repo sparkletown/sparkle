@@ -19,7 +19,6 @@
     "@types/mousetrap": "^1.6.4",
     "@types/qs": "^6.9.3",
     "@types/react-resize-detector": "^4.2.0",
-    "@types/styled-components": "^5.1.4",
     "@types/ws": "^7.2.6",
     "@welldone-software/why-did-you-render": "^4.3.2",
     "bootstrap": "^4.4.1",
