@@ -3,6 +3,10 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
+import { WithId } from "utils/id";
+
+import { ReactionsProvider } from "hooks/reactions";
+
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
@@ -13,6 +17,8 @@ import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { PosterHall } from "components/templates/PosterHall";
+import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
@@ -22,7 +28,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
@@ -108,6 +114,14 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <FireBarrel />;
       break;
 
+    case VenueTemplate.posterhall:
+      template = <PosterHall venue={venue} />;
+      break;
+
+    case VenueTemplate.posterpage:
+      template = <PosterPage venue={venue} />;
+      break;
+
     case VenueTemplate.avatargrid:
       template = (
         <div>
@@ -123,12 +137,14 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   return (
     // @debt remove backButton from Navbar
-    <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
-      <AnnouncementMessage message={venue?.bannerMessage} />
-      {template}
-      <ChatSidebar />
-      <UserProfileModal />
-    </WithNavigationBar>
+    <ReactionsProvider venueId={venue.id}>
+      <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
+        <AnnouncementMessage message={venue.bannerMessage} />
+        {template}
+        <ChatSidebar />
+        <UserProfileModal />
+      </WithNavigationBar>
+    </ReactionsProvider>
   );
 };
 

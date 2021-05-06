@@ -8,6 +8,8 @@ import { isTruthy } from "utils/types";
 import "./InputField.scss";
 
 export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
+  containerClassName?: string;
+  inputClassName?: string;
   iconStart?: IconProp | JSX.Element;
   iconEnd?: IconProp | JSX.Element;
 }
@@ -36,21 +38,32 @@ const renderIcon = (
 };
 
 const InputField: React.ForwardRefRenderFunction<
-  HTMLDivElement,
+  HTMLInputElement,
   InputFieldProps
-> = ({ className, iconStart, iconEnd, ...extraInputProps }, ref) => {
-  const wrapperClassNames = classNames(
+> = (
+  {
+    containerClassName,
+    inputClassName,
+    iconStart,
+    iconEnd,
+    ...extraInputProps
+  },
+  ref
+) => {
+  const containerClassNames = classNames(
     "input-field",
     {
       "input-field--icon-start": isTruthy(iconStart),
       "input-field--icon-end": isTruthy(iconEnd),
     },
-    className
+    containerClassName
   );
 
+  const inputClassNames = classNames("input-field__input", inputClassName);
+
   return (
-    <div ref={ref} className={wrapperClassNames}>
-      <input className="input-field__input" {...extraInputProps} />
+    <div className={containerClassNames}>
+      <input ref={ref} className={inputClassNames} {...extraInputProps} />
 
       {iconStart && renderIcon(iconStart, "input-field__icon--start")}
       {iconEnd && renderIcon(iconEnd, "input-field__icon--end")}

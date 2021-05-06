@@ -66,6 +66,7 @@ export const UserProfileModal: React.FC = () => {
           <div className="profile-information-container">
             <div className="profile-basics">
               <div className="profile-pic">
+                {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
                 <img
                   src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
                   alt="profile"

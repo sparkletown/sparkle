@@ -43,7 +43,7 @@ import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-// import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+// import { getCurrentTimeInUTCSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
@@ -357,7 +357,7 @@ const Playa = () => {
     // user &&
     //   updateLocationData(
     //     user,
-    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
+    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUTCSeconds() },
     //     profile?.lastSeenIn
     //   );
   }, [setShowModal]);
