@@ -1,18 +1,24 @@
 import React, { useMemo } from "react";
 
 import { useRecentWorldUsers } from "hooks/users";
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
+// import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+// import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
+import { AnyVenue } from "types/venues";
+import { WithId } from "utils/id";
 
 export const VenuePartygoers = () => {
-  const venueId = useVenueId();
-  const {
-    parentVenue,
-    currentVenue,
-    isCurrentVenueLoaded,
-  } = useConnectRelatedVenues({ venueId });
+  // const venueId = useVenueId();
+  // const {
+  //   parentVenue,
+  //   currentVenue,
+  //   isCurrentVenueLoaded,
+  // } = useConnectRelatedVenues({ venueId });
+
+  const parentVenue = {} as WithId<AnyVenue>;
+  const currentVenue = {} as WithId<AnyVenue>;
+  const isCurrentVenueLoaded = true;
 
   const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 

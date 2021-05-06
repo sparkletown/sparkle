@@ -1,10 +1,10 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { venueSelector } from "utils/selectors";
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useSelector } from "hooks/useSelector";
@@ -17,13 +17,17 @@ import { hasElements } from "utils/types";
 
 const LiveSchedule: FC = () => {
   const venueId = useVenueId();
-  const currentVenue = useSelector(venueSelector);
-  useConnectRelatedVenues({ venueId });
 
-  const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
-    venueId,
-    withEvents: true,
-  });
+  // const currentVenue = useSelector(venueSelector);
+  // useConnectRelatedVenues({ venueId });
+
+  // const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
+  //   venueId,
+  //   withEvents: true,
+  // });
+  const currentVenue = {} as WithId<AnyVenue>;
+  const relatedVenues = [] as WithId<AnyVenue>[];
+  const relatedVenueEvents = [] as Array<WithVenueId<VenueEvent>>;
 
   const relatedVenueFor = useCallback(
     (event: WithVenueId<VenueEvent>) =>

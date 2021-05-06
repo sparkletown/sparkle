@@ -9,8 +9,8 @@ import { WithId, WithVenueId } from "utils/id";
 import { itemsToObjectByIdReducer } from "utils/reducers";
 import { isEventLiveOrFuture } from "utils/event";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
+// import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+// import { useVenueId } from "hooks/useVenueId";
 
 import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
@@ -28,16 +28,21 @@ interface SchedulePageModalProps {
 export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   isVisible,
 }) => {
-  const venueId = useVenueId();
-  const {
-    parentVenue,
-    currentVenue,
-    relatedVenues,
-    relatedVenueEvents,
-  } = useConnectRelatedVenues({
-    venueId,
-    withEvents: true,
-  });
+  // const venueId = useVenueId();
+  // const {
+  //   parentVenue,
+  //   currentVenue,
+  //   relatedVenues,
+  //   relatedVenueEvents,
+  // } = useConnectRelatedVenues({
+  //   venueId,
+  //   withEvents: true,
+  // });
+
+  const parentVenue = {} as WithId<AnyVenue>;
+  const currentVenue = {} as WithId<AnyVenue>;
+  const relatedVenues = [] as WithId<AnyVenue>[];
+  const relatedVenueEvents = [] as Array<WithVenueId<VenueEvent>>;
 
   const relatedVenuesById: Partial<
     Record<string, WithId<AnyVenue>>
