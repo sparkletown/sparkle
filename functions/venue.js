@@ -4,7 +4,6 @@ const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const PLAYA_VENUE_ID = "jamonline";
-const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -782,53 +781,6 @@ exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
     .doc(venueId)
     .update({ iframeUrl: iframeUrl || null });
 });
-
-exports.getVenueEvents = functions.https.onCall(
-  async ({ venueId }, context) => {
-    try {
-      checkAuth(context);
-      const now = new Date().getTime();
-
-      const venueEvents = [];
-      const venue = await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .get();
-      const events = await venue.ref.collection("events").get();
-
-      const liveAndFutureEvents = events.docs
-        .map((eventRef) => {
-          const event = eventRef.data();
-          if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
-            event.start_utc_seconds = now / 1000;
-          }
-          return event;
-        })
-        .filter((event) => {
-          const nowSeconds = now / 1000;
-
-          const eventIsTransient =
-            event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
-
-          const eventIsInFuture = nowSeconds < event.start_utc_seconds;
-
-          const eventEndSeconds =
-            60 * event.duration_minutes + event.start_utc_seconds;
-          const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
-
-          return eventIsTransient && (eventIsInFuture || eventIsNow);
-        });
-      if (liveAndFutureEvents) {
-        venueEvents.push(...liveAndFutureEvents);
-      }
-
-      return venueEvents;
-    } catch (error) {
-      throw new HttpsError("internal", e.toString());
-    }
-  }
-);
 
 exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   const user = (
