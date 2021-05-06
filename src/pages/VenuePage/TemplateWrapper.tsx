@@ -95,7 +95,9 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route component={Audience} />
+          <Route>
+            <Audience venue={venue} />
+          </Route>
         </Switch>
       );
       fullscreen = true;

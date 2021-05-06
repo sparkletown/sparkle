@@ -2,8 +2,8 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const PLAYA_VENUE_ID = "jamonline";
 
+const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
@@ -69,6 +69,54 @@ const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
   Hidden: "HIDDEN",
+};
+
+const checkUserIsOwner = async (venueId, uid) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then(async (doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
+      }
+      const venue = doc.data();
+      if (venue.owners && venue.owners.includes(uid)) return;
+
+      if (venue.parentId) {
+        const doc = await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
+      }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
 };
 
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
@@ -197,53 +245,12 @@ const getVenueId = (name) => {
 
 const checkIfValidVenueId = (venueId) => /[a-z0-9_]{1,250}/.test(venueId);
 
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
-};
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);
 
 /** Add a user to the list of admins
  *
@@ -850,10 +857,3 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
-
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);

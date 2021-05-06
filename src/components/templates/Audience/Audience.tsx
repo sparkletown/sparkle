@@ -17,18 +17,18 @@ import { addReaction } from "store/actions/Reactions";
 import { makeUpdateUserGridLocation } from "api/profile";
 
 import { EmojiReactions, EmojiReactionType } from "types/reactions";
-import { User } from "types/User";
+
+import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createEmojiReaction, createTextReaction } from "utils/reactions";
-import { currentVenueSelectorData } from "utils/selectors";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+
+import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -143,11 +143,15 @@ const burningReactions = EmojiReactions.filter(
     reaction.type !== EmojiReactionType.thatsjazz
 );
 
+export interface AudienceProps {
+  venue: WithId<GenericVenue>;
+}
+
 // Note: This is the component that is used for the Auditorium
-export const Audience: React.FunctionComponent = () => {
-  const venueId = useVenueId();
+export const Audience: React.FC<AudienceProps> = ({ venue }) => {
+  const venueId = venue.id;
+
   const { userId, userWithId } = useUser();
-  const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
   const minColumns = venue?.auditoriumColumns ?? MIN_COLUMNS;
@@ -220,32 +224,28 @@ export const Audience: React.FunctionComponent = () => {
   // These are going to be translated (ie. into negative/positive per above)
   // That way, when the audience size is expanded these people keep their seats
 
-  // FIXME: This is really bad, needs to be fixed ASAP
-  const partygoersBySeat: WithId<User>[][] = [];
-  let seatedPartygoers = 0;
-  recentVenueUsers?.forEach((user) => {
-    if (
-      !venueId ||
-      !user?.data ||
-      user.data[venueId] === undefined ||
-      user.data[venueId].row === undefined ||
-      user.data[venueId].column === undefined
-    )
-      return;
-    const row = user.data[venueId].row || 0;
-    const column = user.data[venueId].column || 0;
-    if (!(row in partygoersBySeat)) {
-      partygoersBySeat[row] = [];
-    }
-    partygoersBySeat[row][column] = user;
-    seatedPartygoers++;
+  const seatedVenueUsers = useMemo(() => {
+    if (!venueId) return [];
+
+    return recentVenueUsers.filter((user) => {
+      const { row, column } = user.data?.[venueId] ?? {};
+
+      return row && column;
+    });
+  }, [recentVenueUsers, venueId]);
+
+  const { partygoersBySeat } = usePartygoersbySeat({
+    venueId,
+    partygoers: seatedVenueUsers,
   });
+
+  const seatedVenueUsersCount = seatedVenueUsers.length;
 
   useEffect(() => {
     setAuditoriumSize(
-      requiredAuditoriumSize(seatedPartygoers, minColumns, minRows)
+      requiredAuditoriumSize(seatedVenueUsersCount, minColumns, minRows)
     );
-  }, [minColumns, minRows, seatedPartygoers]);
+  }, [minColumns, minRows, seatedVenueUsersCount]);
 
   const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
   const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
@@ -292,21 +292,24 @@ export const Audience: React.FunctionComponent = () => {
     [carvedOutWidthInSeats, carvedOutHeightInSeats]
   );
 
-  // @debt this return useMemo antipattern should be rewritten
-  return useMemo(() => {
-    const takeSeat = (row: number | null, column: number | null) => {
+  const takeSeat = useCallback(
+    (row: number | null, column: number | null) => {
       if (!venueId || !userId) return;
 
       makeUpdateUserGridLocation({
         venueId,
         userUid: userId,
       })(row, column);
-    };
+    },
+    [venueId, userId]
+  );
 
-    const leaveSeat = () => {
-      takeSeat(null, null);
-    };
+  const leaveSeat = useCallback(() => {
+    takeSeat(null, null);
+  }, [takeSeat]);
 
+  // @debt this return useMemo antipattern should be rewritten
+  return useMemo(() => {
     const onSubmit = async (data: ChatOutDataType) => {
       if (!venueId || !userWithId) return;
 
@@ -449,6 +452,7 @@ export const Audience: React.FunctionComponent = () => {
                         ]
                           ? partygoersBySeat[row][column]
                           : null;
+
                         return (
                           <div
                             key={untranslatedColumnIndex}
@@ -482,22 +486,23 @@ export const Audience: React.FunctionComponent = () => {
     );
   }, [
     venue,
+    userWithId,
     venueId,
     focusElementOnLoad,
     videoContainerStyles,
     iframeUrl,
     rowsForSizedAuditorium,
-    userId,
-    userWithId,
     dispatch,
     reset,
     columnsForSizedAuditorium,
     isAudioEffectDisabled,
+    leaveSeat,
     handleSubmit,
     register,
     isShoutSent,
     reactionClicked,
     isSeat,
     partygoersBySeat,
+    takeSeat,
   ]);
 };
