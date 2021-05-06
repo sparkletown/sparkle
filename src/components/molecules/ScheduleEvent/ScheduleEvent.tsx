@@ -15,8 +15,9 @@ import { PersonalizedVenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 import { isTruthy } from "utils/types";
+import { isEventLive } from "utils/event";
 
-import { isLiveEvent, ONE_HOUR_IN_MINUTES } from "utils/time";
+import { ONE_HOUR_IN_MINUTES } from "utils/time";
 
 import { saveEventToProfile } from "api/profile";
 import { useUser } from "hooks/useUser";
@@ -49,10 +50,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       classNames(
         "ScheduleEvent",
         {
-          "ScheduleEvent--live": isLiveEvent(
-            event.start_utc_seconds,
-            event.duration_minutes
-          ),
+          "ScheduleEvent--live": isEventLive(event),
         },
         { "ScheduleEvent--users": isTruthy(isUsers) }
       ),

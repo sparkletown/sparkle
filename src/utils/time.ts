@@ -1,10 +1,8 @@
 import {
-  addMinutes,
   differenceInSeconds,
   format,
   formatDuration,
   formatRelative,
-  isWithinInterval,
   startOfDay,
 } from "date-fns";
 
@@ -182,16 +180,6 @@ export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const utcMilliseconds = utcSeconds * ONE_SECOND_IN_MILLISECONDS;
 
   return differenceInSeconds(utcMilliseconds, startOfDay(utcMilliseconds));
-};
-
-export const isLiveEvent = (
-  startUtcSeconds: number,
-  minutesDuration: number
-) => {
-  const start = startUtcSeconds * ONE_SECOND_IN_MILLISECONDS;
-  const end = addMinutes(start, minutesDuration);
-
-  return isWithinInterval(Date.now(), { start, end });
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
