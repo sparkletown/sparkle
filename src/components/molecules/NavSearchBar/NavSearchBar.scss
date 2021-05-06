@@ -32,7 +32,7 @@
     margin-top: $navbar-height;
     background-color: $saturated-black;
     box-shadow: box-shadow--large();
-    border-radius: 0 0 $border-radius--input $border-radius--input;
+    border-radius: 0 0 $border-radius--xl $border-radius--xl;
     transform: translateY(-$navbar-height - $search-dropdown-height--empty);
     transform-origin: top right;
     transition: all 400ms $transition-function;

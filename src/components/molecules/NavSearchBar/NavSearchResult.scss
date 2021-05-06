@@ -14,7 +14,7 @@
     height: $search-result-image--size;
     width: $search-result-image--size;
     margin-right: $search-result-image--right-margin;
-    border-radius: $border-radius--small;
+    border-radius: $border-radius--sm;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
@@ -26,7 +26,7 @@
   }
 
   &__description {
-    font-size: $font-size--small;
+    font-size: $font-size--md;
     opacity: 0.6;
   }
 
@@ -35,6 +35,6 @@
   }
 
   &:last-child {
-    border-radius: 0 0 $border-radius--input $border-radius--input;
+    border-radius: 0 0 $border-radius--xl $border-radius--xl;
   }
 }

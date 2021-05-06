@@ -1,12 +1,5 @@
-import React, {
-  useCallback,
-  useState,
-  ChangeEvent,
-  useMemo,
-  useEffect,
-} from "react";
+import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
-import { debounce } from "lodash";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -23,6 +16,7 @@ import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useDebounceSearch } from "hooks/useDebounceSearch";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
@@ -36,34 +30,20 @@ import "./NavSearchBar.scss";
 
 const emptyEventsArray: VenueEvent[] = [];
 
-const DEBOUNCE_TIME = 200; // ms
-
 const NavSearchBar = () => {
-  const [searchInputValue, setSearchInputValue] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const debouncedSearch = useMemo(
-    () =>
-      debounce((value: string) => {
-        setSearchQuery(value.toLowerCase());
-      }, DEBOUNCE_TIME),
-    []
-  );
+  const {
+    searchInputValue,
+    searchQuery,
+    setSearchInputValue,
+    clearSearch,
+  } = useDebounceSearch();
 
   const onSearchInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       setSearchInputValue(e.target.value);
     },
-    []
+    [setSearchInputValue]
   );
-
-  const clearSearchQuery = useCallback(() => {
-    setSearchInputValue("");
-  }, []);
-
-  useEffect(() => {
-    debouncedSearch(searchInputValue);
-  }, [debouncedSearch, searchInputValue]);
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
@@ -93,12 +73,12 @@ const NavSearchBar = () => {
             image={room.image_url}
             onClick={() => {
               setSelectedRoom(room);
-              clearSearchQuery();
+              clearSearch();
             }}
           />
         )) ?? []
     );
-  }, [searchQuery, venue, clearSearchQuery]);
+  }, [searchQuery, venue, clearSearch]);
 
   const foundUsers = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -112,11 +92,11 @@ const NavSearchBar = () => {
           user={user}
           onClick={() => {
             openUserProfileModal(user);
-            clearSearchQuery();
+            clearSearch();
           }}
         />
       ));
-  }, [searchQuery, worldUsers, clearSearchQuery, openUserProfileModal]);
+  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -149,7 +129,7 @@ const NavSearchBar = () => {
       className="NavSearchBar__clear-search"
       src={navDropdownCloseIcon}
       alt="close button"
-      onClick={clearSearchQuery}
+      onClick={clearSearch}
     />
   );
 

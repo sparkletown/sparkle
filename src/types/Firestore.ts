@@ -5,7 +5,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -95,6 +95,7 @@ export interface FirestoreOrdered {
   userModalVisits?: Array<WithId<UserVisit>>;
   userPurchaseHistory?: Array<WithId<Purchase>>;
   privateChatMessages?: Array<WithId<PrivateChatMessage>>;
+  posterVenues?: WithId<PosterPageVenue>[];
   worldUsers?: Array<WithId<User>>;
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;

@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+
 const PLAYA_VENUE_ID = "jamonline";
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
@@ -19,6 +20,8 @@ const VenueTemplate = {
   partymap: "partymap",
   performancevenue: "performancevenue",
   playa: "playa",
+  posterhall: "posterhall",
+  posterpage: "posterpage",
   preplaya: "preplaya",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
@@ -239,6 +242,8 @@ const createVenueData_v2 = (data, context) => ({
 const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
 };
+
+const checkIfValidVenueId = (venueId) => /[a-z0-9_]{1,250}/.test(venueId);
 
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
@@ -831,4 +836,24 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   ).data();
 
   return user;
+});
+
+exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  if (typeof data.isLive !== "boolean") {
+    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+  }
+
+  const update = {
+    isLive: Boolean(data.isLive),
+  };
+
+  await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });

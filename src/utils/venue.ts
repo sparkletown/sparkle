@@ -28,6 +28,9 @@ export const canBeDeleted = (venue: AnyVenue): boolean =>
 export const canHavePlacement = (venue: AnyVenue): boolean =>
   PLAYA_TEMPLATES.includes(venue.template);
 
+export const checkIfValidVenueId = (venueId: string): boolean =>
+  /[a-z0-9_]{1,250}/.test(venueId);
+
 export const peopleByLastSeenIn = (
   venueName: string,
   users?: readonly WithId<User>[]

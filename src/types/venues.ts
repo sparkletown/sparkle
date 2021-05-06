@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { EntranceStepConfig } from "./EntranceStep";
+import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
@@ -24,6 +25,8 @@ export enum VenueTemplate {
   partymap = "partymap",
   performancevenue = "performancevenue",
   playa = "playa",
+  posterhall = "posterhall",
+  posterpage = "posterpage",
   preplaya = "preplaya",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -37,15 +40,19 @@ export enum VenueTemplate {
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
-  VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
+  | VenueTemplate.embeddable
+  | VenueTemplate.jazzbar
+  | VenueTemplate.partymap
+  | VenueTemplate.posterpage
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
 export type AnyVenue =
   | GenericVenue
-  | PartyMapVenue
+  | EmbeddableVenue
   | JazzbarVenue
-  | EmbeddableVenue;
+  | PartyMapVenue
+  | PosterPageVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -214,6 +221,12 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
+}
+
+export interface PosterPageVenue extends BaseVenue {
+  template: VenueTemplate.posterpage;
+  poster?: Poster;
+  isLive?: boolean;
 }
 
 export interface Question {
