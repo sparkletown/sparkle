@@ -1,9 +1,7 @@
 import React, { useState, useMemo, FC, MouseEventHandler } from "react";
-import { startOfToday } from "date-fns";
+import { addDays, startOfToday, format, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import classNames from "classnames";
-
-import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
@@ -14,7 +12,11 @@ import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDesc
 
 import { ScheduleDay } from "components/molecules/Schedule/Schedule.types";
 
-import { scheduleDayBuilder } from "./utils";
+import {
+  extendRoomsWithDaysEvents,
+  isEventLaterThisDay,
+  prepareForSchedule,
+} from "./utils";
 
 import "./SchedulePageModal.scss";
 
@@ -44,45 +46,50 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     [relatedVenues]
   );
 
-  const schedule: ScheduleDay[] = useMemo(() => {
-    const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
-    const today = startOfToday();
-    const buildScheduleEvent = scheduleDayBuilder(
-      today,
-      liveAndFutureEvents,
-      relatedRooms,
-      userEventIds
-    );
-
-    return range(0, DAYS_AHEAD).map((dayIndex) => buildScheduleEvent(dayIndex));
-  }, [relatedVenueEvents, relatedRooms, userEventIds]);
-
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
-  const weekdays = useMemo(
-    () =>
-      schedule.map((day, index) => {
-        const classes = classNames("SchedulePageModal__weekday", {
-          "SchedulePageModal__weekday--active": index === selectedDayIndex,
-        });
+  const weekdays = useMemo(() => {
+    const today = startOfToday();
 
-        const onWeekdayClick: MouseEventHandler<HTMLLIElement> = (e) => {
-          e.stopPropagation();
-          setSelectedDayIndex(index);
-        };
+    return range(0, DAYS_AHEAD).map((dayIndex) => {
+      const day = addDays(today, dayIndex);
+      const classes = classNames("SchedulePageModal__weekday", {
+        "SchedulePageModal__weekday--active": dayIndex === selectedDayIndex,
+      });
 
-        return (
-          <li
-            key={day.dayStartUtcSeconds}
-            className={classes}
-            onClick={onWeekdayClick}
-          >
-            {day.isToday ? "Today" : day.weekday}
-          </li>
-        );
-      }),
-    [schedule, selectedDayIndex]
-  );
+      const onWeekdayClick: MouseEventHandler<HTMLLIElement> = (e) => {
+        e.stopPropagation();
+        setSelectedDayIndex(dayIndex);
+      };
+
+      return (
+        <li
+          key={day.toISOString()}
+          className={classes}
+          onClick={onWeekdayClick}
+        >
+          {dayIndex === 0 ? "Today" : format(day, "E")}
+        </li>
+      );
+    });
+  }, [selectedDayIndex]);
+
+  const schedule: ScheduleDay = useMemo(() => {
+    const day = addDays(startOfToday(), selectedDayIndex);
+    const daysEvents = relatedVenueEvents
+      .filter(isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : day))
+      .map(prepareForSchedule(day, userEventIds));
+
+    const roomsWithEvents = extendRoomsWithDaysEvents(relatedRooms, daysEvents);
+
+    return {
+      isToday: selectedDayIndex === 0,
+      weekday: format(day, "E"),
+      dayStartUtcSeconds: getUnixTime(day),
+      rooms: roomsWithEvents.filter((room) => room.events.length > 0),
+      personalEvents: daysEvents.filter((event) => event.isSaved),
+    };
+  }, [relatedVenueEvents, relatedRooms, userEventIds, selectedDayIndex]);
 
   const containerClasses = classNames("SchedulePageModal", {
     "SchedulePageModal--show": isVisible,
@@ -94,8 +101,8 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
 
-      {schedule[selectedDayIndex].rooms.length > 0 ? (
-        <Schedule scheduleDay={schedule[selectedDayIndex]} />
+      {schedule.rooms.length > 0 ? (
+        <Schedule scheduleDay={schedule} />
       ) : (
         <div className="SchedulePageModal__no-events">No events scheduled</div>
       )}
