@@ -3,7 +3,7 @@ import {
   formatDuration,
   formatRelative,
   getHours,
-  getMinutes as getLibMinutes,
+  getMinutes,
   getSeconds,
 } from "date-fns";
 
@@ -177,28 +177,12 @@ export const formatHourAndMinute = (utcSeconds: number) => {
   return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
 };
 
-// TODO: do we need it?
-export const formatHour = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  const hh = String(date.getHours()).padStart(2, "0");
-  return hh;
-};
-
-// TODO: do we need it?
-export const getMinutes = (utcSeconds: number) => {
-  const date = new Date(utcSeconds * ONE_SECOND_IN_MILLISECONDS);
-  const hh = date.getHours();
-  const mm = date.getMinutes();
-  const minutes = hh * 60 + mm;
-  return minutes;
-};
-
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const utcMilliseconds = utcSeconds * ONE_SECOND_IN_MILLISECONDS;
 
   return (
     getHours(utcMilliseconds) * ONE_HOUR_IN_SECONDS +
-    getLibMinutes(utcMilliseconds) * ONE_MINUTE_IN_SECONDS +
+    getMinutes(utcMilliseconds) * ONE_MINUTE_IN_SECONDS +
     getSeconds(utcMilliseconds)
   );
 };
