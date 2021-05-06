@@ -17,7 +17,9 @@ import { useSovereignVenueId } from "./useSovereignVenueId";
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId();
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId(
+    venueId
+  );
 
   useFirestoreConnect(() => {
     if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];

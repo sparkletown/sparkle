@@ -11,6 +11,7 @@ import VenueEventDetails from "./VenueEventDetails";
 
 export type EventsComponentProps = {
   venue: WithId<AnyVenue>;
+  worldId: string;
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
@@ -20,6 +21,7 @@ export type EventsComponentProps = {
 
 const EventsComponent: React.FC<EventsComponentProps> = ({
   venue,
+  worldId,
   showCreateEventModal,
   setShowCreateEventModal,
   editedEvent,
@@ -123,6 +125,7 @@ const EventsComponent: React.FC<EventsComponentProps> = ({
           setEditedEvent && setEditedEvent(undefined);
         }}
         venueId={venue.id}
+        worldId={worldId}
         event={editedEvent}
         template={venue.template}
         setEditedEvent={setEditedEvent}

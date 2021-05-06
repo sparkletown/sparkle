@@ -97,6 +97,7 @@ export interface FirestoreOrdered {
   privateChatMessages?: Array<WithId<PrivateChatMessage>>;
   posterVenues?: WithId<PosterPageVenue>[];
   worldUsers?: Array<WithId<User>>;
+  worldEvents?: Array<WithId<VenueEvent>>;
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;
   venues?: Array<WithId<AnyVenue>>;

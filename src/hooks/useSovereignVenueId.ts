@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { fetchSovereignVenueId } from "api/sovereignVenue";
 
 import {
@@ -10,10 +11,8 @@ import { sovereignVenueIdSelector } from "utils/selectors";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
-import { useVenueId } from "./useVenueId";
 
-export const useSovereignVenueId = () => {
-  const venueId = useVenueId();
+export const useSovereignVenueId = (venueId?: string) => {
   const dispatch = useDispatch();
 
   const {
@@ -22,8 +21,11 @@ export const useSovereignVenueId = () => {
     errorMsg,
   } = useSelector(sovereignVenueIdSelector);
 
-  // NOTE: Force to fetch it only once
-  if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
+  useEffect(() => {
+    // The change of venueId will not trigger the fetching of sovereignVenueId
+    if (sovereignVenueId || isSovereignVenueIdLoading || errorMsg || !venueId)
+      return;
+
     dispatch(setSovereignVenueIdIsLoading(true));
     fetchSovereignVenueId(venueId)
       .then((sovereignVenueId) => {
@@ -36,7 +38,13 @@ export const useSovereignVenueId = () => {
       .finally(() => {
         dispatch(setSovereignVenueIdIsLoading(false));
       });
-  }
+  }, [
+    sovereignVenueId,
+    isSovereignVenueIdLoading,
+    errorMsg,
+    venueId,
+    dispatch,
+  ]);
 
   return {
     sovereignVenueId,

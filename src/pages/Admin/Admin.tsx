@@ -56,6 +56,7 @@ import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -83,7 +84,7 @@ const VenueList: React.FC<VenueListProps> = ({
 }) => {
   const venues = useSelector(orderedVenuesSelector);
 
-  if (!venues) return <>Loading...</>;
+  if (!venues) return <span>Loading...</span>;
 
   return (
     <>
@@ -131,6 +132,9 @@ type VenueDetailsProps = {
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId(
+    venueId
+  );
 
   const venueSelector = useCallback(
     (state) => makeVenueSelector(venueId)(state),
@@ -166,7 +170,15 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   }, [matchUrl, venue]);
 
   if (!venue) {
-    return <>{"Oops, seems we can't find your venue!"}</>;
+    return <span>Oops, seems we can't find your venue!</span>;
+  }
+
+  if (isSovereignVenueIdLoading) {
+    return <span>Loading world venue</span>;
+  }
+
+  if (!sovereignVenueId) {
+    return <span>Oops, seems we can't find the world venue</span>;
   }
 
   return (
@@ -188,6 +200,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <Route path={`${matchUrl}/events`}>
             <EventsComponent
               venue={venue}
+              worldId={sovereignVenueId}
               showCreateEventModal={showCreateEventModal}
               setShowCreateEventModal={setShowCreateEventModal}
               editedEvent={editedEvent}
@@ -212,6 +225,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         show={showCreateEventModal}
         onHide={adminEventModalOnHide}
         venueId={venueId}
+        worldId={sovereignVenueId}
         event={editedEvent}
         template={venue.template}
         setEditedEvent={setEditedEvent}
@@ -253,6 +267,9 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const history = useHistory();
   const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId(
+    venue.id
+  );
 
   useEffect(() => {
     const clientWidth = placementDivRef.current?.clientWidth ?? 0;
@@ -278,6 +295,14 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const deleteText =
     venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
+
+  if (isSovereignVenueIdLoading) {
+    return <span>Loading world venue</span>;
+  }
+
+  if (!sovereignVenueId) {
+    return <span>Oops, seems we can't find the world venue</span>;
+  }
 
   return (
     <>
@@ -430,6 +455,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
           setEditedEvent(undefined);
         }}
         venueId={venue.id}
+        worldId={sovereignVenueId}
         event={editedEvent}
         template={venue.template}
         setEditedEvent={setEditedEvent}

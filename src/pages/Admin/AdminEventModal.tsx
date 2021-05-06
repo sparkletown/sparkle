@@ -19,6 +19,7 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   venueId: string;
+  worldId: string;
   event?: WithId<VenueEvent>;
   template?: VenueTemplate;
   setEditedEvent: Function | undefined;
@@ -58,6 +59,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   venueId,
+  worldId,
   event,
   template,
   setEditedEvent,
@@ -104,6 +106,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         price: 0,
         collective_price: 0,
         host: data.host,
+        venueId,
+        worldId,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;
@@ -114,7 +118,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId, template]
+    [event, onHide, venueId, template, worldId]
   );
 
   return (

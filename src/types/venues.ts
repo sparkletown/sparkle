@@ -309,6 +309,8 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+  venueId?: string;
+  worldId?: string;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
