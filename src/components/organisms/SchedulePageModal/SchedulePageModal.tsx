@@ -1,18 +1,8 @@
-import React, {
-  useState,
-  useMemo,
-  FC,
-  useEffect,
-  useCallback,
-  MouseEventHandler,
-} from "react";
-import { startOfDay } from "date-fns";
+import React, { useState, useMemo, FC, MouseEventHandler } from "react";
+import { startOfToday } from "date-fns";
 import { range } from "lodash";
 import classNames from "classnames";
 
-import { Room } from "types/rooms";
-
-import { formatDate } from "utils/time";
 import { isEventLiveOrFuture } from "utils/event";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
@@ -24,7 +14,7 @@ import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDesc
 
 import { ScheduleDay } from "components/molecules/Schedule/Schedule.types";
 
-import { scheduleDayBuilder } from "./SchedulePageModal.utils";
+import { scheduleDayBuilder } from "./utils";
 
 import "./SchedulePageModal.scss";
 
@@ -49,19 +39,14 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const [relatedRooms, setRelatedRooms] = useState<Room[]>([]);
-
-  useEffect(() => {
-    const rooms: Room[] = [];
-    relatedVenues
-      .map((venue) => venue.rooms || [])
-      .forEach((venueRooms) => rooms.push(...venueRooms));
-    setRelatedRooms(rooms);
-  }, [relatedVenues]);
+  const relatedRooms = useMemo(
+    () => relatedVenues.flatMap((venue) => venue.rooms ?? []),
+    [relatedVenues]
+  );
 
   const schedule: ScheduleDay[] = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
-    const today = startOfDay(Date.now());
+    const today = startOfToday();
     const buildScheduleEvent = scheduleDayBuilder(
       today,
       liveAndFutureEvents,
@@ -74,41 +59,34 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
-  const onWeekdayClick = useCallback(
-    (index: number): MouseEventHandler<HTMLLIElement> => (e) => {
-      e.stopPropagation();
-      setSelectedDayIndex(index);
-    },
-    []
-  );
-
-  const weekdayClasses = useCallback(
-    (index) =>
-      classNames("SchedulePageModal__weekday", {
-        "SchedulePageModal__weekday--active": index === selectedDayIndex,
-      }),
-    [selectedDayIndex]
-  );
-
   const weekdays = useMemo(
     () =>
-      schedule.map((day, index) => (
-        <li
-          key={formatDate(day.dayStartUtcSeconds)}
-          className={weekdayClasses(index)}
-          onClick={onWeekdayClick(index)}
-        >
-          {day.isToday ? "Today" : day.weekday}
-        </li>
-      )),
-    [schedule, weekdayClasses, onWeekdayClick]
+      schedule.map((day, index) => {
+        const classes = classNames("SchedulePageModal__weekday", {
+          "SchedulePageModal__weekday--active": index === selectedDayIndex,
+        });
+
+        const onWeekdayClick: MouseEventHandler<HTMLLIElement> = (e) => {
+          e.stopPropagation();
+          setSelectedDayIndex(index);
+        };
+
+        return (
+          <li
+            key={day.dayStartUtcSeconds}
+            className={classes}
+            onClick={onWeekdayClick}
+          >
+            {day.isToday ? "Today" : day.weekday}
+          </li>
+        );
+      }),
+    [schedule, selectedDayIndex]
   );
 
-  const containerClasses = useMemo(
-    () =>
-      classNames("SchedulePageModal", { "SchedulePageModal--show": isVisible }),
-    [isVisible]
-  );
+  const containerClasses = classNames("SchedulePageModal", {
+    "SchedulePageModal--show": isVisible,
+  });
 
   return (
     <div className={containerClasses}>
