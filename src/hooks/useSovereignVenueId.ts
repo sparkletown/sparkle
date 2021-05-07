@@ -26,8 +26,8 @@ export const useSovereignVenueId = () => {
   if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
     dispatch(setSovereignVenueIdIsLoading(true));
     fetchSovereignVenueId(venueId)
-      .then((sovereignVenueId) => {
-        dispatch(setSovereignVenueId(sovereignVenueId));
+      .then(({ sovereignVenue }) => {
+        dispatch(setSovereignVenueId(sovereignVenue.id));
       })
       .catch((errorMsg) => {
         // @debt Just to stop spamming firebase with requests

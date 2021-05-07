@@ -45,16 +45,24 @@ export const setVenueLiveStatus = async ({
     .finally(onFinish);
 };
 
-// TODO: return an array of all venueId's we find on the full way up to the sovereignVenue
+export interface FetchSovereignVenueReturn {
+  sovereignVenue: WithId<AnyVenue>;
+  checkedVenueIds: readonly string[];
+}
+
 export const fetchSovereignVenueId = async (
   venueId: string,
   previouslyCheckedVenueIds: readonly string[] = []
-): Promise<string> => {
+): Promise<FetchSovereignVenueReturn> => {
   const venue = await fetchVenue(venueId);
 
   if (!venue) throw new Error(`The '${venueId}' venue doesn't exist`);
 
-  if (!venue.parentId) return venue.id;
+  if (!venue.parentId)
+    return {
+      sovereignVenue: venue,
+      checkedVenueIds: previouslyCheckedVenueIds,
+    };
 
   if (previouslyCheckedVenueIds.includes(venueId))
     throw new Error(
@@ -81,7 +89,7 @@ export const fetchVenue = async (
   return withId(venue, venueId);
 };
 
-export const fetchChildVenues = async (
+export const fetchAllChildVenues = async (
   venueId: string
 ): Promise<WithId<AnyVenue>[]> => {
   const childVenuesSnapshot = await getVenueCollectionRef()
@@ -93,22 +101,27 @@ export const fetchChildVenues = async (
 
   // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
   //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
-  return childVenuesSnapshot.docs
+  const childVenues = childVenuesSnapshot.docs
     .filter((docSnapshot) => docSnapshot.exists)
     .map((docSnapshot) =>
       withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
     );
+
+  const grandChildrenVenues = await Promise.all(
+    childVenues.map((childVenue) => fetchAllChildVenues(childVenue.id))
+  );
+
+  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
+  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
+  return [...childVenues, ...grandChildrenVenues.flat()];
 };
 
-// TODO: implement fetchRelatedVenues
 export const fetchRelatedVenues = async (
   venueId: string
 ): Promise<WithId<AnyVenue>[]> => {
-  // TODO: find the sovereignVenueId
-  // TODO: fetch the sovereignVenue (note if fetchSovereignVenueId returned the venue and not just the id, we wouldn't need this extra step)
-  // TODO: fetch the sovereignVenue's children
-  // TODO: recursively fetch their children, etc till we have all of them
-  // TODO: return the final array
+  const { sovereignVenue } = await fetchSovereignVenueId(venueId);
 
-  return [];
+  const childrenVenues = await fetchAllChildVenues(sovereignVenue.id);
+
+  return [sovereignVenue, ...childrenVenues];
 };
