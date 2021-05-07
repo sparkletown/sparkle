@@ -1,27 +1,45 @@
 import firebase from "firebase/app";
 
+import { AnyVenue } from "types/venues";
+
+import { withId, WithId } from "utils/id";
+
+// TODO: return an array of all venueId's we find on the full way up to the sovereignVenue
 export const fetchSovereignVenueId = async (
-  venueId: string
+  venueId: string,
+  previouslyCheckedVenueIds: readonly string[] = []
 ): Promise<string> => {
+  const venue = await fetchVenue(venueId);
+
+  if (!venue) throw new Error(`The '${venueId}' venue doesn't exist`);
+
+  if (!venue.parentId) return venue.id;
+
+  if (previouslyCheckedVenueIds.includes(venueId))
+    throw new Error(
+      `Circular reference detected. '${venueId}' has already been checked`
+    );
+
+  return fetchSovereignVenueId(venue.parentId, [
+    ...previouslyCheckedVenueIds,
+    venueId,
+  ]);
+};
+
+export const fetchVenue = async (
+  venueId: string
+): Promise<WithId<AnyVenue> | undefined> => {
   const venueDoc = await firebase
     .firestore()
     .collection("venues")
     .doc(venueId)
     .get();
 
-  if (!venueDoc.exists) {
-    throw new Error("The venue doesn't exist");
-  }
+  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
+  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
+  const venue: AnyVenue | undefined = venueDoc.data() as AnyVenue | undefined;
 
-  const venue = venueDoc.data();
+  if (!venue) return undefined;
 
-  if (!venue || !venueDoc.id) {
-    throw new Error("The venue doesn't have data or id");
-  }
-
-  if (!venue.parentId) {
-    return venueDoc.id;
-  } else {
-    return fetchSovereignVenueId(venue.parentId);
-  }
+  return withId(venue, venueId);
 };
