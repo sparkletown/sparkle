@@ -63,3 +63,16 @@ export const fetchChildVenues = async (
       withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
     );
 };
+
+// TODO: implement fetchRelatedVenues
+export const fetchRelatedVenues = async (
+  venueId: string
+): Promise<WithId<AnyVenue>[]> => {
+  // TODO: find the sovereignVenueId
+  // TODO: fetch the sovereignVenue (note if fetchSovereignVenueId returned the venue and not just the id, we wouldn't need this extra step)
+  // TODO: fetch the sovereignVenue's children
+  // TODO: recursively fetch their children, etc till we have all of them
+  // TODO: return the final array
+
+  return [];
+};
