@@ -1,9 +1,16 @@
 import classNames from "classnames";
 import React, { useState } from "react";
+import { useParams } from "react-router";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
+import { updateVenue_v2 } from "api/admin";
 
-import { Room } from "types/rooms";
+import { DEFAULT_MAP_BACKGROUND, DEFAULT_MAP_ICON_URL } from "settings";
+
+import { Room, RoomData_v2, RoomTypes } from "types/rooms";
+import { VenueTemplate } from "types/venues";
+
+import { useUser } from "hooks/useUser";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -17,34 +24,61 @@ interface TemplateType {
 
 interface RecipeType {
   title: string;
-  rooms: Room[];
+  rooms: RoomData_v2[];
 }
 
 const templates: TemplateType[] = [
   {
-    title: "Title",
-    description: "Description",
+    title: "Template 1",
+    description: "Description 1",
     background: DEFAULT_MAP_BACKGROUND,
   },
   {
-    title: "Title",
-    description: "Description",
+    title: "Template 2",
+    description: "Description 2",
     background: DEFAULT_MAP_BACKGROUND,
   },
   {
-    title: "Title",
-    description: "Description",
+    title: "Template 3",
+    description: "Description 3",
     background: DEFAULT_MAP_BACKGROUND,
   },
   {
-    title: "Title",
-    description: "Description",
+    title: "Template 4",
+    description: "Description 4",
     background: DEFAULT_MAP_BACKGROUND,
   },
 ];
 
+const recipeRooms: RoomData_v2[] = [
+  {
+    type: RoomTypes.unclickable,
+    template: VenueTemplate.jazzbar,
+    isEnabled: true,
+    url: window.location.host,
+    title: "Jazzbar 1",
+    image_url: DEFAULT_MAP_ICON_URL,
+    x_percent: 10,
+    y_percent: 10,
+    width_percent: 100,
+    height_percent: 100,
+  },
+  {
+    type: RoomTypes.unclickable,
+    isEnabled: true,
+    url: window.location.host,
+    title: "Room 1",
+    description: "",
+    image_url: DEFAULT_MAP_ICON_URL,
+    x_percent: 20,
+    y_percent: 10,
+    width_percent: 100,
+    height_percent: 100,
+  },
+];
+
 const recipes: RecipeType[] = [
-  { title: "Recipe 1", rooms: [] },
+  { title: "Recipe 1", rooms: recipeRooms },
   { title: "Recipe 2", rooms: [] },
   { title: "Recipe 3", rooms: [] },
   { title: "Blank Canvas", rooms: [] },
@@ -55,6 +89,10 @@ export const AdminTemplates: React.FC = () => {
   const [selectedRecipe, setSelectedRecipe] = useState<RecipeType>(recipes[0]);
   const [isLoading, setLoading] = useState<boolean>(false);
 
+  const { user } = useUser();
+  const { venueId } = useParams<{ venueId: string }>();
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+
   const selectTemplate = (template: TemplateType) => {
     if (isLoading) return;
 
@@ -64,6 +102,27 @@ export const AdminTemplates: React.FC = () => {
       setSelectedTemplate(template);
       setLoading(false);
     }, 2000);
+  };
+
+  const chooseTemplate = async () => {
+    if (!venue || !user) return;
+
+    const venueInput = {
+      name: venue.name,
+      rooms: selectedRecipe.rooms,
+    };
+
+    setLoading(true);
+    await updateVenue_v2(venueInput, user)
+      .then(() => {
+        //TODO: Redirect
+      })
+      .catch((e) => {
+        //TODO: Handle error and UX
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
 
   return (
@@ -79,7 +138,7 @@ export const AdminTemplates: React.FC = () => {
             </button>
             <button
               className="templates-page__nav-buttons--confirm"
-              onClick={() => console.log("asd")}
+              onClick={chooseTemplate}
             >
               Choose this template
             </button>
@@ -103,7 +162,7 @@ export const AdminTemplates: React.FC = () => {
           </div>
           <div className="templates-page__template-preview">
             <PartyMapContainer
-              rooms={[]}
+              rooms={selectedRecipe.rooms as Room[]}
               iconsMap={{}}
               coordinatesBoundary={{ width: 60, height: 60 }}
               interactive={false}

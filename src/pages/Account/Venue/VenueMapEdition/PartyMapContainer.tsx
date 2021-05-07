@@ -19,7 +19,7 @@ export const PartyMapContainer: React.FC<PartyMapContainerProps> = (props) => {
   const otherIcons: SubVenueIconMap = useMemo(() => {
     return (
       rooms
-        ?.filter((r, idx) => idx !== currentRoomIndex)
+        ?.filter((r, index) => index !== currentRoomIndex)
         .reduce((acc, r) => {
           return {
             ...acc,

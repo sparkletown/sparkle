@@ -622,6 +622,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.parentId = data.parentId;
   }
 
+  if (data.rooms) {
+    updated.rooms = data.rooms;
+  }
+
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
     updated.columns = data.columns;
