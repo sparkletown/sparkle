@@ -75,10 +75,12 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   }, [selectedDayIndex]);
 
   const schedule: ScheduleDay = useMemo(() => {
-    const day = addDays(startOfToday(), selectedDayIndex);
+    const dayStart = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
-      .filter(isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : day))
-      .map(prepareForSchedule(day, userEventIds));
+      .filter(
+        isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : dayStart)
+      )
+      .map(prepareForSchedule(dayStart, userEventIds));
 
     const roomNamesInSchedule = new Set(daysEvents.map((event) => event.room));
 
@@ -89,8 +91,8 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
     return {
       isToday: selectedDayIndex === 0,
-      weekday: format(day, "E"),
-      dayStartUtcSeconds: getUnixTime(day),
+      weekday: format(dayStart, "E"),
+      dayStartUtcSeconds: getUnixTime(dayStart),
       rooms: roomsWithEvents,
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
