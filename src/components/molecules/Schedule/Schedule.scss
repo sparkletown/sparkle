@@ -1,23 +1,43 @@
 @import "scss/constants.scss";
 @import "./Schedule.constants.scss";
 
+$room-count: var(--room-count, 1);
+$current-time--position: var(--current-time--position, -2);
+$hours-count: var(--hours-count, 8);
+
+$hour-width: 200px;
+$half-hour-width: calc(#{$hour-width} / 2);
+
+$rooms-column--width: 215px;
+$timeline--height: 36px;
+
+$time-line--margin-top: 18px;
+$time-line--width: 1px;
+$current-time-line--width: 2px;
+
+$time-line--height: calc(
+  (#{$room--height} + #{$room--margin-bottom}) * #{$room-count}
+);
+
+$schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
+
 .ScheduledEvents {
-  padding-top: 20px;
+  padding-top: $ScheduleEvents--padding;
   display: flex;
   position: relative;
 
   &__rooms {
-    flex-basis: 215px;
+    flex-basis: $rooms-column--width;
     flex-shrink: 0;
-    margin-top: 36px;
-    padding-right: 20px;
-    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    margin-top: $timeline--height;
+    padding-right: $ScheduleEvents--padding;
+    box-shadow: box-shadow--large();
     font-size: 0.8rem;
   }
 
   &__room {
-    margin-bottom: 1rem;
-    height: 70px;
+    margin-bottom: $room--margin-bottom;
+    height: $room--height;
     display: flex;
     justify-content: center;
     flex-flow: column;
@@ -36,8 +56,8 @@
   }
 
   &__timeline {
-    height: 36px;
-    font-size: 0.9rem;
+    height: $timeline--height;
+    font-size: $font-size--small;
     opacity: 0.6;
     white-space: nowrap;
   }
@@ -50,24 +70,24 @@
     &::after {
       content: "";
       display: block;
-      height: calc((65px + 1rem) * #{$room-count});
-      border-left: 1px solid white;
-      margin-left: 100px;
-      margin-top: 18px;
+      height: $time-line--height;
+      border-left: #{$time-line--width} solid white;
+      margin-left: $half-hour-width;
+      margin-top: $time-line--margin-top;
     }
   }
 
   &__user-schedule {
-    height: 70px;
-    margin-bottom: 1rem;
+    height: $room--height;
+    margin-bottom: $room--margin-bottom;
     background-color: rgba(255, 255, 255, 0.2);
-    width: calc(#{$hours-count} * #{$hour-width} + #{$hour-width} / 2);
+    width: $schedule--width;
   }
 
   &__current-time-line {
     position: absolute;
-    width: 2px;
-    height: calc((65px + 1rem) * #{$room-count});
+    width: $current-time-line--width;
+    height: $time-line--height;
     left: calc(#{$current-time--position} * 1px);
     background-color: $primary;
   }

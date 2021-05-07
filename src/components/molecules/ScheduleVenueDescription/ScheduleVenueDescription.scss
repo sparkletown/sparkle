@@ -1,23 +1,31 @@
 @import "scss/constants.scss";
+@import "../Schedule/Schedule.constants.scss";
+
+$image-size: 92px;
+
+$main--margin-top: 2rem;
+$main--margin-bottom: 1rem;
+
+$name--margin-bottom: 5px;
 
 .ScheduleVenueDescription {
   flex: 1;
-  padding-left: 20px;
+  padding-left: $ScheduleEvents--padding;
 
   &__main {
     display: flex;
     align-items: center;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
+    margin-top: $main--margin-top;
+    margin-bottom: $main--margin-bottom;
   }
 
   &__pic {
     flex-shrink: 0;
-    width: 92px;
-    height: 92px;
+    width: $image-size;
+    height: $image-size;
     background-size: cover;
-    border-radius: 46px;
-    margin-right: 20px;
+    border-radius: 50%;
+    margin-right: $ScheduleEvents--padding;
     cursor: pointer;
     transition: all 400ms $transition-function;
     box-shadow: 0 8px 16px rgba($black, 0.3);
@@ -34,7 +42,7 @@
 
   &__name {
     font-style: italic;
-    margin-bottom: 5px;
+    margin-bottom: $name--margin-bottom;
   }
 
   &__subtitle {

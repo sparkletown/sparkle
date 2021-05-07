@@ -1,5 +1,11 @@
 @import "scss/constants.scss";
 
+$SchedulePageModal--height: 620px;
+$SchedulePageModal--padding: 20px;
+
+$weekday--padding: 8px 10px;
+$weekday--margin-right: 10px;
+
 .SchedulePageModal {
   @include scrollbar;
   position: fixed;
@@ -7,17 +13,17 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 620px;
+  height: $SchedulePageModal--height;
 
   padding-top: $navbar-height;
-  padding-left: 20px;
+  padding-left: $SchedulePageModal--padding;
 
   background-color: rgba($black, 0.9);
   overflow: auto;
 
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-800px);
+  transform: translateY(-#{$SchedulePageModal--height});
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
@@ -30,15 +36,15 @@
 
   &__weekdays {
     display: flex;
-    padding-left: 20px;
+    padding-left: $SchedulePageModal--padding;
   }
 
   &__weekday {
     display: inline;
     cursor: pointer;
-    padding: 8px 10px;
-    margin-right: 10px;
-    border-radius: 22px; // consider variable
+    padding: $weekday--padding;
+    margin-right: $weekday--margin-right;
+    border-radius: $border-radius--input;
     opacity: 0.8;
 
     &--active {
@@ -54,7 +60,6 @@
   }
 
   &__no-events {
-    padding: 40px;
-    padding-left: 20px;
+    padding: $SchedulePageModal--padding;
   }
 }

@@ -1,4 +1,6 @@
+@import "../Schedule/Schedule.constants.scss";
+
 .RoomEvents {
-  height: 70px;
-  margin-bottom: 1rem;
+  height: $room--height;
+  margin-bottom: $room--margin-bottom;
 }
