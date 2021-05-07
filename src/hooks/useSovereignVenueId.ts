@@ -1,10 +1,10 @@
-import { fetchSovereignVenueId } from "api/sovereignVenue";
-
 import {
   setSovereignVenueId,
   setSovereignVenueIdIsLoading,
   setSovereignVenueIdError,
 } from "store/actions/SovereignVenue";
+
+import { fetchSovereignVenueId } from "api/venue";
 
 import { sovereignVenueIdSelector } from "utils/selectors";
 
