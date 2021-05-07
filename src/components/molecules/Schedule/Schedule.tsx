@@ -1,10 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
-import { format } from "date-fns";
+import { format, fromUnixTime, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import { useCss } from "react-use";
-
-import { ONE_SECOND_IN_MILLISECONDS } from "utils/time";
 
 import { RoomWithEvents, ScheduleProps } from "./Schedule.types";
 
@@ -22,7 +20,7 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
   const getStartHour = useCallback(
     (utcSeconds: number) => {
       return utcSeconds >= scheduleDay.dayStartUtcSeconds
-        ? Number(format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "H"))
+        ? Number(format(fromUnixTime(utcSeconds), "H"))
         : 0;
     },
     [scheduleDay]
@@ -60,7 +58,7 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
   const containerVars = useCss({
     "--room-count": scheduleDay.rooms.length + 1,
     "--current-time--position": calcStartPosition(
-      Math.floor(Date.now() / ONE_SECOND_IN_MILLISECONDS),
+      Math.floor(getUnixTime(Date.now())),
       scheduleStartHour
     ),
     "--hours-count": hours.length,

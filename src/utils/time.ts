@@ -3,6 +3,8 @@ import {
   format,
   formatDuration,
   formatRelative,
+  fromUnixTime,
+  getUnixTime,
   startOfDay,
 } from "date-fns";
 
@@ -72,8 +74,7 @@ const formatMeasurementInString = (value: number, measureUnit: string) => {
 export const getTimeBeforeParty = (startUtcSeconds?: number) => {
   if (startUtcSeconds === undefined) return "???";
 
-  const secondsBeforeParty =
-    startUtcSeconds - Date.now() / ONE_SECOND_IN_MILLISECONDS;
+  const secondsBeforeParty = startUtcSeconds - getUnixTime(Date.now());
 
   if (secondsBeforeParty < 0) {
     return 0;
@@ -108,8 +109,7 @@ export const getTimeBeforeParty = (startUtcSeconds?: number) => {
 };
 
 export const canUserJoinTheEvent = (event: VenueEvent) =>
-  event.start_utc_seconds - Date.now() / ONE_SECOND_IN_MILLISECONDS >
-  ONE_HOUR_IN_SECONDS;
+  event.start_utc_seconds - getUnixTime(Date.now()) > ONE_HOUR_IN_SECONDS;
 
 /**
  * Format UTC seconds as a string representing date.
@@ -123,7 +123,7 @@ export const canUserJoinTheEvent = (event: VenueEvent) =>
  * @see https://date-fns.org/docs/format
  */
 export function formatDate(utcSeconds: number) {
-  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "MMM do");
+  return format(fromUnixTime(utcSeconds), "MMM do");
 }
 
 export function oneHourAfterTimestamp(timestamp: number) {
@@ -142,13 +142,11 @@ export function oneHourAfterTimestamp(timestamp: number) {
  * @see https://date-fns.org/docs/format
  */
 export function formatUtcSeconds(utcSeconds?: number | null) {
-  return utcSeconds
-    ? format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "p")
-    : "(unknown)";
+  return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
 }
 
 export function getHoursAgoInSeconds(hours: number) {
-  const nowInSec = Date.now() / ONE_SECOND_IN_MILLISECONDS;
+  const nowInSec = getUnixTime(Date.now());
   return nowInSec - hours * ONE_HOUR_IN_SECONDS;
 }
 
@@ -173,19 +171,18 @@ export function getDaysAgoInSeconds(days: number) {
  * @see https://date-fns.org/docs/format
  */
 export const formatHourAndMinute = (utcSeconds: number) => {
-  return format(utcSeconds * ONE_SECOND_IN_MILLISECONDS, "HH:mm");
+  return format(fromUnixTime(utcSeconds), "HH:mm");
 };
 
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
-  const utcMilliseconds = utcSeconds * ONE_SECOND_IN_MILLISECONDS;
+  const time = fromUnixTime(utcSeconds);
 
-  return differenceInSeconds(utcMilliseconds, startOfDay(utcMilliseconds));
+  return differenceInSeconds(time, startOfDay(time));
 };
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date/now
 //   The static Date.now() method returns the number of milliseconds elapsed since January 1, 1970 00:00:00 UTC.
-export const getCurrentTimeInUTCSeconds = () =>
-  Date.now() / ONE_SECOND_IN_MILLISECONDS;
+export const getCurrentTimeInUTCSeconds = () => getUnixTime(Date.now());
 
 /**
  * Format UTC seconds as a string representing relative date from now.
@@ -199,7 +196,7 @@ export const getCurrentTimeInUTCSeconds = () =>
  * @see https://date-fns.org/docs/formatRelative
  */
 export const formatUtcSecondsRelativeToNow = (utcSeconds: number) => {
-  return formatRelative(utcSeconds * ONE_SECOND_IN_MILLISECONDS, Date.now());
+  return formatRelative(fromUnixTime(utcSeconds), Date.now());
 };
 
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
