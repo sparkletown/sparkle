@@ -80,13 +80,18 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
       .filter(isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : day))
       .map(prepareForSchedule(day, userEventIds));
 
-    const roomsWithEvents = extendRoomsWithDaysEvents(relatedRooms, daysEvents);
+    const roomNamesInSchedule = new Set(daysEvents.map((event) => event.room));
+
+    const roomsWithEvents = extendRoomsWithDaysEvents(
+      relatedRooms.filter((room) => roomNamesInSchedule.has(room.title)),
+      daysEvents
+    );
 
     return {
       isToday: selectedDayIndex === 0,
       weekday: format(day, "E"),
       dayStartUtcSeconds: getUnixTime(day),
-      rooms: roomsWithEvents.filter((room) => room.events.length > 0),
+      rooms: roomsWithEvents,
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
   }, [relatedVenueEvents, relatedRooms, userEventIds, selectedDayIndex]);
