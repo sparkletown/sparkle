@@ -5,11 +5,11 @@
   justify-content: space-around;
   padding: 20px 0;
 
-  @media (max-width: $small-desktop-width) {
+  @media (max-width: $media-breakpoint--lg) {
     align-items: center;
   }
 
-  @media (max-width: $normal-tablet-width) {
+  @media (max-width: $media-breakpoint--md) {
     flex-direction: column;
     align-items: center;
     width: 100%;
@@ -32,11 +32,11 @@
     color: rgba($white, 0.6);
     text-decoration: none;
 
-    @media (max-width: $small-desktop-width) {
+    @media (max-width: $media-breakpoint--lg) {
       width: 50%;
     }
 
-    @media (max-width: $normal-tablet-width) {
+    @media (max-width: $media-breakpoint--md) {
       width: 100%;
     }
 

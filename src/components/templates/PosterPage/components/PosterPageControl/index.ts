@@ -1,0 +1,1 @@
+export { PosterPageControl } from "./PosterPageControl";

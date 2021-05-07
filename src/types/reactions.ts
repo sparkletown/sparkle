@@ -13,6 +13,7 @@ export enum EmojiReactionType {
 }
 
 export const TextReactionType = "messageToTheBand" as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the type the same as the const
 export type TextReactionType = typeof TextReactionType;
 
 export type ReactionType = EmojiReactionType | TextReactionType;

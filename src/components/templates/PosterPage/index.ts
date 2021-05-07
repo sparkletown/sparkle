@@ -1,0 +1,1 @@
+export { PosterPage } from "./PosterPage";

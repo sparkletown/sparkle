@@ -10,6 +10,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { isTruthyFilter } from "utils/filter";
 import { WithId, withVenueId, WithVenueId } from "utils/id";
 import {
+  emptyArraySelector,
   makeSubvenueEventsSelector,
   maybeArraySelector,
   parentVenueEventsSelector,
@@ -52,6 +53,10 @@ const makeEventsQueryConfig = (
   storeAs,
 });
 
+const emptyArray: never[] = [];
+
+export type VenueEventsSelector = SparkleSelector<WithVenueId<VenueEvent>[]>;
+
 interface UseConnectRelatedVenuesProps {
   venueId?: string;
 
@@ -85,25 +90,6 @@ export const useConnectRelatedVenues: ReactHook<
 
   const parentId: string | undefined = currentVenue?.parentId;
 
-  const parentEventsWithVenueIdsSelector: SparkleSelector<
-    WithVenueId<VenueEvent>[]
-  > = useMemo(() => {
-    if (!withEvents || !parentId) return () => [];
-
-    return (state: RootState) =>
-      parentVenueEventsSelector(state)?.map(toEventsWithVenueIds(parentId)) ??
-      [];
-  }, [parentId, withEvents]);
-
-  const venueEventsWithVenueIdsSelector: SparkleSelector<
-    WithVenueId<VenueEvent>[]
-  > = useMemo(() => {
-    if (!withEvents || !venueId) return () => [];
-
-    return (state: RootState) =>
-      venueEventsSelector(state)?.map(toEventsWithVenueIds(venueId)) ?? [];
-  }, [venueId, withEvents]);
-
   const siblingNotVenueSelector: SparkleSelector<
     WithId<AnyVenue>[]
   > = useCallback(
@@ -114,32 +100,51 @@ export const useConnectRelatedVenues: ReactHook<
     [venueId]
   );
 
-  const parentVenueRaw = useSelector(parentVenueOrderedSelector);
-  const parentVenue = parentVenueRaw?.[0];
+  const parentVenueRaw: WithId<AnyVenue>[] | undefined = useSelector(
+    parentVenueOrderedSelector
+  );
+  const parentVenue: WithId<AnyVenue> | undefined = parentVenueRaw?.[0];
 
-  const subvenuesRaw = useSelector(subvenuesSelector);
-  const subvenues = subvenuesRaw ?? [];
+  const subvenuesRaw: WithId<AnyVenue>[] | undefined = useSelector(
+    subvenuesSelector
+  );
+  const subvenues: WithId<AnyVenue>[] = subvenuesRaw ?? emptyArray;
 
   const siblingVenuesRaw = useSelector(siblingNotVenueSelector);
-  const siblingVenues = siblingVenuesRaw ?? [];
+  const siblingVenues: WithId<AnyVenue>[] = siblingVenuesRaw ?? emptyArray;
 
   const isParentVenueLoaded = isLoaded(parentVenueRaw);
   const isSubvenuesLoaded = isLoaded(subvenuesRaw);
   const isSiblingVenuesLoaded = isLoaded(siblingVenuesRaw);
 
-  const maybeParentEventsSelector = useCallback(
+  const parentEventsWithVenueIdsSelector: VenueEventsSelector = useMemo((): VenueEventsSelector => {
+    if (!withEvents || !parentId) return emptyArraySelector;
+
+    return (state) =>
+      parentVenueEventsSelector(state)?.map(toEventsWithVenueIds(parentId)) ??
+      [];
+  }, [parentId, withEvents]);
+
+  const venueEventsWithVenueIdsSelector: VenueEventsSelector = useMemo((): VenueEventsSelector => {
+    if (!withEvents || !venueId) return emptyArraySelector;
+
+    return (state) =>
+      venueEventsSelector(state)?.map(toEventsWithVenueIds(venueId)) ?? [];
+  }, [venueId, withEvents]);
+
+  const maybeParentEventsSelector: VenueEventsSelector = useCallback(
     (state) =>
       maybeArraySelector(withEvents, parentEventsWithVenueIdsSelector)(state),
     [withEvents, parentEventsWithVenueIdsSelector]
   );
 
-  const maybeVenueEventsSelector = useCallback(
+  const maybeVenueEventsSelector: VenueEventsSelector = useCallback(
     (state) =>
       maybeArraySelector(withEvents, venueEventsWithVenueIdsSelector)(state),
     [withEvents, venueEventsWithVenueIdsSelector]
   );
 
-  const maybeSiblingEventsSelector = useCallback(
+  const maybeSiblingEventsSelector: VenueEventsSelector = useCallback(
     (state) =>
       maybeArraySelector(
         withEvents,
@@ -148,7 +153,7 @@ export const useConnectRelatedVenues: ReactHook<
     [withEvents, siblingVenues]
   );
 
-  const maybeSubvenueEventsSelector = useCallback(
+  const maybeSubvenueEventsSelector: VenueEventsSelector = useCallback(
     (state) =>
       maybeArraySelector(
         withEvents,
