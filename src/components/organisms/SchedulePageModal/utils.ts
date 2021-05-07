@@ -8,15 +8,13 @@ import {
   startOfDay,
 } from "date-fns";
 
-import { Room } from "types/rooms";
+import { Room, RoomWithEvents } from "types/rooms";
 import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 import { MyPersonalizedSchedule } from "types/User";
 
 import { WithVenueId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
 import { isTruthy } from "utils/types";
-
-import { RoomWithEvents } from "components/molecules/Schedule/Schedule.types";
 
 export const isEventLaterThisDay = (date: number | Date) => (
   event: VenueEvent

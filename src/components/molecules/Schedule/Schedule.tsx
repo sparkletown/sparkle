@@ -4,13 +4,18 @@ import { format, fromUnixTime, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import { useCss } from "react-use";
 
-import { RoomWithEvents, ScheduleProps } from "./Schedule.types";
+import { ScheduleDay } from "types/schedule";
+import { RoomWithEvents } from "types/rooms";
 
 import { calcStartPosition } from "./Schedule.utils";
 
 import { ScheduleRoomEvents } from "../ScheduleRoomEvents";
 
 import "./Schedule.scss";
+
+export interface ScheduleProps {
+  scheduleDay: ScheduleDay;
+}
 
 const MAX_SCHEDULE_START_HOUR = 16;
 const MAX_HOUR = 24;

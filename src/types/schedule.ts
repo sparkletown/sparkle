@@ -1,10 +1,7 @@
-import { Room } from "types/rooms";
 import { PersonalizedVenueEvent } from "types/venues";
-import { WithVenueId } from "utils/id";
+import { RoomWithEvents } from "types/rooms";
 
-export type RoomWithEvents = Room & {
-  events: WithVenueId<PersonalizedVenueEvent>[];
-};
+import { WithVenueId } from "utils/id";
 
 export interface ScheduleDay {
   isToday: boolean;
@@ -12,8 +9,4 @@ export interface ScheduleDay {
   dayStartUtcSeconds: number;
   rooms: RoomWithEvents[];
   personalEvents: WithVenueId<PersonalizedVenueEvent>[];
-}
-
-export interface ScheduleProps {
-  scheduleDay: ScheduleDay;
 }

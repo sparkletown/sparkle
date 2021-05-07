@@ -3,14 +3,14 @@ import { addDays, startOfToday, format, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import classNames from "classnames";
 
+import { ScheduleDay } from "types/schedule";
+
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
 
 import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
-
-import { ScheduleDay } from "components/molecules/Schedule/Schedule.types";
 
 import {
   extendRoomsWithDaysEvents,
