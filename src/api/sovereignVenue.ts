@@ -45,3 +45,21 @@ export const fetchVenue = async (
 
   return withId(venue, venueId);
 };
+
+export const fetchChildVenues = async (
+  venueId: string
+): Promise<WithId<AnyVenue>[]> => {
+  const childVenuesSnapshot = await getVenueCollectionRef()
+    .where("parentId", "==", venueId)
+    .get();
+
+  if (childVenuesSnapshot.empty) return [];
+
+  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
+  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
+  return childVenuesSnapshot.docs
+    .filter((docSnapshot) => docSnapshot.exists)
+    .map((docSnapshot) =>
+      withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
+    );
+};
