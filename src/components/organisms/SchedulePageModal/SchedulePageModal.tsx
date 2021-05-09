@@ -14,6 +14,8 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
+import { START_DATE } from "settings";
+
 type DatedEvents = Array<{
   dateDay: Date;
   events: Array<WithVenueId<VenueEvent>>;
@@ -43,14 +45,56 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     Record<string, WithId<AnyVenue>>
   > = relatedVenues.reduce(itemsToObjectByIdReducer, {});
 
+  const [startDate, setStartDate] = useState(START_DATE);
+
+  const selectStartDate = () => (
+    <>
+      <form
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <label>
+          Select the calendar starting date:
+          <div>
+            <select
+              value={startDate}
+              onChange={(e) => {
+                setStartDate(e.target.value);
+              }}
+            >
+              <option value="today">Today</option>
+              <option value="course">Educational Course</option>
+              <option value="conference">Conference</option>
+            </select>
+          </div>
+        </label>
+      </form>
+    </>
+  );
+
   const orderedEvents: DatedEvents = useMemo(() => {
     const liveAndFutureEvents = relatedVenueEvents.filter(isEventLiveOrFuture);
     const hasEvents = liveAndFutureEvents.length > 0;
 
-    const nowDay = startOfDay(new Date());
+    const nowDay = (startDate: string) => {
+      if (startDate === "conference") {
+        // 21 June 2021
+        const now: number | Date = startOfDay(new Date(2021, 5, 21));
+        return now;
+      } else if (startDate === "course") {
+        // 30 May 2021
+        const now: number | Date = startOfDay(new Date(2021, 4, 30));
+        return now;
+      } else {
+        // today:
+        const now: number | Date = startOfDay(new Date());
+        return now;
+      }
+    };
 
     const dates: DatedEvents = range(0, DAYS_AHEAD).map((idx) => {
-      const day = addDays(nowDay, idx);
+      const day = addDays(nowDay(startDate), idx);
 
       const todaysEvents = liveAndFutureEvents
         .filter((event) => {
@@ -72,7 +116,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     });
 
     return dates;
-  }, [relatedVenueEvents]);
+  }, [relatedVenueEvents, startDate]);
 
   const [date, setDate] = useState(0);
 
@@ -142,6 +186,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
               <h3>{subtitleText}</h3>
             </div>
           </div>
+          <form>{selectStartDate()}</form>
           <div className="partyinfo-desc">
             <p>{descriptionText}</p>
           </div>

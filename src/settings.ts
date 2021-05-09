@@ -566,3 +566,5 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+
+export const START_DATE = "conference"; // options: "conference", "course", "today"
