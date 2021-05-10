@@ -1,6 +1,9 @@
 import { useCallback, useMemo } from "react";
+import { useAsync } from "react-use";
 
 import { RootState } from "index";
+
+import { fetchRelatedVenues } from "api/venue";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { SparkleSelector } from "types/SparkleSelector";
@@ -19,6 +22,7 @@ import {
   subvenuesSelector,
   venueEventsSelector,
 } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useSelector } from "./useSelector";
@@ -28,6 +32,7 @@ import {
   isLoaded,
   SparkleRFSubcollectionQuery,
 } from "./useFirestoreConnect";
+import { useSovereignVenueId } from "./useSovereignVenueId";
 
 const toEventsWithVenueIds = (venueId: string) => (event: VenueEvent) =>
   withVenueId(event, venueId);
@@ -56,6 +61,59 @@ const makeEventsQueryConfig = (
 const emptyArray: never[] = [];
 
 export type VenueEventsSelector = SparkleSelector<WithVenueId<VenueEvent>[]>;
+
+export interface UseRelatedVenuesProps {
+  venueId: string;
+}
+
+export interface UseRelatedVenuesData {
+  isLoading: boolean;
+  isError: boolean;
+
+  sovereignVenueId?: string;
+  isSovereignVenueIdLoading: boolean;
+  sovereignVenueIdError?: string;
+
+  relatedVenues: WithId<AnyVenue>[];
+  isRelatedVenuesLoading: boolean;
+  relatedVenuesError?: Error;
+}
+
+export const useRelatedVenues: ReactHook<
+  UseRelatedVenuesProps,
+  UseRelatedVenuesData
+> = ({ venueId }) => {
+  const {
+    sovereignVenueId,
+    isSovereignVenueIdLoading,
+    errorMsg: sovereignVenueIdError,
+  } = useSovereignVenueId({
+    venueId,
+  });
+
+  const {
+    loading: isRelatedVenuesLoading,
+    error: relatedVenuesError,
+    value: relatedVenues,
+  } = useAsync(async () => {
+    if (!sovereignVenueId) return [];
+
+    return fetchRelatedVenues(sovereignVenueId);
+  }, [sovereignVenueId]);
+
+  return {
+    isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
+    isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
+
+    sovereignVenueId,
+    isSovereignVenueIdLoading,
+    sovereignVenueIdError,
+
+    relatedVenues,
+    isRelatedVenuesLoading,
+    relatedVenuesError,
+  };
+};
 
 interface UseLegacyConnectRelatedVenuesProps {
   venueId?: string;
