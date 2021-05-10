@@ -18,7 +18,10 @@ import {
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
-import { roomTitleSchema } from "pages/Admin/Details/ValidationSchema";
+import {
+  roomTitleSchema,
+  urlIfNoFileValidation,
+} from "pages/Admin/Details/ValidationSchema";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -44,15 +47,6 @@ const createFileSchema = (name: string, required: boolean) =>
         return file.size <= MAX_IMAGE_FILE_SIZE_BYTES;
       }
     );
-
-const urlIfNoFileValidation = (fieldName: string) =>
-  Yup.string().when(
-    fieldName,
-    (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
-      file && file.length > 0
-        ? schema.notRequired()
-        : schema.required("Required")
-  );
 
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
@@ -174,10 +168,10 @@ export const validationSchema = Yup.object()
     showReactions: Yup.bool().notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
-      .min(5, "Columns must be at least 5"),
+      .min(5, "There must be at least 5 columns"),
     auditoriumRows: Yup.number()
       .notRequired()
-      .min(5, "Rows must be at least 5"),
+      .min(5, "There must be at least 5 rows"),
   })
   .required();
 

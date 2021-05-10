@@ -61,7 +61,7 @@ const createFileSchema = (
       }
     );
 
-const urlIfNoFileValidation = (fieldName: string) =>
+export const urlIfNoFileValidation = (fieldName: string) =>
   Yup.string().when(
     fieldName,
     (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
@@ -70,10 +70,10 @@ const urlIfNoFileValidation = (fieldName: string) =>
         : schema.required("Required")
   );
 
-const mustBeMinimum = (fieldName: string, min: number) =>
+export const mustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
 
-const mustBeMaximum = (fieldName: string, max: number) =>
+export const mustBeMaximum = (fieldName: string, max: number) =>
   `${fieldName} must be at least ${max} characters`;
 
 export const roomTitleSchema = Yup.string()
