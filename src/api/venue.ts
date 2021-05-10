@@ -136,10 +136,13 @@ export const fetchDescendantVenues = async (
     venueId
   );
 
-  // TODO: use 'chunked array-in query' pattern to fetch the children of all of these in 1/10th the number of calls
-  const descendantVenues: WithId<AnyVenue>[] = await Promise.all(
-    directChildVenues.map((childVenue) => fetchDescendantVenues(childVenue.id))
-  ).then((venues) => venues.flat());
+  const directChildVenueIds: string[] = directChildVenues.map(
+    (childVenue) => childVenue.id
+  );
+
+  const descendantVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
+    directChildVenueIds
+  );
 
   return [...directChildVenues, ...descendantVenues];
 };
