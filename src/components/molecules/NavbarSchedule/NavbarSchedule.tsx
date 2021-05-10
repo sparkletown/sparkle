@@ -1,17 +1,14 @@
 import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
-import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import "./NavbarSchedule.scss";
 
 export const NavbarSchedule: React.FC = () => {
-  const venue = useSelector(currentVenueSelectorData);
-  const parentVenue = useSelector(parentVenueSelector);
+  const { sovereignVenueId: navbarTitle } = useSovereignVenueId();
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
 
@@ -23,25 +20,21 @@ export const NavbarSchedule: React.FC = () => {
     setEventScheduleVisible(false);
   }, []);
 
-  // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? venue?.name ?? "";
+  const scheduleBackdropClasses = classNames("schedule-dropdown-backdrop", {
+    "schedule-dropdown-backdrop--visible": isEventScheduleVisible,
+  });
 
   return (
     <>
       <div
-        className={classNames("nav-party-logo", {
-          "nav-party-logo--visible": isEventScheduleVisible,
+        className={classNames("nav-schedule", {
+          "nav-schedule--visible": isEventScheduleVisible,
         })}
         onClick={toggleEventSchedule}
       >
         {navbarTitle} Schedule
       </div>
-      <div
-        className={classNames("schedule-dropdown-backdrop", {
-          "schedule-dropdown-backdrop--visible": isEventScheduleVisible,
-        })}
-        onClick={hideEventSchedule}
-      >
+      <div className={scheduleBackdropClasses} onClick={hideEventSchedule}>
         <SchedulePageModal isVisible={isEventScheduleVisible} />
       </div>
     </>

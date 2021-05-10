@@ -1,1 +1,0 @@
-export { NavbarProfile } from "./NavbarProfile";

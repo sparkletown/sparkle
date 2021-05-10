@@ -13,9 +13,9 @@ import { useRadio } from "hooks/useRadio";
 
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
-import "./NavbarRadio.scss";
+import "./NavBarRadio.scss";
 
-export const NavbarRadio: React.FC = () => {
+export const NavBarRadio: React.FC = () => {
   const venue = useSelector(currentVenueSelectorData);
 
   const radioStations = useSelector(radioStationsSelector) ?? [];
@@ -94,6 +94,11 @@ export const NavbarRadio: React.FC = () => {
 
   const soundCloudIframeSrc = `https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`;
 
+  const radioTriggerClasses = classNames("radio-trigger__iframe", {
+    "radio-trigger__iframe--visible": showRadioPopover,
+    "radio-trigger__iframe--hidden": !showRadioPopover,
+  });
+
   return (
     <>
       {showSoundCloudRadio && (
@@ -104,12 +109,7 @@ export const NavbarRadio: React.FC = () => {
             })}
             onClick={toggleShowRadioPopover}
           />
-          <div
-            className={classNames("radio-trigger__iframe", {
-              "radio-trigger__iframe--visible": showRadioPopover,
-              "radio-trigger__iframe--hidden": !showRadioPopover,
-            })}
-          >
+          <div className={radioTriggerClasses}>
             <iframe
               title="venueRadio"
               scrolling="no"

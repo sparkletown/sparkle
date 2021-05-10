@@ -17,6 +17,7 @@ import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { GiftTicketModal } from "components/molecules/GiftTicketModal/GiftTicketModal";
 
 import "./WithNavigationBar.scss";
+import { NavBarRadio } from "components/molecules/NavBar/components/NavBarRadio";
 
 interface PropsType {
   children: React.ReactNode;
@@ -71,6 +72,8 @@ export const WithNavigationBar: React.FunctionComponent<PropsType> = ({
           </span>
         </OverlayTrigger>
       )}
+
+      {venue && <NavBarRadio />}
     </>
   );
 

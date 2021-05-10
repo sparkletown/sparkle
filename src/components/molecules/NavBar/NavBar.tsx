@@ -7,9 +7,8 @@ import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useUser } from "hooks/useUser";
 
-import { NavBarLogin } from "./NavBarLogin";
-import { NavbarRadio } from "../NavbarRadio";
-import { NavbarProfile } from "../NavbarProfile";
+import { NavBarLogin } from "components/molecules/NavBar/components/NavBarLogin";
+import { NavBarProfile } from "components/molecules/NavBar/components/NavBarProfile";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -49,23 +48,19 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   return (
     <>
       <header>
-        <div className={`navbar navbar_playa nonplaya`}>
+        <div className="navbar navbar_playa nonplaya">
           <div className="navbar-container">
             <div className="nav-logos">
               <div className="nav-sparkle-logo" onClick={onClickLogo}>
-                <div />
+                <div className="nav-sparkle-logo--animation" />
               </div>
-              <div className="nav-sparkle-logo_small">
-                <div />
-              </div>
-
               {leftSlot}
             </div>
+
             {user ? (
               <div className="navbar-links">
                 {rightSlot}
-                <NavbarRadio />
-                <NavbarProfile />
+                <NavBarProfile />
               </div>
             ) : (
               <NavBarLogin />
