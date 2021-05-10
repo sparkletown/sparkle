@@ -4,6 +4,7 @@ import {
   faLock,
   faLockOpen,
   faChevronLeft,
+  faPen,
 } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
@@ -139,58 +140,62 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }, [leaveSeat]);
 
   return (
-    // @debt move all style into TableHeader.scss
-    <div className="row no-margin at-table table-header">
-      <div className="header">
-        <div className="back-button-container">
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="back-button"
-            id="leave-seat"
-            onClick={leaveSeat}
-          >
-            <FontAwesomeIcon
-              className="back-button-icon"
-              icon={faChevronLeft}
-              size="xs"
-            />
-            Leave table
-          </button>
-        </div>
-        <div className="table-title-container">
-          <div className="private-table-title">
-            {tableTitle}
-
-            {tableCapacity && (
-              <span className="private-table-seats-left">
-                {numberOfSeatsLeft} seats left
-              </span>
-            )}
-          </div>
-          {tableOfUser && tableOfUser.subtitle && (
-            <div className="private-table-subtitle">{tableOfUser.subtitle}</div>
-          )}
-        </div>
-        <div className="lock-button-container">
+    <div className="row table-header">
+      <div className="table-header__leave-table">
+        <button
+          type="button"
+          title={"Leave " + seatedAtTable}
+          className="table-header__leave-button"
+          id="leave-seat"
+          onClick={leaveSeat}
+        >
           <FontAwesomeIcon
-            className="lock-table-icon"
-            icon={isCurrentTableLocked ? faLock : faLockOpen}
-            size="sm"
+            className="table-header__leave-button--icon"
+            icon={faChevronLeft}
+            size="xs"
           />
-          <div className="lock-table-checbox-indication">
-            {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
+          Leave table
+        </button>
+      </div>
+
+      <div className="table-header__topic-info">
+        <div className="row table-header__topic">
+          <div>{tableTitle}</div>
+
+          <div className="table-header__edit-topic-button">
+            <FontAwesomeIcon icon={faPen} />
           </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              className="switch-hidden-input"
-              checked={!!isCurrentTableLocked}
-              onChange={toggleIsCurrentTableLocked}
-            />
-            <span className="slider" />
-          </label>
         </div>
+
+        {tableCapacity && (
+          <span className="table-header__seats-left">
+            {numberOfSeatsLeft} seats left
+          </span>
+        )}
+
+        {tableOfUser && tableOfUser.subtitle && (
+          <label>{tableOfUser.subtitle}</label>
+        )}
+      </div>
+
+      <div className="table-header__lock-button">
+        <FontAwesomeIcon
+          className="table-header__lock-button--icon"
+          icon={isCurrentTableLocked ? faLock : faLockOpen}
+          size="sm"
+        />
+        <div className="table-header__lock-indication">
+          {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
+        </div>
+        <label className="switch table-header__lock-toggle">
+          <input
+            type="checkbox"
+            className="switch-hidden-input"
+            checked={!!isCurrentTableLocked}
+            onChange={toggleIsCurrentTableLocked}
+          />
+          <span className="slider" />
+        </label>
       </div>
     </div>
   );
