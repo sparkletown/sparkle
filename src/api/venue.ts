@@ -89,7 +89,7 @@ export const fetchVenue = async (
   return withId(venue, venueId);
 };
 
-export const fetchAllChildVenues = async (
+export const fetchDirectChildVenues = async (
   venueId: string
 ): Promise<WithId<AnyVenue>[]> => {
   const childVenuesSnapshot = await getVenueCollectionRef()
@@ -101,19 +101,26 @@ export const fetchAllChildVenues = async (
 
   // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
   //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
-  const childVenues = childVenuesSnapshot.docs
+  return childVenuesSnapshot.docs
     .filter((docSnapshot) => docSnapshot.exists)
     .map((docSnapshot) =>
       withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
     );
+};
 
-  const grandChildrenVenues = await Promise.all(
-    childVenues.map((childVenue) => fetchAllChildVenues(childVenue.id))
+export const fetchDescendantVenues = async (
+  venueId: string
+): Promise<WithId<AnyVenue>[]> => {
+  const directChildVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
+    venueId
   );
 
-  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
-  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
-  return [...childVenues, ...grandChildrenVenues.flat()];
+  // TODO: use 'chunked array-in query' pattern to fetch the children of all of these in 1/10th the number of calls
+  const descendantVenues: WithId<AnyVenue>[] = await Promise.all(
+    directChildVenues.map((childVenue) => fetchDescendantVenues(childVenue.id))
+  ).then((venues) => venues.flat());
+
+  return [...directChildVenues, ...descendantVenues];
 };
 
 export const fetchRelatedVenues = async (
@@ -121,7 +128,7 @@ export const fetchRelatedVenues = async (
 ): Promise<WithId<AnyVenue>[]> => {
   const { sovereignVenue } = await fetchSovereignVenueId(venueId);
 
-  const childrenVenues = await fetchAllChildVenues(sovereignVenue.id);
+  const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
 
-  return [sovereignVenue, ...childrenVenues];
+  return [sovereignVenue, ...descendantVenues];
 };
