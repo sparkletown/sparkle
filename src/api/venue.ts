@@ -53,7 +53,7 @@ export interface FetchSovereignVenueReturn {
   checkedVenueIds: readonly string[];
 }
 
-export const fetchSovereignVenueId = async (
+export const fetchSovereignVenue = async (
   venueId: string,
   previouslyCheckedVenueIds: readonly string[] = []
 ): Promise<FetchSovereignVenueReturn> => {
@@ -72,7 +72,7 @@ export const fetchSovereignVenueId = async (
       `Circular reference detected. '${venueId}' has already been checked`
     );
 
-  return fetchSovereignVenueId(venue.parentId, [
+  return fetchSovereignVenue(venue.parentId, [
     ...previouslyCheckedVenueIds,
     venueId,
   ]);
@@ -136,7 +136,7 @@ export const fetchDescendantVenues = async (
 export const fetchRelatedVenues = async (
   venueId: string
 ): Promise<WithId<AnyVenue>[]> => {
-  const { sovereignVenue } = await fetchSovereignVenueId(venueId);
+  const { sovereignVenue } = await fetchSovereignVenue(venueId);
 
   const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
 

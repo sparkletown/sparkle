@@ -4,7 +4,7 @@ import {
   setSovereignVenueIdError,
 } from "store/actions/SovereignVenue";
 
-import { fetchSovereignVenueId } from "api/venue";
+import { fetchSovereignVenue } from "api/venue";
 
 import { sovereignVenueIdSelector } from "utils/selectors";
 
@@ -25,7 +25,7 @@ export const useSovereignVenueId = () => {
   // NOTE: Force to fetch it only once
   if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
     dispatch(setSovereignVenueIdIsLoading(true));
-    fetchSovereignVenueId(venueId)
+    fetchSovereignVenue(venueId)
       .then(({ sovereignVenue }) => {
         dispatch(setSovereignVenueId(sovereignVenue.id));
       })
