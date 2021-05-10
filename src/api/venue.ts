@@ -91,17 +91,11 @@ export const fetchSovereignVenue = async (
 
 export const fetchVenue = async (
   venueId: string
-): Promise<WithId<AnyVenue> | undefined> => {
-  const venueDoc = await getVenueRef(venueId).get();
-
-  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
-  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
-  const venue: AnyVenue | undefined = venueDoc.data() as AnyVenue | undefined;
-
-  if (!venue) return undefined;
-
-  return withId(venue, venueId);
-};
+): Promise<WithId<AnyVenue> | undefined> =>
+  getVenueRef(venueId)
+    .withConverter(anyVenueWithIdConverter)
+    .get()
+    .then((docSnapshot) => docSnapshot.data());
 
 export const fetchDirectChildVenues = async (
   venueIdOrIds: string | string[]
@@ -116,16 +110,12 @@ export const fetchDirectChildVenues = async (
       async (venueIdsChunk: string[]) => {
         const childVenuesSnapshot = await getVenueCollectionRef()
           .where("parentId", "in", venueIdsChunk)
-          // .withConverter()
+          .withConverter(anyVenueWithIdConverter)
           .get();
 
-        // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
-        //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
         return childVenuesSnapshot.docs
           .filter((docSnapshot) => docSnapshot.exists)
-          .map((docSnapshot) =>
-            withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
-          );
+          .map((docSnapshot) => docSnapshot.data());
       }
     )
   ).then((result) => result.flat());
@@ -172,4 +162,29 @@ export const fetchRelatedVenues = async (
   const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
 
   return [sovereignVenue, ...descendantVenues];
+};
+
+/**
+ * Convert Venue objects between the app/firestore formats (@debt:, including validation).
+ */
+export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
+  WithId<AnyVenue>
+> = {
+  toFirestore: (
+    anyVenue: WithId<AnyVenue>
+  ): firebase.firestore.DocumentData => {
+    // @debt Properly check/validate this data
+    //   return AnyVenueSchema.validateSync(anyVenue);
+
+    return anyVenue;
+  },
+
+  fromFirestore: (
+    snapshot: firebase.firestore.QueryDocumentSnapshot
+  ): WithId<AnyVenue> => {
+    // @debt Properly check/validate this data rather than using 'as'
+    //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
+
+    return withId(snapshot.data() as AnyVenue, snapshot.id);
+  },
 };
