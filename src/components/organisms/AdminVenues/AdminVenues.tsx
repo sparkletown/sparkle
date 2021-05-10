@@ -59,6 +59,13 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
                 >
                   Manage Space
                 </Button>
+                <Button
+                  className="card__button"
+                  as={Link}
+                  to={`/admin_v2/advanced-settings/${venue.id}`}
+                >
+                  Advanced Settings
+                </Button>
               </div>
             );
           })}

@@ -1,18 +1,18 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+import AdvancedSettings from "pages/Admin/AdvancedSettings";
+import EntranceExperience from "pages/Admin/EntranceExperience";
+import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
+
 import { Venue_v2 } from "types/venues";
 
-import AdvancedSettings from "pages/Admin/AdvancedSettings";
-import VenueDetails from "pages/Admin/Venue/Details";
-import { Spaces } from "pages/Admin/Spaces";
-import { LoadingPage } from "components/molecules/LoadingPage";
-
-import "./AdminVenueView.scss";
+// import "./AdminVenueView.scss";
 
 export interface SidebarOption {
   id: string;
@@ -20,58 +20,42 @@ export interface SidebarOption {
 }
 
 enum SidebarOptions {
-  dashboard = "dashboard",
   basicInfo = "basic_info",
   entranceExperience = "entrance_experience",
-  spaces = "spaces",
   advancedMapSettings = "advanced_map_settings",
-  ticketingAndAccess = "ticketing_and_access",
 }
 
 const sidebarOptions: SidebarOption[] = [
   {
-    id: SidebarOptions.spaces,
-    text: "Spaces",
+    id: SidebarOptions.basicInfo,
+    text: "Start",
+  },
+  {
+    id: SidebarOptions.entranceExperience,
+    text: "Entrance",
   },
   {
     id: SidebarOptions.advancedMapSettings,
     text: "Advanced",
   },
-  {
-    id: SidebarOptions.dashboard,
-    text: "Dashboard",
-  },
-  // TODO: Reintroduce when field is decided what to include
-  // {
-  //   id: SidebarOptions.ticketingAndAccess,
-  //   text: "Ticketing and access",
-  // },
 ];
 
-const DEFAULT_EDIT_TAB = sidebarOptions.findIndex(
-  (option) => option.id === SidebarOptions.dashboard
-);
-
-const DEFAULT_CREATE_TAB = sidebarOptions.findIndex(
+const DEFAULT_TAB = sidebarOptions.findIndex(
   (option) => option.id === SidebarOptions.basicInfo
 );
 
-export const AdminVenueView: React.FC = () => {
+export const AdminAdvancedSettings: React.FC = () => {
   const venueId = useVenueId();
 
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
-  const defaultTab = useMemo(() => {
-    return venueId ? DEFAULT_EDIT_TAB : DEFAULT_CREATE_TAB;
-  }, [venueId]);
-
   const [selectedOption, setSelectedOption] = useState(
-    sidebarOptions[defaultTab].id
+    sidebarOptions[DEFAULT_TAB].id
   );
 
   const selectDashboard = useCallback(() => {
-    setSelectedOption(sidebarOptions[defaultTab].id);
-  }, [defaultTab]);
+    setSelectedOption(sidebarOptions[DEFAULT_TAB].id);
+  }, []);
 
   if (venueId && !venue) {
     return <LoadingPage />;
@@ -99,14 +83,15 @@ export const AdminVenueView: React.FC = () => {
           ))}
         </Nav>
       </div>
-      {selectedOption === SidebarOptions.spaces && (
-        <Spaces venue={venue as Venue_v2} />
+      {selectedOption === SidebarOptions.basicInfo && <VenueWizard />}
+      {selectedOption === SidebarOptions.entranceExperience && (
+        <EntranceExperience
+          venue={venue as Venue_v2}
+          onSave={selectDashboard}
+        />
       )}
       {selectedOption === SidebarOptions.advancedMapSettings && (
         <AdvancedSettings venue={venue as Venue_v2} onSave={selectDashboard} />
-      )}
-      {selectedOption === SidebarOptions.dashboard && (
-        <VenueDetails venue={venue as Venue_v2} />
       )}
     </>
   );

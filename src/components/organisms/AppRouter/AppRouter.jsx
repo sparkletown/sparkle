@@ -34,6 +34,7 @@ import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminVenueView } from "../AdminVenueView";
+import { AdminAdvancedSettings } from "../AdminAdvancedSettings";
 
 const AppRouter = () => {
   return (
@@ -61,6 +62,10 @@ const AppRouter = () => {
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
         <Route path="/admin_v2/venue/:venueId?" component={AdminVenueView} />
+        <Route
+          path="/admin_v2/advanced-settings/:venueId?"
+          component={AdminAdvancedSettings}
+        />
 
         <Route path="/admin/:venueId" component={Admin} />
 

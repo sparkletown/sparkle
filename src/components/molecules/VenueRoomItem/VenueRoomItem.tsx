@@ -1,16 +1,20 @@
+import React, { useCallback, useState } from "react";
+import { Button, Form, Modal } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+
 import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import { VenueTemplate } from "types/venues";
+
+import { venueInsideUrl } from "utils/url";
+
 import {
   venueRoomSchema,
   roomSchema,
 } from "pages/Admin/Details/ValidationSchema";
-import React, { useCallback, useState } from "react";
-import { Button, Form, Modal } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { DEFAULT_VENUE_LOGO } from "settings";
-import { VenueTemplate } from "types/venues";
-import { venueInsideUrl } from "utils/url";
 
 import "./VenueRoomItem.scss";
 
@@ -58,7 +62,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     const roomData = {
       title: values.roomTitle,
       isEnabled: true,
-      image_url: DEFAULT_VENUE_LOGO,
+      image_url: icon,
       url: roomUrl,
       template,
     };
@@ -90,6 +94,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       console.error(err);
     }
   }, [
+    icon,
     template,
     user,
     values.roomTitle,
