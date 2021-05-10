@@ -57,14 +57,14 @@ const emptyArray: never[] = [];
 
 export type VenueEventsSelector = SparkleSelector<WithVenueId<VenueEvent>[]>;
 
-interface UseConnectRelatedVenuesProps {
+interface UseLegacyConnectRelatedVenuesProps {
   venueId?: string;
 
   /** @default false **/
   withEvents?: boolean;
 }
 
-interface UseConnectRelatedVenuesReturn {
+interface UseLegacyConnectRelatedVenuesReturn {
   parentVenue?: WithId<AnyVenue>;
   currentVenue?: WithId<AnyVenue>;
   relatedVenues: WithId<AnyVenue>[];
@@ -80,9 +80,12 @@ interface UseConnectRelatedVenuesReturn {
   isCurrentVenueLoaded: boolean;
 }
 
-export const useConnectRelatedVenues: ReactHook<
-  UseConnectRelatedVenuesProps,
-  UseConnectRelatedVenuesReturn
+/**
+ * @deprecated use useRelatedVenues instead
+ */
+export const useLegacyConnectRelatedVenues: ReactHook<
+  UseLegacyConnectRelatedVenuesProps,
+  UseLegacyConnectRelatedVenuesReturn
 > = ({ venueId, withEvents = false }) => {
   const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
     venueId

@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useRecentWorldUsers } from "hooks/users";
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
@@ -12,7 +12,7 @@ export const VenuePartygoers = () => {
     parentVenue,
     currentVenue,
     isCurrentVenueLoaded,
-  } = useConnectRelatedVenues({ venueId });
+  } = useLegacyConnectRelatedVenues({ venueId });
 
   const { recentWorldUsers, isRecentWorldUsersLoaded } = useRecentWorldUsers();
 

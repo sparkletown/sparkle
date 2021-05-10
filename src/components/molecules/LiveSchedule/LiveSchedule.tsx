@@ -6,7 +6,7 @@ import { isEventLive } from "utils/event";
 import { venueSelector } from "utils/selectors";
 import { WithVenueId } from "utils/id";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -18,9 +18,9 @@ import { hasElements } from "utils/types";
 const LiveSchedule: FC = () => {
   const venueId = useVenueId();
   const currentVenue = useSelector(venueSelector);
-  useConnectRelatedVenues({ venueId });
+  useLegacyConnectRelatedVenues({ venueId });
 
-  const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
+  const { relatedVenueEvents, relatedVenues } = useLegacyConnectRelatedVenues({
     venueId,
     withEvents: true,
   });
