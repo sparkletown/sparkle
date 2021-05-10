@@ -16,6 +16,7 @@ export type VideoState = {
 
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
+export type MyPersonalizedPosters = Partial<Record<string, string[]>>;
 
 export interface User {
   drinkOfChoice?: string;
@@ -36,4 +37,5 @@ export interface User {
   anonMode: boolean;
   enteredVenueIds?: string[];
   myPersonalizedSchedule?: MyPersonalizedSchedule;
+  myPersonalizedPosters?: MyPersonalizedPosters;
 }

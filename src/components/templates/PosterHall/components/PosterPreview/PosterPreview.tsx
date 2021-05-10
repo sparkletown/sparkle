@@ -1,30 +1,53 @@
-import React, { useCallback, useMemo } from "react";
+import React, {
+  MouseEventHandler,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import classNames from "classnames";
 
-import { PosterPageVenue } from "types/venues";
+import { PersonalizedPoster } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+
+import { savePosterToProfile } from "api/profile";
+import { useUser } from "hooks/useUser";
+
 import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
-  posterVenue: WithId<PosterPageVenue>;
   enterVenue: (venueId: string) => void;
+  personalizedPoster: WithId<PersonalizedPoster>;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
-  posterVenue,
   enterVenue,
+  personalizedPoster,
 }) => {
-  const { title, authorName, categories } = posterVenue.poster ?? {};
+  const [isBookmarkedPoster, setBookmarkPoster] = useState(
+    personalizedPoster.isSaved
+  );
 
-  const venueId = posterVenue.id;
+  useEffect(() => {
+    setBookmarkPoster(personalizedPoster.isSaved);
+  }, [personalizedPoster.isSaved]);
+
+  const { userId } = useUser();
 
   const posterClassnames = classNames("PosterPreview", {
-    "PosterPreview--live": posterVenue.isLive,
+    "PosterPreview--live": personalizedPoster.isLive,
   });
+
+  const { title, authorName, categories } = personalizedPoster.poster ?? {};
+
+  const venueId = personalizedPoster.id;
 
   const handleEnterVenue = useCallback(() => enterVenue(venueId), [
     enterVenue,
@@ -39,8 +62,33 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
+  const bookmarkPoster = useCallback(() => {
+    setBookmarkPoster(!isBookmarkedPoster);
+    personalizedPoster.isSaved = !personalizedPoster.isSaved;
+    if (userId && personalizedPoster.id) {
+      savePosterToProfile({
+        venueId: personalizedPoster.id,
+        userId: userId,
+        removeMode: !personalizedPoster.isSaved,
+      });
+    }
+  }, [userId, isBookmarkedPoster, personalizedPoster]);
+
+  const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      e.stopPropagation();
+      bookmarkPoster();
+    },
+    [bookmarkPoster]
+  );
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
+      <div className="PosterPreview__bookmark" onClick={onBookmarkPoster}>
+        <FontAwesomeIcon
+          icon={isBookmarkedPoster ? solidBookmark : regularBookmark}
+        />
+      </div>
       <p className="PosterPreview__title">{title}</p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>

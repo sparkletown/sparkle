@@ -12,13 +12,35 @@ import { Button } from "components/atoms/Button";
 import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 
+import { useUser } from "hooks/useUser";
+import { MyPersonalizedPosters } from "types/User";
+import { PosterPageVenue, PersonalizedPoster } from "types/venues";
+import { isTruthy } from "utils/types";
+
 import "./PosterHall.scss";
+
+const prepareForMyPosters = (usersPosters: MyPersonalizedPosters) => (
+  poster: WithId<PosterPageVenue>
+): WithId<PersonalizedPoster> => {
+  return {
+    ...poster,
+    isSaved: isTruthy(
+      poster.id && usersPosters[poster.id]?.includes(poster.id)
+    ),
+  };
+};
 
 export interface PosterHallProps {
   venue: WithId<GenericVenue>;
 }
 
+export const emptyPersonalizedPosters = {};
+
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
+  const { userWithId } = useUser();
+  const userPosterIds =
+    userWithId?.myPersonalizedPosters ?? emptyPersonalizedPosters;
+
   const {
     posterVenues,
     isPostersLoaded,
@@ -31,15 +53,19 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setLiveFilter,
   } = usePosters(venue.id);
 
+  const posterVenuesPersonalized = posterVenues.map(
+    prepareForMyPosters(userPosterIds)
+  );
+
   const renderedPosterPreviews = useMemo(() => {
-    return posterVenues.map((posterVenue) => (
+    return posterVenuesPersonalized.map((posterVenue) => (
       <PosterPreview
         key={posterVenue.id}
-        posterVenue={posterVenue}
         enterVenue={enterVenue}
+        personalizedPoster={posterVenue}
       />
     ));
-  }, [posterVenues]);
+  }, [posterVenuesPersonalized]);
 
   return (
     <div className="PosterHall">

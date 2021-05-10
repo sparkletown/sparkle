@@ -99,3 +99,37 @@ export const updatePersonalizedSchedule = async ({
     });
   });
 };
+
+export interface SavePosterToProfileProps {
+  venueId: string;
+  userId: string;
+  removeMode?: boolean;
+}
+
+export function savePosterToProfile({
+  venueId,
+  userId,
+  removeMode = false,
+}: SavePosterToProfileProps): Promise<void> {
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+
+  const modify = removeMode
+    ? firebase.firestore.FieldValue.arrayRemove
+    : firebase.firestore.FieldValue.arrayUnion;
+
+  // potentially replace venueId with eventId, if available.
+  const newSavedPosters = {
+    [`myPersonalizedPosters.${venueId}`]: modify(venueId),
+  };
+
+  return userProfileRef.update(newSavedPosters).catch((err) => {
+    Bugsnag.notify(err, (poster) => {
+      poster.addMetadata("context", {
+        location: "api/profile::savePosterToProfile",
+        venueId,
+        userId,
+        removeMode,
+      });
+    });
+  });
+}
