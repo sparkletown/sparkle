@@ -50,6 +50,7 @@ export const setVenueLiveStatus = async ({
 
 export interface FetchSovereignVenueOptions {
   previouslyCheckedVenueIds?: readonly string[];
+  maxDepth?: number;
 }
 
 export interface FetchSovereignVenueReturn {
@@ -61,7 +62,7 @@ export const fetchSovereignVenue = async (
   venueId: string,
   options?: FetchSovereignVenueOptions
 ): Promise<FetchSovereignVenueReturn> => {
-  const { previouslyCheckedVenueIds = [] } = options ?? {};
+  const { previouslyCheckedVenueIds = [], maxDepth } = options ?? {};
 
   const venue = await fetchVenue(venueId);
 
@@ -78,9 +79,13 @@ export const fetchSovereignVenue = async (
       `Circular reference detected. '${venueId}' has already been checked`
     );
 
+  if (maxDepth && maxDepth <= 0)
+    throw new Error("Maximum depth reached before finding the sovereignVenue.");
+
   return fetchSovereignVenue(venue.parentId, {
     ...options,
     previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
+    maxDepth: maxDepth ? maxDepth - 1 : undefined,
   });
 };
 
