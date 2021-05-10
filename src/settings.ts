@@ -566,3 +566,8 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
