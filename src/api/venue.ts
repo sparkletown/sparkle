@@ -130,18 +130,17 @@ export const fetchDirectChildVenues = async (
 };
 
 export const fetchDescendantVenues = async (
-  venueId: string
+  venueIdOrIds: string | string[]
 ): Promise<WithId<AnyVenue>[]> => {
+  const venueIds: string[] =
+    typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
+
   const directChildVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
-    venueId
+    venueIds
   );
 
-  const directChildVenueIds: string[] = directChildVenues.map(
-    (childVenue) => childVenue.id
-  );
-
-  const descendantVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
-    directChildVenueIds
+  const descendantVenues: WithId<AnyVenue>[] = await fetchDescendantVenues(
+    directChildVenues.map((venue) => venue.id)
   );
 
   return [...directChildVenues, ...descendantVenues];
