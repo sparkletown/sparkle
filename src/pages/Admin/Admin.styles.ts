@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Wrapper as ToggleSwitch } from "components/atoms/ToggleSwitch/ToggleSwitch.styles";
 
 interface WrapperProps {
   hasSelectedVenue?: boolean;
@@ -8,8 +7,7 @@ interface WrapperProps {
 export const Wrapper = styled.div<WrapperProps>`
   display: grid;
   height: 100vh;
-  grid-template-columns: ${({ hasSelectedVenue }) =>
-    hasSelectedVenue ? "240px auto" : "auto"};
+  grid-template-columns: auto;
 
   position: relative;
   scrollbar-width: thin;
@@ -29,10 +27,6 @@ export const ItemWrapper = styled.div`
   margin-bottom: 2rem;
 
   position: relative;
-
-  ${ToggleSwitch} {
-    margin-bottom: 1rem;
-  }
 `;
 
 export const ItemHeader = styled.header``;

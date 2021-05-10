@@ -1,5 +1,9 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
+
+$primary: #6f43ff;
+$dimmer-primary: #3f247d;
+
 $dark-grey: #1a1d23;
 $intermediate-grey: #333035;
 $saturated-black: #19181a;
@@ -20,14 +24,14 @@ $light-green: #3ce348;
 $dark-green: #208a28;
 $stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
-
-$primary: #6f43ff;
-$secondary: #6f43ff;
+$ripple-color: chocolate;
+$profile-image-bg-color: #999999;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba($secondary, 0.35);
+$chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$gradient: linear-gradient(124deg, #00f6d5 0%, $secondary 50%, #e15ada 100%);
+
+$gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -41,24 +45,50 @@ $navbar-height: 66px;
 $schedule-height: 60px;
 $footer-height: 30px;
 $chat-input-height: 114px;
-$ripple-color: chocolate;
+
+$avatarSize: max(4vh, 3vw);
+$avatarSizeMin: 25px;
+$reactionSize: max(2.5vh, 2vw);
+
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
-$border-radius--small: 8px;
-$border-radius--input: 22px;
+$margin-right--navbar-links: 8px;
 
-$font-size--small: 0.9rem;
-$avatarSize: max(4vh, 3vw);
-$avatarSizeMin: 25px;
-$reactionSize: max(2.5vh, 2vw);
+$border-radius--sm: 8px;
+$border-radius--md: 12px;
+$border-radius--lg: 16px;
+$border-radius--xl: 24px;
+$border-radius--max: 50%;
 
-$profile-image-bg-color: #999999;
-$room-info-bg: #6f43ff;
+$spacing--xs: 4px;
+$spacing--sm: 8px;
+$spacing--md: 12px;
+$spacing--lg: 16px;
+$spacing--xl: 24px;
+$spacing--xxl: 30px;
 
-$small-laptop-width: 980px;
+$font-size--xs: 10px;
+$font-size--sm: 12px;
+$font-size--md: 14px;
+$font-size--lg: 16px;
+$font-size--xl: 20px;
+// Not sure this is the best naming for these
+$font-size--xxl: 30px;
+$font-size--xxxl: 50px;
+
+// Placeholders, until we can find meaningful names for them
+$font-weight--400: 400;
+$font-weight--500: 500;
+$font-weight--600: 600;
+$font-weight--700: 700;
+
+$media-breakpoint--sm: 576px;
+$media-breakpoint--md: 768px;
+$media-breakpoint--lg: 992px;
+$media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -68,6 +98,10 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+
+// @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
+//       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
+$z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
   admin-venue-card-bg: -1,
@@ -90,6 +124,7 @@ $z-layers: (
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
+  navbar__drawer: $z-layer-navbar-drawer,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
@@ -126,6 +161,10 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
+}
+
+@function opaque-white($opacity: 0.1) {
+  @return rgba($white, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {

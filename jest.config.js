@@ -10,13 +10,14 @@
 // export default async (): Promise<Config.InitialOptions> => {
 module.exports = async () => {
   return {
-    rootDir: "<rootDir>",
+    rootDir: ".",
+    roots: ["<rootDir>", "<rootDir>/src"],
     verbose: true,
     maxWorkers: "50%",
 
     testMatch: [
-      "{.,src}/**/__tests__/**/*.+(ts|tsx|js)",
-      "{.,src}/**/?(*.)+(spec|test).+(ts|tsx|js)",
+      "**/__tests__/**/*.+(ts|tsx|js)",
+      "**/?(*.)+(spec|test).+(ts|tsx|js)",
     ],
 
     // @debt make these work to actually ignore the paths we want

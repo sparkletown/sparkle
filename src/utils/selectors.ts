@@ -8,7 +8,7 @@ import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -211,6 +211,10 @@ export const userModalVisitsSelector = (state: RootState) =>
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
 
+export const posterVenuesSelector: SparkleSelector<
+  WithId<PosterPageVenue>[] | undefined
+> = (state) => state.firestore.ordered.posterVenues;
+
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.
  *
@@ -223,16 +227,6 @@ export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
 
-export const maybeSelector = <T extends SparkleSelector<U>, U>(
-  ifTrue: boolean,
-  selector: SparkleSelector<U>
-) => (ifTrue ? selector : noopSelector);
-
-export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
-  ifTrue: boolean,
-  selector: SparkleSelector<U[]>
-) => (ifTrue ? selector : emptyArraySelector);
-
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
@@ -244,8 +238,18 @@ export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
 ) => state.chat.settings;
 
+export const maybeSelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T>
+): SparkleSelector<T> | SparkleSelector<undefined> =>
+  ifTrue ? selector : noopSelector;
+
+export const maybeArraySelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T[]>
+): SparkleSelector<T[]> => (ifTrue ? selector : emptyArraySelector);
+
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 
 export const emptyArray = [];
-export const emptyArraySelector = <T extends SparkleSelector<U>, U>() =>
-  emptyArray as U[];
+export const emptyArraySelector = <T>(): T[] => emptyArray;

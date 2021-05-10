@@ -11,7 +11,7 @@ import {
 } from "settings";
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
-interface AdminVenuePreview {
+export interface AdminVenuePreviewProps {
   venue: WithId<AnyVenue>;
   containerStyle: CSSProperties;
 }
@@ -23,7 +23,7 @@ const infoTextByVenue: { [key: string]: string } = {
   [VenueTemplate.partymap]: "Party Map Info:",
 };
 
-export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
+export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
   venue,
   containerStyle,
 }) => {
@@ -51,7 +51,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreview> = ({
                 frameBorder="0"
                 allow={IFRAME_ALLOW}
                 allowFullScreen
-              ></iframe>
+              />
             </div>
           </>
         );

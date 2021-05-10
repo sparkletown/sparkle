@@ -34,7 +34,6 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
           Create a new space
         </Button>
       </div>
-
       <div
         className={classNames("admin-venue__cards", {
           "admin-venue__cards--empty": !hasVenues,
