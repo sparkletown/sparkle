@@ -52,6 +52,13 @@
       }
     ],
     "react/prop-types": "off",
-    "react/display-name": "warn"
+    "react/display-name": "warn",
+    // @see https://github.com/facebook/react/tree/master/packages/eslint-plugin-react-hooks#advanced-configuration
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useAsync)"
+      }
+    ]
   }
 }
