@@ -2,13 +2,18 @@ import { useMemo, useCallback } from "react";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { sendVenueMessage, deleteVenueMessage } from "api/chat";
+import {
+  sendVenueMessage,
+  deleteVenueMessage,
+  sendMessageToVenueThread,
+} from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
 
 import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
+import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
@@ -65,6 +70,17 @@ export const useVenueChat = () => {
     [venueId, userId]
   );
 
+  const sendThreadedMessage = useCallback(
+    (text: string, parentMessage: WithId<VenueChatMessage>) => {
+      if (!venueId || !userId) return;
+
+      const message = buildMessage<VenueChatMessage>({ from: userId, text });
+
+      sendMessageToVenueThread({ venueId, message, parentMessage });
+    },
+    [venueId, userId]
+  );
+
   const deleteMessage = useCallback(
     (messageId: string) => {
       if (!venueId) return;
@@ -84,12 +100,15 @@ export const useVenueChat = () => {
           isAdmin,
         })
       ),
+
       sendMessage,
       deleteMessage,
+      sendThreadedMessage,
     }),
     [
       filteredMessages,
       sendMessage,
+      sendThreadedMessage,
       deleteMessage,
       worldUsersById,
       userId,

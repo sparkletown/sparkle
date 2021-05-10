@@ -23,38 +23,6 @@ $my-text-border-radius: 28px 28px 4px 28px;
     font-size: 0.9rem;
   }
 
-  &__info {
-    display: flex;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-
-  &__author {
-    opacity: 0.8;
-    color: $white;
-    margin: 0 8px 0 4px;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  &__time {
-    opacity: 0.6;
-    font-weight: 300;
-  }
-
-  &__delete-icon {
-    margin-left: 5px;
-    opacity: 0.6;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.8;
-    }
-  }
-
   &--me {
     align-self: flex-end;
     align-items: flex-end;
@@ -63,20 +31,6 @@ $my-text-border-radius: 28px 28px 4px 28px;
       text-align: right;
       background-color: $primary;
       border-radius: $my-text-border-radius;
-    }
-
-    .chat-message__info {
-      flex-direction: row-reverse;
-      align-self: flex-end;
-    }
-
-    .chat-message__author {
-      margin: 0 4px 0 8px;
-    }
-
-    .chat-message__delete-icon {
-      margin-left: 0;
-      margin-right: 5px;
     }
   }
 }

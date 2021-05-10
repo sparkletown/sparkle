@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-import { MessageToDisplay } from "types/chat";
+import { ChatMessage as TChatMessage, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -14,6 +14,10 @@ import "./Chatbox.scss";
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: (text: string) => void;
+  sendThreadMessage?: (
+    text: string,
+    parentMessage: WithId<TChatMessage>
+  ) => void;
   deleteMessage: (messageId: string) => void;
 }
 
@@ -51,7 +55,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     () =>
       messages.map((message) => (
         <ChatMessage
-          key={`${message.ts_utc}-${message.from}`}
+          key={message.id}
           message={message}
           deleteMessage={() => deleteMessage(message.id)}
         />

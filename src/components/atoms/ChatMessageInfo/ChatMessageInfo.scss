@@ -1,0 +1,55 @@
+@import "scss/constants";
+
+$counterparty-text-border-radius: 28px 28px 28px 4px;
+$my-text-border-radius: 28px 28px 4px 28px;
+
+.ChatMessageInfo {
+  display: flex;
+  align-items: center;
+  font-size: 0.8rem;
+
+  &__author {
+    opacity: 0.8;
+    color: $white;
+    margin: 0 8px 0 4px;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__time {
+    opacity: 0.6;
+    font-weight: 300;
+  }
+
+  &__delete-icon {
+    margin-left: 5px;
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &--me {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .ChatMessageInfo__info {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .ChatMessageInfo__author {
+      margin: 0 4px 0 8px;
+    }
+
+    .ChatMessageInfo__delete-icon {
+      margin-left: 0;
+      margin-right: 5px;
+    }
+  }
+}
