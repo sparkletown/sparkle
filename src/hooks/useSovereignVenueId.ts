@@ -20,6 +20,7 @@ export interface UseSovereignVenueIdProps {
 export interface UseSovereignVenueIdData {
   sovereignVenueId?: string;
   isSovereignVenueIdLoading: boolean;
+  errorMsg?: string;
 }
 
 export const useSovereignVenueId: ReactHook<
@@ -37,6 +38,7 @@ export const useSovereignVenueId: ReactHook<
   // NOTE: Force to fetch it only once
   if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
     dispatch(setSovereignVenueIdIsLoading(true));
+
     fetchSovereignVenue(venueId)
       .then(({ sovereignVenue }) => {
         dispatch(setSovereignVenueId(sovereignVenue.id));
@@ -53,5 +55,6 @@ export const useSovereignVenueId: ReactHook<
   return {
     sovereignVenueId,
     isSovereignVenueIdLoading,
+    errorMsg,
   };
 };
