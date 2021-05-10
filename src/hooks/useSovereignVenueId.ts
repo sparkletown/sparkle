@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   setSovereignVenueId,
   setSovereignVenueIdIsLoading,
@@ -35,10 +36,12 @@ export const useSovereignVenueId: ReactHook<
     errorMsg,
   } = useSelector(sovereignVenueIdSelector);
 
-  // NOTE: Force to fetch it only once
-  if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
-    dispatch(setSovereignVenueIdIsLoading(true));
+  useEffect(() => {
+    // NOTE: Force to fetch it only once
+    if (!venueId || sovereignVenueId || isSovereignVenueIdLoading || errorMsg)
+      return;
 
+    dispatch(setSovereignVenueIdIsLoading(true));
     fetchSovereignVenue(venueId)
       .then(({ sovereignVenue }) => {
         dispatch(setSovereignVenueId(sovereignVenue.id));
@@ -50,7 +53,13 @@ export const useSovereignVenueId: ReactHook<
       .finally(() => {
         dispatch(setSovereignVenueIdIsLoading(false));
       });
-  }
+  }, [
+    dispatch,
+    errorMsg,
+    isSovereignVenueIdLoading,
+    sovereignVenueId,
+    venueId,
+  ]);
 
   return {
     sovereignVenueId,
