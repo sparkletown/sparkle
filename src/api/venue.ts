@@ -1,5 +1,8 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
+import { chunk } from "lodash";
+
+import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 
 import { AnyVenue } from "types/venues";
 
@@ -90,22 +93,29 @@ export const fetchVenue = async (
 };
 
 export const fetchDirectChildVenues = async (
-  venueId: string
+  venueIdOrIds: string | string[]
 ): Promise<WithId<AnyVenue>[]> => {
-  const childVenuesSnapshot = await getVenueCollectionRef()
-    .where("parentId", "==", venueId)
-    // .withConverter()
-    .get();
+  const venueIds: string[] =
+    typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
 
-  if (childVenuesSnapshot.empty) return [];
+  return Promise.all(
+    chunk(venueIds, FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS).map(
+      async (venueIdsChunk: string[]) => {
+        const childVenuesSnapshot = await getVenueCollectionRef()
+          .where("parentId", "in", venueIdsChunk)
+          // .withConverter()
+          .get();
 
-  // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
-  //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
-  return childVenuesSnapshot.docs
-    .filter((docSnapshot) => docSnapshot.exists)
-    .map((docSnapshot) =>
-      withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
-    );
+        // TODO: Use proper data validation + firestore model converters to set this type rather than just forcing it with 'as'
+        //  see .withConverter(soundConfigConverter) in fetchSoundConfigs in src/api/sounds.ts as an example
+        return childVenuesSnapshot.docs
+          .filter((docSnapshot) => docSnapshot.exists)
+          .map((docSnapshot) =>
+            withId(docSnapshot.data() as AnyVenue, docSnapshot.id)
+          );
+      }
+    )
+  ).then((result) => result.flat());
 };
 
 export const fetchDescendantVenues = async (
