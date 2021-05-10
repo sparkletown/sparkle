@@ -7,7 +7,7 @@ import { ButtonProps } from "./Button.types";
 import * as S from "./Button.styles";
 import { Link } from "react-router-dom";
 
-const AppButton: React.FC<ButtonProps> = ({
+export const AppButton: React.FC<ButtonProps> = ({
   customClass,
   loading,
   onClick,

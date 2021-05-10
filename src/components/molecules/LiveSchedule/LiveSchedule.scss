@@ -1,27 +1,12 @@
 @import "scss/constants.scss";
 
 .sidebar-container .schedule-container {
+  @include scrollbar;
   height: calc(100% - #{$chat-input-height + $footer-height});
   flex-direction: column;
   display: none;
   overflow-y: scroll;
   overflow-x: hidden;
-
-  // styling scrollbar
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.1);
-  }
 
   &.show {
     display: flex;

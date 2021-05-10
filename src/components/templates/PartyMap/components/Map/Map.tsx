@@ -152,6 +152,9 @@ export const Map: React.FC<MapProps> = ({
     }
   }, [roomsHit, selectRoom, unselectRoom]);
 
+  // @debt It seems seatedPartygoer is only passed in here so we don't try and take an already occupied seat
+  //  Instead of threading this all the way down into useMapGrid -> MapCell, can we just close over partygoersBySeat here,
+  //  and/or handle it in a better way?
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {

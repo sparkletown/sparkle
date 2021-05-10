@@ -6,10 +6,7 @@ import { AnyVenue } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
 import { venueEventsSelector } from "utils/selectors";
-import {
-  getCurrentTimeInUnixEpochSeconds,
-  ONE_MINUTE_IN_SECONDS,
-} from "utils/time";
+import { getCurrentTimeInUTCSeconds, ONE_MINUTE_IN_SECONDS } from "utils/time";
 
 import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -50,7 +47,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
 }) => {
-  const venueEvents = useSelector(venueEventsSelector) ?? [];
+  const venueEvents = useSelector(venueEventsSelector);
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -59,17 +56,17 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     onend: enterRoom,
   });
 
-  const roomEvents = useMemo(
-    () =>
-      venueEvents.filter(
-        (event) =>
-          event.room === room.title &&
-          event.start_utc_seconds +
-            event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-            getCurrentTimeInUnixEpochSeconds()
-      ),
-    [room, venueEvents]
-  );
+  const roomEvents = useMemo(() => {
+    if (!venueEvents) return [];
+
+    return venueEvents.filter(
+      (event) =>
+        event.room === room.title &&
+        event.start_utc_seconds +
+          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
+          getCurrentTimeInUTCSeconds()
+    );
+  }, [room, venueEvents]);
 
   const currentEvent = getCurrentEvent(roomEvents);
 

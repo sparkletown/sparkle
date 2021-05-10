@@ -6,7 +6,7 @@ $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
 $dark: #1a1d24;
 $border-radius: 28px;
-$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+$large-shadow: box-shadow--large(0.34);
 $login-max-width: 540px;
 $modal-max-width: 540px;
 $page-max-width: 1240px;
