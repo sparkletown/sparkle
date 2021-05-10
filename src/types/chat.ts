@@ -4,7 +4,7 @@ import { User } from "types/User";
 // Change this together with functions/chat.js turnMessageIntoThread function
 export enum MessageType {
   THREAD = "THREAD",
-  THREAD_CHILD = "THREAD_CHILD",
+  THREAD_REPLY = "THREAD_REPLY",
 }
 
 export type BaseChatMessage = {
@@ -15,12 +15,12 @@ export type BaseChatMessage = {
   type?: MessageType;
 };
 
-export type ParentThreadMessage = BaseChatMessage & {
+export type Thread = BaseChatMessage & {
   type: MessageType.THREAD;
 };
 
-export type ChildThreadMessage = BaseChatMessage & {
-  type: MessageType.THREAD_CHILD;
+export type ThreadReply = BaseChatMessage & {
+  type: MessageType.THREAD_REPLY;
   threadId: string;
 };
 
@@ -29,12 +29,13 @@ export type PrivateChatMessage = BaseChatMessage & {
   isRead?: boolean;
 };
 
-export type VenueChatMessage =
-  | BaseChatMessage
-  | ParentThreadMessage
-  | ChildThreadMessage;
+export type VenueChatMessage = BaseChatMessage;
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage;
+export type ChatMessage =
+  | PrivateChatMessage
+  | VenueChatMessage
+  | Thread
+  | ThreadReply;
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;

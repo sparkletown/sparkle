@@ -1,14 +1,8 @@
-import React, { useCallback } from "react";
+import React from "react";
 import classNames from "classnames";
-import dayjs from "dayjs";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-
-import { UserAvatar } from "components/atoms/UserAvatar";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
 import "./ChatMessage.scss";

@@ -4,7 +4,7 @@ import Bugsnag from "@bugsnag/js";
 import {
   VenueChatMessage,
   PrivateChatMessage,
-  ChildThreadMessage,
+  ThreadReply,
   MessageType,
 } from "types/chat";
 
@@ -51,30 +51,30 @@ export const turnMessageIntoThread = async ({
 
 export interface SendMessageToThreadProps {
   venueId: string;
-  parentMessage: WithId<VenueChatMessage>;
-  message: VenueChatMessage;
+  thread: WithId<VenueChatMessage>;
+  reply: VenueChatMessage;
 }
 
-export const sendMessageToVenueThread = async ({
+export const sendThreadReply = async ({
   venueId,
-  parentMessage,
-  message,
+  thread,
+  reply,
 }: SendMessageToThreadProps) => {
-  const threadMessageId = parentMessage.id;
+  const threadMessageId = thread.id;
 
-  if (parentMessage.type !== MessageType.THREAD) {
+  if (thread.type !== MessageType.THREAD) {
     await turnMessageIntoThread({ venueId, messageId: threadMessageId });
   }
 
-  const childThreadMessage: ChildThreadMessage = {
-    ...message,
-    type: MessageType.THREAD_CHILD,
+  const threadReply: ThreadReply = {
+    ...reply,
+    type: MessageType.THREAD_REPLY,
     threadId: threadMessageId,
   };
 
   return sendVenueMessage({
     venueId,
-    message: childThreadMessage,
+    message: threadReply,
   });
 };
 

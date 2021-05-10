@@ -12,13 +12,13 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./ChatMessageInfo.scss";
 
-export interface ChatProps {
+export interface ChatMessageInfoProps {
   message: MessageToDisplay;
   deleteMessage: () => void;
   isReversed?: boolean;
 }
 
-export const ChatMessageInfo: React.FC<ChatProps> = ({
+export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   message,
   deleteMessage,
   isReversed = false,
@@ -37,7 +37,7 @@ export const ChatMessageInfo: React.FC<ChatProps> = ({
   });
 
   return (
-    <div className="ChatMessageInfo" onClick={openAuthorProfile}>
+    <div className={containerClasses} onClick={openAuthorProfile}>
       <UserAvatar user={author} />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">

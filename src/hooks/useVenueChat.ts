@@ -5,7 +5,7 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 import {
   sendVenueMessage,
   deleteVenueMessage,
-  sendMessageToVenueThread,
+  sendThreadReply,
 } from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
@@ -71,12 +71,12 @@ export const useVenueChat = () => {
   );
 
   const sendThreadedMessage = useCallback(
-    (text: string, parentMessage: WithId<VenueChatMessage>) => {
+    (text: string, thread: WithId<VenueChatMessage>) => {
       if (!venueId || !userId) return;
 
       const message = buildMessage<VenueChatMessage>({ from: userId, text });
 
-      sendMessageToVenueThread({ venueId, message, parentMessage });
+      sendThreadReply({ venueId, reply: message, thread });
     },
     [venueId, userId]
   );
