@@ -131,18 +131,34 @@ export const fetchDirectChildVenues = async (
   ).then((result) => result.flat());
 };
 
+export interface FetchDescendantVenuesOptions {
+  maxDepth?: number;
+}
+
 export const fetchDescendantVenues = async (
-  venueIdOrIds: string | string[]
+  venueIdOrIds: string | string[],
+  options?: FetchDescendantVenuesOptions
 ): Promise<WithId<AnyVenue>[]> => {
   const venueIds: string[] =
     typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
+
+  const { maxDepth } = options ?? {};
 
   const directChildVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
     venueIds
   );
 
+  if (maxDepth && maxDepth <= 0 && directChildVenues.length > 0)
+    throw new Error(
+      "Maximum depth reached before fetching all descendant venues."
+    );
+
   const descendantVenues: WithId<AnyVenue>[] = await fetchDescendantVenues(
-    directChildVenues.map((venue) => venue.id)
+    directChildVenues.map((venue) => venue.id),
+    {
+      ...options,
+      maxDepth: maxDepth ? maxDepth - 1 : undefined,
+    }
   );
 
   return [...directChildVenues, ...descendantVenues];
