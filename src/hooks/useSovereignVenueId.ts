@@ -6,14 +6,26 @@ import {
 
 import { fetchSovereignVenue } from "api/venue";
 
+import { ReactHook } from "types/utility";
+
 import { sovereignVenueIdSelector } from "utils/selectors";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
-import { useVenueId } from "./useVenueId";
 
-export const useSovereignVenueId = () => {
-  const venueId = useVenueId();
+export interface UseSovereignVenueIdProps {
+  venueId?: string;
+}
+
+export interface UseSovereignVenueIdData {
+  sovereignVenueId?: string;
+  isSovereignVenueIdLoading: boolean;
+}
+
+export const useSovereignVenueId: ReactHook<
+  UseSovereignVenueIdProps,
+  UseSovereignVenueIdData
+> = ({ venueId }) => {
   const dispatch = useDispatch();
 
   const {
