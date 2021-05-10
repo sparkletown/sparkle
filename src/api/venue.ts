@@ -48,6 +48,10 @@ export const setVenueLiveStatus = async ({
     .finally(onFinish);
 };
 
+export interface FetchSovereignVenueOptions {
+  previouslyCheckedVenueIds?: readonly string[];
+}
+
 export interface FetchSovereignVenueReturn {
   sovereignVenue: WithId<AnyVenue>;
   checkedVenueIds: readonly string[];
@@ -55,8 +59,10 @@ export interface FetchSovereignVenueReturn {
 
 export const fetchSovereignVenue = async (
   venueId: string,
-  previouslyCheckedVenueIds: readonly string[] = []
+  options?: FetchSovereignVenueOptions
 ): Promise<FetchSovereignVenueReturn> => {
+  const { previouslyCheckedVenueIds = [] } = options ?? {};
+
   const venue = await fetchVenue(venueId);
 
   if (!venue) throw new Error(`The '${venueId}' venue doesn't exist`);
@@ -72,10 +78,10 @@ export const fetchSovereignVenue = async (
       `Circular reference detected. '${venueId}' has already been checked`
     );
 
-  return fetchSovereignVenue(venue.parentId, [
-    ...previouslyCheckedVenueIds,
-    venueId,
-  ]);
+  return fetchSovereignVenue(venue.parentId, {
+    ...options,
+    previouslyCheckedVenueIds: [...previouslyCheckedVenueIds, venueId],
+  });
 };
 
 export const fetchVenue = async (
