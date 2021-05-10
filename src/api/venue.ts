@@ -109,6 +109,8 @@ export const fetchDirectChildVenues = async (
   const venueIds: string[] =
     typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
 
+  if (venueIds.length <= 0) return [];
+
   return Promise.all(
     chunk(venueIds, FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS).map(
       async (venueIdsChunk: string[]) => {
