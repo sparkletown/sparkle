@@ -2,12 +2,16 @@ import React, { useMemo } from "react";
 
 import { useRecentWorldUsers } from "hooks/users";
 import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import "./VenuePartygoers.scss";
 
-export const VenuePartygoers = () => {
-  const venueId = useVenueId();
+export interface VenuePartygoersProps {
+  venueId: string;
+}
+
+export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
+  venueId,
+}) => {
   const {
     parentVenue,
     currentVenue,
