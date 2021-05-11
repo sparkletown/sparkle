@@ -117,7 +117,6 @@ export function savePosterToProfile({
     ? firebase.firestore.FieldValue.arrayRemove
     : firebase.firestore.FieldValue.arrayUnion;
 
-  // potentially replace venueId with eventId, if available.
   const newSavedPosters = {
     [`myPersonalizedPosters.${venueId}`]: modify(venueId),
   };
