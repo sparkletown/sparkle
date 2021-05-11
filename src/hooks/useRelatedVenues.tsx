@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useAsync } from "react-use";
 
 import { RootState } from "index";
@@ -62,11 +62,7 @@ const emptyArray: never[] = [];
 
 export type VenueEventsSelector = SparkleSelector<WithVenueId<VenueEvent>[]>;
 
-export interface UseRelatedVenuesProps {
-  venueId: string;
-}
-
-export interface UseRelatedVenuesData {
+export interface RelatedVenuesContextState {
   isLoading: boolean;
   isError: boolean;
 
@@ -79,10 +75,18 @@ export interface UseRelatedVenuesData {
   relatedVenuesError?: Error;
 }
 
-export const useRelatedVenues: ReactHook<
-  UseRelatedVenuesProps,
-  UseRelatedVenuesData
-> = ({ venueId }) => {
+const RelatedVenuesContext = createContext<
+  RelatedVenuesContextState | undefined
+>(undefined);
+
+export interface RelatedVenuesProviderProps {
+  venueId: string;
+}
+
+export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
+  venueId,
+  children,
+}) => {
   const {
     sovereignVenueId,
     isSovereignVenueIdLoading,
@@ -101,18 +105,46 @@ export const useRelatedVenues: ReactHook<
     return fetchRelatedVenues(sovereignVenueId);
   }, [sovereignVenueId]);
 
-  return {
-    isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
-    isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
+  const relatedVenuesState: RelatedVenuesContextState = useMemo(
+    () => ({
+      isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
+      isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
 
-    sovereignVenueId,
-    isSovereignVenueIdLoading,
-    sovereignVenueIdError,
+      sovereignVenueId,
+      isSovereignVenueIdLoading,
+      sovereignVenueIdError,
 
-    relatedVenues,
-    isRelatedVenuesLoading,
-    relatedVenuesError,
-  };
+      relatedVenues,
+      isRelatedVenuesLoading,
+      relatedVenuesError,
+    }),
+    [
+      isRelatedVenuesLoading,
+      isSovereignVenueIdLoading,
+      relatedVenues,
+      relatedVenuesError,
+      sovereignVenueId,
+      sovereignVenueIdError,
+    ]
+  );
+
+  return (
+    <RelatedVenuesContext.Provider value={relatedVenuesState}>
+      {children}
+    </RelatedVenuesContext.Provider>
+  );
+};
+
+export const useRelatedVenues = (): RelatedVenuesContextState => {
+  const relatedVenuesState = useContext(RelatedVenuesContext);
+
+  if (!relatedVenuesState) {
+    throw new Error(
+      "<RelatedVenuesProvider/> not found. Did you forget to include it in your component hierarchy?"
+    );
+  }
+
+  return relatedVenuesState;
 };
 
 interface UseLegacyConnectRelatedVenuesProps {
