@@ -17,12 +17,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
-import { savePosterToProfile } from "api/profile";
+import { saveEventToProfile, savePosterToProfile } from "api/profile";
 import { useUser } from "hooks/useUser";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useWorldUsersById } from "hooks/users";
+
+import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
 import "./PosterPreview.scss";
 
@@ -66,6 +68,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
+  const { subvenueEvents } = useConnectRelatedVenues({
+    venueId,
+    withEvents: true,
+  });
+
   const bookmarkPoster = useCallback(() => {
     setBookmarkPoster(!isBookmarkedPoster);
     personalizedPoster.isSaved = !personalizedPoster.isSaved;
@@ -76,7 +83,20 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         removeMode: !personalizedPoster.isSaved,
       });
     }
-  }, [userId, isBookmarkedPoster, personalizedPoster]);
+    subvenueEvents
+      .filter((event) => event.venueId === personalizedPoster.id)
+      .map((event) => {
+        userId &&
+          event.id &&
+          saveEventToProfile({
+            venueId: personalizedPoster.id,
+            userId: userId,
+            removeMode: !personalizedPoster.isSaved,
+            eventId: event.id,
+          });
+      });
+    return subvenueEvents;
+  }, [userId, isBookmarkedPoster, personalizedPoster, subvenueEvents]);
 
   const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
