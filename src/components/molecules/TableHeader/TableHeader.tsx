@@ -6,10 +6,12 @@ import {
   faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
-
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { updateVenue_v2 } from "api/admin";
+
+import { GENERIC_ERROR } from "settings";
 
 import { User } from "types/User";
 import { Table } from "types/Table";
@@ -24,8 +26,6 @@ import { experienceSelector } from "utils/selectors";
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
 
 import "./TableHeader.scss";
-import Bugsnag from "@bugsnag/js";
-import { GENERIC_ERROR } from "settings";
 
 interface TableHeaderProps {
   seatedAtTable: string;

@@ -1,5 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
+
 import { Room } from "types/rooms";
 import {
   VenueEvent,
@@ -9,9 +10,10 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
+import { Table } from "types/Table";
+
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
-import { Table } from "types/Table";
 
 export interface EventInput {
   name: string;
