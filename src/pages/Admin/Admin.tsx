@@ -250,8 +250,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
     push,
   ]);
-  const history = useHistory();
-  const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -386,16 +384,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 {deleteText}
               </button>
             )}
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                history.push(`${match.url}/events`);
-                setShowCreateEventModal(true);
-              }}
-              style={{ marginBottom: 10, width: "100%" }}
-            >
-              Create an Event
-            </button>
             <Link
               to={{ search: "manageUsers=true" }}
               className="btn btn-primary"
