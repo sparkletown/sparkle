@@ -6,16 +6,7 @@
   padding-bottom: 5px;
 
   &__input {
-    // @debt Workaround to avoid styles set by src/scss/global.scss (fix this when when clean that up)
-    all: unset;
-    outline: none;
-    background-color: $saturated-black;
     flex: 1;
-    cursor: pointer;
-    font-size: 0.9em;
-    padding: 12px 12px;
-    border-radius: 28px;
-    color: $white;
   }
 
   &__submit-button {
@@ -23,7 +14,7 @@
     border: none;
     min-width: 44px;
     min-height: 44px;
-    border-radius: 50%;
+    border-radius: $border-radius--max;
     display: flex;
     justify-content: center;
     align-items: center;

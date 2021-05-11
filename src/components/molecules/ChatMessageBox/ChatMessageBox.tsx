@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
+
+import { InputField } from "components/atoms/InputField";
 
 import "./ChatMessageBox.scss";
 
@@ -28,7 +30,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     };
   }, [isSendingMessage]);
 
-  const { register, handleSubmit, reset, watch } = useForm<{
+  const { control, handleSubmit, reset, watch } = useForm<{
     message: string;
   }>({
     mode: "onSubmit",
@@ -44,12 +46,16 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   return (
     <form className="ChatMessageBox" onSubmit={onSubmit}>
-      <input
-        className="ChatMessageBox__input"
-        ref={register({ required: true })}
+      <Controller
+        as={
+          <InputField
+            containerClassName="ChatMessageBox__input"
+            placeholder="Write your message..."
+            autoComplete="off"
+          />
+        }
+        control={control}
         name="message"
-        placeholder="Write your message..."
-        autoComplete="off"
       />
       <button
         className="ChatMessageBox__submit-button"
