@@ -241,7 +241,7 @@ $preview-margin: 30px;
     &:before {
       background-color: $primaryColor;
       box-shadow: 0 0 0 2px rgba($white, 0);
-      background-image: url("./img/checkbox-checked.png");
+      background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
   }

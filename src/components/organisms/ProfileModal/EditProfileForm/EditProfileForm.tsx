@@ -11,12 +11,6 @@ import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData } from "utils/selectors";
 
-interface EditProfileFormValuesType {
-  partyName: string;
-  pictureUrl: string;
-  [questionId: string]: string;
-}
-
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
 }

@@ -112,7 +112,7 @@ $border-radius: 28px;
     display: block;
     width: 25px;
     height: 35px;
-    background-image: url(/icons/sparkle-nav-logo.png);
+    background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
     &:before {
       position: absolute;
@@ -122,7 +122,7 @@ $border-radius: 28px;
       left: 22px;
       width: 108px;
       height: 35px;
-      background-image: url(/icons/sparkle-nav-logo-text.png);
+      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
       background-size: 108px 35px;
       transform: translateX(-40px) scale(0.75);
       transition: opacity 200ms, transform 400ms $transition-function;
@@ -135,7 +135,7 @@ $border-radius: 28px;
 
     &:hover {
       opacity: 1;
-      background-image: url(/icons/sparkle-nav-logo-animate.png);
+      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
       background-size: 75px 35px;
       background-position: 0 0;
       animation: sparklelogoanimate 0.4s steps(3) infinite;
@@ -180,7 +180,7 @@ $border-radius: 28px;
     top: 20px;
     height: 20px;
     width: 20px;
-    background-image: url(/icons/nav-party-logo-icon.png);
+    background-image: url(/assets/icons/nav-party-logo-icon.png);
     background-size: 20px;
     opacity: 0.4;
     transform: rotate(0deg);
@@ -344,7 +344,7 @@ $border-radius: 28px;
   .back-icon {
     height: 22px;
     width: 22px;
-    background-image: url(/icons/slide-btn-icon.png);
+    background-image: url(/assets/icons/slide-btn-icon.png);
     background-size: 22px 22px;
     opacity: 0.7;
   }

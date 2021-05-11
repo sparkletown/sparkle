@@ -94,7 +94,7 @@ export const RoomsForm: React.FC = () => {
   );
 };
 
-interface RoomInnerForm {
+interface RoomInnerFormProps {
   venueId: string;
   venue: PartyMapVenue;
   editingRoom?: Room;
@@ -103,7 +103,7 @@ interface RoomInnerForm {
 
 export type FormValues = Yup.InferType<typeof validationSchema>;
 
-const RoomInnerForm: React.FC<RoomInnerForm> = (props) => {
+const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
