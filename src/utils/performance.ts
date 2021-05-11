@@ -111,3 +111,66 @@ export const createPerformanceTrace = (
 
   return trace;
 };
+
+export interface TracePromiseOptions extends CreatePerformanceTraceOptions {
+  withDebugLog?: boolean;
+  debugLogFunc?: (...args: unknown[]) => void;
+}
+
+/**
+ * Create a new Trace instance that wraps a Promise, optionally configuring it. The trace starts
+ * as soon as the Promise is created, and ends when the Promise finishes (whether successfully or
+ * with an error)
+ *
+ * @example Basic Usage
+ *   const resultPromise Promise<Bar> = tracePromise(
+ *     "Foo::fetchBar",
+ *     () => fetchBar("baz"),
+ *   );
+ *
+ * @example Usage with options
+ *   const resultPromise Promise<Bar> = tracePromise(
+ *     "Foo::fetchBar",
+ *     () => fetchBar("baz"),
+ *     {
+ *       attributes: {
+ *         bazParam: "baz",
+ *       },
+ *     }
+ *   );
+ *
+ * @param traceName The name of the trace instance
+ * @param createPromise a function wrapper that creates the Promise to be traced
+ * @param options see CreatePerformanceTraceOptions
+ *
+ * @see https://firebase.googleblog.com/2021/03/rtdb-performance-monitoring.html
+ */
+export const tracePromise = <T>(
+  traceName: PerformanceTrace | string,
+  createPromise: () => Promise<T>,
+  options?: TracePromiseOptions
+): Promise<T> => {
+  const {
+    withDebugLog = false,
+    debugLogFunc = console.log,
+    ...createPerformanceTraceOptions
+  } = options ?? {};
+
+  const trace = createPerformanceTrace(
+    traceName,
+    createPerformanceTraceOptions
+  );
+
+  if (withDebugLog) {
+    debugLogFunc(`tracePromise::${traceName}::started`, trace);
+  }
+
+  trace.start();
+  return createPromise().finally(() => {
+    trace.stop();
+
+    if (withDebugLog) {
+      debugLogFunc(`tracePromise::${traceName}::finished`, trace);
+    }
+  });
+};
