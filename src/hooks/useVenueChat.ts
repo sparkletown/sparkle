@@ -2,11 +2,7 @@ import { useMemo, useCallback } from "react";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import {
-  sendVenueMessage,
-  deleteVenueMessage,
-  sendThreadReply,
-} from "api/chat";
+import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 
 import { VenueChatMessage } from "types/chat";
 
@@ -70,13 +66,17 @@ export const useVenueChat = () => {
     [venueId, userId]
   );
 
-  const sendThreadedMessage = useCallback(
-    (text: string, thread: WithId<VenueChatMessage>) => {
+  const sendThreadReply = useCallback(
+    (text: string, threadId: string) => {
       if (!venueId || !userId) return;
 
-      const message = buildMessage<VenueChatMessage>({ from: userId, text });
+      const threadReply = buildMessage<VenueChatMessage>({
+        from: userId,
+        text,
+        threadId,
+      });
 
-      sendThreadReply({ venueId, reply: message, thread });
+      sendVenueMessage({ venueId, message: threadReply });
     },
     [venueId, userId]
   );
@@ -90,29 +90,66 @@ export const useVenueChat = () => {
     [venueId]
   );
 
-  return useMemo(
-    () => ({
-      messagesToDisplay: filteredMessages.map((message) =>
+  const { messages, allMessagesReplies } = filteredMessages.reduce<{
+    messages: WithId<VenueChatMessage>[];
+    allMessagesReplies: WithId<VenueChatMessage>[];
+  }>(
+    (acc, message) => {
+      if (message.threadId !== undefined)
+        return {
+          ...acc,
+          allMessagesReplies: [...acc.allMessagesReplies, message],
+        };
+
+      return { ...acc, messages: [...acc.messages, message] };
+    },
+    { messages: [], allMessagesReplies: [] }
+  );
+
+  const getMessageReplies = useCallback(
+    (messageId) => {
+      const messageReplies = allMessagesReplies
+        .filter((reply) => reply.threadId === messageId)
+        .map((reply) =>
+          getMessageToDisplay({
+            message: reply,
+            usersById: worldUsersById,
+            myUserId: userId,
+            isAdmin,
+          })
+        );
+
+      if (messageReplies.length === 0) return undefined;
+
+      return messageReplies;
+    },
+    [allMessagesReplies]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      messages.map((message) => {
+        const messageReplies = getMessageReplies(message.id);
+
         getMessageToDisplay({
           message,
           usersById: worldUsersById,
           myUserId: userId,
+          replies: messageReplies,
           isAdmin,
-        })
-      ),
+        });
+      }),
+    [getMessageReplies]
+  );
+
+  return useMemo(
+    () => ({
+      messagesToDisplay,
 
       sendMessage,
       deleteMessage,
-      sendThreadedMessage,
+      sendThreadReply,
     }),
-    [
-      filteredMessages,
-      sendMessage,
-      sendThreadedMessage,
-      deleteMessage,
-      worldUsersById,
-      userId,
-      isAdmin,
-    ]
+    [messagesToDisplay, sendMessage, sendThreadReply, deleteMessage]
   );
 };

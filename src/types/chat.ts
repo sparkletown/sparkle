@@ -1,27 +1,12 @@
 import { WithId } from "utils/id";
 import { User } from "types/User";
 
-// Change this together with functions/chat.js turnMessageIntoThread function
-export enum MessageType {
-  THREAD = "THREAD",
-  THREAD_REPLY = "THREAD_REPLY",
-}
-
 export type BaseChatMessage = {
   from: string;
   text: string;
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
-  type?: MessageType;
-};
-
-export type Thread = BaseChatMessage & {
-  type: MessageType.THREAD;
-};
-
-export type ThreadReply = BaseChatMessage & {
-  type: MessageType.THREAD_REPLY;
-  threadId: string;
+  threadId?: string;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
@@ -31,16 +16,13 @@ export type PrivateChatMessage = BaseChatMessage & {
 
 export type VenueChatMessage = BaseChatMessage;
 
-export type ChatMessage =
-  | PrivateChatMessage
-  | VenueChatMessage
-  | Thread
-  | ThreadReply;
+export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
   canBeDeleted?: boolean;
+  replies?: WithId<MessageToDisplay>[];
 };
 
 export type PreviewChatMessage = PrivateChatMessage & {

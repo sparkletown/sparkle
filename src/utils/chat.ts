@@ -21,6 +21,7 @@ export interface GetMessageToDisplayProps<T> {
   message: T;
   usersById: Record<string, User>;
   myUserId?: string;
+  replies?: WithId<MessageToDisplay>[];
   isAdmin?: boolean;
 }
 
@@ -28,6 +29,7 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
   message,
   usersById,
   myUserId,
+  replies,
   isAdmin,
 }: GetMessageToDisplayProps<T>): MessageToDisplay<T> => {
   const isMine = myUserId === message.from;
@@ -36,6 +38,7 @@ export const getMessageToDisplay = <T extends ChatMessage = ChatMessage>({
     ...message,
     author: withId(usersById[message.from], message.from),
     isMine,
+    replies,
     ...(isAdmin && { canBeDeleted: isAdmin }),
   };
 };
