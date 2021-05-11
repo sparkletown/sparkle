@@ -15,7 +15,7 @@ export type PrivateChatMessage = BaseChatMessage & {
 
 export type VenueChatMessage = BaseChatMessage & {};
 
-export type PollMessage = {
+export type PollMessage = BaseChatMessage & {
   // TODO: add poll data
 };
 

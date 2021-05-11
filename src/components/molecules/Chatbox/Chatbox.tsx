@@ -12,10 +12,10 @@ import { MessageToDisplay } from "types/chat";
 import { WithId } from "utils/id";
 
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
+// import { ChatPoll } from "components/molecules/ChatPoll";
 import { PollBox } from "components/molecules/PollBox";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
-// import { ChatPoll } from "components/atoms/ChatPoll";
 
 import "./Chatbox.scss";
 
