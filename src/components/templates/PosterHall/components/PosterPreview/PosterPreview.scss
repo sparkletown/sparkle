@@ -1,0 +1,59 @@
+@import "scss/constants";
+
+$poster-preview-height: 200px;
+$poster-preview-width: 300px;
+$active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
+
+.PosterPreview {
+  display: flex;
+  flex-direction: column;
+
+  content-visibility: auto;
+
+  height: $poster-preview-height;
+  width: $poster-preview-width;
+
+  padding: $spacing--lg;
+  margin: $spacing--md;
+  border-radius: $border-radius--md;
+
+  background-color: $saturated-black-alt;
+  color: $white;
+
+  border: 2px solid $lighter-intermediate-grey;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: $lighter-intermediate-grey;
+    border-color: $concrete;
+  }
+
+  &--live {
+    border-color: $primary;
+    box-shadow: $active-poster-shadows;
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      border-color: $primary;
+    }
+  }
+
+  &__title {
+    font-size: $font-size--md;
+    font-weight: $font-weight--600;
+
+    margin: $spacing--md 0;
+  }
+
+  &__categories {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__author {
+    margin-top: auto;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+  }
+}

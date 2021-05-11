@@ -17,6 +17,8 @@ import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
+import { PosterHall } from "components/templates/PosterHall";
+import { PosterPage } from "components/templates/PosterPage";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
@@ -94,7 +96,9 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route component={Audience} />
+          <Route>
+            <Audience venue={venue} />
+          </Route>
         </Switch>
       );
       fullscreen = true;
@@ -112,6 +116,14 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
+      break;
+
+    case VenueTemplate.posterhall:
+      template = <PosterHall venue={venue} />;
+      break;
+
+    case VenueTemplate.posterpage:
+      template = <PosterPage venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:

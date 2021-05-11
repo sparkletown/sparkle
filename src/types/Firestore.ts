@@ -5,7 +5,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { Table } from "types/Table";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -66,37 +66,38 @@ export interface FirestoreData {
   userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
-  worldUsers?: Record<string, User>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
+  worldUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  chatRequests?: Array<WithId<ChatRequest>>;
-  currentEvent?: Array<WithId<VenueEvent>>;
-  currentVenue?: Array<WithId<AnyVenue>>;
-  currentVenueEventsNG?: Array<WithId<VenueEvent>>;
-  currentVenueNG?: Array<WithId<AnyVenue>>;
-  eventPurchase?: Array<WithId<Purchase>>;
-  events?: Array<WithId<VenueEvent>>;
+  chatRequests?: WithId<ChatRequest>[];
+  currentEvent?: WithId<VenueEvent>[];
+  currentVenue?: WithId<AnyVenue>[];
+  currentVenueEventsNG?: WithId<VenueEvent>[];
+  currentVenueNG?: WithId<AnyVenue>[];
+  eventPurchase?: WithId<Purchase>[];
+  events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
-  parentVenue?: Array<WithId<AnyVenue>>;
-  parentVenueEvents?: Array<WithId<VenueEvent>>;
-  playaVenues?: Array<WithId<AnyVenue>>;
-  reactions?: Array<WithId<Reaction>>;
+  parentVenue?: WithId<AnyVenue>[];
+  parentVenueEvents?: WithId<VenueEvent>[];
+  playaVenues?: WithId<AnyVenue>[];
+  reactions?: WithId<Reaction>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  statsOnlineUsers?: Array<WithId<User>>;
-  statsOpenVenues?: Array<WithId<AnyVenue>>;
+  statsOnlineUsers?: WithId<User>[];
+  statsOpenVenues?: WithId<AnyVenue>[];
   subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
-  userModalVisits?: Array<WithId<UserVisit>>;
-  userPurchaseHistory?: Array<WithId<Purchase>>;
-  privateChatMessages?: Array<WithId<PrivateChatMessage>>;
-  worldUsers?: Array<WithId<User>>;
-  venueChatMessages?: Array<WithId<VenueChatMessage>>;
-  venueEvents?: Array<WithId<VenueEvent>>;
-  venues?: Array<WithId<AnyVenue>>;
+  userModalVisits?: WithId<UserVisit>[];
+  userPurchaseHistory?: WithId<Purchase>[];
+  privateChatMessages?: WithId<PrivateChatMessage>[];
+  posterVenues?: WithId<PosterPageVenue>[];
+  venueChatMessages?: WithId<VenueChatMessage>[];
+  venueEvents?: WithId<VenueEvent>[];
+  venues?: WithId<AnyVenue>[];
+  worldUsers?: WithId<User>[];
 }
