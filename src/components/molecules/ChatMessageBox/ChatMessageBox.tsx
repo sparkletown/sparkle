@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
 import "./ChatMessageBox.scss";
 
@@ -17,14 +18,14 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   // This logic disallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
     if (!isSendingMessage) return;
-    
+
     const timeoutId = setTimeout(() => {
       setMessageSending(false);
     }, CHAT_MESSAGE_TIMEOUT);
-    
+
     return () => {
-      clearTimeout(timeoutId)
-    }
+      clearTimeout(timeoutId);
+    };
   }, [isSendingMessage]);
 
   const { register, handleSubmit, reset, watch } = useForm<{
@@ -42,7 +43,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const chatValue = watch("message");
 
   return (
-    <form className="ChatMessageBox__form" onSubmit={onSubmit}>
+    <form className="ChatMessageBox" onSubmit={onSubmit}>
       <input
         className="ChatMessageBox__input"
         ref={register({ required: true })}

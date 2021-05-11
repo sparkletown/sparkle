@@ -550,6 +550,8 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
