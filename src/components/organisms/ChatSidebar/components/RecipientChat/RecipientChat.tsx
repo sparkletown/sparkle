@@ -54,6 +54,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         messages={messagesToDisplay}
         sendMessage={sendMessageToSelectedRecipient}
         deleteMessage={deleteMessage}
+        sendThreadReply={() => {}}
       />
     </div>
   );

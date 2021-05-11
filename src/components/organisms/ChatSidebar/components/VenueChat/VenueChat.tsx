@@ -11,7 +11,7 @@ export const VenueChat: React.FC = () => {
     sendMessage,
     deleteMessage,
     messagesToDisplay,
-    sendThreadedMessage,
+    sendThreadReply,
   } = useVenueChat();
 
   return (
@@ -19,7 +19,7 @@ export const VenueChat: React.FC = () => {
       <Chatbox
         messages={messagesToDisplay}
         sendMessage={sendMessage}
-        sendThreadMessage={sendThreadedMessage}
+        sendThreadReply={sendThreadReply}
         deleteMessage={deleteMessage}
       />
     </div>

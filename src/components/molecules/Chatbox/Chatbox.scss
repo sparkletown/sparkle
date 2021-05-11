@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.chatbox {
+.Chatbox {
   height: 100%;
   display: flex;
   flex-flow: column;
@@ -14,25 +14,44 @@
     overflow-x: auto;
   }
 
-  &__form {
+  &__form-box {
     background-color: $black;
-    height: 74px;
-    padding: 10px;
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__chat-contols {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: $spacing--sm $spacing--md;
+  }
+
+  &__form {
+    padding: 0 $spacing--md $spacing--md $spacing--md;
     display: flex;
     align-items: center;
   }
 
   &__input {
-    // @debt Workaround to avoid styles set by src/scss/global.scss (fix this when when clean that up)
-    all: unset;
-    outline: none;
-    background-color: $saturated-black;
-    flex: 1;
+    width: 100%;
+  }
+
+  &__thread-author {
+    font-size: $font-size--sm;
+    color: opaque-white(0.8);
+  }
+
+  &__simple-button {
+    font-size: $font-size--sm;
+    color: opaque-white(0.8);
     cursor: pointer;
-    font-size: 0.9em;
-    padding: 12px 12px;
-    border-radius: 28px;
-    color: $white;
+    border-bottom: thin solid opaque-white(0.8);
+
+    &:hover {
+      color: opaque-white(0.9);
+      border-bottom: thin solid opaque-white(0.9);
+    }
   }
 
   &__submit-button {

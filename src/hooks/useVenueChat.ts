@@ -123,23 +123,21 @@ export const useVenueChat = () => {
 
       return messageReplies;
     },
-    [allMessagesReplies]
+    [allMessagesReplies, worldUsersById, userId, isAdmin]
   );
 
   const messagesToDisplay = useMemo(
     () =>
-      messages.map((message) => {
-        const messageReplies = getMessageReplies(message.id);
-
+      messages.map((message) =>
         getMessageToDisplay({
           message,
           usersById: worldUsersById,
           myUserId: userId,
-          replies: messageReplies,
+          replies: getMessageReplies(message.id),
           isAdmin,
-        });
-      }),
-    [getMessageReplies]
+        })
+      ),
+    [getMessageReplies, userId, worldUsersById, isAdmin, messages]
   );
 
   return useMemo(

@@ -11,7 +11,7 @@ export const sendVenueMessage = async ({
   venueId,
   message,
 }: SendVenueMessageProps) =>
-  firebase
+  await firebase
     .firestore()
     .collection("venues")
     .doc(venueId)
