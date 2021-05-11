@@ -81,7 +81,7 @@ export type CreatePerformanceTraceOptions = {
  * @see https://firebase.google.com/docs/reference/js/firebase.performance.Trace
  */
 export const createPerformanceTrace = (
-  traceName: PerformanceTrace,
+  traceName: PerformanceTrace | string,
   options?: CreatePerformanceTraceOptions
 ) => {
   const { startNow = false, attributes, metrics } = options ?? {};
