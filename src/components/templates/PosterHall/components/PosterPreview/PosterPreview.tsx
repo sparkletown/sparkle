@@ -20,6 +20,10 @@ import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-ico
 import { savePosterToProfile } from "api/profile";
 import { useUser } from "hooks/useUser";
 
+import { UserAvatar } from "components/atoms/UserAvatar";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useWorldUsersById } from "hooks/users";
+
 import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
@@ -82,6 +86,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [bookmarkPoster]
   );
 
+  // wrap author in memo:
+  const { worldUsersById } = useWorldUsersById();
+  const authors = personalizedPoster.owners;
+  const author = { ...worldUsersById[authors[0]], id: authors[0] };
+  const { openUserProfileModal } = useProfileModalControls();
+  const openAuthorProfile = useCallback(() => {
+    openUserProfileModal(author);
+  }, [openUserProfileModal, author]);
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__bookmark" onClick={onBookmarkPoster}>
@@ -90,10 +103,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         />
       </div>
       <p className="PosterPreview__title">{title}</p>
-
       <div className="PosterPreview__categories">{renderedCategories}</div>
-
       <div className="PosterPreview__author">{authorName}</div>
+      {/* don't show author profile if not available... */}
+      {author && (
+        <UserAvatar
+          user={author}
+          // isOnline={}
+          onClick={openAuthorProfile}
+        />
+      )}
     </div>
   );
 };
