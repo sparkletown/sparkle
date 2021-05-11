@@ -71,19 +71,19 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 16,
+                maxLength: 30,
               })}
               autoComplete="off"
             />
             <span className="input-info">
-              This is your public name (max 16 characters)
+              This is your public name (max 30 characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
               <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 16 characters or less
+                Display name must be 30 characters or less
               </span>
             )}
             {user && (

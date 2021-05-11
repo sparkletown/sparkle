@@ -74,7 +74,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 16,
+                maxLength: 30,
               })}
             />
             {errors.partyName && errors.partyName.type === "required" && (
@@ -82,7 +82,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 16 characters or less
+                Display name must be 30 characters or less
               </span>
             )}
             {user && (
