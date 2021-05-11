@@ -12,6 +12,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId, withVenueId, WithVenueId } from "utils/id";
+import { tracePromise } from "utils/performance";
 import {
   emptyArraySelector,
   makeSubvenueEventsSelector,
@@ -107,7 +108,15 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   } = useAsync(async () => {
     if (!sovereignVenueId) return emptyArray;
 
-    return fetchRelatedVenues(sovereignVenueId);
+    return tracePromise(
+      "RelatedVenuesProvider::fetchRelatedVenues",
+      () => fetchRelatedVenues(sovereignVenueId),
+      {
+        attributes: {
+          sovereignVenueId: sovereignVenueId,
+        },
+      }
+    );
   }, [sovereignVenueId]);
 
   const findVenueInRelatedVenues = useCallback(
