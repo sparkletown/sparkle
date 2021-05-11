@@ -8,15 +8,15 @@ import {
   startOfDay,
 } from "date-fns";
 
-import { Room } from "types/rooms";
+import { AnyVenue } from "types/venues";
 import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 import { MyPersonalizedSchedule } from "types/User";
 
-import { WithVenueId } from "utils/id";
+import { WithVenueId, WithId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
 import { isTruthy } from "utils/types";
 
-import { RoomWithEvents } from "components/molecules/Schedule/Schedule.types";
+import { VenueWithEvents } from "components/molecules/Schedule/Schedule.types";
 
 export const isEventLaterThisDay = (date: number | Date) => (
   event: VenueEvent
@@ -26,15 +26,16 @@ export const isEventLaterThisDay = (date: number | Date) => (
     end: eventEndTime(event),
   });
 
-export const extendRoomsWithDaysEvents = (
-  rooms: Room[],
+export const extendVenuesWithDaysEvents = (
+  venues: WithId<AnyVenue>[],
   daysEvents: WithVenueId<PersonalizedVenueEvent>[]
-): RoomWithEvents[] => {
-  return rooms.map((room) => {
+): VenueWithEvents[] => {
+  //@ts-ignore
+  return venues.map((venue) => {
     const events: WithVenueId<PersonalizedVenueEvent>[] = daysEvents.filter(
-      (event) => event?.room === room?.title
+      (event) => event?.venueId === venue.id
     );
-    return { ...room, events };
+    return { ...venue, events };
   });
 };
 

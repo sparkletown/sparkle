@@ -15,7 +15,7 @@ import { PersonalizedVenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 import { isTruthy } from "utils/types";
-import { isEventLive } from "utils/event";
+// import { isEventLive } from "utils/event";
 
 import { ONE_HOUR_IN_MINUTES } from "utils/time";
 
@@ -49,9 +49,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     () =>
       classNames(
         "ScheduleEvent",
-        {
-          "ScheduleEvent--live": isEventLive(event),
-        },
+        // {
+        //   "ScheduleEvent--live": isEventLive(event),
+        // },
         { "ScheduleEvent--users": isTruthy(isUsers) }
       ),
     [event, isUsers]

@@ -4,7 +4,7 @@ import { format, fromUnixTime, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import { useCss } from "react-use";
 
-import { RoomWithEvents, ScheduleProps } from "./Schedule.types";
+import { VenueWithEvents, ScheduleProps } from "./Schedule.types";
 
 import { calcStartPosition } from "./Schedule.utils";
 
@@ -26,9 +26,9 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
     [scheduleDay]
   );
 
-  const roomStartHour = useCallback(
-    (room: RoomWithEvents) =>
-      room.events?.reduce(
+  const venueStartHour = useCallback(
+    (venue: VenueWithEvents) =>
+      venue.events?.reduce(
         (acc, event) => Math.min(acc, getStartHour(event.start_utc_seconds)),
         MAX_SCHEDULE_START_HOUR
       ) ?? MAX_SCHEDULE_START_HOUR,
@@ -38,10 +38,10 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
   const scheduleStartHour = useMemo(
     () =>
       Math.min(
-        ...scheduleDay.rooms.map((room) => roomStartHour(room)),
+        ...scheduleDay.venues.map((venue) => venueStartHour(venue)),
         MAX_SCHEDULE_START_HOUR
       ),
-    [scheduleDay, roomStartHour]
+    [scheduleDay, venueStartHour]
   );
 
   const hours = useMemo(
@@ -56,7 +56,7 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
   );
 
   const containerVars = useCss({
-    "--room-count": scheduleDay.rooms.length + 1,
+    "--room-count": scheduleDay.venues.length + 1,
     "--current-time--position": calcStartPosition(
       Math.floor(getUnixTime(Date.now())),
       scheduleStartHour
@@ -78,11 +78,11 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
             {scheduleDay.personalEvents.length} events
           </span>
         </div>
-        {scheduleDay.rooms.map((room) => (
-          <div key={room.title} className="ScheduledEvents__room">
-            <p className="ScheduledEvents__room-title">{room.title}</p>
+        {scheduleDay.venues.map((venue) => (
+          <div key={venue.name} className="ScheduledEvents__room">
+            <p className="ScheduledEvents__room-title">{venue.name}</p>
             <span className="ScheduledEvents__events-count">
-              {room.events?.length || 0} events
+              {venue.events?.length || 0} events
             </span>
           </div>
         ))}
@@ -108,9 +108,9 @@ export const Schedule: React.FC<ScheduleProps> = ({ scheduleDay }) => {
             scheduleStartHour={scheduleStartHour}
           />
         </div>
-        {scheduleDay.rooms.map((room) => (
+        {scheduleDay.venues.map((room) => (
           <ScheduleRoomEvents
-            key={room.title}
+            key={room.name}
             events={room.events}
             scheduleStartHour={scheduleStartHour}
           />

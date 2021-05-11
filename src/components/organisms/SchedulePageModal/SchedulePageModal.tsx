@@ -1,5 +1,5 @@
 import React, { useState, useMemo, FC, MouseEventHandler } from "react";
-import { addDays, startOfToday, format, getUnixTime } from "date-fns";
+import { addDays, startOfDay, format, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import classNames from "classnames";
 
@@ -13,7 +13,7 @@ import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDesc
 import { ScheduleDay } from "components/molecules/Schedule/Schedule.types";
 
 import {
-  extendRoomsWithDaysEvents,
+  extendVenuesWithDaysEvents,
   isEventLaterThisDay,
   prepareForSchedule,
 } from "./utils";
@@ -41,15 +41,15 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     withEvents: true,
   });
 
-  const relatedRooms = useMemo(
-    () => relatedVenues.flatMap((venue) => venue.rooms ?? []),
-    [relatedVenues]
-  );
+  // const relatedRooms = useMemo(
+  //   () => relatedVenues.flatMap((venue) => venue.id ?? []),
+  //   [relatedVenues]
+  // );
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   const weekdays = useMemo(() => {
-    const today = startOfToday();
+    const today = startOfDay(startOfDay(new Date(2021, 5, 21))); //startOfToday()); //new Date(2021, 5, 21)); //
 
     return range(0, DAYS_AHEAD).map((dayIndex) => {
       const day = addDays(today, dayIndex);
@@ -68,35 +68,39 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
           className={classes}
           onClick={onWeekdayClick}
         >
-          {dayIndex === 0 ? "Today" : format(day, "E")}
+          {dayIndex === 0 ? "Today" : format(day, "E, LLL d")}
         </li>
       );
     });
   }, [selectedDayIndex]);
 
   const schedule: ScheduleDay = useMemo(() => {
-    const dayStart = addDays(startOfToday(), selectedDayIndex);
+    const dayStart = addDays(startOfDay(new Date(21, 5, 21)), selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(
-        isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : dayStart)
+        isEventLaterThisDay(
+          selectedDayIndex === 0 ? new Date(2021, 5, 21) : dayStart
+        )
       )
       .map(prepareForSchedule(dayStart, userEventIds));
 
-    const roomNamesInSchedule = new Set(daysEvents.map((event) => event.room));
+    const venueNamesInSchedule = new Set(
+      daysEvents.map((event) => event.venueId)
+    );
 
-    const roomsWithEvents = extendRoomsWithDaysEvents(
-      relatedRooms.filter((room) => roomNamesInSchedule.has(room.title)),
+    const venuesWithEvents = extendVenuesWithDaysEvents(
+      relatedVenues.filter((venue) => venueNamesInSchedule.has(venue.id)),
       daysEvents
     );
 
     return {
       isToday: selectedDayIndex === 0,
-      weekday: format(dayStart, "E"),
+      weekday: format(dayStart, "E, LLL, d"),
       dayStartUtcSeconds: getUnixTime(dayStart),
-      rooms: roomsWithEvents,
+      venues: venuesWithEvents,
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
-  }, [relatedVenueEvents, relatedRooms, userEventIds, selectedDayIndex]);
+  }, [relatedVenueEvents, relatedVenues, userEventIds, selectedDayIndex]);
 
   const containerClasses = classNames("SchedulePageModal", {
     "SchedulePageModal--show": isVisible,
@@ -108,7 +112,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
 
-      {schedule.rooms.length > 0 ? (
+      {schedule.venues.length > 0 ? (
         <Schedule scheduleDay={schedule} />
       ) : (
         <div className="SchedulePageModal__no-events">No events scheduled</div>
