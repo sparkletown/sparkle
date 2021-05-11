@@ -48,13 +48,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
     (index) => index + 1 === fields.length && MAX_POLL_CHOICES > fields.length,
     [fields]
   );
-  const formatPlaceholder = useCallback(
-    (index) =>
-      index === 0
-        ? `Choice ${index + 1} (Max ${MAX_POLL_CHOICES} choices)`
-        : `Choice ${index + 1}`,
-    []
-  );
+
   const renderedChoices = useMemo(
     () =>
       fields.map((field, index) => (
@@ -64,7 +58,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
               <InputField
                 containerClassName="PollBox__input"
                 autoComplete="off"
-                placeholder={formatPlaceholder(index)}
+                placeholder={`Choice ${index + 1}`}
               />
             }
             control={control}
@@ -77,7 +71,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
           )}
         </section>
       )),
-    [addChoice, fields, showAppend, formatPlaceholder, control]
+    [addChoice, fields, showAppend, control]
   );
 
   return (

@@ -1,5 +1,6 @@
 import { WithId } from "utils/id";
 import { User } from "types/User";
+import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 
 export type BaseChatMessage = {
   from: string;
@@ -56,3 +57,15 @@ export type ChatSettings = PrivateChatSettings | VenueChatSettings;
 
 // @debt Remove it when UserProfileModal is refactored
 export type SetSelectedProfile = (user: WithId<User>) => void;
+
+export enum ChatOptionType {
+  poll = "poll",
+  question = "question",
+}
+
+export interface ChatOption {
+  icon: IconDefinition;
+  name: string;
+}
+
+export type ChatOptionMap = Partial<Record<ChatOptionType, ChatOption>>;

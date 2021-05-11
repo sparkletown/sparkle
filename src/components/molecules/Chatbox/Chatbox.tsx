@@ -1,13 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faPoll,
-  faQuestion,
-  IconDefinition,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
 
-import { MessageToDisplay } from "types/chat";
+import { MessageToDisplay, ChatOption } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -19,12 +15,7 @@ import { ChatMessage } from "components/atoms/ChatMessage";
 
 import "./Chatbox.scss";
 
-export type Option = {
-  icon: IconDefinition;
-  name: string;
-};
-
-export const ChatMessageOption: Option[] = [
+export const ChatMessageOption: ChatOption[] = [
   {
     icon: faPoll,
     name: "Create Poll",
@@ -46,7 +37,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   deleteMessage,
 }) => {
-  const [activeOption, setActiveOption] = useState<Option>();
+  const [activeOption, setActiveOption] = useState<ChatOption>();
 
   const renderedMessages = useMemo(
     () =>
