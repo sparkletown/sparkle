@@ -277,7 +277,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 
   // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const deleteText =
-    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
+    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete space";
 
   return (
     <>
@@ -377,15 +377,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 Edit Room
               </Link>
             )}
-            {canBeDeleted(venue) && (
-              <button
-                role="link"
-                className="btn btn-block btn-danger"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                {deleteText}
-              </button>
-            )}
             <button
               className="btn btn-primary"
               onClick={() => {
@@ -409,6 +400,15 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               </div>
             )}
           </>
+        )}
+        {canBeDeleted(venue) && (
+          <button
+            role="link"
+            className="btn btn-block btn-danger"
+            onClick={() => setShowDeleteModal(true)}
+          >
+            {deleteText}
+          </button>
         )}
       </div>
       <VenueDeleteModal
