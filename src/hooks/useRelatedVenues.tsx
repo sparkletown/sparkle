@@ -73,6 +73,10 @@ export interface RelatedVenuesContextState {
   relatedVenues: WithId<AnyVenue>[];
   isRelatedVenuesLoading: boolean;
   relatedVenuesError?: Error;
+
+  findVenueInRelatedVenues: (
+    searchedForVenueId?: string
+  ) => WithId<AnyVenue> | undefined;
 }
 
 const RelatedVenuesContext = createContext<
@@ -105,6 +109,15 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     return fetchRelatedVenues(sovereignVenueId);
   }, [sovereignVenueId]);
 
+  const findVenueInRelatedVenues = useCallback(
+    (searchedForVenueId?: string): WithId<AnyVenue> | undefined => {
+      if (!relatedVenues) return;
+
+      return relatedVenues.find((venue) => venue.id === searchedForVenueId);
+    },
+    [relatedVenues]
+  );
+
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
@@ -117,8 +130,11 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       relatedVenues,
       isRelatedVenuesLoading,
       relatedVenuesError,
+
+      findVenueInRelatedVenues,
     }),
     [
+      findVenueInRelatedVenues,
       isRelatedVenuesLoading,
       isSovereignVenueIdLoading,
       relatedVenues,
