@@ -145,14 +145,16 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               />
             </div>
           </div>
-          <div style={{ width: "150px" }}>
-            <div className="title" style={{ width: "150px" }}>
-              {PLAYA_VENUE_NAME} icon
+          {venue.mapIconImageUrl && (
+            <div style={{ width: "150px" }}>
+              <div className="title" style={{ width: "150px" }}>
+                {PLAYA_VENUE_NAME} icon
+              </div>
+              <div className="content">
+                <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
+              </div>
             </div>
-            <div className="content">
-              <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
-            </div>
-          </div>
+          )}
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
               Camp logo
