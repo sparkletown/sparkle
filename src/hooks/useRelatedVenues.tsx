@@ -80,7 +80,7 @@ const RelatedVenuesContext = createContext<
 >(undefined);
 
 export interface RelatedVenuesProviderProps {
-  venueId: string;
+  venueId?: string;
 }
 
 export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
