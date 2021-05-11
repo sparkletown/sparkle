@@ -153,7 +153,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   );
 };
 
-export const useRelatedVenues = (): RelatedVenuesContextState => {
+export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   const relatedVenuesState = useContext(RelatedVenuesContext);
 
   if (!relatedVenuesState) {
@@ -163,6 +163,36 @@ export const useRelatedVenues = (): RelatedVenuesContextState => {
   }
 
   return relatedVenuesState;
+};
+
+export interface RelatedVenuesProps {
+  currentVenueId?: string;
+}
+
+export interface RelatedVenuesData extends RelatedVenuesContextState {
+  parentVenue?: WithId<AnyVenue>;
+  currentVenue?: WithId<AnyVenue>;
+}
+
+export const useRelatedVenues: ReactHook<
+  RelatedVenuesProps,
+  RelatedVenuesData
+> = ({ currentVenueId }): RelatedVenuesData => {
+  const relatedVenuesState = useRelatedVenuesContext();
+
+  const { findVenueInRelatedVenues } = relatedVenuesState;
+
+  const currentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+    return findVenueInRelatedVenues(currentVenueId);
+  }, [currentVenueId, findVenueInRelatedVenues]);
+
+  const parentVenue: WithId<AnyVenue> | undefined = useMemo(() => {
+    if (!currentVenue) return;
+
+    return findVenueInRelatedVenues(currentVenue.parentId);
+  }, [currentVenue, findVenueInRelatedVenues]);
+
+  return { ...relatedVenuesState, currentVenue, parentVenue };
 };
 
 interface UseLegacyConnectRelatedVenuesProps {
