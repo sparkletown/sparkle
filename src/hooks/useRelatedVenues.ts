@@ -94,9 +94,9 @@ export const useRelatedVenues: ReactHook<
   const {
     loading: isRelatedVenuesLoading,
     error: relatedVenuesError,
-    value: relatedVenues,
+    value: relatedVenues = emptyArray,
   } = useAsync(async () => {
-    if (!sovereignVenueId) return [];
+    if (!sovereignVenueId) return emptyArray;
 
     return fetchRelatedVenues(sovereignVenueId);
   }, [sovereignVenueId]);
