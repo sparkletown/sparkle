@@ -1,29 +1,35 @@
 import React, { FC, useCallback, useMemo } from "react";
 
-import { VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
 import { venueSelector } from "utils/selectors";
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
-import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
+// import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+// import { useVenueId } from "hooks/useVenueId";
 
 import { EventDisplay } from "../EventDisplay";
 
 import "./LiveSchedule.scss";
 import { hasElements } from "utils/types";
 
-const LiveSchedule: FC = () => {
-  const venueId = useVenueId();
-  const currentVenue = useSelector(venueSelector);
-  useLegacyConnectRelatedVenues({ venueId });
+const emptyArray: never[] = [];
 
-  const { relatedVenueEvents, relatedVenues } = useLegacyConnectRelatedVenues({
-    venueId,
-    withEvents: true,
-  });
+const LiveSchedule: FC = () => {
+  // const venueId = useVenueId();
+  const currentVenue = useSelector(venueSelector);
+
+  // @debt Stubbing out legacy code as this component isn't used anymore and is getting deleted in a different PR.
+  // useLegacyConnectRelatedVenues({ venueId });
+  //
+  // const { relatedVenueEvents, relatedVenues } = useLegacyConnectRelatedVenues({
+  //   venueId,
+  //   withEvents: true,
+  // });
+  const relatedVenues: WithId<AnyVenue>[] = emptyArray;
+  const relatedVenueEvents: WithVenueId<VenueEvent>[] = emptyArray;
 
   const relatedVenueFor = useCallback(
     (event: WithVenueId<VenueEvent>) =>
