@@ -609,12 +609,19 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
+
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
+
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
+
+  if (data.tables) {
+    updated.config.tables = data.tables;
+  }
+
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};

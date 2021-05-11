@@ -180,6 +180,24 @@ button.btn {
     margin-left: auto;
     margin-right: auto;
   }
+  &.btn-primary {
+    background-image: none;
+    background-color: $primary;
+
+    &:hover {
+      background-image: none;
+      background-color: $dimmer-primary;
+    }
+  }
+  &.btn-secondary {
+    background-image: none;
+    background-color: $lighter-intermediate-grey;
+
+    &:hover {
+      background-image: none;
+      background-color: $light-grey;
+    }
+  }
   &.disabled {
     color: rgba($white, 0.2);
     background-image: linear-gradient(

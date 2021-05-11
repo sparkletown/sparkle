@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLock,
@@ -9,16 +9,23 @@ import {
 
 import firebase from "firebase/app";
 
+import { updateVenue_v2 } from "api/admin";
+
 import { User } from "types/User";
 import { Table } from "types/Table";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 
 import { experienceSelector } from "utils/selectors";
 
+import { EditTableTitleModal } from "./components/EditTableTitleModal";
+
 import "./TableHeader.scss";
+import Bugsnag from "@bugsnag/js";
+import { GENERIC_ERROR } from "settings";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -37,12 +44,15 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const experience = useSelector(experienceSelector);
   const { recentVenueUsers } = useRecentVenueUsers();
+  const { isShown, show, hide } = useShowHide();
 
   const allTables = experience?.tables;
 
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
+
+  const [error, setError] = useState<string>("");
 
   const usersAtCurrentTable = useMemo(
     () =>
@@ -139,6 +149,40 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
   }, [leaveSeat]);
 
+  const updateTableTitle = useCallback(
+    async (newTableTitle) => {
+      if (!user) return;
+
+      const venueTables = tables.map((table) => {
+        if (table.reference === tableOfUser?.reference) {
+          return { ...table, title: newTableTitle };
+        }
+        return table;
+      });
+
+      // Ideally we want to do this only when config.tables doesn't exist. Otherwise we want to update only a single table.
+      await updateVenue_v2(
+        { name: venueName, tables: venueTables },
+        user
+      ).catch(() => {
+        // @debt Replace generic error when proper error handling is added
+        setError(GENERIC_ERROR);
+
+        const msg = "[updateVenue_v2] updating tables in venue.config.tables";
+        const context = {
+          location: "molecules::TableHeader::updateTableTitle",
+        };
+
+        console.warn(msg, context);
+        Bugsnag.notify(msg, (event) => {
+          event.severity = "warning";
+          event.addMetadata("context", context);
+        });
+      });
+    },
+    [tableOfUser?.reference, tables, user, venueName]
+  );
+
   return (
     <div className="row table-header">
       <div className="table-header__leave-table">
@@ -162,7 +206,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="row table-header__topic">
           <div>{tableTitle}</div>
 
-          <div className="table-header__edit-topic-button">
+          <div className="table-header__edit-topic-button" onClick={show}>
             <FontAwesomeIcon icon={faPen} />
           </div>
         </div>
@@ -197,6 +241,15 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           <span className="slider" />
         </label>
       </div>
+
+      <EditTableTitleModal
+        isShown={isShown}
+        title={tableTitle}
+        error={error}
+        onHide={hide}
+        onCancel={hide}
+        onSave={updateTableTitle}
+      />
     </div>
   );
 };

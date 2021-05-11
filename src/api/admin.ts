@@ -11,6 +11,7 @@ import {
 import { RoomData_v2 } from "types/rooms";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { Table } from "types/Table";
 
 export interface EventInput {
   name: string;
@@ -120,6 +121,7 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  tables?: Table[];
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
