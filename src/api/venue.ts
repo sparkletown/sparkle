@@ -134,6 +134,8 @@ export const fetchDescendantVenues = async (
 
   const { maxDepth } = options ?? {};
 
+  if (venueIds.length <= 0) return [];
+
   const directChildVenues: WithId<AnyVenue>[] = await fetchDirectChildVenues(
     venueIds
   );
