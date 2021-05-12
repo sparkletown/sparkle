@@ -57,7 +57,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
 
   &__timeline {
     height: $timeline--height;
-    font-size: $font-size--small;
+    font-size: $font-size--md;
     opacity: 0.6;
     white-space: nowrap;
   }
