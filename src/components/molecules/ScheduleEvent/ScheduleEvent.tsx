@@ -19,7 +19,7 @@ import { isEventLive } from "utils/event";
 
 import { ONE_HOUR_IN_MINUTES } from "utils/time";
 
-import { saveEventToProfile } from "api/profile";
+import { updatePersonalisedSchedule } from "api/profile";
 import { useUser } from "hooks/useUser";
 
 import { calcStartPosition, HOUR_WIDTH } from "../Schedule/Schedule.utils";
@@ -61,17 +61,17 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     () => (event.duration_minutes * HOUR_WIDTH) / ONE_HOUR_IN_MINUTES,
     [event]
   );
-  const bookmarkEvent = useCallback(() => {
-    event.isSaved = !event.isSaved;
 
-    if (userId && event.id) {
-      saveEventToProfile({
-        venueId: event.venueId,
-        userId: userId,
-        removeMode: !event.isSaved,
-        eventId: event.id,
-      });
-    }
+  const bookmarkEvent = useCallback(() => {
+    if (!userId || !event.id) return;
+
+    event.isSaved = !event.isSaved;
+    updatePersonalisedSchedule({
+      venueId: event.venueId,
+      userId: userId,
+      removeMode: !event.isSaved,
+      eventId: event.id,
+    });
   }, [userId, event]);
 
   const onBookmark: MouseEventHandler<HTMLDivElement> = useCallback(

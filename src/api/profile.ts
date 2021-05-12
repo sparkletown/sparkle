@@ -56,7 +56,7 @@ export interface SaveEventToProfileProps {
   removeMode?: boolean;
 }
 
-export const saveEventToProfile = async ({
+export const updatePersonalisedSchedule = async ({
   venueId,
   userId,
   eventId,
