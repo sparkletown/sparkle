@@ -7,6 +7,7 @@ import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 import { AnyVenue } from "types/venues";
 
 import { withId, WithId } from "utils/id";
+import { asArray } from "utils/types";
 
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
@@ -100,8 +101,7 @@ export const fetchVenue = async (
 export const fetchDirectChildVenues = async (
   venueIdOrIds: string | string[]
 ): Promise<WithId<AnyVenue>[]> => {
-  const venueIds: string[] =
-    typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
+  const venueIds = asArray(venueIdOrIds);
 
   if (venueIds.length <= 0) return [];
 
@@ -129,8 +129,7 @@ export const fetchDescendantVenues = async (
   venueIdOrIds: string | string[],
   options?: FetchDescendantVenuesOptions
 ): Promise<WithId<AnyVenue>[]> => {
-  const venueIds: string[] =
-    typeof venueIdOrIds === "string" ? [venueIdOrIds] : venueIdOrIds;
+  const venueIds = asArray(venueIdOrIds);
 
   const { maxDepth } = options ?? {};
 
