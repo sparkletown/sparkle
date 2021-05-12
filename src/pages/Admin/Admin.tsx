@@ -32,12 +32,7 @@ import {
 } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
-import {
-  isVenueWithRooms,
-  AnyVenue,
-  VenueEvent,
-  VenueTemplate,
-} from "types/venues";
+import { isVenueWithRooms, AnyVenue, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
@@ -56,6 +51,7 @@ import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useShowHide } from "hooks/useShowHide";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -264,20 +260,8 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     );
   }, [venue]);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { isShown, show, hide } = useShowHide();
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
-
-  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
-  const visitText =
-    venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
-
-  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
-  const editText =
-    venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
-
-  // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
-  const deleteText =
-    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete space";
 
   return (
     <>
@@ -353,13 +337,13 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
             >
-              {visitText}
+              Visit space
             </Link>
             <Link
               to={`/admin/venue/edit/${venue.id}`}
               className="btn btn-block"
             >
-              {editText}
+              Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
@@ -389,35 +373,29 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             </button>
             <Link
               to={{ search: "manageUsers=true" }}
-              className="btn btn-primary"
+              className="btn btn-block btn-primary"
             >
               Manage Venue Owners
             </Link>
             {typeof roomIndex !== "number" && (
-              <div>
+              <div className="page-container-adminpanel-actions-note">
                 If you are looking to edit one of your rooms, please select the
                 room in the left hand menu
               </div>
             )}
+            {canBeDeleted(venue) && (
+              <button
+                role="link"
+                className="btn btn-block btn-danger"
+                onClick={show}
+              >
+                Delete space
+              </button>
+            )}
           </>
         )}
-        {canBeDeleted(venue) && (
-          <button
-            role="link"
-            className="btn btn-block btn-danger"
-            onClick={() => setShowDeleteModal(true)}
-          >
-            {deleteText}
-          </button>
-        )}
       </div>
-      <VenueDeleteModal
-        show={showDeleteModal}
-        onHide={() => {
-          setShowDeleteModal(false);
-        }}
-        venue={venue}
-      />
+      <VenueDeleteModal show={isShown} onHide={hide} venue={venue} />
       <VenueOwnersModal
         visible={manageUsers}
         onHide={onManageUsersModalHide}
