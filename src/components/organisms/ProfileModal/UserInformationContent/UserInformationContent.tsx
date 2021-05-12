@@ -15,6 +15,7 @@ import {
   currentVenueSelector,
   currentVenueSelectorData,
 } from "utils/selectors";
+import { makeUpdateUserOnlineStatus } from "api/profile";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -68,6 +69,18 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
   if (!user || !userWithId) return null;
 
+  const handlerChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = e.target;
+    if (!venueId) return;
+    makeUpdateUserOnlineStatus({
+      venueId,
+      userUid: userWithId?.id,
+    })(value);
+  };
+
+  const statuses = ["online", "busy", "offline", "custom"];
+  const profileStatus = profile?.data?.status || "";
+
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
@@ -85,6 +98,17 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
           </h2>
           <div className="ellipsis-text">{user.email}</div>
+          <select name="pets" id="pet-select" onChange={handlerChangeStatus}>
+            {statuses.map((status) => (
+              <option
+                key={status}
+                value={status}
+                selected={profileStatus === status}
+              >
+                {status}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
