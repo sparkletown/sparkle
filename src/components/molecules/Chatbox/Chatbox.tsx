@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
 
-import { MessageToDisplay, ChatOption } from "types/chat";
+import { MessageToDisplay, ChatOption, ChatOptionMap } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -15,16 +15,16 @@ import { ChatMessage } from "components/atoms/ChatMessage";
 
 import "./Chatbox.scss";
 
-export const ChatMessageOption: ChatOption[] = [
-  {
+const ChatMessageOption: ChatOptionMap = {
+  poll: {
     icon: faPoll,
     name: "Create Poll",
   },
-  {
+  question: {
     icon: faQuestion,
     name: "Ask Question",
   },
-];
+};
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -53,7 +53,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const dropdownOptions = useMemo(
     () =>
-      ChatMessageOption.map((option) => (
+      Object.values(ChatMessageOption).map((option) => (
         <Dropdown.Item
           key={option.name}
           onClick={() => setActiveOption(option)}
@@ -65,13 +65,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     []
   );
 
-  const showPoll = activeOption?.name !== ChatMessageOption[0].name;
+  const showPoll = activeOption === ChatMessageOption.poll;
 
   const handleSubmit = useCallback((data) => console.log(data), []);
 
   const renderForms = useMemo(() => {
-    switch (activeOption?.name) {
-      case ChatMessageOption[0].name:
+    switch (activeOption) {
+      case ChatMessageOption.poll:
         return <PollBox onSubmit={handleSubmit} />;
 
       default:
@@ -92,6 +92,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       </div>
       <div className="chatbox__container">
         {showPoll ? (
+          <div
+            className="chatbox__cancel-poll"
+            onClick={() => setActiveOption(undefined)}
+          >
+            Cancel Poll
+          </div>
+        ) : (
           <DropdownButton
             id="options-dropdown"
             title="Options"
@@ -101,13 +108,6 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           >
             {dropdownOptions}
           </DropdownButton>
-        ) : (
-          <div
-            className="chatbox__cancel-poll"
-            onClick={() => setActiveOption(undefined)}
-          >
-            Cancel Poll
-          </div>
         )}
         {renderForms}
       </div>

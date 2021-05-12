@@ -68,4 +68,4 @@ export interface ChatOption {
   name: string;
 }
 
-export type ChatOptionMap = Partial<Record<ChatOptionType, ChatOption>>;
+export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
