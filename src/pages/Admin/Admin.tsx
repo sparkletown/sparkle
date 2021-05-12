@@ -188,9 +188,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <Route path={`${matchUrl}/events`}>
             <EventsComponent
               venue={venue}
-              showCreateEventModal={showCreateEventModal}
               setShowCreateEventModal={setShowCreateEventModal}
-              editedEvent={editedEvent}
+              setShowDeleteEventModal={setShowDeleteEventModal}
               setEditedEvent={setEditedEvent}
             />
           </Route>
@@ -198,13 +197,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             <>Appearance Component</>
           </Route>
           <Route path={matchUrl}>
-            <VenueInfoComponent
-              venue={venue}
-              roomIndex={roomIndex}
-              showCreateEventModal={showCreateEventModal}
-              setShowCreateEventModal={setShowCreateEventModal}
-              setShowDeleteEventModal={setShowDeleteEventModal}
-            />
+            <VenueInfoComponent venue={venue} roomIndex={roomIndex} />
           </Route>
         </Switch>
       </div>
@@ -230,9 +223,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 export type VenueInfoComponentProps = {
   venue: WithId<AnyVenue>;
   roomIndex?: number;
-  showCreateEventModal: boolean;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
   editedEvent?: WithId<VenueEvent>;
   setEditedEvent?: Function;
 };
@@ -240,9 +230,6 @@ export type VenueInfoComponentProps = {
 const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   venue,
   roomIndex,
-  showCreateEventModal,
-  setShowCreateEventModal,
-  setShowDeleteEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -263,7 +250,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   }, [venue]);
 
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   // @debt Refactor this mapping/customisation into settings, or types/templates, or similar?
   const visitText =
@@ -410,18 +396,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         visible={manageUsers}
         onHide={onManageUsersModalHide}
         venue={venue}
-      />
-      <AdminEventModal
-        show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-        template={venue.template}
-        setEditedEvent={setEditedEvent}
-        setShowDeleteEventModal={setShowDeleteEventModal}
       />
     </>
   );
