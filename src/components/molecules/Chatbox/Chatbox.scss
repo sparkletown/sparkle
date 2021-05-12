@@ -24,11 +24,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: $spacing--sm $spacing--md;
+    padding: $spacing--sm $spacing--md 0 $spacing--md;
   }
 
   &__form {
-    padding: 0 $spacing--md $spacing--md $spacing--md;
+    padding: $spacing--md;
     display: flex;
     align-items: center;
   }

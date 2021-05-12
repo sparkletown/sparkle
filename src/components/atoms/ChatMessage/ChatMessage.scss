@@ -1,17 +1,25 @@
 @import "scss/constants";
 
+$counterparty-bottom-border-radius: 0 0 28px 4px;
 $counterparty-text-border-radius: 28px 28px 28px 4px;
+$my-text-bottom-border-radius: 0 0 4px 28px;
 $my-text-border-radius: 28px 28px 4px 28px;
 
-.chat-message {
+.ChatMessage {
   align-self: flex-start;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: $spacing--lg;
 
-  &__text {
-    margin-bottom: 6px;
+  &:hover {
+    .ChatMessage__reply-icon {
+      display: flex;
+    }
+  }
+
+  &__body {
+    margin-bottom: $spacing--sm;
     width: auto;
     border-radius: $counterparty-text-border-radius;
     overflow-wrap: break-word;
@@ -19,18 +27,104 @@ $my-text-border-radius: 28px 28px 4px 28px;
     word-break: break-word;
     hyphens: auto;
     background-color: $intermediate-grey;
-    padding: 12px 16px;
-    font-size: 0.9rem;
+
+    font-size: $font-size--md;
+  }
+
+  &__main {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    padding: $spacing--md $spacing--lg;
+  }
+
+  &__text {
+    font-size: $font-size--md;
+  }
+
+  &__simple-button {
+    margin-top: $spacing--sm;
+    font-size: $font-size--sm;
+    color: opaque-white(0.8);
+    cursor: pointer;
+    align-self: flex-end;
+    border-bottom: thin solid opaque-white(0.8);
+
+    &:hover {
+      color: opaque-white(0.9);
+      border-bottom: thin solid opaque-white(0.9);
+    }
+  }
+
+  &__reply-icon {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+
+    position: absolute;
+
+    cursor: pointer;
+
+    width: $spacing--xl;
+    height: $spacing--xl;
+
+    right: $spacing--xs;
+
+    bottom: calc(-#{$spacing--xl / 2});
+
+    border-radius: $border-radius--max;
+    background-color: #6a6a6a;
+
+    &:hover {
+      background-color: #868686;
+    }
+  }
+
+  &__reply {
+    padding-top: $spacing--md;
+  }
+
+  &__replies {
+    @include scrollbar;
+    background-color: rgba(0, 0, 0, 0.14);
+    padding: 0 $spacing--lg $spacing--lg $spacing--lg;
+    font-size: $font-size--md;
+    display: flex;
+    flex-flow: column-reverse;
+
+    border-radius: $counterparty-bottom-border-radius;
+
+    height: 100%;
+    max-height: 200px;
+    overflow: auto;
+
+    align-items: flex-start;
+    text-align: left;
   }
 
   &--me {
     align-self: flex-end;
     align-items: flex-end;
 
-    .chat-message__text {
+    .ChatMessage__body {
       text-align: right;
       background-color: $primary;
       border-radius: $my-text-border-radius;
+    }
+
+    .ChatMessage__replies {
+      border-radius: $my-text-bottom-border-radius;
+    }
+
+    .ChatMessage__reply-icon {
+      background-color: #9669ff;
+      right: unset;
+      left: $spacing--xs;
+
+      &:hover {
+        background-color: #a179ff;
+      }
     }
   }
 }
