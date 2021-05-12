@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 import { VenueEvent } from "types/venues";
 
 import { withId, WithId, withVenueId, WithVenueId } from "utils/id";
+import { asArray } from "utils/types";
 
 import { getVenueRef } from "./venue";
 
@@ -20,6 +21,14 @@ export const fetchVenueEvents = async (
         withVenueId(venueEvent.data(), venueId)
       )
     );
+
+export const fetchAllVenueEvents = async (
+  venueIdOrIds: string | string[]
+): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
+  Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) =>
+    result.flat()
+  );
+
 /**
  * Convert VenueEvent objects between the app/firestore formats (@debt:, including validation).
  */
