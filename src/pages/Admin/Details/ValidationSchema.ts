@@ -74,7 +74,7 @@ export const mustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
 
 export const mustBeMaximum = (fieldName: string, max: number) =>
-  `${fieldName} must be at least ${max} characters`;
+  `${fieldName} must be less than ${max} characters`;
 
 export const roomTitleSchema = Yup.string()
   .required("Name is required")
