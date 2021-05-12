@@ -24,6 +24,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { experienceSelector } from "utils/selectors";
 
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
+import { EditTableForm } from "./components/EditTableTitleModal/EditTableTitleModal";
 
 import "./TableHeader.scss";
 
@@ -54,15 +55,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const [error, setError] = useState<string>("");
 
-  const usersAtCurrentTable = useMemo(
-    () =>
-      seatedAtTable &&
-      recentVenueUsers.filter(
-        (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ),
-    [seatedAtTable, recentVenueUsers, venueName]
-  );
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = async (doc: string, update: any) => {
     const firestore = firebase.firestore();
@@ -88,12 +80,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
-  const tableCapacity = tableOfUser?.capacity;
-  const numberOfSeatsLeft = useMemo(() => {
-    if (!tableCapacity || !usersAtCurrentTable) return 0;
-
-    return tableCapacity - usersAtCurrentTable.length;
-  }, [tableCapacity, usersAtCurrentTable]);
+  const tableCapacity = tableOfUser?.capacity ?? 10;
+  const tableSubtitle = tableOfUser?.subtitle;
 
   const setIsCurrentTableLocked = useCallback(
     (locked: boolean) => {
@@ -150,12 +138,17 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }, [leaveSeat]);
 
   const updateTableTitle = useCallback(
-    async (newTableTitle) => {
+    async (values: EditTableForm) => {
       if (!user) return;
 
       const venueTables = tables.map((table) => {
         if (table.reference === tableOfUser?.reference) {
-          return { ...table, title: newTableTitle };
+          return {
+            ...table,
+            title: values.title,
+            subtitle: values.description,
+            capacity: values.capacity,
+          };
         }
         return table;
       });
@@ -186,20 +179,22 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   return (
     <div className="row table-header">
       <div className="table-header__leave-table">
-        <button
-          type="button"
-          title={"Leave " + seatedAtTable}
-          className="table-header__leave-button"
-          id="leave-seat"
-          onClick={leaveSeat}
-        >
-          <FontAwesomeIcon
-            className="table-header__leave-button--icon"
-            icon={faChevronLeft}
-            size="xs"
-          />
-          Leave table
-        </button>
+        <div>
+          <button
+            type="button"
+            title={"Leave " + seatedAtTable}
+            className="table-header__leave-button"
+            id="leave-seat"
+            onClick={leaveSeat}
+          >
+            <FontAwesomeIcon
+              className="table-header__leave-button--icon"
+              icon={faChevronLeft}
+              size="xs"
+            />
+            Leave table
+          </button>
+        </div>
       </div>
 
       <div className="table-header__topic-info">
@@ -213,12 +208,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
         {tableCapacity && (
           <span className="table-header__seats-left">
-            {numberOfSeatsLeft} seats left
+            {tableOfUser && tableOfUser.subtitle && (
+              <label>{tableOfUser.subtitle} -</label>
+            )}{" "}
+            {tableCapacity} seats
           </span>
-        )}
-
-        {tableOfUser && tableOfUser.subtitle && (
-          <label>{tableOfUser.subtitle}</label>
         )}
       </div>
 
@@ -245,6 +239,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       <EditTableTitleModal
         isShown={isShown}
         title={tableTitle}
+        description={tableSubtitle}
+        capacity={tableCapacity}
         error={error}
         onHide={hide}
         onCancel={hide}

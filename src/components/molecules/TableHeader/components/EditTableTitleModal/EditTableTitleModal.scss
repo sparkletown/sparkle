@@ -1,6 +1,29 @@
-.edit-title-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  padding: 10px 0 0 0;
+.edit-table-modal {
+  padding: 0 10px;
+
+  &__input {
+    &--spacing {
+      padding: 5px 0;
+    }
+  }
+
+  &__capacity {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    padding: 5px 0;
+  }
+
+  &__max-capacity {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0;
+  }
+
+  &__footer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 10px 0 0 0;
+  }
 }

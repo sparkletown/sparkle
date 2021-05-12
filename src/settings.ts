@@ -100,6 +100,10 @@ export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
+// Tables
+export const MAX_TABLE_CAPACITY = 10;
+export const MIN_TABLE_CAPACITY = 2;
+
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
 

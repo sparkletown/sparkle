@@ -3,13 +3,12 @@
 .table-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: stretch;
 
   &__leave-table {
     display: flex;
     flex: 1;
     justify-content: flex-start;
-    align-items: center;
   }
 
   &__leave-button {
