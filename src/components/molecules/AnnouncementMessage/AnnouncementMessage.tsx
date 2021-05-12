@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
-
-import { getLinkFromText } from "utils/getLinkFromText";
 
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
@@ -37,7 +36,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         centered: !isExpanded,
       })}
     >
-      <div className="announcement-message">{getLinkFromText(message)}</div>
+      <div className="announcement-message">
+        <ReactMarkdown>{message}</ReactMarkdown>
+      </div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>

@@ -54,6 +54,7 @@
     "react-eventbrite-popup-checkout": "^1.0.5",
     "react-hook-form": "^5.7.2",
     "react-image-file-resizer": "^0.3.8",
+    "react-markdown": "^6.0.2",
     "react-mic": "^12.4.6",
     "react-redux": "^7.2.0",
     "react-redux-firebase": "^3.10.0",
