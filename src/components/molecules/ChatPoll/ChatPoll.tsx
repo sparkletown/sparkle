@@ -3,14 +3,11 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { WithId } from "utils/id";
 import { formatHourAndMinute } from "utils/time";
 
-import { User } from "types/User";
+import { PollData, PollQuestion } from "types/chat";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-
-import { PollValues, PollQuestion } from "components/molecules/PollBox/PollBox";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 import Button from "components/atoms/Button";
@@ -18,19 +15,25 @@ import Button from "components/atoms/Button";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: {
-    poll: PollValues;
-    ts_utc: number;
-    isMine: boolean;
-    author: WithId<User>;
-    canBeDeleted: boolean;
-    votes: number;
-  };
-  deletePoll?: () => void;
+  pollData: PollData;
+  deletePoll: (pollId: string) => void;
+  voteInPoll: (question: PollQuestion) => void;
 }
 
-export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
-  const { poll, ts_utc, isMine, author, canBeDeleted, votes } = pollData;
+export const ChatPoll: React.FC<ChatPollProps> = ({
+  pollData,
+  voteInPoll,
+  deletePoll,
+}) => {
+  const {
+    poll,
+    ts_utc,
+    isMine,
+    author,
+    canBeDeleted,
+    votes,
+    pollId,
+  } = pollData;
   const { questions, topic } = poll;
 
   const { openUserProfileModal } = useProfileModalControls();
@@ -47,18 +50,16 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
             {question.name}
           </div>
         ) : (
-          // TODO: finish button for voting
-          <Button onClick={console.log}>Send message</Button>
-          // <button
-          //   key={question.name}
-          //   className="ChatPoll__question"
-          //   onClick={() => console.log(question)}
-          // >
-          //   {question.name}
-          // </button>
+          <Button
+            key={question.name}
+            customClass="ChatPoll__question"
+            onClick={() => voteInPoll(question)}
+          >
+            {question.name}
+          </Button>
         )
       ),
-    [questions, isMine]
+    [questions, isMine, voteInPoll]
   );
 
   const openAuthorProfile = useCallback(() => {
@@ -76,7 +77,10 @@ export const ChatPoll: React.FC<ChatPollProps> = ({ pollData, deletePoll }) => {
           {canBeDeleted && (
             <>
               -
-              <button onClick={deletePoll} className="ChatPoll__delete-button">
+              <button
+                onClick={() => deletePoll(pollId)}
+                className="ChatPoll__delete-button"
+              >
                 Delete Poll
               </button>
             </>

@@ -5,21 +5,14 @@ import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { MAX_POLL_CHOICES } from "settings";
 
+import { PollValues, PollQuestion } from "types/chat";
+
 import { InputField } from "components/atoms/InputField";
 
 import "./PollBox.scss";
 
-export type PollQuestion = {
-  name: string;
-};
-
-export type PollValues = {
-  topic: string;
-  questions: PollQuestion[];
-};
-
 export interface PollBoxProps {
-  onSubmit: (props: PollValues) => void;
+  sendPoll: (props: PollValues) => void;
 }
 
 const DEFAULT_QUESTION: PollQuestion = { name: "" };
@@ -28,7 +21,7 @@ const DEFAULT_VALUES = {
   questions: [DEFAULT_QUESTION, DEFAULT_QUESTION],
 };
 
-export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
+export const PollBox: React.FC<PollBoxProps> = ({ sendPoll }) => {
   const { control, handleSubmit, reset, watch } = useForm<PollValues>({
     defaultValues: DEFAULT_VALUES,
   });
@@ -36,8 +29,8 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
   const [question1, question2] = watch("questions");
   const topic = watch("topic");
 
-  const onCustomSubmit = handleSubmit((data) => {
-    onSubmit(data);
+  const onPollSubmit = handleSubmit((data) => {
+    sendPoll(data);
     reset();
   });
 
@@ -75,7 +68,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ onSubmit }) => {
   );
 
   return (
-    <form className="PollBox" onSubmit={onCustomSubmit}>
+    <form className="PollBox" onSubmit={onPollSubmit}>
       <section className="PollBox__section">
         <Controller
           as={

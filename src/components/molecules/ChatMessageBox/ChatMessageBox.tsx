@@ -36,7 +36,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     mode: "onSubmit",
   });
 
-  const onSubmit = handleSubmit(({ message }) => {
+  const onChatFormSubmit = handleSubmit(({ message }) => {
     setMessageSending(true);
     sendMessage(message);
     reset();
@@ -45,7 +45,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   const chatValue = watch("message");
 
   return (
-    <form className="ChatMessageBox" onSubmit={onSubmit}>
+    <form className="ChatMessageBox" onSubmit={onChatFormSubmit}>
       <Controller
         as={
           <InputField

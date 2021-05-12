@@ -1,6 +1,7 @@
-import { WithId } from "utils/id";
-import { User } from "types/User";
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { User } from "types/User";
+import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 export type BaseChatMessage = {
   from: string;
@@ -17,10 +18,13 @@ export type PrivateChatMessage = BaseChatMessage & {
 export type VenueChatMessage = BaseChatMessage & {};
 
 export type PollMessage = BaseChatMessage & {
-  // TODO: add poll data
+  pollData: PollData;
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
+
+export const isPollMessage = (r: unknown): r is PollMessage =>
+  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("pollData");
 
 export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
@@ -69,3 +73,22 @@ export interface ChatOption {
 }
 
 export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
+
+export type PollQuestion = {
+  name: string;
+};
+
+export type PollValues = {
+  topic: string;
+  questions: PollQuestion[];
+};
+
+export type PollData = {
+  poll: PollValues;
+  ts_utc: number;
+  isMine: boolean;
+  author: WithId<User>;
+  canBeDeleted: boolean;
+  votes: number;
+  pollId: string;
+};
