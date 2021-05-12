@@ -11,20 +11,20 @@ import "./ScheduleRoomEvents.scss";
 export interface ScheduleRoomEventsProps {
   events: WithVenueId<PersonalizedVenueEvent>[];
   scheduleStartHour: number;
-  isUsers?: boolean;
+  isPersonalizedRoom?: boolean;
 }
 
 export const ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
   events,
   scheduleStartHour,
-  isUsers,
+  isPersonalizedRoom,
 }) => {
   return (
     <div className="RoomEvents">
-      {events.map((event, index) => (
+      {events.map((event) => (
         <ScheduleEvent
-          key={`event-${event.id}-${index}`}
-          isUsers={isUsers}
+          key={`event-${event.id}`}
+          isPersonalizedEvent={isPersonalizedRoom}
           event={event}
           scheduleStartHour={scheduleStartHour}
         />

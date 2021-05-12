@@ -22,20 +22,20 @@ import { ONE_HOUR_IN_MINUTES } from "utils/time";
 import { updatePersonalisedSchedule } from "api/profile";
 import { useUser } from "hooks/useUser";
 
-import { calcStartPosition, HOUR_WIDTH } from "../Schedule/Schedule.utils";
+import { calcStartPosition, HOUR_WIDTH_PX } from "../Schedule/Schedule.utils";
 
 import "./ScheduleEvent.scss";
 
 export interface ScheduleEventProps {
   event: WithVenueId<PersonalizedVenueEvent>;
   scheduleStartHour: number;
-  isUsers?: boolean;
+  isPersonalizedEvent?: boolean;
 }
 
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
   scheduleStartHour,
-  isUsers,
+  isPersonalizedEvent,
 }) => {
   const [isBookmarked, setBookmark] = useState(event.isSaved);
 
@@ -52,13 +52,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
         {
           "ScheduleEvent--live": isEventLive(event),
         },
-        { "ScheduleEvent--users": isTruthy(isUsers) }
+        { "ScheduleEvent--users": isTruthy(isPersonalizedEvent) }
       ),
-    [event, isUsers]
+    [event, isPersonalizedEvent]
   );
 
   const eventWidth = useMemo(
-    () => (event.duration_minutes * HOUR_WIDTH) / ONE_HOUR_IN_MINUTES,
+    () => (event.duration_minutes * HOUR_WIDTH_PX) / ONE_HOUR_IN_MINUTES,
     [event]
   );
 

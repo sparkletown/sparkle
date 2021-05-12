@@ -3,11 +3,14 @@ import { addDays, startOfToday, format, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import classNames from "classnames";
 
-import { ScheduleDay } from "types/schedule";
-
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
+
+import { PersonalizedVenueEvent } from "types/venues";
+import { RoomWithEvents } from "types/rooms";
+
+import { WithVenueId } from "utils/id";
 
 import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
@@ -20,10 +23,18 @@ import {
 
 import "./SchedulePageModal.scss";
 
-const DAYS_AHEAD = 7;
+const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 
 interface SchedulePageModalProps {
   isVisible?: boolean;
+}
+
+export interface ScheduleDay {
+  isToday: boolean;
+  weekday: string;
+  dayStartUtcSeconds: number;
+  rooms: RoomWithEvents[];
+  personalEvents: WithVenueId<PersonalizedVenueEvent>[];
 }
 
 export const emptyPersonalizedSchedule = {};
@@ -51,7 +62,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   const weekdays = useMemo(() => {
     const today = startOfToday();
 
-    return range(0, DAYS_AHEAD).map((dayIndex) => {
+    return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
       const day = addDays(today, dayIndex);
       const classes = classNames("SchedulePageModal__weekday", {
         "SchedulePageModal__weekday--active": dayIndex === selectedDayIndex,
@@ -109,7 +120,11 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
 
       {schedule.rooms.length > 0 ? (
-        <Schedule scheduleDay={schedule} />
+        <Schedule
+          rooms={schedule.rooms}
+          personalEvents={schedule.personalEvents}
+          isToday={schedule.isToday}
+        />
       ) : (
         <div className="SchedulePageModal__no-events">No events scheduled</div>
       )}
