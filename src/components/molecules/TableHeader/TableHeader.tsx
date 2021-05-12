@@ -1,4 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { useAsyncFn } from "react-use";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLock,
@@ -6,12 +7,9 @@ import {
   faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
-import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { updateVenue_v2 } from "api/admin";
-
-import { GENERIC_ERROR } from "settings";
 
 import { User } from "types/User";
 import { Table } from "types/Table";
@@ -27,6 +25,7 @@ import { EditTableTitleModal } from "./components/EditTableTitleModal";
 import { EditTableForm } from "./components/EditTableTitleModal/EditTableTitleModal";
 
 import "./TableHeader.scss";
+import { Toggler } from "components/atoms/Toggler";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -52,8 +51,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const tableOfUser = seatedAtTable
     ? tables.find((table) => table.reference === seatedAtTable)
     : undefined;
-
-  const [error, setError] = useState<string>("");
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = async (doc: string, update: any) => {
@@ -137,7 +134,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
   }, [leaveSeat]);
 
-  const updateTableTitle = useCallback(
+  const [updateResponse, updateTables] = useAsyncFn(
+    async (values: EditTableForm) => await updateTableInfo(values),
+    []
+  );
+
+  const updateTableInfo = useCallback(
     async (values: EditTableForm) => {
       if (!user) return;
 
@@ -154,24 +156,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
 
       // Ideally we want to do this only when config.tables doesn't exist. Otherwise we want to update only a single table.
-      await updateVenue_v2(
+      return await updateVenue_v2(
         { name: venueName, tables: venueTables },
         user
-      ).catch(() => {
-        // @debt Replace generic error when proper error handling is added
-        setError(GENERIC_ERROR);
-
-        const msg = "[updateVenue_v2] updating tables in venue.config.tables";
-        const context = {
-          location: "molecules::TableHeader::updateTableTitle",
-        };
-
-        console.warn(msg, context);
-        Bugsnag.notify(msg, (event) => {
-          event.severity = "warning";
-          event.addMetadata("context", context);
-        });
-      });
+      );
     },
     [tableOfUser?.reference, tables, user, venueName]
   );
@@ -184,7 +172,6 @@ const TableHeader: React.FC<TableHeaderProps> = ({
             type="button"
             title={"Leave " + seatedAtTable}
             className="table-header__leave-button"
-            id="leave-seat"
             onClick={leaveSeat}
           >
             <FontAwesomeIcon
@@ -199,7 +186,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
       <div className="table-header__topic-info">
         <div className="row table-header__topic">
-          <div>{tableTitle}</div>
+          {tableTitle}
 
           <div className="table-header__edit-topic-button" onClick={show}>
             <FontAwesomeIcon icon={faPen} />
@@ -225,15 +212,11 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="table-header__lock-indication">
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
-        <label className="switch table-header__lock-toggle">
-          <input
-            type="checkbox"
-            className="switch-hidden-input"
-            checked={!!isCurrentTableLocked}
-            onChange={toggleIsCurrentTableLocked}
-          />
-          <span className="slider" />
-        </label>
+        <Toggler
+          toggled={!!isCurrentTableLocked}
+          containerClassName="table-header__lock-toggle"
+          onChange={toggleIsCurrentTableLocked}
+        />
       </div>
 
       <EditTableTitleModal
@@ -241,10 +224,10 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         title={tableTitle}
         description={tableSubtitle}
         capacity={tableCapacity}
-        error={error}
+        error={updateResponse.error?.message ?? ""}
         onHide={hide}
         onCancel={hide}
-        onSave={updateTableTitle}
+        onSave={updateTables}
       />
     </div>
   );

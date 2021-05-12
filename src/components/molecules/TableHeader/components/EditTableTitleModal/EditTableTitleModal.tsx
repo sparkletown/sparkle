@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+
+import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
 import { InputField } from "components/atoms/InputField";
 
 import "./EditTableTitleModal.scss";
-import { useForm } from "react-hook-form";
-import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
 export interface EditTableTitleModalProps {
   isShown: boolean;

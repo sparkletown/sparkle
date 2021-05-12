@@ -171,15 +171,18 @@ button.btn {
       rgba(0, 0, 0, 0.4) 100%
     );
   }
+
   &.btn-block {
     display: block;
     max-width: 275px;
     margin-bottom: 0.8rem;
   }
+
   &.btn-centered {
     margin-left: auto;
     margin-right: auto;
   }
+
   &.btn-primary {
     background-image: none;
     background-color: $primary;
@@ -189,6 +192,7 @@ button.btn {
       background-color: $dimmer-primary;
     }
   }
+
   &.btn-secondary {
     background-image: none;
     background-color: $lighter-intermediate-grey;
@@ -198,6 +202,7 @@ button.btn {
       background-color: $light-grey;
     }
   }
+
   &.disabled {
     color: rgba($white, 0.2);
     background-image: linear-gradient(

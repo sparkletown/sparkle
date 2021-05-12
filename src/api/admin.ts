@@ -1,5 +1,6 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
+import Bugsnag from "@bugsnag/js";
 
 import { Room } from "types/rooms";
 import {
@@ -332,9 +333,21 @@ export const updateVenue = async (
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  await firebase.functions().httpsCallable("venue-updateVenue_v2")(
-    firestoreVenueInput
-  );
+  await firebase
+    .functions()
+    .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateVenue_v2] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateVenue_v2",
+      };
+
+      console.warn(msg, context);
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+      });
+    });
 };
 
 const createFirestoreRoomInput = async (
