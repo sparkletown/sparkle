@@ -127,6 +127,7 @@ const isPlaced = (venue: AnyVenue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
