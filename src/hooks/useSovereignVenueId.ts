@@ -10,6 +10,7 @@ import { fetchSovereignVenue } from "api/venue";
 import { ReactHook } from "types/utility";
 
 import { sovereignVenueIdSelector } from "utils/selectors";
+import { tracePromise } from "utils/performance";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
@@ -42,7 +43,16 @@ export const useSovereignVenueId: ReactHook<
       return;
 
     dispatch(setSovereignVenueIdIsLoading(true));
-    fetchSovereignVenue(venueId)
+
+    tracePromise(
+      "useSovereignVenueId::fetchSovereignVenue",
+      () => fetchSovereignVenue(venueId),
+      {
+        attributes: {
+          venueId,
+        },
+      }
+    )
       .then(({ sovereignVenue }) => {
         dispatch(setSovereignVenueId(sovereignVenue.id));
       })
