@@ -52,3 +52,9 @@ export const prepareForSchedule = (
     ),
   };
 };
+
+export const buildLocationString = (event: WithVenueId<VenueEvent>) =>
+  `${event.venueId}#${event.room}`;
+
+export const extractLocation = (locationStr: string) =>
+  locationStr.split("#", 2);

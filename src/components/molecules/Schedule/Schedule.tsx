@@ -4,12 +4,11 @@ import { getHours, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import { useCss } from "react-use";
 
-import { RoomWithEvents } from "types/rooms";
-import { PersonalizedVenueEvent } from "types/venues";
+import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
-import { eventStartTime } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { MAX_HOUR, MIDDAY_HOUR } from "utils/time";
+import { eventStartTime } from "utils/event";
 
 import { calcStartPosition } from "./Schedule.utils";
 
@@ -18,7 +17,7 @@ import { ScheduleRoomEvents } from "../ScheduleRoomEvents";
 import "./Schedule.scss";
 
 export interface ScheduleProps {
-  rooms: RoomWithEvents[];
+  locatedEvents: LocatedEvents[];
   personalEvents: WithVenueId<PersonalizedVenueEvent>[];
   isToday: boolean;
 }
@@ -26,24 +25,23 @@ export interface ScheduleProps {
 const MAX_SCHEDULE_START_HOUR = 16;
 const NUMBER_OF_PERSONAL_ROOMS = 1;
 
-const getRoomStartHour = (room: RoomWithEvents) =>
-  room.events.reduce(
-    (acc, event) => Math.min(acc, getHours(eventStartTime(event))),
-    MAX_SCHEDULE_START_HOUR
-  );
-
 export const Schedule: React.FC<ScheduleProps> = ({
-  rooms,
+  locatedEvents,
   personalEvents,
   isToday,
 }) => {
   const scheduleStartHour = useMemo(
     () =>
       Math.min(
-        ...rooms.map((room) => getRoomStartHour(room)),
+        ...locatedEvents.map(({ events }) =>
+          events.reduce(
+            (acc, event) => Math.min(acc, getHours(eventStartTime(event))),
+            MAX_SCHEDULE_START_HOUR
+          )
+        ),
         MAX_SCHEDULE_START_HOUR
       ),
-    [rooms]
+    [locatedEvents]
   );
 
   const currentTimePosition = calcStartPosition(
@@ -53,15 +51,20 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   const roomCells = useMemo(
     () =>
-      rooms.map((room) => (
-        <div key={room.title} className="ScheduledEvents__room">
-          <p className="ScheduledEvents__room-title">{room.title}</p>
+      locatedEvents?.map(({ location, events }) => (
+        <div
+          key={location.venueId + location.roomTitle + "index"}
+          className="ScheduledEvents__room"
+        >
+          <p className="ScheduledEvents__room-title">
+            {location.roomTitle || location.venueTitle || location.venueId}
+          </p>
           <span className="ScheduledEvents__events-count">
-            {room.events.length} events
+            {events.length} events
           </span>
         </div>
       )),
-    [rooms]
+    [locatedEvents]
   );
 
   const hoursRow = useMemo(
@@ -78,7 +81,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
   );
 
   const containerVars = useCss({
-    "--room-count": rooms.length + NUMBER_OF_PERSONAL_ROOMS,
+    "--room-count": locatedEvents.length + NUMBER_OF_PERSONAL_ROOMS,
     "--current-time--position": currentTimePosition,
     "--hours-count": hoursRow.length,
   });
@@ -112,10 +115,10 @@ export const Schedule: React.FC<ScheduleProps> = ({
             scheduleStartHour={scheduleStartHour}
           />
         </div>
-        {rooms.map((room) => (
+        {locatedEvents.map(({ location, events }) => (
           <ScheduleRoomEvents
-            key={room.title}
-            events={room.events}
+            key={location.venueId + location.roomTitle}
+            events={events}
             scheduleStartHour={scheduleStartHour}
           />
         ))}

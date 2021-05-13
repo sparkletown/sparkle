@@ -1,14 +1,23 @@
-import React, { useState, useMemo, FC, MouseEventHandler } from "react";
+import React, {
+  useState,
+  useMemo,
+  FC,
+  MouseEventHandler,
+  useCallback,
+} from "react";
 import { addDays, startOfToday, format, getUnixTime } from "date-fns";
-import { range } from "lodash";
+import { chain, range } from "lodash";
 import classNames from "classnames";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
 
-import { PersonalizedVenueEvent } from "types/venues";
-import { RoomWithEvents } from "types/rooms";
+import {
+  PersonalizedVenueEvent,
+  VenueLocation,
+  LocatedEvents,
+} from "types/venues";
 
 import { WithVenueId } from "utils/id";
 
@@ -16,7 +25,8 @@ import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
 import {
-  extendRoomsWithDaysEvents,
+  buildLocationString,
+  extractLocation,
   isEventLaterThisDay,
   prepareForSchedule,
 } from "./utils";
@@ -33,7 +43,7 @@ export interface ScheduleDay {
   isToday: boolean;
   weekday: string;
   dayStartUtcSeconds: number;
-  rooms: RoomWithEvents[];
+  locatedEvents: LocatedEvents[];
   personalEvents: WithVenueId<PersonalizedVenueEvent>[];
 }
 
@@ -51,11 +61,6 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     venueId,
     withEvents: true,
   });
-
-  const relatedRooms = useMemo(
-    () => relatedVenues.flatMap((venue) => venue.rooms ?? []),
-    [relatedVenues]
-  );
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
@@ -85,6 +90,16 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     });
   }, [selectedDayIndex]);
 
+  const getLocaion = useCallback(
+    (locString: string): VenueLocation => {
+      const [venueId, roomTitle = ""] = extractLocation(locString);
+      const venueTitle =
+        relatedVenues.find((venue) => venue.id === venueId)?.name || "";
+      return { venueId, roomTitle, venueTitle };
+    },
+    [relatedVenues]
+  );
+
   const schedule: ScheduleDay = useMemo(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
@@ -93,21 +108,19 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
       )
       .map(prepareForSchedule(dayStart, userEventIds));
 
-    const roomNamesInSchedule = new Set(daysEvents.map((event) => event.room));
-
-    const roomsWithEvents = extendRoomsWithDaysEvents(
-      relatedRooms.filter((room) => roomNamesInSchedule.has(room.title)),
-      daysEvents
-    );
+    const locatedEvents: LocatedEvents[] = chain(daysEvents)
+      .groupBy(buildLocationString)
+      .map((value, key) => ({ location: getLocaion(key), events: value }))
+      .value();
 
     return {
+      locatedEvents,
       isToday: selectedDayIndex === 0,
       weekday: format(dayStart, "E"),
       dayStartUtcSeconds: getUnixTime(dayStart),
-      rooms: roomsWithEvents,
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
-  }, [relatedVenueEvents, relatedRooms, userEventIds, selectedDayIndex]);
+  }, [relatedVenueEvents, userEventIds, selectedDayIndex, getLocaion]);
 
   const containerClasses = classNames("SchedulePageModal", {
     "SchedulePageModal--show": isVisible,
@@ -119,9 +132,9 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
 
-      {schedule.rooms.length > 0 ? (
+      {schedule.locatedEvents.length > 0 ? (
         <Schedule
-          rooms={schedule.rooms}
+          locatedEvents={schedule.locatedEvents}
           personalEvents={schedule.personalEvents}
           isToday={schedule.isToday}
         />
