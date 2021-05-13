@@ -129,6 +129,10 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
+  const venues = useSelector(orderedVenuesSelector);
+
+  const venue = useSelector(currentVenueSelectorData);
+
   const [showModal, setShowModal] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
@@ -340,9 +344,6 @@ const Playa = () => {
       }
     };
   }, []);
-
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
 
   const showVenue = useCallback(
     (venue: WithId<AnyVenue>) => {

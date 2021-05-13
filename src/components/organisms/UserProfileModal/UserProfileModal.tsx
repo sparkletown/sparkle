@@ -126,8 +126,9 @@ export const UserProfileModal: React.FC = () => {
 const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
   // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
-  const currentVenue = useSelector(currentVenueSelectorData);
   const allVenues = useSelector(orderedVenuesSelector);
+
+  const currentVenue = useSelector(currentVenueSelectorData);
 
   const suspectedLocation = useMemo(
     () => ({
