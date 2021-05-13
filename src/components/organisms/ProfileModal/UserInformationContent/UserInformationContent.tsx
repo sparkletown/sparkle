@@ -82,7 +82,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const profileStatus = profile?.data?.status || "";
 
   const statusDotClasses = classNames("profile-avatar__status-dot", {
-    [`profile-avatar__status-dot_${profileStatus}`]: profileStatus,
+    [`profile-avatar__status-dot--${profileStatus}`]: profileStatus,
   });
 
   return (

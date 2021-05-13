@@ -35,7 +35,7 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
       {user ? (
         <UserAvatar
           user={user}
-          isShowStatus
+          showStatus
           containerClassName="NavSearchResult__avatar"
         />
       ) : (

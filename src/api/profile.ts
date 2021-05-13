@@ -57,7 +57,7 @@ export const makeUpdateUserOnlineStatus = ({
   userUid,
 }: makeUpdateUserOnlineStatusProps) => (status: string) => {
   const newData = {
-    "data.status": status,
+    status: status,
   };
 
   firebase.firestore().collection("users").doc(userUid).update(newData);

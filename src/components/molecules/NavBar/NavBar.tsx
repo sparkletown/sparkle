@@ -182,7 +182,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
 
   const profileStatus = profile?.data?.status || "";
   const statusClasses = classNames("nav-avatar__status-dot", {
-    [`nav-avatar__status-dot_${profileStatus}`]: profileStatus,
+    [`nav-avatar__status-dot--${profileStatus}`]: profileStatus,
   });
 
   return (

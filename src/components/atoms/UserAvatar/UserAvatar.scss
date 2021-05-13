@@ -22,19 +22,19 @@
     width: 8px;
     z-index: z(user-avatar-status-dot);
 
-    &_online {
+    &--online {
       background-color: $green;
     }
 
-    &_busy {
+    &--busy {
       background-color: $ripple-color;
     }
 
-    &_offline {
+    &--offline {
       background-color: $red;
     }
 
-    &_custom {
+    &--custom {
       background-color: $concrete;
     }
   }
