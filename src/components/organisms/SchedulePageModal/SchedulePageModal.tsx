@@ -9,6 +9,8 @@ import { addDays, startOfToday, format, getUnixTime } from "date-fns";
 import { chain, range } from "lodash";
 import classNames from "classnames";
 
+import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -32,8 +34,6 @@ import {
 } from "./utils";
 
 import "./SchedulePageModal.scss";
-
-const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 
 interface SchedulePageModalProps {
   isVisible?: boolean;

@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
+import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
+
 import { PersonalizedVenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
@@ -16,7 +18,7 @@ import { ONE_HOUR_IN_MINUTES } from "utils/time";
 import { updatePersonalisedSchedule } from "api/profile";
 import { useUser } from "hooks/useUser";
 
-import { calcStartPosition, HOUR_WIDTH_PX } from "../Schedule/Schedule.utils";
+import { calcStartPosition } from "../Schedule/Schedule.utils";
 
 import "./ScheduleEvent.scss";
 
@@ -46,7 +48,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   const eventWidth = useMemo(
-    () => (event.duration_minutes * HOUR_WIDTH_PX) / ONE_HOUR_IN_MINUTES,
+    () =>
+      (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
+      ONE_HOUR_IN_MINUTES,
     [event]
   );
 

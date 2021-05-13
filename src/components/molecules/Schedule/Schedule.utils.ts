@@ -1,6 +1,6 @@
-import { getSecondsFromStartOfDay, ONE_HOUR_IN_SECONDS } from "utils/time";
+import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
 
-export const HOUR_WIDTH_PX = 200;
+import { getSecondsFromStartOfDay, ONE_HOUR_IN_SECONDS } from "utils/time";
 
 export const calcStartPosition = (
   startTimeUtcSeconds: number,
@@ -9,8 +9,8 @@ export const calcStartPosition = (
   const startTimeTodaySeconds = getSecondsFromStartOfDay(startTimeUtcSeconds);
 
   return Math.floor(
-    HOUR_WIDTH_PX / 2 +
+    SCHEDULE_HOUR_COLUMN_WIDTH_PX / 2 +
       (startTimeTodaySeconds / ONE_HOUR_IN_SECONDS - scheduleStartHour) *
-        HOUR_WIDTH_PX
+        SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 };

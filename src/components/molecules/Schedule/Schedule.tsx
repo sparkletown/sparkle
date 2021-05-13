@@ -4,6 +4,12 @@ import { getHours, getUnixTime } from "date-fns";
 import { range } from "lodash";
 import { useCss } from "react-use";
 
+import {
+  SCHEDULE_HOUR_COLUMN_WIDTH_PX,
+  SCHEDULE_MAX_START_HOUR,
+  SCHEDULE_NUMBER_OF_PERSONAL_ROOMS,
+} from "settings";
+
 import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
 import { WithVenueId } from "utils/id";
@@ -22,9 +28,6 @@ export interface ScheduleProps {
   isToday: boolean;
 }
 
-const MAX_SCHEDULE_START_HOUR = 16;
-const NUMBER_OF_PERSONAL_ROOMS = 1;
-
 export const Schedule: React.FC<ScheduleProps> = ({
   locatedEvents,
   personalEvents,
@@ -36,10 +39,10 @@ export const Schedule: React.FC<ScheduleProps> = ({
         ...locatedEvents.map(({ events }) =>
           events.reduce(
             (acc, event) => Math.min(acc, getHours(eventStartTime(event))),
-            MAX_SCHEDULE_START_HOUR
+            SCHEDULE_MAX_START_HOUR
           )
         ),
-        MAX_SCHEDULE_START_HOUR
+        SCHEDULE_MAX_START_HOUR
       ),
     [locatedEvents]
   );
@@ -81,9 +84,10 @@ export const Schedule: React.FC<ScheduleProps> = ({
   );
 
   const containerVars = useCss({
-    "--room-count": locatedEvents.length + NUMBER_OF_PERSONAL_ROOMS,
+    "--room-count": locatedEvents.length + SCHEDULE_NUMBER_OF_PERSONAL_ROOMS,
     "--current-time--position": currentTimePosition,
     "--hours-count": hoursRow.length,
+    "--hour-width": `${SCHEDULE_HOUR_COLUMN_WIDTH_PX}px`,
   });
 
   const containerClasses = useMemo(

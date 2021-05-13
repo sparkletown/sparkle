@@ -5,7 +5,7 @@ $room-count: var(--room-count, 1);
 $current-time--position: var(--current-time--position, -2);
 $hours-count: var(--hours-count, 8);
 
-$hour-width: 200px;
+$hour-width: var(--hour-width, 200px);
 $half-hour-width: calc(#{$hour-width} / 2);
 
 $rooms-column--width: 215px;
