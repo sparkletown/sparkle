@@ -1,6 +1,10 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+import { VenueEvent } from "types/venues";
+
+import { WithVenueId } from "utils/id";
+
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userUid: string;
@@ -49,19 +53,29 @@ export const makeUpdateUserGridLocation = ({
     });
 };
 
-export interface SaveEventToProfileProps {
-  venueId: string;
+export interface UpdatePersonalizedScheduleProps {
+  event: WithVenueId<VenueEvent>;
   userId: string;
-  eventId: string;
   removeMode?: boolean;
 }
 
-export const updatePersonalisedSchedule = async ({
-  venueId,
+export const addEventToPersonalizedSchedule = ({
+  event,
   userId,
-  eventId,
+}: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
+  updatePersonalizedSchedule({ event, userId });
+
+export const removeEventFromPersonalizedSchedule = ({
+  event,
+  userId,
+}: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
+  updatePersonalizedSchedule({ event, userId, removeMode: true });
+
+export const updatePersonalizedSchedule = async ({
+  event,
+  userId,
   removeMode = false,
-}: SaveEventToProfileProps): Promise<void> => {
+}: UpdatePersonalizedScheduleProps): Promise<void> => {
   const userProfileRef = firebase.firestore().collection("users").doc(userId);
 
   const modify = removeMode
@@ -69,16 +83,15 @@ export const updatePersonalisedSchedule = async ({
     : firebase.firestore.FieldValue.arrayUnion;
 
   const newSavedEvents = {
-    [`myPersonalizedSchedule.${venueId}`]: modify(eventId),
+    [`myPersonalizedSchedule.${event.venueId}`]: modify(event.id),
   };
 
   return userProfileRef.update(newSavedEvents).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
         location: "api/profile::saveEventToProfile",
-        venueId,
         userId,
-        eventId,
+        event,
         removeMode,
       });
     });

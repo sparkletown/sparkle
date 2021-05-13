@@ -15,7 +15,10 @@ import { isEventLive } from "utils/event";
 
 import { ONE_HOUR_IN_MINUTES } from "utils/time";
 
-import { updatePersonalisedSchedule } from "api/profile";
+import {
+  addEventToPersonalizedSchedule,
+  removeEventFromPersonalizedSchedule,
+} from "api/profile";
 import { useUser } from "hooks/useUser";
 
 import { calcStartPosition } from "../Schedule/Schedule.utils";
@@ -58,12 +61,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     if (!userId || !event.id) return;
 
     event.isSaved = !event.isSaved;
-    updatePersonalisedSchedule({
-      venueId: event.venueId,
-      userId: userId,
-      removeMode: !event.isSaved,
-      eventId: event.id,
-    });
+    event.isSaved
+      ? addEventToPersonalizedSchedule({ event, userId })
+      : removeEventFromPersonalizedSchedule({ event, userId });
   }, [userId, event]);
 
   const onBookmark: MouseEventHandler<HTMLDivElement> = useCallback(
