@@ -9,7 +9,8 @@ import { WithId, WithVenueId } from "utils/id";
 import { itemsToObjectByIdReducer } from "utils/reducers";
 import { isEventLiveOrFuture } from "utils/event";
 
-import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
@@ -33,10 +34,13 @@ export const SchedulePageModal: React.FC<SchedulePageModalProps> = ({
     parentVenue,
     currentVenue,
     relatedVenues,
-    relatedVenueEvents,
-  } = useLegacyConnectRelatedVenues({
-    venueId,
-    withEvents: true,
+    relatedVenueIds,
+  } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const { events: relatedVenueEvents } = useVenueEvents({
+    venueIds: relatedVenueIds,
   });
 
   const relatedVenuesById: Partial<
