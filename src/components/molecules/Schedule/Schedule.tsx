@@ -40,6 +40,8 @@ export const Schedule: React.FC<ScheduleProps> = ({
   scheduleDate,
   isToday,
 }) => {
+  const hasEvents = locatedEvents.length > 0;
+
   const scheduleStartHour = useMemo(
     () =>
       Math.min(
@@ -119,30 +121,36 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   return (
     <div className={containerClasses}>
-      <div className="Schedule__rooms">
-        <div className="Schedule__room">
-          <p className="Schedule__room-title">My Daily Schedule</p>
-          <span className="Schedule__events-count">
-            {personalEvents.length} events
-          </span>
-        </div>
-        {roomCells}
-      </div>
+      {hasEvents ? (
+        <>
+          <div className="Schedule__rooms">
+            <div className="Schedule__room">
+              <p className="Schedule__room-title">My Daily Schedule</p>
+              <span className="Schedule__events-count">
+                {personalEvents.length} events
+              </span>
+            </div>
+            {roomCells}
+          </div>
 
-      <div className="Schedule__schedule">
-        <div className="Schedule__timeline">{hoursRow}</div>
+          <div className="Schedule__schedule">
+            <div className="Schedule__timeline">{hoursRow}</div>
 
-        {isToday && <div className="Schedule__current-time-line"></div>}
+            {isToday && <div className="Schedule__current-time-line"></div>}
 
-        <div className="Schedule__user-schedule">
-          <ScheduleRoomEvents
-            isPersonalizedRoom
-            events={personalEvents}
-            scheduleStartHour={scheduleStartHour}
-          />
-        </div>
-        {rowsWithTheEvents}
-      </div>
+            <div className="Schedule__user-schedule">
+              <ScheduleRoomEvents
+                isPersonalizedRoom
+                events={personalEvents}
+                scheduleStartHour={scheduleStartHour}
+              />
+            </div>
+            {rowsWithTheEvents}
+          </div>
+        </>
+      ) : (
+        <div className="Schedule__no-events">No events scheduled</div>
+      )}
     </div>
   );
 };

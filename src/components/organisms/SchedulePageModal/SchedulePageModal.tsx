@@ -135,19 +135,13 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
   return (
     <div className={containerClasses}>
       <ScheduleVenueDescription />
-
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
-
-      {schedule.locatedEvents.length > 0 ? (
-        <Schedule
-          locatedEvents={schedule.locatedEvents}
-          personalEvents={schedule.personalEvents}
-          isToday={schedule.isToday}
-          scheduleDate={fromUnixTime(schedule.dayStartUtcSeconds)}
-        />
-      ) : (
-        <div className="SchedulePageModal__no-events">No events scheduled</div>
-      )}
+      <Schedule
+        locatedEvents={schedule.locatedEvents}
+        personalEvents={schedule.personalEvents}
+        isToday={schedule.isToday}
+        scheduleDate={fromUnixTime(schedule.dayStartUtcSeconds)}
+      />
     </div>
   );
 };

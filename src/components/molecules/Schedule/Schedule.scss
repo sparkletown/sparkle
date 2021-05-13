@@ -91,4 +91,8 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     left: calc(#{$current-time--position} * 1px);
     background-color: $primary;
   }
+
+  &__no-events {
+    padding: $Schedule--padding;
+  }
 }
