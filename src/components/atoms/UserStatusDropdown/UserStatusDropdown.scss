@@ -1,0 +1,44 @@
+@import "scss/constants";
+
+$dropdown-width: 100px;
+
+.dropdown-container {
+  position: relative;
+
+  &__header {
+    width: $dropdown-width;
+    margin-bottom: $spacing--xs;
+    padding: $spacing--xs 0;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
+    background-color: $black;
+    cursor: pointer;
+  }
+
+  &__list-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+  }
+
+  &__list {
+    width: $dropdown-width;
+    padding: 0;
+    margin: 0;
+    background-color: $black;
+    box-sizing: border-box;
+    overflow: visible;
+    &:first-child {
+      padding-top: $spacing--xs;
+    }
+  }
+
+  &__item {
+    list-style: none;
+    margin-bottom: $spacing--xs;
+    padding: 0 $spacing--sm;
+    cursor: pointer;
+    &:hover {
+      background-color: rgba($white, 0.1);
+    }
+  }
+}

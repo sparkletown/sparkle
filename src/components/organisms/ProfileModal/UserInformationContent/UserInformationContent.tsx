@@ -7,6 +7,7 @@ import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { Badges } from "components/organisms/Badges";
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
 import { useVenueId } from "hooks/useVenueId";
@@ -71,8 +72,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
   if (!user || !userWithId) return null;
 
-  const handlerChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = e.target;
+  const handlerChangeStatus = (value: string) => {
     makeUpdateUserOnlineStatus({
       userUid: userWithId?.id,
     })(value);
@@ -103,17 +103,11 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
           </h2>
           <div className="ellipsis-text">{user.email}</div>
-          <select name="pets" id="pet-select" onChange={handlerChangeStatus}>
-            {statuses.map((status) => (
-              <option
-                key={status}
-                value={status}
-                selected={profileStatus === status}
-              >
-                {status}
-              </option>
-            ))}
-          </select>
+          <UserStatusDropdown
+            options={statuses}
+            onChange={handlerChangeStatus}
+            label={profileStatus}
+          />
         </div>
       </div>
 
