@@ -1,17 +1,23 @@
 import React, { useState } from "react";
-import "./ArtPiece.scss";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import InformationCard from "components/molecules/InformationCard";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import { IFRAME_ALLOW } from "settings";
+
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { GenericVenue } from "types/venues";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
+
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import Room from "components/organisms/Room";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import InformationCard from "components/molecules/InformationCard";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import "./ArtPiece.scss";
 
 export interface ArtPieceProps {
   venue: WithId<GenericVenue>;
