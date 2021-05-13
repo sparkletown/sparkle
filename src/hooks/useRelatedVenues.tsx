@@ -67,13 +67,14 @@ export interface RelatedVenuesContextState {
   isLoading: boolean;
   isError: boolean;
 
+  isSovereignVenueIdLoading: boolean;
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
-  isSovereignVenueIdLoading: boolean;
+
   sovereignVenueIdError?: string;
 
-  relatedVenues: WithId<AnyVenue>[];
   isRelatedVenuesLoading: boolean;
+  relatedVenues: WithId<AnyVenue>[];
   relatedVenuesError?: Error;
 
   findVenueInRelatedVenues: (
@@ -133,13 +134,13 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
       isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
 
+      isSovereignVenueIdLoading,
       sovereignVenue: findVenueInRelatedVenues(sovereignVenueId),
       sovereignVenueId,
-      isSovereignVenueIdLoading,
       sovereignVenueIdError,
 
-      relatedVenues,
       isRelatedVenuesLoading,
+      relatedVenues,
       relatedVenuesError,
 
       findVenueInRelatedVenues,
