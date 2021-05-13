@@ -74,11 +74,18 @@ export const worldUsersByIdSelector: SparkleSelector<
  * Selector to retrieve venues from the Redux Firestore.
  *
  * @param state the Redux store
+ *
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
 
+/**
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
+ */
 export const orderedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.venues;
@@ -94,6 +101,9 @@ export const orderedVenuesSelector: SparkleSelector<
  *   const venueId = 'abc123'
  *   const venueSelector = useCallback(makeVenueSelector(venueId), [venueId])
  *   const venue = useSelector(venueSelector, shallowEqual)
+ *
+ * @deprecated This function relies on a selector that requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const makeVenueSelector = (venueId: string) => (
   state: RootState

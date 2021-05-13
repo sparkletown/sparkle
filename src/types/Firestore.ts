@@ -69,6 +69,11 @@ export interface FirestoreData {
   worldUsers?: Record<string, User>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: Record<string, AnyVenue>;
 }
 
@@ -94,5 +99,10 @@ export interface FirestoreOrdered {
   worldUsers?: Array<WithId<User>>;
   venueChatMessages?: Array<WithId<VenueChatMessage>>;
   venueEvents?: Array<WithId<VenueEvent>>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: Array<WithId<AnyVenue>>;
 }
