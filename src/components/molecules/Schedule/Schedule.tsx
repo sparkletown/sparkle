@@ -69,14 +69,12 @@ export const Schedule: React.FC<ScheduleProps> = ({
       locatedEvents?.map(({ location, events }) => (
         <div
           key={location.venueId + location.roomTitle + "index"}
-          className="ScheduledEvents__room"
+          className="Schedule__room"
         >
-          <p className="ScheduledEvents__room-title">
+          <p className="Schedule__room-title">
             {location.roomTitle || location.venueTitle || location.venueId}
           </p>
-          <span className="ScheduledEvents__events-count">
-            {events.length} events
-          </span>
+          <span className="Schedule__events-count">{events.length} events</span>
         </div>
       )),
     [locatedEvents]
@@ -88,10 +86,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
         start: scheduleStartDateTime,
         end: endOfDay(scheduleStartDateTime),
       }).map((scheduleHour) => (
-        <span
-          className="ScheduledEvents__hour"
-          key={scheduleHour.toISOString()}
-        >
+        <span className="Schedule__hour" key={scheduleHour.toISOString()}>
           {format(scheduleHour, "h a")}
         </span>
       )),
@@ -106,7 +101,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
   });
 
   const containerClasses = useMemo(
-    () => classNames("ScheduledEvents", containerVars),
+    () => classNames("Schedule", containerVars),
     [containerVars]
   );
 
@@ -124,22 +119,22 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   return (
     <div className={containerClasses}>
-      <div className="ScheduledEvents__rooms">
-        <div className="ScheduledEvents__room">
-          <p className="ScheduledEvents__room-title">My Daily Schedule</p>
-          <span className="ScheduledEvents__events-count">
+      <div className="Schedule__rooms">
+        <div className="Schedule__room">
+          <p className="Schedule__room-title">My Daily Schedule</p>
+          <span className="Schedule__events-count">
             {personalEvents.length} events
           </span>
         </div>
         {roomCells}
       </div>
 
-      <div className="ScheduledEvents__schedule">
-        <div className="ScheduledEvents__timeline">{hoursRow}</div>
+      <div className="Schedule__schedule">
+        <div className="Schedule__timeline">{hoursRow}</div>
 
-        {isToday && <div className="ScheduledEvents__current-time-line"></div>}
+        {isToday && <div className="Schedule__current-time-line"></div>}
 
-        <div className="ScheduledEvents__user-schedule">
+        <div className="Schedule__user-schedule">
           <ScheduleRoomEvents
             isPersonalizedRoom
             events={personalEvents}

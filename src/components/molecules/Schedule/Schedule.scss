@@ -21,8 +21,8 @@ $time-line--height: calc(
 
 $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
 
-.ScheduledEvents {
-  padding-top: $ScheduleEvents--padding;
+.Schedule {
+  padding-top: $Schedule--padding;
   display: flex;
   position: relative;
 
@@ -30,7 +30,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     flex-basis: $rooms-column--width;
     flex-shrink: 0;
     margin-top: $timeline--height;
-    padding-right: $ScheduleEvents--padding;
+    padding-right: $Schedule--padding;
     box-shadow: box-shadow--large();
     font-size: 0.8rem;
   }
