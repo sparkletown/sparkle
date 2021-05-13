@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useCallback, useMemo } from "react";
+import React, { MouseEventHandler, useCallback } from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,8 +9,6 @@ import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-import { isTruthy } from "utils/types";
 import { isEventLive } from "utils/event";
 
 import { ONE_HOUR_IN_MINUTES } from "utils/time";
@@ -21,12 +19,12 @@ import {
 } from "api/profile";
 import { useUser } from "hooks/useUser";
 
-import { calcStartPosition } from "../Schedule/Schedule.utils";
+import { calcStartPosition } from "components/molecules/Schedule/Schedule.utils";
 
 import "./ScheduleEvent.scss";
 
 export interface ScheduleEventProps {
-  event: WithVenueId<PersonalizedVenueEvent>;
+  event: PersonalizedVenueEvent;
   scheduleStartHour: number;
   isPersonalizedEvent?: boolean;
 }
@@ -34,28 +32,21 @@ export interface ScheduleEventProps {
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
   scheduleStartHour,
-  isPersonalizedEvent,
+  isPersonalizedEvent = false,
 }) => {
   const { userId } = useUser();
 
-  const containerClasses = useMemo(
-    () =>
-      classNames(
-        "ScheduleEvent",
-        {
-          "ScheduleEvent--live": isEventLive(event),
-        },
-        { "ScheduleEvent--users": isTruthy(isPersonalizedEvent) }
-      ),
-    [event, isPersonalizedEvent]
+  const containerClasses = classNames(
+    "ScheduleEvent",
+    {
+      "ScheduleEvent--live": isEventLive(event),
+    },
+    { "ScheduleEvent--users": isPersonalizedEvent }
   );
 
-  const eventWidth = useMemo(
-    () =>
-      (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
-      ONE_HOUR_IN_MINUTES,
-    [event]
-  );
+  const eventWidth =
+    (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
+    ONE_HOUR_IN_MINUTES;
 
   const bookmarkEvent = useCallback(() => {
     if (!userId || !event.id) return;

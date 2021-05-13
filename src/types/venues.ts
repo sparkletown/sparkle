@@ -321,10 +321,10 @@ export interface VenueLocation {
 
 export interface LocatedEvents {
   location: VenueLocation;
-  events: WithVenueId<PersonalizedVenueEvent>[];
+  events: PersonalizedVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends VenueEvent {
+export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
 }
 

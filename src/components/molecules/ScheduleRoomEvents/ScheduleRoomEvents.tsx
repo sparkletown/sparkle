@@ -2,14 +2,12 @@ import React, { useMemo } from "react";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-
-import { ScheduleEvent } from "../ScheduleEvent";
+import { ScheduleEvent } from "components/molecules/ScheduleEvent";
 
 import "./ScheduleRoomEvents.scss";
 
 export interface ScheduleRoomEventsProps {
-  events: WithVenueId<PersonalizedVenueEvent>[];
+  events: PersonalizedVenueEvent[];
   scheduleStartHour: number;
   isPersonalizedRoom?: boolean;
 }

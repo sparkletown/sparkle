@@ -18,18 +18,17 @@ import {
 
 import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
-import { WithVenueId } from "utils/id";
 import { eventStartTime } from "utils/event";
 
-import { calcStartPosition } from "./Schedule.utils";
+import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 
-import { ScheduleRoomEvents } from "../ScheduleRoomEvents";
+import { calcStartPosition } from "./Schedule.utils";
 
 import "./Schedule.scss";
 
 export interface ScheduleProps {
   locatedEvents: LocatedEvents[];
-  personalEvents: WithVenueId<PersonalizedVenueEvent>[];
+  personalEvents: PersonalizedVenueEvent[];
   scheduleDate: Date;
   isToday: boolean;
 }
@@ -70,7 +69,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
     () =>
       locatedEvents?.map(({ location, events }) => (
         <div
-          key={location.venueId + location.roomTitle + "index"}
+          key={`RoomCell-${location.venueId}-${location.roomTitle}`}
           className="Schedule__room"
         >
           <p className="Schedule__room-title">
@@ -102,16 +101,13 @@ export const Schedule: React.FC<ScheduleProps> = ({
     "--hour-width": `${SCHEDULE_HOUR_COLUMN_WIDTH_PX}px`,
   });
 
-  const containerClasses = useMemo(
-    () => classNames("Schedule", containerVars),
-    [containerVars]
-  );
+  const containerClasses = classNames("Schedule", containerVars);
 
   const rowsWithTheEvents = useMemo(
     () =>
       locatedEvents.map(({ location, events }) => (
         <ScheduleRoomEvents
-          key={location.venueId + location.roomTitle}
+          key={`ScheduleRoomEvents-${location.venueId}-${location.roomTitle}`}
           events={events}
           scheduleStartHour={scheduleStartHour}
         />
@@ -130,13 +126,14 @@ export const Schedule: React.FC<ScheduleProps> = ({
                 {personalEvents.length} events
               </span>
             </div>
+
             {roomCells}
           </div>
 
           <div className="Schedule__schedule">
             <div className="Schedule__timeline">{hoursRow}</div>
 
-            {isToday && <div className="Schedule__current-time-line"></div>}
+            {isToday && <div className="Schedule__current-time-line" />}
 
             <div className="Schedule__user-schedule">
               <ScheduleRoomEvents
@@ -145,6 +142,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
                 scheduleStartHour={scheduleStartHour}
               />
             </div>
+
             {rowsWithTheEvents}
           </div>
         </>

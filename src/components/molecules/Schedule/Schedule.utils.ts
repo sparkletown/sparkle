@@ -6,11 +6,12 @@ export const calcStartPosition = (
   startTimeUtcSeconds: number,
   scheduleStartHour: number
 ) => {
-  const startTimeTodaySeconds = getSecondsFromStartOfDay(startTimeUtcSeconds);
+  const startTimeSeconds = getSecondsFromStartOfDay(startTimeUtcSeconds);
+  const hoursToSkip =
+    startTimeSeconds / ONE_HOUR_IN_SECONDS - scheduleStartHour;
+  const halfHourWidth = SCHEDULE_HOUR_COLUMN_WIDTH_PX / 2;
 
   return Math.floor(
-    SCHEDULE_HOUR_COLUMN_WIDTH_PX / 2 +
-      (startTimeTodaySeconds / ONE_HOUR_IN_SECONDS - scheduleStartHour) *
-        SCHEDULE_HOUR_COLUMN_WIDTH_PX
+    halfHourWidth + hoursToSkip * SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 };

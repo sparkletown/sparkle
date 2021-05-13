@@ -27,8 +27,6 @@ import {
   LocatedEvents,
 } from "types/venues";
 
-import { WithVenueId } from "utils/id";
-
 import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -50,7 +48,7 @@ export interface ScheduleDay {
   weekday: string;
   dayStartUtcSeconds: number;
   locatedEvents: LocatedEvents[];
-  personalEvents: WithVenueId<PersonalizedVenueEvent>[];
+  personalEvents: PersonalizedVenueEvent[];
 }
 
 export const emptyPersonalizedSchedule = {};

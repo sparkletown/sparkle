@@ -26,10 +26,10 @@ export const isEventLaterThisDay = (date: number | Date) => (
 
 export const extendRoomsWithDaysEvents = (
   rooms: Room[],
-  daysEvents: WithVenueId<PersonalizedVenueEvent>[]
+  daysEvents: PersonalizedVenueEvent[]
 ): RoomWithEvents[] => {
   return rooms.map((room) => {
-    const events: WithVenueId<PersonalizedVenueEvent>[] = daysEvents.filter(
+    const events: PersonalizedVenueEvent[] = daysEvents.filter(
       (event) => event?.room === room?.title
     );
     return { ...room, events };
@@ -39,7 +39,7 @@ export const extendRoomsWithDaysEvents = (
 export const prepareForSchedule = (
   day: Date,
   usersEvents: MyPersonalizedSchedule
-) => (event: WithVenueId<VenueEvent>): WithVenueId<PersonalizedVenueEvent> => {
+) => (event: WithVenueId<VenueEvent>): PersonalizedVenueEvent => {
   const startOfEventToShow = max([eventStartTime(event), startOfDay(day)]);
   const endOfEventToShow = min([eventEndTime(event), endOfDay(day)]);
 
