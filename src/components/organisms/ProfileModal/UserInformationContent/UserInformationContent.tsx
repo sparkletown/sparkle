@@ -73,9 +73,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
   const handlerChangeStatus = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { value } = e.target;
-    if (!venueId) return;
     makeUpdateUserOnlineStatus({
-      venueId,
       userUid: userWithId?.id,
     })(value);
   };

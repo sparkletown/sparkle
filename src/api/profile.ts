@@ -49,39 +49,16 @@ export const makeUpdateUserGridLocation = ({
     });
 };
 
-export const makeUpdateUserOnlineStatus = ({
-  venueId,
-  userUid,
-}: MakeUpdateUserGridLocationProps) => (status: string) => {
-  const doc = `users/${userUid}`;
+export interface makeUpdateUserOnlineStatusProps {
+  userUid: string;
+}
 
+export const makeUpdateUserOnlineStatus = ({
+  userUid,
+}: makeUpdateUserOnlineStatusProps) => (status: string) => {
   const newData = {
     "data.status": status,
   };
 
-  const firestore = firebase.firestore();
-
-  // @debt refactor this to use a proper upsert pattern instead of error based try/catch logic
-  firestore
-    .doc(doc)
-    .update(newData)
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.severity = "info";
-
-        event.addMetadata(
-          "notes",
-          "TODO",
-          "refactor this to use a proper upsert pattern (eg. check that the doc exists, then insert or update accordingly), rather than using try/catch"
-        );
-
-        event.addMetadata("api::profile::makeUpdateUserOnlineStatus", {
-          venueId,
-          userUid,
-          doc,
-        });
-      });
-
-      firestore.doc(doc).set(newData);
-    });
+  firebase.firestore().collection("users").doc(userUid).update(newData);
 };
