@@ -79,7 +79,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
         dialogClassName="custom-dialog"
       >
         <Modal.Body>
-          <SchedulePageModal />
+          <SchedulePageModal venueId={venue.id} />
         </Modal.Body>
       </Modal>
     </WithNavigationBar>

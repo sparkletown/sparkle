@@ -54,7 +54,6 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -1056,7 +1055,9 @@ const Playa = () => {
           dialogClassName="custom-dialog"
         >
           <Modal.Body>
-            <SchedulePageModal />
+            {/* @debt Stubbing out legacy code as this component isn't used anymore and is getting deleted in a different PR. */}
+            Schedule Disabled
+            {/*<SchedulePageModal venueId={???} />*/}
           </Modal.Body>
         </Modal>
       </>

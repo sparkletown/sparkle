@@ -315,7 +315,10 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <SchedulePageModal isVisible={isEventScheduleVisible} />
+        <SchedulePageModal
+          venueId={venueId}
+          isVisible={isEventScheduleVisible}
+        />
       </div>
 
       {/* @debt Remove back button from Navbar */}

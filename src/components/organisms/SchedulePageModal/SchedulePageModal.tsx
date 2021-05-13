@@ -1,4 +1,4 @@
-import React, { useState, useMemo, FC } from "react";
+import React, { useState, useMemo } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import { range } from "lodash";
 
@@ -10,7 +10,6 @@ import { itemsToObjectByIdReducer } from "utils/reducers";
 import { isEventLiveOrFuture } from "utils/event";
 
 import { useLegacyConnectRelatedVenues } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
@@ -22,13 +21,14 @@ type DatedEvents = Array<{
 const DAYS_AHEAD = 7;
 
 interface SchedulePageModalProps {
+  venueId?: string;
   isVisible?: boolean;
 }
 
-export const SchedulePageModal: FC<SchedulePageModalProps> = ({
+export const SchedulePageModal: React.FC<SchedulePageModalProps> = ({
+  venueId,
   isVisible,
 }) => {
-  const venueId = useVenueId();
   const {
     parentVenue,
     currentVenue,
