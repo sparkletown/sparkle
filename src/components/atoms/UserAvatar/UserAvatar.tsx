@@ -13,7 +13,7 @@ export interface UserAvatarProps {
   user?: WithId<User>;
   containerClassName?: string;
   imageClassName?: string;
-  isOnline?: boolean;
+  isShowStatus?: boolean;
   onClick?: () => void;
 }
 
@@ -23,7 +23,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   containerClassName,
   imageClassName,
   onClick,
-  isOnline,
+  isShowStatus,
 }) => {
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -37,7 +37,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--clickable": onClick !== undefined,
   });
 
+  const status = user?.data?.status || "";
+
   const imageClasses = classNames("user-avatar__image", imageClassName);
+  const statusClasses = classNames("user-avatar__status-dot", {
+    [`user-avatar__status-dot_${status}`]: status,
+  });
 
   return (
     <div className={containerClasses}>
@@ -47,7 +52,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {isOnline && <span className="user-avatar__status-dot" />}
+      {isShowStatus && status && <span className={statusClasses} />}
     </div>
   );
 };

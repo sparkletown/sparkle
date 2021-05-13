@@ -17,6 +17,8 @@ import {
   parentVenueSelector,
   radioStationsSelector,
 } from "utils/selectors";
+import classNames from "classnames";
+
 import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
 
@@ -178,6 +180,11 @@ const NavBar: React.FC<NavBarPropsType> = ({
   const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio = (venue?.showRadio && isSoundCloud) ?? false;
 
+  const profileStatus = profile?.data?.status || "";
+  const statusClasses = classNames("nav-avatar__status-dot", {
+    [`nav-avatar__status-dot_${profileStatus}`]: profileStatus,
+  });
+
   return (
     <>
       <header>
@@ -293,7 +300,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <div className="navbar-link-profile">
+                  <div className="navbar-link-profile navbar-profile-container">
                     <img
                       src={profileImage}
                       className="profile-icon"
@@ -301,6 +308,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
                       width="40"
                       height="40"
                     />
+                    {profileStatus && <span className={statusClasses} />}
                   </div>
                 </OverlayTrigger>
               </div>

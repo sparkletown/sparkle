@@ -5,6 +5,7 @@
 
   width: 25px;
   height: 25px;
+
   &__image {
     height: 100%;
     width: 100%;
@@ -20,6 +21,22 @@
     height: 8px;
     width: 8px;
     z-index: z(user-avatar-status-dot);
+
+    &_online {
+      background-color: $green;
+    }
+
+    &_busy {
+      background-color: $ripple-color;
+    }
+
+    &_offline {
+      background-color: $red;
+    }
+
+    &_custom {
+      background-color: $concrete;
+    }
   }
 
   &--clickable {

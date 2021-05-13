@@ -16,6 +16,8 @@ import {
   currentVenueSelectorData,
 } from "utils/selectors";
 import { makeUpdateUserOnlineStatus } from "api/profile";
+import classNames from "classnames";
+import "./UserInformationContent.scss";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -81,18 +83,23 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const statuses = ["online", "busy", "offline", "custom"];
   const profileStatus = profile?.data?.status || "";
 
+  const statusDotClasses = classNames("profile-avatar__status-dot", {
+    [`profile-avatar__status-dot_${profileStatus}`]: profileStatus,
+  });
+
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <img
-          className="profile-icon profile-modal-avatar"
-          src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-          alt="profile avatar"
-          width="50"
-          height="50"
-        />
+        <div className="profile-avatar profile-avatar--clickable">
+          <img
+            className="profile-icon profile-avatar__image"
+            src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
+            alt="profile avatar"
+          />
+          {profileStatus && <span className={statusDotClasses} />}
+        </div>
         <div className="text-container">
           <h2 className="title ellipsis-text">
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}

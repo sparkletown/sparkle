@@ -38,7 +38,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="chat-message__text">{text}</div>
       <div className="chat-message__info" onClick={openAuthorProfile}>
-        <UserAvatar user={author} />
+        <UserAvatar user={author} isShowStatus />
         <span className="chat-message__author">{author.partyName}</span>
         <span className="chat-message__time">
           {dayjs(timestamp).format("h:mm A")}
