@@ -95,6 +95,18 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [containerVars]
   );
 
+  const rowsWithTheEvents = useMemo(
+    () =>
+      locatedEvents.map(({ location, events }) => (
+        <ScheduleRoomEvents
+          key={location.venueId + location.roomTitle}
+          events={events}
+          scheduleStartHour={scheduleStartHour}
+        />
+      )),
+    [locatedEvents, scheduleStartHour]
+  );
+
   return (
     <div className={containerClasses}>
       <div className="ScheduledEvents__rooms">
@@ -119,13 +131,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
             scheduleStartHour={scheduleStartHour}
           />
         </div>
-        {locatedEvents.map(({ location, events }) => (
-          <ScheduleRoomEvents
-            key={location.venueId + location.roomTitle}
-            events={events}
-            scheduleStartHour={scheduleStartHour}
-          />
-        ))}
+        {rowsWithTheEvents}
       </div>
     </div>
   );

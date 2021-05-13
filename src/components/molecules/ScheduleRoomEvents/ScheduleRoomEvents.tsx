@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
@@ -19,16 +19,18 @@ export const ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
   scheduleStartHour,
   isPersonalizedRoom,
 }) => {
-  return (
-    <div className="RoomEvents">
-      {events.map((event) => (
+  const eventBlocks = useMemo(
+    () =>
+      events.map((event) => (
         <ScheduleEvent
           key={`event-${event.id}`}
           isPersonalizedEvent={isPersonalizedRoom}
           event={event}
           scheduleStartHour={scheduleStartHour}
         />
-      ))}
-    </div>
+      )),
+    [events, isPersonalizedRoom, scheduleStartHour]
   );
+
+  return <div className="RoomEvents">{eventBlocks}</div>;
 };
