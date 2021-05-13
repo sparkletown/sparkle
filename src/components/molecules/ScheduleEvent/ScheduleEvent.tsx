@@ -1,10 +1,4 @@
-import React, {
-  MouseEventHandler,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { MouseEventHandler, useCallback, useMemo } from "react";
 import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -37,12 +31,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   scheduleStartHour,
   isPersonalizedEvent,
 }) => {
-  const [isBookmarked, setBookmark] = useState(event.isSaved);
-
-  useEffect(() => {
-    setBookmark(event.isSaved);
-  }, [event.isSaved]);
-
   const { userId } = useUser();
 
   const containerClasses = useMemo(
@@ -100,7 +88,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
       <div className="ScheduleEvent__bookmark" onClick={onBookmark}>
         <FontAwesomeIcon
-          icon={isBookmarked ? solidBookmark : regularBookmark}
+          icon={event.isSaved ? solidBookmark : regularBookmark}
         />
       </div>
     </div>
