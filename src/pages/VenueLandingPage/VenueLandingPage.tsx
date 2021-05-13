@@ -100,7 +100,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         new Date().getTime() / 1000 && event.price > 0
   );
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
 
   useEffect(() => {
     if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {

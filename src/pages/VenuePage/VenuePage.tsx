@@ -89,7 +89,13 @@ const VenuePage: React.FC = () => {
 
   const event = currentEvent?.[0];
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
