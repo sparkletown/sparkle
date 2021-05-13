@@ -14,6 +14,14 @@ $author-margin--right-aligned: 8px;
   margin-bottom: 16px;
   width: 100%;
 
+  .ChatPoll__question {
+    display: block;
+    background: none;
+    margin-bottom: $spacing;
+    width: 100%;
+    background-color: $concrete;
+  }
+
   &--me {
     align-self: flex-end;
     align-items: flex-end;
@@ -40,12 +48,6 @@ $author-margin--right-aligned: 8px;
   }
 
   &__text {
-    margin-bottom: $spacing;
-  }
-
-  &__question {
-    display: block;
-    background: none;
     margin-bottom: $spacing;
   }
 

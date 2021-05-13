@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
@@ -8,8 +8,6 @@ import {
   ChatOption,
   ChatOptionMap,
   isPollMessage,
-  PollQuestion,
-  PollValues,
 } from "types/chat";
 
 import { WithId } from "utils/id";
@@ -19,6 +17,8 @@ import { ChatPoll } from "components/molecules/ChatPoll";
 import { PollBox } from "components/molecules/PollBox";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
+
+import { useVenuePoll } from "hooks/useVenuePoll";
 
 import "./Chatbox.scss";
 
@@ -68,24 +68,16 @@ export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: (text: string) => void;
   deleteMessage: (messageId: string) => void;
+  displayPoll?: boolean;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
   messages,
   sendMessage,
   deleteMessage,
+  displayPoll,
 }) => {
-  // todo: create hook and store for Poll
-  // todo: add Poll type for data
-  // const { sendPoll, deletePoll, voteInPoll } = useVenuePoll();
-
-  const sendPoll = useCallback((data: PollValues) => console.log(data), []);
-  const deletePoll = useCallback((pollId: string) => console.log(pollId), []);
-  const voteInPoll = useCallback(
-    (question: PollQuestion) => console.log(question),
-    []
-  );
-
+  const { createPoll, deletePoll, voteInPoll } = useVenuePoll();
   const [activeOption, setActiveOption] = useState<ChatOption>();
   const showPoll = activeOption === ChatMessageOption.poll;
 
@@ -126,35 +118,36 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const renderForms = useMemo(() => {
     switch (activeOption) {
       case ChatMessageOption.poll:
-        return <PollBox sendPoll={sendPoll} />;
+        return <PollBox createPoll={createPoll} />;
 
       default:
         return <ChatMessageBox sendMessage={sendMessage} />;
     }
-  }, [activeOption, sendMessage, sendPoll]);
+  }, [activeOption, sendMessage, createPoll]);
 
   return (
     <div className="chatbox">
       <div className="chatbox__messages">{renderedMessages}</div>
       <div className="chatbox__container">
-        {showPoll ? (
-          <div
-            className="chatbox__cancel-poll"
-            onClick={() => setActiveOption(undefined)}
-          >
-            Cancel Poll
-          </div>
-        ) : (
-          <DropdownButton
-            id="options-dropdown"
-            title="Options"
-            className="chatbox__dropdown"
-            variant="link"
-            drop="up"
-          >
-            {dropdownOptions}
-          </DropdownButton>
-        )}
+        {displayPoll &&
+          (showPoll ? (
+            <div
+              className="chatbox__cancel-poll"
+              onClick={() => setActiveOption(undefined)}
+            >
+              Cancel Poll
+            </div>
+          ) : (
+            <DropdownButton
+              id="options-dropdown"
+              title="Options"
+              className="chatbox__dropdown"
+              variant="link"
+              drop="up"
+            >
+              {dropdownOptions}
+            </DropdownButton>
+          ))}
         {renderForms}
       </div>
     </div>

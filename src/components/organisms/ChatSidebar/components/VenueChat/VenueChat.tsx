@@ -12,6 +12,7 @@ export const VenueChat: React.FC = () => {
   return (
     <div className="venue-chat">
       <Chatbox
+        displayPoll
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         deleteMessage={deleteMessage}

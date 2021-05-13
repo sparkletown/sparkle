@@ -12,7 +12,7 @@ import { InputField } from "components/atoms/InputField";
 import "./PollBox.scss";
 
 export interface PollBoxProps {
-  sendPoll: (props: PollValues) => void;
+  createPoll: (props: PollValues) => void;
 }
 
 const DEFAULT_QUESTION: PollQuestion = { name: "" };
@@ -21,7 +21,7 @@ const DEFAULT_VALUES = {
   questions: [DEFAULT_QUESTION, DEFAULT_QUESTION],
 };
 
-export const PollBox: React.FC<PollBoxProps> = ({ sendPoll }) => {
+export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const { control, handleSubmit, reset, watch } = useForm<PollValues>({
     defaultValues: DEFAULT_VALUES,
   });
@@ -30,7 +30,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ sendPoll }) => {
   const topic = watch("topic");
 
   const onPollSubmit = handleSubmit((data) => {
-    sendPoll(data);
+    createPoll(data);
     reset();
   });
 
