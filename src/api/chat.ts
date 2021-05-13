@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 
 import { VenueChatMessage, PrivateChatMessage } from "types/chat";
+import { VideoChatRequest, VideoChatRequestState } from "types/ChatRequest";
 
 export interface SendVenueMessageProps {
   venueId: string;
@@ -80,3 +81,62 @@ export const deletePrivateMessage = async ({
     .collection("chats")
     .doc(messageId)
     .update({ deleted: true });
+
+export const createVideoChat = async (
+  hostId: string,
+  guestId: string,
+  venueName: string
+) => {
+  const videoChatRequest: VideoChatRequest = {
+    hostId: hostId,
+    guestId: guestId,
+    state: VideoChatRequestState.Asked,
+    createdAt: Date.now(),
+  };
+
+  return await firebase
+    .firestore()
+    .collection("experiences")
+    .doc(venueName)
+    .collection("chatRequests")
+    .add(videoChatRequest);
+};
+
+export const acceptVideoChat = async (
+  venueName: string,
+  videoChatId: string
+) => {
+  return await firebase
+    .firestore()
+    .collection("experiences")
+    .doc(venueName)
+    .collection("chatRequests")
+    .doc(videoChatId)
+    .update({ state: VideoChatRequestState.Accepted });
+};
+
+export const declineVideoChat = async (
+  venueName: string,
+  videoChatId: string
+) => {
+  return await firebase
+    .firestore()
+    .collection("experiences")
+    .doc(venueName)
+    .collection("chatRequests")
+    .doc(videoChatId)
+    .update({ state: VideoChatRequestState.Declined });
+};
+
+export const leaveVideoChat = async (
+  venueName: string,
+  videoChatId: string
+) => {
+  return await firebase
+    .firestore()
+    .collection("experiences")
+    .doc(venueName)
+    .collection("chatRequests")
+    .doc(videoChatId)
+    .update({ state: VideoChatRequestState.Canceled });
+};

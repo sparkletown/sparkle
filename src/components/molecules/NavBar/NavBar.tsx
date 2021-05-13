@@ -12,11 +12,7 @@ import { IS_BURN } from "secrets";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  radioStationsSelector,
-} from "utils/selectors";
+import { parentVenueSelector, radioStationsSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
 
@@ -40,6 +36,7 @@ import { NavBarLogin } from "./NavBarLogin";
 import "./NavBar.scss";
 import * as S from "./Navbar.styles";
 import "./playa.scss";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -79,7 +76,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
 }) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelectorData);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueParentId = venue?.parentId;
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
