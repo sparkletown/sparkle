@@ -24,8 +24,8 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { VideoChatModal } from "components/organisms/VideoChatModal";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -144,6 +144,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         <AnnouncementMessage message={venue.bannerMessage} />
         {template}
         <ChatSidebar />
+        <VideoChatModal />
         <UserProfileModal />
       </WithNavigationBar>
     </ReactionsProvider>

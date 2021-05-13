@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+
+import { createVideoChat } from "api/chat";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -26,6 +28,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useVenueId } from "hooks/useVenueId";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
@@ -33,9 +36,11 @@ import Button from "components/atoms/Button";
 import "./UserProfileModal.scss";
 
 export const UserProfileModal: React.FC = () => {
+  const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
 
   const { user } = useUser();
+  const history = useHistory();
 
   const { selectRecipientChat } = useChatSidebarControls();
 
@@ -54,6 +59,14 @@ export const UserProfileModal: React.FC = () => {
     // NOTE: Hide the modal, after the chat is opened;
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
+
+  const startVideoChat = useCallback(async () => {
+    if (!user?.uid || !chosenUserId || !venueId) return;
+
+    const response = await createVideoChat(user.uid, chosenUserId, venueId);
+    const roomId = response.id;
+    history.push(`/pr/${venueId}/${roomId}`);
+  }, [chosenUserId, history, user?.uid, venueId]);
 
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
@@ -115,7 +128,10 @@ export const UserProfileModal: React.FC = () => {
             <Badges user={selectedUserProfile} currentVenue={venue} />
           )}
           {chosenUserId !== user.uid && (
-            <Button onClick={openChosenUserChat}>Send message</Button>
+            <>
+              <Button onClick={startVideoChat}>Start a Video Chat</Button>
+              <Button onClick={openChosenUserChat}>Send message</Button>
+            </>
           )}
         </div>
       </Modal.Body>
