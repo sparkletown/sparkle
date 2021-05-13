@@ -1,7 +1,13 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { getHours, getUnixTime } from "date-fns";
-import { range } from "lodash";
+import {
+  eachHourOfInterval,
+  endOfDay,
+  format,
+  getHours,
+  getUnixTime,
+  setHours,
+} from "date-fns";
 import { useCss } from "react-use";
 
 import {
@@ -13,7 +19,6 @@ import {
 import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
 import { WithVenueId } from "utils/id";
-import { MAX_HOUR, MIDDAY_HOUR } from "utils/time";
 import { eventStartTime } from "utils/event";
 
 import { calcStartPosition } from "./Schedule.utils";
@@ -25,12 +30,14 @@ import "./Schedule.scss";
 export interface ScheduleProps {
   locatedEvents: LocatedEvents[];
   personalEvents: WithVenueId<PersonalizedVenueEvent>[];
+  scheduleDate: Date;
   isToday: boolean;
 }
 
 export const Schedule: React.FC<ScheduleProps> = ({
   locatedEvents,
   personalEvents,
+  scheduleDate,
   isToday,
 }) => {
   const scheduleStartHour = useMemo(
@@ -45,6 +52,11 @@ export const Schedule: React.FC<ScheduleProps> = ({
         SCHEDULE_MAX_START_HOUR
       ),
     [locatedEvents]
+  );
+
+  const scheduleStartDateTime = useMemo(
+    () => setHours(scheduleDate, scheduleStartHour),
+    [scheduleStartHour, scheduleDate]
   );
 
   const currentTimePosition = calcStartPosition(
@@ -72,15 +84,18 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   const hoursRow = useMemo(
     () =>
-      range(scheduleStartHour, MAX_HOUR).map((hour: number) => {
-        return (
-          <span className="ScheduledEvents__hour" key={hour}>
-            {hour % MIDDAY_HOUR || MIDDAY_HOUR}{" "}
-            {hour >= MIDDAY_HOUR ? "PM" : "AM"}
-          </span>
-        );
-      }),
-    [scheduleStartHour]
+      eachHourOfInterval({
+        start: scheduleStartDateTime,
+        end: endOfDay(scheduleStartDateTime),
+      }).map((scheduleHour) => (
+        <span
+          className="ScheduledEvents__hour"
+          key={scheduleHour.toISOString()}
+        >
+          {format(scheduleHour, "h a")}
+        </span>
+      )),
+    [scheduleStartDateTime]
   );
 
   const containerVars = useCss({

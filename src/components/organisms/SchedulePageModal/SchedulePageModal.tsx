@@ -5,7 +5,13 @@ import React, {
   MouseEventHandler,
   useCallback,
 } from "react";
-import { addDays, startOfToday, format, getUnixTime } from "date-fns";
+import {
+  addDays,
+  startOfToday,
+  format,
+  getUnixTime,
+  fromUnixTime,
+} from "date-fns";
 import { chain, range } from "lodash";
 import classNames from "classnames";
 
@@ -137,6 +143,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
           locatedEvents={schedule.locatedEvents}
           personalEvents={schedule.personalEvents}
           isToday={schedule.isToday}
+          scheduleDate={fromUnixTime(schedule.dayStartUtcSeconds)}
         />
       ) : (
         <div className="SchedulePageModal__no-events">No events scheduled</div>

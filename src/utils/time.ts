@@ -23,9 +23,6 @@ export const ONE_HOUR_IN_MILLISECONDS =
 
 export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
 
-export const MAX_HOUR = 24;
-export const MIDDAY_HOUR = 12;
-
 /**
  * Convert totalSeconds to a Duration object (days, hours, minutes, seconds).
  *
