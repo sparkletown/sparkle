@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 
 import { isVenueWithRooms } from "types/venues";
 
+import { orderedVenuesSelector } from "utils/selectors";
 import { canHaveSubvenues } from "utils/venue";
 
 import { useSelector } from "hooks/useSelector";
@@ -13,7 +14,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector((state) => state.firestore.ordered.venues);
+  const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;
 
