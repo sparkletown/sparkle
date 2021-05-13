@@ -4,18 +4,29 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 
-import { VenueChatMessage } from "types/chat";
+import {
+  DeleteMessage,
+  SendChatReply,
+  SendVenueMessage,
+  VenueChatMessage,
+} from "types/chat";
 
-import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
+import {
+  buildMessage,
+  chatSort,
+  divideMessages,
+  getMessageReplies,
+  getMessageToDisplay,
+} from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
-import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
-import { useWorldUsersById } from "./users";
+import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
 
 export const useConnectVenueChatMessages = (venueId?: string) => {
@@ -33,7 +44,7 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
 
 export const useVenueChat = () => {
   const venueId = useVenueId();
-  const { worldUsersById } = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
   const { user } = useUser();
 
@@ -55,89 +66,63 @@ export const useVenueChat = () => {
     )
     .sort(chatSort);
 
-  const sendMessage = useCallback(
-    (text: string) => {
+  const sendMessage: SendVenueMessage = useCallback(
+    async (text: string) => {
       if (!venueId || !userId) return;
 
       const message = buildMessage<VenueChatMessage>({ from: userId, text });
 
-      sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message });
     },
     [venueId, userId]
   );
 
-  const sendThreadReply = useCallback(
-    (text: string, threadId: string) => {
-      if (!venueId || !userId) return;
-
-      const threadReply = buildMessage<VenueChatMessage>({
-        from: userId,
-        text,
-        threadId,
-      });
-
-      sendVenueMessage({ venueId, message: threadReply });
-    },
-    [venueId, userId]
-  );
-
-  const deleteMessage = useCallback(
+  const deleteMessage: DeleteMessage = useCallback(
     (messageId: string) => {
       if (!venueId) return;
 
-      deleteVenueMessage({ venueId, messageId });
+      return deleteVenueMessage({ venueId, messageId });
     },
     [venueId]
   );
 
-  const { messages, allMessagesReplies } = filteredMessages.reduce<{
-    messages: WithId<VenueChatMessage>[];
-    allMessagesReplies: WithId<VenueChatMessage>[];
-  }>(
-    (acc, message) => {
-      if (message.threadId !== undefined)
-        return {
-          ...acc,
-          allMessagesReplies: [...acc.allMessagesReplies, message],
-        };
+  const sendThreadReply: SendChatReply = useCallback(
+    async ({ replyText, threadId }) => {
+      if (!venueId || !userId) return;
 
-      return { ...acc, messages: [...acc.messages, message] };
+      const threadReply = buildMessage<VenueChatMessage>({
+        from: userId,
+        text: replyText,
+        threadId,
+      });
+
+      return sendVenueMessage({ venueId, message: threadReply });
     },
-    { messages: [], allMessagesReplies: [] }
+    [venueId, userId]
   );
 
-  const getMessageReplies = useCallback(
-    (messageId) => {
-      const messageReplies = allMessagesReplies
-        .filter((reply) => reply.threadId === messageId)
-        .map((reply) =>
-          getMessageToDisplay({
-            message: reply,
-            usersById: worldUsersById,
-            myUserId: userId,
-            isAdmin,
-          })
-        );
-
-      if (messageReplies.length === 0) return undefined;
-
-      return messageReplies;
-    },
-    [allMessagesReplies, worldUsersById, userId, isAdmin]
+  const { messages, allMessagesReplies } = useMemo(
+    () => divideMessages(filteredMessages),
+    [filteredMessages]
   );
 
   const messagesToDisplay = useMemo(
     () =>
-      messages.map((message) =>
-        getMessageToDisplay({
-          message,
-          usersById: worldUsersById,
-          myUserId: userId,
-          replies: getMessageReplies(message.id),
-          isAdmin,
-        })
-      ),
-    [getMessageReplies, userId, worldUsersById, isAdmin, messages]
+      messages
+        .map((message) =>
+          getMessageToDisplay({
+            message,
+            usersById: worldUsersById,
+            myUserId: userId,
+            replies: getMessageReplies({
+              messageId: message.id,
+              allReplies: allMessagesReplies,
+            }),
+            isAdmin,
+          })
+        )
+        .filter(isTruthy),
+    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );
 
   return useMemo(

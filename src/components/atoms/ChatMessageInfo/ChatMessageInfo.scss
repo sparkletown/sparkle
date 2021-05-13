@@ -1,18 +1,17 @@
 @import "scss/constants";
 
-$counterparty-text-border-radius: 28px 28px 28px 4px;
-$my-text-border-radius: 28px 28px 4px 28px;
-
 .ChatMessageInfo {
   display: flex;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: $font-size--sm;
 
   &__author {
+    margin: 0 $spacing--sm 0 $spacing--xs;
+
+    cursor: pointer;
+
     opacity: 0.8;
     color: $white;
-    margin: 0 8px 0 4px;
-    cursor: pointer;
 
     &:hover {
       opacity: 1;
@@ -21,11 +20,12 @@ $my-text-border-radius: 28px 28px 4px 28px;
 
   &__time {
     opacity: 0.6;
-    font-weight: 300;
+    font-weight: $font-weight--300;
   }
 
   &__delete-icon {
-    margin-left: 5px;
+    margin-left: $spacing--xs;
+
     opacity: 0.6;
     cursor: pointer;
 
@@ -44,12 +44,12 @@ $my-text-border-radius: 28px 28px 4px 28px;
     }
 
     .ChatMessageInfo__author {
-      margin: 0 4px 0 8px;
+      margin: 0 $spacing--xs 0 $spacing--sm;
     }
 
     .ChatMessageInfo__delete-icon {
       margin-left: 0;
-      margin-right: 5px;
+      margin-right: $spacing--xs;
     }
   }
 }

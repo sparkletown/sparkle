@@ -1,11 +1,19 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
 
+$primary--lightest: #a179ff;
+$primary--light: #9669ff;
 $primary: #6f43ff;
-$dimmer-primary: #3f247d;
+$dimmer--darker: #3f247d;
 
+$secondary--lightest: #868686;
+$secondary--light: #6a6a6a;
+$secondary: #333035;
+$secondary--dark: #19181a;
+$secondary--darkest: #090909;
+
+// @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
-$intermediate-grey: #333035;
 $saturated-black: #19181a;
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
@@ -79,6 +87,7 @@ $font-size--xxl: 30px;
 $font-size--xxxl: 50px;
 
 // Placeholders, until we can find meaningful names for them
+$font-weight--300: 300;
 $font-weight--400: 400;
 $font-weight--500: 500;
 $font-weight--600: 600;
@@ -115,6 +124,7 @@ $z-layers: (
   chat-drawer-container: $z-layer-sidebar,
   chatbox-submit-button: 1,
   chatslist-private-container-back-button: 1,
+  chatmessage-reply-button: 1,
   user-search-close-icon: 1,
   user-search-input-close-btn: 1,
   user-search-results: 380,
@@ -164,6 +174,10 @@ $z-layers: (
 
 @function opaque-white($opacity: 0.1) {
   @return rgba($white, $opacity);
+}
+
+@function opaque-black($opacity: 0.1) {
+  @return rgba($black, $opacity);
 }
 
 @function box-shadow--large($transparency: 0.5) {

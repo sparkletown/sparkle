@@ -13,10 +13,19 @@ import {
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
   getPreviewChatMessage,
+  divideMessages,
+  getMessageReplies,
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
+import { isTruthy } from "utils/types";
 
-import { PreviewChatMessageMap, PrivateChatMessage } from "types/chat";
+import {
+  DeleteMessage,
+  PreviewChatMessageMap,
+  PrivateChatMessage,
+  SendPrivateMessage,
+  SendChatReply,
+} from "types/chat";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -155,7 +164,7 @@ export const useRecipientChat = (recipientId: string) => {
   const userId = user?.uid;
   const recipient = withId(worldUsersById[recipientId], recipientId);
 
-  const sendMessageToSelectedRecipient = useCallback(
+  const sendMessageToSelectedRecipient: SendPrivateMessage = useCallback(
     (text: string) => {
       if (!userId) return;
 
@@ -165,35 +174,16 @@ export const useRecipientChat = (recipientId: string) => {
         to: recipientId,
       });
 
-      sendPrivateMessage(message);
+      return sendPrivateMessage(message);
     },
     [userId, recipientId]
   );
 
-  const messagesToDisplay = useMemo(
-    () =>
-      privateChatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            (message.to === recipientId || message.from === recipientId)
-        )
-        .sort(chatSort)
-        .map((message) =>
-          getMessageToDisplay<WithId<PrivateChatMessage>>({
-            message,
-            usersById: worldUsersById,
-            myUserId: userId,
-          })
-        ),
-    [privateChatMessages, recipientId, worldUsersById, userId]
-  );
-
-  const deleteMessage = useCallback(
+  const deleteMessage: DeleteMessage = useCallback(
     (messageId: string) => {
       if (!userId) return;
 
-      deletePrivateMessage({ userId, messageId });
+      return deletePrivateMessage({ userId, messageId });
     },
     [userId]
   );
@@ -207,10 +197,63 @@ export const useRecipientChat = (recipientId: string) => {
     [userId]
   );
 
+  const sendThreadReply: SendChatReply = useCallback(
+    async ({ replyText, threadId }) => {
+      if (!userId) return;
+
+      const threadReply = buildMessage<PrivateChatMessage>({
+        from: userId,
+        to: recipientId,
+        text: replyText,
+        threadId,
+      });
+
+      return sendPrivateMessage(threadReply);
+    },
+    [userId, recipientId]
+  );
+
+  const filteredMessages = useMemo(
+    () =>
+      privateChatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            (message.to === recipientId || message.from === recipientId)
+        )
+        .sort(chatSort),
+    [privateChatMessages, recipientId]
+  );
+
+  const { messages, allMessagesReplies } = useMemo(
+    () => divideMessages(filteredMessages),
+    [filteredMessages]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      messages
+        .map((message) =>
+          getMessageToDisplay<WithId<PrivateChatMessage>>({
+            message,
+            usersById: worldUsersById,
+            myUserId: userId,
+            replies: getMessageReplies({
+              messageId: message.id,
+              allReplies: allMessagesReplies,
+            }),
+          })
+        )
+        .filter(isTruthy),
+    [worldUsersById, userId, allMessagesReplies, messages]
+  );
+
   return {
     sendMessageToSelectedRecipient,
     deleteMessage,
     markMessageRead,
+    sendThreadReply,
+
     messagesToDisplay,
     recipient,
   };

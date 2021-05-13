@@ -36,7 +36,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
       }
 
       &--toggler {
-        background-color: $dimmer-primary;
+        background-color: $dimmer--darker;
 
         &::after {
           left: $toggler-circle-moving-delta;

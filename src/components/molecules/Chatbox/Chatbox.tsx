@@ -3,20 +3,27 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
-import { MessageToDisplay } from "types/chat";
+import {
+  DeleteMessage,
+  MessageToDisplay,
+  SendChatReply,
+  SendMesssage,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
 import { InputField } from "components/atoms/InputField";
 
+import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
+
 import "./Chatbox.scss";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  sendMessage: (text: string) => void;
-  sendThreadReply: (text: string, threadId: string) => void;
-  deleteMessage: (messageId: string) => void;
+  sendMessage: SendMesssage;
+  sendThreadReply: SendChatReply;
+  deleteMessage: DeleteMessage;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
@@ -58,7 +65,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     if (!chosenThread) return;
 
     setMessageSending(true);
-    sendThreadReply(message, chosenThread.id);
+    sendThreadReply({ replyText: message, threadId: chosenThread.id });
     reset();
   });
 
@@ -82,14 +89,10 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       <div className="Chatbox__messages">{renderedMessages}</div>
       <div className="Chatbox__form-box">
         {chosenThread && (
-          <div className="Chatbox__chat-contols">
-            <span className="Chatbox__thread-author">
-              replying to <b>{chosenThread.author.partyName}...</b>
-            </span>
-            <span className="Chatbox__simple-button" onClick={quitThread}>
-              Cancel
-            </span>
-          </div>
+          <ChatboxThreadControls
+            threadAuthor={chosenThread.author.partyName}
+            onThreadLeave={quitThread}
+          />
         )}
 
         <form

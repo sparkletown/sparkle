@@ -1,5 +1,6 @@
 import { WithId } from "utils/id";
 import { User } from "types/User";
+import firebase from "firebase/app";
 
 export type BaseChatMessage = {
   from: string;
@@ -24,6 +25,29 @@ export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   canBeDeleted?: boolean;
   replies?: WithId<MessageToDisplay>[];
 };
+
+export type SendVenueMessage = (
+  text: string
+) =>
+  | Promise<void | firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>
+  | undefined;
+
+export type SendPrivateMessage = (text: string) => Promise<void> | undefined;
+
+export type SendMesssage = SendVenueMessage | SendPrivateMessage;
+
+export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
+
+export interface SendChatReplyProps {
+  replyText: string;
+  threadId: string;
+}
+
+export type SendChatReply = (
+  props: SendChatReplyProps
+) =>
+  | Promise<void | firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>
+  | undefined;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;

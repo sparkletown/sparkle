@@ -10,6 +10,7 @@ import { WithId } from "utils/id";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatMessage.scss";
 
@@ -36,7 +37,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     message,
   ]);
 
-  const { isShown, toggle } = useShowHide();
+  const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,
@@ -56,33 +57,39 @@ export const ChatMessage: React.FC<ChatProps> = ({
     [replies, deleteMessage]
   );
 
-  const hasReplies = renderedReplies !== undefined;
-
   const repliesCount = renderedReplies && renderedReplies.length;
 
   const hasMultipleReplies = repliesCount && repliesCount > 1;
 
   const replyText = hasMultipleReplies ? "replies" : "reply";
 
+  const replyButtonText = !isRepliesShown
+    ? `${repliesCount} ${replyText}`
+    : `hide ${replyText}`;
+
   return (
     <div className={containerStyles}>
-      <div className="ChatMessage__body">
-        <div className="ChatMessage__main">
+      <div className="ChatMessage__bulb">
+        <div className="ChatMessage__text-content">
           <div className="ChatMessage__text">{text}</div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon icon={faReply} size="sm" onClick={onReplyClick} />
           </div>
-          {hasReplies && (
-            <div className="ChatMessage__simple-button" onClick={toggle}>
-              {!isShown ? `${repliesCount} ${replyText}` : `hide ${replyText}`}
-            </div>
+          {repliesCount && (
+            <TextButton
+              containerClassName="ChatMessage__show-replies-button"
+              onClick={toggleReplies}
+              text={replyButtonText}
+            />
           )}
         </div>
 
-        {isShown && (
-          <div className="ChatMessage__replies">{renderedReplies}</div>
-        )}
+        <div className="ChatMessage__replies-content">
+          {isRepliesShown && (
+            <div className="ChatMessage__replies">{renderedReplies}</div>
+          )}
+        </div>
       </div>
       <ChatMessageInfo
         message={message}

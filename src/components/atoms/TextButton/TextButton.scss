@@ -1,0 +1,22 @@
+@import "scss/constants";
+
+.TextButton {
+  // get rid of default button styles
+  background: none;
+  border: none;
+
+  font-size: $font-size--sm;
+  color: opaque-white(0.8);
+  cursor: pointer;
+  border-bottom: thin solid opaque-white(0.8);
+
+  &:hover {
+    color: opaque-white(0.9);
+    border-bottom: thin solid opaque-white(0.9);
+  }
+
+  &:focus {
+    // get rid of default button styles
+    outline: none;
+  }
+}
