@@ -57,7 +57,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = <PartyMap />;
+      template = <PartyMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:
