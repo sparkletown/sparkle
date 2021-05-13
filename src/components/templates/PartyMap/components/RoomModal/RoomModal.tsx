@@ -108,6 +108,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         <RoomModalOngoingEvent
           roomEvents={roomEvents}
           onRoomEnter={enterRoomWithSound}
+          roomUrl={room.url}
         />
       </div>
 
