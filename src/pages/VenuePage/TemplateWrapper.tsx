@@ -61,7 +61,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.artpiece:
-      template = <ArtPiece />;
+      template = <ArtPiece venue={venue} />;
       break;
 
     case VenueTemplate.playa:

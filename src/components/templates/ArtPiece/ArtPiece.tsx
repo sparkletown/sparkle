@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "./ArtPiece.scss";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
 import InformationCard from "components/molecules/InformationCard";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
@@ -9,16 +8,17 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 import { Modal } from "react-bootstrap";
 import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { GenericVenue } from "types/venues";
+import { WithId } from "utils/id";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
 
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-
-  if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
 
@@ -79,8 +79,3 @@ export const ArtPiece = () => {
     </WithNavigationBar>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;
