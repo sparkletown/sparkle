@@ -3,6 +3,7 @@ import {
   differenceInHours,
   fromUnixTime,
   isWithinInterval,
+  startOfDay,
 } from "date-fns";
 
 import { VenueEvent } from "types/venues";
@@ -56,3 +57,11 @@ export const eventEndTime = (event: VenueEvent) =>
 
 export const moreThanHourLeftBeforeEventStarts = (event: VenueEvent) =>
   differenceInHours(eventStartTime(event), Date.now()) > 0;
+
+export const isEventLaterThisDay = (date: number | Date) => (
+  event: VenueEvent
+) =>
+  isWithinInterval(date, {
+    start: startOfDay(eventStartTime(event)),
+    end: eventEndTime(event),
+  });

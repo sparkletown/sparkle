@@ -33,9 +33,9 @@ import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDesc
 import {
   buildLocationString,
   extractLocation,
-  isEventLaterThisDay,
   prepareForSchedule,
 } from "./utils";
+import { isEventLaterThisDay } from "utils/event";
 
 import "./NavBarSchedule.scss";
 

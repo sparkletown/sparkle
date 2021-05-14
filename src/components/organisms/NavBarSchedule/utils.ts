@@ -2,7 +2,6 @@ import {
   differenceInMinutes,
   endOfDay,
   getUnixTime,
-  isWithinInterval,
   max,
   min,
   startOfDay,
@@ -14,14 +13,6 @@ import { MyPersonalizedSchedule } from "types/User";
 import { WithVenueId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
 import { isTruthy } from "utils/types";
-
-export const isEventLaterThisDay = (date: number | Date) => (
-  event: VenueEvent
-) =>
-  isWithinInterval(date, {
-    start: startOfDay(eventStartTime(event)),
-    end: eventEndTime(event),
-  });
 
 export const prepareForSchedule = (
   day: Date,
