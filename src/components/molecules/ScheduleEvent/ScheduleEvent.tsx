@@ -51,10 +51,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const bookmarkEvent = useCallback(() => {
     if (!userId || !event.id) return;
 
-    event.isSaved = !event.isSaved;
     event.isSaved
-      ? addEventToPersonalizedSchedule({ event, userId })
-      : removeEventFromPersonalizedSchedule({ event, userId });
+      ? removeEventFromPersonalizedSchedule({ event, userId })
+      : addEventToPersonalizedSchedule({ event, userId });
   }, [userId, event]);
 
   const onBookmark: MouseEventHandler<HTMLDivElement> = useCallback(
