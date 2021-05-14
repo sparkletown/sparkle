@@ -1,0 +1,82 @@
+@import "scss/constants.scss";
+
+.share-modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+
+  &__title {
+    text-align: center;
+  }
+
+  &__button-text {
+    margin-left: 10px;
+  }
+
+  &__link {
+    text-align: center;
+    text-decoration: none;
+    margin-top: 20px;
+    background-color: $lighter-intermediate-grey;
+    padding: 12px 16px;
+    border-radius: 28px;
+    cursor: pointer;
+
+    &--copied {
+      cursor: auto;
+      opacity: 0.5;
+    }
+  }
+}
+
+.share-modal-header {
+  position: relative;
+  height: 200px;
+  margin: 10px 10px 0 10px;
+  border-radius: 15px;
+
+  &__background {
+    z-index: z(map-background);
+    border-radius: 15px;
+    height: 100%;
+    opacity: 0.5;
+  }
+
+  &__logo {
+    position: absolute;
+    top: 30%;
+    left: 125px;
+    display: block;
+    width: 50px;
+    height: 70px;
+    background-image: url(/assets/icons/sparkle-nav-logo.png);
+    background-size: 50px 70px;
+    &:before {
+      position: absolute;
+      content: "";
+      pointer-events: none;
+      left: 52px;
+      width: 220px;
+      height: 75px;
+      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
+      background-size: 220px 75px;
+      transform: translateX(-40px) scale(0.75);
+      transition: opacity 200ms, transform 400ms $transition-function;
+    }
+  }
+
+  &__title {
+    position: absolute;
+    font-size: 20px;
+    bottom: 20px;
+    left: 0;
+  }
+
+  &__url-text {
+    position: absolute;
+    color: $concrete;
+    bottom: 12px;
+    left: 30px;
+  }
+}

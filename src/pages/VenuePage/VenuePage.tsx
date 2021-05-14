@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -45,8 +44,6 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
-
-import { PLATFORM_BRAND_NAME } from "settings";
 
 import "./VenuePage.scss";
 
@@ -115,8 +112,6 @@ const VenuePage: React.FC = () => {
 
     setLocationData({ userId, locationName: venueName });
   }, [userId, venueName]);
-
-  useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
   useEffect(() => {
     if (!userId) return;

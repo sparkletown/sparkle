@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { faTv, faStop } from "@fortawesome/free-solid-svg-icons";
+import { faTv, faShare, faStop } from "@fortawesome/free-solid-svg-icons";
 
 import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 
@@ -18,6 +18,7 @@ import { PosterPageControl } from "./components/PosterPageControl";
 import { PosterPageSettingsControl } from "./components/PosterPageSettingsControl";
 
 import { usePosterVideo } from "./usePosterVideo";
+import { ShareModal } from "./components/ShareModal";
 
 import "./PosterPage.scss";
 
@@ -35,6 +36,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
     show: showIntroVideoModal,
     hide: hideIntroVideoModal,
+  } = useShowHide();
+  const {
+    isShown: isShareModal,
+    show: showShareModal,
+    hide: hideShareModal,
   } = useShowHide();
 
   const {
@@ -97,7 +103,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           />
 
           {/* TODO: Implement poster sharing on social media */}
-          {/* <PosterPageControl label="Share" icon={faShare} /> */}
+          <PosterPageControl
+            label="Share"
+            icon={faShare}
+            onClick={showShareModal}
+          />
 
           {introVideoUrl && (
             <PosterPageControl
@@ -143,6 +153,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           introVideoUrl={introVideoUrl}
         />
       )}
+      <ShareModal show={isShareModal} onHide={hideShareModal} venue={venue} />
     </div>
   );
 };
