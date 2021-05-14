@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { FirebaseReducer } from "react-redux-firebase";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -10,10 +11,10 @@ import { WithId } from "utils/id";
 import "./UserAvatar.scss";
 
 export interface UserAvatarProps {
-  user?: WithId<User>;
+  user?: WithId<User> | FirebaseReducer.Profile<User>;
   containerClassName?: string;
   imageClassName?: string;
-  isOnline?: boolean;
+  statusClassName?: string;
   showStatus?: boolean;
   onClick?: () => void;
 }
@@ -23,8 +24,8 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
+  statusClassName,
   onClick,
-  isOnline,
   showStatus,
 }) => {
   const avatarSrc: string = user?.anonMode
@@ -39,11 +40,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--clickable": onClick !== undefined,
   });
 
-  const status = user?.data?.status || "";
+  const status = user?.status ?? "";
 
   const imageClasses = classNames("user-avatar__image", imageClassName);
-  const statusClasses = classNames("user-avatar__status-dot", {
-    [`user-avatar__status-dot--${status}`]: isOnline && status,
+  const statusClasses = classNames("user-avatar__status-dot", statusClassName, {
+    [`user-avatar__status-dot--${status}`]: status,
   });
 
   return (

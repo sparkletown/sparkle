@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { Experience } from "types/User";
+import { Experience, Statuses } from "types/User";
 
 import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
-  options: Array<string>;
+  options: Array<Statuses>;
   onChange: (option: string) => void;
   label: string | Experience;
 }

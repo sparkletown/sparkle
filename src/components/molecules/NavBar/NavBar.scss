@@ -28,35 +28,14 @@ $border-radius: 28px;
     cursor: pointer;
   }
 
-  .navbar-profile-container {
-    position: relative;
+  .navbar-profile-image-container {
+    width: 40px;
+    height: 40px;
+  }
 
-    .nav-avatar__status-dot {
-      position: absolute;
-      bottom: -1px;
-      right: -1px;
-      border-radius: 50%;
-      background-color: $green;
-      height: 12px;
-      width: 12px;
-      z-index: z(user-avatar-status-dot);
-
-      &_online {
-        background-color: $green;
-      }
-
-      &_busy {
-        background-color: $ripple-color;
-      }
-
-      &_offline {
-        background-color: $red;
-      }
-
-      &_custom {
-        background-color: $concrete;
-      }
-    }
+  .navbar-profile-image-status {
+    width: 12px;
+    height: 12px;
   }
 
   .notification-card {

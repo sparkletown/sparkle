@@ -49,16 +49,27 @@ export const makeUpdateUserGridLocation = ({
     });
 };
 
-export interface makeUpdateUserOnlineStatusProps {
-  userUid: string;
+export interface UpdateUserOnlineStatusProps {
+  status: string;
+  userId: string;
 }
 
-export const makeUpdateUserOnlineStatus = ({
-  userUid,
-}: makeUpdateUserOnlineStatusProps) => (status: string) => {
+export const updateUserOnlineStatus = async ({
+  status,
+  userId,
+}: UpdateUserOnlineStatusProps): Promise<void> => {
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
   const newData = {
     status: status,
   };
 
-  firebase.firestore().collection("users").doc(userUid).update(newData);
+  return userProfileRef.update(newData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateUserOnlineStatus",
+        status,
+        userId,
+      });
+    });
+  });
 };

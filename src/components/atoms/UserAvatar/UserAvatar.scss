@@ -5,7 +5,6 @@
 
   width: 25px;
   height: 25px;
-
   &__image {
     height: 100%;
     width: 100%;
@@ -25,15 +24,12 @@
     &--online {
       background-color: $green;
     }
-
     &--busy {
       background-color: $ripple-color;
     }
-
     &--offline {
       background-color: $red;
     }
-
     &--custom {
       background-color: $concrete;
     }

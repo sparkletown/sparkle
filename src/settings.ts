@@ -10,6 +10,7 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { Statuses } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -566,3 +567,10 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+
+export const USER_STATUSES = [
+  Statuses.online,
+  Statuses.busy,
+  Statuses.offline,
+  Statuses.custom,
+];

@@ -3,7 +3,6 @@ import { useUser } from "hooks/useUser";
 import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { Badges } from "components/organisms/Badges";
@@ -16,8 +15,10 @@ import {
   currentVenueSelector,
   currentVenueSelectorData,
 } from "utils/selectors";
-import { makeUpdateUserOnlineStatus } from "api/profile";
-import classNames from "classnames";
+import { updateUserOnlineStatus } from "api/profile";
+import { UserAvatar } from "components/atoms/UserAvatar";
+import { USER_STATUSES } from "settings";
+
 import "./UserInformationContent.scss";
 
 interface PropsType {
@@ -70,41 +71,40 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   }, [profile, user]);
 
+  const handlerChangeStatus = useCallback(
+    (value: string) => {
+      if (userWithId) {
+        updateUserOnlineStatus({
+          status: value,
+          userId: userWithId?.id,
+        });
+      }
+    },
+    [userWithId]
+  );
+
   if (!user || !userWithId) return null;
 
-  const handlerChangeStatus = (value: string) => {
-    makeUpdateUserOnlineStatus({
-      userUid: userWithId?.id,
-    })(value);
-  };
-
-  const statuses = ["online", "busy", "offline", "custom"];
-  const profileStatus = profile?.data?.status || "";
-
-  const statusDotClasses = classNames("profile-avatar__status-dot", {
-    [`profile-avatar__status-dot--${profileStatus}`]: profileStatus,
-  });
+  const profileStatus = profile?.status ?? "";
 
   return (
     <>
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <div className="profile-avatar profile-avatar--clickable">
-          <img
-            className="profile-icon profile-avatar__image"
-            src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-            alt="profile avatar"
-          />
-          {profileStatus && <span className={statusDotClasses} />}
-        </div>
+        <UserAvatar
+          user={profile}
+          containerClassName="profile-avatar-container"
+          statusClassName="profile-avatar-status"
+          showStatus
+        />
         <div className="text-container">
           <h2 className="title ellipsis-text">
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
           </h2>
           <div className="ellipsis-text">{user.email}</div>
           <UserStatusDropdown
-            options={statuses}
+            options={USER_STATUSES}
             onChange={handlerChangeStatus}
             label={profileStatus}
           />

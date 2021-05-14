@@ -32,4 +32,12 @@ export interface User {
   kidsMode: boolean;
   anonMode: boolean;
   enteredVenueIds?: string[];
+  status?: string;
+}
+
+export enum Statuses {
+  online = "online",
+  busy = "busy",
+  offline = "offline",
+  custom = "custom",
 }
