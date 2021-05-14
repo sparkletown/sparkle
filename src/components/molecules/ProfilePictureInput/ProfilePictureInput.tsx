@@ -101,7 +101,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         ref={uploadRef}
       />
       <label htmlFor="profile-picture-input" className="profile-picture-button">
-        Upload your profile pic
+        Upload your profile pic!
       </label>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
