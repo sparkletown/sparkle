@@ -1,13 +1,16 @@
 import React, { FC, useMemo } from "react";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import "./ScheduleVenueDescription.scss";
 
-export const ScheduleVenueDescription: FC = () => {
-  const venueId = useVenueId();
+export interface ScheduleVenueDescriptionProps {
+  venueId: string;
+}
 
+export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
+  venueId,
+}) => {
   const { parentVenue, currentVenue } = useConnectRelatedVenues({
     venueId,
   });

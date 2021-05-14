@@ -132,7 +132,7 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
   return (
     <div className={containerClasses}>
-      <ScheduleVenueDescription />
+      {venueId && <ScheduleVenueDescription venueId={venueId} />}
       <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
       <Schedule
         locatedEvents={schedule.locatedEvents}
