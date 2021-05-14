@@ -11,7 +11,6 @@ import {
 } from "settings";
 
 import {
-  currentVenueSelector,
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
@@ -19,7 +18,7 @@ import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
-import { isVenueWithRooms } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -32,9 +31,13 @@ import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 
-export const UserProfileModal: React.FC = () => {
-  const venue = useSelector(currentVenueSelector);
+export interface UserProfileModalProps {
+  venue: WithId<AnyVenue>;
+}
 
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  venue,
+}) => {
   const { user } = useUser();
 
   const { selectRecipientChat } = useChatSidebarControls();
