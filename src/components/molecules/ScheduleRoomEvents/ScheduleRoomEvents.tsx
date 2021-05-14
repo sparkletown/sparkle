@@ -30,5 +30,5 @@ export const ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
     [events, isPersonalizedRoom, scheduleStartHour]
   );
 
-  return <div className="RoomEvents">{eventBlocks}</div>;
+  return <div className="ScheduleRoomEvents">{eventBlocks}</div>;
 };
