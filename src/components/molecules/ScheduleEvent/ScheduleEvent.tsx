@@ -58,20 +58,16 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     containerCssVars
   );
 
-  const bookmarkEvent = useCallback(() => {
-    if (!userId || !event.id) return;
-
-    event.isSaved
-      ? removeEventFromPersonalizedSchedule({ event, userId })
-      : addEventToPersonalizedSchedule({ event, userId });
-  }, [userId, event]);
-
-  const onBookmark: MouseEventHandler<HTMLDivElement> = useCallback(
+  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       e.stopPropagation();
-      bookmarkEvent();
+      if (!userId || !event.id) return;
+
+      event.isSaved
+        ? removeEventFromPersonalizedSchedule({ event, userId })
+        : addEventToPersonalizedSchedule({ event, userId });
     },
-    [bookmarkEvent]
+    [userId, event]
   );
 
   return (
@@ -81,7 +77,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
         <div className="ScheduleEvent__description">by {event.host}</div>
       </div>
 
-      <div className="ScheduleEvent__bookmark" onClick={onBookmark}>
+      <div className="ScheduleEvent__bookmark" onClick={bookmarkEvent}>
         <FontAwesomeIcon
           icon={event.isSaved ? solidBookmark : regularBookmark}
         />
