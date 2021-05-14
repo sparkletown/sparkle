@@ -1,7 +1,5 @@
 import { SoundConfigReference } from "./sounds";
 
-import { PersonalizedVenueEvent } from "types/venues";
-
 export enum RoomTypes {
   unclickable = "UNCLICKABLE",
 }
@@ -43,7 +41,3 @@ export interface RoomData_v2 {
   template?: string;
   roomIndex?: number;
 }
-
-export type RoomWithEvents = Room & {
-  events: PersonalizedVenueEvent[];
-};
