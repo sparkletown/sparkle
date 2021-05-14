@@ -54,7 +54,7 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -1056,7 +1056,7 @@ const Playa = () => {
           dialogClassName="custom-dialog"
         >
           <Modal.Body>
-            <SchedulePageModal />
+            <NavBarSchedule />
           </Modal.Body>
         </Modal>
       </>

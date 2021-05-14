@@ -37,9 +37,9 @@ import {
   prepareForSchedule,
 } from "./utils";
 
-import "./SchedulePageModal.scss";
+import "./NavBarSchedule.scss";
 
-interface SchedulePageModalProps {
+interface NavBarScheduleProps {
   isVisible?: boolean;
 }
 
@@ -53,9 +53,7 @@ export interface ScheduleDay {
 
 export const emptyPersonalizedSchedule = {};
 
-export const SchedulePageModal: FC<SchedulePageModalProps> = ({
-  isVisible,
-}) => {
+export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const venueId = useVenueId();
   const { userWithId } = useUser();
   const userEventIds =
@@ -73,8 +71,8 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
 
     return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
       const day = addDays(today, dayIndex);
-      const classes = classNames("SchedulePageModal__weekday", {
-        "SchedulePageModal__weekday--active": dayIndex === selectedDayIndex,
+      const classes = classNames("NavBarSchedule__weekday", {
+        "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
       const onWeekdayClick: MouseEventHandler<HTMLLIElement> = (e) => {
@@ -126,14 +124,14 @@ export const SchedulePageModal: FC<SchedulePageModalProps> = ({
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getLocaion]);
 
-  const containerClasses = classNames("SchedulePageModal", {
-    "SchedulePageModal--show": isVisible,
+  const containerClasses = classNames("NavBarSchedule", {
+    "NavBarSchedule--show": isVisible,
   });
 
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      <ul className="SchedulePageModal__weekdays">{weekdays}</ul>
+      <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
       <Schedule
         locatedEvents={schedule.locatedEvents}
         personalEvents={schedule.personalEvents}

@@ -7,7 +7,7 @@ import { venueInsideUrl } from "utils/url";
 import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
 import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 export interface ProfileFormData {
   partyName: string;
@@ -66,7 +66,7 @@ const SplashPage = () => {
         dialogClassName="custom-dialog"
       >
         <Modal.Body>
-          <SchedulePageModal />
+          <NavBarSchedule />
         </Modal.Body>
       </Modal>
     </>

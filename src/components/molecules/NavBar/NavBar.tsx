@@ -29,7 +29,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -315,7 +315,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <SchedulePageModal isVisible={isEventScheduleVisible} />
+        <NavBarSchedule isVisible={isEventScheduleVisible} />
       </div>
 
       {/* @debt Remove back button from Navbar */}

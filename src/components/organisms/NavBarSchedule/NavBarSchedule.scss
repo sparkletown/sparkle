@@ -1,29 +1,29 @@
 @import "scss/constants.scss";
 
-$SchedulePageModal--height: 620px;
-$SchedulePageModal--padding: 20px;
+$NavBarSchedule--height: 620px;
+$NavBarSchedule--padding: 20px;
 
 $weekday--padding: 8px 10px;
 $weekday--margin-right: 10px;
 
-.SchedulePageModal {
+.NavBarSchedule {
   @include scrollbar;
   position: fixed;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
   width: 100%;
-  height: $SchedulePageModal--height;
+  height: $NavBarSchedule--height;
 
   padding-top: $navbar-height;
-  padding-left: $SchedulePageModal--padding;
+  padding-left: $NavBarSchedule--padding;
 
   background-color: rgba($black, 0.9);
   overflow: auto;
 
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-#{$SchedulePageModal--height});
+  transform: translateY(-#{$NavBarSchedule--height});
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
@@ -36,7 +36,7 @@ $weekday--margin-right: 10px;
 
   &__weekdays {
     display: flex;
-    padding-left: $SchedulePageModal--padding;
+    padding-left: $NavBarSchedule--padding;
   }
 
   &__weekday {

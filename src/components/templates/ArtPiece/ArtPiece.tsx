@@ -7,7 +7,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import Room from "components/organisms/Room";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelectorData } from "utils/selectors";
 import { IFRAME_ALLOW } from "settings";
@@ -73,7 +73,7 @@ export const ArtPiece = () => {
         dialogClassName="custom-dialog"
       >
         <Modal.Body>
-          <SchedulePageModal />
+          <NavBarSchedule />
         </Modal.Body>
       </Modal>
     </WithNavigationBar>
