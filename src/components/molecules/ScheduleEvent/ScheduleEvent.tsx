@@ -1,5 +1,6 @@
 import React, { MouseEventHandler, useCallback } from "react";
 import classNames from "classnames";
+import { useCss } from "react-use";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
@@ -36,17 +37,26 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 }) => {
   const { userId } = useUser();
 
+  const eventWidth =
+    (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
+    ONE_HOUR_IN_MINUTES;
+
+  const containerCssVars = useCss({
+    "--event--margin-left": `${calcStartPosition(
+      event.start_utc_seconds,
+      scheduleStartHour
+    )}px`,
+    "--event--width": `${eventWidth}px`,
+  });
+
   const containerClasses = classNames(
     "ScheduleEvent",
     {
       "ScheduleEvent--live": isEventLive(event),
     },
-    { "ScheduleEvent--users": isPersonalizedEvent }
+    { "ScheduleEvent--users": isPersonalizedEvent },
+    containerCssVars
   );
-
-  const eventWidth =
-    (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
-    ONE_HOUR_IN_MINUTES;
 
   const bookmarkEvent = useCallback(() => {
     if (!userId || !event.id) return;
@@ -65,16 +75,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   return (
-    <div
-      className={containerClasses}
-      style={{
-        marginLeft: `${calcStartPosition(
-          event.start_utc_seconds,
-          scheduleStartHour
-        )}px`,
-        width: `${eventWidth}px`,
-      }}
-    >
+    <div className={containerClasses}>
       <div className="ScheduleEvent__info">
         <div className="ScheduleEvent__title">{event.name}</div>
         <div className="ScheduleEvent__description">by {event.host}</div>

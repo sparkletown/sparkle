@@ -31,6 +31,8 @@ $description--margin-top: 2px;
   background-color: $grey--regular;
   box-shadow: $ScheduleEvent--box-shadow;
   margin-top: $ScheduleEvent--margin-top;
+  margin-left: var(--event--margin-left);
+  width: var(--event--width);
 
   &:hover {
     background-color: $grey--hover;
