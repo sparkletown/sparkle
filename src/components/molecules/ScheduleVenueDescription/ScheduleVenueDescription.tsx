@@ -1,4 +1,8 @@
 import React, { FC, useMemo } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
+
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
@@ -21,13 +25,21 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     [parentVenue, currentVenue]
   );
 
+  const venuePictureCssVars = useCss({
+    "--venue-picture--background-image": `url(${
+      scheduleVenue?.host?.icon ?? DEFAULT_VENUE_LOGO
+    })`,
+  });
+
+  const venuePictureClasses = classNames(
+    "ScheduleVenueDescription__pic",
+    venuePictureCssVars
+  );
+
   return (
     <div className="ScheduleVenueDescription">
       <div className="ScheduleVenueDescription__main">
-        <div
-          className="ScheduleVenueDescription__pic"
-          style={{ backgroundImage: `url(${scheduleVenue?.host?.icon})` }}
-        />
+        <div className={venuePictureClasses} />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
             {scheduleVenue?.name}
