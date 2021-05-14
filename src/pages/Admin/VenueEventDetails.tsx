@@ -1,12 +1,13 @@
 import React from "react";
-import { format, fromUnixTime } from "date-fns";
+import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 import { formatHourAndMinute, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { eventStartTime } from "utils/event";
 
-interface Props {
+export interface VenueEventDetailsProps {
   venueEvent: WithId<VenueEvent>;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
@@ -20,16 +21,13 @@ const VenueEventDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
   className,
-}: Props) => {
+}: VenueEventDetailsProps) => {
   const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
   const endTime = formatHourAndMinute(
     venueEvent.start_utc_seconds +
       ONE_MINUTE_IN_SECONDS * venueEvent.duration_minutes
   );
-  const startDay = format(
-    fromUnixTime(venueEvent.start_utc_seconds),
-    "EEEE LLLL do"
-  );
+  const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (
     <div className={className}>
