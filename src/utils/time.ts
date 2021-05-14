@@ -8,8 +8,6 @@ import {
   startOfDay,
 } from "date-fns";
 
-import { VenueEvent } from "types/venues";
-
 export const ONE_SECOND_IN_MILLISECONDS = 1000;
 export const ONE_MINUTE_IN_SECONDS = 60;
 export const ONE_HOUR_IN_MINUTES = 60;
@@ -74,7 +72,10 @@ const formatMeasurementInString = (value: number, measureUnit: string) => {
 export const getTimeBeforeParty = (startUtcSeconds?: number) => {
   if (startUtcSeconds === undefined) return "???";
 
-  const secondsBeforeParty = startUtcSeconds - getUnixTime(Date.now());
+  const secondsBeforeParty = differenceInSeconds(
+    fromUnixTime(startUtcSeconds),
+    Date.now()
+  );
 
   if (secondsBeforeParty < 0) {
     return 0;
@@ -107,9 +108,6 @@ export const getTimeBeforeParty = (startUtcSeconds?: number) => {
 
   return `${numberOfDaysInString} ${numberOfHoursInString} ${numberOfMinutesInString}`;
 };
-
-export const canUserJoinTheEvent = (event: VenueEvent) =>
-  event.start_utc_seconds - getUnixTime(Date.now()) > ONE_HOUR_IN_SECONDS;
 
 /**
  * Format UTC seconds as a string representing date.

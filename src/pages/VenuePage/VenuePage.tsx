@@ -15,7 +15,7 @@ import {
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
+import { ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
   clearLocationData,
   setLocationData,
@@ -26,6 +26,7 @@ import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import { moreThanHourLeftBeforeEventStarts } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -212,7 +213,7 @@ const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (!canUserJoinTheEvent(event)) {
+    if (!moreThanHourLeftBeforeEventStarts(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

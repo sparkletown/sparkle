@@ -1,8 +1,13 @@
-import { addMinutes, fromUnixTime, isWithinInterval } from "date-fns";
+import {
+  addMinutes,
+  differenceInHours,
+  fromUnixTime,
+  isWithinInterval,
+} from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
-import { getCurrentTimeInUTCSeconds, ONE_MINUTE_IN_SECONDS } from "./time";
+import { getCurrentTimeInUTCSeconds } from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
@@ -15,8 +20,8 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
 };
 
 export const isEventLive = (event: VenueEvent) => {
-  const start = fromUnixTime(event.start_utc_seconds);
-  const end = addMinutes(start, event.duration_minutes);
+  const start = eventStartTime(event);
+  const end = eventEndTime(event);
 
   return isWithinInterval(Date.now(), { start, end });
 };
@@ -47,6 +52,7 @@ export const eventStartTime = (event: VenueEvent) =>
   fromUnixTime(event.start_utc_seconds);
 
 export const eventEndTime = (event: VenueEvent) =>
-  fromUnixTime(
-    event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS
-  );
+  addMinutes(eventStartTime(event), event.duration_minutes);
+
+export const moreThanHourLeftBeforeEventStarts = (event: VenueEvent) =>
+  differenceInHours(eventStartTime(event), Date.now()) > 0;
