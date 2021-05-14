@@ -8,7 +8,6 @@ import {
   startOfDay,
 } from "date-fns";
 
-import { Room, RoomWithEvents } from "types/rooms";
 import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 import { MyPersonalizedSchedule } from "types/User";
 
@@ -23,18 +22,6 @@ export const isEventLaterThisDay = (date: number | Date) => (
     start: startOfDay(eventStartTime(event)),
     end: eventEndTime(event),
   });
-
-export const extendRoomsWithDaysEvents = (
-  rooms: Room[],
-  daysEvents: PersonalizedVenueEvent[]
-): RoomWithEvents[] => {
-  return rooms.map((room) => {
-    const events: PersonalizedVenueEvent[] = daysEvents.filter(
-      (event) => event?.room === room?.title
-    );
-    return { ...room, events };
-  });
-};
 
 export const prepareForSchedule = (
   day: Date,

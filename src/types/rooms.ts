@@ -1,8 +1,6 @@
 import { SoundConfigReference } from "./sounds";
 
-import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
-
-import { WithVenueId } from "utils/id";
+import { PersonalizedVenueEvent } from "types/venues";
 
 export enum RoomTypes {
   unclickable = "UNCLICKABLE",
@@ -10,7 +8,6 @@ export enum RoomTypes {
 
 // @debt We should end up with 1 canonical room type
 export interface Room {
-  events?: Array<WithVenueId<VenueEvent>>;
   type?: RoomTypes;
   zIndex?: number;
   title: string;
