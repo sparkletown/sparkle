@@ -203,9 +203,9 @@ export const Map: React.FC<MapProps> = ({
     () =>
       venue?.rooms
         ?.filter(filterEnabledRooms)
-        .map((room) => (
+        .map((room, idx) => (
           <MapRoom
-            key={room.title}
+            key={idx}
             venue={venue}
             room={room}
             selectRoom={() => selectRoom(room)}
@@ -225,7 +225,7 @@ export const Map: React.FC<MapProps> = ({
   if (!user || !venue) {
     return <>Loading map...</>;
   }
-
+  //console.dir(roomOverlay?.map(r=>r));
   return (
     <div className="party-map-map-component">
       <div className="party-map-map-content">
