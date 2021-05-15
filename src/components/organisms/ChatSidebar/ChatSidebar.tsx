@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,7 +7,7 @@ import {
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { VenueChat, PrivateChats } from "./components";
+import { VenueChat, PrivateChats, Resizer } from "./components";
 
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
 
@@ -40,8 +40,23 @@ export const ChatSidebar: React.FC = () => {
       chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
   });
 
+  const widthStorageKey = "chatSideBarWidth";
+  const initWidth = localStorage.getItem(widthStorageKey);
+  let [width, setWidth] = useState<number>(initWidth ? +initWidth : 400);
+
+  function onChangeWidth(width: number) {
+    if (width < 300) width = 300;
+    setWidth(width);
+    localStorage.setItem(widthStorageKey, width.toString());
+  }
+
+  const styles = {
+    width: width + "px",
+    //transition: 'width 0.2s'
+  };
+
   return (
-    <div className={containerStyles}>
+    <div className={containerStyles} style={styles}>
       <div className="chat-sidebar__header">
         <div className="chat-sidebar__controller" onClick={toggleSidebar}>
           {isExpanded ? (
@@ -73,6 +88,7 @@ export const ChatSidebar: React.FC = () => {
           <PrivateChats recipientId={chatSettings.recipientId} />
         )}
       </div>
+      <Resizer width={width} onChangeWidth={onChangeWidth} />
     </div>
   );
 };

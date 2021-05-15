@@ -3,3 +3,4 @@ export { VenueChat } from "./VenueChat/VenueChat";
 export { OnlineUser } from "./OnlineUser/OnlineUser";
 export { PrivateChatPreview } from "./PrivateChatPreview/PrivateChatPreview";
 export { RecipientChat } from "./RecipientChat/RecipientChat";
+export { Resizer } from "./Resizer/Resizer";

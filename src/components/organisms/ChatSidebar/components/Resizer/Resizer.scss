@@ -1,0 +1,12 @@
+.resizer {
+  width: 12px;
+  height: 100%;
+  opacity: 0.3;
+  position: absolute;
+  transition: background-color 0.3s;
+  &:hover {
+    background-color: white;
+    cursor: pointer;
+    user-select: none;
+  }
+}
