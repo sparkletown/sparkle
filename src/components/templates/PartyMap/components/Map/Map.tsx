@@ -225,7 +225,6 @@ export const Map: React.FC<MapProps> = ({
   if (!user || !venue) {
     return <>Loading map...</>;
   }
-  //console.dir(roomOverlay?.map(r=>r));
   return (
     <div className="party-map-map-component">
       <div className="party-map-map-content">
