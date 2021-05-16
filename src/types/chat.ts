@@ -19,11 +19,16 @@ export type VenueChatMessage = BaseChatMessage;
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
-export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
+export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
   canBeDeleted?: boolean;
-  replies?: WithId<MessageToDisplay>[];
+};
+
+export type MessageToDisplay<
+  T extends ChatMessage = ChatMessage
+> = BaseMessageToDisplay<T> & {
+  replies: WithId<BaseMessageToDisplay<T>>[];
 };
 
 export type SendMesssage = (text: string) => Promise<void> | undefined;

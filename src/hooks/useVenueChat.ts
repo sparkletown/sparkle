@@ -14,7 +14,7 @@ import {
 import {
   buildMessage,
   chatSort,
-  divideMessages,
+  partitionMessagesFromReplies,
   getMessageReplies,
   getMessageToDisplay,
 } from "utils/chat";
@@ -102,7 +102,7 @@ export const useVenueChat = () => {
   );
 
   const { messages, allMessagesReplies } = useMemo(
-    () => divideMessages(filteredMessages),
+    () => partitionMessagesFromReplies(filteredMessages),
     [filteredMessages]
   );
 

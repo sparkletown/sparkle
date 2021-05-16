@@ -13,7 +13,7 @@ import {
   getPreviewChatMessageToDisplay,
   getMessageToDisplay,
   getPreviewChatMessage,
-  divideMessages,
+  partitionMessagesFromReplies,
   getMessageReplies,
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
@@ -226,7 +226,7 @@ export const useRecipientChat = (recipientId: string) => {
   );
 
   const { messages, allMessagesReplies } = useMemo(
-    () => divideMessages(filteredMessages),
+    () => partitionMessagesFromReplies(filteredMessages),
     [filteredMessages]
   );
 

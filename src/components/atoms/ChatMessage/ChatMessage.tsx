@@ -57,9 +57,9 @@ export const ChatMessage: React.FC<ChatProps> = ({
     [replies, deleteMessage]
   );
 
-  const repliesCount = renderedReplies && renderedReplies.length;
+  const repliesCount = renderedReplies.length;
 
-  const hasMultipleReplies = repliesCount && repliesCount > 1;
+  const hasMultipleReplies = repliesCount > 1;
 
   const replyText = hasMultipleReplies ? "replies" : "reply";
 

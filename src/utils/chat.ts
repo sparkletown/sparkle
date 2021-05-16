@@ -10,6 +10,7 @@ import {
   PreviewChatMessageToDisplay,
   PreviewChatMessage,
   PrivateChatMessage,
+  BaseMessageToDisplay,
 } from "types/chat";
 import { User } from "types/User";
 
@@ -18,30 +19,72 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export interface GetMessageToDisplayProps<T extends object> {
+export interface GetBaseMessageToDisplayProps<
+  T extends WithId<ChatMessage> = WithId<ChatMessage>
+> {
   message: T;
   usersById: Partial<Record<string, User>>;
   myUserId?: string;
-  replies?: T[];
   isAdmin?: boolean;
 }
 
-export const getMessageToDisplay = <
+export type GetBaseMessageToDisplay<
   T extends WithId<ChatMessage> = WithId<ChatMessage>
->({
+> = (
+  props: GetBaseMessageToDisplayProps<T>
+) => WithId<BaseMessageToDisplay<T>> | undefined;
+
+export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
   message,
   usersById,
   myUserId,
-  replies,
   isAdmin,
-}: GetMessageToDisplayProps<T>): WithId<MessageToDisplay<T>> | undefined => {
+}) => {
   const user = usersById[message.from];
 
   if (!user) return undefined;
 
+  const isMine = myUserId === message.from;
+
+  return {
+    ...message,
+    author: withId(user, message.from),
+    isMine,
+    ...(isAdmin && { canBeDeleted: isAdmin }),
+  };
+};
+
+export interface GetMessageToDisplayProps<
+  T extends WithId<ChatMessage> = WithId<ChatMessage>
+> extends GetBaseMessageToDisplayProps<T> {
+  replies: WithId<T>[];
+}
+
+export type GetMessageToDisplay = {
+  <T extends WithId<ChatMessage> = WithId<ChatMessage>>(
+    props: GetMessageToDisplayProps<T>
+  ): MessageToDisplay<WithId<ChatMessage>> | undefined;
+};
+
+export const getMessageToDisplay: GetMessageToDisplay = ({
+  replies,
+  usersById,
+  myUserId,
+  isAdmin,
+  message,
+}) => {
+  const displayMessage = getBaseMessageToDisplay({
+    usersById,
+    myUserId,
+    isAdmin,
+    message,
+  });
+
+  if (!displayMessage) return;
+
   const repliesToDisplay = replies
-    ?.map((reply) =>
-      getMessageToDisplay({
+    .map((reply) =>
+      getBaseMessageToDisplay({
         message: reply,
         usersById,
         myUserId,
@@ -50,15 +93,7 @@ export const getMessageToDisplay = <
     )
     .filter(isTruthy);
 
-  const isMine = myUserId === message.from;
-
-  return {
-    ...message,
-    author: withId(user, message.from),
-    isMine,
-    replies: repliesToDisplay,
-    ...(isAdmin && { canBeDeleted: isAdmin }),
-  };
+  return { ...displayMessage, replies: repliesToDisplay };
 };
 
 export interface GetPreviewChatMessageProps {
@@ -94,24 +129,22 @@ export const buildMessage = <T extends ChatMessage>(
   ts_utc: firebase.firestore.Timestamp.now(),
 });
 
-export interface DivideMessagesReturn<T extends object> {
+export interface PartitionMessagesFromRepliesReturn<T extends object> {
   messages: WithId<T>[];
   allMessagesReplies: WithId<T>[];
 }
 
-export const divideMessages = <T extends ChatMessage>(
+export const partitionMessagesFromReplies = <T extends ChatMessage>(
   messages: WithId<T>[]
-): DivideMessagesReturn<T> =>
-  messages.reduce<DivideMessagesReturn<T>>(
-    (acc, message) => {
-      if (message.threadId !== undefined)
-        return {
-          ...acc,
-          allMessagesReplies: [...acc.allMessagesReplies, message],
-        };
-
-      return { ...acc, messages: [...acc.messages, message] };
-    },
+): PartitionMessagesFromRepliesReturn<T> =>
+  messages.reduce<PartitionMessagesFromRepliesReturn<T>>(
+    (acc, message) =>
+      message.threadId !== undefined
+        ? {
+            ...acc,
+            allMessagesReplies: [...acc.allMessagesReplies, message],
+          }
+        : { ...acc, messages: [...acc.messages, message] },
     { messages: [], allMessagesReplies: [] }
   );
 
@@ -123,12 +156,5 @@ export interface GetMessageRepliesProps<T extends object> {
 export const getMessageReplies = <T extends ChatMessage>({
   messageId,
   allReplies,
-}: GetMessageRepliesProps<T>) => {
-  const messageReplies = allReplies.filter(
-    (reply) => reply.threadId === messageId
-  );
-
-  if (messageReplies.length === 0) return undefined;
-
-  return messageReplies;
-};
+}: GetMessageRepliesProps<T>) =>
+  allReplies.filter((reply) => reply.threadId === messageId);

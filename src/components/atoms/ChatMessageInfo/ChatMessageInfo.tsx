@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-import { MessageToDisplay } from "types/chat";
+import { BaseMessageToDisplay } from "types/chat";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -13,7 +13,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./ChatMessageInfo.scss";
 
 export interface ChatMessageInfoProps {
-  message: MessageToDisplay;
+  message: BaseMessageToDisplay;
   deleteMessage: () => void;
   isReversed?: boolean;
 }
