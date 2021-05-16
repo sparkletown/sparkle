@@ -13,7 +13,7 @@ export interface TextButtonProps
 }
 
 export const TextButton: React.FC<TextButtonProps> = ({
-  text,
+  label,
   containerClassName,
   ...props
 }) => {
@@ -21,7 +21,7 @@ export const TextButton: React.FC<TextButtonProps> = ({
 
   return (
     <button className={containerClasses} {...props}>
-      {text}
+      {label}
     </button>
   );
 };

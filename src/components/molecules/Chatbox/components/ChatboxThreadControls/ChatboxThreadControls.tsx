@@ -18,7 +18,7 @@ export const ChatboxThreadControls: React.FC<ChatboxThreadControlsProps> = ({
       <span className="ChatboxThreadControls__thread-author">
         replying to <b>{threadAuthor}...</b>
       </span>
-      <TextButton text="Cancel" onClick={onThreadLeave} />
+      <TextButton label="Cancel" onClick={onThreadLeave} />
     </div>
   );
 };

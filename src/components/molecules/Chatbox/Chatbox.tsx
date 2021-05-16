@@ -78,7 +78,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           key={message.id}
           message={message}
           deleteMessage={deleteMessage}
-          setChosenThread={() => setChosenThread(message.id)}
+          setChosenThread={() => setChosenThread(message)}
         />
       )),
     [messages, deleteMessage]
@@ -91,7 +91,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         {chosenThread && (
           <ChatboxThreadControls
             threadAuthor={chosenThread.author.partyName}
-            onThreadLeave={quitThread}
+            onThreadLeave={closeThread}
           />
         )}
 

@@ -74,13 +74,17 @@ export const ChatMessage: React.FC<ChatProps> = ({
           <div className="ChatMessage__text">{text}</div>
 
           <div className="ChatMessage__reply-icon">
-            <FontAwesomeIcon icon={faReply} size="sm" onClick={onReplyClick} />
+            <FontAwesomeIcon
+              icon={faReply}
+              size="sm"
+              onClick={selectThisThread}
+            />
           </div>
           {repliesCount && (
             <TextButton
               containerClassName="ChatMessage__show-replies-button"
               onClick={toggleReplies}
-              text={replyButtonText}
+              label={replyButtonText}
             />
           )}
         </div>
@@ -93,8 +97,8 @@ export const ChatMessage: React.FC<ChatProps> = ({
       </div>
       <ChatMessageInfo
         message={message}
-        isReversed={isMine}
-        deleteMessage={onMessageDelete}
+        reversed={isMine}
+        deleteMessage={deleteThisMessage}
       />
     </div>
   );

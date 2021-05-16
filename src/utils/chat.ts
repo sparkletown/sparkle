@@ -19,9 +19,7 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export interface GetBaseMessageToDisplayProps<
-  T extends WithId<ChatMessage> = WithId<ChatMessage>
-> {
+export interface GetBaseMessageToDisplayProps<T extends WithId<ChatMessage>> {
   message: T;
   usersById: Partial<Record<string, User>>;
   myUserId?: string;
@@ -54,16 +52,15 @@ export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
   };
 };
 
-export interface GetMessageToDisplayProps<
-  T extends WithId<ChatMessage> = WithId<ChatMessage>
-> extends GetBaseMessageToDisplayProps<T> {
+export interface GetMessageToDisplayProps<T extends WithId<ChatMessage>>
+  extends GetBaseMessageToDisplayProps<T> {
   replies: WithId<T>[];
 }
 
 export type GetMessageToDisplay = {
-  <T extends WithId<ChatMessage> = WithId<ChatMessage>>(
-    props: GetMessageToDisplayProps<T>
-  ): MessageToDisplay<WithId<ChatMessage>> | undefined;
+  <T extends WithId<ChatMessage>>(props: GetMessageToDisplayProps<T>):
+    | MessageToDisplay<WithId<T>>
+    | undefined;
 };
 
 export const getMessageToDisplay: GetMessageToDisplay = ({
