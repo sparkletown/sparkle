@@ -15,7 +15,7 @@ import "./ChatMessageInfo.scss";
 export interface ChatMessageInfoProps {
   message: BaseMessageToDisplay;
   deleteMessage: () => void;
-  isReversed?: boolean;
+  reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
