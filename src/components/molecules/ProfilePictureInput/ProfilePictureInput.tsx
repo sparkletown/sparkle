@@ -1,5 +1,6 @@
 import React, { useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
+import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 
@@ -11,10 +12,11 @@ import {
 import { resizeFile } from "utils/image";
 
 import "./ProfilePictureInput.scss";
+import { useQuery } from "hooks/useQuery";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
-interface PropsType {
+interface ProfilePictureInputProps {
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,13 +27,13 @@ interface PropsType {
 }
 
 const sparkleAvatars = [
-  "default-profile-pic-1.png",
-  "default-profile-pic-2.png",
-  "default-profile-pic-3.png",
-  "default-profile-pic-4.png",
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
 ];
 
-const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
+const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
   setValue,
   user,
   errors,
@@ -42,6 +44,16 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
+  const queryParams = useQuery();
+  const venueId = queryParams.get("venueId");
+
+  const customAvatars = useAsync(async () => {
+    const storageRef = firebase.storage().ref();
+    const list = await storageRef.child(`/assets/avatars/${venueId}`).listAll();
+    const promises = list.items.map((item) => item.getDownloadURL());
+    const avatars: string[] = await Promise.all(promises);
+    return avatars;
+  }, []);
 
   const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
@@ -76,8 +88,14 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   };
 
   const uploadDefaultAvatar = async (avatar: string) => {
-    setValue("pictureUrl", process.env.PUBLIC_URL + `/avatars/${avatar}`, true);
+    setValue("pictureUrl", avatar, true);
   };
+
+  const isLoadingAvatars = customAvatars.loading;
+
+  const defaultAvatars = customAvatars?.value?.length
+    ? customAvatars.value
+    : sparkleAvatars;
 
   return (
     <div className="profile-picture-upload-form">
@@ -110,21 +128,23 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {sparkleAvatars.map((avatar, index) => {
-          return (
-            <div
-              key={`${avatar}-${index}`}
-              className="profile-picture-preview-container"
-              onClick={() => uploadDefaultAvatar(avatar)}
-            >
-              <img
-                src={`/avatars/${avatar}`}
-                className="profile-icon profile-picture-preview"
-                alt="your profile"
-              />
-            </div>
-          );
-        })}
+        {isLoadingAvatars && <div>Loading...</div>}
+        {!isLoadingAvatars &&
+          defaultAvatars.map((avatar, index) => {
+            return (
+              <div
+                key={`${avatar}-${index}`}
+                className="profile-picture-preview-container"
+                onClick={() => uploadDefaultAvatar(avatar)}
+              >
+                <img
+                  src={`${avatar}`}
+                  className="profile-icon profile-picture-preview"
+                  alt="your profile"
+                />
+              </div>
+            );
+          })}
       </div>
       <input
         name="pictureUrl"
