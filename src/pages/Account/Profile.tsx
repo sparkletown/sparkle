@@ -9,7 +9,7 @@ import { RouterLocation } from "types/RouterLocation";
 import { useUser } from "hooks/useUser";
 import { IS_BURN } from "secrets";
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 import { useVenueId } from "hooks/useVenueId";
 
 export interface ProfileFormData {
@@ -71,19 +71,21 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 30,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
               autoComplete="off"
             />
             <span className="input-info">
-              This is your public name (max 30 characters)
+              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
+              characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
               <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 30 characters or less
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
               </span>
             )}
             {user && (

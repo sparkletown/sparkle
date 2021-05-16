@@ -7,6 +7,7 @@ import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
 import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -74,7 +75,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 30,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
             />
             {errors.partyName && errors.partyName.type === "required" && (
@@ -82,7 +83,8 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 30 characters or less
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
               </span>
             )}
             {user && (
