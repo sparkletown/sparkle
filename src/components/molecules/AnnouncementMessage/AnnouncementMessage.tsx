@@ -1,9 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-
-import ReactMarkdown from "react-markdown";
-import glm from "remark-gfm";
-import sanitize from "rehype-sanitize";
-
+import { convertMarkdown } from "utils/convertMarkdown";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -40,15 +36,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         centered: !isExpanded,
       })}
     >
-      <div className="announcement-message">
-        <ReactMarkdown
-          linkTarget={"_blank"}
-          remarkPlugins={[[glm]]}
-          rehypePlugins={[[sanitize]]}
-        >
-          {message}
-        </ReactMarkdown>
-      </div>
+      <div className="announcement-message">{convertMarkdown(message)}</div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>
