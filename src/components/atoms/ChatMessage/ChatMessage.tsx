@@ -27,12 +27,12 @@ export const ChatMessage: React.FC<ChatProps> = ({
 }) => {
   const { text, isMine, replies, id } = message;
 
-  const onMessageDelete = useCallback(() => deleteMessage(id), [
+  const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
     id,
   ]);
 
-  const onReplyClick = useCallback(() => setChosenThread(message), [
+  const selectThisThread = useCallback(() => setChosenThread(message), [
     setChosenThread,
     message,
   ]);

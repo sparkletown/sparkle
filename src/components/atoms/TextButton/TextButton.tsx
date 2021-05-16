@@ -8,7 +8,7 @@ export interface TextButtonProps
     ButtonHTMLAttributes<HTMLButtonElement>,
     HTMLButtonElement
   > {
-  text: string;
+  label: string;
   containerClassName?: string;
 }
 

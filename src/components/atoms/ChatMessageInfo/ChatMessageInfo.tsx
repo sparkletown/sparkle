@@ -21,7 +21,7 @@ export interface ChatMessageInfoProps {
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   message,
   deleteMessage,
-  isReversed = false,
+  reversed: isReversed = false,
 }) => {
   const { ts_utc, author, canBeDeleted } = message;
   const { openUserProfileModal } = useProfileModalControls();

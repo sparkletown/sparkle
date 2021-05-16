@@ -36,7 +36,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const [chosenThread, setChosenThread] = useState<WithId<MessageToDisplay>>();
 
-  const quitThread = useCallback(() => setChosenThread(undefined), []);
+  const closeThread = useCallback(() => setChosenThread(undefined), []);
 
   const hasChosenThread = chosenThread !== undefined;
 
@@ -78,7 +78,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           key={message.id}
           message={message}
           deleteMessage={deleteMessage}
-          setChosenThread={setChosenThread}
+          setChosenThread={() => setChosenThread(message.id)}
         />
       )),
     [messages, deleteMessage]
