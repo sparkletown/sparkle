@@ -38,7 +38,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       })}
     >
       <div className="announcement-message">
-        <ReactMarkdown rehypePlugins={[[sanitize]]}>{message}</ReactMarkdown>
+        <ReactMarkdown linkTarget={"_blank"} rehypePlugins={[[sanitize]]}>
+          {message}
+        </ReactMarkdown>
       </div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
