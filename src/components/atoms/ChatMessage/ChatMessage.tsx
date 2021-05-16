@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import { WithId } from "utils/id";
 
@@ -42,7 +43,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     () =>
       replies?.map((reply) => (
         <div key={reply.id} className="ChatMessage__reply">
-          {reply.text}
+          {convertMarkdown(reply.text)}
           <ChatMessageInfo
             message={reply}
             deleteMessage={() => deleteMessage(reply.id)}
@@ -68,7 +69,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
-          <div className="ChatMessage__text">{text}</div>
+          <div className="ChatMessage__text">{convertMarkdown(text)}</div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon
