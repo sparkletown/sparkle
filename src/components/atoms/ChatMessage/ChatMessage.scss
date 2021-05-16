@@ -56,7 +56,6 @@ $reply-icon-radius: 20px;
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: z(chatmessage-reply-button);
 
     position: absolute;
 
@@ -109,7 +108,7 @@ $reply-icon-radius: 20px;
     align-self: flex-end;
     align-items: flex-end;
 
-    .ChatMessage__body {
+    .ChatMessage__bulb {
       text-align: right;
       background-color: $primary;
       border-radius: $my-text-border-radius;

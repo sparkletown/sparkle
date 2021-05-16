@@ -23,7 +23,7 @@ import {
   DeleteMessage,
   PreviewChatMessageMap,
   PrivateChatMessage,
-  SendPrivateMessage,
+  SendMesssage,
   SendChatReply,
 } from "types/chat";
 
@@ -164,7 +164,7 @@ export const useRecipientChat = (recipientId: string) => {
   const userId = user?.uid;
   const recipient = withId(worldUsersById[recipientId], recipientId);
 
-  const sendMessageToSelectedRecipient: SendPrivateMessage = useCallback(
+  const sendMessageToSelectedRecipient: SendMesssage = useCallback(
     (text: string) => {
       if (!userId) return;
 

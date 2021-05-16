@@ -1,7 +1,17 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
+import noop from "lodash/noop";
 
 import { VenueChatMessage, PrivateChatMessage } from "types/chat";
+
+import { getVenueRef } from "./venue";
+
+export const userChatsCollectionRef = (userId: string) =>
+  firebase
+    .firestore()
+    .collection("privatechats")
+    .doc(userId)
+    .collection("chats");
 
 export interface SendVenueMessageProps {
   venueId: string;
@@ -11,13 +21,11 @@ export interface SendVenueMessageProps {
 export const sendVenueMessage = async ({
   venueId,
   message,
-}: SendVenueMessageProps): Promise<void | firebase.firestore.DocumentReference<firebase.firestore.DocumentData>> =>
-  firebase
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
+}: SendVenueMessageProps): Promise<void> =>
+  getVenueRef(venueId)
     .collection("chats")
     .add(message)
+    .then(noop)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
@@ -34,19 +42,8 @@ export const sendPrivateMessage = async (
 ): Promise<void> => {
   const batch = firebase.firestore().batch();
 
-  const authorRef = firebase
-    .firestore()
-    .collection("privatechats")
-    .doc(message.from)
-    .collection("chats")
-    .doc();
-
-  const recipientRef = firebase
-    .firestore()
-    .collection("privatechats")
-    .doc(message.to)
-    .collection("chats")
-    .doc();
+  const authorRef = userChatsCollectionRef(message.from).doc();
+  const recipientRef = userChatsCollectionRef(message.to).doc();
 
   batch.set(authorRef, message);
   batch.set(recipientRef, message);
@@ -71,11 +68,7 @@ export const setChatMessageRead = async ({
   userId,
   messageId,
 }: SetChatMessageIsReadProps): Promise<void> =>
-  firebase
-    .firestore()
-    .collection("privatechats")
-    .doc(userId)
-    .collection("chats")
+  userChatsCollectionRef(userId)
     .doc(messageId)
     .update({ isRead: true })
     .catch((err) => {
@@ -98,10 +91,7 @@ export const deleteVenueMessage = async ({
   venueId,
   messageId,
 }: DeleteVenueMessageProps): Promise<void> =>
-  firebase
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
+  getVenueRef(venueId)
     .collection("chats")
     .doc(messageId)
     .update({ deleted: true })
@@ -125,11 +115,7 @@ export const deletePrivateMessage = async ({
   userId,
   messageId,
 }: DeletePrivateMessageProps): Promise<void> =>
-  firebase
-    .firestore()
-    .collection("privatechats")
-    .doc(userId)
-    .collection("chats")
+  userChatsCollectionRef(userId)
     .doc(messageId)
     .update({ deleted: true })
     .catch((err) => {

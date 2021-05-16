@@ -26,15 +26,7 @@ export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   replies?: WithId<MessageToDisplay>[];
 };
 
-export type SendVenueMessage = (
-  text: string
-) =>
-  | Promise<void | firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>
-  | undefined;
-
-export type SendPrivateMessage = (text: string) => Promise<void> | undefined;
-
-export type SendMesssage = SendVenueMessage | SendPrivateMessage;
+export type SendMesssage = (text: string) => Promise<void> | undefined;
 
 export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
 
@@ -45,9 +37,7 @@ export interface SendChatReplyProps {
 
 export type SendChatReply = (
   props: SendChatReplyProps
-) =>
-  | Promise<void | firebase.firestore.DocumentReference<firebase.firestore.DocumentData>>
-  | undefined;
+) => Promise<void> | undefined;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;

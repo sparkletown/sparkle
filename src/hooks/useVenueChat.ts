@@ -7,7 +7,7 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 import {
   DeleteMessage,
   SendChatReply,
-  SendVenueMessage,
+  SendMesssage,
   VenueChatMessage,
 } from "types/chat";
 
@@ -66,7 +66,7 @@ export const useVenueChat = () => {
     )
     .sort(chatSort);
 
-  const sendMessage: SendVenueMessage = useCallback(
+  const sendMessage: SendMesssage = useCallback(
     async (text: string) => {
       if (!venueId || !userId) return;
 
