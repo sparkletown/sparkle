@@ -5,6 +5,8 @@ import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
 
+import { getLinkFromText } from "utils/getLinkFromText";
+
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -42,7 +44,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     () =>
       replies?.map((reply) => (
         <div key={reply.id} className="ChatMessage__reply">
-          {reply.text}
+          {getLinkFromText(reply.text)}
           <ChatMessageInfo
             message={reply}
             deleteMessage={() => deleteMessage(reply.id)}
@@ -68,7 +70,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
-          <div className="ChatMessage__text">{text}</div>
+          <div className="ChatMessage__text">{getLinkFromText(text)}</div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon
