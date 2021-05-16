@@ -1,6 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
+
 import ReactMarkdown from "react-markdown";
+import glm from "remark-gfm";
 import sanitize from "rehype-sanitize";
+
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -38,7 +41,11 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       })}
     >
       <div className="announcement-message">
-        <ReactMarkdown linkTarget={"_blank"} rehypePlugins={[[sanitize]]}>
+        <ReactMarkdown
+          linkTarget={"_blank"}
+          remarkPlugins={[[glm]]}
+          rehypePlugins={[[sanitize]]}
+        >
           {message}
         </ReactMarkdown>
       </div>
