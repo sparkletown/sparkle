@@ -1,6 +1,8 @@
 import {
   addMinutes,
+  areIntervalsOverlapping,
   differenceInHours,
+  endOfDay,
   fromUnixTime,
   isWithinInterval,
   startOfDay,
@@ -21,10 +23,7 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
 };
 
 export const isEventLive = (event: VenueEvent) => {
-  const start = eventStartTime(event);
-  const end = eventEndTime(event);
-
-  return isWithinInterval(Date.now(), { start, end });
+  return isWithinInterval(Date.now(), getEventInterval(event));
 };
 
 export const isEventLiveOrFuture = (event: VenueEvent) => {
@@ -58,10 +57,20 @@ export const eventEndTime = (event: VenueEvent) =>
 export const isEventStartingSoon = (event: VenueEvent) =>
   differenceInHours(eventStartTime(event), Date.now()) > 0;
 
-export const isEventLaterThisDay = (date: number | Date) => (
+export const getEventInterval = (event: VenueEvent) => ({
+  start: eventStartTime(event),
+  end: eventEndTime(event),
+});
+
+export const isEventWithinDate = (checkDate: number | Date) => (
   event: VenueEvent
-) =>
-  isWithinInterval(date, {
-    start: startOfDay(eventStartTime(event)),
-    end: eventEndTime(event),
-  });
+) => {
+  const checkDateInterval = {
+    start: startOfDay(checkDate),
+    end: endOfDay(checkDate),
+  };
+
+  const eventInterval = getEventInterval(event);
+
+  return areIntervalsOverlapping(checkDateInterval, eventInterval);
+};

@@ -86,7 +86,9 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
 
-export const getTimeBeforeParty = (startUtcSeconds: number) => {
+export const getTimeBeforeParty = (startUtcSeconds?: number) => {
+  if (startUtcSeconds === undefined) return "???";
+
   const eventStartDate = fromUnixTime(startUtcSeconds);
   const now = Date.now();
 

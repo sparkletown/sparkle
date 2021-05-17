@@ -35,7 +35,7 @@ import {
   extractLocation,
   prepareForSchedule,
 } from "./utils";
-import { isEventLaterThisDay } from "utils/event";
+import { isEventWithinDate } from "utils/event";
 
 import "./NavBarSchedule.scss";
 
@@ -104,9 +104,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const schedule: ScheduleDay = useMemo(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
-      .filter(
-        isEventLaterThisDay(selectedDayIndex === 0 ? Date.now() : dayStart)
-      )
+      .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
       .map(prepareForSchedule(dayStart, userEventIds));
 
     const locatedEvents: LocatedEvents[] = chain(daysEvents)
