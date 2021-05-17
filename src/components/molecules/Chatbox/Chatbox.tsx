@@ -34,11 +34,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 }) => {
   const [isSendingMessage, setMessageSending] = useState(false);
 
-  const [chosenThread, setChosenThread] = useState<WithId<MessageToDisplay>>();
+  const [selectedThread, setSelectedThread] = useState<
+    WithId<MessageToDisplay>
+  >();
 
-  const closeThread = useCallback(() => setChosenThread(undefined), []);
+  const closeThread = useCallback(() => setSelectedThread(undefined), []);
 
-  const hasChosenThread = chosenThread !== undefined;
+  const hasChosenThread = selectedThread !== undefined;
 
   // This logic dissallows users to spam into the chat. There should be a delay, between each message
   useEffect(() => {
@@ -62,10 +64,10 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   });
 
   const sendReplyToThread = handleSubmit(({ message }) => {
-    if (!chosenThread) return;
+    if (!selectedThread) return;
 
     setMessageSending(true);
-    sendThreadReply({ replyText: message, threadId: chosenThread.id });
+    sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
   });
 
@@ -78,7 +80,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           key={message.id}
           message={message}
           deleteMessage={deleteMessage}
-          setChosenThread={() => setChosenThread(message)}
+          selectThisThread={() => setSelectedThread(message)}
         />
       )),
     [messages, deleteMessage]
@@ -88,9 +90,9 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     <div className="Chatbox">
       <div className="Chatbox__messages">{renderedMessages}</div>
       <div className="Chatbox__form-box">
-        {chosenThread && (
+        {selectedThread && (
           <ChatboxThreadControls
-            threadAuthor={chosenThread.author.partyName}
+            threadAuthor={selectedThread.author.partyName}
             closeThread={closeThread}
           />
         )}

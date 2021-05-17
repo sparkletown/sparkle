@@ -17,24 +17,19 @@ import "./ChatMessage.scss";
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
   deleteMessage: (messageId: string) => void;
-  setChosenThread: (message: WithId<MessageToDisplay>) => void;
+  selectThisThread: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
   message,
   deleteMessage,
-  setChosenThread,
+  selectThisThread,
 }) => {
   const { text, isMine, replies, id } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
     id,
-  ]);
-
-  const selectThisThread = useCallback(() => setChosenThread(message), [
-    setChosenThread,
-    message,
   ]);
 
   const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
