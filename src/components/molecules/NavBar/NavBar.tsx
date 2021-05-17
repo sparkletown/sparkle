@@ -141,7 +141,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
-  const hideEventSchedule = useCallback(() => {
+  const hideEventSchedule = useCallback((e) => {
+    if (e.target.closest(".NavBarSchedule")) return;
+
     setEventScheduleVisible(false);
   }, []);
 
