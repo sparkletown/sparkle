@@ -56,6 +56,8 @@ $reply-icon-radius: 20px;
     display: none;
     justify-content: center;
     align-items: center;
+    // Overflow the userAvatar in the replies list
+    z-index: z(chatmessage-reply-button);
 
     position: absolute;
 

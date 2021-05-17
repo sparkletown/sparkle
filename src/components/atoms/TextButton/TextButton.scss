@@ -14,9 +14,4 @@
     color: opaque-white(0.9);
     border-bottom: thin solid opaque-white(0.9);
   }
-
-  &:focus {
-    // get rid of default button styles
-    outline: none;
-  }
 }

@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
-import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { BaseMessageToDisplay } from "types/chat";
+
+import { formatTimestampToDisplayHoursMinutes } from "utils/time";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -41,7 +42,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       <UserAvatar user={author} />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
-        {format(timestamp, "h:mm A")}
+        {formatTimestampToDisplayHoursMinutes(timestamp)}
       </span>
       {canBeDeleted && (
         <FontAwesomeIcon
