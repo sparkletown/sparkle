@@ -75,8 +75,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
-      const onWeekdayClick: MouseEventHandler<HTMLLIElement> = (e) => {
-        e.stopPropagation();
+      const onWeekdayClick: MouseEventHandler<HTMLLIElement> = () => {
         setSelectedDayIndex(dayIndex);
       };
 

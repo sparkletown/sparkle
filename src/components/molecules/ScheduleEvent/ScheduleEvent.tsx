@@ -59,17 +59,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     containerCssVars
   );
 
-  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      e.stopPropagation();
-      if (!userId || !event.id) return;
+  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {
+    if (!userId || !event.id) return;
 
-      event.isSaved
-        ? removeEventFromPersonalizedSchedule({ event, userId })
-        : addEventToPersonalizedSchedule({ event, userId });
-    },
-    [userId, event]
-  );
+    event.isSaved
+      ? removeEventFromPersonalizedSchedule({ event, userId })
+      : addEventToPersonalizedSchedule({ event, userId });
+  }, [userId, event]);
 
   return (
     <div className={containerClasses}>
