@@ -91,9 +91,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <div className="ChatPoll__info" onClick={openAuthorProfile}>
         <UserAvatar user={author} />
         <span className="ChatPoll__author">{author.partyName}</span>
-        <span className="ChatPoll__time">
-          {formatHourAndMinute(ts_utc, true)}
-        </span>
+        <span className="ChatPoll__time">{formatHourAndMinute(ts_utc)}</span>
       </div>
     </div>
   );
