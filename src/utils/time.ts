@@ -131,7 +131,7 @@ export function formatDate(utcSeconds: number) {
  * @see https://date-fns.org/docs/format
  */
 export function formatTimestampToDisplayHoursMinutes(timestamp: number) {
-  return format(timestamp, "h:mm A");
+  return format(timestamp, "h:mm aa");
 }
 
 export function oneHourAfterTimestamp(timestamp: number) {

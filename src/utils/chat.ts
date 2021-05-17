@@ -1,12 +1,10 @@
 import firebase from "firebase/app";
 
 import { WithId, withId } from "utils/id";
-import { isTruthy } from "utils/types";
 
 import {
   BaseChatMessage,
   ChatMessage,
-  MessageToDisplay,
   PreviewChatMessageToDisplay,
   PreviewChatMessage,
   PrivateChatMessage,
@@ -26,16 +24,16 @@ export interface GetBaseMessageToDisplayProps<T extends ChatMessage> {
   isAdmin?: boolean;
 }
 
-export type GetBaseMessageToDisplay<T extends ChatMessage = ChatMessage> = (
-  props: GetBaseMessageToDisplayProps<T>
-) => BaseMessageToDisplay<T> | undefined;
+export type GetBaseMessageToDisplayReturn<T extends ChatMessage> =
+  | BaseMessageToDisplay<T>
+  | undefined;
 
-export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
+export const getBaseMessageToDisplay = <T extends ChatMessage>({
   message,
   usersById,
   myUserId,
   isAdmin,
-}) => {
+}: GetBaseMessageToDisplayProps<T>): GetBaseMessageToDisplayReturn<T> => {
   const user = usersById[message.from];
 
   if (!user) return undefined;
@@ -48,47 +46,6 @@ export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
     isMine,
     ...(isAdmin && { canBeDeleted: isAdmin }),
   };
-};
-
-export interface GetMessageToDisplayProps<T extends ChatMessage>
-  extends GetBaseMessageToDisplayProps<T> {
-  replies: WithId<T>[];
-}
-
-export type GetMessageToDisplay = {
-  <T extends ChatMessage>(props: GetMessageToDisplayProps<T>):
-    | MessageToDisplay<T>
-    | undefined;
-};
-
-export const getMessageToDisplay: GetMessageToDisplay = ({
-  replies,
-  usersById,
-  myUserId,
-  isAdmin,
-  message,
-}) => {
-  const displayMessage = getBaseMessageToDisplay({
-    usersById,
-    myUserId,
-    isAdmin,
-    message,
-  });
-
-  if (!displayMessage) return;
-
-  const repliesToDisplay = replies
-    .map((reply) =>
-      getBaseMessageToDisplay({
-        message: reply,
-        usersById,
-        myUserId,
-        isAdmin,
-      })
-    )
-    .filter(isTruthy);
-
-  return { ...displayMessage, replies: repliesToDisplay };
 };
 
 export interface GetPreviewChatMessageProps {

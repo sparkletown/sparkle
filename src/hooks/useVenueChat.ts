@@ -16,11 +16,12 @@ import {
   chatSort,
   partitionMessagesFromReplies,
   getMessageReplies,
-  getMessageToDisplay,
+  getBaseMessageToDisplay,
 } from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
+import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
@@ -109,18 +110,35 @@ export const useVenueChat = () => {
   const messagesToDisplay = useMemo(
     () =>
       messages
-        .map((message) =>
-          getMessageToDisplay({
+        .map((message) => {
+          const displayMessage = getBaseMessageToDisplay<
+            WithId<VenueChatMessage>
+          >({
             message,
             usersById: worldUsersById,
             myUserId: userId,
-            replies: getMessageReplies({
-              messageId: message.id,
-              allReplies: allMessagesReplies,
-            }),
+
             isAdmin,
+          });
+
+          if (!displayMessage) return undefined;
+
+          const messageReplies = getMessageReplies<VenueChatMessage>({
+            messageId: message.id,
+            allReplies: allMessagesReplies,
           })
-        )
+            .map((reply) =>
+              getBaseMessageToDisplay<WithId<VenueChatMessage>>({
+                message: reply,
+                usersById: worldUsersById,
+                myUserId: userId,
+                isAdmin,
+              })
+            )
+            .filter(isTruthy);
+
+          return { ...displayMessage, replies: messageReplies };
+        })
         .filter(isTruthy),
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );

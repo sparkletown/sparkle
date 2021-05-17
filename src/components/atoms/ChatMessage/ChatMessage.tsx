@@ -54,6 +54,8 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const repliesCount = renderedReplies.length;
 
+  const hasReplies = repliesCount !== 0;
+
   const hasMultipleReplies = repliesCount > 1;
 
   const replyText = hasMultipleReplies ? "replies" : "reply";
@@ -75,7 +77,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
               onClick={selectThisThread}
             />
           </div>
-          {repliesCount && (
+          {hasReplies && (
             <TextButton
               containerClassName="ChatMessage__show-replies-button"
               onClick={toggleReplies}

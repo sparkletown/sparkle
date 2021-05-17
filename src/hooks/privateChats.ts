@@ -11,10 +11,10 @@ import {
   chatSort,
   buildMessage,
   getPreviewChatMessageToDisplay,
-  getMessageToDisplay,
   getPreviewChatMessage,
   partitionMessagesFromReplies,
   getMessageReplies,
+  getBaseMessageToDisplay,
 } from "utils/chat";
 import { WithId, withId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -233,17 +233,32 @@ export const useRecipientChat = (recipientId: string) => {
   const messagesToDisplay = useMemo(
     () =>
       messages
-        .map((message) =>
-          getMessageToDisplay<WithId<PrivateChatMessage>>({
+        .map((message) => {
+          const displayMessage = getBaseMessageToDisplay<
+            WithId<PrivateChatMessage>
+          >({
             message,
             usersById: worldUsersById,
             myUserId: userId,
-            replies: getMessageReplies({
-              messageId: message.id,
-              allReplies: allMessagesReplies,
-            }),
+          });
+
+          if (!displayMessage) return undefined;
+
+          const messageReplies = getMessageReplies<PrivateChatMessage>({
+            messageId: message.id,
+            allReplies: allMessagesReplies,
           })
-        )
+            .map((reply) =>
+              getBaseMessageToDisplay<WithId<PrivateChatMessage>>({
+                message: reply,
+                usersById: worldUsersById,
+                myUserId: userId,
+              })
+            )
+            .filter(isTruthy);
+
+          return { ...displayMessage, replies: messageReplies };
+        })
         .filter(isTruthy),
     [worldUsersById, userId, allMessagesReplies, messages]
   );

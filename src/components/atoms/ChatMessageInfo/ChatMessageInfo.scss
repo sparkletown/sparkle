@@ -6,13 +6,8 @@
   font-size: $font-size--sm;
 
   &--reverse {
+    flex-direction: row-reverse;
     align-self: flex-end;
-    align-items: flex-end;
-
-    .ChatMessageInfo__info {
-      flex-direction: row-reverse;
-      align-self: flex-end;
-    }
 
     .ChatMessageInfo__author {
       margin: 0 $spacing--xs 0 $spacing--sm;
