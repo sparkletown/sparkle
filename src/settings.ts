@@ -92,6 +92,9 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
@@ -570,6 +573,5 @@ export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
 // SCHEDULE
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
-export const SCHEDULE_NUMBER_OF_PERSONAL_ROOMS = 1;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
 export const SCHEDULE_SHOW_DAYS_AHEAD = 7;

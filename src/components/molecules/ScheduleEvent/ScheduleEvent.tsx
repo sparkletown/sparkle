@@ -27,13 +27,13 @@ import "./ScheduleEvent.scss";
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
   scheduleStartHour: number;
-  isPersonalizedEvent?: boolean;
+  personalizedEvent?: boolean;
 }
 
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
   scheduleStartHour,
-  isPersonalizedEvent = false,
+  personalizedEvent: isPersonaliezedEvent = false,
 }) => {
   const { userId } = useUser();
 
@@ -53,8 +53,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "ScheduleEvent",
     {
       "ScheduleEvent--live": isEventLive(event),
+      "ScheduleEvent--users": isPersonaliezedEvent,
     },
-    { "ScheduleEvent--users": isPersonalizedEvent },
     containerCssVars
   );
 
@@ -74,7 +74,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     <div className={containerClasses}>
       <div className="ScheduleEvent__info">
         <div className="ScheduleEvent__title">{event.name}</div>
-        <div className="ScheduleEvent__description">by {event.host}</div>
+        <div className="ScheduleEvent__host">by {event.host}</div>
       </div>
 
       <div className="ScheduleEvent__bookmark" onClick={bookmarkEvent}>

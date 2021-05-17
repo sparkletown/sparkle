@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   eachHourOfInterval,
@@ -11,14 +11,16 @@ import {
 import { useCss } from "react-use";
 
 import {
+  SCHEDULE_CURRENT_TIMELINE_MS,
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
   SCHEDULE_MAX_START_HOUR,
-  SCHEDULE_NUMBER_OF_PERSONAL_ROOMS,
 } from "settings";
 
 import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
 import { eventStartTime } from "utils/event";
+
+import { useInterval } from "hooks/useInterval";
 
 import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 
@@ -60,11 +62,6 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
-  const currentTimePosition = calcStartPosition(
-    Math.floor(getUnixTime(Date.now())),
-    scheduleStartHour
-  );
-
   const roomCells = useMemo(
     () =>
       locatedEvents?.map(({ location, events }) => (
@@ -94,8 +91,21 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartDateTime]
   );
 
+  const calcCurrentTimePosition = useCallback(
+    () => calcStartPosition(getUnixTime(Date.now()), scheduleStartHour),
+    [scheduleStartHour]
+  );
+
+  const [currentTimePosition, setCurrentTimePosition] = useState(
+    calcCurrentTimePosition()
+  );
+
+  useInterval(() => {
+    setCurrentTimePosition(calcCurrentTimePosition());
+  }, SCHEDULE_CURRENT_TIMELINE_MS);
+
   const containerVars = useCss({
-    "--room-count": locatedEvents.length + SCHEDULE_NUMBER_OF_PERSONAL_ROOMS,
+    "--room-count": locatedEvents.length + 1, // +1 is needed for the 1st personalized line of the schedule
     "--current-time--position": currentTimePosition,
     "--hours-count": hoursRow.length,
     "--hour-width": `${SCHEDULE_HOUR_COLUMN_WIDTH_PX}px`,
@@ -137,7 +147,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
             <div className="Schedule__user-schedule">
               <ScheduleRoomEvents
-                isPersonalizedRoom
+                personalizedRoom
                 events={personalEvents}
                 scheduleStartHour={scheduleStartHour}
               />
