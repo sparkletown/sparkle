@@ -1,6 +1,12 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
+export const getVenueCollectionRef = () =>
+  firebase.firestore().collection("venues");
+
+export const getVenueRef = (venueId: string) =>
+  getVenueCollectionRef().doc(venueId);
+
 export interface SetVenueLiveStatusProps {
   venueId: string;
   isLive: boolean;
