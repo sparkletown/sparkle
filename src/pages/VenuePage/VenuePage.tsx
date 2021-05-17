@@ -26,7 +26,7 @@ import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
-import { moreThanHourLeftBeforeEventStarts } from "utils/event";
+import { isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -213,7 +213,7 @@ const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (!moreThanHourLeftBeforeEventStarts(event)) {
+    if (!isEventStartingSoon(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

@@ -6,7 +6,7 @@ import { VenueEvent } from "types/venues";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
-import { moreThanHourLeftBeforeEventStarts } from "utils/event";
+import { isEventStartingSoon } from "utils/event";
 import { WithId } from "utils/id";
 import { venueEntranceUrl } from "utils/url";
 import {
@@ -59,7 +59,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
           <button
             role="link"
             className="btn btn-primary buy-tickets-button"
-            disabled={!moreThanHourLeftBeforeEventStarts(event)}
+            disabled={!isEventStartingSoon(event)}
           >
             Join the event
           </button>
