@@ -1,19 +1,19 @@
-// import firebase from "firebase/app";
+import { PollMessage, PollQuestion } from "types/chat";
 
-import { PollValues, PollQuestion } from "types/chat";
+// import { getVenueRef } from "./venue";
 
 export interface CreatePollProps {
   venueId: string;
-  data: PollValues;
+  poll: PollMessage;
 }
-export const createVenuePoll = async ({ venueId, data }: CreatePollProps) =>
-  console.log("createPoll: ", venueId, data);
-// await firebase
-//   .firestore()
-//   .collection("venues")
-//   .doc(venueId)
+export const createVenuePoll = async ({
+  venueId,
+  poll,
+}: CreatePollProps): Promise<void> =>
+  console.log("createPoll: ", venueId, poll);
+// getVenueRef(venueId)
 //   .collection("chats")
-//   .add(message);
+//   .add(message)
 
 export type DeleteVenuePollProps = {
   venueId: string;
@@ -23,7 +23,8 @@ export type DeleteVenuePollProps = {
 export const deleteVenuePoll = async ({
   venueId,
   pollId,
-}: DeleteVenuePollProps) => console.log("deleteVenuePoll: ", venueId, pollId);
+}: DeleteVenuePollProps): Promise<void> =>
+  console.log("deleteVenuePoll: ", venueId, pollId);
 // await firebase
 //   .firestore()
 //   .collection("venues")
@@ -36,5 +37,8 @@ export type VoteInPollProps = {
   venueId: string;
   question: PollQuestion;
 };
-export const voteInVenuePoll = async ({ venueId, question }: VoteInPollProps) =>
+export const voteInVenuePoll = async ({
+  venueId,
+  question,
+}: VoteInPollProps): Promise<void> =>
   console.log("voteInVenuePoll: ", venueId, question);

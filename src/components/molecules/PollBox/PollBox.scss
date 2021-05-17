@@ -1,50 +1,57 @@
 @import "scss/constants";
 
-$spacing: 10px;
+$append-button-width: 24px;
 
 .PollBox {
-  &__form {
-    display: flex;
-    flex-direction: column;
-  }
+  padding: $spacing--md;
+  display: flex;
+  flex-direction: column;
 
   &__section {
     display: flex;
-    padding-bottom: $spacing;
+    padding-bottom: $spacing--md;
+    &:last-child {
+      padding-bottom: 0;
+    }
   }
 
   &__input {
-    flex: 1;
-    input {
-      max-width: 305px;
-    }
+    width: 100%;
+    max-width: calc(
+      #{$chat-sidebar-width} - 3 *#{$spacing--md} - #{$append-button-width}
+    );
   }
 
   &__submit-button {
     outline: none;
     border: none;
-    width: 44px;
+    min-width: 44px;
+    min-height: 44px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: $spacing;
+    margin-left: $spacing--md;
+
     background-color: $primary;
-    color: $white;
 
     &:disabled {
       background-color: $saturated-black;
     }
   }
 
+  &__submit-button-icon {
+    color: $white;
+  }
+
   &__append-button {
     outline: none;
     border: none;
-    width: 24px;
+    width: $append-button-width;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: $spacing;
+    margin-left: $spacing--md;
     background-color: transparent;
     color: $white;
 

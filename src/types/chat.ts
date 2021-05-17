@@ -21,7 +21,15 @@ export type PrivateChatMessage = BaseChatMessage & {
 export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
-  pollData: PollData;
+  poll: PollValues;
+};
+
+export type PollMessageToDisplay<T extends PollMessage = PollMessage> = T & {
+  isMine: boolean;
+  author: WithId<User>;
+  canBeDeleted: boolean;
+  votes: number;
+  pollId: string;
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
@@ -103,16 +111,6 @@ export type PollQuestion = {
 export type PollValues = {
   topic: string;
   questions: PollQuestion[];
-};
-
-export type PollData = {
-  poll: PollValues;
-  ts_utc: number;
-  isMine: boolean;
-  author: WithId<User>;
-  canBeDeleted: boolean;
-  votes: number;
-  pollId: string;
 };
 
 export const ChatMessageOptions: ChatOptionMap = {

@@ -3,9 +3,9 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { formatHourAndMinute } from "utils/time";
+import { formatTimestampToDisplayHoursMinutes } from "utils/time";
 
-import { PollData, PollQuestion } from "types/chat";
+import { PollMessage, PollMessageToDisplay, PollQuestion } from "types/chat";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -15,7 +15,7 @@ import Button from "components/atoms/Button";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: PollData;
+  pollData: PollMessageToDisplay<PollMessage>;
   deletePoll: (pollId: string) => void;
   voteInPoll: (question: PollQuestion) => void;
 }
@@ -35,6 +35,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     pollId,
   } = pollData;
   const { questions, topic } = poll;
+  const timestamp = ts_utc.toMillis();
 
   const { openUserProfileModal } = useProfileModalControls();
 
@@ -91,7 +92,9 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <div className="ChatPoll__info" onClick={openAuthorProfile}>
         <UserAvatar user={author} />
         <span className="ChatPoll__author">{author.partyName}</span>
-        <span className="ChatPoll__time">{formatHourAndMinute(ts_utc)}</span>
+        <span className="ChatPoll__time">
+          {formatTimestampToDisplayHoursMinutes(timestamp)}
+        </span>
       </div>
     </div>
   );

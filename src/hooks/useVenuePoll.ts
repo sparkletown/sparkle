@@ -1,19 +1,17 @@
 import { useMemo, useCallback } from "react";
-
-// import { VENUE_CHAT_AGE_DAYS } from "settings";
+import firebase from "firebase/app";
 
 import { voteInVenuePoll, createVenuePoll, deleteVenuePoll } from "api/poll";
 
-import { PollQuestion, PollValues } from "types/chat";
+import { PollMessage, PollQuestion, PollValues } from "types/chat";
 
-// import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
 // import { venueChatMessagesSelector } from "utils/selectors";
 // import { getDaysAgoInSeconds } from "utils/time";
 
 // import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
-// import { useUser } from "./useUser";
+import { useUser } from "./useUser";
 // import { useWorldUsersById } from "./users";
 // import { useRoles } from "./useRoles";
 
@@ -34,9 +32,9 @@ export const useVenuePoll = () => {
   const venueId = useVenueId();
   // const { worldUsersById } = useWorldUsersById();
   // const { userRoles } = useRoles();
-  // const { user } = useUser();
+  const { user } = useUser();
 
-  // const userId = user?.uid;
+  const userId = user?.uid;
 
   useConnectVenueChatMessages(venueId);
 
@@ -50,12 +48,19 @@ export const useVenuePoll = () => {
   );
 
   const createPoll = useCallback(
-    (data: PollValues) => {
-      if (!venueId) return;
+    (pollData: PollValues) => {
+      if (!venueId || !userId) return;
 
-      createVenuePoll({ venueId, data });
+      const poll: PollMessage = {
+        poll: pollData,
+        from: userId,
+        text: "",
+        ts_utc: firebase.firestore.Timestamp.now(),
+      };
+
+      createVenuePoll({ venueId, poll });
     },
-    [venueId]
+    [venueId, userId]
   );
 
   const deletePoll = useCallback(
