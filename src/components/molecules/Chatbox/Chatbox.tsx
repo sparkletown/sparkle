@@ -5,17 +5,23 @@ import {
   MessageToDisplay,
   SendChatReply,
   SendMesssage,
+  ChatOption,
+  ChatMessageOptions,
 } from "types/chat";
 
 import { WithId } from "utils/id";
 
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
+import { PollBox } from "components/molecules/PollBox";
 
 import { ChatMessage } from "components/atoms/ChatMessage";
 
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 
+import { useVenuePoll } from "hooks/useVenuePoll";
+
 import "./Chatbox.scss";
+import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls/ChatboxOptionsControls";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -32,12 +38,16 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   deleteMessage,
   displayPoll,
 }) => {
-  console.log(displayPoll);
+  // , deletePoll, voteInPoll
+  const { createPoll } = useVenuePoll();
+
   const [selectedThread, setSelectedThread] = useState<
     WithId<MessageToDisplay>
   >();
 
   const closeThread = useCallback(() => setSelectedThread(undefined), []);
+
+  const [activeOption, setActiveOption] = useState<ChatOption>();
 
   const renderedMessages = useMemo(
     () =>
@@ -62,12 +72,21 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             closeThread={closeThread}
           />
         )}
-
-        <ChatMessageBox
-          selectedThread={selectedThread}
-          sendMessage={sendMessage}
-          sendThreadReply={sendThreadReply}
-        />
+        {displayPoll && (
+          <ChatboxOptionsControls
+            activeOption={activeOption}
+            setActiveOption={setActiveOption}
+          />
+        )}
+        {activeOption === ChatMessageOptions.poll ? (
+          <PollBox createPoll={createPoll} />
+        ) : (
+          <ChatMessageBox
+            selectedThread={selectedThread}
+            sendMessage={sendMessage}
+            sendThreadReply={sendThreadReply}
+          />
+        )}
       </div>
     </div>
   );

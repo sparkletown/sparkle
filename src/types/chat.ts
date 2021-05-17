@@ -1,4 +1,5 @@
 import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
+import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
@@ -112,4 +113,15 @@ export type PollData = {
   canBeDeleted: boolean;
   votes: number;
   pollId: string;
+};
+
+export const ChatMessageOptions: ChatOptionMap = {
+  poll: {
+    icon: faPoll,
+    name: "Create Poll",
+  },
+  question: {
+    icon: faQuestion,
+    name: "Ask Question",
+  },
 };
