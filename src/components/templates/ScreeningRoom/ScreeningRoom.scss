@@ -1,0 +1,13 @@
+.ScreeningRoom {
+  &__posters {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  &__more-button {
+    display: flex;
+    justify-content: center;
+  }
+}

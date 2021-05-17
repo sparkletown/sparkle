@@ -1,0 +1,1 @@
+export { PosterHall } from "./ScreeningRoom";
