@@ -37,6 +37,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 }) => {
   const { userId } = useUser();
 
+  // @debt ONE_HOUR_IN_MINUTES is deprectated; refactor to use utils/time or date-fns functions
   const eventWidth =
     (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
     ONE_HOUR_IN_MINUTES;

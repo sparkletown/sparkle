@@ -1,11 +1,11 @@
 import React from "react";
-import { format } from "date-fns";
+import { format, getUnixTime } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { formatHourAndMinute, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import { eventStartTime } from "utils/event";
+import { formatHourAndMinute } from "utils/time";
+import { eventEndTime, eventStartTime } from "utils/event";
 
 export interface VenueEventDetailsProps {
   venueEvent: WithId<VenueEvent>;
@@ -23,10 +23,7 @@ const VenueEventDetails = ({
   className,
 }: VenueEventDetailsProps) => {
   const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
-  const endTime = formatHourAndMinute(
-    venueEvent.start_utc_seconds +
-      ONE_MINUTE_IN_SECONDS * venueEvent.duration_minutes
-  );
+  const endTime = formatHourAndMinute(getUnixTime(eventEndTime(venueEvent)));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (

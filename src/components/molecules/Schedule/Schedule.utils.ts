@@ -7,6 +7,7 @@ export const calcStartPosition = (
   scheduleStartHour: number
 ) => {
   const startTimeSeconds = getSecondsFromStartOfDay(startTimeUtcSeconds);
+  // @debt ONE_HOUR_IN_SECONDS is deprecated; use utils/time or date-fns function instead
   const hoursToSkip =
     startTimeSeconds / ONE_HOUR_IN_SECONDS - scheduleStartHour;
   const halfHourWidth = SCHEDULE_HOUR_COLUMN_WIDTH_PX / 2;

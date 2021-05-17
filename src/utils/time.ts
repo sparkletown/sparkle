@@ -8,17 +8,41 @@ import {
   startOfDay,
 } from "date-fns";
 
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_SECOND_IN_MILLISECONDS = 1000;
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_MINUTE_IN_SECONDS = 60;
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_HOUR_IN_MINUTES = 60;
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_DAY_IN_SECONDS = ONE_HOUR_IN_SECONDS * 24;
 
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const FIVE_MINUTES_MS =
   5 * ONE_MINUTE_IN_SECONDS * ONE_SECOND_IN_MILLISECONDS;
+
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const ONE_HOUR_IN_MILLISECONDS =
   ONE_SECOND_IN_MILLISECONDS * ONE_HOUR_IN_SECONDS;
-
+/**
+ * @deprecated in favor of using date-fns functions
+ */
 export const SECONDS_TIMESTAMP_MAX_VALUE = 9999999999;
 
 /**
@@ -197,6 +221,7 @@ export const formatUtcSecondsRelativeToNow = (utcSeconds: number) => {
   return formatRelative(fromUnixTime(utcSeconds), Date.now());
 };
 
+// @debt get rid of ONE_SECOND_IN_MILLISECONDS and use date-fns function
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   const isTimestampInMilliSeconds = timestamp > SECONDS_TIMESTAMP_MAX_VALUE;
 
