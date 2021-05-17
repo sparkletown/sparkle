@@ -4,7 +4,7 @@ import { format, getUnixTime } from "date-fns";
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { formatHourAndMinute } from "utils/time";
+import { formatHourAndMinute, getTimeBeforeParty } from "utils/time";
 import { eventEndTime, eventStartTime } from "utils/event";
 
 export interface VenueEventDetailsProps {
@@ -25,6 +25,7 @@ const VenueEventDetails = ({
   const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
   const endTime = formatHourAndMinute(getUnixTime(eventEndTime(venueEvent)));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
+  console.log("here");
 
   return (
     <div className={className}>
@@ -42,6 +43,9 @@ const VenueEventDetails = ({
           </span>
         </div>
         {venueEvent.description}
+        <br />
+        {getTimeBeforeParty(venueEvent.start_utc_seconds)}
+
         {venueEvent.descriptions?.map((description, index) => (
           <p key={index}>{description}</p>
         ))}

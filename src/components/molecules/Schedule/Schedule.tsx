@@ -19,6 +19,7 @@ import {
 import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
 
 import { eventStartTime } from "utils/event";
+import { formatMeasurement } from "utils/formatMeasurement";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -72,7 +73,9 @@ export const Schedule: React.FC<ScheduleProps> = ({
           <p className="Schedule__room-title">
             {location.roomTitle || location.venueTitle || location.venueId}
           </p>
-          <span className="Schedule__events-count">{events.length} events</span>
+          <span className="Schedule__events-count">
+            {formatMeasurement(events.length, "event")}
+          </span>
         </div>
       )),
     [locatedEvents]

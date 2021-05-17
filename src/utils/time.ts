@@ -5,6 +5,8 @@ import {
   formatRelative,
   fromUnixTime,
   getUnixTime,
+  intervalToDuration,
+  isBefore,
   startOfDay,
 } from "date-fns";
 
@@ -84,53 +86,19 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
 
-const formatMeasurementInString = (value: number, measureUnit: string) => {
-  const baseFormatted = `${value} ${measureUnit}`;
+export const getTimeBeforeParty = (startUtcSeconds: number) => {
+  const eventStartDate = fromUnixTime(startUtcSeconds);
+  const now = Date.now();
 
-  if (value === 0) return "";
-  if (value === 1) return baseFormatted;
-  if (value > 1) return `${baseFormatted}s`;
-};
+  if (isBefore(eventStartDate, now)) return 0;
 
-// @debt quality test this
-export const getTimeBeforeParty = (startUtcSeconds?: number) => {
-  if (startUtcSeconds === undefined) return "???";
-
-  const secondsBeforeParty = differenceInSeconds(
-    fromUnixTime(startUtcSeconds),
-    Date.now()
+  return formatDuration(
+    intervalToDuration({
+      start: Date.now(),
+      end: eventStartDate,
+    }),
+    { format: ["days", "hours", "minutes"] }
   );
-
-  if (secondsBeforeParty < 0) {
-    return 0;
-  }
-
-  const numberOfCompleteDaysBeforeParty = Math.floor(
-    secondsBeforeParty / ONE_DAY_IN_SECONDS
-  );
-
-  const numberOfCompleteHours = Math.floor(
-    (secondsBeforeParty % ONE_DAY_IN_SECONDS) / ONE_HOUR_IN_SECONDS
-  );
-
-  const numberOfMinutes = Math.floor(
-    (secondsBeforeParty % ONE_HOUR_IN_SECONDS) / ONE_MINUTE_IN_SECONDS
-  );
-
-  const numberOfDaysInString = formatMeasurementInString(
-    numberOfCompleteDaysBeforeParty,
-    "day"
-  );
-  const numberOfHoursInString = formatMeasurementInString(
-    numberOfCompleteHours,
-    "hour"
-  );
-  const numberOfMinutesInString = formatMeasurementInString(
-    numberOfMinutes,
-    "minute"
-  );
-
-  return `${numberOfDaysInString} ${numberOfHoursInString} ${numberOfMinutesInString}`;
 };
 
 /**
