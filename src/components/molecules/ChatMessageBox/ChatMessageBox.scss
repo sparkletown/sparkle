@@ -1,12 +1,14 @@
 @import "scss/constants";
 
-.ChatMessageBox {
-  display: flex;
-  align-items: center;
-  padding-bottom: 5px;
+.Chatbox {
+  &__form {
+    padding: $spacing--md;
+    display: flex;
+    align-items: center;
+  }
 
   &__input {
-    flex: 1;
+    width: 100%;
   }
 
   &__submit-button {
@@ -14,11 +16,11 @@
     border: none;
     min-width: 44px;
     min-height: 44px;
-    border-radius: $border-radius--max;
+    border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-left: 10px;
+    margin-left: $spacing--md;
 
     background-color: $primary;
 

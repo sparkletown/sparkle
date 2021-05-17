@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
+
+import { MessageToDisplay, SendChatReply, SendMesssage } from "types/chat";
+
+import { WithId } from "utils/id";
 
 import { InputField } from "components/atoms/InputField";
 
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
-  sendMessage: (text: string) => void;
+  selectedThread?: WithId<MessageToDisplay>;
+  sendMessage: SendMesssage;
+  sendThreadReply: SendChatReply;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
+  selectedThread,
   sendMessage,
+  sendThreadReply,
 }) => {
+  const hasChosenThread = selectedThread !== undefined;
   const [isSendingMessage, setMessageSending] = useState(false);
 
   // This logic disallows users to spam into the chat. There should be a delay, between each message
@@ -30,41 +39,48 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     };
   }, [isSendingMessage]);
 
-  const { control, handleSubmit, reset, watch } = useForm<{
+  const { register, handleSubmit, watch, reset } = useForm<{
     message: string;
   }>({
     mode: "onSubmit",
   });
 
-  const onChatFormSubmit = handleSubmit(({ message }) => {
+  const sendMessageToChat = handleSubmit(({ message }) => {
     setMessageSending(true);
     sendMessage(message);
+    reset();
+  });
+
+  const sendReplyToThread = handleSubmit(({ message }) => {
+    if (!selectedThread) return;
+
+    setMessageSending(true);
+    sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
   });
 
   const chatValue = watch("message");
 
   return (
-    <form className="ChatMessageBox" onSubmit={onChatFormSubmit}>
-      <Controller
-        as={
-          <InputField
-            containerClassName="ChatMessageBox__input"
-            placeholder="Write your message..."
-            autoComplete="off"
-          />
-        }
-        control={control}
+    <form
+      className="Chatbox__form"
+      onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
+    >
+      <InputField
+        containerClassName="Chatbox__input"
+        ref={register({ required: true })}
         name="message"
+        placeholder="Write your message..."
+        autoComplete="off"
       />
       <button
-        className="ChatMessageBox__submit-button"
+        className="Chatbox__submit-button"
         type="submit"
         disabled={!chatValue || isSendingMessage}
       >
         <FontAwesomeIcon
           icon={faPaperPlane}
-          className="ChatMessageBox__submit-button-icon"
+          className="Chatbox__submit-button-icon"
           size="lg"
         />
       </button>

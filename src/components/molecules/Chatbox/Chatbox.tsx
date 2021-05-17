@@ -1,7 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from "react";
-import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import React, { useMemo, useState, useCallback } from "react";
 
 import {
   DeleteMessage,
@@ -12,8 +9,9 @@ import {
 
 import { WithId } from "utils/id";
 
+import { ChatMessageBox } from "components/molecules/ChatMessageBox";
+
 import { ChatMessage } from "components/atoms/ChatMessage";
-import { InputField } from "components/atoms/InputField";
 
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 
@@ -24,6 +22,7 @@ export interface ChatboxProps {
   sendMessage: SendMesssage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
+  displayPoll?: boolean;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
@@ -31,47 +30,14 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   sendThreadReply,
   deleteMessage,
+  displayPoll,
 }) => {
-  const [isSendingMessage, setMessageSending] = useState(false);
-
+  console.log(displayPoll);
   const [selectedThread, setSelectedThread] = useState<
     WithId<MessageToDisplay>
   >();
 
   const closeThread = useCallback(() => setSelectedThread(undefined), []);
-
-  const hasChosenThread = selectedThread !== undefined;
-
-  // This logic dissallows users to spam into the chat. There should be a delay, between each message
-  useEffect(() => {
-    if (isSendingMessage) {
-      setTimeout(() => {
-        setMessageSending(false);
-      }, 500);
-    }
-  }, [isSendingMessage]);
-
-  const { register, handleSubmit, reset, watch } = useForm<{
-    message: string;
-  }>({
-    mode: "onSubmit",
-  });
-
-  const sendMessageToChat = handleSubmit(({ message }) => {
-    setMessageSending(true);
-    sendMessage(message);
-    reset();
-  });
-
-  const sendReplyToThread = handleSubmit(({ message }) => {
-    if (!selectedThread) return;
-
-    setMessageSending(true);
-    sendThreadReply({ replyText: message, threadId: selectedThread.id });
-    reset();
-  });
-
-  const chatValue = watch("message");
 
   const renderedMessages = useMemo(
     () =>
@@ -97,29 +63,11 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )}
 
-        <form
-          className="Chatbox__form"
-          onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
-        >
-          <InputField
-            containerClassName="Chatbox__input"
-            ref={register({ required: true })}
-            name="message"
-            placeholder="Write your message..."
-            autoComplete="off"
-          />
-          <button
-            className="Chatbox__submit-button"
-            type="submit"
-            disabled={!chatValue || isSendingMessage}
-          >
-            <FontAwesomeIcon
-              icon={faPaperPlane}
-              className="Chatbox__submit-button-icon"
-              size="lg"
-            />
-          </button>
-        </form>
+        <ChatMessageBox
+          selectedThread={selectedThread}
+          sendMessage={sendMessage}
+          sendThreadReply={sendThreadReply}
+        />
       </div>
     </div>
   );
