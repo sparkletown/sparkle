@@ -192,3 +192,16 @@ $z-layers: (
     background-color: rgba($white, 0.5);
   }
 }
+
+@mixin line-clamp($line-count: 1) {
+  display: -webkit-box;
+  -webkit-line-clamp: $line-count;
+  -webkit-box-orient: vertical;
+  line-clamp: $line-count;
+}
+
+@mixin line-clamp-with-overflow($line-count: 1) {
+  @include line-clamp($line-count);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

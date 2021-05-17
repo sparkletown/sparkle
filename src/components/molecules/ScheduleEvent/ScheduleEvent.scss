@@ -71,12 +71,8 @@ $description--margin-top: 2px;
   }
 
   &__title {
+    @include line-clamp-with-overflow(2);
     white-space: pre-line;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
     font-weight: bold;
   }
 
