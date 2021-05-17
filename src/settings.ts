@@ -26,6 +26,7 @@ export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -53,6 +54,7 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DEFAULT_EDIT_PROFILE_TEXT =
   "I haven't edited my profile to tell you yet";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
