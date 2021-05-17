@@ -45,7 +45,6 @@ interface NavBarScheduleProps {
 
 export interface ScheduleDay {
   isToday: boolean;
-  weekday: string;
   dayStartUtcSeconds: number;
   locatedEvents: LocatedEvents[];
   personalEvents: PersonalizedVenueEvent[];
@@ -115,7 +114,6 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     return {
       locatedEvents,
       isToday: selectedDayIndex === 0,
-      weekday: format(dayStart, "E"),
       dayStartUtcSeconds: getUnixTime(dayStart),
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
