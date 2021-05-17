@@ -1,6 +1,6 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
-import dayjs from "dayjs";
+import { format } from "date-fns";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
@@ -41,7 +41,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       <UserAvatar user={author} />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
-        {dayjs(timestamp).format("h:mm A")}
+        {format(timestamp, "h:mm A")}
       </span>
       {canBeDeleted && (
         <FontAwesomeIcon

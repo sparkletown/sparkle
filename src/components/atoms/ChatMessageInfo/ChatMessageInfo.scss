@@ -5,6 +5,25 @@
   align-items: center;
   font-size: $font-size--sm;
 
+  &--reverse {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .ChatMessageInfo__info {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+
+    .ChatMessageInfo__author {
+      margin: 0 $spacing--xs 0 $spacing--sm;
+    }
+
+    .ChatMessageInfo__delete-icon {
+      margin-left: 0;
+      margin-right: $spacing--xs;
+    }
+  }
+
   &__author {
     margin: 0 $spacing--sm 0 $spacing--xs;
 
@@ -31,25 +50,6 @@
 
     &:hover {
       opacity: 0.8;
-    }
-  }
-
-  &--me {
-    align-self: flex-end;
-    align-items: flex-end;
-
-    .ChatMessageInfo__info {
-      flex-direction: row-reverse;
-      align-self: flex-end;
-    }
-
-    .ChatMessageInfo__author {
-      margin: 0 $spacing--xs 0 $spacing--sm;
-    }
-
-    .ChatMessageInfo__delete-icon {
-      margin-left: 0;
-      margin-right: $spacing--xs;
     }
   }
 }
