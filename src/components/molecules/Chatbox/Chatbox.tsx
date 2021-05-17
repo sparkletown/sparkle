@@ -91,7 +91,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         {chosenThread && (
           <ChatboxThreadControls
             threadAuthor={chosenThread.author.partyName}
-            onThreadLeave={closeThread}
+            closeThread={closeThread}
           />
         )}
 

@@ -19,18 +19,16 @@ export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   b: BaseChatMessage
 ) => b.ts_utc.valueOf().localeCompare(a.ts_utc.valueOf());
 
-export interface GetBaseMessageToDisplayProps<T extends WithId<ChatMessage>> {
+export interface GetBaseMessageToDisplayProps<T extends ChatMessage> {
   message: T;
   usersById: Partial<Record<string, User>>;
   myUserId?: string;
   isAdmin?: boolean;
 }
 
-export type GetBaseMessageToDisplay<
-  T extends WithId<ChatMessage> = WithId<ChatMessage>
-> = (
+export type GetBaseMessageToDisplay<T extends ChatMessage = ChatMessage> = (
   props: GetBaseMessageToDisplayProps<T>
-) => WithId<BaseMessageToDisplay<T>> | undefined;
+) => BaseMessageToDisplay<T> | undefined;
 
 export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
   message,
@@ -52,14 +50,14 @@ export const getBaseMessageToDisplay: GetBaseMessageToDisplay = ({
   };
 };
 
-export interface GetMessageToDisplayProps<T extends WithId<ChatMessage>>
+export interface GetMessageToDisplayProps<T extends ChatMessage>
   extends GetBaseMessageToDisplayProps<T> {
   replies: WithId<T>[];
 }
 
 export type GetMessageToDisplay = {
-  <T extends WithId<ChatMessage>>(props: GetMessageToDisplayProps<T>):
-    | MessageToDisplay<WithId<T>>
+  <T extends ChatMessage>(props: GetMessageToDisplayProps<T>):
+    | MessageToDisplay<T>
     | undefined;
 };
 
