@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-.chatbox {
+.Chatbox {
   height: 100%;
   display: flex;
   flex-flow: column;
@@ -10,75 +10,45 @@
     display: flex;
     flex-flow: column-reverse;
     justify-self: flex-end;
-    padding: 24px 16px 0;
+    padding: $spacing--xl $spacing--lg 0;
     overflow-x: auto;
   }
 
-  &__container {
-    padding: 10px;
+  &__form-box {
     background-color: $black;
-
-    & > *:first-child {
-      padding-bottom: 10px;
-    }
-  }
-
-  &__cancel-poll {
-    width: fit-content;
-    margin-left: auto;
-    text-decoration: underline;
-    cursor: pointer;
-    svg {
-      margin-left: 5px;
-    }
-  }
-
-  &__dropdown.dropup {
     display: flex;
-    justify-content: flex-end;
+    flex-flow: column;
+  }
 
-    .dropdown-toggle {
-      height: auto;
-      width: auto;
-      background: none;
-      color: $white;
-      text-decoration: underline;
-      font-size: initial;
-      font-weight: initial;
-      padding: 0;
+  &__form {
+    padding: $spacing--md;
+    display: flex;
+    align-items: center;
+  }
 
-      &:focus {
-        box-shadow: none;
-      }
+  &__input {
+    width: 100%;
+  }
 
-      &:hover:enabled {
-        color: $white;
-        transform: none;
-        background-image: none;
-      }
+  &__submit-button {
+    outline: none;
+    border: none;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: $spacing--md;
 
-      &::after {
-        display: none;
-      }
+    background-color: $primary;
+
+    &:disabled {
+      background-color: $saturated-black;
     }
+  }
 
-    .dropdown-menu {
-      background-color: $primary;
-      border-radius: 22px;
-    }
-
-    .dropdown-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.25rem 1rem;
-      font-weight: 500;
-      text-decoration: none;
-
-      &:hover,
-      &:focus {
-        background: none;
-        opacity: 0.8;
-      }
-    }
+  &__submit-button-icon {
+    color: $white;
   }
 }

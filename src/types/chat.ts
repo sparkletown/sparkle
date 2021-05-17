@@ -2,12 +2,14 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
+import firebase from "firebase/app";
 
 export type BaseChatMessage = {
   from: string;
   text: string;
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
+  threadId?: string;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
@@ -15,7 +17,7 @@ export type PrivateChatMessage = BaseChatMessage & {
   isRead?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage & {};
+export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
   pollData: PollData;
@@ -26,11 +28,30 @@ export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 export const isPollMessage = (r: unknown): r is PollMessage =>
   typeof r === "object" && isTruthy(r) && r.hasOwnProperty("pollData");
 
-export type MessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
+export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
   canBeDeleted?: boolean;
 };
+
+export type MessageToDisplay<
+  T extends ChatMessage = ChatMessage
+> = BaseMessageToDisplay<T> & {
+  replies: WithId<BaseMessageToDisplay<T>>[];
+};
+
+export type SendMesssage = (text: string) => Promise<void> | undefined;
+
+export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
+
+export interface SendChatReplyProps {
+  replyText: string;
+  threadId: string;
+}
+
+export type SendChatReply = (
+  props: SendChatReplyProps
+) => Promise<void> | undefined;
 
 export type PreviewChatMessage = PrivateChatMessage & {
   counterPartyUser: WithId<User>;

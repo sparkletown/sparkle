@@ -1,154 +1,125 @@
-import React, { useMemo, useState } from "react";
-import { Dropdown, DropdownButton } from "react-bootstrap";
+import React, { useMemo, useState, useEffect, useCallback } from "react";
+import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
 import {
+  DeleteMessage,
   MessageToDisplay,
-  ChatOption,
-  ChatOptionMap,
-  isPollMessage,
+  SendChatReply,
+  SendMesssage,
 } from "types/chat";
 
 import { WithId } from "utils/id";
 
-import { ChatMessageBox } from "components/molecules/ChatMessageBox";
-import { ChatPoll } from "components/molecules/ChatPoll";
-import { PollBox } from "components/molecules/PollBox";
-
 import { ChatMessage } from "components/atoms/ChatMessage";
+import { InputField } from "components/atoms/InputField";
 
-import { useVenuePoll } from "hooks/useVenuePoll";
+import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 
 import "./Chatbox.scss";
 
-const pollData = {
-  votes: 8,
-  pollId: "123",
-  poll: {
-    topic: "test topic",
-    questions: [{ name: "test1" }, { name: "test2" }, { name: "test3" }],
-  },
-  ts_utc: 1619444131,
-  isMine: true,
-  author: {
-    mirrorVideo: false,
-    kidsMode: false,
-    anonMode: false,
-    enteredVenueIds: [
-      "devaliashacksville",
-      "devaliasauditorium",
-      "jonsfunkyaudiotorium",
-      "devaliasjazzbar",
-    ],
-    pictureUrl: "/avatars/default-profile-pic-1.png",
-    lastSeenIn: {
-      undefined: 1619201762890,
-    },
-    partyName: "jimbojr",
-    lastSeenAt: 1619201762915,
-    data: {},
-    id: "oYMle5T6L3UjRbcN54CNBAU054l1",
-  },
-  canBeDeleted: true,
-};
-
-const ChatMessageOption: ChatOptionMap = {
-  poll: {
-    icon: faPoll,
-    name: "Create Poll",
-  },
-  question: {
-    icon: faQuestion,
-    name: "Ask Question",
-  },
-};
-
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  sendMessage: (text: string) => void;
-  deleteMessage: (messageId: string) => void;
-  displayPoll?: boolean;
+  sendMessage: SendMesssage;
+  sendThreadReply: SendChatReply;
+  deleteMessage: DeleteMessage;
 }
 
 export const Chatbox: React.FC<ChatboxProps> = ({
   messages,
   sendMessage,
+  sendThreadReply,
   deleteMessage,
-  displayPoll,
 }) => {
-  const { createPoll, deletePoll, voteInPoll } = useVenuePoll();
-  const [activeOption, setActiveOption] = useState<ChatOption>();
-  const showPoll = activeOption === ChatMessageOption.poll;
+  const [isSendingMessage, setMessageSending] = useState(false);
 
-  const dropdownOptions = useMemo(
-    () =>
-      Object.values(ChatMessageOption).map((option) => (
-        <Dropdown.Item
-          key={option.name}
-          onClick={() => setActiveOption(option)}
-        >
-          {option.name}
-          <FontAwesomeIcon icon={option.icon} />
-        </Dropdown.Item>
-      )),
-    []
-  );
+  const [selectedThread, setSelectedThread] = useState<
+    WithId<MessageToDisplay>
+  >();
+
+  const closeThread = useCallback(() => setSelectedThread(undefined), []);
+
+  const hasChosenThread = selectedThread !== undefined;
+
+  // This logic dissallows users to spam into the chat. There should be a delay, between each message
+  useEffect(() => {
+    if (isSendingMessage) {
+      setTimeout(() => {
+        setMessageSending(false);
+      }, 500);
+    }
+  }, [isSendingMessage]);
+
+  const { register, handleSubmit, reset, watch } = useForm<{
+    message: string;
+  }>({
+    mode: "onSubmit",
+  });
+
+  const sendMessageToChat = handleSubmit(({ message }) => {
+    setMessageSending(true);
+    sendMessage(message);
+    reset();
+  });
+
+  const sendReplyToThread = handleSubmit(({ message }) => {
+    if (!selectedThread) return;
+
+    setMessageSending(true);
+    sendThreadReply({ replyText: message, threadId: selectedThread.id });
+    reset();
+  });
+
+  const chatValue = watch("message");
 
   const renderedMessages = useMemo(
     () =>
-      messages.map((message) =>
-        isPollMessage(message) ? (
-          <ChatPoll
-            pollData={pollData}
-            voteInPoll={voteInPoll}
-            deletePoll={deletePoll}
-          />
-        ) : (
-          <ChatMessage
-            key={`${message.ts_utc}-${message.from}`}
-            message={message}
-            deleteMessage={() => deleteMessage(message.id)}
-          />
-        )
-      ),
-    [messages, deleteMessage, voteInPoll, deletePoll]
+      messages.map((message) => (
+        <ChatMessage
+          key={message.id}
+          message={message}
+          deleteMessage={deleteMessage}
+          selectThisThread={() => setSelectedThread(message)}
+        />
+      )),
+    [messages, deleteMessage]
   );
 
-  const renderForms = useMemo(() => {
-    switch (activeOption) {
-      case ChatMessageOption.poll:
-        return <PollBox createPoll={createPoll} />;
-
-      default:
-        return <ChatMessageBox sendMessage={sendMessage} />;
-    }
-  }, [activeOption, sendMessage, createPoll]);
-
   return (
-    <div className="chatbox">
-      <div className="chatbox__messages">{renderedMessages}</div>
-      <div className="chatbox__container">
-        {displayPoll &&
-          (showPoll ? (
-            <div
-              className="chatbox__cancel-poll"
-              onClick={() => setActiveOption(undefined)}
-            >
-              Cancel Poll
-            </div>
-          ) : (
-            <DropdownButton
-              id="options-dropdown"
-              title="Options"
-              className="chatbox__dropdown"
-              variant="link"
-              drop="up"
-            >
-              {dropdownOptions}
-            </DropdownButton>
-          ))}
-        {renderForms}
+    <div className="Chatbox">
+      <div className="Chatbox__messages">{renderedMessages}</div>
+      <div className="Chatbox__form-box">
+        {selectedThread && (
+          <ChatboxThreadControls
+            threadAuthor={selectedThread.author.partyName}
+            closeThread={closeThread}
+          />
+        )}
+
+        <form
+          className="Chatbox__form"
+          onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
+        >
+          <InputField
+            containerClassName="Chatbox__input"
+            ref={register({ required: true })}
+            name="message"
+            placeholder="Write your message..."
+            autoComplete="off"
+          />
+          <button
+            className="Chatbox__submit-button"
+            type="submit"
+            disabled={!chatValue || isSendingMessage}
+          >
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="Chatbox__submit-button-icon"
+              size="lg"
+            />
+          </button>
+        </form>
       </div>
     </div>
   );
