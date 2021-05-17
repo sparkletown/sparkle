@@ -2,7 +2,7 @@ import React, { FC, useMemo } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO } from "settings";
+import { DEFAULT_VENUE_LOGO, DEFAULT_VENUE_NAME } from "settings";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
@@ -42,7 +42,7 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
         <div className={venuePictureClasses} />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
-            {scheduleVenue?.name}
+            {scheduleVenue?.name ?? DEFAULT_VENUE_NAME}
           </h2>
           <h3 className="ScheduleVenueDescription__subtitle">
             {scheduleVenue?.config?.landingPageConfig?.subtitle}
