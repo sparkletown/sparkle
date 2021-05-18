@@ -31,8 +31,16 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const [question1, question2] = watch("questions");
   const topic = watch("topic");
 
-  const onPollSubmit = handleSubmit((data) => {
-    createPoll(data);
+  const onPollSubmit = handleSubmit(({ topic, questions }) => {
+    const newPoll = {
+      topic,
+      questions: questions.map(({ name }, id) => ({
+        name,
+        id,
+        votes: 0,
+      })),
+    };
+    createPoll(newPoll);
     reset();
   });
 
