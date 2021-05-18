@@ -26,6 +26,9 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
 }) => {
   const { id, poll, votes, isMine, canBeDeleted } = pollData;
   const { questions, topic } = poll;
+  // TODO: think about the way to check if user vote
+  // save all votes userIds?
+  const isVoted = false;
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
@@ -72,7 +75,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
-        <div>{isMine ? renderCounts : renderQuestions}</div>
+        <div>{isMine || isVoted ? renderCounts : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span className="ChatPoll__votes">{`${votes} votes`}</span>
           {canBeDeleted && (
