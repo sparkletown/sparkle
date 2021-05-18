@@ -49,9 +49,9 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useShowHide } from "hooks/useShowHide";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -260,7 +260,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     );
   }, [venue]);
 
-  const { isShown, show, hide } = useShowHide();
+  const {
+    isShown: isDeleteModalVisible,
+    show: showDeleteModal,
+    hide: hideDeleteModal,
+  } = useShowHide();
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
@@ -378,7 +382,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               Manage Venue Owners
             </Link>
             {typeof roomIndex !== "number" && (
-              <div className="page-container-adminpanel-actions-note">
+              <div className="page-container-adminpanel-actions__note">
                 If you are looking to edit one of your rooms, please select the
                 room in the left hand menu
               </div>
@@ -387,7 +391,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               <button
                 role="link"
                 className="btn btn-block btn-danger"
-                onClick={show}
+                onClick={showDeleteModal}
               >
                 Delete space
               </button>
@@ -395,7 +399,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
           </>
         )}
       </div>
-      <VenueDeleteModal show={isShown} onHide={hide} venue={venue} />
+      <VenueDeleteModal
+        show={isDeleteModalVisible}
+        onHide={hideDeleteModal}
+        venue={venue}
+      />
       <VenueOwnersModal
         visible={manageUsers}
         onHide={onManageUsersModalHide}
