@@ -119,6 +119,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getLocaion]);
 
+  // if .NavBarSchedule is changed, we need to update the class name in NavBar#hideEventSchedule event handler as well
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
   });
