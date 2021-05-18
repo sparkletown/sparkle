@@ -59,12 +59,8 @@
   font-weight: 500;
 }
 .whatson-description-container-description {
+  @include line-clamp-with-overflow(2);
   font-size: 0.8rem;
   opacity: 0.8;
   margin-bottom: 4px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }

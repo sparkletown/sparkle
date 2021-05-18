@@ -74,11 +74,18 @@ export const worldUsersByIdSelector: SparkleSelector<
  * Selector to retrieve venues from the Redux Firestore.
  *
  * @param state the Redux store
+ *
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
 
+/**
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
+ */
 export const orderedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.venues;
@@ -94,6 +101,9 @@ export const orderedVenuesSelector: SparkleSelector<
  *   const venueId = 'abc123'
  *   const venueSelector = useCallback(makeVenueSelector(venueId), [venueId])
  *   const venue = useSelector(venueSelector, shallowEqual)
+ *
+ * @deprecated This function relies on a selector that requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const makeVenueSelector = (venueId: string) => (
   state: RootState
@@ -171,39 +181,13 @@ export const messagesToTheBandSelector: SparkleSelector<
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const parentVenueOrderedSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.parentVenue;
-
 export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
   state
 ) => state.firestore.data.parentVenue;
 
-export const subvenuesSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.subvenues;
-
-export const siblingVenuesSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.siblingVenues;
-
 export const venueEventsSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = (state) => state.firestore.ordered.venueEvents;
-
-export const parentVenueEventsSelector: SparkleSelector<
-  WithId<VenueEvent>[] | undefined
-> = (state: RootState) => state.firestore.ordered.parentVenueEvents;
-
-export const makeSubvenueEventsSelector = (venueId?: string) => (
-  state: RootState
-): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as never)[`subvenueEvents-${venueId}`];
-
-export const makeSiblingVenueEventsSelector = (venueId?: string) => (
-  state: RootState
-): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as never)[`siblingVenueEvents-${venueId}`];
 
 export const userModalVisitsSelector = (state: RootState) =>
   state.firestore.ordered.userModalVisits;

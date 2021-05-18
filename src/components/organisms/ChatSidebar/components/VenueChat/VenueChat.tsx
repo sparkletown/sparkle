@@ -7,13 +7,19 @@ import { useVenueChat } from "hooks/useVenueChat";
 import "./VenueChat.scss";
 
 export const VenueChat: React.FC = () => {
-  const { sendMessage, deleteMessage, messagesToDisplay } = useVenueChat();
+  const {
+    sendMessage,
+    deleteMessage,
+    messagesToDisplay,
+    sendThreadReply,
+  } = useVenueChat();
 
   return (
     <div className="venue-chat">
       <Chatbox
         messages={messagesToDisplay}
         sendMessage={sendMessage}
+        sendThreadReply={sendThreadReply}
         deleteMessage={deleteMessage}
       />
     </div>

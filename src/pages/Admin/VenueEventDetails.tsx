@@ -1,16 +1,13 @@
 import React from "react";
-import { format } from "date-fns";
+import { format, getUnixTime } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import {
-  formatHourAndMinute,
-  ONE_MINUTE_IN_SECONDS,
-  ONE_SECOND_IN_MILLISECONDS,
-} from "utils/time";
+import { formatHourAndMinute } from "utils/time";
+import { eventEndTime, eventStartTime } from "utils/event";
 
-interface Props {
+export interface VenueEventDetailsProps {
   venueEvent: WithId<VenueEvent>;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
@@ -24,16 +21,10 @@ const VenueEventDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
   className,
-}: Props) => {
+}: VenueEventDetailsProps) => {
   const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
-  const endTime = formatHourAndMinute(
-    venueEvent.start_utc_seconds +
-      ONE_MINUTE_IN_SECONDS * venueEvent.duration_minutes
-  );
-  const startDay = format(
-    venueEvent.start_utc_seconds * ONE_SECOND_IN_MILLISECONDS,
-    "EEEE LLLL do"
-  );
+  const endTime = formatHourAndMinute(getUnixTime(eventEndTime(venueEvent)));
+  const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (
     <div className={className}>
@@ -51,6 +42,7 @@ const VenueEventDetails = ({
           </span>
         </div>
         {venueEvent.description}
+
         {venueEvent.descriptions?.map((description, index) => (
           <p key={index}>{description}</p>
         ))}

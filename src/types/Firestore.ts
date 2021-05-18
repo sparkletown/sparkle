@@ -66,38 +66,48 @@ export interface FirestoreData {
   userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
-  worldUsers?: Record<string, User>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
+  worldUsers?: Record<string, User>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: Record<string, AnyVenue>;
 }
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreOrdered {
-  chatRequests?: Array<WithId<ChatRequest>>;
-  currentEvent?: Array<WithId<VenueEvent>>;
-  currentVenue?: Array<WithId<AnyVenue>>;
-  currentVenueEventsNG?: Array<WithId<VenueEvent>>;
-  currentVenueNG?: Array<WithId<AnyVenue>>;
-  eventPurchase?: Array<WithId<Purchase>>;
-  events?: Array<WithId<VenueEvent>>;
+  chatRequests?: WithId<ChatRequest>[];
+  currentEvent?: WithId<VenueEvent>[];
+  currentVenue?: WithId<AnyVenue>[];
+  currentVenueEventsNG?: WithId<VenueEvent>[];
+  currentVenueNG?: WithId<AnyVenue>[];
+  eventPurchase?: WithId<Purchase>[];
+  events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
-  parentVenue?: Array<WithId<AnyVenue>>;
-  parentVenueEvents?: Array<WithId<VenueEvent>>;
-  playaVenues?: Array<WithId<AnyVenue>>;
-  reactions?: Array<WithId<Reaction>>;
+  parentVenue?: WithId<AnyVenue>[];
+  parentVenueEvents?: WithId<VenueEvent>[];
+  playaVenues?: WithId<AnyVenue>[];
+  reactions?: WithId<Reaction>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  statsOnlineUsers?: Array<WithId<User>>;
-  statsOpenVenues?: Array<WithId<AnyVenue>>;
+  statsOnlineUsers?: WithId<User>[];
+  statsOpenVenues?: WithId<AnyVenue>[];
   subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
-  userModalVisits?: Array<WithId<UserVisit>>;
-  userPurchaseHistory?: Array<WithId<Purchase>>;
-  privateChatMessages?: Array<WithId<PrivateChatMessage>>;
+  userModalVisits?: WithId<UserVisit>[];
+  userPurchaseHistory?: WithId<Purchase>[];
+  privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
-  worldUsers?: Array<WithId<User>>;
-  venueChatMessages?: Array<WithId<VenueChatMessage>>;
-  venueEvents?: Array<WithId<VenueEvent>>;
-  venues?: Array<WithId<AnyVenue>>;
+  venueChatMessages?: WithId<VenueChatMessage>[];
+  venueEvents?: WithId<VenueEvent>[];
+  worldUsers?: WithId<User>[];
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
+  venues?: WithId<AnyVenue>[];
 }
