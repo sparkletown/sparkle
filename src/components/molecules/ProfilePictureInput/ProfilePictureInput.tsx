@@ -4,8 +4,6 @@ import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
 
-import { fetchSovereignVenueId } from "api/sovereignVenue";
-
 import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_AVATARS,
@@ -13,6 +11,8 @@ import {
 } from "settings";
 
 import { resizeFile } from "utils/image";
+
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import "./ProfilePictureInput.scss";
 
@@ -42,25 +42,23 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  // @debt Replace fetchSovereignVenueId with useSovereignVenueId, when the hook is refactored to accept venueId as a param.
-  const {
-    value: sovereignVenueId,
-    loading: isLoadingSovereignVenueId,
-  } = useAsync(async () => await fetchSovereignVenueId(venueId));
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+    venueId,
+  });
 
   const {
     value: customAvatars,
     loading: isLoadingCustomAvatars,
   } = useAsync(async () => {
+    if (!sovereignVenueId) return;
+
     const storageRef = firebase.storage().ref();
     const list = await storageRef
       .child(`/assets/avatars/${sovereignVenueId}`)
       .listAll();
-    const avatars: string[] = await Promise.all(
-      list.items.map((item) => item.getDownloadURL())
-    );
-    return avatars;
-  }, [sovereignVenueId]);
+
+    return Promise.all(list.items.map((item) => item.getDownloadURL()));
+  }, [firebase, sovereignVenueId]);
 
   const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
@@ -102,7 +100,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   );
 
   const isLoading =
-    (isLoadingSovereignVenueId || isLoadingCustomAvatars) &&
+    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
