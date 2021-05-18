@@ -68,6 +68,8 @@ const GiftPopover = (
   </Popover>
 );
 
+const navBarScheduleClassName = "NavBar__schedule-dropdown";
+
 interface NavBarPropsType {
   redirectionUrl?: string;
   hasBackButton?: boolean;
@@ -142,7 +144,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback((e) => {
-    if (e.target.closest(".NavBar__schedule-dropdown")) return;
+    if (e.target.closest(`.${navBarScheduleClassName}`)) return;
 
     setEventScheduleVisible(false);
   }, []);
@@ -317,7 +319,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <div className="NavBar__schedule-dropdown">
+        <div className={navBarScheduleClassName}>
           <NavBarSchedule isVisible={isEventScheduleVisible} />
         </div>
       </div>
