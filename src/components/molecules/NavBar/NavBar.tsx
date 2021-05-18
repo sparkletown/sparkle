@@ -25,6 +25,8 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useMousetrap } from "hooks/useMousetrap";
+import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -148,6 +150,13 @@ const NavBar: React.FC<NavBarPropsType> = ({
 
     setEventScheduleVisible(false);
   }, []);
+
+  useMousetrap({
+    keys: ShortcutKeys.schedule,
+    callback: toggleEventSchedule,
+    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
+    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
+  });
 
   const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
