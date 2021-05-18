@@ -59,7 +59,7 @@ const EventPaymentButton: React.FunctionComponent<PropsType> = ({
           <button
             role="link"
             className="btn btn-primary buy-tickets-button"
-            disabled={!isEventStartingSoon(event)}
+            disabled={isEventStartingSoon(event)}
           >
             Join the event
           </button>

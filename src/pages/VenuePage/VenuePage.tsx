@@ -209,7 +209,7 @@ const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (!isEventStartingSoon(event)) {
+    if (isEventStartingSoon(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

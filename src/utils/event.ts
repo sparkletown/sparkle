@@ -55,7 +55,7 @@ export const eventEndTime = (event: VenueEvent) =>
   addMinutes(eventStartTime(event), event.duration_minutes);
 
 export const isEventStartingSoon = (event: VenueEvent) =>
-  differenceInHours(eventStartTime(event), Date.now()) > 0;
+  differenceInHours(eventStartTime(event), Date.now()) <= 0;
 
 export const getEventInterval = (event: VenueEvent) => ({
   start: eventStartTime(event),
