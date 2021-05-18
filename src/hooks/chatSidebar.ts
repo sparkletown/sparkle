@@ -18,10 +18,7 @@ import { useVenueId } from "./useVenueId";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
 import { useMousetrap } from "hooks/useMousetrap";
-
-export const ShortcutKeys = {
-  chat: ["c"],
-};
+import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
