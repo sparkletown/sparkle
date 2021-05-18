@@ -102,7 +102,9 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     [setValue]
   );
 
-  const isLoading = isLoadingCustomAvatars || isLoadingSovereignVenueId;
+  const isLoading =
+    (isLoadingSovereignVenueId || isLoadingCustomAvatars) &&
+    (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
     ? customAvatars
