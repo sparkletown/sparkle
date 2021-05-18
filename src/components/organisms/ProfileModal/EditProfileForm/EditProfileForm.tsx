@@ -3,13 +3,13 @@ import { useForm } from "react-hook-form";
 
 import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+import { QuestionType } from "types/Question";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
-import { QuestionType } from "types/Question";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
 
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";

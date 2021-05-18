@@ -110,21 +110,19 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     : DEFAULT_AVATARS;
 
   const avatarImages = useMemo(() => {
-    return defaultAvatars.map((avatar, index) => {
-      return (
-        <div
-          key={`${avatar}-${index}`}
-          className="profile-picture-preview-container"
-          onClick={() => uploadDefaultAvatar(avatar)}
-        >
-          <img
-            src={`${avatar}`}
-            className="profile-icon profile-picture-preview"
-            alt="your profile"
-          />
-        </div>
-      );
-    });
+    return defaultAvatars.map((avatar, index) => (
+      <div
+        key={`${avatar}-${index}`}
+        className="profile-picture-preview-container"
+        onClick={() => uploadDefaultAvatar(avatar)}
+      >
+        <img
+          src={avatar}
+          className="profile-icon profile-picture-preview"
+          alt={`default avatar ${index}`}
+        />
+      </div>
+    ));
   }, [defaultAvatars, uploadDefaultAvatar]);
 
   return (
@@ -158,8 +156,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading && <div>Loading...</div>}
-        {!isLoading && avatarImages}
+        {isLoading ? <div>Loading...</div> : avatarImages}
       </div>
       <input
         name="pictureUrl"

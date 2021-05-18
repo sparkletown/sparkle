@@ -7,12 +7,12 @@ import { IS_BURN } from "secrets";
 
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
-import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
+import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
 
-import { RouterLocation } from "types/RouterLocation";
+import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "./helpers";
 
