@@ -14,13 +14,12 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useQuery } from "hooks/useQuery";
-
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
 interface ProfilePictureInputProps {
+  venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -31,6 +30,7 @@ interface ProfilePictureInputProps {
 }
 
 const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
+  venueId,
   setValue,
   user,
   errors,
@@ -41,8 +41,6 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
-  const queryParams = useQuery();
-  const venueId = queryParams.get("venueId") ?? "";
 
   const {
     value: sovereignVenueId,

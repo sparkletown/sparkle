@@ -1,15 +1,22 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import "./EditProfileForm.scss";
+
+import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { QuestionType } from "types/Question";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { useUser } from "hooks/useUser";
-import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
+
+import "./EditProfileForm.scss";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -18,6 +25,7 @@ interface PropsType {
 const EditProfileForm: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
@@ -82,8 +90,9 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
               less
             </span>
           )}
-          {user && (
+          {user && venueId && (
             <ProfilePictureInput
+              venueId={venueId}
               setValue={setValue}
               user={user}
               errors={errors}

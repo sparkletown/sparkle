@@ -1,16 +1,24 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { updateUserProfile } from "./helpers";
 import "firebase/storage";
-import "./Account.scss";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { RouterLocation } from "types/RouterLocation";
-import { useUser } from "hooks/useUser";
+
 import { IS_BURN } from "secrets";
-import getQueryParameters from "utils/getQueryParameters";
+
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
 import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
+
+import getQueryParameters from "utils/getQueryParameters";
+
+import { RouterLocation } from "types/RouterLocation";
+
+import { updateUserProfile } from "./helpers";
+
+import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+
+import "./Account.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -90,6 +98,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             )}
             {user && (
               <ProfilePictureInput
+                venueId={venueId}
                 setValue={setValue}
                 user={user}
                 errors={errors}
