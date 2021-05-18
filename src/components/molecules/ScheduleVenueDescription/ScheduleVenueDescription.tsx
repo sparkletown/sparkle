@@ -42,7 +42,7 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
         <div className={venuePictureClasses} />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
-            {scheduleVenue?.name ?? "Sparkle"}
+            {scheduleVenue?.name ?? "Schedule"}
           </h2>
           <h3 className="ScheduleVenueDescription__subtitle">
             {scheduleVenue?.config?.landingPageConfig?.subtitle}
