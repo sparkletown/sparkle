@@ -10,10 +10,7 @@ import {
   DEFAULT_EDIT_PROFILE_TEXT,
 } from "settings";
 
-import {
-  currentVenueSelectorData,
-  orderedVenuesSelector,
-} from "utils/selectors";
+import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
@@ -109,7 +106,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={selectedUserProfile} />
+                  <SuspectedLocation
+                    user={selectedUserProfile}
+                    currentVenue={venue}
+                  />
                 </h6>
               </div>
             )}
@@ -126,12 +126,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   );
 };
 
-const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
+const SuspectedLocation: React.FC<{
+  user: WithId<User>;
+  currentVenue: WithId<AnyVenue>;
+}> = ({ user, currentVenue }) => {
   // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
   const allVenues = useSelector(orderedVenuesSelector);
-
-  const currentVenue = useSelector(currentVenueSelectorData);
 
   const suspectedLocation = useMemo(
     () => ({
