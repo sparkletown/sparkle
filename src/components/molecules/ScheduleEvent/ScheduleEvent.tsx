@@ -33,7 +33,7 @@ export interface ScheduleEventProps {
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
   scheduleStartHour,
-  personalizedEvent: isPersonaliezedEvent = false,
+  personalizedEvent: isPersonalizedEvent = false,
 }) => {
   const { userId } = useUser();
 
@@ -54,7 +54,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "ScheduleEvent",
     {
       "ScheduleEvent--live": isEventLive(event),
-      "ScheduleEvent--users": isPersonaliezedEvent,
+      "ScheduleEvent--users": isPersonalizedEvent,
     },
     containerCssVars
   );
