@@ -1,45 +1,51 @@
+import React, { useEffect, useState } from "react";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { VenueEvent } from "types/venues";
-
-import CountDown from "components/molecules/CountDown";
-import EventPaymentButton from "components/molecules/EventPaymentButton";
-import InformationCard from "components/molecules/InformationCard";
-import SecretPasswordForm from "components/molecules/SecretPasswordForm";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import PaymentModal from "components/organisms/PaymentModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import { updateTheme } from "pages/VenuePage/helpers";
-import React, { useEffect, useState } from "react";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useVenueId } from "hooks/useVenueId";
+import { isAfter } from "date-fns";
 
+import {
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
+  IFRAME_ALLOW,
+} from "settings";
+
+import { VenueEvent } from "types/venues";
 import { Firestore } from "types/Firestore";
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
-import { getTimeBeforeParty, ONE_MINUTE_IN_SECONDS } from "utils/time";
-import "./VenueLandingPage.scss";
+import { getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
   venueEventsSelector,
 } from "utils/selectors";
-import {
-  DEFAULT_VENUE_BANNER,
-  DEFAULT_VENUE_LOGO,
-  IFRAME_ALLOW,
-} from "settings";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import { eventEndTime } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
-import { VenueAccessMode } from "types/VenueAcccess";
+
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useVenueId } from "hooks/useVenueId";
+
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import AuthenticationModal from "components/organisms/AuthenticationModal";
+import PaymentModal from "components/organisms/PaymentModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import CountDown from "components/molecules/CountDown";
+import EventPaymentButton from "components/molecules/EventPaymentButton";
+import InformationCard from "components/molecules/InformationCard";
+import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+
+import "./VenueLandingPage.scss";
 
 export interface VenueLandingPageProps {
   venue: Firestore["data"]["currentVenue"];
@@ -95,9 +101,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { user } = useUser();
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
-    (event) =>
-      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-        new Date().getTime() / 1000 && event.price > 0
+    (event) => isAfter(eventEndTime(event), Date.now()) && event.price > 0
   );
 
   useEffect(() => {

@@ -29,7 +29,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -67,6 +67,8 @@ const GiftPopover = (
     </Popover.Content>
   </Popover>
 );
+
+const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 interface NavBarPropsType {
   redirectionUrl?: string;
@@ -141,7 +143,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
-  const hideEventSchedule = useCallback(() => {
+  const hideEventSchedule = useCallback((e) => {
+    if (e.target.closest(`.${navBarScheduleClassName}`)) return;
+
     setEventScheduleVisible(false);
   }, []);
 
@@ -315,10 +319,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <SchedulePageModal
-          venueId={venueId}
-          isVisible={isEventScheduleVisible}
-        />
+        <div className={navBarScheduleClassName}>
+          <NavBarSchedule isVisible={isEventScheduleVisible} />
+        </div>
       </div>
 
       {/* @debt Remove back button from Navbar */}

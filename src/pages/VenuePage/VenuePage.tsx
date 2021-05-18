@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
+import { isBefore } from "date-fns";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -16,7 +17,6 @@ import {
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
   clearLocationData,
   setLocationData,
@@ -27,6 +27,7 @@ import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import { eventEndTime, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -62,7 +63,6 @@ const VenuePage: React.FC = () => {
   const mixpanel = useMixpanel();
 
   const history = useHistory();
-  const [currentTimestamp] = useState(Date.now() / 1000);
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
@@ -102,10 +102,7 @@ const VenuePage: React.FC = () => {
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
-  const isEventFinished =
-    event &&
-    currentTimestamp >
-      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
+  const isEventFinished = event && isBefore(eventEndTime(event), Date.now());
 
   const isUserVenueOwner = userId && venue?.owners?.includes(userId);
   const isMember =
@@ -223,7 +220,7 @@ const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (!canUserJoinTheEvent(event)) {
+    if (isEventStartingSoon(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

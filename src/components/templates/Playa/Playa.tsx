@@ -134,7 +134,6 @@ const Playa = () => {
   const venue = useSelector(currentVenueSelectorData);
 
   const [showModal, setShowModal] = useState(false);
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -311,6 +310,7 @@ const Playa = () => {
       );
     }, 1);
 
+    // @debt we should try to avoid using event.stopPropagation()
     const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -1051,17 +1051,6 @@ const Playa = () => {
             />
           )}
         </Modal>
-        <Modal
-          show={showEventSchedule}
-          onHide={() => setShowEventSchedule(false)}
-          dialogClassName="custom-dialog"
-        >
-          <Modal.Body>
-            {/* @debt Stubbing out legacy code as this component isn't used anymore and is getting deleted in a different PR. */}
-            Schedule Disabled
-            {/*<SchedulePageModal venueId={???} />*/}
-          </Modal.Body>
-        </Modal>
       </>
     );
   }, [
@@ -1082,7 +1071,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    showEventSchedule,
     inVideoChat,
     videoChatHeight,
     mapContainer,

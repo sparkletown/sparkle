@@ -2,6 +2,8 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { WithVenueId } from "utils/id";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -310,6 +312,21 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+}
+
+export interface VenueLocation {
+  venueId: string;
+  roomTitle: string;
+  venueTitle?: string;
+}
+
+export interface LocatedEvents {
+  location: VenueLocation;
+  events: PersonalizedVenueEvent[];
+}
+
+export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+  isSaved: boolean;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

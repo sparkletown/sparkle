@@ -84,6 +84,7 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
@@ -93,6 +94,9 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
@@ -576,6 +580,11 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
 
+// SCHEDULE
+// @debt probably would be better to adjust max hour based on user's display size
+export const SCHEDULE_MAX_START_HOUR = 16;
+export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
+export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 /**
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */

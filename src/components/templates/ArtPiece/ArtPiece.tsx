@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import { Modal } from "react-bootstrap";
+import React from "react";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -9,11 +8,9 @@ import { GenericVenue } from "types/venues";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import Room from "components/organisms/Room";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
@@ -24,7 +21,7 @@ export interface ArtPieceProps {
 }
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
+  if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
 
@@ -73,15 +70,6 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
           <SparkleFairiesPopUp />
         </div>
       )}
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal venueId={venue.id} />
-        </Modal.Body>
-      </Modal>
     </WithNavigationBar>
   );
 };
