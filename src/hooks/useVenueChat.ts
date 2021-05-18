@@ -4,17 +4,30 @@ import { VENUE_CHAT_AGE_DAYS } from "settings";
 
 import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 
-import { VenueChatMessage } from "types/chat";
+import {
+  DeleteMessage,
+  SendChatReply,
+  SendMesssage,
+  VenueChatMessage,
+} from "types/chat";
 
-import { buildMessage, chatSort, getMessageToDisplay } from "utils/chat";
+import {
+  buildMessage,
+  chatSort,
+  partitionMessagesFromReplies,
+  getMessageReplies,
+  getBaseMessageToDisplay,
+} from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
+import { isTruthy } from "utils/types";
+import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
-import { useWorldUsersById } from "./users";
+import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
 
 export const useConnectVenueChatMessages = (venueId?: string) => {
@@ -32,7 +45,7 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
 
 export const useVenueChat = () => {
   const venueId = useVenueId();
-  const { worldUsersById } = useWorldUsersById();
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
   const { user } = useUser();
 
@@ -54,46 +67,90 @@ export const useVenueChat = () => {
     )
     .sort(chatSort);
 
-  const sendMessage = useCallback(
-    (text: string) => {
+  const sendMessage: SendMesssage = useCallback(
+    async (text: string) => {
       if (!venueId || !userId) return;
 
       const message = buildMessage<VenueChatMessage>({ from: userId, text });
 
-      sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message });
     },
     [venueId, userId]
   );
 
-  const deleteMessage = useCallback(
+  const deleteMessage: DeleteMessage = useCallback(
     (messageId: string) => {
       if (!venueId) return;
 
-      deleteVenueMessage({ venueId, messageId });
+      return deleteVenueMessage({ venueId, messageId });
     },
     [venueId]
   );
 
+  const sendThreadReply: SendChatReply = useCallback(
+    async ({ replyText, threadId }) => {
+      if (!venueId || !userId) return;
+
+      const threadReply = buildMessage<VenueChatMessage>({
+        from: userId,
+        text: replyText,
+        threadId,
+      });
+
+      return sendVenueMessage({ venueId, message: threadReply });
+    },
+    [venueId, userId]
+  );
+
+  const { messages, allMessagesReplies } = useMemo(
+    () => partitionMessagesFromReplies(filteredMessages),
+    [filteredMessages]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      messages
+        .map((message) => {
+          const displayMessage = getBaseMessageToDisplay<
+            WithId<VenueChatMessage>
+          >({
+            message,
+            usersById: worldUsersById,
+            myUserId: userId,
+
+            isAdmin,
+          });
+
+          if (!displayMessage) return undefined;
+
+          const messageReplies = getMessageReplies<VenueChatMessage>({
+            messageId: message.id,
+            allReplies: allMessagesReplies,
+          })
+            .map((reply) =>
+              getBaseMessageToDisplay<WithId<VenueChatMessage>>({
+                message: reply,
+                usersById: worldUsersById,
+                myUserId: userId,
+                isAdmin,
+              })
+            )
+            .filter(isTruthy);
+
+          return { ...displayMessage, replies: messageReplies };
+        })
+        .filter(isTruthy),
+    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
+  );
+
   return useMemo(
     () => ({
-      messagesToDisplay: filteredMessages.map((message) =>
-        getMessageToDisplay({
-          message,
-          usersById: worldUsersById,
-          myUserId: userId,
-          isAdmin,
-        })
-      ),
+      messagesToDisplay,
+
       sendMessage,
       deleteMessage,
+      sendThreadReply,
     }),
-    [
-      filteredMessages,
-      sendMessage,
-      deleteMessage,
-      worldUsersById,
-      userId,
-      isAdmin,
-    ]
+    [messagesToDisplay, sendMessage, sendThreadReply, deleteMessage]
   );
 };
