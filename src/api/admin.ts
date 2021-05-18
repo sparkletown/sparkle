@@ -333,7 +333,7 @@ export const updateVenue = async (
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  await firebase
+  return await firebase
     .functions()
     .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
     .catch((error) => {
@@ -342,11 +342,11 @@ export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
         location: "api/admin::updateVenue_v2",
       };
 
-      console.warn(msg, context);
       Bugsnag.notify(msg, (event) => {
         event.severity = "warning";
         event.addMetadata("context", context);
       });
+      throw error;
     });
 };
 

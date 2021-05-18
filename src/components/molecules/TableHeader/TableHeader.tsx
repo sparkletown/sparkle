@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { useAsyncFn } from "react-use";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLock,
@@ -8,8 +7,6 @@ import {
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
-
-import { updateVenue_v2 } from "api/admin";
 
 import { User } from "types/User";
 import { Table } from "types/Table";
@@ -22,10 +19,9 @@ import { useShowHide } from "hooks/useShowHide";
 import { experienceSelector } from "utils/selectors";
 
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
-import { EditTableForm } from "./components/EditTableTitleModal/EditTableTitleModal";
+import { Toggler } from "components/atoms/Toggler";
 
 import "./TableHeader.scss";
-import { Toggler } from "components/atoms/Toggler";
 
 interface TableHeaderProps {
   seatedAtTable: string;
@@ -134,54 +130,22 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     };
   }, [leaveSeat]);
 
-  const [updateResponse, updateTables] = useAsyncFn(
-    async (values: EditTableForm) => await updateTableInfo(values),
-    []
-  );
-
-  const updateTableInfo = useCallback(
-    async (values: EditTableForm) => {
-      if (!user) return;
-
-      const venueTables = tables.map((table) => {
-        if (table.reference === tableOfUser?.reference) {
-          return {
-            ...table,
-            title: values.title,
-            subtitle: values.description,
-            capacity: values.capacity,
-          };
-        }
-        return table;
-      });
-
-      // Ideally we want to do this only when config.tables doesn't exist. Otherwise we want to update only a single table.
-      return await updateVenue_v2(
-        { name: venueName, tables: venueTables },
-        user
-      );
-    },
-    [tableOfUser?.reference, tables, user, venueName]
-  );
-
   return (
     <div className="row table-header">
       <div className="table-header__leave-table">
-        <div>
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="table-header__leave-button"
-            onClick={leaveSeat}
-          >
-            <FontAwesomeIcon
-              className="table-header__leave-button--icon"
-              icon={faChevronLeft}
-              size="xs"
-            />
-            Leave table
-          </button>
-        </div>
+        <button
+          type="button"
+          title={`Leave ${seatedAtTable}`}
+          className="table-header__leave-button"
+          onClick={leaveSeat}
+        >
+          <FontAwesomeIcon
+            className="table-header__leave-button--icon"
+            icon={faChevronLeft}
+            size="xs"
+          />
+          Leave table
+        </button>
       </div>
 
       <div className="table-header__topic-info">
@@ -195,9 +159,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
         {tableCapacity && (
           <span className="table-header__seats-left">
-            {tableOfUser && tableOfUser.subtitle && (
-              <label>{tableOfUser.subtitle} -</label>
-            )}{" "}
+            {tableOfUser?.subtitle && <label>{tableOfUser.subtitle} -</label>}{" "}
             {tableCapacity} seats
           </span>
         )}
@@ -213,7 +175,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
         <Toggler
-          toggled={!!isCurrentTableLocked}
+          toggled={isCurrentTableLocked}
           containerClassName="table-header__lock-toggle"
           onChange={toggleIsCurrentTableLocked}
         />
@@ -222,12 +184,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       <EditTableTitleModal
         isShown={isShown}
         title={tableTitle}
-        description={tableSubtitle}
+        tables={tables}
+        tableOfUser={tableOfUser}
+        subtitle={tableSubtitle}
         capacity={tableCapacity}
-        error={updateResponse.error?.message ?? ""}
+        venueName={venueName}
         onHide={hide}
-        onCancel={hide}
-        onSave={updateTables}
       />
     </div>
   );

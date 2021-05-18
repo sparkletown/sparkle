@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Checkbox } from "../Checkbox";
+
 export interface TogglerProps {
   toggled: boolean;
   onChange: () => void;
@@ -12,9 +14,11 @@ export const Toggler: React.FC<TogglerProps> = ({
   containerClassName = "",
 }) => {
   return (
-    <label className={`switch ${containerClassName}`}>
-      <input type="checkbox" checked={toggled} onChange={onChange} />
-      <span className="slider" />
-    </label>
+    <Checkbox
+      containerClassName={containerClassName}
+      defaultChecked={toggled}
+      onChange={onChange}
+      toggler
+    />
   );
 };

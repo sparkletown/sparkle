@@ -184,6 +184,7 @@ button.btn {
   }
 
   &.btn-primary {
+    // Background image has to be set to 'none' because by default the Button has gradient image
     background-image: none;
     background-color: $primary;
 
