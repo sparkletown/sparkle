@@ -23,6 +23,7 @@ import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
+  venueEventsSelector,
 } from "utils/selectors";
 import { eventEndTime } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
@@ -62,9 +63,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const venueRequestStatus = useSelector(
     (state) => state.firestore.status.requested.currentVenue
   );
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
-  );
+  const venueEvents = useSelector(venueEventsSelector);
   const purchaseHistory = useSelector(userPurchaseHistorySelector);
 
   const redirectUrl = venue?.config?.redirectUrl ?? "";
@@ -105,7 +104,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     (event) => isAfter(eventEndTime(event), Date.now()) && event.price > 0
   );
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
 
   useEffect(() => {
     if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {

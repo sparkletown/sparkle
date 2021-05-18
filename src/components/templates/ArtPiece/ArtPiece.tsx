@@ -3,11 +3,10 @@ import React from "react";
 import { IFRAME_ALLOW } from "settings";
 
 import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelectorData } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { WithId } from "utils/id";
 
 import Room from "components/organisms/Room";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -17,9 +16,11 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 
 import "./ArtPiece.scss";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
 
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);

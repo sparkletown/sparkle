@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import { SplashPage } from "pages/Account/SplashPage";
+// import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
 import Step3 from "pages/Account/Step3";
@@ -49,7 +49,8 @@ const AppRouter = () => {
         <Route path="/enter/step5" component={Step5} />
         <Route path="/enter/step6a" component={Step6a} />
         <Route path="/enter/step6b" component={Step6b} />
-        <Route path="/enter" component={SplashPage} />
+        {/* @debt This appears to be a legacy route related to the old Playa template. Likely to be removed in future. */}
+        {/*<Route path="/enter" component={SplashPage} />*/}
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />

@@ -205,7 +205,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
               >
                 {navbarTitle} <span className="schedule-text">Schedule</span>
               </div>
-              <VenuePartygoers />
+              <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}

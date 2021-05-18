@@ -123,6 +123,21 @@ export function formatDate(utcSeconds: number) {
   return format(fromUnixTime(utcSeconds), "MMM do");
 }
 
+/**
+ * Format UTC seconds as a string representing exact hour(using 12 hour AM/PM format) and minutes.
+ *
+ * @example
+ *   formatTimestampToDisplayHoursMinutes(1618509600)
+ *   // '9:35 AM'
+ *
+ * @param timestamp
+ *
+ * @see https://date-fns.org/docs/format
+ */
+export function formatTimestampToDisplayHoursMinutes(timestamp: number) {
+  return format(timestamp, "h:mm aa");
+}
+
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }

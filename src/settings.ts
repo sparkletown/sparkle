@@ -26,6 +26,7 @@ export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -53,6 +54,7 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DEFAULT_EDIT_PROFILE_TEXT =
   "I haven't edited my profile to tell you yet";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
@@ -560,6 +562,13 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const DEFAULT_AVATARS = [
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
+];
+
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
@@ -576,3 +585,7 @@ export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
 export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
