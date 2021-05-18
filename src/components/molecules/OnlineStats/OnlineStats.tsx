@@ -78,6 +78,7 @@ const OnlineStats: React.FC = () => {
   const venueName = venue?.name;
   const { openUserProfileModal } = useProfileModalControls();
 
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()

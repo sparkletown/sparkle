@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
+import { isBefore } from "date-fns";
 
 import { Room } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
-import { getCurrentEvent } from "utils/event";
+import { eventEndTime, getCurrentEvent } from "utils/event";
 import { venueEventsSelector } from "utils/selectors";
-import { getCurrentTimeInUTCSeconds, ONE_MINUTE_IN_SECONDS } from "utils/time";
 
 import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -61,10 +61,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
     return venueEvents.filter(
       (event) =>
-        event.room === room.title &&
-        event.start_utc_seconds +
-          event.duration_minutes * ONE_MINUTE_IN_SECONDS >
-          getCurrentTimeInUTCSeconds()
+        event.room === room.title && isBefore(Date.now(), eventEndTime(event))
     );
   }, [room, venueEvents]);
 

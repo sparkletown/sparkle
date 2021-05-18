@@ -12,7 +12,7 @@
   }
 
   &__leave-button {
-    background-color: $intermediate-grey;
+    background-color: $secondary;
     font-size: 0.9rem;
     color: $white;
     border: none;
@@ -27,7 +27,7 @@
     }
 
     &:hover {
-      background-color: $lighter-intermediate-grey;
+      background-color: $secondary;
 
       &--icon {
         opacity: 1;
@@ -60,14 +60,14 @@
     align-items: center;
     justify-content: center;
     border-radius: 100%;
-    background-color: $intermediate-grey;
+    background-color: $secondary;
     width: 25px;
     height: 25px;
     margin: 0px 5px;
     cursor: pointer;
 
     &:hover {
-      background-color: $lighter-intermediate-grey;
+      background-color: $secondary--light;
 
       &--icon {
         opacity: 1;

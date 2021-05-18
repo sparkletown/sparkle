@@ -25,6 +25,7 @@ const dryRun = dryRunFlag === "true";
 initFirebaseAdminApp(projectId);
 
 (async () => {
+  // @debt This function will currently load all venues in firebase into memory.. not very efficient
   const firestoreVenues = await admin.firestore().collection("venues").get();
 
   for (const doc of firestoreVenues.docs) {
