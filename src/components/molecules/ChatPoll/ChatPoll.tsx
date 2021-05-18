@@ -1,21 +1,20 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { formatTimestampToDisplayHoursMinutes } from "utils/time";
-
 import { PollMessage, PollMessageToDisplay, PollQuestion } from "types/chat";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { WithId } from "utils/id";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { TextButton } from "components/atoms/TextButton";
 import Button from "components/atoms/Button";
 
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: PollMessageToDisplay<PollMessage>;
+  pollData: WithId<PollMessageToDisplay<PollMessage>>;
   deletePoll: (pollId: string) => void;
   voteInPoll: (question: PollQuestion) => void;
 }
@@ -25,19 +24,10 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   voteInPoll,
   deletePoll,
 }) => {
-  const {
-    poll,
-    ts_utc,
-    isMine,
-    author,
-    canBeDeleted,
-    votes,
-    pollId,
-  } = pollData;
+  const { id, poll, isMine, canBeDeleted } = pollData;
+  // temp
+  const votes = 8;
   const { questions, topic } = poll;
-  const timestamp = ts_utc.toMillis();
-
-  const { openUserProfileModal } = useProfileModalControls();
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
@@ -63,39 +53,32 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     [questions, isMine, voteInPoll]
   );
 
-  const openAuthorProfile = useCallback(() => {
-    openUserProfileModal(author);
-  }, [openUserProfileModal, author]);
-
   return (
     <div className={containerStyles}>
-      <div className="ChatPoll__wrapper">
+      <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
         {renderQuestions}
         <div className="ChatPoll__details">
-          <p className="ChatPoll__votes">{`${votes} votes`}</p>
+          <span className="ChatPoll__votes">{`${votes} votes`}</span>
           {canBeDeleted && (
             <>
               -
-              <button
-                onClick={() => deletePoll(pollId)}
-                className="ChatPoll__delete-button"
-              >
-                Delete Poll
-              </button>
+              <TextButton
+                containerClassName="ChatPoll__delete-button"
+                onClick={() => deletePoll(id)}
+                label="Delete Poll"
+              />
             </>
           )}
         </div>
       </div>
 
-      <div className="ChatPoll__info" onClick={openAuthorProfile}>
-        <UserAvatar user={author} />
-        <span className="ChatPoll__author">{author.partyName}</span>
-        <span className="ChatPoll__time">
-          {formatTimestampToDisplayHoursMinutes(timestamp)}
-        </span>
-      </div>
+      <ChatMessageInfo
+        message={pollData}
+        reversed={isMine}
+        deleteMessage={() => {}}
+      />
     </div>
   );
 };

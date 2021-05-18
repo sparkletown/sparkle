@@ -27,15 +27,15 @@ export type PollMessage = BaseChatMessage & {
 export type PollMessageToDisplay<T extends PollMessage = PollMessage> = T & {
   isMine: boolean;
   author: WithId<User>;
-  canBeDeleted: boolean;
-  votes: number;
-  pollId: string;
+  canBeDeleted?: boolean;
+  // TODO add fix for votes
+  // votes: number;
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 
 export const isPollMessage = (r: unknown): r is PollMessage =>
-  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("pollData");
+  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("poll");
 
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;

@@ -1,10 +1,7 @@
 @import "scss/constants";
 
-$counterparty-text-border-radius: 28px 28px 28px 4px;
-$my-text-border-radius: 28px 28px 4px 28px;
-$spacing: 16px;
-$author-margin--left-aligned: 4px;
-$author-margin--right-aligned: 8px;
+$counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
+  $spacing--xxl;
 
 .ChatPoll {
   align-self: flex-start;
@@ -14,82 +11,58 @@ $author-margin--right-aligned: 8px;
   margin-bottom: 16px;
   width: 100%;
 
-  .ChatPoll__question {
+  &__bulb {
+    position: relative;
+    width: 100%;
+    border-radius: $counterparty-text-border-radius;
+    background-color: $secondary;
+    padding: $spacing--md;
+    margin-bottom: $spacing--sm;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  &__question {
     display: block;
     background: none;
-    margin-bottom: $spacing;
+    margin-bottom: $spacing--lg;
     width: 100%;
     background-color: $concrete;
+  }
+
+  &__topic {
+    text-align: center;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
+    margin-bottom: $spacing--lg;
+  }
+
+  &__text {
+    font-size: $font-size--lg;
+    margin-bottom: $spacing--md;
   }
 
   &--me {
     align-self: flex-end;
     align-items: flex-end;
 
-    .ChatPoll__wrapper {
+    .ChatPoll__bulb {
       background-color: $primary;
     }
-
-    .ChatPoll__info {
-      flex-direction: row-reverse;
-      align-self: flex-end;
-    }
-
-    .ChatPoll__author {
-      margin: 0 $author-margin--left-aligned 0 $author-margin--right-aligned;
-    }
-  }
-
-  &__topic {
-    text-align: center;
-    font-size: $spacing;
-    font-weight: bold;
-    margin-bottom: 10px;
-  }
-
-  &__text {
-    margin-bottom: $spacing;
   }
 
   &__details {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: opaque-white(0.8);
+    font-size: $font-size--sm;
   }
 
   &__votes {
-    margin: 0 10px 0 0;
-  }
-
-  &__wrapper {
-    position: relative;
-    margin-bottom: 6px;
-    width: 100%;
-    border-radius: $counterparty-text-border-radius;
-    background-color: $intermediate-grey;
-    padding: 12px $spacing;
-    font-size: 14px;
-  }
-
-  &__info {
-    display: flex;
-    align-items: center;
-  }
-
-  &__author {
-    opacity: 0.8;
-    color: $white;
-    margin: 0 $author-margin--right-aligned 0 $author-margin--left-aligned;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 1;
-    }
-  }
-
-  &__time {
-    opacity: 0.6;
-    font-weight: 300;
+    margin-right: $spacing--md;
   }
 
   &__icon {
@@ -99,15 +72,6 @@ $author-margin--right-aligned: 8px;
   }
 
   &__delete-button {
-    margin-left: 10px;
-    background: none;
-    border: none;
-    color: #fff;
-    text-decoration: underline;
-    font-weight: initial;
-    padding: 0;
-    &:focus {
-      outline: none;
-    }
+    margin-left: $spacing--md;
   }
 }

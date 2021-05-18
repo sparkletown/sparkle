@@ -1,6 +1,9 @@
+import Bugsnag from "@bugsnag/js";
+import noop from "lodash/noop";
+
 import { PollMessage, PollQuestion } from "types/chat";
 
-// import { getVenueRef } from "./venue";
+import { getVenueRef } from "./venue";
 
 export interface CreatePollProps {
   venueId: string;
@@ -10,10 +13,21 @@ export const createVenuePoll = async ({
   venueId,
   poll,
 }: CreatePollProps): Promise<void> =>
-  console.log("createPoll: ", venueId, poll);
-// getVenueRef(venueId)
-//   .collection("chats")
-//   .add(message)
+  getVenueRef(venueId)
+    .collection("chats")
+    .add(poll)
+    .then(noop)
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        console.log(err, event, poll);
+        event.addMetadata("context", {
+          location: "api/chat::createVenuePoll",
+          venueId,
+          poll,
+        });
+      });
+      // @debt rethrow error, when we can handle it to show UI error
+    });
 
 export type DeleteVenuePollProps = {
   venueId: string;
@@ -24,14 +38,21 @@ export const deleteVenuePoll = async ({
   venueId,
   pollId,
 }: DeleteVenuePollProps): Promise<void> =>
-  console.log("deleteVenuePoll: ", venueId, pollId);
-// await firebase
-//   .firestore()
-//   .collection("venues")
-//   .doc(venueId)
-//   .collection("chats")
-//   .doc(messageId)
-//   .update({ deleted: true });
+  await getVenueRef(venueId)
+    .collection("chats")
+    .doc(pollId)
+    .update({ deleted: true })
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        console.log(err, event, pollId);
+        event.addMetadata("context", {
+          location: "api/chat::deleteVenuePoll",
+          venueId,
+          pollId,
+        });
+      });
+      // @debt rethrow error, when we can handle it to show UI error
+    });
 
 export type VoteInPollProps = {
   venueId: string;
