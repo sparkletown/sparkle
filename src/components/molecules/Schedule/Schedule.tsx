@@ -34,6 +34,7 @@ export interface ScheduleProps {
   personalEvents: PersonalizedVenueEvent[];
   scheduleDate: Date;
   isToday: boolean;
+  isLoading: boolean;
 }
 
 export const Schedule: React.FC<ScheduleProps> = ({
@@ -41,6 +42,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
   personalEvents,
   scheduleDate,
   isToday,
+  isLoading,
 }) => {
   const hasEvents = locatedEvents.length > 0;
 
@@ -130,40 +132,48 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [locatedEvents, scheduleStartHour]
   );
 
+  if (isLoading)
+    return (
+      <div className={containerClasses}>
+        <div className="Schedule__is-loading">is loading</div>
+      </div>
+    );
+
+  if (!hasEvents)
+    return (
+      <div className={containerClasses}>
+        <div className="Schedule__no-events">No events scheduled</div>
+      </div>
+    );
+
   return (
     <div className={containerClasses}>
-      {hasEvents ? (
-        <>
-          <div className="Schedule__rooms">
-            <div className="Schedule__room">
-              <p className="Schedule__room-title">My Daily Schedule</p>
-              <span className="Schedule__events-count">
-                {personalEvents.length} events
-              </span>
-            </div>
+      <div className="Schedule__rooms">
+        <div className="Schedule__room">
+          <p className="Schedule__room-title">My Daily Schedule</p>
+          <span className="Schedule__events-count">
+            {personalEvents.length} events
+          </span>
+        </div>
 
-            {roomCells}
-          </div>
+        {roomCells}
+      </div>
 
-          <div className="Schedule__schedule">
-            <div className="Schedule__timeline">{hoursRow}</div>
+      <div className="Schedule__schedule">
+        <div className="Schedule__timeline">{hoursRow}</div>
 
-            {isToday && <div className="Schedule__current-time-line" />}
+        {isToday && <div className="Schedule__current-time-line" />}
 
-            <div className="Schedule__user-schedule">
-              <ScheduleRoomEvents
-                personalizedRoom
-                events={personalEvents}
-                scheduleStartHour={scheduleStartHour}
-              />
-            </div>
+        <div className="Schedule__user-schedule">
+          <ScheduleRoomEvents
+            personalizedRoom
+            events={personalEvents}
+            scheduleStartHour={scheduleStartHour}
+          />
+        </div>
 
-            {rowsWithTheEvents}
-          </div>
-        </>
-      ) : (
-        <div className="Schedule__no-events">No events scheduled</div>
-      )}
+        {rowsWithTheEvents}
+      </div>
     </div>
   );
 };

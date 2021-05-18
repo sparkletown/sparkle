@@ -17,14 +17,16 @@ import classNames from "classnames";
 
 import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
+import { useVenueEvents } from "hooks/events";
 
 import {
   PersonalizedVenueEvent,
   VenueLocation,
   LocatedEvents,
+  VenueEvent,
 } from "types/venues";
 
 import { Schedule } from "components/molecules/Schedule";
@@ -36,12 +38,15 @@ import {
   prepareForSchedule,
 } from "./utils";
 import { isEventWithinDate } from "utils/event";
+import { WithVenueId } from "utils/id";
 
 import "./NavBarSchedule.scss";
 
 interface NavBarScheduleProps {
   isVisible?: boolean;
 }
+
+const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
 export interface ScheduleDay {
   isToday: boolean;
@@ -58,10 +63,18 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
-  const { relatedVenueEvents, relatedVenues } = useConnectRelatedVenues({
-    venueId,
-    withEvents: true,
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
+    currentVenueId: venueId,
   });
+
+  const {
+    isEventsLoading,
+    events: relatedVenueEvents = emptyRelatedEvents,
+  } = useVenueEvents({
+    venueIds: relatedVenueIds,
+  });
+
+  const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
@@ -129,7 +142,9 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+
       <Schedule
+        isLoading={isLoadingSchedule}
         locatedEvents={schedule.locatedEvents}
         personalEvents={schedule.personalEvents}
         isToday={schedule.isToday}
