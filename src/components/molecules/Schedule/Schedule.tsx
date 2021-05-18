@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   eachHourOfInterval,
@@ -23,6 +23,7 @@ import { formatMeasurement } from "utils/formatMeasurement";
 
 import { useInterval } from "hooks/useInterval";
 
+import { Loading } from "components/molecules/Loading";
 import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 
 import { calcStartPosition } from "./Schedule.utils";
@@ -97,17 +98,20 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartDateTime]
   );
 
+  const [currentTimePosition, setCurrentTimePosition] = useState(0);
+
   const calcCurrentTimePosition = useCallback(
-    () => calcStartPosition(getUnixTime(Date.now()), scheduleStartHour),
+    () =>
+      setCurrentTimePosition(
+        calcStartPosition(getUnixTime(Date.now()), scheduleStartHour)
+      ),
     [scheduleStartHour]
   );
 
-  const [currentTimePosition, setCurrentTimePosition] = useState(
-    calcCurrentTimePosition()
-  );
+  useEffect(() => calcCurrentTimePosition(), [calcCurrentTimePosition]);
 
   useInterval(() => {
-    setCurrentTimePosition(calcCurrentTimePosition());
+    calcCurrentTimePosition();
   }, SCHEDULE_CURRENT_TIMELINE_MS);
 
   const containerVars = useCss({
@@ -135,7 +139,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
   if (isLoading)
     return (
       <div className={containerClasses}>
-        <div className="Schedule__is-loading">is loading</div>
+        <Loading message={"Events are loading"} />
       </div>
     );
 
