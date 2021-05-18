@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { Experience, Statuses } from "types/User";
+import React from "react";
+import { UserStatus } from "types/User";
+import { useShowHide } from "hooks/useShowHide";
 
 import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
-  options: Array<Statuses>;
-  onChange: (option: string) => void;
-  label: string | Experience;
+  options: Array<UserStatus>;
+  onChange: (option: UserStatus) => void;
+  label: UserStatus | string;
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
@@ -14,22 +15,18 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   label,
   onChange,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const { isShown, hide, toggle } = useShowHide();
 
-  const toggling = () => {
-    setIsOpen(!isOpen);
-  };
-
-  const onOptionClicked = (value: string) => () => {
+  const onOptionClicked = (value: UserStatus) => () => {
     onChange(value);
-    setIsOpen(false);
+    hide();
   };
 
   const optionsComponents = options
     .filter((opt) => opt !== label)
     .map((option) => (
       <li
-        className="dropdown-container__item"
+        className="Dropdown__item"
         onClick={onOptionClicked(option)}
         key={option}
       >
@@ -38,13 +35,13 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
     ));
 
   return (
-    <div className="dropdown-container">
-      <div className="dropdown-container__header" onClick={toggling}>
-        {label}
+    <div className="Dropdown">
+      <div className="Dropdown__header" onClick={toggle}>
+        {label || "change status"}
       </div>
-      {isOpen && (
-        <div className="dropdown-container__list-container">
-          <ul className="dropdown-container__list">{optionsComponents}</ul>
+      {isShown && (
+        <div className="Dropdown__list-container">
+          <ul className="Dropdown__list">{optionsComponents}</ul>
         </div>
       )}
     </div>

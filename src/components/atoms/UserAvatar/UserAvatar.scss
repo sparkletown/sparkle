@@ -33,6 +33,11 @@
     &--custom {
       background-color: $concrete;
     }
+
+    &--large {
+      height: 12px;
+      width: 12px;
+    }
   }
 
   &--clickable {

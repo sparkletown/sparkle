@@ -1,22 +1,22 @@
 import React from "react";
 import classNames from "classnames";
-import { FirebaseReducer } from "react-redux-firebase";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User } from "types/User";
+import { useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 
 import "./UserAvatar.scss";
 
 export interface UserAvatarProps {
-  user?: WithId<User> | FirebaseReducer.Profile<User>;
+  user?: WithId<User>;
   containerClassName?: string;
   imageClassName?: string;
-  statusClassName?: string;
   showStatus?: boolean;
   onClick?: () => void;
+  large?: boolean;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -24,10 +24,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
-  statusClassName,
   onClick,
   showStatus,
+  large,
 }) => {
+  const { recentWorldUsers } = useRecentWorldUsers();
+
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
     : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
@@ -40,12 +42,26 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--clickable": onClick !== undefined,
   });
 
+  const isOnline = recentWorldUsers.find(
+    (worldUser) => worldUser.id === user?.id
+  );
+
   const status = user?.status ?? "";
 
   const imageClasses = classNames("user-avatar__image", imageClassName);
-  const statusClasses = classNames("user-avatar__status-dot", statusClassName, {
+  const statusClasses = classNames("user-avatar__status-dot", {
     [`user-avatar__status-dot--${status}`]: status,
+    "user-avatar__status-dot--large": large,
   });
+  const statusOfflineClasses = classNames(
+    "user-avatar__status-dot",
+    "user-avatar__status-dot--offline",
+    { "user-avatar__status-dot--large": large }
+  );
+
+  const statusComponent = isOnline
+    ? showStatus && status && <span className={statusClasses} />
+    : showStatus && <span className={statusOfflineClasses} />;
 
   return (
     <div className={containerClasses}>
@@ -55,7 +71,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {showStatus && status && <span className={statusClasses} />}
+      {statusComponent}
     </div>
   );
 };

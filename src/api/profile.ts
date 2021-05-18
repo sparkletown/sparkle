@@ -1,5 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
+import { UserStatus } from "types/User";
 
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
@@ -50,7 +51,7 @@ export const makeUpdateUserGridLocation = ({
 };
 
 export interface UpdateUserOnlineStatusProps {
-  status: string;
+  status: UserStatus;
   userId: string;
 }
 
@@ -63,13 +64,15 @@ export const updateUserOnlineStatus = async ({
     status: status,
   };
 
+  const context = {
+    location: "api/profile::updateUserOnlineStatus",
+    status,
+    userId,
+  };
+
   return userProfileRef.update(newData).catch((err) => {
     Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/profile::updateUserOnlineStatus",
-        status,
-        userId,
-      });
+      event.addMetadata("context", context);
     });
   });
 };

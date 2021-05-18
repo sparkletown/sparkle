@@ -79,7 +79,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
   redirectionUrl,
   hasBackButton = true,
 }) => {
-  const { user, profile } = useUser();
+  const { user, userWithId } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
   const venueParentId = venue?.parentId;
@@ -294,10 +294,10 @@ const NavBar: React.FC<NavBarPropsType> = ({
                   rootClose={true}
                 >
                   <UserAvatar
-                    user={profile}
-                    containerClassName="navbar-profile-image-container"
-                    statusClassName="navbar-profile-image-status"
+                    user={userWithId}
                     showStatus
+                    containerClassName="navbar-profile-image-container"
+                    large
                   />
                 </OverlayTrigger>
               </div>

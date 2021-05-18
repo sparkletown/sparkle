@@ -18,6 +18,7 @@ import {
 import { updateUserOnlineStatus } from "api/profile";
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { USER_STATUSES } from "settings";
+import { UserStatus } from "types/User";
 
 import "./UserInformationContent.scss";
 
@@ -72,7 +73,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   }, [profile, user]);
 
   const handlerChangeStatus = useCallback(
-    (value: string) => {
+    (value: UserStatus) => {
       if (userWithId) {
         updateUserOnlineStatus({
           status: value,
@@ -93,10 +94,10 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
 
       <div className="user-information">
         <UserAvatar
-          user={profile}
+          user={userWithId}
           containerClassName="profile-avatar-container"
-          statusClassName="profile-avatar-status"
           showStatus
+          large
         />
         <div className="text-container">
           <h2 className="title ellipsis-text">
