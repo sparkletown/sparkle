@@ -142,7 +142,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback((e) => {
-    if (e.target.closest(".NavBarSchedule")) return;
+    if (e.target.closest(".NavBar__schedule-dropdown")) return;
 
     setEventScheduleVisible(false);
   }, []);
@@ -317,7 +317,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <NavBarSchedule isVisible={isEventScheduleVisible} />
+        <div className="NavBar__schedule-dropdown">
+          <NavBarSchedule isVisible={isEventScheduleVisible} />
+        </div>
       </div>
 
       {/* @debt Remove back button from Navbar */}

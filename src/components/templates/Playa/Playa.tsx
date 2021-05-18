@@ -305,6 +305,7 @@ const Playa = () => {
       );
     }, 1);
 
+    // @debt we should try to avoid using event.stopPropagation()
     const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
