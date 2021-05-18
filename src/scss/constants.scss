@@ -193,6 +193,7 @@ $z-layers: (
   }
 }
 
+// @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
 @mixin line-clamp($line-count: 1) {
   display: -webkit-box;
   -webkit-line-clamp: $line-count;

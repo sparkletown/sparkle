@@ -63,6 +63,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
       locatedEvents?.map(({ location, events }) => (
@@ -116,6 +117,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   const containerClasses = classNames("Schedule", containerVars);
 
+  // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const rowsWithTheEvents = useMemo(
     () =>
       locatedEvents.map(({ location, events }) => (
