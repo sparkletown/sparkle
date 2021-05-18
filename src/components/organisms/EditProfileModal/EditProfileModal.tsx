@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import "./EditProfileModal.scss";
+
+import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { QuestionType } from "types/Question";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
+
+import "./EditProfileModal.scss";
 
 interface PropsType {
   show: boolean;
@@ -21,6 +28,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
@@ -87,8 +95,9 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
                 less
               </span>
             )}
-            {user && (
+            {user && venueId && (
               <ProfilePictureInput
+                venueId={venueId}
                 setValue={setValue}
                 user={user}
                 errors={errors}
