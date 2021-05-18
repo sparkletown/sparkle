@@ -17,6 +17,12 @@ import { useNumberOfUnreadChats } from "./privateChats";
 import { useVenueId } from "./useVenueId";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
+import { useMousetrap } from "hooks/useMousetrap";
+
+export const ShortcutKeys = {
+  chat: ["c"],
+};
+
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
   const isExpanded = useSelector(chatVisibilitySelector);
@@ -37,6 +43,13 @@ export const useChatSidebarControls = () => {
       expandSidebar();
     }
   }, [expandSidebar, collapseSidebar, isExpanded]);
+
+  useMousetrap({
+    keys: ShortcutKeys.chat,
+    callback: toggleSidebar,
+    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
+    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
+  });
 
   const selectVenueChat = useCallback(() => {
     expandSidebar();
