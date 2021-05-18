@@ -14,18 +14,22 @@ import {
  * @deprecated in favor of using date-fns functions
  */
 export const ONE_SECOND_IN_MILLISECONDS = 1000;
+
 /**
  * @deprecated in favor of using date-fns functions
  */
 export const ONE_MINUTE_IN_SECONDS = 60;
+
 /**
  * @deprecated in favor of using date-fns functions
  */
 export const ONE_HOUR_IN_MINUTES = 60;
+
 /**
  * @deprecated in favor of using date-fns functions
  */
 export const ONE_HOUR_IN_SECONDS = ONE_MINUTE_IN_SECONDS * 60;
+
 /**
  * @deprecated in favor of using date-fns functions
  */
@@ -42,6 +46,7 @@ export const FIVE_MINUTES_MS =
  */
 export const ONE_HOUR_IN_MILLISECONDS =
   ONE_SECOND_IN_MILLISECONDS * ONE_HOUR_IN_SECONDS;
+
 /**
  * @deprecated in favor of using date-fns functions
  */
@@ -96,7 +101,7 @@ export const getTimeBeforeParty = (startUtcSeconds?: number) => {
 
   return formatDuration(
     intervalToDuration({
-      start: Date.now(),
+      start: now,
       end: eventStartDate,
     }),
     { format: ["days", "hours", "minutes"] }
@@ -187,14 +192,13 @@ export const getCurrentTimeInUTCSeconds = () => getUnixTime(Date.now());
  *
  * @see https://date-fns.org/docs/formatRelative
  */
-export const formatUtcSecondsRelativeToNow = (utcSeconds: number) => {
-  return formatRelative(fromUnixTime(utcSeconds), Date.now());
-};
+export const formatUtcSecondsRelativeToNow = (utcSeconds: number) =>
+  formatRelative(fromUnixTime(utcSeconds), Date.now());
 
-// @debt get rid of ONE_SECOND_IN_MILLISECONDS and use date-fns function
 export const normalizeTimestampToMilliseconds = (timestamp: number) => {
   const isTimestampInMilliSeconds = timestamp > SECONDS_TIMESTAMP_MAX_VALUE;
 
+  // @debt get rid of ONE_SECOND_IN_MILLISECONDS and use date-fns function
   return isTimestampInMilliSeconds
     ? timestamp
     : timestamp * ONE_SECOND_IN_MILLISECONDS;

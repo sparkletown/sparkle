@@ -12,7 +12,7 @@ import {
   getUnixTime,
   fromUnixTime,
 } from "date-fns";
-import { chain, range } from "lodash";
+import { groupBy, range } from "lodash";
 import classNames from "classnames";
 
 import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
@@ -90,11 +90,11 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     });
   }, [selectedDayIndex]);
 
-  const getLocaion = useCallback(
+  const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
       const [venueId, roomTitle = ""] = extractLocation(locString);
-      const venueTitle =
-        relatedVenues.find((venue) => venue.id === venueId)?.name || "";
+      const venueTitle = relatedVenues.find((venue) => venue.id === venueId)
+        ?.name;
       return { venueId, roomTitle, venueTitle };
     },
     [relatedVenues]
@@ -106,10 +106,12 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
       .map(prepareForSchedule(dayStart, userEventIds));
 
-    const locatedEvents: LocatedEvents[] = chain(daysEvents)
-      .groupBy(buildLocationString)
-      .map((value, key) => ({ location: getLocaion(key), events: value }))
-      .value();
+    const locatedEvents: LocatedEvents[] = Object.entries(
+      groupBy(daysEvents, buildLocationString)
+    ).map(([group, events]) => ({
+      events,
+      location: getEventLocation(group),
+    }));
 
     return {
       locatedEvents,
@@ -117,7 +119,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       dayStartUtcSeconds: getUnixTime(dayStart),
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
-  }, [relatedVenueEvents, userEventIds, selectedDayIndex, getLocaion]);
+  }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
   // if .NavBarSchedule is changed, we need to update the class name in NavBar#hideEventSchedule event handler as well
   const containerClasses = classNames("NavBarSchedule", {

@@ -3,7 +3,7 @@
 $grey--regular: #3f3d42;
 $grey--hover: #4c494f;
 $grey--users: #4c494f;
-$grey--ligth: #ebebeb;
+$grey--light: #ebebeb;
 
 $purple--regular: #7c46fb;
 $purple--hover: #7c46fb;
@@ -41,7 +41,7 @@ $description--margin-top: 2px;
 
   &--users {
     color: $grey--hover;
-    background-color: $grey--ligth;
+    background-color: $grey--light;
 
     &:hover {
       background-color: $white;

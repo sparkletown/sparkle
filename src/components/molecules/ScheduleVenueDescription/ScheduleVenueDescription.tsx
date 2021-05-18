@@ -8,7 +8,6 @@ import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
 import "./ScheduleVenueDescription.scss";
 
-const DEFAULT_VENUE_NAME = "Sparkle";
 export interface ScheduleVenueDescriptionProps {
   venueId: string;
 }
@@ -43,7 +42,7 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
         <div className={venuePictureClasses} />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
-            {scheduleVenue?.name ?? DEFAULT_VENUE_NAME}
+            {scheduleVenue?.name ?? "Sparkle"}
           </h2>
           <h3 className="ScheduleVenueDescription__subtitle">
             {scheduleVenue?.config?.landingPageConfig?.subtitle}

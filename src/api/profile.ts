@@ -94,6 +94,8 @@ export const updatePersonalizedSchedule = async ({
         event,
         removeMode,
       });
+
+      throw err;
     });
   });
 };
