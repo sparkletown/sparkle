@@ -1,5 +1,6 @@
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+import { useProfileStatus } from "hooks/useProfileStatus";
 import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
@@ -15,10 +16,8 @@ import {
   currentVenueSelector,
   currentVenueSelectorData,
 } from "utils/selectors";
-import { updateUserOnlineStatus } from "api/profile";
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { USER_STATUSES } from "settings";
-import { UserStatus } from "types/User";
 
 import "./UserInformationContent.scss";
 
@@ -39,6 +38,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
+  const { status, changeStatus } = useProfileStatus();
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -72,21 +72,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   }, [profile, user]);
 
-  const handlerChangeStatus = useCallback(
-    (value: UserStatus) => {
-      if (userWithId) {
-        updateUserOnlineStatus({
-          status: value,
-          userId: userWithId?.id,
-        });
-      }
-    },
-    [userWithId]
-  );
-
   if (!user || !userWithId) return null;
-
-  const profileStatus = profile?.status ?? "";
 
   return (
     <>
@@ -106,8 +92,8 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           <div className="ellipsis-text">{user.email}</div>
           <UserStatusDropdown
             options={USER_STATUSES}
-            onChange={handlerChangeStatus}
-            label={profileStatus}
+            onChange={changeStatus}
+            label={status}
           />
         </div>
       </div>
