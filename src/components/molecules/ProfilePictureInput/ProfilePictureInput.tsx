@@ -42,6 +42,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
+  // @debt Replace fetchSovereignVenueId with useSovereignVenueId, when the hook is refactored to accept venueId as a param.
   const {
     value: sovereignVenueId,
     loading: isLoadingSovereignVenueId,
