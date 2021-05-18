@@ -35,7 +35,7 @@ export interface User {
   status?: string;
 }
 
-export enum Statuses {
+export enum UserStatus {
   online = "online",
   busy = "busy",
   offline = "offline",
