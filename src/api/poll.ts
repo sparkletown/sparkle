@@ -10,6 +10,7 @@ export interface CreatePollProps {
   venueId: string;
   poll: PollMessage;
 }
+
 export const createVenuePoll = async ({
   venueId,
   poll,
@@ -35,6 +36,7 @@ export type DeleteVenuePollProps = {
   pollId: string;
 };
 
+// RESTRICRED due to user rights issue
 export const deleteVenuePoll = async ({
   venueId,
   pollId,
@@ -60,6 +62,8 @@ export type VoteInPollProps = {
   poll: PollValues;
   pollId: string;
 };
+
+// RESTRICRED due to user rights issue
 export const voteInVenuePoll = async ({
   venueId,
   poll,
