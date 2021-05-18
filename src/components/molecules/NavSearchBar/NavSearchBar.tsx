@@ -17,6 +17,8 @@ import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
+import { useMousetrap } from "hooks/useMousetrap";
+import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
@@ -141,6 +143,19 @@ const NavSearchBar = () => {
     [searchQuery]
   );
 
+  const focusSearchBar = useCallback((e) => {
+    const searchBar = document.getElementById("NavSearchBar__search-input");
+    if (searchBar) searchBar.focus();
+    // TODO: we need to remove "f" from being entered into the input which would happen now
+  }, []);
+
+  useMousetrap({
+    keys: ShortcutKeys.find,
+    callback: focusSearchBar,
+    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
+    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
+  });
+
   return (
     <div className="NavSearchBar">
       <div className={navDropdownClassnames}>
@@ -161,6 +176,7 @@ const NavSearchBar = () => {
       <InputField
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
+        id="NavSearchBar__search-input"
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
