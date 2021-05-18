@@ -39,22 +39,30 @@ export const useVenuePoll = () => {
   useConnectVenueChatMessages(venueId);
 
   const voteInPoll = useCallback(
-    (question: PollQuestion) => {
+    (question: PollQuestion, pollId: string) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, question });
+      voteInVenuePoll({ venueId, question, pollId });
     },
     [venueId]
   );
 
   const createPoll = useCallback(
-    (pollData: PollValues) => {
+    ({ topic, questions }: PollValues) => {
       if (!venueId || !userId) return;
 
       const poll: PollMessage = {
-        poll: pollData,
+        poll: {
+          topic,
+          questions: questions.map(({ name }, id) => ({
+            name,
+            id,
+            votes: 0,
+          })),
+        },
         from: userId,
         text: "poll",
+        votes: 0,
         ts_utc: firebase.firestore.Timestamp.now(),
       };
 

@@ -22,14 +22,7 @@ export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
   poll: PollValues;
-};
-
-export type PollMessageToDisplay<T extends PollMessage = PollMessage> = T & {
-  isMine: boolean;
-  author: WithId<User>;
-  canBeDeleted?: boolean;
-  // TODO add fix for votes
-  // votes: number;
+  votes: number;
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
@@ -106,6 +99,8 @@ export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
 
 export type PollQuestion = {
   name: string;
+  id?: number;
+  votes?: number;
 };
 
 export type PollValues = {

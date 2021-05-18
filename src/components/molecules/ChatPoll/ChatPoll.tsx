@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { PollMessage, PollMessageToDisplay, PollQuestion } from "types/chat";
+import { PollMessage, BaseMessageToDisplay, PollQuestion } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -14,9 +14,9 @@ import Button from "components/atoms/Button";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: WithId<PollMessageToDisplay<PollMessage>>;
+  pollData: WithId<BaseMessageToDisplay<PollMessage>>;
   deletePoll: (pollId: string) => void;
-  voteInPoll: (question: PollQuestion) => void;
+  voteInPoll: (question: PollQuestion, pollId: string) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
@@ -24,33 +24,47 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   voteInPoll,
   deletePoll,
 }) => {
-  const { id, poll, isMine, canBeDeleted } = pollData;
-  // temp
-  const votes = 8;
+  const { id, poll, votes, isMine, canBeDeleted } = pollData;
   const { questions, topic } = poll;
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
   });
 
+  const formattedQuestions = questions
+    .map((item) => ({
+      ...item,
+      count: votes ? Math.floor(((item.votes || 0) / votes) * 100) : 0,
+    }))
+    .sort((a, b) => b.count - a.count);
+
   const renderQuestions = useMemo(
     () =>
-      questions.map((question: PollQuestion) =>
-        isMine ? (
-          <div key={question.name} className="ChatPoll__text">
-            {question.name}
-          </div>
-        ) : (
-          <Button
-            key={question.name}
-            customClass="ChatPoll__question"
-            onClick={() => voteInPoll(question)}
-          >
-            {question.name}
-          </Button>
-        )
-      ),
-    [questions, isMine, voteInPoll]
+      formattedQuestions.map((question) => (
+        <Button
+          key={question.name}
+          customClass="ChatPoll__question"
+          onClick={() => voteInPoll(question, id)}
+        >
+          {question.name}
+        </Button>
+      )),
+    [formattedQuestions, voteInPoll, id]
+  );
+
+  const renderCounts = useMemo(
+    () =>
+      formattedQuestions.map((question) => (
+        <div key={question.name} className="ChatPoll__text">
+          <div
+            className="ChatPoll__text-background"
+            style={{ width: `${question.count}%` }}
+          />
+          <span className="ChatPoll__text-count">{question.count}%</span>
+          {question.name}
+        </div>
+      )),
+    [formattedQuestions]
   );
 
   return (
@@ -58,7 +72,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
-        {renderQuestions}
+        <div>{isMine ? renderCounts : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span className="ChatPoll__votes">{`${votes} votes`}</span>
           {canBeDeleted && (

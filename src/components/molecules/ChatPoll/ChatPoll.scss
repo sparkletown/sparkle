@@ -1,8 +1,19 @@
 @import "scss/constants";
 
-$counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
+$poll-text-border-radius-me: $spacing--xxl $spacing--xxl $spacing--xs
   $spacing--xxl;
+$poll-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xxl $spacing--xs;
 
+button.ChatPoll__question {
+  display: block;
+  margin-bottom: $spacing--lg;
+  width: 100%;
+  background-color: $secondary--light;
+
+  &:hover {
+    background-color: $secondary--lightest;
+  }
+}
 .ChatPoll {
   align-self: flex-start;
   display: flex;
@@ -14,7 +25,7 @@ $counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
   &__bulb {
     position: relative;
     width: 100%;
-    border-radius: $counterparty-text-border-radius;
+    border-radius: $poll-text-border-radius;
     background-color: $secondary;
     padding: $spacing--md;
     margin-bottom: $spacing--sm;
@@ -22,14 +33,6 @@ $counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
     word-wrap: break-word;
     word-break: break-word;
     hyphens: auto;
-  }
-
-  &__question {
-    display: block;
-    background: none;
-    margin-bottom: $spacing--lg;
-    width: 100%;
-    background-color: $concrete;
   }
 
   &__topic {
@@ -48,8 +51,44 @@ $counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
     align-self: flex-end;
     align-items: flex-end;
 
-    .ChatPoll__bulb {
-      background-color: $primary;
+    .ChatPoll {
+      &__bulb {
+        background-color: $primary;
+        border-radius: $poll-text-border-radius-me;
+      }
+
+      &__votes {
+        margin-right: $spacing--md;
+      }
+    }
+  }
+
+  &__text {
+    position: relative;
+    font-weight: $font-weight--500;
+    margin-bottom: $spacing--md;
+    padding: $spacing--sm $spacing--md;
+    width: 100%;
+    z-index: 0;
+
+    &:first-child {
+      .ChatPoll__text-background {
+        background-color: $primary--light;
+      }
+    }
+
+    &-background {
+      position: absolute;
+      z-index: -1;
+      background-color: $primary--darker;
+      border-radius: $border-radius--xl;
+      top: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    &-count {
+      margin-right: $spacing--md;
     }
   }
 
@@ -61,14 +100,10 @@ $counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs
     font-size: $font-size--sm;
   }
 
-  &__votes {
-    margin-right: $spacing--md;
-  }
-
   &__icon {
     position: absolute;
-    top: 5px;
-    left: 5px;
+    top: $spacing--sm;
+    left: 0;
   }
 
   &__delete-button {
