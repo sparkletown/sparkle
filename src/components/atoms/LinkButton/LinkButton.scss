@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.button-link {
+  text-align: center;
+  text-decoration: none;
+  margin-top: 20px;
+  background-color: $lighter-intermediate-grey;
+  padding: 12px 16px;
+  border-radius: 28px;
+  cursor: pointer;
+  &:hover {
+    text-decoration: none;
+  }
+}

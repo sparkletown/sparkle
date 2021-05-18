@@ -7,6 +7,7 @@ import { DEFAULT_MAP_BACKGROUND } from "settings";
 import { WithId } from "utils/id";
 import { PosterPageVenue } from "types/venues";
 import classNames from "classnames";
+import { LinkButton } from "components/atoms/LinkButton";
 
 import "./ShareModal.scss";
 
@@ -34,9 +35,9 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
     "share-modal-container__link--copied": isCopied,
   });
 
-  const facebookHref = `https://www.facebook.com/sharer/sharer.php?app_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&u=${url}`;
-
-  const twitterHref = `https://twitter.com/intent/tweet?text=${venue.chatTitle}&url=${url}`;
+  const textTitle = `Check out this OHBM Poster, ${venue.poster?.title} by ${venue.poster?.authorName} at ${url}`;
+  const facebookHref = `https://www.facebook.com/sharer/sharer.php?app_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&u=${url}&quote=${textTitle}&thumbnail=${venue.host?.icon}&picture=${venue.host?.icon}&hashtag=#OHBM2021`;
+  const twitterHref = `https://twitter.com/intent/tweet?text=${textTitle}&hashtags=OHBM2021`;
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -54,24 +55,14 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
         </div>
         <div className="share-modal-container">
           <h3 className="share-modal-container__title">Share this room</h3>
-          <a
-            href={facebookHref}
-            target="_blank"
-            rel="noreferrer"
-            className="share-modal-container__link"
-          >
+          <LinkButton href={facebookHref}>
             <FontAwesomeIcon icon={faFacebook} />
             <span className="share-modal-container__button-text">Facebook</span>
-          </a>
-          <a
-            href={twitterHref}
-            target="_blank"
-            rel="noreferrer"
-            className="share-modal-container__link"
-          >
+          </LinkButton>
+          <LinkButton href={twitterHref}>
             <FontAwesomeIcon icon={faTwitter} />
             <span className="share-modal-container__button-text">Twitter</span>
-          </a>
+          </LinkButton>
           <CopyToClipboard text={url}>
             <div className={linkClasses} onClick={handlerCopied}>
               {linkText}
