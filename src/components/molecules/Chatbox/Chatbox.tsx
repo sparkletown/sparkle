@@ -23,7 +23,7 @@ import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 import { useVenuePoll } from "hooks/useVenuePoll";
 
 import "./Chatbox.scss";
-import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls/ChatboxOptionsControls";
+import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -71,6 +71,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       ),
     [messages, deleteMessage, deletePoll, voteInPoll]
   );
+  console.log(messages);
 
   return (
     <div className="Chatbox">

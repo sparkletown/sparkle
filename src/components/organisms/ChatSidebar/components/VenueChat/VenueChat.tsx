@@ -17,6 +17,7 @@ export const VenueChat: React.FC = () => {
   return (
     <div className="venue-chat">
       <Chatbox
+        // poll is available for Venue Chat only (displayPoll = true)
         displayPoll
         messages={messagesToDisplay}
         sendMessage={sendMessage}

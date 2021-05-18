@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import noop from "lodash/noop";
 
-import { PollMessage, PollQuestion } from "types/chat";
+import { PollMessage, PollValues } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
@@ -57,27 +57,25 @@ export const deleteVenuePoll = async ({
 
 export type VoteInPollProps = {
   venueId: string;
-  question: PollQuestion;
+  poll: PollValues;
   pollId: string;
 };
 export const voteInVenuePoll = async ({
   venueId,
-  question,
+  poll,
   pollId,
 }: VoteInPollProps): Promise<void> =>
-  // console.log("voteInVenuePoll: ", venueId, question, pollId);
-  // TODO update questions in efficient way
   getVenueRef(venueId)
     .collection("chats")
     .doc(pollId)
-    .update({ votes: firebase.firestore.FieldValue.increment(1) })
+    .update({ votes: firebase.firestore.FieldValue.increment(1), poll })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         console.log(err, event, pollId);
         event.addMetadata("context", {
           location: "api/chat::voteInVenuePoll",
           venueId,
-          question,
+          poll,
           pollId,
         });
       });

@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 
 import { voteInVenuePoll, createVenuePoll, deleteVenuePoll } from "api/poll";
 
-import { PollMessage, PollQuestion, PollValues } from "types/chat";
+import { PollMessage, PollValues } from "types/chat";
 
 // import { venueChatMessagesSelector } from "utils/selectors";
 // import { getDaysAgoInSeconds } from "utils/time";
@@ -39,10 +39,10 @@ export const useVenuePoll = () => {
   useConnectVenueChatMessages(venueId);
 
   const voteInPoll = useCallback(
-    (question: PollQuestion, pollId: string) => {
+    (poll: PollValues, pollId: string) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, question, pollId });
+      voteInVenuePoll({ venueId, poll, pollId });
     },
     [venueId]
   );

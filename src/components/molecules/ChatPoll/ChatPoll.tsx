@@ -1,9 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { PollMessage, BaseMessageToDisplay, PollQuestion } from "types/chat";
+import { PollMessage, BaseMessageToDisplay, PollValues } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -16,7 +16,7 @@ import "./ChatPoll.scss";
 export interface ChatPollProps {
   pollData: WithId<BaseMessageToDisplay<PollMessage>>;
   deletePoll: (pollId: string) => void;
-  voteInPoll: (question: PollQuestion, pollId: string) => void;
+  voteInPoll: (poll: PollValues, pollId: string) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
@@ -41,18 +41,36 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     }))
     .sort((a, b) => b.count - a.count);
 
+  const handleVote = useCallback(
+    (question) => {
+      const newPoll = {
+        topic,
+        questions: questions.map((q) =>
+          q.id === question.id
+            ? {
+                ...question,
+                votes: question.votes + 1,
+              }
+            : q
+        ),
+      };
+      voteInPoll(newPoll, id);
+    },
+    [topic, questions, id, voteInPoll]
+  );
+
   const renderQuestions = useMemo(
     () =>
-      formattedQuestions.map((question) => (
+      questions.map((question) => (
         <Button
           key={question.name}
           customClass="ChatPoll__question"
-          onClick={() => voteInPoll(question, id)}
+          onClick={() => handleVote(question)}
         >
           {question.name}
         </Button>
       )),
-    [formattedQuestions, voteInPoll, id]
+    [questions, handleVote]
   );
 
   const renderCounts = useMemo(
@@ -77,16 +95,16 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         <div className="ChatPoll__topic">{topic}</div>
         <div>{isMine || isVoted ? renderCounts : renderQuestions}</div>
         <div className="ChatPoll__details">
-          <span className="ChatPoll__votes">{`${votes} votes`}</span>
+          <span>{`${votes} votes`}</span>
           {canBeDeleted && (
-            <>
+            <span className="ChatPoll__delete-container">
               -
               <TextButton
                 containerClassName="ChatPoll__delete-button"
                 onClick={() => deletePoll(id)}
                 label="Delete Poll"
               />
-            </>
+            </span>
           )}
         </div>
       </div>

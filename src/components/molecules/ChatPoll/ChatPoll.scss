@@ -57,10 +57,6 @@ button.ChatPoll__question {
         border-radius: $poll-text-border-radius-me;
       }
 
-      &__votes {
-        margin-right: $spacing--md;
-      }
-
       &__text-background {
         background-color: $primary--darker;
       }
@@ -110,7 +106,8 @@ button.ChatPoll__question {
     left: 0;
   }
 
-  &__delete-button {
+  &__delete-button,
+  &__delete-container {
     margin-left: $spacing--md;
   }
 }
