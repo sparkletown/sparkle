@@ -5,13 +5,7 @@ import React, {
   MouseEventHandler,
   useCallback,
 } from "react";
-import {
-  addDays,
-  startOfToday,
-  format,
-  getUnixTime,
-  fromUnixTime,
-} from "date-fns";
+import { addDays, format, getUnixTime, fromUnixTime } from "date-fns";
 import { groupBy, range } from "lodash";
 import classNames from "classnames";
 
@@ -63,9 +57,21 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
-  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
+  const {
+    isLoading,
+    relatedVenues,
+    relatedVenueIds,
+    sovereignVenue,
+  } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const isScheduleStartDate: boolean = sovereignVenue?.scheduleStartDate
+    ? true
+    : false;
+  const today = fromUnixTime(
+    sovereignVenue?.scheduleStartDate || getUnixTime(new Date())
+  );
 
   const {
     isEventsLoading,
@@ -79,8 +85,6 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   const weekdays = useMemo(() => {
-    const today = startOfToday();
-
     return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
       const day = addDays(today, dayIndex);
       const classes = classNames("NavBarSchedule__weekday", {
@@ -97,11 +101,15 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
           className={classes}
           onClick={onWeekdayClick}
         >
-          {dayIndex === 0 ? "Today" : format(day, "E")}
+          {isScheduleStartDate
+            ? format(day, "E, LLL d")
+            : dayIndex === 0
+            ? "Today"
+            : format(day, "E")}
         </li>
       );
     });
-  }, [selectedDayIndex]);
+  }, [selectedDayIndex, today, isScheduleStartDate]);
 
   const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
@@ -114,9 +122,13 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   );
 
   const schedule: ScheduleDay = useMemo(() => {
-    const dayStart = addDays(startOfToday(), selectedDayIndex);
+    const dayStart = addDays(today, selectedDayIndex);
     const daysEvents = relatedVenueEvents
-      .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
+      .filter(
+        isEventWithinDate(
+          selectedDayIndex === 0 && !isScheduleStartDate ? Date.now() : dayStart
+        )
+      )
       .map(prepareForSchedule(dayStart, userEventIds));
 
     const locatedEvents: LocatedEvents[] = Object.entries(
@@ -132,7 +144,14 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       dayStartUtcSeconds: getUnixTime(dayStart),
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
-  }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
+  }, [
+    relatedVenueEvents,
+    userEventIds,
+    selectedDayIndex,
+    getEventLocation,
+    today,
+    isScheduleStartDate,
+  ]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,

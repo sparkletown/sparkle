@@ -171,6 +171,7 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+  scheduleStartDate?: number;
 }
 
 export interface GenericVenue extends BaseVenue {
