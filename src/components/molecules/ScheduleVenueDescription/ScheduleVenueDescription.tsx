@@ -2,12 +2,13 @@ import React, { FC, useMemo } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
-import { DEFAULT_VENUE_LOGO, DEFAULT_VENUE_NAME } from "settings";
+import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
 
 import "./ScheduleVenueDescription.scss";
 
+const DEFAULT_VENUE_NAME = "Sparkle";
 export interface ScheduleVenueDescriptionProps {
   venueId: string;
 }
