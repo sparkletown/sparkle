@@ -1,36 +1,27 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useHistory } from "react-router-dom";
+
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_ID } from "settings";
+
+import { venueInsideUrl } from "utils/url";
+
+import { useUser } from "hooks/useUser";
+
 import "firebase/storage";
 import "./Account.scss";
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_ID } from "settings";
-import { venueInsideUrl } from "utils/url";
-import { useUser } from "hooks/useUser";
-import { useQuery } from "hooks/useQuery";
-import { Modal } from "react-bootstrap";
-import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 export interface ProfileFormData {
   partyName: string;
   pictureUrl: string;
 }
 
-const SplashPage = () => {
+export const SplashPage = () => {
   const history = useHistory();
   const { user } = useUser();
-  const queryParams = useQuery();
-  const showSchedule = !!queryParams.get("schedule");
 
   const onSubmit = () => {
     history.push(user ? venueInsideUrl(PLAYA_VENUE_ID) : "/enter/step1");
   };
-
-  const onHideSchedule = useCallback(() => {
-    history.replace(history.location.pathname);
-  }, [history]);
-
-  const onShowSchedulePress = useCallback(() => {
-    history.replace({ search: "schedule=true" });
-  }, [history]);
 
   return (
     <>
@@ -52,25 +43,8 @@ const SplashPage = () => {
           >
             Enter the burn
           </button>
-          <button
-            className="btn btn-secondary btn-block btn-centered enter-button"
-            onClick={onShowSchedulePress}
-          >
-            Show event schedule
-          </button>
         </div>
       </div>
-      <Modal
-        show={showSchedule}
-        onHide={onHideSchedule}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <NavBarSchedule />
-        </Modal.Body>
-      </Modal>
     </>
   );
 };
-
-export default SplashPage;

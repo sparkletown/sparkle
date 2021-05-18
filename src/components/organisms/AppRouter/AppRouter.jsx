@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import SplashPage from "pages/Account/SplashPage";
+import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
 import Step3 from "pages/Account/Step3";

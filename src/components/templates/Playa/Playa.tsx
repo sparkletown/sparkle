@@ -54,7 +54,6 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -130,7 +129,6 @@ const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 const Playa = () => {
   useFirestoreConnect("venues");
   const [showModal, setShowModal] = useState(false);
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -1050,15 +1048,6 @@ const Playa = () => {
             />
           )}
         </Modal>
-        <Modal
-          show={showEventSchedule}
-          onHide={() => setShowEventSchedule(false)}
-          dialogClassName="custom-dialog"
-        >
-          <Modal.Body>
-            <NavBarSchedule />
-          </Modal.Body>
-        </Modal>
       </>
     );
   }, [
@@ -1079,7 +1068,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    showEventSchedule,
     inVideoChat,
     videoChatHeight,
     mapContainer,

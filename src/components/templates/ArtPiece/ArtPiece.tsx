@@ -1,22 +1,24 @@
-import React, { useState } from "react";
-import "./ArtPiece.scss";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
-import InformationCard from "components/molecules/InformationCard";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { Modal } from "react-bootstrap";
-import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
+import React from "react";
+
+import { IFRAME_ALLOW } from "settings";
+
+import { VideoAspectRatio } from "types/VideoAspectRatio";
+
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelectorData } from "utils/selectors";
-import { IFRAME_ALLOW } from "settings";
-import { VideoAspectRatio } from "types/VideoAspectRatio";
+
+import { useSelector } from "hooks/useSelector";
+
+import Room from "components/organisms/Room";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import "./ArtPiece.scss";
 
 export const ArtPiece = () => {
   const venue = useSelector(currentVenueSelectorData);
-
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
 
   if (!venue) return <>Loading...</>;
 
@@ -67,20 +69,6 @@ export const ArtPiece = () => {
           <SparkleFairiesPopUp />
         </div>
       )}
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <NavBarSchedule />
-        </Modal.Body>
-      </Modal>
     </WithNavigationBar>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;
