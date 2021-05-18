@@ -12,6 +12,10 @@ export const MovementKeys = {
   right: ["right", "d"],
 };
 
+export const ShortcutKeys = {
+  chat: ["c"],
+};
+
 interface UseKeyboardControlsProps {
   venueId: string;
   totalRows: number;
