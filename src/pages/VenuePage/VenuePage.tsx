@@ -67,17 +67,23 @@ const VenuePage: React.FC = () => {
 
   const { user, profile } = useUser();
 
+  // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
+  useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelector);
-
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
+  useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
 
+  useConnectUserPurchaseHistory();
   const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
   const userPurchaseHistoryRequestStatus = useSelector(
     isUserPurchaseHistoryRequestedSelector
   );
+
+  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
+  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 
@@ -86,7 +92,13 @@ const VenuePage: React.FC = () => {
 
   const event = currentEvent?.[0];
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
@@ -146,12 +158,6 @@ const VenuePage: React.FC = () => {
   // NOTE: User's timespent updates
 
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
-
-  // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
-  useConnectCurrentVenue();
-  useConnectCurrentEvent();
-  useConnectUserPurchaseHistory();
-  useFirestoreConnect("venues");
 
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {

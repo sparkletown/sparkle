@@ -54,7 +54,6 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -128,7 +127,12 @@ const isPlaced = (venue: AnyVenue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
+  const venues = useSelector(orderedVenuesSelector);
+
+  const venue = useSelector(currentVenueSelectorData);
+
   const [showModal, setShowModal] = useState(false);
   const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
@@ -340,9 +344,6 @@ const Playa = () => {
       }
     };
   }, []);
-
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
 
   const showVenue = useCallback(
     (venue: WithId<AnyVenue>) => {
@@ -1056,7 +1057,9 @@ const Playa = () => {
           dialogClassName="custom-dialog"
         >
           <Modal.Body>
-            <SchedulePageModal />
+            {/* @debt Stubbing out legacy code as this component isn't used anymore and is getting deleted in a different PR. */}
+            Schedule Disabled
+            {/*<SchedulePageModal venueId={???} />*/}
           </Modal.Body>
         </Modal>
       </>

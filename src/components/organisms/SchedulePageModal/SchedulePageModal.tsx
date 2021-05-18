@@ -1,4 +1,4 @@
-import React, { useState, useMemo, FC } from "react";
+import React, { useState, useMemo } from "react";
 import { startOfDay, addDays, isWithinInterval, endOfDay } from "date-fns";
 import { range } from "lodash";
 
@@ -9,8 +9,8 @@ import { WithId, WithVenueId } from "utils/id";
 import { itemsToObjectByIdReducer } from "utils/reducers";
 import { isEventLiveOrFuture } from "utils/event";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { EventDisplay } from "components/molecules/EventDisplay/EventDisplay";
 
@@ -22,21 +22,25 @@ type DatedEvents = Array<{
 const DAYS_AHEAD = 7;
 
 interface SchedulePageModalProps {
+  venueId?: string;
   isVisible?: boolean;
 }
 
-export const SchedulePageModal: FC<SchedulePageModalProps> = ({
+export const SchedulePageModal: React.FC<SchedulePageModalProps> = ({
+  venueId,
   isVisible,
 }) => {
-  const venueId = useVenueId();
   const {
     parentVenue,
     currentVenue,
     relatedVenues,
-    relatedVenueEvents,
-  } = useConnectRelatedVenues({
-    venueId,
-    withEvents: true,
+    relatedVenueIds,
+  } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const { events: relatedVenueEvents } = useVenueEvents({
+    venueIds: relatedVenueIds,
   });
 
   const relatedVenuesById: Partial<

@@ -1,24 +1,30 @@
 import React, { useState } from "react";
-import "./ArtPiece.scss";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
-import InformationCard from "components/molecules/InformationCard";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelectorData } from "utils/selectors";
+
 import { IFRAME_ALLOW } from "settings";
+
 import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { GenericVenue } from "types/venues";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import Room from "components/organisms/Room";
+import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import InformationCard from "components/molecules/InformationCard";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import "./ArtPiece.scss";
+
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   const [showEventSchedule, setShowEventSchedule] = useState(false);
-
-  if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
 
@@ -73,14 +79,9 @@ export const ArtPiece = () => {
         dialogClassName="custom-dialog"
       >
         <Modal.Body>
-          <SchedulePageModal />
+          <SchedulePageModal venueId={venue.id} />
         </Modal.Body>
       </Modal>
     </WithNavigationBar>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;

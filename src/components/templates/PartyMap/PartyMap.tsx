@@ -1,12 +1,9 @@
 import React, { useState, useCallback } from "react";
 
-import { RootState } from "index";
-
 import { Room, RoomTypes } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
@@ -16,15 +13,16 @@ import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/Sparkl
 
 import "./PartyMap.scss";
 
-const partyMapVenueSelector = (state: RootState) =>
-  state.firestore.ordered.currentVenue?.[0] as PartyMapVenue;
+export interface PartyMapProps {
+  venue: PartyMapVenue;
+}
 
-export const PartyMap: React.FC = () => {
+export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
+  // @debt can we remove useConnectCurrentVenue here? Do any descendants need it?
   useConnectCurrentVenue();
+
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
-
-  const currentVenue = useSelector(partyMapVenueSelector);
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
@@ -47,7 +45,7 @@ export const PartyMap: React.FC = () => {
       <Map
         user={user}
         profileData={profile.data}
-        venue={currentVenue}
+        venue={venue}
         partygoers={recentVenueUsers}
         selectRoom={selectRoom}
         unselectRoom={unselectRoom}
@@ -55,12 +53,12 @@ export const PartyMap: React.FC = () => {
 
       <RoomModal
         room={selectedRoom}
-        venue={currentVenue}
+        venue={venue}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />
 
-      {currentVenue?.config?.showRangers && (
+      {venue.config?.showRangers && (
         <div className="sparkle-fairies">
           <SparkleFairiesPopUp />
         </div>
@@ -68,5 +66,3 @@ export const PartyMap: React.FC = () => {
     </div>
   );
 };
-
-export default PartyMap;

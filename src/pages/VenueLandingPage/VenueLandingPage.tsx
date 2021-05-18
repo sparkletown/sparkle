@@ -30,6 +30,7 @@ import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 import {
   currentVenueSelectorData,
   userPurchaseHistorySelector,
+  venueEventsSelector,
 } from "utils/selectors";
 import {
   DEFAULT_VENUE_BANNER,
@@ -56,9 +57,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const venueRequestStatus = useSelector(
     (state) => state.firestore.status.requested.currentVenue
   );
-  const venueEvents = useSelector(
-    (state) => state.firestore.ordered.venueEvents
-  );
+  const venueEvents = useSelector(venueEventsSelector);
   const purchaseHistory = useSelector(userPurchaseHistorySelector);
 
   const redirectUrl = venue?.config?.redirectUrl ?? "";
@@ -101,7 +100,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
         new Date().getTime() / 1000 && event.price > 0
   );
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
 
   useEffect(() => {
     if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {

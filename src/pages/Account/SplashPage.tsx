@@ -66,7 +66,7 @@ const SplashPage = () => {
         dialogClassName="custom-dialog"
       >
         <Modal.Body>
-          <SchedulePageModal />
+          <SchedulePageModal venueId={PLAYA_VENUE_ID} />
         </Modal.Body>
       </Modal>
     </>
