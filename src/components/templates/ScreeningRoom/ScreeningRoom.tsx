@@ -1,63 +1,117 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback, useState } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import { GenericVenue } from "types/venues";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
-import { usePosters } from "hooks/posters";
+import { useScreeningRoom } from "./useScreeningRoom";
 
+import { InputField } from "components/atoms/InputField";
 import { Button } from "components/atoms/Button";
+import { PosterCategory } from "components/atoms/PosterCategory";
 
-import { PosterPreview } from "./components/PosterPreview";
-import { PosterHallSearch } from "./components/PosterHallSearch";
+import { ScreeningVideoPreview } from "./components/ScreeningVideoPreview";
 
-import "./PosterHall.scss";
+import "./ScreeningRoom.scss";
 
-export interface PosterHallProps {
+export interface ScreeningRoomProps {
   venue: WithId<GenericVenue>;
 }
 
-export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
+export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
   const {
-    posterVenues,
-    isPostersLoaded,
+    videos,
+    isVideosLoaded,
 
-    increaseDisplayedPosterCount,
+    increaseDisplayedVideosAmount,
+
+    categoryList,
+    subCategoryList,
 
     searchInputValue,
-    setSearchInputValue,
-    liveFilter,
-    setLiveFilter,
-  } = usePosters(venue.id);
+    categoryFilter,
+    subCategoryFilter,
 
-  const renderedPosterPreviews = useMemo(() => {
-    return posterVenues.map((posterVenue) => (
-      <PosterPreview
-        key={posterVenue.id}
-        posterVenue={posterVenue}
-        enterVenue={enterVenue}
-      />
-    ));
-  }, [posterVenues]);
+    setSearchInputValue,
+    setCategoryFilter,
+    setSubCategoryFilter,
+  } = useScreeningRoom(venue.id);
+
+  const [selectedVideo, setSelectedVideo] = useState<ScreeningRoomVideo>();
+
+  const onInputFieldChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchInputValue(e.target.value);
+    },
+    [setSearchInputValue]
+  );
+
+  const renderedVideoPreviews = useMemo(
+    () =>
+      videos.map((video) => (
+        <ScreeningVideoPreview
+          key={video.id}
+          video={video}
+          selectThisVideo={() => setSelectedVideo(video)}
+        />
+      )),
+    [videos]
+  );
+
+  const renderedCategoryOptions = useMemo(
+    () => (
+      <div className="ScreeningRoom__categories">
+        {categoryList.map((category) => (
+          <PosterCategory
+            category={category}
+            onClick={() => setCategoryFilter(category)}
+          />
+        ))}
+      </div>
+    ),
+    []
+  );
+
+  const renderedSubCategoryOptions = useMemo(
+    () => (
+      <div className="ScreeningRoom__subcategories">
+        {subCategoryList.map((subCategory) => (
+          <div
+            className="ScreeningRoom__category-option"
+            onClick={() => setSubCategoryFilter(subCategory)}
+          >
+            {subCategory}
+          </div>
+        ))}
+      </div>
+    ),
+    []
+  );
 
   return (
-    <div className="PosterHall">
-      <PosterHallSearch
-        setSearchInputValue={setSearchInputValue}
-        searchInputValue={searchInputValue}
-        liveFilterValue={liveFilter}
-        setLiveValue={setLiveFilter}
+    <div className="ScreeningRoom">
+      <p className="ScreeningRoom__title">Screening room</p>
+      <InputField
+        containerClassName="ScreeningRoom__input-container"
+        inputClassName="ScreeningRoom__input"
+        iconStart={faSearch}
+        placeholder="Search for a talk..."
+        value={searchInputValue}
+        onChange={onInputFieldChange}
       />
+      {renderedCategoryOptions}
+      {renderedSubCategoryOptions}
 
-      <div className="PosterHall__posters">
-        {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
+      <div className="ScreeningRoom__video-previews">
+        {isVideosLoaded ? renderedVideoPreviews : "Loading posters"}
       </div>
 
-      <div className="PosterHall__more-button">
-        {isPostersLoaded && (
-          <Button onClick={increaseDisplayedPosterCount}>
-            Show more posters
+      <div className="ScreeningRoom__more-button">
+        {isVideosLoaded && (
+          <Button onClick={increaseDisplayedVideosAmount}>
+            Show more videos
           </Button>
         )}
       </div>

@@ -1,1 +1,0 @@
-export { PosterHallSearch } from "./PosterHallSearch";
