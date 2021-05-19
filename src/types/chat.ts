@@ -22,7 +22,7 @@ export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
   poll: PollValues;
-  votes: number;
+  votes: string[];
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;

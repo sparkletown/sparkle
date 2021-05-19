@@ -15,10 +15,10 @@ export const useVenuePoll = () => {
   const userId = user?.uid;
 
   const voteInPoll = useCallback(
-    (poll: PollValues, pollId: string) => {
+    (poll: PollValues, votes: string[], pollId: string) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, poll, pollId });
+      voteInVenuePoll({ venueId, poll, votes, pollId });
     },
     [venueId]
   );
@@ -31,7 +31,7 @@ export const useVenuePoll = () => {
         poll: pollValues,
         from: userId,
         text: "poll",
-        votes: 0,
+        votes: [],
         ts_utc: firebase.firestore.Timestamp.now(),
       };
 

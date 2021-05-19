@@ -1,5 +1,4 @@
 import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
 import noop from "lodash/noop";
 
 import { PollMessage, PollValues } from "types/chat";
@@ -21,7 +20,6 @@ export const createVenuePoll = async ({
     .then(noop)
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
-        console.log(err, event, poll);
         event.addMetadata("context", {
           location: "api/chat::createVenuePoll",
           venueId,
@@ -47,7 +45,6 @@ export const deleteVenuePoll = async ({
     .update({ deleted: true })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
-        console.log(err, event, pollId);
         event.addMetadata("context", {
           location: "api/chat::deleteVenuePoll",
           venueId,
@@ -60,6 +57,7 @@ export const deleteVenuePoll = async ({
 export type VoteInPollProps = {
   venueId: string;
   poll: PollValues;
+  votes: string[];
   pollId: string;
 };
 
@@ -67,15 +65,15 @@ export type VoteInPollProps = {
 export const voteInVenuePoll = async ({
   venueId,
   poll,
+  votes,
   pollId,
 }: VoteInPollProps): Promise<void> =>
   getVenueRef(venueId)
     .collection("chats")
     .doc(pollId)
-    .update({ votes: firebase.firestore.FieldValue.increment(1), poll })
+    .update({ votes, poll })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
-        console.log(err, event, pollId);
         event.addMetadata("context", {
           location: "api/chat::voteInVenuePoll",
           venueId,

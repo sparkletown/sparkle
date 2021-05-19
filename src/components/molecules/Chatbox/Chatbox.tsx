@@ -71,7 +71,6 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       ),
     [messages, deleteMessage, deletePoll, voteInPoll]
   );
-  console.log(messages);
 
   return (
     <div className="Chatbox">
