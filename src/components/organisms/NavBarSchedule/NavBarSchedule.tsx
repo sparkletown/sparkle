@@ -5,7 +5,14 @@ import React, {
   MouseEventHandler,
   useCallback,
 } from "react";
-import { addDays, format, getUnixTime, fromUnixTime } from "date-fns";
+import {
+  addDays,
+  format,
+  getUnixTime,
+  fromUnixTime,
+  startOfToday,
+  startOfDay,
+} from "date-fns";
 import { groupBy, range } from "lodash";
 import classNames from "classnames";
 
@@ -33,6 +40,7 @@ import {
 } from "./utils";
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 import "./NavBarSchedule.scss";
 
@@ -66,12 +74,15 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     currentVenueId: venueId,
   });
 
-  const isScheduleStartDate: boolean = sovereignVenue?.scheduleStartDate
-    ? true
-    : false;
-  const today = fromUnixTime(
-    sovereignVenue?.scheduleStartDate || getUnixTime(new Date())
+  const hasScheduleStartDate: boolean = isTruthy(
+    sovereignVenue?.scheduleStartDate
   );
+  const scheduleStartDate: Date = sovereignVenue?.scheduleStartDate?.toDate()!;
+  const firstDay = useMemo(() => {
+    return hasScheduleStartDate
+      ? startOfDay(scheduleStartDate)
+      : startOfToday();
+  }, [hasScheduleStartDate, scheduleStartDate]);
 
   const {
     isEventsLoading,
@@ -86,7 +97,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
 
   const weekdays = useMemo(() => {
     return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
-      const day = addDays(today, dayIndex);
+      const day = addDays(firstDay, dayIndex);
       const classes = classNames("NavBarSchedule__weekday", {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
@@ -101,7 +112,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
           className={classes}
           onClick={onWeekdayClick}
         >
-          {isScheduleStartDate
+          {hasScheduleStartDate
             ? format(day, "E, LLL d")
             : dayIndex === 0
             ? "Today"
@@ -109,7 +120,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
         </li>
       );
     });
-  }, [selectedDayIndex, today, isScheduleStartDate]);
+  }, [selectedDayIndex, firstDay, hasScheduleStartDate]);
 
   const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
@@ -122,11 +133,13 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   );
 
   const schedule: ScheduleDay = useMemo(() => {
-    const dayStart = addDays(today, selectedDayIndex);
+    const dayStart = addDays(firstDay, selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(
         isEventWithinDate(
-          selectedDayIndex === 0 && !isScheduleStartDate ? Date.now() : dayStart
+          selectedDayIndex === 0 && !hasScheduleStartDate
+            ? Date.now()
+            : dayStart
         )
       )
       .map(prepareForSchedule(dayStart, userEventIds));
@@ -149,8 +162,8 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     userEventIds,
     selectedDayIndex,
     getEventLocation,
-    today,
-    isScheduleStartDate,
+    firstDay,
+    hasScheduleStartDate,
   ]);
 
   const containerClasses = classNames("NavBarSchedule", {
