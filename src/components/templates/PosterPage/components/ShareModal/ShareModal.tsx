@@ -78,8 +78,8 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
           <h3 className="ShareModal__title">Room Title</h3>
           <span className="ShareModal__url-text">{url}</span>
         </div>
-        <div className="ShareModal__container">
-          <h3 className="ShareModal__container-title">Share this room</h3>
+        <div className="ShareModal__content">
+          <h3 className="ShareModal__content-title">Share this room</h3>
           {linkButtonsComponent}
           <CopyToClipboard text={url}>
             <div className={linkClasses} onClick={showCopiedText}>

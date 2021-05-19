@@ -50,14 +50,14 @@
     left: 30px;
   }
 
-  &__container {
+  &__content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     padding: $spacing--lg;
   }
 
-  &__container-title {
+  &__content-title {
     text-align: center;
   }
 
