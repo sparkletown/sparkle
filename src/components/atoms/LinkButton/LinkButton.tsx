@@ -1,7 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, DetailedHTMLProps, AnchorHTMLAttributes } from "react";
 import "./LinkButton.scss";
 
-interface LinkButtonProps {
+export interface LinkButtonProps
+  extends DetailedHTMLProps<
+    AnchorHTMLAttributes<HTMLAnchorElement>,
+    HTMLAnchorElement
+  > {
   href: string;
 }
 
