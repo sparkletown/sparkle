@@ -5,6 +5,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 import { WithId } from "utils/id";
+import { getVenueFullLocation } from "utils/url";
 import { PosterPageVenue } from "types/venues";
 import classNames from "classnames";
 import { LinkButton } from "components/atoms/LinkButton";
@@ -23,7 +24,7 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
   onHide,
   venue,
 }) => {
-  const url = `${process.env.REACT_APP_CODE_CHECK_URL}in/${venue.id}`;
+  const url = getVenueFullLocation(venue.id);
   const { isShown: isShowCopiedText, show: showCopiedText } = useShowHide();
 
   const linkText = isShowCopiedText ? "Link Copied" : "Copy Link";
