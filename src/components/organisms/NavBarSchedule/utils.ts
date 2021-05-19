@@ -31,6 +31,17 @@ export const prepareForSchedule = (
   };
 };
 
+export const preparePersonalSchedule = (
+  usersEvents: MyPersonalizedSchedule
+) => (event: WithVenueId<VenueEvent>): PersonalizedVenueEvent => {
+  return {
+    ...event,
+    isSaved: isTruthy(
+      event.id && usersEvents[event.venueId]?.includes(event.id)
+    ),
+  };
+};
+
 export const buildLocationString = (event: WithVenueId<VenueEvent>) =>
   `${event.venueId}#${event.room ?? ""}`;
 

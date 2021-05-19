@@ -22,6 +22,8 @@ import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 
+import { Button } from "components/atoms/Button";
+
 import {
   PersonalizedVenueEvent,
   VenueLocation,
@@ -36,6 +38,7 @@ import {
   buildLocationString,
   extractLocation,
   prepareForSchedule,
+  preparePersonalSchedule,
 } from "./utils";
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -134,6 +137,11 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
+  const downloadCalender = () => {
+    const myEvent = preparePersonalSchedule(userEventIds);
+    console.log(myEvent);
+  };
+
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
   });
@@ -141,6 +149,9 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
+      <div className="NavBarSchedule__download" onClick={downloadCalender}>
+        <Button>Download your schedule</Button>
+      </div>
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <Schedule
