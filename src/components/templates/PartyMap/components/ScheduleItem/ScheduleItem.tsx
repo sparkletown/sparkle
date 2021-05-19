@@ -3,6 +3,7 @@ import React from "react";
 import { VenueEvent } from "types/venues";
 
 import { formatUtcSeconds } from "utils/time";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
@@ -45,7 +46,9 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               by <b>{event.host}</b>
             </div>
           </div>
-          <div className="event-description">{event.description}</div>
+          <div className="event-description">
+            {convertMarkdown(event.description)}
+          </div>
         </div>
         {isCurrentEvent && (
           <div className="entry-room-button">

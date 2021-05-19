@@ -6,6 +6,7 @@ import { InformationLeftColumn } from "components/organisms/InformationLeftColum
 import { useSelector } from "hooks/useSelector";
 
 import { currentVenueSelectorData } from "utils/selectors";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import "./JazzBarSkeletonPage.scss";
 
@@ -40,7 +41,7 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               : "Choose your table, invite your friends to join you and listen to the sounds of our House band."}
           </p>
           {venue?.config?.landingPageConfig.description ? (
-            venue.config?.landingPageConfig.description
+            convertMarkdown(venue.config?.landingPageConfig.description)
           ) : (
             <>
               <p>

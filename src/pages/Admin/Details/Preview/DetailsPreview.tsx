@@ -6,6 +6,7 @@ import { DetailsPreviewProps } from "./DetailsPreview.types";
 // Styles
 import * as S from "./DetailsPreview.styles";
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,
@@ -27,7 +28,9 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
     </S.TitleWrapper>
   );
 
-  const renderDescription = () => <S.Description>{description}</S.Description>;
+  const renderDescription = () => (
+    <S.Description>{convertMarkdown(description)}</S.Description>
+  );
 
   return (
     <S.Wrapper>

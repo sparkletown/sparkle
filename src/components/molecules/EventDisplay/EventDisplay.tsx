@@ -6,6 +6,7 @@ import { Room } from "types/rooms";
 
 import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
 import { WithId } from "utils/id";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import { useRoom } from "hooks/useRoom";
 
@@ -58,7 +59,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
       <div className="schedule-event-info">
         <div className="schedule-event-info-title">{event.name}</div>
         <div className="schedule-event-info-description">
-          {event.description}
+          {convertMarkdown(event.description)}
         </div>
         <div className="schedule-event-info-room">
           {event.room && room && venue ? (

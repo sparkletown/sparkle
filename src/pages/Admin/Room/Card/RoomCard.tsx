@@ -13,6 +13,8 @@ import VenueEventDetails from "pages/Admin/VenueEventDetails";
 import Button from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 
+import { convertMarkdown } from "utils/convertMarkdown";
+
 import * as S from "./RoomCard.styles";
 
 const RoomCard: React.FC<RoomCardProps> = ({
@@ -68,7 +70,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{room.title}</S.Title>
-          <S.Description>{room.description}</S.Description>
+          <S.Description>{convertMarkdown(room.description)}</S.Description>
         </S.TitleWrapper>
 
         <S.ButtonWrapper>

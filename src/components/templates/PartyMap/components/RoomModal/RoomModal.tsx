@@ -11,6 +11,7 @@ import { venueEventsSelector } from "utils/selectors";
 import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import UserList from "components/molecules/UserList";
 
@@ -116,7 +117,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       />
 
       {room.about && (
-        <div className="room-modal__description">{room.about}</div>
+        <div className="room-modal__description">
+          {convertMarkdown(room.about)}
+        </div>
       )}
 
       {hasRoomEvents && (

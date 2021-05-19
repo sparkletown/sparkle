@@ -27,6 +27,7 @@ import {
 } from "utils/selectors";
 import { eventEndTime } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -308,10 +309,10 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                           )}`}
                         </div>
                         <div className="event-description">
-                          {venueEvent.description}
+                          {convertMarkdown(venueEvent.description)}
                           {venueEvent.descriptions?.map(
                             (description, index) => (
-                              <p key={index}>{description}</p>
+                              <p key={index}>{convertMarkdown(description)}</p>
                             )
                           )}
                         </div>

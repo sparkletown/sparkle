@@ -7,6 +7,7 @@ import { retainAttendance } from "store/actions/Attendance";
 import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
+import { convertMarkdown } from "utils/convertMarkdown";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -56,7 +57,9 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
               by <span className="artist-name">{eventToDisplay.host}</span>
             </div>
           </div>
-          <div className="event-description">{eventToDisplay.description}</div>
+          <div className="event-description">
+            {convertMarkdown(eventToDisplay.description)}
+          </div>
         </>
       )}
       <button
