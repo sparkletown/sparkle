@@ -55,6 +55,7 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
         title: "Twitter",
       },
     ];
+
     return linkButtons.map((linkButton) => (
       <LinkButton href={linkButton.href} key={linkButton.title}>
         <FontAwesomeIcon icon={linkButton.icon} />
