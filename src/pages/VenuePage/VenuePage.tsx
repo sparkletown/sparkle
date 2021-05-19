@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
+import { useTitle } from "react-use";
 import { isBefore } from "date-fns";
 
-import { LOC_UPDATE_FREQ_MS } from "settings";
+import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -121,6 +122,8 @@ const VenuePage: React.FC = () => {
 
     setLocationData({ userId, locationName: venueName });
   }, [userId, venueName]);
+
+  useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
   useEffect(() => {
     if (!userId) return;
