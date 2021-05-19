@@ -16,6 +16,13 @@ export interface EventDisplayProps {
   venue?: WithId<AnyVenue>;
 }
 
+/**
+ * @dept the componnet is used in the OnlineStats and VenuePreview (Playa) which are to be removed as part of the Playa cleanup work.
+ *
+ * @see https://github.com/sparkletown/sparkle/pull/833
+ *
+ * @deprecated since https://github.com/sparkletown/sparkle/pull/1302 is merged; the component is replaced by ScheduleEvent
+ */
 export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
   const eventRoomTitle = event.room;
 
