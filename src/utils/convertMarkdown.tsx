@@ -8,7 +8,7 @@ import sanitize from "rehype-sanitize";
 
 export const convertMarkdown = (
   text: string | undefined,
-  options?: { images?: boolean }
+  options?: { images?: boolean; allowP?: boolean }
 ) => {
   if (!text) return;
   const disallowed: Array<string> = [];
@@ -21,7 +21,7 @@ export const convertMarkdown = (
         rehypePlugins={[[sanitize]]}
         key={index}
         disallowedElements={disallowed}
-        components={{ p: Fragment }}
+        components={options?.allowP ? {} : { p: Fragment }}
       >
         {word}
       </ReactMarkdown>
