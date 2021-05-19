@@ -77,6 +77,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
+  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
   const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;

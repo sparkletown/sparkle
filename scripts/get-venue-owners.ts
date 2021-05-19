@@ -39,6 +39,7 @@ initFirebaseAdminApp(projectId, {
     nextPageToken = pageToken;
   }
 
+  // @debt This function will currently load all venues in firebase into memory.. not very efficient
   const firestoreVenues = await admin.firestore().collection("venues").get();
   const venues = firestoreVenues.docs.filter(
     (doc) =>
