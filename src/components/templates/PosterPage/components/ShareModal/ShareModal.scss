@@ -1,40 +1,12 @@
 @import "scss/constants.scss";
 
-.share-modal-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: $spacing--lg;
-
-  &__title {
-    text-align: center;
+.ShareModal {
+  &__header {
+    position: relative;
+    height: 200px;
+    margin: $spacing--sm;
+    border-radius: $border-radius--lg;
   }
-
-  &__button-text {
-    margin-left: $spacing--sm;
-  }
-
-  &__link {
-    text-align: center;
-    text-decoration: none;
-    margin-top: $spacing--lg;
-    background-color: $lighter-intermediate-grey;
-    padding: $spacing--md $spacing--lg;
-    border-radius: $border-radius--xl;
-    cursor: pointer;
-
-    &--copied {
-      cursor: auto;
-      opacity: 0.5;
-    }
-  }
-}
-
-.share-modal-header {
-  position: relative;
-  height: 200px;
-  margin: $spacing--sm;
-  border-radius: $border-radius--lg;
 
   &__background {
     z-index: z(map-background);
@@ -73,8 +45,38 @@
 
   &__url-text {
     position: absolute;
-    color: $concrete;
+    color: $secondary--lightest;
     bottom: 12px;
     left: 30px;
+  }
+
+  &__container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: $spacing--lg;
+  }
+
+  &__container-title {
+    text-align: center;
+  }
+
+  &__button-text {
+    margin-left: $spacing--sm;
+  }
+
+  &__link {
+    text-align: center;
+    text-decoration: none;
+    margin-top: $spacing--lg;
+    background-color: $lighter-intermediate-grey;
+    padding: $spacing--md $spacing--lg;
+    border-radius: $border-radius--xl;
+    cursor: pointer;
+
+    &--copied {
+      cursor: auto;
+      opacity: 0.5;
+    }
   }
 }

@@ -38,27 +38,27 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide}>
-      <Modal.Body>
-        <div className="share-modal-header">
+      <Modal.Body className="ShareModal">
+        <div className="ShareModal__header">
           <img
             width="100%"
-            className="share-modal-header__background"
+            className="ShareModal__background"
             src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
             alt="map"
           />
-          <div className="share-modal-header__logo"></div>
-          <h3 className="share-modal-header__title">Room Title</h3>
-          <span className="share-modal-header__url-text">{url}</span>
+          <div className="ShareModal__logo"></div>
+          <h3 className="ShareModal__title">Room Title</h3>
+          <span className="ShareModal__url-text">{url}</span>
         </div>
-        <div className="share-modal-container">
-          <h3 className="share-modal-container__title">Share this room</h3>
+        <div className="ShareModal__container">
+          <h3 className="ShareModal__container-title">Share this room</h3>
           <LinkButton href={facebookHref}>
             <FontAwesomeIcon icon={faFacebook} />
-            <span className="share-modal-container__button-text">Facebook</span>
+            <span className="ShareModal__button-text">Facebook</span>
           </LinkButton>
           <LinkButton href={twitterHref}>
             <FontAwesomeIcon icon={faTwitter} />
-            <span className="share-modal-container__button-text">Twitter</span>
+            <span className="ShareModal__button-text">Twitter</span>
           </LinkButton>
           <CopyToClipboard text={url}>
             <div className={linkClasses} onClick={showCopiedText}>
