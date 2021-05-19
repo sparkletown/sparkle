@@ -1,4 +1,4 @@
-import React, { FC, useState, useCallback } from "react";
+import React, { FC } from "react";
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -8,6 +8,7 @@ import { WithId } from "utils/id";
 import { PosterPageVenue } from "types/venues";
 import classNames from "classnames";
 import { LinkButton } from "components/atoms/LinkButton";
+import { useShowHide } from "hooks/useShowHide";
 
 import "./ShareModal.scss";
 
@@ -23,16 +24,12 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
   venue,
 }) => {
   const url = `${process.env.REACT_APP_CODE_CHECK_URL}in/${venue.id}`;
-  const [isCopied, setIsCopied] = useState(false);
+  const { isShown: isShowCopiedText, show: showCopiedText } = useShowHide();
 
-  const handlerCopied = useCallback(() => {
-    setIsCopied(true);
-  }, []);
-
-  const linkText = isCopied ? "Link Copied" : "Copy Link";
+  const linkText = isShowCopiedText ? "Link Copied" : "Copy Link";
 
   const linkClasses = classNames("share-modal-container__link", {
-    "share-modal-container__link--copied": isCopied,
+    "share-modal-container__link--copied": isShowCopiedText,
   });
 
   const textTitle = `Check out this OHBM Poster, ${venue.poster?.title} by ${venue.poster?.authorName} at ${url}`;
@@ -64,7 +61,7 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
             <span className="share-modal-container__button-text">Twitter</span>
           </LinkButton>
           <CopyToClipboard text={url}>
-            <div className={linkClasses} onClick={handlerCopied}>
+            <div className={linkClasses} onClick={showCopiedText}>
               {linkText}
             </div>
           </CopyToClipboard>
