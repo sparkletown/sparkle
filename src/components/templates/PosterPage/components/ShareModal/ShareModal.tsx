@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -37,18 +37,26 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?app_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&u=${url}&quote=${textTitle}&thumbnail=${venue.host?.icon}&picture=${venue.host?.icon}&hashtag=#OHBM2021`;
   const twitterHref = `https://twitter.com/intent/tweet?text=${textTitle}&hashtags=OHBM2021`;
 
-  const linkButtons = [
-    {
-      href: facebookHref,
-      icon: faFacebook,
-      title: "Facebook",
-    },
-    {
-      href: twitterHref,
-      icon: faTwitter,
-      title: "Twitter",
-    },
-  ];
+  const linkButtonsComponent = useMemo(() => {
+    const linkButtons = [
+      {
+        href: facebookHref,
+        icon: faFacebook,
+        title: "Facebook",
+      },
+      {
+        href: twitterHref,
+        icon: faTwitter,
+        title: "Twitter",
+      },
+    ];
+    return linkButtons.map((linkButton) => (
+      <LinkButton href={linkButton.href} key={linkButton.title}>
+        <FontAwesomeIcon icon={linkButton.icon} />
+        <span className="ShareModal__button-text">{linkButton.title}</span>
+      </LinkButton>
+    ));
+  }, [facebookHref, twitterHref]);
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -66,14 +74,7 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
         </div>
         <div className="ShareModal__container">
           <h3 className="ShareModal__container-title">Share this room</h3>
-          {linkButtons.map((linkButton) => (
-            <LinkButton href={linkButton.href} key={linkButton.title}>
-              <FontAwesomeIcon icon={linkButton.icon} />
-              <span className="ShareModal__button-text">
-                {linkButton.title}
-              </span>
-            </LinkButton>
-          ))}
+          {linkButtonsComponent}
           <CopyToClipboard text={url}>
             <div className={linkClasses} onClick={showCopiedText}>
               {linkText}
