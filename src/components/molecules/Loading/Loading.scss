@@ -1,0 +1,33 @@
+@keyframes loadingspin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+$Loading__icon--size: 40px;
+$Loading__icon--margin-bottom: 1rem;
+$Loading__message--font-size: 0.9rem;
+$Loading__message--opacity: 0.6;
+
+.Loading {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+
+  &__icon {
+    margin: 0 auto;
+    width: $Loading__icon--size;
+    height: $Loading__icon--size;
+    margin-bottom: $Loading__icon--margin-bottom;
+    animation: loadingspin 0.6s infinite linear;
+  }
+
+  &__message {
+    font-size: $Loading__message--font-size;
+    opacity: $Loading__message--opacity;
+  }
+}
