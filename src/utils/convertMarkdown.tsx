@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 
 import ReactMarkdown from "react-markdown";
 import glm from "remark-gfm";
@@ -21,6 +21,7 @@ export const convertMarkdown = (
         rehypePlugins={[[sanitize]]}
         key={index}
         disallowedElements={disallowed}
+        components={{ p: Fragment }}
       >
         {word}
       </ReactMarkdown>
