@@ -72,6 +72,12 @@ export const usePosters = (posterHallId: string) => {
     () =>
       new Fuse(filteredPosterVenues, {
         keys: ["poster.title", "poster.authorName", "poster.categories"],
+        threshold: 0.4, // default 0.6: brings too distant if anyhow related hits
+        ignoreLocation: true, // default False: True - to search ignoring location of the words.
+        // Otherwise can't find a word in a sentence
+        // includeScore: true   // so it could be displayed!?
+        // distance: 40        //  default 100 - ignored if ignoreLocation: true
+        // useExtendedSearch: true // might be neat!
       }),
     [filteredPosterVenues]
   );
