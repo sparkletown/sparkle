@@ -171,7 +171,7 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
-  scheduleStartDate?: number;
+  scheduleStartDate?: firebase.firestore.Timestamp;
 }
 
 export interface GenericVenue extends BaseVenue {
