@@ -58,6 +58,7 @@ initFirebaseAdminApp(projectId, {
       .join(",")
   );
 
+  // @debt This function will currently load all venues in firebase into memory.. not very efficient
   const firestoreVenues = await admin.firestore().collection("venues").get();
 
   firestoreVenues.docs.forEach((doc) => {

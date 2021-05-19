@@ -1,4 +1,15 @@
+import {
+  addMinutes,
+  areIntervalsOverlapping,
+  differenceInMinutes,
+  endOfDay,
+  fromUnixTime,
+  isWithinInterval,
+  startOfDay,
+} from "date-fns";
+
 import { VenueEvent } from "types/venues";
+
 import { getCurrentTimeInUTCSeconds } from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
@@ -12,13 +23,7 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
 };
 
 export const isEventLive = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return (
-    event.start_utc_seconds < currentTimeInUTCSeconds &&
-    event.start_utc_seconds + event.duration_minutes * 60 >
-      currentTimeInUTCSeconds
-  );
+  return isWithinInterval(Date.now(), getEventInterval(event));
 };
 
 export const isEventLiveOrFuture = (event: VenueEvent) => {
@@ -41,4 +46,31 @@ export const eventHappeningNow = (
       event.start_utc_seconds < currentTimeInUTCSeconds &&
       event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
   );
+};
+
+export const eventStartTime = (event: VenueEvent) =>
+  fromUnixTime(event.start_utc_seconds);
+
+export const eventEndTime = (event: VenueEvent) =>
+  addMinutes(eventStartTime(event), event.duration_minutes);
+
+export const isEventStartingSoon = (event: VenueEvent) =>
+  differenceInMinutes(eventStartTime(event), Date.now()) <= 60;
+
+export const getEventInterval = (event: VenueEvent) => ({
+  start: eventStartTime(event),
+  end: eventEndTime(event),
+});
+
+export const isEventWithinDate = (checkDate: number | Date) => (
+  event: VenueEvent
+) => {
+  const checkDateInterval = {
+    start: startOfDay(checkDate),
+    end: endOfDay(checkDate),
+  };
+
+  const eventInterval = getEventInterval(event);
+
+  return areIntervalsOverlapping(checkDateInterval, eventInterval);
 };
