@@ -1,15 +1,20 @@
 import React, { FC, useMemo } from "react";
 import { Modal } from "react-bootstrap";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
+
 import { DEFAULT_MAP_BACKGROUND } from "settings";
+
+import { PosterPageVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 import { getVenueFullLocation } from "utils/url";
-import { PosterPageVenue } from "types/venues";
-import classNames from "classnames";
-import { LinkButton } from "components/atoms/LinkButton";
+
 import { useShowHide } from "hooks/useShowHide";
+
+import { LinkButton } from "components/atoms/LinkButton";
 
 import "./ShareModal.scss";
 
