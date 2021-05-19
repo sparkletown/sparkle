@@ -4,23 +4,23 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 20px;
+  padding: $spacing--lg;
 
   &__title {
     text-align: center;
   }
 
   &__button-text {
-    margin-left: 10px;
+    margin-left: $spacing--sm;
   }
 
   &__link {
     text-align: center;
     text-decoration: none;
-    margin-top: 20px;
+    margin-top: $spacing--lg;
     background-color: $lighter-intermediate-grey;
-    padding: 12px 16px;
-    border-radius: 28px;
+    padding: $spacing--md $spacing--lg;
+    border-radius: $border-radius--xl;
     cursor: pointer;
 
     &--copied {
@@ -33,12 +33,12 @@
 .share-modal-header {
   position: relative;
   height: 200px;
-  margin: 10px 10px 0 10px;
-  border-radius: 15px;
+  margin: $spacing--sm;
+  border-radius: $border-radius--lg;
 
   &__background {
     z-index: z(map-background);
-    border-radius: 15px;
+    border-radius: $border-radius--lg;
     height: 100%;
     opacity: 0.5;
   }
@@ -57,12 +57,10 @@
       content: "";
       pointer-events: none;
       left: 52px;
-      width: 220px;
-      height: 75px;
+      width: 195px;
+      height: 70px;
       background-image: url(/assets/icons/sparkle-nav-logo-text.png);
-      background-size: 220px 75px;
-      transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms $transition-function;
+      background-size: 195px 70px;
     }
   }
 
