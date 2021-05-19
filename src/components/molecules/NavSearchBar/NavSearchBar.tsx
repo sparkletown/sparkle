@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_PARTY_NAME } from "settings";
+import { DEFAULT_PARTY_NAME, DEFAULT_VENUE_LOGO } from "settings";
 
 import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
@@ -115,7 +115,7 @@ const NavSearchBar = () => {
             description={`Event - ${uppercaseFirstChar(
               formatUtcSecondsRelativeToNow(event.start_utc_seconds)
             )}`}
-            image={imageUrl}
+            image={imageUrl ?? DEFAULT_VENUE_LOGO}
           />
         );
       });
