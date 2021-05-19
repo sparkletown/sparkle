@@ -138,8 +138,11 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
   const downloadCalender = () => {
-    const url = createCalendar(1591466400, 1691466400); //need to use actual info
-    window.open(encodeURI("data:text/calendar;charset=utf8," + url));
+    const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
+      .map(prepareForSchedule(new Date(0), userEventIds))
+      .filter((event) => event.isSaved);
+    const url = createCalendar(allPersonalEvents);
+    return window.open(encodeURI("data:text/calendar;charset=utf8," + url));
   };
 
   const containerClasses = classNames("NavBarSchedule", {

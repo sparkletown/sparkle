@@ -37,20 +37,26 @@ export const buildLocationString = (event: WithVenueId<VenueEvent>) =>
 export const extractLocation = (locationStr: string) =>
   locationStr.split("#", 2);
 
-export function createCalendar(
-  start: string | number | Date,
-  end: string | number | Date
-) {
+export function createCalendar(allPersonalEvents: PersonalizedVenueEvent[]) {
+  let url = ["BEGIN:VCALENDAR", "VERSION:2.0"];
+  allPersonalEvents.map((event) => {
+    const calEvent = createEvent(event);
+    return url.push(calEvent.join("\n"));
+  });
+  url.push("END:VCALENDAR");
+  return url.join("\n");
+}
+
+const createEvent = (event: PersonalizedVenueEvent) => {
   // need to revise this for parsing events
-  let url = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
+  let calEvent = [
     "BEGIN:VEVENT",
-    "DTSTART:" + formatDate(start),
-    "DTEND:" + formatDate(end),
-    "SUMMARY:stuff", // need to be replaced with actual info
-    "DESCRIPTION:stuff", // need to be replaced with actual info
-    "LOCATION:earth", // need to be replaced with actual info
+    "DTSTART:" + formatDate(eventStartTime(event)),
+    "DTEND:" + formatDate(eventEndTime(event)), // something wrong with this function
+    "SUMMARY:" + event.name, // need to be replaced with actual info
+    "UID:" + event.id,
+    "DESCRIPTION:" + event.description, // need to be replaced with actual info
+    "LOCATION:" + event?.room, // need to add https:// for ohbm sparkle programatically. settings.
     "BEGIN:VALARM",
     "TRIGGER:-PT15M",
     "REPEAT:1",
@@ -59,10 +65,9 @@ export function createCalendar(
     "DESCRIPTION:Reminder",
     "END:VALARM",
     "END:VEVENT",
-    "END:VCALENDAR",
-  ].join("\n");
-  return url;
-}
+  ];
+  return calEvent;
+};
 
 function formatDate(utctime: string | number | Date) {
   let dateTime = new Date(utctime);
