@@ -31,17 +31,6 @@ export const prepareForSchedule = (
   };
 };
 
-export const preparePersonalSchedule = (
-  usersEvents: MyPersonalizedSchedule
-) => (event: WithVenueId<VenueEvent>): PersonalizedVenueEvent => {
-  return {
-    ...event,
-    isSaved: isTruthy(
-      event.id && usersEvents[event.venueId]?.includes(event.id)
-    ),
-  };
-};
-
 export const buildLocationString = (event: WithVenueId<VenueEvent>) =>
   `${event.venueId}#${event.room ?? ""}`;
 
@@ -52,15 +41,16 @@ export function createCalendar(
   start: string | number | Date,
   end: string | number | Date
 ) {
+  // need to revise this for parsing events
   let url = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
     "BEGIN:VEVENT",
     "DTSTART:" + formatDate(start),
     "DTEND:" + formatDate(end),
-    "SUMMARY:stuff",
-    "DESCRIPTION:stuff",
-    "LOCATION:earth",
+    "SUMMARY:stuff", // need to be replaced with actual info
+    "DESCRIPTION:stuff", // need to be replaced with actual info
+    "LOCATION:earth", // need to be replaced with actual info
     "BEGIN:VALARM",
     "TRIGGER:-PT15M",
     "REPEAT:1",
@@ -87,6 +77,5 @@ function formatDate(utctime: string | number | Date) {
 }
 
 function pad(num: string | number) {
-  // Ensure date values are double digits
   return num < 10 ? "0" + num : num;
 }
