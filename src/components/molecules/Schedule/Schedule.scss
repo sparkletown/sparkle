@@ -9,7 +9,8 @@ $hour-width: var(--hour-width, 200px);
 $half-hour-width: calc(#{$hour-width} / 2);
 
 $rooms-column--width: 215px;
-$timeline--height: 36px;
+
+$time-labels--height: 36px;
 
 $time-line--margin-top: 18px;
 $time-line--width: 1px;
@@ -29,7 +30,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   &__rooms {
     flex-basis: $rooms-column--width;
     flex-shrink: 0;
-    margin-top: $timeline--height;
+    margin-top: $time-labels--height;
     padding-right: $Schedule--padding;
     box-shadow: box-shadow--large();
     font-size: 0.8rem;
@@ -56,7 +57,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   }
 
   &__timeline {
-    height: $timeline--height;
+    height: $time-labels--height;
     font-size: $font-size--md;
     opacity: 0.6;
     white-space: nowrap;
@@ -71,7 +72,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
       content: "";
       display: block;
       height: $time-line--height;
-      border-left: #{$time-line--width} solid white;
+      border-left: $time-line--width solid white;
       margin-left: $half-hour-width;
       margin-top: $time-line--margin-top;
     }

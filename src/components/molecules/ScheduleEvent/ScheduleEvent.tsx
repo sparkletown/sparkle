@@ -8,19 +8,19 @@ import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-ico
 
 import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
 
-import { PersonalizedVenueEvent } from "types/venues";
-
-import { isEventLive } from "utils/event";
-
-import { ONE_HOUR_IN_MINUTES } from "utils/time";
-
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
+
+import { PersonalizedVenueEvent } from "types/venues";
+
+import { isEventLive } from "utils/event";
+import { ONE_HOUR_IN_MINUTES } from "utils/time";
+
 import { useUser } from "hooks/useUser";
 
-import { calcStartPosition } from "components/molecules/Schedule/Schedule.utils";
+import { calcStartPosition } from "components/molecules/Schedule/utils";
 
 import "./ScheduleEvent.scss";
 
@@ -38,7 +38,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const { userId } = useUser();
 
   // @debt ONE_HOUR_IN_MINUTES is deprectated; refactor to use utils/time or date-fns functions
-  const eventWidth =
+  const eventWidthPx =
     (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
     ONE_HOUR_IN_MINUTES;
 
@@ -47,7 +47,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       event.start_utc_seconds,
       scheduleStartHour
     )}px`,
-    "--event--width": `${eventWidth}px`,
+    "--event--width": `${eventWidthPx}px`,
   });
 
   const containerClasses = classNames(

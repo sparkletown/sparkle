@@ -19,32 +19,33 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     currentVenueId: venueId,
   });
 
-  const venuePictureCssVars = useCss({
+  const containerCssVars = useCss({
     "--venue-picture--background-image": `url(${
       sovereignVenue?.host?.icon ?? DEFAULT_VENUE_LOGO
     })`,
   });
 
-  const venuePictureClasses = classNames(
-    "ScheduleVenueDescription__pic",
-    venuePictureCssVars
+  const containerClasses = classNames(
+    "ScheduleVenueDescription",
+    containerCssVars
   );
 
+  const { subtitle, description } =
+    sovereignVenue?.config?.landingPageConfig ?? {};
+
   return (
-    <div className="ScheduleVenueDescription">
+    <div className={containerClasses}>
       <div className="ScheduleVenueDescription__main">
-        <div className={venuePictureClasses} />
+        <div className="ScheduleVenueDescription__pic" />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
             {sovereignVenue?.name ?? "Schedule"}
           </h2>
-          <h3 className="ScheduleVenueDescription__subtitle">
-            {sovereignVenue?.config?.landingPageConfig?.subtitle}
-          </h3>
+          <h3 className="ScheduleVenueDescription__subtitle">{subtitle}</h3>
         </div>
       </div>
       <div className="ScheduleVenueDescription__desc">
-        <p>{sovereignVenue?.config?.landingPageConfig?.description}</p>
+        <p>{description}</p>
       </div>
     </div>
   );

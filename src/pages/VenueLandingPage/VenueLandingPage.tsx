@@ -35,10 +35,12 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import CountDown from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";

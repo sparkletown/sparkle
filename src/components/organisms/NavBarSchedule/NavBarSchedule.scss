@@ -23,7 +23,7 @@ $weekday--margin-right: 10px;
 
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-#{$NavBarSchedule--height});
+  transform: translateY(-$NavBarSchedule--height);
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
@@ -31,7 +31,7 @@ $weekday--margin-right: 10px;
   &--show {
     pointer-events: all;
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   &__weekdays {

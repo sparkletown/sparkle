@@ -320,7 +320,10 @@ const NavBar: React.FC<NavBarPropsType> = ({
         onClick={hideEventSchedule}
       >
         <div className={navBarScheduleClassName}>
-          <NavBarSchedule isVisible={isEventScheduleVisible} />
+          <NavBarSchedule
+            isVisible={isEventScheduleVisible}
+            venueId={venueId}
+          />
         </div>
       </div>
 

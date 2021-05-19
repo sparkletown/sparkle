@@ -17,7 +17,7 @@ export interface EventDisplayProps {
 }
 
 /**
- * @dept the componnet is used in the OnlineStats and VenuePreview (Playa) which are to be removed as part of the Playa cleanup work.
+ * @dept the component is used in the OnlineStats and VenuePreview (Playa) which are to be removed as part of the Playa cleanup work.
  *
  * @see https://github.com/sparkletown/sparkle/pull/833
  *

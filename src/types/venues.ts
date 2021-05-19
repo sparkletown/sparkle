@@ -317,10 +317,10 @@ export interface VenueEvent {
 export interface VenueLocation {
   venueId: string;
   roomTitle: string;
-  venueTitle?: string;
+  venueName?: string;
 }
 
-export interface LocatedEvents {
+export interface LocationEvents {
   location: VenueLocation;
   events: PersonalizedVenueEvent[];
 }

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 
 // Components
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import { AuthenticationModal } from "components/organisms/AuthenticationModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 // Pages
