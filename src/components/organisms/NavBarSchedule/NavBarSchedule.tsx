@@ -39,6 +39,7 @@ import {
   extractLocation,
   prepareForSchedule,
   preparePersonalSchedule,
+  createCalendar,
 } from "./utils";
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -138,8 +139,12 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
   const downloadCalender = () => {
-    const myEvent = preparePersonalSchedule(userEventIds);
+    const myEvent = relatedVenueEvents.map(
+      preparePersonalSchedule(userEventIds)
+    );
     console.log(myEvent);
+    const url = createCalendar(1591466400, 1691466400);
+    window.open(encodeURI("data:text/calendar;charset=utf8," + url));
   };
 
   const containerClasses = classNames("NavBarSchedule", {
