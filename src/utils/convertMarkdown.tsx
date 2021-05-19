@@ -6,10 +6,13 @@ import emoji from "remark-emoji";
 import externalLinks from "remark-external-links";
 import sanitize from "rehype-sanitize";
 
-export const convertMarkdown = (text: string | undefined, images = true) => {
+export const convertMarkdown = (
+  text: string | undefined,
+  options?: { images?: boolean }
+) => {
   if (!text) return;
   const disallowed: Array<string> = [];
-  if (!images) disallowed.push("img");
+  if (options?.images === false) disallowed.push("img");
   return text.split("\\n").map((word, index) => {
     return (
       <ReactMarkdown
