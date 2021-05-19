@@ -3,7 +3,6 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { isAfter } from "date-fns";
 
 import {
   DEFAULT_VENUE_BANNER,
@@ -25,7 +24,7 @@ import {
   userPurchaseHistorySelector,
   venueEventsSelector,
 } from "utils/selectors";
-import { eventEndTime } from "utils/event";
+import { hasEventFinished } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
@@ -101,7 +100,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { user } = useUser();
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
-    (event) => isAfter(eventEndTime(event), Date.now()) && event.price > 0
+    (event) => !hasEventFinished(event) && event.price > 0
   );
 
   useEffect(() => {

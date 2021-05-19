@@ -1,13 +1,15 @@
 import {
   differenceInSeconds,
+  endOfDay,
   format,
   formatDuration,
   formatRelative,
   fromUnixTime,
   getUnixTime,
   intervalToDuration,
-  isBefore,
+  isAfter,
   startOfDay,
+  subDays,
 } from "date-fns";
 
 /**
@@ -91,21 +93,32 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
 
-export const getTimeBeforeParty = (startUtcSeconds?: number) => {
+/**
+ * Format time left from now as a string representing the Duration ignoring seconds.
+ *
+ * @example
+ *   getTimeBeforeParty(1626432204)
+ *   // 1 month 26 days 20 hours 53 minutes
+ *
+ * @param startUtcSeconds
+ *
+ * @see https://date-fns.org/docs/formatDuration
+ */
+export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
   if (startUtcSeconds === undefined) return "???";
 
   const eventStartDate = fromUnixTime(startUtcSeconds);
   const now = Date.now();
 
-  if (isBefore(eventStartDate, now)) return 0;
+  if (isAfter(now, eventStartDate)) return "0";
 
-  return formatDuration(
-    intervalToDuration({
+  return formatDuration({
+    ...intervalToDuration({
       start: now,
       end: eventStartDate,
     }),
-    { format: ["days", "hours", "minutes"] }
-  );
+    seconds: 0,
+  });
 };
 
 /**
@@ -157,19 +170,13 @@ export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
 }
 
-export function getHoursAgoInSeconds(hours: number) {
-  const nowInSec = getUnixTime(Date.now());
-  return nowInSec - hours * ONE_HOUR_IN_SECONDS;
-}
-
 export const getHoursAgoInMilliseconds = (hours: number) =>
   Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
 
 export const getCurrentTimeInMilliseconds = () => Date.now();
 
-export function getDaysAgoInSeconds(days: number) {
-  return getHoursAgoInSeconds(days * 24);
-}
+export const getDaysAgoInSeconds = (days: number) =>
+  getUnixTime(subDays(Date.now(), days));
 
 /**
  * Format UTC seconds as a string representing time in the format hh:mm.
@@ -218,3 +225,8 @@ export const normalizeTimestampToMilliseconds = (timestamp: number) => {
     ? timestamp
     : timestamp * ONE_SECOND_IN_MILLISECONDS;
 };
+
+export const getDayInterval = (date: Date | number) => ({
+  start: startOfDay(date),
+  end: endOfDay(date),
+});

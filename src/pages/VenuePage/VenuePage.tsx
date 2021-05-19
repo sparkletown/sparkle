@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
-import { isBefore } from "date-fns";
 
 import { LOC_UPDATE_FREQ_MS } from "settings";
 
@@ -27,7 +26,7 @@ import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
-import { eventEndTime, isEventStartingSoon } from "utils/event";
+import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -102,7 +101,7 @@ const VenuePage: React.FC = () => {
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
-  const isEventFinished = event && isBefore(eventEndTime(event), Date.now());
+  const isEventFinished = event && hasEventFinished(event);
 
   const isUserVenueOwner = userId && venue?.owners?.includes(userId);
   const isMember =
