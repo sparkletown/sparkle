@@ -29,13 +29,26 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
 
   const linkText = isShowCopiedText ? "Link Copied" : "Copy Link";
 
-  const linkClasses = classNames("share-modal-container__link", {
-    "share-modal-container__link--copied": isShowCopiedText,
+  const linkClasses = classNames("ShareModal__link", {
+    "ShareModal__link--copied": isShowCopiedText,
   });
 
   const textTitle = `Check out this OHBM Poster, ${venue.poster?.title} by ${venue.poster?.authorName} at ${url}`;
   const facebookHref = `https://www.facebook.com/sharer/sharer.php?app_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&u=${url}&quote=${textTitle}&thumbnail=${venue.host?.icon}&picture=${venue.host?.icon}&hashtag=#OHBM2021`;
   const twitterHref = `https://twitter.com/intent/tweet?text=${textTitle}&hashtags=OHBM2021`;
+
+  const linkButtons = [
+    {
+      href: facebookHref,
+      icon: faFacebook,
+      title: "Facebook",
+    },
+    {
+      href: twitterHref,
+      icon: faTwitter,
+      title: "Twitter",
+    },
+  ];
 
   return (
     <Modal show={show} onHide={onHide}>
@@ -53,14 +66,14 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
         </div>
         <div className="ShareModal__container">
           <h3 className="ShareModal__container-title">Share this room</h3>
-          <LinkButton href={facebookHref}>
-            <FontAwesomeIcon icon={faFacebook} />
-            <span className="ShareModal__button-text">Facebook</span>
-          </LinkButton>
-          <LinkButton href={twitterHref}>
-            <FontAwesomeIcon icon={faTwitter} />
-            <span className="ShareModal__button-text">Twitter</span>
-          </LinkButton>
+          {linkButtons.map((linkButton) => (
+            <LinkButton href={linkButton.href} key={linkButton.title}>
+              <FontAwesomeIcon icon={linkButton.icon} />
+              <span className="ShareModal__button-text">
+                {linkButton.title}
+              </span>
+            </LinkButton>
+          ))}
           <CopyToClipboard text={url}>
             <div className={linkClasses} onClick={showCopiedText}>
               {linkText}
