@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useCopyToClipboard } from "react-use";
 import classNames from "classnames";
@@ -16,13 +16,13 @@ import { LinkButton } from "components/atoms/LinkButton";
 
 import "./ShareModal.scss";
 
-interface ConfirmationModalProps {
+export interface ShareModalProps {
   show: boolean;
   onHide: () => void;
   venue: WithId<PosterPageVenue>;
 }
 
-export const ShareModal: FC<ConfirmationModalProps> = ({
+export const ShareModal: React.FC<ShareModalProps> = ({
   show,
   onHide,
   venue,
