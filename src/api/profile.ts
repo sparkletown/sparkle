@@ -2,6 +2,10 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import { UserStatus } from "types/User";
 
+import { VenueEvent } from "types/venues";
+
+import { WithVenueId } from "utils/id";
+
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userUid: string;
@@ -73,6 +77,53 @@ export const updateUserOnlineStatus = async ({
   return userProfileRef.update(newData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", context);
+    });
+  });
+};
+
+export interface UpdatePersonalizedScheduleProps {
+  event: WithVenueId<VenueEvent>;
+  userId: string;
+  removeMode?: boolean;
+}
+
+export const addEventToPersonalizedSchedule = ({
+  event,
+  userId,
+}: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
+  updatePersonalizedSchedule({ event, userId });
+
+export const removeEventFromPersonalizedSchedule = ({
+  event,
+  userId,
+}: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
+  updatePersonalizedSchedule({ event, userId, removeMode: true });
+
+export const updatePersonalizedSchedule = async ({
+  event,
+  userId,
+  removeMode = false,
+}: UpdatePersonalizedScheduleProps): Promise<void> => {
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+
+  const modify = removeMode
+    ? firebase.firestore.FieldValue.arrayRemove
+    : firebase.firestore.FieldValue.arrayUnion;
+
+  const newSavedEvents = {
+    [`myPersonalizedSchedule.${event.venueId}`]: modify(event.id),
+  };
+
+  return userProfileRef.update(newSavedEvents).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::saveEventToProfile",
+        userId,
+        event,
+        removeMode,
+      });
+
+      throw err;
     });
   });
 };

@@ -68,8 +68,13 @@ export interface FirestoreData {
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
-  venues?: Record<string, AnyVenue>;
   worldUsers?: Record<string, User>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
+  venues?: Record<string, AnyVenue>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -98,6 +103,11 @@ export interface FirestoreOrdered {
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueEvents?: WithId<VenueEvent>[];
-  venues?: WithId<AnyVenue>[];
   worldUsers?: WithId<User>[];
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
+  venues?: WithId<AnyVenue>[];
 }
