@@ -133,6 +133,7 @@ $z-layers: (
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
+  navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
   // Sidebars + similar
   sidebar-slide-btn: -1,
@@ -204,4 +205,18 @@ $z-layers: (
   &::-webkit-scrollbar-thumb:hover {
     background-color: rgba($white, 0.5);
   }
+}
+
+// @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
+@mixin line-clamp($line-count: 1) {
+  display: -webkit-box;
+  -webkit-line-clamp: $line-count;
+  -webkit-box-orient: vertical;
+  line-clamp: $line-count;
+}
+
+@mixin line-clamp-with-overflow($line-count: 1) {
+  @include line-clamp($line-count);
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
