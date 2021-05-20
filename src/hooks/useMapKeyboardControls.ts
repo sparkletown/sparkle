@@ -7,7 +7,7 @@ import { ReactHook } from "types/utility";
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";
 
-interface UseKeyboardControlsProps {
+interface UseMapKeyboardControlsProps {
   venueId: string;
   totalRows: number;
   totalColumns: number;
@@ -18,13 +18,10 @@ interface UseKeyboardControlsProps {
 // TODO: use e.preventDefault() or return false or similar in the keyboard handlers (check mousetrap docs) so we don't scroll on arrow key presses
 // TODO: we may also need some kind of 'centre me on the map' logic somewhere when we do this too? For large zoomed maps.
 // TODO: implement bindRef using useRef() or similar (in Camp?) then remove all withGlobalBind (default is false)
-export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
-  venueId,
-  totalRows,
-  totalColumns,
-  isSeatTaken,
-  takeSeat,
-}) => {
+export const useMapKeyboardControls: ReactHook<
+  UseMapKeyboardControlsProps,
+  void
+> = ({ venueId, totalRows, totalColumns, isSeatTaken, takeSeat }) => {
   const { profile } = useUser();
   const { row, column } = profile?.data?.[venueId] ?? {};
 
