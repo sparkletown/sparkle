@@ -61,9 +61,20 @@ const InputField: React.ForwardRefRenderFunction<
 
   const inputClassNames = classNames("input-field__input", inputClassName);
 
+  const keyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Escape" && e.target) {
+      e.currentTarget.blur();
+    }
+  };
+
   return (
     <div className={containerClassNames}>
-      <input ref={ref} className={inputClassNames} {...extraInputProps} />
+      <input
+        ref={ref}
+        className={inputClassNames}
+        onKeyDown={keyDown}
+        {...extraInputProps}
+      />
 
       {iconStart && renderIcon(iconStart, "input-field__icon--start")}
       {iconEnd && renderIcon(iconEnd, "input-field__icon--end")}
