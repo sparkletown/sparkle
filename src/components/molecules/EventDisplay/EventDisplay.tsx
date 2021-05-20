@@ -9,8 +9,6 @@ import { WithId } from "utils/id";
 
 import { useRoom } from "hooks/useRoom";
 
-import "./EventDisplay.scss";
-
 export interface EventDisplayProps {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
