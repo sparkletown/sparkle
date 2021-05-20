@@ -16,8 +16,10 @@ export const createCalendar = (
 
   allEvents.map((event: PersonalizedVenueEvent | WithVenueId<VenueEvent>) =>
     cal.createEvent({
+      id: event.venueId,
       start: eventStartTime(event),
       end: eventEndTime(event),
+      description: event.host,
       summary: event.name,
       location: getFullVenueInsideUrl(event.venueId),
     })
