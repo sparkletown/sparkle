@@ -14,7 +14,7 @@ export const MovementKeys = {
 
 export const ShortcutKeys = {
   chat: ["c"],
-  schedule: ["s"],
+  schedule: ["S"],
   find: ["f"],
 };
 
