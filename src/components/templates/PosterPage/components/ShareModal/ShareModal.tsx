@@ -46,7 +46,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     "ShareModal__link--copied": isShowCopiedText,
   });
 
-  const linkButtonsComponent = useMemo(() => {
+  const renderedLinkButtons = useMemo(() => {
     const textTitle = getTitleTextForSharing(venue, url);
     const facebookHref = getFacebookHref(url, textTitle);
     const twitterHref = getTwitterHref(textTitle);
