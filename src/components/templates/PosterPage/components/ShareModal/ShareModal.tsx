@@ -14,6 +14,12 @@ import { getVenueFullLocation } from "utils/url";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
+import {
+  getTitleTextForSharing,
+  getFacebookHref,
+  getTwitterHref,
+} from "./helpers";
+
 import "./ShareModal.scss";
 
 export interface ShareModalProps {
@@ -40,11 +46,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     "ShareModal__link--copied": isShowCopiedText,
   });
 
-  const textTitle = `Check out this OHBM Poster, ${venue.poster?.title} by ${venue.poster?.authorName} at ${url}`;
-  const facebookHref = `https://www.facebook.com/sharer/sharer.php?app_id=${process.env.REACT_APP_FACEBOOK_APP_ID}&u=${url}&quote=${textTitle}&thumbnail=${venue.host?.icon}&picture=${venue.host?.icon}&hashtag=#OHBM2021`;
-  const twitterHref = `https://twitter.com/intent/tweet?text=${textTitle}&hashtags=OHBM2021`;
-
   const linkButtonsComponent = useMemo(() => {
+    const textTitle = getTitleTextForSharing(venue, url);
+    const facebookHref = getFacebookHref(url, textTitle);
+    const twitterHref = getTwitterHref(textTitle);
+
     const linkButtons = [
       {
         href: facebookHref,
@@ -64,7 +70,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <span className="ShareModal__button-text">{linkButton.title}</span>
       </LinkButton>
     ));
-  }, [facebookHref, twitterHref]);
+  }, [url, venue]);
 
   return (
     <Modal show={show} onHide={onHide}>
