@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback } from "react";
-import { addDays, startOfToday, format } from "date-fns";
+import { addDays, startOfToday, format, isEqual } from "date-fns";
 import { groupBy } from "lodash";
 import classNames from "classnames";
 
@@ -12,7 +12,7 @@ import {
   VenueEvent,
 } from "types/venues";
 
-import { isEventWithinDate } from "utils/event";
+import { isEventLaterToday, isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -108,9 +108,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const startOfSelectedDay = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(
-        isEventWithinDate(
-          selectedDayIndex === 0 ? Date.now() : startOfSelectedDay
-        )
+        isEqual(startOfToday(), startOfSelectedDay)
+          ? isEventLaterToday
+          : isEventWithinDate(startOfSelectedDay)
       )
       .map(prepareForSchedule(startOfSelectedDay, userEventIds));
 

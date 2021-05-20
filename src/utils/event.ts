@@ -2,6 +2,7 @@ import {
   addMinutes,
   areIntervalsOverlapping,
   differenceInMinutes,
+  endOfToday,
   fromUnixTime,
   isAfter,
   isWithinInterval,
@@ -67,3 +68,12 @@ export const isEventWithinDate = (checkDate: Date | number) => (
   event: VenueEvent
 ) =>
   areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
+
+export const isEventLaterToday = (event: VenueEvent) => {
+  const laterTodayInterval = {
+    start: Date.now(),
+    end: endOfToday(),
+  };
+
+  return areIntervalsOverlapping(laterTodayInterval, getEventInterval(event));
+};
