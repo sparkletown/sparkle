@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
@@ -25,7 +31,6 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useMousetrap } from "hooks/useMousetrap";
 import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
@@ -142,20 +147,25 @@ const NavBar: React.FC<NavBarPropsType> = ({
   }, [radioFirstPlayStateLoaded]);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
-  const toggleEventSchedule = useCallback(() => {
+  function toggleEventSchedule() {
+    console.log("toggling");
     setEventScheduleVisible(!isEventScheduleVisible);
-  }, [isEventScheduleVisible]);
+  }
   const hideEventSchedule = useCallback((e) => {
     if (e.target.closest(`.${navBarScheduleClassName}`)) return;
-
     setEventScheduleVisible(false);
   }, []);
 
-  useMousetrap({
-    keys: ShortcutKeys.schedule,
-    callback: toggleEventSchedule,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
+  function keyDownHandler(e: KeyboardEvent) {
+    if (ShortcutKeys.schedule.includes(e.key)) {
+      toggleEventSchedule();
+    }
+  }
+  useEffect(() => {
+    window.addEventListener("keydown", keyDownHandler);
+    return () => {
+      window.removeEventListener("keydown", keyDownHandler);
+    };
   });
 
   const parentVenueId = venue?.parentId ?? "";
