@@ -44,9 +44,13 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const allTables = experience?.tables;
 
-  const tableOfUser = seatedAtTable
-    ? tables.find((table) => table.reference === seatedAtTable)
-    : undefined;
+  const tableOfUser = useMemo(
+    () =>
+      seatedAtTable
+        ? tables.find((table) => table.reference === seatedAtTable)
+        : undefined,
+    [seatedAtTable, tables]
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = async (doc: string, update: any) => {
@@ -74,7 +78,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const tableTitle = tableOfUser?.title ?? "Table";
   const tableCapacity = tableOfUser?.capacity ?? 10;
-  const tableSubtitle = tableOfUser?.subtitle;
+  const tableSubtitle = tableOfUser?.subtitle ?? "";
 
   const setIsCurrentTableLocked = useCallback(
     (locked: boolean) => {
@@ -183,12 +187,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
       <EditTableTitleModal
         isShown={isShown}
+        venueName={venueName}
         title={tableTitle}
         tables={tables}
         tableOfUser={tableOfUser}
         subtitle={tableSubtitle}
         capacity={tableCapacity}
-        venueName={venueName}
         onHide={hide}
       />
     </div>
