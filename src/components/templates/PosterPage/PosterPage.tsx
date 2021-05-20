@@ -37,8 +37,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     show: showIntroVideoModal,
     hide: hideIntroVideoModal,
   } = useShowHide();
+
   const {
-    isShown: isShareModal,
+    isShown: isShareModalShown,
     show: showShareModal,
     hide: hideShareModal,
   } = useShowHide();
@@ -152,7 +153,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           introVideoUrl={introVideoUrl}
         />
       )}
-      <ShareModal show={isShareModal} onHide={hideShareModal} venue={venue} />
+      <ShareModal
+        show={isShareModalShown}
+        onHide={hideShareModal}
+        venue={venue}
+      />
     </div>
   );
 };
