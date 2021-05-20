@@ -38,10 +38,9 @@ import {
   buildLocationString,
   extractLocation,
   prepareForSchedule,
-  prepareForCalendar,
 } from "./utils";
 
-import { createCalendar } from "./calendar";
+import { createCalendar } from "utils/calendar";
 
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
@@ -123,7 +122,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
-      .map(prepareForSchedule(dayStart, userEventIds));
+      .map(prepareForSchedule(dayStart, userEventIds, "web"));
 
     const locatedEvents: LocatedEvents[] = Object.entries(
       groupBy(daysEvents, buildLocationString)
@@ -141,11 +140,13 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
   const downloadCalenderPersonal = useCallback(() => {
+    const dayStart = addDays(startOfToday(), selectedDayIndex);
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(prepareForCalendar(userEventIds))
+      .map(prepareForSchedule(dayStart, userEventIds, "calender"))
       .filter((event) => event.isSaved);
+
     createCalendar(allPersonalEvents, "Personal");
-  }, [relatedVenueEvents, userEventIds]);
+  }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
   const downloadCalenderAll = useCallback(() => {
     createCalendar(relatedVenueEvents, "Full");

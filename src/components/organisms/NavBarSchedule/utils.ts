@@ -16,26 +16,19 @@ import { isTruthy } from "utils/types";
 
 export const prepareForSchedule = (
   day: Date,
-  usersEvents: MyPersonalizedSchedule
+  usersEvents: MyPersonalizedSchedule,
+  target: string
 ) => (event: WithVenueId<VenueEvent>): PersonalizedVenueEvent => {
-  const startOfEventToShow = max([eventStartTime(event), startOfDay(day)]);
-  const endOfEventToShow = min([eventEndTime(event), endOfDay(day)]);
+  let startOfEventToShow;
+  let endOfEventToShow;
 
-  return {
-    ...event,
-    start_utc_seconds: getUnixTime(startOfEventToShow),
-    duration_minutes: differenceInMinutes(endOfEventToShow, startOfEventToShow),
-    isSaved: isTruthy(
-      event.id && usersEvents[event.venueId]?.includes(event.id)
-    ),
-  };
-};
-
-export const prepareForCalendar = (usersEvents: MyPersonalizedSchedule) => (
-  event: WithVenueId<VenueEvent>
-): PersonalizedVenueEvent => {
-  const startOfEventToShow = eventStartTime(event);
-  const endOfEventToShow = eventEndTime(event);
+  if (target === "calender") {
+    startOfEventToShow = eventStartTime(event);
+    endOfEventToShow = eventEndTime(event);
+  } else {
+    startOfEventToShow = max([eventStartTime(event), startOfDay(day)]);
+    endOfEventToShow = min([eventEndTime(event), endOfDay(day)]);
+  }
 
   return {
     ...event,
