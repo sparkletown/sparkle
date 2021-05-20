@@ -135,7 +135,7 @@ Then, to deploy to `production`:
 - (a Sparkle team member will) create a PR to **merge staging into `master`** with a name such as **`deploy staging -> master`**
 - add the `🚀 deployment` label
 - copy the commit messages (including the `#1234` PR they were made in) and paste it into the PR description after `Deploys:` (see [example](https://github.com/sparkletown/sparkle/pull/1355))
-- **merge (not squash-merge)** this 'deployment PR' into `master`, this will trigger the CI system to deploy to the 'OG `production`' evironment
+- **merge (not squash-merge)** this 'deployment PR' into `master`, this will trigger the CI system to deploy to the '[OG](https://www.dictionary.com/e/slang/og/) `production`' environment
 - push the `master` branch to any other environment branches (eg. `env/foo`) to trigger the CI system to deploy those environments as well
 
 > When adding a quick fix to production:
