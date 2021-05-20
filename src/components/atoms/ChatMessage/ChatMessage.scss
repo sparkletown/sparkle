@@ -45,6 +45,10 @@ $reply-icon-radius: 20px;
 
   &__text {
     font-size: $font-size--md;
+
+    img {
+      width: 100%;
+    }
   }
 
   &__show-replies-button {
