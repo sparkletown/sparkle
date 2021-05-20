@@ -20,9 +20,15 @@ export const createCalendar = (
       start: eventStartTime(event),
       end: eventEndTime(event),
       description: event.host,
-      summary: event.name,
-      location: getFullVenueInsideUrl(event.venueId),
+      summary: event.name ? event.host : "",
+      url: getFullVenueInsideUrl(event.venueId),
     })
   );
-  window.open(cal.toURL());
+
+  const outputCal = cal.toURL();
+  const outputFile = `${calendername}_calendar.ics`;
+  const link = document.createElement("a");
+  link.download = outputFile;
+  link.href = outputCal;
+  link.click();
 };
