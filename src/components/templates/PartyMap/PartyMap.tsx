@@ -29,7 +29,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const hasSelectedRoom = !!selectedRoom;
 
   const selectRoom = useCallback((room: Room) => {
-    if (room.type === RoomTypes.unclickable) return;
+    if (room.type === (RoomTypes.unclickable || RoomTypes.iframe)) return;
 
     setSelectedRoom(room);
   }, []);

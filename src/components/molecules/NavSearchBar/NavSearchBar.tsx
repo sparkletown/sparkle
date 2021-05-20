@@ -62,7 +62,7 @@ const NavSearchBar = () => {
       venue?.rooms
         ?.filter(
           (room) =>
-            room.type !== RoomTypes.unclickable &&
+            room.type !== (RoomTypes.unclickable || RoomTypes.iframe) &&
             room.title.toLowerCase().includes(searchQuery)
         )
         .map((room, index) => (

@@ -2,6 +2,7 @@ import { SoundConfigReference } from "./sounds";
 
 export enum RoomTypes {
   unclickable = "UNCLICKABLE",
+  iframe = "IFRAME",
 }
 
 // @debt We should end up with 1 canonical room type

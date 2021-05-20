@@ -31,6 +31,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
   const isUnclickable = room.type === RoomTypes.unclickable;
+  const isIframe = room.type === RoomTypes.iframe;
 
   const dispatch = useDispatch();
 
@@ -44,15 +45,19 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const containerClasses = classNames("maproom", {
     "maproom--unclickable": isUnclickable,
+    "maproom--iframe": isIframe,
     "maproom--always-show-label":
       !isUnclickable &&
+      !isIframe &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
     "maproom__title--count":
-      !isUnclickable && venue.roomVisibility === RoomVisibility.count,
+      !isUnclickable &&
+      !isIframe &&
+      venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomInlineStyles = useMemo(
@@ -82,13 +87,23 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <div
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={isUnclickable ? noop : selectRoomWithSound}
-      onMouseEnter={isUnclickable ? noop : handleRoomHovered}
-      onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
+      onClick={isUnclickable || isIframe ? noop : selectRoomWithSound}
+      onMouseEnter={isUnclickable || isIframe ? noop : handleRoomHovered}
+      onMouseLeave={isUnclickable || isIframe ? noop : handleRoomUnhovered}
     >
-      <img className="maproom__image" src={room.image_url} alt={room.title} />
+      {!isIframe ? (
+        <img className="maproom__image" src={room.image_url} alt={room.title} />
+      ) : (
+        <iframe
+          title={room.title}
+          id={`${room.type}-${room.title}`}
+          scrolling="no"
+          allow="autoplay"
+          src={room.url}
+        />
+      )}
 
-      {!isUnclickable && (
+      {!isUnclickable && !isIframe && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />

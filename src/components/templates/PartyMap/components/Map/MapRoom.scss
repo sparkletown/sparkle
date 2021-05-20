@@ -50,6 +50,22 @@ $label-visible: flex;
         filter: none;
       }
     }
+
+    &--iframe {
+      z-index: z(map-room--iframe);
+
+      cursor: default;
+
+      &:hover {
+        z-index: z(map-room--iframe);
+
+        transform: none;
+
+        .maproom__image {
+          filter: none;
+        }
+      }
+    }
   }
 
   &--always-show-label {
