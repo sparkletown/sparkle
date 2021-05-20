@@ -144,6 +144,7 @@ const NavSearchBar = () => {
   );
 
   const focusSearchBar = useCallback((e) => {
+    e.preventDefault();
     const searchBar = document.getElementById("NavSearchBar__search-input");
     if (searchBar) searchBar.focus();
     // TODO: we need to remove "f" from being entered into the input which would happen now
