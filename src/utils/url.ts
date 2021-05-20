@@ -83,6 +83,5 @@ export const externalUrlAdditionalProps = {
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
 
-export const getVenueFullLocation = (venueId: string) => {
-  return new URL(venueInsideUrl(venueId), window.location.origin).href;
-};
+export const getFullVenueInsideUrl = (venueId: string) =>
+  new URL(venueInsideUrl(venueId), window.location.origin).href;
