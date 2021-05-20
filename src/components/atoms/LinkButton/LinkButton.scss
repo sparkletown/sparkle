@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-.button-link {
+.LinkButton {
   text-align: center;
   text-decoration: none;
   margin-top: $spacing--lg;
@@ -8,6 +8,7 @@
   padding: $spacing--md $spacing--lg;
   border-radius: $border-radius--xl;
   cursor: pointer;
+
   &:hover {
     text-decoration: none;
   }

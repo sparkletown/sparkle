@@ -10,7 +10,7 @@ export interface LinkButtonProps
 }
 
 export const LinkButton: FC<LinkButtonProps> = ({ children, href }) => (
-  <a href={href} target="_blank" rel="noreferrer" className="button-link">
+  <a href={href} target="_blank" rel="noreferrer" className="LinkButton">
     {children}
   </a>
 );
