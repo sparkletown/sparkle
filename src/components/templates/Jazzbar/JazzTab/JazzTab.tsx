@@ -32,7 +32,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -139,7 +139,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <div className="row">
           <div className="col">
             <div className="description">
-              {convertMarkdown(venueToUse.description?.text)}
+              {RenderMarkdown(venueToUse.description?.text)}
             </div>
           </div>
         </div>

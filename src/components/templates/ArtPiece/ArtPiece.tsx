@@ -7,7 +7,7 @@ import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import Room from "components/organisms/Room";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -40,7 +40,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
               {venue.config?.landingPageConfig.subtitle}
             </p>
             <p style={{ fontSize: 13 }}>
-              {convertMarkdown(venue.config?.landingPageConfig.description)}
+              {RenderMarkdown(venue.config?.landingPageConfig.description)}
             </p>
           </InformationCard>
         </InformationLeftColumn>

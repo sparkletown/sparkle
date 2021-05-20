@@ -13,7 +13,7 @@ import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 import { CustomInputsType } from "settings";
 import { RoomModalItemProps } from "./Item.types";
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
@@ -221,7 +221,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
-          <S.Description>{convertMarkdown(description)}</S.Description>
+          <S.Description>{RenderMarkdown(description)}</S.Description>
         </S.TitleWrapper>
 
         <FontAwesomeIcon

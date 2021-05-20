@@ -6,7 +6,7 @@ import { VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 import { formatHourAndMinute } from "utils/time";
 import { eventEndTime, eventStartTime } from "utils/event";
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 export interface VenueEventDetailsProps {
   venueEvent: WithId<VenueEvent>;
@@ -42,10 +42,10 @@ const VenueEventDetails = ({
             {venueEvent.name}
           </span>
         </div>
-        {convertMarkdown(venueEvent.description)}
+        {RenderMarkdown(venueEvent.description)}
 
         {venueEvent.descriptions?.map((description, index) => (
-          <p key={index}>{convertMarkdown(description)}</p>
+          <p key={index}>{RenderMarkdown(description)}</p>
         ))}
       </div>
       <div className="button-container">

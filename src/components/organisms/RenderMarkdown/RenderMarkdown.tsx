@@ -6,7 +6,7 @@ import emoji from "remark-emoji";
 import externalLinks from "remark-external-links";
 import sanitize from "rehype-sanitize";
 
-export const convertMarkdown = (
+export const RenderMarkdown = (
   text?: string,
   options?: { allowImages?: boolean; allowP?: boolean }
 ) => {

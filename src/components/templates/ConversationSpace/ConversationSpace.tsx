@@ -15,7 +15,7 @@ import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
 
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { TABLES } from "./constants";
 
@@ -42,7 +42,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             {venue.config?.landingPageConfig.subtitle}
           </p>
           <p style={{ fontSize: 13 }}>
-            {convertMarkdown(venue.config?.landingPageConfig.description)}
+            {RenderMarkdown(venue.config?.landingPageConfig.description)}
           </p>
         </InformationCard>
       </InformationLeftColumn>
@@ -61,7 +61,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             <div className="row">
               <div className="col">
                 <div className="description">
-                  {convertMarkdown(venue.description?.text)}
+                  {RenderMarkdown(venue.description?.text)}
                 </div>
               </div>
             </div>

@@ -24,7 +24,7 @@ import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "components/molecules/OnlineStats/OnlineStats.scss";
 
@@ -250,7 +250,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           />
         </div>
         <div className="description">
-          {convertMarkdown(venue.config?.landingPageConfig?.description)}
+          {RenderMarkdown(venue.config?.landingPageConfig?.description)}
         </div>
         {ENABLE_PLAYA_ADDRESS && venue.placement?.x && venue.placement?.y && (
           <div className="address">

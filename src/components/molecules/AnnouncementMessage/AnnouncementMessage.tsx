@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { convertMarkdown } from "utils/convertMarkdown";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
@@ -36,7 +36,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         centered: !isExpanded,
       })}
     >
-      <div className="announcement-message">{convertMarkdown(message)}</div>
+      <div className="announcement-message">{RenderMarkdown(message)}</div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>
