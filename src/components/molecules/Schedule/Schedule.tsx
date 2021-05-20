@@ -136,19 +136,21 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [locatedEvents, scheduleStartHour]
   );
 
-  if (isLoading)
+  if (isLoading) {
     return (
       <div className={containerClasses}>
-        <Loading message={"Events are loading"} />
+        <Loading label={"Events are loading"} />
       </div>
     );
+  }
 
-  if (!hasEvents)
+  if (!hasEvents) {
     return (
       <div className={containerClasses}>
         <div className="Schedule__no-events">No events scheduled</div>
       </div>
     );
+  }
 
   return (
     <div className={containerClasses}>

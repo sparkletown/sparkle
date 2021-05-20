@@ -19,10 +19,10 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     currentVenueId: venueId,
   });
 
+  const venueIcon = sovereignVenue?.host?.icon ?? DEFAULT_VENUE_LOGO;
+
   const containerCssVars = useCss({
-    "--venue-picture--background-image": `url(${
-      sovereignVenue?.host?.icon ?? DEFAULT_VENUE_LOGO
-    })`,
+    "--venue-picture--background-image": `url(${venueIcon})`,
   });
 
   const containerClasses = classNames(

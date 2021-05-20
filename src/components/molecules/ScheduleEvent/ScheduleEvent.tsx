@@ -43,11 +43,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
     ONE_HOUR_IN_MINUTES;
 
+  const eventMarginLeftPx = calcStartPosition(
+    event.start_utc_seconds,
+    scheduleStartHour
+  );
+
   const containerCssVars = useCss({
-    "--event--margin-left": `${calcStartPosition(
-      event.start_utc_seconds,
-      scheduleStartHour
-    )}px`,
+    "--event--margin-left": `${eventMarginLeftPx}px`,
     "--event--width": `${eventWidthPx}px`,
   });
 
