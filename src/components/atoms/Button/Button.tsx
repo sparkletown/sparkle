@@ -17,6 +17,7 @@ export const AppButton: React.FC<ButtonProps> = ({
   gradient,
   isLink = false,
   linkTo,
+  disabled = false,
 }) => {
   if (loading)
     return (
@@ -45,6 +46,7 @@ export const AppButton: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       hasGradient={gradient}
+      disabled={disabled}
     >
       {children}
     </S.Button>

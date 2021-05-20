@@ -69,6 +69,7 @@ const GiftPopover = (
 );
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
+const eventModalClassName = "EventModal";
 
 interface NavBarPropsType {
   redirectionUrl?: string;
@@ -144,7 +145,11 @@ const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback((e) => {
-    if (e.target.closest(`.${navBarScheduleClassName}`)) return;
+    if (
+      e.target.closest(`.${navBarScheduleClassName}`) ||
+      e.target.closest(`.${eventModalClassName}`)
+    )
+      return;
 
     setEventScheduleVisible(false);
   }, []);

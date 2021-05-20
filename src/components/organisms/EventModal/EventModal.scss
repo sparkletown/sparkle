@@ -1,0 +1,48 @@
+@import "scss/constants";
+
+$purple--regular: #7c46fb;
+$purple--hover: #8755fb;
+
+$grey--disabled: #fff3;
+$dark-grey: #232225;
+
+$EventModa--padding-top: 40px;
+
+.EventModal {
+  text-align: left;
+
+  &__content {
+    padding: $EventModa--padding-top $spacing--xl $spacing--xl;
+    display: flex;
+    flex-direction: column;
+    background-color: $dark-grey;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+  }
+
+  &__subtitle {
+    font-size: $font-size--lg;
+    opacity: 0.8;
+  }
+
+  &__description {
+    font-size: $font-size--md;
+    opacity: 0.8;
+    padding-top: $spacing--xl;
+    padding-bottom: $spacing--xl;
+  }
+
+  & .EventModal__button {
+    background-color: $purple--regular;
+
+    &:hover {
+      background-color: $purple--hover;
+    }
+
+    &:disabled {
+      background-color: $grey--disabled;
+    }
+  }
+}

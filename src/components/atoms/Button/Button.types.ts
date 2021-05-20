@@ -19,4 +19,5 @@ export type ButtonProps = LinkProps & {
   loading?: boolean;
   onClick?: () => void;
   type?: "button" | "reset" | "submit";
+  disabled?: boolean;
 };
