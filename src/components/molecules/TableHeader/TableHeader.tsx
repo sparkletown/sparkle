@@ -163,7 +163,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
         {tableCapacity && (
           <span className="table-header__seats-left">
-            {tableOfUser?.subtitle && <div>{tableOfUser.subtitle} -</div>}{" "}
+            {tableOfUser?.subtitle && <>{tableOfUser.subtitle} -</>}{" "}
             {tableCapacity} seats
           </span>
         )}

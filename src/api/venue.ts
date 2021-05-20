@@ -1,16 +1,13 @@
 import Bugsnag from "@bugsnag/js";
-import firebase, { UserInfo } from "firebase/app";
+import firebase from "firebase/app";
 import { chunk } from "lodash";
 
 import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 
-import { Table } from "types/Table";
 import { AnyVenue } from "types/venues";
 
 import { withId, WithId } from "utils/id";
 import { asArray } from "utils/types";
-
-import { updateVenue_v2 } from "./admin";
 
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
@@ -191,26 +188,4 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
 
     return withId(snapshot.data() as AnyVenue, snapshot.id);
   },
-};
-
-export const updateVenueTables = async (
-  venueName: string,
-  updatedTable: Table,
-  tables: Table[],
-  user: UserInfo
-) => {
-  const venueTables = [...tables];
-
-  const currentTableIndex = venueTables.findIndex(
-    (table) => table?.reference === updatedTable?.reference
-  );
-
-  venueTables[currentTableIndex] = updatedTable as Table;
-
-  const venueInput = {
-    name: venueName,
-    tables: venueTables,
-  };
-
-  return await updateVenue_v2(venueInput, user);
 };

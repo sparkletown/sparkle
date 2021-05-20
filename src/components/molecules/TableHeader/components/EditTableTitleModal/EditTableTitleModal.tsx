@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-
-import { updateVenueTables } from "api/venue";
+import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
@@ -84,9 +83,13 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
         capacity: values.capacity,
       };
 
-      return await updateVenueTables(venueName, updatedTable, tables, user);
+      return await firebase.functions().httpsCallable("venue-updateTables")({
+        venueId,
+        tables,
+        updatedTable,
+      });
     },
-    [tableOfUser, tables, user, venueId, venueName]
+    [tableOfUser, tables, user, venueId]
   );
 
   const values = watch();
