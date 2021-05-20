@@ -58,6 +58,7 @@ export const DustStorm = () => {
     []
   );
 
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()
