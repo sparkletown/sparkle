@@ -7,12 +7,12 @@ import externalLinks from "remark-external-links";
 import sanitize from "rehype-sanitize";
 
 export const convertMarkdown = (
-  text: string | undefined,
-  options?: { images?: boolean; allowP?: boolean }
+  text?: string,
+  options?: { allowImages?: boolean; allowP?: boolean }
 ) => {
   if (!text) return;
   const disallowed: Array<string> = [];
-  if (options?.images === false) disallowed.push("img");
+  if (options?.allowImages === false) disallowed.push("img");
   return text.split("\\n").map((word, index) => {
     return (
       <ReactMarkdown

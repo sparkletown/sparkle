@@ -43,7 +43,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     () =>
       replies?.map((reply) => (
         <div key={reply.id} className="ChatMessage__reply">
-          {convertMarkdown(reply.text, { images: false })}
+          {convertMarkdown(reply.text, { allowImages: false })}
           <ChatMessageInfo
             message={reply}
             deleteMessage={() => deleteMessage(reply.id)}
@@ -70,7 +70,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
           <div className="ChatMessage__text">
-            {convertMarkdown(text, { images: false })}
+            {convertMarkdown(text, { allowImages: false })}
           </div>
 
           <div className="ChatMessage__reply-icon">
