@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import classNames from "classnames";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
@@ -16,12 +17,14 @@ export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
   sendMessage: SendMesssage;
   sendThreadReply: SendChatReply;
+  isQuestion: boolean;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThread,
   sendMessage,
   sendThreadReply,
+  isQuestion,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
   const [isSendingMessage, setMessageSending] = useState(false);
@@ -47,7 +50,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const sendMessageToChat = handleSubmit(({ message }) => {
     setMessageSending(true);
-    sendMessage(message);
+    sendMessage({ text: message, isQuestion });
     reset();
   });
 
@@ -61,6 +64,14 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const chatValue = watch("message");
 
+  const placeholderValue = isQuestion
+    ? "Type your question..."
+    : "Write your message...";
+
+  const buttonClassNames = classNames("Chatbox__submit-button", {
+    "Chatbox__submit-button--question": isQuestion,
+  });
+
   return (
     <form
       className="Chatbox__form"
@@ -70,11 +81,11 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         containerClassName="Chatbox__input"
         ref={register({ required: true })}
         name="message"
-        placeholder="Write your message..."
+        placeholder={placeholderValue}
         autoComplete="off"
       />
       <button
-        className="Chatbox__submit-button"
+        className={buttonClassNames}
         type="submit"
         disabled={!chatValue || isSendingMessage}
       >

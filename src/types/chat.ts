@@ -11,6 +11,7 @@ export type BaseChatMessage = {
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
+  isQuestion?: boolean;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
@@ -42,7 +43,14 @@ export type MessageToDisplay<
   replies: WithId<BaseMessageToDisplay<T>>[];
 };
 
-export type SendMesssage = (text: string) => Promise<void> | undefined;
+export interface SendMesssageProps {
+  text: string;
+  isQuestion: boolean;
+}
+
+export type SendMesssage = (
+  message: SendMesssageProps
+) => Promise<void> | undefined;
 
 export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
 

@@ -27,6 +27,10 @@
     &:disabled {
       background-color: $saturated-black;
     }
+
+    &--question {
+      background-color: $dark-green;
+    }
   }
 
   &__submit-button-icon {

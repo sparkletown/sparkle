@@ -50,6 +50,14 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const [activeOption, setActiveOption] = useState<ChatOption>();
 
+  const closeQuestionOption = () => {
+    setActiveOption(undefined);
+  };
+
+  const isQuestionOptions = useMemo(() => {
+    return ChatMessageOptions.question.name === activeOption?.name;
+  }, [activeOption]);
+
   const renderedMessages = useMemo(
     () =>
       messages.map((message) =>
@@ -80,12 +88,19 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           <ChatboxThreadControls
             threadAuthor={selectedThread.author.partyName}
             closeThread={closeThread}
+            text="replying to"
           />
         )}
-        {displayPoll && (
+        {displayPoll && !isQuestionOptions && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
+          />
+        )}
+        {activeOption === ChatMessageOptions.question && (
+          <ChatboxThreadControls
+            threadAuthor="asking a question"
+            closeThread={closeQuestionOption}
           />
         )}
         {activeOption === ChatMessageOptions.poll ? (
@@ -95,6 +110,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             selectedThread={selectedThread}
             sendMessage={sendMessage}
             sendThreadReply={sendThreadReply}
+            isQuestion={isQuestionOptions}
           />
         )}
       </div>

@@ -134,4 +134,10 @@ $reply-icon-radius: 20px;
       }
     }
   }
+
+  &--question {
+    .ChatMessage__bulb {
+      background-color: $dark-green;
+    }
+  }
 }

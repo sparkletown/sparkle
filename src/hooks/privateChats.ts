@@ -165,12 +165,12 @@ export const useRecipientChat = (recipientId: string) => {
   const recipient = withId(worldUsersById[recipientId], recipientId);
 
   const sendMessageToSelectedRecipient: SendMesssage = useCallback(
-    (text: string) => {
+    (props) => {
       if (!userId) return;
 
       const message = buildMessage<PrivateChatMessage>({
         from: userId,
-        text,
+        ...props,
         to: recipientId,
       });
 

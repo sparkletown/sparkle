@@ -7,16 +7,18 @@ import "./ChatboxThreadControls.scss";
 export interface ChatboxThreadControlsProps {
   closeThread: () => void;
   threadAuthor?: string;
+  text?: string;
 }
 
 export const ChatboxThreadControls: React.FC<ChatboxThreadControlsProps> = ({
   closeThread,
   threadAuthor,
+  text = "",
 }) => {
   return (
     <div className="ChatboxThreadControls">
       <span className="ChatboxThreadControls__thread-author">
-        replying to <b>{threadAuthor}...</b>
+        {text} <b>{threadAuthor}...</b>
       </span>
       <TextButton label="Cancel" onClick={closeThread} />
     </div>
