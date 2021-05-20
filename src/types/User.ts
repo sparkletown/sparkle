@@ -14,6 +14,9 @@ export type VideoState = {
   removedParticipantUids?: string[];
 };
 
+// the structure is { [key: venueId] : eventId[] }
+export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
+
 export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
@@ -32,4 +35,5 @@ export interface User {
   kidsMode: boolean;
   anonMode: boolean;
   enteredVenueIds?: string[];
+  myPersonalizedSchedule?: MyPersonalizedSchedule;
 }

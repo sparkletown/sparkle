@@ -1,22 +1,26 @@
-import React, { useState } from "react";
-import "./ArtPiece.scss";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
-import InformationCard from "components/molecules/InformationCard";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelectorData } from "utils/selectors";
+import React from "react";
+
 import { IFRAME_ALLOW } from "settings";
+
 import { VideoAspectRatio } from "types/VideoAspectRatio";
+import { GenericVenue } from "types/venues";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
+import Room from "components/organisms/Room";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import InformationCard from "components/molecules/InformationCard";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
+import "./ArtPiece.scss";
+
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   if (!venue) return <>Loading...</>;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
@@ -26,7 +30,7 @@ export const ArtPiece = () => {
   }`;
 
   return (
-    <>
+    <WithNavigationBar>
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
@@ -66,20 +70,6 @@ export const ArtPiece = () => {
           <SparkleFairiesPopUp />
         </div>
       )}
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
-    </>
+    </WithNavigationBar>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;

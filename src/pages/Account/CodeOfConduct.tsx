@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { updateUserProfile } from "./helpers";
 import "./Account.scss";
@@ -84,6 +84,13 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   };
 
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   if (!venue) {
     return <>Loading...</>;
   }
@@ -94,8 +101,6 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
   ) {
     proceed();
   }
-
-  venue && updateTheme(venue);
 
   const codeOfConductQuestions = IS_BURN
     ? BURN_CODE_OF_CONDUCT_QUESTIONS
