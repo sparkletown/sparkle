@@ -15,7 +15,7 @@ export const MovementKeys = {
 export const ShortcutKeys = {
   chat: ["c"],
   schedule: ["S"],
-  find: ["f"],
+  search: ["/"],
 };
 
 interface UseKeyboardControlsProps {

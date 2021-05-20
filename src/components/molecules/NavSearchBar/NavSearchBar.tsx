@@ -151,7 +151,7 @@ const NavSearchBar = () => {
   }, []);
 
   useMousetrap({
-    keys: ShortcutKeys.find,
+    keys: ShortcutKeys.search,
     callback: focusSearchBar,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
