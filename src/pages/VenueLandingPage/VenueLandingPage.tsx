@@ -41,7 +41,7 @@ import {
 } from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import CountDown from "components/molecules/CountDown";
+import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";

@@ -11,17 +11,12 @@ export const CountDown: React.FunctionComponent<PropsType> = ({
   textBeforeCountdown,
 }) => {
   const timeBeforeParty = getTimeBeforeParty(startUtcSeconds);
-  const isPartyOngoing = timeBeforeParty === "0";
-  return !isPartyOngoing ? (
+
+  if (timeBeforeParty === "0") return <></>;
+
+  return (
     <div className="count-down-container">
       {`${textBeforeCountdown || "Begins in"} ${timeBeforeParty}`}
     </div>
-  ) : (
-    <></>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default CountDown;
