@@ -13,18 +13,28 @@ export const RenderMarkdown = (
   if (!text) return;
   const disallowed: Array<string> = [];
   if (options?.allowImages === false) disallowed.push("img");
-  return text.split("\\n").map((word, index) => {
-    return (
-      <ReactMarkdown
-        linkTarget={"_blank"}
-        remarkPlugins={[[glm], [emoji], [externalLinks]]}
-        rehypePlugins={[[sanitize]]}
-        key={index}
-        disallowedElements={disallowed}
-        components={options?.allowP ? {} : { p: Fragment }}
-      >
-        {word}
-      </ReactMarkdown>
-    );
-  });
+  return (
+    <ReactMarkdown
+      linkTarget={"_blank"}
+      remarkPlugins={[[glm], [emoji], [externalLinks]]}
+      rehypePlugins={[[sanitize]]}
+      disallowedElements={disallowed}
+      components={
+        options?.allowP
+          ? {}
+          : {
+              p: Fragment,
+              h1: Fragment,
+              h2: Fragment,
+              h3: Fragment,
+              h4: Fragment,
+              h5: Fragment,
+              h6: Fragment,
+              pre: Fragment,
+            }
+      }
+    >
+      {text}
+    </ReactMarkdown>
+  );
 };
