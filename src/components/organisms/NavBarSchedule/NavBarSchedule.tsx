@@ -38,8 +38,11 @@ import {
   buildLocationString,
   extractLocation,
   prepareForSchedule,
-  createCalendar,
+  prepareForCalendar,
 } from "./utils";
+
+import { createCalendar } from "./calendar";
+
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
 
@@ -137,13 +140,16 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
-  const downloadCalender = () => {
+  const downloadCalenderPersonal = useCallback(() => {
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(prepareForSchedule(new Date(0), userEventIds))
+      .map(prepareForCalendar(userEventIds))
       .filter((event) => event.isSaved);
-    const url = createCalendar(allPersonalEvents);
-    return window.open(encodeURI("data:text/calendar;charset=utf8," + url));
-  };
+    createCalendar(allPersonalEvents, "Personal");
+  }, [relatedVenueEvents, userEventIds]);
+
+  const downloadCalenderAll = useCallback(() => {
+    createCalendar(relatedVenueEvents, "Full");
+  }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
@@ -152,9 +158,12 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      <div className="NavBarSchedule__download" onClick={downloadCalender}>
-        <Button>Download your schedule</Button>
-      </div>
+      <ul className="NavBarSchedule__downloads">
+        <Button onClick={downloadCalenderPersonal}>
+          Download your schedule
+        </Button>
+        <Button onClick={downloadCalenderAll}>Download full schedule</Button>
+      </ul>
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <Schedule

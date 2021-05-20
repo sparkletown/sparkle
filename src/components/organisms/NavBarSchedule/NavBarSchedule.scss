@@ -53,9 +53,21 @@ $weekday--margin-right: 10px;
       text-shadow: 0 2px 4px rgba($black, 0.3);
       box-shadow: 0 3px 6px rgba($black, 0.2);
     }
-
     &:hover {
       opacity: 1;
+    }
+    &--download {
+      display: flex;
+      cursor: pointer;
+      padding-left: $NavBarSchedule--padding;
+      opacity: 0.8;
+      background-color: $primary;
+      text-shadow: 0 2px 4px rgba($black, 0.3);
+      box-shadow: 0 3px 6px rgba($black, 0.2);
+
+      &:hover {
+        opacity: 1;
+      }
     }
   }
 }
