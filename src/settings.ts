@@ -54,11 +54,14 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DEFAULT_EDIT_PROFILE_TEXT =
   "I haven't edited my profile to tell you yet";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
+export const GIFT_TICKET_MODAL_URL =
+  "https://here.burningman.org/event/virtualburn";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -83,6 +86,7 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
@@ -92,6 +96,9 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
@@ -557,6 +564,13 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const DEFAULT_AVATARS = [
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
+];
+
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
@@ -567,3 +581,13 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+
+// SCHEDULE
+// @debt probably would be better to adjust max hour based on user's display size
+export const SCHEDULE_MAX_START_HOUR = 16;
+export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
+export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
