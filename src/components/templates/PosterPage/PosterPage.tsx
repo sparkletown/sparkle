@@ -16,9 +16,9 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
 import { PosterPageSettingsControl } from "./components/PosterPageSettingsControl";
+import { ShareModal } from "./components/ShareModal";
 
 import { usePosterVideo } from "./usePosterVideo";
-import { ShareModal } from "./components/ShareModal";
 
 import "./PosterPage.scss";
 
