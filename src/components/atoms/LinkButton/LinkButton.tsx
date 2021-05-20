@@ -1,4 +1,7 @@
-import React, { FC, DetailedHTMLProps, AnchorHTMLAttributes } from "react";
+import React, { DetailedHTMLProps, AnchorHTMLAttributes } from "react";
+import classNames from "classnames";
+import { externalUrlAdditionalProps } from "utils/url";
+
 import "./LinkButton.scss";
 
 export interface LinkButtonProps
@@ -9,8 +12,22 @@ export interface LinkButtonProps
   href: string;
 }
 
-export const LinkButton: FC<LinkButtonProps> = ({ children, href }) => (
-  <a href={href} target="_blank" rel="noreferrer" className="LinkButton">
-    {children}
-  </a>
-);
+export const LinkButton: React.FC<LinkButtonProps> = ({
+  children,
+  href,
+  className,
+  ...extraProps
+}) => {
+  const linkClasses = classNames("LinkButton", className);
+
+  return (
+    <a
+      href={href}
+      {...extraProps}
+      {...externalUrlAdditionalProps}
+      className={linkClasses}
+    >
+      {children}
+    </a>
+  );
+};
