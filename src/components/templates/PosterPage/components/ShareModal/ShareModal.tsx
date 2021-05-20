@@ -77,7 +77,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       <Modal.Body className="ShareModal">
         <div className="ShareModal__header">
           <img
-            width="100%"
             className="ShareModal__background"
             src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
             alt="map"
