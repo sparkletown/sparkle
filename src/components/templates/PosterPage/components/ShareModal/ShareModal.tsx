@@ -1,6 +1,6 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
-import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useCopyToClipboard } from "react-use";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
@@ -11,8 +11,6 @@ import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { getVenueFullLocation } from "utils/url";
-
-import { useShowHide } from "hooks/useShowHide";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
@@ -30,7 +28,11 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
   venue,
 }) => {
   const url = getVenueFullLocation(venue.id);
-  const { isShown: isShowCopiedText, show: showCopiedText } = useShowHide();
+  const [{ value: isShowCopiedText }, copyToClipboard] = useCopyToClipboard();
+
+  const toCopy = useCallback(() => {
+    copyToClipboard(url);
+  }, [url, copyToClipboard]);
 
   const linkText = isShowCopiedText ? "Link Copied" : "Copy Link";
 
@@ -81,11 +83,9 @@ export const ShareModal: FC<ConfirmationModalProps> = ({
         <div className="ShareModal__content">
           <h3 className="ShareModal__content-title">Share this room</h3>
           {linkButtonsComponent}
-          <CopyToClipboard text={url}>
-            <div className={linkClasses} onClick={showCopiedText}>
-              {linkText}
-            </div>
-          </CopyToClipboard>
+          <div className={linkClasses} onClick={toCopy}>
+            {linkText}
+          </div>
         </div>
       </Modal.Body>
     </Modal>
