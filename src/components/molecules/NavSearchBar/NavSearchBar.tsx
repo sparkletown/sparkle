@@ -12,14 +12,16 @@ import { isTruthy } from "utils/types";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
+import { WithVenueId } from "utils/id";
 
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
+import { useVenueId } from "hooks/useVenueId";
 
 import { RoomModal } from "components/templates/PartyMap/components";
-
+import { EventModal } from "components/organisms/EventModal";
 import { InputField } from "components/atoms/InputField";
 
 import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
@@ -48,6 +50,10 @@ const NavSearchBar = () => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hasSelectedRoom = !!selectedRoom;
 
+  const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
+
+  const venueId = useVenueId();
+  // @debt we should get all the events / rooms from all the related venues
   const venue = useSelector(currentVenueSelectorData);
   const venueEvents = useSelector(venueEventsSelector) ?? emptyEventsArray;
   const { worldUsers } = useWorldUsers();
@@ -116,10 +122,14 @@ const NavSearchBar = () => {
               formatUtcSecondsRelativeToNow(event.start_utc_seconds)
             )}`}
             image={imageUrl ?? DEFAULT_VENUE_LOGO}
+            onClick={() => {
+              venueId && setSelectedEvent({ ...event, venueId: venueId });
+              clearSearch();
+            }}
           />
         );
       });
-  }, [searchQuery, venueEvents, venue]);
+  }, [searchQuery, venueEvents, venue, clearSearch, setSelectedEvent, venueId]);
 
   const numberOfSearchResults =
     foundRooms.length + foundEvents.length + foundUsers.length;
@@ -175,6 +185,15 @@ const NavSearchBar = () => {
         venue={venue}
         onHide={() => setSelectedRoom(undefined)}
       />
+
+      {/* @debt use only one EventModal instance with state controlled with redux */}
+      {selectedEvent && (
+        <EventModal
+          event={selectedEvent}
+          show={isTruthy(selectedEvent)}
+          onHide={() => setSelectedEvent(undefined)}
+        />
+      )}
     </div>
   );
 };
