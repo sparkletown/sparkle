@@ -1,19 +1,21 @@
 @import "scss/constants";
 
-$poster-preview-height: 200px;
-$poster-preview-width: 300px;
-$active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
+$video-preview-height: 320px;
+$video-preview-width: 280px;
+$active-video-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
-.PosterPreview {
+.ScreeningVideoPreview {
   display: flex;
   flex-direction: column;
 
   content-visibility: auto;
 
-  height: $poster-preview-height;
-  width: $poster-preview-width;
+  height: $video-preview-height;
+  width: $video-preview-width;
 
-  padding: $spacing--lg;
+  background-color: $secondary--dark;
+
+  padding: $spacing--md;
   margin: $spacing--md;
   border-radius: $border-radius--md;
 
@@ -29,9 +31,9 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     border-color: $concrete;
   }
 
-  &--live {
+  &--selected {
     border-color: $primary;
-    box-shadow: $active-poster-shadows;
+    box-shadow: $active-video-shadows;
 
     &:hover {
       background-color: $lighter-intermediate-grey;
@@ -39,11 +41,16 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     }
   }
 
+  &__thumbnail {
+    border-radius: $border-radius--lg;
+    margin-bottom: $spacing--sm;
+  }
+
   &__title {
     font-size: $font-size--md;
     font-weight: $font-weight--600;
 
-    margin: $spacing--md 0;
+    margin: $spacing--xs 0;
   }
 
   &__categories {

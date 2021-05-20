@@ -6,6 +6,7 @@ import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { WithId } from "utils/id";
+import { isTruthy } from "utils/types";
 
 import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
@@ -14,13 +15,14 @@ import { useDebounceSearch } from "hooks/useDebounceSearch";
 const SCREENING_ROOM_VIDEOS_MOCK: WithId<ScreeningRoomVideo>[] = Array(20)
   .fill(0)
   .map((_, index) => ({
-    title: "Video tutorial",
+    title: `Video tutorial ${index}`,
     category: "tutorial",
     subCategory: "video",
     authorName: "Mikhailo Lvov",
-    thumbnailSrc: "",
-    videoSrc: "",
-    id: index.toString(),
+    thumbnailSrc:
+      "https://e7.pngegg.com/pngimages/42/46/png-clipart-pharmaceutical-drug-clinical-pharmacy-patient-counterfeit-medications-pharmacist-pill-bottles-pharmaceutical-drug-medicine-thumbnail.png",
+    videoSrc: "https://www.youtube.com/watch?v=M3EFi_POhps",
+    id: (index + 1).toString(),
   }));
 
 const emptyScreeningRoomVideosArray: never[] = [];
@@ -98,16 +100,16 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
       categoryFilter
         ? Array.from(
             new Set(filteredVideosByCategory.map((video) => video.subCategory))
-          )
+          ).filter(isTruthy)
         : [],
-    [filteredVideosByCategory]
+    [filteredVideosByCategory, categoryFilter]
   );
 
   const filteredVideosBySubCategory = useMemo(
     () =>
       subCategoryFilter
         ? filteredVideosByCategory.filter(
-            (video) => video.category === categoryFilter
+            (video) => video.subCategory === subCategoryFilter
           )
         : filteredVideosByCategory,
     [filteredVideosByCategory, subCategoryFilter]

@@ -1,6 +1,8 @@
 import React, { useMemo, useCallback, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
+import { IFRAME_ALLOW } from "settings";
+
 import { GenericVenue } from "types/venues";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
@@ -39,7 +41,11 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     setSubCategoryFilter,
   } = useScreeningRoom(venue.id);
 
-  const [selectedVideo, setSelectedVideo] = useState<ScreeningRoomVideo>();
+  const [selectedVideo, setSelectedVideo] = useState<
+    WithId<ScreeningRoomVideo>
+  >();
+
+  const selectedVideoId = selectedVideo?.id;
 
   const onInputFieldChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,47 +61,62 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
           key={video.id}
           video={video}
           selectThisVideo={() => setSelectedVideo(video)}
+          selected={video.id === selectedVideoId}
         />
       )),
-    [videos]
+    [videos, selectedVideoId]
   );
 
-  const renderedCategoryOptions = useMemo(
-    () => (
+  const renderedCategoryOptions = useMemo(() => {
+    return (
       <div className="ScreeningRoom__categories">
         {categoryList.map((category) => (
           <PosterCategory
+            key={category}
             category={category}
             onClick={() => setCategoryFilter(category)}
+            containerClassname="ScreeningRoom__category"
+            active={category === categoryFilter}
           />
         ))}
       </div>
-    ),
-    []
-  );
+    );
+  }, [categoryList, categoryFilter, setCategoryFilter]);
 
   const renderedSubCategoryOptions = useMemo(
     () => (
       <div className="ScreeningRoom__subcategories">
         {subCategoryList.map((subCategory) => (
-          <div
-            className="ScreeningRoom__category-option"
+          <PosterCategory
+            key={subCategory}
+            category={subCategory}
             onClick={() => setSubCategoryFilter(subCategory)}
-          >
-            {subCategory}
-          </div>
+            containerClassname="ScreeningRoom__subcategory"
+            active={subCategory === subCategoryFilter}
+          />
         ))}
       </div>
     ),
-    []
+    [subCategoryList, subCategoryFilter, setSubCategoryFilter]
   );
 
   return (
     <div className="ScreeningRoom">
       <p className="ScreeningRoom__title">Screening room</p>
+      {selectedVideo && (
+        <div className="ScreeningRoom__video-container">
+          <iframe
+            className="ScreeningRoom__video"
+            title="selected-video"
+            src={selectedVideo.videoSrc}
+            frameBorder="0"
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        </div>
+      )}
       <InputField
         containerClassName="ScreeningRoom__input-container"
-        inputClassName="ScreeningRoom__input"
         iconStart={faSearch}
         placeholder="Search for a talk..."
         value={searchInputValue}
@@ -105,7 +126,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
       {renderedSubCategoryOptions}
 
       <div className="ScreeningRoom__video-previews">
-        {isVideosLoaded ? renderedVideoPreviews : "Loading posters"}
+        {isVideosLoaded ? renderedVideoPreviews : "Loading videos"}
       </div>
 
       <div className="ScreeningRoom__more-button">

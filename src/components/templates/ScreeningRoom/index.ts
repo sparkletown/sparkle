@@ -1,1 +1,1 @@
-export { PosterHall } from "./ScreeningRoom";
+export { ScreeningRoom } from "./ScreeningRoom";
