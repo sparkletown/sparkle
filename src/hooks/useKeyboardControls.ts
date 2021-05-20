@@ -1,22 +1,11 @@
 import { useCallback } from "react";
 
+import { KEYBOARD_SHORTCUTS } from "settings";
+
 import { ReactHook } from "types/utility";
 
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";
-
-export const MovementKeys = {
-  up: ["up", "w"],
-  down: ["down", "s"],
-  left: ["left", "a"],
-  right: ["right", "d"],
-};
-
-export const ShortcutKeys = {
-  chat: ["c"],
-  schedule: ["S"],
-  search: ["/"],
-};
 
 interface UseKeyboardControlsProps {
   venueId: string;
@@ -50,7 +39,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: MovementKeys.up,
+    keys: KEYBOARD_SHORTCUTS.movement.up,
     callback: moveUp,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -67,7 +56,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   }, [row, column, totalRows, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: MovementKeys.down,
+    keys: KEYBOARD_SHORTCUTS.movement.down,
     callback: moveDown,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -84,7 +73,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: MovementKeys.left,
+    keys: KEYBOARD_SHORTCUTS.movement.left,
     callback: moveLeft,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -101,7 +90,7 @@ export const useKeyboardControls: ReactHook<UseKeyboardControlsProps, void> = ({
   }, [row, column, totalColumns, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: MovementKeys.right,
+    keys: KEYBOARD_SHORTCUTS.movement.right,
     callback: moveRight,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to

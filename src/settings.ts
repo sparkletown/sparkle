@@ -594,3 +594,15 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const KEYBOARD_SHORTCUTS = {
+  chat: "c",
+  search: "/",
+  movement: {
+    up: ["up", "w"],
+    down: ["down", "s"],
+    left: ["left", "a"],
+    right: ["right", "d"],
+  },
+  schedule: "S",
+};

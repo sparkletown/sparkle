@@ -3,7 +3,11 @@ import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_VENUE_LOGO } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_VENUE_LOGO,
+  KEYBOARD_SHORTCUTS,
+} from "settings";
 
 import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
@@ -18,7 +22,6 @@ import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useMousetrap } from "hooks/useMousetrap";
-import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 
@@ -151,7 +154,7 @@ const NavSearchBar = () => {
   }, []);
 
   useMousetrap({
-    keys: ShortcutKeys.search,
+    keys: KEYBOARD_SHORTCUTS.search,
     callback: focusSearchBar,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to

@@ -1,5 +1,7 @@
 import { useCallback } from "react";
 
+import { KEYBOARD_SHORTCUTS } from "settings";
+
 import {
   chatVisibilitySelector,
   selectedChatSettingsSelector,
@@ -18,7 +20,6 @@ import { useVenueId } from "./useVenueId";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 
 import { useMousetrap } from "hooks/useMousetrap";
-import { ShortcutKeys } from "hooks/useKeyboardControls";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -42,7 +43,7 @@ export const useChatSidebarControls = () => {
   }, [expandSidebar, collapseSidebar, isExpanded]);
 
   useMousetrap({
-    keys: ShortcutKeys.chat,
+    keys: KEYBOARD_SHORTCUTS.chat,
     callback: toggleSidebar,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
