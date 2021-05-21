@@ -28,8 +28,6 @@ export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
 
   const screeningRoomVideos = useSelector(screeningRoomVideosSelector);
 
-  console.log({ screeningRoomVenueId, screeningRoomVideos });
-
   return useMemo(
     () => ({
       screeningRoomVideos: screeningRoomVideos ?? emptyScreeningRoomVideosArray,
@@ -61,6 +59,12 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
     // Clear previously chosen subcategory
     setSubCategoryFilter(undefined);
     _setCategoryFilter(category);
+  }, []);
+
+  const unsetCategoryFilter = useCallback(() => {
+    // Clear chosen subcategory, if any
+    setSubCategoryFilter(undefined);
+    _setCategoryFilter(undefined);
   }, []);
 
   const increaseDisplayedVideosAmount = useCallback(() => {
@@ -129,9 +133,13 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
     displayedVideosAmount,
   ]);
 
+  const hasHiddenVideos = searchedVideos.length > displayedVideosAmount;
+
   return {
     videos: searchedVideos,
     isVideosLoaded,
+
+    hasHiddenVideos,
 
     categoryList,
     subCategoryList,
@@ -144,5 +152,6 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
     setSearchInputValue,
     setCategoryFilter,
     setSubCategoryFilter,
+    unsetCategoryFilter,
   };
 };

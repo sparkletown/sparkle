@@ -28,6 +28,8 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     videos,
     isVideosLoaded,
 
+    hasHiddenVideos,
+
     increaseDisplayedVideosAmount,
 
     categoryList,
@@ -40,6 +42,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     setSearchInputValue,
     setCategoryFilter,
     setSubCategoryFilter,
+    unsetCategoryFilter,
   } = useScreeningRoom(venue.id);
 
   const [selectedVideo, setSelectedVideo] = useState<
@@ -73,6 +76,13 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
   const renderedCategoryOptions = useMemo(() => {
     return (
       <div className="ScreeningRoom__categories">
+        <PosterCategory
+          key="All videos"
+          category="All videos"
+          onClick={unsetCategoryFilter}
+          containerClassname="ScreeningRoom__category"
+          active={categoryFilter === undefined}
+        />
         {categoryList.map((category) => (
           <PosterCategory
             key={category}
@@ -84,7 +94,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
         ))}
       </div>
     );
-  }, [categoryList, categoryFilter, setCategoryFilter]);
+  }, [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]);
 
   const renderedSubCategoryOptions = useMemo(
     () => (
@@ -142,7 +152,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
       </div>
 
       <div className="ScreeningRoom__more-button">
-        {isVideosLoaded && (
+        {isVideosLoaded && hasHiddenVideos && (
           <Button onClick={increaseDisplayedVideosAmount}>
             Show more videos
           </Button>
