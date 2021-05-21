@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-.table-header {
+.TableHeader {
   display: flex;
   justify-content: space-between;
   align-items: stretch;
@@ -46,13 +46,13 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
-    font-weight: 500;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
   }
 
   &__seats-left {
     font-size: 11px;
-    font-weight: 400;
+    font-weight: $font-weight--400;
   }
 
   &__edit-topic-button {
@@ -63,7 +63,7 @@
     background-color: $secondary;
     width: 25px;
     height: 25px;
-    margin: 0px 5px;
+    margin: $edit-topic-button-diameter;
     cursor: pointer;
 
     &:hover {
@@ -88,7 +88,7 @@
 
   &__lock-indication {
     margin-right: 10px;
-    font-size: 12px;
+    font-size: $font-size--sm;
   }
 
   &__lock-toggle {

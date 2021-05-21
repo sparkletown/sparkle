@@ -8,6 +8,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
+import { MAX_TABLE_CAPACITY } from "settings";
+
 import { User } from "types/User";
 import { Table } from "types/Table";
 
@@ -77,8 +79,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
-  const tableCapacity = tableOfUser?.capacity ?? 10;
-  const tableSubtitle = tableOfUser?.subtitle ?? "";
+  const tableCapacity = tableOfUser?.capacity ?? MAX_TABLE_CAPACITY;
+  const tableSubtitle = tableOfUser?.subtitle;
 
   const setIsCurrentTableLocked = useCallback(
     (locked: boolean) => {
@@ -135,16 +137,16 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }, [leaveSeat]);
 
   return (
-    <div className="row table-header">
-      <div className="table-header__leave-table">
+    <div className="row TableHeader">
+      <div className="TableHeader__leave-table">
         <button
           type="button"
           title={`Leave ${seatedAtTable}`}
-          className="table-header__leave-button"
+          className="TableHeader__leave-button"
           onClick={leaveSeat}
         >
           <FontAwesomeIcon
-            className="table-header__leave-button--icon"
+            className="TableHeader__leave-button--icon"
             icon={faChevronLeft}
             size="xs"
           />
@@ -152,35 +154,35 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </button>
       </div>
 
-      <div className="table-header__topic-info">
-        <div className="row table-header__topic">
+      <div className="TableHeader__topic-info">
+        <div className="row TableHeader__topic">
           {tableTitle}
 
-          <div className="table-header__edit-topic-button" onClick={show}>
+          <div className="TableHeader__edit-topic-button" onClick={show}>
             <FontAwesomeIcon icon={faPen} />
           </div>
         </div>
 
         {tableCapacity && (
-          <span className="table-header__seats-left">
-            {tableOfUser?.subtitle && <>{tableOfUser.subtitle} -</>}{" "}
+          <span className="TableHeader__seats-left">
+            {tableOfUser?.subtitle && `${tableOfUser.subtitle} - `}
             {tableCapacity} seats
           </span>
         )}
       </div>
 
-      <div className="table-header__lock-button">
+      <div className="TableHeader__lock-button">
         <FontAwesomeIcon
-          className="table-header__lock-button--icon"
+          className="TableHeader__lock-button--icon"
           icon={isCurrentTableLocked ? faLock : faLockOpen}
           size="sm"
         />
-        <div className="table-header__lock-indication">
+        <div className="TableHeader__lock-indication">
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
         <Toggler
           toggled={isCurrentTableLocked}
-          containerClassName="table-header__lock-toggle"
+          containerClassName="TableHeader__lock-toggle"
           onChange={toggleIsCurrentTableLocked}
         />
       </div>

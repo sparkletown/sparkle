@@ -709,12 +709,12 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
-exports.updateTables = functions.https.onCall(async (data, context) => {
+exports.updateTables = functions.https.onCall((data, context) => {
   checkAuth(context);
 
   const venueRef = admin.firestore().collection("venues").doc(data.venueId);
 
-  return await admin.firestore().runTransaction(async (transaction) => {
+  return admin.firestore().runTransaction(async (transaction) => {
     const venueDoc = await transaction.get(venueRef);
 
     if (!venueDoc.exists) {

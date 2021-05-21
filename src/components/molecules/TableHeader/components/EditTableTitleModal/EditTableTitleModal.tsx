@@ -145,8 +145,8 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
           {(errors.capacity?.type === "min" ||
             errors.capacity?.type === "max") && (
             <span className="input-error">
-              Capacity must be between {MIN_TABLE_CAPACITY} and{" "}
-              {MAX_TABLE_CAPACITY}
+              Capacity must be between
+              {` ${MIN_TABLE_CAPACITY} and ${MAX_TABLE_CAPACITY}`}
             </span>
           )}
           {error && <label className="input-error">{error.message}</label>}
