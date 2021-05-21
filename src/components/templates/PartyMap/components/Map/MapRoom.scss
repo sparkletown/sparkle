@@ -49,9 +49,9 @@ $label-visible: flex;
   }
 
   &--unclickable {
-    z-index: z(map-room--covert);
+    z-index: z(map-room--unclickable);
     &:hover {
-      z-index: z(map-room--covert);
+      z-index: z(map-room--unclickable);
     }
   }
 
