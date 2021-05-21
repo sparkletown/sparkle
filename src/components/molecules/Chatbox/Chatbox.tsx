@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
+import { CustomEmoji, Picker } from "emoji-mart";
+import "emoji-mart/css/emoji-mart.css";
+
 import {
   DeleteMessage,
   MessageToDisplay,
@@ -18,7 +21,6 @@ import { InputField } from "components/atoms/InputField";
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 
 import "./Chatbox.scss";
-
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: SendMesssage;
@@ -51,7 +53,14 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     }
   }, [isSendingMessage]);
 
-  const { register, handleSubmit, reset, watch } = useForm<{
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+    setValue,
+    getValues,
+  } = useForm<{
     message: string;
   }>({
     mode: "onSubmit",
@@ -70,6 +79,19 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
   });
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  function addEmoji(emoji: CustomEmoji) {
+    if (emoji.colons) {
+      const message = getValues("message");
+      setValue("message", message + emoji.colons);
+    }
+    setShowEmojiPicker(false);
+  }
+  function toggleEmojiPicker() {
+    setShowEmojiPicker(!showEmojiPicker);
+  }
 
   const chatValue = watch("message");
 
@@ -108,6 +130,12 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             placeholder="Write your message..."
             autoComplete="off"
           />
+          <span
+            className="Chatbox__emoji-picker-toggler"
+            onClick={toggleEmojiPicker}
+          >
+            😃
+          </span>
           <button
             className="Chatbox__submit-button"
             type="submit"
@@ -121,6 +149,11 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           </button>
         </form>
       </div>
+      {showEmojiPicker && (
+        <div className="Chatbox__emoji-picker">
+          <Picker onSelect={addEmoji} />
+        </div>
+      )}
     </div>
   );
 };
