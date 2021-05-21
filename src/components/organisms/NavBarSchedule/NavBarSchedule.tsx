@@ -15,7 +15,7 @@ import {
 import { groupBy, range } from "lodash";
 import classNames from "classnames";
 
-import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { SCHEDULE_SHOW_DAYS_AHEAD, REMOVE_EVENTS_FROM_VENUE } from "settings";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
@@ -115,12 +115,18 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
 
   const schedule: ScheduleDay = useMemo(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
+
     const daysEvents = relatedVenueEvents
       .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
       .map(prepareForSchedule(dayStart, userEventIds));
 
     const locatedEvents: LocatedEvents[] = Object.entries(
-      groupBy(daysEvents, buildLocationString)
+      groupBy(
+        daysEvents.filter(
+          (event) => !event.venueId.match(REMOVE_EVENTS_FROM_VENUE)
+        ),
+        buildLocationString
+      )
     ).map(([group, events]) => ({
       events,
       location: getEventLocation(group),

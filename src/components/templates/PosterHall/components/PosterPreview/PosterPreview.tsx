@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import classNames from "classnames";
 
-import { PersonalizedPoster } from "types/venues";
+import { PersonalizedPoster, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -17,14 +17,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
-import { saveEventToProfile, savePosterToProfile } from "api/profile";
+import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
 import { useUser } from "hooks/useUser";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useWorldUsersById } from "hooks/users";
+// import { UserAvatar } from "components/atoms/UserAvatar";
+// import { useProfileModalControls } from "hooks/useProfileModalControls";
+// import { useWorldUsersById } from "hooks/users";
 
-import { useConnectRelatedVenues } from "hooks/useConnectRelatedVenues";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useVenueEvents } from "hooks/events";
+
+import { WithVenueId } from "utils/id";
 
 import "./PosterPreview.scss";
 
@@ -32,6 +35,9 @@ export interface PosterPreviewProps {
   enterVenue: (venueId: string) => void;
   personalizedPoster: WithId<PersonalizedPoster>;
 }
+
+const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
+export const emptyPersonalizedSchedule = {};
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   enterVenue,
@@ -68,9 +74,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
-  const { subvenueEvents } = useConnectRelatedVenues({
-    venueId,
-    withEvents: true,
+  const { relatedVenueIds } = useRelatedVenues({
+    //isLoading, relatedVenues,
+    currentVenueId: venueId,
+  });
+
+  const {
+    // isEventsLoading,
+    events: relatedVenueEvents = emptyRelatedEvents,
+  } = useVenueEvents({
+    venueIds: relatedVenueIds,
   });
 
   const bookmarkPoster = useCallback(() => {
@@ -83,20 +96,20 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         removeMode: !personalizedPoster.isSaved,
       });
     }
-    subvenueEvents
+    relatedVenueEvents
       .filter((event) => event.venueId === personalizedPoster.id)
       .map((event) => {
         userId &&
           event.id &&
-          saveEventToProfile({
-            venueId: personalizedPoster.id,
+          updatePersonalizedSchedule({
+            event: event,
             userId: userId,
             removeMode: !personalizedPoster.isSaved,
-            eventId: event.id,
           });
+        return {};
       });
-    return subvenueEvents;
-  }, [userId, isBookmarkedPoster, personalizedPoster, subvenueEvents]);
+    return relatedVenueEvents;
+  }, [userId, isBookmarkedPoster, personalizedPoster, relatedVenueEvents]);
 
   const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
@@ -107,13 +120,13 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   // wrap author in memo:
-  const { worldUsersById } = useWorldUsersById();
-  const authors = personalizedPoster.owners;
-  const author = { ...worldUsersById[authors[0]], id: authors[0] };
-  const { openUserProfileModal } = useProfileModalControls();
-  const openAuthorProfile = useCallback(() => {
-    openUserProfileModal(author);
-  }, [openUserProfileModal, author]);
+  // const { worldUsersById } = useWorldUsersById();
+  // const authors = personalizedPoster.owners;
+  // const author = { ...worldUsersById[authors[0]], id: authors[0] };
+  // const { openUserProfileModal } = useProfileModalControls();
+  // const openAuthorProfile = useCallback(() => {
+  //   openUserProfileModal(author);
+  // }, [openUserProfileModal, author]);
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
@@ -126,13 +139,13 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <div className="PosterPreview__categories">{renderedCategories}</div>
       <div className="PosterPreview__author">{authorName}</div>
       {/* don't show author profile if not available... */}
-      {author && (
+      {/* {author && (
         <UserAvatar
           user={author}
           // isOnline={}
           onClick={openAuthorProfile}
         />
-      )}
+      )} */}
     </div>
   );
 };

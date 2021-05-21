@@ -591,3 +591,5 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/; // or "INCLUDE_ALL"
