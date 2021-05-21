@@ -1,4 +1,10 @@
-import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
+import React, {
+  useCallback,
+  useState,
+  ChangeEvent,
+  useMemo,
+  useRef,
+} from "react";
 import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -146,10 +152,10 @@ const NavSearchBar = () => {
     [searchQuery]
   );
 
+  const inputRef = useRef<HTMLInputElement>(null);
   const focusSearchBar = useCallback((e) => {
     e.preventDefault();
-    const searchBar = document.getElementById("NavSearchBar__search-input");
-    if (searchBar) searchBar.focus();
+    if (inputRef && inputRef.current) inputRef.current.focus();
   }, []);
 
   useMousetrap({
@@ -179,7 +185,7 @@ const NavSearchBar = () => {
       <InputField
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
-        id="NavSearchBar__search-input"
+        ref={inputRef}
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
         autoComplete="off"
