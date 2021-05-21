@@ -4,6 +4,9 @@ $poster-preview-height: 300px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
+$related-poster-preview-height: 100px;
+$related-poster-shadows: 0 10px 20px 0 rgba($dark-green, 0.56);
+
 .PosterPreview {
   display: flex;
   flex-direction: column;
@@ -96,5 +99,17 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   &__info {
     display: inline;
     text-align: left;
+  }
+
+  &--related {
+    height: $related-poster-preview-height;
+
+    border-color: $dark-green;
+    box-shadow: $related-poster-shadows;
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      border-color: $dark-green;
+    }
   }
 }

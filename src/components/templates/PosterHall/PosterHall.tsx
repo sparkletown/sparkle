@@ -23,6 +23,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     isPostersLoaded,
     hasHiddenPosters,
 
+    posterRelatedVenues,
+    isPosterRelatedLoaded,
+
     increaseDisplayedPosterCount,
 
     searchInputValue,
@@ -39,8 +42,21 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
+  const renderedPosterRelatedPreviews = useMemo(() => {
+    return posterRelatedVenues.map((posterRelatedVenue) => (
+      <PosterPreview
+        key={posterRelatedVenue.id}
+        posterVenue={posterRelatedVenue}
+        enterVenue={enterVenue}
+      />
+    ));
+  }, [posterRelatedVenues]);
+
   return (
     <div className="PosterHall">
+      <div className="PosterHall__related">
+        {isPosterRelatedLoaded ? renderedPosterRelatedPreviews : "Loading..."}
+      </div>
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}
         searchInputValue={searchInputValue}

@@ -103,6 +103,7 @@ export interface FirestoreOrdered {
   userModalVisits?: WithId<UserVisit>[];
   userPurchaseHistory?: WithId<Purchase>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
+  posterRelatedVenues?: WithId<PosterPageVenue>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueEvents?: WithId<VenueEvent>[];
