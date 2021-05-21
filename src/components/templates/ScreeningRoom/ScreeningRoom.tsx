@@ -1,5 +1,6 @@
 import React, { useMemo, useCallback, useState } from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -46,6 +47,8 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
   >();
 
   const selectedVideoId = selectedVideo?.id;
+
+  const unSelectVideo = useCallback(() => setSelectedVideo(undefined), []);
 
   const onInputFieldChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,14 +108,23 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
       <p className="ScreeningRoom__title">Screening room</p>
       {selectedVideo && (
         <div className="ScreeningRoom__video-container">
-          <iframe
-            className="ScreeningRoom__video"
-            title="selected-video"
-            src={selectedVideo.videoSrc}
-            frameBorder="0"
-            allow={IFRAME_ALLOW}
-            allowFullScreen
-          />
+          {/* We need this additional wrapper to position the close button over the iframe */}
+          <div className="ScreeningRoom__video-cover">
+            <iframe
+              className="ScreeningRoom__video"
+              title="selected-video"
+              src={selectedVideo.videoSrc}
+              frameBorder="0"
+              allow={IFRAME_ALLOW}
+              allowFullScreen
+            />
+            <FontAwesomeIcon
+              className="ScreeningRoom__close-video-icon"
+              icon={faTimesCircle}
+              size="lg"
+              onClick={unSelectVideo}
+            />
+          </div>
         </div>
       )}
       <InputField

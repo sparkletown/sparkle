@@ -1,5 +1,7 @@
 import React from "react";
 import classNames from "classnames";
+import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
@@ -28,6 +30,14 @@ export const ScreeningVideoPreview: React.FC<ScreeningVideoPreviewProps> = ({
 
   return (
     <div className={screeningVideoPreviewClasses} onClick={selectThisVideo}>
+      {isSelected && (
+        <div className="ScreeningVideoPreview__selected-badge">
+          <FontAwesomeIcon icon={faPlayCircle} size="sm" />
+          <span className="ScreeningVideoPreview__selected-badge-text">
+            Now playing
+          </span>
+        </div>
+      )}
       <img
         className="ScreeningVideoPreview__thumbnail"
         src={thumbnailSrc}

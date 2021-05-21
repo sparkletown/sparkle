@@ -3,41 +3,32 @@ import Fuse from "fuse.js";
 
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
-import { ScreeningRoomVideo } from "types/screeningRoom";
-
-import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
+import { screeningRoomVideosSelector } from "utils/selectors";
 
 import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
-
-// TODO: Delete mock data
-const SCREENING_ROOM_VIDEOS_MOCK: WithId<ScreeningRoomVideo>[] = Array(20)
-  .fill(0)
-  .map((_, index) => ({
-    title: `Video tutorial ${index}`,
-    category: "tutorial",
-    subCategory: "video",
-    authorName: "Mikhailo Lvov",
-    thumbnailSrc:
-      "https://e7.pngegg.com/pngimages/42/46/png-clipart-pharmaceutical-drug-clinical-pharmacy-patient-counterfeit-medications-pharmacist-pill-bottles-pharmaceutical-drug-medicine-thumbnail.png",
-    videoSrc: "https://www.youtube.com/watch?v=M3EFi_POhps",
-    id: (index + 1).toString(),
-  }));
+import { useSelector } from "hooks/useSelector";
 
 const emptyScreeningRoomVideosArray: never[] = [];
 
 export const useConnectScreeningRoomVideos = (screeningRoomVenueId: string) => {
-  // TODO: Implement fetching from screening room venue's subcollection
-  useFirestoreConnect();
+  useFirestoreConnect([
+    {
+      collection: "venues",
+      doc: screeningRoomVenueId,
+      subcollections: [{ collection: "screeningRoomVideos" }],
+      storeAs: "screeningRoomVideos",
+    },
+  ]);
 };
 
 export const useScreeningRoomVideos = (screeningRoomVenueId: string) => {
   useConnectScreeningRoomVideos(screeningRoomVenueId);
 
-  // TODO: Select screening room videos
-  // const screeningRoomVideos = useSelector(screeningRoomVideosSelector);
-  const screeningRoomVideos = SCREENING_ROOM_VIDEOS_MOCK;
+  const screeningRoomVideos = useSelector(screeningRoomVideosSelector);
+
+  console.log({ screeningRoomVenueId, screeningRoomVideos });
 
   return useMemo(
     () => ({
