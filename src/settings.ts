@@ -579,7 +579,7 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
-export const LARGE_SCREEN_WIDTH = 1200; // width in px
+export const LARGE_SCREEN_WIDTH = 1920; // width in px
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
