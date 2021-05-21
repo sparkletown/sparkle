@@ -3,8 +3,12 @@ import React, { useMemo } from "react";
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { isEventLive } from "utils/event";
 
 import { usePosters } from "hooks/posters";
+import { useVenueId } from "hooks/useVenueId";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Button } from "components/atoms/Button";
 
@@ -18,6 +22,14 @@ export interface PosterHallProps {
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
+  const venueId = useVenueId();
+  const { isRelatedVenuesLoading, relatedVenueIds } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const { events: relatedVenueEvents } = useVenueEvents({
+    venueIds: relatedVenueIds,
+  });
+
   const {
     posterVenues,
     isPostersLoaded,
@@ -42,20 +54,30 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
+  const liveRelatedVenues = useMemo(() => {
+    const liveVenueIds = relatedVenueEvents
+      .filter((event) => isEventLive(event))
+      .map((event) => event.venueId);
+    return posterRelatedVenues.filter((posterRelatedVenue) =>
+      liveVenueIds.includes(posterRelatedVenue.id)
+    );
+  }, [relatedVenueEvents, posterRelatedVenues]);
+
   const renderedPosterRelatedPreviews = useMemo(() => {
-    return posterRelatedVenues.map((posterRelatedVenue) => (
+    return liveRelatedVenues.map((posterRelatedVenue) => (
       <PosterPreview
         key={posterRelatedVenue.id}
         posterVenue={posterRelatedVenue}
-        enterVenue={enterVenue}
       />
     ));
-  }, [posterRelatedVenues]);
+  }, [liveRelatedVenues]);
 
   return (
     <div className="PosterHall">
       <div className="PosterHall__related">
-        {isPosterRelatedLoaded ? renderedPosterRelatedPreviews : "Loading..."}
+        {isPosterRelatedLoaded || isRelatedVenuesLoading
+          ? renderedPosterRelatedPreviews
+          : "Loading..."}
       </div>
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}

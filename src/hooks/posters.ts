@@ -37,7 +37,6 @@ export const useConnectPosterRelatedVenues = (posterHallId: string) => {
         where: [
           ["parentId", "==", posterHallId],
           ["template", "in", [VenueTemplate.audience, VenueTemplate.jazzbar]],
-          ["isLive", "==", true],
         ],
         storeAs: "posterRelatedVenues",
       },
