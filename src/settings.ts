@@ -597,12 +597,12 @@ export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
 export const KEYBOARD_SHORTCUTS = {
   chat: "c",
-  search: "/",
   movement: {
-    up: ["up", "w"],
     down: ["down", "s"],
     left: ["left", "a"],
     right: ["right", "d"],
+    up: ["up", "w"],
   },
   schedule: "S",
+  search: "/",
 };
