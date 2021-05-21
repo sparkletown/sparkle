@@ -9,6 +9,7 @@ import {
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
+import { RoomTypes } from "types/rooms";
 import { FIVE_MINUTES_MS } from "utils/time";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
@@ -193,6 +194,11 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
+];
+
+export const COVERT_ROOM_TYPES: RoomTypes[] = [
+  RoomTypes.unclickable,
+  RoomTypes.iframe,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
