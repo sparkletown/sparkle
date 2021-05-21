@@ -8,9 +8,9 @@ import ical from "ical-generator";
 
 export const createCalendar = (
   allEvents: PersonalizedVenueEvent[] | WithVenueId<VenueEvent>[],
-  calendername: string
+  calendarname: string
 ) => {
-  const cal = ical({ name: calendername });
+  const cal = ical({ name: calendarname });
 
   if (!cal) return;
 
@@ -26,7 +26,7 @@ export const createCalendar = (
   );
 
   const outputCal = cal.toURL();
-  const outputFile = `${calendername}_calendar.ics`;
+  const outputFile = `${calendarname}.ics`;
   const link = document.createElement("a");
   link.download = outputFile;
   link.href = outputCal;

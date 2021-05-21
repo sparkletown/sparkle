@@ -15,7 +15,7 @@ import {
 import { groupBy, range } from "lodash";
 import classNames from "classnames";
 
-import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
@@ -139,17 +139,17 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
-  const downloadCalenderPersonal = useCallback(() => {
+  const downloadCalendarPersonal = useCallback(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(prepareForSchedule(dayStart, userEventIds, "calender"))
+      .map(prepareForSchedule(dayStart, userEventIds, "calendar"))
       .filter((event) => event.isSaved);
 
-    createCalendar(allPersonalEvents, "Personal");
+    createCalendar(allPersonalEvents, `${PLATFORM_BRAND_NAME}_Personal`);
   }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
-  const downloadCalenderAll = useCallback(() => {
-    createCalendar(relatedVenueEvents, "Full");
+  const downloadCalendarAll = useCallback(() => {
+    createCalendar(relatedVenueEvents, `${PLATFORM_BRAND_NAME}_Full`);
   }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
@@ -160,10 +160,10 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
       <ul className="NavBarSchedule__downloads">
-        <Button onClick={downloadCalenderPersonal}>
+        <Button onClick={downloadCalendarPersonal}>
           Download your schedule
         </Button>
-        <Button onClick={downloadCalenderAll}>Download full schedule</Button>
+        <Button onClick={downloadCalendarAll}>Download full schedule</Button>
       </ul>
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 

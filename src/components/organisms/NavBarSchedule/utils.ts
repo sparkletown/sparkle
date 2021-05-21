@@ -22,7 +22,7 @@ export const prepareForSchedule = (
   let startOfEventToShow;
   let endOfEventToShow;
 
-  if (target === "calender") {
+  if (target === "calendar") {
     startOfEventToShow = eventStartTime(event);
     endOfEventToShow = eventEndTime(event);
   } else {
