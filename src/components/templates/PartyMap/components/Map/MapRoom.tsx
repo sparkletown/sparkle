@@ -12,6 +12,8 @@ import { useRoom } from "hooks/useRoom";
 
 import RoomAttendance from "../RoomAttendance";
 
+import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+
 import "./MapRoom.scss";
 
 const noop = () => {};
@@ -32,6 +34,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const isUnclickable = room.type === RoomTypes.unclickable;
   const isIframe = room.type === RoomTypes.iframe;
+  const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
 
   const dispatch = useDispatch();
 
@@ -44,20 +47,17 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--unclickable": isUnclickable,
-    "maproom--iframe": isIframe,
+    "maproom--covert--unclickable": isUnclickable,
+    "maproom--covert--iframe": isIframe,
     "maproom--always-show-label":
-      !isUnclickable &&
-      !isIframe &&
+      (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
     "maproom__title--count":
-      !isUnclickable &&
-      !isIframe &&
-      venue.roomVisibility === RoomVisibility.count,
+      !isCovertRoom && venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomInlineStyles = useMemo(
@@ -87,23 +87,22 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <div
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={isUnclickable || isIframe ? noop : selectRoomWithSound}
-      onMouseEnter={isUnclickable || isIframe ? noop : handleRoomHovered}
-      onMouseLeave={isUnclickable || isIframe ? noop : handleRoomUnhovered}
+      onClick={isCovertRoom ? noop : selectRoomWithSound}
+      onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
+      onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
       {!isIframe ? (
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       ) : (
         <iframe
-          title={room.title}
-          id={`${room.type}-${room.title}`}
-          scrolling="no"
-          allow="autoplay"
+          className="maproom__iframe"
           src={room.url}
+          title={room.title}
+          allow={IFRAME_ALLOW}
         />
       )}
 
-      {!isUnclickable && !isIframe && (
+      {!isCovertRoom && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />

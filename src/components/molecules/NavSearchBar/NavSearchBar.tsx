@@ -3,10 +3,14 @@ import classNames from "classnames";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_VENUE_LOGO } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_VENUE_LOGO,
+  COVERT_ROOM_TYPES,
+} from "settings";
 
 import { VenueEvent } from "types/venues";
-import { Room, RoomTypes } from "types/rooms";
+import { Room } from "types/rooms";
 
 import { isTruthy } from "utils/types";
 import { uppercaseFirstChar } from "utils/string";
@@ -62,7 +66,7 @@ const NavSearchBar = () => {
       venue?.rooms
         ?.filter(
           (room) =>
-            room.type !== (RoomTypes.unclickable || RoomTypes.iframe) &&
+            (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
             room.title.toLowerCase().includes(searchQuery)
         )
         .map((room, index) => (

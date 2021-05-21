@@ -36,35 +36,29 @@ $label-visible: flex;
     }
   }
 
-  &--unclickable {
-    z-index: z(map-room--unclickable);
-
+  &--covert {
     cursor: default;
 
     &:hover {
-      z-index: z(map-room--unclickable);
-
       transform: none;
 
       .maproom__image {
         filter: none;
       }
     }
+  }
 
-    &--iframe {
+  &--unclickable {
+    z-index: z(map-room--covert);
+    &:hover {
+      z-index: z(map-room--covert);
+    }
+  }
+
+  &--iframe {
+    z-index: z(map-room--iframe);
+    &:hover {
       z-index: z(map-room--iframe);
-
-      cursor: default;
-
-      &:hover {
-        z-index: z(map-room--iframe);
-
-        transform: none;
-
-        .maproom__image {
-          filter: none;
-        }
-      }
     }
   }
 

@@ -1,6 +1,8 @@
 import React, { useState, useCallback } from "react";
 
-import { Room, RoomTypes } from "types/rooms";
+import { COVERT_ROOM_TYPES } from "settings";
+
+import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
@@ -29,7 +31,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const hasSelectedRoom = !!selectedRoom;
 
   const selectRoom = useCallback((room: Room) => {
-    if (room.type === (RoomTypes.unclickable || RoomTypes.iframe)) return;
+    if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
 
     setSelectedRoom(room);
   }, []);
