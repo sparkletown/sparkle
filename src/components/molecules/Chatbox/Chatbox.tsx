@@ -82,16 +82,16 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
-  function addEmoji(emoji: CustomEmoji) {
+  const addEmoji = (emoji: CustomEmoji) => {
     if (emoji.colons) {
       const message = getValues("message");
       setValue("message", message + emoji.colons);
     }
     setShowEmojiPicker(false);
-  }
-  function toggleEmojiPicker() {
+  };
+  const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
-  }
+  };
 
   const chatValue = watch("message");
 
