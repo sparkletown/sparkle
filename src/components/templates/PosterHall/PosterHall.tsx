@@ -67,7 +67,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         (posterRelatedVenue) => liveVenueIds.includes(posterRelatedVenue.id)
       );
       setPosterRelatedPreviews(livePosterRelatedVenues);
-    }, 60000);
+    }, 1000);
     return () => clearInterval(interval);
   }, [posterRelatedVenues, relatedVenueEvents]);
 
