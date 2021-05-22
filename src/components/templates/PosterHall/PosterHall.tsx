@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 import { GenericVenue } from "types/venues";
 
@@ -48,35 +48,43 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 
+  const [posterRelatedPreviews, setPosterRelatedPreviews] = useState(
+    posterRelatedVenues
+  );
+
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
       <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
     ));
   }, [posterVenues]);
 
-  const liveRelatedVenues = useMemo(() => {
-    const liveVenueIds = relatedVenueEvents
-      .filter((event) => isEventLive(event))
-      .map((event) => event.venueId);
-    return posterRelatedVenues.filter((posterRelatedVenue) =>
-      liveVenueIds.includes(posterRelatedVenue.id)
-    );
-  }, [relatedVenueEvents, posterRelatedVenues]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const liveVenueIds = relatedVenueEvents
+        .filter((event) => isEventLive(event))
+        .map((event) => event.venueId);
+      const livePosterRelatedVenues = posterRelatedVenues.filter(
+        (posterRelatedVenue) => liveVenueIds.includes(posterRelatedVenue.id)
+      );
+      setPosterRelatedPreviews(livePosterRelatedVenues);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, [posterRelatedVenues, relatedVenueEvents]);
 
-  const renderedPosterRelatedPreviews = useMemo(() => {
-    return liveRelatedVenues.map((posterRelatedVenue) => (
+  const renderPosterRelatedPreviews = useMemo(() => {
+    return posterRelatedPreviews.map((posterRelatedVenue) => (
       <PosterPreview
         key={posterRelatedVenue.id}
         posterVenue={posterRelatedVenue}
       />
     ));
-  }, [liveRelatedVenues]);
+  }, [posterRelatedPreviews]);
 
   return (
     <div className="PosterHall">
       <div className="PosterHall__related">
         {isPosterRelatedLoaded || isRelatedVenuesLoading
-          ? renderedPosterRelatedPreviews
+          ? renderPosterRelatedPreviews
           : "Loading..."}
       </div>
       <PosterHallSearch
