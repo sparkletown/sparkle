@@ -229,8 +229,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return recentVenueUsers.filter((user) => {
       const { row, column } = user.data?.[venueId] ?? {};
-
-      return row && column;
+      return row != null && column != null;
     });
   }, [recentVenueUsers, venueId]);
 
