@@ -42,6 +42,5 @@ export interface User {
 export enum UserStatus {
   online = "online",
   busy = "busy",
-  offline = "offline",
   custom = "custom",
 }
