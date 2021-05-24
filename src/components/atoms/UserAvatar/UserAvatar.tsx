@@ -17,6 +17,7 @@ export interface UserAvatarProps {
   showStatus?: boolean;
   onClick?: () => void;
   large?: boolean;
+  statusLarge?: boolean;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -27,6 +28,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   onClick,
   showStatus,
   large,
+  statusLarge,
 }) => {
   const { recentWorldUsers } = useRecentWorldUsers();
 
@@ -40,6 +42,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const containerClasses = classNames("user-avatar", containerClassName, {
     "user-avatar--clickable": onClick !== undefined,
+    "user-avatar--large": large,
   });
 
   const isOnline = useMemo(
@@ -55,7 +58,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar__status-indicator--offline": !isOnline,
     "user-avatar__status-indicator--online": isOnline,
     [`user-avatar__status-indicator--${status}`]: isOnline && status,
-    "user-avatar__status-indicator--large": large,
+    "user-avatar__status-indicator--large": statusLarge,
   });
 
   return (

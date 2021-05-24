@@ -19,8 +19,6 @@ import {
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { USER_STATUSES } from "settings";
 
-import "./UserInformationContent.scss";
-
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
   setIsPasswordEditMode: (value: boolean) => void;
@@ -79,12 +77,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <UserAvatar
-          user={userWithId}
-          containerClassName="profile-avatar-container"
-          showStatus
-          large
-        />
+        <UserAvatar user={userWithId} showStatus statusLarge />
         <div className="text-container">
           <h2 className="title ellipsis-text">
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
