@@ -9,12 +9,14 @@ export const useProfileStatus = () => {
 
   const changeStatus = useCallback(
     (value: UserStatus) => {
-      if (userId) {
+      if (!userId) return;
+    
+    
         updateUserOnlineStatus({
           status: value,
           userId,
         });
-      }
+    
     },
     [userId]
   );
