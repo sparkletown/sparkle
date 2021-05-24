@@ -297,12 +297,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar
-                    user={userWithId}
-                    showStatus
-                    containerClassName="navbar-profile-image-container"
-                    large
-                  />
+                  <UserAvatar user={userWithId} showStatus large />
                 </OverlayTrigger>
               </div>
             )}
