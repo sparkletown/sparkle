@@ -584,7 +584,6 @@ export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
 export const USER_STATUSES = [
   UserStatus.online,
   UserStatus.busy,
-  UserStatus.offline,
   UserStatus.custom,
 ];
 
