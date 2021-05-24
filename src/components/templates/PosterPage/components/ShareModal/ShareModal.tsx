@@ -87,7 +87,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         </div>
 
         <div className="ShareModal__content">
-          <h3 className="ShareModal__content-title">Share this room</h3>
+          <h3 className="ShareModal__content-title">Share this page</h3>
 
           {renderedLinkButtons}
 
