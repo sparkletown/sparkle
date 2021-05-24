@@ -50,19 +50,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const status = user?.status;
 
   const imageClasses = classNames("user-avatar__image", imageClassName);
-  const statusClasses = classNames("user-avatar__status-dot", {
-    [`user-avatar__status-dot--${status}`]: status,
-    "user-avatar__status-dot--large": large,
-  });
-  const statusOfflineClasses = classNames(
-    "user-avatar__status-dot",
-    "user-avatar__status-dot--offline",
-    { "user-avatar__status-dot--large": large }
-  );
 
-  const statusComponent = isOnline
-    ? showStatus && status && <span className={statusClasses} />
-    : showStatus && <span className={statusOfflineClasses} />;
+  const statusIndicatorClassName = classNames("user-avatar__status-indicator", {
+    "user-avatar__status-indicator--offline": !isOnline,
+    "user-avatar__status-indicator--online": isOnline,
+    [`user-avatar__status-indicator--${status}`]: isOnline && status,
+    "user-avatar__status-indicator--large": large,
+  });
 
   return (
     <div className={containerClasses}>
@@ -72,7 +66,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {statusComponent}
+      {showStatus && <span className={statusIndicatorClassName} />}
     </div>
   );
 };

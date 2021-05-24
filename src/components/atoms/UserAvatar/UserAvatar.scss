@@ -11,7 +11,7 @@
     border-radius: 50%;
   }
 
-  &__status-dot {
+  &__status-indicator {
     position: absolute;
     bottom: -1px;
     right: -1px;
@@ -19,7 +19,7 @@
     background-color: $green;
     height: 8px;
     width: 8px;
-    z-index: z(user-avatar-status-dot);
+    z-index: z(user-avatar-status-indicator);
 
     &--online {
       background-color: $green;
