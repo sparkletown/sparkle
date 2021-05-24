@@ -17,7 +17,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   label,
   onChange,
 }) => {
-  const { isShown, hide, toggle } = useShowHide();
+  const { isShown: isDropdownOptionsShown, hideDropdownOptions, toggle: toggleDropdownOptions } = useShowHide();
 
   const onOptionClicked = useCallback(
     (value: UserStatus) => {
