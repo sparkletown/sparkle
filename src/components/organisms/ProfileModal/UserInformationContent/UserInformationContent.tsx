@@ -77,7 +77,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <UserAvatar user={userWithId} showStatus statusLarge />
+        <UserAvatar user={userWithId} showStatus />
         <div className="text-container">
           <h2 className="title ellipsis-text">
             {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
