@@ -32,16 +32,16 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   venue,
 }) => {
   const url = getFullVenueInsideUrl(venue.id);
-  const [{ value: isShowCopiedText }, copyToClipboard] = useCopyToClipboard();
+  const [{ value: hasCopiedText }, copyToClipboard] = useCopyToClipboard();
 
   const toCopy = useCallback(() => {
     copyToClipboard(url);
   }, [url, copyToClipboard]);
 
-  const linkText = isShowCopiedText ? "Link Copied" : "Copy Link";
+  const linkText = hasCopiedText ? "Link Copied" : "Copy Link";
 
   const linkClasses = classNames("ShareModal__link", {
-    "ShareModal__link--copied": isShowCopiedText,
+    "ShareModal__link--copied": hasCopiedText,
   });
 
   const renderedLinkButtons = useMemo(() => {
