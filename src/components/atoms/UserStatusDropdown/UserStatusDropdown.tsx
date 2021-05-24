@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 
 import { UserStatus } from "types/User";
 
@@ -19,17 +19,20 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 }) => {
   const { isShown, hide, toggle } = useShowHide();
 
-  const onOptionClicked = (value: UserStatus) => () => {
-    onChange(value);
-    hide();
-  };
+  const onOptionClicked = useCallback(
+    (value: UserStatus) => {
+      onChange(value);
+      hide();
+    },
+    [hide, onChange]
+  );
 
   const optionsComponents = options
     .filter((opt) => opt !== label)
     .map((option) => (
       <li
         className="Dropdown__item"
-        onClick={onOptionClicked(option)}
+        onClick={() => onOptionClicked(option)}
         key={option}
       >
         {option}
