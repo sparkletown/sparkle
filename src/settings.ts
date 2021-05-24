@@ -548,9 +548,6 @@ export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
 export const DEFAULT_WS_RELAY_URL = "ws://localhost:8080/";
 
-// Default to display profile name on top of avatar (overriden by venue parameter)
-export const DEFAULT_SHOW_AVATAR_NAMETAG = "hover";
-
 export const USE_RANDOM_AVATAR = true;
 export const RANDOM_AVATARS = [
   "avatar-01.png",
