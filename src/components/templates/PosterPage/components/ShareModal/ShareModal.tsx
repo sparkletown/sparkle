@@ -81,7 +81,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
             alt="map"
           />
-          <div className="ShareModal__logo"></div>
+          <div className="ShareModal__logo" />
           <h3 className="ShareModal__title">Room Title</h3>
           <span className="ShareModal__url-text">{url}</span>
         </div>
