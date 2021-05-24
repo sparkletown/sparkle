@@ -16,24 +16,27 @@
   }
 
   &__logo {
+    $logo-height: 70px;
+    $logo-width: 50px;
+    $logo-background-width: 195px;
     position: absolute;
     top: 30%;
     left: 125px;
     display: block;
-    width: 50px;
-    height: 70px;
+    width: $logo-width;
+    height: $logo-height;
     background-image: url(/assets/icons/sparkle-nav-logo.png);
-    background-size: 50px 70px;
+    background-size: $logo-width $logo-height;
 
     &:before {
       position: absolute;
       content: "";
       pointer-events: none;
       left: 52px;
-      width: 195px;
-      height: 70px;
+      width: $logo-background-width;
+      height: $logo-height;
       background-image: url(/assets/icons/sparkle-nav-logo-text.png);
-      background-size: 195px 70px;
+      background-size: $logo-background-width $logo-height;
     }
   }
 
