@@ -246,15 +246,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     );
   }, [venue]);
 
-
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-
   const {
     isShown: isDeleteModalVisible,
     show: showDeleteModal,
     hide: hideDeleteModal,
   } = useShowHide();
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
     <>
@@ -359,22 +355,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               <button
                 role="link"
                 className="btn btn-block btn-danger"
-                onClick={() => setShowDeleteModal(true)}
+                onClick={showDeleteModal}
               >
-                {deleteText}
+                Delete space
               </button>
             )}
-
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                history.push(`${match.url}/events`);
-                setShowCreateEventModal(true);
-              }}
-              style={{ marginBottom: 10, width: "100%" }}
-            >
-              Create an Event
-            </button>
 
             <Link
               to={{ search: "manageUsers=true" }}
