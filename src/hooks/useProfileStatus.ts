@@ -20,7 +20,7 @@ export const useProfileStatus = () => {
   );
 
   return {
-    status: profile?.status ?? "",
+    status: profile?.status,
     changeStatus,
   };
 };
