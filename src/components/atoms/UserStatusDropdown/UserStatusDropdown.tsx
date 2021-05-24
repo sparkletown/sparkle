@@ -17,14 +17,18 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   label,
   onChange,
 }) => {
-  const { isShown: isDropdownOptionsShown, hideDropdownOptions, toggle: toggleDropdownOptions } = useShowHide();
+  const {
+    isShown: isDropdownOptionsShown,
+    hide: hideDropdownOptions,
+    toggle: toggleDropdownOptions,
+  } = useShowHide();
 
   const onOptionClicked = useCallback(
     (value: UserStatus) => {
       onChange(value);
-      hide();
+      hideDropdownOptions();
     },
-    [hide, onChange]
+    [hideDropdownOptions, onChange]
   );
 
   const optionsComponents = useMemo(() => {
@@ -43,10 +47,10 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   return (
     <div className="Dropdown">
-      <div className="Dropdown__header" onClick={toggle}>
+      <div className="Dropdown__header" onClick={toggleDropdownOptions}>
         {label || "change status"}
       </div>
-      {isShown && (
+      {isDropdownOptionsShown && (
         <div className="Dropdown__list-container">
           <ul className="Dropdown__list">{optionsComponents}</ul>
         </div>
