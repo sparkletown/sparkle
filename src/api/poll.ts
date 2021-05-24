@@ -35,11 +35,8 @@ export type DeleteVenuePollProps = {
   pollId: string;
 };
 
-export const deleteVenuePoll = async (data: DeleteVenuePollProps) => {
-  return await firebase.functions().httpsCallable("venue-deletePollInVenue")(
-    data
-  );
-};
+export const deleteVenuePoll = async (data: DeleteVenuePollProps) =>
+  await firebase.functions().httpsCallable("venue-deletePollInVenue")(data);
 
 export type VoteInPollProps = {
   venueId: string;

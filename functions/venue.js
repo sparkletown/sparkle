@@ -714,8 +714,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 exports.deletePollInVenue = functions.https.onCall(
   async ({ venueId, pollId }, context) => {
     checkAuth(context);
-
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
     admin
       .firestore()

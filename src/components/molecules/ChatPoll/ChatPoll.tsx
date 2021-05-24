@@ -30,8 +30,8 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
 
   const userId = user?.uid;
 
-  const { id, poll, votes, isMine, canBeDeleted } = pollData;
-  const { questions, topic } = poll;
+  const { id, poll, votes, isMine } = pollData;
+  const { questions, topic, canBeDeleted } = poll;
 
   const isVoted = userId ? votes.includes(userId) : false;
 
@@ -55,8 +55,8 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       const newVotes = [...votes, userId];
 
       const newPoll = {
-        topic,
-        questions: questions.map((q) =>
+        ...poll,
+        questions: poll.questions.map((q) =>
           q.id === question.id
             ? {
                 ...question,
@@ -68,7 +68,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       };
       voteInPoll(newPoll, newVotes, id);
     },
-    [topic, questions, id, voteInPoll, votes, userId]
+    [poll, id, voteInPoll, votes, userId]
   );
 
   const renderQuestions = useMemo(
@@ -122,7 +122,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       </div>
 
       <ChatMessageInfo
-        message={pollData}
+        message={{ ...pollData, canBeDeleted }}
         reversed={isMine}
         deleteMessage={() => {}}
       />
