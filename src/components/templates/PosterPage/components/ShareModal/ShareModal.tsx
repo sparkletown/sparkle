@@ -10,7 +10,7 @@ import { DEFAULT_MAP_BACKGROUND } from "settings";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { getVenueFullLocation } from "utils/url";
+import { getFullVenueInsideUrl } from "utils/url";
 
 import { LinkButton } from "components/atoms/LinkButton";
 
@@ -33,7 +33,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   onHide,
   venue,
 }) => {
-  const url = getVenueFullLocation(venue.id);
+  const url = getFullVenueInsideUrl(venue.id);
   const [{ value: isShowCopiedText }, copyToClipboard] = useCopyToClipboard();
 
   const toCopy = useCallback(() => {
