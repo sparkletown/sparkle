@@ -1,5 +1,7 @@
 import React from "react";
+
 import { UserStatus } from "types/User";
+
 import { useShowHide } from "hooks/useShowHide";
 
 import "./UserStatusDropdown.scss";
