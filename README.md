@@ -1,8 +1,12 @@
 # Sparkle Web App
 
-Codebase for Sparkle, brought to you by Sparkle.
+Codebase for the Sparkle Platform, brought to you by [Sparkle](https://sparklespaces.com/).
 
 ## Getting started
+
+The instructions below assume you already have a Firebase project setup and configured appropriately.
+
+**Note**: If you're interested in setting up the project to run in your own environment but you're not sure how to go about it, feel free to [open an issue](https://github.com/sparkletown/sparkle/issues/new) asking for assistance.
 
 ### Frontend
 
@@ -33,6 +37,8 @@ Now you're ready to start the server! ✨
 npm start
 ```
 
+Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start using the app, navigate to a URL such as http://localhost:3000/v/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
+
 While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
 ```bash
@@ -42,6 +48,8 @@ npm run build
 ### Firebase functions
 
 **Note:** Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
+
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
 In a new terminal, from the directory you cloned the code to, enter the following commands:
 
@@ -55,27 +63,28 @@ cd functions
 # Install the function dependencies
 npm install
 
+# Go back to the root app directory to use firebase package
+cd ..
+
 # Login to firebase with the account that has access to this project
-firebase login
+npm run firebase login
 
 # Switch to the 'staging' project in our local configuration (or whichever environment you are developing against)
-firebase use staging
+npm run firebase use staging
 
 # Copy the runtime config locally
-npm run firebase functions:config:get > .runtimeconfig.json
+npm run --silent firebase functions:config:get > .runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
 
 ```bash
+# Run the command in the root app directory
 npm run firebase:emulate-functions
 
 # Or if you don't want to use our helper scripts, you can do this directly:
-# firebase emulators:start --only functions
+# npm run firebase emulators:start --only functions
 ```
-
-**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
-
 
 ### Stripe
 
@@ -103,15 +112,31 @@ Copy this value and add it to the file `functions/secrets.js`.
 const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
 ```
 
-## Git flow
+## Our Git flow
+
+If you're new to Git / GitHub flows, then you may find these guides helpful:
+
+- https://guides.github.com/introduction/git-handbook/
+- https://guides.github.com/activities/forking/
+- https://guides.github.com/introduction/flow/
 
 To contribute to the code base, please follow these steps:
 
-- create a branch from staging
-- code
-- create a pull request on staging
+- fork the repository (note: Sparkle team skip this step)
+- create a new branch from `staging`
+- write your code
+- create a pull request to merge your branch into `staging`
+- wait for code review
+- fix any review comments
+- once the review has been finalised, a team member will **squash-merge** the PR into `staging`, which will trigger the CI to deploy the `staging` environment
 
-Then, to deploy to production, **merge staging into master**.
+Then, to deploy to `production`:
+
+- (a Sparkle team member will) create a PR to **merge staging into `master`** with a name such as **`deploy staging -> master`**
+- add the `🚀 deployment` label
+- copy the commit messages (including the `#1234` PR they were made in) and paste it into the PR description after `Deploys:` (see [example](https://github.com/sparkletown/sparkle/pull/1355))
+- **merge (not squash-merge)** this 'deployment PR' into `master`, this will trigger the CI system to deploy to the '[OG](https://www.dictionary.com/e/slang/og/) `production`' environment
+- push the `master` branch to any other environment branches (eg. `env/foo`) to trigger the CI system to deploy those environments as well
 
 > When adding a quick fix to production:
 >
@@ -126,8 +151,9 @@ Then, to deploy to production, **merge staging into master**.
 
 Deploys are handled by CircleCI.
 
-- Merging to staging will deploy to staging
-- Merging to master will deploy to production
+- Merging to `staging` will deploy to staging
+- Merging to `master` will deploy to production
+- Pushing the `master` branch to any of our other configured production branches will deploy to that environment
 
 ## Obtaining email addresses from firebase
 
@@ -145,8 +171,8 @@ Paste into a google sheet. Leftmost column is the [UNIX timestamp](https://en.wi
 3. Fill down to get all values
 4. Sort by timestamp or the calculated, human date
 5. Consider not adding any with a "+"
-6. Be mindful this is PII (personally identifiable information) so we should handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
-7. Share the google sheet, ready to import the users into our other email lists.
+6. Be mindful this is PII (personally identifiable information) so handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
+7. Share the Google sheet, ready to import the users into our other email lists.
 8. Email the new folks, welcome them, and say thanks for coming to the party!
 
 ## Addenda

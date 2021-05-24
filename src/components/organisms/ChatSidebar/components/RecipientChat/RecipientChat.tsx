@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
-import { withId } from "utils/id";
 
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -10,31 +8,24 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import { useRecipientChat } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
-import { SetSelectedProfile } from "types/chat";
-
 import "./RecipientChat.scss";
 
 export interface RecipientChatProps {
   recipientId: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  onAvatarClick,
 }) => {
   const {
     messagesToDisplay,
+    recipient,
+
     sendMessageToSelectedRecipient,
     deleteMessage,
     markMessageRead,
-    recipient,
+    sendThreadReply,
   } = useRecipientChat(recipientId);
-
-  const handleAvatarClick = useCallback(
-    () => onAvatarClick(withId(recipient, recipientId)),
-    [onAvatarClick, recipient, recipientId]
-  );
 
   useEffect(() => {
     const unreadCounterpartyMessages = messagesToDisplay.filter(
@@ -52,27 +43,20 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
 
   return (
     <div className="recipient-chat">
-      <div className="recipient-chat__breadcrumbs">
+      <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
         <FontAwesomeIcon
           icon={faChevronLeft}
           className="recipient-chat__back-icon"
           size="sm"
-          onClick={selectPrivateChat}
         />
-
-        <UserAvatar
-          avatarSrc={recipient.pictureUrl}
-          onClick={handleAvatarClick}
-        />
-        <div className="recipient-chat__nickname" onClick={handleAvatarClick}>
-          {recipient.partyName}
-        </div>
+        <UserAvatar user={recipient} />
+        <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       <Chatbox
         messages={messagesToDisplay}
         sendMessage={sendMessageToSelectedRecipient}
         deleteMessage={deleteMessage}
-        onAvatarClick={onAvatarClick}
+        sendThreadReply={sendThreadReply}
       />
     </div>
   );

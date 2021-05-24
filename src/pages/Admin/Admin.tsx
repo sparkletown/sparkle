@@ -32,12 +32,7 @@ import {
 } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
-import {
-  isVenueWithRooms,
-  Venue,
-  VenueEvent,
-  VenueTemplate,
-} from "types/venues";
+import { isVenueWithRooms, AnyVenue, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
@@ -54,6 +49,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -81,6 +77,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
+  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
   const venues = useSelector(orderedVenuesSelector);
 
   if (!venues) return <>Loading...</>;
@@ -228,7 +225,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 };
 
 export type VenueInfoComponentProps = {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   roomIndex?: number;
   showCreateEventModal: boolean;
   setShowCreateEventModal: Function;
@@ -264,14 +261,12 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     );
   }, [venue]);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const {
+    isShown: isDeleteModalVisible,
+    show: showDeleteModal,
+    hide: hideDeleteModal,
+  } = useShowHide();
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
-  const visitText =
-    venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
-  const editText =
-    venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
-  const deleteText =
-    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
 
   return (
     <>
@@ -347,13 +342,13 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
             >
-              {visitText}
+              Visit space
             </Link>
             <Link
               to={`/admin/venue/edit/${venue.id}`}
               className="btn btn-block"
             >
-              {editText}
+              Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
@@ -371,15 +366,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 Edit Room
               </Link>
             )}
-            {canBeDeleted(venue) && (
-              <button
-                role="link"
-                className="btn btn-block btn-danger"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                {deleteText}
-              </button>
-            )}
             <button
               className="btn btn-primary"
               onClick={() => {
@@ -392,24 +378,31 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
             </button>
             <Link
               to={{ search: "manageUsers=true" }}
-              className="btn btn-primary"
+              className="btn btn-block btn-primary"
             >
               Manage Venue Owners
             </Link>
             {typeof roomIndex !== "number" && (
-              <div>
+              <div className="page-container-adminpanel-actions__note">
                 If you are looking to edit one of your rooms, please select the
                 room in the left hand menu
               </div>
+            )}
+            {canBeDeleted(venue) && (
+              <button
+                role="link"
+                className="btn btn-block btn-danger"
+                onClick={showDeleteModal}
+              >
+                Delete space
+              </button>
             )}
           </>
         )}
       </div>
       <VenueDeleteModal
-        show={showDeleteModal}
-        onHide={() => {
-          setShowDeleteModal(false);
-        }}
+        show={isDeleteModalVisible}
+        onHide={hideDeleteModal}
         venue={venue}
       />
       <VenueOwnersModal

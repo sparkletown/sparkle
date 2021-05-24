@@ -1,10 +1,8 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { InputField } from "components/atoms/InputField";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
-
-import { SetSelectedProfile } from "types/chat";
 
 import {
   usePrivateChatPreviews,
@@ -16,15 +14,11 @@ import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
   recipientId?: string;
-  onAvatarClick: SetSelectedProfile;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({
-  recipientId,
-  onAvatarClick,
-}) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
-  const onInputChage = useCallback(
+  const onInputChange = useCallback(
     (e) => setUserSearchQuery(e.target.value),
     []
   );
@@ -33,7 +27,11 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
 
-  const numberOfOnline = onlineUsers.length;
+  const privateChatUserIds = useMemo(
+    () =>
+      privateChatPreviews.map((chatPreview) => chatPreview.counterPartyUser.id),
+    [privateChatPreviews]
+  );
 
   const renderedPrivateChatPreviews = useMemo(
     () =>
@@ -55,14 +53,16 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   const renderedOnlineUsers = useMemo(
     () =>
-      onlineUsers.map((user) => (
-        <OnlineUser
-          key={user.id}
-          user={user}
-          onClick={() => selectRecipientChat(user.id)}
-        />
-      )),
-    [onlineUsers, selectRecipientChat]
+      onlineUsers
+        .filter((user) => !privateChatUserIds.includes(user.id))
+        .map((user) => (
+          <OnlineUser
+            key={user.id}
+            user={user}
+            onClick={() => selectRecipientChat(user.id)}
+          />
+        )),
+    [onlineUsers, privateChatUserIds, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
@@ -83,26 +83,22 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
   const numberOfSearchResults = renderedSearchResults.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
+  const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
-    return (
-      <RecipientChat recipientId={recipientId} onAvatarClick={onAvatarClick} />
-    );
+    return <RecipientChat recipientId={recipientId} />;
   }
 
   return (
     <div className="private-chats">
-      <div className="private-chats__search">
-        <input
-          className="private-chats__search-input"
-          placeholder="Search for online people"
-          value={userSearchQuery}
-          onChange={onInputChage}
-        />
-        <div className="private-chats__search-icon">
-          <FontAwesomeIcon icon={faSearch} size="1x" />
-        </div>
-      </div>
+      <InputField
+        containerClassName="private-chats__search"
+        placeholder="Search for online people"
+        value={userSearchQuery}
+        onChange={onInputChange}
+        iconStart={faSearch}
+        autoComplete="off"
+      />
 
       {userSearchQuery ? (
         <>
@@ -121,7 +117,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           )}
 
           <p className="private-chats__title-text">
-            {numberOfOnline} connected people
+            {numberOfOtherOnlineUsers} other online people
           </p>
 
           {renderedOnlineUsers}

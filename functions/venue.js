@@ -2,23 +2,28 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const PLAYA_VENUE_ID = "jamonline";
-const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
+const PLAYA_VENUE_ID = "jamonline";
+
+// These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
+// @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
 const VenueTemplate = {
-  jazzbar: "jazzbar",
-  friendship: "friendship",
-  partymap: "partymap",
-  zoomroom: "zoomroom",
-  themecamp: "themecamp",
-  artpiece: "artpiece",
   artcar: "artcar",
-  performancevenue: "performancevenue",
-  preplaya: "preplaya",
-  playa: "playa",
+  artpiece: "artpiece",
   audience: "audience",
-  firebarrel: "firebarrel",
   conversationspace: "conversationspace",
+  embeddable: "embeddable",
+  firebarrel: "firebarrel",
+  friendship: "friendship",
+  jazzbar: "jazzbar",
+  partymap: "partymap",
+  performancevenue: "performancevenue",
+  playa: "playa",
+  posterhall: "posterhall",
+  posterpage: "posterpage",
+  preplaya: "preplaya",
+  themecamp: "themecamp",
+  zoomroom: "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
@@ -27,24 +32,90 @@ const VenueTemplate = {
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
-const VALID_TEMPLATES = [
-  VenueTemplate.jazzbar,
-  VenueTemplate.friendship,
-  VenueTemplate.partymap,
-  VenueTemplate.zoomroom,
-  VenueTemplate.themecamp,
-  VenueTemplate.artpiece,
+
+// These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
+const VALID_CREATE_TEMPLATES = [
   VenueTemplate.artcar,
+  VenueTemplate.artpiece,
   VenueTemplate.audience,
-  VenueTemplate.performancevenue,
-  VenueTemplate.firebarrel,
   VenueTemplate.conversationspace,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.friendship,
+  VenueTemplate.jazzbar,
+  VenueTemplate.partymap,
+  VenueTemplate.performancevenue,
+  VenueTemplate.themecamp,
+  VenueTemplate.zoomroom,
 ];
+
+// These templates use iframeUrl (they should remain alphabetically sorted)
+// @debt unify this with IFRAME_TEMPLATES in src/settings.ts + share the same code between frontend/backend
+const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
+  VenueTemplate.jazzbar,
+  VenueTemplate.performancevenue,
+];
+
+// These templates use zoomUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
   Hidden: "HIDDEN",
+};
+
+const checkUserIsOwner = async (venueId, uid) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then(async (doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
+      }
+      const venue = doc.data();
+      if (venue.owners && venue.owners.includes(uid)) return;
+
+      if (venue.parentId) {
+        const doc = await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
+      }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
 };
 
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
@@ -56,7 +127,7 @@ const checkUserIsAdminOrOwner = async (venueId, uid) => {
 };
 
 const createVenueData = (data, context) => {
-  if (!VALID_TEMPLATES.includes(data.template)) {
+  if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
       "invalid-argument",
       `Template ${data.template} unknown`
@@ -119,25 +190,20 @@ const createVenueData = (data, context) => {
     }
   }
 
-  switch (data.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.audience:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.firebarrel:
-      venueData.iframeUrl = data.iframeUrl;
-      break;
+  if (IFRAME_TEMPLATES.includes(data.template)) {
+    venueData.iframeUrl = data.iframeUrl;
+  }
 
+  if (ZOOM_URL_TEMPLATES.includes(data.template)) {
+    venueData.zoomUrl = data.zoomUrl;
+  }
+
+  switch (data.template) {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
       venueData.roomVisibility = data.roomVisibility;
       venueData.showGrid = data.showGrid ? data.showGrid : false;
-      break;
-
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      venueData.zoomUrl = data.zoomUrl;
       break;
 
     case VenueTemplate.playa:
@@ -177,53 +243,14 @@ const getVenueId = (name) => {
   return name.replace(/\W/g, "").toLowerCase();
 };
 
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
+const checkIfValidVenueId = (venueId) => /[a-z0-9_]{1,250}/.test(venueId);
 
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
-};
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);
 
 /** Add a user to the list of admins
  *
@@ -330,14 +357,15 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
   const docData = doc.data();
+  let rooms = docData.rooms;
 
   if (typeof roomIndex !== "number") {
-    docData.rooms = [...docData.rooms, room];
+    rooms = [...rooms, room];
   } else {
-    docData.rooms[roomIndex] = room;
+    rooms[roomIndex] = room;
   }
 
-  admin.firestore().collection("venues").doc(venueId).update(docData);
+  admin.firestore().collection("venues").doc(venueId).update({ rooms });
 });
 
 exports.deleteRoom = functions.https.onCall(async (data, context) => {
@@ -411,7 +439,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
 });
 
 exports.updateVenue = functions.https.onCall(async (data, context) => {
-  const venueId = getVenueId(data.name);
+  const venueId = data.id || getVenueId(data.name);
   checkAuth(context);
 
   await checkUserIsOwner(venueId, context.auth.token.user_id);
@@ -555,26 +583,15 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.showNametags = data.showNametags;
   }
 
+  // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
-  switch (updated.template) {
-    case VenueTemplate.jazzbar:
-    case VenueTemplate.performancevenue:
-    case VenueTemplate.artpiece:
-    case VenueTemplate.audience:
-      if (data.iframeUrl) {
-        updated.iframeUrl = data.iframeUrl;
-      }
-      break;
-    case VenueTemplate.zoomroom:
-    case VenueTemplate.artcar:
-      if (data.zoomUrl) {
-        updated.zoomUrl = data.zoomUrl;
-      }
-      break;
+  if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
+    updated.iframeUrl = data.iframeUrl;
+  }
 
-    default:
-      break;
+  if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
+    updated.zoomUrl = data.zoomUrl;
   }
 
   await admin.firestore().collection("venues").doc(venueId).update(updated);
@@ -774,53 +791,6 @@ exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
     .update({ iframeUrl: iframeUrl || null });
 });
 
-exports.getVenueEvents = functions.https.onCall(
-  async ({ venueId }, context) => {
-    try {
-      checkAuth(context);
-      const now = new Date().getTime();
-
-      const venueEvents = [];
-      const venue = await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .get();
-      const events = await venue.ref.collection("events").get();
-
-      const liveAndFutureEvents = events.docs
-        .map((eventRef) => {
-          const event = eventRef.data();
-          if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
-            event.start_utc_seconds = now / 1000;
-          }
-          return event;
-        })
-        .filter((event) => {
-          const nowSeconds = now / 1000;
-
-          const eventIsTransient =
-            event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
-
-          const eventIsInFuture = nowSeconds < event.start_utc_seconds;
-
-          const eventEndSeconds =
-            60 * event.duration_minutes + event.start_utc_seconds;
-          const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
-
-          return eventIsTransient && (eventIsInFuture || eventIsNow);
-        });
-      if (liveAndFutureEvents) {
-        venueEvents.push(...liveAndFutureEvents);
-      }
-
-      return venueEvents;
-    } catch (error) {
-      throw new HttpsError("internal", e.toString());
-    }
-  }
-);
-
 exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   const user = (
     await admin.firestore().collection("users").doc(userId).get()
@@ -829,9 +799,22 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   return user;
 });
 
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);
+exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  if (typeof data.isLive !== "boolean") {
+    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+  }
+
+  const update = {
+    isLive: Boolean(data.isLive),
+  };
+
+  await admin.firestore().collection("venues").doc(data.venueId).update(update);
+});

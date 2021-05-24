@@ -13,10 +13,10 @@ import { useUser } from "hooks/useUser";
 import { Room, RoomData_v2 } from "types/rooms";
 import { VenueDetailsProps } from "./VenueDetails.types";
 
-import VenueHero from "components/molecules/VenueHero";
+import { VenueCard } from "components/molecules/VenueCard";
 import Button from "components/atoms/Button";
 import AdminEventModal from "pages/Admin/AdminEventModal";
-import RoomEdit from "pages/Admin/Room/Edit";
+import { RoomEditModal } from "pages/Admin/Room/Edit";
 import RoomModal from "pages/Admin/Room/Modal";
 import RoomCard from "pages/Admin/Room/Card";
 import MapPreview from "pages/Admin/MapPreview";
@@ -153,23 +153,19 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   if (!user) return null;
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
-    const newData = {
+    const roomValues: RoomData_v2 = {
+      ...editingRoom,
       ...values,
-      x_percent: editingRoom?.x_percent,
-      y_percent: editingRoom?.y_percent,
-      width_percent: editingRoom?.width_percent,
-      height_percent: editingRoom?.height_percent,
-      isEnabled: editingRoom?.isEnabled,
     };
 
-    await updateRoom(newData, venueId!, user, index);
+    await updateRoom(roomValues, venueId, user, index);
     closeEditingModal();
   };
 
   return (
     <S.Container>
       <S.Header>
-        <VenueHero
+        <VenueCard
           bannerImageUrl={
             !!coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER
           }
@@ -178,8 +174,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           subtitle={subtitle}
           description={description}
           large
-          showEdit
-          venueId={venue.id!}
         />
 
         <S.HeaderActions>
@@ -256,7 +250,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       />
 
       {editingRoom && (
-        <RoomEdit
+        <RoomEditModal
           isVisible={!!editingRoom && !showDeleteModal}
           onClickOutsideHandler={closeEditingModal}
           room={editingRoom}

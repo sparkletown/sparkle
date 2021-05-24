@@ -1,6 +1,11 @@
+import { CSSProperties } from "react";
+
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { WithVenueId } from "utils/id";
+
 import { EntranceStepConfig } from "./EntranceStep";
+import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
@@ -8,29 +13,49 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
-// TODO: should JazzBarVenue be added to this?
-export type AnyVenue = Venue | PartyMapVenue;
-
+// These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
+// @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
 export enum VenueTemplate {
-  jazzbar = "jazzbar",
-  friendship = "friendship",
-  partymap = "partymap",
-  zoomroom = "zoomroom",
-  themecamp = "themecamp",
-  artpiece = "artpiece",
   artcar = "artcar",
-  performancevenue = "performancevenue",
-  preplaya = "preplaya",
-  playa = "playa",
+  artpiece = "artpiece",
   audience = "audience",
   conversationspace = "conversationspace",
+  embeddable = "embeddable",
   firebarrel = "firebarrel",
+  friendship = "friendship",
+  jazzbar = "jazzbar",
+  partymap = "partymap",
+  performancevenue = "performancevenue",
+  playa = "playa",
+  posterhall = "posterhall",
+  posterpage = "posterpage",
+  preplaya = "preplaya",
+  themecamp = "themecamp",
+  zoomroom = "zoomroom",
 
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
 }
+
+// This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
+export type GenericVenueTemplates = Exclude<
+  VenueTemplate,
+  | VenueTemplate.embeddable
+  | VenueTemplate.jazzbar
+  | VenueTemplate.partymap
+  | VenueTemplate.posterpage
+  | VenueTemplate.themecamp
+>;
+
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+export type AnyVenue =
+  | GenericVenue
+  | EmbeddableVenue
+  | JazzbarVenue
+  | PartyMapVenue
+  | PosterPageVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -83,9 +108,11 @@ export interface Venue_v2_EntranceConfig {
 }
 
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
-export interface Venue {
-  parentId?: string;
+// @debt The following keys are marked as required on this type, but i'm not sure they should be:
+//   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
+export interface BaseVenue {
   template: VenueTemplate;
+  parentId?: string;
   name: string;
   access?: VenueAccessMode;
   entrance?: EntranceStepConfig[];
@@ -148,19 +175,29 @@ export interface Venue {
   showZendesk?: boolean;
 }
 
+export interface GenericVenue extends BaseVenue {
+  template: GenericVenueTemplates;
+}
+
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
-export interface PartyMapVenue extends Venue {
+// @debt we probably don't want to include id directly here.. that's what WithId is for
+export interface PartyMapVenue extends BaseVenue {
   id: string;
-  template: VenueTemplate.partymap;
+  template: VenueTemplate.partymap | VenueTemplate.themecamp;
+
+  // @debt The following keys are marked as required on this type, but i'm not sure they should be:
+  //   url, name (we seem to be using icon to hold the URL of the image)
   host?: {
     url: string;
     icon: string;
     name: string;
   };
+
   description?: {
     text: string;
     program_url?: string;
   };
+
   start_utc_seconds?: number;
   duration_hours?: number;
   entrance_hosted_hours?: number;
@@ -174,13 +211,27 @@ export interface PartyMapVenue extends Venue {
   rooms?: Room[];
 }
 
-export interface JazzbarVenue extends Venue {
+export interface JazzbarVenue extends BaseVenue {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;
   host: {
     icon: string;
   };
+}
+
+export interface EmbeddableVenue extends BaseVenue {
+  template: VenueTemplate.embeddable;
+  iframeUrl?: string;
+  containerStyles?: CSSProperties;
+  iframeStyles?: CSSProperties;
+  iframeOptions?: Record<string, string>;
+}
+
+export interface PosterPageVenue extends BaseVenue {
+  template: VenueTemplate.posterpage;
+  poster?: Poster;
+  isLive?: boolean;
 }
 
 export interface Question {
@@ -207,7 +258,7 @@ export interface VenueConfig {
     backgroundColor?: string;
   };
 
-  // @debt landingPageConfig should probably be undefined, or is it guaranteed to exist everywhere?
+  // @debt landingPageConfig should probably be 'potentially undefined', or is it guaranteed to exist everywhere?
   landingPageConfig: VenueLandingPageConfig;
   redirectUrl?: string;
   memberEmails?: string[];
@@ -215,6 +266,8 @@ export interface VenueConfig {
   tables?: Table[];
 }
 
+// @debt The following keys are marked as required on this type, but i'm not sure they should be:
+//   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
   subtitle: string;
@@ -263,10 +316,25 @@ export interface VenueEvent {
   id?: string;
 }
 
+export interface VenueLocation {
+  venueId: string;
+  roomTitle: string;
+  venueTitle?: string;
+}
+
+export interface LocatedEvents {
+  location: VenueLocation;
+  events: PersonalizedVenueEvent[];
+}
+
+export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+  isSaved: boolean;
+}
+
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
   HAS_ROOMS_TEMPLATES.includes(venue.template);
 
-export const isPartyMapVenue = (venue: Venue): venue is PartyMapVenue =>
+export const isPartyMapVenue = (venue: AnyVenue): venue is PartyMapVenue =>
   venue.template === VenueTemplate.partymap;
 
 export const urlFromImage = (

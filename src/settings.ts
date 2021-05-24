@@ -11,6 +11,10 @@ import {
 import { VenueTemplate } from "types/venues";
 import { FIVE_MINUTES_MS } from "utils/time";
 
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
@@ -22,6 +26,7 @@ export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -39,14 +44,24 @@ export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
-export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
+export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
+export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
+export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+
 export const DEFAULT_PARTY_NAME = "Anon";
-export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+export const DEFAULT_EDIT_PROFILE_TEXT =
+  "I haven't edited my profile to tell you yet";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+export const VENUE_NAME_MIN_CHAR_COUNT = 3;
+export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
+export const GIFT_TICKET_MODAL_URL =
+  "https://here.burningman.org/event/virtualburn";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -71,6 +86,7 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
@@ -80,6 +96,9 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
@@ -97,9 +116,6 @@ export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
 export const PLAYA_AVATAR_SIZE = 48;
 export const PLAYA_VENUE_SIZE = 40;
-export const PROFILE_IMAGE_SIZE = 30;
-export const REACTION_PROFILE_IMAGE_SIZE_SMALL = 40;
-export const REACTION_PROFILE_IMAGE_SIZE_LARGE = 50;
 export const PLAYA_ICON_SIDE_PERCENTAGE = 5;
 // Burning Seed: playa is named paddock
 export const PLAYA_IMAGE = "/maps/paddock2k.jpg";
@@ -135,29 +151,39 @@ export const IFRAME_ALLOW =
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.zoomroom,
   VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [
+  VenueTemplate.artpiece,
+  VenueTemplate.audience,
+  VenueTemplate.embeddable,
+  VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
-  VenueTemplate.audience,
-  VenueTemplate.artpiece,
-  VenueTemplate.firebarrel,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
@@ -168,14 +194,18 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+
+// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template {
   template: VenueTemplate;
   name: string;
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export interface Template_v2 {
   template?: VenueTemplate;
   name: string;
@@ -183,6 +213,7 @@ export interface Template_v2 {
   description: Array<string>;
 }
 
+// @debt Refactor this constant into types/templates or similar?
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
@@ -229,8 +260,17 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
@@ -272,8 +312,16 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
 export const ALL_VENUE_TEMPLATES: Array<Template> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -306,6 +354,8 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
+// @debt Refactor this constant into types/templates or similar?
+// @debt this doesn't seem to even be used at the moment.. should it be?
 export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   ...BURN_VENUE_TEMPLATES,
   {
@@ -333,6 +383,7 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   },
 ];
 
+// @debt Refactor this into types/???
 export type CustomInputsType = {
   name: string;
   title: string;
@@ -341,6 +392,8 @@ export type CustomInputsType = {
   // ? if we want the field to be a zoom url
   // ? it must include `zoom.com/`
 };
+
+// @debt Refactor this into types/templates or similar?
 export type RoomTemplate = {
   template: VenueTemplate;
   name: string;
@@ -349,6 +402,8 @@ export type RoomTemplate = {
   url?: string;
   customInputs?: CustomInputsType[];
 };
+
+// @debt Refactor this constant into types/templates or similar?
 export const ROOM_TEMPLATES: RoomTemplate[] = [
   {
     template: VenueTemplate.artpiece,
@@ -424,23 +479,41 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.playa,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
@@ -448,6 +521,7 @@ export const BANNER_MESSAGE_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artpiece,
 ];
 
+// @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.playa,
   VenueTemplate.preplaya,
@@ -493,6 +567,30 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const REACTION_TIMEOUT = 5000; // time im ms
+export const DEFAULT_AVATARS = [
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
+];
+
+export const REACTION_TIMEOUT = 5000; // time in ms
+export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
+
+export const SEARCH_DEBOUNCE_TIME = 200; // ms
+
+export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+
+// SCHEDULE
+// @debt probably would be better to adjust max hour based on user's display size
+export const SCHEDULE_MAX_START_HOUR = 16;
+export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
+export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;

@@ -1,10 +1,90 @@
 @import "scss/constants.scss";
+@import "../../jazzbar-constants.scss";
 
-.jazzbar-participant-container {
-  background: $black;
-  display: flex;
-  justify-content: center;
-  width: 100%;
+.jazzbar-room {
+  &__participant {
+    background-color: $light-grey;
+    display: flex;
+    justify-content: center;
+    justify-self: center;
+    max-width: $video-participant-optimal-width;
+    max-height: $video-participant-optimal-height;
+    border-radius: 15px;
+
+    .participant {
+      display: flex;
+      height: 100%;
+      padding: 0;
+      border-radius: 22px;
+
+      video {
+        height: 100%;
+        width: 100%;
+        border-radius: 15px;
+      }
+
+      .mirrored {
+        transform: scale(-1, 1);
+      }
+
+      .profile-icon {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 25px;
+        height: 25px;
+        border-radius: 188%;
+        z-index: z(jazzbar-participant-profile-icon);
+      }
+
+      .mute-container {
+        position: absolute;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
+
+      .mute-other-container {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+      }
+    }
+  }
+
+  &__participants {
+    display: flex;
+    grid-area: items;
+
+    .jazzbar-room__participant {
+      margin: 0 0.25rem;
+      width: $video-participant-optimal-width;
+    }
+  }
+
+  @media (min-width: $media-breakpoint--lg) {
+    &__participants {
+      justify-content: center;
+      .jazzbar-room__participant {
+        max-width: 24%;
+      }
+    }
+  }
+
+  @media (max-width: $media-breakpoint--lg) {
+    &__participants {
+      justify-content: space-around;
+      .jazzbar-room__participant {
+        max-width: 49%;
+      }
+    }
+  }
 }
 
 .empty-chair-image {

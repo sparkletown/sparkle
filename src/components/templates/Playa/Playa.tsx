@@ -31,8 +31,8 @@ import { OnlineStatsData } from "types/OnlineStatsData";
 import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
 import {
+  AnyVenue,
   RoomVisibility,
-  Venue,
   VenuePlacement,
   VenuePlacementState,
 } from "types/venues";
@@ -43,7 +43,7 @@ import {
   currentVenueSelectorData,
   orderedVenuesSelector,
 } from "utils/selectors";
-// import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+// import { getCurrentTimeInUTCSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
@@ -54,8 +54,6 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import UserProfileModal from "components/organisms/UserProfileModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -115,7 +113,7 @@ const PLAYA_MARGIN_TOP = 60;
 const PLAYA_MARGIN_BOTTOM = 180;
 const VIDEO_CHAT_MIN_HEIGHT = 180;
 
-const isPlaced = (venue: Venue) => {
+const isPlaced = (venue: AnyVenue) => {
   return (
     venue &&
     venue.placement &&
@@ -129,13 +127,14 @@ const isPlaced = (venue: Venue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
+  const venues = useSelector(orderedVenuesSelector);
+
+  const venue = useSelector(currentVenueSelectorData);
+
   const [showModal, setShowModal] = useState(false);
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
-  const [selectedVenue, setSelectedVenue] = useState<WithId<Venue>>();
+  const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
   const [centerY, setCenterY] = useState(GATE_Y);
@@ -311,6 +310,7 @@ const Playa = () => {
       );
     }, 1);
 
+    // @debt we should try to avoid using event.stopPropagation()
     const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -345,11 +345,8 @@ const Playa = () => {
     };
   }, []);
 
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
-
   const showVenue = useCallback(
-    (venue: WithId<Venue>) => {
+    (venue: WithId<AnyVenue>) => {
       setSelectedVenue(venue);
       setShowModal(true);
     },
@@ -361,7 +358,7 @@ const Playa = () => {
     // user &&
     //   updateLocationData(
     //     user,
-    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
+    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUTCSeconds() },
     //     profile?.lastSeenIn
     //   );
   }, [setShowModal]);
@@ -380,14 +377,14 @@ const Playa = () => {
     return Math.hypot(venuePlacement.x - x, venuePlacement.y - y);
   };
 
-  const { camp } = useParams();
+  const { camp } = useParams<{ camp?: string }>();
   useEffect(() => {
     if (camp) {
       const campVenue = venues?.find((venue) => venue.id === camp);
       if (campVenue && !PLAYA_TEMPLATES.includes(campVenue.template)) {
-        if (camp.placement) {
-          setCenterX(camp.placement.x);
-          setCenterY(camp.placement.y);
+        if (campVenue.placement !== undefined) {
+          setCenterX(campVenue.placement.x);
+          setCenterY(campVenue.placement.y);
         }
         showVenue(campVenue);
       }
@@ -413,7 +410,7 @@ const Playa = () => {
   }, REFETCH_SCHEDULE_MS);
 
   const [showVenueTooltip, setShowVenueTooltip] = useState(false);
-  const [hoveredVenue, setHoveredVenue] = useState<Venue>();
+  const [hoveredVenue, setHoveredVenue] = useState<AnyVenue>();
   const venueRef = useRef<HTMLDivElement | null>(null);
   const [showUserTooltip, setShowUserTooltip] = useState(false);
   const [hoveredUser, setHoveredUser] = useState<User | null>();
@@ -545,7 +542,7 @@ const Playa = () => {
   const getNearbyVenue = useCallback(
     (x: number, y: number) => {
       if (!venues) return;
-      let closestVenue: WithId<Venue> | undefined;
+      let closestVenue: WithId<AnyVenue> | undefined;
       let distanceToClosestVenue: number;
       venues.forEach((venue) => {
         const distance = distanceToVenue(x, y, venue.placement);
@@ -803,7 +800,6 @@ const Playa = () => {
         movingLeft={movingLeft}
         movingRight={movingRight}
         setMyLocation={setMyLocation}
-        setSelectedUserProfile={setSelectedUserProfile}
         setShowUserTooltip={setShowUserTooltip}
         setHoveredUser={setHoveredUser}
         setShowMenu={setShowMenu}
@@ -1018,6 +1014,7 @@ const Playa = () => {
                 placeholder={`Shout across ${PLAYA_VENUE_NAME}...`}
                 value={shoutText}
                 onChange={(event) => setShoutText(event.target.value)}
+                autoComplete="off"
               />
             </form>
           </div>
@@ -1043,7 +1040,7 @@ const Playa = () => {
           className={`playa-videochat ${inVideoChat ? "show" : ""}`}
           style={{ height: videoChatHeight }}
         >
-          <VideoChatLayer setSelectedUserProfile={setSelectedUserProfile} />
+          <VideoChatLayer />
         </div>
         <Modal show={showModal} onHide={hideVenue}>
           {selectedVenue && user && (
@@ -1053,20 +1050,6 @@ const Playa = () => {
               allowHideVenue={isUserVenueOwner === true}
             />
           )}
-        </Modal>
-        <UserProfileModal
-          show={selectedUserProfile !== undefined}
-          onHide={() => setSelectedUserProfile(undefined)}
-          userProfile={selectedUserProfile}
-        />
-        <Modal
-          show={showEventSchedule}
-          onHide={() => setShowEventSchedule(false)}
-          dialogClassName="custom-dialog"
-        >
-          <Modal.Body>
-            <SchedulePageModal />
-          </Modal.Body>
         </Modal>
       </>
     );
@@ -1088,8 +1071,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    selectedUserProfile,
-    showEventSchedule,
     inVideoChat,
     videoChatHeight,
     mapContainer,

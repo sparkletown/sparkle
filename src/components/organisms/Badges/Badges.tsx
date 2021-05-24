@@ -4,10 +4,13 @@ import { User } from "@bugsnag/js";
 
 import { useFirestore } from "react-redux-firebase";
 
-import { DEFAULT_AVATAR_IMAGE } from "settings";
+import {
+  DEFAULT_AVATAR_IMAGE,
+  FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
+} from "settings";
 
 import { UserVisit } from "types/Firestore";
-import { AnyVenue, isVenueWithRooms, Venue } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
@@ -18,7 +21,7 @@ import "./Badges.scss";
 
 export const Badges: React.FC<{
   user: WithId<User>;
-  currentVenue: WithId<Venue>;
+  currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
@@ -39,7 +42,10 @@ export const Badges: React.FC<{
           } as WithId<UserVisit>)
       ) ?? [];
 
-    const venuesRequests = chunk(visits, 10).map((visitChunk) =>
+    const venuesRequests = chunk(
+      visits,
+      FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS
+    ).map((visitChunk) =>
       firestore
         .collection("venues")
         .where(

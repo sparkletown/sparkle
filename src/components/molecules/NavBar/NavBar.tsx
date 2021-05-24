@@ -29,7 +29,7 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -68,11 +68,17 @@ const GiftPopover = (
   </Popover>
 );
 
+const navBarScheduleClassName = "NavBar__schedule-dropdown";
+
 interface NavBarPropsType {
   redirectionUrl?: string;
+  hasBackButton?: boolean;
 }
 
-const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
+const NavBar: React.FC<NavBarPropsType> = ({
+  redirectionUrl,
+  hasBackButton = true,
+}) => {
   const { user, profile } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
@@ -80,6 +86,7 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
+  // @debt Move connect from Navbar to a hook
   useFirestoreConnect(
     venueParentId
       ? {
@@ -136,7 +143,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
-  const hideEventSchedule = useCallback(() => {
+  const hideEventSchedule = useCallback((e) => {
+    if (e.target.closest(`.${navBarScheduleClassName}`)) return;
+
     setEventScheduleVisible(false);
   }, []);
 
@@ -194,9 +203,9 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
                 }`}
                 onClick={toggleEventSchedule}
               >
-                {navbarTitle} Schedule
+                {navbarTitle} <span className="schedule-text">Schedule</span>
               </div>
-              <VenuePartygoers />
+              <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}
@@ -310,13 +319,16 @@ const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
         }`}
         onClick={hideEventSchedule}
       >
-        <SchedulePageModal isVisible={isEventScheduleVisible} />
+        <div className={navBarScheduleClassName}>
+          <NavBarSchedule isVisible={isEventScheduleVisible} />
+        </div>
       </div>
 
-      {venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn">
+      {/* @debt Remove back button from Navbar */}
+      {hasBackButton && venue?.parentId && parentVenue?.name && (
+        <div className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
-          <span onClick={backToParentVenue} className="back-link">
+          <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}
           </span>
         </div>

@@ -2,11 +2,15 @@
   "name": "reporting",
   "description": "Tool to fetch zoom reports",
   "scripts": {
-    "lint": "prettier --write \"./**/*.{js,jsx,ts,tsx,json,css,scss,md}\""
+    "lint": "npm run prettier:check",
+    "prettier": "echo Error: Run prettier from the root of the project directory. && exit 1",
+    "prettier:check": "echo Error: Run prettier from the root of the project directory. && exit 1"
   },
   "dependencies": {
-    "prettier": "^2.2.1",
     "puppeteer": "^3.3.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@types/puppeteer": "^5.4.3"
+  }
 }

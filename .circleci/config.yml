@@ -140,6 +140,15 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/memrise" ]; then
               ENV=sparkle-memrise
             fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              ENV=sparkle-unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              ENV=sparkle-ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              ENV=sparkle-pa
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
@@ -248,13 +257,31 @@ jobs:
               PREFIX=KOTR_
               ENV=sparkle-kotr
               TARGET=sparkle-kotr
-              RELEASE_STAGE=kotr
+              RELEASE_STAGE=env/kotr
             fi
             if [ $CIRCLE_BRANCH = "env/memrise" ]; then
               PREFIX=MEMRISE_
               ENV=sparkle-memrise
               TARGET=sparkle-memrise
-              RELEASE_STAGE=memrise
+              RELEASE_STAGE=env/memrise
+            fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              PREFIX=UNESCO_
+              ENV=sparkle-unesco
+              TARGET=sparkle-unesco
+              RELEASE_STAGE=env/unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              PREFIX=OHBM_
+              ENV=sparkle-ohbm
+              TARGET=sparkle-ohbm
+              RELEASE_STAGE=env/ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              PREFIX=PA_
+              ENV=sparkle-pa
+              TARGET=sparkle-pa
+              RELEASE_STAGE=env/pa
             fi
 
             ./scripts/init-env.sh $PREFIX
@@ -311,6 +338,9 @@ workflows:
                 - deloitte
                 - env/kotr
                 - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -334,6 +364,9 @@ workflows:
                 - deloitte
                 - env/kotr
                 - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

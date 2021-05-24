@@ -1,49 +1,75 @@
 import React from "react";
-import { useHistory } from "react-router-dom";
+import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { ReactionsProvider } from "hooks/reactions";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
-import { ArtPiece } from "components/templates/ArtPiece";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import { PlayaRouter } from "components/templates/Playa/Router";
-import { ChatSidebar } from "components/organisms/ChatSidebar";
 
-import { FireBarrel } from "components/templates/FireBarrel";
+import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-import { PartyMap } from "components/templates/PartyMap";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { Embeddable } from "components/templates/Embeddable";
+import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
+import { PartyMap } from "components/templates/PartyMap";
+import { PlayaRouter } from "components/templates/Playa/Router";
+import { PosterHall } from "components/templates/PosterHall";
+import { PosterPage } from "components/templates/PosterPage";
+import { ReactionPage } from "components/templates/ReactionPage";
+
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
-type TemplateWrapperProps = {
-  venue: Venue;
-};
+export interface TemplateWrapperProps {
+  venue: WithId<AnyVenue>;
+}
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
+  const match = useRouteMatch();
 
   let template;
+  // @debt remove backButton from Navbar
+  let hasBackButton = true;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <Jazzbar />;
+      template = (
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route component={Jazzbar} />
+        </Switch>
+      );
+      hasBackButton = false;
       break;
+
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
       break;
+
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = <PartyMap />;
+      template = <PartyMap venue={venue} />;
       break;
+
     case VenueTemplate.artpiece:
-      template = <ArtPiece />;
+      template = <ArtPiece venue={venue} />;
       break;
+
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PlayaRouter />;
       fullscreen = true;
       break;
+
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
@@ -64,16 +90,39 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         </p>
       );
       break;
+
+    // Note: This is the template that is used for the Auditorium
     case VenueTemplate.audience:
-      template = <Audience />;
+      template = (
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route>
+            <Audience venue={venue} />
+          </Route>
+        </Switch>
+      );
       fullscreen = true;
       break;
+
     case VenueTemplate.conversationspace:
       template = <ConversationSpace />;
       break;
 
+    case VenueTemplate.embeddable:
+      template = <Embeddable venue={venue} />;
+      fullscreen = true;
+      break;
+
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
+      break;
+
+    case VenueTemplate.posterhall:
+      template = <PosterHall venue={venue} />;
+      break;
+
+    case VenueTemplate.posterpage:
+      template = <PosterPage venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:
@@ -85,15 +134,25 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     default:
-      template = <div>Unknown Template: ${venue.template}</div>;
+      // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
+      template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
+  // @debt remove backButton from Navbar
   return (
-    <WithNavigationBar fullscreen={fullscreen}>
-      <AnnouncementMessage message={venue?.bannerMessage} />
-      {template}
-      <ChatSidebar />
-    </WithNavigationBar>
+    <RelatedVenuesProvider venueId={venue.id}>
+      <ReactionsProvider venueId={venue.id}>
+        <WithNavigationBar
+          fullscreen={fullscreen}
+          hasBackButton={hasBackButton}
+        >
+          <AnnouncementMessage message={venue.bannerMessage} />
+          {template}
+          <ChatSidebar />
+          <UserProfileModal venue={venue} />
+        </WithNavigationBar>
+      </ReactionsProvider>
+    </RelatedVenuesProvider>
   );
 };
 

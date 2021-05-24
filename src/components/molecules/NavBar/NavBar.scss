@@ -1,6 +1,5 @@
 @import "scss/constants.scss";
 
-$primary: #005ee5;
 $border-radius: 28px;
 
 .navbar-container {
@@ -91,92 +90,6 @@ $border-radius: 28px;
   width: 700px;
   max-width: none !important;
 }
-@import "scss/constants.scss";
-
-.navbar-container {
-  background: $black;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  .log-in-button {
-    cursor: pointer;
-    margin-right: 10px;
-    font-size: 18px;
-  }
-
-  .logout-span {
-    cursor: pointer;
-  }
-
-  .tickets-icon,
-  .private-chat-icon {
-    position: relative;
-    cursor: pointer;
-  }
-
-  .profile-icon-container {
-    cursor: pointer;
-  }
-
-  .notification-card {
-    background: $red;
-    color: $white;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    padding: 2px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .icons-container {
-    display: flex;
-    align-items: center;
-  }
-
-  .button-container {
-    .about-button {
-      border: 2px solid #ebebeb;
-      border-radius: 2em;
-      margin-left: 1em;
-      margin-right: -1em;
-      padding: 0.2em 1em;
-      text-transform: uppercase;
-      text-decoration: none;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      vertical-align: middle;
-      transition: all 0.2s ease-in-out;
-
-      &:hover {
-        background: #ebebeb;
-        color: $dark;
-      }
-    }
-  }
-
-  .counter {
-    margin-right: 1em;
-  }
-}
-
-.navbar {
-  display: flex;
-  height: $navbar-height;
-  padding: 0 15px;
-  background-color: $dark;
-}
-
-.custom-dialog {
-  width: 700px;
-  max-width: none !important;
-}
 
 .nav-logos {
   display: flex;
@@ -199,7 +112,7 @@ $border-radius: 28px;
     display: block;
     width: 25px;
     height: 35px;
-    background-image: url(/icons/sparkle-nav-logo.png);
+    background-image: url(/assets/icons/sparkle-nav-logo.png);
     background-size: 25px 35px;
     &:before {
       position: absolute;
@@ -209,10 +122,10 @@ $border-radius: 28px;
       left: 22px;
       width: 108px;
       height: 35px;
-      background-image: url(/icons/sparkle-nav-logo-text.png);
+      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
       background-size: 108px 35px;
       transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+      transition: opacity 200ms, transform 400ms $transition-function;
     }
     @keyframes sparklelogoanimate {
       100% {
@@ -222,7 +135,7 @@ $border-radius: 28px;
 
     &:hover {
       opacity: 1;
-      background-image: url(/icons/sparkle-nav-logo-animate.png);
+      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
       background-size: 75px 35px;
       background-position: 0 0;
       animation: sparklelogoanimate 0.4s steps(3) infinite;
@@ -241,7 +154,7 @@ $border-radius: 28px;
   position: relative;
   background-color: rgba($white, 0.08);
   height: 60px;
-  padding: 0 50px 0 10px;
+  padding: 0 50px 0 20px;
   text-align: center;
   cursor: pointer;
   display: flex;
@@ -250,8 +163,7 @@ $border-radius: 28px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
-  text-indent: 20px;
+  transition: transform 400ms $transition-function;
   img {
     height: 40px;
   }
@@ -268,11 +180,11 @@ $border-radius: 28px;
     top: 20px;
     height: 20px;
     width: 20px;
-    background-image: url(/icons/nav-party-logo-icon.png);
+    background-image: url(/assets/icons/nav-party-logo-icon.png);
     background-size: 20px;
     opacity: 0.4;
     transform: rotate(0deg);
-    transition: transform 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: transform 400ms $transition-function;
   }
   &.clicked {
     &:after {
@@ -284,110 +196,13 @@ $border-radius: 28px;
   }
 }
 
-.schedule-dropdown-body {
-  position: fixed;
-  z-index: z(navbar-schedule);
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 620px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 60px 40px 0;
-  background-color: rgba($black, 0.9);
-  overflow: none;
-
-  pointer-events: none;
-  opacity: 0;
-  transform: translateY(-800px);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-
-  &.show {
-    pointer-events: all;
-    opacity: 1;
-    transform: translateY(0px);
-  }
-
-  .partyinfo-container {
-    flex: 1;
-    margin-right: 60px;
-    .partyinfo-main {
-      display: flex;
-      align-items: center;
-      margin-top: 2rem;
-      margin-bottom: 1rem;
-      .partyinfo-pic {
-        flex-shrink: 0;
-        width: 92px;
-        height: 92px;
-        background-size: cover;
-        border-radius: 46px;
-        margin-right: 20px;
-        cursor: pointer;
-        transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
-        box-shadow: 0 8px 16px rgba($black, 0.3);
-        &:hover {
-          transform: scale(1.1);
-        }
-        &:active {
-          transform: scale(0.9);
-        }
-      }
-      .partyinfo-title {
-        h2 {
-          font-style: italic;
-          margin-bottom: 5px;
-        }
-        h3 {
-          font-weight: 400;
-        }
-      }
-    }
-    .partyinfo-desc {
-      font-size: 0.8rem;
-      opacity: 0.8;
-    }
-  }
-
-  .schedule-container {
-    position: relative;
-    flex: 2;
-    .schedule-tabs {
-      height: 50px;
-      margin-top: 30px;
-      position: fixed;
-    }
-    .schedule-day-container {
-      position: absolute;
-      width: 100%;
-      top: 70px;
-      height: calc(100% - 70px);
-      overflow-y: scroll;
-      padding-bottom: 20px;
-
-      .schedule-event-container {
-        border-radius: $border-radius/2;
-      }
-
-      // styling scrollbar
-      &::-webkit-scrollbar-track {
-        border-radius: 3px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar {
-        width: 8px;
-        background-color: rgba(0, 0, 0, 0);
-      }
-
-      &::-webkit-scrollbar-thumb {
-        border-radius: 4px;
-        background-color: rgba($white, 0.1);
-      }
-    }
-  }
+.schedule-text {
+  background-color: $primary;
+  border-radius: 10px;
+  margin-left: 8px;
+  padding: 0px 10px;
+  display: inline-block;
+  text-shadow: 0 2px 3px rgb(0 0 0 / 35%);
 }
 
 .schedule-dropdown-backdrop {
@@ -399,8 +214,8 @@ $border-radius: 28px;
   height: 100%;
   background-color: rgba($black, 0.8);
   cursor: pointer;
-  transition: opacity 600ms cubic-bezier(0.23, 1, 0.32, 1),
-    transform 600ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: opacity 600ms $transition-function,
+    transform 600ms $transition-function;
   opacity: 0;
   pointer-events: none;
 
@@ -412,14 +227,14 @@ $border-radius: 28px;
 
 .back-map-btn {
   position: fixed;
-  top: 60px;
+  top: $navbar-height;
   z-index: z(navbar-map-back-button);
   left: 0px;
-  height: 52px;
+  height: 40px;
   width: auto;
   cursor: pointer;
-  background-color: rgba($dark, 0.5);
-  box-shadow: 0 10px 20px rgba($black, 0.2);
+  background-color: $secondary;
+  box-shadow: 0 10px 20px rgba($secondary, 0.2);
   backdrop-filter: blur(8px);
 
   border-radius: 0 0 16px 0;
@@ -430,7 +245,7 @@ $border-radius: 28px;
   font-size: 0.9rem;
 
   &:hover {
-    background-color: rgba($dark, 0.7);
+    background-color: $lighter-intermediate-grey;
     .back-icon {
       opacity: 1;
     }
@@ -438,142 +253,20 @@ $border-radius: 28px;
   .back-icon {
     height: 22px;
     width: 22px;
-    background-image: url(/icons/slide-btn-icon.png);
+    background-image: url(/assets/icons/slide-btn-icon.png);
     background-size: 22px 22px;
     opacity: 0.7;
   }
 }
 
-.schedule-container {
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba(0, 0, 0, 0);
+@media (max-width: 600px) {
+  .schedule-text {
+    display: none;
   }
+}
 
-  &::-webkit-scrollbar {
-    width: 8px;
-    background-color: rgba(0, 0, 0, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.1);
-  }
-  .schedule-tabs {
-    li {
-      display: inline;
-      cursor: pointer;
-      padding: 10px 18px;
-      margin-right: 10px;
-      border-radius: $border-radius;
-      &:hover {
-        background-color: rgba($black, 0.3);
-      }
-      &.active {
-        background-color: $primary;
-        text-shadow: 0 2px 4px rgba($black, 0.3);
-        box-shadow: 0 3px 6px rgba($black, 0.2);
-        font-weight: 500;
-      }
-    }
-  }
-
-  .schedule-event-container {
-    display: flex;
-    align-items: flex-start;
-    padding: 12px;
-    margin-bottom: 10px;
-
-    &:nth-child(odd) {
-      background-color: rgba($black, 0.3);
-    }
-    &.schedule-event-container--live {
-      background-color: rgba($primary, 0.2);
-    }
-
-    .schedule-event-time {
-      width: 100px;
-      flex-shrink: 0;
-      .schedule-event-time-start {
-        font-size: 0.9rem;
-        font-weight: 500;
-      }
-      .schedule-event-time-end {
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-      .schedule-event-time-live,
-      .schedule-event-time-soon {
-        display: inline-block;
-        font-size: 0.8rem;
-        font-weight: 500;
-        margin-top: 10px;
-        background-color: $primary;
-        box-shadow: 0 0 20px rgba($white, 0.2);
-        padding: 4px 10px;
-        border-radius: $border-radius/2;
-        text-align: center;
-      }
-      .schedule-event-time-soon {
-        box-shadow: none;
-
-        background-color: rgba($primary, 0.5);
-      }
-    }
-    .schedule-event-info {
-      .schedule-event-info-title {
-        font-weight: 700;
-      }
-      .schedule-event-info-description {
-        font-size: 0.9rem;
-        opacity: 0.8;
-      }
-      .schedule-event-info-room {
-        margin-top: 10px;
-        font-size: 0.9rem;
-        span.schedule-event-info-room-icon {
-          display: inline-block;
-          height: 15px;
-          width: 15px;
-          vertical-align: middle;
-          margin-left: 4px;
-          margin-right: 4px;
-          background-size: 90px 15px;
-          &.schedule-event-info-room-icon_conversation {
-            background-position: 0 0;
-          }
-          &.schedule-event-info-room-icon_auditorium {
-            background-position: -15px 0;
-          }
-          &.schedule-event-info-room-icon_art {
-            background-position: -30px 0;
-          }
-          &.schedule-event-info-room-icon_musicbar {
-            background-position: -45px 0;
-          }
-          &.schedule-event-info-room-icon_reception {
-            background-position: -60px 0;
-          }
-          &.schedule-event-info-room-icon_concert {
-            background-position: -75px 0;
-          }
-        }
-        a {
-          opacity: 0.8;
-          text-decoration: underline;
-          &:hover {
-            opacity: 1;
-          }
-        }
-        div {
-          opacity: 0.8;
-          text-decoration: underline;
-          cursor: pointer;
-          &:hover {
-            opacity: 1;
-          }
-        }
-      }
-    }
+@media (max-width: 900px) {
+  .nav-search-links {
+    display: none;
   }
 }

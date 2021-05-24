@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -8,7 +8,7 @@ import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { updateTheme } from "pages/VenuePage/helpers";
-import { Venue } from "types/venues";
+import { AnyVenue } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 
@@ -27,7 +27,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const history = useHistory();
   const { user } = useUser();
-  const venue = useSelector(currentVenueSelectorData) as Venue;
+  const venue = useSelector(currentVenueSelectorData) as AnyVenue;
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
@@ -42,6 +42,13 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   };
 
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   if (!venue) {
     return <>Loading...</>;
   }
@@ -50,8 +57,6 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   if (!venue?.profile_questions?.length) {
     proceed();
   }
-
-  venue && updateTheme(venue);
 
   const numberOfQuestions = venue?.profile_questions?.length;
   const oneQuestionOnly = numberOfQuestions === 1;

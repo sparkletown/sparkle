@@ -13,7 +13,7 @@ import { PartyMapVenue } from "types/venues";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { hasElements, isTruthy } from "utils/types";
+import { hasElements } from "utils/types";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { setLocationData } from "utils/userLocation";
@@ -25,8 +25,6 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useMapGrid } from "./hooks/useMapGrid";
 import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
-
-import UserProfileModal from "components/organisms/UserProfileModal";
 
 import { MapRoom } from "./MapRoom";
 
@@ -154,6 +152,9 @@ export const Map: React.FC<MapProps> = ({
     }
   }, [roomsHit, selectRoom, unselectRoom]);
 
+  // @debt It seems seatedPartygoer is only passed in here so we don't try and take an already occupied seat
+  //  Instead of threading this all the way down into useMapGrid -> MapCell, can we just close over partygoersBySeat here,
+  //  and/or handle it in a better way?
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
@@ -178,17 +179,6 @@ export const Map: React.FC<MapProps> = ({
     takeSeat,
   });
 
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
-
-  const deselectUserProfile = useCallback(
-    () => setSelectedUserProfile(undefined),
-    []
-  );
-
-  const isUserProfileSelected = isTruthy(selectedUserProfile);
-
   const mapGrid = useMapGrid({
     showGrid,
     userUid,
@@ -207,7 +197,6 @@ export const Map: React.FC<MapProps> = ({
     rows: totalRows,
     columns: totalColumns,
     partygoers: recentVenueUsers,
-    setSelectedUserProfile,
   });
 
   const roomOverlay = useMemo(
@@ -252,12 +241,6 @@ export const Map: React.FC<MapProps> = ({
           {partygoersOverlay}
           {roomOverlay}
         </div>
-
-        <UserProfileModal
-          userProfile={selectedUserProfile}
-          show={isUserProfileSelected}
-          onHide={deselectUserProfile}
-        />
       </div>
     </div>
   );
