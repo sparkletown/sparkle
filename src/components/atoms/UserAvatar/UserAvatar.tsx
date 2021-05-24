@@ -47,7 +47,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     [user, recentWorldUsers]
   );
 
-  const status = user?.status ?? "";
+  const status = user?.status;
 
   const imageClasses = classNames("user-avatar__image", imageClassName);
   const statusClasses = classNames("user-avatar__status-dot", {
