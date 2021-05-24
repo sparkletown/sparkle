@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { UserStatus } from "types/User";
 
@@ -27,17 +27,19 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
     [hide, onChange]
   );
 
-  const optionsComponents = options
-    .filter((opt) => opt !== label)
-    .map((option) => (
-      <li
-        className="Dropdown__item"
-        onClick={() => onOptionClicked(option)}
-        key={option}
-      >
-        {option}
-      </li>
-    ));
+  const optionsComponents = useMemo(() => {
+    return options
+      .filter((opt) => opt !== label)
+      .map((option) => (
+        <li
+          className="Dropdown__item"
+          onClick={() => onOptionClicked(option)}
+          key={option}
+        >
+          {option}
+        </li>
+      ));
+  }, [label, onOptionClicked, options]);
 
   return (
     <div className="Dropdown">
