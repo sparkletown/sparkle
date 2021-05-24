@@ -18,7 +18,7 @@ import {
   getTitleTextForSharing,
   getFacebookHref,
   getTwitterHref,
-} from "./helpers";
+} from "./utils";
 
 import "./ShareModal.scss";
 
