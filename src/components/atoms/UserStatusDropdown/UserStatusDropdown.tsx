@@ -7,7 +7,7 @@ import { useShowHide } from "hooks/useShowHide";
 import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
-  options: Array<UserStatus>;
+  options: UserStatus[];
   onChange: (option: UserStatus) => void;
   label: UserStatus | string;
 }
