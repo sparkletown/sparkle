@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
@@ -42,8 +42,9 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--clickable": onClick !== undefined,
   });
 
-  const isOnline = recentWorldUsers.find(
-    (worldUser) => worldUser.id === user?.id
+  const isOnline = useMemo(
+    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
+    [user, recentWorldUsers]
   );
 
   const status = user?.status ?? "";
