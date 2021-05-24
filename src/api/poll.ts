@@ -1,3 +1,4 @@
+import firebase from "firebase/app";
 import Bugsnag from "@bugsnag/js";
 import noop from "lodash/noop";
 
@@ -34,25 +35,11 @@ export type DeleteVenuePollProps = {
   pollId: string;
 };
 
-// RESTRICRED due to user rights issue
-export const deleteVenuePoll = async ({
-  venueId,
-  pollId,
-}: DeleteVenuePollProps): Promise<void> =>
-  getVenueRef(venueId)
-    .collection("chats")
-    .doc(pollId)
-    .update({ deleted: true })
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.addMetadata("context", {
-          location: "api/chat::deleteVenuePoll",
-          venueId,
-          pollId,
-        });
-      });
-      // @debt rethrow error, when we can handle it to show UI error
-    });
+export const deleteVenuePoll = async (data: DeleteVenuePollProps) => {
+  return await firebase.functions().httpsCallable("venue-deletePollInVenue")(
+    data
+  );
+};
 
 export type VoteInPollProps = {
   venueId: string;

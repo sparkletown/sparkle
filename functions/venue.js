@@ -711,6 +711,22 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
+exports.deletePollInVenue = functions.https.onCall(
+  async ({ venueId, pollId }, context) => {
+    checkAuth(context);
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("chats")
+      .doc(pollId)
+      .update({ deleted: true });
+  }
+);
+
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);
