@@ -726,6 +726,20 @@ exports.deletePollInVenue = functions.https.onCall(
   }
 );
 
+exports.voteInPoll = functions.https.onCall(
+  async ({ venueId, pollId, votes }, context) => {
+    checkAuth(context);
+
+    admin
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("chats")
+      .doc(pollId)
+      .update({ votes });
+  }
+);
+
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
   checkAuth(context);

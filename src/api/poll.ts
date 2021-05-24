@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import Bugsnag from "@bugsnag/js";
 import noop from "lodash/noop";
 
-import { PollMessage, PollValues } from "types/chat";
+import { PollMessage, Vote } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
@@ -40,30 +40,9 @@ export const deleteVenuePoll = async (data: DeleteVenuePollProps) =>
 
 export type VoteInPollProps = {
   venueId: string;
-  poll: PollValues;
-  votes: string[];
+  votes: Vote[];
   pollId: string;
 };
 
-// RESTRICRED due to user rights issue
-export const voteInVenuePoll = async ({
-  venueId,
-  poll,
-  votes,
-  pollId,
-}: VoteInPollProps): Promise<void> =>
-  getVenueRef(venueId)
-    .collection("chats")
-    .doc(pollId)
-    .update({ votes, poll })
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.addMetadata("context", {
-          location: "api/chat::voteInVenuePoll",
-          venueId,
-          poll,
-          pollId,
-        });
-      });
-      // @debt rethrow error, when we can handle it to show UI error
-    });
+export const voteInVenuePoll = async (data: VoteInPollProps) =>
+  await firebase.functions().httpsCallable("venue-voteInPoll")(data);

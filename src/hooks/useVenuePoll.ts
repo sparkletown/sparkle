@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 
 import { voteInVenuePoll, createVenuePoll, deleteVenuePoll } from "api/poll";
 
-import { PollMessage, PollValues } from "types/chat";
+import { PollMessage, PollValues, Vote } from "types/chat";
 
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
@@ -15,10 +15,10 @@ export const useVenuePoll = () => {
   const userId = user?.uid;
 
   const voteInPoll = useCallback(
-    (poll: PollValues, votes: string[], pollId: string) => {
+    (votes: Vote[], pollId: string) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, poll, votes, pollId });
+      voteInVenuePoll({ venueId, votes, pollId });
     },
     [venueId]
   );

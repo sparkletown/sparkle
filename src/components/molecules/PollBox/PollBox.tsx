@@ -21,7 +21,7 @@ export interface PollBoxProps {
   createPoll: (props: PollValues) => void;
 }
 
-const DEFAULT_QUESTION: PollQuestion = { name: "" };
+const DEFAULT_QUESTION: Partial<PollQuestion> = { name: "" };
 const DEFAULT_VALUES = {
   topic: "",
   questions: [DEFAULT_QUESTION, DEFAULT_QUESTION],
@@ -49,16 +49,12 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
 
     const owners = await getVenueOwners(venueId);
 
-    const newPoll = {
+    const poll = {
       canBeDeleted: isAdmin && owners.includes(userId),
       topic,
-      questions: questions.map(({ name }, id) => ({
-        name,
-        id,
-        votes: 0,
-      })),
+      questions: questions.map(({ name }, id) => ({ name, id })),
     };
-    createPoll(newPoll);
+    createPoll(poll);
     reset();
   });
 

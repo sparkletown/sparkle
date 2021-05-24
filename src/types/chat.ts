@@ -20,9 +20,14 @@ export type PrivateChatMessage = BaseChatMessage & {
 
 export type VenueChatMessage = BaseChatMessage;
 
+export type Vote = {
+  questionId: number;
+  userId: string;
+};
+
 export type PollMessage = BaseChatMessage & {
   poll: PollValues;
-  votes: string[];
+  votes: Vote[];
 };
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
@@ -99,8 +104,7 @@ export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
 
 export type PollQuestion = {
   name: string;
-  id?: number;
-  votes?: number;
+  id: number;
 };
 
 export type PollValues = {
