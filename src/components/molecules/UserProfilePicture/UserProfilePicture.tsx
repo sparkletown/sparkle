@@ -49,7 +49,7 @@ export interface UserProfilePictureProp {
   isAudioEffectDisabled?: boolean;
   containerClassName?: string;
   reactionPosition?: "left" | "right";
-
+  showNametags?: string;
   /**
    * @deprecated Note: This feature is currently disabled.
    */
@@ -61,6 +61,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   containerClassName,
   reactionPosition = "right",
+  showNametags,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
 }) => {
@@ -109,7 +110,11 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       // role="img"
       // aria-label={`${userDisplayName}'s avatar`}
     >
-      <UserAvatar user={user} containerClassName="UserProfilePicture__avatar" />
+      <UserAvatar
+        user={user}
+        containerClassName="UserProfilePicture__avatar"
+        showNametags={showNametags}
+      />
 
       {userId && (
         <UserReactions

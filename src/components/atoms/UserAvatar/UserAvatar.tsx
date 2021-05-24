@@ -14,6 +14,7 @@ export interface UserAvatarProps {
   containerClassName?: string;
   imageClassName?: string;
   isOnline?: boolean;
+  showNametags?: string;
   onClick?: () => void;
 }
 
@@ -22,6 +23,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
+  showNametags = false,
   onClick,
   isOnline,
 }) => {
@@ -33,6 +35,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     ? DEFAULT_PARTY_NAME
     : user?.partyName ?? DEFAULT_PARTY_NAME;
 
+  // const shouldShowNametags: boolean = isTruthy(showNametags);
+
+  const nametagClass = classNames("profile-name-avatar", {
+    "profile-name-avatar profile-name-avatar-hover": showNametags === "hover",
+  });
+
   const containerClasses = classNames("user-avatar", containerClassName, {
     "user-avatar--clickable": onClick !== undefined,
   });
@@ -41,6 +49,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerClasses}>
+      {showNametags && <div className={nametagClass}>{user?.partyName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}

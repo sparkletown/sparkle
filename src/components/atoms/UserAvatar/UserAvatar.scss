@@ -2,7 +2,7 @@
 
 .user-avatar {
   position: relative;
-
+  z-index: z(global-profile-icon);
   width: 25px;
   height: 25px;
   &__image {
@@ -29,4 +29,34 @@
       opacity: 0.9;
     }
   }
+
+  &:hover .profile-name-avatar-hover {
+    transform: scale(1.5) translate(-35%, 50%);
+    opacity: 1;
+    box-shadow: 0 0 0 3px lighten(blue, 10%), 0 2px 4px rgba($black, 0.2);
+    background-color: #005ee5;
+    padding: 5px 5px;
+  }
+}
+
+.profile-name-avatar {
+  opacity: 0.8;
+  z-index: z(global-profile-icon);
+  bottom: 10%;
+  position: absolute;
+  margin: 0 auto;
+  padding: 0px 5px;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 18px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 0.9;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, 0);
+  min-width: 70%;
+  transition: transform 400ms, padding 400ms, opacity 600ms,
+    background-color 600ms;
 }
