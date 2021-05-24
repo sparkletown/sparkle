@@ -5,18 +5,18 @@ import { UserStatus } from "types/User";
 import { updateUserOnlineStatus } from "api/profile";
 
 export const useProfileStatus = () => {
-  const { userWithId, profile } = useUser();
+  const { userId, profile } = useUser();
 
   const changeStatus = useCallback(
     (value: UserStatus) => {
-      if (userWithId) {
+      if (userId) {
         updateUserOnlineStatus({
           status: value,
-          userId: userWithId?.id,
+          userId,
         });
       }
     },
-    [userWithId]
+    [userId]
   );
 
   return {
