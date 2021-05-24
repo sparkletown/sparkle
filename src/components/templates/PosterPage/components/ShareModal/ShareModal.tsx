@@ -63,7 +63,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     ];
 
     return linkButtons.map((linkButton) => (
-      <LinkButton href={linkButton.href} key={linkButton.title}>
+      <LinkButton key={linkButton.title} href={linkButton.href}>
         <FontAwesomeIcon icon={linkButton.icon} />
         <span className="ShareModal__button-text">{linkButton.title}</span>
       </LinkButton>
