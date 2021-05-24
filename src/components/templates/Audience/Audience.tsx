@@ -469,6 +469,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 reactionPosition={isOnRight ? "left" : "right"}
                                 miniAvatars={venue.miniAvatars}
                                 isAudioEffectDisabled={isAudioEffectDisabled}
+                                showNametags={venue.showNametags}
                               />
                             )}
                             {seat && !seatedPartygoer && <>+</>}
