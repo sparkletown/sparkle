@@ -5,8 +5,6 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
-
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -78,7 +76,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <div className="ShareModal__header">
           <img
             className="ShareModal__background"
-            src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+            src={venue.config?.landingPageConfig?.coverImageUrl}
             alt="map"
           />
           <div className="ShareModal__logo" />
