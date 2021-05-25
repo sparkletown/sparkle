@@ -11,7 +11,7 @@ export interface TogglerProps {
 export const Toggler: React.FC<TogglerProps> = ({
   defaultToggled,
   onToggle,
-  containerClassName = "",
+  containerClassName,
 }) => (
   <Checkbox
     containerClassName={containerClassName}

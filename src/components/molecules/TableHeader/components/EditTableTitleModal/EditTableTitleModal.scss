@@ -1,11 +1,16 @@
 @import "scss/constants.scss";
 
+$edit-table-wrapper-padding: 0 10px;
+$edit-table-footer-padding: 10px 0 0 0;
+$edit-table-capacity-padding: 5px 0;
+$edit-table-input-spacing: 5px 0;
+
 .EditTableTitleModal {
-  padding: 0 10px;
+  padding: $edit-table-wrapper-padding;
 
   &__input {
     &--spacing {
-      padding: 5px 0;
+      padding: $edit-table-input-spacing;
     }
   }
 
@@ -13,7 +18,7 @@
     display: flex;
     align-content: center;
     justify-content: space-between;
-    padding: 5px 0;
+    padding: $edit-table-capacity-padding;
   }
 
   &__max-capacity {

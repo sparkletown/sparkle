@@ -1,15 +1,15 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
-import firebase from "firebase/app";
+
+import { updateVenueTable } from "api/table";
 
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
 
 import { Table } from "types/Table";
 
 import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -40,7 +40,6 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   capacity,
   onHide,
 }) => {
-  const { user } = useUser();
   const venueId = useVenueId();
 
   const formDefaultValues = useMemo(
@@ -52,13 +51,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
     [capacity, subtitle, title]
   );
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    watch,
-    reset,
-  } = useForm<EditTableForm>({
+  const { register, handleSubmit, errors, reset } = useForm<EditTableForm>({
     mode: "onBlur",
     reValidateMode: "onBlur",
     defaultValues: formDefaultValues,
@@ -70,46 +63,34 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   }, [formDefaultValues, reset, title]);
 
   // use useAsyncFn for easier error handling, instead of state hook
-  const [{ error }, updateTables] = useAsyncFn(
+  const [{ error: httpError }, updateTables] = useAsyncFn(
     async (values: EditTableForm) => {
-      if (!user || !tableOfUser || !venueId) return;
+      if (!venueId || !tableOfUser) return;
 
-      const updatedTable = {
-        ...tableOfUser,
-        title: values.title,
-        subtitle: values.subtitle,
-        capacity: values.capacity,
-      };
-
-      return await firebase.functions().httpsCallable("venue-updateTables")({
+      updateVenueTable({
+        ...values,
         venueId,
+        tableOfUser,
         tables,
-        updatedTable,
-      });
+      }).then(onHide);
     },
-    [tableOfUser, tables, user, venueId]
+    [onHide, tableOfUser, tables, venueId]
   );
-
-  const values = watch();
-
-  const onSubmit = useCallback(async () => {
-    await updateTables(values).then(() => {
-      onHide();
-    });
-  }, [onHide, updateTables, values]);
 
   return (
     <Modal show={isShown} onHide={onHide}>
       <Modal.Body>
-        <form onSubmit={handleSubmit(onSubmit)} className="EditTableTitleModal">
+        <form
+          onSubmit={handleSubmit(updateTables)}
+          className="EditTableTitleModal"
+        >
           <InputField
             ref={register({ required: true })}
             name="title"
-            defaultValue={title}
             containerClassName="EditTableTitleModal__input--spacing"
             placeholder="Table topic"
           />
-          {errors.title && errors.title.type === "required" && (
+          {errors.title?.type === "required" && (
             <span className="input-error">Topic is required</span>
           )}
 
@@ -123,19 +104,20 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
           <div className="EditTableTitleModal__capacity">
             <label className="EditTableTitleModal__max-capacity">
               Number of seats (max {MAX_TABLE_CAPACITY})
+              <InputField
+                ref={register({
+                  required: true,
+                  max: MAX_TABLE_CAPACITY,
+                  min: MIN_TABLE_CAPACITY,
+                })}
+                className="EditTableTitleModal__max-capacity--input"
+                name="capacity"
+                type="number"
+                min={MIN_TABLE_CAPACITY}
+                max={MAX_TABLE_CAPACITY}
+                placeholder="Max seats"
+              />
             </label>
-            <InputField
-              ref={register({
-                required: true,
-                max: MAX_TABLE_CAPACITY,
-                min: MIN_TABLE_CAPACITY,
-              })}
-              name="capacity"
-              type="number"
-              min={MIN_TABLE_CAPACITY}
-              max={MAX_TABLE_CAPACITY}
-              placeholder="Max seats"
-            />
           </div>
           {errors.capacity?.type === "required" && (
             <span className="input-error">Capacity is required</span>
@@ -147,7 +129,9 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
               {` ${MIN_TABLE_CAPACITY} and ${MAX_TABLE_CAPACITY}`}
             </span>
           )}
-          {error && <label className="input-error">{error.message}</label>}
+          {httpError && (
+            <label className="input-error">{httpError.message}</label>
+          )}
 
           <div className="EditTableTitleModal__footer-buttons">
             <button
