@@ -1,9 +1,10 @@
 import { useMemo, useCallback } from "react";
-import firebase from "firebase/app";
 
 import { voteInVenuePoll, createVenuePoll, deleteVenuePoll } from "api/poll";
 
 import { PollMessage, PollValues, Vote } from "types/chat";
+
+import { buildMessage } from "utils/chat";
 
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
@@ -25,13 +26,12 @@ export const useVenuePoll = () => {
     (pollValues: PollValues) => {
       if (!venueId || !userId) return;
 
-      const poll: PollMessage = {
+      const poll = buildMessage<PollMessage>({
         poll: pollValues,
         from: userId,
         text: "poll",
         votes: [],
-        ts_utc: firebase.firestore.Timestamp.now(),
-      };
+      });
 
       createVenuePoll({ venueId, poll });
     },
