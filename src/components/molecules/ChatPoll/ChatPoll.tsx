@@ -16,7 +16,7 @@ import { useUser } from "hooks/useUser";
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: WithId<BaseMessageToDisplay<PollMessage>>;
+  pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
   deletePoll: (pollId: string) => void;
   voteInPoll: (votes: Vote[], pollId: string) => void;
 }

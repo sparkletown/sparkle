@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
 import { MessageToDisplay, SendChatReply, SendMesssage } from "types/chat";
