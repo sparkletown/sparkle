@@ -229,7 +229,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return recentVenueUsers.filter((user) => {
       const { row, column } = user.data?.[venueId] ?? {};
-      return row != null && column != null;
+      return isDefined(row) && isDefined(column);
     });
   }, [recentVenueUsers, venueId]);
 
