@@ -153,7 +153,7 @@ jobs:
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
             # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
-            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN --force"
+            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
 
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
 
