@@ -6,6 +6,9 @@ import { VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 
+export const getUserRef = (userId: string) =>
+  firebase.firestore().collection("users").doc(userId);
+
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
   userUid: string;
@@ -63,8 +66,9 @@ export const updateUserOnlineStatus = async ({
   status,
   userId,
 }: UpdateUserOnlineStatusProps): Promise<void> => {
-  const userProfileRef = firebase.firestore().collection("users").doc(userId);
-  const newData = {
+  const userProfileRef = getUserRef(userId);
+
+  const newUserStatusData = {
     status: status ?? firebase.firestore.FieldValue.delete(),
   };
 
@@ -74,7 +78,7 @@ export const updateUserOnlineStatus = async ({
     userId,
   };
 
-  return userProfileRef.update(newData).catch((err) => {
+  return userProfileRef.update(newUserStatusData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", context);
     });
@@ -104,7 +108,7 @@ export const updatePersonalizedSchedule = async ({
   userId,
   removeMode = false,
 }: UpdatePersonalizedScheduleProps): Promise<void> => {
-  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+  const userProfileRef = getUserRef(userId);
 
   const modify = removeMode
     ? firebase.firestore.FieldValue.arrayRemove

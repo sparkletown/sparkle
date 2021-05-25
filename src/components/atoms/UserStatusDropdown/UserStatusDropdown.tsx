@@ -21,6 +21,7 @@ export const UserStatusDropdown: React.FC = () => {
   );
 
   return (
+    // @debt replace with our own dropdown component
     <DropdownButton
       id="user-status-dropdown"
       title={status ?? "Change user status"}

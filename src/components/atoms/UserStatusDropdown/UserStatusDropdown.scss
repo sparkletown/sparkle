@@ -3,6 +3,7 @@
 $dropdown-width: 100px;
 
 .UserStatusDropdown {
+  // @debt override the default Dropdown classes
   .dropdown-toggle.btn {
     background: none;
     padding: 0;
