@@ -3,10 +3,10 @@ import { useUser } from "hooks/useUser";
 import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
 import { IS_BURN } from "secrets";
 import { QuestionType } from "types/Question";
 import { Badges } from "components/organisms/Badges";
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { DEFAULT_PROFILE_VALUES } from "../constants";
 import { updateUserProfile } from "pages/Account/helpers";
 import { useVenueId } from "hooks/useVenueId";
@@ -15,6 +15,7 @@ import {
   currentVenueSelector,
   currentVenueSelectorData,
 } from "utils/selectors";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -73,18 +74,11 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <img
-          className="profile-icon profile-modal-avatar"
-          src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-          alt="profile avatar"
-          width="50"
-          height="50"
-        />
+        <UserAvatar user={userWithId} showStatus large />
         <div className="text-container">
-          <h2 className="title ellipsis-text">
-            {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
-          </h2>
+          <h3>{profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}</h3>
           <div className="ellipsis-text">{user.email}</div>
+          <UserStatusDropdown />
         </div>
       </div>
 
