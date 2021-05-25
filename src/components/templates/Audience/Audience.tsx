@@ -23,6 +23,7 @@ import { GenericVenue } from "types/venues";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createEmojiReaction, createTextReaction } from "utils/reactions";
+import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
