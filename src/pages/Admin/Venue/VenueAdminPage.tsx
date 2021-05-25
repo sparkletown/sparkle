@@ -1,6 +1,5 @@
-import React from "react";
-
-import { IFRAME_TEMPLATES } from "settings";
+import React, { useMemo } from "react";
+import { Button } from "react-bootstrap";
 
 import {
   isCurrentVenueNGRequestedSelector,
@@ -10,12 +9,15 @@ import {
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { BannerAdmin } from "components/organisms/BannerAdmin";
+import { NewProfileModal } from "components/organisms/NewProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { IframeAdmin } from "components/molecules/IframeAdmin";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./VenueAdminPage.scss";
@@ -26,10 +28,15 @@ export const VenueAdminPage: React.FC = () => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
+  const { isShown, show } = useShowHide();
 
   const isVenueOwner = useIsUserVenueOwner();
   const isVenueLoading = venueRequestingStatus || !venueRequestStatus;
   const isLoggedIn = profile && user;
+
+  const banner = useMemo(() => {
+    return venue?.banner ?? { content: "No announcement" };
+  }, [venue]);
 
   if (isVenueLoading) {
     return <LoadingPage />;
@@ -49,13 +56,25 @@ export const VenueAdminPage: React.FC = () => {
     );
   }
 
-  const isIframeVenue = IFRAME_TEMPLATES.includes(venue.template);
-
   return (
-    <>
-      <h4 className="admin-page-title">You are editing venue: {venue.name}</h4>
-      <BannerAdmin venueId={venueId} venue={venue} />
-      {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
-    </>
+    <WithNavigationBar>
+      <div className="AdminPage">
+        <h4 className="AdminPage__title">
+          Current Announcement in Space Title
+        </h4>
+        {isShown ? (
+          <BannerAdmin venueId={venueId} venue={venue} />
+        ) : (
+          <>
+            <AnnouncementMessage banner={banner} />
+            <div className="AdminPage__options">
+              <div></div>
+              <Button onClick={show}>Edit</Button>
+            </div>
+          </>
+        )}
+      </div>
+      <NewProfileModal venue={venue} />
+    </WithNavigationBar>
   );
 };

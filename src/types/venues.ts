@@ -15,6 +15,7 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
+import { BannerFormData } from "./banner";
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
@@ -150,7 +151,7 @@ export interface BaseVenue {
   radioTitle?: string;
   dustStorm?: boolean;
   activity?: string;
-  bannerMessage?: string;
+  banner?: BannerFormData;
   playaIcon?: PlayaIcon;
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;

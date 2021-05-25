@@ -7,7 +7,7 @@ export const makeUpdateBanner = (
 ) => async (message?: string): Promise<void> => {
   const params = {
     venueId,
-    bannerMessage: message ?? "",
+    banner: message ?? {},
   };
 
   await firebase
