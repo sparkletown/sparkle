@@ -17,7 +17,7 @@ export const VenueChat: React.FC = () => {
   const { selectVenueChat } = useChatSidebarControls();
 
   return (
-    <div className="venue-chat" onClick={() => selectVenueChat()}>
+    <div className="venue-chat" onClick={selectVenueChat}>
       <Chatbox
         messages={messagesToDisplay}
         sendMessage={sendMessage}
