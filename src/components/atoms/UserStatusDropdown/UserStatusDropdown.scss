@@ -2,43 +2,45 @@
 
 $dropdown-width: 100px;
 
-.Dropdown {
-  position: relative;
-
-  &__header {
-    width: $dropdown-width;
-    margin-bottom: $spacing--xs;
-    padding: $spacing--xs 0;
-    box-shadow: 0 2px 3px rgba(0, 0, 0, 0.15);
-    background-color: $black;
-    cursor: pointer;
-  }
-
-  &__list-container {
-    position: absolute;
-    top: 100%;
-    left: 0;
-  }
-
-  &__list {
-    width: $dropdown-width;
+.UserStatusDropdown {
+  .dropdown-toggle.btn {
+    background: none;
     padding: 0;
-    margin: 0;
-    background-color: $black;
-    box-sizing: border-box;
-    overflow: visible;
-    &:first-child {
-      padding-top: $spacing--xs;
+    border-radius: 0;
+    text-decoration: none;
+    border: none;
+
+    font-size: $font-size--sm;
+    font-weight: $font-weight--400;
+    color: opaque-white(0.8);
+    border-bottom: thin solid opaque-white(0.8);
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:hover {
+      background-color: initial;
+      transform: none;
+      color: opaque-white(0.9);
+      border-bottom: thin solid opaque-white(0.9);
+    }
+
+    &::after {
+      display: none;
     }
   }
 
-  &__item {
-    list-style: none;
-    margin-bottom: $spacing--xs;
-    padding: 0 $spacing--sm;
-    cursor: pointer;
-    &:hover {
-      background-color: $concrete;
+  .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 $spacing--md;
+    text-decoration: none;
+    opacity: 0.8;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
     }
   }
 }

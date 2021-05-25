@@ -21,17 +21,15 @@
     width: 8px;
     z-index: z(user-avatar-status-indicator);
 
+    display: none;
+
     &--online {
+      display: block;
       background-color: $green;
     }
     &--busy {
+      display: block;
       background-color: $ripple-color;
-    }
-    &--offline {
-      background-color: $red;
-    }
-    &--custom {
-      background-color: $concrete;
     }
 
     &--large {

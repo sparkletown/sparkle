@@ -1,6 +1,5 @@
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useProfileStatus } from "hooks/useProfileStatus";
 import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
@@ -17,7 +16,6 @@ import {
   currentVenueSelectorData,
 } from "utils/selectors";
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { USER_STATUSES } from "settings";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -36,7 +34,6 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-  const { status, changeUserStatus } = useProfileStatus();
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -77,17 +74,11 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <UserAvatar user={userWithId} showStatus />
+        <UserAvatar user={userWithId} showStatus large />
         <div className="text-container">
-          <h2 className="title ellipsis-text">
-            {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
-          </h2>
+          <h3>{profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}</h3>
           <div className="ellipsis-text">{user.email}</div>
-          <UserStatusDropdown
-            options={USER_STATUSES}
-            onChange={changeUserStatus}
-            label={status}
-          />
+          <UserStatusDropdown />
         </div>
       </div>
 

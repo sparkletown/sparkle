@@ -1,66 +1,32 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
-import { UserStatus } from "types/User";
+import { USER_STATUSES } from "settings";
 
-import { useShowHide } from "hooks/useShowHide";
+import { useProfileStatus } from "hooks/useProfileStatus";
 
 import "./UserStatusDropdown.scss";
 
-export interface UserStatusDropdownProps {
-  options: UserStatus[];
-  onChange: (option?: UserStatus) => void;
-  label?: string;
-}
+export const UserStatusDropdown: React.FC = () => {
+  const { status, changeUserStatus } = useProfileStatus();
 
-export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
-  options,
-  label,
-  onChange,
-}) => {
-  const {
-    isShown: isDropdownOptionsShown,
-    hide: hideDropdownOptions,
-    toggle: toggleDropdownOptions,
-  } = useShowHide();
-
-  const onOptionClicked = useCallback(
-    (value: UserStatus) => {
-      if (value === UserStatus.online) {
-        // Remove status field, if the status is default
-        onChange(undefined);
-      } else {
-        onChange(value);
-      }
-
-      hideDropdownOptions();
-    },
-    [hideDropdownOptions, onChange]
+  const userStatusDropdownOptions = useMemo(
+    () =>
+      USER_STATUSES.map((option) => (
+        <Dropdown.Item key={option} onClick={() => changeUserStatus(option)}>
+          {option}
+        </Dropdown.Item>
+      )),
+    [changeUserStatus]
   );
 
-  const optionsComponents = useMemo(() => {
-    return options
-      .filter((opt) => opt !== label)
-      .map((option) => (
-        <li
-          className="Dropdown__item"
-          onClick={() => onOptionClicked(option)}
-          key={option}
-        >
-          {option}
-        </li>
-      ));
-  }, [label, onOptionClicked, options]);
-
   return (
-    <div className="Dropdown">
-      <div className="Dropdown__header" onClick={toggleDropdownOptions}>
-        {label || "change status"}
-      </div>
-      {isDropdownOptionsShown && (
-        <div className="Dropdown__list-container">
-          <ul className="Dropdown__list">{optionsComponents}</ul>
-        </div>
-      )}
-    </div>
+    <DropdownButton
+      id="user-status-dropdown"
+      title={status ?? "Change user status"}
+      className="UserStatusDropdown"
+    >
+      {userStatusDropdownOptions}
+    </DropdownButton>
   );
 };

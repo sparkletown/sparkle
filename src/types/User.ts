@@ -40,7 +40,6 @@ export interface User {
 }
 
 export enum UserStatus {
-  online = "online",
+  available = "available",
   busy = "busy",
-  custom = "custom",
 }

@@ -53,7 +53,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const imageClasses = classNames("user-avatar__image", imageClassName);
 
   const statusIndicatorClasses = classNames("user-avatar__status-indicator", {
-    "user-avatar__status-indicator--offline": !isOnline,
     "user-avatar__status-indicator--online": isOnline,
     [`user-avatar__status-indicator--${status}`]: isOnline && status,
     "user-avatar__status-indicator--large": large,

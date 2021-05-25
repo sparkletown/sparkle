@@ -583,11 +583,7 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
 
-export const USER_STATUSES = [
-  UserStatus.online,
-  UserStatus.busy,
-  UserStatus.custom,
-];
+export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
 // SCHEDULE
 // @debt probably would be better to adjust max hour based on user's display size

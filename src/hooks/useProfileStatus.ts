@@ -11,6 +11,16 @@ export const useProfileStatus = () => {
     (newStatus?: UserStatus) => {
       if (!userId) return;
 
+      if (newStatus === UserStatus.available) {
+        // Remove the field, if the person sets a defult status
+        updateUserOnlineStatus({
+          status: undefined,
+          userId,
+        });
+
+        return;
+      }
+
       updateUserOnlineStatus({
         status: newStatus,
         userId,
