@@ -119,7 +119,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
       <p className="ScreeningRoom__title">Screening room</p>
       {selectedVideo && (
         <div className="ScreeningRoom__video-container">
-          {/* We need this additional wrapper to position the close button over the iframe */}
+          {/* We need this additional wrapper to properly place the close button over the iframe */}
           <div className="ScreeningRoom__video-cover">
             <iframe
               className="ScreeningRoom__video"
