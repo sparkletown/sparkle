@@ -9,11 +9,11 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { WithId } from "utils/id";
 
-import { useScreeningRoom } from "./useScreeningRoom";
-
 import { InputField } from "components/atoms/InputField";
 import { Button } from "components/atoms/Button";
 import { PosterCategory } from "components/atoms/PosterCategory";
+
+import { useScreeningRoom } from "./useScreeningRoom";
 
 import { ScreeningVideoPreview } from "./components/ScreeningVideoPreview";
 
@@ -73,8 +73,8 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     [videos, selectedVideoId]
   );
 
-  const renderedCategoryOptions = useMemo(() => {
-    return (
+  const renderedCategoryOptions = useMemo(
+    () => (
       <div className="ScreeningRoom__categories">
         <PosterCategory
           key="All videos"
@@ -93,8 +93,9 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
           />
         ))}
       </div>
-    );
-  }, [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]);
+    ),
+    [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]
+  );
 
   const renderedSubCategoryOptions = useMemo(
     () => (
