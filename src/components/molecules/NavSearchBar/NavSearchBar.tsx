@@ -155,7 +155,7 @@ const NavSearchBar = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const focusSearchBar = useCallback((e) => {
     e.preventDefault();
-    if (inputRef && inputRef.current) inputRef.current.focus();
+    inputRef.current?.focus();
   }, []);
 
   useMousetrap({
@@ -183,9 +183,9 @@ const NavSearchBar = () => {
       </div>
 
       <InputField
+        ref={inputRef}
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
-        ref={inputRef}
         onChange={onSearchInputChange}
         placeholder="Search for people, rooms, events..."
         autoComplete="off"

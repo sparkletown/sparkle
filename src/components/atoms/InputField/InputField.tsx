@@ -61,6 +61,7 @@ const InputField: React.ForwardRefRenderFunction<
 
   const inputClassNames = classNames("input-field__input", inputClassName);
 
+  // @debt Replace this with useMousetrap when we fix it to bind refs (not just globally)
   const keyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Escape" && e.target) {
       e.currentTarget.blur();

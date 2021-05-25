@@ -7,7 +7,7 @@ import { ReactHook } from "types/utility";
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";
 
-interface UseMapKeyboardControlsProps {
+export interface UseMapKeyboardControlsProps {
   venueId: string;
   totalRows: number;
   totalColumns: number;
