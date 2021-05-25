@@ -17,7 +17,7 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
   activeOption,
   setActiveOption,
 }) => {
-  const showPoll = activeOption === ChatMessageOptions.poll;
+  const shouldShowPoll = activeOption === ChatMessageOptions.poll;
 
   const dropdownOptions = useMemo(
     () =>
@@ -35,7 +35,7 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
 
   return (
     <div className="ChatboxOptionsControls">
-      {showPoll ? (
+      {shouldShowPoll ? (
         <TextButton
           label="Cancel Poll"
           onClick={() => setActiveOption(undefined)}
