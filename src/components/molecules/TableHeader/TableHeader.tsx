@@ -20,12 +20,13 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { experienceSelector } from "utils/selectors";
 
-import { EditTableTitleModal } from "./components/EditTableTitleModal";
 import { Toggler } from "components/atoms/Toggler";
+
+import { EditTableTitleModal } from "./components/EditTableTitleModal";
 
 import "./TableHeader.scss";
 
-interface TableHeaderProps {
+export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
   venueName: string;
@@ -40,11 +41,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { user, profile } = useUser();
 
-  const experience = useSelector(experienceSelector);
+  const { tables: allTables } = useSelector(experienceSelector) ?? {};
   const { recentVenueUsers } = useRecentVenueUsers();
   const { isShown, show, hide } = useShowHide();
-
-  const allTables = experience?.tables;
 
   const tableOfUser = useMemo(
     () =>
@@ -54,6 +53,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     [seatedAtTable, tables]
   );
 
+  // @debt This should be removed after the functions using it, are extracted into the api layer.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = async (doc: string, update: any) => {
     const firestore = firebase.firestore();
@@ -72,9 +72,9 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 
   const currentTableHasSeatedUsers = useMemo(
     () =>
-      recentVenueUsers.filter(
+      !!recentVenueUsers.find(
         (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ).length !== 0,
+      ),
     [venueName, recentVenueUsers, seatedAtTable]
   );
 
@@ -82,6 +82,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const tableCapacity = tableOfUser?.capacity ?? MAX_TABLE_CAPACITY;
   const tableSubtitle = tableOfUser?.subtitle;
 
+  // @debt This should be extracted into the api layer
   const setIsCurrentTableLocked = useCallback(
     (locked: boolean) => {
       const doc = `experiences/${venueName}`;
@@ -110,6 +111,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     setIsCurrentTableLocked,
   ]);
 
+  // @debt This should be extracted into the api layer
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
 
@@ -164,7 +166,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </div>
 
         {tableCapacity && (
-          <span className="TableHeader__seats-left">
+          <span className="TableHeader__table-details">
             {tableOfUser?.subtitle && `${tableOfUser.subtitle} - `}
             {tableCapacity} seats
           </span>
@@ -181,21 +183,18 @@ const TableHeader: React.FC<TableHeaderProps> = ({
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
         <Toggler
-          toggled={isCurrentTableLocked}
           containerClassName="TableHeader__lock-toggle"
-          onChange={toggleIsCurrentTableLocked}
+          defaultToggled={isCurrentTableLocked}
+          onToggle={toggleIsCurrentTableLocked}
         />
       </div>
 
       <EditTableTitleModal
-        isShown={isShown}
-        venueName={venueName}
         title={tableTitle}
-        tables={tables}
-        tableOfUser={tableOfUser}
         subtitle={tableSubtitle}
         capacity={tableCapacity}
         onHide={hide}
+        {...{ isShown, tables, tableOfUser }}
       />
     </div>
   );

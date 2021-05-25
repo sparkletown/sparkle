@@ -18,7 +18,7 @@
     border: none;
     padding: 15px 15px 15px 25px;
     border-radius: 0 0 16px 0;
-    font-weight: 500;
+    font-weight: $font-weight--500;
 
     &--icon {
       margin-right: 8px;
@@ -50,8 +50,8 @@
     font-weight: $font-weight--500;
   }
 
-  &__seats-left {
-    font-size: 11px;
+  &__table-details {
+    font-size: $font-size--xs;
     font-weight: $font-weight--400;
   }
 

@@ -11,7 +11,6 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
-import { Table } from "types/Table";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
@@ -124,7 +123,6 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
-  tables?: Table[];
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -333,7 +331,7 @@ export const updateVenue = async (
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  return await firebase
+  return firebase
     .functions()
     .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
     .catch((error) => {
@@ -345,6 +343,7 @@ export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
       Bugsnag.notify(msg, (event) => {
         event.severity = "warning";
         event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
       });
       throw error;
     });

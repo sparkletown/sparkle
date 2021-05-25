@@ -195,12 +195,12 @@ button.btn {
   }
 
   &.btn-secondary {
-    background-image: none;
-    background-color: $lighter-intermediate-grey;
+    // Background image has to be set to 'none' because by default the Button has gradient image
+    background-color: $secondary--light;
 
     &:hover {
       background-image: none;
-      background-color: $light-grey;
+      background-color: $secondary;
     }
   }
 

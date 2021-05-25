@@ -26,7 +26,6 @@ export interface EditTableTitleModalProps {
   title: string;
   subtitle?: string;
   capacity: number;
-  venueName: string;
   tables: Table[];
   tableOfUser?: Table;
   onHide: () => void;
@@ -34,7 +33,6 @@ export interface EditTableTitleModalProps {
 
 export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   isShown,
-  venueName,
   title,
   tables,
   tableOfUser,
@@ -155,7 +153,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             <button
               className="btn btn-centered btn-secondary"
               onClick={onHide}
-              type="reset"
+              type="button"
             >
               Cancel
             </button>

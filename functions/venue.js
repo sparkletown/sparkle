@@ -618,10 +618,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.config.landingPageConfig.description = data.description;
   }
 
-  if (data.tables) {
-    updated.config.tables = data.tables;
-  }
-
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -726,6 +722,13 @@ exports.updateTables = functions.https.onCall((data, context) => {
     const currentTableIndex = venueTables.findIndex(
       (table) => table.reference === data.updatedTable.reference
     );
+
+    if (currentTableIndex > 0) {
+      throw new HttpsError(
+        "not-found",
+        `current table does not exist in the venue`
+      );
+    }
 
     venueTables[currentTableIndex] = data.updatedTable;
 
