@@ -22,10 +22,10 @@ export const LinkButton: React.FC<LinkButtonProps> = ({
 
   return (
     <a
+      className={linkClasses}
       href={href}
       {...extraProps}
       {...externalUrlAdditionalProps}
-      className={linkClasses}
     >
       {children}
     </a>
