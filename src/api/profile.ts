@@ -55,7 +55,7 @@ export const makeUpdateUserGridLocation = ({
 };
 
 export interface UpdateUserOnlineStatusProps {
-  status: UserStatus;
+  status: UserStatus | null;
   userId: string;
 }
 

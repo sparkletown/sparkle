@@ -8,7 +8,7 @@ export const useProfileStatus = () => {
   const { userId, profile } = useUser();
 
   const changeStatus = useCallback(
-    (value: UserStatus) => {
+    (value: UserStatus | null) => {
       if (!userId) return;
 
       updateUserOnlineStatus({

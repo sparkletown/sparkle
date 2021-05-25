@@ -8,7 +8,7 @@ import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
   options: UserStatus[];
-  onChange: (option: UserStatus) => void;
+  onChange: (option: UserStatus | null) => void;
   label?: string;
 }
 
@@ -25,6 +25,9 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   const onOptionClicked = useCallback(
     (value: UserStatus) => {
+      if (value === "online") {
+        onChange(null);
+      }
       onChange(value);
       hideDropdownOptions();
     },
