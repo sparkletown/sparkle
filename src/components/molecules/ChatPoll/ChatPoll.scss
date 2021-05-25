@@ -4,6 +4,7 @@ $poll-text-border-radius-me: $spacing--xxl $spacing--xxl $spacing--xs
   $spacing--xxl;
 $poll-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xxl $spacing--xs;
 
+// Override global styles button
 button.ChatPoll__question {
   display: block;
   margin-bottom: $spacing--lg;
