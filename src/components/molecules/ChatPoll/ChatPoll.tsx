@@ -5,7 +5,12 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
 import { getVenueOwners } from "api/admin";
 
-import { PollMessage, BaseMessageToDisplay, Vote } from "types/chat";
+import {
+  PollMessage,
+  BaseMessageToDisplay,
+  Vote,
+  PollQuestion,
+} from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -41,6 +46,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   useEffect(() => {
     async function fetchVenueOwners() {
       if (!venueId) return;
+
       const owners = await getVenueOwners(venueId);
       setOwners(owners);
     }
@@ -66,19 +72,6 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
   });
-
-  const formattedQuestions = questions
-    .map((item) => ({
-      ...item,
-      count: votes.length
-        ? Math.floor(
-            (votes.filter(({ questionId }) => questionId === item.id).length /
-              votes.length) *
-              100
-          )
-        : 0,
-    }))
-    .sort((a, b) => b.count - a.count);
 
   const handleVote = useCallback(
     (question) => {
@@ -108,27 +101,44 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     [questions, handleVote]
   );
 
-  const renderCounts = useMemo(
-    () =>
-      formattedQuestions.map((question) => (
-        <div key={question.name} className="ChatPoll__text">
-          <div
-            className="ChatPoll__text-background"
-            style={{ width: `${question.count}%` }}
-          />
-          <span className="ChatPoll__text-count">{question.count}%</span>
-          {question.name}
-        </div>
-      )),
-    [formattedQuestions]
+  const calculateShare = useCallback(
+    (item: PollQuestion) =>
+      votes.length
+        ? Math.floor(
+            (votes.filter(({ questionId }) => questionId === item.id).length /
+              votes.length) *
+              100
+          )
+        : 0,
+    [votes]
   );
+
+  const renderResults = useMemo(() => {
+    const sortedQuestions = questions
+      .map((item) => ({
+        ...item,
+        share: calculateShare(item),
+      }))
+      .sort((a, b) => b.share - a.share);
+
+    return sortedQuestions.map((question) => (
+      <div key={question.name} className="ChatPoll__text">
+        <div
+          className="ChatPoll__text-background"
+          style={{ width: `${question.share}%` }}
+        />
+        <span className="ChatPoll__text-count">{question.share}%</span>
+        {question.name}
+      </div>
+    ));
+  }, [questions, calculateShare]);
 
   return (
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
-        <div>{isMine || isVoted ? renderCounts : renderQuestions}</div>
+        <div>{isMine || isVoted ? renderResults : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
         </div>
