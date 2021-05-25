@@ -5,15 +5,9 @@ import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 
 import { MAX_POLL_QUESTIONS } from "settings";
 
-import { getVenueOwners } from "api/admin";
-
 import { PollValues, PollQuestion } from "types/chat";
 
 import { InputField } from "components/atoms/InputField";
-
-import { useVenueId } from "hooks/useVenueId";
-import { useRoles } from "hooks/useRoles";
-import { useUser } from "hooks/useUser";
 
 import "./PollBox.scss";
 
@@ -28,12 +22,6 @@ const DEFAULT_VALUES = {
 };
 
 export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
-  const venueId = useVenueId();
-  const { userRoles } = useRoles();
-  const { userId } = useUser();
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-
   const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
     {
       defaultValues: DEFAULT_VALUES,
@@ -44,13 +32,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const topic = watch("topic");
 
   const onPollSubmit = handleSubmit(async ({ topic, questions }) => {
-    if (!venueId || !userId) return;
-
-    const owners = await getVenueOwners(venueId);
-
     const poll = {
-      // delete
-      canBeDeleted: isAdmin && owners.includes(userId),
       topic,
       questions: questions.map(({ name }, id) => ({ name, id })),
     };

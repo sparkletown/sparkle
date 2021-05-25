@@ -19,11 +19,11 @@ import { PollBox } from "components/molecules/PollBox";
 import { ChatMessage } from "components/atoms/ChatMessage";
 
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
+import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
 
 import "./Chatbox.scss";
-import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -40,7 +40,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   deleteMessage,
   displayPoll,
 }) => {
-  const { createPoll, deletePoll, voteInPoll } = useVenuePoll();
+  const { createPoll, voteInPoll } = useVenuePoll();
 
   const [selectedThread, setSelectedThread] = useState<
     WithId<MessageToDisplay>
@@ -57,7 +57,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           <ChatPoll
             key={message.id}
             pollMessage={message}
-            deletePoll={deletePoll}
+            deletePollMessage={deleteMessage}
             voteInPoll={voteInPoll}
           />
         ) : (
@@ -69,7 +69,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )
       ),
-    [messages, deleteMessage, deletePoll, voteInPoll]
+    [messages, deleteMessage, voteInPoll]
   );
 
   return (

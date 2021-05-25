@@ -110,7 +110,6 @@ export type PollQuestion = {
 export type PollValues = {
   topic: string;
   questions: PollQuestion[];
-  canBeDeleted: boolean;
 };
 
 export const ChatMessageOptions: ChatOptionMap = {

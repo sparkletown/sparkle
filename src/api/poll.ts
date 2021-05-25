@@ -30,14 +30,6 @@ export const createVenuePoll = async ({
       // @debt rethrow error, when we can handle it to show UI error
     });
 
-export type DeleteVenuePollProps = {
-  venueId: string;
-  pollId: string;
-};
-
-export const deleteVenuePoll = async (data: DeleteVenuePollProps) =>
-  await firebase.functions().httpsCallable("venue-deletePollInVenue")(data);
-
 export type VoteInPollProps = {
   venueId: string;
   votes: Vote[];

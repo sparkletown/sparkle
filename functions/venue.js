@@ -711,24 +711,13 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
-exports.deletePollInVenue = functions.https.onCall(
-  async ({ venueId, pollId }, context) => {
-    checkAuth(context);
-    await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
-
-    admin
-      .firestore()
-      .collection("venues")
-      .doc(venueId)
-      .collection("chats")
-      .doc(pollId)
-      .update({ deleted: true });
-  }
-);
-
 exports.voteInPoll = functions.https.onCall(
   async ({ venueId, pollId, votes }, context) => {
     checkAuth(context);
+
+    // checkUserIsVoted
+    // in transactions fetch current Poll
+    // check if new Vote in list ? error : add in list
 
     admin
       .firestore()
