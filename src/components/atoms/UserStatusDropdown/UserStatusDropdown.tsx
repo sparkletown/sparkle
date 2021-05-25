@@ -9,7 +9,7 @@ import "./UserStatusDropdown.scss";
 export interface UserStatusDropdownProps {
   options: UserStatus[];
   onChange: (option: UserStatus) => void;
-  label: UserStatus | string;
+  label?: string;
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
