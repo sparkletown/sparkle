@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import ReactMarkdown from "react-markdown";
 import glm from "remark-gfm";
@@ -8,7 +8,7 @@ import sanitize from "rehype-sanitize";
 
 export const RenderMarkdown = (
   text?: string,
-  options?: { allowImages?: boolean; allowP?: boolean }
+  options?: { allowImages?: boolean }
 ) => {
   if (!text) return;
   const disallowed: Array<string> = [];
@@ -19,20 +19,6 @@ export const RenderMarkdown = (
       remarkPlugins={[[glm], [emoji], [externalLinks]]}
       rehypePlugins={[[sanitize]]}
       disallowedElements={disallowed}
-      components={
-        options?.allowP
-          ? {}
-          : {
-              p: Fragment,
-              h1: Fragment,
-              h2: Fragment,
-              h3: Fragment,
-              h4: Fragment,
-              h5: Fragment,
-              h6: Fragment,
-              pre: Fragment,
-            }
-      }
     >
       {text}
     </ReactMarkdown>
