@@ -597,6 +597,7 @@ export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
 export const KeyboardShortcutKeys = {
   chat: "c",
+  escape: "escape",
   movement: {
     down: ["down", "s"],
     left: ["left", "a"],
