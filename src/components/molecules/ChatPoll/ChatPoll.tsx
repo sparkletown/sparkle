@@ -8,7 +8,6 @@ import { PollMessage, BaseMessageToDisplay, Vote } from "types/chat";
 import { WithId } from "utils/id";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
-import { TextButton } from "components/atoms/TextButton";
 import Button from "components/atoms/Button";
 
 import { useUser } from "hooks/useUser";
@@ -22,22 +21,25 @@ export interface ChatPollProps {
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
-  pollData,
+  pollMessage,
   voteInPoll,
   deletePoll,
 }) => {
-  const { user } = useUser();
+  const { userId } = useUser();
 
-  const userId = user?.uid;
-
-  const { id, poll, votes, isMine } = pollData;
-  const { questions, topic, canBeDeleted } = poll;
+  const { id, poll, votes, isMine } = pollMessage;
+  const { questions, topic } = poll;
+  // canBeDeleted: isAdmin && owners.includes(userId)
+  const canBeDeleted = false;
 
   const isVoted = userId
     ? votes.map(({ userId }) => userId).includes(userId)
     : false;
 
-  const isDeleted = isMine && canBeDeleted;
+  const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
+    pollMessage,
+    canBeDeleted,
+  ]);
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
@@ -107,22 +109,13 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         <div>{isMine || isVoted ? renderCounts : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
-          {isDeleted && (
-            <span className="ChatPoll__delete-container">
-              -
-              <TextButton
-                containerClassName="ChatPoll__delete-button"
-                onClick={() => deletePoll(id)}
-                label="Delete Poll"
-              />
-            </span>
-          )}
         </div>
       </div>
 
       <ChatMessageInfo
-        message={{ ...pollData, canBeDeleted: isDeleted }}
+        message={message}
         reversed={isMine}
+        // deleteVenueMessage instead of deletePoll
         deleteMessage={() => {}}
       />
     </div>

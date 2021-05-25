@@ -56,7 +56,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         isPollMessage(message) ? (
           <ChatPoll
             key={message.id}
-            pollData={message}
+            pollMessage={message}
             deletePoll={deletePoll}
             voteInPoll={voteInPoll}
           />

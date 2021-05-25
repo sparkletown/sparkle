@@ -3,7 +3,7 @@ import { useForm, useFieldArray } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faPlus } from "@fortawesome/free-solid-svg-icons";
 
-import { MAX_POLL_CHOICES } from "settings";
+import { MAX_POLL_QUESTIONS } from "settings";
 
 import { getVenueOwners } from "api/admin";
 
@@ -30,9 +30,8 @@ const DEFAULT_VALUES = {
 export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const venueId = useVenueId();
   const { userRoles } = useRoles();
-  const { user } = useUser();
+  const { userId } = useUser();
 
-  const userId = user?.uid;
   const isAdmin = Boolean(userRoles?.includes("admin"));
 
   const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
@@ -50,6 +49,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
     const owners = await getVenueOwners(venueId);
 
     const poll = {
+      // delete
       canBeDeleted: isAdmin && owners.includes(userId),
       topic,
       questions: questions.map(({ name }, id) => ({ name, id })),
@@ -61,8 +61,9 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const isDisabled = !(topic && question1.name && question2.name);
 
   const addChoice = useCallback(() => append(DEFAULT_QUESTION), [append]);
-  const showAppend = useCallback(
-    (index) => index + 1 === fields.length && MAX_POLL_CHOICES > fields.length,
+  const checkIfChoiceCanBeAppended = useCallback(
+    (questionId) =>
+      questionId + 1 === fields.length && MAX_POLL_QUESTIONS > fields.length,
     [fields]
   );
 
@@ -77,14 +78,14 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
             placeholder={`Choice ${index + 1}`}
             name={`questions.${index}.name`}
           />
-          {showAppend(index) && (
+          {checkIfChoiceCanBeAppended(index) && (
             <button className="PollBox__append-button" onClick={addChoice}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
           )}
         </section>
       )),
-    [addChoice, fields, showAppend, register]
+    [addChoice, fields, checkIfChoiceCanBeAppended, register]
   );
 
   return (

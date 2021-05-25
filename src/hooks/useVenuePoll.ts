@@ -10,9 +10,7 @@ import { useUser } from "./useUser";
 
 export const useVenuePoll = () => {
   const venueId = useVenueId();
-  const { user } = useUser();
-
-  const userId = user?.uid;
+  const { userId } = useUser();
 
   const voteInPoll = useCallback(
     (votes: Vote[], pollId: string) => {
