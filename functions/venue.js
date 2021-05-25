@@ -118,6 +118,34 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
+const checkIfUserIsVoted = async (venueId, pollId, userId) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("chats")
+    .doc(pollId)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
+      }
+      const poll = doc.data();
+      if (!poll.votes.map(({ userId }) => userId).includes(userId)) return;
+
+      throw new HttpsError(
+        "has-voted",
+        `User ${userId} has voted in ${pollId} Poll`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
+};
+
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
     return await checkUserIsOwner(venueId, uid);
@@ -712,12 +740,15 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 });
 
 exports.voteInPoll = functions.https.onCall(
-  async ({ venueId, pollId, votes }, context) => {
+  async ({ venueId, pollId, questionId }, context) => {
     checkAuth(context);
 
-    // checkUserIsVoted
-    // in transactions fetch current Poll
-    // check if new Vote in list ? error : add in list
+    await checkIfUserIsVoted(venueId, pollId, context.auth.token.user_id);
+
+    const newVote = {
+      questionId,
+      userId: context.auth.token.user_id,
+    };
 
     admin
       .firestore()
@@ -725,7 +756,9 @@ exports.voteInPoll = functions.https.onCall(
       .doc(venueId)
       .collection("chats")
       .doc(pollId)
-      .update({ votes });
+      .update({
+        votes: admin.firestore.FieldValue.arrayUnion(newVote),
+      });
   }
 );
 

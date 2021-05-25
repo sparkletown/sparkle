@@ -12,7 +12,7 @@ import { InputField } from "components/atoms/InputField";
 import "./PollBox.scss";
 
 export interface PollBoxProps {
-  createPoll: (props: PollValues) => void;
+  createPoll: (poll: PollValues) => void;
 }
 
 const DEFAULT_QUESTION: Partial<PollQuestion> = { name: "" };
@@ -32,24 +32,23 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   const topic = watch("topic");
 
   const onPollSubmit = handleSubmit(async ({ topic, questions }) => {
-    const poll = {
+    createPoll({
       topic,
       questions: questions.map(({ name }, id) => ({ name, id })),
-    };
-    createPoll(poll);
+    });
     reset();
   });
 
   const isDisabled = !(topic && question1.name && question2.name);
 
-  const addChoice = useCallback(() => append(DEFAULT_QUESTION), [append]);
-  const checkIfChoiceCanBeAppended = useCallback(
+  const addQuestion = useCallback(() => append(DEFAULT_QUESTION), [append]);
+  const checkIfQuestionCanBeAppended = useCallback(
     (questionId) =>
       questionId + 1 === fields.length && MAX_POLL_QUESTIONS > fields.length,
     [fields]
   );
 
-  const renderedChoices = useMemo(
+  const renderedQuestions = useMemo(
     () =>
       fields.map((field, index) => (
         <section className="PollBox__section" key={field.id}>
@@ -60,14 +59,14 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
             placeholder={`Choice ${index + 1}`}
             name={`questions.${index}.name`}
           />
-          {checkIfChoiceCanBeAppended(index) && (
-            <button className="PollBox__append-button" onClick={addChoice}>
+          {checkIfQuestionCanBeAppended(index) && (
+            <button className="PollBox__append-button" onClick={addQuestion}>
               <FontAwesomeIcon icon={faPlus} />
             </button>
           )}
         </section>
       )),
-    [addChoice, fields, checkIfChoiceCanBeAppended, register]
+    [addQuestion, fields, checkIfQuestionCanBeAppended, register]
   );
 
   return (
@@ -92,7 +91,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
           />
         </button>
       </section>
-      {renderedChoices}
+      {renderedQuestions}
     </form>
   );
 };

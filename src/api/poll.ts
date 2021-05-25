@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import Bugsnag from "@bugsnag/js";
 import noop from "lodash/noop";
 
-import { PollMessage, Vote } from "types/chat";
+import { PollMessage, VoteInPoll } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
@@ -30,10 +30,8 @@ export const createVenuePoll = async ({
       // @debt rethrow error, when we can handle it to show UI error
     });
 
-export type VoteInPollProps = {
+export type VoteInPollProps = VoteInPoll & {
   venueId: string;
-  votes: Vote[];
-  pollId: string;
 };
 
 export const voteInVenuePoll = async (data: VoteInPollProps) =>

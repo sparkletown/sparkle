@@ -8,7 +8,7 @@ import { getVenueOwners } from "api/admin";
 import {
   PollMessage,
   BaseMessageToDisplay,
-  Vote,
+  VoteInPoll,
   PollQuestion,
 } from "types/chat";
 
@@ -26,7 +26,7 @@ import "./ChatPoll.scss";
 export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
   deletePollMessage: (pollId: string) => void;
-  voteInPoll: (votes: Vote[], pollId: string) => void;
+  voteInPoll: (data: VoteInPoll) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
@@ -74,17 +74,12 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   });
 
   const handleVote = useCallback(
-    (question) => {
-      if (!userId) return;
-
-      const newVote = {
+    (question) =>
+      voteInPoll({
         questionId: question.id,
-        userId,
-      };
-
-      voteInPoll([...votes, newVote], id);
-    },
-    [id, voteInPoll, votes, userId]
+        pollId: id,
+      }),
+    [id, voteInPoll]
   );
 
   const renderQuestions = useMemo(

@@ -2,7 +2,7 @@ import { useMemo, useCallback } from "react";
 
 import { voteInVenuePoll, createVenuePoll } from "api/poll";
 
-import { PollMessage, PollValues, Vote } from "types/chat";
+import { PollMessage, PollValues, VoteInPoll } from "types/chat";
 
 import { buildMessage } from "utils/chat";
 
@@ -14,10 +14,10 @@ export const useVenuePoll = () => {
   const { userId } = useUser();
 
   const voteInPoll = useCallback(
-    (votes: Vote[], pollId: string) => {
+    (props: VoteInPoll) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, votes, pollId });
+      voteInVenuePoll({ ...props, venueId });
     },
     [venueId]
   );

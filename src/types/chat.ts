@@ -20,7 +20,12 @@ export type PrivateChatMessage = BaseChatMessage & {
 
 export type VenueChatMessage = BaseChatMessage;
 
-export type Vote = {
+export type VoteInPoll = {
+  questionId: number;
+  pollId: string;
+};
+
+type Vote = {
   questionId: number;
   userId: string;
 };
