@@ -8,7 +8,7 @@ import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
   options: UserStatus[];
-  onChange: (option: UserStatus | null) => void;
+  onChange: (option?: UserStatus) => void;
   label?: string;
 }
 
@@ -25,10 +25,13 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   const onOptionClicked = useCallback(
     (value: UserStatus) => {
-      if (value === "online") {
-        onChange(null);
+      if (value === UserStatus.online) {
+        // Remove status field, if the status is default
+        onChange(undefined);
+      } else {
+        onChange(value);
       }
-      onChange(value);
+
       hideDropdownOptions();
     },
     [hideDropdownOptions, onChange]

@@ -36,7 +36,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-  const { status, changeStatus } = useProfileStatus();
+  const { status, changeUserStatus } = useProfileStatus();
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -85,7 +85,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
           <div className="ellipsis-text">{user.email}</div>
           <UserStatusDropdown
             options={USER_STATUSES}
-            onChange={changeStatus}
+            onChange={changeUserStatus}
             label={status}
           />
         </div>

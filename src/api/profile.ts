@@ -55,7 +55,7 @@ export const makeUpdateUserGridLocation = ({
 };
 
 export interface UpdateUserOnlineStatusProps {
-  status: UserStatus | null;
+  status?: UserStatus;
   userId: string;
 }
 
@@ -65,7 +65,7 @@ export const updateUserOnlineStatus = async ({
 }: UpdateUserOnlineStatusProps): Promise<void> => {
   const userProfileRef = firebase.firestore().collection("users").doc(userId);
   const newData = {
-    status: status,
+    status: status ?? firebase.firestore.FieldValue.delete(),
   };
 
   const context = {

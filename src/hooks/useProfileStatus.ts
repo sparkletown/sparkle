@@ -7,12 +7,12 @@ import { updateUserOnlineStatus } from "api/profile";
 export const useProfileStatus = () => {
   const { userId, profile } = useUser();
 
-  const changeStatus = useCallback(
-    (value: UserStatus | null) => {
+  const changeUserStatus = useCallback(
+    (newStatus?: UserStatus) => {
       if (!userId) return;
 
       updateUserOnlineStatus({
-        status: value,
+        status: newStatus,
         userId,
       });
     },
@@ -21,6 +21,6 @@ export const useProfileStatus = () => {
 
   return {
     status: profile?.status,
-    changeStatus,
+    changeUserStatus,
   };
 };
