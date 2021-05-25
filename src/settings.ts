@@ -595,7 +595,7 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
-export const KEYBOARD_SHORTCUTS = {
+export const KeyboardShortcutKeys = {
   chat: "c",
   movement: {
     down: ["down", "s"],

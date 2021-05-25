@@ -7,7 +7,7 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
-import { KEYBOARD_SHORTCUTS, PLAYA_VENUE_ID } from "settings";
+import { KeyboardShortcutKeys, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
@@ -153,7 +153,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
   }, []);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.schedule,
+    keys: KeyboardShortcutKeys.schedule,
     callback: toggleEventSchedule,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to

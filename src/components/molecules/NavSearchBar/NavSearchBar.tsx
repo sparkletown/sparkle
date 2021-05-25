@@ -12,7 +12,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_VENUE_LOGO,
-  KEYBOARD_SHORTCUTS,
+  KeyboardShortcutKeys,
 } from "settings";
 
 import { VenueEvent } from "types/venues";
@@ -159,7 +159,7 @@ const NavSearchBar = () => {
   }, []);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.search,
+    keys: KeyboardShortcutKeys.search,
     callback: focusSearchBar,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to

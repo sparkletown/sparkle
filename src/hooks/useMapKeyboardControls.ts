@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { KEYBOARD_SHORTCUTS } from "settings";
+import { KeyboardShortcutKeys } from "settings";
 
 import { ReactHook } from "types/utility";
 
@@ -36,7 +36,7 @@ export const useMapKeyboardControls: ReactHook<
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.movement.up,
+    keys: KeyboardShortcutKeys.movement.up,
     callback: moveUp,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -53,7 +53,7 @@ export const useMapKeyboardControls: ReactHook<
   }, [row, column, totalRows, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.movement.down,
+    keys: KeyboardShortcutKeys.movement.down,
     callback: moveDown,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -70,7 +70,7 @@ export const useMapKeyboardControls: ReactHook<
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.movement.left,
+    keys: KeyboardShortcutKeys.movement.left,
     callback: moveLeft,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
@@ -87,7 +87,7 @@ export const useMapKeyboardControls: ReactHook<
   }, [row, column, totalColumns, isSeatTaken, takeSeat]);
 
   useMousetrap({
-    keys: KEYBOARD_SHORTCUTS.movement.right,
+    keys: KeyboardShortcutKeys.movement.right,
     callback: moveRight,
     // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
     withGlobalBind: true, // TODO: remove this once we have a ref to bind to
