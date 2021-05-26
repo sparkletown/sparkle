@@ -17,6 +17,10 @@ import classNames from "classnames";
 
 import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
+import { downloadCalendar } from "utils/calendar";
+import { isEventWithinDate } from "utils/event";
+import { WithVenueId } from "utils/id";
+
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -39,11 +43,6 @@ import {
   extractLocation,
   prepareForSchedule,
 } from "./utils";
-
-import { createCalendar } from "utils/calendar";
-
-import { isEventWithinDate } from "utils/event";
-import { WithVenueId } from "utils/id";
 
 import "./NavBarSchedule.scss";
 
@@ -122,7 +121,13 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(isEventWithinDate(selectedDayIndex === 0 ? Date.now() : dayStart))
-      .map(prepareForSchedule(dayStart, userEventIds, "web"));
+      .map(
+        prepareForSchedule({
+          day: dayStart,
+          usersEvents: userEventIds,
+          isForCalendarFile: false,
+        })
+      );
 
     const locatedEvents: LocatedEvents[] = Object.entries(
       groupBy(daysEvents, buildLocationString)
@@ -139,17 +144,29 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     };
   }, [relatedVenueEvents, userEventIds, selectedDayIndex, getEventLocation]);
 
-  const downloadCalendarPersonal = useCallback(() => {
+  const downloadPersonalEventsCalendar = useCallback(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(prepareForSchedule(dayStart, userEventIds, "calendar"))
+      .map(
+        prepareForSchedule({
+          day: dayStart,
+          usersEvents: userEventIds,
+          isForCalendarFile: true,
+        })
+      )
       .filter((event) => event.isSaved);
 
-    createCalendar(allPersonalEvents, `${PLATFORM_BRAND_NAME}_Personal`);
+    downloadCalendar({
+      calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
+      events: allPersonalEvents,
+    });
   }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
-  const downloadCalendarAll = useCallback(() => {
-    createCalendar(relatedVenueEvents, `${PLATFORM_BRAND_NAME}_Full`);
+  const downloadAllEventsCalendar = useCallback(() => {
+    downloadCalendar({
+      calendarName: `${PLATFORM_BRAND_NAME}_Full`,
+      events: relatedVenueEvents,
+    });
   }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
@@ -159,12 +176,14 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      <ul className="NavBarSchedule__downloads">
-        <Button onClick={downloadCalendarPersonal}>
+      <div className="NavBarSchedule__downloads">
+        <Button onClick={downloadPersonalEventsCalendar}>
           Download your schedule
         </Button>
-        <Button onClick={downloadCalendarAll}>Download full schedule</Button>
-      </ul>
+        <Button onClick={downloadAllEventsCalendar}>
+          Download full schedule
+        </Button>
+      </div>
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <Schedule

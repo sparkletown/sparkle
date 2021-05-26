@@ -1,34 +1,44 @@
-import { PersonalizedVenueEvent } from "types/venues";
-import { VenueEvent } from "types/venues";
-import { eventEndTime, eventStartTime } from "utils/event";
-import { WithVenueId } from "utils/id";
-import { getFullVenueInsideUrl } from "utils/url";
-
 import ical from "ical-generator";
 
-export const createCalendar = (
-  allEvents: PersonalizedVenueEvent[] | WithVenueId<VenueEvent>[],
-  calendarname: string
-) => {
-  const cal = ical({ name: calendarname });
+import { VenueEvent } from "types/venues";
 
-  if (!cal) return;
+import { eventEndTime, eventStartTime } from "utils/event";
 
-  allEvents.map((event: PersonalizedVenueEvent | WithVenueId<VenueEvent>) =>
+import { WithVenueId } from "utils/id";
+
+import { getFullVenueInsideUrl } from "utils/url";
+
+export interface CreateCalendarProps {
+  calendarName: string;
+  events: WithVenueId<VenueEvent>[];
+}
+
+const createCalendar = ({ calendarName, events }: CreateCalendarProps) => {
+  const cal = ical({ name: calendarName });
+
+  events.forEach((event) =>
     cal.createEvent({
-      id: event.venueId,
       start: eventStartTime(event),
       end: eventEndTime(event),
-      description: event.host,
-      summary: event.name ? event.host : "",
+      organizer: `${event.host} <undefined>`, // string format: "name <email>". email cannot be blank
+      description: event.description,
+      summary: event.name,
       url: getFullVenueInsideUrl(event.venueId),
     })
   );
+  return cal;
+};
 
+export const downloadCalendar = ({
+  calendarName,
+  events,
+}: CreateCalendarProps) => {
+  const cal = createCalendar({ calendarName: calendarName, events: events });
   const outputCal = cal.toURL();
-  const outputFile = `${calendarname}.ics`;
+  const outputFile = `${calendarName}.ics`;
   const link = document.createElement("a");
   link.download = outputFile;
   link.href = outputCal;
+  console.log(link.href);
   link.click();
 };

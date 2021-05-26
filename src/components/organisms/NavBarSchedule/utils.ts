@@ -14,21 +14,25 @@ import { WithVenueId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
 import { isTruthy } from "utils/types";
 
-export const prepareForSchedule = (
-  day: Date,
-  usersEvents: MyPersonalizedSchedule,
-  target: string
-) => (event: WithVenueId<VenueEvent>): PersonalizedVenueEvent => {
-  let startOfEventToShow;
-  let endOfEventToShow;
+export interface PrepareForScheduleProps {
+  day: Date;
+  usersEvents: MyPersonalizedSchedule;
+  isForCalendarFile: boolean;
+}
 
-  if (target === "calendar") {
-    startOfEventToShow = eventStartTime(event);
-    endOfEventToShow = eventEndTime(event);
-  } else {
-    startOfEventToShow = max([eventStartTime(event), startOfDay(day)]);
-    endOfEventToShow = min([eventEndTime(event), endOfDay(day)]);
-  }
+export const prepareForSchedule = ({
+  day,
+  usersEvents,
+  isForCalendarFile,
+}: PrepareForScheduleProps) => (
+  event: WithVenueId<VenueEvent>
+): PersonalizedVenueEvent => {
+  const startOfEventToShow = isForCalendarFile
+    ? eventStartTime(event)
+    : max([eventStartTime(event), startOfDay(day)]);
+  const endOfEventToShow = isForCalendarFile
+    ? eventEndTime(event)
+    : min([eventEndTime(event), endOfDay(day)]);
 
   return {
     ...event,
