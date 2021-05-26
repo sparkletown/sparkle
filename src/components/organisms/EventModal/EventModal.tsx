@@ -3,6 +3,7 @@ import Modal from "react-bootstrap/Modal";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
+import { Room } from "types/rooms";
 import { VenueEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
@@ -33,7 +34,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     currentVenueId: event.venueId,
   });
 
-  const eventRoom = useMemo(
+  const eventRoom = useMemo<Room | undefined>(
     () => eventVenue?.rooms?.find((room) => room.title === event.room),
     [eventVenue, event]
   );
