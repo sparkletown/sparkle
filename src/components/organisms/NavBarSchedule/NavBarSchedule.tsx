@@ -17,7 +17,7 @@ import classNames from "classnames";
 
 import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
-import { downloadCalendar } from "utils/calendar";
+import { createCalendar, downloadCalendar } from "utils/calendar";
 import { isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
 
@@ -156,17 +156,17 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       )
       .filter((event) => event.isSaved);
 
-    downloadCalendar(createCalendar({
+    downloadCalendar({
+      calendar: createCalendar({ events: allPersonalEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
-      events: allPersonalEvents,
-    }));
+    });
   }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
   const downloadAllEventsCalendar = useCallback(() => {
-    downloadCalendar(createCalendar({
+    downloadCalendar({
+      calendar: createCalendar({ events: relatedVenueEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
-      events: relatedVenueEvents,
-    }));
+    });
   }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {

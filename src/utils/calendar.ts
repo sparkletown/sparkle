@@ -1,5 +1,7 @@
 import ical from "ical-generator";
 
+import { ICalCalendar } from "ical-generator";
+
 import { VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
@@ -7,12 +9,13 @@ import { WithVenueId } from "utils/id";
 import { getFullVenueInsideUrl } from "utils/url";
 
 export interface CreateCalendarProps {
-  calendarName: string;
   events: WithVenueId<VenueEvent>[];
 }
 
-const createCalendar = ({ calendarName, events }: CreateCalendarProps): ??? => {
-  const cal = ical({ name: calendarName });
+export const createCalendar = ({
+  events,
+}: CreateCalendarProps): ICalCalendar => {
+  const cal = ical();
 
   events.forEach((event) =>
     cal.createEvent({
@@ -28,12 +31,19 @@ const createCalendar = ({ calendarName, events }: CreateCalendarProps): ??? => {
   return cal;
 };
 
-export const downloadCalendar = (calendar: ???): void => {
-  const outputCal = cal.toURL();
-  const outputFile = `${calendarName}.ics`;
+export interface DownloadCalendarProps {
+  calendar: ICalCalendar;
+  calendarName: string;
+}
+
+export const downloadCalendar = ({
+  calendar,
+  calendarName,
+}: DownloadCalendarProps): void => {
+  const outputFileName = `${calendarName}.ics`;
 
   const link = document.createElement("a");
   link.download = outputFileName;
-  link.href = outputCal;
+  link.href = calendar.toURL();
   link.click();
 };
