@@ -71,7 +71,12 @@ export const usePosters = (posterHallId: string) => {
   const fuseVenues = useMemo(
     () =>
       new Fuse(filteredPosterVenues, {
-        keys: ["poster.title", "poster.authorName", "poster.categories"],
+        keys: [
+          "name",
+          "poster.title",
+          "poster.authorName",
+          "poster.categories",
+        ],
         threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
@@ -92,6 +97,7 @@ export const usePosters = (posterHallId: string) => {
           .match(/("[^"]*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472 + fix
           .map((x) => ({
             $or: [
+              { "name": x },
               { "poster.title": x },
               { "poster.authorName": x },
               { "poster.categories": x },
