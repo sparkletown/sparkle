@@ -103,7 +103,7 @@ export const usePosters = (posterHallId: string) => {
         //@ts-ignore
         $and: searchQuery
           .trim()
-          .split(" ")
+          .match(/(".*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472
           .map((x) => ({
             $or: [
               { "poster.title": x },
