@@ -1,5 +1,9 @@
 @import "scss/constants.scss";
 
+$logo-height: 70px;
+$logo-width: 50px;
+$logo-background-width: 195px;
+
 .ShareModal {
   &__header {
     position: relative;
@@ -16,9 +20,6 @@
   }
 
   &__logo {
-    $logo-height: 70px;
-    $logo-width: 50px;
-    $logo-background-width: 195px;
     position: absolute;
     top: 30%;
     left: 125px;
