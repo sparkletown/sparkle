@@ -92,9 +92,6 @@ export type VenueChatSettings = {
 
 export type ChatSettings = PrivateChatSettings | VenueChatSettings;
 
-// @debt Remove it when UserProfileModal is refactored
-export type SetSelectedProfile = (user: WithId<User>) => void;
-
 export enum ChatOptionType {
   poll = "poll",
   question = "question",
