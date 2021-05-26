@@ -1,12 +1,13 @@
 import React, { useMemo } from "react";
 import Modal from "react-bootstrap/Modal";
+
 import { VenueEvent } from "types/venues";
 import { Room } from "types/rooms";
 
-import { WithVenueId } from "utils/id";
-import { enterVenue } from "utils/url";
 import { hasEventFinished, isEventLive } from "utils/event";
+import { WithVenueId } from "utils/id";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
+import { enterVenue } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -54,9 +55,8 @@ export const EventModal: React.FC<EventModalProps> = ({
     venueName: eventVenue?.name ?? "",
   });
 
-  const eventLocationToDisplay = event.room
-    ? event.room
-    : eventVenue?.name ?? event.venueId;
+  const eventLocationToDisplay =
+    event.room ?? eventVenue?.name ?? event.venueId;
 
   const goToEventLocation = () => {
     onHide();

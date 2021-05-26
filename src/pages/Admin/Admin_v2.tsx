@@ -16,11 +16,11 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-import { LoadingPage } from "components/molecules/LoadingPage";
 import {
   AuthenticationModal,
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
 import * as S from "./Admin.styles";

@@ -31,7 +31,7 @@ import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
-import NavSearchBar from "components/molecules/NavSearchBar";
+import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
@@ -217,7 +217,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar />
+                <NavSearchBar venueId={venueId} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger

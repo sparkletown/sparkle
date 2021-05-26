@@ -5,11 +5,13 @@ import {
   formatDuration,
   formatRelative,
   fromUnixTime,
+  getTime,
   getUnixTime,
   intervalToDuration,
   isAfter,
   startOfDay,
   subDays,
+  subHours,
 } from "date-fns";
 
 /**
@@ -171,7 +173,7 @@ export function formatUtcSeconds(utcSeconds?: number | null) {
 }
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
-  Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
+  getTime(subHours(Date.now(), hours));
 
 export const getCurrentTimeInMilliseconds = () => Date.now();
 

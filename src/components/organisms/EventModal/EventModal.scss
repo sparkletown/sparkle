@@ -6,13 +6,13 @@ $purple--hover: #8755fb;
 $grey--disabled: #fff3;
 $dark-grey: #232225;
 
-$EventModa--padding-top: 40px;
+$EventModal--padding-top: 40px;
 
 .EventModal {
   text-align: left;
 
   &__content {
-    padding: $EventModa--padding-top $spacing--xl $spacing--xl;
+    padding: $EventModal--padding-top $spacing--xl $spacing--xl;
     display: flex;
     flex-direction: column;
     background-color: $dark-grey;

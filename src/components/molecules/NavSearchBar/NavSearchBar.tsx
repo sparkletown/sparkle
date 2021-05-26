@@ -8,17 +8,16 @@ import { DEFAULT_PARTY_NAME, DEFAULT_VENUE_LOGO } from "settings";
 import { VenueEvent } from "types/venues";
 import { Room, RoomTypes } from "types/rooms";
 
-import { isTruthy } from "utils/types";
+import { isTruthy, isDefined } from "utils/types";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
-import { WithVenueId } from "utils/id";
+import { withVenueId, WithVenueId } from "utils/id";
 
 import { useWorldUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
-import { useVenueId } from "hooks/useVenueId";
 
 import { RoomModal } from "components/templates/PartyMap/components";
 import { EventModal } from "components/organisms/EventModal";
@@ -32,7 +31,11 @@ import "./NavSearchBar.scss";
 
 const emptyEventsArray: VenueEvent[] = [];
 
-const NavSearchBar = () => {
+export interface NavSearchBarProps {
+  venueId: string;
+}
+
+export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const {
     searchInputValue,
     searchQuery,
@@ -48,11 +51,11 @@ const NavSearchBar = () => {
   );
 
   const [selectedRoom, setSelectedRoom] = useState<Room>();
-  const hasSelectedRoom = !!selectedRoom;
+  const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
+  const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const venueId = useVenueId();
   // @debt we should get all the events / rooms from all the related venues
   const venue = useSelector(currentVenueSelectorData);
   const venueEvents = useSelector(venueEventsSelector) ?? emptyEventsArray;
@@ -123,13 +126,13 @@ const NavSearchBar = () => {
             )}`}
             image={imageUrl ?? DEFAULT_VENUE_LOGO}
             onClick={() => {
-              venueId && setSelectedEvent({ ...event, venueId: venueId });
+              venueId && setSelectedEvent(withVenueId(event, venueId));
               clearSearch();
             }}
           />
         );
       });
-  }, [searchQuery, venueEvents, venue, clearSearch, setSelectedEvent, venueId]);
+  }, [searchQuery, venueEvents, venue, clearSearch, venueId]);
 
   const numberOfSearchResults =
     foundRooms.length + foundEvents.length + foundUsers.length;
@@ -180,22 +183,20 @@ const NavSearchBar = () => {
 
       {/* @debt use only one RoomModal instance with state controlled with redux */}
       <RoomModal
-        show={hasSelectedRoom}
+        show={isDefined(selectedRoom)}
         room={selectedRoom}
         venue={venue}
-        onHide={() => setSelectedRoom(undefined)}
+        onHide={hideRoomModal}
       />
 
       {/* @debt use only one EventModal instance with state controlled with redux */}
       {selectedEvent && (
         <EventModal
           event={selectedEvent}
-          show={isTruthy(selectedEvent)}
-          onHide={() => setSelectedEvent(undefined)}
+          show={isDefined(selectedEvent)}
+          onHide={hideEventModal}
         />
       )}
     </div>
   );
 };
-
-export default NavSearchBar;

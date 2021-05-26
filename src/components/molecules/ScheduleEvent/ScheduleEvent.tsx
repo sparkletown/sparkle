@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useCallback, useState } from "react";
+import React, { MouseEventHandler, useCallback } from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
 
@@ -19,9 +19,10 @@ import { isEventLive } from "utils/event";
 import { ONE_HOUR_IN_MINUTES } from "utils/time";
 
 import { useUser } from "hooks/useUser";
+import { useShowHide } from "hooks/useShowHide";
 
-import { calcStartPosition } from "components/molecules/Schedule/utils";
 import { EventModal } from "components/organisms/EventModal";
+import { calcStartPosition } from "components/molecules/Schedule/utils";
 
 import "./ScheduleEvent.scss";
 
@@ -70,11 +71,15 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       : addEventToPersonalizedSchedule({ event, userId });
   }, [userId, event]);
 
-  const [showEventModal, setShowEventModal] = useState(false);
+  const {
+    isShown: isEventModalVisible,
+    show: showEventModal,
+    hide: hideEventModal,
+  } = useShowHide();
 
   return (
     <>
-      <div className={containerClasses} onClick={() => setShowEventModal(true)}>
+      <div className={containerClasses} onClick={showEventModal}>
         <div className="ScheduleEvent__info">
           <div className="ScheduleEvent__title">{event.name}</div>
           <div className="ScheduleEvent__host">by {event.host}</div>
@@ -88,8 +93,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       </div>
 
       <EventModal
-        show={showEventModal}
-        onHide={() => setShowEventModal(false)}
+        show={isEventModalVisible}
+        onHide={hideEventModal}
         event={event}
       />
     </>

@@ -1,4 +1,4 @@
-import React, { memo } from "react";
+import React from "react";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
@@ -12,7 +12,7 @@ export interface ScheduleRoomEventsProps {
   personalizedRoom?: boolean;
 }
 
-const _ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
+export const _ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
   events,
   scheduleStartHour,
   personalizedRoom,
@@ -31,4 +31,4 @@ const _ScheduleRoomEvents: React.FC<ScheduleRoomEventsProps> = ({
   );
 };
 
-export const ScheduleRoomEvents = memo(_ScheduleRoomEvents);
+export const ScheduleRoomEvents = React.memo(_ScheduleRoomEvents);

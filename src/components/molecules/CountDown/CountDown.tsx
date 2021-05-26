@@ -8,15 +8,15 @@ interface PropsType {
 
 export const CountDown: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
-  textBeforeCountdown,
+  textBeforeCountdown = "Begins in",
 }) => {
   const timeBeforeParty = getTimeBeforeParty(startUtcSeconds);
 
-  if (timeBeforeParty === "0") return <></>;
+  if (timeBeforeParty === "0") return null;
 
   return (
     <div className="count-down-container">
-      {`${textBeforeCountdown || "Begins in"} ${timeBeforeParty}`}
+      {textBeforeCountdown} {timeBeforeParty}
     </div>
   );
 };
