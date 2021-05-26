@@ -2,7 +2,7 @@ import { FACEBOOK_APP_ID } from "secrets";
 import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 
-const getCategoriesFromVeune = (venue: WithId<PosterPageVenue>) => {
+const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) => {
   return venue?.poster?.categories || [];
 };
 
@@ -20,7 +20,7 @@ export const getFacebookHref = (
   url: string,
   text: string
 ) => {
-  const categories = getCategoriesFromVeune(venue);
+  const categories = getCategoriesFromVenue(venue);
   const hashtagsString = categories.reduce((result, hash, index, array) => {
     const isLast = index === array.length - 1;
     const separator = isLast ? "" : ", ";
@@ -34,7 +34,7 @@ export const getTwitterHref = (
   venue: WithId<PosterPageVenue>,
   text: string
 ) => {
-  const categories = getCategoriesFromVeune(venue);
+  const categories = getCategoriesFromVenue(venue);
   const hashtagsString = categories.join(",");
   return `https://twitter.com/intent/tweet?text=${text}&hashtags=${hashtagsString}`;
 };

@@ -46,8 +46,8 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
   const renderedLinkButtons = useMemo(() => {
     const textTitle = getTitleTextForSharing(venue, url);
-    const facebookHref = getFacebookHref(url, textTitle);
-    const twitterHref = getTwitterHref(textTitle);
+    const facebookHref = getFacebookHref(venue, url, textTitle);
+    const twitterHref = getTwitterHref(venue, textTitle);
 
     const linkButtons = [
       {
