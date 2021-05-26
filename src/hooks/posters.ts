@@ -97,7 +97,7 @@ export const usePosters = (posterHallId: string) => {
           .match(/("[^"]*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472 + fix
           .map((x) => ({
             $or: [
-              { "name": x },
+              { name: x },
               { "poster.title": x },
               { "poster.authorName": x },
               { "poster.categories": x },
