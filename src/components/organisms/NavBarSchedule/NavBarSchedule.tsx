@@ -156,17 +156,17 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       )
       .filter((event) => event.isSaved);
 
-    downloadCalendar({
+    downloadCalendar(createCalendar({
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
       events: allPersonalEvents,
-    });
+    }));
   }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
   const downloadAllEventsCalendar = useCallback(() => {
-    downloadCalendar({
+    downloadCalendar(createCalendar({
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
       events: relatedVenueEvents,
-    });
+    }));
   }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {

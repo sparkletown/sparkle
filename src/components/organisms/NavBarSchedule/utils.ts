@@ -17,19 +17,20 @@ import { isTruthy } from "utils/types";
 export interface PrepareForScheduleProps {
   day: Date;
   usersEvents: MyPersonalizedSchedule;
-  isForCalendarFile: boolean;
+  isForCalendarFile?: boolean;
 }
 
 export const prepareForSchedule = ({
   day,
   usersEvents,
-  isForCalendarFile,
+  isForCalendarFile = false,
 }: PrepareForScheduleProps) => (
   event: WithVenueId<VenueEvent>
 ): PersonalizedVenueEvent => {
   const startOfEventToShow = isForCalendarFile
     ? eventStartTime(event)
     : max([eventStartTime(event), startOfDay(day)]);
+
   const endOfEventToShow = isForCalendarFile
     ? eventEndTime(event)
     : min([eventEndTime(event), endOfDay(day)]);
