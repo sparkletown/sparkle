@@ -71,20 +71,7 @@ export const usePosters = (posterHallId: string) => {
   const fuseVenues = useMemo(
     () =>
       new Fuse(filteredPosterVenues, {
-        keys: [
-          {
-            name: "poster.title",
-            weight: 2,
-          },
-          {
-            name: "poster.authorName",
-            weight: 3,
-          },
-          {
-            name: "poster.categories",
-            weight: 1,
-          },
-        ],
+        keys: ["poster.title", "poster.authorName", "poster.categories"],
         threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
