@@ -40,6 +40,8 @@ export interface TemplateWrapperProps {
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
+  // const { isShown, show, hide } = useShowHide();
+
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
