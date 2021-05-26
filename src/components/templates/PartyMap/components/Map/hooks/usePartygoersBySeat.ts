@@ -2,6 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { User } from "types/User";
 import { WithId } from "utils/id";
+import { isDefined } from "utils/types";
 import { ReactHook } from "types/utility";
 
 import { makeMatrixReducer } from "utils/reducers";
@@ -37,7 +38,7 @@ export const usePartygoersbySeat: ReactHook<
 
   const isSeatTaken = useCallback(
     (row: number, column: number): boolean =>
-      !!partygoersBySeat?.[row]?.[column],
+      isDefined(partygoersBySeat?.[row]?.[column]),
     [partygoersBySeat]
   );
 
