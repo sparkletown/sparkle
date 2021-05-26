@@ -43,6 +43,7 @@
   &__title {
     position: absolute;
     font-size: $font-size--xl;
+    text-transform: capitalize;
     bottom: 20px;
     left: 0;
   }
