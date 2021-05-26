@@ -7,7 +7,6 @@ import {
   RANDOM_AVATARS,
   DEFAULT_PROFILE_PIC,
   DEFAULT_PARTY_NAME,
-  DEFAULT_EDIT_PROFILE_TEXT,
 } from "settings";
 
 import { orderedVenuesSelector } from "utils/selectors";
@@ -91,14 +90,19 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div className="profile-extras">
               {venue?.profile_questions?.map((question) => (
                 <React.Fragment key="question.text">
-                  <p className="light question">{question.text}</p>
-                  <h6>
-                    {/*
-                    // @debt typing - need to support known User interface with unknown question keys
-                    // @ts-ignore */}
-                    {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      DEFAULT_EDIT_PROFILE_TEXT}
-                  </h6>
+                  {/*
+                  // @ts-ignore */}
+                  {selectedUserProfile[question.name] && (
+                    <>
+                      <p className="light question">{question.text}</p>
+                      <h6>
+                        {/*
+                      // @debt typing - need to support known User interface with unknown question keys
+                      // @ts-ignore */}
+                        {selectedUserProfile[question.name]}
+                      </h6>
+                    </>
+                  )}
                 </React.Fragment>
               ))}
             </div>

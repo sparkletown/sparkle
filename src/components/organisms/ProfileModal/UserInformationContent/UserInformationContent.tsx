@@ -85,17 +85,20 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       {profileQuestions &&
         profileQuestions.map((question: QuestionType) => (
           <div key={question.name} className="question-section">
-            <div className="question">{question.text}</div>
-            <div className="answer">
-              {
-                // @ts-ignore question.name is a correct index for type User
-                (profile && profile[question.name]) ||
-                  DEFAULT_PROFILE_VALUES.questionAnswer
-              }
-            </div>
+            {/*
+            // @ts-ignore question.name is a correct index for type User */}
+            {profile[question.name] && (
+              <>
+                <div className="question">{question.text}</div>
+                <div className="answer">
+                  {/*
+                  // @ts-ignore */}
+                  {profile[question.name]}
+                </div>
+              </>
+            )}
           </div>
         ))}
-
       {IS_BURN && (
         <>
           <label

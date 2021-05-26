@@ -79,7 +79,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
                   name={question.name}
                   placeholder={question.text}
                   ref={register({
-                    required: true,
+                    required: false,
                   })}
                 />
               </div>
