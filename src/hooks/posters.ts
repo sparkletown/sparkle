@@ -99,7 +99,19 @@ export const usePosters = (posterHallId: string) => {
       return filteredPosterVenues.slice(0, displayedPostersCount);
 
     return fuseVenues
-      .search(searchQuery.trim()) // trim so adding space does not kill all results at once
+      .search({
+        //@ts-ignore
+        $and: searchQuery
+          .trim()
+          .split(" ")
+          .map((x) => ({
+            $or: [
+              { "poster.title": x },
+              { "poster.authorName": x },
+              { "poster.categories": x },
+            ],
+          })),
+      })
       .slice(0, displayedPostersCount)
       .map((fuseSearchItem) => fuseSearchItem.item);
   }, [searchQuery, fuseVenues, filteredPosterVenues, displayedPostersCount]);
