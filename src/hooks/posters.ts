@@ -88,7 +88,6 @@ export const usePosters = (posterHallId: string) => {
         threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
-        minMatchCharLength: 3,
         // useExtendedSearch: true,  // might be neat but confusing. might be worthwhile a UI switch
       }),
     [filteredPosterVenues]
