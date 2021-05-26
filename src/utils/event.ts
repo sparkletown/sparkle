@@ -10,7 +10,11 @@ import {
 
 import { VenueEvent } from "types/venues";
 
-import { getCurrentTimeInUTCSeconds, getDayInterval } from "./time";
+import {
+  formatUtcSecondsRelativeToNow,
+  getCurrentTimeInUTCSeconds,
+  getDayInterval,
+} from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
@@ -76,4 +80,14 @@ export const isEventLaterToday = (event: VenueEvent) => {
   };
 
   return areIntervalsOverlapping(laterTodayInterval, getEventInterval(event));
+};
+
+export const getEventStatus = (event: VenueEvent) => {
+  if (isEventLive(event)) return `Happening now`;
+
+  if (hasEventFinished(event)) {
+    return `Ended`;
+  } else {
+    return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
+  }
 };

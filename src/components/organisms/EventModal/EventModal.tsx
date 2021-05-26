@@ -1,13 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 
-import { VenueEvent } from "types/venues";
-import { Room } from "types/rooms";
+import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { hasEventFinished, isEventLive } from "utils/event";
+import { VenueEvent } from "types/venues";
+
+import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
-import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { enterVenue } from "utils/url";
+
+import { useInterval } from "hooks/useInterval";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
@@ -15,19 +17,6 @@ import { useRoom } from "hooks/useRoom";
 import { Button } from "components/atoms/Button";
 
 import "./EventModal.scss";
-
-const emptyRoom: Room = {
-  title: "",
-  subtitle: "",
-  url: "",
-  about: "",
-  x_percent: 0,
-  y_percent: 0,
-  width_percent: 0,
-  height_percent: 0,
-  isEnabled: false,
-  image_url: "",
-};
 
 export interface EventModalProps {
   show: boolean;
@@ -45,8 +34,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   });
 
   const eventRoom = useMemo(
-    () =>
-      eventVenue?.rooms?.find((room) => room.title === event.room) ?? emptyRoom,
+    () => eventVenue?.rooms?.find((room) => room.title === event.room),
     [eventVenue, event]
   );
 
@@ -56,7 +44,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   });
 
   const eventLocationToDisplay =
-    event.room ?? eventVenue?.name ?? event.venueId;
+    (event.room || eventVenue?.name) ?? event.venueId;
 
   const goToEventLocation = () => {
     onHide();
@@ -70,15 +58,11 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const isLive = isEventLive(event);
 
-  const getEventStatus = () => {
-    if (isLive) return `Happening now`;
-
-    if (hasEventFinished(event)) {
-      return `Ended`;
-    } else {
-      return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
-    }
-  };
+  const [eventStatus, setEventStatus] = useState(getEventStatus(event));
+  useInterval(
+    () => setEventStatus(getEventStatus(event)),
+    EVENT_STATUS_REFRESH_MS
+  );
 
   return (
     <Modal show={show} onHide={onHide} className="EventModal">
@@ -98,7 +82,7 @@ export const EventModal: React.FC<EventModalProps> = ({
           onClick={goToEventLocation}
           disabled={!isLive}
         >
-          {getEventStatus()} in the {eventLocationToDisplay}
+          {eventStatus} in the {eventLocationToDisplay}
         </Button>
       </div>
     </Modal>

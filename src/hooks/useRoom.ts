@@ -12,7 +12,7 @@ import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 export interface UseRoomProps {
-  room: Room;
+  room?: Room;
   venueName: string;
 }
 
@@ -20,7 +20,7 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
   const userId = user?.uid;
 
-  const roomUrl = room.url;
+  const roomUrl = room?.url ?? "";
 
   // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
   const venues = useSelector(orderedVenuesSelector);
@@ -33,7 +33,7 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
   // @debt we should replace externalRoomSlug with preferrably room id
   const roomSlug = roomVenue
     ? roomVenue.name
-    : getExternalRoomSlug({ roomTitle: room.title, venueName });
+    : getExternalRoomSlug({ roomTitle: room?.title, venueName });
 
   const { recentLocationUsers } = useRecentLocationUsers(roomSlug);
 
