@@ -9,6 +9,7 @@ import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -198,6 +199,10 @@ export const radioStationsSelector = (state: RootState) =>
 export const posterVenuesSelector: SparkleSelector<
   WithId<PosterPageVenue>[] | undefined
 > = (state) => state.firestore.ordered.posterVenues;
+
+export const screeningRoomVideosSelector: SparkleSelector<
+  WithId<ScreeningRoomVideo>[] | undefined
+> = (state) => state.firestore.ordered.screeningRoomVideos;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.

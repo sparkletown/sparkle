@@ -24,10 +24,6 @@
     margin-bottom: 30px;
   }
 
-  .profile-modal-avatar {
-    margin-right: 10px;
-  }
-
   .profile-modal-container {
     padding: 30px;
   }
@@ -61,8 +57,8 @@
   }
 
   .text-container {
-    overflow: hidden;
     font-size: 12px;
+    margin-left: $spacing--md;
   }
 
   .checkbox {
