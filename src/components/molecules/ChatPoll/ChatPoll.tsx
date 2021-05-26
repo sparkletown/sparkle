@@ -10,22 +10,23 @@ import {
   BaseMessageToDisplay,
   VoteInPoll,
   PollQuestion,
+  DeleteMessage,
 } from "types/chat";
 
 import { WithId } from "utils/id";
-
-import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
-import Button from "components/atoms/Button";
 
 import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import Button from "components/atoms/Button";
+
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
-  deletePollMessage: (pollId: string) => void;
+  deletePollMessage: DeleteMessage;
   voteInPoll: (data: VoteInPoll) => void;
 }
 
@@ -128,6 +129,11 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     ));
   }, [questions, calculateShare]);
 
+  const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
+    id,
+    deletePollMessage,
+  ]);
+
   return (
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
@@ -142,7 +148,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={() => deletePollMessage(id)}
+        deleteMessage={deleteThisPollMessage}
       />
     </div>
   );

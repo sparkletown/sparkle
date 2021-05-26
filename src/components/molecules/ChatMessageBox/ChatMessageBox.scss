@@ -14,8 +14,8 @@
   &__submit-button {
     outline: none;
     border: none;
-    min-width: 44px;
-    min-height: 44px;
+    min-width: $submit-button-diameter;
+    min-height: $submit-button-diameter;
     border-radius: 50%;
     display: flex;
     justify-content: center;

@@ -70,7 +70,7 @@ button.ChatPoll__question {
     margin-bottom: $spacing--md;
     padding: $spacing--sm $spacing--md;
     width: 100%;
-    z-index: 0;
+    z-index: z(chat-poll-text);
 
     &:first-child {
       .ChatPoll__text-background {
@@ -80,7 +80,7 @@ button.ChatPoll__question {
 
     &-background {
       position: absolute;
-      z-index: -1;
+      z-index: z(chat-poll-text-background);
       background-color: $dark-grey;
       border-radius: $border-radius--xl;
       top: 0;

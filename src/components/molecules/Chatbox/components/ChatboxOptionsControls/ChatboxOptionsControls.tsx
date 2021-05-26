@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -33,13 +33,14 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
     [setActiveOption]
   );
 
+  const unSelectOption = useCallback(() => setActiveOption(undefined), [
+    setActiveOption,
+  ]);
+
   return (
     <div className="ChatboxOptionsControls">
       {shouldShowPoll ? (
-        <TextButton
-          label="Cancel Poll"
-          onClick={() => setActiveOption(undefined)}
-        />
+        <TextButton label="Cancel Poll" onClick={unSelectOption} />
       ) : (
         <DropdownButton
           id="options-dropdown"

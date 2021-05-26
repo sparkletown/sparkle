@@ -118,7 +118,7 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
-const checkIfUserIsVoted = async (venueId, pollId, userId) => {
+const checkIfUserHasVoted = async (venueId, pollId, userId) => {
   await admin
     .firestore()
     .collection("venues")
@@ -130,13 +130,10 @@ const checkIfUserIsVoted = async (venueId, pollId, userId) => {
       if (!doc.exists) {
         throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
       }
-      const poll = doc.data();
-      if (!poll.votes.map(({ userId }) => userId).includes(userId)) return;
 
-      throw new HttpsError(
-        "has-voted",
-        `User ${userId} has voted in ${pollId} Poll`
-      );
+      const poll = doc.data();
+
+      return poll.votes.map(({ userId }) => userId).includes(userId);
     })
     .catch((err) => {
       throw new HttpsError(
@@ -743,22 +740,30 @@ exports.voteInPoll = functions.https.onCall(
   async ({ venueId, pollId, questionId }, context) => {
     checkAuth(context);
 
-    await checkIfUserIsVoted(venueId, pollId, context.auth.token.user_id);
+    try {
+      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
 
-    const newVote = {
-      questionId,
-      userId: context.auth.token.user_id,
-    };
+      const newVote = {
+        questionId,
+        userId: context.auth.token.user_id,
+      };
 
-    admin
-      .firestore()
-      .collection("venues")
-      .doc(venueId)
-      .collection("chats")
-      .doc(pollId)
-      .update({
-        votes: admin.firestore.FieldValue.arrayUnion(newVote),
-      });
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("chats")
+        .doc(pollId)
+        .update({
+          votes: admin.firestore.FieldValue.arrayUnion(newVote),
+        });
+    } catch (error) {
+      throw new HttpsError(
+        "has-voted",
+        `User ${userId} has voted in ${pollId} Poll`,
+        error
+      );
+    }
   }
 );
 

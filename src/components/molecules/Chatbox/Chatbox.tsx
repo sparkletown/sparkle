@@ -82,7 +82,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             closeThread={closeThread}
           />
         )}
-        {displayPoll && (
+        {displayPoll && !selectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
