@@ -6,7 +6,7 @@ import { VenueChatMessage, PrivateChatMessage } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
-export const userChatsCollectionRef = (userId: string) =>
+export const getUserChatsCollectionRef = (userId: string) =>
   firebase
     .firestore()
     .collection("privatechats")
@@ -42,8 +42,8 @@ export const sendPrivateMessage = async (
 ): Promise<void> => {
   const batch = firebase.firestore().batch();
 
-  const authorRef = userChatsCollectionRef(message.from).doc();
-  const recipientRef = userChatsCollectionRef(message.to).doc();
+  const authorRef = getUserChatsCollectionRef(message.from).doc();
+  const recipientRef = getUserChatsCollectionRef(message.to).doc();
 
   batch.set(authorRef, message);
   batch.set(recipientRef, message);
@@ -68,7 +68,7 @@ export const setChatMessageRead = async ({
   userId,
   messageId,
 }: SetChatMessageIsReadProps): Promise<void> =>
-  userChatsCollectionRef(userId)
+  getUserChatsCollectionRef(userId)
     .doc(messageId)
     .update({ isRead: true })
     .catch((err) => {
@@ -115,7 +115,7 @@ export const deletePrivateMessage = async ({
   userId,
   messageId,
 }: DeletePrivateMessageProps): Promise<void> =>
-  userChatsCollectionRef(userId)
+  getUserChatsCollectionRef(userId)
     .doc(messageId)
     .update({ deleted: true })
     .catch((err) => {

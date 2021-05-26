@@ -1,0 +1,92 @@
+@import "scss/constants";
+
+$video-container-height: 500px;
+
+.ScreeningRoom {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+
+  &__title {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--500;
+    text-align: center;
+    margin: $spacing--md 0;
+  }
+
+  &__video-container {
+    display: flex;
+    justify-content: center;
+
+    width: 100%;
+    height: $video-container-height;
+    background-color: $secondary--dark;
+    margin-bottom: $spacing--md;
+  }
+
+  &__video-cover {
+    width: 70%;
+    height: 100%;
+    position: relative;
+  }
+
+  &__video {
+    width: 100%;
+    height: 100%;
+  }
+
+  &__close-video-icon {
+    position: absolute;
+    z-index: 1;
+    top: $spacing--sm;
+    right: $spacing--sm;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+
+  &__input-container {
+    width: 40%;
+    min-width: 300px;
+    margin-bottom: $spacing--md;
+  }
+
+  &__category {
+    padding: $spacing--md;
+    font-size: $font-size--md;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+
+  &__subcategory {
+    padding: $spacing--sm;
+    font-size: $font-size--sm;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
+
+  &__categories {
+    display: flex;
+    justify-content: center;
+    margin-bottom: $spacing--sm;
+  }
+
+  &__subcategories {
+    display: flex;
+    margin-bottom: $spacing--sm;
+  }
+
+  &__video-previews {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: flex-start;
+  }
+
+  &__more-button {
+    display: flex;
+    justify-content: center;
+  }
+}
