@@ -19,6 +19,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
   const { title, authorName, categories } = posterVenue.poster ?? {};
+  const number = posterVenue.name.replace("poster", "");
 
   const venueId = posterVenue.id;
 
@@ -42,7 +43,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
-      <p className="PosterPreview__title">{title}</p>
+      <p className="PosterPreview__title">
+        {number}: {title}
+      </p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
 

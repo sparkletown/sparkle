@@ -30,6 +30,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
 
   const { title, introVideoUrl, categories } = poster ?? {};
+  const number = venue.name.replace("poster", "");
 
   const {
     isShown: isIntroVideoShown,
@@ -84,7 +85,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
-          <p className="PosterPage__title">{title}</p>
+          <p className="PosterPage__title">
+            {number}: {title}
+          </p>
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 
