@@ -71,13 +71,25 @@ export const usePosters = (posterHallId: string) => {
   const fuseVenues = useMemo(
     () =>
       new Fuse(filteredPosterVenues, {
-        keys: ["poster.title", "poster.authorName", "poster.categories"],
-        threshold: 0.4, // default 0.6: brings too distant if anyhow related hits
+        keys: [
+          {
+            name: "poster.title",
+            weight: 2,
+          },
+          {
+            name: "poster.authorName",
+            weight: 3,
+          },
+          {
+            name: "poster.categories",
+            weight: 1,
+          },
+        ],
+        threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
-        // Otherwise can't find a word in a sentence
-        // includeScore: true   // so it could be displayed!?
-        // distance: 40        //  default 100 - ignored if ignoreLocation: true
-        // useExtendedSearch: true // might be neat!
+        findAllMatches: true,
+        minMatchCharLength: 3,
+        // useExtendedSearch: true,  // might be neat but confusing. might be worthwhile a UI switch
       }),
     [filteredPosterVenues]
   );
