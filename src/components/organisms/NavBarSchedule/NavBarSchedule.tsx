@@ -99,7 +99,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       const [venueId, roomTitle] = extractLocation(locString);
       const venueName = relatedVenues.find((venue) => venue.id === venueId)
         ?.name;
-      return { venueId, roomTitle, venueName };
+      return { venueId, venueName, roomTitle: roomTitle || undefined };
     },
     [relatedVenues]
   );

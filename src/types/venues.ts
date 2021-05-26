@@ -316,7 +316,7 @@ export interface VenueEvent {
 
 export interface VenueLocation {
   venueId: string;
-  roomTitle: string;
+  roomTitle?: string;
   venueName?: string;
 }
 

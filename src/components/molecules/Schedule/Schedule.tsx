@@ -75,7 +75,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           className="Schedule__room"
         >
           <p className="Schedule__room-title">
-            {(location.roomTitle || location.venueName) ?? location.venueId}
+            {location.roomTitle ?? location.venueName ?? location.venueId}
           </p>
           <span className="Schedule__events-count">
             {formatMeasurement(events.length, "event")}
