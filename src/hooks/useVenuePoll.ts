@@ -1,7 +1,6 @@
 import { useMemo, useCallback } from "react";
-import firebase from "firebase/app";
 
-import { sendVenueMessage } from "api/chat";
+import { sendVenueMessage, voteInVenuePoll } from "api/chat";
 
 import { PollMessage, PollValues, VoteInPoll } from "types/chat";
 
@@ -15,13 +14,10 @@ export const useVenuePoll = () => {
   const { userId } = useUser();
 
   const voteInPoll = useCallback(
-    async (props: VoteInPoll) => {
+    (props: VoteInPoll) => {
       if (!venueId) return;
 
-      await firebase.functions().httpsCallable("venue-voteInPoll")({
-        ...props,
-        venueId,
-      });
+      voteInVenuePoll({ ...props, venueId });
     },
     [venueId]
   );
