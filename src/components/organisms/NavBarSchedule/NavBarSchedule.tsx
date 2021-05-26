@@ -14,6 +14,7 @@ import {
 
 import { isEventLaterToday, isEventWithinDate } from "utils/event";
 import { WithVenueId } from "utils/id";
+import { range } from "utils/range";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -40,9 +41,6 @@ export interface ScheduleDay {
 }
 
 export const emptyPersonalizedSchedule = {};
-
-const range = (stop: number) => Array.from(Array(stop).keys());
-
 export interface NavBarScheduleProps {
   isVisible?: boolean;
   venueId: string;

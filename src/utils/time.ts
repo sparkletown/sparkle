@@ -109,15 +109,15 @@ export const formatSecondsAsDuration = (seconds: number): string =>
 export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
   if (startUtcSeconds === undefined) return "???";
 
-  const eventStartDate = fromUnixTime(startUtcSeconds);
+  const startDate = fromUnixTime(startUtcSeconds);
   const now = Date.now();
 
-  if (isAfter(now, eventStartDate)) return "0";
+  if (isAfter(now, startDate)) return "0";
 
   return formatDuration({
     ...intervalToDuration({
       start: now,
-      end: eventStartDate,
+      end: startDate,
     }),
     seconds: 0,
   });
