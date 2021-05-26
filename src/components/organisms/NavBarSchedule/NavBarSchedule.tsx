@@ -82,6 +82,8 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       : startOfToday();
   }, [scheduledStartDate]);
 
+  const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
+
   const {
     isEventsLoading,
     events: relatedVenueEvents = emptyRelatedEvents,
@@ -94,10 +96,12 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   const weekdays = useMemo(() => {
-    const formatDayLabel = (day: Date) => {
-      if (isToday(day)) return "Today";
-      if (isToday(firstDayOfSchedule)) return format(day, "E");
-      return format(day, "E, LLL d");
+    const formatDayLabel = (day: Date | number) => {
+      if (isScheduleTimeshifted) {
+        return format(day, "E, LLL d");
+      } else {
+        return isToday(day) ? "Today" : format(day, "E");
+      }
     };
 
     return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
@@ -120,7 +124,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
         </li>
       );
     });
-  }, [selectedDayIndex, firstDayOfSchedule]);
+  }, [selectedDayIndex, firstDayOfSchedule, isScheduleTimeshifted]);
 
   const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
