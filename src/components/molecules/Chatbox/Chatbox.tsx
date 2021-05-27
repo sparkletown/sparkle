@@ -55,7 +55,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   };
 
   const isQuestionOptions = useMemo(() => {
-    return ChatMessageOptions.question.name === activeOption?.name;
+    return ChatMessageOptions.question === activeOption;
   }, [activeOption]);
 
   const renderedMessages = useMemo(
