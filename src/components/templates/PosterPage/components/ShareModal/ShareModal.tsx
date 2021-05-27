@@ -80,7 +80,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         <div className="ShareModal__header">
           <img
             className="ShareModal__background"
-            src={venue.config?.landingPageConfig?.coverImageUrl}
+            src={
+              venue.config?.landingPageConfig?.coverImageUrl ??
+              DEFAULT_MAP_BACKGROUND
             alt="map"
           />
           <SparkleLogo className="ShareModal__logo" />

@@ -48,5 +48,11 @@ export const getTwitterHref = (
 ) => {
   const categories = getCategoriesFromVenue(venue);
   const hashtagsString = categories.join(",");
-  return `https://twitter.com/intent/tweet?text=${text}&hashtags=${hashtagsString}`;
+
+  const searchParams = new URLSearchParams({
+    text,
+    hashtag: hashtagsString,
+  }).toString();
+
+  return `${TWITTER_SHARE_URL}${searchParams}`;
 };
