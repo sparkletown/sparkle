@@ -5,6 +5,7 @@ import Fuse from "fuse.js";
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 import { posterVenuesSelector } from "utils/selectors";
+import { breakStringWithQuotesBySpaces } from "utils/text";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -89,19 +90,21 @@ export const usePosters = (posterHallId: string) => {
 
     if (!normalizedSearchQuery) return filteredPosterVenues;
 
+    const matchEntries = breakStringWithQuotesBySpaces(normalizedSearchQuery);
+
+    if (!matchEntries) return filteredPosterVenues;
+
     return fuseVenues
       .search({
-        //@ts-ignore
-        $and: normalizedSearchQuery
-          .match(/("[^"]*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472
-          .map((x) => ({
-            $or: [
-              { name: x },
-              { "poster.title": x },
-              { "poster.authorName": x },
-              { "poster.categories": x },
-            ],
-          })),
+        $and: matchEntries.map((x) => ({
+          $or: [
+            { name: x },
+            { "poster.title": x },
+            { "poster.authorName": x },
+            { "poster.categories": x },
+            // @debt Rewrite the search query to match the $and type
+          ] as Record<string, string>[],
+        })),
       })
       .map((fuseSearchItem) => fuseSearchItem.item);
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
