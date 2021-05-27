@@ -86,7 +86,7 @@ export const usePosters = (posterHallId: string) => {
   );
 
   const searchedPosterVenues = useMemo(() => {
-    if (!searchQuery)
+    if (!searchQuery.trim())
       return filteredPosterVenues.slice(0, displayedPostersCount);
 
     return fuseVenues
