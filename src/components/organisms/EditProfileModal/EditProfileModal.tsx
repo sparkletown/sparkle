@@ -114,9 +114,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
                   <textarea
                     className="input-block input-centered"
                     name={question.name}
-                    ref={register({
-                      required: false,
-                    })}
+                    ref={register()}
                   />
                 </div>
               </>

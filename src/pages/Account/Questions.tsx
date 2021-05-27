@@ -78,9 +78,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
                   className="input-block input-centered"
                   name={question.name}
                   placeholder={question.text}
-                  ref={register({
-                    required: false,
-                  })}
+                  ref={register()}
                 />
               </div>
             ))}
