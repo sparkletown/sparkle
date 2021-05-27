@@ -6,10 +6,14 @@ $logo-background-width: 195px;
 
 .ShareModal {
   &__header {
-    position: relative;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
     height: 200px;
     margin: $spacing--sm;
     border-radius: $border-radius--lg;
+    background-color: $secondary;
   }
 
   &__background {
@@ -28,18 +32,14 @@ $logo-background-width: 195px;
   }
 
   &__title {
-    position: absolute;
     font-size: $font-size--xl;
     text-transform: capitalize;
-    bottom: 20px;
-    left: 0;
+    padding: 0 $spacing--xxl;
   }
 
   &__url-text {
-    position: absolute;
     color: $secondary--lightest;
-    bottom: 12px;
-    left: 30px;
+    padding: 0 $spacing--xxl;
   }
 
   &__content {

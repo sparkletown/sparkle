@@ -11,9 +11,6 @@ import { WithId } from "utils/id";
 import { getFullVenueInsideUrl } from "utils/url";
 
 import { LinkButton } from "components/atoms/LinkButton";
-import { SparkleLogo } from "components/atoms/SparkleLogo";
-
-import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import {
   getTitleTextForSharing,
@@ -77,15 +74,6 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     <Modal show={show} onHide={onHide}>
       <Modal.Body className="ShareModal">
         <div className="ShareModal__header">
-          <img
-            className="ShareModal__background"
-            src={
-              venue.config?.landingPageConfig?.coverImageUrl ??
-              DEFAULT_MAP_BACKGROUND
-            }
-            alt="map"
-          />
-          <SparkleLogo className="ShareModal__logo" />
           <h3 className="ShareModal__title">
             {venue.poster?.title ?? "Poster"}
           </h3>
