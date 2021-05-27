@@ -7,9 +7,10 @@ import { retainAttendance } from "store/actions/Attendance";
 import { VenueEvent } from "types/venues";
 
 import { getCurrentEvent } from "utils/event";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { useDispatch } from "hooks/useDispatch";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./RoomModalOngoingEvent.scss";
 
@@ -58,7 +59,7 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
             </div>
           </div>
           <div className="event-description">
-            {RenderMarkdown(eventToDisplay.description)}
+            <RenderMarkdown text={eventToDisplay.description} />
           </div>
         </>
       )}

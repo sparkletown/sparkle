@@ -139,7 +139,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <div className="row">
           <div className="col">
             <div className="description">
-              {RenderMarkdown(venueToUse.description?.text)}
+              <RenderMarkdown text={venueToUse.description?.text} />
             </div>
           </div>
         </div>

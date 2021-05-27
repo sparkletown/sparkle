@@ -6,6 +6,7 @@ import { DetailsPreviewProps } from "./DetailsPreview.types";
 // Styles
 import * as S from "./DetailsPreview.styles";
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
@@ -29,7 +30,7 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   );
 
   const renderDescription = () => (
-    <S.Description>{RenderMarkdown(description)}</S.Description>
+    <S.Description><RenderMarkdown text={description} /></S.Description>
   );
 
   return (

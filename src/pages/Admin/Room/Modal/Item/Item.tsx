@@ -11,9 +11,12 @@ import {
 import { Button } from "react-bootstrap";
 import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 import { CustomInputsType } from "settings";
-import { RoomModalItemProps } from "./Item.types";
+
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { RoomModalItemProps } from "./Item.types";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
@@ -221,7 +224,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
-          <S.Description>{RenderMarkdown(description)}</S.Description>
+          <S.Description><RenderMarkdown text={description} /></S.Description>
         </S.TitleWrapper>
 
         <FontAwesomeIcon

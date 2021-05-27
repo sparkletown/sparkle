@@ -7,6 +7,7 @@ import { VenueEvent } from "types/venues";
 
 import { deleteEvent, EventInput } from "api/admin";
 import { WithId } from "utils/id";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 interface PropsType {
@@ -55,7 +56,7 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <p>Name: {event?.name}</p>
-            <p>Description: {RenderMarkdown(event?.description)}</p>
+            <p>Description: <RenderMarkdown text={event?.description} /></p>
             <p>
               Time:{" "}
               {event

@@ -7,6 +7,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import "./VenueInfoEvents.scss";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { EventDisplay } from "../EventDisplay/EventDisplay";
@@ -71,7 +72,7 @@ const VenueInfoEvents: React.FunctionComponent<PropsType> = ({
                         {event.name}
                       </div>
                       <div className="whatson-description-container-description">
-                        {RenderMarkdown(event.description)}
+                        <RenderMarkdown text={event.description} />
                       </div>
                     </React.Fragment>
                   ))}

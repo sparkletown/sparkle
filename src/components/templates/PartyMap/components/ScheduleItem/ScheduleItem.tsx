@@ -2,11 +2,13 @@ import React from "react";
 
 import { VenueEvent } from "types/venues";
 
+import { retainAttendance } from "store/actions/Attendance";
+
 import { formatUtcSeconds } from "utils/time";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { useDispatch } from "hooks/useDispatch";
-import { retainAttendance } from "store/actions/Attendance";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ScheduleItem.scss";
 
@@ -47,7 +49,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             </div>
           </div>
           <div className="event-description">
-            {RenderMarkdown(event.description)}
+            <RenderMarkdown text={event.description} />
           </div>
         </div>
         {isCurrentEvent && (

@@ -80,17 +80,19 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     reset();
   });
 
-  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const {
+    isShown: isEmojiPickerVisible,
+    hide: hideEmojiPicker,
+    toggle: toggleEmojiPicker,
+  } = useShowHide();
 
   const addEmoji = (emoji: CustomEmoji) => {
     if (emoji.colons) {
       const message = getValues("message");
       setValue("message", message + emoji.colons);
     }
-    setShowEmojiPicker(false);
-  };
-  const toggleEmojiPicker = () => {
-    setShowEmojiPicker(!showEmojiPicker);
+    
+    hideEmojiPicker();
   };
 
   const chatValue = watch("message");
@@ -149,7 +151,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           </button>
         </form>
       </div>
-      {showEmojiPicker && (
+      {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
           <Picker onSelect={addEmoji} />
         </div>

@@ -42,7 +42,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             {venue.config?.landingPageConfig.subtitle}
           </p>
           <p style={{ fontSize: 13 }}>
-            {RenderMarkdown(venue.config?.landingPageConfig.description)}
+            <RenderMarkdown text={venue.config?.landingPageConfig.description} />
           </p>
         </InformationCard>
       </InformationLeftColumn>
@@ -61,7 +61,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             <div className="row">
               <div className="col">
                 <div className="description">
-                  {RenderMarkdown(venue.description?.text)}
+                  <RenderMarkdown text={venue.description?.text} />
                 </div>
               </div>
             </div>

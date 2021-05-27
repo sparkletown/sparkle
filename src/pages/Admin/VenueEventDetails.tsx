@@ -6,6 +6,7 @@ import { VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 import { formatHourAndMinute } from "utils/time";
 import { eventEndTime, eventStartTime } from "utils/event";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 export interface VenueEventDetailsProps {
@@ -42,10 +43,11 @@ const VenueEventDetails = ({
             {venueEvent.name}
           </span>
         </div>
-        {RenderMarkdown(venueEvent.description)}
+        <RenderMarkdown text={venueEvent.description} />
 
         {venueEvent.descriptions?.map((description, index) => (
-          <p key={index}>{RenderMarkdown(description)}</p>
+          // @debt we shouldn't be using index as a key here
+          <p key={index}><RenderMarkdown text={description} /></p>
         ))}
       </div>
       <div className="button-container">

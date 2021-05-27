@@ -309,10 +309,11 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                           )}`}
                         </div>
                         <div className="event-description">
-                          {RenderMarkdown(venueEvent.description)}
+                          <RenderMarkdown text={venueEvent.description} />
                           {venueEvent.descriptions?.map(
                             (description, index) => (
-                              <p key={index}>{RenderMarkdown(description)}</p>
+                              // @debt we shouldn't be using index for the key here
+                              <p key={index}><RenderMarkdown text={description} /></p>
                             )
                           )}
                         </div>
