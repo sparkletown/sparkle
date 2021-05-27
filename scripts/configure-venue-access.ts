@@ -8,7 +8,11 @@ import "firebase/firestore";
 
 import { VenueAccessMode } from "../src/types/VenueAcccess";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import {
+  initFirebaseAdminApp,
+  makeScriptUsage,
+  FieldValue,
+} from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description: "Configures the venue access with the selected method and value",
@@ -81,16 +85,18 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
       break;
 
     case VenueAccessMode.Emails:
-      const emails = fs
+      const emails: string[] = fs
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .map((line) => line.trim().toLowerCase());
+
       console.log(
         `  Adding ${emails.length} email addresses to the '${venueId}' venue's '${method}' whitelist..`
       );
+
       await accessDocRef.set(
         {
-          emails: emails,
+          emails: FieldValue.arrayUnion(...emails),
         },
         { merge: true }
       );
