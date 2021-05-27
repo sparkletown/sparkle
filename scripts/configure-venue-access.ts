@@ -72,9 +72,6 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
     `Configuring venue '${venueId}' access data for '${method}' using '${accessDetail}'...`
   );
 
-  const accessDoc = await accessDocRef.get();
-  const access = accessDoc.exists ? accessDoc.data() : {};
-
   switch (method) {
     case VenueAccessMode.Password:
       const password = accessDetail.trim();
@@ -103,16 +100,18 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
       break;
 
     case VenueAccessMode.Codes:
-      const codes = fs
+      const codes: string[] = fs
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .forEach((line) => {
-          access?.codes?.push(line.trim());
-        });
-      console.log(`Setting venues/${venueId}/access/${method}...`);
+        .map((line) => line.trim());
+
+      console.log(
+        `  Adding ${codes.length} access codes to the '${venueId}' venue's '${method}' list..`
+      );
+
       await accessDocRef.set(
         {
-          codes: codes,
+          codes: FieldValue.arrayUnion(...codes),
         },
         { merge: true }
       );
