@@ -106,9 +106,9 @@ export const usePosters = (posterHallId: string) => {
       .map((fuseSearchItem) => fuseSearchItem.item);
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
 
-  const displayedPosterVenues = searchedPosterVenues.slice(
-    0,
-    displayedPostersCount
+  const displayedPosterVenues = useMemo(
+    () => searchedPosterVenues.slice(0, displayedPostersCount),
+    [searchedPosterVenues, displayedPostersCount]
   );
 
   const hasHiddenPosters =
