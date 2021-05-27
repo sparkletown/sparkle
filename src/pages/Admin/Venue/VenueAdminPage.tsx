@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Button } from "react-bootstrap";
 
 import {
@@ -20,6 +20,8 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { AnnouncementOptions } from "./AnnouncementOptions";
+
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
@@ -28,15 +30,15 @@ export const VenueAdminPage: React.FC = () => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueRequestStatus = useSelector(isCurrentVenueNGRequestedSelector);
   const venueRequestingStatus = useSelector(isCurrentVenueNGRequestingSelector);
-  const { isShown, show } = useShowHide();
+  const {
+    isShown: isShowBannerAdmin,
+    show: showBannerAdmin,
+    hide: hideBannerAdmin,
+  } = useShowHide();
 
   const isVenueOwner = useIsUserVenueOwner();
   const isVenueLoading = venueRequestingStatus || !venueRequestStatus;
   const isLoggedIn = profile && user;
-
-  const banner = useMemo(() => {
-    return venue?.banner ?? { content: "No announcement" };
-  }, [venue]);
 
   if (isVenueLoading) {
     return <LoadingPage />;
@@ -62,14 +64,23 @@ export const VenueAdminPage: React.FC = () => {
         <h4 className="AdminPage__title">
           Current Announcement in Space Title
         </h4>
-        {isShown ? (
-          <BannerAdmin venueId={venueId} venue={venue} />
+        {isShowBannerAdmin ? (
+          <BannerAdmin
+            venueId={venueId}
+            venue={venue}
+            onClose={hideBannerAdmin}
+          />
         ) : (
           <>
-            <AnnouncementMessage banner={banner} />
+            <AnnouncementMessage banner={venue?.banner} />
             <div className="AdminPage__options">
-              <div></div>
-              <Button onClick={show}>Edit</Button>
+              <AnnouncementOptions banner={venue?.banner} />
+              <Button
+                onClick={showBannerAdmin}
+                className="AdminPage__option-button"
+              >
+                Edit
+              </Button>
             </div>
           </>
         )}
