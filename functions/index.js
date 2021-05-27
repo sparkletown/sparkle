@@ -36,6 +36,7 @@ const payment = require("./payment");
 const venue = require("./venue");
 const stats = require("./stats");
 const access = require("./access");
+const videoRoom = require("./videoRoom");
 
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
@@ -64,3 +65,4 @@ exports.payment = payment;
 exports.venue = venue;
 exports.stats = stats;
 exports.access = access;
+exports.videoRoom = videoRoom;

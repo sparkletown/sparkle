@@ -6,6 +6,7 @@ import { Role } from "types/Role";
 import { Table } from "types/Table";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+import { VideoChatRequest } from "types/VideoRoom";
 
 import { WithId } from "utils/id";
 
@@ -70,6 +71,7 @@ export interface FirestoreData {
   venueEvents?: Record<string, VenueEvent>;
   venues?: Record<string, AnyVenue>;
   worldUsers?: Record<string, User>;
+  videoRoomInvites?: Record<string, VideoChatRequest>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -100,4 +102,5 @@ export interface FirestoreOrdered {
   venueEvents?: WithId<VenueEvent>[];
   venues?: WithId<AnyVenue>[];
   worldUsers?: WithId<User>[];
+  videoRoomInvites?: WithId<VideoChatRequest>[];
 }

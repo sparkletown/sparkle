@@ -19,6 +19,7 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
+import { VideoChatRequest } from "types/VideoRoom";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -78,6 +79,15 @@ export const worldUsersByIdSelector: SparkleSelector<
 export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
+
+/**
+ * Selector to retrieve video room invite requests from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const videoRoomInvitesSelector: SparkleSelector<
+  Record<string, VideoChatRequest>
+> = (state) => state.firestore.data.videoRoomInvites || {};
 
 export const orderedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined

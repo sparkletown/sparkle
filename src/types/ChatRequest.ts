@@ -6,13 +6,6 @@ export enum ChatRequestState {
   Canceled = "Canceled",
 }
 
-export enum VideoChatRequestState {
-  Asked = "Asked",
-  Declined = "Declined",
-  Accepted = "Accepted",
-  Canceled = "Canceled",
-}
-
 export enum ChatRequestType {
   JoinTheirChat = "JoinTheirChat",
   JoinMyChat = "JoinMyChat",
@@ -28,10 +21,3 @@ export type ChatRequest = {
   fromJoined: boolean;
   toJoined: boolean;
 };
-
-export interface VideoChatRequest {
-  hostId: string;
-  guestId: string;
-  state: VideoChatRequestState;
-  createdAt: number;
-}

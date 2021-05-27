@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
-import { createVideoChat } from "api/chat";
+import { inviteToVideoChat } from "api/video";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -63,9 +63,13 @@ export const UserProfileModal: React.FC = () => {
   const startVideoChat = useCallback(async () => {
     if (!user?.uid || !chosenUserId || !venueId) return;
 
-    const response = await createVideoChat(user.uid, chosenUserId, venueId);
-    const roomId = response.id;
-    history.push(`/pr/${venueId}/${roomId}`);
+    const response = await inviteToVideoChat(user.uid, chosenUserId);
+
+    const roomId = response.data;
+
+    if (roomId) {
+      history.push(`/pr/${venueId}/${roomId}`);
+    }
   }, [chosenUserId, history, user?.uid, venueId]);
 
   if (!selectedUserProfile || !chosenUserId || !user) {
