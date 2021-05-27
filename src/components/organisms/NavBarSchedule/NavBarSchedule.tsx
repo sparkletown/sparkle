@@ -152,7 +152,6 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
         prepareForSchedule({
           day: startOfSelectedDay,
           usersEvents: userEventIds,
-          isForCalendarFile: false,
         })
       );
 
