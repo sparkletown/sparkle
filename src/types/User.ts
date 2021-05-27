@@ -36,6 +36,12 @@ export interface User {
   kidsMode: boolean;
   anonMode: boolean;
   enteredVenueIds?: string[];
+  status?: string;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   myPersonalizedPosters?: MyPersonalizedPosters;
+}
+
+export enum UserStatus {
+  available = "available",
+  busy = "busy",
 }
