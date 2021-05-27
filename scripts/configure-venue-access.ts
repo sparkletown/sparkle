@@ -52,18 +52,21 @@ const venueDocRef = admin.firestore().collection("venues").doc(venueId);
 const accessDocRef = venueDocRef.collection("access").doc(method);
 
 (async () => {
-  console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
   const venueDoc = await venueDocRef.get();
 
   if (!venueDoc.exists) {
-    console.error(`venue ${venueId} does not exist`);
+    console.error(`venue '${venueId}' doesn't exist`);
     process.exit(1);
   }
 
   await admin.firestore().doc(`venues/${venueId}`).update({ access: method });
-  console.log("Done");
 
-  console.log(`Configuring access details for ${method}...`);
+  console.log(
+    `Configuring venue '${venueId}' access mode to use '${method}'...`
+  );
+  console.log(
+    `Configuring venue '${venueId}' access data for '${method}' using '${accessDetail}'...`
+  );
 
   const accessDoc = await accessDocRef.get();
   const access = accessDoc.exists ? accessDoc.data() : {};
@@ -83,7 +86,7 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
         .split(/\r?\n/)
         .map((line) => line.trim().toLowerCase());
       console.log(
-        `Setting venues/${venueId}/access/${method} to {emails: ${emails}}...`
+        `  Adding ${emails.length} email addresses to the '${venueId}' venue's '${method}' whitelist..`
       );
       await accessDocRef.set(
         {
@@ -109,7 +112,8 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
       );
       break;
   }
-  console.log("Done.");
+
+  console.log("Finished.");
 
   process.exit(0);
 })()
