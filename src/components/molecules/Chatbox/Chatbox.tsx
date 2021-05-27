@@ -86,9 +86,9 @@ export const Chatbox: React.FC<ChatboxProps> = ({
       <div className="Chatbox__form-box">
         {selectedThread && (
           <ChatboxThreadControls
+            text="replying to"
             threadAuthor={selectedThread.author.partyName}
             closeThread={closeThread}
-            text="replying to"
           />
         )}
         {displayPoll && !isQuestionOptions && (

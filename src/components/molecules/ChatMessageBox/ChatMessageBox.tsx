@@ -68,7 +68,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     ? "Type your question..."
     : "Write your message...";
 
-  const buttonClassNames = classNames("Chatbox__submit-button", {
+  const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
   });
 
@@ -85,7 +85,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         autoComplete="off"
       />
       <button
-        className={buttonClassNames}
+        className={buttonClasses}
         type="submit"
         disabled={!chatValue || isSendingMessage}
       >
