@@ -18,6 +18,7 @@ export const getTitleTextForSharing = ({
   venue,
   url,
 }: GetTitleTextForSharingProps) => {
+  if (!venue.poster) return "Check out this poster";
   return `Check out this OHBM Poster, ${venue.poster.title} by ${venue.poster.authorName} at ${url}`;
 };
 
