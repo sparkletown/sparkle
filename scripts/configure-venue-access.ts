@@ -48,9 +48,13 @@ initFirebaseAdminApp(projectId, {
     : undefined,
 });
 
+const venueDocRef = admin.firestore().collection("venues").doc(venueId);
+const accessDocRef = venueDocRef.collection("access").doc(method);
+
 (async () => {
   console.log(`Ensuring ${venueId} access via ${method} - ${accessDetail}`);
-  const venueDoc = await admin.firestore().doc(`venues/${venueId}`).get();
+  const venueDoc = await venueDocRef.get();
+
   if (!venueDoc.exists) {
     console.error(`venue ${venueId} does not exist`);
     process.exit(1);
@@ -61,9 +65,6 @@ initFirebaseAdminApp(projectId, {
 
   console.log(`Configuring access details for ${method}...`);
 
-  const accessDocRef = admin
-    .firestore()
-    .doc(`venues/${venueId}/access/${method}`);
   const accessDoc = await accessDocRef.get();
   const access = accessDoc.exists ? accessDoc.data() : {};
 
