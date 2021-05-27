@@ -2,7 +2,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { InputField } from "components/atoms/InputField";
 
-import { PrivateChatPreview, RecipientChat, OnlineUser } from "../";
+import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
 
 import {
   usePrivateChatPreviews,

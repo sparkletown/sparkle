@@ -7,6 +7,10 @@
   padding: $spacing--xs $spacing--sm;
   margin: $spacing--xs;
   border-radius: $border-radius--lg;
-  background-color: $primary;
+  background-color: $secondary;
   font-weight: $font-weight--500;
+
+  &--active {
+    background-color: $primary;
+  }
 }
