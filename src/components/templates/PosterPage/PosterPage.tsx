@@ -62,7 +62,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const renderedCategories = useMemo(
     () =>
       Array.from(new Set(categories)).map((category) => (
-        <PosterCategory key={category} category={category} />
+        <PosterCategory key={category} category={category} active />
       )),
     [categories]
   );

@@ -34,7 +34,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const renderedCategories = useMemo(
     () =>
       Array.from(new Set(categories)).map((category) => (
-        <PosterCategory key={category} category={category} />
+        <PosterCategory key={category} category={category} active />
       )),
     [categories]
   );

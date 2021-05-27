@@ -10,6 +10,7 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -60,6 +61,8 @@ export const VENUE_NAME_MIN_CHAR_COUNT = 3;
 export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
+export const GIFT_TICKET_MODAL_URL =
+  "https://here.burningman.org/event/virtualburn";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -581,7 +584,9 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
-export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
+
+export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
 // SCHEDULE
 // @debt probably would be better to adjust max hour based on user's display size
