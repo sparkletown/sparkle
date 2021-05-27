@@ -17,14 +17,14 @@ export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
   sendMessage: SendMesssage;
   sendThreadReply: SendChatReply;
-  isQuestion: boolean;
+  isQuestion?: boolean;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThread,
   sendMessage,
   sendThreadReply,
-  isQuestion,
+  isQuestion = false,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
   const [isSendingMessage, setMessageSending] = useState(false);
@@ -50,7 +50,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const sendMessageToChat = handleSubmit(({ message }) => {
     setMessageSending(true);
-    sendMessage({ text: message, isQuestion });
+    sendMessage({ message, isQuestion });
     reset();
   });
 
