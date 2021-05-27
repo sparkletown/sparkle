@@ -97,7 +97,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     [questions, handleVote]
   );
 
-  const calculateShare = useCallback(
+  const calculateVotePercentage = useCallback(
     (item: PollQuestion) =>
       votes.length
         ? Math.floor(
@@ -113,7 +113,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     const sortedQuestions = questions
       .map((item) => ({
         ...item,
-        share: calculateShare(item),
+        share: calculateVotePercentage(item),
       }))
       .sort((a, b) => b.share - a.share);
 
@@ -127,7 +127,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         {question.name}
       </div>
     ));
-  }, [questions, calculateShare]);
+  }, [questions, calculateVotePercentage]);
 
   const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
     id,
