@@ -19,6 +19,7 @@ import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 
 import { experienceSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
 import { Toggler } from "components/atoms/Toggler";
 
@@ -65,10 +66,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  const isCurrentTableLocked = useMemo(() => {
-    // @debt Why does `locked` has Table type?
-    return !!allTables?.[seatedAtTable]?.locked;
-  }, [allTables, seatedAtTable]);
+  const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
   const currentTableHasSeatedUsers = useMemo(
     () =>

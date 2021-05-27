@@ -709,6 +709,12 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 exports.updateTables = functions.https.onCall((data, context) => {
   checkAuth(context);
 
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
   const venueRef = admin.firestore().collection("venues").doc(data.venueId);
 
   return admin.firestore().runTransaction(async (transaction) => {
