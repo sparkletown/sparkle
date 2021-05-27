@@ -151,6 +151,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           </button>
         </form>
       </div>
+
       {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
           <Picker onSelect={addEmoji} />
