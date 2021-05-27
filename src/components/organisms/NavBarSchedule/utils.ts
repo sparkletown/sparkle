@@ -12,6 +12,7 @@ import { MyPersonalizedSchedule } from "types/User";
 
 import { WithVenueId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
+import { arrayIncludes } from "utils/types";
 
 export const prepareForSchedule = (
   day: Date,
@@ -24,9 +25,7 @@ export const prepareForSchedule = (
     ...event,
     start_utc_seconds: getUnixTime(startOfEventToShow),
     duration_minutes: differenceInMinutes(endOfEventToShow, startOfEventToShow),
-    isSaved: event.id
-      ? usersEvents[event.venueId]?.includes(event.id) ?? false
-      : false,
+    isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
   };
 };
 
