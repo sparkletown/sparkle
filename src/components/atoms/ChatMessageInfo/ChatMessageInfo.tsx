@@ -39,7 +39,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={author} />
+      <UserAvatar user={author} showStatus />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
         {formatTimestampToDisplayHoursMinutes(timestamp)}
