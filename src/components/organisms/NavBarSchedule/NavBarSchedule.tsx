@@ -6,7 +6,6 @@ import {
   startOfToday,
   startOfDay,
   isToday,
-  isEqual,
 } from "date-fns";
 import { groupBy } from "lodash";
 import classNames from "classnames";
@@ -20,7 +19,10 @@ import {
   VenueEvent,
 } from "types/venues";
 
-import { isEventLaterToday, isEventWithinDate } from "utils/event";
+import {
+  isEventWithinDate,
+  isEventWithinDateAndNotFinished,
+} from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 
@@ -135,9 +137,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(
-        isEqual(startOfToday(), startOfSelectedDay)
-          ? isEventLaterToday
-          : isEventWithinDate(startOfSelectedDay)
+        isScheduleTimeshifted
+          ? isEventWithinDate(startOfSelectedDay)
+          : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
       .map(prepareForSchedule(startOfSelectedDay, userEventIds));
 
@@ -160,6 +162,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     getEventLocation,
     firstDayOfSchedule,
+    isScheduleTimeshifted,
   ]);
 
   const containerClasses = classNames("NavBarSchedule", {
