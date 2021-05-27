@@ -80,21 +80,20 @@ export const usePosters = (posterHallId: string) => {
         threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
         findAllMatches: true,
-        // useExtendedSearch: true,  // might be neat but confusing. might be worthwhile a UI switch
       }),
     [filteredPosterVenues]
   );
 
   const searchedPosterVenues = useMemo(() => {
-    if (!searchQuery.trim())
-      return filteredPosterVenues.slice(0, displayedPostersCount);
+    const normalizedSearchQuery = searchQuery.trim();
+
+    if (!normalizedSearchQuery) return filteredPosterVenues;
 
     return fuseVenues
       .search({
         //@ts-ignore
-        $and: searchQuery
-          .trim()
-          .match(/("[^"]*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472 + fix
+        $and: normalizedSearchQuery
+          .match(/("[^"]*?"|[^"\s]+)+(?=\s*|\s*$)/g) // source: https://stackoverflow.com/a/16261693/1265472
           .map((x) => ({
             $or: [
               { name: x },
@@ -104,13 +103,21 @@ export const usePosters = (posterHallId: string) => {
             ],
           })),
       })
-      .slice(0, displayedPostersCount)
       .map((fuseSearchItem) => fuseSearchItem.item);
-  }, [searchQuery, fuseVenues, filteredPosterVenues, displayedPostersCount]);
+  }, [searchQuery, fuseVenues, filteredPosterVenues]);
+
+  const displayedPosterVenues = searchedPosterVenues.slice(
+    0,
+    displayedPostersCount
+  );
+
+  const hasHiddenPosters =
+    searchedPosterVenues.length > displayedPosterVenues.length;
 
   return {
-    posterVenues: searchedPosterVenues,
+    posterVenues: displayedPosterVenues,
     isPostersLoaded,
+    hasHiddenPosters,
 
     searchInputValue,
     liveFilter,
