@@ -16,21 +16,6 @@ $logo-background-width: 195px;
     background-color: $secondary;
   }
 
-  &__background {
-    width: 100%;
-    border-radius: $border-radius--lg;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.3;
-  }
-
-  &__logo {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-  }
-
   &__title {
     font-size: $font-size--xl;
     text-transform: capitalize;
