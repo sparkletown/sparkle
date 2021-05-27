@@ -1,8 +1,5 @@
 @import "scss/constants";
 
-$purple--regular: #7c46fb;
-$purple--hover: #8755fb;
-
 $grey--disabled: #fff3;
 $dark-grey: #232225;
 
@@ -35,10 +32,10 @@ $EventModal--padding-top: 40px;
   }
 
   & .EventModal__button {
-    background-color: $purple--regular;
+    background-color: $primary--live;
 
     &:hover {
-      background-color: $purple--hover;
+      background-color: $primary--live-hover;
     }
 
     &:disabled {
