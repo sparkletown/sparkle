@@ -22,6 +22,9 @@ export const SPARKLE_TERMS_AND_CONDITIONS_URL =
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
 
+// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
+export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
+
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";

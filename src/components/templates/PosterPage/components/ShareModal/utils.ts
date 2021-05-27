@@ -1,8 +1,12 @@
-import { FACEBOOK_APP_ID } from "secrets";
-import { PosterPageVenue } from "types/venues";
-import { WithId } from "utils/id";
+import {
+  FACEBOOK_SPARKLE_APP_ID,
+  FACEBOOK_SHARE_URL,
+  TWITTER_SHARE_URL,
+} from "settings";
 
-import { FACEBOOK_SHARE_URL, TWITTER_SHARE_URL } from "settings";
+import { PosterPageVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) =>
   venue?.poster?.categories ?? [];
@@ -30,7 +34,7 @@ export const getFacebookHref = (
   const hashtagsString = categories.map((category) => `#${category}`).join(",");
 
   const searchParams = new URLSearchParams({
-    app_id: `${FACEBOOK_APP_ID}`,
+    app_id: FACEBOOK_SPARKLE_APP_ID,
     u: url,
     quote: text,
     hashtag: hashtagsString,

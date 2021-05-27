@@ -86,7 +86,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             alt="map"
           />
           <SparkleLogo className="ShareModal__logo" />
-          <h3 className="ShareModal__title">{venue.name}</h3>
+          <h3 className="ShareModal__title">
+            {venue.poster?.title ?? "Poster"}
+          </h3>
           <span className="ShareModal__url-text">{url}</span>
         </div>
 
