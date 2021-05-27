@@ -110,7 +110,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             selectedThread={selectedThread}
             sendMessage={sendMessage}
             sendThreadReply={sendThreadReply}
-            isQuestion={isQuestionOptions}
+            questionMode={isQuestionMode}
           />
         )}
       </div>

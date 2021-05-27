@@ -13,7 +13,7 @@ export interface ChatboxThreadControlsProps {
 export const ChatboxThreadControls: React.FC<ChatboxThreadControlsProps> = ({
   closeThread,
   threadAuthor,
-  text = "",
+  text,
 }) => {
   return (
     <div className="ChatboxThreadControls">
