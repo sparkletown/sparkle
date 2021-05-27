@@ -22,6 +22,9 @@ export const SPARKLE_TERMS_AND_CONDITIONS_URL =
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
 
+// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
+export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
+
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
@@ -594,3 +597,6 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
+export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
