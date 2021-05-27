@@ -16,14 +16,14 @@ $edit-table-input-spacing: 5px 0;
 
   &__capacity {
     display: flex;
-    align-content: center;
-    justify-content: space-between;
     padding: $edit-table-capacity-padding;
   }
 
   &__max-capacity {
     display: flex;
+    flex: 1;
     align-items: center;
+    justify-content: space-between;
     margin-bottom: 0;
   }
 
