@@ -27,6 +27,10 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   display: flex;
   position: relative;
 
+  &__loading {
+    margin-top: $Schedule--padding;
+  }
+
   &__rooms {
     flex-basis: $rooms-column--width;
     flex-shrink: 0;

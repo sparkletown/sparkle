@@ -138,9 +138,10 @@ export const Schedule: React.FC<ScheduleProps> = ({
 
   if (isLoading) {
     return (
-      <div className={containerClasses}>
-        <Loading label={"Events are loading"} />
-      </div>
+      <Loading
+        containerClassName="Schedule__loading"
+        label={"Events are loading"}
+      />
     );
   }
 
