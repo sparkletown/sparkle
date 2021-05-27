@@ -12,10 +12,18 @@ import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description: "Configures the venue access with the selected method and value",
-  usageParams:
-    "PROJECT_ID VENUE_ID [password|emaillist|codelist] [password | emails file path | codes file path] [CREDENTIAL_PATH]",
-  exampleParams:
-    "co-reality-map password abc123 [theMatchingAccountServiceKey.json] / co-reality-map emails emails-one-per-line.txt [theMatchingAccountServiceKey.json] / co-reality-map codes ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]",
+  usageParams: [
+    "PROJECT_ID VENUE_ID METHOD ACCESS_DETAIL [CREDENTIAL_PATH]",
+    "",
+    `PROJECT_ID VENUE_ID ${VenueAccessMode.Password} THE_PASSWORD_TO_SET [CREDENTIAL_PATH]`,
+    `PROJECT_ID VENUE_ID ${VenueAccessMode.Emails} LIST_OF_EMAILS_PATH [CREDENTIAL_PATH]`,
+    `PROJECT_ID VENUE_ID ${VenueAccessMode.Codes} LIST_OF_ONE_TIME_USE_CODES_PATH [CREDENTIAL_PATH]`,
+  ],
+  exampleParams: [
+    `co-reality-map venue123Id ${VenueAccessMode.Password} secretPassword123 [theMatchingAccountServiceKey.json]`,
+    `co-reality-map venue123Id ${VenueAccessMode.Emails} emails-one-per-line.txt [theMatchingAccountServiceKey.json]`,
+    `co-reality-map venue123Id ${VenueAccessMode.Codes} one-time-use-ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]`,
+  ],
 });
 
 const [
