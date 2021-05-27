@@ -61,5 +61,10 @@
     position: absolute;
     bottom: 65px;
     right: 60px;
+    z-index: 2;
+
+    input {
+      color: $light-grey;
+    }
   }
 }
