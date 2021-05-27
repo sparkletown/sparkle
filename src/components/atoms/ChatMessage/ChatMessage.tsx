@@ -25,7 +25,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, isMine, replies, id, isQuestion } = message;
+  const { text, replies, id, isMine, isQuestion } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
