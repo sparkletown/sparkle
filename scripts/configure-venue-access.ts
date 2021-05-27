@@ -117,10 +117,6 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
       );
       break;
   }
-
-  console.log("Finished.");
-
-  process.exit(0);
 })()
   .catch((error) => {
     console.error(error);
