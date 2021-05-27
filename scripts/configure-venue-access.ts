@@ -30,6 +30,8 @@ const usage = makeScriptUsage({
   ],
 });
 
+// TODO: refactor this to work with multiple venueIds at once, in a similar way to how scripts/count-users-entered-venue.ts works
+
 const [
   projectId,
   venueId,
