@@ -119,6 +119,7 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
+// @debt extract this into a new functions/chat backend script file
 const checkIfUserHasVoted = async (venueId, pollId, userId) => {
   await admin
     .firestore()
@@ -134,7 +135,9 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
 
       const poll = doc.data();
 
-      return poll.votes.map(({ userId }) => userId).includes(userId);
+      return poll.votes.some(
+        ({ userId: existingUserId }) => userId === existingUserId
+      );
     })
     .catch((err) => {
       throw new HttpsError(
@@ -737,6 +740,7 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).delete();
 });
 
+// @debt extract this into a new functions/chat backend script file
 exports.voteInPoll = functions.https.onCall(
   async ({ venueId, pollId, questionId }, context) => {
     checkAuth(context);

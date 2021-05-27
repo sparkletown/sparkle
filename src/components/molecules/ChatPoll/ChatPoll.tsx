@@ -62,7 +62,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
   }, [isAdmin, userId, owners]);
 
   const isVoted = userId
-    ? votes.map(({ userId }) => userId).includes(userId)
+    ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
     : false;
 
   const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
