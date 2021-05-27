@@ -11,6 +11,8 @@ export const getTitleTextForSharing = (
   url: string
 ) => {
   if (!venue.poster) return "Check out this OHBM Poster";
+const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) =>
+  venue?.poster?.categories ?? [];
 
   return `Check out this OHBM Poster, ${venue.poster.title} by ${venue.poster.authorName} at ${url}`;
 };
