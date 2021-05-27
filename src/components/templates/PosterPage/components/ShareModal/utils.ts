@@ -6,14 +6,18 @@ const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) => {
   return venue?.poster?.categories || [];
 };
 
-export const getTitleTextForSharing = (
-  venue: WithId<PosterPageVenue>,
-  url: string
-) => {
-  if (!venue.poster) return "Check out this OHBM Poster";
 const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) =>
   venue?.poster?.categories ?? [];
 
+export interface GetTitleTextForSharingProps {
+  venue: WithId<PosterPageVenue>;
+  url: string;
+}
+
+export const getTitleTextForSharing = ({
+  venue,
+  url,
+}: GetTitleTextForSharingProps) => {
   return `Check out this OHBM Poster, ${venue.poster.title} by ${venue.poster.authorName} at ${url}`;
 };
 
