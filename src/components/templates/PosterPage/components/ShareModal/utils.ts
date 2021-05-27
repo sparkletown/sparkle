@@ -28,11 +28,7 @@ export const getFacebookHref = (
   text: string
 ) => {
   const categories = getCategoriesFromVenue(venue);
-  const hashtagsString = categories.reduce((result, hash, index, array) => {
-    const isLast = index === array.length - 1;
-    const separator = isLast ? "" : ", ";
-    return result + `#${hash}${separator}`;
-  }, "");
+  const hashtagsString = categories.map((category) => `#${category}`).join(",");
 
   return `https://www.facebook.com/sharer/sharer.php?app_id=${FACEBOOK_APP_ID}&u=${url}&quote=${text}&hashtag=${hashtagsString}`;
 };
