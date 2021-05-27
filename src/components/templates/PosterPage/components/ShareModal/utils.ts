@@ -2,9 +2,6 @@ import { FACEBOOK_APP_ID } from "secrets";
 import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 
-const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) => {
-  return venue?.poster?.categories || [];
-};
 import { FACEBOOK_SHARE_URL, TWITTER_SHARE_URL } from "settings";
 
 const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) =>
