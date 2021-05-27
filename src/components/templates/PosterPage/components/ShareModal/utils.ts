@@ -5,6 +5,7 @@ import { WithId } from "utils/id";
 const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) => {
   return venue?.poster?.categories || [];
 };
+import { FACEBOOK_SHARE_URL, TWITTER_SHARE_URL } from "settings";
 
 const getCategoriesFromVenue = (venue: WithId<PosterPageVenue>) =>
   venue?.poster?.categories ?? [];
@@ -19,6 +20,7 @@ export const getTitleTextForSharing = ({
   url,
 }: GetTitleTextForSharingProps) => {
   if (!venue.poster) return "Check out this poster";
+
   return `Check out this OHBM Poster, ${venue.poster.title} by ${venue.poster.authorName} at ${url}`;
 };
 
@@ -30,7 +32,14 @@ export const getFacebookHref = (
   const categories = getCategoriesFromVenue(venue);
   const hashtagsString = categories.map((category) => `#${category}`).join(",");
 
-  return `https://www.facebook.com/sharer/sharer.php?app_id=${FACEBOOK_APP_ID}&u=${url}&quote=${text}&hashtag=${hashtagsString}`;
+  const searchParams = new URLSearchParams({
+    app_id: `${FACEBOOK_APP_ID}`,
+    u: url,
+    quote: text,
+    hashtag: hashtagsString,
+  }).toString();
+
+  return `${FACEBOOK_SHARE_URL}${searchParams}`;
 };
 
 export const getTwitterHref = (

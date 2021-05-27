@@ -13,6 +13,8 @@ import { getFullVenueInsideUrl } from "utils/url";
 import { LinkButton } from "components/atoms/LinkButton";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
+import { DEFAULT_MAP_BACKGROUND } from "settings";
+
 import {
   getTitleTextForSharing,
   getFacebookHref,
