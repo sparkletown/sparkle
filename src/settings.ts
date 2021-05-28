@@ -277,6 +277,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
   },
+  {
+    template: VenueTemplate.screenshare,
+    name: "Screenshare",
+    description: ["test"],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?

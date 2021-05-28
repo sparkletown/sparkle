@@ -1,0 +1,31 @@
+@import "scss/constants";
+
+.ScreenShare {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing--xl;
+
+  &__scene {
+    display: flex;
+    background-color: #191919;
+    border: solid 0;
+    border-radius: 22px;
+    flex-direction: column;
+    align-items: center;
+
+    &--players {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    padding: $spacing--lg;
+  }
+}
