@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { MessageToDisplay, SendChatReply, SendMesssage } from "types/chat";
+import { MessageToDisplay, SendChatReply, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -15,7 +15,7 @@ import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
-  sendMessage: SendMesssage;
+  sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
   isQuestion?: boolean;
 }
@@ -50,7 +50,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const sendMessageToChat = handleSubmit(({ message }) => {
     setMessageSending(true);
-    sendMessage({ text: message, isQuestion });
+    sendMessage({ message, isQuestion });
     reset();
   });
 

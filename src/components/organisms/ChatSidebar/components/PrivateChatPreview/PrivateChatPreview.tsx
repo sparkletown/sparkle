@@ -9,17 +9,23 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./PrivateChatPreview.scss";
 
 export interface PrivateChatPreviewProps {
-  message: PreviewChatMessageToDisplay;
+  sendMessageProps: PreviewChatMessageToDisplay;
   isOnline: boolean;
   onClick?: () => void;
 }
 
 export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
-  message,
+  sendMessageProps,
   isOnline,
   onClick,
 }) => {
-  const { isRead, isMine, counterPartyUser, text, ts_utc } = message;
+  const {
+    isRead,
+    isMine,
+    counterPartyUser,
+    message,
+    ts_utc,
+  } = sendMessageProps;
 
   const timestamp = ts_utc.toMillis();
 
@@ -34,7 +40,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
         <div className="chat-preview__username">
           {counterPartyUser.partyName}
         </div>
-        <div className="chat-preview__text">{text}</div>
+        <div className="chat-preview__text">{message}</div>
       </div>
       <div className="chat-preview__time">
         {formatDistanceToNow(timestamp, { addSuffix: true })}

@@ -14,17 +14,17 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./ChatMessageInfo.scss";
 
 export interface ChatMessageInfoProps {
-  message: BaseMessageToDisplay;
+  sendMessageProps: BaseMessageToDisplay;
   deleteMessage: () => void;
   reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
-  message,
+  sendMessageProps,
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, author, canBeDeleted } = message;
+  const { ts_utc, author, canBeDeleted } = sendMessageProps;
   const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();

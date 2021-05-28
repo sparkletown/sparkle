@@ -41,7 +41,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
         .map((chatMessage) => (
           <PrivateChatPreview
             key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
-            message={chatMessage}
+            sendMessageProps={chatMessage}
             isOnline={onlineUsers.some(
               (user) => user.id === chatMessage.counterPartyUser.id
             )}

@@ -30,7 +30,7 @@ export const useVenuePoll = () => {
       const poll: PollMessage = {
         poll: pollValues,
         from: userId,
-        text: "poll",
+        message: "poll",
         votes: [],
         ts_utc: firebase.firestore.Timestamp.now(),
       };

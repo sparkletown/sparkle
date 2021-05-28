@@ -23,8 +23,8 @@ import {
   DeleteMessage,
   PreviewChatMessageMap,
   PrivateChatMessage,
-  SendMesssage,
   SendChatReply,
+  SendMessage,
 } from "types/chat";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
@@ -164,18 +164,18 @@ export const useRecipientChat = (recipientId: string) => {
   const userId = user?.uid;
   const recipient = withId(worldUsersById[recipientId], recipientId);
 
-  const sendMessageToSelectedRecipient: SendMesssage = useCallback(
-    ({ text, isQuestion }) => {
+  const sendMessageToSelectedRecipient: SendMessage = useCallback(
+    ({ message, isQuestion }) => {
       if (!userId) return;
 
-      const message = buildMessage<PrivateChatMessage>({
+      const sendMessageProps = buildMessage<PrivateChatMessage>({
         from: userId,
-        text,
+        message,
         isQuestion,
         to: recipientId,
       });
 
-      return sendPrivateMessage(message);
+      return sendPrivateMessage(sendMessageProps);
     },
     [userId, recipientId]
   );
@@ -205,7 +205,7 @@ export const useRecipientChat = (recipientId: string) => {
       const threadReply = buildMessage<PrivateChatMessage>({
         from: userId,
         to: recipientId,
-        text: replyText,
+        message: replyText,
         threadId,
       });
 

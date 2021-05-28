@@ -4,7 +4,7 @@ import {
   DeleteMessage,
   MessageToDisplay,
   SendChatReply,
-  SendMesssage,
+  SendMessage,
   isPollMessage,
   ChatOptionType,
 } from "types/chat";
@@ -26,7 +26,7 @@ import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  sendMessage: SendMesssage;
+  sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
   displayPoll?: boolean;
@@ -68,7 +68,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         ) : (
           <ChatMessage
             key={message.id}
-            message={message}
+            sendMessageProps={message}
             deleteMessage={deleteMessage}
             selectThisThread={() => setSelectedThread(message)}
           />

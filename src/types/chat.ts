@@ -7,7 +7,7 @@ import firebase from "firebase/app";
 
 export type BaseChatMessage = {
   from: string;
-  text: string;
+  message: string;
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
@@ -16,9 +16,12 @@ export type BaseChatMessage = {
 export type PrivateChatMessage = BaseChatMessage & {
   to: string;
   isRead?: boolean;
+  isQuestion?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage;
+export type VenueChatMessage = BaseChatMessage & {
+  isQuestion?: boolean;
+};
 
 export type PollMessage = BaseChatMessage & {
   poll: PollValues;
@@ -43,13 +46,13 @@ export type MessageToDisplay<
   replies: WithId<BaseMessageToDisplay<T>>[];
 };
 
-export interface SendMesssageProps {
-  text: string;
-  isQuestion: boolean;
+export interface SendMessageProps {
+  message: string;
+  isQuestion?: boolean;
 }
 
-export type SendMesssage = (
-  message: SendMesssageProps
+export type SendMessage = (
+  sendMessageProps: SendMessageProps
 ) => Promise<void> | undefined;
 
 export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
