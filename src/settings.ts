@@ -588,6 +588,7 @@ export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
+export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
 export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
