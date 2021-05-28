@@ -164,8 +164,9 @@ export const chatUsersByIdSelector: SparkleSelector<
   Record<string, User> | undefined
 > = (state) => state.firestore.data.chatUsers;
 
-export const experienceSelector: SparkleSelector<Experience> = (state) =>
-  state.firestore.data.experience;
+export const experienceSelector: SparkleSelector<Experience | undefined> = (
+  state
+) => state.firestore.data.experience;
 
 export const reactionsSelector: SparkleSelector<
   WithId<Reaction>[] | undefined
