@@ -64,9 +64,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const chatValue = watch("message");
 
-  const placeholderValue = isQuestion
-    ? "Type your question..."
-    : "Write your message...";
+  const placeholderValue = isQuestion ? "question" : "message";
 
   const buttonClasses = classNames("Chatbox__submit-button", {
     "Chatbox__submit-button--question": isQuestion,
@@ -81,7 +79,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         containerClassName="Chatbox__input"
         ref={register({ required: true })}
         name="text"
-        placeholder={placeholderValue}
+        placeholder={`Write your ${placeholderValue}...`}
         autoComplete="off"
       />
       <button
