@@ -94,7 +94,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             setActiveOption={setActiveOption}
           />
         )}
-        {activeOption === ChatOptionType.question && (
+        {isQuestionOptions && (
           <ChatboxThreadControls
             text="asking a question"
             closeThread={closeQuestionOption}
