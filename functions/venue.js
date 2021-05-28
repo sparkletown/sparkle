@@ -742,8 +742,10 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 
 // @debt extract this into a new functions/chat backend script file
 exports.voteInPoll = functions.https.onCall(
-  async ({ venueId, pollId, questionId }, context) => {
+  async ({ venueId, pollVote }, context) => {
     checkAuth(context);
+
+    const { pollId, questionId } = pollVote;
 
     try {
       await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);

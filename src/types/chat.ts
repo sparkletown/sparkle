@@ -26,12 +26,16 @@ export type VenueChatMessage = BaseChatMessage | PollMessage;
 export type PollMessage = BaseChatMessage & {
   type: ChatMessageType.poll;
   poll: PollValues;
-  votes: Vote[];
+  votes: PollVote[];
 };
 
-export type PollVote = {
+export type PollVoteBase = {
   questionId: number;
   pollId: string;
+};
+
+export type PollVote = PollVoteBase & {
+  userId: string;
 };
 
 export type Vote = {

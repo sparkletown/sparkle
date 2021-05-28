@@ -6,7 +6,7 @@ import { faPoll } from "@fortawesome/free-solid-svg-icons";
 import {
   PollMessage,
   BaseMessageToDisplay,
-  PollVote,
+  PollVoteBase,
   PollQuestion,
   DeleteMessage,
 } from "types/chat";
@@ -26,7 +26,7 @@ export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
   venue: WithId<AnyVenue>;
   deletePollMessage: DeleteMessage;
-  voteInPoll: (pollVote: PollVote) => void;
+  voteInPoll: (pollVote: PollVoteBase) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({

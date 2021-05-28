@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import noop from "lodash/noop";
 
-import { VenueChatMessage, PrivateChatMessage, PollVote } from "types/chat";
+import { VenueChatMessage, PrivateChatMessage, PollVoteBase } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
@@ -129,9 +129,13 @@ export const deletePrivateMessage = async ({
       // @debt rethrow error, when we can handle it to show UI error
     });
 
-export type VoteInPollProps = PollVote & {
+export interface VoteInPollProps {
+  pollVote: PollVoteBase;
   venueId: string;
-};
+}
 
-export const voteInVenuePoll = async (pollVote: VoteInPollProps) =>
-  await firebase.functions().httpsCallable("venue-voteInPoll")(pollVote);
+export const voteInVenuePoll = async ({ pollVote, venueId }: VoteInPollProps) =>
+  await firebase.functions().httpsCallable("venue-voteInPoll")({
+    pollVote,
+    venueId,
+  });
