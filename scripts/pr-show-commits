@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 # https://cli.github.com/
 # https://github.com/octokit/core.js
 #   TODO: rewrite this so that it uses octokit core, and then maybe do it as a GitHub action/similar?

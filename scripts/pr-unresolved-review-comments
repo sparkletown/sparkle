@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 # https://cli.github.com/
 # https://docs.github.com/en/graphql/overview/explorer
 # https://stackoverflow.com/questions/26701538/how-to-filter-an-array-of-objects-based-on-values-in-an-inner-array-with-jq/26701851#26701851
