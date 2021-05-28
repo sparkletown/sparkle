@@ -37,7 +37,9 @@ export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
   openUrl(getRoomUrl(url), options);
 };
 
-export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
+export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
+  openUrl(venueInsideUrl(venueId), options);
+
 export interface OpenUrlOptions {
   customOpenRelativeUrl?: (url: string) => void;
   customOpenExternalUrl?: (url: string) => void;
