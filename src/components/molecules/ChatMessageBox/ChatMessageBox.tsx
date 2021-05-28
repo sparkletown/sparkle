@@ -50,7 +50,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const sendMessageToChat = handleSubmit(({ message }) => {
     setMessageSending(true);
-    sendMessage({ message, isQuestion });
+    sendMessage({ text: message, isQuestion });
     reset();
   });
 
@@ -80,7 +80,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       <InputField
         containerClassName="Chatbox__input"
         ref={register({ required: true })}
-        name="message"
+        name="text"
         placeholder={placeholderValue}
         autoComplete="off"
       />

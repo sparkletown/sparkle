@@ -5,9 +5,8 @@ import {
   MessageToDisplay,
   SendChatReply,
   SendMesssage,
-  ChatOption,
-  ChatMessageOptions,
   isPollMessage,
+  ChatOptionType,
 } from "types/chat";
 
 import { WithId } from "utils/id";
@@ -48,15 +47,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const closeThread = useCallback(() => setSelectedThread(undefined), []);
 
-  const [activeOption, setActiveOption] = useState<ChatOption>();
+  const [activeOption, setActiveOption] = useState<ChatOptionType>();
 
   const closeQuestionOption = () => {
     setActiveOption(undefined);
   };
 
-  const isQuestionOptions = useMemo(() => {
-    return ChatMessageOptions.question === activeOption;
-  }, [activeOption]);
+  const isQuestionOptions = ChatOptionType.question === activeOption;
 
   const renderedMessages = useMemo(
     () =>
@@ -97,20 +94,20 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             setActiveOption={setActiveOption}
           />
         )}
-        {activeOption === ChatMessageOptions.question && (
+        {activeOption === ChatOptionType.question && (
           <ChatboxThreadControls
             threadAuthor="asking a question"
             closeThread={closeQuestionOption}
           />
         )}
-        {activeOption === ChatMessageOptions.poll ? (
+        {activeOption === ChatOptionType.poll ? (
           <PollBox createPoll={createPoll} />
         ) : (
           <ChatMessageBox
             selectedThread={selectedThread}
             sendMessage={sendMessage}
             sendThreadReply={sendThreadReply}
-            questionMode={isQuestionMode}
+            isQuestion={isQuestionOptions}
           />
         )}
       </div>
