@@ -135,7 +135,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const schedule: ScheduleDay = useMemo(() => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
-
     const daysEvents = relatedVenueEvents
       .filter(
         isScheduleTimeshifted
