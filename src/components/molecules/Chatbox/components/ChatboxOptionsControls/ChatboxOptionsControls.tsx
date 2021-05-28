@@ -35,14 +35,14 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
     [setActiveOption]
   );
 
-  const unSelectOption = useCallback(() => setActiveOption(undefined), [
+  const unselectOption = useCallback(() => setActiveOption(undefined), [
     setActiveOption,
   ]);
 
   return (
     <div className="ChatboxOptionsControls">
       {shouldShowPoll ? (
-        <TextButton label="Cancel Poll" onClick={unSelectOption} />
+        <TextButton label="Cancel Poll" onClick={unselectOption} />
       ) : (
         <DropdownButton
           id="options-dropdown"

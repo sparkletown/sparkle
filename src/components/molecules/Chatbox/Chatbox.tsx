@@ -51,7 +51,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const [activeOption, setActiveOption] = useState<ChatOptionType>();
 
-  const deselectOption = useCallback(() => {
+  const unselectOption = useCallback(() => {
     setActiveOption(undefined);
   }, []);
 
@@ -94,7 +94,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         {isQuestionOptions && (
           <ChatboxThreadControls
             text="asking a question"
-            closeThread={deselectOption}
+            closeThread={unselectOption}
           />
         )}
         {displayPoll && !isQuestionOptions && !selectedThread && (

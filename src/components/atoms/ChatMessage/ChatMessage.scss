@@ -23,6 +23,10 @@ $reply-icon-radius: 20px;
     }
   }
 
+  &--question &__bulb {
+    background-color: $dark-green;
+  }
+
   &__bulb {
     margin-bottom: $spacing--sm;
     width: auto;
@@ -133,8 +137,5 @@ $reply-icon-radius: 20px;
         background-color: $primary--lightest;
       }
     }
-  }
-  &--question &__bulb {
-    background-color: $dark-green;
   }
 }
