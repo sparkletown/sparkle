@@ -5,7 +5,6 @@ import { DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT } from "settings";
 
 import { isTruthy } from "utils/types";
 import { screeningRoomVideosSelector } from "utils/selectors";
-import { alphabeticalOrderSort } from "utils/sort";
 
 import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
@@ -128,7 +127,7 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
   }, [searchQuery, fuseVideos, filteredVideosBySubCategory]);
 
   const displayedVideos = searchedVideos
-    .sort((a, b) => alphabeticalOrderSort(a.title, b.title))
+    .sort((a, b) => a.title.localeCompare(b.title))
     .slice(0, displayedVideosAmount);
 
   const hasHiddenVideos = searchedVideos.length > displayedVideos.length;
