@@ -96,7 +96,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         )}
         {activeOption === ChatOptionType.question && (
           <ChatboxThreadControls
-            threadAuthor="asking a question"
+            text="asking a question"
             closeThread={closeQuestionOption}
           />
         )}
