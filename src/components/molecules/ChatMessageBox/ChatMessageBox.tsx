@@ -62,7 +62,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     reset();
   });
 
-  const chatValue = watch("message");
+  const chatValue = watch("text");
 
   const placeholderValue = isQuestion ? "question" : "message";
 

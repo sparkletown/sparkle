@@ -84,6 +84,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     <div className="Chatbox">
       <div className="Chatbox__messages">{renderedMessages}</div>
       <div className="Chatbox__form-box">
+        {/* @debt sort these out. Preferrably using some kind of enum */}
         {selectedThread && (
           <ChatboxThreadControls
             text="replying to"

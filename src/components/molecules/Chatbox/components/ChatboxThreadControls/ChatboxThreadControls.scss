@@ -6,8 +6,13 @@
   align-items: center;
   padding: $spacing--sm $spacing--md 0 $spacing--md;
 
-  &__thread-author {
+  &__text {
     font-size: $font-size--sm;
     color: opaque-white(0.8);
+  }
+
+  &__thread-author {
+    font-weight: $font-weight--500;
+    margin-left: $spacing--xs;
   }
 }

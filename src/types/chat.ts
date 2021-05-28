@@ -14,17 +14,15 @@ export type BaseChatMessage = {
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
+  isQuestion?: boolean;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
   to: string;
   isRead?: boolean;
-  isQuestion?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage & {
-  isQuestion?: boolean;
-};
+export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
   type: ChatMessageType.poll;
@@ -48,7 +46,6 @@ export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   isMine: boolean;
   // @debt remove this from Types. It should be decided in the in-component level
   canBeDeleted?: boolean;
-  isQuestion?: boolean;
 };
 
 export type MessageToDisplay<
