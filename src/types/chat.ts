@@ -11,7 +11,6 @@ export type BaseChatMessage = {
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
-  isQuestion?: boolean;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
@@ -35,6 +34,7 @@ export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
   canBeDeleted?: boolean;
+  isQuestion?: boolean;
 };
 
 export type MessageToDisplay<
