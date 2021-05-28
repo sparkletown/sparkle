@@ -730,7 +730,7 @@ exports.updateTables = functions.https.onCall((data, context) => {
       (table) => table.reference === data.updatedTable.reference
     );
 
-    if (currentTableIndex > 0) {
+    if (currentTableIndex < 0) {
       throw new HttpsError(
         "not-found",
         `current table does not exist in the venue`
