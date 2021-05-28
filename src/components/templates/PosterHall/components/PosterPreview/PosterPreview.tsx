@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -25,7 +26,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
-  const handleEnterVenue = useCallback(() => enterVenue(venueId), [venueId]);
+  const { push: openUrlUsingRouter } = useHistory();
+  const handleEnterVenue = useCallback(
+    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
+    [venueId, openUrlUsingRouter]
+  );
 
   const renderedCategories = useMemo(
     () =>
