@@ -3,6 +3,8 @@ $backgroundColor: var(--background-color);
 
 $primary--lightest: #a179ff;
 $primary--light: #9669ff;
+$primary--live-hover: #8755fb;
+$primary--live: #7c46fb;
 $primary: #6f43ff;
 $primary--darker: #3f247d;
 
@@ -11,6 +13,10 @@ $secondary--light: #6a6a6a;
 $secondary: #333035;
 $secondary--dark: #19181a;
 $secondary--darkest: #090909;
+
+$secondary--schedule-event: #3f3d42;
+$secondary--schedule-event-hover: #4c494f;
+$secondary--schedule-event-users: #ebebeb;
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
@@ -80,7 +86,8 @@ $spacing--xxl: 30px;
 
 $submit-button-diameter: 44px;
 
-$font-size--xs: 10px;
+$font-size--xxs: 10px;
+$font-size--xs: 11px;
 $font-size--sm: 12px;
 $font-size--md: 14px;
 $font-size--lg: 16px;
