@@ -69,6 +69,7 @@ export const usePosters = (posterHallId: string) => {
     [posterVenues, liveFilter]
   );
 
+  // See https://fusejs.io/api/options.html
   const fuseVenues = useMemo(
     () =>
       new Fuse(filteredPosterVenues, {
