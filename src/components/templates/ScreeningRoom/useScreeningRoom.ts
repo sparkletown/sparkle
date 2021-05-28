@@ -69,8 +69,8 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
 
   const increaseDisplayedVideosAmount = useCallback(() => {
     setDisplayedVideosAmount(
-      (prevPostersNumber) =>
-        prevPostersNumber + DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT
+      (prevVideosNumber) =>
+        prevVideosNumber + DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT
     );
   }, []);
 
