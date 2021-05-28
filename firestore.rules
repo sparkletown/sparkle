@@ -88,9 +88,6 @@ service cloud.firestore {
       allow write: if false;
     }
     match /videoRooms/{restOfPath=**} {
-      allow read, write: if request.auth.uid != null;
-    }
-    match /videoRooms/{restOfPath=**} {
       allow read: if request.auth.uid != null;
     }
   }

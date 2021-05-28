@@ -89,9 +89,18 @@ export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
  *
  * @param state the Redux store
  */
-export const videoRoomInvitesSelector: SparkleSelector<
+export const videoRoomInvitesByIdSelector: SparkleSelector<
   Record<string, VideoChatRequest>
 > = (state) => state.firestore.data.videoRoomInvites || {};
+
+/**
+ * Selector to retrieve video room invite requests from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const videoRoomInvitesSelector: SparkleSelector<
+  WithId<VideoChatRequest>[]
+> = (state) => state.firestore.ordered.videoRoomInvites || [];
 
 /**
  * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
