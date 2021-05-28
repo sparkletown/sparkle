@@ -38,16 +38,12 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type Vote = {
-  questionId: number;
-  userId: string;
-};
-
 export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
+  // @debt remove this from Types. It should be decided in the in-component level
   canBeDeleted?: boolean;
 };
 

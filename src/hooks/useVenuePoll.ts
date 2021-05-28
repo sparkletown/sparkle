@@ -36,7 +36,8 @@ export const useVenuePoll = () => {
         type: ChatMessageType.poll,
         from: userId,
         votes: [],
-        text: "",
+        // @debt remove this useless text from here
+        text: "poll",
       });
 
       sendVenueMessage({ venueId, message });
