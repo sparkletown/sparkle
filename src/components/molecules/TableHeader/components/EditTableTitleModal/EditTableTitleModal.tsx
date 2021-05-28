@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -14,6 +14,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { InputField } from "components/atoms/InputField";
 
 import "./EditTableTitleModal.scss";
+import classNames from "classnames";
 
 export interface EditTableForm {
   title: string;
@@ -41,6 +42,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   onHide,
 }) => {
   const venueId = useVenueId();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const formDefaultValues = useMemo(
     () => ({
@@ -67,15 +69,22 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
     async (values: EditTableForm) => {
       if (!venueId || !tableOfUser) return;
 
+      setIsLoading(true);
       updateVenueTable({
         ...values,
         venueId,
         tableOfUser,
         tables,
-      }).then(onHide);
+      })
+        .then(onHide)
+        .finally(() => setIsLoading(false));
     },
     [onHide, tableOfUser, tables, venueId]
   );
+
+  const saveButtonClassNames = classNames("btn btn-centered btn-primary", {
+    disabled: isLoading,
+  });
 
   return (
     <Modal show={isShown} onHide={onHide}>
@@ -89,6 +98,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             name="title"
             containerClassName="EditTableTitleModal__input--spacing"
             placeholder="Table topic"
+            disabled={isLoading}
           />
           {errors.title?.type === "required" && (
             <span className="input-error">Topic is required</span>
@@ -99,6 +109,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             name="subtitle"
             containerClassName="EditTableTitleModal__input--spacing"
             placeholder="Describe this table (optional)"
+            disabled={isLoading}
           />
 
           <div className="EditTableTitleModal__capacity">
@@ -113,6 +124,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
                 className="EditTableTitleModal__max-capacity--input"
                 name="capacity"
                 type="number"
+                disabled={isLoading}
                 min={MIN_TABLE_CAPACITY}
                 max={MAX_TABLE_CAPACITY}
                 placeholder="Max seats"
@@ -141,7 +153,11 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-centered btn-primary">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={saveButtonClassNames}
+            >
               Save
             </button>
           </div>
