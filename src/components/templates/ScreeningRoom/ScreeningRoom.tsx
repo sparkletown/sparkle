@@ -60,6 +60,8 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
     [setSearchInputValue]
   );
 
+  const shouldShowMoreVideos = isVideosLoaded && hasHiddenVideos;
+
   const renderedVideoPreviews = useMemo(
     () =>
       videos.map((video) => (
@@ -153,7 +155,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
       </div>
 
       <div className="ScreeningRoom__more-button">
-        {isVideosLoaded && hasHiddenVideos && (
+        {shouldShowMoreVideos && (
           <Button onClick={increaseDisplayedVideosAmount}>
             Show more videos
           </Button>

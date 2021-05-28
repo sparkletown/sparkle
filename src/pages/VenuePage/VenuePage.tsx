@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
 
-import { LOC_UPDATE_FREQ_MS } from "settings";
+import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -45,8 +45,6 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
-
-import { PLATFORM_BRAND_NAME } from "settings";
 
 import "./VenuePage.scss";
 
