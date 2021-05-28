@@ -5,7 +5,7 @@ import Fuse from "fuse.js";
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 import { posterVenuesSelector } from "utils/selectors";
-import { breakStringWithQuotesBySpaces } from "utils/text";
+import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -90,19 +90,20 @@ export const usePosters = (posterHallId: string) => {
 
     if (!normalizedSearchQuery) return filteredPosterVenues;
 
-    const matchEntries: string[] =
-      breakStringWithQuotesBySpaces(normalizedSearchQuery) ?? [];
+    const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
+      normalizedSearchQuery
+    );
 
-    if (!matchEntries) return filteredPosterVenues;
+    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
 
     return fuseVenues
       .search({
-        $and: matchEntries.map((x: string) => {
+        $and: tokenisedSearchQuery.map((searchToken: string) => {
           const orFields: Fuse.Expression[] = [
-            { name: x },
-            { "poster.title": x },
-            { "poster.authorName": x },
-            { "poster.categories": x },
+            { name: searchToken },
+            { "poster.title": searchToken },
+            { "poster.authorName": searchToken },
+            { "poster.categories": searchToken },
           ];
 
           return {
@@ -110,7 +111,7 @@ export const usePosters = (posterHallId: string) => {
           };
         }),
       })
-      .map((fuseSearchItem) => fuseSearchItem.item);
+      .map((fuseResult) => fuseResult.item);
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
 
   const displayedPosterVenues = useMemo(
