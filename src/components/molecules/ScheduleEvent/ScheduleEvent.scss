@@ -1,13 +1,5 @@
 @import "scss/constants.scss";
 
-$grey--regular: #3f3d42;
-$grey--hover: #4c494f;
-$grey--users: #4c494f;
-$grey--light: #ebebeb;
-
-$purple--regular: #7c46fb;
-$purple--hover: #7c46fb;
-
 $ScheduleEvent--margin-top: 0.25rem;
 $ScheduleEvent--height: 3.75rem;
 $ScheduleEvent--padding: 0 0.25rem 0 0.75rem;
@@ -28,20 +20,20 @@ $description--margin-top: 2px;
   height: $ScheduleEvent--height;
   justify-content: space-between;
   align-items: center;
-  background-color: $grey--regular;
+  background-color: $secondary--schedule-event;
   box-shadow: $ScheduleEvent--box-shadow;
   margin-top: $ScheduleEvent--margin-top;
   margin-left: var(--event--margin-left);
   width: var(--event--width);
 
   &:hover {
-    background-color: $grey--hover;
+    background-color: $secondary--schedule-event-hover;
     z-index: z(navbar__schedule-event--hover);
   }
 
   &--users {
-    color: $grey--hover;
-    background-color: $grey--light;
+    color: $secondary--schedule-event-hover;
+    background-color: $secondary--schedule-event-users;
 
     &:hover {
       background-color: $white;
@@ -53,11 +45,11 @@ $description--margin-top: 2px;
   }
 
   &--live {
-    background-color: $purple--regular;
+    background-color: $primary--live;
     color: $white;
 
     &:hover {
-      background-color: $purple--hover;
+      background-color: $primary--live-hover;
     }
 
     .ScheduleEvent__bookmark {
@@ -66,7 +58,7 @@ $description--margin-top: 2px;
   }
 
   &__info {
-    font-size: 0.8rem;
+    font-size: $font-size--sm;
     overflow: hidden;
   }
 

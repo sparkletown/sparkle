@@ -610,12 +610,15 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
+
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
+
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
+
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -701,6 +704,43 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+exports.updateTables = functions.https.onCall((data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+
+  return admin.firestore().runTransaction(async (transaction) => {
+    const venueDoc = await transaction.get(venueRef);
+
+    if (!venueDoc.exists) {
+      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+    }
+
+    const venueTables = [...data.tables];
+
+    const currentTableIndex = venueTables.findIndex(
+      (table) => table.reference === data.updatedTable.reference
+    );
+
+    if (currentTableIndex < 0) {
+      throw new HttpsError(
+        "not-found",
+        `current table does not exist in the venue`
+      );
+    }
+
+    venueTables[currentTableIndex] = data.updatedTable;
+
+    transaction.update(venueRef, { "config.tables": venueTables });
+  });
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {

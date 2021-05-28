@@ -33,13 +33,21 @@ export const isExternalUrl = (url: string) => {
 export const getRoomUrl = (roomUrl: string) =>
   roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
 
-export const openRoomUrl = (url: string) => {
-  openUrl(getRoomUrl(url));
+export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
+  openUrl(getRoomUrl(url), options);
 };
 
-export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
+export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
+  openUrl(venueInsideUrl(venueId), options);
 
-export const openUrl = (url: string) => {
+export interface OpenUrlOptions {
+  customOpenRelativeUrl?: (url: string) => void;
+  customOpenExternalUrl?: (url: string) => void;
+}
+
+export const openUrl = (url: string, options?: OpenUrlOptions) => {
+  const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
+
   if (!isValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
@@ -55,10 +63,14 @@ export const openUrl = (url: string) => {
   }
 
   if (isExternalUrl(url)) {
-    window.open(url, "_blank", "noopener,noreferrer");
+    customOpenExternalUrl
+      ? customOpenExternalUrl(url)
+      : window.open(url, "_blank", "noopener,noreferrer");
   } else {
-    // @debt Possibly use react router here with window.location.pathname.
-    window.location.href = url;
+    // @debt Is this a decent enough way to use react router here? Should we just use it always and get rid of window.location.href?
+    customOpenRelativeUrl
+      ? customOpenRelativeUrl(url)
+      : (window.location.href = url);
   }
 };
 
@@ -82,3 +94,6 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
+
+export const getFullVenueInsideUrl = (venueId: string) =>
+  new URL(venueInsideUrl(venueId), window.location.origin).href;
