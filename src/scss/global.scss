@@ -340,13 +340,19 @@ textarea {
   }
 }
 
-a {
+a,
+.button--a {
   color: $white;
   text-decoration: underline;
 
   &:hover {
     color: $primaryColor;
   }
+}
+
+.button--a {
+  background: transparent;
+  border: none;
 }
 
 h4 {

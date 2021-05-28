@@ -1,5 +1,5 @@
 import React from "react";
-import CountDown from "components/molecules/CountDown";
+import { CountDown } from "components/molecules/CountDown";
 
 interface PropsType {
   startUtcSeconds: number;
