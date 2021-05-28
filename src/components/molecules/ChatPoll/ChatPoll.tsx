@@ -3,72 +3,73 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { PollMessage, BaseMessageToDisplay, PollValues } from "types/chat";
+import {
+  PollMessage,
+  BaseMessageToDisplay,
+  PollVoteBase,
+  PollQuestion,
+  DeleteMessage,
+} from "types/chat";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
-import { TextButton } from "components/atoms/TextButton";
-import Button from "components/atoms/Button";
-
+import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
+
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import Button from "components/atoms/Button";
 
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
-  pollData: WithId<BaseMessageToDisplay<PollMessage>>;
-  deletePoll: (pollId: string) => void;
-  voteInPoll: (poll: PollValues, votes: string[], pollId: string) => void;
+  pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
+  venue: WithId<AnyVenue>;
+  deletePollMessage: DeleteMessage;
+  voteInPoll: (pollVote: PollVoteBase) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
-  pollData,
+  pollMessage,
+  venue,
   voteInPoll,
-  deletePoll,
+  deletePollMessage,
 }) => {
-  const { user } = useUser();
+  const { userId } = useUser();
+  const { userRoles } = useRoles();
 
-  const userId = user?.uid;
+  const isAdmin = Boolean(userRoles?.includes("admin"));
+  const owners = venue.owners;
 
-  const { id, poll, votes, isMine, canBeDeleted } = pollData;
+  const { id, poll, votes, isMine } = pollMessage;
   const { questions, topic } = poll;
 
-  const isVoted = userId ? votes.includes(userId) : false;
+  const canBeDeleted: boolean = useMemo(() => {
+    if (!userId || !owners.length) return false;
+
+    return isAdmin && owners.includes(userId);
+  }, [isAdmin, userId, owners]);
+
+  const hasVoted = userId
+    ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
+    : false;
+
+  const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
+    pollMessage,
+    canBeDeleted,
+  ]);
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
   });
 
-  const formattedQuestions = questions
-    .map((item) => ({
-      ...item,
-      count: votes.length
-        ? Math.floor(((item.votes || 0) / votes.length) * 100)
-        : 0,
-    }))
-    .sort((a, b) => b.count - a.count);
-
   const handleVote = useCallback(
-    (question) => {
-      if (!userId) return;
-
-      const newVotes = [...votes, userId];
-
-      const newPoll = {
-        topic,
-        questions: questions.map((q) =>
-          q.id === question.id
-            ? {
-                ...question,
-                // think about to save all polling userIds
-                votes: question.votes + 1,
-              }
-            : q
-        ),
-      };
-      voteInPoll(newPoll, newVotes, id);
-    },
-    [topic, questions, id, voteInPoll, votes, userId]
+    (question) =>
+      voteInPoll({
+        questionId: question.id,
+        pollId: id,
+      }),
+    [id, voteInPoll]
   );
 
   const renderQuestions = useMemo(
@@ -85,46 +86,58 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     [questions, handleVote]
   );
 
-  const renderCounts = useMemo(
-    () =>
-      formattedQuestions.map((question) => (
-        <div key={question.name} className="ChatPoll__text">
-          <div
-            className="ChatPoll__text-background"
-            style={{ width: `${question.count}%` }}
-          />
-          <span className="ChatPoll__text-count">{question.count}%</span>
-          {question.name}
-        </div>
-      )),
-    [formattedQuestions]
+  const calculateVotePercentage = useCallback(
+    (item: PollQuestion) =>
+      votes.length
+        ? Math.floor(
+            (votes.filter(({ questionId }) => questionId === item.id).length /
+              votes.length) *
+              100
+          )
+        : 0,
+    [votes]
   );
+
+  const renderResults = useMemo(() => {
+    const sortedQuestions = questions
+      .map((item) => ({
+        ...item,
+        share: calculateVotePercentage(item),
+      }))
+      .sort((a, b) => b.share - a.share);
+
+    return sortedQuestions.map((question) => (
+      <div key={question.name} className="ChatPoll__text">
+        <div
+          className="ChatPoll__text-background"
+          style={{ width: `${question.share}%` }}
+        />
+        <span className="ChatPoll__text-count">{question.share}%</span>
+        {question.name}
+      </div>
+    ));
+  }, [questions, calculateVotePercentage]);
+
+  const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
+    id,
+    deletePollMessage,
+  ]);
 
   return (
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
-        <div>{isMine || isVoted ? renderCounts : renderQuestions}</div>
+        <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
-          {canBeDeleted && (
-            <span className="ChatPoll__delete-container">
-              -
-              <TextButton
-                containerClassName="ChatPoll__delete-button"
-                onClick={() => deletePoll(id)}
-                label="Delete Poll"
-              />
-            </span>
-          )}
         </div>
       </div>
 
       <ChatMessageInfo
-        sendMessageProps={pollData}
+        message={message}
         reversed={isMine}
-        deleteMessage={() => {}}
+        deleteMessage={deleteThisPollMessage}
       />
     </div>
   );

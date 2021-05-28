@@ -1,6 +1,10 @@
 @import "scss/constants";
 
 .Chatbox {
+  &--question {
+    background-color: $dark-green;
+  }
+
   &__form {
     padding: $spacing--md;
     display: flex;
@@ -14,9 +18,9 @@
   &__submit-button {
     outline: none;
     border: none;
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 50%;
+    min-width: $submit-button-diameter;
+    min-height: $submit-button-diameter;
+    border-radius: $border-radius--max;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,10 +30,6 @@
 
     &:disabled {
       background-color: $saturated-black;
-    }
-
-    &--question {
-      background-color: $dark-green;
     }
   }
 

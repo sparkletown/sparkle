@@ -2,12 +2,15 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 import firebase from "firebase/app";
+
+export enum ChatMessageType {
+  poll = "poll",
+}
 
 export type BaseChatMessage = {
   from: string;
-  message: string;
+  text: string;
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
@@ -19,23 +22,36 @@ export type PrivateChatMessage = BaseChatMessage & {
   isQuestion?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage & {
+export type VenueChatQuestionMessage = BaseChatMessage & {
   isQuestion?: boolean;
 };
 
 export type PollMessage = BaseChatMessage & {
+  type: ChatMessageType.poll;
   poll: PollValues;
-  votes: string[];
+  votes: PollVote[];
 };
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
+export type PollVoteBase = {
+  questionId: number;
+  pollId: string;
+};
 
-export const isPollMessage = (r: unknown): r is PollMessage =>
-  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("poll");
+export type PollVote = PollVoteBase & {
+  userId: string;
+};
+
+export type VenueChatMessage =
+  | BaseChatMessage
+  | VenueChatQuestionMessage
+  | PollMessage;
+
+export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
+  // @debt remove this from Types. It should be decided in the in-component level
   canBeDeleted?: boolean;
   isQuestion?: boolean;
 };
@@ -93,25 +109,20 @@ export type VenueChatSettings = {
 
 export type ChatSettings = PrivateChatSettings | VenueChatSettings;
 
-// @debt Remove it when UserProfileModal is refactored
-export type SetSelectedProfile = (user: WithId<User>) => void;
-
 export enum ChatOptionType {
   poll = "poll",
   question = "question",
 }
 
 export interface ChatOption {
+  type: ChatOptionType;
   icon: IconDefinition;
   name: string;
 }
 
-export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
-
 export type PollQuestion = {
   name: string;
-  id?: number;
-  votes?: number;
+  id: number;
 };
 
 export type PollValues = {
@@ -119,13 +130,15 @@ export type PollValues = {
   questions: PollQuestion[];
 };
 
-export const ChatMessageOptions: ChatOptionMap = {
-  poll: {
+export const ChatMessageOptions: ChatOption[] = [
+  {
+    type: ChatOptionType.poll,
     icon: faPoll,
     name: "Create Poll",
   },
-  question: {
+  {
+    type: ChatOptionType.question,
     icon: faQuestion,
     name: "Ask Question",
   },
-};
+];

@@ -14,17 +14,17 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./ChatMessageInfo.scss";
 
 export interface ChatMessageInfoProps {
-  sendMessageProps: BaseMessageToDisplay;
+  message: BaseMessageToDisplay;
   deleteMessage: () => void;
   reversed?: boolean;
 }
 
 export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
-  sendMessageProps,
+  message,
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, author, canBeDeleted } = sendMessageProps;
+  const { ts_utc, author, canBeDeleted } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();
@@ -39,7 +39,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={author} />
+      <UserAvatar user={author} showStatus />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
         {formatTimestampToDisplayHoursMinutes(timestamp)}

@@ -20,6 +20,7 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
@@ -125,6 +126,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <PosterPage venue={venue} />;
       break;
 
+    case VenueTemplate.screeningroom:
+      template = <ScreeningRoom venue={venue} />;
+      break;
+
     case VenueTemplate.avatargrid:
       template = (
         <div>
@@ -148,7 +153,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         >
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
-          <ChatSidebar />
+          <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>
       </ReactionsProvider>

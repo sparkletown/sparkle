@@ -1,0 +1,59 @@
+@import "scss/constants.scss";
+
+$logo-height: 70px;
+$logo-width: 50px;
+$logo-background-width: 195px;
+
+.ShareModal {
+  &__header {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: flex-start;
+    height: 200px;
+    margin: $spacing--sm;
+    border-radius: $border-radius--lg;
+    background-color: $secondary;
+  }
+
+  &__title {
+    font-size: $font-size--xl;
+    text-transform: capitalize;
+    padding: 0 $spacing--xxl;
+  }
+
+  &__url-text {
+    color: $secondary--lightest;
+    padding: 0 $spacing--xxl;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: $spacing--lg;
+  }
+
+  &__content-title {
+    text-align: center;
+  }
+
+  &__button-text {
+    margin-left: $spacing--sm;
+  }
+
+  &__link {
+    text-align: center;
+    text-decoration: none;
+    margin-top: $spacing--lg;
+    background-color: $lighter-intermediate-grey;
+    padding: $spacing--md $spacing--lg;
+    border-radius: $border-radius--xl;
+    cursor: pointer;
+
+    &--copied {
+      cursor: auto;
+      opacity: 0.5;
+    }
+  }
+}

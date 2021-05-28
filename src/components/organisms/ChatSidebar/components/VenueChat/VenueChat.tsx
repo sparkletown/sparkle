@@ -1,18 +1,26 @@
 import React from "react";
 
-import { Chatbox } from "components/molecules/Chatbox";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { useVenueChat } from "hooks/useVenueChat";
 
+import { Chatbox } from "components/molecules/Chatbox";
+
 import "./VenueChat.scss";
 
-export const VenueChat: React.FC = () => {
+export interface VenueChatProps {
+  venue: WithId<AnyVenue>;
+}
+
+export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
     messagesToDisplay,
     sendThreadReply,
-  } = useVenueChat();
+  } = useVenueChat(venue.id);
 
   return (
     <div className="venue-chat">
@@ -23,6 +31,7 @@ export const VenueChat: React.FC = () => {
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
         deleteMessage={deleteMessage}
+        venue={venue}
       />
     </div>
   );

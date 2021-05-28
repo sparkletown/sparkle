@@ -18,7 +18,9 @@
 
       font-size: $font-size--sm;
       font-weight: $font-weight--400;
+      line-height: inherit;
       color: opaque-white(0.8);
+      border: none;
       border-bottom: thin solid opaque-white(0.8);
 
       &:focus {
@@ -39,14 +41,14 @@
 
     .dropdown-menu {
       background-color: $primary;
-      border-radius: 22px;
+      border-radius: $border-radius--xl;
     }
 
     .dropdown-item {
       display: flex;
       justify-content: space-between;
-      padding: 0.25rem 1rem;
-      font-weight: 500;
+      padding: $spacing--xs $spacing--lg;
+      font-weight: $font-weight--500;
       text-decoration: none;
 
       &:hover,

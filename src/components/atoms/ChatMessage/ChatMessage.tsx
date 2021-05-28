@@ -15,17 +15,17 @@ import { TextButton } from "components/atoms/TextButton";
 import "./ChatMessage.scss";
 
 export interface ChatProps {
-  sendMessageProps: WithId<MessageToDisplay>;
+  message: WithId<MessageToDisplay>;
   deleteMessage: (messageId: string) => void;
   selectThisThread: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
-  sendMessageProps,
+  message,
   deleteMessage,
   selectThisThread,
 }) => {
-  const { message, replies, id, isMine, isQuestion } = sendMessageProps;
+  const { text, replies, id, isMine, isQuestion } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
@@ -43,9 +43,9 @@ export const ChatMessage: React.FC<ChatProps> = ({
     () =>
       replies?.map((reply) => (
         <div key={reply.id} className="ChatMessage__reply">
-          {reply.message}
+          {reply.text}
           <ChatMessageInfo
-            sendMessageProps={reply}
+            message={reply}
             deleteMessage={() => deleteMessage(reply.id)}
           />
         </div>
@@ -69,7 +69,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
-          <div className="ChatMessage__text">{message}</div>
+          <div className="ChatMessage__text">{text}</div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon
@@ -94,7 +94,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
         </div>
       </div>
       <ChatMessageInfo
-        sendMessageProps={sendMessageProps}
+        message={message}
         reversed={isMine}
         deleteMessage={deleteThisMessage}
       />

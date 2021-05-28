@@ -1,0 +1,15 @@
+@import "scss/constants.scss";
+
+.LinkButton {
+  text-align: center;
+  text-decoration: none;
+  margin-top: $spacing--lg;
+  background-color: $lighter-intermediate-grey;
+  padding: $spacing--md $spacing--lg;
+  border-radius: $border-radius--xl;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: none;
+  }
+}

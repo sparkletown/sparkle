@@ -9,6 +9,8 @@ import {
   PreviewChatMessage,
   PrivateChatMessage,
   BaseMessageToDisplay,
+  ChatMessageType,
+  PollMessage,
 } from "types/chat";
 import { User } from "types/User";
 
@@ -110,3 +112,13 @@ export const getMessageReplies = <T extends ChatMessage>({
   allReplies,
 }: GetMessageRepliesProps<T>) =>
   allReplies.filter((reply) => reply.threadId === messageId);
+
+export const checkIfPollMessage = (
+  message: ChatMessage
+): message is PollMessage => {
+  if ("type" in message) {
+    return message.type === ChatMessageType.poll;
+  }
+
+  return false;
+};

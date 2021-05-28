@@ -1,24 +1,28 @@
 import { useMemo, useCallback } from "react";
-import firebase from "firebase/app";
 
-import { voteInVenuePoll, createVenuePoll, deleteVenuePoll } from "api/poll";
+import { sendVenueMessage, voteInVenuePoll } from "api/chat";
 
-import { PollMessage, PollValues } from "types/chat";
+import {
+  ChatMessageType,
+  PollMessage,
+  PollValues,
+  PollVoteBase,
+} from "types/chat";
+
+import { buildMessage } from "utils/chat";
 
 import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
 
 export const useVenuePoll = () => {
   const venueId = useVenueId();
-  const { user } = useUser();
-
-  const userId = user?.uid;
+  const { userId } = useUser();
 
   const voteInPoll = useCallback(
-    (poll: PollValues, votes: string[], pollId: string) => {
+    (pollVote: PollVoteBase) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ venueId, poll, votes, pollId });
+      voteInVenuePoll({ pollVote, venueId });
     },
     [venueId]
   );
@@ -27,34 +31,25 @@ export const useVenuePoll = () => {
     (pollValues: PollValues) => {
       if (!venueId || !userId) return;
 
-      const poll: PollMessage = {
+      const message = buildMessage<PollMessage>({
         poll: pollValues,
+        type: ChatMessageType.poll,
         from: userId,
-        message: "poll",
         votes: [],
-        ts_utc: firebase.firestore.Timestamp.now(),
-      };
+        // @debt remove this useless text from here
+        text: "poll",
+      });
 
-      createVenuePoll({ venueId, poll });
+      sendVenueMessage({ venueId, message });
     },
     [venueId, userId]
-  );
-
-  const deletePoll = useCallback(
-    (pollId: string) => {
-      if (!venueId) return;
-
-      deleteVenuePoll({ venueId, pollId });
-    },
-    [venueId]
   );
 
   return useMemo(
     () => ({
       createPoll,
-      deletePoll,
       voteInPoll,
     }),
-    [createPoll, deletePoll, voteInPoll]
+    [createPoll, voteInPoll]
   );
 };

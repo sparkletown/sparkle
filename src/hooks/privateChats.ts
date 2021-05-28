@@ -170,7 +170,7 @@ export const useRecipientChat = (recipientId: string) => {
 
       const sendMessageProps = buildMessage<PrivateChatMessage>({
         from: userId,
-        message,
+        text: message,
         isQuestion,
         to: recipientId,
       });
@@ -205,7 +205,7 @@ export const useRecipientChat = (recipientId: string) => {
       const threadReply = buildMessage<PrivateChatMessage>({
         from: userId,
         to: recipientId,
-        message: replyText,
+        text: replyText,
         threadId,
       });
 

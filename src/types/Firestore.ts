@@ -3,6 +3,7 @@ import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Purchase } from "types/Purchase";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
@@ -59,10 +60,11 @@ export interface FirestoreData {
   currentVenueNG?: AnyVenue;
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
-  experience: Experience;
+  experience?: Experience;
   parentVenue?: AnyVenue;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
+  screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
@@ -91,6 +93,7 @@ export interface FirestoreOrdered {
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];
+  screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
   statsOnlineUsers?: WithId<User>[];

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -19,33 +19,30 @@ export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
   activeOption,
   setActiveOption,
 }) => {
-  const showPoll = activeOption === ChatOptionType.poll;
+  const shouldShowPoll = activeOption === ChatOptionType.poll;
 
   const dropdownOptions = useMemo(
     () =>
-      Object.entries(ChatMessageOptions).map(([key, option]) => {
-        const optionKey = key as ChatOptionType;
-
-        return (
-          <Dropdown.Item
-            key={option.name}
-            onClick={() => setActiveOption(optionKey)}
-          >
-            {option.name}
-            <FontAwesomeIcon icon={option.icon} />
-          </Dropdown.Item>
-        );
-      }),
+      ChatMessageOptions.map((option) => (
+        <Dropdown.Item
+          key={option.name}
+          onClick={() => setActiveOption(option.type)}
+        >
+          {option.name}
+          <FontAwesomeIcon icon={option.icon} />
+        </Dropdown.Item>
+      )),
     [setActiveOption]
   );
 
+  const unSelectOption = useCallback(() => setActiveOption(undefined), [
+    setActiveOption,
+  ]);
+
   return (
     <div className="ChatboxOptionsControls">
-      {showPoll ? (
-        <TextButton
-          label="Cancel Poll"
-          onClick={() => setActiveOption(undefined)}
-        />
+      {shouldShowPoll ? (
+        <TextButton label="Cancel Poll" onClick={unSelectOption} />
       ) : (
         <DropdownButton
           id="options-dropdown"

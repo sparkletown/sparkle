@@ -5,27 +5,28 @@ import {
   MessageToDisplay,
   SendChatReply,
   SendMessage,
-  isPollMessage,
   ChatOptionType,
 } from "types/chat";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { checkIfPollMessage } from "utils/chat";
 
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { ChatPoll } from "components/molecules/ChatPoll";
 import { PollBox } from "components/molecules/PollBox";
-
 import { ChatMessage } from "components/atoms/ChatMessage";
-
-import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
 
-import "./Chatbox.scss";
+import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
+
+import "./Chatbox.scss";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
+  venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
@@ -34,12 +35,13 @@ export interface ChatboxProps {
 
 export const Chatbox: React.FC<ChatboxProps> = ({
   messages,
+  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
   displayPoll,
 }) => {
-  const { createPoll, deletePoll, voteInPoll } = useVenuePoll();
+  const { createPoll, voteInPoll } = useVenuePoll();
 
   const [selectedThread, setSelectedThread] = useState<
     WithId<MessageToDisplay>
@@ -58,23 +60,24 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const renderedMessages = useMemo(
     () =>
       messages.map((message) =>
-        isPollMessage(message) ? (
+        checkIfPollMessage(message) ? (
           <ChatPoll
             key={message.id}
-            pollData={message}
-            deletePoll={deletePoll}
+            pollMessage={message}
+            deletePollMessage={deleteMessage}
             voteInPoll={voteInPoll}
+            venue={venue}
           />
         ) : (
           <ChatMessage
             key={message.id}
-            sendMessageProps={message}
+            message={message}
             deleteMessage={deleteMessage}
             selectThisThread={() => setSelectedThread(message)}
           />
         )
       ),
-    [messages, deleteMessage, deletePoll, voteInPoll]
+    [messages, deleteMessage, voteInPoll, venue]
   );
 
   return (
@@ -94,7 +97,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             closeThread={deselectOption}
           />
         )}
-        {displayPoll && !isQuestionOptions && (
+        {displayPoll && !isQuestionOptions && !selectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
