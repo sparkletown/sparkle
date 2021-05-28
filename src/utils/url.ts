@@ -33,8 +33,8 @@ export const isExternalUrl = (url: string) => {
 export const getRoomUrl = (roomUrl: string) =>
   roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
 
-export const openRoomUrl = (url: string) => {
-  openUrl(getRoomUrl(url));
+export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
+  openUrl(getRoomUrl(url), options);
 };
 
 export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
