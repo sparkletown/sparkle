@@ -90,21 +90,25 @@ export const usePosters = (posterHallId: string) => {
 
     if (!normalizedSearchQuery) return filteredPosterVenues;
 
-    const matchEntries = breakStringWithQuotesBySpaces(normalizedSearchQuery);
+    const matchEntries: string[] =
+      breakStringWithQuotesBySpaces(normalizedSearchQuery) ?? [];
 
     if (!matchEntries) return filteredPosterVenues;
 
     return fuseVenues
       .search({
-        $and: matchEntries.map((x) => ({
-          $or: [
+        $and: matchEntries.map((x: string) => {
+          const orFields: Fuse.Expression[] = [
             { name: x },
             { "poster.title": x },
             { "poster.authorName": x },
             { "poster.categories": x },
-            // @debt Rewrite the search query to match the $and type
-          ] as Record<string, string>[],
-        })),
+          ];
+
+          return {
+            $or: orFields,
+          };
+        }),
       })
       .map((fuseSearchItem) => fuseSearchItem.item);
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
