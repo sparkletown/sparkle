@@ -103,6 +103,12 @@ export const removeEventFromPersonalizedSchedule = ({
 }: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
   updatePersonalizedSchedule({ event, userId, removeMode: true });
 
+export interface UpdatePersonalizedScheduleProps {
+  event: WithVenueId<VenueEvent>;
+  userId: string;
+  removeMode?: boolean;
+}
+
 export const updatePersonalizedSchedule = async ({
   event,
   userId,
