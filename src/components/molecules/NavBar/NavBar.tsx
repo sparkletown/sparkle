@@ -19,7 +19,7 @@ import {
 } from "utils/selectors";
 
 import { hasElements } from "utils/types";
-import { venueInsideUrl } from "utils/url";
+import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
@@ -101,6 +101,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
 
   const {
     location: { pathname },
+    push: openUrlUsingRouter,
   } = useHistory();
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -153,8 +154,8 @@ const NavBar: React.FC<NavBarPropsType> = ({
 
   const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
-    window.location.href = venueInsideUrl(parentVenueId);
-  }, [parentVenueId]);
+    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     const venueLink =

@@ -1,0 +1,1 @@
+export { EditTableTitleModal } from "./EditTableTitleModal";

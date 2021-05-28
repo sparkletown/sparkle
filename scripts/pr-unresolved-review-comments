@@ -1,0 +1,56 @@
+#!/usr/bin/env sh
+
+# https://cli.github.com/
+# https://docs.github.com/en/graphql/overview/explorer
+# https://stackoverflow.com/questions/26701538/how-to-filter-an-array-of-objects-based-on-values-in-an-inner-array-with-jq/26701851#26701851
+# https://github.com/octokit/core.js#graphql-example
+#   TODO: rewrite this so that it uses octokit core, and then maybe do it as a GitHub action/similar?
+#   https://github.com/octokit/graphql.js
+#   https://github.com/octokit/action.js
+#   https://github.com/octokit/request-action
+#   https://github.com/actions/toolkit
+
+# Posted solution to:
+#   https://stackoverflow.com/questions/55713929/list-all-unresolved-pull-request-comments/66072198#66072198
+#   https://github.community/t/state-of-conversation-marked-resolved/14355/3?u=0xdevalias
+
+# Usage:
+#   Retrieve unresolved review comments
+#     ./pr-unresolved-review-comments sparkletown sparkle 1016
+#
+#   Count of unresolved review comment threads
+#     ./pr-unresolved-review-comments sparkletown sparkle 1016 | jq length
+
+OWNER=$1
+REPO=$2
+PR=$3
+
+gh api graphql -f query="
+  query FetchReviewComments {
+    repository(owner: \"$OWNER\", name: \"$REPO\") {
+      pullRequest(number: $PR) {
+        url
+        reviewDecision
+        reviewThreads(first: 100) {
+          edges {
+            node {
+              isResolved
+              isOutdated
+              isCollapsed
+              comments(first: 100) {
+                totalCount
+                nodes {
+                  author {
+                    login
+                  }
+                  body
+                  url
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+" | jq '.data.repository.pullRequest.reviewThreads.edges | map(select(.node.isResolved == false))'
