@@ -68,12 +68,13 @@ export const useVenueChat = () => {
     .sort(chatSort);
 
   const sendMessage: SendMesssage = useCallback(
-    async (props) => {
+    async ({ text, isQuestion }) => {
       if (!venueId || !userId) return;
 
       const message = buildMessage<VenueChatMessage>({
         from: userId,
-        ...props,
+        text,
+        isQuestion,
       });
 
       return sendVenueMessage({ venueId, message });
