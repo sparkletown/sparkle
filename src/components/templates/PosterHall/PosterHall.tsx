@@ -22,6 +22,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
     isPostersLoaded,
+    hasHiddenPosters,
 
     increaseDisplayedPosterCount,
 
@@ -30,6 +31,8 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     liveFilter,
     setLiveFilter,
   } = usePosters(venue.id);
+
+  const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
@@ -55,7 +58,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       </div>
 
       <div className="PosterHall__more-button">
-        {isPostersLoaded && (
+        {shouldShowMorePosters && (
           <Button onClick={increaseDisplayedPosterCount}>
             Show more posters
           </Button>
