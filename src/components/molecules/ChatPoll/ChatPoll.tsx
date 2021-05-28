@@ -1,23 +1,21 @@
-import React, { useState, useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
 
-import { getVenueOwners } from "api/admin";
-
 import {
   PollMessage,
   BaseMessageToDisplay,
-  VoteInPoll,
+  PollVote,
   PollQuestion,
   DeleteMessage,
 } from "types/chat";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import Button from "components/atoms/Button";
@@ -26,34 +24,25 @@ import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
+  venue: WithId<AnyVenue>;
   deletePollMessage: DeleteMessage;
-  voteInPoll: (data: VoteInPoll) => void;
+  voteInPoll: (pollVote: PollVote) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
+  venue,
   voteInPoll,
   deletePollMessage,
 }) => {
   const { userId } = useUser();
   const { userRoles } = useRoles();
-  const venueId = useVenueId();
-  const [owners, setOwners] = useState<string[]>([]);
+
   const isAdmin = Boolean(userRoles?.includes("admin"));
+  const owners = venue.owners;
 
   const { id, poll, votes, isMine } = pollMessage;
   const { questions, topic } = poll;
-
-  useEffect(() => {
-    async function fetchVenueOwners() {
-      if (!venueId) return;
-
-      const owners = await getVenueOwners(venueId);
-      setOwners(owners);
-    }
-
-    fetchVenueOwners();
-  }, [venueId]);
 
   const canBeDeleted: boolean = useMemo(() => {
     if (!userId || !owners.length) return false;
@@ -61,7 +50,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     return isAdmin && owners.includes(userId);
   }, [isAdmin, userId, owners]);
 
-  const isVoted = userId
+  const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
     : false;
 
@@ -139,7 +128,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
         <div className="ChatPoll__topic">{topic}</div>
-        <div>{isMine || isVoted ? renderResults : renderQuestions}</div>
+        <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
         </div>

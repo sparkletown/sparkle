@@ -5,12 +5,12 @@ import {
   MessageToDisplay,
   SendChatReply,
   SendMesssage,
-  ChatOption,
-  ChatMessageOptions,
-  isPollMessage,
+  ChatOptionType,
 } from "types/chat";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { checkIfPollMessage } from "utils/chat";
 
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { ChatPoll } from "components/molecules/ChatPoll";
@@ -27,6 +27,7 @@ import "./Chatbox.scss";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
+  venue: WithId<AnyVenue>;
   sendMessage: SendMesssage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
@@ -35,6 +36,7 @@ export interface ChatboxProps {
 
 export const Chatbox: React.FC<ChatboxProps> = ({
   messages,
+  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
@@ -48,17 +50,18 @@ export const Chatbox: React.FC<ChatboxProps> = ({
 
   const closeThread = useCallback(() => setSelectedThread(undefined), []);
 
-  const [activeOption, setActiveOption] = useState<ChatOption>();
+  const [activeOption, setActiveOption] = useState<ChatOptionType>();
 
   const renderedMessages = useMemo(
     () =>
       messages.map((message) =>
-        isPollMessage(message) ? (
+        checkIfPollMessage(message) ? (
           <ChatPoll
             key={message.id}
             pollMessage={message}
             deletePollMessage={deleteMessage}
             voteInPoll={voteInPoll}
+            venue={venue}
           />
         ) : (
           <ChatMessage
@@ -69,7 +72,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )
       ),
-    [messages, deleteMessage, voteInPoll]
+    [messages, deleteMessage, voteInPoll, venue]
   );
 
   return (
@@ -88,7 +91,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             setActiveOption={setActiveOption}
           />
         )}
-        {activeOption === ChatMessageOptions.poll ? (
+        {activeOption === ChatOptionType.poll ? (
           <PollBox createPoll={createPoll} />
         ) : (
           <ChatMessageBox

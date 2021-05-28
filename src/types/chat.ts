@@ -2,8 +2,11 @@ import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
 import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 import firebase from "firebase/app";
+
+export enum ChatMessageType {
+  poll = "poll",
+}
 
 export type BaseChatMessage = {
   from: string;
@@ -18,27 +21,25 @@ export type PrivateChatMessage = BaseChatMessage & {
   isRead?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage;
-
-export type VoteInPoll = {
-  questionId: number;
-  pollId: string;
-};
-
-type Vote = {
-  questionId: number;
-  userId: string;
-};
+export type VenueChatMessage = BaseChatMessage | PollMessage;
 
 export type PollMessage = BaseChatMessage & {
+  type: ChatMessageType.poll;
   poll: PollValues;
   votes: Vote[];
 };
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
+export type PollVote = {
+  questionId: number;
+  pollId: string;
+};
 
-export const isPollMessage = (r: unknown): r is PollMessage =>
-  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("poll");
+export type Vote = {
+  questionId: number;
+  userId: string;
+};
+
+export type ChatMessage = PrivateChatMessage | VenueChatMessage;
 
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
@@ -98,11 +99,10 @@ export enum ChatOptionType {
 }
 
 export interface ChatOption {
+  type: ChatOptionType;
   icon: IconDefinition;
   name: string;
 }
-
-export type ChatOptionMap = Record<ChatOptionType, ChatOption>;
 
 export type PollQuestion = {
   name: string;
@@ -114,13 +114,15 @@ export type PollValues = {
   questions: PollQuestion[];
 };
 
-export const ChatMessageOptions: ChatOptionMap = {
-  poll: {
+export const ChatMessageOptions: ChatOption[] = [
+  {
+    type: ChatOptionType.poll,
     icon: faPoll,
     name: "Create Poll",
   },
-  question: {
+  {
+    type: ChatOptionType.question,
     icon: faQuestion,
     name: "Ask Question",
   },
-};
+];

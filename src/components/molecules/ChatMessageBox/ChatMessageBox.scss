@@ -16,7 +16,7 @@
     border: none;
     min-width: $submit-button-diameter;
     min-height: $submit-button-diameter;
-    border-radius: 50%;
+    border-radius: $border-radius--max;
     display: flex;
     justify-content: center;
     align-items: center;

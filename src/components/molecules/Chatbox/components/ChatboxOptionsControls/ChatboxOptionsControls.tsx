@@ -2,29 +2,31 @@ import React, { useCallback, useMemo } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { ChatMessageOptions, ChatOption } from "types/chat";
+import { ChatMessageOptions, ChatOptionType } from "types/chat";
 
 import { TextButton } from "components/atoms/TextButton";
 
 import "./ChatboxOptionsControls.scss";
 
 export interface ChatboxOptionsControlsProps {
-  activeOption?: ChatOption;
-  setActiveOption: React.Dispatch<React.SetStateAction<ChatOption | undefined>>;
+  activeOption?: ChatOptionType;
+  setActiveOption: React.Dispatch<
+    React.SetStateAction<ChatOptionType | undefined>
+  >;
 }
 
 export const ChatboxOptionsControls: React.FC<ChatboxOptionsControlsProps> = ({
   activeOption,
   setActiveOption,
 }) => {
-  const shouldShowPoll = activeOption === ChatMessageOptions.poll;
+  const shouldShowPoll = activeOption === ChatOptionType.poll;
 
   const dropdownOptions = useMemo(
     () =>
-      Object.values(ChatMessageOptions).map((option) => (
+      ChatMessageOptions.map((option) => (
         <Dropdown.Item
           key={option.name}
-          onClick={() => setActiveOption(option)}
+          onClick={() => setActiveOption(option.type)}
         >
           {option.name}
           <FontAwesomeIcon icon={option.icon} />
