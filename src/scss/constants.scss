@@ -55,6 +55,7 @@ $danger-gradient: linear-gradient(
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
 $map-sidebar-width: 20%;
+$chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $chat-input-height: 114px;
@@ -82,6 +83,8 @@ $spacing--md: 12px;
 $spacing--lg: 16px;
 $spacing--xl: 24px;
 $spacing--xxl: 30px;
+
+$submit-button-diameter: 44px;
 
 $font-size--xxs: 10px;
 $font-size--xs: 11px;
@@ -135,6 +138,8 @@ $z-layers: (
   user-search-close-icon: 1,
   user-search-input-close-btn: 1,
   user-search-results: 380,
+  chat-poll-text: 0,
+  chat-poll-text-background: -1,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,

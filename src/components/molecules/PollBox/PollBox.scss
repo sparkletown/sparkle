@@ -1,0 +1,62 @@
+@import "scss/constants";
+
+$append-button-width: 24px;
+
+.PollBox {
+  padding: $spacing--md;
+  display: flex;
+  flex-direction: column;
+
+  &__section {
+    display: flex;
+    padding-bottom: $spacing--md;
+    &:last-child {
+      padding-bottom: 0;
+    }
+  }
+
+  &__input {
+    width: 100%;
+    max-width: calc(
+      #{$chat-sidebar-width} - 3 *#{$spacing--md} - #{$append-button-width}
+    );
+  }
+
+  &__submit-button {
+    outline: none;
+    border: none;
+    min-width: $submit-button-diameter;
+    min-height: $submit-button-diameter;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: $spacing--md;
+
+    background-color: $primary;
+
+    &:disabled {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__submit-button-icon {
+    color: $white;
+  }
+
+  &__append-button {
+    outline: none;
+    border: none;
+    width: $append-button-width;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: $spacing--md;
+    background-color: transparent;
+    color: $white;
+
+    &:focus {
+      outline: none;
+    }
+  }
+}
