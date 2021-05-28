@@ -168,14 +168,14 @@ export const useRecipientChat = (recipientId: string) => {
     ({ message, isQuestion }) => {
       if (!userId) return;
 
-      const sendMessageProps = buildMessage<PrivateChatMessage>({
+      const privateChatMessage = buildMessage<PrivateChatMessage>({
         from: userId,
         text: message,
         isQuestion,
         to: recipientId,
       });
 
-      return sendPrivateMessage(sendMessageProps);
+      return sendPrivateMessage(privateChatMessage);
     },
     [userId, recipientId]
   );

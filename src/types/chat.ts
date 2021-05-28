@@ -22,7 +22,7 @@ export type PrivateChatMessage = BaseChatMessage & {
   isQuestion?: boolean;
 };
 
-export type VenueChatQuestionMessage = BaseChatMessage & {
+export type VenueChatMessage = BaseChatMessage & {
   isQuestion?: boolean;
 };
 
@@ -40,11 +40,6 @@ export type PollVoteBase = {
 export type PollVote = PollVoteBase & {
   userId: string;
 };
-
-export type VenueChatMessage =
-  | BaseChatMessage
-  | VenueChatQuestionMessage
-  | PollMessage;
 
 export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 

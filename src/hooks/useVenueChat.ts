@@ -9,7 +9,6 @@ import {
   SendChatReply,
   SendMessage,
   VenueChatMessage,
-  VenueChatQuestionMessage,
 } from "types/chat";
 
 import {
@@ -68,7 +67,7 @@ export const useVenueChat = (venueId?: string) => {
     async ({ message, isQuestion }) => {
       if (!venueId || !userId) return;
 
-      const processedMessage = buildMessage<VenueChatQuestionMessage>({
+      const processedMessage = buildMessage<VenueChatMessage>({
         from: userId,
         text: message,
         isQuestion,
