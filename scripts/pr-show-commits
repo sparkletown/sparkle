@@ -1,0 +1,21 @@
+# https://cli.github.com/
+# https://github.com/octokit/core.js
+#   TODO: rewrite this so that it uses octokit core, and then maybe do it as a GitHub action/similar?
+#   https://github.com/octokit/graphql.js
+#   https://github.com/octokit/action.js
+#   https://github.com/octokit/request-action
+#   https://github.com/actions/toolkit
+
+
+# Useful for generating the description for a 'deploy' PR that follows our standards.
+#
+# Usage:
+#   Retrieve a markdown formatted list of the first line of commit message for each commit in the specified PR
+#     ./pr-show-commits 1138
+#
+#   Count of commits in PR
+#     ./pr-show-commits 1138 | wc -l
+
+PR=$1
+
+gh api "/repos/:owner/:repo/pulls/$PR/commits" --jq 'map(.commit.message |= "- " + split("(?:\r\n|\n)"; "")[0]) | .[] | .commit.message'
