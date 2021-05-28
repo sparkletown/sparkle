@@ -2,8 +2,8 @@ import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import React from "react";
 
 export const VideoChatModal: React.FC = () => {
-  const asd = useConnectVideoRooms();
+  const videoRoomRequests = useConnectVideoRooms();
 
-  console.log("VideoChatModal:", asd);
+  console.log("VideoChatModal:", videoRoomRequests);
   return <div></div>;
 };

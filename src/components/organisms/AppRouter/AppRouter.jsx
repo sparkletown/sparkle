@@ -10,7 +10,7 @@ import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import { venueLandingUrl } from "utils/url";
 
-import SplashPage from "pages/Account/SplashPage";
+// import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
 import Step3 from "pages/Account/Step3";
@@ -32,7 +32,6 @@ import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
-import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VenuePrivateRoom } from "pages/VenuePrivateRoom";
 
@@ -51,7 +50,8 @@ const AppRouter = () => {
         <Route path="/enter/step5" component={Step5} />
         <Route path="/enter/step6a" component={Step6a} />
         <Route path="/enter/step6b" component={Step6b} />
-        <Route path="/enter" component={SplashPage} />
+        {/* @debt This appears to be a legacy route related to the old Playa template. Likely to be removed in future. */}
+        {/*<Route path="/enter" component={SplashPage} />*/}
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
@@ -77,7 +77,6 @@ const AppRouter = () => {
         <Route path="/pr/:venueId/:roomId" component={VenuePrivateRoom} />
 
         <Route path="/version" component={VersionPage} />
-        <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"
           render={(props) => (

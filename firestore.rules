@@ -67,6 +67,10 @@ service cloud.firestore {
       match /accessgranted/{userId} {
         allow read, write: if false;
       }
+      match /screeningRoomVideos/{screeningRoomVideoId} {
+        allow read: if request.auth.uid != null;
+        allow write: if false;
+      }
     }
     match /customers/{userId} {
       allow read: if false;

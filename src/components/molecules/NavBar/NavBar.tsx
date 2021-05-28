@@ -7,12 +7,13 @@ import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
-import { DEFAULT_PROFILE_IMAGE, PLAYA_VENUE_ID } from "settings";
+import { PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { parentVenueSelector, radioStationsSelector } from "utils/selectors";
+
 import { hasElements } from "utils/types";
 import { venueInsideUrl } from "utils/url";
 
@@ -25,13 +26,14 @@ import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
+import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import NavSearchBar from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { NavBarLogin } from "./NavBarLogin";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./NavBar.scss";
 import * as S from "./Navbar.styles";
@@ -65,6 +67,8 @@ const GiftPopover = (
   </Popover>
 );
 
+const navBarScheduleClassName = "NavBar__schedule-dropdown";
+
 interface NavBarPropsType {
   redirectionUrl?: string;
   hasBackButton?: boolean;
@@ -74,7 +78,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
   redirectionUrl,
   hasBackButton = true,
 }) => {
-  const { user, profile } = useUser();
+  const { user, userWithId } = useUser();
   const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueParentId = venue?.parentId;
@@ -138,7 +142,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
-  const hideEventSchedule = useCallback(() => {
+  const hideEventSchedule = useCallback((e) => {
+    if (e.target.closest(`.${navBarScheduleClassName}`)) return;
+
     setEventScheduleVisible(false);
   }, []);
 
@@ -168,8 +174,6 @@ const NavBar: React.FC<NavBarPropsType> = ({
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? venue.name;
 
-  const profileImage = profile?.pictureUrl || DEFAULT_PROFILE_IMAGE;
-
   const radioStation = !!hasRadioStations && radioStations![0];
 
   const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
@@ -198,7 +202,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
               >
                 {navbarTitle} <span className="schedule-text">Schedule</span>
               </div>
-              <VenuePartygoers />
+              <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}
@@ -290,15 +294,7 @@ const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <div className="navbar-link-profile">
-                    <img
-                      src={profileImage}
-                      className="profile-icon"
-                      alt="avatar"
-                      width="40"
-                      height="40"
-                    />
-                  </div>
+                  <UserAvatar user={userWithId} showStatus large />
                 </OverlayTrigger>
               </div>
             )}
@@ -312,7 +308,9 @@ const NavBar: React.FC<NavBarPropsType> = ({
         }`}
         onClick={hideEventSchedule}
       >
-        <SchedulePageModal isVisible={isEventScheduleVisible} />
+        <div className={navBarScheduleClassName}>
+          <NavBarSchedule isVisible={isEventScheduleVisible} />
+        </div>
       </div>
 
       {/* @debt Remove back button from Navbar */}

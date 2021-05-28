@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
+import { useTitle } from "react-use";
+import { isBefore } from "date-fns";
 
-import { LOC_UPDATE_FREQ_MS } from "settings";
+import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -15,7 +17,6 @@ import {
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
-import { canUserJoinTheEvent, ONE_MINUTE_IN_SECONDS } from "utils/time";
 import {
   clearLocationData,
   setLocationData,
@@ -26,6 +27,7 @@ import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
+import { eventEndTime, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -59,22 +61,27 @@ const VenuePage: React.FC = () => {
   const mixpanel = useMixpanel();
 
   const history = useHistory();
-  const [currentTimestamp] = useState(Date.now() / 1000);
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
 
+  // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
+  useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelector);
-
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
+  useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
 
+  useConnectUserPurchaseHistory();
   const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
   const userPurchaseHistoryRequestStatus = useSelector(
     isUserPurchaseHistoryRequestedSelector
   );
+
+  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
+  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 
@@ -83,14 +90,17 @@ const VenuePage: React.FC = () => {
 
   const event = currentEvent?.[0];
 
-  venue && updateTheme(venue);
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   const hasUserBoughtTicket =
     event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
 
-  const isEventFinished =
-    event &&
-    currentTimestamp >
-      event.start_utc_seconds + event.duration_minutes * ONE_MINUTE_IN_SECONDS;
+  const isEventFinished = event && isBefore(eventEndTime(event), Date.now());
 
   const isUserVenueOwner = userId && venue?.owners?.includes(userId);
   const isMember =
@@ -112,6 +122,8 @@ const VenuePage: React.FC = () => {
 
     setLocationData({ userId, locationName: venueName });
   }, [userId, venueName]);
+
+  useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
   useEffect(() => {
     if (!userId) return;
@@ -141,12 +153,6 @@ const VenuePage: React.FC = () => {
   // NOTE: User's timespent updates
 
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
-
-  // @debt Remove this once we replace currentVenue with currentVenueNG our firebase
-  useConnectCurrentVenue();
-  useConnectCurrentEvent();
-  useConnectUserPurchaseHistory();
-  useFirestoreConnect("venues");
 
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
@@ -212,7 +218,7 @@ const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (!canUserJoinTheEvent(event)) {
+    if (isEventStartingSoon(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

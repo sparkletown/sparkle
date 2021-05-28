@@ -55,8 +55,8 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import {
-  createPerformanceTrace,
   PerformanceTrace,
+  tracePromise,
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -100,15 +100,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Load Stripe
-const traceStripeLoad = createPerformanceTrace(
-  PerformanceTrace.initStripeLoad,
-  {
-    startNow: true,
-  }
+const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
+  loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")
 );
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "").finally(() => {
-  traceStripeLoad.stop();
-});
 
 const rrfConfig = {
   userProfile: "users",

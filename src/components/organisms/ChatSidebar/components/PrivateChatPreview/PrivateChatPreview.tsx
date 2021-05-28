@@ -29,7 +29,7 @@ export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
 
   return (
     <div className={containerClasses} onClick={onClick}>
-      <UserAvatar user={counterPartyUser} isOnline={isOnline} />
+      <UserAvatar user={counterPartyUser} showStatus />
       <div className="chat-preview__content">
         <div className="chat-preview__username">
           {counterPartyUser.partyName}

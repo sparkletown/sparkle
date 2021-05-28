@@ -12,16 +12,12 @@ import {
   DEFAULT_EDIT_PROFILE_TEXT,
 } from "settings";
 
-import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-  orderedVenuesSelector,
-} from "utils/selectors";
+import { currentVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
-import { isVenueWithRooms } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -38,7 +34,6 @@ import "./UserProfileModal.scss";
 export const UserProfileModal: React.FC = () => {
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-
   const { user } = useUser();
   const history = useHistory();
 
@@ -123,7 +118,10 @@ export const UserProfileModal: React.FC = () => {
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={selectedUserProfile} />
+                  <SuspectedLocation
+                    user={selectedUserProfile}
+                    currentVenue={venue!}
+                  />
                 </h6>
               </div>
             )}
@@ -143,9 +141,12 @@ export const UserProfileModal: React.FC = () => {
   );
 };
 
-const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
+const SuspectedLocation: React.FC<{
+  user: WithId<User>;
+  currentVenue: WithId<AnyVenue>;
+}> = ({ user, currentVenue }) => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
-  const currentVenue = useSelector(currentVenueSelectorData);
   const allVenues = useSelector(orderedVenuesSelector);
 
   const suspectedLocation = useMemo(
