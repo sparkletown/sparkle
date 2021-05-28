@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
 import { usePosters } from "hooks/posters";
 
@@ -36,11 +35,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
-      <PosterPreview
-        key={posterVenue.id}
-        posterVenue={posterVenue}
-        enterVenue={enterVenue}
-      />
+      <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
     ));
   }, [posterVenues]);
 
