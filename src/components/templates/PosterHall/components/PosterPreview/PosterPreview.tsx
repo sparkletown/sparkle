@@ -1,13 +1,13 @@
 import React, {
   MouseEventHandler,
   useCallback,
-  useEffect,
+  // useEffect,
   useMemo,
   useState,
 } from "react";
 import classNames from "classnames";
 
-import { PersonalizedPoster, VenueEvent } from "types/venues";
+import { VenueEvent, PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -20,10 +20,6 @@ import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-ico
 import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
 import { useUser } from "hooks/useUser";
 
-// import { UserAvatar } from "components/atoms/UserAvatar";
-// import { useProfileModalControls } from "hooks/useProfileModalControls";
-// import { useWorldUsersById } from "hooks/users";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueEvents } from "hooks/events";
 
@@ -31,35 +27,34 @@ import { WithVenueId } from "utils/id";
 
 import "./PosterPreview.scss";
 
-export interface PosterPreviewProps {
-  enterVenue: (venueId: string) => void;
-  personalizedPoster: WithId<PersonalizedPoster>;
-}
-
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 export const emptyPersonalizedSchedule = {};
+export const emptyPersonalizedPosters = {};
+
+export interface PosterPreviewProps {
+  posterVenue: WithId<PosterPageVenue>;
+  enterVenue: (venueId: string) => void;
+}
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   enterVenue,
-  personalizedPoster,
+  posterVenue,
 }) => {
+  const { title, authorName, categories } = posterVenue.poster ?? {};
+
+  const venueId = posterVenue.id;
+
+  const { userWithId } = useUser();
+  const userPosterIds = userWithId?.savedPosters ?? emptyPersonalizedPosters;
+
   const [isBookmarkedPoster, setBookmarkPoster] = useState(
-    personalizedPoster.isSaved
+    //@ts-ignore
+    userPosterIds[posterVenue.id]?.[0] === posterVenue.id
   );
 
-  useEffect(() => {
-    setBookmarkPoster(personalizedPoster.isSaved);
-  }, [personalizedPoster.isSaved]);
-
-  const { userId } = useUser();
-
   const posterClassnames = classNames("PosterPreview", {
-    "PosterPreview--live": personalizedPoster.isLive,
+    "PosterPreview--live": posterVenue.isLive,
   });
-
-  const { title, authorName, categories } = personalizedPoster.poster ?? {};
-
-  const venueId = personalizedPoster.id;
 
   const handleEnterVenue = useCallback(() => enterVenue(venueId), [
     enterVenue,
@@ -75,41 +70,36 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   const { relatedVenueIds } = useRelatedVenues({
-    //isLoading, relatedVenues,
     currentVenueId: venueId,
   });
 
-  const {
-    // isEventsLoading,
-    events: relatedVenueEvents = emptyRelatedEvents,
-  } = useVenueEvents({
+  const { events: relatedVenueEvents = emptyRelatedEvents } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
 
   const bookmarkPoster = useCallback(() => {
-    setBookmarkPoster(!isBookmarkedPoster);
-    personalizedPoster.isSaved = !personalizedPoster.isSaved;
-    if (userId && personalizedPoster.id) {
+    if (userWithId?.id && posterVenue.id) {
       savePosterToProfile({
-        venueId: personalizedPoster.id,
-        userId: userId,
-        removeMode: !personalizedPoster.isSaved,
+        venueId: posterVenue.id,
+        userId: userWithId?.id,
+        removeMode: isBookmarkedPoster,
       });
     }
     relatedVenueEvents
-      .filter((event) => event.venueId === personalizedPoster.id)
+      .filter((event) => event.venueId === posterVenue.id)
       .map((event) => {
-        userId &&
+        userWithId?.id &&
           event.id &&
           updatePersonalizedSchedule({
             event: event,
-            userId: userId,
-            removeMode: !personalizedPoster.isSaved,
+            userId: userWithId?.id,
+            removeMode: isBookmarkedPoster,
           });
         return {};
       });
+    setBookmarkPoster(!isBookmarkedPoster);
     return relatedVenueEvents;
-  }, [userId, isBookmarkedPoster, personalizedPoster, relatedVenueEvents]);
+  }, [userWithId, isBookmarkedPoster, posterVenue, relatedVenueEvents]);
 
   const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
@@ -119,15 +109,6 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [bookmarkPoster]
   );
 
-  // wrap author in memo:
-  // const { worldUsersById } = useWorldUsersById();
-  // const authors = personalizedPoster.owners;
-  // const author = { ...worldUsersById[authors[0]], id: authors[0] };
-  // const { openUserProfileModal } = useProfileModalControls();
-  // const openAuthorProfile = useCallback(() => {
-  //   openUserProfileModal(author);
-  // }, [openUserProfileModal, author]);
-
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__bookmark" onClick={onBookmarkPoster}>
@@ -136,16 +117,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         />
       </div>
       <p className="PosterPreview__title">{title}</p>
+
       <div className="PosterPreview__categories">{renderedCategories}</div>
+
       <div className="PosterPreview__author">{authorName}</div>
-      {/* don't show author profile if not available... */}
-      {/* {author && (
-        <UserAvatar
-          user={author}
-          // isOnline={}
-          onClick={openAuthorProfile}
-        />
-      )} */}
     </div>
   );
 };

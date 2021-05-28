@@ -150,17 +150,8 @@ export function savePosterToProfile({
     : firebase.firestore.FieldValue.arrayUnion;
 
   const newSavedPosters = {
-    [`myPersonalizedPosters.${venueId}`]: modify(venueId),
+    [`savedPosters.${venueId}`]: modify(venueId),
   };
 
-  return userProfileRef.update(newSavedPosters).catch((err) => {
-    Bugsnag.notify(err, (poster) => {
-      poster.addMetadata("context", {
-        location: "api/profile::savePosterToProfile",
-        venueId,
-        userId,
-        removeMode,
-      });
-    });
-  });
+  return userProfileRef.update(newSavedPosters);
 }
