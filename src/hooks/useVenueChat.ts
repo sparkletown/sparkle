@@ -70,7 +70,7 @@ export const useVenueChat = (venueId?: string) => {
       const processedMessage = buildMessage<VenueChatMessage>({
         from: userId,
         text: message,
-        isQuestion,
+        ...(isQuestion && { isQuestion }),
       });
 
       return sendVenueMessage({ venueId, message: processedMessage });

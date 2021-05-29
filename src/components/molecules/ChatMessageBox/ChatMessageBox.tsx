@@ -17,6 +17,7 @@ export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
+  unselectOption: () => void;
   isQuestion?: boolean;
 }
 
@@ -24,6 +25,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThread,
   sendMessage,
   sendThreadReply,
+  unselectOption,
   isQuestion = false,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
@@ -52,6 +54,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     setMessageSending(true);
     sendMessage({ message, isQuestion });
     reset();
+    unselectOption();
   });
 
   const sendReplyToThread = handleSubmit(({ message }) => {
@@ -60,9 +63,10 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     setMessageSending(true);
     sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
+    unselectOption();
   });
 
-  const chatValue = watch("text");
+  const chatValue = watch("message");
 
   const placeholderValue = isQuestion ? "question" : "message";
 
@@ -78,7 +82,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       <InputField
         containerClassName="Chatbox__input"
         ref={register({ required: true })}
-        name="text"
+        name="message"
         placeholder={`Write your ${placeholderValue}...`}
         autoComplete="off"
       />

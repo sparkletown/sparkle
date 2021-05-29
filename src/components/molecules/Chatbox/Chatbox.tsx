@@ -39,7 +39,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   sendThreadReply,
   deleteMessage,
-  displayPoll,
+  displayPoll: isDisplayedPoll,
 }) => {
   const { createPoll, voteInPoll } = useVenuePoll();
 
@@ -92,13 +92,13 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             closeThread={closeThread}
           />
         )}
-        {isQuestionOptions && (
+        {isQuestionOptions && !selectedThread && (
           <ChatboxThreadControls
             text="asking a question"
             closeThread={unselectOption}
           />
         )}
-        {displayPoll && !isQuestionOptions && !selectedThread && (
+        {isDisplayedPoll && !isQuestionOptions && !selectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
@@ -111,6 +111,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             selectedThread={selectedThread}
             sendMessage={sendMessage}
             sendThreadReply={sendThreadReply}
+            unselectOption={unselectOption}
             isQuestion={isQuestionOptions}
           />
         )}
