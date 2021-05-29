@@ -126,9 +126,15 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
       .map((fuseSearchItem) => fuseSearchItem.item);
   }, [searchQuery, fuseVideos, filteredVideosBySubCategory]);
 
-  const displayedVideos = searchedVideos
-    .sort((a, b) => a.title.localeCompare(b.title))
-    .slice(0, displayedVideosAmount);
+  const displayedVideos = useMemo(
+    () =>
+      searchedVideos
+        // As per https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
+        .slice()
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .slice(0, displayedVideosAmount),
+    [searchedVideos, displayedVideosAmount]
+  );
 
   const hasHiddenVideos = searchedVideos.length > displayedVideos.length;
 

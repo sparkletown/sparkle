@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import classNames from "classnames";
 
 import { updateVenueTable } from "api/table";
 
@@ -63,11 +64,11 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
   }, [formDefaultValues, reset, title]);
 
   // use useAsyncFn for easier error handling, instead of state hook
-  const [{ error: httpError }, updateTables] = useAsyncFn(
+  const [{ error: httpError, loading: isUpdating }, updateTables] = useAsyncFn(
     async (values: EditTableForm) => {
       if (!venueId || !tableOfUser) return;
 
-      updateVenueTable({
+      await updateVenueTable({
         ...values,
         venueId,
         tableOfUser,
@@ -76,6 +77,10 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
     },
     [onHide, tableOfUser, tables, venueId]
   );
+
+  const saveButtonClassNames = classNames("btn btn-centered btn-primary", {
+    disabled: isUpdating,
+  });
 
   return (
     <Modal show={isShown} onHide={onHide}>
@@ -89,6 +94,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             name="title"
             containerClassName="EditTableTitleModal__input--spacing"
             placeholder="Table topic"
+            disabled={isUpdating}
           />
           {errors.title?.type === "required" && (
             <span className="input-error">Topic is required</span>
@@ -99,6 +105,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             name="subtitle"
             containerClassName="EditTableTitleModal__input--spacing"
             placeholder="Describe this table (optional)"
+            disabled={isUpdating}
           />
 
           <div className="EditTableTitleModal__capacity">
@@ -113,6 +120,7 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
                 className="EditTableTitleModal__max-capacity--input"
                 name="capacity"
                 type="number"
+                disabled={isUpdating}
                 min={MIN_TABLE_CAPACITY}
                 max={MAX_TABLE_CAPACITY}
                 placeholder="Max seats"
@@ -141,7 +149,11 @@ export const EditTableTitleModal: React.FC<EditTableTitleModalProps> = ({
             >
               Cancel
             </button>
-            <button type="submit" className="btn btn-centered btn-primary">
+            <button
+              type="submit"
+              disabled={isUpdating}
+              className={saveButtonClassNames}
+            >
               Save
             </button>
           </div>

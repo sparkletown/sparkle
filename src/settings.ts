@@ -104,6 +104,9 @@ export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 // How often to refresh current time line in the schedule
 export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
+// How often to refresh event status (passed / happening now / haven't started)
+export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
@@ -571,6 +574,8 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+
 export const DEFAULT_AVATARS = [
   "/avatars/default-profile-pic-1.png",
   "/avatars/default-profile-pic-2.png",
@@ -582,6 +587,9 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+// Max questions number for Poll inside Chat
+export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
