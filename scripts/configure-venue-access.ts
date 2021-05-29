@@ -87,7 +87,19 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
       const emails: string[] = fs
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .map((line) => line.trim().toLowerCase());
+        .map((line) => line.trim().toLowerCase())
+        .filter((line) => {
+          const isEmail = line.includes("@");
+
+          // We don't want to spam the logs about empty lines
+          if (!isEmail && line.length > 0) {
+            console.log(
+              `  Line doesn't appear to be an email, skipping: ${line}`
+            );
+          }
+
+          return isEmail;
+        });
 
       console.log(
         `  Adding ${emails.length} email addresses to the '${venueId}' venue's '${method}' whitelist..`
