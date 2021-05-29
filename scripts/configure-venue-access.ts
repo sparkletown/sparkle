@@ -137,5 +137,6 @@ const accessDocRef = venueDocRef.collection("access").doc(method);
     process.exit(1);
   })
   .finally(() => {
+    console.log("Done");
     process.exit(0);
   });
