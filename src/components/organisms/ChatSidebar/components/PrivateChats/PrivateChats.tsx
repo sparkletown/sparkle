@@ -50,13 +50,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           <PrivateChatPreview
             key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
             message={chatMessage}
-            isOnline={onlineUsers.some(
-              (user) => user.id === chatMessage.counterPartyUser.id
-            )}
             onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
           />
         )),
-    [privateChatPreviews, selectRecipientChat, onlineUsers]
+    [privateChatPreviews, selectRecipientChat]
   );
 
   const renderedOnlineUsers = useMemo(

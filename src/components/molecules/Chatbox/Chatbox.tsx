@@ -4,7 +4,7 @@ import {
   DeleteMessage,
   MessageToDisplay,
   SendChatReply,
-  SendMesssage,
+  SendMessage,
   ChatOptionType,
 } from "types/chat";
 import { AnyVenue } from "types/venues";
@@ -15,20 +15,19 @@ import { checkIfPollMessage } from "utils/chat";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { ChatPoll } from "components/molecules/ChatPoll";
 import { PollBox } from "components/molecules/PollBox";
-
 import { ChatMessage } from "components/atoms/ChatMessage";
+
+import { useVenuePoll } from "hooks/useVenuePoll";
 
 import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
-
-import { useVenuePoll } from "hooks/useVenuePoll";
 
 import "./Chatbox.scss";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   venue: WithId<AnyVenue>;
-  sendMessage: SendMesssage;
+  sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
   displayPoll?: boolean;
@@ -40,7 +39,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   sendMessage,
   sendThreadReply,
   deleteMessage,
-  displayPoll,
+  displayPoll: isDisplayedPoll,
 }) => {
   const { createPoll, voteInPoll } = useVenuePoll();
 
@@ -51,6 +50,12 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const closeThread = useCallback(() => setSelectedThread(undefined), []);
 
   const [activeOption, setActiveOption] = useState<ChatOptionType>();
+
+  const unselectOption = useCallback(() => {
+    setActiveOption(undefined);
+  }, []);
+
+  const isQuestionOptions = ChatOptionType.question === activeOption;
 
   const renderedMessages = useMemo(
     () =>
@@ -79,13 +84,21 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     <div className="Chatbox">
       <div className="Chatbox__messages">{renderedMessages}</div>
       <div className="Chatbox__form-box">
+        {/* @debt sort these out. Preferrably using some kind of enum */}
         {selectedThread && (
           <ChatboxThreadControls
+            text="replying to"
             threadAuthor={selectedThread.author.partyName}
             closeThread={closeThread}
           />
         )}
-        {displayPoll && !selectedThread && (
+        {isQuestionOptions && !selectedThread && (
+          <ChatboxThreadControls
+            text="asking a question"
+            closeThread={unselectOption}
+          />
+        )}
+        {isDisplayedPoll && !isQuestionOptions && !selectedThread && (
           <ChatboxOptionsControls
             activeOption={activeOption}
             setActiveOption={setActiveOption}
@@ -98,6 +111,8 @@ export const Chatbox: React.FC<ChatboxProps> = ({
             selectedThread={selectedThread}
             sendMessage={sendMessage}
             sendThreadReply={sendThreadReply}
+            unselectOption={unselectOption}
+            isQuestion={isQuestionOptions}
           />
         )}
       </div>

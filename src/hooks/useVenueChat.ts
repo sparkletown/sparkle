@@ -7,7 +7,7 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 import {
   DeleteMessage,
   SendChatReply,
-  SendMesssage,
+  SendMessage,
   VenueChatMessage,
 } from "types/chat";
 
@@ -63,13 +63,17 @@ export const useVenueChat = (venueId?: string) => {
     )
     .sort(chatSort);
 
-  const sendMessage: SendMesssage = useCallback(
-    async (text: string) => {
+  const sendMessage: SendMessage = useCallback(
+    async ({ message, isQuestion }) => {
       if (!venueId || !userId) return;
 
-      const message = buildMessage<VenueChatMessage>({ from: userId, text });
+      const processedMessage = buildMessage<VenueChatMessage>({
+        from: userId,
+        text: message,
+        ...(isQuestion && { isQuestion }),
+      });
 
-      return sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message: processedMessage });
     },
     [venueId, userId]
   );

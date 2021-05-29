@@ -1,6 +1,10 @@
 @import "scss/constants";
 
 .Chatbox {
+  &--question {
+    background-color: $dark-green;
+  }
+
   &__form {
     padding: $spacing--md;
     display: flex;

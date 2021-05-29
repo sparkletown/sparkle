@@ -14,6 +14,7 @@ export type BaseChatMessage = {
   ts_utc: firebase.firestore.Timestamp;
   deleted?: boolean;
   threadId?: string;
+  isQuestion?: boolean;
 };
 
 export type PrivateChatMessage = BaseChatMessage & {
@@ -21,7 +22,7 @@ export type PrivateChatMessage = BaseChatMessage & {
   isRead?: boolean;
 };
 
-export type VenueChatMessage = BaseChatMessage | PollMessage;
+export type VenueChatMessage = BaseChatMessage;
 
 export type PollMessage = BaseChatMessage & {
   type: ChatMessageType.poll;
@@ -38,7 +39,7 @@ export type PollVote = PollVoteBase & {
   userId: string;
 };
 
-export type ChatMessage = PrivateChatMessage | VenueChatMessage;
+export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
@@ -53,7 +54,14 @@ export type MessageToDisplay<
   replies: WithId<BaseMessageToDisplay<T>>[];
 };
 
-export type SendMesssage = (text: string) => Promise<void> | undefined;
+export interface SendMessageProps {
+  message: string;
+  isQuestion?: boolean;
+}
+
+export type SendMessage = (
+  sendMessageProps: SendMessageProps
+) => Promise<void> | undefined;
 
 export type DeleteMessage = (messageId: string) => Promise<void> | undefined;
 

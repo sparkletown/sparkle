@@ -33,7 +33,7 @@ export const AppButton: React.FC<ButtonProps> = ({
   if (loading)
     return (
       <div className="spinner-border">
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">Loading&hellip;</span>
       </div>
     );
 
