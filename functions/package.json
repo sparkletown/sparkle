@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "body-parser": "^1.19.0",
-    "firebase": "^8.2.4",
+    "firebase": "^8.6.3",
     "firebase-admin": "^9.4.2",
     "firebase-functions": "^3.13.1",
     "stripe": "^8.71.0",
