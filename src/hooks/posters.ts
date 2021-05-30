@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { VenueTemplate } from "types/venues";
 import Fuse from "fuse.js";
+import { sampleSize } from "lodash";
 
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
@@ -116,7 +117,7 @@ export const usePosters = (posterHallId: string) => {
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
 
   const displayedPosterVenues = useMemo(
-    () => searchedPosterVenues.slice(0, displayedPostersCount),
+    () => sampleSize(searchedPosterVenues, displayedPostersCount),
     [searchedPosterVenues, displayedPostersCount]
   );
 
