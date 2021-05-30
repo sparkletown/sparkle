@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import { VenueTemplate } from "types/venues";
 import Fuse from "fuse.js";
-import { sampleSize } from "lodash";
+import { shuffle } from "lodash";
 
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
@@ -90,13 +90,11 @@ export const usePosters = (posterHallId: string) => {
   const searchedPosterVenues = useMemo(() => {
     const normalizedSearchQuery = searchQuery.trim();
 
-    if (!normalizedSearchQuery) return filteredPosterVenues;
-
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
 
-    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+    if (tokenisedSearchQuery.length === 0) return shuffle(filteredPosterVenues);
 
     return fuseVenues
       .search({
@@ -117,7 +115,7 @@ export const usePosters = (posterHallId: string) => {
   }, [searchQuery, fuseVenues, filteredPosterVenues]);
 
   const displayedPosterVenues = useMemo(
-    () => sampleSize(searchedPosterVenues, displayedPostersCount),
+    () => searchedPosterVenues.slice(0, displayedPostersCount),
     [searchedPosterVenues, displayedPostersCount]
   );
 
