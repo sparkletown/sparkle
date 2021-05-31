@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "react-bootstrap";
 
 import {
   isCurrentVenueNGRequestedSelector,
@@ -73,15 +72,10 @@ export const VenueAdminPage: React.FC = () => {
         ) : (
           <>
             <AnnouncementMessage banner={venue?.banner} />
-            <div className="AdminPage__options">
-              <AnnouncementOptions banner={venue?.banner} />
-              <Button
-                onClick={showBannerAdmin}
-                className="AdminPage__option-button"
-              >
-                Edit
-              </Button>
-            </div>
+            <AnnouncementOptions
+              banner={venue?.banner}
+              onEdit={showBannerAdmin}
+            />
           </>
         )}
       </div>
