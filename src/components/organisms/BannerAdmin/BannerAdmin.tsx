@@ -43,10 +43,17 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   venue,
   onClose,
 }) => {
-  const { register, handleSubmit, reset } = useForm<BannerFormData>({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    reset,
+    watch,
+  } = useForm<BannerFormData>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
+  const isActionButtonValue = watch("isActionButton");
 
   const [bannerData, setBannerDate] = useState<BannerFormData>(
     initialBannerData
@@ -106,6 +113,9 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             placeholder="Please type your announcement content"
             ref={register({ required: true })}
           />
+          {errors.content && errors.content.type === "required" && (
+            <span className="input-error">Display content is required</span>
+          )}
         </div>
 
         <Checkbox
@@ -126,6 +136,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             defaultValue={venue?.banner?.buttonUrl}
             containerClassName="Banner__input-container"
             inputClassName="Banner__input-text"
+            disabled={!isActionButtonValue}
             autoComplete="off"
           />
           <InputField
@@ -135,6 +146,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             defaultValue={venue?.banner?.buttonDisplayText}
             containerClassName="Banner__input-container"
             inputClassName="Banner__input-text"
+            disabled={!isActionButtonValue}
             autoComplete="off"
           />
         </div>
