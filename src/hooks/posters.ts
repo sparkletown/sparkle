@@ -91,6 +91,8 @@ export const usePosters = (posterHallId: string) => {
   const searchedPosterVenues = useMemo(() => {
     const normalizedSearchQuery = searchQuery.trim();
 
+    if (!normalizedSearchQuery) return shuffle(filteredPosterVenues);
+
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
