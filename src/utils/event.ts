@@ -2,15 +2,18 @@ import {
   addMinutes,
   areIntervalsOverlapping,
   differenceInMinutes,
-  endOfDay,
   fromUnixTime,
+  isAfter,
   isWithinInterval,
-  startOfDay,
 } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
-import { getCurrentTimeInUTCSeconds } from "./time";
+import {
+  formatUtcSecondsRelativeToNow,
+  getCurrentTimeInUTCSeconds,
+  getDayInterval,
+} from "./time";
 
 export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
@@ -22,9 +25,8 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
   );
 };
 
-export const isEventLive = (event: VenueEvent) => {
-  return isWithinInterval(Date.now(), getEventInterval(event));
-};
+export const isEventLive = (event: VenueEvent) =>
+  isWithinInterval(Date.now(), getEventInterval(event));
 
 export const isEventLiveOrFuture = (event: VenueEvent) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
@@ -48,6 +50,9 @@ export const eventHappeningNow = (
   );
 };
 
+export const hasEventFinished = (event: VenueEvent) =>
+  isAfter(Date.now(), eventEndTime(event));
+
 export const eventStartTime = (event: VenueEvent) =>
   fromUnixTime(event.start_utc_seconds);
 
@@ -62,15 +67,21 @@ export const getEventInterval = (event: VenueEvent) => ({
   end: eventEndTime(event),
 });
 
-export const isEventWithinDate = (checkDate: number | Date) => (
+export const isEventWithinDate = (checkDate: Date | number) => (
   event: VenueEvent
-) => {
-  const checkDateInterval = {
-    start: startOfDay(checkDate),
-    end: endOfDay(checkDate),
-  };
+) =>
+  areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
 
-  const eventInterval = getEventInterval(event);
+export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
+  event: VenueEvent
+) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
 
-  return areIntervalsOverlapping(checkDateInterval, eventInterval);
+export const getEventStatus = (event: VenueEvent) => {
+  if (isEventLive(event)) return `Happening now`;
+
+  if (hasEventFinished(event)) {
+    return `Ended`;
+  } else {
+    return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
+  }
 };

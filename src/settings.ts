@@ -10,6 +10,7 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -20,6 +21,9 @@ export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
+
+// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
+export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
 
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
@@ -100,11 +104,17 @@ export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 // How often to refresh current time line in the schedule
 export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
+// How often to refresh event status (passed / happening now / haven't started)
+export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
+
+export const MIN_TABLE_CAPACITY = 2;
+export const MAX_TABLE_CAPACITY = 10;
 
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
@@ -564,6 +574,8 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+
 export const DEFAULT_AVATARS = [
   "/avatars/default-profile-pic-1.png",
   "/avatars/default-profile-pic-2.png",
@@ -576,11 +588,17 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+// Max questions number for Poll inside Chat
+export const MAX_POLL_QUESTIONS = 8;
+
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
-export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 12;
+export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
+export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
+
+export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
 // SCHEDULE
 // @debt probably would be better to adjust max hour based on user's display size
@@ -591,3 +609,6 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
+export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
