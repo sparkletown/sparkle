@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 
 import { setVideoChatState } from "api/video";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
-import { useVenueId } from "hooks/useVenueId";
+import { useWorldUserById } from "hooks/users";
 
 import { hasElements } from "utils/types";
 
@@ -14,32 +14,34 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 
 export const VideoChatModal: React.FC = () => {
   const videoRoomRequests = useConnectVideoRooms();
-  const venueId = useVenueId();
   const history = useHistory();
 
   const hasVideoRoomRequests = hasElements(videoRoomRequests);
 
-  const currentVideoRoomRequest = videoRoomRequests?.[0] ?? {};
+  const currentVideoRoomRequest = hasVideoRoomRequests
+    ? videoRoomRequests[0]
+    : undefined;
 
-  useEffect(() => {
-    console.log(videoRoomRequests, hasVideoRoomRequests);
-  }, [videoRoomRequests, hasVideoRoomRequests]);
+  const host = useWorldUserById(currentVideoRoomRequest?.hostUserId);
 
   const acceptVideoRoomRequest = useCallback(() => {
+    if (!currentVideoRoomRequest) return;
+
     setVideoChatState(
       currentVideoRoomRequest.id,
       VideoChatRequestState.Accepted
     );
-    history.push(`/pr/${venueId}/${currentVideoRoomRequest.id}`);
-  }, [currentVideoRoomRequest.id, history, venueId]);
+    history.push(`/pr/${currentVideoRoomRequest.id}`);
+  }, [currentVideoRoomRequest, history]);
 
   const declineVideoRoomRequest = useCallback(() => {
+    if (!currentVideoRoomRequest) return;
+
     setVideoChatState(
       currentVideoRoomRequest.id,
       VideoChatRequestState.Declined
     );
-    history.push(`/pr/${venueId}/${currentVideoRoomRequest.id}`);
-  }, [currentVideoRoomRequest.id, history, venueId]);
+  }, [currentVideoRoomRequest]);
 
   console.log("VideoChatModal:", videoRoomRequests);
 
@@ -49,7 +51,7 @@ export const VideoChatModal: React.FC = () => {
 
   return (
     <ConfirmationModal
-      message={`test`}
+      message={`${host?.partyName} invites you to video chat.`}
       onConfirm={acceptVideoRoomRequest}
       onCancel={declineVideoRoomRequest}
     />

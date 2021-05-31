@@ -74,7 +74,7 @@ const AppRouter = () => {
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
-        <Route path="/pr/:venueId/:roomId" component={VenuePrivateRoom} />
+        <Route path="/pr/:roomId" component={VenuePrivateRoom} />
 
         <Route path="/version" component={VersionPage} />
         <Route

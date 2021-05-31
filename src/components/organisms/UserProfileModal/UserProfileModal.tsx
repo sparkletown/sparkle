@@ -63,7 +63,7 @@ export const UserProfileModal: React.FC = () => {
     const roomId = response.data;
 
     if (roomId) {
-      history.push(`/pr/${venueId}/${roomId}`);
+      history.push(`/pr/${roomId}`);
     }
   }, [chosenUserId, history, user?.uid, venueId]);
 
