@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import { DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT } from "settings";
 
 import { isTruthy } from "utils/types";
 import { screeningRoomVideosSelector } from "utils/selectors";
@@ -52,7 +52,7 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
   const [categoryFilter, _setCategoryFilter] = useState<string>();
   const [subCategoryFilter, setSubCategoryFilter] = useState<string>();
   const [displayedVideosAmount, setDisplayedVideosAmount] = useState(
-    DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
+    DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT
   );
 
   const setCategoryFilter = useCallback((category: string) => {
@@ -69,8 +69,8 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
 
   const increaseDisplayedVideosAmount = useCallback(() => {
     setDisplayedVideosAmount(
-      (prevPostersNumber) =>
-        prevPostersNumber + DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
+      (prevVideosNumber) =>
+        prevVideosNumber + DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT
     );
   }, []);
 
@@ -119,24 +119,27 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
   );
 
   const searchedVideos = useMemo(() => {
-    if (!searchQuery)
-      return filteredVideosBySubCategory.slice(0, displayedVideosAmount);
+    if (!searchQuery) return filteredVideosBySubCategory;
 
     return fuseVideos
       .search(searchQuery)
-      .slice(0, displayedVideosAmount)
       .map((fuseSearchItem) => fuseSearchItem.item);
-  }, [
-    searchQuery,
-    fuseVideos,
-    filteredVideosBySubCategory,
-    displayedVideosAmount,
-  ]);
+  }, [searchQuery, fuseVideos, filteredVideosBySubCategory]);
 
-  const hasHiddenVideos = searchedVideos.length > displayedVideosAmount;
+  const displayedVideos = useMemo(
+    () =>
+      searchedVideos
+        // As per https://stackoverflow.com/questions/53420055/error-while-sorting-array-of-objects-cannot-assign-to-read-only-property-2-of/53420326
+        .slice()
+        .sort((a, b) => a.title.localeCompare(b.title))
+        .slice(0, displayedVideosAmount),
+    [searchedVideos, displayedVideosAmount]
+  );
+
+  const hasHiddenVideos = searchedVideos.length > displayedVideos.length;
 
   return {
-    videos: searchedVideos,
+    videos: displayedVideos,
     isVideosLoaded,
 
     hasHiddenVideos,

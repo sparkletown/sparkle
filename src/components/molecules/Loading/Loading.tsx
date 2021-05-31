@@ -1,18 +1,25 @@
-import React, { FC } from "react";
+import React from "react";
+import classNames from "classnames";
 
 import LoadingIcon from "assets/icons/icon-loading.svg";
 
 import "./Loading.scss";
 
 export interface LoadingProps {
-  message?: string;
+  containerClassName?: string;
+  label?: string;
 }
 
-export const Loading: FC<LoadingProps> = ({ message }) => {
+export const Loading: React.FC<LoadingProps> = ({
+  containerClassName,
+  label,
+}) => {
+  const containerClasses = classNames("Loading", containerClassName);
+
   return (
-    <div className="Loading">
+    <div className={containerClasses}>
       <img className="Loading__icon" src={LoadingIcon} alt="loading" />
-      <span className="Loading__message">{message}</span>
+      <span className="Loading__message">{label}</span>
     </div>
   );
 };

@@ -9,10 +9,10 @@ import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
 import Room from "components/organisms/Room";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+import { Loading } from "components/molecules/Loading";
 
 import "./ArtPiece.scss";
 
@@ -21,7 +21,7 @@ export interface ArtPieceProps {
 }
 
 export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
-  if (!venue) return <>Loading...</>;
+  if (!venue) return <Loading label="Loading..." />;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
 
@@ -30,7 +30,7 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   }`;
 
   return (
-    <WithNavigationBar>
+    <>
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
@@ -70,6 +70,6 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
           <SparkleFairiesPopUp />
         </div>
       )}
-    </WithNavigationBar>
+    </>
   );
 };

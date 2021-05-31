@@ -1,0 +1,109 @@
+@import "scss/constants";
+
+$poll-text-border-radius-me: $spacing--xxl $spacing--xxl $spacing--xs
+  $spacing--xxl;
+$poll-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xxl $spacing--xs;
+
+// Override global styles button
+button.ChatPoll__question {
+  display: block;
+  margin-bottom: $spacing--lg;
+  width: 100%;
+  background-color: $secondary--light;
+
+  &:hover {
+    background-color: $secondary--lightest;
+  }
+}
+.ChatPoll {
+  align-self: flex-start;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  margin-bottom: 16px;
+  width: 100%;
+
+  &__bulb {
+    position: relative;
+    width: 100%;
+    border-radius: $poll-text-border-radius;
+    background-color: $secondary;
+    padding: $spacing--md;
+    margin-bottom: $spacing--sm;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  &__topic {
+    text-align: center;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
+    margin-bottom: $spacing--lg;
+  }
+
+  &__text {
+    font-size: $font-size--lg;
+    margin-bottom: $spacing--md;
+  }
+
+  &--me {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .ChatPoll {
+      &__bulb {
+        background-color: $primary;
+        border-radius: $poll-text-border-radius-me;
+      }
+
+      &__text-background {
+        background-color: $primary--darker;
+      }
+    }
+  }
+
+  &__text {
+    position: relative;
+    font-weight: $font-weight--500;
+    margin-bottom: $spacing--md;
+    padding: $spacing--sm $spacing--md;
+    width: 100%;
+    z-index: z(chat-poll-text);
+
+    &:first-child {
+      .ChatPoll__text-background {
+        background-color: $primary--light;
+      }
+    }
+
+    &-background {
+      position: absolute;
+      z-index: z(chat-poll-text-background);
+      background-color: $dark-grey;
+      border-radius: $border-radius--xl;
+      top: 0;
+      left: 0;
+      bottom: 0;
+    }
+
+    &-count {
+      margin-right: $spacing--md;
+    }
+  }
+
+  &__details {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: opaque-white(0.8);
+    font-size: $font-size--sm;
+  }
+
+  &__icon {
+    position: absolute;
+    top: $spacing--md;
+    left: $spacing--md;
+  }
+}

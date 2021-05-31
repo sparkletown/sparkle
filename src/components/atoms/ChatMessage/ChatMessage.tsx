@@ -25,7 +25,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, isMine, replies, id } = message;
+  const { text, replies, id, isMine, isQuestion } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
@@ -36,6 +36,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,
+    "ChatMessage--question": isQuestion,
   });
 
   const renderedReplies = useMemo(

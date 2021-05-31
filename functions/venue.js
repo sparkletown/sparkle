@@ -119,6 +119,34 @@ const checkUserIsOwner = async (venueId, uid) => {
     });
 };
 
+// @debt extract this into a new functions/chat backend script file
+const checkIfUserHasVoted = async (venueId, pollId, userId) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("chats")
+    .doc(pollId)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
+      }
+
+      const poll = doc.data();
+
+      return poll.votes.some(
+        ({ userId: existingUserId }) => userId === existingUserId
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
+};
+
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
     return await checkUserIsOwner(venueId, uid);
@@ -610,12 +638,15 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
+
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
+
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
+
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -703,6 +734,43 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+exports.updateTables = functions.https.onCall((data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+
+  return admin.firestore().runTransaction(async (transaction) => {
+    const venueDoc = await transaction.get(venueRef);
+
+    if (!venueDoc.exists) {
+      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+    }
+
+    const venueTables = [...data.tables];
+
+    const currentTableIndex = venueTables.findIndex(
+      (table) => table.reference === data.updatedTable.reference
+    );
+
+    if (currentTableIndex < 0) {
+      throw new HttpsError(
+        "not-found",
+        `current table does not exist in the venue`
+      );
+    }
+
+    venueTables[currentTableIndex] = data.updatedTable;
+
+    transaction.update(venueRef, { "config.tables": venueTables });
+  });
+});
+
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.id);
   checkAuth(context);
@@ -711,6 +779,40 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
+
+// @debt extract this into a new functions/chat backend script file
+exports.voteInPoll = functions.https.onCall(
+  async ({ venueId, pollVote }, context) => {
+    checkAuth(context);
+
+    const { pollId, questionId } = pollVote;
+
+    try {
+      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
+
+      const newVote = {
+        questionId,
+        userId: context.auth.token.user_id,
+      };
+
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("chats")
+        .doc(pollId)
+        .update({
+          votes: admin.firestore.FieldValue.arrayUnion(newVote),
+        });
+    } catch (error) {
+      throw new HttpsError(
+        "has-voted",
+        `User ${userId} has voted in ${pollId} Poll`,
+        error
+      );
+    }
+  }
+);
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
