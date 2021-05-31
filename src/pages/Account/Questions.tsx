@@ -63,8 +63,10 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
       <div className="login-container">
-        <h2>{headerMessage}</h2>
-        <p>This will help your fellow partygoers break the ice</p>
+        <h2 className="header-message">{headerMessage}</h2>
+        <p className="subheader-message">
+          This will help your fellow partygoers break the ice
+        </p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions &&
             venue.profile_questions.map((question: QuestionType) => (

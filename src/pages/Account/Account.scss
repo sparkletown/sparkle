@@ -55,11 +55,21 @@ $page-max-width: 1240px;
   background-color: $dark;
   flex-direction: column;
   flex: 1;
+  padding-bottom: 30px;
 
   .login-container {
     align-self: center;
+
+    .header-message {
+      text-align: center;
+    }
+
+    .subheader-message {
+      text-align: center;
+    }
   }
 }
+
 .page-container-onboarding {
   max-height: 100%;
   overflow: hidden;
@@ -107,7 +117,9 @@ $page-max-width: 1240px;
 
   &.sparkle {
     margin: 0 auto;
-    background-image: url(/assets/images/sparkle-logo.png);
+    background-image: url(/assets/images/Sparkle_logo_white_yellow.png);
+    background-repeat: no-repeat;
+    background-position: center;
     width: 280px;
     height: 225px;
     background-size: 280px;
