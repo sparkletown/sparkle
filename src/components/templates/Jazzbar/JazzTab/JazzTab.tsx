@@ -25,12 +25,14 @@ import Room from "../components/JazzBarRoom";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
+import UserList from "components/molecules/UserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -49,6 +51,7 @@ interface JazzProps {
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const parentVenueId = venueToUse?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
@@ -147,6 +150,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           <div className="back-icon" />
           <span className="back-link">Back to {parentVenue.name}</span>
         </div>
+      )}
+
+      {!seatedAtTable && (
+        <UserList
+          users={recentVenueUsers}
+          activity={venue?.activity ?? "here"}
+          disableSeeAll={false}
+        />
       )}
 
       {seatedAtTable && (
