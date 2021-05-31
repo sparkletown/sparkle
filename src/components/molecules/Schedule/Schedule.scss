@@ -9,13 +9,14 @@ $hour-width: var(--hour-width, 200px);
 $half-hour-width: calc(#{$hour-width} / 2);
 
 $rooms-column--width: 215px;
-$timeline--height: 36px;
 
-$time-line--margin-top: 18px;
-$time-line--width: 1px;
-$current-time-line--width: 2px;
+$timeline-label--height: 36px;
 
-$time-line--height: calc(
+$timeline-delimeter--margin-top: 18px;
+$timeline-delimeter--width: 1px;
+$current-timeline-delimeter--width: 2px;
+
+$timeline-delimeter--height: calc(
   (#{$room--height} + #{$room--margin-bottom}) * #{$room-count}
 );
 
@@ -26,10 +27,14 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   display: flex;
   position: relative;
 
+  &__loading {
+    margin-top: $Schedule--padding;
+  }
+
   &__rooms {
     flex-basis: $rooms-column--width;
     flex-shrink: 0;
-    margin-top: $timeline--height;
+    margin-top: $timeline-label--height;
     padding-right: $Schedule--padding;
     box-shadow: box-shadow--large();
     font-size: 0.8rem;
@@ -56,7 +61,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
   }
 
   &__timeline {
-    height: $timeline--height;
+    height: $timeline-label--height;
     font-size: $font-size--md;
     opacity: 0.6;
     white-space: nowrap;
@@ -70,10 +75,10 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
     &::after {
       content: "";
       display: block;
-      height: $time-line--height;
-      border-left: #{$time-line--width} solid white;
+      height: $timeline-delimeter--height;
+      border-left: $timeline-delimeter--width solid white;
       margin-left: $half-hour-width;
-      margin-top: $time-line--margin-top;
+      margin-top: $timeline-delimeter--margin-top;
     }
   }
 
@@ -86,8 +91,8 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
 
   &__current-time-line {
     position: absolute;
-    width: $current-time-line--width;
-    height: $time-line--height;
+    width: $current-timeline-delimeter--width;
+    height: $timeline-delimeter--height;
     left: calc(#{$current-time--position} * 1px);
     background-color: $primary;
   }

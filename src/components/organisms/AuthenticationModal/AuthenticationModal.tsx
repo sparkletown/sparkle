@@ -80,8 +80,3 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default AuthenticationModal;

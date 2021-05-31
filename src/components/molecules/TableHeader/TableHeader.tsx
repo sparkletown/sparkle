@@ -4,9 +4,11 @@ import {
   faLock,
   faLockOpen,
   faChevronLeft,
+  faPen,
 } from "@fortawesome/free-solid-svg-icons";
-
 import firebase from "firebase/app";
+
+import { MAX_TABLE_CAPACITY } from "settings";
 
 import { User } from "types/User";
 import { Table } from "types/Table";
@@ -14,12 +16,18 @@ import { Table } from "types/Table";
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 
 import { experienceSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
+
+import { Toggler } from "components/atoms/Toggler";
+
+import { EditTableTitleModal } from "./components/EditTableTitleModal";
 
 import "./TableHeader.scss";
 
-interface TableHeaderProps {
+export interface TableHeaderProps {
   seatedAtTable: string;
   setSeatedAtTable: (val: string) => void;
   venueName: string;
@@ -34,24 +42,19 @@ const TableHeader: React.FC<TableHeaderProps> = ({
 }) => {
   const { user, profile } = useUser();
 
-  const experience = useSelector(experienceSelector);
+  const { tables: allTables } = useSelector(experienceSelector) ?? {};
   const { recentVenueUsers } = useRecentVenueUsers();
+  const { isShown, show, hide } = useShowHide();
 
-  const allTables = experience?.tables;
-
-  const tableOfUser = seatedAtTable
-    ? tables.find((table) => table.reference === seatedAtTable)
-    : undefined;
-
-  const usersAtCurrentTable = useMemo(
+  const tableOfUser = useMemo(
     () =>
-      seatedAtTable &&
-      recentVenueUsers.filter(
-        (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ),
-    [seatedAtTable, recentVenueUsers, venueName]
+      seatedAtTable
+        ? tables.find((table) => table.reference === seatedAtTable)
+        : undefined,
+    [seatedAtTable, tables]
   );
 
+  // @debt This should be removed after the functions using it, are extracted into the api layer.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const firestoreUpdate = async (doc: string, update: any) => {
     const firestore = firebase.firestore();
@@ -63,27 +66,21 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       });
   };
 
-  const isCurrentTableLocked = useMemo(() => {
-    // @debt Why does `locked` has Table type?
-    return !!allTables?.[seatedAtTable]?.locked;
-  }, [allTables, seatedAtTable]);
+  const isCurrentTableLocked = isTruthy(!!allTables?.[seatedAtTable]?.locked);
 
   const currentTableHasSeatedUsers = useMemo(
     () =>
-      recentVenueUsers.filter(
+      !!recentVenueUsers.find(
         (user: User) => user.data?.[venueName]?.table === seatedAtTable
-      ).length !== 0,
+      ),
     [venueName, recentVenueUsers, seatedAtTable]
   );
 
   const tableTitle = tableOfUser?.title ?? "Table";
-  const tableCapacity = tableOfUser?.capacity;
-  const numberOfSeatsLeft = useMemo(() => {
-    if (!tableCapacity || !usersAtCurrentTable) return 0;
+  const tableCapacity = tableOfUser?.capacity ?? MAX_TABLE_CAPACITY;
+  const tableSubtitle = tableOfUser?.subtitle;
 
-    return tableCapacity - usersAtCurrentTable.length;
-  }, [tableCapacity, usersAtCurrentTable]);
-
+  // @debt This should be extracted into the api layer
   const setIsCurrentTableLocked = useCallback(
     (locked: boolean) => {
       const doc = `experiences/${venueName}`;
@@ -112,6 +109,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
     setIsCurrentTableLocked,
   ]);
 
+  // @debt This should be extracted into the api layer
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
 
@@ -139,59 +137,63 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   }, [leaveSeat]);
 
   return (
-    // @debt move all style into TableHeader.scss
-    <div className="row no-margin at-table table-header">
-      <div className="header">
-        <div className="back-button-container">
-          <button
-            type="button"
-            title={"Leave " + seatedAtTable}
-            className="back-button"
-            id="leave-seat"
-            onClick={leaveSeat}
-          >
-            <FontAwesomeIcon
-              className="back-button-icon"
-              icon={faChevronLeft}
-              size="xs"
-            />
-            Leave table
-          </button>
-        </div>
-        <div className="table-title-container">
-          <div className="private-table-title">
-            {tableTitle}
-
-            {tableCapacity && (
-              <span className="private-table-seats-left">
-                {numberOfSeatsLeft} seats left
-              </span>
-            )}
-          </div>
-          {tableOfUser && tableOfUser.subtitle && (
-            <div className="private-table-subtitle">{tableOfUser.subtitle}</div>
-          )}
-        </div>
-        <div className="lock-button-container">
+    <div className="row TableHeader">
+      <div className="TableHeader__leave-table">
+        <button
+          type="button"
+          title={`Leave ${seatedAtTable}`}
+          className="TableHeader__leave-button"
+          onClick={leaveSeat}
+        >
           <FontAwesomeIcon
-            className="lock-table-icon"
-            icon={isCurrentTableLocked ? faLock : faLockOpen}
-            size="sm"
+            className="TableHeader__leave-button--icon"
+            icon={faChevronLeft}
+            size="xs"
           />
-          <div className="lock-table-checbox-indication">
-            {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
-          </div>
-          <label className="switch">
-            <input
-              type="checkbox"
-              className="switch-hidden-input"
-              checked={!!isCurrentTableLocked}
-              onChange={toggleIsCurrentTableLocked}
-            />
-            <span className="slider" />
-          </label>
-        </div>
+          Leave table
+        </button>
       </div>
+
+      <div className="TableHeader__topic-info">
+        <div className="row TableHeader__topic">
+          {tableTitle}
+
+          <div className="TableHeader__edit-topic-button" onClick={show}>
+            <FontAwesomeIcon icon={faPen} />
+          </div>
+        </div>
+
+        {tableCapacity && (
+          <span className="TableHeader__table-details">
+            {tableOfUser?.subtitle && `${tableOfUser.subtitle} - `}
+            {tableCapacity} seats
+          </span>
+        )}
+      </div>
+
+      <div className="TableHeader__lock-button">
+        <FontAwesomeIcon
+          className="TableHeader__lock-button--icon"
+          icon={isCurrentTableLocked ? faLock : faLockOpen}
+          size="sm"
+        />
+        <div className="TableHeader__lock-indication">
+          {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
+        </div>
+        <Toggler
+          containerClassName="TableHeader__lock-toggle"
+          defaultToggled={isCurrentTableLocked}
+          onToggle={toggleIsCurrentTableLocked}
+        />
+      </div>
+
+      <EditTableTitleModal
+        title={tableTitle}
+        subtitle={tableSubtitle}
+        capacity={tableCapacity}
+        onHide={hide}
+        {...{ isShown, tables, tableOfUser }}
+      />
     </div>
   );
 };

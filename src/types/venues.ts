@@ -30,6 +30,7 @@ export enum VenueTemplate {
   posterhall = "posterhall",
   posterpage = "posterpage",
   preplaya = "preplaya",
+  screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -316,11 +317,11 @@ export interface VenueEvent {
 
 export interface VenueLocation {
   venueId: string;
-  roomTitle: string;
-  venueTitle?: string;
+  roomTitle?: string;
+  venueName?: string;
 }
 
-export interface LocatedEvents {
+export interface LocationEvents {
   location: VenueLocation;
   events: PersonalizedVenueEvent[];
 }

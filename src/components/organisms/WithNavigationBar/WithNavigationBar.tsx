@@ -3,7 +3,7 @@ import React from "react";
 import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
-import NavBar from "components/molecules/NavBar";
+import { NavBar } from "components/molecules/NavBar";
 import { Footer } from "components/molecules/Footer";
 
 import "./WithNavigationBar.scss";
