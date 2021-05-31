@@ -1,9 +1,12 @@
 import React from "react";
+
+import { GIFT_TICKET_MODAL_URL } from "settings";
+
+import { externalUrlAdditionalProps } from "utils/url";
+
 import "./GiftTicketModal.scss";
 
-interface PropsType {}
-
-export const GiftTicketModal: React.FunctionComponent<PropsType> = () => {
+export const GiftTicketModal: React.FC = () => {
   return (
     <div className="gift_ticket-modal-container">
       <div className="gift_ticket-title">Gift a ticket</div>
@@ -11,12 +14,9 @@ export const GiftTicketModal: React.FunctionComponent<PropsType> = () => {
         Invite that awesome friend, make the Burn twice as good!
       </div>
       <a
-        href={
-          "https://www.eventbrite.com/e/sparkleverse-2020-online-burn-tickets-117154948605"
-        }
-        target={"_blank"}
-        rel={"noopener noreferrer"}
-        className={"btn button btn-primary"}
+        className="btn button btn-primary"
+        href={GIFT_TICKET_MODAL_URL}
+        {...externalUrlAdditionalProps}
       >
         Gift a ticket
       </a>

@@ -11,7 +11,8 @@ $header-height: 45px;
   top: $navbar-height;
   right: 0;
   bottom: $footer-height;
-  width: $sidebar-width;
+  width: $chat-sidebar-width;
+  // height: calc(100vh - 96px);
   background-color: $saturated-black;
   z-index: z(sidebar);
 
@@ -25,7 +26,7 @@ $header-height: 45px;
   &--pinned {
     position: relative;
     top: 0;
-    min-width: $sidebar-width;
+    min-width: $chat-sidebar-width;
   }
 
   &__header {
