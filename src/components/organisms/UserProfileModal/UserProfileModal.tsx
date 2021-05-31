@@ -12,7 +12,7 @@ import {
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
+import { enterVenue, venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
@@ -22,8 +22,11 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useRecentWorldUsers } from "hooks/users";
+import { useShowHide } from "hooks/useShowHide";
 
 import { Badges } from "components/organisms/Badges";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
@@ -38,6 +41,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const { user } = useUser();
 
   const { selectRecipientChat } = useChatSidebarControls();
+  const { recentWorldUsers } = useRecentWorldUsers();
+  const { isShown, show } = useShowHide();
 
   const {
     selectedUserProfile,
@@ -55,6 +60,22 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
+  const status = useMemo(() => {
+    const isOnline = recentWorldUsers.find(
+      (worldUser) => worldUser.id === chosenUserId
+    );
+    return isOnline ? "online" : "offline";
+  }, [chosenUserId, recentWorldUsers]);
+
+  const selectVenue = useMemo(() => {
+    return selectedUserProfile?.enteredVenueIds?.[0] || "";
+  }, [selectedUserProfile]);
+
+  const goToVenue = useCallback(() => {
+    show();
+    enterVenue(selectVenue);
+  }, [selectVenue, show]);
+
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
   }
@@ -62,65 +83,73 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   return (
     <Modal show={hasSelectedProfile} onHide={closeUserProfileModal}>
       <Modal.Body>
-        <div className="modal-container modal-container_profile">
-          <div className="profile-information-container">
-            <div className="profile-basics">
-              <div className="profile-pic">
-                {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
-                <img
-                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
-                  alt="profile"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).onerror = null;
-                    (e.target as HTMLImageElement).src =
-                      "/avatars/" +
-                      RANDOM_AVATARS[
-                        Math.floor(
-                          chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
-                        )
-                      ];
-                  }}
-                />
-              </div>
-              <div className="profile-text">
-                <h2 className="italic">
-                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
-                </h2>
-              </div>
-            </div>
-            <div className="profile-extras">
-              {venue?.profile_questions?.map((question) => (
-                <React.Fragment key="question.text">
-                  <p className="light question">{question.text}</p>
-                  <h6>
-                    {/*
-                    // @debt typing - need to support known User interface with unknown question keys
-                    // @ts-ignore */}
-                    {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      DEFAULT_EDIT_PROFILE_TEXT}
-                  </h6>
-                </React.Fragment>
-              ))}
-            </div>
-            {ENABLE_SUSPECTED_LOCATION && (
-              <div className="profile-location">
-                <p className="question">Suspected Location:</p>
-                <h6 className="location">
-                  <SuspectedLocation
-                    user={selectedUserProfile}
-                    currentVenue={venue}
+        {isShown ? (
+          <LoadingPage />
+        ) : (
+          <div className="modal-container modal-container_profile">
+            <div className="profile-information-container">
+              <div className="profile-basics">
+                <div className="profile-pic">
+                  {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
+                  <img
+                    src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
+                    alt="profile"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).onerror = null;
+                      (e.target as HTMLImageElement).src =
+                        "/avatars/" +
+                        RANDOM_AVATARS[
+                          Math.floor(
+                            chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
+                          )
+                        ];
+                    }}
                   />
-                </h6>
+                </div>
+                <div className="profile-text">
+                  <h2 className="italic">
+                    {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
+                  </h2>
+                  {`is ${status} in `}
+                  <span className="profile-text-venue-name" onClick={goToVenue}>
+                    {selectVenue}
+                  </span>
+                </div>
               </div>
+              <div className="profile-extras">
+                {venue?.profile_questions?.map((question) => (
+                  <React.Fragment key="question.text">
+                    <p className="light question">{question.text}</p>
+                    <h6>
+                      {/*
+                        @debt typing - need to support known User interface with unknown question keys
+                        @ts-ignore */}
+                      {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
+                        DEFAULT_EDIT_PROFILE_TEXT}
+                    </h6>
+                  </React.Fragment>
+                ))}
+              </div>
+              {ENABLE_SUSPECTED_LOCATION && (
+                <div className="profile-location">
+                  <p className="question">Suspected Location:</p>
+                  <h6 className="location">
+                    <SuspectedLocation
+                      user={selectedUserProfile}
+                      currentVenue={venue}
+                    />
+                  </h6>
+                </div>
+              )}
+            </div>
+            {venue?.showBadges && (
+              <Badges user={selectedUserProfile} currentVenue={venue} />
+            )}
+            {chosenUserId !== user.uid && (
+              <Button onClick={openChosenUserChat}>Send message</Button>
             )}
           </div>
-          {venue?.showBadges && (
-            <Badges user={selectedUserProfile} currentVenue={venue} />
-          )}
-          {chosenUserId !== user.uid && (
-            <Button onClick={openChosenUserChat}>Send message</Button>
-          )}
-        </div>
+        )}
       </Modal.Body>
     </Modal>
   );
