@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
+import { getSeconds } from "date-fns";
 
 import { REACTION_TIMEOUT } from "settings";
 
@@ -11,16 +12,13 @@ import {
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
-import { ONE_SECOND_IN_MILLISECONDS } from "utils/time";
 
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
 
 import "./UserReactions.scss";
 
-const REACTION_TIMEOUT_CSS = `${
-  REACTION_TIMEOUT / ONE_SECOND_IN_MILLISECONDS
-}s`;
+const REACTION_TIMEOUT_CSS = `${getSeconds(REACTION_TIMEOUT)}s`;
 
 export interface UserReactionsProps {
   userId: string;
