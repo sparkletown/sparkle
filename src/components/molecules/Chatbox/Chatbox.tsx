@@ -105,7 +105,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )}
         {activeOption === ChatOptionType.poll ? (
-          <PollBox createPoll={createPoll} />
+          <PollBox createPoll={createPoll} unselectOption={unselectOption} />
         ) : (
           <ChatMessageBox
             selectedThread={selectedThread}
