@@ -55,7 +55,7 @@ $page-max-width: 1240px;
   background-color: $dark;
   flex-direction: column;
   flex: 1;
-  padding-bottom: 30px;
+  padding-bottom: $spacing--xxl;
 
   .login-container {
     align-self: center;
