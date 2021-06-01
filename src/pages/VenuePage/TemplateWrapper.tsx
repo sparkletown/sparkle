@@ -6,6 +6,7 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 
 import { ReactionsProvider } from "hooks/reactions";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -19,6 +20,7 @@ import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
@@ -56,11 +58,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = <PartyMap />;
+      template = <PartyMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:
-      template = <ArtPiece />;
+      template = <ArtPiece venue={venue} />;
       break;
 
     case VenueTemplate.playa:
@@ -124,6 +126,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <PosterPage venue={venue} />;
       break;
 
+    case VenueTemplate.screeningroom:
+      template = <ScreeningRoom venue={venue} />;
+      break;
+
     case VenueTemplate.avatargrid:
       template = (
         <div>
@@ -137,16 +143,21 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
+  // @debt remove backButton from Navbar
   return (
-    // @debt remove backButton from Navbar
-    <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar fullscreen={fullscreen} hasBackButton={hasBackButton}>
-        <AnnouncementMessage message={venue.bannerMessage} />
-        {template}
-        <ChatSidebar />
-        <UserProfileModal />
-      </WithNavigationBar>
-    </ReactionsProvider>
+    <RelatedVenuesProvider venueId={venue.id}>
+      <ReactionsProvider venueId={venue.id}>
+        <WithNavigationBar
+          fullscreen={fullscreen}
+          hasBackButton={hasBackButton}
+        >
+          <AnnouncementMessage message={venue.bannerMessage} />
+          {template}
+          <ChatSidebar venue={venue} />
+          <UserProfileModal venue={venue} />
+        </WithNavigationBar>
+      </ReactionsProvider>
+    </RelatedVenuesProvider>
   );
 };
 

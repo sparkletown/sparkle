@@ -2,6 +2,8 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { WithVenueId } from "utils/id";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -28,6 +30,7 @@ export enum VenueTemplate {
   posterhall = "posterhall",
   posterpage = "posterpage",
   preplaya = "preplaya",
+  screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -44,6 +47,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
+  | VenueTemplate.themecamp
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
@@ -178,7 +182,7 @@ export interface GenericVenue extends BaseVenue {
 // @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
   id: string;
-  template: VenueTemplate.partymap;
+  template: VenueTemplate.partymap | VenueTemplate.themecamp;
 
   // @debt The following keys are marked as required on this type, but i'm not sure they should be:
   //   url, name (we seem to be using icon to hold the URL of the image)
@@ -309,6 +313,21 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+}
+
+export interface VenueLocation {
+  venueId: string;
+  roomTitle?: string;
+  venueName?: string;
+}
+
+export interface LocationEvents {
+  location: VenueLocation;
+  events: PersonalizedVenueEvent[];
+}
+
+export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+  isSaved: boolean;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

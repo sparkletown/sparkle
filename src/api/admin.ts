@@ -1,5 +1,7 @@
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
+import Bugsnag from "@bugsnag/js";
+
 import { Room } from "types/rooms";
 import {
   VenueEvent,
@@ -9,6 +11,7 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
+
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 
@@ -153,7 +156,7 @@ const randomPrefix = () => Math.random().toString();
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-const getVenueOwners = async (venueId: string): Promise<string[]> => {
+export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
     await firebase.firestore().collection("venues").doc(venueId).get()
   ).data()?.owners;
@@ -328,9 +331,22 @@ export const updateVenue = async (
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  await firebase.functions().httpsCallable("venue-updateVenue_v2")(
-    firestoreVenueInput
-  );
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateVenue_v2] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
 };
 
 const createFirestoreRoomInput = async (

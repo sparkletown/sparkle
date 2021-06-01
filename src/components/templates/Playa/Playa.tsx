@@ -54,7 +54,6 @@ import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
@@ -128,9 +127,13 @@ const isPlaced = (venue: AnyVenue) => {
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
 const Playa = () => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
+  const venues = useSelector(orderedVenuesSelector);
+
+  const venue = useSelector(currentVenueSelectorData);
+
   const [showModal, setShowModal] = useState(false);
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -307,6 +310,7 @@ const Playa = () => {
       );
     }, 1);
 
+    // @debt we should try to avoid using event.stopPropagation()
     const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -340,9 +344,6 @@ const Playa = () => {
       }
     };
   }, []);
-
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
 
   const showVenue = useCallback(
     (venue: WithId<AnyVenue>) => {
@@ -1050,15 +1051,6 @@ const Playa = () => {
             />
           )}
         </Modal>
-        <Modal
-          show={showEventSchedule}
-          onHide={() => setShowEventSchedule(false)}
-          dialogClassName="custom-dialog"
-        >
-          <Modal.Body>
-            <SchedulePageModal />
-          </Modal.Body>
-        </Modal>
       </>
     );
   }, [
@@ -1079,7 +1071,6 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    showEventSchedule,
     inVideoChat,
     videoChatHeight,
     mapContainer,

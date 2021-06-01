@@ -10,19 +10,21 @@ import { ReactHook } from "types/utility";
 import { isTruthyFilter } from "utils/filter";
 import { withId, WithId } from "utils/id";
 
-export interface ReactionsProviderProps {
-  venueId?: string;
-  withPastReactions?: boolean;
-}
-
 export type ReactionsById = Partial<Record<string, WithId<Reaction>>>;
 
-export interface ReactionsState {
+export interface ReactionsContextState {
   reactionsById: ReactionsById;
   reactions: Reaction[];
 }
 
-const ReactionsContext = createContext<ReactionsState | undefined>(undefined);
+const ReactionsContext = createContext<ReactionsContextState | undefined>(
+  undefined
+);
+
+export interface ReactionsProviderProps {
+  venueId?: string;
+  withPastReactions?: boolean;
+}
 
 export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
   venueId,
@@ -70,7 +72,7 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
     };
   }, [firebase, venueId, withPastReactions, setReaction, removeReaction]);
 
-  const reactionsState: ReactionsState = useMemo(
+  const reactionsState: ReactionsContextState = useMemo(
     () => ({
       reactionsById: reactionsMap,
       reactions: Object.values(reactionsMap).filter(isTruthyFilter),
@@ -85,7 +87,7 @@ export const ReactionsProvider: React.FC<ReactionsProviderProps> = ({
   );
 };
 
-export const useReactionsContext = (): ReactionsState => {
+export const useReactionsContext = (): ReactionsContextState => {
   const reactionsState = useContext(ReactionsContext);
 
   if (!reactionsState) {

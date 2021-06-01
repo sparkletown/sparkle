@@ -14,10 +14,12 @@ import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
 import { useVenueId } from "hooks/useVenueId";
 
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
@@ -29,7 +31,9 @@ const Admin_v2: React.FC = () => {
   const { user } = useUser();
   useAdminVenues(user?.uid);
 
+  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
   const venues = useSelector(orderedVenuesSelector);
+
   const venueId = useVenueId();
 
   const selectedVenue = useMemo(() => venues?.find((v) => v.id === venueId), [
