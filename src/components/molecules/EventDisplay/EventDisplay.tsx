@@ -9,15 +9,13 @@ import { WithId } from "utils/id";
 
 import { useRoom } from "hooks/useRoom";
 
-import "./EventDisplay.scss";
-
 export interface EventDisplayProps {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
 }
 
 /**
- * @dept the componnet is used in the OnlineStats and VenuePreview (Playa) which are to be removed as part of the Playa cleanup work.
+ * @dept the component is used in the OnlineStats and VenuePreview (Playa) which are to be removed as part of the Playa cleanup work.
  *
  * @see https://github.com/sparkletown/sparkle/pull/833
  *
@@ -38,6 +36,9 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
     event.start_utc_seconds + event.duration_minutes * 60 >
       getCurrentTimeInUTCSeconds();
 
+  // @debt there is no css rules defined for any of the following class names at the moment:
+  //  schedule-event-container, schedule-event-container--live, schedule-event-time, schedule-event-time-start, schedule-event-time-end,
+  //  schedule-event-time-live, schedule-event-info, schedule-event-info-title, schedule-event-info-description, schedule-event-info-room
   const containerClasses = classNames("schedule-event-container", {
     "schedule-event-container--live": isLiveEvent,
   });

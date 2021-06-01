@@ -20,7 +20,7 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
-  const [isVisible, setIsVisible] = useState(show ?? true);
+  const [isVisible, setIsVisible] = useState(true);
 
   const hide = useCallback(() => {
     setIsVisible(false);
@@ -38,8 +38,10 @@ export const ConfirmationModal: FC<ConfirmationModalProps> = ({
 
   const hasHeader = isTruthy(header);
 
+  const isShown = show !== undefined ? show : isVisible;
+
   return (
-    <Modal show={isVisible} onHide={hide}>
+    <Modal show={isShown} onHide={hide}>
       <Modal.Body>
         <div className="confirmation-modal">
           {hasHeader && <h2 className="confirm-header">{header}</h2>}
