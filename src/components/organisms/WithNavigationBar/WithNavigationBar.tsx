@@ -1,6 +1,5 @@
 import React from "react";
 
-import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { NavBar } from "components/molecules/NavBar";
@@ -9,20 +8,19 @@ import { Footer } from "components/molecules/Footer";
 import "./WithNavigationBar.scss";
 
 export interface WithNavigationBarProps {
+  venueId?: string;
   redirectionUrl?: string;
   fullscreen?: boolean;
   hasBackButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
+  venueId,
   redirectionUrl,
   fullscreen,
   hasBackButton,
   children,
 }) => {
-  // @debt remove useVenueId from here and just pass it through as a prop/similar
-  const venueId = useVenueId();
-
   // @debt remove backButton from Navbar
   return (
     <>

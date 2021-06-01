@@ -103,6 +103,15 @@ export const videoRoomInvitesSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.videoRoomInvites || [];
 
 /**
+ * Selector to retrieve the current video room from the Redux Firestore.
+ *
+ * @param state the Redux store
+ */
+export const currentVideoRoomSelector: SparkleSelector<
+  WithId<VideoChatRequest> | undefined
+> = (state) => state.firestore.ordered.currentVideoRoom?.[0];
+
+/**
  * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
  * @debt Refactor all places that rely on this, then remove it from the codebase
  */

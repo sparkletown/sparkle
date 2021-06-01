@@ -162,7 +162,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const isPasswordRequired = venue.access === VenueAccessMode.Password;
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar venueId={venueId}>
       <div className="container venue-entrance-experience-container">
         <div
           className="header"

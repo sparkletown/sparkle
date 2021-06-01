@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
-import { inviteToVideoChat } from "api/video";
+import { inviteToVideoChat } from "api/videoRoom";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -45,6 +45,7 @@ export const UserProfileModal: React.FC = () => {
     closeUserProfileModal,
   } = useProfileModalControls();
 
+  console.log(selectedUserProfile);
   const chosenUserId = selectedUserProfile?.id;
 
   const openChosenUserChat = useCallback(() => {

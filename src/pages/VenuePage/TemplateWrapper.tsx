@@ -148,13 +148,14 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     <RelatedVenuesProvider venueId={venue.id}>
       <ReactionsProvider venueId={venue.id}>
         <WithNavigationBar
+          venueId={venue.id}
           fullscreen={fullscreen}
           hasBackButton={hasBackButton}
         >
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
           <ChatSidebar venue={venue} />
-          <UserProfileModal venue={venue} />
+          <UserProfileModal />
           <VideoChatModal />
         </WithNavigationBar>
       </ReactionsProvider>

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 
-import { setVideoChatState } from "api/video";
+import { setVideoChatState } from "api/videoRoom";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import { useWorldUserById } from "hooks/users";

@@ -73,6 +73,7 @@ export interface FirestoreData {
   venueEvents?: Record<string, VenueEvent>;
   worldUsers?: Record<string, User>;
   videoRoomInvites?: Record<string, VideoChatRequest>;
+  currentVideoRoom?: VideoChatRequest;
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
@@ -110,6 +111,7 @@ export interface FirestoreOrdered {
   venueEvents?: WithId<VenueEvent>[];
   worldUsers?: WithId<User>[];
   videoRoomInvites?: WithId<VideoChatRequest>[];
+  currentVideoRoom?: WithId<VideoChatRequest>[];
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
