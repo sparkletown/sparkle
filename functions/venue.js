@@ -466,20 +466,26 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   }
 });
 
+// @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id || getVenueId(data.name);
   checkAuth(context);
 
+  // @debt updateVenue_v2 uses checkUserIsAdminOrOwner rather than checkUserIsOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   const updated = doc.data();
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
     if (!updated.config) {
       updated.config = {};
@@ -489,18 +495,24 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     }
   }
 
+  // @debt in updateVenue_v2 this is configured as:
+  //   updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl
+  //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -508,6 +520,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.theme.primaryColor = data.primaryColor;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.logoImageUrl) {
     if (!updated.host) {
       updated.host = {};
@@ -515,14 +528,19 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
+  // @debt this is duplicated further down in this same function
   if (data.profile_questions) {
     updated.profile_questions = data.profile_questions;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
+  //   I expect this may be legacy functionality related to the Playa template?
   if (
     !data.placement.state ||
     data.placement.state === PlacementState.SelfPlaced
@@ -535,74 +553,94 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.placementRequests = data.placementRequests;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
+  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
   if (data.bannerMessage) {
     updated.bannerMessage = data.bannerMessage;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.parentId) {
     updated.parentId = data.parentId;
   }
 
+  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showGrid is a boolean
   if (data.columns) {
     updated.columns = data.columns;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (typeof data.showLiveSchedule === "boolean") {
     updated.showLiveSchedule = data.showLiveSchedule;
   }
 
+  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.columns within this if as well
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (typeof data.showBadges === "boolean") {
     updated.showBadges = data.showBadges;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (typeof data.showZendesk === "boolean") {
     updated.showZendesk = data.showZendesk;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.attendeesTitle) {
     updated.attendeesTitle = data.attendeesTitle;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.chatTitle) {
     updated.chatTitle = data.chatTitle;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.auditoriumColumns) {
     updated.auditoriumColumns = data.auditoriumColumns;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
+  // @debt this is duplicated higher up in this same function
   if (data.profile_questions) {
     updated.profile_questions = data.profile_questions;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (data.code_of_conduct_questions) {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
+  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.radioStations within this if as well
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
   }
 
+  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showRadio is a boolean
   if (data.radioStations) {
     updated.radioStations = [data.radioStations];
   }
@@ -610,43 +648,60 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
     updated.zoomUrl = data.zoomUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   await admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+// @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
 exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
+  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
   await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
 
+  // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
+  // @debt this is exactly the same as in updateVenue
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
+  // @debt this is exactly the same as in updateVenue
   const updated = doc.data();
 
+  // @debt in updateVenue we're checking/creating the updated.config object here if needed.
+  //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?
+
+  // @debt in updateVenue this is configured as:
+  //   updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl
+  //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -654,6 +709,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.theme.primaryColor = data.primaryColor;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.logoImageUrl) {
     if (!updated.host) {
       updated.host = {};
@@ -661,31 +717,39 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.host.icon = data.logoImageUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.parentId) {
     updated.parentId = data.parentId;
   }
 
+  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
     updated.columns = data.columns;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (typeof data.showLiveSchedule === "boolean") {
     updated.showLiveSchedule = data.showLiveSchedule;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (typeof data.showBadges === "boolean") {
     updated.showBadges = data.showBadges;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (typeof data.showZendesk === "boolean") {
     updated.showZendesk = data.showZendesk;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
   }
@@ -694,43 +758,55 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
+  // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
+    // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
     updated.radioStations = [data.radioStations];
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.roomVisibility) {
     updated.roomVisibility = data.roomVisibility;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.profile_questions) {
     updated.profile_questions = data.profile_questions;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.code_of_conduct_questions) {
     updated.code_of_conduct_questions = data.code_of_conduct_questions;
   }
 
+  // @debt this is missing from updateVenue
   if (data.entrance) {
     updated.entrance = data.entrance;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.attendeesTitle) {
     updated.attendeesTitle = data.attendeesTitle;
   }
 
+  // @debt this is exactly the same as in updateVenue
   if (data.chatTitle) {
     updated.chatTitle = data.chatTitle;
   }
 
+  // @debt this is exactly the same as in updateVenue
+  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
   if (data.bannerMessage) {
     updated.bannerMessage = data.bannerMessage;
   }
 
+  // @debt this is exactly the same as in updateVenue
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
