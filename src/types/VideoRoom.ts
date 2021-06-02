@@ -5,15 +5,11 @@ export enum VideoChatRequestState {
   Expired = "Expired",
 }
 
-export interface InvitedUser {
-  id: string;
-  location: string;
-}
-
 export interface VideoChatRequest {
   hostUserId: string;
   hostUserLocation: string;
-  invitedUserIds: InvitedUser[];
+  invitedUserId: string;
+  invitedUserLocation: string;
   state: VideoChatRequestState;
   createdAt: number;
 }

@@ -180,6 +180,10 @@ export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = 
   "userPurchaseHistory"
 );
 
+export const isCurrentVideoRoomRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "currentVideoRoom"
+);
+
 export const venueChatMessagesSelector: SparkleSelector<
   WithId<VenueChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.venueChatMessages;

@@ -1,4 +1,8 @@
-import { currentVideoRoomSelector } from "utils/selectors";
+import {
+  currentVideoRoomSelector,
+  isCurrentVideoRoomRequestedSelector,
+} from "utils/selectors";
+
 import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 
@@ -12,6 +16,12 @@ export const useCurrentVideoRoom = (roomId: string) => {
   ]);
 
   const currentVideoRoom = useSelector(currentVideoRoomSelector);
+  const isLoadingCurrentVideoRoom = useSelector(
+    isCurrentVideoRoomRequestedSelector
+  );
 
-  return currentVideoRoom;
+  return {
+    videoRoom: currentVideoRoom,
+    isLoading: isLoadingCurrentVideoRoom,
+  };
 };

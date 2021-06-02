@@ -4,12 +4,15 @@ import { VideoChatRequest, VideoChatRequestState } from "types/VideoRoom";
 
 export const inviteToVideoChat = async (
   hostUserId: string,
-  guestId: string
+  hostUserLocation: string,
+  invitedUserId: string,
+  invitedUserLocation: string
 ) => {
   const videoRoomRequest: VideoChatRequest = {
     hostUserId: hostUserId,
-    hostUserLocation: "123",
-    invitedUserIds: [{ id: guestId, location: "asd" }],
+    hostUserLocation: hostUserLocation,
+    invitedUserId: invitedUserId,
+    invitedUserLocation: invitedUserLocation,
     state: VideoChatRequestState.Invited,
     createdAt: Date.now(),
   };

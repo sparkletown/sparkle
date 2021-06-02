@@ -16,12 +16,16 @@ export interface VenuePrivateRoomParams {
 export const VenuePrivateRoom: React.FC = () => {
   const { roomId } = useParams<VenuePrivateRoomParams>();
 
-  const room = useCurrentVideoRoom(roomId);
+  const { videoRoom, isLoading } = useCurrentVideoRoom(roomId);
 
-  console.log(room);
+  console.log(videoRoom, isLoading);
 
-  if (!room) {
+  if (isLoading) {
     return <LoadingPage />;
+  }
+
+  if (!videoRoom && !isLoading) {
+    return <div>failed</div>;
   }
 
   return (
