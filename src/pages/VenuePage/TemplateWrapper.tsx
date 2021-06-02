@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
+import { TemplatesWithoutBackButton } from "types/templates";
 
 import { WithId } from "utils/id";
 
@@ -28,6 +29,10 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { BackButton } from "components/molecules/BackButton/BackButton";
+import { enterVenue } from "utils/url";
+import { useSelector } from "hooks/useSelector";
+import { parentVenueSelector } from "utils/selectors";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -36,10 +41,9 @@ export interface TemplateWrapperProps {
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
   const match = useRouteMatch();
+  const parentVenue = useSelector(parentVenueSelector);
 
   let template;
-  // @debt remove backButton from Navbar
-  let hasBackButton = true;
   let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
@@ -49,7 +53,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route component={Jazzbar} />
         </Switch>
       );
-      hasBackButton = false;
       break;
 
     case VenueTemplate.friendship:
@@ -143,16 +146,25 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  // @debt remove backButton from Navbar
+  const parentVenueId = venue?.parentId ?? "";
+
+  const backToParentVenue = useCallback(() => {
+    enterVenue(parentVenueId, { customOpenRelativeUrl: history.push });
+  }, [history.push, parentVenueId]);
+
   return (
     <RelatedVenuesProvider venueId={venue.id}>
       <ReactionsProvider venueId={venue.id}>
-        <WithNavigationBar
-          fullscreen={fullscreen}
-          hasBackButton={hasBackButton}
-        >
+        <WithNavigationBar fullscreen={fullscreen}>
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
+          {!TemplatesWithoutBackButton.includes(venue.template) &&
+            parentVenue && (
+              <BackButton
+                onClick={backToParentVenue}
+                title={`Back ${parentVenue ? ` to ${parentVenue.name}` : ""}`}
+              />
+            )}
           <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>

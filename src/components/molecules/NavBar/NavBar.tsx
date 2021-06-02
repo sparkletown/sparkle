@@ -19,7 +19,7 @@ import {
 } from "utils/selectors";
 
 import { hasElements } from "utils/types";
-import { enterVenue, venueInsideUrl } from "utils/url";
+import { venueInsideUrl } from "utils/url";
 
 import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
@@ -74,13 +74,9 @@ const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
   redirectionUrl?: string;
-  hasBackButton?: boolean;
 }
 
-export const NavBar: React.FC<NavBarPropsType> = ({
-  redirectionUrl,
-  hasBackButton = true,
-}) => {
+export const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
@@ -101,7 +97,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const {
     location: { pathname },
-    push: openUrlUsingRouter,
+    // push: openUrlUsingRouter,
   } = useHistory();
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -155,11 +151,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
     setEventScheduleVisible(false);
   }, []);
-
-  const parentVenueId = venue?.parentId ?? "";
-  const backToParentVenue = useCallback(() => {
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     const venueLink =
@@ -323,16 +314,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
           />
         </div>
       </div>
-
-      {/* @debt Remove back button from Navbar */}
-      {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">
-            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-          </span>
-        </div>
-      )}
     </>
   );
 };
