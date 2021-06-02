@@ -10,6 +10,7 @@
   &__scene {
     display: flex;
     background-color: #191919;
+    width: calc(35 * 30px);
     border: solid 0;
     border-radius: 22px;
     flex-direction: column;
@@ -24,6 +25,7 @@
 
   &__buttons {
     display: flex;
+    align-items: center;
     width: 100%;
     justify-content: space-between;
     padding: $spacing--lg;

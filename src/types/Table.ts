@@ -20,4 +20,5 @@ export interface TableComponentPropsType {
   onJoinClicked: (table: string, locked: boolean, videoRoom: string) => void;
   nameOfVideoRoom: string;
   imageSize?: number;
+  emptySeatSize?: number;
 }

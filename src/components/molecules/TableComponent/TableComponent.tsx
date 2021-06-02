@@ -12,6 +12,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
   nameOfVideoRoom,
   experienceName,
   imageSize = 50,
+  emptySeatSize = 50,
   table,
   tableLocked,
 }) => {
@@ -29,8 +30,10 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
       <div
         className="table-item"
         style={{
-          height: `${table.rows && table.rows * 50 + 65}px`,
-          width: `${table.columns && (table.columns + 1) * 55}px`,
+          height: `${table.rows && table.rows * emptySeatSize + 65}px`,
+          width: `${
+            table.columns && (table.columns + 1) * (emptySeatSize + 5)
+          }px`,
         }}
       >
         <div className="table-occupancy-information red-text">
@@ -65,6 +68,7 @@ const TableComponent: React.FunctionComponent<TableComponentPropsType> = ({
               }
               id={`join-table-${venue?.name}-${table.reference}`}
               className="add-participant-button"
+              style={{ width: emptySeatSize, height: emptySeatSize }}
             >
               +
             </span>
