@@ -107,18 +107,23 @@ export const useRecentWorldUsers = (): {
 
 export const useRecentWorldUser = (
   userId: string
-): WithId<User> | undefined => {
+): {
+  user?: WithId<User>;
+  userLastSeenIn?: string;
+} => {
   const { recentWorldUsers } = useRecentWorldUsers();
 
   const user = useMemo(() => {
     return recentWorldUsers.find((worldUser) => worldUser.id === userId);
   }, [userId, recentWorldUsers]);
 
-  return user;
+  const userLastSeenIn = Object.keys(user?.lastSeenIn ?? {})[0];
+
+  return { user, userLastSeenIn };
 };
 
 export const useRecentUserStatus = (userId: string): RecentUserStatusType => {
-  const user = useRecentWorldUser(userId);
+  const { user } = useRecentWorldUser(userId);
 
   if (user?.status) return RecentUserStatusType.busy;
 

@@ -22,7 +22,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useRecentUserStatus } from "hooks/users";
+import { useRecentWorldUser, useRecentUserStatus } from "hooks/users";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
@@ -47,6 +47,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   } = useProfileModalControls();
 
   const chosenUserId = selectedUserProfile?.id ?? "";
+  const { userLastSeenIn: selectedUserLastSeenInVenueId } = useRecentWorldUser(
+    chosenUserId
+  );
   const status = useRecentUserStatus(chosenUserId);
 
   const openChosenUserChat = useCallback(() => {
@@ -57,13 +60,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  const selectVenue = useMemo(() => {
-    return selectedUserProfile?.enteredVenueIds?.[0] || "";
-  }, [selectedUserProfile]);
-
   const goToVenue = useCallback(() => {
-    enterVenue(selectVenue);
-  }, [selectVenue]);
+    if (selectedUserLastSeenInVenueId) {
+      enterVenue(selectedUserLastSeenInVenueId);
+    }
+  }, [selectedUserLastSeenInVenueId]);
 
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
@@ -98,7 +99,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </h2>
                 {`is ${status} in `}
                 <span className="profile-text__venueId" onClick={goToVenue}>
-                  {selectVenue}
+                  {selectedUserLastSeenInVenueId ?? ""}
                 </span>
               </div>
             </div>
