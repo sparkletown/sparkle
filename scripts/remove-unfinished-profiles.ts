@@ -12,9 +12,10 @@ import {
 } from "./lib/helpers";
 
 const usage = makeScriptUsage({
-  description: `Bulk remove of user accounts that exist in the auth but are not in the firestore users collection`,
-  usageParams: `CREDENTIAL_PATH`,
-  exampleParams: `fooAccountKey.json`,
+  description:
+    "Bulk remove of user accounts that exist in the auth but are not in the firestore users collection",
+  usageParams: "CREDENTIAL_PATH",
+  exampleParams: "fooAccountKey.json",
 });
 
 const [credentialPath] = process.argv.slice(2);
@@ -40,6 +41,8 @@ initFirebaseAdminApp(projectId, {
     : undefined,
 });
 
+const usersCollectionRef = admin.firestore().collection("users");
+
 // 1000 is the maximum number of users firestore can fetch. check .listUsers()'s documentation for more information.
 // It is also 1000 by default but I decided to set it explicitly to avoid confusion.
 const MAX_USERS = 1000;
@@ -54,7 +57,7 @@ const getAuthUsers = async (maxUsers: number, pageToken?: string) =>
   const { users: authUsers, pageToken } = await getAuthUsers(MAX_USERS);
   totalAuthUsers.push(...authUsers);
 
-  // @debt This is going to make another request with offset if there are the maximum users returned by the previous request. This should be using recursion.
+  // @debt This is going to make another request with offset if the maximum number of users have been returned by the previous request. This should be using recursion, because there might be more than 2k users.
   if (authUsers.length >= MAX_USERS) {
     console.log(
       `Auth users are more than ${MAX_USERS}. Fetching additional batch of firestore auth users...`
@@ -66,9 +69,7 @@ const getAuthUsers = async (maxUsers: number, pageToken?: string) =>
     totalAuthUsers.push(...additionalAuthUsers);
   }
 
-  const userDocIds: string[] = await admin
-    .firestore()
-    .collection("users")
+  const userDocIds: string[] = await usersCollectionRef
     .get()
     .then((result) => {
       console.log("Firestore users successfully fetched.");
@@ -82,36 +83,52 @@ const getAuthUsers = async (maxUsers: number, pageToken?: string) =>
       return [];
     });
 
-  const unregisteredUsers: string[] = [];
+  const unfinishedProfiles = totalAuthUsers
+    .filter((user) => !userDocIds.includes(user.uid))
+    .map((user) => user.uid);
 
-  totalAuthUsers.forEach((user) => {
-    if (!userDocIds.includes(user.uid)) {
-      unregisteredUsers.push(user.uid);
-    }
-  });
+  const numberOfUnfinishedProfiles = unfinishedProfiles.length;
 
-  const numberOfUnregisteredUsers = unregisteredUsers.length;
-
-  if (!numberOfUnregisteredUsers) {
-    console.error(
-      "There are no unregistered users in the database, end of script."
+  if (!numberOfUnfinishedProfiles) {
+    console.log(
+      "There are no unfinished profiles in the database, end of script."
     );
     return;
   }
 
-  console.error(`Deleting ${numberOfUnregisteredUsers} users...`);
+  const numberOfProfiles =
+    numberOfUnfinishedProfiles > MAX_USERS
+      ? MAX_USERS
+      : numberOfUnfinishedProfiles;
+
+  console.log(`Deleting ${numberOfProfiles} users...`);
 
   await admin
     .auth()
-    .deleteUsers(unregisteredUsers)
-    .then(() => {
-      console.error(
-        `${numberOfUnregisteredUsers} users have been successfuly deleted.`
+    .deleteUsers(unfinishedProfiles)
+    .then(async () => {
+      console.log(`${numberOfProfiles} users have been successfuly deleted.`);
+      const remainingUnfinishedProfiles = [...unfinishedProfiles].splice(
+        0,
+        MAX_USERS
       );
+      const numberOfRemainingUnfinishedProfiles =
+        remainingUnfinishedProfiles.length;
+      if (numberOfRemainingUnfinishedProfiles) {
+        console.log(`Deleting ${remainingUnfinishedProfiles} users...`);
+        await admin
+          .auth()
+          .deleteUsers(remainingUnfinishedProfiles)
+          .then(() => {
+            console.log(
+              `${remainingUnfinishedProfiles} users have been successfuly deleted.`
+            );
+          });
+      }
     })
     .catch((err) => {
       console.error(
-        "Failed when trying to delete the unregistered users, end of script.",
+        "Failed when trying to delete the unfinished profiles, end of script.",
         err
       );
     });
