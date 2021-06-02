@@ -111,7 +111,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                   </h2>
                   {`is ${status} in `}
-                  <span className="profile-text-venue-name" onClick={goToVenue}>
+                  <span className="profile-text__venueId" onClick={goToVenue}>
                     {selectVenue}
                   </span>
                 </div>
