@@ -1,7 +1,10 @@
 import { IAgoraRTCClient, IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useCallback, useEffect, useState } from "react";
 
-const useAgoraRemotes = (client: IAgoraRTCClient | undefined) => {
+const useAgoraRemotes = (
+  client: IAgoraRTCClient | undefined,
+  channel: { appId: string; channel: string; token: string }
+) => {
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
 
   const updateRemoteUsers = useCallback(() => {
@@ -27,7 +30,7 @@ const useAgoraRemotes = (client: IAgoraRTCClient | undefined) => {
     client.on("user-unpublished", updateRemoteUsers);
     client.on("user-joined", updateRemoteUsers);
     client.on("user-left", updateRemoteUsers);
-    client.join("bc9f5ed85b4f4218bff32c78a3ff88eb", "videotest", null);
+    client.join(channel.appId, channel.channel, channel.token);
 
     return () => {
       client.off("user-published", handleUserPublished);
@@ -36,7 +39,7 @@ const useAgoraRemotes = (client: IAgoraRTCClient | undefined) => {
       client.off("user-left", updateRemoteUsers);
       client.leave();
     };
-  }, [client, handleUserPublished, updateRemoteUsers]);
+  }, [client, handleUserPublished, updateRemoteUsers, channel]);
 
   return remoteUsers;
 };

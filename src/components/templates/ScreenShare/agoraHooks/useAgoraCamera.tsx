@@ -6,7 +6,8 @@ import AgoraRTC, {
 } from "agora-rtc-sdk-ng";
 
 export default function useAgoraCamera(
-  client: IAgoraRTCClient | undefined
+  client: IAgoraRTCClient | undefined,
+  channel: { appId: string; channel: string; token: string }
 ): {
   localCameraTrack: ILocalVideoTrack | undefined;
   toggleCamera: () => void;
@@ -14,6 +15,7 @@ export default function useAgoraCamera(
   isCameraOn: boolean;
   closeTracks: () => void;
   isMicrophoneOn: boolean;
+  onJoin: () => void;
 } {
   const [localCameraTrack, setLocalCameraTrack] = useState<
     ILocalVideoTrack | undefined
@@ -36,7 +38,7 @@ export default function useAgoraCamera(
 
   const onJoin = useCallback(async () => {
     if (!client) return;
-    await client.join("bc9f5ed85b4f4218bff32c78a3ff88eb", "videotest", null);
+    await client.join(channel.appId, channel.channel, channel.token);
 
     setIsCameraOn(true);
     setIsMicrophoneOn(true);
@@ -46,7 +48,7 @@ export default function useAgoraCamera(
     setLocalCameraTrack(cameraTrack);
     setLocalMicrophoneTrack(microphoneTrack);
     await client.publish([microphoneTrack, cameraTrack]);
-  }, [client]);
+  }, [client, channel]);
 
   const closeTracks = () => {
     if (!client) return;
@@ -81,5 +83,6 @@ export default function useAgoraCamera(
     isCameraOn,
     closeTracks,
     isMicrophoneOn,
+    onJoin,
   };
 }

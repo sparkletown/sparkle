@@ -6,7 +6,8 @@ import AgoraRTC, {
 } from "agora-rtc-sdk-ng";
 
 export default function useAgoraScreenShare(
-  client: IAgoraRTCClient | undefined
+  client: IAgoraRTCClient | undefined,
+  channel: { appId: string; channel: string; token: string }
 ): {
   localScreenTrack: ILocalVideoTrack | undefined;
   shareScreen: Function;
@@ -56,11 +57,11 @@ export default function useAgoraScreenShare(
 
   useEffect(() => {
     if (!client) return;
-    client.join("bc9f5ed85b4f4218bff32c78a3ff88eb", "videotest", null);
+    client.join(channel.appId, channel.channel, channel.token);
     return () => {
       client.leave();
     };
-  }, [client]);
+  }, [client, channel]);
 
   return {
     localScreenTrack,
