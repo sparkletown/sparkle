@@ -43,3 +43,9 @@ export enum UserStatus {
   available = "available",
   busy = "busy",
 }
+
+export enum RecentUserStatusType {
+  online = "online",
+  offline = "offline",
+  busy = "busy",
+}

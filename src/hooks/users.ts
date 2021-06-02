@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { User } from "types/User";
+import { User, RecentUserStatusType } from "types/User";
 
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
@@ -103,6 +103,26 @@ export const useRecentWorldUsers = (): {
     }),
     [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
   );
+};
+
+export const useRecentWorldUser = (
+  userId: string
+): WithId<User> | undefined => {
+  const { recentWorldUsers } = useRecentWorldUsers();
+
+  const user = useMemo(() => {
+    return recentWorldUsers.find((worldUser) => worldUser.id === userId);
+  }, [userId, recentWorldUsers]);
+
+  return user;
+};
+
+export const useRecentUserStatus = (userId: string): RecentUserStatusType => {
+  const user = useRecentWorldUser(userId);
+
+  if (user?.status) return RecentUserStatusType.busy;
+
+  return user ? RecentUserStatusType.online : RecentUserStatusType.offline;
 };
 
 /**

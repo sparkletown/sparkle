@@ -22,7 +22,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentUserStatus } from "hooks/users";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
@@ -39,7 +39,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   const { user } = useUser();
 
   const { selectRecipientChat } = useChatSidebarControls();
-  const { recentWorldUsers } = useRecentWorldUsers();
 
   const {
     selectedUserProfile,
@@ -47,7 +46,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const chosenUserId = selectedUserProfile?.id;
+  const chosenUserId = selectedUserProfile?.id ?? "";
+  const status = useRecentUserStatus(chosenUserId);
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
@@ -56,13 +56,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     // NOTE: Hide the modal, after the chat is opened;
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
-
-  const status = useMemo(() => {
-    const isOnline = recentWorldUsers.find(
-      (worldUser) => worldUser.id === chosenUserId
-    );
-    return isOnline ? "online" : "offline";
-  }, [chosenUserId, recentWorldUsers]);
 
   const selectVenue = useMemo(() => {
     return selectedUserProfile?.enteredVenueIds?.[0] || "";
