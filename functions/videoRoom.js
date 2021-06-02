@@ -14,6 +14,20 @@ exports.setVideoChatState = functions.https.onCall(async (data, context) => {
     .update({ state });
 });
 
+exports.acceptVideoRoomRequest = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { videoChatId, state, invitedUserLocation } = data;
+
+    return admin
+      .firestore()
+      .collection("videoRooms")
+      .doc(videoChatId)
+      .update({ state, invitedUserLocation });
+  }
+);
+
 exports.addVideoRoomRequest = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 

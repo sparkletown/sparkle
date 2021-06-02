@@ -1,10 +1,11 @@
 import React, { useCallback } from "react";
 import { useHistory } from "react-router";
 
-import { setVideoChatState } from "api/videoRoom";
+import { acceptVideoChat, setVideoChatState } from "api/videoRoom";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import { useWorldUserById } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
 
 import { hasElements } from "utils/types";
 
@@ -15,6 +16,7 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 export const VideoChatModal: React.FC = () => {
   const videoRoomRequests = useConnectVideoRooms();
   const history = useHistory();
+  const venueId = useVenueId();
 
   const hasVideoRoomRequests = hasElements(videoRoomRequests);
 
@@ -25,14 +27,11 @@ export const VideoChatModal: React.FC = () => {
   const host = useWorldUserById(currentVideoRoomRequest?.hostUserId);
 
   const acceptVideoRoomRequest = useCallback(() => {
-    if (!currentVideoRoomRequest) return;
+    if (!currentVideoRoomRequest || !venueId) return;
 
-    setVideoChatState(
-      currentVideoRoomRequest.id,
-      VideoChatRequestState.Accepted
-    );
+    acceptVideoChat(currentVideoRoomRequest.id, venueId);
     history.push(`/pr/${currentVideoRoomRequest.id}`);
-  }, [currentVideoRoomRequest, history]);
+  }, [currentVideoRoomRequest, history, venueId]);
 
   const declineVideoRoomRequest = useCallback(() => {
     if (!currentVideoRoomRequest) return;

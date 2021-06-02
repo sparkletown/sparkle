@@ -20,7 +20,6 @@ import { enterVenue, venueInsideUrl } from "utils/url";
 import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
@@ -70,16 +69,17 @@ const GiftPopover = (
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
+  venueId?: string;
   redirectionUrl?: string;
   hasBackButton?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
+  venueId,
   redirectionUrl,
   hasBackButton = true,
 }) => {
   const { user, userWithId } = useUser();
-  const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const venueParentId = venue?.parentId;
   const radioStations = useSelector(radioStationsSelector);

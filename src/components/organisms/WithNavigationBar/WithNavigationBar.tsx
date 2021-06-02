@@ -30,7 +30,11 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    works on the user side of things.
        */}
       <RelatedVenuesProvider venueId={venueId}>
-        <NavBar redirectionUrl={redirectionUrl} hasBackButton={hasBackButton} />
+        <NavBar
+          venueId={venueId}
+          redirectionUrl={redirectionUrl}
+          hasBackButton={hasBackButton}
+        />
       </RelatedVenuesProvider>
 
       <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>

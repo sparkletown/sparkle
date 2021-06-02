@@ -47,6 +47,7 @@ export const UserProfileModal: React.FC = () => {
 
   console.log(selectedUserProfile);
   const chosenUserId = selectedUserProfile?.id;
+  console.log(selectedUserProfile);
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
@@ -59,7 +60,7 @@ export const UserProfileModal: React.FC = () => {
   const startVideoChat = useCallback(async () => {
     if (!user?.uid || !chosenUserId || !venueId) return;
 
-    const response = await inviteToVideoChat(user.uid, chosenUserId);
+    const response = await inviteToVideoChat(user.uid, venueId, chosenUserId);
 
     const roomId = response.data;
 

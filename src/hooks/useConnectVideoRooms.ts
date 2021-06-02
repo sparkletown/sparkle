@@ -13,7 +13,7 @@ export const useConnectVideoRooms = () => {
     {
       collection: "videoRooms",
       where: [
-        ["invitedUserIds", "array-contains", user?.uid],
+        ["invitedUserId", "==", user?.uid],
         ["state", "==", VideoChatRequestState.Invited],
       ],
       storeAs: "videoRoomInvites",

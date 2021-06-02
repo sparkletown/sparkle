@@ -2,10 +2,10 @@ import React from "react";
 import { useParams } from "react-router";
 
 import { useCurrentVideoRoom } from "hooks/useCurrentVideoRoom";
+import { useUser } from "hooks/useUser";
 
 import Room from "components/organisms/Room";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./VenuePrivateRoom.scss";
 
@@ -14,22 +14,22 @@ export interface VenuePrivateRoomParams {
 }
 
 export const VenuePrivateRoom: React.FC = () => {
+  const { user } = useUser();
   const { roomId } = useParams<VenuePrivateRoomParams>();
 
-  const { videoRoom, isLoading } = useCurrentVideoRoom(roomId);
+  const { videoRoom } = useCurrentVideoRoom(roomId);
 
-  console.log(videoRoom, isLoading);
-
-  if (isLoading) {
-    return <LoadingPage />;
+  if (!videoRoom) {
+    return null;
   }
 
-  if (!videoRoom && !isLoading) {
-    return <div>failed</div>;
-  }
+  const venueId =
+    user?.uid === videoRoom.hostUserId
+      ? videoRoom.hostUserLocation
+      : videoRoom.invitedUserLocation;
 
   return (
-    <WithNavigationBar venueId={"denismusic"}>
+    <WithNavigationBar venueId={venueId}>
       <Room roomName={roomId} />
     </WithNavigationBar>
   );

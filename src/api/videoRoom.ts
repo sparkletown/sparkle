@@ -5,14 +5,13 @@ import { VideoChatRequest, VideoChatRequestState } from "types/VideoRoom";
 export const inviteToVideoChat = async (
   hostUserId: string,
   hostUserLocation: string,
-  invitedUserId: string,
-  invitedUserLocation: string
+  invitedUserId: string
 ) => {
   const videoRoomRequest: VideoChatRequest = {
     hostUserId: hostUserId,
     hostUserLocation: hostUserLocation,
     invitedUserId: invitedUserId,
-    invitedUserLocation: invitedUserLocation,
+    invitedUserLocation: "",
     state: VideoChatRequestState.Invited,
     createdAt: Date.now(),
   };
@@ -33,5 +32,18 @@ export const setVideoChatState = async (
     .httpsCallable("videoRoom-setVideoChatState")({
     videoChatId,
     state,
+  });
+};
+
+export const acceptVideoChat = async (
+  videoChatId: string,
+  invitedUserLocation: string
+) => {
+  return await firebase
+    .functions()
+    .httpsCallable("videoRoom-acceptVideoRoomRequest")({
+    state: VideoChatRequestState.Accepted,
+    videoChatId,
+    invitedUserLocation,
   });
 };
