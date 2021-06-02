@@ -21,13 +21,19 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-  }
 
-  &__buttons {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-    padding: $spacing--lg;
+    &--buttons {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      padding: $spacing--lg;
+
+      &--join-stage {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
   }
 }

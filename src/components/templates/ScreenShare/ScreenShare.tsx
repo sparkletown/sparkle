@@ -24,9 +24,15 @@ const cameraClient: IAgoraRTCClient = AgoraRTC.createClient({
   mode: "rtc",
 });
 
+const AGORA_CHANNEL = {
+  appId: "bc9f5ed85b4f4218bff32c78a3ff88eb",
+  channel: "videotest",
+  token: "",
+};
+
 export const ScreenShare = () => {
   const [openLeaveStageModal, setOpenLeaveStageModal] = useState(false);
-  const remoteUsers = useAgoraRemotes(remotesClient);
+  const remoteUsers = useAgoraRemotes(remotesClient, AGORA_CHANNEL);
 
   const {
     localCameraTrack,
@@ -35,10 +41,12 @@ export const ScreenShare = () => {
     isCameraOn,
     isMicrophoneOn,
     closeTracks,
-  } = useAgoraCamera(cameraClient);
+    onJoin: cameraClientJoin,
+  } = useAgoraCamera(cameraClient, AGORA_CHANNEL);
 
   const { localScreenTrack, shareScreen, stopShare } = useAgoraScreenShare(
-    screenClient
+    screenClient,
+    AGORA_CHANNEL
   );
 
   return (
@@ -79,28 +87,49 @@ export const ScreenShare = () => {
           )}
         </div>
 
-        <div className="ScreenShare__buttons">
-          <Button
-            onClick={() => {
-              localScreenTrack ? stopShare() : shareScreen();
-            }}
-            rightLabel={localScreenTrack && "You are screensharing"}
-            variant="secondary"
-            small
-          >
-            {localScreenTrack ? "Stop Sharing" : "Share Screen"}
-          </Button>
+        <div className="ScreenShare__scene--buttons">
+          {cameraClient.connectionState === "CONNECTED" ? (
+            <>
+              <Button
+                onClick={() => {
+                  localScreenTrack ? stopShare() : shareScreen();
+                }}
+                rightLabel={localScreenTrack && "You are screensharing"}
+                variant="secondary"
+                small
+              >
+                {localScreenTrack ? "Stop Sharing" : "Share Screen"}
+              </Button>
 
-          <Button
-            onClick={() => {
-              setOpenLeaveStageModal(true);
-            }}
-            leftLabel="You are on stage"
-            variant="secondary"
-            small
-          >
-            Leave stage
-          </Button>
+              <Button
+                onClick={() => {
+                  setOpenLeaveStageModal(true);
+                }}
+                leftLabel="You are on stage"
+                variant="secondary"
+                small
+              >
+                Leave Stage
+              </Button>
+            </>
+          ) : (
+            <div className="ScreenShare__scene--buttons--join-stage">
+              <Button
+                onClick={() => {
+                  cameraClientJoin();
+                  screenClient.join(
+                    AGORA_CHANNEL.appId,
+                    AGORA_CHANNEL.channel,
+                    AGORA_CHANNEL.token
+                  );
+                }}
+                variant="secondary"
+                small
+              >
+                Join Stage
+              </Button>
+            </div>
+          )}
         </div>
       </div>
       <Audience />
@@ -113,6 +142,8 @@ export const ScreenShare = () => {
           // host -> audience
           closeTracks();
           stopShare();
+          cameraClient.leave();
+          screenClient.leave();
         }}
       />
     </div>
