@@ -133,9 +133,11 @@ export const isTextReaction = (r: unknown): r is TextReaction => {
 export const isReaction = (r: unknown): r is Reaction =>
   isEmojiReaction(r) || isTextReaction(r);
 
-export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
-  created_at: chat.ts_utc.toMillis() / 1000,
-  created_by: chat.from,
+export const chatMessageAsTextReaction = (
+  message: ChatMessage
+): TextReaction => ({
+  created_at: message.ts_utc.toMillis() / 1000,
+  created_by: message.from,
   reaction: TextReactionType,
-  text: chat.text,
+  text: message.text,
 });

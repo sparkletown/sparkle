@@ -574,6 +574,8 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+
 export const DEFAULT_AVATARS = [
   "/avatars/default-profile-pic-1.png",
   "/avatars/default-profile-pic-2.png",
@@ -585,6 +587,9 @@ export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+// Max questions number for Poll inside Chat
+export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 

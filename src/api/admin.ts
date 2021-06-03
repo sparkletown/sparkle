@@ -156,7 +156,7 @@ const randomPrefix = () => Math.random().toString();
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-const getVenueOwners = async (venueId: string): Promise<string[]> => {
+export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
     await firebase.firestore().collection("venues").doc(venueId).get()
   ).data()?.owners;

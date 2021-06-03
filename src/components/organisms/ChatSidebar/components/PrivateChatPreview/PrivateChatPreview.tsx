@@ -10,13 +10,11 @@ import "./PrivateChatPreview.scss";
 
 export interface PrivateChatPreviewProps {
   message: PreviewChatMessageToDisplay;
-  isOnline: boolean;
   onClick?: () => void;
 }
 
 export const PrivateChatPreview: React.FC<PrivateChatPreviewProps> = ({
   message,
-  isOnline,
   onClick,
 }) => {
   const { isRead, isMine, counterPartyUser, text, ts_utc } = message;
