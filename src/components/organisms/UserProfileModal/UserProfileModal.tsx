@@ -99,7 +99,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 </h2>
                 {`is ${status} in `}
                 <span
-                  className="profile-text__venueId"
+                  className="profile-text__recent-venue"
                   onClick={enterRecentUserVenue}
                 >
                   {selectedUserLastSeenInVenueId}
