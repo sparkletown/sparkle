@@ -60,7 +60,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  const goToVenue = useCallback(() => {
+  const enterRecentUserVenue = useCallback(() => {
     if (selectedUserLastSeenInVenueId) {
       enterVenue(selectedUserLastSeenInVenueId);
     }
@@ -98,7 +98,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
                 {`is ${status} in `}
-                <span className="profile-text__venueId" onClick={goToVenue}>
+                <span
+                  className="profile-text__venueId"
+                  onClick={enterRecentUserVenue}
+                >
                   {selectedUserLastSeenInVenueId ?? ""}
                 </span>
               </div>
