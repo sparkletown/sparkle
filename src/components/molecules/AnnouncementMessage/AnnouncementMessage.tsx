@@ -37,7 +37,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         centered: !isExpanded,
       })}
     >
-      <div className="announcement-message"><RenderMarkdown text={message} /></div>
+      <div className="announcement-message">
+        <RenderMarkdown text={message} />
+      </div>
       <span className="close-button" onClick={hideAnnouncement}>
         <FontAwesomeIcon icon={faTimesCircle} />
       </span>

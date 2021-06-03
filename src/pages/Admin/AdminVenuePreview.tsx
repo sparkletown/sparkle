@@ -128,7 +128,9 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               Long description:
             </span>
             <span className="content">
-              <RenderMarkdown text={venue.config?.landingPageConfig.description} />
+              <RenderMarkdown
+                text={venue.config?.landingPageConfig.description}
+              />
             </span>
           </div>
         </div>

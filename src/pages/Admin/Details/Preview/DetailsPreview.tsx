@@ -30,7 +30,9 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   );
 
   const renderDescription = () => (
-    <S.Description><RenderMarkdown text={description} /></S.Description>
+    <S.Description>
+      <RenderMarkdown text={description} />
+    </S.Description>
   );
 
   return (

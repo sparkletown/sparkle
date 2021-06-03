@@ -224,7 +224,9 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
-          <S.Description><RenderMarkdown text={description} /></S.Description>
+          <S.Description>
+            <RenderMarkdown text={description} />
+          </S.Description>
         </S.TitleWrapper>
 
         <FontAwesomeIcon

@@ -56,7 +56,9 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <p>Name: {event?.name}</p>
-            <p>Description: <RenderMarkdown text={event?.description} /></p>
+            <p>
+              Description: <RenderMarkdown text={event?.description} />
+            </p>
             <p>
               Time:{" "}
               {event
