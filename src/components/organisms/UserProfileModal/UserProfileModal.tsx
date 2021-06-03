@@ -102,7 +102,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   className="profile-text__venueId"
                   onClick={enterRecentUserVenue}
                 >
-                  {selectedUserLastSeenInVenueId ?? ""}
+                  {selectedUserLastSeenInVenueId}
                 </span>
               </div>
             </div>
