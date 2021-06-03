@@ -134,7 +134,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
       {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
-          <Picker onSelect={addEmoji} />
+          <Picker theme={"dark"} onSelect={addEmoji} />
         </div>
       )}
     </>
