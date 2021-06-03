@@ -109,7 +109,7 @@ First, you need to install the CLI. For Homebrew, use
 brew install stripe/stripe-cli/stripe
 ```
 
-and for other environments, follow the instructions at [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
+Otherwise, follow the installation instructions at https://stripe.com/docs/stripe-cli#install
 
 Make sure that you have a Stripe account setup and know the login credentials, then run the following commands (replacing `TODO-PROJECTID` with your actual Firebase project ID:
 
