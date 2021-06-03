@@ -117,7 +117,7 @@ Make sure that you have a Stripe account setup and know the login credentials, t
 
 ```bash
 stripe login
-stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/payment-webhooks
+stripe listen --forward-to http://localhost:5001/TODO-PROJECTID/us-central1/payment-webhooks
 ```
 
 You should see
