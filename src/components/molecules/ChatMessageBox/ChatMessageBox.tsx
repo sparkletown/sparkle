@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 import { CustomEmoji, Picker } from "emoji-mart";
 
@@ -88,7 +88,6 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
       const message = getValues("message");
       setValue("message", message + emoji.colons);
     }
-
     hideEmojiPicker();
   };
 
@@ -113,12 +112,17 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           placeholder={`Write your ${placeholderValue}...`}
           autoComplete="off"
         />
-        <span
-          className="Chatbox__emoji-picker-toggler"
+        <button
+          className="Chatbox__submit-button"
+          type="button"
           onClick={toggleEmojiPicker}
         >
-          😃
-        </span>
+          <FontAwesomeIcon
+            icon={faSmile}
+            className="Chatbox__submit-button-icon"
+            size="lg"
+          />
+        </button>
         <button
           className={buttonClasses}
           type="submit"

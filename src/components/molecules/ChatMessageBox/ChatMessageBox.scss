@@ -13,7 +13,6 @@
 
   &__input {
     width: 100%;
-    padding-right: 10px;
   }
 
   &__submit-button {
@@ -36,10 +35,6 @@
 
   &__submit-button-icon {
     color: $white;
-  }
-
-  &__emoji-picker-toggler {
-    cursor: pointer;
   }
 
   &__emoji-picker {
