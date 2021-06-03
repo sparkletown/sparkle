@@ -18,12 +18,12 @@ $weekday--margin-right: 10px;
   padding-top: $navbar-height;
   padding-left: $NavBarSchedule--padding;
 
-  background-color: rgba($black, 0.9);
+  background-color: opaque-black(0.9);
   overflow: auto;
 
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-#{$NavBarSchedule--height});
+  transform: translateY(-$NavBarSchedule--height);
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
@@ -31,7 +31,7 @@ $weekday--margin-right: 10px;
   &--show {
     pointer-events: all;
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0);
   }
 
   &__weekdays {
@@ -63,8 +63,8 @@ $weekday--margin-right: 10px;
     &--active {
       opacity: 1;
       background-color: $primary;
-      text-shadow: 0 2px 4px rgba($black, 0.3);
-      box-shadow: 0 3px 6px rgba($black, 0.2);
+      text-shadow: 0 2px 4px opaque-black(0.3);
+      box-shadow: 0 3px 6px opaque-black(0.2);
     }
 
     &:hover {

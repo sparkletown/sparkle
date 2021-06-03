@@ -1,41 +1,37 @@
-import React, {
-  useState,
-  useMemo,
-  FC,
-  MouseEventHandler,
-  useCallback,
-} from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import {
   addDays,
   format,
-  getUnixTime,
   fromUnixTime,
   startOfToday,
   startOfDay,
   isToday,
 } from "date-fns";
-import { groupBy, range } from "lodash";
+import { groupBy } from "lodash";
 import classNames from "classnames";
 
 import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
-import { isEventWithinDate } from "utils/event";
-import { WithVenueId } from "utils/id";
-
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
-import { useVenueEvents } from "hooks/events";
-
 import { Button } from "components/atoms/Button";
 
 import {
   PersonalizedVenueEvent,
   VenueLocation,
-  LocatedEvents,
+  LocationEvents,
   VenueEvent,
 } from "types/venues";
+
+import {
+  isEventWithinDate,
+  isEventWithinDateAndNotFinished,
+} from "utils/event";
+import { WithVenueId } from "utils/id";
+import { range } from "utils/range";
+
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useUser } from "hooks/useUser";
+import { useVenueEvents } from "hooks/events";
 
 import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
@@ -48,23 +44,25 @@ import {
 
 import "./NavBarSchedule.scss";
 
-interface NavBarScheduleProps {
-  isVisible?: boolean;
-}
-
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
 export interface ScheduleDay {
   isToday: boolean;
-  dayStartUtcSeconds: number;
-  locatedEvents: LocatedEvents[];
+  scheduleDate: Date;
+  locatedEvents: LocationEvents[];
   personalEvents: PersonalizedVenueEvent[];
 }
 
 export const emptyPersonalizedSchedule = {};
+export interface NavBarScheduleProps {
+  isVisible?: boolean;
+  venueId: string;
+}
 
-export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
-  const venueId = useVenueId();
+export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
+  isVisible,
+  venueId,
+}) => {
   const { userWithId } = useUser();
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
@@ -108,21 +106,19 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       }
     };
 
-    return range(0, SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
+    return range(SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
       const day = addDays(firstDayOfSchedule, dayIndex);
       const classes = classNames("NavBarSchedule__weekday", {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
-      const onWeekdayClick: MouseEventHandler<HTMLLIElement> = () => {
-        setSelectedDayIndex(dayIndex);
-      };
-
       return (
         <li
           key={day.toISOString()}
           className={classes}
-          onClick={onWeekdayClick}
+          onClick={() => {
+            setSelectedDayIndex(dayIndex);
+          }}
         >
           {formatDayLabel(day)}
         </li>
@@ -132,10 +128,10 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
 
   const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
-      const [venueId, roomTitle = ""] = extractLocation(locString);
-      const venueTitle = relatedVenues.find((venue) => venue.id === venueId)
+      const [venueId, roomTitle] = extractLocation(locString);
+      const venueName = relatedVenues.find((venue) => venue.id === venueId)
         ?.name;
-      return { venueId, roomTitle, venueTitle };
+      return { venueId, venueName, roomTitle: roomTitle || undefined };
     },
     [relatedVenues]
   );
@@ -144,9 +140,9 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
     const daysEvents = relatedVenueEvents
       .filter(
-        isEventWithinDate(
-          selectedDayIndex === 0 ? Date.now() : startOfSelectedDay
-        )
+        isScheduleTimeshifted
+          ? isEventWithinDate(startOfSelectedDay)
+          : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
       .map(
         prepareForSchedule({
@@ -155,7 +151,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
         })
       );
 
-    const locatedEvents: LocatedEvents[] = Object.entries(
+    const locatedEvents: LocationEvents[] = Object.entries(
       groupBy(daysEvents, buildLocationString)
     ).map(([group, events]) => ({
       events,
@@ -165,7 +161,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     return {
       locatedEvents,
       isToday: selectedDayIndex === 0,
-      dayStartUtcSeconds: getUnixTime(startOfSelectedDay),
+      scheduleDate: startOfSelectedDay,
       personalEvents: daysEvents.filter((event) => event.isSaved),
     };
   }, [
@@ -174,6 +170,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
     selectedDayIndex,
     getEventLocation,
     firstDayOfSchedule,
+    isScheduleTimeshifted,
   ]);
 
   const downloadPersonalEventsCalendar = useCallback(() => {
@@ -218,13 +215,7 @@ export const NavBarSchedule: FC<NavBarScheduleProps> = ({ isVisible }) => {
       </div>
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <Schedule
-        isLoading={isLoadingSchedule}
-        locatedEvents={schedule.locatedEvents}
-        personalEvents={schedule.personalEvents}
-        isToday={schedule.isToday}
-        scheduleDate={fromUnixTime(schedule.dayStartUtcSeconds)}
-      />
+      <Schedule isLoading={isLoadingSchedule} {...schedule} />
     </div>
   );
 };

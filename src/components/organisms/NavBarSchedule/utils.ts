@@ -12,7 +12,7 @@ import { MyPersonalizedSchedule } from "types/User";
 
 import { WithVenueId } from "utils/id";
 import { eventEndTime, eventStartTime } from "utils/event";
-import { isTruthy } from "utils/types";
+import { arrayIncludes } from "utils/types";
 
 export interface PrepareForScheduleProps {
   day: Date;
@@ -39,9 +39,7 @@ export const prepareForSchedule = ({
     ...event,
     start_utc_seconds: getUnixTime(startOfEventToShow),
     duration_minutes: differenceInMinutes(endOfEventToShow, startOfEventToShow),
-    isSaved: isTruthy(
-      event.id && usersEvents[event.venueId]?.includes(event.id)
-    ),
+    isSaved: arrayIncludes(usersEvents[event.venueId], event.id),
   };
 };
 

@@ -1,9 +1,11 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { enterVenue } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
@@ -11,12 +13,10 @@ import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
-  enterVenue: (venueId: string) => void;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
-  enterVenue,
 }) => {
   const { title, authorName, categories } = posterVenue.poster ?? {};
 
@@ -26,10 +26,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
-  const handleEnterVenue = useCallback(() => enterVenue(venueId), [
-    enterVenue,
-    venueId,
-  ]);
+  const { push: openUrlUsingRouter } = useHistory();
+  const handleEnterVenue = useCallback(
+    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
+    [venueId, openUrlUsingRouter]
+  );
 
   const renderedCategories = useMemo(
     () =>

@@ -3,8 +3,10 @@ import "firebase/storage";
 
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 
 import "./Account.scss";
 
