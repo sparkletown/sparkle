@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
-import { CustomEmoji, Picker } from "emoji-mart";
+import { BaseEmoji, Picker } from "emoji-mart";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -83,10 +83,10 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     toggle: toggleEmojiPicker,
   } = useShowHide();
 
-  const addEmoji = (emoji: CustomEmoji) => {
-    if (emoji.colons) {
+  const addEmoji = (emoji: BaseEmoji) => {
+    if (emoji.native) {
       const message = getValues("message");
-      setValue("message", message + emoji.colons);
+      setValue("message", message + emoji.native);
     }
     hideEmojiPicker();
   };
@@ -138,7 +138,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
       {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
-          <Picker theme={"dark"} onSelect={addEmoji} />
+          <Picker theme={"dark"} onSelect={addEmoji} native={true} />
         </div>
       )}
     </>
