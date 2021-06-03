@@ -46,7 +46,7 @@ Now you're ready to start the server! ✨
 npm start
 ```
 
-Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). Browser autorun can be opted out by adding a line to `.env.local`:
+Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). You can opt out of this by adding the following line to your `.env.local`:
 
 ```bash
 BROWSER=none
