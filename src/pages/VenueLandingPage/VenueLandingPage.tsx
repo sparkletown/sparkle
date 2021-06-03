@@ -26,7 +26,6 @@ import {
 } from "utils/selectors";
 import { hasEventFinished } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -41,6 +40,7 @@ import {
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
