@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User } from "types/User";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentUserStatus } from "hooks/users";
 
 import { WithId } from "utils/id";
 
@@ -28,8 +28,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   large,
 }) => {
-  const { recentWorldUsers } = useRecentWorldUsers();
-
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
     : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
@@ -43,18 +41,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar--large": large,
   });
 
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
-
-  const status = user?.status;
+  const status = useRecentUserStatus(user?.id);
 
   const imageClasses = classNames("user-avatar__image", imageClassName);
 
   const statusIndicatorClasses = classNames("user-avatar__status-indicator", {
-    "user-avatar__status-indicator--online": isOnline,
-    [`user-avatar__status-indicator--${status}`]: isOnline && status,
+    [`user-avatar__status-indicator--${status}`]: status,
     "user-avatar__status-indicator--large": large,
   });
 
