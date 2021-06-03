@@ -1,51 +1,49 @@
 @import "scss/constants.scss";
 
-.badges-component {
-  .visits {
-    display: flex;
-    background-color: $dark;
-    border-radius: 22px;
-    padding: 15px;
-    justify-content: space-evenly;
-
-    .visit-separator {
-      border: 1px solid $concrete;
-      border-radius: 22px;
-    }
-
-    .visit-item {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .visit-item__value {
-        font-weight: 900;
-        font-size: 1.3em;
-      }
-
-      .visit-item__label {
-        color: $concrete;
-      }
-    }
+.Badges {
+  &__container {
+    padding: $spacing--lg 0;
   }
 
-  .badges-container {
-    padding: 15px;
+  &__title {
+    color: $concrete;
+    font-size: $font-size--md;
+    margin-bottom: $spacing--md;
+  }
 
-    .badges-title {
-      color: $concrete;
-    }
+  &__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+  }
 
-    .badge-list {
-      display: flex;
-      flex-wrap: wrap;
-      list-style: none;
-    }
+  &__item-image {
+    width: 30px;
+    height: 30px;
+    border-radius: $border-radius--max;
+    margin: 3px 3px 0 0;
+  }
+}
 
-    .badge-list-item-image {
-      width: 40px;
-      height: 40px;
-      border-radius: 22px;
-    }
+.visits {
+  display: flex;
+  background-color: $dark;
+  border-radius: 22px;
+  padding: 15px;
+  justify-content: space-evenly;
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  &__item-value {
+    font-weight: 900;
+    font-size: $spacing--lg;
+  }
+
+  &__item-label {
+    color: $concrete;
+    font-size: $font-size--md;
   }
 }

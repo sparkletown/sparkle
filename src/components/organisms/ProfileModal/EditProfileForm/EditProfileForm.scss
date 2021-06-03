@@ -1,13 +1,17 @@
-.edit-profile-modal {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+@import "scss/constants.scss";
 
-  .title {
-    margin-bottom: 20px;
+$input-horizon-space: 14px;
+$button-height: 30px;
+
+.EditProfileForm {
+  &__title {
+    font-size: $font-size--md;
+    line-height: $spacing--xl;
+    color: opaque-white(0.5);
+    text-align: start;
   }
 
-  .question {
+  &__question {
     display: flex;
     justify-content: center;
 
@@ -18,8 +22,32 @@
     }
   }
 
-  .cancel-button {
+  &__cancel-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__cancel-button {
     cursor: pointer;
     text-decoration: underline;
   }
+
+  &__input-container-name {
+    height: $submit-button-diameter;
+  }
+
+  &__input-name {
+    text-align: start;
+    padding: $spacing--md $input-horizon-space;
+    font-size: $font-size--lg;
+  }
+}
+
+button.EditProfileForm__submit-button {
+  width: 100%;
+  height: $button-height;
+  padding: 0;
+  background-color: opaque-white(0.2);
+  font-size: $font-size--md;
+  margin: $spacing--md 0;
 }

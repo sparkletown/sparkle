@@ -3,8 +3,9 @@
 .user-avatar {
   position: relative;
 
-  width: 25px;
-  height: 25px;
+  width: 40px;
+  height: 40px;
+
   &__image {
     height: 100%;
     width: 100%;
@@ -46,8 +47,13 @@
     }
   }
 
+  &--small {
+    width: 25px;
+    height: 25px;
+  }
+
   &--large {
-    height: 40px;
-    width: 40px;
+    height: 54px;
+    width: 54px;
   }
 }

@@ -54,7 +54,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           className="recipient-chat__back-icon"
           size="sm"
         />
-        <UserAvatar user={recipient} showStatus />
+        <UserAvatar user={recipient} showStatus small />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       <Chatbox

@@ -1,10 +1,102 @@
+@import "scss/constants.scss";
+
+$picture-size-large: 150px;
+$picture-size: 40px;
+$input-media-height: 30px;
+$input-media-padding: 14px;
+
 .default-avatars-container {
   display: flex;
   flex-direction: row;
 
   .profile-picture-preview {
-    width: 40px;
-    height: 40px;
-    border: 0px solid;
+    width: $picture-size;
+    height: $picture-size;
+    border: 0;
+  }
+}
+
+.ProfilePictureInput {
+  margin-top: 10px;
+
+  &__container {
+    position: relative;
+    z-index: z(account-profile-picture-preview);
+  }
+
+  &__picture {
+    width: $picture-size-large;
+    height: $picture-size-large;
+  }
+
+  &__picture-input {
+    display: none;
+  }
+
+  &__picture-button {
+    position: absolute;
+    top: 60px;
+    left: 20px;
+    margin: 0;
+    width: 110px;
+    height: 30px;
+    background-color: opaque-white(0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $border-radius--xl;
+    font-size: $font-size--md;
+    cursor: pointer;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  &__input-media-container {
+    height: $input-media-height;
+    margin-top: $spacing--md;
+  }
+
+  &__input-media {
+    padding: $spacing--xs $input-media-padding;
+    text-align: start;
+    font-size: $font-size--md;
+  }
+
+  &__color-container {
+    display: flex;
+    align-items: center;
+  }
+
+  &__color-container {
+    display: flex;
+    align-items: center;
+    margin-top: $spacing--md;
+  }
+
+  &__color-button {
+    width: $picture-size;
+    height: $picture-size;
+  }
+
+  &__color-text {
+    margin-left: $spacing--md;
+    font-size: $font-size--md;
+  }
+}
+
+button.ProfilePictureInput__color-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: opaque-white(0.1);
+
+  &--changed {
+    background-color: $bright-pink;
+  }
+
+  &:focus {
+    outline: none;
   }
 }

@@ -1,21 +1,34 @@
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
 import React, { useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+
 import { IS_BURN } from "secrets";
+
 import { QuestionType } from "types/Question";
-import { Badges } from "components/organisms/Badges";
+
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
-import { DEFAULT_PROFILE_VALUES } from "../constants";
+import { Button } from "components/atoms/Button";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
+import { Badges } from "components/organisms/Badges";
+
 import { updateUserProfile } from "pages/Account/helpers";
+
 import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
 import { venueLandingUrl } from "utils/url";
 import {
   currentVenueSelector,
   currentVenueSelectorData,
 } from "utils/selectors";
-import { UserAvatar } from "components/atoms/UserAvatar";
+
+import editIcon from "assets/icons/profile-edit-icon.svg";
+
+import { DEFAULT_PROFILE_VALUES } from "../constants";
+
+import "./UserInformationContent.scss";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -70,16 +83,36 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   if (!user || !userWithId) return null;
 
   return (
-    <>
-      <h1 className="title modal-title">My Profile</h1>
+    <div className="UserInformationContent">
+      <h1 className="UserInformationContent__title">My Profile</h1>
 
-      <div className="user-information">
-        <UserAvatar user={userWithId} showStatus large />
-        <div className="text-container">
-          <h3>{profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}</h3>
-          <div className="ellipsis-text">{user.email}</div>
-          <UserStatusDropdown />
+      <div className="UserInformationContent__information">
+        <div>
+          <UserAvatar user={userWithId} showStatus large />
         </div>
+        <div className="UserInformationContent__text-container">
+          <h3 className="UserInformationContent__user-name">
+            {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
+          </h3>
+          <div
+            title={user.email ?? ""}
+            className="UserInformationContent__ellipsis-text"
+          >
+            {user.email}
+          </div>
+          <div className="UserInformationContent__status-container">
+            <span className="UserInformationContent__status-prefix">
+              Available
+            </span>
+            <UserStatusDropdown />
+          </div>
+        </div>
+        <Button
+          customClass="UserInformationContent__edit"
+          onClick={() => setIsEditMode(true)}
+        >
+          <img src={editIcon} alt="edit" />
+        </Button>
       </div>
 
       {profileQuestions &&
@@ -144,27 +177,16 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         onClick={() => toggleMirrorVideo()}
       />
 
-      <input
-        className="btn button btn-primary"
-        value="Edit profile"
-        onClick={() => setIsEditMode(true)}
-        type="button"
-      />
-
-      <input
-        className="btn button"
-        value="Change password"
-        type="button"
+      <Button
+        customClass="UserInformationContent__button"
         onClick={() => setIsPasswordEditMode(true)}
-      />
-
-      <input
-        className="btn button"
-        value="Log out"
-        onClick={logout}
-        type="button"
-      />
-    </>
+      >
+        Change password
+      </Button>
+      <Button customClass="UserInformationContent__button" onClick={logout}>
+        Log out
+      </Button>
+    </div>
   );
 };
 
