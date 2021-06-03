@@ -7,7 +7,6 @@ import { PartyMapVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { Map, RoomModal } from "./components";
 
@@ -20,9 +19,6 @@ export interface PartyMapProps {
 }
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
-  // @debt can we remove useConnectCurrentVenue here? Do any descendants need it?
-  useConnectCurrentVenue();
-
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
