@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import { FirebaseReducer } from "react-redux-firebase";
-import { User } from "types/User";
+import { User, RecentUserStatusType } from "types/User";
 import { WithId } from "utils/id";
 import { isTruthy } from "./types";
 
@@ -18,6 +18,14 @@ export const updateProfileEnteredVenueIds = async (
       .doc(userId)
       .update({ enteredVenueIds });
   }
+};
+
+export const getUserDisplayStatus = (
+  user?: WithId<User>
+): RecentUserStatusType => {
+  if (user?.status) return RecentUserStatusType.busy;
+
+  return user ? RecentUserStatusType.online : RecentUserStatusType.offline;
 };
 
 export const isCompleteProfile = (profile: FirebaseReducer.Profile<User>) =>

@@ -5,6 +5,8 @@ import { User, RecentUserStatusType } from "types/User";
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 import { getUserCurrentLocation } from "utils/profile";
+import { getUserDisplayStatus } from "utils/profile";
+
 import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
 import { useSelector } from "./useSelector";
@@ -125,9 +127,7 @@ export const useRecentWorldUser = (
 export const useRecentUserStatus = (userId?: string): RecentUserStatusType => {
   const { user } = useRecentWorldUser(userId);
 
-  if (user?.status) return RecentUserStatusType.busy;
-
-  return user ? RecentUserStatusType.online : RecentUserStatusType.offline;
+  return getUserDisplayStatus(user);
 };
 
 /**
