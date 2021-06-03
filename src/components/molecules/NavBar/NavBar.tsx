@@ -97,7 +97,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ redirectionUrl }) => {
 
   const {
     location: { pathname },
-    // push: openUrlUsingRouter,
   } = useHistory();
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 

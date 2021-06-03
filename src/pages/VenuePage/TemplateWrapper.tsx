@@ -5,9 +5,12 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 import { TemplatesWithoutBackButton } from "types/templates";
 
 import { WithId } from "utils/id";
+import { enterVenue } from "utils/url";
+import { parentVenueSelector } from "utils/selectors";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { useSelector } from "hooks/useSelector";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -27,12 +30,8 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { BackButton } from "components/molecules/BackButton/BackButton";
-import { enterVenue } from "utils/url";
-import { useSelector } from "hooks/useSelector";
-import { parentVenueSelector } from "utils/selectors";
+import { BackButton } from "components/atoms/BackButton";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
