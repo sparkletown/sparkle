@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from "react";
-import { Modal } from "react-bootstrap";
+import { Button, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
 import { inviteToVideoChat } from "api/videoRoom";
@@ -27,7 +27,6 @@ import { useChatSidebarControls } from "hooks/chatSidebar";
 import { useVenueId } from "hooks/useVenueId";
 
 import { Badges } from "components/organisms/Badges";
-import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 

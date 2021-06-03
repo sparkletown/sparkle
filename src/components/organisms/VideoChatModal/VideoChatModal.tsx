@@ -29,8 +29,9 @@ export const VideoChatModal: React.FC = () => {
     [hasVideoRoomRequests, videoRoomRequests]
   );
 
-  const { value: host } = useAsync(
-    async () => await getUserById(currentVideoRoomRequest?.hostUserId)
+  const { value: host, loading: isLoadingHost } = useAsync(
+    async () => await getUserById(currentVideoRoomRequest?.hostUserId),
+    [currentVideoRoomRequest]
   );
 
   const acceptVideoRoomRequest = useCallback(() => {
@@ -49,7 +50,7 @@ export const VideoChatModal: React.FC = () => {
     );
   }, [currentVideoRoomRequest]);
 
-  if (!hasVideoRoomRequests) {
+  if (!hasVideoRoomRequests && !isLoadingHost) {
     return null;
   }
 
@@ -62,9 +63,9 @@ export const VideoChatModal: React.FC = () => {
       onConfirm={acceptVideoRoomRequest}
       onCancel={declineVideoRoomRequest}
     >
-      <div className="row">
+      <div className="VideoChatModal__host-info">
         <UserAvatar user={host} large />
-        <div>{host?.partyName}</div>
+        <div className="VideoChatModal__host-title">{host?.partyName}</div>
       </div>
     </ConfirmationModal>
   );
