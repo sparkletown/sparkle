@@ -103,7 +103,9 @@ npm run firebase:emulate-functions
 
 **Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
 
-First, you need to install the CLI. For Homebrew, use
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli).
+
+If you use Homebrew, you can install it as follows:
 
 ```bash
 brew install stripe/stripe-cli/stripe
