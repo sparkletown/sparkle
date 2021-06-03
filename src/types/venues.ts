@@ -31,6 +31,7 @@ export enum VenueTemplate {
   posterpage = "posterpage",
   preplaya = "preplaya",
   screeningroom = "screeningroom",
+  screenshare = "screenshare",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 

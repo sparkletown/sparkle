@@ -1,0 +1,39 @@
+@import "scss/constants";
+
+.ScreenShare {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: $spacing--xl;
+
+  &__scene {
+    display: flex;
+    background-color: #191919;
+    width: calc(35 * 30px);
+    border: solid 0;
+    border-radius: 22px;
+    flex-direction: column;
+    align-items: center;
+
+    &--players {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    &--buttons {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      justify-content: space-between;
+      padding: $spacing--lg;
+
+      &--join-stage {
+        display: flex;
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  }
+}

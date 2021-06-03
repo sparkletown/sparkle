@@ -28,6 +28,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { ScreenShare } from "../../components/templates/ScreenShare";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -136,6 +137,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           Legacy Template: ${venue.template} has been removed from the platform
         </div>
       );
+      break;
+
+    case VenueTemplate.screenshare:
+      template = <ScreenShare />;
       break;
 
     default:

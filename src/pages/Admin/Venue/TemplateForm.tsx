@@ -25,6 +25,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
+  [VenueTemplate.screenshare]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
@@ -51,6 +52,7 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
+  [VenueTemplate.screenshare]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,

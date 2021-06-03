@@ -1,0 +1,23 @@
+.button-with-label {
+  display: flex;
+  align-items: center;
+
+  p {
+    margin: 0 15px;
+    font-size: 14px;
+  }
+
+  .btn {
+    color: white;
+    font-weight: 500;
+  }
+
+  .btn-primary {
+    background-image: none !important;
+    background-color: rgb(124, 70, 251) !important;
+  }
+
+  .btn-secondary {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+  }
+}

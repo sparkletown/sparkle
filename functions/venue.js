@@ -23,6 +23,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   preplaya: "preplaya",
   screeningroom: "screeningroom",
+  screenshare: "screenshare",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
 
@@ -46,6 +47,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
   VenueTemplate.performancevenue,
+  VenueTemplate.screenshare,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
