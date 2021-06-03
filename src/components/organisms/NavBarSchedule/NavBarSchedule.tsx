@@ -1,27 +1,25 @@
-import React, { useState, useMemo, useCallback } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import {
   addDays,
   format,
   fromUnixTime,
-  startOfToday,
-  startOfDay,
   isToday,
+  startOfDay,
+  startOfToday,
 } from "date-fns";
-import { groupBy } from "lodash";
 import classNames from "classnames";
+import { groupBy } from "lodash";
 
 import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
-import { createCalendar, downloadCalendar } from "utils/calendar";
-import { Button } from "components/atoms/Button";
-
 import {
-  PersonalizedVenueEvent,
-  VenueLocation,
   LocationEvents,
+  PersonalizedVenueEvent,
   VenueEvent,
+  VenueLocation,
 } from "types/venues";
 
+import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
@@ -33,6 +31,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 
+import { Button } from "components/atoms/Button";
 import { Schedule } from "components/molecules/Schedule";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
