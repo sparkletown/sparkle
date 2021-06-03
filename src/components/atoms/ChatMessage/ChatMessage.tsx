@@ -26,7 +26,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, isMine, replies, id } = message;
+  const { text, replies, id, isMine, isQuestion } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
@@ -37,6 +37,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,
+    "ChatMessage--question": isQuestion,
   });
 
   const renderedReplies = useMemo(
@@ -69,7 +70,9 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
-          <div className="ChatMessage__text"><RenderMarkdown text={text} allowHeadings={false} /></div>
+          <div className="ChatMessage__text">
+            <RenderMarkdown text={text} allowHeadings={false} />
+          </div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon

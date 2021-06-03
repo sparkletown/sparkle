@@ -4,14 +4,14 @@ import { PLAYA_VENUE_NAME, SPARKLE_ICON } from "settings";
 
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import "./VenueInfoEvents.scss";
 import { WithId } from "utils/id";
 import { openUrl, venueInsideUrl } from "utils/url";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { EventDisplay } from "../EventDisplay/EventDisplay";
-import "../EventDisplay/EventDisplay.scss";
+
+import "./VenueInfoEvents.scss";
 
 interface PropsType {
   eventsNow: VenueEvent[];

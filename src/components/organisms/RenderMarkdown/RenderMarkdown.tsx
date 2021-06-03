@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 
 import ReactMarkdown from "react-markdown";
 import glm from "remark-gfm";
@@ -8,8 +8,8 @@ import sanitize from "rehype-sanitize";
 
 import { isTruthy } from "utils/types";
 
-const REMARK_PLUGINS = [[glm], [emoji], [externalLinks]];
-const REHYPE_PLUGINS = [[sanitize]];
+const REMARK_PLUGINS = [glm, emoji, externalLinks];
+const REHYPE_PLUGINS = [sanitize];
 
 const MARKDOWN_BASIC_FORMATTING_TAGS = [
   "p",

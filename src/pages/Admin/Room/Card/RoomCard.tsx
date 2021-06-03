@@ -70,7 +70,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{room.title}</S.Title>
-          <S.Description>{<RenderMarkdown text={room.description} /></S.Description>
+          <S.Description>
+            {<RenderMarkdown text={room.description} />}
+          </S.Description>
         </S.TitleWrapper>
 
         <S.ButtonWrapper>

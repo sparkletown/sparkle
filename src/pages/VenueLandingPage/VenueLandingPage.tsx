@@ -3,7 +3,6 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { isAfter } from "date-fns";
 
 import {
   DEFAULT_VENUE_BANNER,
@@ -25,7 +24,7 @@ import {
   userPurchaseHistorySelector,
   venueEventsSelector,
 } from "utils/selectors";
-import { eventEndTime } from "utils/event";
+import { hasEventFinished } from "utils/event";
 import { showZendeskWidget } from "utils/zendesk";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -37,11 +36,13 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import CountDown from "components/molecules/CountDown";
+import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
@@ -102,7 +103,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { user } = useUser();
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
-    (event) => isAfter(eventEndTime(event), Date.now()) && event.price > 0
+    (event) => !hasEventFinished(event) && event.price > 0
   );
 
   useEffect(() => {
@@ -313,7 +314,9 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                           {venueEvent.descriptions?.map(
                             (description, index) => (
                               // @debt we shouldn't be using index for the key here
-                              <p key={index}><RenderMarkdown text={description} /></p>
+                              <p key={index}>
+                                <RenderMarkdown text={description} />
+                              </p>
                             )
                           )}
                         </div>

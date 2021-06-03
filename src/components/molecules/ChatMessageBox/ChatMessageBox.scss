@@ -1,0 +1,54 @@
+@import "scss/constants";
+
+.Chatbox {
+  &--question {
+    background-color: $dark-green;
+  }
+
+  &__form {
+    padding: $spacing--md;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input {
+    width: 100%;
+  }
+
+  &__submit-button {
+    outline: none;
+    border: none;
+    min-width: $submit-button-diameter;
+    min-height: $submit-button-diameter;
+    border-radius: $border-radius--max;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: $spacing--md;
+
+    background-color: $primary;
+
+    &:disabled {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__submit-button-icon {
+    color: $white;
+  }
+
+  &__emoji-picker-toggler {
+    cursor: pointer;
+  }
+
+  &__emoji-picker {
+    position: absolute;
+    bottom: 65px;
+    right: 60px;
+    z-index: 2;
+
+    input {
+      color: $light-grey;
+    }
+  }
+}
