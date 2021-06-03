@@ -23,6 +23,15 @@ You can read more about the various `.env` files that you can use at:
 
 - https://create-react-app.dev/docs/adding-custom-environment-variables#adding-development-environment-variables-in-env
 
+**Note:** Before you run the next steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI. The following variables are required to be set up:
+
+```bash
+REACT_APP_PROJECT_ID=
+REACT_APP_API_KEY=
+REACT_APP_APP_ID=
+REACT_APP_MEASUREMENT_ID=
+```
+
 Install the platform dependencies with `npm`:
 
 (**Note:** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions)
@@ -37,7 +46,13 @@ Now you're ready to start the server! ✨
 npm start
 ```
 
-Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). To start using the app, navigate to a URL such as http://localhost:3000/v/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
+Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). Browser autorun can be opted out by adding a line to `.env.local`:
+
+```bash
+BROWSER=none
+```
+
+To start using the app, navigate to a URL such as http://localhost:3000/v/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
 
 While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
 
@@ -46,8 +61,6 @@ npm run build
 ```
 
 ### Firebase functions
-
-**Note:** Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
 
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
@@ -73,7 +86,7 @@ npm run firebase login
 npm run firebase use staging
 
 # Copy the runtime config locally
-npm run --silent firebase functions:config:get > .runtimeconfig.json
+npm run --silent firebase functions:config:get > ./functions/.runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
@@ -90,10 +103,17 @@ npm run firebase:emulate-functions
 
 **Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
 
-First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
+First, you need to install the CLI. For Homebrew, use
 
 ```bash
 brew install stripe/stripe-cli/stripe
+```
+
+and for other environments, follow the instructions at [Stripe CLI](https://stripe.com/docs/stripe-cli#install)
+
+Make sure that you have a Stripe account with the right credentials. Then
+
+```bash
 stripe login
 stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/payment-webhooks
 ```
