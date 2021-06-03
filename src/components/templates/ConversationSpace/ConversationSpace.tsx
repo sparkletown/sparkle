@@ -7,6 +7,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
@@ -14,8 +15,6 @@ import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { TABLES } from "./constants";
 
@@ -42,7 +41,9 @@ export const ConversationSpace: React.FunctionComponent = () => {
             {venue.config?.landingPageConfig.subtitle}
           </p>
           <p style={{ fontSize: 13 }}>
-            <RenderMarkdown text={venue.config?.landingPageConfig.description} />
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
           </p>
         </InformationCard>
       </InformationLeftColumn>
