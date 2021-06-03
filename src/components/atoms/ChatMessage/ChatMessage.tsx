@@ -4,12 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { TextButton } from "components/atoms/TextButton";
 
