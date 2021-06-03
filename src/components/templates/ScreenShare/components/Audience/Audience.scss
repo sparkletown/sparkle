@@ -1,34 +1,130 @@
 @import "scss/constants.scss";
 
-.screenshare-audience {
-  border: 0 solid white;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  flex: 0 0 auto;
-  user-select: none;
-  margin: 0 40px;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  padding-bottom: 150px;
+.Screenshare__audience {
+  &-title {
+    margin-top: $spacing--xl;
+    font-size: $font-size--lg;
+    line-height: 19px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.56);
+    &--hidden {
+      visibility: hidden;
+    }
+  }
 
-  .table-item {
-    background-color: $black;
+  &-container {
+    margin-top: $spacing--xl;
+    position: relative;
+    width: calc(35 * 30px);
+    height: 100%;
+    display: grid;
 
-    &:hover {
-      background-color: $black;
-      transform: scale(1);
+    & > *:first-child {
+      grid-row: 1 / 1;
+      grid-column: 1 / 1;
     }
 
-    .add-participant-button {
-      background-color: $light-grey;
-      font-size: 1.6rem;
-      text-align: center;
+    &:before {
+      content: " ";
+      display: block;
+      width: 0;
+      padding-bottom: 100%;
+      grid-row: 1 / 1;
+      grid-column: 1 / 1;
+    }
+
+    .UserProfilePicture {
+      max-width: 35px;
+      max-height: 35px;
+    }
+
+    .seat-column {
+      width: 100%;
+      height: 100%;
+      z-index: z(map-grid);
+    }
+
+    .seat-row {
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .seat-container {
+      display: flex;
+      position: relative;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
 
       &:hover {
-        background-color: white;
+        cursor: pointer;
+        .not-seat {
+          opacity: 0.4;
+        }
+      }
+    }
+
+    .seat {
+      width: 80%;
+      height: 80%;
+      border-radius: 100%;
+      position: relative;
+
+      &:hover {
+        transform: scale(1.1);
+        cursor: pointer;
+      }
+
+      .user {
+        background-size: cover;
+        background-position: center;
+        width: 100%;
+        height: 100%;
+        border-radius: 100%;
+        background-size: cover;
+      }
+
+      .avatar {
+        opacity: 0.025;
+        background-color: $white;
+      }
+    }
+
+    .not-seat {
+      width: 80%;
+      height: 80%;
+      position: relative;
+      background-color: rgba(255, 255, 255, 0.18);
+      border-radius: 100%;
+
+      &:hover {
+        opacity: 0.4;
+        cursor: pointer;
+      }
+
+      &:active {
+        opacity: 0.6;
+        transform: scale(1.1);
+        cursor: pointer;
+      }
+    }
+
+    @keyframes avatarpulse {
+      0% {
+        background-color: $primary;
+        box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
+      }
+      50% {
+        background-color: lighten($primary, 10%);
+        box-shadow: 0 0 0 3px $primary, 0 0 20px 10px rgba($primary, 0.65);
+      }
+      100% {
+        background-color: $primary;
+        box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
       }
     }
   }

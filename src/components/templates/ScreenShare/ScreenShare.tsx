@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 import useAgoraScreenShare from "./agoraHooks/useAgoraScreenShare";
 import Player from "./components/Player/Player";
 import useAgoraCamera from "./agoraHooks/useAgoraCamera";
-import "./ScreenShare.scss";
 import useAgoraRemotes from "./agoraHooks/useAgoraRemotes";
+import { GenericVenue } from "types/venues";
+import { WithId } from "utils/id";
+import { isDefined } from "utils/types";
+import { useUser } from "hooks/useUser";
 import Audience from "./components/Audience/Audience";
 import Button from "./components/Button/Button";
 import LeaveStageModal from "./components/LeaveStageModal/LeaveStageModal";
+import "./ScreenShare.scss";
 
 const remotesClient: IAgoraRTCClient = AgoraRTC.createClient({
   codec: "h264",
@@ -30,9 +34,19 @@ const AGORA_CHANNEL = {
   token: "",
 };
 
-export const ScreenShare = () => {
+export interface ScreenShareProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ScreenShare: React.FC<ScreenShareProps> = ({ venue }) => {
+  const { profile } = useUser();
   const [openLeaveStageModal, setOpenLeaveStageModal] = useState(false);
   const remoteUsers = useAgoraRemotes(remotesClient, AGORA_CHANNEL);
+
+  const isAttendee = useMemo(() => isDefined(profile?.data?.[venue.id]), [
+    profile?.data,
+    venue.id,
+  ]);
 
   const {
     localCameraTrack,
@@ -114,25 +128,27 @@ export const ScreenShare = () => {
             </>
           ) : (
             <div className="ScreenShare__scene--buttons--join-stage">
-              <Button
-                onClick={() => {
-                  cameraClientJoin();
-                  screenClient.join(
-                    AGORA_CHANNEL.appId,
-                    AGORA_CHANNEL.channel,
-                    AGORA_CHANNEL.token
-                  );
-                }}
-                variant="secondary"
-                small
-              >
-                Join Stage
-              </Button>
+              {isAttendee && (
+                <Button
+                  onClick={() => {
+                    cameraClientJoin();
+                    screenClient.join(
+                      AGORA_CHANNEL.appId,
+                      AGORA_CHANNEL.channel,
+                      AGORA_CHANNEL.token
+                    );
+                  }}
+                  variant="secondary"
+                  small
+                >
+                  Join Stage
+                </Button>
+              )}
             </div>
           )}
         </div>
       </div>
-      <Audience />
+      <Audience venue={venue} />
       <LeaveStageModal
         show={openLeaveStageModal}
         onHide={() => {

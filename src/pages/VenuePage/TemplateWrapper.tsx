@@ -140,7 +140,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.screenshare:
-      template = <ScreenShare />;
+      template = <ScreenShare venue={venue} />;
       break;
 
     default:
