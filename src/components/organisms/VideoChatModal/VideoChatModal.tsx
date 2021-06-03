@@ -1,10 +1,11 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
+import { useAsync } from "react-use";
 
+import { getUserById } from "api/profile";
 import { acceptVideoChat, setVideoChatState } from "api/videoRoom";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
-import { useWorldUserById } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
 
 import { hasElements } from "utils/types";
@@ -12,6 +13,9 @@ import { hasElements } from "utils/types";
 import { VideoChatRequestState } from "types/VideoRoom";
 
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
+import { UserAvatar } from "components/atoms/UserAvatar";
+
+import "./VideoChatModal.scss";
 
 export const VideoChatModal: React.FC = () => {
   const videoRoomRequests = useConnectVideoRooms();
@@ -20,11 +24,14 @@ export const VideoChatModal: React.FC = () => {
 
   const hasVideoRoomRequests = hasElements(videoRoomRequests);
 
-  const currentVideoRoomRequest = hasVideoRoomRequests
-    ? videoRoomRequests[0]
-    : undefined;
+  const currentVideoRoomRequest = useMemo(
+    () => (hasVideoRoomRequests ? videoRoomRequests[0] : undefined),
+    [hasVideoRoomRequests, videoRoomRequests]
+  );
 
-  const host = useWorldUserById(currentVideoRoomRequest?.hostUserId);
+  const { value: host } = useAsync(
+    async () => await getUserById(currentVideoRoomRequest?.hostUserId)
+  );
 
   const acceptVideoRoomRequest = useCallback(() => {
     if (!currentVideoRoomRequest || !venueId) return;
@@ -42,17 +49,23 @@ export const VideoChatModal: React.FC = () => {
     );
   }, [currentVideoRoomRequest]);
 
-  console.log("VideoChatModal:", videoRoomRequests);
-
   if (!hasVideoRoomRequests) {
     return null;
   }
 
   return (
     <ConfirmationModal
-      message={`${host?.partyName} invites you to video chat.`}
+      show={hasVideoRoomRequests}
+      message={"wants to video chat with you!"}
+      confirmButtonTitle={"Join video chat"}
+      cancelButtonTitle={"Decline"}
       onConfirm={acceptVideoRoomRequest}
       onCancel={declineVideoRoomRequest}
-    />
+    >
+      <div className="row">
+        <UserAvatar user={host} large />
+        <div>{host?.partyName}</div>
+      </div>
+    </ConfirmationModal>
   );
 };
