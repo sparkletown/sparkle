@@ -46,7 +46,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const chosenUserId = selectedUserProfile?.id ?? "";
+  const chosenUserId = selectedUserProfile?.id;
   const { userLastSeenIn: selectedUserLastSeenInVenueId } = useRecentWorldUser(
     chosenUserId
   );

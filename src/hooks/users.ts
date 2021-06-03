@@ -106,7 +106,7 @@ export const useRecentWorldUsers = (): {
 };
 
 export const useRecentWorldUser = (
-  userId: string
+  userId?: string
 ): {
   user?: WithId<User>;
   userLastSeenIn?: string;
@@ -122,7 +122,7 @@ export const useRecentWorldUser = (
   return { user, userLastSeenIn };
 };
 
-export const useRecentUserStatus = (userId: string): RecentUserStatusType => {
+export const useRecentUserStatus = (userId?: string): RecentUserStatusType => {
   const { user } = useRecentWorldUser(userId);
 
   if (user?.status) return RecentUserStatusType.busy;
