@@ -5,7 +5,7 @@ import classNames from "classnames";
 
 import { BannerFormData } from "types/banner";
 
-import { externalUrlAdditionalProps } from "utils/url";
+import { LinkButton } from "components/atoms/LinkButton";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -68,13 +68,12 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           <RenderMarkdown text={banner.content} />
         </div>
         {isActiveButton && (
-          <a
+          <LinkButton
             href={banner.buttonUrl}
             className="AnnouncementMessage__action-button"
-            {...externalUrlAdditionalProps}
           >
             {banner.buttonDisplayText}
-          </a>
+          </LinkButton>
         )}
         {isUser && banner.isCloseButton ? (
           <span

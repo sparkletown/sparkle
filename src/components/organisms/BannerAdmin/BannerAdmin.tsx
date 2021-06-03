@@ -1,5 +1,4 @@
-import React, { useCallback, useState } from "react";
-import { Button } from "react-bootstrap";
+import React, { useCallback, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 <<<<<<< HEAD
@@ -13,6 +12,7 @@ import { AnyVenue } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
+import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { InputField } from "components/atoms/InputField";
 
@@ -58,12 +58,18 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   const [bannerData, setBannerDate] = useState<BannerFormData>(
     initialBannerData
   );
-
   const {
     isShown: isShowModal,
     show: showModal,
     hide: hideModal,
   } = useShowHide();
+  const [isDisabledUrlFields, setIsDisabledUrlFields] = useState(
+    venue?.banner?.isActionButton
+  );
+
+  useEffect(() => {
+    setIsDisabledUrlFields(isActionButtonValue);
+  }, [isActionButtonValue]);
 
   const updateBannerInFirestore = useCallback(
     (data: BannerFormData) => {
@@ -136,7 +142,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             defaultValue={venue?.banner?.buttonUrl}
             containerClassName="Banner__input-container"
             inputClassName="Banner__input-text"
-            disabled={!isActionButtonValue}
+            disabled={!isDisabledUrlFields}
             autoComplete="off"
           />
           <InputField
@@ -146,7 +152,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
             defaultValue={venue?.banner?.buttonDisplayText}
             containerClassName="Banner__input-container"
             inputClassName="Banner__input-text"
-            disabled={!isActionButtonValue}
+            disabled={!isDisabledUrlFields}
             autoComplete="off"
           />
         </div>
@@ -170,13 +176,12 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
 
         <div className="Banner__button-container">
           <Button
-            className="Banner__button"
-            variant="danger"
+            customClass="Banner__button Banner__button--close"
             onClick={clearBanner}
           >
             Clear
           </Button>
-          <Button className="Banner__button" type="submit">
+          <Button customClass="Banner__button" type="submit">
             Save
           </Button>
         </div>

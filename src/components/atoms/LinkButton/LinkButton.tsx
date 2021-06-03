@@ -10,7 +10,7 @@ export interface LinkButtonProps
     AnchorHTMLAttributes<HTMLAnchorElement>,
     HTMLAnchorElement
   > {
-  href: string;
+  href?: string;
 }
 
 export const LinkButton: React.FC<LinkButtonProps> = ({
