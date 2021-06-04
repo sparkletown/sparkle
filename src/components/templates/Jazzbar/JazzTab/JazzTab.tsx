@@ -34,6 +34,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import { JAZZBAR_TABLES } from "./constants";
 
 import "./JazzTab.scss";
@@ -139,7 +141,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       {venueToUse.description?.text && (
         <div className="row">
           <div className="col">
-            <div className="description">{venueToUse.description?.text}</div>
+            <div className="description">
+              <RenderMarkdown text={venueToUse.description?.text} />
+            </div>
           </div>
         </div>
       )}
