@@ -25,6 +25,8 @@ import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
@@ -249,7 +251,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           />
         </div>
         <div className="description">
-          {venue.config?.landingPageConfig?.description}
+          <RenderMarkdown text={venue.config?.landingPageConfig?.description} />
         </div>
         {ENABLE_PLAYA_ADDRESS && venue.placement?.x && venue.placement?.y && (
           <div className="address">
