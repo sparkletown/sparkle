@@ -5,18 +5,7 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
-export default function useAgoraCamera(
-  client: IAgoraRTCClient | undefined,
-  channel: { appId: string; channel: string; token: string }
-): {
-  localCameraTrack: ILocalVideoTrack | undefined;
-  toggleCamera: () => void;
-  toggleMicrophone: () => void;
-  isCameraOn: boolean;
-  closeTracks: () => void;
-  isMicrophoneOn: boolean;
-  onJoin: () => void;
-} {
+export default function useAgoraCamera(client: IAgoraRTCClient | undefined) {
   const [localCameraTrack, setLocalCameraTrack] = useState<
     ILocalVideoTrack | undefined
   >(undefined);
@@ -36,9 +25,13 @@ export default function useAgoraCamera(
     setIsMicrophoneOn(!isMicrophoneOn);
   };
 
-  const onJoin = useCallback(async () => {
+  const joinChannel = async (
+    appId: string,
+    channel: string,
+    token?: string | null
+  ) => {
     if (!client) return;
-    await client.join(channel.appId, channel.channel, channel.token);
+    await client.join(appId, channel, token || null);
 
     setIsCameraOn(true);
     setIsMicrophoneOn(true);
@@ -48,11 +41,9 @@ export default function useAgoraCamera(
     setLocalCameraTrack(cameraTrack);
     setLocalMicrophoneTrack(microphoneTrack);
     await client.publish([microphoneTrack, cameraTrack]);
-  }, [client, channel]);
+  };
 
-  const closeTracks = () => {
-    if (!client) return;
-
+  const leaveChannel = useCallback(async () => {
     if (localCameraTrack) {
       localCameraTrack.stop();
       localCameraTrack.close();
@@ -65,24 +56,25 @@ export default function useAgoraCamera(
 
     setLocalCameraTrack(undefined);
     setLocalMicrophoneTrack(undefined);
-  };
+
+    await client?.leave();
+  }, [client, localCameraTrack, localMicrophoneTrack]);
 
   useEffect(() => {
-    if (!client) return;
-    onJoin();
-
     return () => {
-      client.leave();
+      leaveChannel();
     };
-  }, [client, onJoin]);
+    // Otherwise, it will fire when local tracks are updated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     localCameraTrack,
     toggleCamera,
     toggleMicrophone,
     isCameraOn,
-    closeTracks,
     isMicrophoneOn,
-    onJoin,
+    joinChannel,
+    leaveChannel,
   };
 }

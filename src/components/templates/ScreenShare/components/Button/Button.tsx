@@ -8,6 +8,7 @@ interface ButtonProps {
   rightLabel?: string;
   leftLabel?: string;
   small?: boolean;
+  disabled?: boolean;
 }
 
 const Button = ({
@@ -17,6 +18,7 @@ const Button = ({
   rightLabel,
   leftLabel,
   small,
+  disabled = false,
 }: ButtonProps) => {
   return (
     <div className="button-with-label">
@@ -26,6 +28,7 @@ const Button = ({
         onClick={() => {
           onClick();
         }}
+        disabled={disabled}
       >
         {children}
       </button>

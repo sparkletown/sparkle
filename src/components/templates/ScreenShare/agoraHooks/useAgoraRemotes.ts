@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const useAgoraRemotes = (
   client: IAgoraRTCClient | undefined,
-  channel: { appId: string; channel: string; token: string }
+  channel: { appId: string; channel: string; token: string | null }
 ) => {
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
 

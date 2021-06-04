@@ -6,13 +6,8 @@ import AgoraRTC, {
 } from "agora-rtc-sdk-ng";
 
 export default function useAgoraScreenShare(
-  client: IAgoraRTCClient | undefined,
-  channel: { appId: string; channel: string; token: string }
-): {
-  localScreenTrack: ILocalVideoTrack | undefined;
-  shareScreen: Function;
-  stopShare: Function;
-} {
+  client: IAgoraRTCClient | undefined
+) {
   const [localScreenTrack, setLocalScreenTrack] = useState<
     ILocalVideoTrack | undefined
   >(undefined);
@@ -22,7 +17,6 @@ export default function useAgoraScreenShare(
 
   const shareScreen = useCallback(async () => {
     if (!client) return;
-
     const screenTrack = await AgoraRTC.createScreenVideoTrack({}, "auto");
 
     if (Array.isArray(screenTrack)) {
@@ -39,8 +33,6 @@ export default function useAgoraScreenShare(
   }, [client]);
 
   const stopShare = useCallback(() => {
-    if (!client) return;
-
     if (localScreenTrack) {
       localScreenTrack.stop();
       localScreenTrack.close();
@@ -53,19 +45,34 @@ export default function useAgoraScreenShare(
 
     setLocalScreenTrack(undefined);
     setLocalAudioTrack(undefined);
-  }, [client, localAudioTrack, localScreenTrack]);
+  }, [localAudioTrack, localScreenTrack]);
+
+  const joinChannel = async (
+    appId: string,
+    channel: string,
+    token?: string | null
+  ) => {
+    await client?.join(appId, channel, token || null);
+  };
+
+  const leaveChannel = useCallback(async () => {
+    stopShare();
+    await client?.leave();
+  }, [client, stopShare]);
 
   useEffect(() => {
-    if (!client) return;
-    client.join(channel.appId, channel.channel, channel.token);
     return () => {
-      client.leave();
+      leaveChannel();
     };
-  }, [client, channel]);
+    // Otherwise, it will fire when local tracks are updated
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return {
     localScreenTrack,
     shareScreen,
     stopShare,
+    joinChannel,
+    leaveChannel,
   };
 }
