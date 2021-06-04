@@ -90,8 +90,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div className="profile-extras">
               {venue?.profile_questions?.map((question) => (
                 <React.Fragment key={question.text}>
-                  {/*
-                  // @ts-ignore */}
+                  {/* @ts-ignore */}
                   {selectedUserProfile[question.name] && (
                     <>
                       <p className="light question">{question.text}</p>
