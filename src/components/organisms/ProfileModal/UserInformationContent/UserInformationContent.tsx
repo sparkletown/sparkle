@@ -2,6 +2,8 @@ import React, { useCallback, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
+import { DEFAULT_PARTY_NAME } from "settings";
+
 import { IS_BURN } from "secrets";
 
 import { venueLandingUrl } from "utils/url";
@@ -15,8 +17,6 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { Badges } from "components/organisms/Badges";
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import { DEFAULT_PROFILE_VALUES } from "../constants";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -96,7 +96,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <div className="user-information">
         <UserAvatar user={userWithId} showStatus large />
         <div className="text-container">
-          <h3>{profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}</h3>
+          <h3>{profile?.partyName || DEFAULT_PARTY_NAME}</h3>
           <div className="ellipsis-text">{user.email}</div>
           <UserStatusDropdown />
         </div>
