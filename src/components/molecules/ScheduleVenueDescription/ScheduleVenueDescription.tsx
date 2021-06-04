@@ -47,9 +47,7 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
         </div>
       </div>
       <div className="ScheduleVenueDescription__desc">
-        <p>
-          <RenderMarkdown text={description} />
-        </p>
+        <RenderMarkdown text={description} />
       </div>
     </div>
   );
