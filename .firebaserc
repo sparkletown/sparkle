@@ -20,7 +20,11 @@
     "memrise": "sparkle-memrise",
     "unesco": "sparkle-unesco",
     "ohbm": "sparkle-ohbm",
-    "sparkle-pa": "sparkle-pa"
+    "sparkle-pa": "sparkle-pa",
+    "sparkle-demo": "sparkle-demo-e65b1",
+    "sparkle-clever": "sparkle-clever",
+    "sparkle-unity": "sparkle-unity",
+    "sparkle-burn": "sparkle-burn"
   },
   "targets": {
     "co-reality-map": {
@@ -173,6 +177,34 @@
       "hosting": {
         "sparkle-pa": [
           "sparkle-pa"
+        ]
+      }
+    },
+    "sparkle-demo": {
+      "hosting": {
+        "sparkle-demo": [
+          "sparkle-demo"
+        ]
+      }
+    },
+    "sparkle-unity": {
+      "hosting": {
+        "sparkle-unity": [
+          "sparkle-unity"
+        ]
+      }
+    },
+    "sparkle-clever": {
+      "hosting": {
+        "sparkle-clever": [
+          "sparkle-clever"
+        ]
+      }
+    },
+    "sparkle-burn": {
+      "hosting": {
+        "sparkle-burn": [
+          "sparkle-burn"
         ]
       }
     }
