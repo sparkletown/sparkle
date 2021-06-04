@@ -46,10 +46,7 @@ const VenueEventDetails = ({
         <RenderMarkdown text={venueEvent.description} />
 
         {venueEvent.descriptions?.map((description, index) => (
-          // @debt we shouldn't be using index as a key here
-          <p key={index}>
-            <RenderMarkdown text={description} />
-          </p>
+          <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
       </div>
       <div className="button-container">

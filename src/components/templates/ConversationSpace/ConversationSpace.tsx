@@ -40,11 +40,11 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
             {venue.config?.landingPageConfig.subtitle}
           </p>
-          <p style={{ fontSize: 13 }}>
+          <div style={{ fontSize: 13 }}>
             <RenderMarkdown
               text={venue.config?.landingPageConfig.description}
             />
-          </p>
+          </div>
         </InformationCard>
       </InformationLeftColumn>
       <div className="conversation-space-container">

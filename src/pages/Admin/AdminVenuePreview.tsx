@@ -123,15 +123,22 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               {venue.config?.landingPageConfig.subtitle}
             </span>
           </div>
-          <div style={{ padding: "5px" }}>
-            <span className="title" style={{ fontSize: "18px" }}>
+          <div
+            style={{ padding: "5px", display: "flex", alignItems: "center" }}
+          >
+            <span
+              className="title"
+              style={{
+                fontSize: "18px",
+                marginBottom: "1rem",
+                marginTop: 0,
+              }}
+            >
               Long description:
             </span>
-            <span className="content">
-              <RenderMarkdown
-                text={venue.config?.landingPageConfig.description}
-              />
-            </span>
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
           </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>
