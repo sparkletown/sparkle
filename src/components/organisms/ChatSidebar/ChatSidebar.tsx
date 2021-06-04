@@ -7,15 +7,22 @@ import {
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { VenueChat, PrivateChats } from "./components";
-
 import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
 
 import { ChatTypes } from "types/chat";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { VenueChat, PrivateChats } from "./components";
 
 import "./ChatSidebar.scss";
 
-export const ChatSidebar: React.FC = () => {
+export interface ChatSidebarProps {
+  venue: WithId<AnyVenue>;
+}
+
+export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
     toggleSidebar,
@@ -68,9 +75,11 @@ export const ChatSidebar: React.FC = () => {
         </div>
       </div>
       <div className="chat-sidebar__tab-content">
-        {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && <VenueChat />}
+        {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
+          <VenueChat venue={venue} />
+        )}
         {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
-          <PrivateChats recipientId={chatSettings.recipientId} />
+          <PrivateChats recipientId={chatSettings.recipientId} venue={venue} />
         )}
       </div>
     </div>

@@ -32,7 +32,7 @@ export const Title = styled.h1`
   font-size: 1.4rem;
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   margin-bottom: 0;
 
   font-size: 1rem;

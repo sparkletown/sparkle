@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
 import { usePosters } from "hooks/posters";
 
@@ -22,6 +21,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
     isPostersLoaded,
+    hasHiddenPosters,
 
     increaseDisplayedPosterCount,
 
@@ -31,13 +31,11 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setLiveFilter,
   } = usePosters(venue.id);
 
+  const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
+
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
-      <PosterPreview
-        key={posterVenue.id}
-        posterVenue={posterVenue}
-        enterVenue={enterVenue}
-      />
+      <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
     ));
   }, [posterVenues]);
 
@@ -55,7 +53,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       </div>
 
       <div className="PosterHall__more-button">
-        {isPostersLoaded && (
+        {shouldShowMorePosters && (
           <Button onClick={increaseDisplayedPosterCount}>
             Show more posters
           </Button>

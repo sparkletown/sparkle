@@ -23,6 +23,7 @@ import { GenericVenue } from "types/venues";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 import { createEmojiReaction, createTextReaction } from "utils/reactions";
+import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
@@ -229,8 +230,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
     return recentVenueUsers.filter((user) => {
       const { row, column } = user.data?.[venueId] ?? {};
-
-      return row && column;
+      return isDefined(row) && isDefined(column);
     });
   }, [recentVenueUsers, venueId]);
 

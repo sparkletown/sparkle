@@ -11,7 +11,7 @@
     border-radius: 50%;
   }
 
-  &__status-dot {
+  &__status-indicator {
     position: absolute;
     bottom: -1px;
     right: -1px;
@@ -19,7 +19,23 @@
     background-color: $green;
     height: 8px;
     width: 8px;
-    z-index: z(user-avatar-status-dot);
+    z-index: z(user-avatar-status-indicator);
+
+    display: none;
+
+    &--online {
+      display: block;
+      background-color: $green;
+    }
+    &--busy {
+      display: block;
+      background-color: $ripple-color;
+    }
+
+    &--large {
+      height: 12px;
+      width: 12px;
+    }
   }
 
   &--clickable {
@@ -28,6 +44,11 @@
     &:hover {
       opacity: 0.9;
     }
+  }
+
+  &--large {
+    height: 40px;
+    width: 40px;
   }
 
   &:hover .profile-name-avatar-hover {

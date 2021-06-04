@@ -2,11 +2,15 @@
 
 .PosterCategory {
   display: flex;
-  font-size: $font-size--xs;
+  font-size: $font-size--xxs;
   color: $white;
   padding: $spacing--xs $spacing--sm;
   margin: $spacing--xs;
   border-radius: $border-radius--lg;
-  background-color: $primary;
+  background-color: $secondary;
   font-weight: $font-weight--500;
+
+  &--active {
+    background-color: $primary;
+  }
 }

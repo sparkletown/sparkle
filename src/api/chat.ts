@@ -2,11 +2,11 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import noop from "lodash/noop";
 
-import { VenueChatMessage, PrivateChatMessage } from "types/chat";
+import { VenueChatMessage, PrivateChatMessage, PollVoteBase } from "types/chat";
 
 import { getVenueRef } from "./venue";
 
-export const userChatsCollectionRef = (userId: string) =>
+export const getUserChatsCollectionRef = (userId: string) =>
   firebase
     .firestore()
     .collection("privatechats")
@@ -42,8 +42,8 @@ export const sendPrivateMessage = async (
 ): Promise<void> => {
   const batch = firebase.firestore().batch();
 
-  const authorRef = userChatsCollectionRef(message.from).doc();
-  const recipientRef = userChatsCollectionRef(message.to).doc();
+  const authorRef = getUserChatsCollectionRef(message.from).doc();
+  const recipientRef = getUserChatsCollectionRef(message.to).doc();
 
   batch.set(authorRef, message);
   batch.set(recipientRef, message);
@@ -68,7 +68,7 @@ export const setChatMessageRead = async ({
   userId,
   messageId,
 }: SetChatMessageIsReadProps): Promise<void> =>
-  userChatsCollectionRef(userId)
+  getUserChatsCollectionRef(userId)
     .doc(messageId)
     .update({ isRead: true })
     .catch((err) => {
@@ -115,7 +115,7 @@ export const deletePrivateMessage = async ({
   userId,
   messageId,
 }: DeletePrivateMessageProps): Promise<void> =>
-  userChatsCollectionRef(userId)
+  getUserChatsCollectionRef(userId)
     .doc(messageId)
     .update({ deleted: true })
     .catch((err) => {
@@ -128,3 +128,14 @@ export const deletePrivateMessage = async ({
       });
       // @debt rethrow error, when we can handle it to show UI error
     });
+
+export interface VoteInPollProps {
+  pollVote: PollVoteBase;
+  venueId: string;
+}
+
+export const voteInVenuePoll = async ({ pollVote, venueId }: VoteInPollProps) =>
+  await firebase.functions().httpsCallable("venue-voteInPoll")({
+    pollVote,
+    venueId,
+  });

@@ -149,10 +149,26 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/pa" ]; then
               ENV=sparkle-pa
             fi
+            if [ $CIRCLE_BRANCH = "env/demo" ]; then
+              ENV=sparkle-demo
+            fi
+            if [ $CIRCLE_BRANCH = "env/unity" ]; then
+              ENV=sparkle-unity
+            fi
+            if [ $CIRCLE_BRANCH = "env/clever" ]; then
+              ENV=sparkle-clever
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn" ]; then
+              ENV=sparkle-burn
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+
+            # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
+            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+
             ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
       - *notify-on-fail
@@ -283,6 +299,30 @@ jobs:
               TARGET=sparkle-pa
               RELEASE_STAGE=env/pa
             fi
+            if [ $CIRCLE_BRANCH = "env/demo" ]; then
+              PREFIX=DEMO_
+              ENV=sparkle-demo
+              TARGET=sparkle-demo
+              RELEASE_STAGE=env/demo
+            fi
+            if [ $CIRCLE_BRANCH = "env/unity" ]; then
+              PREFIX=UNITY_
+              ENV=sparkle-unity
+              TARGET=sparkle-unity
+              RELEASE_STAGE=env/unity
+            fi
+            if [ $CIRCLE_BRANCH = "env/clever" ]; then
+              PREFIX=CLEVER_
+              ENV=sparkle-clever
+              TARGET=sparkle-clever
+              RELEASE_STAGE=env/clever
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn" ]; then
+              PREFIX=BURN_
+              ENV=sparkle-burn
+              TARGET=sparkle-burn
+              RELEASE_STAGE=env/burn
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -341,6 +381,10 @@ workflows:
                 - env/unesco
                 - env/ohbm
                 - env/pa
+                - env/demo
+                - env/unity
+                - env/clever
+                - env/burn
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -367,6 +411,10 @@ workflows:
                 - env/unesco
                 - env/ohbm
                 - env/pa
+                - env/demo
+                - env/unity
+                - env/clever
+                - env/burn
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

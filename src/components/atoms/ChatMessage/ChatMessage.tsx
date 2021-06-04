@@ -12,6 +12,8 @@ import { useShowHide } from "hooks/useShowHide";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { TextButton } from "components/atoms/TextButton";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import "./ChatMessage.scss";
 
 export interface ChatProps {
@@ -25,7 +27,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
   deleteMessage,
   selectThisThread,
 }) => {
-  const { text, isMine, replies, id } = message;
+  const { text, replies, id, isMine, isQuestion } = message;
 
   const deleteThisMessage = useCallback(() => deleteMessage(id), [
     deleteMessage,
@@ -36,13 +38,14 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const containerStyles = classNames("ChatMessage", {
     "ChatMessage--me": isMine,
+    "ChatMessage--question": isQuestion,
   });
 
   const renderedReplies = useMemo(
     () =>
       replies?.map((reply) => (
         <div key={reply.id} className="ChatMessage__reply">
-          {reply.text}
+          <RenderMarkdown text={reply.text} allowHeadings={false} />
           <ChatMessageInfo
             message={reply}
             deleteMessage={() => deleteMessage(reply.id)}
@@ -68,7 +71,9 @@ export const ChatMessage: React.FC<ChatProps> = ({
     <div className={containerStyles}>
       <div className="ChatMessage__bulb">
         <div className="ChatMessage__text-content">
-          <div className="ChatMessage__text">{text}</div>
+          <div className="ChatMessage__text">
+            <RenderMarkdown text={text} allowHeadings={false} />
+          </div>
 
           <div className="ChatMessage__reply-icon">
             <FontAwesomeIcon
