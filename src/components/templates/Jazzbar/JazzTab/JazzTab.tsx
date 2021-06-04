@@ -18,14 +18,6 @@ import { createEmojiReaction } from "utils/reactions";
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
 
-import Room from "../components/JazzBarRoom";
-
-// NOTE: This functionality will probably be returned in the nearest future.
-// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
-import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
-
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
@@ -33,6 +25,14 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { JAZZBAR_TABLES } from "./constants";
+
+// NOTE: This functionality will probably be returned in the nearest future.
+// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
+import Room from "../components/JazzBarRoom";
+import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import TableHeader from "components/molecules/TableHeader";
+import TablesUserList from "components/molecules/TablesUserList";
+import { BackButton } from "components/atoms/BackButton";
 
 import "./JazzTab.scss";
 
@@ -141,12 +141,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
       )}
 
-      {/* @debt Move the logic of Back button into a separate reusable hook/component */}
       {!seatedAtTable && parentVenueId && parentVenue && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">Back to {parentVenue.name}</span>
-        </div>
+        <BackButton
+          title={`Back to ${parentVenue.name}`}
+          onClick={backToParentVenue}
+        />
       )}
 
       {seatedAtTable && (

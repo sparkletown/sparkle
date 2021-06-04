@@ -1,11 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLock,
-  faLockOpen,
-  faChevronLeft,
-  faPen,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLock, faLockOpen, faPen } from "@fortawesome/free-solid-svg-icons";
 import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
@@ -24,6 +19,7 @@ import { isTruthy } from "utils/types";
 import { Toggler } from "components/atoms/Toggler";
 
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
+import { BackButton } from "components/atoms/BackButton";
 
 import "./TableHeader.scss";
 
@@ -139,19 +135,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   return (
     <div className="row TableHeader">
       <div className="TableHeader__leave-table">
-        <button
-          type="button"
-          title={`Leave ${seatedAtTable}`}
-          className="TableHeader__leave-button"
-          onClick={leaveSeat}
-        >
-          <FontAwesomeIcon
-            className="TableHeader__leave-button--icon"
-            icon={faChevronLeft}
-            size="xs"
-          />
-          Leave table
-        </button>
+        <BackButton title={"Leave table"} onClick={leaveSeat} />
       </div>
 
       <div className="TableHeader__topic-info">
