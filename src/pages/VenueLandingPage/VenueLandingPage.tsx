@@ -40,6 +40,7 @@ import {
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
@@ -309,10 +310,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                           )}`}
                         </div>
                         <div className="event-description">
-                          {venueEvent.description}
+                          <RenderMarkdown text={venueEvent.description} />
+
                           {venueEvent.descriptions?.map(
                             (description, index) => (
-                              <p key={index}>{description}</p>
+                              <RenderMarkdown
+                                text={description}
+                                key={`${description}#${index}`}
+                              />
                             )
                           )}
                         </div>
