@@ -96,9 +96,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                     <>
                       <p className="light question">{question.text}</p>
                       <h6>
-                        {/*
-                      // @debt typing - need to support known User interface with unknown question keys
-                      // @ts-ignore */}
+                        {/* @debt typing - need to support known User interface with unknown question keys
+                          * @ts-ignore
+                          */}
                         {selectedUserProfile[question.name]}
                       </h6>
                     </>
