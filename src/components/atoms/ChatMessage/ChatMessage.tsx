@@ -9,9 +9,10 @@ import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { TextButton } from "components/atoms/TextButton";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatMessage.scss";
 
