@@ -56,8 +56,6 @@ export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
-export const DEFAULT_EDIT_PROFILE_TEXT =
-  "I haven't edited my profile to tell you yet";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
