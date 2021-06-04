@@ -6,24 +6,19 @@ import emoji from "remark-emoji";
 import externalLinks from "remark-external-links";
 import sanitize from "rehype-sanitize";
 
+import {
+  MARKDOWN_BASIC_FORMATTING_TAGS,
+  MARKDOWN_HEADING_TAGS,
+  MARKDOWN_IMAGE_TAGS,
+  MARKDOWN_LINK_TAGS,
+  MARKDOWN_LIST_TAGS,
+  MARKDOWN_PRE_CODE_TAGS,
+} from "settings";
+
 import { isTruthy } from "utils/types";
 
 const REMARK_PLUGINS = [glm, emoji, externalLinks];
 const REHYPE_PLUGINS = [sanitize];
-
-const MARKDOWN_BASIC_FORMATTING_TAGS = [
-  "p",
-  "strong",
-  "em",
-  "blockquote",
-  "hr",
-  "del",
-];
-const MARKDOWN_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
-const MARKDOWN_IMAGE_TAGS = ["img"];
-const MARKDOWN_LINK_TAGS = ["a"];
-const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
-const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 
 export interface RenderMarkdownProps {
   text?: string;
@@ -35,7 +30,7 @@ export interface RenderMarkdownProps {
   allowLists?: boolean;
 }
 
-export const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
+const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
   text,
   allowBasicFormatting = true,
   allowPreAndCode = true,

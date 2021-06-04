@@ -99,12 +99,10 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )}
         {isDisplayedPoll && !isQuestionOptions && !selectedThread && (
-          <>
-            <ChatboxOptionsControls
-              activeOption={activeOption}
-              setActiveOption={setActiveOption}
-            />
-          </>
+          <ChatboxOptionsControls
+            activeOption={activeOption}
+            setActiveOption={setActiveOption}
+          />
         )}
         {activeOption === ChatOptionType.poll ? (
           <PollBox createPoll={createPoll} />
