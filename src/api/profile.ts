@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { UserStatus } from "types/User";
+import { PlaceInScreenshareVenue, UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
@@ -131,6 +131,68 @@ export const updatePersonalizedSchedule = async ({
         userId,
         event,
         removeMode,
+      });
+
+      throw err;
+    });
+  });
+};
+
+export interface updatePlaceInScreenshareVenueProps {
+  venueId: string;
+  userId: string;
+  placeInScreenshareVenue: PlaceInScreenshareVenue;
+}
+
+export const updatePlaceInScreenshareVenue = ({
+  venueId,
+  userId,
+  placeInScreenshareVenue,
+}: updatePlaceInScreenshareVenueProps) => {
+  const userProfileRef = getUserRef(userId);
+
+  const newData = {
+    [`data.${venueId}`]: { placeInScreenshareVenue },
+  };
+
+  userProfileRef.update(newData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updatePlaceInScreenshareVenue",
+        userId,
+        event,
+        placeInScreenshareVenue,
+      });
+
+      throw err;
+    });
+  });
+};
+
+export interface updateShareStatusInScreenshareVenueProps {
+  venueId: string;
+  userId: string;
+  isSharingScreen: boolean;
+}
+
+export const updateShareStatusInScreenshareVenue = ({
+  venueId,
+  userId,
+  isSharingScreen,
+}: updateShareStatusInScreenshareVenueProps) => {
+  const userProfileRef = getUserRef(userId);
+
+  const newData = {
+    [`data.${venueId}`]: { isSharingScreen },
+  };
+
+  userProfileRef.update(newData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updatePlaceInScreenshareVenue",
+        userId,
+        event,
+        isSharingScreen,
       });
 
       throw err;

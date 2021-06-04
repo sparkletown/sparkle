@@ -1,8 +1,16 @@
+export enum PlaceInScreenshareVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
 export interface Experience {
   bartender: User;
   table: string;
   row?: number;
   column?: number;
+  placeInScreenshareVenue?: PlaceInScreenshareVenue;
+  isSharingScreen?: boolean;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm
