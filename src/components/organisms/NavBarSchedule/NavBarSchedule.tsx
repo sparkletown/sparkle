@@ -172,6 +172,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
   ]);
 
+  const hasSavedEvents = schedule.personalEvents.length > 0;
+
   const downloadPersonalEventsCalendar = useCallback(() => {
     const dayStart = addDays(startOfToday(), selectedDayIndex);
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
@@ -204,14 +206,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      <div className="NavBarSchedule__downloads">
-        <Button onClick={downloadPersonalEventsCalendar}>
-          Download your schedule
-        </Button>
-        <Button onClick={downloadAllEventsCalendar}>
-          Download full schedule
-        </Button>
-      </div>
+      {!isLoadingSchedule && (
+        <div className="NavBarSchedule__download-buttons">
+          {hasSavedEvents && (
+            <Button
+              onClick={downloadPersonalEventsCalendar}
+              customClass="NavBarSchedule__download-schedule-btn"
+            >
+              Download your schedule
+            </Button>
+          )}
+
+          <Button
+            onClick={downloadAllEventsCalendar}
+            customClass="NavBarSchedule__download-schedule-btn"
+          >
+            Download full schedule
+          </Button>
+        </div>
+      )}
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <Schedule isLoading={isLoadingSchedule} {...schedule} />

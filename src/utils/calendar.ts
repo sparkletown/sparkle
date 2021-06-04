@@ -1,6 +1,4 @@
-import ical from "ical-generator";
-
-import { ICalCalendar } from "ical-generator";
+import calendarGenerator, { ICalCalendar } from "ical-generator";
 
 import { VenueEvent } from "types/venues";
 
@@ -15,10 +13,10 @@ export interface CreateCalendarProps {
 export const createCalendar = ({
   events,
 }: CreateCalendarProps): ICalCalendar => {
-  const cal = ical();
+  const calendar = calendarGenerator();
 
   events.forEach((event) =>
-    cal.createEvent({
+    calendar.createEvent({
       start: eventStartTime(event),
       end: eventEndTime(event),
       organizer: `${event.host} <undefined>`, // string format: "name <email>". email cannot be blank
@@ -28,7 +26,7 @@ export const createCalendar = ({
     })
   );
 
-  return cal;
+  return calendar;
 };
 
 export interface DownloadCalendarProps {
