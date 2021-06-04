@@ -23,3 +23,9 @@ export const isDefined = notEmpty;
  */
 export const asArray = <T>(elementOrElements: T | T[]): T[] =>
   ([] as T[]).concat(elementOrElements);
+
+export const arrayIncludes = <T>(arr?: T[], element?: T | null): boolean => {
+  if (!isDefined(element) || !isDefined(arr)) return false;
+
+  return arr.includes(element);
+};

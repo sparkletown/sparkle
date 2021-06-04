@@ -7,7 +7,7 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 import {
   DeleteMessage,
   SendChatReply,
-  SendMesssage,
+  SendMessage,
   VenueChatMessage,
 } from "types/chat";
 
@@ -25,7 +25,6 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
 import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
@@ -43,13 +42,10 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
   );
 };
 
-export const useVenueChat = () => {
-  const venueId = useVenueId();
+export const useVenueChat = (venueId?: string) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
-  const { user } = useUser();
-
-  const userId = user?.uid;
+  const { userId } = useUser();
 
   useConnectVenueChatMessages(venueId);
 
@@ -67,13 +63,17 @@ export const useVenueChat = () => {
     )
     .sort(chatSort);
 
-  const sendMessage: SendMesssage = useCallback(
-    async (text: string) => {
+  const sendMessage: SendMessage = useCallback(
+    async ({ message, isQuestion }) => {
       if (!venueId || !userId) return;
 
-      const message = buildMessage<VenueChatMessage>({ from: userId, text });
+      const processedMessage = buildMessage<VenueChatMessage>({
+        from: userId,
+        text: message,
+        ...(isQuestion && { isQuestion }),
+      });
 
-      return sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message: processedMessage });
     },
     [venueId, userId]
   );

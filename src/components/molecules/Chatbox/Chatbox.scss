@@ -19,36 +19,4 @@
     display: flex;
     flex-flow: column;
   }
-
-  &__form {
-    padding: $spacing--md;
-    display: flex;
-    align-items: center;
-  }
-
-  &__input {
-    width: 100%;
-  }
-
-  &__submit-button {
-    outline: none;
-    border: none;
-    min-width: 44px;
-    min-height: 44px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: $spacing--md;
-
-    background-color: $primary;
-
-    &:disabled {
-      background-color: $saturated-black;
-    }
-  }
-
-  &__submit-button-icon {
-    color: $white;
-  }
 }

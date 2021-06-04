@@ -2,7 +2,9 @@ import React, { useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { InputField } from "components/atoms/InputField";
 
-import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import {
   usePrivateChatPreviews,
@@ -10,13 +12,19 @@ import {
 } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
+import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
+
 import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
+  venue: WithId<AnyVenue>;
   recipientId?: string;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({
+  recipientId,
+  venue,
+}) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const onInputChange = useCallback(
     (e) => setUserSearchQuery(e.target.value),
@@ -42,13 +50,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
           <PrivateChatPreview
             key={`${chatMessage.ts_utc}-${chatMessage.from}-${chatMessage.to}`}
             message={chatMessage}
-            isOnline={onlineUsers.some(
-              (user) => user.id === chatMessage.counterPartyUser.id
-            )}
             onClick={() => selectRecipientChat(chatMessage.counterPartyUser.id)}
           />
         )),
-    [privateChatPreviews, selectRecipientChat, onlineUsers]
+    [privateChatPreviews, selectRecipientChat]
   );
 
   const renderedOnlineUsers = useMemo(
@@ -86,7 +91,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
-    return <RecipientChat recipientId={recipientId} />;
+    return <RecipientChat recipientId={recipientId} venue={venue} />;
   }
 
   return (

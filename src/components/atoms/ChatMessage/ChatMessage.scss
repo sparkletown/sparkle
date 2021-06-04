@@ -23,6 +23,39 @@ $reply-icon-radius: 20px;
     }
   }
 
+  &--me {
+    align-self: flex-end;
+    align-items: flex-end;
+
+    .ChatMessage__bulb {
+      text-align: right;
+      background-color: $primary;
+      border-radius: $my-text-border-radius;
+    }
+
+    .ChatMessage__show-replies-button {
+      align-self: flex-end;
+    }
+
+    .ChatMessage__replies-content {
+      border-radius: $my-text-bottom-border-radius;
+    }
+
+    .ChatMessage__reply-icon {
+      background-color: $primary--light;
+      right: unset;
+      left: $spacing--sm;
+
+      &:hover {
+        background-color: $primary--lightest;
+      }
+    }
+  }
+
+  &--question &__bulb {
+    background-color: $dark-green;
+  }
+
   &__bulb {
     margin-bottom: $spacing--sm;
     width: auto;
@@ -45,6 +78,16 @@ $reply-icon-radius: 20px;
 
   &__text {
     font-size: $font-size--md;
+
+    // This direct element style is used with RenderMarkdown
+    img {
+      max-width: 100%;
+    }
+
+    // This direct element style is used with RenderMarkdown
+    p {
+      margin-bottom: 0;
+    }
   }
 
   &__show-replies-button {
@@ -104,34 +147,5 @@ $reply-icon-radius: 20px;
     // We add padding to single reply instead of margin so that the container has spacing at the top
     // https://stackoverflow.com/questions/13471910/no-padding-when-using-overflow-auto
     padding-top: $spacing--md;
-  }
-
-  &--me {
-    align-self: flex-end;
-    align-items: flex-end;
-
-    .ChatMessage__bulb {
-      text-align: right;
-      background-color: $primary;
-      border-radius: $my-text-border-radius;
-    }
-
-    .ChatMessage__show-replies-button {
-      align-self: flex-end;
-    }
-
-    .ChatMessage__replies-content {
-      border-radius: $my-text-bottom-border-radius;
-    }
-
-    .ChatMessage__reply-icon {
-      background-color: $primary--light;
-      right: unset;
-      left: $spacing--sm;
-
-      &:hover {
-        background-color: $primary--lightest;
-      }
-    }
   }
 }
