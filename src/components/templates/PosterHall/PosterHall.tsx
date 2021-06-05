@@ -17,8 +17,6 @@ export interface PosterHallProps {
   venue: WithId<GenericVenue>;
 }
 
-export const emptyPersonalizedPosters = {};
-
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
