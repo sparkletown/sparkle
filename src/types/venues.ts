@@ -233,6 +233,10 @@ export interface PosterPageVenue extends BaseVenue {
   isLive?: boolean;
 }
 
+export interface PersonalizedPoster extends PosterPageVenue {
+  isSaved: boolean;
+}
+
 export interface Question {
   name: string;
   text: string;

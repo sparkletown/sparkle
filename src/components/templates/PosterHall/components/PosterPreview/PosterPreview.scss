@@ -66,5 +66,9 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     top: 0%;
     padding: 0.5rem;
     color: rgb(255, 255, 255);
+
+    &:hover {
+      padding-top: 0.375rem;
+    }
   }
 }

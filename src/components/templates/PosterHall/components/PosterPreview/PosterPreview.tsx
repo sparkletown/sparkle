@@ -1,7 +1,6 @@
 import React, {
   MouseEventHandler,
   useCallback,
-  // useEffect,
   useMemo,
   useState,
 } from "react";
@@ -40,10 +39,6 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const { title, authorName, categories } = posterVenue.poster ?? {};
-
-  const venueId = posterVenue.id;
-
   const { userWithId } = useUser();
   const userPosterIds = userWithId?.savedPosters ?? emptyPersonalizedPosters;
 
@@ -58,10 +53,12 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const { push: openUrlUsingRouter } = useHistory();
   const handleEnterVenue = useCallback(
-    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
-    [venueId, openUrlUsingRouter]
+    () =>
+      enterVenue(posterVenue.id, { customOpenRelativeUrl: openUrlUsingRouter }),
+    [posterVenue, openUrlUsingRouter]
   );
 
+  const categories = posterVenue.poster?.categories;
   const renderedCategories = useMemo(
     () =>
       Array.from(new Set(categories)).map((category) => (
@@ -71,7 +68,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   const { relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
+    currentVenueId: posterVenue.id,
   });
 
   const { events: relatedVenueEvents = emptyRelatedEvents } = useVenueEvents({
@@ -117,11 +114,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
           icon={isBookmarkedPoster ? solidBookmark : regularBookmark}
         />
       </div>
-      <p className="PosterPreview__title">{title}</p>
-
+      <p className="PosterPreview__title">{posterVenue.poster?.title}</p>
       <div className="PosterPreview__categories">{renderedCategories}</div>
-
-      <div className="PosterPreview__author">{authorName}</div>
+      <div className="PosterPreview__author">
+        {posterVenue.poster?.authorName}
+      </div>
     </div>
   );
 };

@@ -614,3 +614,19 @@ export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/;
 
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
+
+// Markdown
+
+export const MARKDOWN_BASIC_FORMATTING_TAGS = [
+  "p",
+  "strong",
+  "em",
+  "blockquote",
+  "hr",
+  "del",
+];
+export const MARKDOWN_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
+export const MARKDOWN_IMAGE_TAGS = ["img"];
+export const MARKDOWN_LINK_TAGS = ["a"];
+export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
+export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
