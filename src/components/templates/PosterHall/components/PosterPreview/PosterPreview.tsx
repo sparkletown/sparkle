@@ -7,9 +7,9 @@ import React, {
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
-import { VenueEvent, PosterPageVenue } from "types/venues";
+import { PosterPageVenue } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -26,7 +26,6 @@ import { useVenueEvents } from "hooks/events";
 
 import "./PosterPreview.scss";
 
-const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 export const emptySavedPosters = {};
 
 export interface PosterPreviewProps {
@@ -62,7 +61,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     currentVenueId: venueId,
   });
 
-  const { events: relatedVenueEvents = emptyRelatedEvents } = useVenueEvents({
+  const { events: relatedVenueEvents } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
 
