@@ -97,13 +97,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     return relatedVenueEvents;
   }, [userWithId, isBookmarkedPoster, venueId, relatedVenueEvents]);
 
-  const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
-    (e) => {
-      e.stopPropagation();
-      bookmarkPoster();
-    },
-    [bookmarkPoster]
-  );
+  const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(() => {
+    bookmarkPoster();
+  }, [bookmarkPoster]);
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
