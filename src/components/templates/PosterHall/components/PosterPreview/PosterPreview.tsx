@@ -1,9 +1,4 @@
-import React, {
-  MouseEventHandler,
-  useCallback,
-  useMemo,
-  useState,
-} from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -13,17 +8,10 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
-import { Bookmark } from "components/atoms/Bookmark";
 
-import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
-
-import { useUser } from "hooks/useUser";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useVenueEvents } from "hooks/events";
+import { PosterBookmark } from "../PosterBookmark";
 
 import "./PosterPreview.scss";
-
-export const emptySavedPosters = {};
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -54,53 +42,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
-  const { relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
-
-  const { events: relatedVenueEvents } = useVenueEvents({
-    venueIds: relatedVenueIds,
-  });
-
-  const { userWithId } = useUser();
-  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
-
-  const [isBookmarkedPoster, setBookmarkPoster] = useState(
-    //@ts-ignore
-    userPosterIds[venueId]?.[0] === venueId
-  );
-
-  const bookmarkPoster = useCallback(() => {
-    if (userWithId?.id && venueId) {
-      savePosterToProfile({
-        venueId: venueId,
-        userId: userWithId?.id,
-        removeMode: isBookmarkedPoster,
-      });
-    }
-    relatedVenueEvents
-      .filter((event) => event.venueId === venueId)
-      .map((event) => {
-        userWithId?.id &&
-          event.id &&
-          updatePersonalizedSchedule({
-            event: event,
-            userId: userWithId?.id,
-            removeMode: isBookmarkedPoster,
-          });
-        return {};
-      });
-    setBookmarkPoster(!isBookmarkedPoster);
-    return relatedVenueEvents;
-  }, [userWithId, isBookmarkedPoster, venueId, relatedVenueEvents]);
-
-  const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    bookmarkPoster();
-  }, [bookmarkPoster]);
-
   return (
     <div className={posterClassnames}>
-      <Bookmark onClick={onBookmarkPoster} isSaved={isBookmarkedPoster} />
+      <PosterBookmark posterVenue={posterVenue} />
       <div onClick={handleEnterVenue}>
         <p className="PosterPreview__title">{title}</p>
 
