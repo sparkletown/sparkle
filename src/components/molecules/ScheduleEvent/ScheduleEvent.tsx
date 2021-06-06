@@ -2,10 +2,6 @@ import React, { MouseEventHandler, useCallback } from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
-import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-
 import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
 
 import {
@@ -23,6 +19,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { EventModal } from "components/organisms/EventModal";
 import { calcStartPosition } from "components/molecules/Schedule/utils";
+import { Bookmark } from "components/atoms/Bookmark";
 
 import "./ScheduleEvent.scss";
 
@@ -79,17 +76,18 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   return (
     <>
-      <div className={containerClasses} onClick={showEventModal}>
-        <div className="ScheduleEvent__info">
-          <div className="ScheduleEvent__title">{event.name}</div>
-          <div className="ScheduleEvent__host">by {event.host}</div>
+      <div className={containerClasses}>
+        <div onClick={showEventModal}>
+          <div className="ScheduleEvent__info">
+            <div className="ScheduleEvent__title">{event.name}</div>
+            <div className="ScheduleEvent__host">by {event.host}</div>
+          </div>
         </div>
-
-        <div className="ScheduleEvent__bookmark" onClick={bookmarkEvent}>
-          <FontAwesomeIcon
-            icon={event.isSaved ? solidBookmark : regularBookmark}
-          />
-        </div>
+        <Bookmark
+          className="ScheduleEvent__bookmark"
+          onClick={bookmarkEvent}
+          isSaved={event.isSaved}
+        />
       </div>
 
       <EventModal
