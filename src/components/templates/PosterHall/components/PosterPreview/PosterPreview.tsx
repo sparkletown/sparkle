@@ -9,7 +9,7 @@ import { useHistory } from "react-router-dom";
 
 import { VenueEvent, PosterPageVenue } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -19,12 +19,10 @@ import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
 import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
-import { useUser } from "hooks/useUser";
 
+import { useUser } from "hooks/useUser";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueEvents } from "hooks/events";
-
-import { WithVenueId } from "utils/id";
 
 import "./PosterPreview.scss";
 
@@ -42,14 +40,6 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { title, authorName, categories } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
-
-  const { userWithId } = useUser();
-  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
-
-  const [isBookmarkedPoster, setBookmarkPoster] = useState(
-    //@ts-ignore
-    userPosterIds[venueId]?.[0] === venueId
-  );
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
@@ -76,6 +66,14 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { events: relatedVenueEvents = emptyRelatedEvents } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
+
+  const { userWithId } = useUser();
+  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
+
+  const [isBookmarkedPoster, setBookmarkPoster] = useState(
+    //@ts-ignore
+    userPosterIds[venueId]?.[0] === venueId
+  );
 
   const bookmarkPoster = useCallback(() => {
     if (userWithId?.id && venueId) {
@@ -117,7 +115,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         />
       </div>
       <p className="PosterPreview__title">{title}</p>
+
       <div className="PosterPreview__categories">{renderedCategories}</div>
+
       <div className="PosterPreview__author">{authorName}</div>
     </div>
   );
