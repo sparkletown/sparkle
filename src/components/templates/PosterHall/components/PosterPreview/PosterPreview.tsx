@@ -30,7 +30,7 @@ import "./PosterPreview.scss";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 export const emptyPersonalizedSchedule = {};
-export const emptyPersonalizedPosters = {};
+export const emptySavedPosters = {};
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -39,12 +39,16 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
+  const { title, authorName, categories } = posterVenue.poster ?? {};
+
+  const venueId = posterVenue.id;
+
   const { userWithId } = useUser();
-  const userPosterIds = userWithId?.savedPosters ?? emptyPersonalizedPosters;
+  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
 
   const [isBookmarkedPoster, setBookmarkPoster] = useState(
     //@ts-ignore
-    userPosterIds[posterVenue.id]?.[0] === posterVenue.id
+    userPosterIds[venueId]?.[0] === venueId
   );
 
   const posterClassnames = classNames("PosterPreview", {
@@ -53,12 +57,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const { push: openUrlUsingRouter } = useHistory();
   const handleEnterVenue = useCallback(
-    () =>
-      enterVenue(posterVenue.id, { customOpenRelativeUrl: openUrlUsingRouter }),
-    [posterVenue, openUrlUsingRouter]
+    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
+    [venueId, openUrlUsingRouter]
   );
 
-  const categories = posterVenue.poster?.categories;
   const renderedCategories = useMemo(
     () =>
       Array.from(new Set(categories)).map((category) => (
@@ -68,7 +70,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   const { relatedVenueIds } = useRelatedVenues({
-    currentVenueId: posterVenue.id,
+    currentVenueId: venueId,
   });
 
   const { events: relatedVenueEvents = emptyRelatedEvents } = useVenueEvents({
@@ -76,15 +78,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   });
 
   const bookmarkPoster = useCallback(() => {
-    if (userWithId?.id && posterVenue.id) {
+    if (userWithId?.id && venueId) {
       savePosterToProfile({
-        venueId: posterVenue.id,
+        venueId: venueId,
         userId: userWithId?.id,
         removeMode: isBookmarkedPoster,
       });
     }
     relatedVenueEvents
-      .filter((event) => event.venueId === posterVenue.id)
+      .filter((event) => event.venueId === venueId)
       .map((event) => {
         userWithId?.id &&
           event.id &&
@@ -97,7 +99,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       });
     setBookmarkPoster(!isBookmarkedPoster);
     return relatedVenueEvents;
-  }, [userWithId, isBookmarkedPoster, posterVenue, relatedVenueEvents]);
+  }, [userWithId, isBookmarkedPoster, venueId, relatedVenueEvents]);
 
   const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
@@ -114,11 +116,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
           icon={isBookmarkedPoster ? solidBookmark : regularBookmark}
         />
       </div>
-      <p className="PosterPreview__title">{posterVenue.poster?.title}</p>
+      <p className="PosterPreview__title">{title}</p>
       <div className="PosterPreview__categories">{renderedCategories}</div>
-      <div className="PosterPreview__author">
-        {posterVenue.poster?.authorName}
-      </div>
+      <div className="PosterPreview__author">{authorName}</div>
     </div>
   );
 };
