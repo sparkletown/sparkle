@@ -172,6 +172,7 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+  showBookmarks?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

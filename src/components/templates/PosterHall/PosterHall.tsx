@@ -35,9 +35,13 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
-      <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
+      <PosterPreview
+        key={posterVenue.id}
+        posterVenue={posterVenue}
+        showBookmarks={venue?.showBookmarks}
+      />
     ));
-  }, [posterVenues]);
+  }, [posterVenues, venue]);
 
   return (
     <div className="PosterHall">
