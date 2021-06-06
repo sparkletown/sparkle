@@ -29,6 +29,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setSearchInputValue,
     liveFilter,
     setLiveFilter,
+
+    bookmarkedFilter,
+    setBookmarkedFilter,
   } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
@@ -50,6 +53,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         searchInputValue={searchInputValue}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
+        bookmarkedFilterValue={bookmarkedFilter}
+        setBookmarkedValue={setBookmarkedFilter}
+        showBookmarks={venue?.showBookmarks}
       />
 
       <div className="PosterHall__posters">
