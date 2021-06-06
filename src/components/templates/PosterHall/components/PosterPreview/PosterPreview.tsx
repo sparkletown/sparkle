@@ -27,7 +27,6 @@ import { useVenueEvents } from "hooks/events";
 import "./PosterPreview.scss";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
-export const emptyPersonalizedSchedule = {};
 export const emptySavedPosters = {};
 
 export interface PosterPreviewProps {
