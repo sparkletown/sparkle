@@ -13,10 +13,7 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
-import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+import { Bookmark } from "components/atoms/Bookmark";
 
 import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
 
@@ -102,17 +99,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   }, [bookmarkPoster]);
 
   return (
-    <div className={posterClassnames} onClick={handleEnterVenue}>
-      <div className="PosterPreview__bookmark" onClick={onBookmarkPoster}>
-        <FontAwesomeIcon
-          icon={isBookmarkedPoster ? solidBookmark : regularBookmark}
-        />
+    <div className={posterClassnames}>
+      <Bookmark onClick={onBookmarkPoster} isSaved={isBookmarkedPoster} />
+      <div onClick={handleEnterVenue}>
+        <p className="PosterPreview__title">{title}</p>
+
+        <div className="PosterPreview__categories">{renderedCategories}</div>
+
+        <div className="PosterPreview__author">{authorName}</div>
       </div>
-      <p className="PosterPreview__title">{title}</p>
-
-      <div className="PosterPreview__categories">{renderedCategories}</div>
-
-      <div className="PosterPreview__author">{authorName}</div>
     </div>
   );
 };

@@ -56,19 +56,4 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
   }
-
-  &__bookmark {
-    cursor: pointer;
-    height: 100%;
-    display: flex;
-    justify-content: right;
-    align-items: right;
-    top: 0%;
-    padding: 0.5rem;
-    color: rgb(255, 255, 255);
-
-    &:hover {
-      padding-top: 0.375rem;
-    }
-  }
 }
