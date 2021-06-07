@@ -9,6 +9,8 @@ import { WithId } from "utils/id";
 
 import { useRoom } from "hooks/useRoom";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 export interface EventDisplayProps {
   event: VenueEvent;
   venue?: WithId<AnyVenue>;
@@ -59,7 +61,7 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
       <div className="schedule-event-info">
         <div className="schedule-event-info-title">{event.name}</div>
         <div className="schedule-event-info-description">
-          {event.description}
+          <RenderMarkdown text={event.description} />
         </div>
         <div className="schedule-event-info-room">
           {event.room && room && venue ? (
