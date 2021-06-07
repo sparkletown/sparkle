@@ -1,21 +1,13 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { User, UserStatus } from "types/User";
+import { UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
-import { WithId, WithVenueId } from "utils/id";
+import { WithVenueId } from "utils/id";
 
 export const getUserRef = (userId: string) =>
   firebase.firestore().collection("users").doc(userId);
-
-export const getUserById = (userId?: string) => {
-  if (!userId) return;
-
-  return getUserRef(userId)
-    .get()
-    .then((response) => response.data() as WithId<User>);
-};
 
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;

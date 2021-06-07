@@ -1,16 +1,17 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
-import { useAsync } from "react-use";
 
-import { getUserById } from "api/profile";
 import { acceptVideoChat, setVideoChatState } from "api/videoRoom";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import { useVenueId } from "hooks/useVenueId";
+import { useWorldUserById } from "hooks/users";
 
 import { hasElements } from "utils/types";
+import { WithId } from "utils/id";
 
 import { VideoChatRequestState } from "types/VideoRoom";
+import { User } from "types/User";
 
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -29,10 +30,7 @@ export const VideoChatModal: React.FC = () => {
     [hasVideoRoomRequests, videoRoomRequests]
   );
 
-  const { value: host, loading: isLoadingHost } = useAsync(
-    async () => await getUserById(currentVideoRoomRequest?.hostUserId),
-    [currentVideoRoomRequest]
-  );
+  const host = useWorldUserById(currentVideoRoomRequest?.hostUserId);
 
   const acceptVideoRoomRequest = useCallback(() => {
     if (!currentVideoRoomRequest || !venueId) return;
@@ -50,9 +48,14 @@ export const VideoChatModal: React.FC = () => {
     );
   }, [currentVideoRoomRequest]);
 
-  if (!hasVideoRoomRequests && !isLoadingHost) {
+  if (!currentVideoRoomRequest || !host) {
     return null;
   }
+
+  const hostWithId: WithId<User> = {
+    ...host,
+    id: currentVideoRoomRequest.hostUserId,
+  };
 
   return (
     <ConfirmationModal
@@ -64,7 +67,7 @@ export const VideoChatModal: React.FC = () => {
       onCancel={declineVideoRoomRequest}
     >
       <div className="VideoChatModal__host-info">
-        <UserAvatar user={host} large />
+        <UserAvatar user={hostWithId} large />
         <div className="VideoChatModal__host-title">{host?.partyName}</div>
       </div>
     </ConfirmationModal>
