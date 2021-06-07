@@ -57,8 +57,6 @@ export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
-export const DEFAULT_EDIT_PROFILE_TEXT =
-  "I haven't edited my profile to tell you yet";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
@@ -77,7 +75,7 @@ export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
-export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
