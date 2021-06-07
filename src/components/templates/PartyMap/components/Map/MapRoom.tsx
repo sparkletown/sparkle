@@ -50,7 +50,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     "maproom--covert--unclickable": isUnclickable,
     "maproom--covert--iframe": isIframe,
     "maproom--always-show-label":
-      (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
+      !isCovertRoom &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
@@ -91,15 +91,15 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
       onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
-      {!isIframe ? (
-        <img className="maproom__image" src={room.image_url} alt={room.title} />
-      ) : (
+      {isIframe ? (
         <iframe
           className="maproom__iframe"
           src={room.url}
           title={room.title}
           allow={IFRAME_ALLOW}
         />
+      ) : (
+        <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
       {!isCovertRoom && (
