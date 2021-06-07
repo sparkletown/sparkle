@@ -3,8 +3,6 @@ import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { Venue_v2 } from "types/venues";
-
 import { orderedVenuesSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -63,7 +61,7 @@ const Admin_v2: React.FC = () => {
         <S.ViewWrapper>
           {selectedVenue ? (
             // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-            <AdminVenueView venue={selectedVenue as Venue_v2} />
+            <AdminVenueView />
           ) : (
             <AdminVenues venues={venues} />
           )}

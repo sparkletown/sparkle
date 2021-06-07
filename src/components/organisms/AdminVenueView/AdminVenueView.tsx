@@ -1,43 +1,38 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Button, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { useMemo, useState } from "react";
+import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
-import AdvancedSettings from "pages/Admin/AdvancedSettings";
-import BasicInfo from "pages/Admin/BasicInfo";
-import EntranceExperience from "pages/Admin/EntranceExperience";
-import VenueDetails from "pages/Admin/Venue/Details";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useUser } from "hooks/useUser";
+import { useAdminVenues } from "hooks/useAdminVenues";
 
-import { Venue_v2 } from "types/venues";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./AdminVenueView.scss";
 
 export enum AdminVenueTab {
-  dashboard = "dashboard",
-  basicInfo = "basic_info",
-  entranceExperience = "entrance_experience",
-  advancedMapSettings = "advanced_map_settings",
+  spaces = "spaces",
+  timing = "timing",
+  run = "run",
 }
 
 const adminVenueTabs: Record<AdminVenueTab, String> = {
-  [AdminVenueTab.basicInfo]: "Start",
-  [AdminVenueTab.entranceExperience]: "Entrance",
-  [AdminVenueTab.advancedMapSettings]: "Advanced",
-  [AdminVenueTab.dashboard]: "Dashboard",
+  [AdminVenueTab.spaces]: "Spaces",
+  [AdminVenueTab.timing]: "Timing",
+  [AdminVenueTab.run]: "Run",
 };
 
-const DEFAULT_TAB = AdminVenueTab.dashboard;
+const DEFAULT_TAB = AdminVenueTab.spaces;
 
-export interface AdminVenueViewProps {
-  venue: Venue_v2;
-}
+export const AdminVenueView: React.FC = () => {
+  const { user } = useUser();
+  useAdminVenues(user?.uid);
 
-export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
+  const venueId = useVenueId();
   const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
 
-  const selectDefaultTab = useCallback(() => {
-    setSelectedTab(DEFAULT_TAB);
-  }, []);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabs).map(([id, text]) => (
@@ -53,13 +48,13 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
     ));
   }, [selectedTab]);
 
+  if (venueId && !venue) {
+    return <LoadingPage />;
+  }
+
   return (
     <>
       <div className="AdminVenueView">
-        <Button as={Link} to="/admin_v2/venue">
-          Back
-        </Button>
-
         <Nav
           className="AdminVenueView__options"
           activeKey={selectedTab}
@@ -68,18 +63,9 @@ export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
           {renderAdminVenueTabs}
         </Nav>
       </div>
-      {selectedTab === AdminVenueTab.basicInfo && (
-        <BasicInfo venue={venue} onSave={selectDefaultTab} />
-      )}
-      {selectedTab === AdminVenueTab.entranceExperience && (
-        <EntranceExperience venue={venue} onSave={selectDefaultTab} />
-      )}
-      {selectedTab === AdminVenueTab.advancedMapSettings && (
-        <AdvancedSettings venue={venue} onSave={selectDefaultTab} />
-      )}
-      {selectedTab === AdminVenueTab.dashboard && (
-        <VenueDetails venue={venue} />
-      )}
+      {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
+      {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
+      {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
   );
 };

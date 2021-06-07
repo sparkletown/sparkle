@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$admin-venue-card-button-margin: 5px 0;
+
 .admin-venue-card {
   position: relative;
   overflow: hidden;
@@ -65,6 +67,7 @@
     border-radius: 16px;
     text-align: center;
     text-decoration: none;
+    margin: $admin-venue-card-button-margin;
 
     &:hover {
       color: $white;

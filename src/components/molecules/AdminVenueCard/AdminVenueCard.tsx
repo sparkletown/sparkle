@@ -30,8 +30,17 @@ export const AdminVenueCard: React.FC<AdminVenueCardProps> = ({ venue }) => (
       />
       <h3>{venue.name}</h3>
     </div>
-    <Link className="admin-venue-card__button" to={`/admin_v2/${venue.id}`}>
-      Manage Party
+    <Link
+      className="admin-venue-card__button"
+      to={`/admin_v2/venue/${venue.id}`}
+    >
+      Manage Space
+    </Link>
+    <Link
+      className="admin-venue-card__button"
+      to={`/admin_v2/advanced-settings/${venue.id}`}
+    >
+      Advanced Settings
     </Link>
   </div>
 );
