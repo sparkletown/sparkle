@@ -16,11 +16,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./AdminAdvancedSettings.scss";
 
-export interface SidebarOption {
-  id: string;
-  text: string;
-}
-
 export enum AdminAdvancedTab {
   basicInfo = "basic_info",
   entranceExperience = "entrance_experience",
