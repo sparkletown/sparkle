@@ -8,6 +8,8 @@ import { GenericVenue } from "types/venues";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import Room from "components/organisms/Room";
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import InformationCard from "components/molecules/InformationCard";
@@ -38,9 +40,11 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p style={{ fontSize: 13 }}>
-              {venue.config?.landingPageConfig.description}
-            </p>
+            <div style={{ fontSize: 13 }}>
+              <RenderMarkdown
+                text={venue.config?.landingPageConfig.description}
+              />
+            </div>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">

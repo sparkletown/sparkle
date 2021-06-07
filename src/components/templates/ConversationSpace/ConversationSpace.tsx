@@ -7,6 +7,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
@@ -39,9 +40,11 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
             {venue.config?.landingPageConfig.subtitle}
           </p>
-          <p style={{ fontSize: 13 }}>
-            {venue.config?.landingPageConfig.description}
-          </p>
+          <div style={{ fontSize: 13 }}>
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
+          </div>
         </InformationCard>
       </InformationLeftColumn>
       <div className="conversation-space-container">
@@ -58,7 +61,9 @@ export const ConversationSpace: React.FunctionComponent = () => {
           {venue.description?.text && (
             <div className="row">
               <div className="col">
-                <div className="description">{venue.description?.text}</div>
+                <div className="description">
+                  <RenderMarkdown text={venue.description?.text} />
+                </div>
               </div>
             </div>
           )}
