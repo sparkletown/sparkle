@@ -56,10 +56,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const videoParticipants = useMemo(
     () =>
-      activeParticipants.map((participant, index) => (
+      activeParticipants.map(({ participant, user }, index) => (
         <VideoParticipant
           key={participant.identity ?? `participant-${index}`}
           participant={participant}
+          participantUser={user}
           additionalClassNames="PosterPage__video-participant"
         />
       )),
