@@ -36,6 +36,7 @@ debug.log*
 
 # Firebase debug log
 firebase-debug.log
+firestore-debug.log
 ui-debug.log
 
 # Reports
@@ -46,3 +47,7 @@ reporting/cookies.json
 
 #IDEs
 .idea/
+
+# Firebase emulators
+/tmp/*
+!/tmp/.gitkeep

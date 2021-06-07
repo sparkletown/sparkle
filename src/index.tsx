@@ -99,6 +99,11 @@ if (process.env.NODE_ENV === "development") {
   firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
 }
 
+// Enable the functions emulator when running in development at specific port
+if (process.env.NODE_ENV === "development" && window.location.port === "5000") {
+  firebaseApp.firestore().useEmulator("localhost", 8080);
+}
+
 // Load Stripe
 const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
   loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")

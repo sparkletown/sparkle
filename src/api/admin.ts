@@ -1,4 +1,4 @@
-import firebase, { UserInfo } from "firebase/app";
+import firebase from "firebase/app";
 import { omit } from "lodash";
 import Bugsnag from "@bugsnag/js";
 
@@ -14,6 +14,8 @@ import { RoomData_v2 } from "types/rooms";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+
+type UserInfo = firebase.UserInfo;
 
 export interface EventInput {
   name: string;

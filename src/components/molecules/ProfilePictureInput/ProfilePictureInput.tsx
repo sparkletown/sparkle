@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
-import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import firebase from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -16,6 +16,7 @@ import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import "./ProfilePictureInput.scss";
 
+type UserInfo = firebase.UserInfo;
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
 interface ProfilePictureInputProps {
