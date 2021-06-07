@@ -22,7 +22,7 @@ export enum AdminAdvancedTab {
   advancedMapSettings = "advanced_map_settings",
 }
 
-const adminVenueTabs: Record<AdminAdvancedTab, String> = {
+const adminAdvancedTabs: Record<AdminAdvancedTab, String> = {
   [AdminAdvancedTab.basicInfo]: "Start",
   [AdminAdvancedTab.entranceExperience]: "Entrance",
   [AdminAdvancedTab.advancedMapSettings]: "Advanced",
@@ -44,13 +44,13 @@ export const AdminAdvancedSettings: React.FC = () => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminAdvancedTabs = useMemo(() => {
-    return Object.entries(adminVenueTabs).map(([id, text]) => (
+    return Object.entries(adminAdvancedTabs).map(([key, text]) => (
       <Nav.Link
-        key={id}
+        key={key}
         className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedTab === id,
+          "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        eventKey={id}
+        eventKey={key}
       >
         {text}
       </Nav.Link>

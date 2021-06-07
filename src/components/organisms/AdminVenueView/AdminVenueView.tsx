@@ -35,13 +35,13 @@ export const AdminVenueView: React.FC = () => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabs).map(([id, text]) => (
+    return Object.entries(adminVenueTabs).map(([key, text]) => (
       <Nav.Link
-        key={id}
+        key={key}
         className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedTab === id,
+          "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        eventKey={id}
+        eventKey={key}
       >
         {text}
       </Nav.Link>
