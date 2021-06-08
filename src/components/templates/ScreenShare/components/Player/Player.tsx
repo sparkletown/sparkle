@@ -8,11 +8,18 @@ import {
 } from "agora-rtc-sdk-ng";
 import "./Player.scss";
 
+import { WithId } from "utils/id";
+
+import { User } from "types/User";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
+
 import VolumeMutedIcon from "assets/icons/volume-muted-icon.svg";
 import CameraOffIcon from "assets/icons/camera-off-icon.svg";
 import StreamingIcon from "assets/icons/streaming-icon.svg";
 
 export interface VideoPlayerProps {
+  user?: WithId<User>;
   videoTrack: ILocalVideoTrack | IRemoteVideoTrack | undefined;
   audioTrack?: ILocalAudioTrack | IRemoteAudioTrack | undefined;
   showButtons?: boolean;
@@ -24,6 +31,7 @@ export interface VideoPlayerProps {
 }
 
 const Player = ({
+  user,
   videoTrack,
   audioTrack,
   showButtons = false,
@@ -54,6 +62,12 @@ const Player = ({
     classNames("icon-container", {
       on: isOn,
     });
+
+  // TODO: detect how to find sharing player
+  // const containerClasses = () =>
+  //   classNames("video-player", {
+  //     'video-player--sharing': isSharing,
+  //   });
 
   return (
     <div ref={container} className="video-player">
@@ -87,6 +101,7 @@ const Player = ({
                 <img src={StreamingIcon} alt="streaming-icon" />
               </div>
             )}
+            <UserAvatar user={user} containerClassName="icon-container" />
           </div>
         </div>
       )}

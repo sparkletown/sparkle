@@ -30,7 +30,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const { userId, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const isHidden = isDefined(profile?.data?.[venueId]);
+  const isHidden = isDefined(profile?.data?.[venueId]?.row);
 
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
@@ -46,9 +46,6 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
     [userId, venueId, name]
   );
 
-  // @debt It seems seatedPartygoer is only passed in here so we don't try and take an already occupied seat
-  //  Instead of threading this all the way down into useMapGrid -> MapCell, can we just close over partygoersBySeat here,
-  //  and/or handle it in a better way?
   const onSeatClick = useCallback(
     (row: number, column: number) => takeSeat(row, column),
     [takeSeat]
@@ -89,7 +86,6 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
     onSeatClick,
   });
 
-  // TODO: this probably doesn't even need to be a hook.. it's more of a component if anything. We can clean this up later
   const partygoersOverlay = usePartygoersOverlay({
     showGrid,
     userUid: userId,

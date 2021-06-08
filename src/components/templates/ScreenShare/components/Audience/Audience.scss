@@ -18,6 +18,7 @@
     width: calc(35 * 30px);
     height: 100%;
     display: grid;
+    overflow: hidden;
 
     & > *:first-child {
       grid-row: 1 / 1;
