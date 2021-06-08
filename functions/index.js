@@ -37,6 +37,12 @@ const venue = require("./venue");
 const stats = require("./stats");
 const access = require("./access");
 
+exports.video = video;
+exports.payment = payment;
+exports.venue = venue;
+exports.stats = stats;
+exports.access = access;
+
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()
@@ -58,9 +64,3 @@ exports.checkPassword = functions.https.onCall(async (data) => {
       );
     });
 });
-
-exports.video = video;
-exports.payment = payment;
-exports.venue = venue;
-exports.stats = stats;
-exports.access = access;
