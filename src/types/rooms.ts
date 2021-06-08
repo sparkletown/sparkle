@@ -4,6 +4,7 @@ export enum RoomType {
   unclickable = "UNCLICKABLE",
   mapFrame = "MAPFRAME",
   video = "VIDEO",
+  pdf = "PDF",
 }
 
 // @debt We should end up with 1 canonical room type

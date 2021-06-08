@@ -13,6 +13,7 @@ import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import { PdfModal } from "components/organisms/PdfModal";
 import VideoModal from "components/organisms/VideoModal";
 
 import UserList from "components/molecules/UserList";
@@ -50,8 +51,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           caption={room.title}
           url={room.url}
           autoplay={true}
+          backdrop={true}
         />
       );
+      break;
+
+    case RoomTypes.pdf:
+      template = <PdfModal show={show} onHide={onHide} url={room.url} />;
       break;
 
     default:
