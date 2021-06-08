@@ -168,6 +168,7 @@ if (BUGSNAG_API_KEY) {
     "env/unity",
     "env/clever",
     "env/burn",
+    "env/burn-staging",
   ];
 
   const releaseStage = () => {
