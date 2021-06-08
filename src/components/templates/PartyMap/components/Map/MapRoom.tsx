@@ -94,7 +94,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       {isMapFrame ? (
         <iframe
           className="maproom__iframe"
-          src={room.image_url}
+          src={room.url}
           title={room.title}
           allow={IFRAME_ALLOW}
           frameBorder="0"
