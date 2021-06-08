@@ -17,6 +17,7 @@
     "uuidv4": "^6.2.6"
   },
   "devDependencies": {
+    "@tsconfig/node10": "^1.0.7",
     "eslint": "^7.19.0",
     "eslint-plugin-promise": "^4.0.1",
     "firebase-functions-test": "^0.2.3",
