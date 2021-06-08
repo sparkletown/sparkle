@@ -20,7 +20,7 @@ export const usePosterVideo = (venueId: string) => {
   } = useVideoRoomState({
     userId,
     roomName: venueId,
-    defaultActiveParticipant: false,
+    activeParticipantByDefault: false,
   });
 
   const getUserById = useCallback(

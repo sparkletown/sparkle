@@ -163,13 +163,13 @@ export const useParticipantState = ({
 export interface UseVideoRoomStateProps {
   userId?: string;
   roomName?: string;
-  defaultActiveParticipant?: boolean;
+  activeParticipantByDefault?: boolean;
 }
 
 export const useVideoRoomState = ({
   userId,
   roomName,
-  defaultActiveParticipant = true,
+  activeParticipantByDefault = true,
 }: UseVideoRoomStateProps) => {
   const [token, setToken] = useState<string>();
 
@@ -211,7 +211,7 @@ export const useVideoRoomState = ({
 
     show: becomeActiveParticipant,
     hide: becomePassiveParticipant,
-  } = useShowHide(defaultActiveParticipant);
+  } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback((participant: RemoteParticipant) => {
     setParticipants((prevParticipants) => [...prevParticipants, participant]);
