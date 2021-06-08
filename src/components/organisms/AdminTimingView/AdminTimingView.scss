@@ -1,0 +1,112 @@
+@import "scss/constants.scss";
+
+$side-padding: 30px;
+$primary: #7c46fb;
+$black: #000000;
+$white: #fff;
+
+$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
+
+$dark: #1a1d24;
+$border-radius: 28px;
+$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+$login-max-width: 540px;
+$modal-max-width: 540px;
+$page-max-width: 1240px;
+
+.creation-page-container {
+  height: 100vh;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+}
+
+.creation-page-container .creation-page-left {
+  position: relative;
+  background-color: #000;
+  height: 100%;
+  overflow-y: scroll;
+  width: 360px;
+}
+
+.creation-page-container .creation-page-left .creation-page-left-content {
+  margin-top: 100px;
+  padding: 100px 30px;
+  padding: 40px 30px 100px;
+  max-width: 620px;
+  margin: auto;
+}
+
+.creation-page-container .creation-page-left .creation-page-left-bottombar {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  z-index: 100;
+  bottom: 0px;
+  width: 360px;
+  padding: 12px;
+  background-color: #000;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.creation-page-container
+  .creation-page-left
+  .creation-page-left-bottombar
+  .creation-page-left-bottombar-btnright
+  .btn {
+  margin-left: 12px;
+}
+
+.creation-page-container .creation-page-right {
+  background-color: #19181a;
+  overflow-y: scroll;
+}
+
+.creation-page-container .creation-page-right .creation-page-right-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.events-container {
+  background-color: #000;
+  position: relative;
+  height: 75%;
+  width: 85%;
+  margin: 75px;
+  border-radius: 30px;
+  padding: 20px;
+  padding-left: 30px;
+}
+
+.party-heading,
+.party-subheading {
+  font-weight: 300;
+  line-height: 1;
+  opacity: 0.6;
+}
+
+.party-heading {
+  opacity: 1;
+  display: inline-block;
+  margin-top: 20px;
+}
+
+.input-left {
+  display: inline;
+  width: 59%;
+  margin-right: 5px;
+  float: left;
+  margin-top: 10px;
+}
+
+.input-right {
+  width: 38%;
+  display: inline;
+  float: right;
+  margin-top: 10px;
+}
+
+.mb-1 {
+  line-height: 1;
+}
