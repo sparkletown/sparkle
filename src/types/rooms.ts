@@ -1,13 +1,13 @@
 import { SoundConfigReference } from "./sounds";
 
-export enum RoomTypes {
+export enum RoomType {
   unclickable = "UNCLICKABLE",
-  iframe = "IFRAME",
+  mapFrame = "MAPFRAME",
 }
 
 // @debt We should end up with 1 canonical room type
 export interface Room {
-  type?: RoomTypes;
+  type?: RoomType;
   zIndex?: number;
   title: string;
   subtitle: string;
@@ -26,7 +26,7 @@ export interface Room {
 
 // @debt We should end up with 1 canonical room type
 export interface RoomData_v2 {
-  type?: RoomTypes;
+  type?: RoomType;
   zIndex?: number;
   title?: string;
   subtitle?: string;

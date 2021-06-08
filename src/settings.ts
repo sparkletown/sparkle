@@ -9,7 +9,7 @@ import {
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
-import { RoomTypes } from "types/rooms";
+import { RoomType } from "types/rooms";
 import { FIVE_MINUTES_MS } from "utils/time";
 import { UserStatus } from "types/User";
 
@@ -204,9 +204,9 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.zoomroom,
 ];
 
-export const COVERT_ROOM_TYPES: RoomTypes[] = [
-  RoomTypes.unclickable,
-  RoomTypes.iframe,
+export const COVERT_ROOM_TYPES: RoomType[] = [
+  RoomType.unclickable,
+  RoomType.mapFrame,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it

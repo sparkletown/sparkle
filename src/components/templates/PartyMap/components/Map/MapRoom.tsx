@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room, RoomType } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
@@ -32,8 +32,8 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
-  const isUnclickable = room.type === RoomTypes.unclickable;
-  const isIframe = room.type === RoomTypes.iframe;
+  const isUnclickable = room.type === RoomType.unclickable;
+  const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
 
   const dispatch = useDispatch();
@@ -48,7 +48,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const containerClasses = classNames("maproom", {
     "maproom--covert--unclickable": isUnclickable,
-    "maproom--covert--iframe": isIframe,
+    "maproom--covert--iframe": isMapFrame,
     "maproom--always-show-label":
       !isCovertRoom &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
@@ -91,12 +91,13 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
       onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
-      {isIframe ? (
+      {isMapFrame ? (
         <iframe
           className="maproom__iframe"
           src={room.url}
           title={room.title}
           allow={IFRAME_ALLOW}
+          frameBorder="0"
         />
       ) : (
         <img className="maproom__image" src={room.image_url} alt={room.title} />
