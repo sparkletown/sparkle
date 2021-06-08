@@ -50,16 +50,17 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
     isMeActiveParticipant,
 
-    leaveVideoSeat,
-    takeVideoSeat,
+    becomePassiveParticipant,
+    becomeActiveParticipant,
   } = usePosterVideo(venueId);
 
   const videoParticipants = useMemo(
     () =>
-      activeParticipants.map((participant, index) => (
+      activeParticipants.map(({ participant, user }, index) => (
         <VideoParticipant
           key={participant.identity ?? `participant-${index}`}
           participant={participant}
+          participantUser={user}
           additionalClassNames="PosterPage__video-participant"
         />
       )),
@@ -96,7 +97,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
               label="Stop video"
               icon={faStop}
               containerClassNames="PosterPage__control--stop"
-              onClick={leaveVideoSeat}
+              onClick={becomePassiveParticipant}
             />
           )}
 
@@ -135,7 +136,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         {hasFreeSpace && !isMeActiveParticipant && (
           <div
             className="PosterPage__join-video-participants-btn"
-            onClick={takeVideoSeat}
+            onClick={becomeActiveParticipant}
           >
             Join with video
           </div>
