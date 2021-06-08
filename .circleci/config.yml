@@ -327,7 +327,7 @@ jobs:
               RELEASE_STAGE=env/burn
             fi
             if [ $CIRCLE_BRANCH = "env/burn-staging" ]; then
-              PREFIX=BURN_
+              PREFIX=BURN_STAGING_
               ENV=sparkle-burn-staging
               TARGET=sparkle-burn-staging
               RELEASE_STAGE=env/burn
