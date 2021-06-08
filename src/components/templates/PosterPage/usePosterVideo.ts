@@ -15,12 +15,12 @@ export const usePosterVideo = (venueId: string) => {
 
   const {
     participants,
-    turnVideoOff: leaveVideoSeat,
-    turnVideoOn: takeVideoSeat,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   } = useVideoRoomState({
     userId,
     roomName: venueId,
-    showVideoByDefault: false,
+    activeParticipantByDefault: false,
   });
 
   const getUserById = useCallback(
@@ -86,7 +86,7 @@ export const usePosterVideo = (venueId: string) => {
 
     isMeActiveParticipant,
 
-    takeVideoSeat,
-    leaveVideoSeat,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   };
 };
