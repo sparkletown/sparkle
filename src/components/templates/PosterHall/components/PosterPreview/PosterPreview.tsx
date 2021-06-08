@@ -42,7 +42,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
-      <p className="PosterPreview__title">{title}</p>
+      <p className="PosterPreview__title">
+        {posterVenue.name}: {title}
+      </p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
