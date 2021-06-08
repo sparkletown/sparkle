@@ -1,4 +1,6 @@
 import Bugsnag from "@bugsnag/js";
+import { generatePath } from "react-router";
+
 import { VALID_URL_PROTOCOLS } from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
@@ -9,12 +11,16 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-export const adminv3VenueUrl = (venueId: string) => {
-  return `/admin-v2/venue/${venueId}`;
+export const adminNGVenueUrl = (venueId?: string) => {
+  return generatePath("/admin-ng/venue/:venueId?", {
+    venueId: venueId,
+  });
 };
 
-export const adminV3SettigsUrl = (venueId: string) => {
-  return `/admin-v2/advanced-settings/${venueId}`;
+export const adminNGSettigsUrl = (venueId?: string) => {
+  return generatePath("/admin-ng/advanced-settings/:venueId?", {
+    venueId: venueId,
+  });
 };
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {

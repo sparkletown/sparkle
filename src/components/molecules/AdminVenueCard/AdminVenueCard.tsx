@@ -6,7 +6,7 @@ import { AnyVenue } from "types/venues";
 import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { WithId } from "utils/id";
-import { adminV3SettigsUrl, adminv3VenueUrl } from "utils/url";
+import { adminNGSettigsUrl, adminNGVenueUrl } from "utils/url";
 
 import "./AdminVenueCard.scss";
 
@@ -31,10 +31,10 @@ export const AdminVenueCard: React.FC<AdminVenueCardProps> = ({ venue }) => (
       />
       <h3>{venue.name}</h3>
     </div>
-    <Link className="AdminVenueCard__button" to={adminv3VenueUrl(venue.id)}>
+    <Link className="AdminVenueCard__button" to={adminNGVenueUrl(venue.id)}>
       Manage Space
     </Link>
-    <Link className="AdminVenueCard__button" to={adminV3SettigsUrl(venue.id)}>
+    <Link className="AdminVenueCard__button" to={adminNGSettigsUrl(venue.id)}>
       Advanced Settings
     </Link>
   </div>

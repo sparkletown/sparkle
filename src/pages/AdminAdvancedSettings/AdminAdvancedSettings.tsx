@@ -5,7 +5,8 @@ import classNames from "classnames";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
-import { useAdminVenues } from "hooks/useAdminVenues";
+import { useRoles } from "hooks/useRoles";
+import { useIsAdminUser } from "hooks/roles";
 
 import { Venue_v2 } from "types/venues";
 
@@ -31,11 +32,12 @@ const adminAdvancedTabs: Readonly<Record<AdminAdvancedTab, String>> = {
 const DEFAULT_TAB = AdminAdvancedTab.basicInfo;
 
 export const AdminAdvancedSettings: React.FC = () => {
-  const { user } = useUser();
-  useAdminVenues(user?.uid);
-
   const venueId = useVenueId();
   const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
+
+  const { user } = useUser();
+  const { roles } = useRoles();
+  const { isAdminUser } = useIsAdminUser(user?.uid);
 
   const selectDefaultTab = useCallback(() => {
     setSelectedTab(DEFAULT_TAB);
@@ -57,8 +59,12 @@ export const AdminAdvancedSettings: React.FC = () => {
     ));
   }, [selectedTab]);
 
-  if (venueId && !venue) {
+  if ((venueId && !venue) || !roles) {
     return <LoadingPage />;
+  }
+
+  if (!roles.includes("admin") || !isAdminUser) {
+    return <>Forbidden</>;
   }
 
   return (
