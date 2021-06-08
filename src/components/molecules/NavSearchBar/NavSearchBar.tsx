@@ -10,7 +10,7 @@ import {
   COVERT_ROOM_TYPES,
 } from "settings";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
