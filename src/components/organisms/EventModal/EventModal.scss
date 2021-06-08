@@ -24,13 +24,6 @@ $EventModal--padding-top: 40px;
     opacity: 0.8;
   }
 
-  &__description {
-    font-size: $font-size--md;
-    opacity: 0.8;
-    padding-top: $spacing--xl;
-    padding-bottom: $spacing--xl;
-  }
-
   // @debt we need to transform the rule to `&__button { ... }` once `<Button />` styles stop appearing later than the styles from this file
   & .EventModal__button {
     background-color: $primary--live;
