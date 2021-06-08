@@ -150,7 +150,7 @@ jobs:
               ENV=sparkle-pa
             fi
             if [ $CIRCLE_BRANCH = "env/demo" ]; then
-              ENV=sparkle-demo
+              ENV=sparkle-demo-e65b1
             fi
             if [ $CIRCLE_BRANCH = "env/unity" ]; then
               ENV=sparkle-unity
@@ -160,6 +160,9 @@ jobs:
             fi
             if [ $CIRCLE_BRANCH = "env/burn" ]; then
               ENV=sparkle-burn
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn-staging" ]; then
+              ENV=sparkle-burn-staging
             fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
@@ -301,8 +304,8 @@ jobs:
             fi
             if [ $CIRCLE_BRANCH = "env/demo" ]; then
               PREFIX=DEMO_
-              ENV=sparkle-demo
-              TARGET=sparkle-demo
+              ENV=sparkle-demo-e65b1
+              TARGET=sparkle-demo-e65b1
               RELEASE_STAGE=env/demo
             fi
             if [ $CIRCLE_BRANCH = "env/unity" ]; then
@@ -321,6 +324,12 @@ jobs:
               PREFIX=BURN_
               ENV=sparkle-burn
               TARGET=sparkle-burn
+              RELEASE_STAGE=env/burn
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn-staging" ]; then
+              PREFIX=BURN_
+              ENV=sparkle-burn-staging
+              TARGET=sparkle-burn-staging
               RELEASE_STAGE=env/burn
             fi
 
@@ -385,6 +394,7 @@ workflows:
                 - env/unity
                 - env/clever
                 - env/burn
+                - env/burn-staging
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -415,6 +425,7 @@ workflows:
                 - env/unity
                 - env/clever
                 - env/burn
+                - env/burn-staging
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
