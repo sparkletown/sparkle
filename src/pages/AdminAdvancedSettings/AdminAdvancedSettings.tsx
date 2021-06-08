@@ -75,6 +75,7 @@ export const AdminAdvancedSettings: React.FC = () => {
       {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
       {selectedTab === AdminAdvancedTab.entranceExperience && (
         <EntranceExperience
+          // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
           venue={venue as Venue_v2}
           onSave={selectDefaultTab}
         />

@@ -9,6 +9,14 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
+export const adminv3VenueUrl = (venueId: string) => {
+  return `/admin-v2/venue/${venueId}`;
+};
+
+export const adminV3SettigsUrl = (venueId: string) => {
+  return `/admin-v2/advanced-settings/${venueId}`;
+};
+
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
 };

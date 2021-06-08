@@ -59,12 +59,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          {selectedVenue ? (
-            // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-            <AdminVenueView />
-          ) : (
-            <AdminVenues venues={venues} />
-          )}
+          {selectedVenue ? <AdminVenueView /> : <AdminVenues venues={venues} />}
         </S.ViewWrapper>
       </S.Wrapper>
 
