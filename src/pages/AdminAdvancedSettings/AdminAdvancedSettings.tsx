@@ -22,7 +22,7 @@ export enum AdminAdvancedTab {
   advancedMapSettings = "advanced_map_settings",
 }
 
-const adminAdvancedTabs: Record<AdminAdvancedTab, String> = {
+const adminAdvancedTabs: Readonly<Record<AdminAdvancedTab, String>> = {
   [AdminAdvancedTab.basicInfo]: "Start",
   [AdminAdvancedTab.entranceExperience]: "Entrance",
   [AdminAdvancedTab.advancedMapSettings]: "Advanced",

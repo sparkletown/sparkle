@@ -17,7 +17,7 @@ export enum AdminVenueTab {
   run = "run",
 }
 
-const adminVenueTabs: Record<AdminVenueTab, String> = {
+const adminVenueTabs: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",

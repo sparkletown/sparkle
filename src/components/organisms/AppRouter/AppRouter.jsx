@@ -62,20 +62,20 @@ const AppRouter = () => {
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-        <Route path="/admin_v2/venue/:venueId?" component={AdminVenueView} />
+        <Route path="/admin-v2/venue/:venueId?" component={AdminVenueView} />
         <Route
-          path="/admin_v2/advanced-settings/:venueId?"
+          path="/admin-v2/advanced-settings/:venueId?"
           component={AdminAdvancedSettings}
         />
 
-        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-v2/venue/creation" component={VenueWizard_v2} />
+        <Route path="/admin-v2/edit/:venueId" component={VenueWizard_v2} />
 
         <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin_v2/:venueId" component={Admin_v2} />
+        <Route path="/admin-v2/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin_v2" component={Admin_v2} />
+        <Route path="/admin-v2" component={Admin_v2} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
