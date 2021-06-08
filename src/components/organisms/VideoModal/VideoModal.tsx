@@ -8,7 +8,7 @@ interface PropsType {
   show: boolean;
   onHide: () => void;
   url: string;
-  caption: string;
+  caption?: string;
   autoplay?: boolean;
 }
 
