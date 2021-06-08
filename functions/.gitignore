@@ -1,6 +1,7 @@
 ## Compiled JavaScript files
 ## TODO: uncomment this once we convert all of the function code from *.js to *.ts
 #**/*.js
+lib/**/*.js
 **/*.js.map
 
 # Typescript v1 declaration files
