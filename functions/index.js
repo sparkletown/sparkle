@@ -31,17 +31,17 @@ admin.initializeApp({
   }),
 });
 
-const video = require("./video");
-const payment = require("./payment");
-const venue = require("./venue");
-const stats = require("./stats");
 const access = require("./access");
+const payment = require("./payment");
+const stats = require("./stats");
+const venue = require("./venue");
+const video = require("./video");
 
-exports.video = video;
-exports.payment = payment;
-exports.venue = venue;
-exports.stats = stats;
 exports.access = access;
+exports.payment = payment;
+exports.stats = stats;
+exports.venue = venue;
+exports.video = video;
 
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
