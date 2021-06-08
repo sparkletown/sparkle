@@ -330,7 +330,7 @@ jobs:
               PREFIX=BURN_STAGING_
               ENV=sparkle-burn-staging
               TARGET=sparkle-burn-staging
-              RELEASE_STAGE=env/burn
+              RELEASE_STAGE=env/burn-staging
             fi
 
             ./scripts/init-env.sh $PREFIX
