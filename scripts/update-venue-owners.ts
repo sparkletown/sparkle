@@ -81,7 +81,7 @@ const app = initFirebaseAdminApp(projectId, { credentialPath });
       }
 
       switch (mode) {
-        // Add user's UID to the role
+        // Add user's UID to the owners list
         case Mode.Add:
           await venueDocRef
             .update({ owners: FieldValue.arrayUnion(existingUser.uid) })
@@ -99,7 +99,7 @@ const app = initFirebaseAdminApp(projectId, { credentialPath });
           break;
 
         case Mode.Remove:
-          // Remove user's UID from the role
+          // Remove user's UID from the owners list
           await venueDocRef
             .update({ owners: FieldValue.arrayRemove(existingUser.uid) })
             .then(() => {
