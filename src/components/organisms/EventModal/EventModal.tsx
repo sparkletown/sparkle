@@ -70,9 +70,7 @@ export const EventModal: React.FC<EventModalProps> = ({
   return (
     <Modal show={show} onHide={onHide} className="EventModal">
       <div className="EventModal__content">
-        <h4 className="EventModal__title">
-          <RenderMarkdown text={event.name} />
-        </h4>
+        <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
           by {event.host} in{" "}
           <button className="button--a" onClick={goToEventLocation}>
