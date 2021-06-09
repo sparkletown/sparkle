@@ -21,6 +21,12 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { title, authorName, categories } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
+  const posterId = venueId.replace("poster", "");
+  // TODO: the posterId doesn't correspond to abs ID. We will need proper URL in DB.
+  // This version is just to demonstrate possibility
+  const posterAbsUrl =
+    "https://ww4.aievolution.com/hbm2101/index.cfm?do=abs.viewAbs&src=ext&abs=" +
+    posterId;
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
@@ -41,14 +47,19 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   return (
-    <div className={posterClassnames} onClick={handleEnterVenue}>
-      <p className="PosterPreview__title">
-        {posterVenue.name}: {title}
-      </p>
+    <div className={posterClassnames}>
+      <a href={posterAbsUrl} target="_ohbm-poster-preview">
+        📄
+      </a>
+      <div onClick={handleEnterVenue}>
+        <p className="PosterPreview__title">
+          {posterVenue.name}: {title}
+        </p>
 
-      <div className="PosterPreview__categories">{renderedCategories}</div>
+        <div className="PosterPreview__categories">{renderedCategories}</div>
 
-      <div className="PosterPreview__author">{authorName}</div>
+        <div className="PosterPreview__author">{authorName}</div>
+      </div>
     </div>
   );
 };
