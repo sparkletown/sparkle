@@ -4,7 +4,7 @@ $poster-cell-optimal-width: 260px;
 $poster-cell-optimal-height: 195px;
 
 .PosterPage {
-  padding: 0 $spacing--xl 0;
+  padding: $announcement-banner-height $spacing--xl 0;
 
   &__header {
     display: grid;
