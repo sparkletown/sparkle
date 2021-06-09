@@ -10,6 +10,8 @@ import { useUser } from "hooks/useUser";
 
 import VenueEventDetails from "pages/Admin/VenueEventDetails";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import Button from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 
@@ -68,7 +70,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{room.title}</S.Title>
-          <S.Description>{room.description}</S.Description>
+          <S.Description>
+            {<RenderMarkdown text={room.description} />}
+          </S.Description>
         </S.TitleWrapper>
 
         <S.ButtonWrapper>

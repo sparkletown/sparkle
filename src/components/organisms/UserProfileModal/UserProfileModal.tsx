@@ -9,7 +9,6 @@ import {
   RANDOM_AVATARS,
   DEFAULT_PROFILE_PIC,
   DEFAULT_PARTY_NAME,
-  DEFAULT_EDIT_PROFILE_TEXT,
 } from "settings";
 
 import { currentVenueSelector, orderedVenuesSelector } from "utils/selectors";
@@ -50,6 +49,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const chosenUserId = selectedUserProfile?.id;
 
+  const profileQuestions = venue?.profile_questions;
+
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
@@ -69,6 +70,26 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       history.push(`/pr/${roomId}`);
     }
   }, [chosenUserId, history, user?.uid, venueId]);
+
+  const renderedProfileQuestionAnswers = useMemo(
+    () =>
+      selectedUserProfile
+        ? profileQuestions?.map((question) => {
+            // @ts-ignore User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
+            const questionAnswer = selectedUserProfile[question.name];
+
+            if (!questionAnswer) return undefined;
+
+            return (
+              <React.Fragment key={question.text}>
+                <p className="light question">{question.text}</p>
+                <h6>{questionAnswer}</h6>
+              </React.Fragment>
+            );
+          })
+        : undefined,
+    [selectedUserProfile, profileQuestions]
+  );
 
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
@@ -104,18 +125,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               </div>
             </div>
             <div className="profile-extras">
-              {venue?.profile_questions?.map((question) => (
-                <React.Fragment key="question.text">
-                  <p className="light question">{question.text}</p>
-                  <h6>
-                    {/*
-                    // @debt typing - need to support known User interface with unknown question keys
-                    // @ts-ignore */}
-                    {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      DEFAULT_EDIT_PROFILE_TEXT}
-                  </h6>
-                </React.Fragment>
-              ))}
+              {renderedProfileQuestionAnswers}
             </div>
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">

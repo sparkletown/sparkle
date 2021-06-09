@@ -164,6 +164,11 @@ if (BUGSNAG_API_KEY) {
     "env/unesco",
     "env/ohbm",
     "env/pa",
+    "env/demo",
+    "env/unity",
+    "env/clever",
+    "env/burn",
+    "env/burn-staging",
   ];
 
   const releaseStage = () => {

@@ -108,6 +108,16 @@ $video-icon-margin: 0 10px 0 0;
 
   &__text {
     font-size: $font-size--md;
+
+    // This direct element style is used with RenderMarkdown
+    img {
+      max-width: 100%;
+    }
+
+    // This direct element style is used with RenderMarkdown
+    p {
+      margin-bottom: 0;
+    }
   }
 
   &__show-replies-button {
