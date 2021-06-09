@@ -4,9 +4,13 @@ import { isEqual } from "lodash";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_VENUE_LOGO } from "settings";
+import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_VENUE_LOGO,
+  COVERT_ROOM_TYPES,
+} from "settings";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
@@ -82,7 +86,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       relatedRooms
         ?.filter(
           (room) =>
-            room.type !== RoomTypes.unclickable &&
+            (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
             room.title.toLowerCase().includes(searchQuery)
         )
         .map((room, index) => (

@@ -21,10 +21,11 @@
     "unesco": "sparkle-unesco",
     "ohbm": "sparkle-ohbm",
     "sparkle-pa": "sparkle-pa",
-    "sparkle-demo": "sparkle-demo-e65b1",
+    "sparkle-demo-e65b1": "sparkle-demo-e65b1",
     "sparkle-clever": "sparkle-clever",
     "sparkle-unity": "sparkle-unity",
-    "sparkle-burn": "sparkle-burn"
+    "sparkle-burn": "sparkle-burn",
+    "sparkle-burn-staging": "sparkle-burn-staging"
   },
   "targets": {
     "co-reality-map": {
@@ -180,10 +181,10 @@
         ]
       }
     },
-    "sparkle-demo": {
+    "sparkle-demo-e65b1": {
       "hosting": {
-        "sparkle-demo": [
-          "sparkle-demo"
+        "sparkle-demo-e65b1": [
+          "sparkle-demo-e65b1"
         ]
       }
     },
@@ -205,6 +206,13 @@
       "hosting": {
         "sparkle-burn": [
           "sparkle-burn"
+        ]
+      }
+    },
+    "sparkle-burn-staging": {
+      "hosting": {
+        "sparkle-burn-staging": [
+          "sparkle-burn-staging"
         ]
       }
     }
