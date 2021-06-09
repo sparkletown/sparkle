@@ -13,10 +13,9 @@ import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-import { PdfModal } from "components/organisms/PdfModal";
 import VideoModal from "components/organisms/VideoModal";
 
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
@@ -29,47 +28,40 @@ export interface RoomModalProps {
   room?: Room;
 }
 
-export interface RoomModalContentProps {
-  room: Room;
-  venueName: string;
-}
-
 export const RoomModal: React.FC<RoomModalProps> = ({
   onHide,
   room,
   show,
   venue,
 }) => {
-  switch (room?.type) {
-    case RoomType.video:
-      return (
-        <VideoModal
-          show={show}
-          onHide={onHide}
-          caption={room.title}
-          url={room.url}
-          autoplay={true}
-          backdrop={true}
-        />
-      );
+  if (!venue || !room) return null;
 
-    case RoomType.pdf:
-      return <PdfModal show={show} onHide={onHide} url={room.url} />;
-
-    default:
-      return (
-        <>
-          {venue && room && (
-            <Modal show={show} onHide={onHide}>
-              <div className="room-modal">
-                <RoomModalContent room={room} venueName={venue.name} />
-              </div>
-            </Modal>
-          )}
-        </>
-      );
+  if (room.type === RoomType.modalFrame) {
+    return (
+      <VideoModal
+        show={show}
+        onHide={onHide}
+        caption={room.title}
+        url={room.url}
+        autoplay
+        backdrop
+      />
+    );
   }
+
+  return (
+    <Modal show={show} onHide={onHide}>
+      <div className="room-modal">
+        <RoomModalContent room={room} venueName={venue.name} />
+      </div>
+    </Modal>
+  );
 };
+
+export interface RoomModalContentProps {
+  room: Room;
+  venueName: string;
+}
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,

@@ -1,1 +1,0 @@
-export { PdfModal } from "./PdfModal";
