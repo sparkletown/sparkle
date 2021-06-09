@@ -178,6 +178,7 @@ export const IFRAME_TEMPLATES = [
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.posterpage,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
