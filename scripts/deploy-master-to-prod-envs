@@ -41,7 +41,7 @@ read -p "  Press enter to continue"
 # Modern branch names
 
 echo
-echo "About to deploy to memrise, unesco, ohbm, pa:"
+echo "About to deploy to memrise, unesco, ohbm, pa, github:"
 read -p "  Press enter to continue"
 
 #(set -x; git push origin master:env/kotr) # Note: This runs custom code/is no longer used/required. Don't deploy to it.
@@ -49,6 +49,7 @@ read -p "  Press enter to continue"
 (set -x; git push origin master:env/unesco)
 (set -x; git push origin master:env/ohbm)
 (set -x; git push origin master:env/pa)
+(set -x; git push origin master:env/github)
 
 echo
 echo "All done!"
