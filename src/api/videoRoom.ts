@@ -1,3 +1,4 @@
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 import { VideoChatRequest, VideoChatRequestState } from "types/VideoRoom";
@@ -13,14 +14,23 @@ export const inviteToVideoChat = async (
     invitedUserId: invitedUserId,
     invitedUserLocation: "",
     state: VideoChatRequestState.Invited,
-    createdAt: Date.now(),
+    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
   };
 
   return await firebase
     .functions()
     .httpsCallable("videoRoom-addVideoRoomRequest")({
-    videoRoomRequest,
-  });
+      videoRoomRequest,
+    })
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/videoRoom::inviteToVideoChat",
+          videoRoomRequest,
+        });
+      });
+      return err;
+    });
 };
 
 export const setVideoChatState = async (
@@ -30,9 +40,19 @@ export const setVideoChatState = async (
   return await firebase
     .functions()
     .httpsCallable("videoRoom-setVideoChatState")({
-    videoChatId,
-    state,
-  });
+      videoChatId,
+      state,
+    })
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/videoRoom::setVideoChatState",
+          videoChatId,
+          state,
+        });
+      });
+      return err;
+    });
 };
 
 export const acceptVideoChat = async (
@@ -42,8 +62,18 @@ export const acceptVideoChat = async (
   return await firebase
     .functions()
     .httpsCallable("videoRoom-acceptVideoRoomRequest")({
-    state: VideoChatRequestState.Accepted,
-    videoChatId,
-    invitedUserLocation,
-  });
+      state: VideoChatRequestState.Accepted,
+      videoChatId,
+      invitedUserLocation,
+    })
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/videoRoom::acceptVideoChat",
+          videoChatId,
+          invitedUserLocation,
+        });
+      });
+      return err;
+    });
 };

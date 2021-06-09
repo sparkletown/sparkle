@@ -1,1 +1,0 @@
-export { VideoChatModal } from "./VideoChatModal";

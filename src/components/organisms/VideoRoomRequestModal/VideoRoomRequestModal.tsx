@@ -16,9 +16,9 @@ import { User } from "types/User";
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import "./VideoChatModal.scss";
+import "./VideoRoomRequestModal.scss";
 
-export const VideoChatModal: React.FC = () => {
+export const VideoRoomRequestModal: React.FC = () => {
   const videoRoomRequests = useConnectVideoRooms();
   const history = useHistory();
   const venueId = useVenueId();
@@ -66,9 +66,11 @@ export const VideoChatModal: React.FC = () => {
       onConfirm={acceptVideoRoomRequest}
       onCancel={declineVideoRoomRequest}
     >
-      <div className="VideoChatModal__host-info">
+      <div className="VideoRoomRequestModal__host-info">
         <UserAvatar user={hostWithId} large />
-        <div className="VideoChatModal__host-title">{host?.partyName}</div>
+        <div className="VideoRoomRequestModal__host-title">
+          {host?.partyName}
+        </div>
       </div>
     </ConfirmationModal>
   );

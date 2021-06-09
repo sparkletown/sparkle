@@ -24,14 +24,18 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useVenueId } from "hooks/useVenueId";
 
 import { Badges } from "components/organisms/Badges";
 
 import "./UserProfileModal.scss";
 
-export const UserProfileModal: React.FC = () => {
-  const venueId = useVenueId();
+export interface UserProfileModalProps {
+  venueId: string;
+}
+
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  venueId,
+}) => {
   const venue = useSelector(currentVenueSelector);
   const { user } = useUser();
   const history = useHistory();
@@ -44,9 +48,7 @@ export const UserProfileModal: React.FC = () => {
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  console.log(selectedUserProfile);
   const chosenUserId = selectedUserProfile?.id;
-  console.log(selectedUserProfile);
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;

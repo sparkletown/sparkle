@@ -1,3 +1,5 @@
+import firebase from "firebase/app";
+
 export enum VideoChatRequestState {
   Invited = "Invited",
   Declined = "Declined",
@@ -11,5 +13,5 @@ export interface VideoChatRequest {
   invitedUserId: string;
   invitedUserLocation: string;
   state: VideoChatRequestState;
-  createdAt: number;
+  createdAt: firebase.firestore.FieldValue;
 }
