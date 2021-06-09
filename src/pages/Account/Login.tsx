@@ -26,6 +26,8 @@ export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
 
   const redirectAfterLogin = () => {};
 
+  // TODO: Figure out the best way to incorporate SSO signon here (eg. via OAuth2 redirect flows)
+
   return (
     <div className="auth-container">
       <div className="logo-container">

@@ -1,4 +1,5 @@
 {
+  "//": "TODO: Add rewrites for at least the staging/OHBM environments to add /redirect and /token endpoints as per https://github.com/firebase/functions-samples/blob/master/instagram-auth/firebase.json",
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
@@ -33,6 +34,14 @@
       "target": "staging",
       "public": "build",
       "rewrites": [
+        {
+          "source": "/oauth2/redirect",
+          "function": "auth-oauth2Redirect"
+        },
+        {
+          "source": "/oauth2/token",
+          "function": "auth-oauth2Token"
+        },
         {
           "source": "**",
           "destination": "/index.html"

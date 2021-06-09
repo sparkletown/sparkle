@@ -1,5 +1,7 @@
 rules_version = '2';
 
+// TODO: Add appropriate data structures/rules based on + how we decide we want to lay things out: https://github.com/firebase/functions-samples/blob/master/instagram-auth/database.rules.json
+
 function isUpdateRestrictedToField(request, field) {
     return request.resource.data.diff(resource.data).affectedKeys().hasOnly([field]);
 }

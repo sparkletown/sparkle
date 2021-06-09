@@ -34,6 +34,9 @@ import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
+// TODO: Add a route/some kind of related functionality here or similar for handling receiving the custom auth token back from firebase, then using that to sign in.
+//   Alternatively, should we handle this in src/index.ts?
+
 const AppRouter = () => {
   return (
     <Router basename="/">
