@@ -78,7 +78,9 @@ export const EventModal: React.FC<EventModalProps> = ({
           </button>
         </span>
 
-        <RenderMarkdown text={event.description} />
+        <div className="EventModal__description">
+          <RenderMarkdown text={event.description} />
+        </div>
 
         <Button
           customClass="EventModal__button"
