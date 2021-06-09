@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
-import { BaseVenue } from "types/venues";
+import { FullTalkShowVenue } from "types/venues";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
@@ -20,13 +20,13 @@ import { usePartygoersOverlay } from "components/templates/PartyMap/components/M
 import "./Audience.scss";
 
 export interface AudienceProps {
-  venue: WithId<BaseVenue>;
+  venue: WithId<FullTalkShowVenue>;
 }
 const TOTAL_COLUMNS = 30;
 const TOTAL_ROWS = 8;
 
 const Audience: React.FC<AudienceProps> = ({ venue }) => {
-  const { name, id: venueId, showGrid } = venue;
+  const { name, id: venueId } = venue;
   const { userId, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
@@ -78,7 +78,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
   });
 
   const mapGrid = useMapGrid({
-    showGrid,
+    showGrid: true,
     userUid: userId,
     columnsArray,
     rowsArray,
@@ -87,7 +87,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
   });
 
   const partygoersOverlay = usePartygoersOverlay({
-    showGrid,
+    showGrid: true,
     userUid: userId,
     venueId,
     withMiniAvatars: venue.miniAvatars,

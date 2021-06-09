@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,8 +11,14 @@ import AdminPanel from "./components/AdminPanel/AdminPanel";
 import { useUser } from "../../../../../hooks/useUser";
 import { useSelector } from "../../../../../hooks/useSelector";
 import { currentVenueSelectorData } from "../../../../../utils/selectors";
+import { FullTalkShowVenue } from "../../../../../types/venues";
+import { WithId } from "../../../../../utils/id";
 
-const SettingsSidebar = () => {
+export interface SettingsSidebarProps {
+  venue: WithId<FullTalkShowVenue>;
+}
+
+const SettingsSidebar: FC<SettingsSidebarProps> = ({ venue }) => {
   const [isOpened, setIsOpened] = useState(false);
   const currentVenue = useSelector(currentVenueSelectorData);
   const { userId } = useUser();
@@ -44,7 +50,7 @@ const SettingsSidebar = () => {
         <div className="tab">Admin</div>
       </div>
       <div className="tab-content">
-        <AdminPanel />
+        <AdminPanel venue={venue} />
       </div>
     </div>
   );

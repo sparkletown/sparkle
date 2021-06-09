@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { PlaceInScreenshareVenue, UserStatus } from "types/User";
+import { PlaceInFullTalkShowVenue, UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
@@ -138,30 +138,33 @@ export const updatePersonalizedSchedule = async ({
   });
 };
 
-export interface updatePlaceInScreenshareVenueProps {
+export interface updatePlaceInRoomProps {
   venueId: string;
   userId: string;
-  placeInScreenshareVenue: PlaceInScreenshareVenue;
+  place: PlaceInFullTalkShowVenue;
 }
 
-export const updatePlaceInScreenshareVenue = ({
+export const updatePlaceInRoom = async ({
   venueId,
   userId,
-  placeInScreenshareVenue,
-}: updatePlaceInScreenshareVenueProps) => {
-  const userProfileRef = getUserRef(userId);
+  place,
+}: updatePlaceInRoomProps) => {
+  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+
+  const userData = (await userProfileRef.get()).data();
 
   const newData = {
-    [`data.${venueId}`]: { placeInScreenshareVenue },
+    [`data.${venueId}`]: { ...userData?.data[venueId], place },
   };
 
   userProfileRef.update(newData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api/profile::updatePlaceInScreenshareVenue",
+        location: "api/profile::updatePlaceInRoom",
+        venueId,
         userId,
         event,
-        placeInScreenshareVenue,
+        place,
       });
 
       throw err;
@@ -169,27 +172,30 @@ export const updatePlaceInScreenshareVenue = ({
   });
 };
 
-export interface updateShareStatusInScreenshareVenueProps {
+export interface updateScreenShareStatusProps {
   venueId: string;
   userId: string;
   isSharingScreen: boolean;
 }
 
-export const updateShareStatusInScreenshareVenue = ({
+export const updateScreenShareStatus = async ({
   venueId,
   userId,
   isSharingScreen,
-}: updateShareStatusInScreenshareVenueProps) => {
+}: updateScreenShareStatusProps) => {
   const userProfileRef = getUserRef(userId);
 
+  const userData = (await userProfileRef.get()).data();
+
   const newData = {
-    [`data.${venueId}`]: { isSharingScreen },
+    [`data.${venueId}`]: { ...userData?.data[venueId], isSharingScreen },
   };
 
   userProfileRef.update(newData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api/profile::updatePlaceInScreenshareVenue",
+        location: "api/profile::updateScreenShareStatus",
+        venueId,
         userId,
         event,
         isSharingScreen,

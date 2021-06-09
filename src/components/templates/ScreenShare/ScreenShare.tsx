@@ -1,24 +1,21 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useCallback, useEffect, useMemo } from "react";
 import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
+import { FullTalkShowVenue } from "types/venues";
+import { WithId } from "utils/id";
 import useAgoraScreenShare from "./agoraHooks/useAgoraScreenShare";
 import Player from "./components/Player/Player";
 import useAgoraCamera from "./agoraHooks/useAgoraCamera";
-import "./ScreenShare.scss";
 import useAgoraRemotes from "./agoraHooks/useAgoraRemotes";
 import Audience from "./components/Audience/Audience";
-import Button from "./components/Button/Button";
-import LeaveStageModal from "./components/LeaveStageModal/LeaveStageModal";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
-import {
-  updatePlaceInScreenshareVenue,
-  updateShareStatusInScreenshareVenue,
-} from "../../../api/profile";
-import { useVenueId } from "../../../hooks/useVenueId";
-import { useUser } from "../../../hooks/useUser";
-import { PlaceInScreenshareVenue } from "../../../types/User";
 import useStage from "./useStage";
-import { GenericVenue } from "types/venues";
-import { WithId } from "utils/id";
+import AppButton from "../../atoms/Button";
+import { ControlBar } from "./components/ControlBar";
+import { AgoraClientConnectionState } from "../../../types/agora";
+import { useSelector } from "../../../hooks/useSelector";
+import { currentVenueSelectorData } from "../../../utils/selectors";
+import { useUser } from "../../../hooks/useUser";
+import "./ScreenShare.scss";
 
 const AGORA_CHANNEL = {
   appId: "bc9f5ed85b4f4218bff32c78a3ff88eb",
@@ -40,32 +37,25 @@ const cameraClient: IAgoraRTCClient = AgoraRTC.createClient({
   codec: "h264",
   mode: "rtc",
 });
+
 export interface ScreenShareProps {
-  venue: WithId<GenericVenue>;
+  venue: WithId<FullTalkShowVenue>;
 }
 
 export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
-  const [openLeaveStageModal, setOpenLeaveStageModal] = useState(false);
-  const venueId = useVenueId();
   const { userId } = useUser();
-  const remoteUsers = useAgoraRemotes(remotesClient, AGORA_CHANNEL);
 
-  useEffect(() => {
-    return () => {
-      if (venueId && userId) {
-        updatePlaceInScreenshareVenue({
-          venueId,
-          userId,
-          placeInScreenshareVenue: PlaceInScreenshareVenue.audience,
-        });
-        updateShareStatusInScreenshareVenue({
-          venueId,
-          userId,
-          isSharingScreen: false,
-        });
-      }
-    };
-  }, [userId, venueId]);
+  const isRequestToJoinStageEnabled = useMemo(() => venue.requestToJoinStage, [
+    venue.requestToJoinStage,
+  ]);
+
+  const currentVenue = useSelector(currentVenueSelectorData);
+  const isUserOwner = useMemo(
+    () => !!userId && currentVenue?.owners.includes(userId),
+    [currentVenue?.owners, userId]
+  );
+
+  const remoteUsers = useAgoraRemotes(remotesClient, AGORA_CHANNEL);
 
   const {
     localCameraTrack,
@@ -86,14 +76,14 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
   } = useAgoraScreenShare(screenClient);
 
   const {
-    canJoinStage,
-    isUserOnStage,
     joinStage,
     leaveStage,
-    canShareScreen,
+    requestJoinStage,
+    canJoinStage,
+    isUserOnStage,
   } = useStage();
 
-  const onStageJoin = () => {
+  const onStageJoin = useCallback(() => {
     cameraClientJoin(
       AGORA_CHANNEL.appId,
       AGORA_CHANNEL.channel,
@@ -105,13 +95,23 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
       AGORA_CHANNEL.token
     );
     joinStage();
-  };
+  }, [cameraClientJoin, joinStage, screenClientJoin]);
 
-  const onStageLeaving = () => {
+  const onStageLeaving = useCallback(() => {
     cameraClientLeave();
     screenClientLeave();
     leaveStage();
-  };
+  }, [cameraClientLeave, leaveStage, screenClientLeave]);
+
+  useEffect(() => {
+    cameraClient.connectionState === AgoraClientConnectionState.DISCONNECTED &&
+      isUserOnStage &&
+      onStageJoin();
+
+    cameraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
+      !isUserOnStage &&
+      onStageLeaving();
+  }, [isUserOnStage, onStageJoin, onStageLeaving]);
 
   return (
     <>
@@ -152,62 +152,31 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
             )}
           </div>
 
-          <div className="ScreenShare__scene--buttons">
-            {isUserOnStage ? (
-              <>
-                {canShareScreen && (
-                  <Button
-                    onClick={() => {
-                      venueId &&
-                        userId &&
-                        updateShareStatusInScreenshareVenue({
-                          venueId,
-                          userId,
-                          isSharingScreen: !!localScreenTrack,
-                        });
-                      localScreenTrack ? stopShare() : shareScreen();
-                    }}
-                    rightLabel={localScreenTrack && "You are screensharing"}
-                    variant="secondary"
-                    small
-                    disabled={screenClient.connectionState !== "CONNECTED"}
-                  >
-                    {localScreenTrack ? "Stop Sharing" : "Share Screen"}
-                  </Button>
-                )}
-
-                <Button
-                  onClick={() => {
-                    setOpenLeaveStageModal(true);
-                  }}
-                  leftLabel="You are on stage"
-                  variant="secondary"
-                  small
-                >
-                  Leave Stage
-                </Button>
-              </>
-            ) : (
-              canJoinStage && (
-                <div className="ScreenShare__scene--buttons--join-stage">
-                  <Button onClick={onStageJoin} variant="secondary" small>
-                    Join Stage
-                  </Button>
-                </div>
-              )
-            )}
-          </div>
+          <ControlBar
+            isSharing={!!localScreenTrack}
+            loading={
+              screenClient.connectionState !==
+              AgoraClientConnectionState.CONNECTED
+            }
+            onStageJoin={onStageJoin}
+            onStageLeaving={onStageLeaving}
+            shareScreen={shareScreen}
+            stopShare={stopShare}
+            showJoinStageButton={isUserOwner}
+          />
         </div>
+        {isRequestToJoinStageEnabled && canJoinStage && !isUserOwner && (
+          <AppButton
+            onClick={() => {
+              requestJoinStage();
+            }}
+          >
+            <span>✋</span> Request to join
+          </AppButton>
+        )}
         <Audience venue={venue} />
-        <LeaveStageModal
-          show={openLeaveStageModal}
-          onHide={() => {
-            setOpenLeaveStageModal(false);
-          }}
-          onSubmit={onStageLeaving}
-        />
       </div>
-      <SettingsSidebar />
+      <SettingsSidebar venue={venue} />
     </>
   );
 };

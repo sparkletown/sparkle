@@ -733,6 +733,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.bannerMessage = data.bannerMessage;
   }
 
+  if (typeof data.requestToJoinStage === "boolean") {
+    updated.requestToJoinStage = data.requestToJoinStage;
+  }
+
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
@@ -914,3 +918,24 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
+
+exports.changeUserPlaceInVenue = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, userId, place } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const userRef = admin.firestore().collection("users").doc(userId);
+    const user = (await userRef.get()).data();
+
+    if (!user) return;
+
+    const newUserData = {
+      [`data.${venueId}`]: { ...user.data[venueId], place },
+    };
+
+    await userRef.update(newUserData);
+  }
+);

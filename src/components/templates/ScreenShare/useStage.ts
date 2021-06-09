@@ -1,9 +1,12 @@
 import { useRecentVenueUsers } from "../../../hooks/users";
-import { useMemo } from "react";
-import { PlaceInScreenshareVenue } from "../../../types/User";
+import { useCallback, useEffect, useMemo } from "react";
+import { PlaceInFullTalkShowVenue } from "../../../types/User";
 import { useVenueId } from "../../../hooks/useVenueId";
 import { useUser } from "../../../hooks/useUser";
-import { updatePlaceInScreenshareVenue } from "../../../api/profile";
+import {
+  updatePlaceInRoom,
+  updateScreenShareStatus,
+} from "../../../api/profile";
 
 const MAX_HOSTS = 5;
 
@@ -12,13 +15,31 @@ const useStage = () => {
   const { recentVenueUsers } = useRecentVenueUsers();
   const { userId } = useUser();
 
+  const setDefaultUserSettings = useCallback(async () => {
+    if (venueId && userId) {
+      await updatePlaceInRoom({
+        venueId,
+        userId,
+        place: PlaceInFullTalkShowVenue.audience,
+      });
+      await updateScreenShareStatus({
+        venueId,
+        userId,
+        isSharingScreen: false,
+      });
+    }
+  }, [userId, venueId]);
+
+  useEffect(() => {
+    setDefaultUserSettings();
+  }, [setDefaultUserSettings]);
+
   const peopleOnStage = useMemo(
     () =>
       venueId
         ? recentVenueUsers.filter(
             (user) =>
-              user.data?.[venueId]?.placeInScreenshareVenue ===
-              PlaceInScreenshareVenue.stage
+              user.data?.[venueId]?.place === PlaceInFullTalkShowVenue.stage
           )
         : [],
     [recentVenueUsers, venueId]
@@ -29,8 +50,8 @@ const useStage = () => {
       venueId
         ? recentVenueUsers.filter(
             (user) =>
-              user.data?.[venueId]?.placeInScreenshareVenue ===
-              PlaceInScreenshareVenue.requesting
+              user.data?.[venueId]?.place ===
+              PlaceInFullTalkShowVenue.requesting
           )
         : [],
     [recentVenueUsers, venueId]
@@ -47,8 +68,8 @@ const useStage = () => {
 
   const canShareScreen = useMemo(
     () =>
-      peopleOnStage.some(
-        (user) => venueId && !user.data?.[venueId].isSharingScreen
+      !peopleOnStage.find(
+        (user) => venueId && user.data?.[venueId].isSharingScreen
       ),
     [peopleOnStage, venueId]
   );
@@ -56,20 +77,30 @@ const useStage = () => {
   const joinStage = () => {
     venueId &&
       userId &&
-      updatePlaceInScreenshareVenue({
+      updatePlaceInRoom({
         venueId,
         userId,
-        placeInScreenshareVenue: PlaceInScreenshareVenue.stage,
+        place: PlaceInFullTalkShowVenue.stage,
       });
   };
 
   const leaveStage = () => {
     venueId &&
       userId &&
-      updatePlaceInScreenshareVenue({
+      updatePlaceInRoom({
         venueId,
         userId,
-        placeInScreenshareVenue: PlaceInScreenshareVenue.audience,
+        place: PlaceInFullTalkShowVenue.audience,
+      });
+  };
+
+  const requestJoinStage = () => {
+    venueId &&
+      userId &&
+      updatePlaceInRoom({
+        venueId,
+        userId,
+        place: PlaceInFullTalkShowVenue.requesting,
       });
   };
 
@@ -81,6 +112,7 @@ const useStage = () => {
     canShareScreen,
     joinStage,
     leaveStage,
+    requestJoinStage,
   };
 };
 

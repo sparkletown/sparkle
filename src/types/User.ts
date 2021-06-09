@@ -1,4 +1,4 @@
-export enum PlaceInScreenshareVenue {
+export enum PlaceInFullTalkShowVenue {
   stage = "stage",
   audience = "audience",
   requesting = "requesting",
@@ -9,7 +9,7 @@ export interface Experience {
   table: string;
   row?: number;
   column?: number;
-  placeInScreenshareVenue?: PlaceInScreenshareVenue;
+  place?: PlaceInFullTalkShowVenue;
   isSharingScreen?: boolean;
 }
 

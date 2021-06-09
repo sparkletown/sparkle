@@ -14,6 +14,7 @@ import { RoomData_v2 } from "types/rooms";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { PlaceInFullTalkShowVenue } from "../types/User";
 
 export interface EventInput {
   name: string;
@@ -106,6 +107,7 @@ export type VenueInput = AdvancedVenueInput &
     showRadio?: boolean;
     radioStations?: string;
     showZendesk?: boolean;
+    requestToJoinStage?: boolean;
   };
 
 export interface VenueInput_v2
@@ -123,6 +125,7 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  requestToJoinStage?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -560,4 +563,15 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
   firebase.functions().httpsCallable("venue-removeVenueOwner")({
     venueId,
     ownerId,
+  });
+
+export const changeUserPlaceInVenue = async (
+  venueId: string,
+  userId: string,
+  place: PlaceInFullTalkShowVenue
+) =>
+  firebase.functions().httpsCallable("venue-changeUserPlaceInVenue")({
+    venueId,
+    userId,
+    place,
   });
