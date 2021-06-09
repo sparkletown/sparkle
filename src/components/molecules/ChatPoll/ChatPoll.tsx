@@ -20,6 +20,8 @@ import { useUser } from "hooks/useUser";
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import Button from "components/atoms/Button";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
@@ -80,7 +82,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           customClass="ChatPoll__question"
           onClick={() => handleVote(question)}
         >
-          {question.name}
+          <RenderMarkdown text={question.name} />
         </Button>
       )),
     [questions, handleVote]
@@ -113,7 +115,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           style={{ width: `${question.share}%` }}
         />
         <span className="ChatPoll__text-count">{question.share}%</span>
-        {question.name}
+        <RenderMarkdown text={question.name} />
       </div>
     ));
   }, [questions, calculateVotePercentage]);
@@ -127,7 +129,9 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
-        <div className="ChatPoll__topic">{topic}</div>
+        <div className="ChatPoll__topic">
+          <RenderMarkdown text={topic} />
+        </div>
         <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>

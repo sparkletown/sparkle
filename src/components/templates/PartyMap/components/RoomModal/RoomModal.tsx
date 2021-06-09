@@ -12,6 +12,8 @@ import { useCustomSound } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import UserList from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
@@ -116,7 +118,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       />
 
       {room.about && (
-        <div className="room-modal__description">{room.about}</div>
+        <div className="room-modal__description">
+          <RenderMarkdown text={room.about} />
+        </div>
       )}
 
       {hasRoomEvents && (

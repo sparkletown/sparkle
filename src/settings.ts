@@ -9,6 +9,7 @@ import {
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
+import { RoomType } from "types/rooms";
 import { FIVE_MINUTES_MS } from "utils/time";
 import { UserStatus } from "types/User";
 
@@ -56,8 +57,6 @@ export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
 export const DEFAULT_PARTY_NAME = "Anon";
-export const DEFAULT_EDIT_PROFILE_TEXT =
-  "I haven't edited my profile to tell you yet";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
@@ -76,7 +75,7 @@ export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
-export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
@@ -203,6 +202,11 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
+];
+
+export const COVERT_ROOM_TYPES: RoomType[] = [
+  RoomType.unclickable,
+  RoomType.mapFrame,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -617,3 +621,19 @@ export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
+
+// Markdown
+
+export const MARKDOWN_BASIC_FORMATTING_TAGS = [
+  "p",
+  "strong",
+  "em",
+  "blockquote",
+  "hr",
+  "del",
+];
+export const MARKDOWN_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
+export const MARKDOWN_IMAGE_TAGS = ["img"];
+export const MARKDOWN_LINK_TAGS = ["a"];
+export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
+export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
