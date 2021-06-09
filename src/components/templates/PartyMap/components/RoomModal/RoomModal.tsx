@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { isBefore } from "date-fns";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room, RoomType } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
 import { eventEndTime, getCurrentEvent } from "utils/event";
@@ -40,11 +40,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   show,
   venue,
 }) => {
-  let template;
-
   switch (room?.type) {
-    case RoomTypes.video:
-      template = (
+    case RoomType.video:
+      return (
         <VideoModal
           show={show}
           onHide={onHide}
@@ -54,22 +52,23 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           backdrop={true}
         />
       );
-      break;
 
-    case RoomTypes.pdf:
-      template = <PdfModal show={show} onHide={onHide} url={room.url} />;
-      break;
+    case RoomType.pdf:
+      return <PdfModal show={show} onHide={onHide} url={room.url} />;
 
     default:
-      template = venue && room && (
-        <Modal show={show} onHide={onHide}>
-          <div className="room-modal">
-            <RoomModalContent room={room} venueName={venue.name} />
-          </div>
-        </Modal>
+      return (
+        <>
+          {venue && room && (
+            <Modal show={show} onHide={onHide}>
+              <div className="room-modal">
+                <RoomModalContent room={room} venueName={venue.name} />
+              </div>
+            </Modal>
+          )}
+        </>
       );
   }
-  return <>{template}</>;
 };
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
