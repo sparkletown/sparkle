@@ -26,7 +26,6 @@ import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
-
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
@@ -38,7 +37,7 @@ export interface TemplateWrapperProps {
 }
 
 const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const history = useHistory();
+  const { push: openUrlUsingRouter, ...history } = useHistory();
   const match = useRouteMatch();
   const parentVenue = useSelector(parentVenueSelector);
 
@@ -145,11 +144,16 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  const parentVenueId = venue?.parentId ?? "";
+  const parentVenueId = venue.parentId;
 
   const backToParentVenue = useCallback(() => {
-    enterVenue(parentVenueId, { customOpenRelativeUrl: history.push });
-  }, [history.push, parentVenueId]);
+    if (!parentVenueId) return;
+
+    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [openUrlUsingRouter, parentVenueId]);
+
+  const showBackButton =
+    !TemplatesWithoutBackButton.includes(venue.template) && parentVenue;
 
   return (
     <RelatedVenuesProvider venueId={venue.id}>
@@ -157,13 +161,12 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         <WithNavigationBar fullscreen={fullscreen}>
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
-          {!TemplatesWithoutBackButton.includes(venue.template) &&
-            parentVenue && (
-              <BackButton
-                onClick={backToParentVenue}
-                title={`Back ${parentVenue ? ` to ${parentVenue.name}` : ""}`}
-              />
-            )}
+          {showBackButton && (
+            <BackButton
+              onClick={backToParentVenue}
+              title={parentVenue ? `Back to ${parentVenue.name}` : "Back"}
+            />
+          )}
           <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>

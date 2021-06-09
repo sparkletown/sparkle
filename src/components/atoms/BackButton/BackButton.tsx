@@ -2,7 +2,7 @@ import React from "react";
 
 import "./BackButton.scss";
 
-interface BackButtonProps {
+export interface BackButtonProps {
   title?: string;
   onClick: () => void;
 }

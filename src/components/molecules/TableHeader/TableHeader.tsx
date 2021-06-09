@@ -17,9 +17,9 @@ import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 
 import { Toggler } from "components/atoms/Toggler";
+import { BackButton } from "components/atoms/BackButton";
 
 import { EditTableTitleModal } from "./components/EditTableTitleModal";
-import { BackButton } from "components/atoms/BackButton";
 
 import "./TableHeader.scss";
 
@@ -135,7 +135,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   return (
     <div className="row TableHeader">
       <div className="TableHeader__leave-table">
-        <BackButton title={"Leave table"} onClick={leaveSeat} />
+        <BackButton title="Leave table" onClick={leaveSeat} />
       </div>
 
       <div className="TableHeader__topic-info">

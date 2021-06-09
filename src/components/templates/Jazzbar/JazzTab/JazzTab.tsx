@@ -28,11 +28,11 @@ import { JAZZBAR_TABLES } from "./constants";
 
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
-import Room from "../components/JazzBarRoom";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import { BackButton } from "components/atoms/BackButton";
+import Room from "../components/JazzBarRoom";
+import JazzBarTableComponent from "../components/JazzBarTableComponent";
 
 import "./JazzTab.scss";
 

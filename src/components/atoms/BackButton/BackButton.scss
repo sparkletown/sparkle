@@ -1,35 +1,42 @@
 @import "scss/constants.scss";
 
+$button-height: 40px;
+$button-border-radius: 0 0 16px 0;
+$button-spacing: 0 10px 0 0;
+$button-box-shadow: 0 10px 20px rgba($secondary, 0.2);
+$button-font-size: 0.9rem;
+
+$icon-size: 22px;
+$icon-background-size: 22px 22px;
+
 .BackButton {
   position: fixed;
   top: $navbar-height;
   z-index: z(navbar-map-back-button);
   left: 0px;
-  height: 40px;
+  height: $button-height;
   width: auto;
   cursor: pointer;
   background-color: $secondary;
-  box-shadow: 0 10px 20px rgba($secondary, 0.2);
+  box-shadow: $button-box-shadow;
   backdrop-filter: blur(8px);
 
-  border-radius: 0 0 16px 0;
+  border-radius: $button-border-radius;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px 0 0;
-  font-size: 0.9rem;
+  padding: $button-spacing;
+  font-size: $button-font-size;
 
   &:hover {
     background-color: $lighter-intermediate-grey;
-    .back-icon {
-      opacity: 1;
-    }
   }
+
   &__icon {
-    height: 22px;
-    width: 22px;
+    height: $icon-size;
+    width: $icon-size;
     background-image: url(/assets/icons/slide-btn-icon.png);
-    background-size: 22px 22px;
+    background-size: $icon-background-size;
     opacity: 0.7;
   }
 }
