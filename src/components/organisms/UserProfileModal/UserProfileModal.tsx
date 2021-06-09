@@ -11,7 +11,7 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
-import { currentVenueSelector, orderedVenuesSelector } from "utils/selectors";
+import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
@@ -29,13 +29,12 @@ import { Badges } from "components/organisms/Badges";
 import "./UserProfileModal.scss";
 
 export interface UserProfileModalProps {
-  venueId: string;
+  venue: WithId<AnyVenue>;
 }
 
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({
-  venueId,
+  venue,
 }) => {
-  const venue = useSelector(currentVenueSelector);
   const { user } = useUser();
   const history = useHistory();
 
@@ -60,16 +59,16 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
   const startVideoChat = useCallback(async () => {
-    if (!user?.uid || !chosenUserId || !venueId) return;
+    if (!user?.uid || !chosenUserId || !venue.id) return;
 
-    const response = await inviteToVideoChat(user.uid, venueId, chosenUserId);
+    const response = await inviteToVideoChat(user.uid, venue.id, chosenUserId);
 
     const roomId = response.data;
 
     if (roomId) {
       history.push(`/pr/${roomId}`);
     }
-  }, [chosenUserId, history, user?.uid, venueId]);
+  }, [chosenUserId, history, user?.uid, venue.id]);
 
   const renderedProfileQuestionAnswers = useMemo(
     () =>
@@ -133,7 +132,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <h6 className="location">
                   <SuspectedLocation
                     user={selectedUserProfile}
-                    currentVenue={venue!}
+                    currentVenue={venue}
                   />
                 </h6>
               </div>

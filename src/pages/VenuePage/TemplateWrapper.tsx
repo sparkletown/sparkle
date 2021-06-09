@@ -155,7 +155,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
           <ChatSidebar venue={venue} />
-          <UserProfileModal venueId={venue.id} />
+          <UserProfileModal venue={venue} />
           <VideoRoomRequestModal />
         </WithNavigationBar>
       </ReactionsProvider>
