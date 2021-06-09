@@ -103,7 +103,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
-      {!isCovertRoom && !room.hideTitle && (
+      {!isCovertRoom && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />
