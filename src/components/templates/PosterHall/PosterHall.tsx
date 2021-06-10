@@ -1,19 +1,23 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 
-import { GenericVenue } from "types/venues";
+import { GenericVenue, VenueTemplate } from "types/venues";
+
+import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isEventLive } from "utils/event";
 
 import { usePosters } from "hooks/posters";
-import { useVenueId } from "hooks/useVenueId";
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useInterval } from "hooks/useInterval";
 
 import { Button } from "components/atoms/Button";
 
 import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
+
+import { INTERVAL_TIME } from "settings";
 
 import "./PosterHall.scss";
 
@@ -22,21 +26,10 @@ export interface PosterHallProps {
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
-  const venueId = venue.id;
-  const { isRelatedVenuesLoading, relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
-  const { events: relatedVenueEvents } = useVenueEvents({
-    venueIds: relatedVenueIds,
-  });
-
   const {
     posterVenues,
     isPostersLoaded,
     hasHiddenPosters,
-
-    posterRelatedVenues,
-    isPosterRelatedLoaded,
 
     increaseDisplayedPosterCount,
 
@@ -48,45 +41,60 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 
-  const [posterRelatedPreviews, setPosterRelatedPreviews] = useState(
-    posterRelatedVenues
-  );
-
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
       <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
     ));
   }, [posterVenues]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const liveVenueIds = relatedVenueEvents
-        .filter((event) => isEventLive(event))
-        .map((event) => event.venueId);
-      const livePosterRelatedVenues = posterRelatedVenues.filter(
-        (posterRelatedVenue) => liveVenueIds.includes(posterRelatedVenue.id)
-      );
-      setPosterRelatedPreviews(livePosterRelatedVenues);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [posterRelatedVenues, relatedVenueEvents]);
+  const [liveVenueIds, setLiveVenueIds] = useState<string[]>();
 
-  const renderPosterRelatedPreviews = useMemo(() => {
-    return posterRelatedPreviews.map((posterRelatedVenue) => (
-      <PosterPreview
-        key={posterRelatedVenue.id}
-        posterVenue={posterRelatedVenue}
-      />
-    ));
-  }, [posterRelatedPreviews]);
+  const { isRelatedVenuesLoading, relatedVenues } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+
+  const subVenues = useMemo(() => {
+    return relatedVenues.filter(
+      (relatedVenue) =>
+        relatedVenue.parentId === venue.id &&
+        relatedVenue.template !== VenueTemplate.posterpage
+    );
+  }, [relatedVenues, venue]);
+
+  const { events: subVenueEvents } = useVenueEvents({
+    venueIds: subVenues.map((venue) => venue.id),
+  });
+
+  useInterval(() => {
+    setLiveVenueIds(
+      subVenueEvents
+        .filter((event) => isEventLive(event))
+        .map((event) => event.venueId)
+    );
+  }, INTERVAL_TIME);
+
+  const liveSubVenues = useMemo(() => {
+    if (!liveVenueIds) return;
+    return subVenues.filter((subVenue) => liveVenueIds.includes(subVenue.id));
+  }, [subVenues, liveVenueIds]);
+
+  const renderedSubvenues = useMemo(() => {
+    if (liveSubVenues)
+      return liveSubVenues.map((subVenue) => (
+        <PosterPreview
+          key={subVenue.id}
+          posterVenue={subVenue as WithId<PosterPageVenue>}
+          enterVenue={enterVenue}
+        />
+      ));
+  }, [liveSubVenues]);
 
   return (
     <div className="PosterHall">
       <div className="PosterHall__related">
-        {isPosterRelatedLoaded || isRelatedVenuesLoading
-          ? renderPosterRelatedPreviews
-          : "Loading..."}
+        {isRelatedVenuesLoading ? renderedSubvenues : "Loading"}
       </div>
+
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}
         searchInputValue={searchInputValue}
