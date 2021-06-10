@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
+import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 
@@ -51,6 +51,14 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <a href={posterAbsUrl} target="_ohbm-poster-preview">
         📄
       </a>
+      {posterVenue.iframeUrl?.trim() !== "" ? (
+        <a href={posterVenue.iframeUrl} {...externalUrlAdditionalProps}>
+          {" "}
+          ⬇{" "}
+        </a>
+      ) : (
+        <div />
+      )}
       <div onClick={handleEnterVenue}>
         <p className="PosterPreview__title">
           {posterVenue.name}: {title}
