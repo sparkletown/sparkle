@@ -117,6 +117,14 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
     <>
       <div className="ScreenShare">
         <div className="ScreenShare__scene">
+          {localScreenTrack && (
+            <div className="ScreenShare__scene--sharing">
+              <Player
+                videoTrack={localScreenTrack}
+                containerClass="ScreenShare__mode--share"
+              />
+            </div>
+          )}
           <div className="ScreenShare__scene--players">
             {localCameraTrack && (
               <div>
@@ -128,12 +136,8 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
                   isSharing={!!localScreenTrack}
                   toggleCam={toggleCamera}
                   toggleMic={toggleMicrophone}
+                  containerClass="ScreenShare__mode--play"
                 />
-              </div>
-            )}
-            {localScreenTrack && (
-              <div>
-                <Player videoTrack={localScreenTrack} />
               </div>
             )}
             {remoteUsers.map(
@@ -145,6 +149,7 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
                       <Player
                         videoTrack={user.videoTrack}
                         audioTrack={user.audioTrack}
+                        containerClass="ScreenShare__mode--play"
                       />
                     )}
                   </div>

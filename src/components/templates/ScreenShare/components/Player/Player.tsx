@@ -28,6 +28,7 @@ export interface VideoPlayerProps {
   isSharing?: boolean;
   toggleCam?: () => void;
   toggleMic?: () => void;
+  containerClass?: string;
 }
 
 const Player = ({
@@ -40,6 +41,7 @@ const Player = ({
   isSharing,
   toggleCam,
   toggleMic,
+  containerClass,
 }: VideoPlayerProps) => {
   const container = useRef<HTMLDivElement>(null);
 
@@ -63,14 +65,8 @@ const Player = ({
       on: isOn,
     });
 
-  // TODO: detect how to find sharing player
-  // const containerClasses = () =>
-  //   classNames("video-player", {
-  //     'video-player--sharing': isSharing,
-  //   });
-
   return (
-    <div ref={container} className="video-player">
+    <div ref={container} className={classNames("video-player", containerClass)}>
       {showButtons && (
         <div className="overlay">
           <div className="buttons">
