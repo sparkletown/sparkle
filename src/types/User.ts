@@ -43,3 +43,8 @@ export enum UserStatus {
   available = "available",
   busy = "busy",
 }
+
+export enum UsernameVisibility {
+  hover = "hover",
+  inline = "inline",
+}

@@ -20,6 +20,7 @@ import {
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
+import { UsernameVisibility } from "types/User";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -183,7 +184,9 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
-    showNametags: Yup.string().notRequired(),
+    showNametags: Yup.mixed()
+      .oneOf(Object.values(UsernameVisibility))
+      .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(5, "Columns must be at least 5"),

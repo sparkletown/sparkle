@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
-import { User } from "types/User";
+import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -49,7 +49,7 @@ export interface UserProfilePictureProp {
   isAudioEffectDisabled?: boolean;
   containerClassName?: string;
   reactionPosition?: "left" | "right";
-  showNametags?: string;
+  showNametags?: UsernameVisibility;
   /**
    * @deprecated Note: This feature is currently disabled.
    */
@@ -113,7 +113,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       <UserAvatar
         user={user}
         containerClassName="UserProfilePicture__avatar"
-        showNametags={showNametags}
+        showNametag={showNametags}
       />
 
       {userId && (

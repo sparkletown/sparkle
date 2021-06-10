@@ -8,6 +8,7 @@ import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
 import { updateVenue_v2 } from "api/admin";
 
 import { Venue_v2_AdvancedConfig } from "types/venues";
+import { UsernameVisibility } from "types/User";
 
 import { useUser } from "hooks/useUser";
 
@@ -70,7 +71,9 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
-  showNametags: Yup.string().notRequired(),
+  showNametags: Yup.mixed()
+    .oneOf(Object.values(UsernameVisibility))
+    .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
   showZendesk: Yup.bool().notRequired(),

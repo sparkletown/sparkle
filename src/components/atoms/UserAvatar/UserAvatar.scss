@@ -1,10 +1,22 @@
 @import "scss/constants";
 
-.user-avatar {
+.UserAvatar {
   position: relative;
   z-index: z(global-profile-icon);
   width: 25px;
   height: 25px;
+
+  &:hover .UserAvatar__nametag--hover {
+    opacity: 1;
+
+    background-color: $primary;
+    padding: $spacing--xs;
+
+    transform: scale(1.5) translate(-35%, 50%);
+    box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
+      0 2px 4px opaque-black(0.2);
+  }
+
   &__image {
     height: 100%;
     width: 100%;
@@ -51,33 +63,35 @@
     width: 40px;
   }
 
-  &:hover .profile-name-avatar-hover {
-    transform: scale(1.5) translate(-35%, 50%);
-    opacity: 1;
-    box-shadow: 0 0 0 3px lighten(blue, 10%), 0 2px 4px rgba($black, 0.2);
-    background-color: #005ee5;
-    padding: 5px 5px;
-  }
-}
+  &__nametag {
+    position: absolute;
+    color: $white;
 
-.profile-name-avatar {
-  opacity: 0.8;
-  z-index: z(global-profile-icon);
-  bottom: 10%;
-  position: absolute;
-  margin: 0 auto;
-  padding: 0px 5px;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(8px);
-  border-radius: 18px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  text-align: center;
-  font-size: 0.8rem;
-  line-height: 0.9;
-  left: 50%;
-  margin-right: -50%;
-  transform: translate(-50%, 0);
-  min-width: 70%;
-  transition: transform 400ms, padding 400ms, opacity 600ms,
-    background-color 600ms;
+    opacity: 0;
+
+    min-width: 70%;
+
+    z-index: z(global-profile-icon);
+
+    text-align: center;
+
+    margin: 0 auto;
+    padding: 0 $spacing--xs;
+
+    bottom: 10%;
+    left: 50%;
+    margin-right: -50%;
+
+    border-radius: $border-radius--md;
+
+    font-size: $font-size--xs;
+    line-height: 1;
+
+    background-color: opaque-black(0.4);
+    box-shadow: 0 2px 4px opaque-black(0.2);
+
+    transform: translate(-50%, 0);
+    transition: transform 400ms, padding 400ms, opacity 600ms,
+      background-color 600ms;
+  }
 }
