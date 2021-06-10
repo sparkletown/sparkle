@@ -5,7 +5,6 @@ import classNames from "classnames";
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
-import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -31,7 +30,6 @@ export const AdminVenueView: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<AdminVenueTab>(DEFAULT_TAB);
 
   const { userId } = useUser();
-  const { roles } = useRoles();
   const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
@@ -55,11 +53,11 @@ export const AdminVenueView: React.FC = () => {
     setSelectedTab(tab as AdminVenueTab);
   }, []);
 
-  if (!isCurrentVenueLoaded || !roles) {
+  if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
   }
 
-  if (!roles.includes("admin") || !isAdminUser) {
+  if (!isAdminUser) {
     return <>Forbidden</>;
   }
 
