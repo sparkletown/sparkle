@@ -2,13 +2,13 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
+import { Venue_v2 } from "types/venues";
+
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
 import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-
-import { Venue_v2 } from "types/venues";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
@@ -23,7 +23,7 @@ export enum AdminAdvancedTab {
   advancedMapSettings = "advanced_map_settings",
 }
 
-const adminAdvancedTabs: Readonly<Record<AdminAdvancedTab, String>> = {
+const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
   [AdminAdvancedTab.basicInfo]: "Start",
   [AdminAdvancedTab.entranceExperience]: "Entrance",
   [AdminAdvancedTab.advancedMapSettings]: "Advanced",
@@ -33,20 +33,23 @@ const DEFAULT_TAB = AdminAdvancedTab.basicInfo;
 
 export const AdminAdvancedSettings: React.FC = () => {
   const venueId = useVenueId();
-  const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
+  const [selectedTab, setSelectedTab] = useState<AdminAdvancedTab>(DEFAULT_TAB);
 
-  const { user } = useUser();
+  const { userId } = useUser();
   const { roles } = useRoles();
-  const { isAdminUser } = useIsAdminUser(user?.uid);
+  const { isAdminUser } = useIsAdminUser(userId);
 
   const selectDefaultTab = useCallback(() => {
     setSelectedTab(DEFAULT_TAB);
   }, []);
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  const {
+    currentVenue: venue,
+    isCurrentVenueLoaded,
+  } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminAdvancedTabs = useMemo(() => {
-    return Object.entries(adminAdvancedTabs).map(([key, text]) => (
+    return Object.entries(adminAdvancedTabLabelMap).map(([key, text]) => (
       <Nav.Link
         key={key}
         className={classNames("AdminVenueView__tab", {
@@ -59,7 +62,11 @@ export const AdminAdvancedSettings: React.FC = () => {
     ));
   }, [selectedTab]);
 
-  if ((venueId && !venue) || !roles) {
+  const selectTab = useCallback((tab: string) => {
+    setSelectedTab(tab as AdminAdvancedTab);
+  }, []);
+
+  if (!isCurrentVenueLoaded || !roles) {
     return <LoadingPage />;
   }
 
@@ -73,7 +80,7 @@ export const AdminAdvancedSettings: React.FC = () => {
         <Nav
           className="AdminAdvancedSettings__options"
           activeKey={selectedTab}
-          onSelect={setSelectedTab}
+          onSelect={selectTab}
         >
           {renderAdminAdvancedTabs}
         </Nav>
