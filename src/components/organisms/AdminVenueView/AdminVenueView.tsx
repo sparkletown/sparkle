@@ -11,6 +11,8 @@ import { useIsAdminUser } from "hooks/roles";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./AdminVenueView.scss";
+import { Spaces } from "./components";
+import { Venue_v2 } from "types/venues";
 
 export enum AdminVenueTab {
   spaces = "spaces",
@@ -69,7 +71,9 @@ export const AdminVenueView: React.FC = () => {
           {renderAdminVenueTabs}
         </Nav>
       </div>
-      {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
+      {selectedTab === AdminVenueTab.spaces && (
+        <Spaces venue={venue as Venue_v2} />
+      )}
       {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
