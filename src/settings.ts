@@ -107,7 +107,7 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
 // How often to check for live events in subvenues of a posterhall template
-export const POSTERHALL_SUBVENUE_STATUS_MS = 1000; // 1 sec
+export const POSTERHALL_SUBVENUE_STATUS_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
