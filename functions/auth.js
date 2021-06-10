@@ -1,7 +1,8 @@
 const functions = require("firebase-functions");
-// const admin = require("firebase-admin");
+const admin = require("firebase-admin");
 
 const oauth2 = require("simple-oauth2");
+const fetch = require("node-fetch");
 
 const PROJECT_ID = functions.config().project.id;
 
@@ -42,7 +43,7 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
 const createOAuth2Client = () => {
-  // TODO: configure these creds in cloud config and/ore firestore or similar
+  // TODO: configure these creds in cloud config and/or firestore or similar
   const credentials = {
     client: {
       id: "TODO", // TODO
@@ -69,26 +70,35 @@ exports.oauth2Redirect = functions.https.onRequest((req, res) => {
   // TODO: should we load the oauth config data from firestore based on the venue it's configured for or similar?
   const authClient = createOAuth2Client();
 
+  // TODO: configure this in cloud config and/or firestore or similar
+  // const authCodeReturnUri = "http://localhost:5006/oauth2/token";
+  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/oauth2/token`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
+
+  // TODO: configure this in cloud config and/or firestore or similar
+  const scope = "";
+
   // TODO: use a uuid4 for this state?
   // TODO: do we also want/need to store something about what venueId they were trying to access/etc for redirecting them back again?
+  // TODO: it seems I4A's OAuth2 doesn't even send on the state param anyway, so no point using this here..
   // const state = crypto.randomBytes(20).toString("hex");
-  const state = "TODO-use-proper-state";
+  // const state = "TODO-use-proper-state";
 
-  functions.logger.log(
-    "Setting verification state in __session cookie:",
-    state
-  );
-  res.cookie("__session", state, {
-    maxAge: 60 * 60, // seconds
-    secure: true,
-    httpOnly: true,
-    sameSite: "strict",
-  });
+  // functions.logger.log(
+  //   "Setting verification state in __session cookie:",
+  //   state
+  // );
+  // res.cookie("__session", state);
+  // res.cookie("__session", state, {
+  //   maxAge: 60 * 60, // seconds
+  //   // secure: true, // TODO: don't set this when running locally?
+  //   httpOnly: true,
+  //   sameSite: "strict",
+  // });
 
   const redirectUri = authClient.authorizationCode.authorizeURL({
-    redirect_uri: "http://localhost:3000/oauth2/token", // TODO: what do we want to use here?
-    scope: "TODO", // TODO: what do we want to use here?
-    state,
+    redirect_uri: authCodeReturnUri,
+    scope,
+    // state,
   });
 
   functions.logger.log("Redirecting to:", redirectUri);
@@ -102,101 +112,133 @@ exports.oauth2Redirect = functions.https.onRequest((req, res) => {
 exports.oauth2Token = functions.https.onRequest(async (req, res) => {
   const authClient = createOAuth2Client();
 
-  functions.logger.log("Request:", JSON.stringify(req, null, 2));
+  // TODO: configure this in cloud config and/or firestore or similar
+  const i4aGetUserInfoUrl =
+    "https://www.humanbrainmapping.org/custom/api/Sparkle.cfm";
+  const i4aApiKey = "TODO";
 
-  functions.logger.log("Received verification state:", req.cookies.state);
-  functions.logger.log("Received state:", req.query.state);
-  if (!req.cookies.state) {
-    throw new Error(
-      "State cookie not set or expired. Maybe you took too long to authorize. Please try again."
-    );
-  } else if (req.cookies.state !== req.query.state) {
-    throw new Error("State validation failed");
-  }
+  // TODO: I4A's OAuth2 implementation doesn't seem to support the state parameter, so probaby no point using these cookies/etc
+  // const cookieState = req.cookies["__session"];
+  // const queryState = req.query.state;
+  //
+  // functions.logger.log("Received verification state:", cookieState);
+  // functions.logger.log("Received state:", queryState);
+  // if (!cookieState) {
+  //   throw new Error(
+  //     "__session cookie not set or expired. Maybe you took too long to authorize. Please try again."
+  //   );
+  // } else if (cookieState !== queryState) {
+  //   throw new Error("State validation failed");
+  // }
 
-  functions.logger.log("Received auth code:", req.query.code);
+  const { code: authCode } = req.query;
+
+  functions.logger.log("Received auth code:", authCode);
   const results = await authClient.authorizationCode.getToken({
-    code: req.query.code,
+    code: authCode,
     redirect_uri: "http://localhost:3000/in/foo", // TODO: what do we want to use here?
   });
   functions.logger.log("Auth code exchange result received:", results);
 
-  // TODO: do something with results
-  //   extract userId/relevant details
-  //   make an authenticated request to the 'get user details' API to retrieve this user's data
-  //     we want to check this for both meeting ids, so may need to make 2 requests here as the API is.. lacking
-  //   use the returned email address to lookup if an account already exists for this user
-  //     if it doesn't exist: create one
-  //     if it does exist: ?potentially update it to provide access to the appropriate areas/venues/etc as needed?
-  //   create a custom firebase auth token to allow logging in as this user + return it to the client (possibly via redirect)?
-  //     or should we create a session cookie maybe?
-  //     do we want to set any custom claims on this token? https://firebase.google.com/docs/auth/admin/custom-claims
-  //       and if so, how can we ensure those claims exist for the user the next time they login, potentially via a different method?
-  //         it sounds like the claims are set on the user, and then propogate when the token is refreshed: https://firebase.google.com/docs/auth/admin/custom-claims#set_and_validate_custom_user_claims_via_the_admin_sdk
-  //         they can be set on user creation/etc: https://firebase.google.com/docs/auth/admin/custom-claims#defining_roles_via_firebase_functions_on_user_creation
+  // const { access_token: accessToken } = results;
 
-  // TODO
-  // const userMaybe = await admin.auth().getUserByEmail("user@admin.example.com");
+  // TODO: We apparently are meant to use the accessToken with another API to query this I4A User ID from some API
+  //   Though we seemingly haven't been given any details about that yet..
+  const i4aUserId = 1234;
 
-  // TODO
-  // Ref: https://firebase.google.com/docs/auth/admin/create-custom-tokens#create_custom_tokens_using_the_firebase_admin_sdk
-  // const foo = await admin.auth().createCustomToken(uid);
-  // const foo = await admin.auth().createCustomToken(uid, additionalClaims);
+  // TODO: instead of manually creating these 2 checkes, we should map over an array of meeting IDs configured
+  //   in cloud config and/or firestore or similar
 
-  // TODO
-  // // Create a Firebase account and get the Custom Auth Token.
-  // const firebaseToken = await createFirebaseAccount(
-  //   instagramUserID,
-  //   userName,
-  //   profilePic,
-  //   accessToken
-  // );
+  const checkMeeting1Body = {
+    apiKey: i4aApiKey,
+    ams_id: i4aUserId,
+    meeting_id: 131, // TODO: configure this in cloud config and/or firestore or similar
+  };
+
+  const checkMeeting2Body = {
+    apiKey: i4aApiKey,
+    ams_id: i4aUserId,
+    meeting_id: 136, // TODO: configure this in cloud config and/or firestore or similar
+  };
+
+  const checkMeeting1Promise = fetch(i4aGetUserInfoUrl, {
+    method: "POST",
+    body: JSON.stringify(checkMeeting1Body),
+    headers: { "Content-Type": "application/json" },
+  }).then((res) => res.json());
+
+  const checkMeeting2Promise = fetch(i4aGetUserInfoUrl, {
+    method: "POST",
+    body: JSON.stringify(checkMeeting2Body),
+    headers: { "Content-Type": "application/json" },
+  }).then((res) => res.json());
+
+  const [checkMeeting1Result, checkMeeting2Result] = await Promise.all([
+    checkMeeting1Promise,
+    checkMeeting2Promise,
+  ]);
+
+  functions.logger.log("Check Meeting 1 Result:", checkMeeting1Result);
+  functions.logger.log("Check Meeting 2 Result:", checkMeeting2Result);
+
+  // The details should be exactly the same from both of these API calls except for the is_registered value,
+  // so we will just get the user's name/etc from the results of one of the calls.
+  const {
+    // title,
+    // firstname,
+    // lastname,
+    // company,
+    email,
+    is_registered: isRegisteredMeeting1,
+  } = checkMeeting1Result;
+
+  const { is_registered: isRegisteredMeeting2 } = checkMeeting2Result;
+
+  const isRegistered = isRegisteredMeeting1 || isRegisteredMeeting2;
+
+  if (!isRegistered || !email) {
+    // TODO: redirect to some kind of 'not allowed' page
+    res.redirect("/TODO/not-registered");
+    return;
+  }
+
+  const normalisedEmail = email.toLowerCase().trim();
+
+  // Lookup the existing user by their email, or create them if they don't already exist
+  const userRecord = await admin
+    .auth()
+    .getUserByEmail(normalisedEmail)
+    .catch((error) => {
+      // If user doesn't exist then create them
+      if (error.code === "auth/user-not-found") {
+        functions.logger.log(
+          "Existing user not found, creating new user:",
+          normalisedEmail
+        );
+
+        // We explicitly don't set a password here, which should prevent signing in that way (until the user resets their password to create one)
+        // We also explicitly aren't creating the user's profile here, which will let them configure it in the normal way when they first sign in
+        return admin.auth().createUser({
+          email: normalisedEmail,
+        });
+      }
+      throw error;
+    });
+
+  functions.logger.log("User:", {
+    userId: userRecord.uid,
+    email: userRecord.email,
+  });
+
+  const registeredMeetings = [];
+  isRegisteredMeeting1 && registeredMeetings.push(checkMeeting1Body.meeting_id);
+  isRegisteredMeeting2 && registeredMeetings.push(checkMeeting1Body.meeting_id);
+
+  // Create a custom token for the frontend to use to sign into firebase auth as this user
+  const customToken = await admin.auth().createCustomToken(userRecord.uid, {
+    registeredMeetings,
+  });
 
   // TODO: redirect back to the main application in a way that we can provide the custom auth token back to it
-  res.redirect("TODO");
+  res.redirect(`/in/TODO-venueId?customToken=${customToken}`);
 });
-
-// TODO: extract the relevant patterns from this example code for 'create new user if required'/etc.
-//   Note: we don't want to use all of the patterns/etc here, but it's a good starting reference
-// /**
-//  * Creates a Firebase account with the given user profile and returns a custom auth token allowing
-//  * signing-in this account.
-//  * Also saves the accessToken to the datastore at /instagramAccessToken/$uid
-//  *
-//  * @returns {Promise<string>} The Firebase custom auth token in a promise.
-//  */
-// async function createFirebaseAccount(instagramID, displayName, photoURL, accessToken) {
-//   // The UID we'll assign to the user.
-//   const uid = `instagram:${instagramID}`;
-//
-//   // Save the access token to the Firebase Realtime Database.
-//   const databaseTask = admin.database().ref(`/instagramAccessToken/${uid}`).set(accessToken);
-//
-//   // Create or update the user account.
-//   const userCreationTask = admin.auth().updateUser(uid, {
-//     displayName: displayName,
-//     photoURL: photoURL,
-//   }).catch((error) => {
-//     // If user does not exists we create it.
-//     if (error.code === 'auth/user-not-found') {
-//       return admin.auth().createUser({
-//         uid: uid,
-//         displayName: displayName,
-//         photoURL: photoURL,
-//       });
-//     }
-//     throw error;
-//   });
-//
-//   // Wait for all async task to complete then generate and return a custom auth token.
-//   await Promise.all([userCreationTask, databaseTask]);
-//   // Create a Firebase custom auth token.
-//   const token = await admin.auth().createCustomToken(uid);
-//   functions.logger.log(
-//     'Created Custom token for UID "',
-//     uid,
-//     '" Token:',
-//     token
-//   );
-//   return token;
-// }
