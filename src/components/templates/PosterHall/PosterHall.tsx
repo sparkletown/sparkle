@@ -49,7 +49,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const [liveVenueIds, setLiveVenueIds] = useState<string[]>();
 
-  const { isRelatedVenuesLoading, relatedVenues } = useRelatedVenues({
+  const { relatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
 
@@ -61,8 +61,12 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     );
   }, [relatedVenues, venue]);
 
+  const subVenueIds = useMemo(() => subVenues.map((venue) => venue.id), [
+    subVenues,
+  ]);
+
   const { events: subVenueEvents } = useVenueEvents({
-    venueIds: subVenues.map((venue) => venue.id),
+    venueIds: subVenueIds,
   });
 
   useInterval(() => {
@@ -73,27 +77,22 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     );
   }, LOCATION_INCREMENT_MS);
 
-  const liveSubVenues = useMemo(() => {
-    if (!liveVenueIds) return;
-    return subVenues.filter((subVenue) => liveVenueIds.includes(subVenue.id));
-  }, [subVenues, liveVenueIds]);
-
   const renderedSubvenues = useMemo(() => {
-    if (liveSubVenues)
-      return liveSubVenues.map((subVenue) => (
-        <PosterPreview
-          key={subVenue.id}
-          posterVenue={subVenue as WithId<PosterPageVenue>}
-          enterVenue={enterVenue}
-        />
-      ));
-  }, [liveSubVenues]);
+    if (liveVenueIds)
+      return subVenues
+        .filter((subVenue) => liveVenueIds.includes(subVenue.id))
+        .map((subVenue) => (
+          <PosterPreview
+            key={subVenue.id}
+            posterVenue={subVenue as WithId<PosterPageVenue>}
+            enterVenue={enterVenue}
+          />
+        ));
+  }, [liveVenueIds, subVenues]);
 
   return (
     <div className="PosterHall">
-      <div className="PosterHall__related">
-        {isRelatedVenuesLoading ? renderedSubvenues : "Loading"}
-      </div>
+      <div className="PosterHall__related">{renderedSubvenues}</div>
 
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}
