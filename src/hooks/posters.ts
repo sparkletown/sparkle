@@ -5,10 +5,7 @@ import Fuse from "fuse.js";
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
-import {
-  posterVenuesSelector,
-  posterRelatedVenuesSelector,
-} from "utils/selectors";
+import { posterVenuesSelector } from "utils/selectors";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -29,21 +26,6 @@ export const useConnectPosterVenues = (posterHallId: string) => {
   });
 };
 
-export const useConnectPosterRelatedVenues = (posterHallId: string) => {
-  useFirestoreConnect(() => {
-    return [
-      {
-        collection: "venues",
-        where: [
-          ["parentId", "==", posterHallId],
-          ["template", "in", [VenueTemplate.audience, VenueTemplate.jazzbar]],
-        ],
-        storeAs: "posterRelatedVenues",
-      },
-    ];
-  });
-};
-
 export const usePosterVenues = (posterHallId: string) => {
   useConnectPosterVenues(posterHallId);
 
@@ -58,25 +40,8 @@ export const usePosterVenues = (posterHallId: string) => {
   );
 };
 
-export const usePosterRelatedVenues = (posterHallId: string) => {
-  useConnectPosterRelatedVenues(posterHallId);
-
-  const posterRelatedVenues = useSelector(posterRelatedVenuesSelector);
-
-  return useMemo(
-    () => ({
-      posterRelatedVenues: posterRelatedVenues ?? [],
-      isPosterRelatedLoaded: isLoaded(posterRelatedVenues),
-    }),
-    [posterRelatedVenues]
-  );
-};
-
 export const usePosters = (posterHallId: string) => {
   const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
-  const { posterRelatedVenues, isPosterRelatedLoaded } = usePosterRelatedVenues(
-    posterHallId
-  );
 
   const {
     searchInputValue,
@@ -168,9 +133,6 @@ export const usePosters = (posterHallId: string) => {
     posterVenues: displayedPosterVenues,
     isPostersLoaded,
     hasHiddenPosters,
-
-    posterRelatedVenues,
-    isPosterRelatedLoaded,
 
     searchInputValue,
     liveFilter,

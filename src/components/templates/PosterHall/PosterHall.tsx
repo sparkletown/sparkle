@@ -22,7 +22,7 @@ export interface PosterHallProps {
 }
 
 export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
-  const venueId = useVenueId();
+  const venueId = venue.id;
   const { isRelatedVenuesLoading, relatedVenueIds } = useRelatedVenues({
     currentVenueId: venueId,
   });

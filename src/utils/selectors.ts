@@ -205,10 +205,6 @@ export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
 > = (state) => state.firestore.ordered.screeningRoomVideos;
 
-export const posterRelatedVenuesSelector: SparkleSelector<
-  WithId<PosterPageVenue>[] | undefined
-> = (state) => state.firestore.ordered.posterRelatedVenues;
-
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.
  *
