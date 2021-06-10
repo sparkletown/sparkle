@@ -190,7 +190,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       <S.ItemBody>
         <Form.Control as="select" custom name="showNametags" ref={register}>
           <option value="none">None</option>
-          <option value="inline">Inline</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
           <option value="hover">Inline and hover</option>
         </Form.Control>
       </S.ItemBody>

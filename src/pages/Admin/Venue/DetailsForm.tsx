@@ -786,7 +786,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <label className="input-container">
         <Form.Control as="select" name="showNametags" ref={register} custom>
           <option value="none">None</option>
-          <option value="inline">Inline</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
           <option value="hover">Inline and hover</option>
         </Form.Control>
       </label>

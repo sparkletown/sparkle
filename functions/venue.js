@@ -200,7 +200,6 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     showRadio: data.showRadio || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
-    showNametags: data.showNametags || "none",
   };
 
   if (data.mapBackgroundImageUrl) {
