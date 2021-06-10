@@ -69,6 +69,16 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     venueIds: subVenueIds,
   });
 
+  useMemo(
+    () =>
+      setLiveVenueIds(
+        subVenueEvents
+          .filter((event) => isEventLive(event))
+          .map((event) => event.venueId)
+      ),
+    [subVenueEvents]
+  );
+
   useInterval(() => {
     setLiveVenueIds(
       subVenueEvents
