@@ -106,6 +106,9 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
+// How often to check for live events in subvenues of a posterhall template
+export const POSTERHALL_SUBVENUE_STATUS_MS = 1000; // 1 sec
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
@@ -636,4 +639,3 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
-export const INTERVAL_TIME = 1000;

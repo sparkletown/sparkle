@@ -17,7 +17,7 @@ import { Button } from "components/atoms/Button";
 import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 
-import { LOCATION_INCREMENT_MS } from "settings";
+import { POSTERHALL_SUBVENUE_STATUS_MS } from "settings";
 
 import "./PosterHall.scss";
 
@@ -75,7 +75,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         .filter((event) => isEventLive(event))
         .map((event) => event.venueId)
     );
-  }, LOCATION_INCREMENT_MS);
+  }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   const renderedSubvenues = useMemo(() => {
     if (liveVenueIds)
