@@ -64,7 +64,7 @@ export const Logo = styled.div`
   background-color: #1a1d24;
 `;
 
-export const Description = styled.p`
+export const Description = styled.div`
   margin-bottom: 1rem;
 
   opacity: 0.7;
