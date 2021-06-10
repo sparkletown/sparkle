@@ -149,52 +149,47 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
   // TODO: instead of manually creating these 2 checkes, we should map over an array of meeting IDs configured
   //   in cloud config and/or firestore or similar
 
-  const checkMeeting1Body = {
-    apiKey: i4aApiKey,
-    ams_id: i4aUserId,
-    meeting_id: 131, // TODO: configure this in cloud config and/or firestore or similar
-  };
+  // TODO: configure this in cloud config and/or firestore or similar
+  const meetingIdsToCheck = [131, 136];
 
-  const checkMeeting2Body = {
-    apiKey: i4aApiKey,
-    ams_id: i4aUserId,
-    meeting_id: 136, // TODO: configure this in cloud config and/or firestore or similar
-  };
+  const checkedMeetingResults = await Promise.all(
+    meetingIdsToCheck.map((meetingId) => {
+      const postBody = {
+        apiKey: i4aApiKey,
+        ams_id: i4aUserId,
+        meeting_id: meetingId,
+      };
 
-  const checkMeeting1Promise = fetch(i4aGetUserInfoUrl, {
-    method: "POST",
-    body: JSON.stringify(checkMeeting1Body),
-    headers: { "Content-Type": "application/json" },
-  }).then((res) => res.json());
+      return fetch(i4aGetUserInfoUrl, {
+        method: "POST",
+        body: JSON.stringify(postBody),
+        headers: { "Content-Type": "application/json" },
+      }).then((res) => res.json());
+    })
+  );
 
-  const checkMeeting2Promise = fetch(i4aGetUserInfoUrl, {
-    method: "POST",
-    body: JSON.stringify(checkMeeting2Body),
-    headers: { "Content-Type": "application/json" },
-  }).then((res) => res.json());
+  checkedMeetingResults.forEach((meetingResult) => {
+    functions.logger.log("Checked Meeting Result:", meetingResult);
+  });
 
-  const [checkMeeting1Result, checkMeeting2Result] = await Promise.all([
-    checkMeeting1Promise,
-    checkMeeting2Promise,
-  ]);
+  const { email, registeredMeetings } = checkedMeetingResults.reduce(
+    (acc, { email, meeting_id: meetingId, is_registered: isRegistered }) => {
+      const { registeredMeetings = [] } = acc;
 
-  functions.logger.log("Check Meeting 1 Result:", checkMeeting1Result);
-  functions.logger.log("Check Meeting 2 Result:", checkMeeting2Result);
+      const newRegisteredMeetings = isRegistered
+        ? [...registeredMeetings, meetingId]
+        : registeredMeetings;
 
-  // The details should be exactly the same from both of these API calls except for the is_registered value,
-  // so we will just get the user's name/etc from the results of one of the calls.
-  const {
-    // title,
-    // firstname,
-    // lastname,
-    // company,
-    email,
-    is_registered: isRegisteredMeeting1,
-  } = checkMeeting1Result;
+      return {
+        ...acc,
+        email: email.toLowerCase().trim(),
+        registeredMeetings: newRegisteredMeetings,
+      };
+    },
+    {}
+  );
 
-  const { is_registered: isRegisteredMeeting2 } = checkMeeting2Result;
-
-  const isRegistered = isRegisteredMeeting1 || isRegisteredMeeting2;
+  const isRegistered = registeredMeetings.length > 0;
 
   if (!isRegistered || !email) {
     // TODO: redirect to some kind of 'not allowed' page
@@ -202,25 +197,21 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
     return;
   }
 
-  const normalisedEmail = email.toLowerCase().trim();
-
   // Lookup the existing user by their email, or create them if they don't already exist
   const userRecord = await admin
     .auth()
-    .getUserByEmail(normalisedEmail)
+    .getUserByEmail(email)
     .catch((error) => {
       // If user doesn't exist then create them
       if (error.code === "auth/user-not-found") {
         functions.logger.log(
           "Existing user not found, creating new user:",
-          normalisedEmail
+          email
         );
 
         // We explicitly don't set a password here, which should prevent signing in that way (until the user resets their password to create one)
         // We also explicitly aren't creating the user's profile here, which will let them configure it in the normal way when they first sign in
-        return admin.auth().createUser({
-          email: normalisedEmail,
-        });
+        return admin.auth().createUser({ email });
       }
       throw error;
     });
@@ -229,10 +220,6 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
     userId: userRecord.uid,
     email: userRecord.email,
   });
-
-  const registeredMeetings = [];
-  isRegisteredMeeting1 && registeredMeetings.push(checkMeeting1Body.meeting_id);
-  isRegisteredMeeting2 && registeredMeetings.push(checkMeeting1Body.meeting_id);
 
   // Create a custom token for the frontend to use to sign into firebase auth as this user
   const customToken = await admin.auth().createCustomToken(userRecord.uid, {
