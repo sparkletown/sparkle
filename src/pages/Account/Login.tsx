@@ -1,8 +1,9 @@
+import React, { FC, useState } from "react";
+
+import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
-import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
-import React, { FC, useState } from "react";
 import "./Account.scss";
 
 interface LoginProps {
