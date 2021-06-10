@@ -94,11 +94,15 @@ export const useParticipantState = ({
 
   // Mute/unmute audio
   const {
-    isShown: isMuted,
+    isShown: isAudioOn,
 
     setShown: setMuted,
     toggle: toggleMuted,
-  } = useShowHide(defaultMute);
+    show: unmuteAudio,
+    hide: muteAudio,
+  } = useShowHide(!defaultMute);
+
+  const isMuted = !isAudioOn;
 
   useEffect(() => {
     if (isMuted) {
@@ -145,6 +149,8 @@ export const useParticipantState = ({
 
     isMuted,
     setMuted,
+    muteAudio,
+    unmuteAudio,
     toggleMuted,
 
     isVideoHidden,
@@ -157,13 +163,13 @@ export const useParticipantState = ({
 export interface UseVideoRoomStateProps {
   userId?: string;
   roomName?: string;
-  showVideoByDefault?: boolean;
+  activeParticipantByDefault?: boolean;
 }
 
 export const useVideoRoomState = ({
   userId,
   roomName,
-  showVideoByDefault = true,
+  activeParticipantByDefault = true,
 }: UseVideoRoomStateProps) => {
   const [token, setToken] = useState<string>();
 
@@ -201,11 +207,11 @@ export const useVideoRoomState = ({
   }, []);
 
   const {
-    isShown: hasVideo,
+    isShown: isActiveParticipant,
 
-    show: turnVideoOn,
-    hide: turnVideoOff,
-  } = useShowHide(showVideoByDefault);
+    show: becomeActiveParticipant,
+    hide: becomePassiveParticipant,
+  } = useShowHide(activeParticipantByDefault);
 
   const participantConnected = useCallback((participant: RemoteParticipant) => {
     setParticipants((prevParticipants) => [...prevParticipants, participant]);
@@ -226,14 +232,15 @@ export const useVideoRoomState = ({
     // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
     connect(token, {
       name: roomName,
-      video: hasVideo,
+      video: isActiveParticipant,
+      audio: isActiveParticipant,
       enableDscp: true,
     }).then(setRoom);
 
     return () => {
       disconnect();
     };
-  }, [disconnect, roomName, token, hasVideo]);
+  }, [disconnect, roomName, token, isActiveParticipant]);
 
   useEffect(() => {
     if (!room) return;
@@ -262,7 +269,7 @@ export const useVideoRoomState = ({
     participants,
 
     disconnect,
-    turnVideoOff,
-    turnVideoOn,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   };
 };
