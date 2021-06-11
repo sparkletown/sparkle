@@ -6,15 +6,21 @@
   width: 25px;
   height: 25px;
 
-  &:hover .UserAvatar__nametag--hover {
-    opacity: 1;
+  &:hover {
+    z-index: z(global-profile-icon--hover);
 
-    background-color: $primary;
-    padding: $spacing--xs;
+    .UserAvatar__nametag--hover {
+      opacity: 1;
 
-    transform: scale(1.5) translate(-35%, 50%);
-    box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
-      0 2px 4px opaque-black(0.2);
+      z-index: z(global-profile-icon--hover);
+
+      background-color: $primary;
+      padding: $spacing--xs;
+
+      transform: scale(1.5) translate(-35%, 50%);
+      box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
+        0 2px 4px opaque-black(0.2);
+    }
   }
 
   &__image {
@@ -70,8 +76,6 @@
     opacity: 0;
 
     min-width: 70%;
-
-    z-index: z(global-profile-icon);
 
     text-align: center;
 
