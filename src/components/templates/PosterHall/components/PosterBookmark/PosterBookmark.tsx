@@ -9,7 +9,6 @@ import { updatePersonalizedSchedule, savePosterToProfile } from "api/profile";
 import { Bookmark } from "components/atoms/Bookmark";
 
 import { useUser } from "hooks/useUser";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useVenueEvents } from "hooks/events";
 
 export const emptySavedPosters = {};
@@ -34,7 +33,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
       : false
   );
 
-  const bookmarkPoster = useCallback(() => {
+  const bookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(() => {
     if (userWithId?.id && venueId) {
       savePosterToProfile({
         venueId: venueId,
@@ -42,7 +41,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
         removeMode: isBookmarkedPoster,
       });
     }
-    relatedVenueEvents
+    venueEvents
       .filter((event) => event.venueId === venueId)
       .map((event) => {
         userWithId?.id &&
@@ -55,7 +54,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
         return {};
       });
     setBookmarkPoster(!isBookmarkedPoster);
-  }, [userWithId, isBookmarkedPoster, venueId, relatedVenueEvents]);
+  }, [userWithId, isBookmarkedPoster, venueId, venueEvents]);
 
   return <Bookmark onClick={bookmarkPoster} isSaved={isBookmarkedPoster} />;
 };
