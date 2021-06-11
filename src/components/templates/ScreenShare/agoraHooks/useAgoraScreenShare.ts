@@ -4,10 +4,15 @@ import AgoraRTC, {
   ILocalAudioTrack,
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
+import { updateUserIds } from "api/profile";
+import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
 
 export default function useAgoraScreenShare(
   client: IAgoraRTCClient | undefined
 ) {
+  const venueId = useVenueId();
+  const { userId } = useUser();
   const [localScreenTrack, setLocalScreenTrack] = useState<
     ILocalVideoTrack | undefined
   >(undefined);
@@ -52,7 +57,13 @@ export default function useAgoraScreenShare(
     channel: string,
     token?: string | null
   ) => {
-    await client?.join(appId, channel, token || null);
+    if (!client || !venueId || !userId) return;
+    const screenClientUid = await client.join(appId, channel, token || null);
+    await updateUserIds({
+      venueId,
+      userId,
+      props: { screenClientUid },
+    });
   };
 
   const leaveChannel = useCallback(async () => {

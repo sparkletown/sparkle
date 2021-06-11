@@ -205,3 +205,38 @@ export const updateScreenShareStatus = async ({
     });
   });
 };
+
+export interface UpdateUserIdsProps {
+  venueId: string;
+  userId: string;
+  // TODO: unify updateUserIds, updateScreenShareStatus and updatePlaceInRoom methods into one
+  props: Record<string, string | number>;
+}
+
+export const updateUserIds = async ({
+  venueId,
+  userId,
+  props,
+}: UpdateUserIdsProps) => {
+  const userProfileRef = getUserRef(userId);
+
+  const userData = (await userProfileRef.get()).data();
+
+  const newData = {
+    [`data.${venueId}`]: { ...userData?.data[venueId], ...props },
+  };
+
+  userProfileRef.update(newData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateUserIds",
+        venueId,
+        userId,
+        event,
+        ...props,
+      });
+
+      throw err;
+    });
+  });
+};

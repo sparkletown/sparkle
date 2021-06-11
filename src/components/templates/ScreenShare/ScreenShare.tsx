@@ -14,7 +14,7 @@ import { ControlBar } from "./components/ControlBar";
 import { AgoraClientConnectionState } from "../../../types/agora";
 import { useSelector } from "../../../hooks/useSelector";
 import { currentVenueSelectorData } from "../../../utils/selectors";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "hooks/useUser";
 import "./ScreenShare.scss";
 
 const AGORA_CHANNEL = {
@@ -76,12 +76,19 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
   } = useAgoraScreenShare(screenClient);
 
   const {
+    peopleOnStage,
     joinStage,
     leaveStage,
     requestJoinStage,
     canJoinStage,
     isUserOnStage,
   } = useStage();
+
+  const [localUser] = useMemo(
+    () => peopleOnStage.filter(({ id }) => id === userId),
+    [userId, peopleOnStage]
+  );
+  console.log("peopleOnStage", peopleOnStage, localUser);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin(
@@ -120,6 +127,7 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
           {localScreenTrack && (
             <div className="ScreenShare__scene--sharing">
               <Player
+                user={localUser}
                 videoTrack={localScreenTrack}
                 containerClass="ScreenShare__mode--share"
               />
@@ -129,6 +137,7 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
             {localCameraTrack && (
               <div>
                 <Player
+                  user={localUser}
                   videoTrack={localCameraTrack}
                   showButtons
                   isCamOn={isCameraOn}

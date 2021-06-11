@@ -11,6 +11,8 @@ export interface Experience {
   column?: number;
   place?: PlaceInFullTalkShowVenue;
   isSharingScreen?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm

@@ -85,6 +85,7 @@ const useStage = () => {
   };
 
   const leaveStage = () => {
+    // TODO: clear agoraIds for user when left Stage
     venueId &&
       userId &&
       updatePlaceInRoom({

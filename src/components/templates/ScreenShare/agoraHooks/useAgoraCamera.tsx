@@ -4,8 +4,13 @@ import AgoraRTC, {
   ILocalAudioTrack,
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
+import { updateUserIds } from "api/profile";
+import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
 
 export default function useAgoraCamera(client: IAgoraRTCClient | undefined) {
+  const venueId = useVenueId();
+  const { userId } = useUser();
   const [localCameraTrack, setLocalCameraTrack] = useState<
     ILocalVideoTrack | undefined
   >(undefined);
@@ -30,9 +35,13 @@ export default function useAgoraCamera(client: IAgoraRTCClient | undefined) {
     channel: string,
     token?: string | null
   ) => {
-    if (!client) return;
-    await client.join(appId, channel, token || null);
-
+    if (!client || !venueId || !userId) return;
+    const cameraClientUid = await client.join(appId, channel, token || null);
+    await updateUserIds({
+      venueId,
+      userId,
+      props: { cameraClientUid },
+    });
     setIsCameraOn(true);
     setIsMicrophoneOn(true);
     const cameraTrack = await AgoraRTC.createCameraVideoTrack();
