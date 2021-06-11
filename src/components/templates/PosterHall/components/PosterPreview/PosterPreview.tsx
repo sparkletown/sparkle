@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -21,11 +22,16 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const { title, authorName, categories, authors } = posterVenue.poster ?? {};
+  const { title, authorName, categories, authors, thumbnailUrl, posterId } =
+    posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
 
-  const posterClassnames = classNames("PosterPreview", {
+  const containerCssVars = useCss({
+    "--poster-thumbnail-image": `url(${thumbnailUrl})`,
+  });
+
+  const posterClassnames = classNames("PosterPreview", containerCssVars, {
     "PosterPreview--live": posterVenue.isLive,
   });
 
@@ -58,15 +64,17 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
+      {posterId && <div className="PosterPreview__posterId">{posterId}</div>}
+
+      <p className="PosterPreview__title">{title}</p>
+
       <div className="PosterPreview__avatar">{userPresenter}</div>
 
       {numUsers > 0 && (
         <div className="PosterPreview__visiting">
-          {numUsers} currently visiting poster
+          {numUsers} current visitors
         </div>
       )}
-
-      <p className="PosterPreview__title">{title}</p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
 

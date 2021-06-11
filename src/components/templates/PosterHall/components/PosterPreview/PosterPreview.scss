@@ -24,6 +24,8 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   cursor: pointer;
 
+  background-image: var(--poster-thumbnail-image);
+
   &:hover {
     background-color: $lighter-intermediate-grey;
     border-color: $concrete;
@@ -39,11 +41,22 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     }
   }
 
+  &__posterId {
+    font-size: $font-size--sm;
+    margin: 0;
+    padding: 0;
+    background-color: $saturated-black-alt;
+    border-radius: $border-radius--md;
+  }
+
   &__title {
     font-size: $font-size--md;
-    font-weight: $font-weight--600;
+    font-weight: $font-weight--400;
 
-    margin: $spacing--md 0;
+    margin: 0 0 $spacing--md 0;
+    background-color: $saturated-black-alt;
+    padding: $spacing--sm $spacing--sm;
+    border-radius: $border-radius--md;
   }
 
   &__categories {
@@ -55,6 +68,12 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     margin-top: auto;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
+
+    margin: $spacing--md 0;
+    background-color: $saturated-black-alt;
+    padding: $spacing--sm $spacing--sm;
+    border-radius: $border-radius--md;
+
     @include line-clamp-with-overflow(3);
   }
 
