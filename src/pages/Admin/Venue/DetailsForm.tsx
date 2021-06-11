@@ -51,6 +51,11 @@ import { Form } from "react-bootstrap";
 import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { UserStatusManager } from "components/molecules/UserStatusManager";
+import { UserStatus } from "types/User";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useShowHide } from "hooks/useShowHide";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -81,6 +86,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
+  const { sovereignVenueId } = useSovereignVenueId({ venueId });
 
   const {
     watch,
@@ -128,13 +134,36 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   }, [state]);
 
   const onSubmit = useCallback(
-    async (vals: Partial<FormValues>) => {
+    async (
+      vals: Partial<FormValues>,
+      userStatuses: UserStatus[],
+      showUserStatuses: boolean
+    ) => {
       if (!user) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId)
+        if (!!venueId) {
           await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
-        else await createVenue(vals as VenueInput, user);
+
+          if (!!sovereignVenueId)
+            await updateVenue(
+              {
+                ...(vals as VenueInput),
+                id: sovereignVenueId,
+                userStatuses,
+                showUserStatus: showUserStatuses,
+              },
+              user
+            );
+        } else
+          await createVenue(
+            {
+              ...vals,
+              userStatuses,
+              showUserStatus: showUserStatuses,
+            } as VenueInput,
+            user
+          );
 
         vals.name
           ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
@@ -149,7 +178,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, venueId, history]
+    [user, venueId, history, sovereignVenueId]
   );
 
   const mapIconUrl = useMemo(() => {
@@ -204,6 +233,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
             <DetailsFormLeft
+              venueId={venueId}
               setValue={setValue}
               state={state}
               previous={previous}
@@ -281,6 +311,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 };
 
 interface DetailsFormLeftProps {
+  venueId?: string;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   values: FormValues;
@@ -288,7 +319,11 @@ interface DetailsFormLeftProps {
   register: ReturnType<typeof useForm>["register"];
   watch: ReturnType<typeof useForm>["watch"];
   control: ReturnType<typeof useForm>["control"];
-  onSubmit: (vals: Partial<FormValues>) => Promise<void>;
+  onSubmit: (
+    vals: Partial<FormValues>,
+    userStatuses: UserStatus[],
+    showUserStatuses: boolean
+  ) => Promise<void>;
   handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
   editing?: boolean;
@@ -297,6 +332,7 @@ interface DetailsFormLeftProps {
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  venueId,
   editing,
   state,
   values,
@@ -805,8 +841,67 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const { sovereignVenueId } = useSovereignVenueId({ venueId });
+
+  const { currentVenue: venue } = useConnectCurrentVenueNG(sovereignVenueId);
+
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+
+  const {
+    isShown: hasUserStatuses,
+    hide: hideUserStatuses,
+    show: showUserStatuses,
+  } = useShowHide(venue?.showUserStatus);
+
+  useEffect(() => {
+    if (!venue) return;
+    const venueUserStatuses = venue?.userStatuses ?? [];
+
+    setUserStatuses(venueUserStatuses);
+
+    if (venue.showUserStatus) {
+      showUserStatuses();
+    }
+  }, [showUserStatuses, venue]);
+
+  const removeUserStatus = (index: number) => {
+    const statuses = [...userStatuses];
+    statuses.splice(index, 1);
+    setUserStatuses(statuses);
+  };
+
+  const toggleUserStatus = useCallback(() => {
+    hasUserStatuses ? hideUserStatuses() : showUserStatuses();
+  }, [hasUserStatuses, hideUserStatuses, showUserStatuses]);
+
+  const addUserStatus = () =>
+    setUserStatuses([...userStatuses, { status: "", color: "#4BCC4B" }]);
+
+  const updateStatusColor = (color: string, index: number) => {
+    const statuses = [...userStatuses];
+    statuses[index] = { status: statuses[index].status, color: color };
+    setUserStatuses(statuses);
+  };
+
+  const updateStatusText = (
+    event: React.FormEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const statuses = [...userStatuses];
+    statuses[index] = {
+      color: statuses[index].color,
+      status: event.currentTarget.value,
+    };
+    setUserStatuses(statuses);
+  };
+
   return (
-    <form className="full-height-container" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="full-height-container"
+      onSubmit={handleSubmit((vals) =>
+        onSubmit(vals, userStatuses, hasUserStatuses)
+      )}
+    >
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${
@@ -881,6 +976,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        <UserStatusManager
+          venueId={venueId}
+          checked={hasUserStatuses}
+          userStatuses={userStatuses}
+          onCheck={toggleUserStatus}
+          onDelete={removeUserStatus}
+          onAdd={addUserStatus}
+          onPickColor={updateStatusColor}
+          onChangeInput={updateStatusText}
+        />
+
         {values.showRadio && renderRadioStationInput()}
 
         {templateID &&

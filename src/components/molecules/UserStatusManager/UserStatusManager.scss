@@ -1,0 +1,11 @@
+.UserStatusManager {
+  &__checkbox {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__description {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+}

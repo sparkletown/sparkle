@@ -10,6 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -169,9 +170,11 @@ export interface BaseVenue {
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
+  userStatuses?: UserStatus[];
   showRadio?: boolean;
   showBadges?: boolean;
   showZendesk?: boolean;
+  showUserStatus?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

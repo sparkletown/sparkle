@@ -1,6 +1,5 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
@@ -58,7 +57,7 @@ export const makeUpdateUserGridLocation = ({
 };
 
 export interface UpdateUserOnlineStatusProps {
-  status?: UserStatus;
+  status?: string;
   userId: string;
 }
 

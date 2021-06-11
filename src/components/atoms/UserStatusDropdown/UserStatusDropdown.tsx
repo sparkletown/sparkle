@@ -5,19 +5,34 @@ import { USER_STATUSES } from "settings";
 
 import { useProfileStatus } from "hooks/useProfileStatus";
 
+import { UserStatus } from "types/User";
+
 import "./UserStatusDropdown.scss";
 
-export const UserStatusDropdown: React.FC = () => {
+export interface UserStatusDropdownProps {
+  userStatuses: UserStatus[];
+}
+
+export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
+  userStatuses,
+}) => {
   const { status, changeUserStatus } = useProfileStatus();
+
+  const allUserStatuses = useMemo(() => [...USER_STATUSES, ...userStatuses], [
+    userStatuses,
+  ]);
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      USER_STATUSES.map((option) => (
-        <Dropdown.Item key={option} onClick={() => changeUserStatus(option)}>
-          {option}
+      allUserStatuses.map((userStatus) => (
+        <Dropdown.Item
+          key={userStatus.status}
+          onClick={() => changeUserStatus(userStatus.status)}
+        >
+          {userStatus.status}
         </Dropdown.Item>
       )),
-    [changeUserStatus]
+    [allUserStatuses, changeUserStatus]
   );
 
   return (

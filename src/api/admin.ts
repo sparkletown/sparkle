@@ -14,6 +14,7 @@ import { RoomData_v2 } from "types/rooms";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { UserStatus } from "types/User";
 
 export interface EventInput {
   name: string;
@@ -102,10 +103,12 @@ export type VenueInput = AdvancedVenueInput &
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
+    userStatuses?: UserStatus[];
     showReactions?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showZendesk?: boolean;
+    showUserStatus?: boolean;
   };
 
 export interface VenueInput_v2

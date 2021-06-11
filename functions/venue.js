@@ -198,7 +198,9 @@ const createVenueData = (data, context) => {
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
+    userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
+    showUserStatus: data.showUserStatus || false,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
@@ -573,6 +575,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
   }
 
   if (data.attendeesTitle) {

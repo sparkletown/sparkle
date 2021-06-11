@@ -1,0 +1,31 @@
+@import "scss/constants";
+
+.UserStatusPanel {
+  &__status {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 5px 0;
+  }
+
+  &__picker-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $border-radius--max;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+  }
+
+  &__delete-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: $border-radius--max;
+    width: 25px;
+    height: 25px;
+    background-color: $lighter-intermediate-grey;
+    cursor: pointer;
+  }
+}

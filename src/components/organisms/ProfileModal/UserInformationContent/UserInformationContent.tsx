@@ -98,7 +98,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         <div className="text-container">
           <h3>{profile?.partyName || DEFAULT_PARTY_NAME}</h3>
           <div className="ellipsis-text">{user.email}</div>
-          <UserStatusDropdown />
+          <UserStatusDropdown userStatuses={venue?.userStatuses ?? []} />
         </div>
       </div>
 

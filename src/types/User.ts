@@ -39,7 +39,12 @@ export interface User {
   myPersonalizedSchedule?: MyPersonalizedSchedule;
 }
 
-export enum UserStatus {
-  available = "available",
-  busy = "busy",
+export enum DefaultUserStatus {
+  online = "Online",
+  busy = "Busy",
+}
+
+export interface UserStatus {
+  status: string;
+  color: string;
 }
