@@ -7,7 +7,10 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
+import { useWorldUsers } from "hooks/users";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./PosterPreview.scss";
 
@@ -40,8 +43,20 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
+  const { worldUsers } = useWorldUsers();
+
+  const userPresenter = useMemo<JSX.Element[]>(() => {
+    return worldUsers
+      .filter((user) => user.partyName === authorName)
+      .map((user) => (
+        <UserAvatar key={`user-${user.id}`} user={user} showStatus />
+      ));
+  }, [worldUsers, authorName]);
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
+      <div className="PosterPreview__avatar">{userPresenter}</div>
+
       <p className="PosterPreview__title">{title}</p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
