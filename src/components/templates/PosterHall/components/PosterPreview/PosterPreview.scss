@@ -55,5 +55,6 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     margin-top: auto;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(3);
   }
 }
