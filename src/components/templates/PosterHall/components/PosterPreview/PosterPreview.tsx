@@ -18,7 +18,7 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const { title, authorName, categories } = posterVenue.poster ?? {};
+  const { title, authorName, categories, authors } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
 
@@ -46,7 +46,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
-      <div className="PosterPreview__author">{authorName}</div>
+      <div className="PosterPreview__author">
+        {authors?.join(", ") ?? authorName}
+      </div>
     </div>
   );
 };
