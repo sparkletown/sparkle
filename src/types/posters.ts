@@ -9,4 +9,5 @@ export type Poster = {
   presenter?: string;
   introduction?: string;
   contactEmail?: string;
+  moreInfoUrl?: string;
 };
