@@ -26,6 +26,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -103,6 +104,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
+
+  const { sovereignVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -161,12 +167,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
+  const homeVenueId = sovereignVenue?.id ?? parentVenueId;
   const navigateToHomepage = useCallback(() => {
-    const venueLink =
-      redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
-
-    window.location.href = venueLink;
-  }, [redirectionUrl, venueId]);
+    enterVenue(homeVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [homeVenueId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -202,6 +206,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
+              <div
+                onClick={navigateToHomepage}
+                className="nav-sparkle-back-home-icon"
+              ></div>
               <div
                 className={`nav-party-logo ${
                   isEventScheduleVisible && "clicked"
