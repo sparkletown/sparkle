@@ -23,20 +23,15 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
 }) => {
   const venueId = posterVenue.id;
 
-  const { relatedVenueIds } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
-
-  const { events: relatedVenueEvents } = useVenueEvents({
-    venueIds: relatedVenueIds,
+  const { events: venueEvents } = useVenueEvents({
+    venueIds: [venueId],
   });
 
   const { userWithId } = useUser();
-  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
-
   const [isBookmarkedPoster, setBookmarkPoster] = useState(
-    //@ts-ignore
-    userPosterIds[venueId]?.[0] === venueId
+    userWithId?.savedPosters
+      ? userWithId.savedPosters[venueId]?.[0] === venueId
+      : false
   );
 
   const bookmarkPoster = useCallback(() => {
@@ -60,12 +55,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
         return {};
       });
     setBookmarkPoster(!isBookmarkedPoster);
-    return relatedVenueEvents;
   }, [userWithId, isBookmarkedPoster, venueId, relatedVenueEvents]);
 
-  const onBookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    bookmarkPoster();
-  }, [bookmarkPoster]);
-
-  return <Bookmark onClick={onBookmarkPoster} isSaved={isBookmarkedPoster} />;
+  return <Bookmark onClick={bookmarkPoster} isSaved={isBookmarkedPoster} />;
 };
