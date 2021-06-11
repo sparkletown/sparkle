@@ -7,7 +7,7 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import { useWorldUsers } from "hooks/users";
+import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
 
 import { PosterCategory } from "components/atoms/PosterCategory";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -53,9 +53,18 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       ));
   }, [worldUsers, authorName]);
 
+  const recentPosterUsers = useRecentLocationUsers(posterVenue.name);
+  const numUsers = recentPosterUsers.recentLocationUsers.length;
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__avatar">{userPresenter}</div>
+
+      {numUsers > 0 && (
+        <div className="PosterPreview__visiting">
+          {numUsers} currently visiting poster
+        </div>
+      )}
 
       <p className="PosterPreview__title">{title}</p>
 

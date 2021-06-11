@@ -61,4 +61,8 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   &__avatar {
     margin-right: 10px;
   }
+
+  &__visiting {
+    font-size: $font-size--sm;
+  }
 }
