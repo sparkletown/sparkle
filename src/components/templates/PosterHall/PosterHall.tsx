@@ -47,8 +47,6 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
-  const [liveVenueIds, setLiveVenueIds] = useState<string[]>();
-
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
@@ -69,22 +67,23 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     venueIds: subVenueIds,
   });
 
-  useMemo(
+  const initLiveVenueIds = useMemo(
     () =>
-      setLiveVenueIds(
-        subVenueEvents
-          .filter((event) => isEventLive(event))
-          .map((event) => event.venueId)
-      ),
+      subVenueEvents
+        .filter((event) => isEventLive(event))
+        .map((event) => event.venueId),
     [subVenueEvents]
   );
 
+  const [liveVenueIds, setLiveVenueIds] = useState(initLiveVenueIds);
+
   useInterval(() => {
-    setLiveVenueIds(
-      subVenueEvents
-        .filter((event) => isEventLive(event))
-        .map((event) => event.venueId)
-    );
+    const updateLiveVenueIds = subVenueEvents
+      .filter((event) => isEventLive(event))
+      .map((event) => event.venueId);
+
+    if (updateLiveVenueIds === liveVenueIds) return;
+    setLiveVenueIds(updateLiveVenueIds);
   }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   const renderedSubvenues = useMemo(() => {
