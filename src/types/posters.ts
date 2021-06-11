@@ -8,4 +8,5 @@ export type Poster = {
   keywords?: string[];
   presenter?: string;
   introduction?: string;
+  contactEmail?: string;
 };
