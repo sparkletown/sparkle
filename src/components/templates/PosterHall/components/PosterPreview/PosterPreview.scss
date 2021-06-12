@@ -84,4 +84,8 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     font-weight: $font-weight--500;
     @include line-clamp-with-overflow(5);
   }
+
+  &__contactEmail {
+    font-size: $font-size--sm;
+  }
 }

@@ -29,10 +29,22 @@ $poster-cell-optimal-height: 195px;
     }
   }
 
+  &__headerInfo {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__posterId {
     display: inline;
     text-align: left;
     font-size: $font-size--sm;
+  }
+
+  &__moreInfoUrl {
+    display: inline;
+    text-align: right;
+    font-size: $font-size--sm;
+    margin-left: $spacing--md;
   }
 
   &__title {
@@ -54,6 +66,10 @@ $poster-cell-optimal-height: 195px;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
     @include line-clamp-with-overflow(7);
+  }
+
+  &__contactEmail {
+    font-size: $font-size--sm;
   }
 
   &__categories {

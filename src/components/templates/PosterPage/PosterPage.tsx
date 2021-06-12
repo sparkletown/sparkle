@@ -32,8 +32,16 @@ export interface PosterPageProps {
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
 
-  const { title, introVideoUrl, categories, authorName, authors, posterId } =
-    poster ?? {};
+  const {
+    title,
+    introVideoUrl,
+    categories,
+    authorName,
+    authors,
+    posterId,
+    moreInfoUrl,
+    contactEmail,
+  } = poster ?? {};
 
   const {
     isShown: isIntroVideoShown,
@@ -99,7 +107,16 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
-          {posterId && <div className="PosterPage__posterId">{posterId}</div>}
+          <div className="PosterPage__headerInfo">
+            {posterId && <div className="PosterPage__posterId">{posterId}</div>}
+            {moreInfoUrl && (
+              <div className="PosterPage__moreInfoUrl">
+                <a href={moreInfoUrl} target="_blank" rel="noreferrer">
+                  Full abstract
+                </a>
+              </div>
+            )}
+          </div>
           <p className="PosterPage__title">{title}</p>
           <div className="PosterPage__authorBox">
             <div className="PosterPage__avatar">{userPresenter}</div>
@@ -107,6 +124,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
               {authors?.join(", ") ?? authorName}
             </p>
           </div>
+          {contactEmail && (
+            <p className="PosterPreview__contactEmail">{contactEmail}</p>
+          )}
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 

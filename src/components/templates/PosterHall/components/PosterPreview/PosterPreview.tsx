@@ -21,8 +21,15 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const { title, authorName, categories, authors, posterId } =
-    posterVenue.poster ?? {};
+  const {
+    title,
+    authorName,
+    categories,
+    authors,
+    posterId,
+    moreInfoUrl,
+    contactEmail,
+  } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
 
@@ -60,8 +67,17 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
-        {posterId && <div className="PosterPreview__posterId">{posterId}</div>}
-
+        {posterId && (
+          <div className="PosterPreview__posterId">
+            {moreInfoUrl ? (
+              <a href={moreInfoUrl} target="_blank" rel="noreferrer">
+                {posterId}
+              </a>
+            ) : (
+              { posterId }
+            )}
+          </div>
+        )}
         {numUsers > 0 && (
           <div className="PosterPreview__visiting">
             {numUsers} {numUsers === 1 ? "current visitor" : "current visitors"}
@@ -76,6 +92,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <div className="PosterPreview__authorBox">
         <div className="PosterPreview__avatar">{userPresenter}</div>
 
+        {contactEmail && (
+          <p className="PosterPreview__contactEmail">{contactEmail}</p>
+        )}
         <p className="PosterPreview__author">
           {authors?.join(", ") ?? authorName}
         </p>
