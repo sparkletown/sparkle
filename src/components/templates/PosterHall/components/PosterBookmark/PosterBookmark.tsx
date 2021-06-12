@@ -37,7 +37,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
   ]);
 
   const isSaved = useMemo(
-    () => (savedPosters ? savedPosters[venueId]?.[0] === venueId : false),
+    () => savedPosters[venueId]?.includes(venueId) ?? false,
     [savedPosters, venueId]
   );
 
