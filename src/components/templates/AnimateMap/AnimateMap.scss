@@ -1,0 +1,29 @@
+@import "scss/constants.scss";
+
+.navbar-margin {
+  height: 100%;
+}
+
+.animatemap-venue-container {
+  display: block;
+  height: 100%;
+
+  overflow-x: hidden;
+
+  canvas {
+    display: block;
+  }
+}
+
+body {
+  @include scrollbar;
+
+  &.no-scroll {
+    overflow: hidden;
+  }
+
+  &.modal-open {
+    padding: 0 0 0 0 !important;
+    overflow-y: scroll !important;
+  }
+}
