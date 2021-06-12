@@ -1,15 +1,24 @@
-import { useState, useMemo, useCallback } from "react";
-import { VenueTemplate } from "types/venues";
+import { useState, useMemo, useCallback, useEffect } from "react";
+
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 import { posterVenuesSelector } from "utils/selectors";
+import { isEventLive } from "utils/event";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
+import { useRelatedVenues } from "./useRelatedVenues";
+import { useVenueEvents } from "./events";
+import { useInterval } from "./useInterval";
+
+import { POSTERHALL_SUBVENUE_STATUS_MS } from "settings";
+import { WithVenueId } from "utils/id";
+
+import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -140,5 +149,50 @@ export const usePosters = (posterHallId: string) => {
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
+  };
+};
+
+export const checkLiveEvents = (subVenueEvents: WithVenueId<VenueEvent>[]) => {
+  return subVenueEvents.filter((event) => isEventLive(event));
+};
+
+export const usePosterHallSubVenues = (posterHallId: string) => {
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: posterHallId,
+  });
+
+  const subVenues = useMemo(() => {
+    return relatedVenues.filter(
+      (relatedVenue) =>
+        relatedVenue.parentId === posterHallId &&
+        relatedVenue.template !== VenueTemplate.posterpage
+    );
+  }, [relatedVenues, posterHallId]);
+
+  const subVenueIds = useMemo(() => subVenues.map((venue) => venue.id), [
+    subVenues,
+  ]);
+
+  const { events: subVenueEvents } = useVenueEvents({
+    venueIds: subVenueIds,
+  });
+
+  const [liveVenueEvents, setLiveVenueEvents] = useState(
+    checkLiveEvents(subVenueEvents)
+  );
+
+  const setLiveEvents = useCallback(() => {
+    if (checkLiveEvents(subVenueEvents) === liveVenueEvents) return;
+    setLiveVenueEvents(checkLiveEvents(subVenueEvents));
+  }, [subVenueEvents, liveVenueEvents]);
+
+  useEffect(() => setLiveEvents(), [setLiveEvents]);
+
+  useInterval(() => {
+    setLiveEvents();
+  }, POSTERHALL_SUBVENUE_STATUS_MS);
+
+  return {
+    liveVenueEvents,
   };
 };
