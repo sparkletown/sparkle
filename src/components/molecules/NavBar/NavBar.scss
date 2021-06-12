@@ -271,15 +271,18 @@ $border-radius: 28px;
   }
 }
 
-.nav-sparkle-back-home-icon {
-  width: 25px;
-  height: 25px;
-  background-image: url(/assets/icons/home.png);
-  background-size: 100%;
-  background-position: center;
-  background-repeat: no-repeat;
-  cursor: pointer;
-  &:hover {
-    background-size: 115%;
+.navBar__home {
+  &-icon {
+    cursor: pointer;
+    font-size: 24px;
+    &:hover {
+      font-size: 28px;
+    }
+    &-wrapper {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      width: 25px;
+    }
   }
 }
