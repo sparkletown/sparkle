@@ -76,12 +76,10 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   return (
     <>
-      <div className={containerClasses}>
-        <div onClick={showEventModal}>
-          <div className="ScheduleEvent__info">
-            <div className="ScheduleEvent__title">{event.name}</div>
-            <div className="ScheduleEvent__host">by {event.host}</div>
-          </div>
+      <div className={containerClasses} onClick={showEventModal}>
+        <div className="ScheduleEvent__info">
+          <div className="ScheduleEvent__title">{event.name}</div>
+          <div className="ScheduleEvent__host">by {event.host}</div>
         </div>
         <Bookmark
           className="ScheduleEvent__bookmark"
