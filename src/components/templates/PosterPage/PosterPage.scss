@@ -29,8 +29,31 @@ $poster-cell-optimal-height: 195px;
     }
   }
 
+  &__posterId {
+    display: inline;
+    text-align: left;
+    font-size: $font-size--sm;
+  }
+
   &__title {
     margin: 0 0 $spacing--xs;
+  }
+
+  &__authorBox {
+    display: flex;
+    margin-top: auto;
+  }
+
+  &__avatar {
+    float: left;
+    margin-left: -0.5em;
+  }
+
+  &__author {
+    margin-left: 0.5em;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(7);
   }
 
   &__categories {
