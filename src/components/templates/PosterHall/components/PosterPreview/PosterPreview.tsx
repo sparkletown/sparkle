@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -22,16 +21,12 @@ export interface PosterPreviewProps {
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
-  const { title, authorName, categories, authors, thumbnailUrl, posterId } =
+  const { title, authorName, categories, authors, posterId } =
     posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
 
-  const containerCssVars = useCss({
-    "--poster-thumbnail-image": `url(${thumbnailUrl})`,
-  });
-
-  const posterClassnames = classNames("PosterPreview", containerCssVars, {
+  const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
   });
 
@@ -64,22 +59,26 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
-      {posterId && <div className="PosterPreview__posterId">{posterId}</div>}
+      <div className="PosterPreview__header">
+        {posterId && <div className="PosterPreview__posterId">{posterId}</div>}
+
+        {numUsers > 0 && (
+          <div className="PosterPreview__visiting">
+            {numUsers} {numUsers === 1 ? "current visitor" : "current visitors"}
+          </div>
+        )}
+      </div>
 
       <p className="PosterPreview__title">{title}</p>
 
-      <div className="PosterPreview__avatar">{userPresenter}</div>
-
-      {numUsers > 0 && (
-        <div className="PosterPreview__visiting">
-          {numUsers} current visitors
-        </div>
-      )}
-
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
-      <div className="PosterPreview__author">
-        {authors?.join(", ") ?? authorName}
+      <div className="PosterPreview__authorBox">
+        <div className="PosterPreview__avatar">{userPresenter}</div>
+
+        <p className="PosterPreview__author">
+          {authors?.join(", ") ?? authorName}
+        </p>
       </div>
     </div>
   );
