@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt, faHome } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
@@ -26,7 +26,7 @@ import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -105,8 +105,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     push: openUrlUsingRouter,
   } = useHistory();
 
-  const { sovereignVenue } = useRelatedVenues({
-    currentVenueId: venueId,
+  const { sovereignVenueId } = useSovereignVenueId({
+    venueId,
   });
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
@@ -167,7 +167,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
-  const homeVenueId = sovereignVenue?.id ?? parentVenueId;
+  const homeVenueId = sovereignVenueId ?? parentVenueId;
   const navigateToHomepage = useCallback(() => {
     enterVenue(homeVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [homeVenueId, openUrlUsingRouter]);
@@ -205,6 +205,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                 onClick={navigateToHomepage}
               >
                 <div />
+              </div>
+              <div className="navBar__home-icon-wrapper">
+                <FontAwesomeIcon
+                  icon={faHome}
+                  className="navBar__home-icon"
+                  onClick={navigateToHomepage}
+                />
               </div>
               <div
                 onClick={navigateToHomepage}
