@@ -25,7 +25,8 @@
     "sparkle-clever": "sparkle-clever",
     "sparkle-unity": "sparkle-unity",
     "sparkle-burn": "sparkle-burn",
-    "sparkle-burn-staging": "sparkle-burn-staging"
+    "sparkle-burn-staging": "sparkle-burn-staging",
+    "sparkle-github": "sparkle-github"
   },
   "targets": {
     "co-reality-map": {
@@ -213,6 +214,13 @@
       "hosting": {
         "sparkle-burn-staging": [
           "sparkle-burn-staging"
+        ]
+      }
+    },
+    "sparkle-github": {
+      "hosting": {
+        "sparkle-github": [
+          "sparkle-github"
         ]
       }
     }
