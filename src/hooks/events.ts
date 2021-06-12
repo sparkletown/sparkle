@@ -1,6 +1,6 @@
 import { useAsync } from "react-use";
 
-import { fetchAllVenueEvents } from "api/events";
+import { fetchAllVenueEvents, fetchVenueEvents } from "api/events";
 
 import { ReactHook } from "types/utility";
 import { VenueEvent } from "types/venues";
@@ -42,6 +42,34 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
       }
     );
   }, [venueIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
+
+  return {
+    isEventsLoading,
+    isError: eventsError !== undefined,
+
+    events,
+  };
+};
+
+export interface SingleVenueEventsProps {
+  venueId: string;
+}
+
+export const useSingleVenueEvents: ReactHook<
+  SingleVenueEventsProps,
+  VenueEventsData
+> = ({ venueId }) => {
+  const {
+    loading: isEventsLoading,
+    error: eventsError,
+    value: events = emptyArray,
+  } = useAsync(async () => {
+    if (!venueId) return emptyArray;
+
+    return tracePromise("useVenueEvents::fetchVenueEvents", () =>
+      fetchVenueEvents(venueId)
+    );
+  }, [venueId]);
 
   return {
     isEventsLoading,

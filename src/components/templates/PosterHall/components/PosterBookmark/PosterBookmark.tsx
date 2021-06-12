@@ -14,7 +14,7 @@ import {
 import { Bookmark } from "components/atoms/Bookmark";
 
 import { useUser } from "hooks/useUser";
-import { useVenueEvents } from "hooks/events";
+import { useSingleVenueEvents } from "hooks/events";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -28,15 +28,15 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { events: venueEvents } = useVenueEvents({
-    venueIds: [venueId],
+  const { events: venueEvents } = useSingleVenueEvents({
+    venueId: venueId,
   });
 
   const savedPosters = useMemo(() => userWithId?.savedPosters ?? {}, [
     userWithId,
   ]);
 
-  const isPosterBookmarked = useMemo(
+  const isSaved = useMemo(
     () => (savedPosters ? savedPosters[venueId]?.[0] === venueId : false),
     [savedPosters, venueId]
   );
@@ -60,10 +60,10 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
   const bookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(
     (e) => {
       e.stopPropagation();
-      isPosterBookmarked ? removeBookmarks() : addBookmarks();
+      isSaved ? removeBookmarks() : addBookmarks();
     },
-    [isPosterBookmarked, addBookmarks, removeBookmarks]
+    [isSaved, addBookmarks, removeBookmarks]
   );
 
-  return <Bookmark onClick={bookmarkPoster} isSaved={isPosterBookmarked} />;
+  return <Bookmark onClick={bookmarkPoster} isSaved={isSaved} />;
 };
