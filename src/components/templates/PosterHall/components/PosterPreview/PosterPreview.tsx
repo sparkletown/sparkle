@@ -32,7 +32,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const { push: openUrlUsingRouter } = useHistory();
   const handleEnterVenue = useCallback(
-    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
+    (e) => {
+      if (e.target.closest("PosterPreview__bookmark")) return;
+
+      enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
+    },
     [venueId, openUrlUsingRouter]
   );
 
@@ -45,15 +49,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   );
 
   return (
-    <div className={posterClassnames}>
-      {showBookmarks && <PosterBookmark posterVenue={posterVenue} />}
-      <div onClick={handleEnterVenue}>
-        <p className="PosterPreview__title">{title}</p>
-
-        <div className="PosterPreview__categories">{renderedCategories}</div>
-
-        <div className="PosterPreview__author">{authorName}</div>
+    <div className={posterClassnames} onClick={handleEnterVenue}>
+      <div className="PosterPreview__bookmark">
+        {showBookmarks && <PosterBookmark posterVenue={posterVenue} />}
       </div>
+      <p className="PosterPreview__title">{title}</p>
+
+      <div className="PosterPreview__categories">{renderedCategories}</div>
+
+      <div className="PosterPreview__author">{authorName}</div>
     </div>
   );
 };
