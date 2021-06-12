@@ -1,23 +1,16 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
-import { GenericVenue, VenueTemplate } from "types/venues";
-
-import { PosterPageVenue } from "types/venues";
+import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { isEventLive } from "utils/event";
 
-import { usePosters } from "hooks/posters";
-import { useVenueEvents } from "hooks/events";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useInterval } from "hooks/useInterval";
+import { usePosters, usePosterHallSubVenues } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
 import { PosterPreview } from "./components/PosterPreview";
+import { SubVenuePreview } from "./components/SubVenuePreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
-
-import { POSTERHALL_SUBVENUE_STATUS_MS } from "settings";
 
 import "./PosterHall.scss";
 
@@ -47,57 +40,18 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
-  const { relatedVenues } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-
-  const subVenues = useMemo(() => {
-    return relatedVenues.filter(
-      (relatedVenue) =>
-        relatedVenue.parentId === venue.id &&
-        relatedVenue.template !== VenueTemplate.posterpage
-    );
-  }, [relatedVenues, venue]);
-
-  const subVenueIds = useMemo(() => subVenues.map((venue) => venue.id), [
-    subVenues,
-  ]);
-
-  const { events: subVenueEvents } = useVenueEvents({
-    venueIds: subVenueIds,
-  });
-
-  const initLiveVenueIds = useMemo(
-    () =>
-      subVenueEvents
-        .filter((event) => isEventLive(event))
-        .map((event) => event.venueId),
-    [subVenueEvents]
-  );
-
-  const [liveVenueIds, setLiveVenueIds] = useState(initLiveVenueIds);
-
-  useInterval(() => {
-    const updateLiveVenueIds = subVenueEvents
-      .filter((event) => isEventLive(event))
-      .map((event) => event.venueId);
-
-    if (updateLiveVenueIds === liveVenueIds) return;
-    setLiveVenueIds(updateLiveVenueIds);
-  }, POSTERHALL_SUBVENUE_STATUS_MS);
+  const { liveVenueEvents } = usePosterHallSubVenues(venue.id);
 
   const renderedSubvenues = useMemo(() => {
-    if (liveVenueIds)
-      return subVenues
-        .filter((subVenue) => liveVenueIds.includes(subVenue.id))
-        .map((subVenue) => (
-          <PosterPreview
-            key={subVenue.id}
-            posterVenue={subVenue as WithId<PosterPageVenue>}
-            enterVenue={enterVenue}
-          />
-        ));
-  }, [liveVenueIds, subVenues]);
+    return liveVenueEvents.map((subVenueEvent) => (
+      <SubVenuePreview
+        key={subVenueEvent.venueId}
+        venueId={subVenueEvent.venueId}
+        title={subVenueEvent.name}
+        host={subVenueEvent.host}
+      />
+    ));
+  }, [liveVenueEvents]);
 
   return (
     <div className="PosterHall">
