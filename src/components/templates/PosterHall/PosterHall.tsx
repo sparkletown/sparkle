@@ -41,7 +41,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       <PosterPreview
         key={posterVenue.id}
         posterVenue={posterVenue}
-        showBookmarks={venue?.showBookmarks}
+        canBeBookmarked={venue?.canBeBookmarked}
       />
     ));
   }, [posterVenues, venue]);
@@ -55,7 +55,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         setLiveValue={setLiveFilter}
         bookmarkedFilterValue={bookmarkedFilter}
         setBookmarkedValue={setBookmarkedFilter}
-        showBookmarks={venue?.showBookmarks}
+        showBookmarks={venue?.canBeBookmarked}
       />
 
       <div className="PosterHall__posters">

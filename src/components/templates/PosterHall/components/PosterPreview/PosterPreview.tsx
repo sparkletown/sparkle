@@ -15,12 +15,12 @@ import "./PosterPreview.scss";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
-  showBookmarks?: boolean;
+  canBeBookmarked?: boolean;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
-  showBookmarks = false,
+  canBeBookmarked = false,
 }) => {
   const { title, authorName, categories } = posterVenue.poster ?? {};
 
@@ -51,7 +51,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__bookmark">
-        {showBookmarks && <PosterBookmark posterVenue={posterVenue} />}
+        {canBeBookmarked && <PosterBookmark posterVenue={posterVenue} />}
       </div>
       <p className="PosterPreview__title">{title}</p>
 
