@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$poster-preview-height: 200px;
+$poster-preview-height: 300px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
@@ -24,8 +24,6 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   cursor: pointer;
 
-  background-image: var(--poster-thumbnail-image);
-
   &:hover {
     background-color: $lighter-intermediate-grey;
     border-color: $concrete;
@@ -41,22 +39,28 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     }
   }
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
   &__posterId {
+    display: inline;
+    text-align: left;
     font-size: $font-size--sm;
-    margin: 0;
-    padding: 0;
-    background-color: $saturated-black-alt;
-    border-radius: $border-radius--md;
+  }
+
+  &__visiting {
+    display: inline;
+    text-align: right;
+    font-size: $font-size--sm;
   }
 
   &__title {
     font-size: $font-size--md;
-    font-weight: $font-weight--400;
+    font-weight: $font-weight--600;
 
-    margin: 0 0 $spacing--md 0;
-    background-color: $saturated-black-alt;
-    padding: $spacing--sm $spacing--sm;
-    border-radius: $border-radius--md;
+    margin: $spacing--md 0;
   }
 
   &__categories {
@@ -64,24 +68,20 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     flex-wrap: wrap;
   }
 
-  &__author {
+  &__authorBox {
+    display: flex;
     margin-top: auto;
-    font-size: $font-size--sm;
-    font-weight: $font-weight--500;
-
-    margin: $spacing--md 0;
-    background-color: $saturated-black-alt;
-    padding: $spacing--sm $spacing--sm;
-    border-radius: $border-radius--md;
-
-    @include line-clamp-with-overflow(3);
   }
 
   &__avatar {
-    margin-right: 10px;
+    float: left;
+    margin-left: -0.5em;
   }
 
-  &__visiting {
+  &__author {
+    margin-left: 0.5em;
     font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(5);
   }
 }
