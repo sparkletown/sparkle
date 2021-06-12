@@ -99,9 +99,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
-          {posterId && (
-            <div className="PosterPreview__posterId">{posterId}</div>
-          )}
+          {posterId && <div className="PosterPage__posterId">{posterId}</div>}
           <p className="PosterPage__title">{title}</p>
           <div className="PosterPage__authorBox">
             <div className="PosterPage__avatar">{userPresenter}</div>
