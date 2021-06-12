@@ -125,7 +125,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
             </p>
           </div>
           {contactEmail && (
-            <p className="PosterPreview__contactEmail">{contactEmail}</p>
+            <p className="PosterPage__contactEmail">{contactEmail}</p>
           )}
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
