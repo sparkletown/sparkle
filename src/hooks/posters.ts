@@ -182,9 +182,8 @@ export const usePosterHallSubVenues = (posterHallId: string) => {
   );
 
   const setLiveEvents = useCallback(() => {
-    if (checkLiveEvents(subVenueEvents) === liveVenueEvents) return;
-    setLiveVenueEvents(checkLiveEvents(subVenueEvents));
-  }, [subVenueEvents, liveVenueEvents]);
+    setLiveVenueEvents(() => checkLiveEvents(subVenueEvents));
+  }, [subVenueEvents]);
 
   useEffect(() => setLiveEvents(), [setLiveEvents]);
 
