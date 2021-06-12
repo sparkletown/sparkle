@@ -8,10 +8,13 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
+import { useWorldUsers } from "hooks/users";
 
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
 import { PosterCategory } from "components/atoms/PosterCategory";
+
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
@@ -29,7 +32,8 @@ export interface PosterPageProps {
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
 
-  const { title, introVideoUrl, categories } = poster ?? {};
+  const { title, introVideoUrl, categories, authorName, authors, posterId } =
+    poster ?? {};
 
   const {
     isShown: isIntroVideoShown,
@@ -78,6 +82,16 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
+  const { worldUsers } = useWorldUsers();
+
+  const userPresenter = useMemo<JSX.Element[]>(() => {
+    return worldUsers
+      .filter((user) => user.partyName === authorName)
+      .map((user) => (
+        <UserProfilePicture key={`user-${user.id}`} user={user} />
+      ));
+  }, [worldUsers, authorName]);
+
   return (
     <div className="PosterPage">
       <div className="PosterPage__header">
@@ -85,7 +99,16 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
+          {posterId && (
+            <div className="PosterPreview__posterId">{posterId}</div>
+          )}
           <p className="PosterPage__title">{title}</p>
+          <div className="PosterPage__authorBox">
+            <div className="PosterPage__avatar">{userPresenter}</div>
+            <p className="PosterPage__author">
+              {authors?.join(", ") ?? authorName}
+            </p>
+          </div>
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 
