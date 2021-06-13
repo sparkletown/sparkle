@@ -14,7 +14,7 @@ import {
 import { Bookmark } from "components/atoms/Bookmark";
 
 import { useUser } from "hooks/useUser";
-import { useSingleVenueEvents } from "hooks/events";
+import { useVenueEvents } from "hooks/events";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -28,9 +28,11 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { events: venueEvents } = useSingleVenueEvents({
-    venueId: venueId,
-  });
+  const venueIds = useMemo(() => {
+    return { venueIds: [venueId] };
+  }, [venueId]);
+
+  const { events: venueEvents } = useVenueEvents(venueIds);
 
   const savedPosters = useMemo(() => userWithId?.savedPosters ?? {}, [
     userWithId,
