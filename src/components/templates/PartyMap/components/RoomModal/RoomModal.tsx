@@ -1,11 +1,10 @@
 import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
-import { isBefore } from "date-fns";
 
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { eventEndTime, getCurrentEvent } from "utils/event";
+import { isEventLiveOrFuture, getCurrentEvent } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -86,8 +85,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
     return venueEvents
       .filter(
-        (event) =>
-          event.room === room.title && isBefore(Date.now(), eventEndTime(event))
+        (event) => event.room === room.title && isEventLiveOrFuture(event)
       )
       .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
   }, [room, venueEvents]);
