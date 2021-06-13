@@ -1,17 +1,17 @@
 @import "scss/constants";
 
-$subvenue-preview-height: 100px;
-$subvenue-preview-width: 300px;
-$subvenue-poster-shadows: 0 10px 20px 0 rgba($dark-green, 0.56);
+$nonposter-subvenue-preview-height: 100px;
+$nonposter-subvenue-preview-width: 300px;
+$nonposter-subvenue-poster-shadows: 0 10px 20px 0 rgba($dark-green, 0.56);
 
-.SubVenuePreview {
+.NonPosterSubVenuePreview {
   display: flex;
   flex-direction: column;
 
   content-visibility: auto;
 
-  height: $subvenue-preview-height;
-  width: $subvenue-preview-width;
+  height: $nonposter-subvenue-preview-height;
+  width: $nonposter-subvenue-preview-width;
 
   padding: $spacing--lg;
   margin: $spacing--md;
@@ -25,7 +25,7 @@ $subvenue-poster-shadows: 0 10px 20px 0 rgba($dark-green, 0.56);
   cursor: pointer;
 
   border-color: $dark-green;
-  box-shadow: $subvenue-poster-shadows;
+  box-shadow: $nonposter-subvenue-poster-shadows;
 
   &:hover {
     background-color: $lighter-intermediate-grey;

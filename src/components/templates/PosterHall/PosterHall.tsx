@@ -4,12 +4,12 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { usePosters, usePosterHallSubVenues } from "hooks/posters";
+import { usePosters, useLiveEventNonPosterSubVenues } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
 import { PosterPreview } from "./components/PosterPreview";
-import { SubVenuePreview } from "./components/SubVenuePreview";
+import { NonPosterSubVenuePreview } from "./components/NonPosterSubVenuePreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 
 import "./PosterHall.scss";
@@ -40,23 +40,25 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
-  const { liveVenueEvents } = usePosterHallSubVenues(venue.id);
+  const { liveNonPosterSubVenueEvents } = useLiveEventNonPosterSubVenues(
+    venue.id
+  );
 
-  const renderedSubvenues = useMemo(() => {
-    if (!liveVenueEvents) return;
-    return liveVenueEvents.map((subVenueEvent) => (
-      <SubVenuePreview
-        key={subVenueEvent.venueId}
-        venueId={subVenueEvent.venueId}
-        title={subVenueEvent.name}
-        host={subVenueEvent.host}
+  const renderedNonPosterSubVenues = useMemo(() => {
+    if (!liveNonPosterSubVenueEvents) return;
+    return liveNonPosterSubVenueEvents.map((nonPosterSubVenueEvent) => (
+      <NonPosterSubVenuePreview
+        key={nonPosterSubVenueEvent.venueId}
+        venueId={nonPosterSubVenueEvent.venueId}
+        title={nonPosterSubVenueEvent.name}
+        host={nonPosterSubVenueEvent.host}
       />
     ));
-  }, [liveVenueEvents]);
+  }, [liveNonPosterSubVenueEvents]);
 
   return (
     <div className="PosterHall">
-      <div className="PosterHall__related">{renderedSubvenues}</div>
+      <div className="PosterHall__related">{renderedNonPosterSubVenues}</div>
 
       <PosterHallSearch
         setSearchInputValue={setSearchInputValue}

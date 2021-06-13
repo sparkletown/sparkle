@@ -152,16 +152,18 @@ export const usePosters = (posterHallId: string) => {
   };
 };
 
-export const checkLiveEvents = (subVenueEvents: WithVenueId<VenueEvent>[]) => {
-  return subVenueEvents.filter((event) => isEventLive(event));
+export const filterLiveEvents = (
+  nonPosterSubVenueEvents: WithVenueId<VenueEvent>[]
+) => {
+  return nonPosterSubVenueEvents.filter((event) => isEventLive(event));
 };
 
-export const usePosterHallSubVenues = (posterHallId: string) => {
+export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: posterHallId,
   });
 
-  const subVenueIds = useMemo(() => {
+  const nonPosterSubVenueIds = useMemo(() => {
     return relatedVenues
       .filter(
         (relatedVenue) =>
@@ -171,23 +173,30 @@ export const usePosterHallSubVenues = (posterHallId: string) => {
       .map((venue) => venue.id);
   }, [relatedVenues, posterHallId]);
 
-  const { events: subVenueEvents } = useVenueEvents({
-    venueIds: subVenueIds,
+  const { events: nonPosterSubVenueEvents } = useVenueEvents({
+    venueIds: nonPosterSubVenueIds,
   });
 
-  const [liveVenueEvents, setLiveVenueEvents] = useState<
-    WithVenueId<VenueEvent>[]
-  >();
+  const [
+    liveNonPosterSubVenueEvents,
+    setLiveNonPosterSubVenueEvents,
+  ] = useState<WithVenueId<VenueEvent>[]>();
 
-  useEffect(() => setLiveVenueEvents(() => checkLiveEvents(subVenueEvents)), [
-    subVenueEvents,
-  ]);
+  useEffect(
+    () =>
+      setLiveNonPosterSubVenueEvents(() =>
+        filterLiveEvents(nonPosterSubVenueEvents)
+      ),
+    [nonPosterSubVenueEvents]
+  );
 
   useInterval(() => {
-    setLiveVenueEvents(() => checkLiveEvents(subVenueEvents));
+    setLiveNonPosterSubVenueEvents(() =>
+      filterLiveEvents(nonPosterSubVenueEvents)
+    );
   }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   return {
-    liveVenueEvents,
+    liveNonPosterSubVenueEvents,
   };
 };

@@ -5,15 +5,15 @@ import { enterVenue } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import "./SubVenuePreview.scss";
+import "./NonPosterSubVenuePreview.scss";
 
-export interface SubVenuePreviewProps {
+export interface NonPosterSubVenuePreviewProps {
   venueId: string;
   title: string;
   host: string;
 }
 
-export const SubVenuePreview: React.FC<SubVenuePreviewProps> = ({
+export const NonPosterSubVenuePreview: React.FC<NonPosterSubVenuePreviewProps> = ({
   venueId,
   title,
   host,
@@ -30,12 +30,14 @@ export const SubVenuePreview: React.FC<SubVenuePreviewProps> = ({
   const venueName = currentVenue?.name;
 
   return (
-    <div className="SubVenuePreview" onClick={handleEnterVenue}>
-      {venueName && <p className="SubVenuePreview__venue">{venueName}</p>}
+    <div className="NonPosterSubVenuePreview" onClick={handleEnterVenue}>
+      {venueName && (
+        <p className="NonPosterSubVenuePreview__venue">{venueName}</p>
+      )}
 
-      <p className="SubVenuePreview__title">{title}</p>
+      <p className="NonPosterSubVenuePreview__title">{title}</p>
 
-      <div className="SubVenuePreview__author">{host}</div>
+      <div className="NonPosterSubVenuePreview__author">{host}</div>
     </div>
   );
 };
