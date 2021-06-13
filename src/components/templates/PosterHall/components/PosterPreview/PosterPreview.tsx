@@ -28,6 +28,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     authors,
     posterId,
     moreInfoUrl,
+    moreInfoUrls,
     contactEmail,
   } = posterVenue.poster ?? {};
 
@@ -62,20 +63,35 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   }, [worldUsers, authorName]);
 
   const recentPosterUsers = useRecentLocationUsers(posterVenue.name);
+
   const numUsers = recentPosterUsers.recentLocationUsers.length;
+
+  const renderMoreInfoUrl = useMemo(() => {
+    if (!moreInfoUrl) return;
+    return (
+      <a href={moreInfoUrl} target="_blank" rel="noreferrer">
+        {moreInfoUrl.replace(/(^\w+:|^)\/\//, "")}
+      </a>
+    );
+  }, [moreInfoUrl]);
+
+  const renderMoreInfoUrls = useMemo(() => {
+    if (!moreInfoUrls) return;
+    return moreInfoUrls.map((infoUrl) => (
+      <div key={infoUrl}>
+        <a href={infoUrl} target="_blank" rel="noreferrer">
+          {infoUrl.replace(/(^\w+:|^)\/\//, "")}
+        </a>
+      </div>
+    ));
+  }, [moreInfoUrls]);
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
         {posterId && (
           <div className="PosterPreview__posterId">
-            {moreInfoUrl ? (
-              <a href={moreInfoUrl} target="_blank" rel="noreferrer">
-                {posterId}
-              </a>
-            ) : (
-              { posterId }
-            )}
+            {renderMoreInfoUrl ? { renderMoreInfoUrl } : { posterId }}
           </div>
         )}
         {numUsers > 0 && (
@@ -87,11 +103,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       <p className="PosterPreview__title">{title}</p>
 
-      {!posterId && moreInfoUrl && (
+      {!posterId && (renderMoreInfoUrl || renderMoreInfoUrls) && (
         <p className="PosterPreview__moreInfoUrl">
-          <a href={moreInfoUrl} target="_blank" rel="noreferrer">
-            {moreInfoUrl.replace(/(^\w+:|^)\/\//, "")}
-          </a>
+          {renderMoreInfoUrl}
+          {renderMoreInfoUrls}
         </p>
       )}
 
