@@ -42,14 +42,12 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
         </span>
       </div>
       <div className="event-section">
-        <div>
-          <div className={`${isCurrentEvent ? "primary" : ""}`}>
-            <span className="event-name">{event.name}</span>
-            by <span className="event-host">{event.host}</span>
-            <div className="event-description">
-              <RenderMarkdown text={event.description} />
-            </div>
-          </div>
+        <div className={`${isCurrentEvent ? "primary" : ""}`}>
+          <span className="event-name">{event.name}</span>
+          by <span className="event-host">{event.host}</span>
+          <span className="event-description">
+            <RenderMarkdown text={event.description} />
+          </span>
         </div>
         {isCurrentEvent && (
           <div className="entry-room-button">
