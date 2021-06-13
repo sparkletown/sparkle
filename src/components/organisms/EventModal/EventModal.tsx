@@ -72,7 +72,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
-          {event.host && "by"} {event.host} in{" "}
+          by {event.host} in{" "}
           <button className="button--a" onClick={goToEventLocation}>
             {eventLocationToDisplay}
           </button>
