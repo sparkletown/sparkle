@@ -7,9 +7,8 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { PosterCategory } from "components/atoms/PosterCategory";
-
-import { PosterBookmark } from "../PosterBookmark";
 
 import "./PosterPreview.scss";
 
