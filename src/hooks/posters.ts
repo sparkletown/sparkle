@@ -1,4 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
+import { isEqual, sortBy } from "lodash";
 
 import Fuse from "fuse.js";
 
@@ -191,6 +192,14 @@ export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
   );
 
   useInterval(() => {
+    if (
+      isEqual(
+        sortBy(filterLiveEvents(nonPosterSubVenueEvents)),
+        sortBy(liveNonPosterSubVenueEvents)
+      )
+    )
+      return;
+
     setLiveNonPosterSubVenueEvents(() =>
       filterLiveEvents(nonPosterSubVenueEvents)
     );
