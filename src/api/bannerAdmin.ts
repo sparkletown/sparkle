@@ -1,11 +1,11 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { BannerFormData } from "types/banner";
+import { Banner } from "types/banner";
 
 export interface MakeUpdateBannerProps {
   venueId: string;
-  banner?: BannerFormData;
+  banner?: Banner;
   onError?: (errorMsg: string) => void
 }
 
