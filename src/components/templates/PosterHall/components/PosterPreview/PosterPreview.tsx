@@ -87,14 +87,23 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       <p className="PosterPreview__title">{title}</p>
 
+      {!posterId && moreInfoUrl && (
+        <p className="PosterPreview__moreInfoUrl">
+          <a href={moreInfoUrl} target="_blank" rel="noreferrer">
+            {moreInfoUrl.replace(/(^\w+:|^)\/\//, "")}
+          </a>
+        </p>
+      )}
+
+      {contactEmail && (
+        <p className="PosterPreview__contactEmail">{contactEmail}</p>
+      )}
+
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
       <div className="PosterPreview__authorBox">
         <div className="PosterPreview__avatar">{userPresenter}</div>
 
-        {contactEmail && (
-          <p className="PosterPreview__contactEmail">{contactEmail}</p>
-        )}
         <p className="PosterPreview__author">
           {authors?.join(", ") ?? authorName}
         </p>

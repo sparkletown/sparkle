@@ -10,5 +10,6 @@ export type Poster = {
   introduction?: string;
   contactEmail?: string;
   moreInfoUrl?: string;
+  moreInfoUrlTitle?: string;
   posterId?: string;
 };

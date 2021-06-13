@@ -25,6 +25,8 @@ import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
 
+import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
+
 export interface PosterPageProps {
   venue: WithId<PosterPageVenue>;
 }
@@ -41,7 +43,10 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     posterId,
     moreInfoUrl,
     contactEmail,
+    moreInfoUrlTitle,
   } = poster ?? {};
+
+  const moreInfoUrlName = moreInfoUrlTitle ?? POSTERPAGE_MORE_INFO_URL_TITLE;
 
   const {
     isShown: isIntroVideoShown,
@@ -110,11 +115,14 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           <div className="PosterPage__headerInfo">
             {posterId && <div className="PosterPage__posterId">{posterId}</div>}
             {moreInfoUrl && (
-              <div className="PosterPage__moreInfoUrl">
-                <a href={moreInfoUrl} target="_blank" rel="noreferrer">
-                  Full abstract
-                </a>
-              </div>
+              <a
+                className="PosterPage__moreInfoUrl"
+                href={moreInfoUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                {moreInfoUrlName}
+              </a>
             )}
           </div>
           <p className="PosterPage__title">{title}</p>

@@ -597,6 +597,8 @@ export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
 export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
 
 export const SEARCH_DEBOUNCE_TIME = 200; // ms

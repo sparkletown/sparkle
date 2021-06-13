@@ -38,13 +38,14 @@ $poster-cell-optimal-height: 195px;
     display: inline;
     text-align: left;
     font-size: $font-size--sm;
+    margin-right: $spacing--md;
   }
 
   &__moreInfoUrl {
     display: inline;
     text-align: right;
     font-size: $font-size--sm;
-    margin-left: $spacing--md;
+    margin-bottom: $spacing--sm;
   }
 
   &__title {
