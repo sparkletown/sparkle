@@ -72,11 +72,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const { relatedVenueIds } = useRelatedVenues({ currentVenueId: venue.id });
 
-  const venueIds = useMemo(() => {
-    return { venueIds: relatedVenueIds };
-  }, [relatedVenueIds]);
+  const venueIds = useMemo(() => relatedVenueIds, [relatedVenueIds]);
 
-  const { events: venueEvents } = useVenueEvents(venueIds);
+  const { events: venueEvents } = useVenueEvents({ venueIds: venueIds });
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
