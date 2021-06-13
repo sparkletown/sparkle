@@ -16,6 +16,7 @@
   }
 
   .event-description {
+    display: block;
     color: $concrete;
     white-space: pre-wrap;
   }
@@ -34,5 +35,18 @@
     display: flex;
     align-items: center;
     margin-left: 10px;
+  }
+  .event-time,
+  .event-name {
+    display: block;
+    font-weight: 700;
+  }
+  .event-date {
+    display: block;
+    font-weight: 700;
+    color: $concrete;
+  }
+  .event-host {
+    font-weight: 700;
   }
 }

@@ -29,32 +29,29 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   return (
     <div className="schedule-item-container">
       <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-        <div>
-          <b>{labelDayRoomSchedule(event.start_utc_seconds)}</b>
-        </div>
-        <div>
-          <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
-        </div>
-        <div>
+        <span className="event-date">
+          {labelDayRoomSchedule(event.start_utc_seconds)}
+        </span>
+        <span className="event-time">
+          {formatUtcSeconds(event.start_utc_seconds)}
+        </span>
+        <span className="event-time">
           {formatUtcSeconds(
             event.start_utc_seconds + event.duration_minutes * 60
           )}
-        </div>
+        </span>
       </div>
       <div className="event-section">
         <div>
           <div className={`${isCurrentEvent ? "primary" : ""}`}>
-            <div>
-              <b>{event.name}</b>
+            <span className="event-name">{event.name}</span>
+            by <span className="event-host">{event.host}</span>
+            <div className="event-description">
+              <RenderMarkdown
+                text={event.description}
+                allowPreAndCode={false}
+              />
             </div>
-            {event.host && (
-              <div>
-                by <b>{event.host}</b>
-              </div>
-            )}
-          </div>
-          <div className="event-description">
-            <RenderMarkdown text={event.description} />
           </div>
         </div>
         {isCurrentEvent && (
