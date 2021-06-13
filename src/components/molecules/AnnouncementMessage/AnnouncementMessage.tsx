@@ -69,7 +69,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         <div className="AnnouncementMessage__content">
           <RenderMarkdown text={banner.content} />
         </div>
-        {isActiveButton && (
+        {isActiveButton && banner.buttonUrl && (
           <LinkButton
             href={banner.buttonUrl}
             className="AnnouncementMessage__action-button"
