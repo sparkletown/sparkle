@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
@@ -7,6 +7,8 @@ import { PartyMapVenue } from "types/venues";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Map, RoomModal } from "./components";
 
@@ -21,6 +23,12 @@ export interface PartyMapProps {
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
+
+  const { relatedVenueIds } = useRelatedVenues({ currentVenueId: venue.id });
+
+  const venueIds = useMemo(() => relatedVenueIds, [relatedVenueIds]);
+
+  const { events: venueEvents } = useVenueEvents({ venueIds: venueIds });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
@@ -52,6 +60,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <RoomModal
         room={selectedRoom}
         venue={venue}
+        venueEvents={venueEvents}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />

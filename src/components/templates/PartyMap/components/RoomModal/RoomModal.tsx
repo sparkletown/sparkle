@@ -3,15 +3,13 @@ import { Modal } from "react-bootstrap";
 import { isBefore } from "date-fns";
 
 import { Room, RoomType } from "types/rooms";
-import { AnyVenue } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { eventEndTime, getCurrentEvent } from "utils/event";
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
-import { useVenueEvents } from "hooks/events";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -25,8 +23,9 @@ import "./RoomModal.scss";
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  venue?: WithId<AnyVenue>;
+  venue?: AnyVenue;
   room?: Room;
+  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({
@@ -34,8 +33,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
+  venueEvents,
 }) => {
-  if (!venue || !room) return null;
+  if (!venue || !room || !venueEvents) return null;
 
   if (room.type === RoomType.modalFrame) {
     return (
@@ -53,7 +53,11 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="room-modal">
-        <RoomModalContent room={room} venue={venue} />
+        <RoomModalContent
+          room={room}
+          venueName={venue.name}
+          venueEvents={venueEvents}
+        />
       </div>
     </Modal>
   );
@@ -61,21 +65,15 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venue: WithId<AnyVenue>;
+  venueName: string;
+  venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  venue,
+  venueName,
+  venueEvents,
 }) => {
-  const venueName = venue.name;
-
-  const { relatedVenueIds } = useRelatedVenues({ currentVenueId: venue.id });
-
-  const venueIds = useMemo(() => relatedVenueIds, [relatedVenueIds]);
-
-  const { events: venueEvents } = useVenueEvents({ venueIds: venueIds });
-
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
   const [enterRoomWithSound] = useCustomSound(room.enterSound, {
