@@ -24,11 +24,22 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const { relatedVenueIds } = useRelatedVenues({ currentVenueId: venue.id });
+  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
-  const venueIds = useMemo(() => relatedVenueIds, [relatedVenueIds]);
+  const relatedVenueRoomIds = useMemo(
+    () =>
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
+        )
+        .map((roomVenue) => roomVenue.id),
+    [relatedVenues, venue]
+  );
 
-  const { events: venueEvents } = useVenueEvents({ venueIds: venueIds });
+  const { events: relatedVenueEvents } = useVenueEvents({
+    venueIds: relatedVenueRoomIds,
+  });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
@@ -60,7 +71,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <RoomModal
         room={selectedRoom}
         venue={venue}
-        venueEvents={venueEvents}
+        venueEvents={relatedVenueEvents}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />
