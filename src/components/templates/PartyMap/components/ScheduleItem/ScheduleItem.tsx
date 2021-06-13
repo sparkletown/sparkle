@@ -47,10 +47,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             <span className="event-name">{event.name}</span>
             by <span className="event-host">{event.host}</span>
             <div className="event-description">
-              <RenderMarkdown
-                text={event.description}
-                allowPreAndCode={false}
-              />
+              <RenderMarkdown text={event.description} />
             </div>
           </div>
         </div>
