@@ -553,6 +553,8 @@ export const FIREBASE_CONFIG = {
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
+  // TODO: Set this in secrets/env
+  authDomain: "sparkle-github.firebaseapp.com",
 };
 
 export const DEFAULT_VENUE = "zilloween";

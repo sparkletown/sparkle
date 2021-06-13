@@ -20,6 +20,7 @@ import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
+import { SamlSignIn } from "pages/Account/SamlSignIn";
 
 import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
@@ -55,6 +56,7 @@ const AppRouter = () => {
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
         <Route path="/login" component={Login} />
+        <Route path="/saml" component={SamlSignIn} />
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
         <Route path="/admin/venue/creation" component={VenueWizard} />
