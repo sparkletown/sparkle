@@ -3,18 +3,20 @@ import firebase from "firebase/app";
 
 import { BannerFormData } from "types/banner";
 
+export interface MakeUpdateBannerProps {
+  venueId: string;
+  banner?: BannerFormData;
+  onError?: (errorMsg: string) => void
+}
+
 export const makeUpdateBanner = async ({
   venueId,
   banner,
   onError = () => {}
-}: {
-  venueId: string;
-  banner: BannerFormData;
-  onError?: (errorMsg: string) => void
-}): Promise<void> => {
+}: MakeUpdateBannerProps): Promise<void> => {
   const params = {
     venueId,
-    banner,
+    banner: banner ?? firebase.firestore.FieldValue.delete(),
   };
 
   await firebase
