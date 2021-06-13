@@ -1,4 +1,5 @@
 import React from "react";
+import { fromUnixTime, isToday } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -29,9 +30,11 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   return (
     <div className="schedule-item-container">
       <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-        <div>
-          <b>{formatDate(event.start_utc_seconds)}</b>
-        </div>
+        {!isToday(fromUnixTime(event.start_utc_seconds)) && (
+          <div>
+            <b>{formatDate(event.start_utc_seconds)}</b>
+          </div>
+        )}
         <div>
           <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
         </div>
