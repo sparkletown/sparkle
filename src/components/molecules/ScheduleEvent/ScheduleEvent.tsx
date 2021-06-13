@@ -82,7 +82,9 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       <div className={containerClasses} onClick={showEventModal}>
         <div className="ScheduleEvent__info">
           <div className="ScheduleEvent__title">{event.name}</div>
-          <div className="ScheduleEvent__host">by {event.host}</div>
+          {event.host && (
+            <div className="ScheduleEvent__host">by {event.host}</div>
+          )}
         </div>
 
         <div className="ScheduleEvent__bookmark" onClick={bookmarkEvent}>
