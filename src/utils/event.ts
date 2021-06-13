@@ -85,3 +85,6 @@ export const getEventStatus = (event: VenueEvent) => {
     return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
   }
 };
+
+export const sortEventsByStartUtcSeconds = (events: VenueEvent[]) =>
+  events.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);

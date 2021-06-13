@@ -4,7 +4,11 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { isEventLiveOrFuture, getCurrentEvent } from "utils/event";
+import {
+  isEventLiveOrFuture,
+  getCurrentEvent,
+  sortEventsByStartUtcSeconds,
+} from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -83,11 +87,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomEvents = useMemo(() => {
     if (!venueEvents) return [];
 
-    return venueEvents
-      .filter(
+    return sortEventsByStartUtcSeconds(
+      venueEvents.filter(
         (event) => event.room === room.title && isEventLiveOrFuture(event)
       )
-      .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+    );
   }, [room, venueEvents]);
 
   const currentEvent = getCurrentEvent(roomEvents);
