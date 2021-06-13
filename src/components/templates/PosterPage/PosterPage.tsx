@@ -170,13 +170,15 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <div className="PosterPage__content">
-        <iframe
-          className="PosterPage__iframe"
-          src={iframeUrl}
-          title={title}
-          allow={IFRAME_ALLOW}
-          allowFullScreen
-        />
+        {iframeUrl && (
+          <iframe
+            className="PosterPage__iframe"
+            src={iframeUrl}
+            title={title}
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        )}
 
         {videoParticipants}
 
