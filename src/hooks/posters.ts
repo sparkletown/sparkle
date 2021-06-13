@@ -175,9 +175,9 @@ export const usePosterHallSubVenues = (posterHallId: string) => {
     venueIds: subVenueIds,
   });
 
-  const [liveVenueEvents, setLiveVenueEvents] = useState(
-    checkLiveEvents(subVenueEvents)
-  );
+  const [liveVenueEvents, setLiveVenueEvents] = useState<
+    WithVenueId<VenueEvent>[]
+  >();
 
   useEffect(() => setLiveVenueEvents(() => checkLiveEvents(subVenueEvents)), [
     subVenueEvents,

@@ -43,6 +43,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const { liveVenueEvents } = usePosterHallSubVenues(venue.id);
 
   const renderedSubvenues = useMemo(() => {
+    if (!liveVenueEvents) return;
     return liveVenueEvents.map((subVenueEvent) => (
       <SubVenuePreview
         key={subVenueEvent.venueId}
