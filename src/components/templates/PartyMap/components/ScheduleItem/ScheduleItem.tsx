@@ -1,11 +1,10 @@
 import React from "react";
-import { fromUnixTime, isToday } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { formatUtcSeconds, formatDate } from "utils/time";
+import { formatUtcSeconds, labelDayRoomSchedule } from "utils/time";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -30,11 +29,9 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   return (
     <div className="schedule-item-container">
       <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-        {!isToday(fromUnixTime(event.start_utc_seconds)) && (
-          <div>
-            <b>{formatDate(event.start_utc_seconds)}</b>
-          </div>
-        )}
+        <div>
+          <b>{labelDayRoomSchedule(event.start_utc_seconds)}</b>
+        </div>
         <div>
           <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
         </div>

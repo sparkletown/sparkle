@@ -9,6 +9,8 @@ import {
   getUnixTime,
   intervalToDuration,
   isAfter,
+  isToday,
+  isTomorrow,
   startOfDay,
   subDays,
   subHours,
@@ -232,3 +234,9 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
+
+export const labelDayRoomSchedule = (startUtcSeconds: number) => {
+  if (isToday(fromUnixTime(startUtcSeconds))) return "";
+  else if (isTomorrow(fromUnixTime(startUtcSeconds))) return "Tomorrow";
+  else return formatDate(startUtcSeconds);
+};
