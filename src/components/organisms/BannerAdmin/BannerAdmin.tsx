@@ -1,12 +1,8 @@
-import React, { useCallback, useState, useEffect } from "react";
+import React, { useCallback, useEffect,useState } from "react";
 import { useForm } from "react-hook-form";
 
-<<<<<<< HEAD
-=======
 import { makeUpdateBanner } from "api/bannerAdmin";
 
-import { AnyVenue } from "types/venues";
->>>>>>> updates
 import { BannerFormData } from "types/banner";
 import { AnyVenue } from "types/venues";
 
@@ -72,9 +68,9 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   }, [isActionButtonValue]);
 
   const updateBannerInFirestore = useCallback(
-    (data: BannerFormData) => {
+    (banner: BannerFormData) => {
       if (!venueId) return;
-      makeUpdateBanner(venueId)(data);
+      makeUpdateBanner({venueId, banner});
       onClose();
     },
     [venueId, onClose]

@@ -1,13 +1,20 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-export const makeUpdateBanner = (
-  venueId: string,
+import { BannerFormData } from "types/banner";
+
+export const makeUpdateBanner = async ({
+  venueId,
+  banner,
+  onError = () => {}
+}: {
+  venueId: string;
+  banner: BannerFormData;
   onError?: (errorMsg: string) => void
-) => async (message?: string): Promise<void> => {
+}): Promise<void> => {
   const params = {
     venueId,
-    banner: message ?? {},
+    banner,
   };
 
   await firebase
@@ -18,7 +25,7 @@ export const makeUpdateBanner = (
         event.addMetadata("context", {
           location: "api/bannerAdmin::makeUpdateBanner",
           venueId,
-          message,
+          banner,
         });
       });
       onError?.(e.toString());
