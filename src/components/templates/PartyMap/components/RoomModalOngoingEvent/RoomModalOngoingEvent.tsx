@@ -54,9 +54,11 @@ export const RoomModalOngoingEvent: React.FC<RoomModalOngoingEventProps> = ({
           </div>
           <div className="artist-ongoing-container">
             <div className="event-title">{eventToDisplay.name}</div>
-            <div>
-              by <span className="artist-name">{eventToDisplay.host}</span>
-            </div>
+            {eventToDisplay.host && (
+              <div>
+                by <span className="artist-name">{eventToDisplay.host}</span>
+              </div>
+            )}
           </div>
           <div className="event-description">
             <RenderMarkdown text={eventToDisplay.description} />
