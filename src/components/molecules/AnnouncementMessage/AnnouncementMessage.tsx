@@ -77,7 +77,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
             {banner.buttonDisplayText}
           </LinkButton>
         )}
-        {isUser && banner.isCloseButton ? (
+        {isUser && banner.hasCloseButton ? (
           <span
             className="AnnouncementMessage__close-button"
             onClick={hideAnnouncementMessage}
