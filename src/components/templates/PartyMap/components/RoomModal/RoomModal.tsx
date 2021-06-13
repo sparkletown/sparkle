@@ -88,10 +88,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const roomEvents = useMemo(() => {
     if (!venueEvents) return [];
 
-    return venueEvents.filter(
-      (event) =>
-        event.room === room.title && isBefore(Date.now(), eventEndTime(event))
-    );
+    return venueEvents
+      .filter(
+        (event) =>
+          event.room === room.title && isBefore(Date.now(), eventEndTime(event))
+      )
+      .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
   }, [room, venueEvents]);
 
   const currentEvent = getCurrentEvent(roomEvents);
