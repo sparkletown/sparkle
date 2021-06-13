@@ -7,9 +7,11 @@ import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { VideoParticipant } from "components/organisms/Video";
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { UserList } from "components/molecules/UserList";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
@@ -30,6 +32,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
 
   const { title, introVideoUrl, categories } = poster ?? {};
+
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const canBeBookmarked = parentVenue?.canBeBookmarked;
 
   const {
     isShown: isIntroVideoShown,
@@ -85,6 +90,7 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
+          {canBeBookmarked && <PosterBookmark posterVenue={venue} />}
           <p className="PosterPage__title">{title}</p>
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
