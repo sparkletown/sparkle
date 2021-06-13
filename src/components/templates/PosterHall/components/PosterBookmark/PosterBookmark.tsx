@@ -28,11 +28,9 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const venueIds = useMemo(() => {
-    return { venueIds: [venueId] };
-  }, [venueId]);
+  const venueIds = useMemo(() => [venueId], [venueId]);
 
-  const { events: venueEvents } = useVenueEvents(venueIds);
+  const { events: venueEvents } = useVenueEvents({ venueIds: venueIds });
 
   const savedPosters = useMemo(() => userWithId?.savedPosters ?? {}, [
     userWithId,
