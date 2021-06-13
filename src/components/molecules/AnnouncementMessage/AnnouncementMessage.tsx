@@ -5,6 +5,8 @@ import classNames from "classnames";
 
 import { BannerFormData } from "types/banner";
 
+import { isDefined } from "utils/types";
+
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -30,7 +32,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   } = useShowHide();
 
   useEffect(() => {
-    if (banner?.content) {
+    if (isDefined(banner?.content)) {
       showAnnouncementMessage();
     }
   }, [banner, showAnnouncementMessage]);
