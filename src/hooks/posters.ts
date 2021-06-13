@@ -161,17 +161,15 @@ export const usePosterHallSubVenues = (posterHallId: string) => {
     currentVenueId: posterHallId,
   });
 
-  const subVenues = useMemo(() => {
-    return relatedVenues.filter(
-      (relatedVenue) =>
-        relatedVenue.parentId === posterHallId &&
-        relatedVenue.template !== VenueTemplate.posterpage
-    );
+  const subVenueIds = useMemo(() => {
+    return relatedVenues
+      .filter(
+        (relatedVenue) =>
+          relatedVenue.parentId === posterHallId &&
+          relatedVenue.template !== VenueTemplate.posterpage
+      )
+      .map((venue) => venue.id);
   }, [relatedVenues, posterHallId]);
-
-  const subVenueIds = useMemo(() => subVenues.map((venue) => venue.id), [
-    subVenues,
-  ]);
 
   const { events: subVenueEvents } = useVenueEvents({
     venueIds: subVenueIds,
@@ -181,14 +179,12 @@ export const usePosterHallSubVenues = (posterHallId: string) => {
     checkLiveEvents(subVenueEvents)
   );
 
-  const setLiveEvents = useCallback(() => {
-    setLiveVenueEvents(() => checkLiveEvents(subVenueEvents));
-  }, [subVenueEvents]);
-
-  useEffect(() => setLiveEvents(), [setLiveEvents]);
+  useEffect(() => setLiveVenueEvents(() => checkLiveEvents(subVenueEvents)), [
+    subVenueEvents,
+  ]);
 
   useInterval(() => {
-    setLiveEvents();
+    setLiveVenueEvents(() => checkLiveEvents(subVenueEvents));
   }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   return {
