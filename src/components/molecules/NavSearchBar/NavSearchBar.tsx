@@ -13,7 +13,7 @@ import {
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { isTruthy, isDefined } from "utils/types";
@@ -57,7 +57,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<AnyVenue>();
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
+  >();
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);

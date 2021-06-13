@@ -6,11 +6,12 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
 import { eventEndTime, getCurrentEvent } from "utils/event";
-import { venueEventsSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
-import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -24,7 +25,7 @@ import "./RoomModal.scss";
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  venue?: AnyVenue;
+  venue?: WithId<AnyVenue>;
   room?: Room;
 }
 
@@ -52,7 +53,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="room-modal">
-        <RoomModalContent room={room} venueName={venue.name} />
+        <RoomModalContent room={room} venue={venue} />
       </div>
     </Modal>
   );
@@ -60,14 +61,22 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venueName: string;
+  venue: WithId<AnyVenue>;
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  venueName,
+  venue,
 }) => {
-  const venueEvents = useSelector(venueEventsSelector);
+  const venueName = venue.name;
+
+  const { relatedVenueIds } = useRelatedVenues({ currentVenueId: venue.id });
+
+  const venueIds = useMemo(() => {
+    return { venueIds: relatedVenueIds };
+  }, [relatedVenueIds]);
+
+  const { events: venueEvents } = useVenueEvents(venueIds);
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
