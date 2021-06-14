@@ -179,23 +179,25 @@ export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
     venueIds: nonPosterSubVenueIds,
   });
 
-  const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
-
   const [
     liveNonPosterSubVenueEvents,
     setLiveNonPosterSubVenueEvents,
   ] = useState<WithVenueId<VenueEvent>[]>();
 
-  useEffect(() => setLiveNonPosterSubVenueEvents(filteredLiveEvents), [
-    filteredLiveEvents,
-  ]);
+  const updateLiveEvents = useCallback(() => {
+    const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
 
-  useInterval(() => {
-    setLiveNonPosterSubVenueEvents(function (prevState) {
+    setLiveNonPosterSubVenueEvents((prevState) => {
       if (isEqual(prevState, filteredLiveEvents)) return prevState;
 
       return filteredLiveEvents;
     });
+  }, [nonPosterSubVenueEvents]);
+
+  useEffect(() => updateLiveEvents(), [updateLiveEvents]);
+
+  useInterval(() => {
+    updateLiveEvents();
   }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   return {
