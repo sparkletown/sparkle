@@ -1,6 +1,7 @@
 export const PROJECT_ID = process.env.REACT_APP_PROJECT_ID;
 export const API_KEY = process.env.REACT_APP_API_KEY;
 export const APP_ID = process.env.REACT_APP_APP_ID;
+export const AUTH_DOMAIN = process.env.REACT_APP_AUTH_DOMAIN;
 export const MEASUREMENT_ID = process.env.REACT_APP_MEASUREMENT_ID;
 export const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 export const STRIPE_PUBLISHABLE_KEY =
@@ -12,6 +13,7 @@ export const MIXPANEL_PROJECT_TOKEN =
 
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
+export const SSO_PROVIDER_ID = process.env.REACT_APP_SSO_PROVIDER_ID;
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;

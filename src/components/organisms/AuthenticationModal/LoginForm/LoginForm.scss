@@ -1,0 +1,19 @@
+@import "scss/constants.scss";
+
+.LoginForm {
+  &__alternative-logins {
+    display: flex;
+    justify-content: center;
+    margin-bottom: $spacing--xs;
+  }
+
+  &__sso-login {
+    height: 50px;
+    width: 50px;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
+}
