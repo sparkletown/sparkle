@@ -1,9 +1,12 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
-import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
+import AgoraRTC, {
+  IAgoraRTCClient,
+  IAgoraRTCRemoteUser,
+} from "agora-rtc-sdk-ng";
 import { FullTalkShowVenue } from "types/venues";
 import { WithId } from "utils/id";
 import useAgoraScreenShare from "./agoraHooks/useAgoraScreenShare";
-import Player from "./components/Player/Player";
+import Player, { VideoPlayerProps } from "./components/Player/Player";
 import useAgoraCamera from "./agoraHooks/useAgoraCamera";
 import useAgoraRemotes from "./agoraHooks/useAgoraRemotes";
 import Audience from "./components/Audience/Audience";
@@ -97,6 +100,7 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
       AGORA_CHANNEL.channel,
       AGORA_CHANNEL.token
     );
+    // TODO: now screenClientUid is set on Stage join. screenClientUid is condition to render screen share mode
     screenClientJoin(
       AGORA_CHANNEL.appId,
       AGORA_CHANNEL.channel,
@@ -122,56 +126,69 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
   }, [isUserOnStage, onStageJoin, onStageLeaving]);
 
   const renderRemotesUsers = useMemo(() => {
-    const setremoteUser = (remoteUserId: number | string) => {
+    // TODO: strict render remote user when he is screenSharing
+    const validateUser = (user: IAgoraRTCRemoteUser) =>
+      user.hasVideo &&
+      user.uid !== screenClient.uid &&
+      user.uid !== cameraClient.uid;
+    const setremoteUserAvatar = (remoteUserId: number | string) => {
       if (!venueId) return;
       const [remoteUser] = peopleOnStage.filter(
         ({ data }) => data?.[`${venueId}`]?.cameraClientUid === remoteUserId
       );
       return remoteUser;
     };
-    return remoteUsers.map(
-      (user) =>
-        user.hasVideo &&
-        user.uid !== screenClient.uid &&
-        user.uid !== cameraClient.uid && (
-          <Player
-            key={user.uid}
-            videoTrack={user.videoTrack}
-            audioTrack={user.audioTrack}
-            containerClass="ScreenShare__mode--play"
-            user={setremoteUser(user.uid)}
-          />
-        )
-    );
+
+    return remoteUsers
+      .filter(validateUser)
+      .map((user) => (
+        <Player
+          key={user.uid}
+          videoTrack={user.videoTrack}
+          audioTrack={user.audioTrack}
+          containerClass="ScreenShare__mode--play"
+          user={setremoteUserAvatar(user.uid)}
+        />
+      ));
   }, [peopleOnStage, remoteUsers, venueId]);
+
+  const renderScreenSharing = (
+    screenTrack: VideoPlayerProps["videoTrack"],
+    cameraTrack: VideoPlayerProps["videoTrack"]
+  ) => {
+    return (
+      <div className="ScreenShare__scene--sharing">
+        {screenTrack && (
+          <Player
+            videoTrack={screenTrack}
+            containerClass="ScreenShare__mode--share"
+          />
+        )}
+        {cameraTrack && (
+          <Player
+            user={localUser}
+            videoTrack={cameraTrack}
+            showButtons
+            isCamOn={isCameraOn}
+            isMicOn={isMicrophoneOn}
+            isSharing={!!screenTrack}
+            toggleCam={toggleCamera}
+            toggleMic={toggleMicrophone}
+            containerClass="ScreenShare__mode--local-play"
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       <div className="ScreenShare">
         <div className="ScreenShare__scene">
-          {localScreenTrack && localCameraTrack && (
-            <div className="ScreenShare__scene--sharing">
-              {localScreenTrack && (
-                <Player
-                  videoTrack={localScreenTrack}
-                  containerClass="ScreenShare__mode--share"
-                />
-              )}
-              {localCameraTrack && (
-                <Player
-                  user={localUser}
-                  videoTrack={localCameraTrack}
-                  showButtons
-                  isCamOn={isCameraOn}
-                  isMicOn={isMicrophoneOn}
-                  isSharing={!!localScreenTrack}
-                  toggleCam={toggleCamera}
-                  toggleMic={toggleMicrophone}
-                  containerClass="ScreenShare__mode--local-play"
-                />
-              )}
-            </div>
-          )}
+          {/* TODO: add condition to render remote user when he is screensharing */}
+          {localScreenTrack &&
+            localCameraTrack &&
+            renderScreenSharing(localScreenTrack, localCameraTrack)}
           <div className="ScreenShare__scene--players">
             {!localScreenTrack && localCameraTrack && (
               <Player
