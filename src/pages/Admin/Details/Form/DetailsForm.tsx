@@ -22,13 +22,11 @@ import { createJazzbar } from "utils/venue";
 
 // Typings
 import { VenueTemplate } from "types/venues";
-import { DetailsFormProps } from "./DetailsForm.types";
+import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
-
-import { FormValues } from "./DetailsForm.types";
 
 // Validation schemas
 import { validationSchema_v2 } from "../ValidationSchema";
@@ -55,7 +53,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
-        history.push(`/admin-v2/${createUrlSafeName(vals.name!)}`);
+        if (vals.name) {
+          history.push(`/admin-ng/venue/${createUrlSafeName(vals.name)}`);
+        } else {
+          history.push("/admin-ng");
+        }
       } catch (e) {
         console.error(e);
       }

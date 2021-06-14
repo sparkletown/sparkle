@@ -15,12 +15,12 @@ export const usePosterVideo = (venueId: string) => {
 
   const {
     participants,
-    turnVideoOff: leaveVideoSeat,
-    turnVideoOn: takeVideoSeat,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   } = useVideoRoomState({
     userId,
     roomName: venueId,
-    showVideoByDefault: false,
+    activeParticipantByDefault: false,
   });
 
   const getUserById = useCallback(
@@ -38,15 +38,18 @@ export const usePosterVideo = (venueId: string) => {
     () =>
       participants.reduce<{
         passiveListeners: WithId<User>[];
-        activeParticipants: (RemoteParticipant | LocalParticipant)[];
+        activeParticipants: {
+          participant: RemoteParticipant | LocalParticipant;
+          user: WithId<User>;
+        }[];
       }>(
         (acc, participant) => {
+          const user = getUserById(participant.identity);
+
+          if (!user) return acc;
+
           // If participant is not broadcasting video, put them into passiveListeners
           if (participant.videoTracks.size === 0) {
-            const user = getUserById(participant.identity);
-
-            if (!user) return acc;
-
             return {
               ...acc,
               passiveListeners: [...acc.passiveListeners, user],
@@ -55,7 +58,10 @@ export const usePosterVideo = (venueId: string) => {
 
           return {
             ...acc,
-            activeParticipants: [...acc.activeParticipants, participant],
+            activeParticipants: [
+              ...acc.activeParticipants,
+              { participant, user },
+            ],
           };
         },
         {
@@ -69,7 +75,7 @@ export const usePosterVideo = (venueId: string) => {
   const isMeActiveParticipant = useMemo(
     () =>
       !!activeParticipants.find(
-        (participant) => participant.identity === userId
+        (activeParticipant) => activeParticipant.participant.identity === userId
       ),
     [activeParticipants, userId]
   );
@@ -80,7 +86,7 @@ export const usePosterVideo = (venueId: string) => {
 
     isMeActiveParticipant,
 
-    takeVideoSeat,
-    leaveVideoSeat,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   };
 };
