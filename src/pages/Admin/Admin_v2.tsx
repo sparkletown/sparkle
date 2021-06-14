@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React from "react";
 import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -10,10 +10,8 @@ import { useUser } from "hooks/useUser";
 import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
-import { useVenueId } from "hooks/useVenueId";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
-import { AdminVenueView } from "components/organisms/AdminVenueView";
 import {
   AuthenticationModal,
   AuthOptions,
@@ -31,13 +29,6 @@ const Admin_v2: React.FC = () => {
 
   // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
   const venues = useSelector(orderedVenuesSelector);
-
-  const venueId = useVenueId();
-
-  const selectedVenue = useMemo(() => venues?.find((v) => v.id === venueId), [
-    venueId,
-    venues,
-  ]);
 
   const { roles } = useRoles();
 
@@ -59,7 +50,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          {selectedVenue ? <AdminVenueView /> : <AdminVenues venues={venues} />}
+          <AdminVenues venues={venues} />
         </S.ViewWrapper>
       </S.Wrapper>
 

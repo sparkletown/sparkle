@@ -17,6 +17,8 @@ import { useRoom } from "hooks/useRoom";
 
 import { Button } from "components/atoms/Button";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import "./EventModal.scss";
 
 export interface EventModalProps {
@@ -76,7 +78,9 @@ export const EventModal: React.FC<EventModalProps> = ({
           </button>
         </span>
 
-        <p className="EventModal__description">{event.description}</p>
+        <div className="EventModal__description">
+          <RenderMarkdown text={event.description} />
+        </div>
 
         <Button
           customClass="EventModal__button"

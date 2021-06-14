@@ -1,17 +1,16 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
-import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { Spaces } from "./components";
 
 import "./AdminVenueView.scss";
-import { Spaces } from "./components";
 import { Venue_v2 } from "types/venues";
 
 export enum AdminVenueTab {
@@ -20,7 +19,7 @@ export enum AdminVenueTab {
   run = "run",
 }
 
-const adminVenueTabs: Readonly<Record<AdminVenueTab, String>> = {
+const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",
@@ -30,16 +29,19 @@ const DEFAULT_TAB = AdminVenueTab.spaces;
 
 export const AdminVenueView: React.FC = () => {
   const venueId = useVenueId();
-  const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
+  const [selectedTab, setSelectedTab] = useState<AdminVenueTab>(DEFAULT_TAB);
 
-  const { user } = useUser();
-  const { roles } = useRoles();
-  const { isAdminUser } = useIsAdminUser(user?.uid);
+  const { userId } = useUser();
+  const { isAdminUser } = useIsAdminUser(userId);
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+  // Get and pass venue to child components when working on tabs
+  const {
+    isCurrentVenueLoaded,
+    currentVenue: venue,
+  } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabs).map(([key, text]) => (
+    return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
       <Nav.Link
         key={key}
         className={classNames("AdminVenueView__tab", {
@@ -52,11 +54,15 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab]);
 
-  if ((venueId && !venue) || !roles) {
+  const selectTab = useCallback((tab: string) => {
+    setSelectedTab(tab as AdminVenueTab);
+  }, []);
+
+  if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
   }
 
-  if (!roles.includes("admin") || !isAdminUser) {
+  if (!isAdminUser) {
     return <>Forbidden</>;
   }
 
@@ -66,7 +72,7 @@ export const AdminVenueView: React.FC = () => {
         <Nav
           className="AdminVenueView__options"
           activeKey={selectedTab}
-          onSelect={setSelectedTab}
+          onSelect={selectTab}
         >
           {renderAdminVenueTabs}
         </Nav>
