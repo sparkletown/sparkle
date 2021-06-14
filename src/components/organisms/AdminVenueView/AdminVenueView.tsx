@@ -9,7 +9,7 @@ import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { RunTabView } from "./components/RunTabView";
+import { RunTabView } from "./components/RunTabView/RunTabView";
 
 import "./AdminVenueView.scss";
 

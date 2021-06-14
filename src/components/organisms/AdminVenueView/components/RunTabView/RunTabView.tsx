@@ -1,17 +1,18 @@
 import React from "react";
-import { useVenueId } from "../../../../hooks/useVenueId";
-import { Button } from "../../../atoms/Button";
-import { venueInsideUrl } from "../../../../utils/url";
-import { DEFAULT_MAP_BACKGROUND } from "../../../../settings";
-import { useConnectCurrentVenueNG } from "../../../../hooks/useConnectCurrentVenueNG";
-import { Container } from "../../../../pages/Account/Venue/VenueMapEdition/Container";
+import { useVenueId } from "../../../../../hooks/useVenueId";
+import { Button } from "../../../../atoms/Button";
+import { venueInsideUrl } from "../../../../../utils/url";
+import { DEFAULT_MAP_BACKGROUND } from "../../../../../settings";
+import { useConnectCurrentVenueNG } from "../../../../../hooks/useConnectCurrentVenueNG";
+import { Container } from "../../../../../pages/Account/Venue/VenueMapEdition/Container";
 import { FormControl } from "react-bootstrap";
-import { useUser } from "../../../../hooks/useUser";
+import { useUser } from "../../../../../hooks/useUser";
+import { AdminVenueRoomsList } from "../../../../../pages/Admin/AdminVenueRoomsList";
+import { WithId } from "../../../../../utils/id";
+import { AnyVenue } from "../../../../../types/venues";
 
 import "./RunTabView.scss";
-import { AdminVenueRoomsList } from "../../../../pages/Admin/AdminVenueRoomsList";
-import { WithId } from "../../../../utils/id";
-import { AnyVenue } from "../../../../types/venues";
+import { AdvancedSettingsButton } from "../AdvancedSettingsButton/AdvancedSettingsButton";
 
 const noop = () => undefined;
 
@@ -23,11 +24,9 @@ export const RunTabView: React.FC = () => {
 
   return (
     <div className="RunTabView">
-      <div className="RunTabView_sidebar">
-        <h3>Run your space</h3>
-        <Button customClass="RunTabView__advanced" onClick={noop}>
-          Advanced settings
-        </Button>
+      <div className="RunTabView__sidebar">
+        <h3 className="RunTabView__title">Run your space</h3>
+        <AdvancedSettingsButton id={venueId} />
         <div className="row-container">
           <h4>Current Venue Owners</h4>
           <div className="user-row">

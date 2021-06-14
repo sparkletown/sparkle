@@ -15,6 +15,10 @@
     width: 100%;
   }
 
+  &__title {
+    margin: $spacing--lg !important;
+  }
+
   &__toolbars {
     display: flex;
     flex-direction: row;
@@ -41,17 +45,20 @@
   &__sidebar {
     display: flex;
     flex-direction: column;
-    padding: $spacing--md;
+    padding: $spacing--xs;
+    min-width: 18%;
+
+    & > * {
+      width: calc(100% - 2 * #{$spacing--xs});
+    }
+
+    & > * {
+      margin-bottom: $spacing--xs;
+    }
   }
 
   &__main {
     display: flex;
     flex-direction: column;
-  }
-
-  &__advanced {
-    height: 4em;
-    background-color: $secondary;
-    width: 100%;
   }
 }
