@@ -271,10 +271,17 @@ $border-radius: 28px;
   }
 }
 
-.NavBar__home-icon {
-    cursor: pointer;
-    font-size: 24px;
-    &:hover {
-      font-size: 28px;
-    }
+.navBar__home-icon {
+  cursor: pointer;
+  font-size: 24px;
+  &:hover {
+    font-size: 28px;
+  }
+}
+
+.navBar__home-icon-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 25px;
 }
