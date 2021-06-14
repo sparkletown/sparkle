@@ -47,8 +47,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--covert maproom--unclickable": isUnclickable,
-    "maproom--covert maproom--iframe": isMapFrame,
+    "maproom--covert": isCovertRoom,
+    "maproom--unclickable": isUnclickable,
+    "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
       !isCovertRoom &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
