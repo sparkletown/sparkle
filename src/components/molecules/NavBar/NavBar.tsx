@@ -167,9 +167,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
-  const homeVenueId = sovereignVenueId ?? parentVenueId;
   const navigateToHomepage = useCallback(() => {
-    enterVenue(homeVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+    if (!sovereignVenueId) return;
+    
+    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [homeVenueId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
@@ -206,17 +207,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              <div className="navBar__home-icon-wrapper">
-                <FontAwesomeIcon
+                {sovereignVenueId && <FontAwesomeIcon
                   icon={faHome}
                   className="navBar__home-icon"
                   onClick={navigateToHomepage}
-                />
-              </div>
-              <div
-                onClick={navigateToHomepage}
-                className="nav-sparkle-back-home-icon"
-              ></div>
+                />}
               <div
                 className={`nav-party-logo ${
                   isEventScheduleVisible && "clicked"

@@ -271,18 +271,10 @@ $border-radius: 28px;
   }
 }
 
-.navBar__home {
-  &-icon {
+.NavBar__home-icon {
     cursor: pointer;
     font-size: 24px;
     &:hover {
       font-size: 28px;
     }
-    &-wrapper {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      width: 25px;
-    }
-  }
 }
