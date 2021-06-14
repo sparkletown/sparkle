@@ -23,7 +23,6 @@ const VenueTemplate = {
   posterpage: "posterpage",
   preplaya: "preplaya",
   screeningroom: "screeningroom",
-  screenshare: "screenshare",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
 
@@ -47,7 +46,6 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
   VenueTemplate.performancevenue,
-  VenueTemplate.screenshare,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
@@ -609,6 +607,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
@@ -733,8 +735,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.bannerMessage = data.bannerMessage;
   }
 
-  if (typeof data.requestToJoinStage === "boolean") {
-    updated.requestToJoinStage = data.requestToJoinStage;
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);
@@ -918,24 +920,3 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
-
-exports.changeUserPlaceInVenue = functions.https.onCall(
-  async (data, context) => {
-    checkAuth(context);
-
-    const { venueId, userId, place } = data;
-
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
-
-    const userRef = admin.firestore().collection("users").doc(userId);
-    const user = (await userRef.get()).data();
-
-    if (!user) return;
-
-    const newUserData = {
-      [`data.${venueId}`]: { ...user.data[venueId], place },
-    };
-
-    await userRef.update(newUserData);
-  }
-);

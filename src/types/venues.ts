@@ -10,6 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { UsernameVisibility } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -99,6 +100,7 @@ export interface Venue_v2_AdvancedConfig {
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
+  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
   showZendesk?: boolean;
@@ -174,6 +176,7 @@ export interface BaseVenue {
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
   showZendesk?: boolean;
 }
 
