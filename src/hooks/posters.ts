@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import { isEqual, sortBy } from "lodash";
+import { isEqual } from "lodash";
 
 import Fuse from "fuse.js";
 
@@ -8,6 +8,7 @@ import { VenueEvent, VenueTemplate } from "types/venues";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 import { posterVenuesSelector } from "utils/selectors";
 import { isEventLive } from "utils/event";
+import { WithVenueId } from "utils/id";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -16,10 +17,10 @@ import { useRelatedVenues } from "./useRelatedVenues";
 import { useVenueEvents } from "./events";
 import { useInterval } from "./useInterval";
 
-import { POSTERHALL_SUBVENUE_STATUS_MS } from "settings";
-import { WithVenueId } from "utils/id";
-
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import {
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  POSTERHALL_SUBVENUE_STATUS_MS,
+} from "settings";
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -178,31 +179,23 @@ export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
     venueIds: nonPosterSubVenueIds,
   });
 
+  const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
+
   const [
     liveNonPosterSubVenueEvents,
     setLiveNonPosterSubVenueEvents,
   ] = useState<WithVenueId<VenueEvent>[]>();
 
-  useEffect(
-    () =>
-      setLiveNonPosterSubVenueEvents(() =>
-        filterLiveEvents(nonPosterSubVenueEvents)
-      ),
-    [nonPosterSubVenueEvents]
-  );
+  useEffect(() => setLiveNonPosterSubVenueEvents(filteredLiveEvents), [
+    filteredLiveEvents,
+  ]);
 
   useInterval(() => {
-    if (
-      isEqual(
-        sortBy(filterLiveEvents(nonPosterSubVenueEvents)),
-        sortBy(liveNonPosterSubVenueEvents)
-      )
-    )
-      return;
+    setLiveNonPosterSubVenueEvents(function (prevState) {
+      if (isEqual(prevState, filteredLiveEvents)) return prevState;
 
-    setLiveNonPosterSubVenueEvents(() =>
-      filterLiveEvents(nonPosterSubVenueEvents)
-    );
+      return filteredLiveEvents;
+    });
   }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   return {
