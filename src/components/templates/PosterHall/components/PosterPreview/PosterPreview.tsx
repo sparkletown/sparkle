@@ -27,6 +27,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { recentLocationUsers } = useRecentLocationUsers(posterVenue.name);
 
   const totalPosterUsers = recentLocationUsers.length;
+  const hasPosterUsers = !!totalPosterUsers;
 
   const venueId = posterVenue.id;
 
@@ -50,7 +51,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
-      {!!totalPosterUsers && (
+      {hasPosterUsers && (
         <div className="PosterPreview__users">
           <FontAwesomeIcon
             className="PosterPreview__users-icon"
