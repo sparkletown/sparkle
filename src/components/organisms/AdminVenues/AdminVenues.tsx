@@ -30,7 +30,7 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
     <div className="admin-venue">
       <div className="admin-venue__header">
         <div className="admin-venue__title">Admin Dashboard</div>
-        <Button as={Link} to="/admin_v2/venue/creation">
+        <Button as={Link} to="/admin-ng/venue/creation">
           Create a new space
         </Button>
       </div>
