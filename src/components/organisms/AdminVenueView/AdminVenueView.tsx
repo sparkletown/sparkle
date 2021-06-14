@@ -9,9 +9,9 @@ import { useAdminVenues } from "hooks/useAdminVenues";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { RunTabView } from "./components/RunTabView";
+
 import "./AdminVenueView.scss";
-import { Button } from "../../atoms/Button";
-import { venueInsideUrl } from "../../../utils/url";
 
 export enum AdminVenueTab {
   spaces = "spaces",
@@ -26,24 +26,6 @@ const adminVenueTabs: Readonly<Record<AdminVenueTab, String>> = {
 };
 
 const DEFAULT_TAB = AdminVenueTab.spaces;
-
-const AdminRunView: React.FC = () => {
-  const venueId = useVenueId();
-
-  return (
-    <>
-      The Run View
-      <Button
-        isLink={true}
-        linkTo={venueId ? venueInsideUrl(venueId) : undefined}
-        customClass="btn btn-primary btn-block"
-        newTab={true}
-      >
-        Visit Space
-      </Button>
-    </>
-  );
-};
 
 export const AdminVenueView: React.FC = () => {
   const { user } = useUser();
@@ -85,7 +67,7 @@ export const AdminVenueView: React.FC = () => {
       </div>
       {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
       {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
-      {selectedTab === AdminVenueTab.run && <AdminRunView />}
+      {selectedTab === AdminVenueTab.run && <RunTabView />}
     </>
   );
 };
