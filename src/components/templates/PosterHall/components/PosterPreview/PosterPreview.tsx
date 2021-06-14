@@ -1,6 +1,10 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUserAlt } from "@fortawesome/free-solid-svg-icons";
+
+import { useRecentLocationUsers } from "hooks/users";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -19,6 +23,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
 }) => {
   const { title, authorName, categories } = posterVenue.poster ?? {};
+
+  const { recentLocationUsers } = useRecentLocationUsers(posterVenue.name);
+
+  const totalPosterUsers = recentLocationUsers.length;
 
   const venueId = posterVenue.id;
 
@@ -42,6 +50,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
+      {!!totalPosterUsers && (
+        <div className="PosterPreview__users">
+          <FontAwesomeIcon
+            className="PosterPreview__users-icon"
+            icon={faUserAlt}
+          />
+          {totalPosterUsers}
+        </div>
+      )}
+
       <p className="PosterPreview__title">{title}</p>
 
       <div className="PosterPreview__categories">{renderedCategories}</div>
