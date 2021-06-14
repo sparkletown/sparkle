@@ -8,6 +8,7 @@ import {
 import React, { useCallback, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import { DEFAULT_VENUE_LOGO } from "settings";
 import { VenueTemplate } from "types/venues";
 import { venueInsideUrl } from "utils/url";
@@ -24,14 +25,12 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   template,
 }) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false);
-  // const [isDeleting, setDeleting] = useState<boolean>(false)
-  // const [error, setError] = useState<string>("")
 
   const { user } = useUser();
 
   const venueId = useVenueId();
 
-  const { register, watch, handleSubmit, errors } = useForm({
+  const { register, getValues, handleSubmit, errors } = useForm({
     validationSchema: template ? venueRoomSchema : roomSchema,
     defaultValues: {
       roomTitle: "",
@@ -41,20 +40,19 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     },
   });
 
-  const values = watch();
-
   const closeModal = useCallback(() => {
     setModalVisible(false);
   }, []);
 
-  const onSubmit = useCallback(async () => {
+  const createVenueRoom = useCallback(async () => {
     if (!user || !venueId) return;
 
+    const roomValues = getValues();
     const roomUrl = template
-      ? window.origin + venueInsideUrl(values.venueName)
-      : values.roomUrl;
+      ? window.origin + venueInsideUrl(roomValues.venueName)
+      : roomValues.roomUrl;
     const roomData = {
-      title: values.roomTitle,
+      title: roomValues.roomTitle,
       isEnabled: true,
       image_url: DEFAULT_VENUE_LOGO,
       url: roomUrl,
@@ -68,7 +66,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
         const fileList = list.files;
 
         const venueInput: VenueInput_v2 = {
-          name: values.venueName,
+          name: roomValues.venueName,
           subtitle: "",
           description: "",
           template: template,
@@ -82,29 +80,28 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
         await createVenue_v2(venueInput, user);
       }
+
       await createRoom(roomData, venueId, user);
       setModalVisible(false);
     } catch (err) {
       console.error(err);
     }
-  }, [
-    template,
-    user,
-    values.roomTitle,
-    values.roomUrl,
-    values.venueName,
-    venueId,
-  ]);
+  }, [getValues, template, user, venueId]);
+
+  const [{ value, loading }, addRoom] = useAsyncFn(createVenueRoom);
+
+  console.log(value, loading);
 
   return (
     <>
       <Modal show={isModalVisible} onHide={closeModal}>
         <Modal.Body>
-          <Form onSubmit={handleSubmit(onSubmit)}>
+          <Form onSubmit={handleSubmit(addRoom)}>
             <Form.Row>
               <div className="room-edit-modal__input">
                 <Form.Label>Room title</Form.Label>
                 <Form.Control
+                  disabled={loading}
                   type="text"
                   ref={register}
                   name="roomTitle"
@@ -124,6 +121,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
                 <div className="room-edit-modal__input">
                   <Form.Label>Venue name</Form.Label>
                   <Form.Control
+                    disabled={loading}
                     type="text"
                     ref={register}
                     name="venueName"
@@ -144,6 +142,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
                 <div className="room-edit-modal__input">
                   <Form.Label>Room url</Form.Label>
                   <Form.Control
+                    disabled={loading}
                     type="text"
                     ref={register}
                     name="roomUrl"
@@ -159,7 +158,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               </Form.Row>
             )}
 
-            <Button title="Add room" type="submit">
+            <Button disabled={loading} title="Add room" type="submit">
               Add room
             </Button>
           </Form>

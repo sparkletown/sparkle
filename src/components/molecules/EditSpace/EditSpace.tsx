@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { RoomData_v2 } from "types/rooms";
@@ -33,7 +33,7 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
 
   const venueId = useVenueId();
 
-  const { register, handleSubmit, setValue, getValues, errors } = useForm({
+  const { register, handleSubmit, setValue, watch, errors } = useForm({
     reValidateMode: "onChange",
     validationSchema: roomEditSchema,
     defaultValues: {
@@ -46,24 +46,13 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
     },
   });
 
-  const values = getValues();
+  const values = watch();
 
-  // useForm doesn't trigger on props change and the default values always remain the first room
-  // This is why this useEffect is needed to update the values every time room changes.
-  useEffect(() => {
-    setValue("title", room.title ?? "");
-    setValue("url", room.url ?? "");
-    setValue("description", room.description ?? "");
-    setValue("template", room.template ?? "");
-    setValue("image_url", room.image_url ?? "", false);
-  }, [
-    room.description,
-    room.image_url,
-    room.template,
-    room.title,
-    room.url,
-    setValue,
-  ]);
+  // // useForm doesn't trigger on props change and the default values always remain the first room
+  // // This is why this useEffect is needed to update the values every time room changes.
+  // useEffect(() => {
+  //   reset();
+  // }, [reset]);
 
   const handleImageChange = useCallback(
     (val: string) => {
@@ -79,8 +68,9 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
         ...(room as RoomInput),
         ...values,
       };
-      await upsertRoom(roomData, venueId, user, roomIndex);
+      console.log("12312312312", roomData, values);
       onEdit && onEdit();
+      await upsertRoom(roomData, venueId, user, roomIndex);
     } catch (e) {
       console.log(error, e);
 

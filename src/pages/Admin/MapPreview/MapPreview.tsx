@@ -24,6 +24,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   venueId,
   isEditing,
   setIsEditing,
+  onRoomChange,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
@@ -66,6 +67,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         height_percent: room.height,
       }));
       setMapRooms(normalizeRooms);
+      onRoomChange && onRoomChange(normalizeRooms);
     }
   };
 

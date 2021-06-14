@@ -1,12 +1,12 @@
 import React, { useCallback, useState } from "react";
-import { updateRoom } from "api/admin";
+// import { updateRoom } from "api/admin";
 import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
 
-import { useVenueId } from "hooks/useVenueId";
-import { useUser } from "hooks/useUser";
+// import { useVenueId } from "hooks/useVenueId";
+// import { useUser } from "hooks/useUser";
 
 import "./Spaces.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -71,17 +71,15 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [showRooms, setShowRooms] = useState<boolean>(false);
   // const [showGrid, setShowGrid] = useState<boolean>(false)
-  const [updatedRooms, test] = useState<RoomData_v2[]>(venue.rooms ?? []);
-  console.log(test);
+  // const [updatedRooms, setUpdatedRooms] = useState<RoomData_v2[]>(venue.rooms ?? []);
 
   const [showAddRoom, setShowAddRoom] = useState<boolean>(false);
-  // const [newRoomPreview, setNewRoomPreview] = useState<RoomData_v2>()
   const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(
     false
   );
-  const { user } = useUser();
+  // const { user } = useUser();
 
-  const venueId = useVenueId();
+  // const venueId = useVenueId();
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue.rooms?.length ?? 0;
 
@@ -89,16 +87,16 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
     setSelectedRoom(undefined);
   }, []);
 
-  const handleSavePositions = async () => {
-    if (!venueId || !user) return;
+  // const handleSavePositions = async () => {
+  //   if (!venueId || !user || updatedRooms === venue.rooms) return;
 
-    const roomIndex = updatedRooms.findIndex(
-      (room) => room.title === selectedRoom?.title
-    );
-    const room = updatedRooms[roomIndex];
-    await updateRoom(room, venueId, user, roomIndex);
-    setSelectedRoom(undefined);
-  };
+  //   const roomIndex = updatedRooms.findIndex(
+  //     (room) => room.title === selectedRoom?.title
+  //   );
+  //   const room = updatedRooms[roomIndex];
+  //   await updateRoom(room, venueId, user, roomIndex);
+  //   setSelectedRoom(undefined);
+  // };
 
   // const addNewRoomPreview = useCallback(() => {
   //   const newPreview = {
@@ -121,7 +119,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
             roomIndex={selectedRoomIndex}
             onBackPress={clearSelectedRoom}
             onDelete={clearSelectedRoom}
-            onEdit={handleSavePositions}
+            onEdit={() => {}}
           />
         ) : (
           <>
