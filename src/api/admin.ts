@@ -15,7 +15,7 @@ import { UsernameVisibility } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
-import { PlaceInFullTalkShowVenue } from "../types/User";
+import { TalkShowStudioExperience } from "../types/User";
 
 export interface EventInput {
   name: string;
@@ -567,13 +567,15 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
     ownerId,
   });
 
-export const changeUserPlaceInVenue = async (
+export const updateUserTalkShowStudioExperience = async (
   venueId: string,
   userId: string,
-  place: PlaceInFullTalkShowVenue
+  experience: TalkShowStudioExperience
 ) =>
-  firebase.functions().httpsCallable("venue-changeUserPlaceInVenue")({
+  firebase
+    .functions()
+    .httpsCallable("venue-updateUserTalkShowStudioExperience")({
     venueId,
     userId,
-    place,
+    experience,
   });

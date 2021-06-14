@@ -1,12 +1,16 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import classNames from "classnames";
-import Button from "../Button/Button";
-import { updateScreenShareStatus } from "../../../../../api/profile";
-import useStage from "../../useStage";
-import { useVenueId } from "../../../../../hooks/useVenueId";
+
+import { useStage } from "../../useStage";
 import { useUser } from "../../../../../hooks/useUser";
-import LeaveStageModal from "../LeaveStageModal/LeaveStageModal";
+import { useVenueId } from "../../../../../hooks/useVenueId";
 import { useShowHide } from "../../../../../hooks/useShowHide";
+
+import { ButtonWithLabel } from "../Button/Button";
+import { LeaveStageModal } from "../LeaveStageModal";
+import { AppButton } from "components/atoms/Button/Button";
+import { updateTalkShowStudioExperience } from "../../../../../api/profile";
+
 import "./ControlBar.scss";
 
 export interface ControlBarProps {
@@ -43,6 +47,19 @@ export const ControlBar: FC<ControlBarProps> = ({
     isSharing,
   ]);
 
+  const onClickShare = useCallback(() => {
+    if (venueId && userId) {
+      updateTalkShowStudioExperience({
+        venueId,
+        userId,
+        experience: {
+          isSharingScreen: !isSharing,
+        },
+      });
+    }
+    isSharing ? stopShare() : shareScreen();
+  }, [venueId, userId, isSharing, stopShare, shareScreen]);
+
   const ControlBarClasses = classNames("ControlBar", {
     "ControlBar--one-item": !showSharingControl,
   });
@@ -50,51 +67,38 @@ export const ControlBar: FC<ControlBarProps> = ({
   if (!isUserOnStage && canJoinStage && showJoinStageButton)
     return (
       <div className="JoinStage">
-        <Button onClick={onStageJoin} variant="secondary" small>
+        <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
           Join Stage
-        </Button>
+        </AppButton>
       </div>
     );
 
   return isUserOnStage ? (
     <div className={ControlBarClasses}>
       {showSharingControl && (
-        <Button
-          onClick={() => {
-            venueId &&
-              userId &&
-              updateScreenShareStatus({
-                venueId,
-                userId,
-                isSharingScreen: !isSharing,
-              });
-            isSharing ? stopShare() : shareScreen();
-          }}
+        <ButtonWithLabel
+          onClick={onClickShare}
           rightLabel={isSharing ? "You are screensharing" : undefined}
           variant="secondary"
           small
           disabled={loading}
         >
           {isSharing ? "Stop Sharing" : "Share Screen"}
-        </Button>
+        </ButtonWithLabel>
       )}
 
-      <Button
-        onClick={() => {
-          showLeaveStageModal();
-        }}
+      <ButtonWithLabel
+        onClick={showLeaveStageModal}
         leftLabel="You are on stage"
         variant="secondary"
         small
       >
         Leave Stage
-      </Button>
+      </ButtonWithLabel>
 
       <LeaveStageModal
         show={isLeaveStageModalVisible}
-        onHide={() => {
-          hideLeaveStageModal();
-        }}
+        onHide={hideLeaveStageModal}
         onSubmit={onStageLeaving}
       />
     </div>

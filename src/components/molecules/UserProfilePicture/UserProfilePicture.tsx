@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { User, UsernameVisibility } from "types/User";
+import { UserPersistentReactionType } from "types/reactions";
 
 import { WithId } from "utils/id";
 
@@ -10,6 +11,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { UserReactions } from "components/molecules/UserReactions";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { UserPersistentReaction } from "../UserPersistentReaction";
 
 import "./UserProfilePicture.scss";
 
@@ -49,6 +51,7 @@ export interface UserProfilePictureProp {
   isAudioEffectDisabled?: boolean;
   containerClassName?: string;
   reactionPosition?: "left" | "right";
+  userPersistentReaction?: UserPersistentReactionType;
   showNametags?: UsernameVisibility;
   /**
    * @deprecated Note: This feature is currently disabled.
@@ -61,6 +64,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   isAudioEffectDisabled = true,
   containerClassName,
   reactionPosition = "right",
+  userPersistentReaction,
   showNametags,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
@@ -117,11 +121,19 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       />
 
       {userId && (
-        <UserReactions
-          userId={userId}
-          isMuted={isAudioEffectDisabled}
-          reactionPosition={reactionPosition}
-        />
+        <>
+          {userPersistentReaction?.isReaction ? (
+            <UserPersistentReaction
+              emojiReaction={userPersistentReaction.emojiReaction}
+            />
+          ) : (
+            <UserReactions
+              userId={userId}
+              isMuted={isAudioEffectDisabled}
+              reactionPosition={reactionPosition}
+            />
+          )}
+        </>
       )}
     </div>
   );

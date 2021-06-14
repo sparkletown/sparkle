@@ -1,0 +1,111 @@
+@import "scss/constants";
+
+.admin-panel {
+  width: 100%;
+  height: 100%;
+  padding: 11px 0;
+
+  .section-label {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.9em;
+    margin: $spacing--sm $spacing--lg;
+  }
+
+  .user {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 $spacing--lg;
+
+    &:hover {
+      background-color: $black;
+    }
+
+    &__buttons {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+
+      &__mute-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 30px;
+        height: 30px;
+        margin-left: 5px;
+        border: solid 0;
+        border-radius: 50%;
+        background-color: opaque-white(0.2);
+        cursor: pointer;
+
+        &:hover {
+          box-shadow: 0 2px 10px 0 #ffffff4d;
+        }
+
+        img {
+          user-select: none;
+        }
+
+        &--on {
+          background: rgb(124, 70, 251);
+        }
+      }
+    }
+
+    .user-info {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      .user-pic {
+        position: relative;
+        width: 30px;
+        height: 30px;
+        border: solid 0;
+        border-radius: 50%;
+        background-color: opaque-white(0.1);
+        margin: 8px 8px 8px 0;
+
+        img {
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+        }
+
+        &__reaction {
+          position: absolute;
+          bottom: -6px;
+          right: -6px;
+        }
+      }
+    }
+
+    .control-user-button {
+      background-color: #404040;
+      cursor: pointer;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: $white;
+      border: solid 0;
+      border-radius: 50%;
+      &:hover {
+        box-shadow: 0 2px 10px 0 #ffffff4d;
+      }
+    }
+  }
+
+  .people-on-stage {
+    padding-bottom: 12px;
+  }
+
+  .control-scene-button {
+    margin-left: $spacing--lg;
+    background-color: opaque-white(0.2);
+    padding: $spacing--sm $spacing--md;
+  }
+}

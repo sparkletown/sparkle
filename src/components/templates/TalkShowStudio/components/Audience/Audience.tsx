@@ -9,6 +9,7 @@ import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { setLocationData } from "utils/userLocation";
 
+import { useStage } from "../../useStage";
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
@@ -29,6 +30,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const { name, id: venueId } = venue;
   const { userId, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
+  const { peopleRequesting } = useStage();
 
   const isHidden = isDefined(profile?.data?.[venueId]?.row);
 
@@ -94,6 +96,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
     rows: TOTAL_ROWS,
     columns: TOTAL_COLUMNS,
     partygoers: recentVenueUsers,
+    peopleRequesting,
   });
 
   const titleStyles = classNames("Screenshare__audience-title", {

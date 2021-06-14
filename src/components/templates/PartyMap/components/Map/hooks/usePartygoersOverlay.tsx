@@ -6,6 +6,7 @@ import { ReactHook } from "types/utility";
 import { WithId } from "utils/id";
 
 import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
+import { EmojiReactionType } from "../../../../../../types/reactions";
 
 interface UsePartygoersOverlay {
   showGrid?: boolean;
@@ -15,6 +16,8 @@ interface UsePartygoersOverlay {
   rows: number;
   columns: number;
   partygoers: readonly WithId<User>[];
+  peopleRequesting?: readonly WithId<User>[];
+  emojiUserPersistentReaction?: EmojiReactionType;
 }
 
 export type UsePartygoersReturn =
@@ -33,6 +36,8 @@ export const usePartygoersOverlay: ReactHook<
   rows,
   columns,
   partygoers,
+  peopleRequesting,
+  emojiUserPersistentReaction = EmojiReactionType.request,
 }) => {
   return useMemo(() => {
     // @debt partygoers can be undefined because our types are broken so check explicitly
@@ -41,16 +46,35 @@ export const usePartygoersOverlay: ReactHook<
     // @debt workaround, sometimes partygoers are duplicated but the new ones don't have id's
     const filteredPartygoers = partygoers.filter((partygoer) => partygoer?.id);
 
-    return filteredPartygoers.map((partygoer) => (
-      <MapPartygoerOverlay
-        key={partygoer.id}
-        partygoer={partygoer}
-        venueId={venueId}
-        myUserUid={userUid}
-        totalRows={rows}
-        totalColumns={columns}
-        withMiniAvatars={withMiniAvatars}
-      />
-    ));
-  }, [showGrid, partygoers, venueId, userUid, rows, columns, withMiniAvatars]);
+    return filteredPartygoers.map((partygoer) => {
+      const isUserPersistentReaction =
+        peopleRequesting?.some((user) => user.id === partygoer.id) || false;
+
+      return (
+        <MapPartygoerOverlay
+          key={partygoer.id}
+          partygoer={partygoer}
+          venueId={venueId}
+          myUserUid={userUid}
+          totalRows={rows}
+          totalColumns={columns}
+          userPersistentReaction={{
+            isReaction: isUserPersistentReaction,
+            emojiReaction: emojiUserPersistentReaction,
+          }}
+          withMiniAvatars={withMiniAvatars}
+        />
+      );
+    });
+  }, [
+    showGrid,
+    partygoers,
+    peopleRequesting,
+    emojiUserPersistentReaction,
+    venueId,
+    userUid,
+    rows,
+    columns,
+    withMiniAvatars,
+  ]);
 };

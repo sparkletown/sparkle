@@ -17,4 +17,12 @@
   width: 100%;
   justify-content: flex-end;
   padding: $spacing--lg;
+
+  &__button {
+    min-width: 143px;
+    min-height: 30px;
+    font-size: $font-size--md !important;
+    font-weight: $font-weight--500 !important;
+    background-color: opaque-white(0.2) !important;
+  }
 }

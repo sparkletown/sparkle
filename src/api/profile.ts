@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { PlaceInFullTalkShowVenue, UserStatus } from "types/User";
+import { TalkShowStudioExperience, UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
@@ -138,67 +138,33 @@ export const updatePersonalizedSchedule = async ({
   });
 };
 
-export interface updatePlaceInRoomProps {
+export interface updateTalkShowStudioExperienceProps {
   venueId: string;
   userId: string;
-  place: PlaceInFullTalkShowVenue;
+  experience: TalkShowStudioExperience;
 }
 
-export const updatePlaceInRoom = async ({
+export const updateTalkShowStudioExperience = async ({
   venueId,
   userId,
-  place,
-}: updatePlaceInRoomProps) => {
-  const userProfileRef = firebase.firestore().collection("users").doc(userId);
-
-  const userData = (await userProfileRef.get()).data();
-
-  const newData = {
-    [`data.${venueId}`]: { ...userData?.data[venueId], place },
-  };
-
-  userProfileRef.update(newData).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/profile::updatePlaceInRoom",
-        venueId,
-        userId,
-        event,
-        place,
-      });
-
-      throw err;
-    });
-  });
-};
-
-export interface updateScreenShareStatusProps {
-  venueId: string;
-  userId: string;
-  isSharingScreen: boolean;
-}
-
-export const updateScreenShareStatus = async ({
-  venueId,
-  userId,
-  isSharingScreen,
-}: updateScreenShareStatusProps) => {
+  experience,
+}: updateTalkShowStudioExperienceProps) => {
   const userProfileRef = getUserRef(userId);
 
   const userData = (await userProfileRef.get()).data();
 
   const newData = {
-    [`data.${venueId}`]: { ...userData?.data[venueId], isSharingScreen },
+    [`data.${venueId}`]: { ...userData?.data?.[venueId], ...experience },
   };
 
   userProfileRef.update(newData).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api/profile::updateScreenShareStatus",
+        location: "api/profile::updateTalkShowStudioExperience",
         venueId,
         userId,
         event,
-        isSharingScreen,
+        experience,
       });
 
       throw err;

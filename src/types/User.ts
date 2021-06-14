@@ -1,16 +1,20 @@
-export enum PlaceInFullTalkShowVenue {
+export enum PlaceInTalkShowStudioVenue {
   stage = "stage",
   audience = "audience",
   requesting = "requesting",
 }
 
-export interface Experience {
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table: string;
   row?: number;
   column?: number;
-  place?: PlaceInFullTalkShowVenue;
-  isSharingScreen?: boolean;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm

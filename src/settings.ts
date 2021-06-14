@@ -282,8 +282,8 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
-    template: VenueTemplate.screenshare,
-    name: "Screenshare",
+    template: VenueTemplate.talkshowstudio,
+    name: "Talk Show Studio",
     description: ["test"],
   },
 ];
