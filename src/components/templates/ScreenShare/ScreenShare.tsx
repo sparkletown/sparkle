@@ -15,6 +15,7 @@ import { AgoraClientConnectionState } from "../../../types/agora";
 import { useSelector } from "../../../hooks/useSelector";
 import { currentVenueSelectorData } from "../../../utils/selectors";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 import "./ScreenShare.scss";
 
 const AGORA_CHANNEL = {
@@ -44,6 +45,7 @@ export interface ScreenShareProps {
 
 export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
   const { userId } = useUser();
+  const venueId = useVenueId();
 
   const isRequestToJoinStageEnabled = useMemo(() => venue.requestToJoinStage, [
     venue.requestToJoinStage,
@@ -88,7 +90,6 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
     () => peopleOnStage.filter(({ id }) => id === userId),
     [userId, peopleOnStage]
   );
-  console.log("peopleOnStage", peopleOnStage, localUser);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin(
@@ -121,6 +122,13 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
   }, [isUserOnStage, onStageJoin, onStageLeaving]);
 
   const renderRemotesUsers = useMemo(() => {
+    const setremoteUser = (remoteUserId: number | string) => {
+      if (!venueId) return;
+      const [remoteUser] = peopleOnStage.filter(
+        ({ data }) => data?.[`${venueId}`]?.cameraClientUid === remoteUserId
+      );
+      return remoteUser;
+    };
     return remoteUsers.map(
       (user) =>
         user.hasVideo &&
@@ -131,10 +139,11 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
             videoTrack={user.videoTrack}
             audioTrack={user.audioTrack}
             containerClass="ScreenShare__mode--play"
+            user={setremoteUser(user.uid)}
           />
         )
     );
-  }, [remoteUsers]);
+  }, [peopleOnStage, remoteUsers, venueId]);
 
   return (
     <>
@@ -144,7 +153,6 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
             <div className="ScreenShare__scene--sharing">
               {localScreenTrack && (
                 <Player
-                  user={localUser}
                   videoTrack={localScreenTrack}
                   containerClass="ScreenShare__mode--share"
                 />

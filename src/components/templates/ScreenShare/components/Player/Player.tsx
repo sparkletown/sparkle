@@ -98,9 +98,9 @@ const Player = ({
               </div>
             )}
           </div>
-          <UserAvatar user={user} containerClassName="avatar-container" />
         </div>
       )}
+      {user && <UserAvatar user={user} containerClassName="avatar-container" />}
     </div>
   );
 };
