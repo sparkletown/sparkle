@@ -120,22 +120,36 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
       onStageLeaving();
   }, [isUserOnStage, onStageJoin, onStageLeaving]);
 
+  const renderRemotesUsers = useMemo(() => {
+    return remoteUsers.map(
+      (user) =>
+        user.hasVideo &&
+        user.uid !== screenClient.uid &&
+        user.uid !== cameraClient.uid && (
+          <Player
+            key={user.uid}
+            videoTrack={user.videoTrack}
+            audioTrack={user.audioTrack}
+            containerClass="ScreenShare__mode--play"
+          />
+        )
+    );
+  }, [remoteUsers]);
+
   return (
     <>
       <div className="ScreenShare">
         <div className="ScreenShare__scene">
-          {localScreenTrack && (
+          {localScreenTrack && localCameraTrack && (
             <div className="ScreenShare__scene--sharing">
-              <Player
-                user={localUser}
-                videoTrack={localScreenTrack}
-                containerClass="ScreenShare__mode--share"
-              />
-            </div>
-          )}
-          <div className="ScreenShare__scene--players">
-            {localCameraTrack && (
-              <div>
+              {localScreenTrack && (
+                <Player
+                  user={localUser}
+                  videoTrack={localScreenTrack}
+                  containerClass="ScreenShare__mode--share"
+                />
+              )}
+              {localCameraTrack && (
                 <Player
                   user={localUser}
                   videoTrack={localCameraTrack}
@@ -145,25 +159,26 @@ export const ScreenShare: FC<ScreenShareProps> = ({ venue }) => {
                   isSharing={!!localScreenTrack}
                   toggleCam={toggleCamera}
                   toggleMic={toggleMicrophone}
-                  containerClass="ScreenShare__mode--play"
+                  containerClass="ScreenShare__mode--local-play"
                 />
-              </div>
+              )}
+            </div>
+          )}
+          <div className="ScreenShare__scene--players">
+            {!localScreenTrack && localCameraTrack && (
+              <Player
+                user={localUser}
+                videoTrack={localCameraTrack}
+                showButtons
+                isCamOn={isCameraOn}
+                isMicOn={isMicrophoneOn}
+                isSharing={!!localScreenTrack}
+                toggleCam={toggleCamera}
+                toggleMic={toggleMicrophone}
+                containerClass="ScreenShare__mode--play"
+              />
             )}
-            {remoteUsers.map(
-              (user) =>
-                user.uid !== screenClient.uid &&
-                user.uid !== cameraClient.uid && (
-                  <div key={user.uid}>
-                    {user.hasVideo && (
-                      <Player
-                        videoTrack={user.videoTrack}
-                        audioTrack={user.audioTrack}
-                        containerClass="ScreenShare__mode--play"
-                      />
-                    )}
-                  </div>
-                )
-            )}
+            {renderRemotesUsers}
           </div>
 
           <ControlBar

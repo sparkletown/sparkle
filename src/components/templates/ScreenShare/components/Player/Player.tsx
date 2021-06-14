@@ -97,8 +97,8 @@ const Player = ({
                 <img src={StreamingIcon} alt="streaming-icon" />
               </div>
             )}
-            <UserAvatar user={user} containerClassName="icon-container" />
           </div>
+          <UserAvatar user={user} containerClassName="avatar-container" />
         </div>
       )}
     </div>
