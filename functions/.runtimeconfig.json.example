@@ -2,6 +2,9 @@
   "project": {
     "id": ""
   },
+  "auth": {
+    "origin": "https://foo.example.com"
+  },
   "stripe": {
     "secret_key": "",
     "endpoint_secret": ""

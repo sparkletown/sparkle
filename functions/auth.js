@@ -8,6 +8,7 @@ const { getJson, postJson } = require("./src/utils/fetch");
 const { checkIfValidVenueId } = require("./src/utils/venue");
 
 const PROJECT_ID = functions.config().project.id;
+const { origin: AUTH_ORIGIN } = functions.config().auth;
 
 exports.checkAuth = (context) => {
   if (!context.auth || !context.auth.token) {
@@ -72,6 +73,10 @@ const createOAuth2Client = () => {
 exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
   const { venueId } = req.query;
 
+  if (!AUTH_ORIGIN) {
+    throw new HttpsError("internal", "auth.origin is not configured properly");
+  }
+
   if (!checkIfValidVenueId(venueId)) {
     throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
   }
@@ -80,8 +85,7 @@ exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar
-  // const authCodeReturnUri = "http://localhost:5006/oauth2/token";
-  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/auth/connect/i4a/handler?venueId=${venueId}`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
+  const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
 
   // TODO: configure this in cloud config and/or firestore or similar
   const scope = "";
@@ -120,6 +124,10 @@ exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const { venueId } = req.query;
+
+  if (!AUTH_ORIGIN) {
+    throw new HttpsError("internal", "auth.origin is not configured properly");
+  }
 
   if (!checkIfValidVenueId(venueId)) {
     throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
@@ -245,5 +253,5 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   });
 
   // TODO: redirect back to the main application in a way that we can provide the custom auth token back to it
-  res.redirect(`/in/${venueId}?customToken=${customToken}`);
+  res.redirect(`${AUTH_ORIGIN}/in/${venueId}?customToken=${customToken}`);
 });
