@@ -2,7 +2,8 @@ const functions = require("firebase-functions");
 const admin = require("firebase-admin");
 
 const oauth2 = require("simple-oauth2");
-const fetch = require("node-fetch");
+
+const { postJson } = require("./src/utils/fetch");
 
 const PROJECT_ID = functions.config().project.id;
 
@@ -151,51 +152,45 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
 
   // TODO: configure this in cloud config and/or firestore or similar
   const meetingIdsToCheck = [131, 136];
+  const eventIdsToCheck = [504, 506, 554];
 
-  const checkedMeetingResults = await Promise.all(
-    meetingIdsToCheck.map((meetingId) => {
-      const postBody = {
-        apiKey: i4aApiKey,
-        ams_id: i4aUserId,
-        meeting_id: meetingId,
-      };
-
-      return fetch(i4aGetUserInfoUrl, {
-        method: "POST",
-        body: JSON.stringify(postBody),
-        headers: { "Content-Type": "application/json" },
-      }).then((res) => res.json());
-    })
-  );
-
-  checkedMeetingResults.forEach((meetingResult) => {
-    functions.logger.log("Checked Meeting Result:", meetingResult);
+  const checkedMeetingResult = await postJson(i4aGetUserInfoUrl, {
+    apiKey: i4aApiKey,
+    ams_id: i4aUserId,
   });
 
-  const { email, registeredMeetings } = checkedMeetingResults.reduce(
-    (acc, { email, meeting_id: meetingId, is_registered: isRegistered }) => {
-      const { registeredMeetings = [] } = acc;
+  functions.logger.log("Checked Meeting Result:", checkedMeetingResult);
 
-      const newRegisteredMeetings = isRegistered
-        ? [...registeredMeetings, meetingId]
-        : registeredMeetings;
+  const {
+    email: emailRaw,
+    meeting_ids: meetingIds = [],
+    event_ids: eventIds = [],
+  } = checkedMeetingResult;
 
-      return {
-        ...acc,
-        email: email.toLowerCase().trim(),
-        registeredMeetings: newRegisteredMeetings,
-      };
-    },
-    {}
+  const registeredMeetings = meetingIds.filter((meetingId) =>
+    meetingIdsToCheck.includes(meetingId)
   );
 
-  const isRegistered = registeredMeetings.length > 0;
+  const registeredEvents = eventIds.filter((eventId) =>
+    eventIdsToCheck.includes(eventId)
+  );
 
-  if (!isRegistered || !email) {
+  const isRegistered =
+    registeredMeetings.length > 0 && registeredEvents.length > 0;
+
+  functions.logger.log("Registered:", {
+    isRegistered,
+    registeredMeetings,
+    registeredEvents,
+  });
+
+  if (!isRegistered || !emailRaw) {
     // TODO: redirect to some kind of 'not allowed' page
     res.redirect("/TODO/not-registered");
     return;
   }
+
+  const email = emailRaw.toLowerCase().trim();
 
   // Lookup the existing user by their email, or create them if they don't already exist
   const userRecord = await admin
