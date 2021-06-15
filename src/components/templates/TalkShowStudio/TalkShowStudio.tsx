@@ -81,7 +81,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
               <Player
                 videoTrack={user.videoTrack}
                 audioTrack={user.audioTrack}
-                containerClass="ScreenShare__mode--play"
+                containerClass="TalkShowStudio__mode--play"
               />
             )}
           </div>
@@ -132,17 +132,17 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
 
   return (
     <>
-      <div className="ScreenShare">
-        <div className="ScreenShare__scene">
+      <div className="TalkShowStudio">
+        <div className="TalkShowStudio__scene">
           {localScreenTrack && (
-            <div className="ScreenShare__scene--sharing">
+            <div className="TalkShowStudio__scene--sharing">
               <Player
                 videoTrack={localScreenTrack}
-                containerClass="ScreenShare__mode--share"
+                containerClass="TalkShowStudio__mode--share"
               />
             </div>
           )}
-          <div className="ScreenShare__scene--players">
+          <div className="TalkShowStudio__players">
             {localCameraTrack && (
               <div>
                 <Player
@@ -153,7 +153,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
                   isSharing={!!localScreenTrack}
                   toggleCam={toggleCamera}
                   toggleMic={stage.toggleMute}
-                  containerClass="ScreenShare__mode--play"
+                  containerClass="TalkShowStudio__mode--play"
                 />
               </div>
             )}
@@ -175,7 +175,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
         </div>
         {isJoinStageButtonDisplayed && (
           <AppButton
-            customClass="ScreenShare__request-button"
+            customClass="TalkShowStudio__request-button"
             onClick={stage.requestJoinStage}
           >
             <span>✋</span> Request to join
@@ -183,7 +183,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
         )}
         {stage.isUserRequesting && (
           <AppButton
-            customClass="ScreenShare__request-button"
+            customClass="TalkShowStudio__request-button"
             onClick={stage.leaveStage}
           >
             Cancel Request
