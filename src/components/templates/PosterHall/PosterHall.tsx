@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 
-import { GenericVenue } from "types/venues";
+import { GenericVenue, PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -35,7 +35,10 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
-      <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
+      <PosterPreview
+        key={(posterVenue as WithId<PosterPageVenue>).id}
+        posterVenue={posterVenue as WithId<PosterPageVenue>}
+      />
     ));
   }, [posterVenues]);
 
