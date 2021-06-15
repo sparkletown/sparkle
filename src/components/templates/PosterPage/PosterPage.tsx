@@ -43,10 +43,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     posterId,
     moreInfoUrl,
     contactEmail,
-    moreInfoUrlTitle,
+    moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
   } = poster ?? {};
-
-  const moreInfoUrlName = moreInfoUrlTitle ?? POSTERPAGE_MORE_INFO_URL_TITLE;
 
   const {
     isShown: isIntroVideoShown,
@@ -97,13 +95,10 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
   const { worldUsers } = useWorldUsers();
 
-  const userPresenter = useMemo<JSX.Element[]>(() => {
-    return worldUsers
-      .filter((user) => user.partyName === authorName)
-      .map((user) => (
-        <UserProfilePicture key={`user-${user.id}`} user={user} />
-      ));
-  }, [worldUsers, authorName]);
+  const presenterUser = useMemo(
+    () => worldUsers.find((user) => user.partyName === authorName),
+    [worldUsers, authorName]
+  );
 
   return (
     <div className="PosterPage">
@@ -121,20 +116,27 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
                 target="_blank"
                 rel="noreferrer"
               >
-                {moreInfoUrlName}
+                {moreInfoUrlTitle}
               </a>
             )}
           </div>
+
           <p className="PosterPage__title">{title}</p>
+
           <div className="PosterPage__authorBox">
-            <div className="PosterPage__avatar">{userPresenter}</div>
+            <UserProfilePicture
+              containerClassName="PosterPage__avatar"
+              user={presenterUser}
+            />
             <p className="PosterPage__author">
               {authors?.join(", ") ?? authorName}
             </p>
           </div>
+
           {contactEmail && (
             <p className="PosterPage__contactEmail">{contactEmail}</p>
           )}
+
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 

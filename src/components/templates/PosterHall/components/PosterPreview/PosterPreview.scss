@@ -74,12 +74,11 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   }
 
   &__avatar {
-    float: left;
-    margin-left: -0.5em;
+    margin-right: auto;
   }
 
   &__author {
-    margin-left: 0.5em;
+    margin-left: $spacing--sm;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
     @include line-clamp-with-overflow(5);

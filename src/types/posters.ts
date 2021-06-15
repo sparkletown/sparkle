@@ -1,14 +1,13 @@
 export type Poster = {
-  title: string;
-  categories: string[];
-  introVideoUrl?: string;
   authorName: string;
-  thumbnailUrl?: string;
+  categories: string[];
+  title: string;
   authors?: string[];
-  keywords?: string[];
-  presenter?: string;
-  introduction?: string;
   contactEmail?: string;
+  introVideoUrl?: string;
+  thumbnailUrl?: string;
+  keywords?: string[];
+  introduction?: string;
   moreInfoUrl?: string;
   moreInfoUrls?: string[];
   moreInfoUrlTitle?: string;

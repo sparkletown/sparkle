@@ -39,6 +39,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   });
 
   const { push: openUrlUsingRouter } = useHistory();
+
   const handleEnterVenue = useCallback(
     () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
     [venueId, openUrlUsingRouter]
@@ -54,20 +55,19 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const { worldUsers } = useWorldUsers();
 
-  const userPresenter = useMemo<JSX.Element[]>(() => {
-    return worldUsers
-      .filter((user) => user.partyName === authorName)
-      .map((user) => (
-        <UserAvatar key={`user-${user.id}`} user={user} showStatus />
-      ));
-  }, [worldUsers, authorName]);
+  const presenterUser = useMemo(
+    () => worldUsers.find((user) => user.partyName === authorName),
+    [worldUsers, authorName]
+  );
 
-  const recentPosterUsers = useRecentLocationUsers(posterVenue.name);
+  const { recentLocationUsers } = useRecentLocationUsers(posterVenue.name);
 
-  const numUsers = recentPosterUsers.recentLocationUsers.length;
+  const userCount = recentLocationUsers.length;
+  const hasUsers = userCount > 0;
 
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
+
     return (
       <a href={moreInfoUrl} target="_blank" rel="noreferrer">
         {moreInfoUrl.replace(/(^\w+:|^)\/\//, "")}
@@ -77,6 +77,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const renderMoreInfoUrls = useMemo(() => {
     if (!moreInfoUrls) return;
+
     return moreInfoUrls.map((infoUrl) => (
       <div key={infoUrl}>
         <a href={infoUrl} target="_blank" rel="noreferrer">
@@ -94,9 +95,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
             {renderMoreInfoUrl ? { renderMoreInfoUrl } : { posterId }}
           </div>
         )}
-        {numUsers > 0 && (
+        {hasUsers && (
           <div className="PosterPreview__visiting">
-            {numUsers} {numUsers === 1 ? "current visitor" : "current visitors"}
+            {userCount}{" "}
+            {userCount === 1 ? "current visitor" : "current visitors"}
           </div>
         )}
       </div>
@@ -117,7 +119,13 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <div className="PosterPreview__categories">{renderedCategories}</div>
 
       <div className="PosterPreview__authorBox">
-        <div className="PosterPreview__avatar">{userPresenter}</div>
+        {presenterUser && (
+          <UserAvatar
+            containerClassName="PosterPreview__avatar"
+            user={presenterUser}
+            showStatus
+          />
+        )}
 
         <p className="PosterPreview__author">
           {authors?.join(", ") ?? authorName}
