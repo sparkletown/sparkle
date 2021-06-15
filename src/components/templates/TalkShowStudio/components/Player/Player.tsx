@@ -99,7 +99,6 @@ const Player = ({
                 <FontAwesomeIcon icon={faTv} />
               </div>
             )}
-            <UserAvatar user={user} containerClassName="Player__icon" />
           </div>
         </div>
       )}
