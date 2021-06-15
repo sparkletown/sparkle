@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import { faUserAlt } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -13,8 +15,6 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
-import { faUserAlt } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
