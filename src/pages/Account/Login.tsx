@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import { AnyVenue } from "types/venues";
 
-import { useSSO } from "hooks/useSSO";
+import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
@@ -27,7 +27,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const hasSAMLConfigId = venue.SAMLConfigId !== undefined;
 
-  const { signInSSO } = useSSO(venue.SAMLConfigId);
+  const { signInWithSAML } = useSAMLSignIn(venue.SAMLConfigId);
   // It will be extended with addition of new providers
   const hasAlternativeLogins = hasSAMLConfigId;
 
@@ -58,10 +58,10 @@ export const Login: React.FC<LoginProps> = ({
             <div className="Login__alternative-logins">
               {hasSAMLConfigId && (
                 <img
-                  className="Login__sso-login"
+                  className="Login__saml-login"
                   src={SAMLLoginIcon}
-                  onClick={signInSSO}
-                  alt="SSO login"
+                  onClick={signInWithSAML}
+                  alt="SAML SSO login"
                 />
               )}
             </div>
