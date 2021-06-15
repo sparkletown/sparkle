@@ -39,7 +39,6 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
-    "PosterPreview--related": posterVenue.template !== "posterpage",
   });
 
   const { push: openUrlUsingRouter } = useHistory();
