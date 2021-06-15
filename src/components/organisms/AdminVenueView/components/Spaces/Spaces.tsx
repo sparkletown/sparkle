@@ -11,9 +11,9 @@ import { RoomData_v2 } from "types/rooms";
 import "./Spaces.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import BackgroundSelect from "pages/Admin/BackgroundSelect";
-import MapPreview from "pages/Admin/MapPreview";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 import { EditSpace } from "components/molecules/EditSpace";
+import { MapPreview } from "../MapPreview";
 
 interface VenueRooms {
   text: string;
@@ -212,10 +212,10 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
           venueId={venue.id}
           venueName={venue.name}
           mapBackground={venue.mapBackgroundImageUrl}
-          // setSelectedRoom={setSelectedRoom}
+          setSelectedRoom={setSelectedRoom}
           rooms={venue.rooms ?? []}
-          // onRoomChange={setUpdatedRooms}
-          // selectedRoom={selectedRoom}
+          onRoomChange={() => {}}
+          selectedRoom={selectedRoom}
         />
       </div>
     </div>

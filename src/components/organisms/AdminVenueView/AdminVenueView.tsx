@@ -8,7 +8,7 @@ import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { Spaces } from "./components";
+import { Spaces } from "./components/Spaces";
 
 import "./AdminVenueView.scss";
 import { Venue_v2 } from "types/venues";
