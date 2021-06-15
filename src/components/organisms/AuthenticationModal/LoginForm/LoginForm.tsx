@@ -2,18 +2,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
-import { SSO_LOGIN_ICON } from "settings";
-
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { useSelector } from "hooks/useSelector";
-import { useSSO } from "hooks/useSSO";
 
 import { venueSelector } from "utils/selectors";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
-
-import "./LoginForm.scss";
 
 export interface LoginFormProps {
   displayRegisterForm: () => void;
@@ -29,7 +24,7 @@ interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<PropsType> = ({
+const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
@@ -49,10 +44,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     mode: "onChange",
     reValidateMode: "onChange",
   });
-
-  const { signInSSO, hasSSOProvider } = useSSO();
-  // It will be extended with addition of new providers
-  const hasAlternativeLogins = hasSSOProvider;
 
   if (!venue) return null;
 
@@ -102,25 +93,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
       </div>
 
       <h2>Log in</h2>
-
-      {hasAlternativeLogins && (
-        <>
-          <p>Quick log in with</p>
-
-          <div className="LoginForm__alternative-logins">
-            {hasSSOProvider && (
-              <img
-                className="LoginForm__sso-login"
-                src={SSO_LOGIN_ICON}
-                onClick={signInSSO}
-                alt="SSO login"
-              />
-            )}
-          </div>
-
-          <p>or use your email address</p>
-        </>
-      )}
 
       <form
         onSubmit={handleSubmit(onSubmit)}

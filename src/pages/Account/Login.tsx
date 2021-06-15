@@ -1,16 +1,27 @@
+import React, { useState } from "react";
+
+import { SSO_LOGIN_ICON } from "settings";
+
+import { useSSO } from "hooks/useSSO";
+
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
-import React, { FC, useState } from "react";
-import "./Account.scss";
 
-interface LoginProps {
+import "./Account.scss";
+import "./Login.scss";
+
+export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
 }
 
-export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
+export const Login: React.FC<LoginProps> = ({ formType = "initial" }) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
+
+  const { signInSSO, hasSSOProvider } = useSSO();
+  // It will be extended with addition of new providers
+  const hasAlternativeLogins = hasSSOProvider;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -32,6 +43,22 @@ export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
         <img src="/sparkle-header.png" alt="" width="100%" />
       </div>
       <div className="auth-form-container">
+        {hasAlternativeLogins && (
+          <div className="Login__login-box">
+            <span>Quick log in with</span>
+
+            <div className="Login__alternative-logins">
+              {hasSSOProvider && (
+                <img
+                  className="Login__sso-login"
+                  src={SSO_LOGIN_ICON}
+                  onClick={signInSSO}
+                  alt="SSO login"
+                />
+              )}
+            </div>
+          </div>
+        )}
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}

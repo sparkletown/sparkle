@@ -1,7 +1,15 @@
 @import "scss/constants.scss";
 
-.LoginForm {
+.Login {
+  &__login-box {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-bottom: $spacing--md;
+  }
+
   &__alternative-logins {
+    margin-top: $spacing--md;
     display: flex;
     justify-content: center;
     margin-bottom: $spacing--xs;
