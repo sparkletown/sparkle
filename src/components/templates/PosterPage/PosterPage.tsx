@@ -132,7 +132,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
                 showStatus
               />
             )}
-            <p className="PosterPage__author">{authorList ?? authorName}</p>
+            <span className="PosterPage__author">
+              {authorList ?? authorName}
+            </span>
           </div>
 
           {contactEmail && (

@@ -132,7 +132,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
           />
         )}
 
-        <p className="PosterPreview__author">{authorList ?? authorName}</p>
+        <span className="PosterPreview__author">
+          {authorList ?? authorName}
+        </span>
       </div>
     </div>
   );

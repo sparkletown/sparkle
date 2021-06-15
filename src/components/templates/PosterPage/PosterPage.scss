@@ -50,11 +50,13 @@ $poster-cell-optimal-height: 195px;
 
   &__title {
     margin: 0 0 $spacing--xs;
+    text-align: center;
   }
 
   &__authorBox {
     display: flex;
-    margin-top: auto;
+    align-items: center;
+    margin: $spacing--sm 0;
   }
 
   &__avatar {
@@ -62,6 +64,7 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__author {
+    margin-left: $spacing--sm;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
     @include line-clamp-with-overflow(7);
