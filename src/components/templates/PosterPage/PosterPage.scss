@@ -58,12 +58,10 @@ $poster-cell-optimal-height: 195px;
   }
 
   &__avatar {
-    float: left;
-    margin-left: -0.5em;
+    margin-right: auto;
   }
 
   &__author {
-    margin-left: 0.5em;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
     @include line-clamp-with-overflow(7);

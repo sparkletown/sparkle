@@ -12,9 +12,8 @@ import { useWorldUsers } from "hooks/users";
 
 import { VideoParticipant } from "components/organisms/Video";
 import { UserList } from "components/molecules/UserList";
-import { PosterCategory } from "components/atoms/PosterCategory";
-
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
 import { PosterPageControl } from "./components/PosterPageControl";
@@ -68,6 +67,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     becomePassiveParticipant,
     becomeActiveParticipant,
   } = usePosterVideo(venueId);
+
+  const authorList = authors?.join(", ");
 
   const videoParticipants = useMemo(
     () =>
@@ -124,13 +125,14 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
           <p className="PosterPage__title">{title}</p>
 
           <div className="PosterPage__authorBox">
-            <UserProfilePicture
-              containerClassName="PosterPage__avatar"
-              user={presenterUser}
-            />
-            <p className="PosterPage__author">
-              {authors?.join(", ") ?? authorName}
-            </p>
+            {presenterUser && (
+              <UserProfilePicture
+                containerClassName="PosterPage__avatar"
+                user={presenterUser}
+                showStatus
+              />
+            )}
+            <p className="PosterPage__author">{authorList ?? authorName}</p>
           </div>
 
           {contactEmail && (

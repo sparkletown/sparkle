@@ -9,8 +9,8 @@ import { enterVenue } from "utils/url";
 
 import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
 
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { PosterCategory } from "components/atoms/PosterCategory";
-import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./PosterPreview.scss";
 
@@ -53,6 +53,8 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     [categories]
   );
 
+  const authorList = authors?.join(", ");
+
   const { worldUsers } = useWorldUsers();
 
   const presenterUser = useMemo(
@@ -64,6 +66,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const userCount = recentLocationUsers.length;
   const hasUsers = userCount > 0;
+  const userCountText = `${userCount} ${
+    userCount === 1 ? "current visitor" : "current visitors"
+  }`;
 
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
@@ -87,25 +92,24 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     ));
   }, [moreInfoUrls]);
 
+  const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
         {posterId && (
           <div className="PosterPreview__posterId">
-            {renderMoreInfoUrl ? { renderMoreInfoUrl } : { posterId }}
+            {renderMoreInfoUrl || posterId}
           </div>
         )}
         {hasUsers && (
-          <div className="PosterPreview__visiting">
-            {userCount}{" "}
-            {userCount === 1 ? "current visitor" : "current visitors"}
-          </div>
+          <div className="PosterPreview__visiting">{userCountText}</div>
         )}
       </div>
 
       <p className="PosterPreview__title">{title}</p>
 
-      {!posterId && (renderMoreInfoUrl || renderMoreInfoUrls) && (
+      {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">
           {renderMoreInfoUrl}
           {renderMoreInfoUrls}
@@ -120,16 +124,14 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       <div className="PosterPreview__authorBox">
         {presenterUser && (
-          <UserAvatar
+          <UserProfilePicture
             containerClassName="PosterPreview__avatar"
             user={presenterUser}
             showStatus
           />
         )}
 
-        <p className="PosterPreview__author">
-          {authors?.join(", ") ?? authorName}
-        </p>
+        <p className="PosterPreview__author">{authorList ?? authorName}</p>
       </div>
     </div>
   );
