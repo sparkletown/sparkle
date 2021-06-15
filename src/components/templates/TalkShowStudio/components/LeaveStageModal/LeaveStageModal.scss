@@ -1,0 +1,41 @@
+@import "scss/constants";
+
+.LeaveStageModal {
+  .modal-content {
+    width: max-content;
+    padding: 0;
+
+    .modal-body {
+      padding: 0;
+    }
+  }
+
+  &__label {
+    text-align: center;
+    font-weight: $font-weight--400;
+    font-size: $font-size--md;
+    margin: $spacing--xxl $spacing--xxl $spacing--xl $spacing--xxl;
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 $spacing--xxl $spacing--xxl $spacing--xxl;
+  }
+
+  &__cancelButton,
+  &__removeButton {
+    min-width: 136px;
+    min-height: 44px;
+    padding: $spacing--sm $spacing--md !important;
+  }
+
+  &__cancelButton {
+    background-color: opaque-white(0.2) !important;
+  }
+
+  &__removeButton {
+    margin-left: $spacing--sm;
+    background-color: $primary--live !important;
+  }
+}

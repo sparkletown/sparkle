@@ -1,15 +1,21 @@
-export enum PlaceInFullTalkShowVenue {
+export enum PlaceInTalkShowStudioVenue {
   stage = "stage",
   audience = "audience",
   requesting = "requesting",
 }
 
-export interface Experience {
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table: string;
   row?: number;
   column?: number;
-  place?: PlaceInFullTalkShowVenue;
+  place?: PlaceInTalkShowStudioVenue;
   isSharingScreen?: boolean;
   cameraClientUid?: string;
   screenClientUid?: string;

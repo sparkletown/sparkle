@@ -1,27 +1,28 @@
 import React, { useRef, useEffect } from "react";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   ILocalVideoTrack,
   IRemoteVideoTrack,
   ILocalAudioTrack,
   IRemoteAudioTrack,
 } from "agora-rtc-sdk-ng";
-import "./Player.scss";
+import {
+  faVideoSlash,
+  faVolumeMute,
+  faTv,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { WithId } from "utils/id";
-
 import { User } from "types/User";
-
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import VolumeMutedIcon from "assets/icons/volume-muted-icon.svg";
-import CameraOffIcon from "assets/icons/camera-off-icon.svg";
-import StreamingIcon from "assets/icons/streaming-icon.svg";
+import "./Player.scss";
 
 export interface VideoPlayerProps {
   user?: WithId<User>;
-  videoTrack: ILocalVideoTrack | IRemoteVideoTrack | undefined;
-  audioTrack?: ILocalAudioTrack | IRemoteAudioTrack | undefined;
+  videoTrack?: ILocalVideoTrack | IRemoteVideoTrack;
+  audioTrack?: ILocalAudioTrack | IRemoteAudioTrack;
   showButtons?: boolean;
   isCamOn?: boolean;
   isMicOn?: boolean;
@@ -46,57 +47,59 @@ const Player = ({
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!container.current) return;
-    videoTrack?.play(container.current);
+    if (!container.current || !videoTrack) return;
+
+    videoTrack.play(container.current);
+
     return () => {
-      videoTrack?.stop();
+      videoTrack.stop();
     };
   }, [container, videoTrack]);
 
   useEffect(() => {
-    audioTrack?.play();
+    if (!audioTrack) return;
+
+    audioTrack.play();
+
     return () => {
-      audioTrack?.stop();
+      audioTrack.stop();
     };
   }, [audioTrack]);
 
   const IconContainerClasses = (isOn: boolean) =>
-    classNames("icon-container", {
-      on: isOn,
+    classNames("Player__icon", {
+      "Player__icon--on": isOn,
     });
 
   return (
-    <div ref={container} className={classNames("video-player", containerClass)}>
+    <div ref={container} className={classNames("Player", containerClass)}>
       {showButtons && (
-        <div className="overlay">
-          <div className="buttons">
+        <div className="Player__overlay">
+          <div className="Player__buttons">
             <div
               className={IconContainerClasses(!isMicOn)}
               onClick={() => {
-                toggleMic && toggleMic();
+                toggleMic?.();
               }}
             >
-              <img src={VolumeMutedIcon} alt="volume-muted-icon" />
+              <FontAwesomeIcon icon={faVolumeMute} />
             </div>
 
             <div
               className={IconContainerClasses(!isCamOn)}
               onClick={() => {
-                toggleCam && toggleCam();
+                toggleCam?.();
               }}
             >
-              <img
-                src={CameraOffIcon}
-                alt="camera-off-icon"
-                className="camera-off"
-              />
+              <FontAwesomeIcon icon={faVideoSlash} />
             </div>
 
             {isSharing && (
               <div className={IconContainerClasses(true)}>
-                <img src={StreamingIcon} alt="streaming-icon" />
+                <FontAwesomeIcon icon={faTv} />
               </div>
             )}
+            <UserAvatar user={user} containerClassName="Player__icon" />
           </div>
         </div>
       )}

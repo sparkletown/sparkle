@@ -28,7 +28,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { ScreenShare } from "../../components/templates/ScreenShare";
+import { TalkShowStudio } from "../../components/templates/TalkShowStudio";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -139,8 +139,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       );
       break;
 
-    case VenueTemplate.screenshare:
-      template = <ScreenShare venue={venue} />;
+    case VenueTemplate.talkshowstudio:
+      template = <TalkShowStudio venue={venue} />;
       break;
 
     default:

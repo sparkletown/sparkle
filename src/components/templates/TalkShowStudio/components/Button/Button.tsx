@@ -1,7 +1,8 @@
+import { AppButton } from "components/atoms/Button/Button";
 import React from "react";
 import "./Button.scss";
 
-interface ButtonProps {
+interface ButtonWithLabelProps {
   children: React.ReactNode;
   variant?: "primary" | "secondary";
   onClick: () => void;
@@ -11,7 +12,7 @@ interface ButtonProps {
   disabled?: boolean;
 }
 
-const Button = ({
+export const ButtonWithLabel: React.FC<ButtonWithLabelProps> = ({
   children,
   variant = "primary",
   onClick,
@@ -19,22 +20,18 @@ const Button = ({
   leftLabel,
   small,
   disabled = false,
-}: ButtonProps) => {
+}) => {
   return (
     <div className="button-with-label">
       {leftLabel && <p>{leftLabel}</p>}
-      <button
-        className={`btn ${small && "btn-small"} btn-${variant}`}
-        onClick={() => {
-          onClick();
-        }}
+      <AppButton
+        customClass={`btn ${small && "btn-small"} btn-${variant}`}
+        onClick={onClick}
         disabled={disabled}
       >
         {children}
-      </button>
+      </AppButton>
       {rightLabel && <p>{rightLabel}</p>}
     </div>
   );
 };
-
-export default Button;

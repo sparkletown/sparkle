@@ -64,6 +64,7 @@ $announcement-banner-height: 50px;
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
 $reactionSize: max(2.5vh, 2vw);
+$persistentReactionSize: max(2.5vh, 2vw);
 
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
@@ -181,7 +182,8 @@ $z-layers: (
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
-  venuepage-preview-indication: 1
+  venuepage-preview-indication: 1,
+  player-overlay: 2
 );
 
 @function z($layer) {

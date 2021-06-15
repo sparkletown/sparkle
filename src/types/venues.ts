@@ -32,7 +32,7 @@ export enum VenueTemplate {
   posterpage = "posterpage",
   preplaya = "preplaya",
   screeningroom = "screeningroom",
-  screenshare = "screenshare",
+  talkshowstudio = "talkshowstudio",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -49,7 +49,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
-  | VenueTemplate.screenshare
+  | VenueTemplate.talkshowstudio
   | VenueTemplate.themecamp
 >;
 
@@ -240,7 +240,7 @@ export interface PosterPageVenue extends BaseVenue {
 }
 
 export interface FullTalkShowVenue extends BaseVenue {
-  template: VenueTemplate.screenshare;
+  template: VenueTemplate.talkshowstudio;
   requestToJoinStage?: boolean;
 }
 
