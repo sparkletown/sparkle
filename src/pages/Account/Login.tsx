@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 
-import { SSO_LOGIN_ICON } from "settings";
-
 import { AnyVenue } from "types/venues";
 
 import { useSSO } from "hooks/useSSO";
@@ -10,6 +8,8 @@ import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
+
+import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 import "./Account.scss";
 import "./Login.scss";
@@ -59,7 +59,7 @@ export const Login: React.FC<LoginProps> = ({
               {hasSAMLConfigId && (
                 <img
                   className="Login__sso-login"
-                  src={SSO_LOGIN_ICON}
+                  src={SAMLLoginIcon}
                   onClick={signInSSO}
                   alt="SSO login"
                 />

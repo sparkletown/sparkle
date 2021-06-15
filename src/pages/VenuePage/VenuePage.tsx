@@ -172,7 +172,7 @@ const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (!venue || !venueId || !profile) {
+  if (!venue || !venueId) {
     return <LoadingPage />;
   }
 
@@ -182,6 +182,10 @@ const VenuePage: React.FC = () => {
 
   if (!user) {
     return <Login formType="initial" venue={venue} />;
+  }
+
+  if (!profile) {
+    return <LoadingPage />;
   }
 
   // if (isAccessDenied) {
