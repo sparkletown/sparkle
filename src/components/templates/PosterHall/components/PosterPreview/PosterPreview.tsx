@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
+import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
 import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
 
@@ -70,27 +70,28 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     userCount === 1 ? "current visitor" : "current visitors"
   }`;
 
+  const renderInfoLink = useCallback(
+    (url: string) => (
+      <a href={url} {...externalUrlAdditionalProps}>
+        {url.replace(/(^\w+:|^)\/\//, "")}
+      </a>
+    ),
+    []
+  );
+
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
 
-    return (
-      <a href={moreInfoUrl} target="_blank" rel="noreferrer">
-        {moreInfoUrl.replace(/(^\w+:|^)\/\//, "")}
-      </a>
-    );
-  }, [moreInfoUrl]);
+    return renderInfoLink(moreInfoUrl);
+  }, [moreInfoUrl, renderInfoLink]);
 
   const renderMoreInfoUrls = useMemo(() => {
     if (!moreInfoUrls) return;
 
     return moreInfoUrls.map((infoUrl) => (
-      <div key={infoUrl}>
-        <a href={infoUrl} target="_blank" rel="noreferrer">
-          {infoUrl.replace(/(^\w+:|^)\/\//, "")}
-        </a>
-      </div>
+      <div key={infoUrl}>{renderInfoLink(infoUrl)}</div>
     ));
-  }, [moreInfoUrls]);
+  }, [moreInfoUrls, renderInfoLink]);
 
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
