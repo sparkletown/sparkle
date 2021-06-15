@@ -32,7 +32,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const { push: openUrlUsingRouter } = useHistory();
   const handleEnterVenue = useCallback(
     (e) => {
-      if (e.target.closest("PosterPreview__bookmark")) return;
+      if (e.target.closest(".PosterPreview__bookmark")) return;
 
       enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
     },
