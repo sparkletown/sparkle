@@ -1,4 +1,5 @@
 import React, { MouseEventHandler } from "react";
+import classNames from "classnames";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
@@ -7,18 +8,21 @@ import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-ico
 import "./Bookmark.scss";
 
 export interface BookmarkProps {
-  className?: string;
+  containerClassName?: string;
   onClick: MouseEventHandler<HTMLDivElement>;
   isSaved: boolean;
 }
 
 export const Bookmark: React.FC<BookmarkProps> = ({
-  className = "Bookmark",
+  containerClassName,
   onClick,
   isSaved,
 }) => {
   return (
-    <div className={className} onClick={onClick}>
+    <div
+      className={classNames("Bookmark", containerClassName)}
+      onClick={onClick}
+    >
       <FontAwesomeIcon icon={isSaved ? solidBookmark : regularBookmark} />
     </div>
   );
