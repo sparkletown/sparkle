@@ -609,6 +609,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
@@ -733,8 +737,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.bannerMessage = data.bannerMessage;
   }
 
-  if (typeof data.requestToJoinStage === "boolean") {
-    updated.requestToJoinStage = data.requestToJoinStage;
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);
