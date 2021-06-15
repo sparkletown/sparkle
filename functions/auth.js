@@ -29,18 +29,6 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
   lowercaseFirstChar(submittedPassword.trim()) ===
     lowercaseFirstChar(actualPassword.trim());
 
-// Ref: https://firebase.google.com/docs/functions/callable-reference
-
-// TODO: References/implementation notes/etc
-//   https://github.com/lelylan/simple-oauth2
-//     Needed for node < v12: https://github.com/lelylan/simple-oauth2/tree/3.x
-//   OAuth example: https://github.com/firebase/functions-samples/blob/master/instagram-auth/functions/index.js
-//   While the example seems to use cookies, not sure that we can by default, as per:
-//     https://stackoverflow.com/questions/44929653/firebase-cloud-function-wont-store-cookie-named-other-than-session
-//     Official docs: https://firebase.google.com/docs/hosting/manage-cache#using_cookies
-//     https://firebase.google.com/docs/hosting/manage-cache#set_cache-control
-//   There seems to be a fix about this mentioned in https://github.com/firebase/functions-samples/pull/852
-
 /**
  * Creates a configured simple-oauth2 client.
  *
@@ -90,28 +78,9 @@ exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
   // TODO: configure this in cloud config and/or firestore or similar
   const scope = "";
 
-  // TODO: use a uuid4 for this state?
-  // TODO: do we also want/need to store something about what venueId they were trying to access/etc for redirecting them back again?
-  // TODO: it seems I4A's OAuth2 doesn't even send on the state param anyway, so no point using this here..
-  // const state = crypto.randomBytes(20).toString("hex");
-  // const state = "TODO-use-proper-state";
-
-  // functions.logger.log(
-  //   "Setting verification state in __session cookie:",
-  //   state
-  // );
-  // res.cookie("__session", state);
-  // res.cookie("__session", state, {
-  //   maxAge: 60 * 60, // seconds
-  //   // secure: true, // TODO: don't set this when running locally?
-  //   httpOnly: true,
-  //   sameSite: "strict",
-  // });
-
   const redirectUri = authClient.authorizationCode.authorizeURL({
     redirect_uri: authCodeReturnUri,
     scope,
-    // state,
   });
 
   functions.logger.log("Redirecting to:", redirectUri);
@@ -141,20 +110,6 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const i4aGetUserMeetingInfoUrl =
     "https://www.humanbrainmapping.org/custom/api/Sparkle.cfm";
   const i4aApiKey = "TODO";
-
-  // TODO: I4A's OAuth2 implementation doesn't seem to support the state parameter, so probaby no point using these cookies/etc
-  // const cookieState = req.cookies["__session"];
-  // const queryState = req.query.state;
-  //
-  // functions.logger.log("Received verification state:", cookieState);
-  // functions.logger.log("Received state:", queryState);
-  // if (!cookieState) {
-  //   throw new Error(
-  //     "__session cookie not set or expired. Maybe you took too long to authorize. Please try again."
-  //   );
-  // } else if (cookieState !== queryState) {
-  //   throw new Error("State validation failed");
-  // }
 
   const { code: authCode } = req.query;
 
