@@ -92,4 +92,9 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   &__moreInfoUrl {
     font-size: $font-size--sm;
   }
+
+  &__info {
+    display: inline;
+    text-align: left;
+  }
 }

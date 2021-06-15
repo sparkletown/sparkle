@@ -6,6 +6,7 @@ import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
 import { useWorldUsers } from "hooks/users";
@@ -109,22 +110,20 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
         <div className="PosterPage__header--middle-cell">
           <div className="PosterPage__headerInfo">
-            {posterId && <div className="PosterPage__posterId">{posterId}</div>}
             {moreInfoUrl && (
-              <a
-                className="PosterPage__moreInfoUrl"
-                href={moreInfoUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {moreInfoUrlTitle}
-              </a>
+              <div className="PosterPage__posterId">
+                <a
+                  className="PosterPage__moreInfoUrl"
+                  href={moreInfoUrl}
+                  {...externalUrlAdditionalProps}
+                >
+                  {posterId ?? moreInfoUrlTitle}
+                </a>
+              </div>
             )}
           </div>
 
-          <p className="PosterPage__title">
-            {venue.name}: {title}
-          </p>
+          <p className="PosterPage__title">{title}</p>
 
           <div className="PosterPage__authorBox">
             {presenterUser && (

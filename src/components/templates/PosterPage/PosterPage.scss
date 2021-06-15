@@ -76,6 +76,7 @@ $poster-cell-optimal-height: 195px;
 
   &__categories {
     display: flex;
+    flex-wrap: wrap;
   }
 
   &__content {
