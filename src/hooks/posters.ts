@@ -98,6 +98,9 @@ export const usePosters = (posterHallId: string) => {
           "poster.title",
           "poster.authorName",
           "poster.categories",
+          "poster.authors",
+          "poster.keywords",
+          "poster.introduction",
         ],
         threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
         ignoreLocation: true, // default False: True - to search ignoring location of the words.
@@ -125,6 +128,9 @@ export const usePosters = (posterHallId: string) => {
             { "poster.title": searchToken },
             { "poster.authorName": searchToken },
             { "poster.categories": searchToken },
+            { "poster.authors": searchToken },
+            { "poster.keywords": searchToken },
+            { "poster.introduction": searchToken },
           ];
 
           return {
