@@ -141,6 +141,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  SAMLConfigId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;

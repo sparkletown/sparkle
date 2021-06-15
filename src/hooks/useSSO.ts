@@ -1,24 +1,19 @@
 import { useCallback } from "react";
 import firebase from "firebase/app";
 
-import { SSO_PROVIDER_ID } from "secrets";
-
-export const useSSO = () => {
-  const hasSSOProvider = SSO_PROVIDER_ID !== undefined;
-
+export const useSSO = (SAMLConfigId?: string) => {
   const signInSSO = useCallback(() => {
-    if (!SSO_PROVIDER_ID) return;
+    if (!SAMLConfigId) return;
 
-    const SSOProvider = new firebase.auth.SAMLAuthProvider(SSO_PROVIDER_ID);
+    const SSOProvider = new firebase.auth.SAMLAuthProvider(SAMLConfigId);
 
     firebase
       .auth()
       .signInWithPopup(SSOProvider)
       .catch((err) => console.log("error", err));
-  }, []);
+  }, [SAMLConfigId]);
 
   return {
     signInSSO,
-    hasSSOProvider,
   };
 };

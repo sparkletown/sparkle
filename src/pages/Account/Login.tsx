@@ -2,6 +2,8 @@ import React, { useState } from "react";
 
 import { SSO_LOGIN_ICON } from "settings";
 
+import { AnyVenue } from "types/venues";
+
 import { useSSO } from "hooks/useSSO";
 
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -14,14 +16,20 @@ import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
+  venue: AnyVenue;
 }
 
-export const Login: React.FC<LoginProps> = ({ formType = "initial" }) => {
+export const Login: React.FC<LoginProps> = ({
+  formType = "initial",
+  venue,
+}) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
-  const { signInSSO, hasSSOProvider } = useSSO();
+  const hasSAMLConfigId = venue.SAMLConfigId !== undefined;
+
+  const { signInSSO } = useSSO(venue.SAMLConfigId);
   // It will be extended with addition of new providers
-  const hasAlternativeLogins = hasSSOProvider;
+  const hasAlternativeLogins = hasSAMLConfigId;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -48,7 +56,7 @@ export const Login: React.FC<LoginProps> = ({ formType = "initial" }) => {
             <span>Quick log in with</span>
 
             <div className="Login__alternative-logins">
-              {hasSSOProvider && (
+              {hasSAMLConfigId && (
                 <img
                   className="Login__sso-login"
                   src={SSO_LOGIN_ICON}

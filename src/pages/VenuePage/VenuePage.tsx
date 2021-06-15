@@ -172,16 +172,16 @@ const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (!user) {
-    return <Login formType="initial" />;
+  if (!venue || !venueId || !profile) {
+    return <LoadingPage />;
   }
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
-  if (!venue || !venueId || !profile) {
-    return <LoadingPage />;
+  if (!user) {
+    return <Login formType="initial" venue={venue} />;
   }
 
   // if (isAccessDenied) {
