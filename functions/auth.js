@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 
 const oauth2 = require("simple-oauth2");
 
-const { postJson } = require("./src/utils/fetch");
+const { getJson, postJson } = require("./src/utils/fetch");
 
 const PROJECT_ID = functions.config().project.id;
 
@@ -114,7 +114,9 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar
-  const i4aGetUserInfoUrl =
+  const i4aOAuthUserInfoUrl =
+    "https://www.humanbrainmapping.org/oauth/userinfo";
+  const i4aGetUserMeetingInfoUrl =
     "https://www.humanbrainmapping.org/custom/api/Sparkle.cfm";
   const i4aApiKey = "TODO";
 
@@ -141,20 +143,26 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
   });
   functions.logger.log("Auth code exchange result received:", results);
 
-  // const { access_token: accessToken } = results;
+  const { access_token: accessToken } = results;
 
-  // TODO: We apparently are meant to use the accessToken with another API to query this I4A User ID from some API
-  //   Though we seemingly haven't been given any details about that yet..
-  const i4aUserId = 1234;
+  // Retrieve the user's I4A User ID
+  const { id: i4aUserId } = await getJson(i4aOAuthUserInfoUrl, {
+    Authorization: `Bearer ${accessToken}`,
+  });
 
-  // TODO: instead of manually creating these 2 checkes, we should map over an array of meeting IDs configured
-  //   in cloud config and/or firestore or similar
+  functions.logger.log("I4A User ID:", i4aUserId);
+
+  if (!i4aUserId) {
+    // TODO: redirect to some kind of '500 error' page?
+    res.redirect("/in/TODO/error");
+    return;
+  }
 
   // TODO: configure this in cloud config and/or firestore or similar
   const meetingIdsToCheck = [131, 136];
   const eventIdsToCheck = [504, 506, 554];
 
-  const checkedMeetingResult = await postJson(i4aGetUserInfoUrl, {
+  const checkedMeetingResult = await postJson(i4aGetUserMeetingInfoUrl, {
     apiKey: i4aApiKey,
     ams_id: i4aUserId,
   });
@@ -186,7 +194,7 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
 
   if (!isRegistered || !emailRaw) {
     // TODO: redirect to some kind of 'not allowed' page
-    res.redirect("/TODO/not-registered");
+    res.redirect("/in/TODO/not-registered");
     return;
   }
 
@@ -212,6 +220,7 @@ exports.oauth2Token = functions.https.onRequest(async (req, res) => {
     });
 
   functions.logger.log("User:", {
+    i4aUserId,
     userId: userRecord.uid,
     email: userRecord.email,
   });
