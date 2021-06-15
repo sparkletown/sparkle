@@ -15,7 +15,7 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import "./LoginForm.scss";
 
-interface PropsType {
+export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal: () => void;
