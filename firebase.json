@@ -1,5 +1,4 @@
 {
-  "//": "TODO: Add rewrites for at least the staging/OHBM environments to add /redirect and /token endpoints as per https://github.com/firebase/functions-samples/blob/master/instagram-auth/firebase.json",
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
@@ -229,6 +228,14 @@
       "target": "sparkle-ohbm",
       "public": "build",
       "rewrites": [
+        {
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
+        },
+        {
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
+        },
         {
           "source": "**",
           "destination": "/index.html"
