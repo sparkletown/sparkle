@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$poster-preview-height: 200px;
+$poster-preview-height: 300px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
@@ -50,6 +50,17 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     margin-right: 5px;
   }
 
+  &__header {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__posterId {
+    display: inline;
+    text-align: left;
+    font-size: $font-size--sm;
+  }
+
   &__title {
     font-size: $font-size--md;
     font-weight: $font-weight--600;
@@ -62,9 +73,28 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     flex-wrap: wrap;
   }
 
-  &__author {
+  &__authorBox {
+    display: flex;
+    align-items: center;
     margin-top: auto;
+  }
+
+  &__avatar {
+    margin-right: auto;
+  }
+
+  &__author {
+    margin-left: $spacing--sm;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(5);
+  }
+
+  &__contactEmail {
+    font-size: $font-size--sm;
+  }
+
+  &__moreInfoUrl {
+    font-size: $font-size--sm;
   }
 }
