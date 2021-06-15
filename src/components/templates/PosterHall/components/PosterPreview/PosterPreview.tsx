@@ -105,15 +105,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
+      <div className="PosterPreview__bookmark">
+        {canBeBookmarked && <PosterBookmark posterVenue={posterVenue} />}
+      </div>
       <div className="PosterPreview__header">
         {posterId && (
           <div className="PosterPreview__posterId">
             {renderMoreInfoUrl || posterId}
           </div>
         )}
-        <div className="PosterPreview__bookmark">
-          {canBeBookmarked && <PosterBookmark posterVenue={posterVenue} />}
-        </div>
         {hasUsers && (
           <div className="PosterPreview__visiting">{userCountText}</div>
         )}
