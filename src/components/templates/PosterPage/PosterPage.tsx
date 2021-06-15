@@ -122,7 +122,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
             )}
           </div>
 
-          <p className="PosterPage__title">{title}</p>
+          <p className="PosterPage__title">
+            {venue.name}: {title}
+          </p>
 
           <div className="PosterPage__authorBox">
             {presenterUser && (

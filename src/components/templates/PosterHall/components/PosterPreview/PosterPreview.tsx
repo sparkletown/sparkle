@@ -108,7 +108,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         )}
       </div>
 
-      <p className="PosterPreview__title">{title}</p>
+      <p className="PosterPreview__title">
+        {posterVenue.name}: {title}
+      </p>
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">
