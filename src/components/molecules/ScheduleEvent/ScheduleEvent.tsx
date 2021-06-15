@@ -82,7 +82,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
           <div className="ScheduleEvent__host">by {event.host}</div>
         </div>
         <Bookmark
-          className="ScheduleEvent__bookmark"
+          containerClassName="ScheduleEvent__bookmark"
           onClick={bookmarkEvent}
           isSaved={event.isSaved}
         />
