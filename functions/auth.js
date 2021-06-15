@@ -67,13 +67,13 @@ const createOAuth2Client = () => {
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
 // TODO: rename this authorize or similar?
-exports.oauth2Redirect = functions.https.onRequest((req, res) => {
+exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
   // TODO: should we load the oauth config data from firestore based on the venue it's configured for or similar?
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar
   // const authCodeReturnUri = "http://localhost:5006/oauth2/token";
-  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/oauth2/token`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
+  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/auth/connect/i4a/handler`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
 
   // TODO: configure this in cloud config and/or firestore or similar
   const scope = "";
@@ -110,7 +110,7 @@ exports.oauth2Redirect = functions.https.onRequest((req, res) => {
  * Exchanges a given auth code passed in the 'code' URL query parameter for a Firebase auth token.
  * The request also needs to specify a 'state' query parameter which will be checked against the 'state' cookie.
  */
-exports.oauth2Token = functions.https.onRequest(async (req, res) => {
+exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar

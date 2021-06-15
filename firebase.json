@@ -33,15 +33,14 @@
     {
       "target": "staging",
       "public": "build",
-      "//": "TODO: Change the URL paths to something like /connect/i4a and /connect/i4a/callback or similar?",
       "rewrites": [
         {
-          "source": "/oauth2/redirect",
-          "function": "auth-oauth2Redirect"
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
         },
         {
-          "source": "/oauth2/token",
-          "function": "auth-oauth2Token"
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
         },
         {
           "source": "**",
