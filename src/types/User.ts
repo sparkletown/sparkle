@@ -8,6 +8,8 @@ export interface TalkShowStudioExperience {
   place?: PlaceInTalkShowStudioVenue;
   isSharingScreen?: boolean;
   isMuted?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
 }
 
 export interface Experience extends TalkShowStudioExperience {
@@ -15,10 +17,6 @@ export interface Experience extends TalkShowStudioExperience {
   table: string;
   row?: number;
   column?: number;
-  place?: PlaceInTalkShowStudioVenue;
-  isSharingScreen?: boolean;
-  cameraClientUid?: string;
-  screenClientUid?: string;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm
