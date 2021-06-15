@@ -34,6 +34,12 @@ $poster-cell-optimal-height: 195px;
     justify-content: space-between;
   }
 
+  &__bookmark {
+    display: inline;
+    text-align: left;
+    margin-right: 5px;
+  }
+
   &__posterId {
     display: inline;
     text-align: left;
@@ -76,6 +82,7 @@ $poster-cell-optimal-height: 195px;
 
   &__categories {
     display: flex;
+    flex-wrap: wrap;
   }
 
   &__content {

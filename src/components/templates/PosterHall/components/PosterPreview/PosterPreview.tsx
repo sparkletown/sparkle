@@ -16,6 +16,8 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
 
+import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
+
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
   canBeBookmarked?: boolean;
@@ -33,6 +35,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     posterId,
     moreInfoUrl,
     moreInfoUrls,
+    moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
     contactEmail,
   } = posterVenue.poster ?? {};
 
@@ -46,7 +49,16 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const handleEnterVenue = useCallback(
     (e) => {
-      if (e.target.closest(".PosterPreview__bookmark")) return;
+      if (
+        e.target.closest([
+          ".PosterPreview__bookmark",
+          ".PosterPreview__posterId",
+          ".PosterPreview__info",
+          ".PosterPreview__moreInfoUrl",
+          ".PosterPreview__avatar",
+        ])
+      )
+        return;
 
       enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
     },
@@ -79,49 +91,54 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   }`;
 
   const renderInfoLink = useCallback(
-    (url: string) => (
+    (url: string, text: string) => (
       <a href={url} {...externalUrlAdditionalProps}>
-        {url.replace(/(^\w+:|^)\/\//, "")}
+        {text}
       </a>
     ),
     []
   );
 
+  const moreUrlInfoText = useMemo(() => posterId ?? moreInfoUrlTitle, [
+    posterId,
+    moreInfoUrlTitle,
+  ]);
+
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
 
-    return renderInfoLink(moreInfoUrl);
-  }, [moreInfoUrl, renderInfoLink]);
+    return renderInfoLink(moreInfoUrl, moreUrlInfoText);
+  }, [moreInfoUrl, renderInfoLink, moreUrlInfoText]);
 
   const renderMoreInfoUrls = useMemo(() => {
     if (!moreInfoUrls) return;
 
     return moreInfoUrls.map((infoUrl) => (
-      <div key={infoUrl}>{renderInfoLink(infoUrl)}</div>
+      <div key={infoUrl}>{renderInfoLink(infoUrl, moreUrlInfoText)}</div>
     ));
-  }, [moreInfoUrls, renderInfoLink]);
+  }, [moreInfoUrls, renderInfoLink, moreUrlInfoText]);
 
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
-      <div className="PosterPreview__bookmark">
-        {canBeBookmarked && <PosterBookmark posterVenue={posterVenue} />}
-      </div>
       <div className="PosterPreview__header">
-        {posterId && (
-          <div className="PosterPreview__posterId">
-            {renderMoreInfoUrl || posterId}
-          </div>
-        )}
+        <div className="PosterPreview__info">
+          {canBeBookmarked && (
+            <div className="PosterPreview__bookmark">
+              <PosterBookmark posterVenue={posterVenue} />
+            </div>
+          )}
+          {posterId && (
+            <div className="PosterPreview__posterId">{renderMoreInfoUrl}</div>
+          )}
+        </div>
         {hasUsers && (
           <div className="PosterPreview__visiting">{userCountText}</div>
         )}
       </div>
 
-      <p className="PosterPreview__title">
-        {posterVenue.name}: {title}
-      </p>
+      <p className="PosterPreview__title">{title}</p>
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">

@@ -114,23 +114,26 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
         <div className="PosterPage__header--middle-cell">
           <div className="PosterPage__headerInfo">
-            {canBeBookmarked && <PosterBookmark posterVenue={venue} />}
-            {posterId && <div className="PosterPage__posterId">{posterId}</div>}
+            {canBeBookmarked && (
+              <div className="PosterPage__bookmark">
+                <PosterBookmark posterVenue={venue} />
+              </div>
+            )}
             {moreInfoUrl && (
-              <a
-                className="PosterPage__moreInfoUrl"
-                href={moreInfoUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                {moreInfoUrlTitle}
-              </a>
+              <div className="PosterPage__posterId">
+                <a
+                  className="PosterPage__moreInfoUrl"
+                  href={moreInfoUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {posterId ?? moreInfoUrlTitle}
+                </a>
+              </div>
             )}
           </div>
 
-          <p className="PosterPage__title">
-            {venue.name}: {title}
-          </p>
+          <p className="PosterPage__title">{title}</p>
 
           <div className="PosterPage__authorBox">
             {presenterUser && (
