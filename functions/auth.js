@@ -1,9 +1,11 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-
 const oauth2 = require("simple-oauth2");
 
+const { HttpsError } = require("firebase-functions/lib/providers/https");
+
 const { getJson, postJson } = require("./src/utils/fetch");
+const { checkIfValidVenueId } = require("./src/utils/venue");
 
 const PROJECT_ID = functions.config().project.id;
 
@@ -68,12 +70,18 @@ const createOAuth2Client = () => {
  */
 // TODO: rename this authorize or similar?
 exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
+  const { venueId } = req.query;
+
+  if (!checkIfValidVenueId(venueId)) {
+    throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
+  }
+
   // TODO: should we load the oauth config data from firestore based on the venue it's configured for or similar?
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar
   // const authCodeReturnUri = "http://localhost:5006/oauth2/token";
-  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/auth/connect/i4a/handler`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
+  const authCodeReturnUri = `http://${req.headers["x-forwarded-host"]}/auth/connect/i4a/handler?venueId=${venueId}`; // TODO: refactor this to use a static URL from config as it's probably super insecure as is..
 
   // TODO: configure this in cloud config and/or firestore or similar
   const scope = "";
@@ -111,6 +119,12 @@ exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
  * The request also needs to specify a 'state' query parameter which will be checked against the 'state' cookie.
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
+  const { venueId } = req.query;
+
+  if (!checkIfValidVenueId(venueId)) {
+    throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
+  }
+
   const authClient = createOAuth2Client();
 
   // TODO: configure this in cloud config and/or firestore or similar
@@ -231,5 +245,5 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   });
 
   // TODO: redirect back to the main application in a way that we can provide the custom auth token back to it
-  res.redirect(`/in/TODO-venueId?customToken=${customToken}`);
+  res.redirect(`/in/${venueId}?customToken=${customToken}`);
 });
