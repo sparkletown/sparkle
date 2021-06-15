@@ -96,7 +96,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
   return (
-    <div className={posterClassnames} onClick={handleEnterVenue}>
+    <div className={posterClassnames}>
       <div className="PosterPreview__header">
         {posterId && (
           <div className="PosterPreview__posterId">
@@ -108,33 +108,35 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
         )}
       </div>
 
-      <p className="PosterPreview__title">{title}</p>
+      <div onClick={handleEnterVenue}>
+        <p className="PosterPreview__title">{title}</p>
 
-      {!posterId && hasMoreInfo && (
-        <p className="PosterPreview__moreInfoUrl">
-          {renderMoreInfoUrl}
-          {renderMoreInfoUrls}
-        </p>
-      )}
-
-      {contactEmail && (
-        <p className="PosterPreview__contactEmail">{contactEmail}</p>
-      )}
-
-      <div className="PosterPreview__categories">{renderedCategories}</div>
-
-      <div className="PosterPreview__authorBox">
-        {presenterUser && (
-          <UserProfilePicture
-            containerClassName="PosterPreview__avatar"
-            user={presenterUser}
-            showStatus
-          />
+        {!posterId && hasMoreInfo && (
+          <p className="PosterPreview__moreInfoUrl">
+            {renderMoreInfoUrl}
+            {renderMoreInfoUrls}
+          </p>
         )}
 
-        <span className="PosterPreview__author">
-          {authorList ?? authorName}
-        </span>
+        {contactEmail && (
+          <p className="PosterPreview__contactEmail">{contactEmail}</p>
+        )}
+
+        <div className="PosterPreview__categories">{renderedCategories}</div>
+
+        <div className="PosterPreview__authorBox">
+          {presenterUser && (
+            <UserProfilePicture
+              containerClassName="PosterPreview__avatar"
+              user={presenterUser}
+              showStatus
+            />
+          )}
+
+          <span className="PosterPreview__author">
+            {authorList ?? authorName}
+          </span>
+        </div>
       </div>
     </div>
   );
