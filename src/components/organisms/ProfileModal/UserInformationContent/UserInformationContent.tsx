@@ -26,7 +26,7 @@ import {
 
 import editIcon from "assets/icons/profile-edit-icon.svg";
 
-import { DEFAULT_PROFILE_VALUES } from "../constants";
+// import { DEFAULT_PROFILE_VALUES } from "../constants";
 
 import "./UserInformationContent.scss";
 
@@ -36,11 +36,18 @@ interface PropsType {
   hideModal: () => void;
 }
 
+// TODO: check DEFAULT_PROFILE_VALUES
+// TODO: check UserInformationContent changes
 const UserInformationContent: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
   setIsPasswordEditMode,
   hideModal,
 }) => {
+  // temp
+  const DEFAULT_PROFILE_VALUES = {
+    partyName: "test partyName",
+    questionAnswer: "test questionAnswer",
+  };
   const { user, profile, userWithId } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions

@@ -60,6 +60,7 @@ $chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $chat-input-height: 114px;
+$announcement-banner-height: 50px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -133,6 +134,7 @@ $z-layers: (
   // Chat
   chatbox-chat-container: $z-layer-sidebar,
   chat-drawer-container: $z-layer-sidebar,
+  chatbox-emoji-picker: 2,
   chatbox-submit-button: 1,
   chatslist-private-container-back-button: 1,
   chatmessage-reply-button: 1,
@@ -152,13 +154,18 @@ $z-layers: (
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
+  // UserAvatar
+  global-profile-icon--hover: 2,
+  global-profile-icon: 1,
+  user-avatar-status-indicator: 1,
   // UserReactions
   user-reactions-shout: 2,
   user-reactions-emoji: 1,
   // Map
-  map-room--hovered: 6,
-  map-avatar: 5,
-  map-room: 4,
+  map-room--hovered: 7,
+  map-avatar: 6,
+  map-room: 5,
+  map-room--iframe: 4,
   map-grid: 3,
   map-room--unclickable: 2,
   map-background: 1,
@@ -169,8 +176,6 @@ $z-layers: (
   // Unsorted
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
-  global-profile-icon: 1,
-  user-avatar-status-indicator: 1,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
