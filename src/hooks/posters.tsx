@@ -19,6 +19,7 @@ import { useDebounceSearch } from "./useDebounceSearch";
 import { WithId } from "../utils/id";
 
 import { useUser } from "hooks/useUser";
+import { shuffle } from "lodash";
 
 export const emptySavedPosters = {};
 
@@ -132,13 +133,13 @@ export const usePosters = (posterHallId: string): PostersContextState => {
   const searchedPosterVenues = useMemo(() => {
     const normalizedSearchQuery = searchQuery.trim();
 
-    if (!normalizedSearchQuery) return filteredPosterVenues;
+    if (!normalizedSearchQuery) return shuffle(filteredPosterVenues);
 
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
 
-    if (!tokenisedSearchQuery.length) return filteredPosterVenues;
+    if (!tokenisedSearchQuery.length) return shuffle(filteredPosterVenues);
 
     return fuseVenues
       .search({
