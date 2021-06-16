@@ -152,7 +152,9 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>Or pick one from our Sparkle profile pics</small>
+      <small>
+        Feeling camera shy? Choose from one these Summit profile avatars.
+      </small>
       <div className="default-avatars-container">
         {isLoading ? <div>Loading...</div> : avatarImages}
       </div>
