@@ -206,7 +206,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 className="btn btn-primary btn-block btn-centered"
                 onClick={onJoinClick}
               >
-                Join the event
+                Sign Up for Summit
                 {(venue?.start_utc_seconds ?? 0) >
                   new Date().getTime() / 1000 && (
                   <span className="countdown">

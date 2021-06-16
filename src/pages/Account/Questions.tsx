@@ -58,24 +58,23 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   }
 
-  const numberOfQuestions = venue?.profile_questions?.length;
-  const oneQuestionOnly = numberOfQuestions === 1;
-  const headerMessage = oneQuestionOnly
-    ? "Now complete your profile by answering this question"
-    : "Now complete your profile by answering some short questions";
+  const headerMessage =
+    "To help other Hubbers find and get to know you, tell us a little about yourself";
 
   return (
-    <div className="page-container">
-      <div className="hero-logo sparkle"></div>
+    <div className="page-container questions-container">
+      <div className="hero-logo github"></div>
       <div className="login-container">
         <h2 className="header-message">{headerMessage}</h2>
-        <p className="subheader-message">
-          This will help your fellow partygoers break the ice
-        </p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions &&
-            venue.profile_questions.map((question: QuestionType) => (
-              <div key={question.name} className="input-group">
+            venue.profile_questions.map((question: QuestionType, index) => (
+              <div key={question.name} className="input-group question-input">
+                {index <= 2 ? (
+                  <p> {question.name}* </p>
+                ) : (
+                  <p> {question.name} </p>
+                )}
                 <textarea
                   className="input-block input-centered"
                   name={question.name}
