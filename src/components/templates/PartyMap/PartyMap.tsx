@@ -5,6 +5,8 @@ import { COVERT_ROOM_TYPES } from "settings";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
+import { isEventLiveOrFuture } from "utils/event";
+
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
@@ -45,6 +47,14 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const hasSelectedRoom = !!selectedRoom;
 
+  const selectedRoomEvents = useMemo(() => {
+    if (!relatedVenueEvents || !selectedRoom) return [];
+
+    return relatedVenueEvents.filter(
+      (event) => event.room === selectedRoom.title && isEventLiveOrFuture(event)
+    );
+  }, [relatedVenueEvents, selectedRoom]);
+
   const selectRoom = useCallback((room: Room) => {
     if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
 
@@ -71,7 +81,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <RoomModal
         room={selectedRoom}
         venue={venue}
-        venueEvents={relatedVenueEvents}
+        roomEvents={selectedRoomEvents}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />

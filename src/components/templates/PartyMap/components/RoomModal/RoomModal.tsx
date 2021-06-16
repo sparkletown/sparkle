@@ -4,11 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import {
-  isEventLiveOrFuture,
-  getCurrentEvent,
-  sortEventsByStartUtcSeconds,
-} from "utils/event";
+import { getCurrentEvent } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -28,7 +24,7 @@ export interface RoomModalProps {
   show: boolean;
   venue?: AnyVenue;
   room?: Room;
-  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
+  roomEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({
@@ -36,9 +32,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
-  venueEvents,
+  roomEvents,
 }) => {
-  if (!venue || !room || !venueEvents) return null;
+  if (!venue || !room || !roomEvents) return null;
 
   if (room.type === RoomType.modalFrame) {
     return (
@@ -59,7 +55,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
         <RoomModalContent
           room={room}
           venueName={venue.name}
-          venueEvents={venueEvents}
+          roomEvents={roomEvents}
         />
       </div>
     </Modal>
@@ -69,13 +65,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  venueEvents: WithVenueId<WithId<VenueEvent>>[];
+  roomEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
-  venueEvents,
+  roomEvents,
 }) => {
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -83,16 +79,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     interrupt: true,
     onend: enterRoom,
   });
-
-  const roomEvents = useMemo(() => {
-    if (!venueEvents) return [];
-
-    return sortEventsByStartUtcSeconds(
-      venueEvents.filter(
-        (event) => event.room === room.title && isEventLiveOrFuture(event)
-      )
-    );
-  }, [room, venueEvents]);
 
   const currentEvent = getCurrentEvent(roomEvents);
 
