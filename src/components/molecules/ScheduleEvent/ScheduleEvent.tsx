@@ -26,6 +26,8 @@ import { calcStartPosition } from "components/molecules/Schedule/utils";
 
 import "./ScheduleEvent.scss";
 
+const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
+
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
   scheduleStartHour: number;
@@ -62,8 +64,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     },
     containerCssVars
   );
-
-  const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
 
   const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {
     if (!userId || !event.id) return;
