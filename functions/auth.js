@@ -1,9 +1,11 @@
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const oauth2 = require("simple-oauth2");
 
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
+const { fetchAuthConfig } = require("./src/api/auth");
+
+const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
 const { checkIfValidVenueId } = require("./src/utils/venue");
 
@@ -30,35 +32,12 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
     lowercaseFirstChar(actualPassword.trim());
 
 /**
- * Creates a configured simple-oauth2 client.
- *
- * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
- */
-const createOAuth2Client = () => {
-  // TODO: configure these creds in cloud config and/or firestore or similar
-  const credentials = {
-    client: {
-      id: "TODO", // TODO
-      secret: "TODO", // TODO
-    },
-    auth: {
-      tokenHost: "TODO", // TODO
-      tokenPath: "TODO", // TODO
-      revokePath: "TODO", // TODO
-      authorizePath: "TODO", // TODO
-    },
-  };
-
-  return oauth2.create(credentials);
-};
-
-/**
  * Redirect the user to the authentication consent screen. The 'state' cookie is set for later state verification.
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
 // TODO: rename this authorize or similar?
-exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
+exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
   const { venueId } = req.query;
 
   if (!AUTH_ORIGIN) {
@@ -69,8 +48,9 @@ exports.connectI4AOAuth = functions.https.onRequest((req, res) => {
     throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
   }
 
-  // TODO: should we load the oauth config data from firestore based on the venue it's configured for or similar?
-  const authClient = createOAuth2Client();
+  const authConfig = await fetchAuthConfig(venueId);
+
+  const authClient = createOAuth2Client(authConfig);
 
   // TODO: configure this in cloud config and/or firestore or similar
   const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
@@ -102,7 +82,9 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
   }
 
-  const authClient = createOAuth2Client();
+  const authConfig = await fetchAuthConfig(venueId);
+
+  const authClient = createOAuth2Client(authConfig);
 
   // TODO: configure this in cloud config and/or firestore or similar
   const i4aOAuthUserInfoUrl =
