@@ -1,4 +1,4 @@
-import React, { MouseEventHandler, useMemo, useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -25,8 +25,7 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
 }) => {
   const venueId = posterVenue.id;
 
-  const { userWithId } = useUser();
-  const userId = userWithId?.id;
+  const { userWithId, userId } = useUser();
 
   const venueIds = useMemo(() => [venueId], [venueId]);
 
@@ -40,7 +39,9 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
 
   const removeBookmarks = useCallback(() => {
     if (!userId) return;
+
     removePosterFromProfile({ venueId, userId });
+
     venueEvents.forEach((event) => {
       removeEventFromPersonalizedSchedule({ event, userId });
     });
@@ -48,15 +49,18 @@ export const PosterBookmark: React.FC<PosterPreviewProps> = ({
 
   const addBookmarks = useCallback(() => {
     if (!userId) return;
+
     addPosterToProfile({ venueId, userId });
+
     venueEvents.forEach((event) => {
       addEventToPersonalizedSchedule({ event, userId });
     });
   }, [venueId, userId, venueEvents]);
 
-  const bookmarkPoster: MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    isSaved ? removeBookmarks() : addBookmarks();
-  }, [isSaved, addBookmarks, removeBookmarks]);
-
-  return <Bookmark onClick={bookmarkPoster} isSaved={isSaved} />;
+  return (
+    <Bookmark
+      onClick={isSaved ? removeBookmarks : addBookmarks}
+      isSaved={isSaved}
+    />
+  );
 };

@@ -37,7 +37,7 @@ $poster-cell-optimal-height: 195px;
   &__bookmark {
     display: inline;
     text-align: left;
-    margin-right: 5px;
+    margin-right: $spacing--xs;
   }
 
   &__posterId {

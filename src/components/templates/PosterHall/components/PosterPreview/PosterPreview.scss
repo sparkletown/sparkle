@@ -46,13 +46,11 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__posterId {
     display: inline;
-    float: left;
     font-size: $font-size--sm;
   }
 
   &__visiting {
     display: inline;
-    float: right;
     font-size: $font-size--sm;
   }
 
@@ -95,8 +93,7 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__bookmark {
     display: inline;
-    float: left;
-    margin-right: 5px;
+    margin-right: $spacing--xs;
   }
 
   &__info {
