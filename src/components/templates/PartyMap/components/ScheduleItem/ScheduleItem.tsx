@@ -29,7 +29,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   const dispatch = useDispatch();
 
   const schedulePrimaryClasses = classNames({
-    ScheduleItem__primary: isCurrentEvent,
+    ScheduleItem--primary: isCurrentEvent,
   });
 
   const scheduleItemTimeSectionClasses = classNames(
