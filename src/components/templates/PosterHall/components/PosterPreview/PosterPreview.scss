@@ -52,6 +52,7 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   &__visiting {
     display: inline;
     font-size: $font-size--sm;
+    margin-left: auto;
   }
 
   &__title {
@@ -93,11 +94,11 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__bookmark {
     display: inline;
-    margin-right: $spacing--xs;
+    margin-right: $spacing--sm;
   }
 
   &__info {
-    display: inline;
+    display: flex;
     text-align: left;
   }
 }
