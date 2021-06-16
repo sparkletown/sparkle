@@ -34,7 +34,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   venue,
   venueEvents,
 }) => {
-  if (!venue || !room || !venueEvents) return null;
+  if (!venue || !room) return null;
 
   if (room.type === RoomType.modalFrame) {
     return (
@@ -65,7 +65,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  venueEvents: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({

@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 
 import { VenueEvent } from "types/venues";
 
@@ -26,13 +27,19 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   roomUrl,
 }) => {
   const dispatch = useDispatch();
+
+  const schedulePrimaryClasses = classNames({
+    ScheduleItem__primary: isCurrentEvent,
+  });
+
+  const scheduleItemTimeSectionClasses = classNames(
+    "ScheduleItem__time-section",
+    schedulePrimaryClasses
+  );
+
   return (
     <div className="ScheduleItem">
-      <div
-        className={`ScheduleItem__time-section ${
-          isCurrentEvent ? "ScheduleItem__primary" : ""
-        }`}
-      >
+      <div className={scheduleItemTimeSectionClasses}>
         <span className="ScheduleItem__event-date">
           {labelDayRoomSchedule(event.start_utc_seconds)}
         </span>
@@ -46,7 +53,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
         </span>
       </div>
       <div className="ScheduleItem__event-section">
-        <div className={`${isCurrentEvent ? "ScheduleItem__primary" : ""}`}>
+        <div className={schedulePrimaryClasses}>
           <span className="ScheduleItem__event-name">{event.name}</span>
           by <span className="ScheduleItem__event-host">{event.host}</span>
           <span className="ScheduleItem__event-description">
