@@ -33,7 +33,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
           (relatedVenue) =>
             relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
         )
-        .map((roomVenue) => roomVenue.id),
+        .map((childVenue) => childVenue.id),
     [relatedVenues, venue]
   );
 
