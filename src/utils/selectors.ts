@@ -245,6 +245,18 @@ export const noopSelector: SparkleSelector<undefined> = () => undefined;
 export const emptyArray = [];
 export const emptyArraySelector = <T>(): T[] => emptyArray;
 
+// AnimateMap
 export const animateMapStageOptionsSelector: SparkleSelector<AnimateMapStageOptions> = (
   state
 ) => state.animatemap.stageOptions;
+
+export type AnimateMapWorldBounds = { width: number; height: number };
+
+export const animateMapWorldBoundsSelector: SparkleSelector<AnimateMapWorldBounds> = (
+  state
+) => {
+  return {
+    width: state.animatemap.worldWidth,
+    height: state.animatemap.worldHeight,
+  };
+};

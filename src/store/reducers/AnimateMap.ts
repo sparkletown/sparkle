@@ -12,6 +12,9 @@ export type AnimateMapStageOptions = LastInTuple<
 
 interface AnimateMapState {
   stageOptions: AnimateMapStageOptions;
+  worldWidth: number;
+  worldHeight: number;
+  zoom: number;
 }
 
 const initialAnimateMapState: AnimateMapState = {
@@ -21,6 +24,9 @@ const initialAnimateMapState: AnimateMapState = {
     autoDensity: true,
     resizeTo: undefined,
   },
+  worldWidth: 9920,
+  worldHeight: 9920,
+  zoom: 1,
 };
 
 export type AnimateMapReducer = Reducer<AnimateMapState, AnimateMapActions>;
@@ -33,6 +39,11 @@ export const animateMapReducer: AnimateMapReducer = (
     case AnimateMapActionTypes.UPDATE_ANIMATE_MAP_STAGE_OPTIONS:
       const { options } = action.payload;
       return { ...state, stageOptions: options };
+
+    case AnimateMapActionTypes.UPDATE_ZOOM:
+      const { zoom } = action.payload;
+      return { ...state, zoom: zoom };
+
     default:
       return state;
   }

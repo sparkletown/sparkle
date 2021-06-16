@@ -1,53 +1,85 @@
-import React, { useEffect, useRef } from "react";
-import { useUser } from "hooks/useUser";
-import "./AnimateMap.scss";
+import * as PIXI from "pixi.js";
+
+import React, { useState, useRef, useEffect } from "react";
+import { Provider, ReactReduxContext } from "react-redux";
+import { AppConsumer, Container, Stage, useApp } from "@inlet/react-pixi";
 import { AnimateMapVenue } from "../../../types/venues";
+import { useUser } from "hooks/useUser";
 import { useSelector } from "../../../hooks/useSelector";
 import { animateMapStageOptionsSelector } from "../../../utils/selectors";
-import { useDispatch } from "../../../hooks/useDispatch";
-import { updateAnimateMapStageOptions } from "../../../store/actions/AnimateMap";
-import { AppContext, Container, Stage } from "react-pixi-fiber";
-import { Map } from "./components";
+
+import "./AnimateMap.scss";
+
+import { Map } from "./components/Map/Map";
+import { MAP_IMAGE } from "./constants/Resources";
 
 export interface AnimateMapProps {
   venue: AnimateMapVenue;
 }
 
-export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
+export const AnimateMap: React.FC<AnimateMapProps> = () => {
   const options = useSelector(animateMapStageOptionsSelector);
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(
-      updateAnimateMapStageOptions(
-        Object.assign(options, { resizeTo: containerRef.current })
-      )
-    ); // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const { user, profile } = useUser();
-  if (!user || !profile) return <>Loading..</>;
+
+  if (!user || !profile) {
+    return <>Loading..</>;
+  }
+
+  const container = containerRef.current ?? null;
 
   return (
     <div ref={containerRef} className="animatemap-venue-container">
-      <Stage options={{ ...options }}>
-        <AppContext.Consumer>
-          {(app) => (
-            <RootContainer>
-              <Map />
-              <UI />
-            </RootContainer>
+      {container && (
+        <ReactReduxContext.Consumer>
+          {({ store }) => (
+            <Stage
+              width={container.offsetWidth}
+              height={container.offsetHeight}
+              options={Object.assign(options, { resizeTo: container })}
+            >
+              <AppConsumer>
+                {(app) => (
+                  <Provider store={store}>
+                    {app ? <LoadingContainer /> : <Container />}
+                  </Provider>
+                )}
+              </AppConsumer>
+            </Stage>
           )}
-        </AppContext.Consumer>
-      </Stage>
+        </ReactReduxContext.Consumer>
+      )}
     </div>
   );
 };
 
-const RootContainer = ({ ...props }) => {
-  return <Container {...props} />;
+// @ts-ignore
+const LoadingContainer = () => {
+  const app = useApp();
+
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && app) {
+      setIsLoading(true);
+
+      app.loader.reset().add(MAP_IMAGE).load();
+      app.loader.onLoad.add(() => setIsLoaded(true));
+      app.loader.onError.add((loader: PIXI.Loader, resource: PIXI.Resource) =>
+        console.error(resource)
+      );
+    }
+  }, [isLoading, app]);
+
+  if (!isLoaded) {
+    return <Container />;
+  }
+
+  return <RootContainer />;
 };
-const UI = ({ ...props }) => {
-  return <Container {...props} />;
+
+const RootContainer = () => {
+  return <Map />;
 };

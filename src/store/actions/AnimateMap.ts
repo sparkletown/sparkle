@@ -3,16 +3,21 @@ import { ReduxAction } from "../../types/redux";
 
 export enum AnimateMapActionTypes {
   UPDATE_ANIMATE_MAP_STAGE_OPTIONS = "UPDATE_ANIMATE_MAP_STAGE_OPTIONS",
+  UPDATE_ZOOM = "UPDATE_ZOOM",
 }
 
 export type setAnimateMapStageOptionsAction = ReduxAction<
   AnimateMapActionTypes.UPDATE_ANIMATE_MAP_STAGE_OPTIONS,
-  VenueAnimateMapStageOptions
+  {
+    options: AnimateMapStageOptions;
+  }
 >;
-
-export type VenueAnimateMapStageOptions = {
-  options: AnimateMapStageOptions;
-};
+export type updateAnimateMapZoomAction = ReduxAction<
+  AnimateMapActionTypes.UPDATE_ZOOM,
+  {
+    zoom: number;
+  }
+>;
 
 export const updateAnimateMapStageOptions = (
   options?: AnimateMapStageOptions
@@ -21,4 +26,13 @@ export const updateAnimateMapStageOptions = (
   payload: { options },
 });
 
-export type AnimateMapActions = setAnimateMapStageOptionsAction;
+export const updateAnimateMapZoom = (
+  zoom: number
+): updateAnimateMapZoomAction => ({
+  type: AnimateMapActionTypes.UPDATE_ZOOM,
+  payload: { zoom },
+});
+
+export type AnimateMapActions =
+  | setAnimateMapStageOptionsAction
+  | updateAnimateMapZoomAction;
