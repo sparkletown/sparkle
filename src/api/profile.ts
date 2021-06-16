@@ -85,6 +85,45 @@ export const updateUserOnlineStatus = async ({
   });
 };
 
+export interface UpdateUserCollectionProps {
+  collectionKey: string;
+  collectionValue: unknown[];
+  userId: string;
+  removeMode?: boolean;
+}
+
+export const updateUserCollection = async ({
+  collectionKey,
+  collectionValue,
+  userId,
+  removeMode = false,
+}: UpdateUserCollectionProps): Promise<void> => {
+  const userProfileRef = getUserRef(userId);
+
+  const modify = removeMode
+    ? firebase.firestore.FieldValue.arrayRemove
+    : firebase.firestore.FieldValue.arrayUnion;
+
+  const modifiedCollection = {
+    [collectionKey]: modify(...collectionValue),
+  };
+
+  return userProfileRef.update(modifiedCollection).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateUserCollectionProps",
+        collectionKey,
+        collectionValue,
+        userId,
+        removeMode,
+        event,
+      });
+
+      throw err;
+    });
+  });
+};
+
 export interface UpdatePersonalizedScheduleProps {
   event: WithVenueId<VenueEvent>;
   userId: string;
@@ -103,37 +142,44 @@ export const removeEventFromPersonalizedSchedule = ({
 }: Omit<UpdatePersonalizedScheduleProps, "removeMode">): Promise<void> =>
   updatePersonalizedSchedule({ event, userId, removeMode: true });
 
-export interface UpdatePersonalizedScheduleProps {
-  event: WithVenueId<VenueEvent>;
-  userId: string;
-  removeMode?: boolean;
-}
-
 export const updatePersonalizedSchedule = async ({
   event,
   userId,
   removeMode = false,
-}: UpdatePersonalizedScheduleProps): Promise<void> => {
-  const userProfileRef = getUserRef(userId);
-
-  const modify = removeMode
-    ? firebase.firestore.FieldValue.arrayRemove
-    : firebase.firestore.FieldValue.arrayUnion;
-
-  const newSavedEvents = {
-    [`myPersonalizedSchedule.${event.venueId}`]: modify(event.id),
-  };
-
-  return userProfileRef.update(newSavedEvents).catch((err) => {
-    Bugsnag.notify(err, (event) => {
-      event.addMetadata("context", {
-        location: "api/profile::saveEventToProfile",
-        userId,
-        event,
-        removeMode,
-      });
-
-      throw err;
-    });
+}: UpdatePersonalizedScheduleProps): Promise<void> =>
+  updateUserCollection({
+    userId,
+    removeMode,
+    collectionKey: `myPersonalizedSchedule.${event.venueId}`,
+    collectionValue: [event.id],
   });
-};
+
+export interface UpdateSavedPostersProps {
+  venueId: string;
+  userId: string;
+  removeMode?: boolean;
+}
+
+export const addPosterToProfile = ({
+  venueId,
+  userId,
+}: Omit<UpdateSavedPostersProps, "removeMode">): Promise<void> =>
+  updatePosterToProfile({ venueId, userId });
+
+export const removePosterFromProfile = ({
+  venueId,
+  userId,
+}: Omit<UpdateSavedPostersProps, "removeMode">): Promise<void> =>
+  updatePosterToProfile({ venueId, userId, removeMode: true });
+
+export const updatePosterToProfile = async ({
+  venueId,
+  userId,
+  removeMode = false,
+}: UpdateSavedPostersProps): Promise<void> =>
+  updateUserCollection({
+    userId,
+    removeMode,
+    collectionKey: `savedPosters.${venueId}`,
+    collectionValue: [venueId],
+  });
