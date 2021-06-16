@@ -29,6 +29,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setSearchInputValue,
     liveFilter,
     setLiveFilter,
+
+    bookmarkedFilter,
+    setBookmarkedFilter,
   } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
@@ -38,9 +41,10 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       <PosterPreview
         key={(posterVenue as WithId<PosterPageVenue>).id}
         posterVenue={posterVenue as WithId<PosterPageVenue>}
+        canBeBookmarked={venue?.canBeBookmarked}
       />
     ));
-  }, [posterVenues]);
+  }, [posterVenues, venue]);
 
   return (
     <div className="PosterHall">
@@ -49,6 +53,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         searchInputValue={searchInputValue}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
+        bookmarkedFilterValue={bookmarkedFilter}
+        setBookmarkedValue={setBookmarkedFilter}
+        showBookmarks={venue?.canBeBookmarked}
       />
 
       <div className="PosterHall__posters">

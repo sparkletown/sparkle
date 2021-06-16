@@ -12,9 +12,13 @@ import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
 
+
 import sampleSize from "utils/shuffle";
 import seedrandom from "seedrandom";
 import { useUser } from "./useUser";
+
+export const emptySavedPosters = {};
+
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -70,12 +74,28 @@ export const usePosters = (posterHallId: string) => {
     );
   }, []);
 
-  const filteredPosterVenues = useMemo(
+  const liveFilteredPosterVenues = useMemo(
     () =>
       liveFilter
         ? posterVenues.filter((posterVenue) => posterVenue.isLive)
         : posterVenues,
     [posterVenues, liveFilter]
+  );
+
+  const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
+  const { userWithId } = useUser();
+  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
+
+  const filteredPosterVenues = useMemo(
+    () =>
+      bookmarkedFilter
+        ? liveFilteredPosterVenues.filter(
+            (posterVenue) =>
+              //@ts-ignore
+              userPosterIds[posterVenue.id]?.[0] === posterVenue.id
+          )
+        : liveFilteredPosterVenues,
+    [liveFilteredPosterVenues, bookmarkedFilter, userPosterIds]
   );
 
   // See https://fusejs.io/api/options.html
@@ -149,9 +169,11 @@ export const usePosters = (posterHallId: string) => {
 
     searchInputValue,
     liveFilter,
+    bookmarkedFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
+    setBookmarkedFilter,
   };
 };

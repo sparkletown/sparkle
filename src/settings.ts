@@ -618,6 +618,8 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
+export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/;
+
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
 

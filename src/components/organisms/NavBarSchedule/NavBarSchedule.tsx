@@ -10,7 +10,11 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import {
+  PLATFORM_BRAND_NAME,
+  SCHEDULE_SHOW_DAYS_AHEAD,
+  REMOVE_EVENTS_FROM_VENUE,
+} from "settings";
 
 import {
   LocationEvents,
@@ -151,7 +155,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     const locatedEvents: LocationEvents[] = Object.entries(
-      groupBy(daysEvents, buildLocationString)
+      groupBy(
+        daysEvents.filter(
+          (event: { venueId: string }) =>
+            !event.venueId.match(REMOVE_EVENTS_FROM_VENUE)
+        ),
+        buildLocationString
+      )
     ).map(([group, events]) => ({
       events,
       location: getEventLocation(group),
