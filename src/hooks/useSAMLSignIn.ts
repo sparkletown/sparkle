@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 export const useSAMLSignIn = (samlAuthProviderId?: string) => {
@@ -14,7 +15,16 @@ export const useSAMLSignIn = (samlAuthProviderId?: string) => {
     firebase
       .auth()
       .signInWithPopup(SAMLAuthProvider)
-      .catch((err) => console.log("error", err));
+      .catch((err) => {
+        Bugsnag.notify(err, (event) => {
+          event.addMetadata("context", {
+            location: "hooks/useSAMLSignIn::signInWithSAML",
+            samlAuthProviderId,
+            SAMLAuthProvider,
+          });
+        });
+        // @debt show UI error?
+      });
   }, [samlAuthProviderId]);
 
   return { signInWithSAML, hasSamlAuthProviderId };
