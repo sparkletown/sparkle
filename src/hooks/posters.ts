@@ -11,7 +11,9 @@ import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
 
-import { useUser } from "hooks/useUser";
+import sampleSize from "utils/shuffle";
+import seedrandom from "seedrandom";
+import { useUser } from "./useUser";
 
 export const emptySavedPosters = {};
 
@@ -44,7 +46,11 @@ export const usePosterVenues = (posterHallId: string) => {
   );
 };
 
+const POSTERS_TIME_GRANULARITY = 1000 * 60 * 60; // one hour in ms
+
 export const usePosters = (posterHallId: string) => {
+  const timeSlice = Math.floor(new Date().getTime() / POSTERS_TIME_GRANULARITY);
+  const { userId } = useUser();
   const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
 
   const {
@@ -110,15 +116,19 @@ export const usePosters = (posterHallId: string) => {
   );
 
   const searchedPosterVenues = useMemo(() => {
+    // Local PRNG: does not affect Math.random.
+    const random = seedrandom(`${userId}${timeSlice}`);
     const normalizedSearchQuery = searchQuery.trim();
 
-    if (!normalizedSearchQuery) return filteredPosterVenues;
+    if (!normalizedSearchQuery)
+      return sampleSize(filteredPosterVenues, { random });
 
     const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
       normalizedSearchQuery
     );
 
-    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+    if (!tokenisedSearchQuery.length)
+      return sampleSize(filteredPosterVenues, { random });
 
     return fuseVenues
       .search({
@@ -139,7 +149,7 @@ export const usePosters = (posterHallId: string) => {
         }),
       })
       .map((fuseResult) => fuseResult.item);
-  }, [searchQuery, fuseVenues, filteredPosterVenues]);
+  }, [searchQuery, fuseVenues, filteredPosterVenues, userId, timeSlice]);
 
   const displayedPosterVenues = useMemo(
     () => searchedPosterVenues.slice(0, displayedPostersCount),
