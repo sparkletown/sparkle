@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { getCurrentEvent } from "utils/event";
+import { getCurrentEvent, sortEventsByStartUtcSeconds } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -24,7 +24,7 @@ export interface RoomModalProps {
   show: boolean;
   venue?: AnyVenue;
   room?: Room;
-  roomEvents?: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModal: React.FC<RoomModalProps> = ({
@@ -32,9 +32,9 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
-  roomEvents,
+  venueEvents,
 }) => {
-  if (!venue || !room || !roomEvents) return null;
+  if (!venue || !room || !venueEvents) return null;
 
   if (room.type === RoomType.modalFrame) {
     return (
@@ -55,7 +55,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
         <RoomModalContent
           room={room}
           venueName={venue.name}
-          roomEvents={roomEvents}
+          venueEvents={venueEvents}
         />
       </div>
     </Modal>
@@ -65,13 +65,13 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  roomEvents: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
-  roomEvents,
+  venueEvents,
 }) => {
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -79,6 +79,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     interrupt: true,
     onend: enterRoom,
   });
+
+  const roomEvents = useMemo(() => {
+    if (!venueEvents) return [];
+
+    return sortEventsByStartUtcSeconds(venueEvents);
+  }, [venueEvents]);
 
   const currentEvent = getCurrentEvent(roomEvents);
 
