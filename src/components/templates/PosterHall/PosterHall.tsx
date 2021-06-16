@@ -1,10 +1,6 @@
 import React, { useMemo } from "react";
 
-import { GenericVenue } from "types/venues";
-
-import { WithId } from "utils/id";
-
-import { usePosters } from "hooks/posters";
+import { usePostersContext } from "../../../hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
@@ -13,11 +9,7 @@ import { PosterHallSearch } from "./components/PosterHallSearch";
 
 import "./PosterHall.scss";
 
-export interface PosterHallProps {
-  venue: WithId<GenericVenue>;
-}
-
-export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
+export const PosterHall: React.FC = () => {
   const {
     posterVenues,
     isPostersLoaded,
@@ -29,7 +21,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setSearchInputValue,
     liveFilter,
     setLiveFilter,
-  } = usePosters(venue.id);
+  } = usePostersContext();
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 

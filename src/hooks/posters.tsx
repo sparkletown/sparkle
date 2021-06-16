@@ -1,5 +1,11 @@
-import { useState, useMemo, useCallback } from "react";
-import { VenueTemplate } from "types/venues";
+import React, {
+  useState,
+  useMemo,
+  useCallback,
+  useContext,
+  createContext,
+} from "react";
+import { VenueTemplate, PosterPageVenue } from "types/venues";
 import Fuse from "fuse.js";
 
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
@@ -10,6 +16,7 @@ import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
+import { WithId } from "../utils/id";
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -40,7 +47,18 @@ export const usePosterVenues = (posterHallId: string) => {
   );
 };
 
-export const usePosters = (posterHallId: string) => {
+interface PostersContextState {
+  posterVenues: WithId<PosterPageVenue>[];
+  isPostersLoaded: boolean;
+  hasHiddenPosters: boolean;
+  searchInputValue: string;
+  liveFilter: boolean;
+  increaseDisplayedPosterCount: () => void;
+  setSearchInputValue: (value: string) => void;
+  setLiveFilter: (value: boolean) => void;
+}
+
+export const usePosters = (posterHallId: string): PostersContextState => {
   const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
 
   const {
@@ -98,7 +116,7 @@ export const usePosters = (posterHallId: string) => {
       normalizedSearchQuery
     );
 
-    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+    if (!tokenisedSearchQuery.length) return filteredPosterVenues;
 
     return fuseVenues
       .search({
@@ -141,4 +159,30 @@ export const usePosters = (posterHallId: string) => {
     setSearchInputValue,
     setLiveFilter,
   };
+};
+
+export const PostersContext = createContext<PostersContextState | undefined>(
+  undefined
+);
+
+type PostersProviderProps = Readonly<{ venueId: string }>;
+export const PostersProvider: React.FC<PostersProviderProps> = ({
+  venueId,
+  children,
+}) => (
+  <PostersContext.Provider value={usePosters(venueId)}>
+    {children}
+  </PostersContext.Provider>
+);
+
+export const usePostersContext = (): PostersContextState => {
+  const postersContextState = useContext(PostersContext);
+
+  if (!postersContextState) {
+    throw new Error(
+      "<PostersContext/> not found. Did you forget to include it in your component hierarchy?"
+    );
+  }
+
+  return postersContextState;
 };

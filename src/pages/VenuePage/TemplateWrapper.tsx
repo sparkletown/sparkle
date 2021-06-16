@@ -28,6 +28,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { PostersProvider } from "../../hooks/posters";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -119,7 +120,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.posterhall:
-      template = <PosterHall venue={venue} />;
+      template = <PosterHall />;
       break;
 
     case VenueTemplate.posterpage:
@@ -152,7 +153,13 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           hasBackButton={hasBackButton}
         >
           <AnnouncementMessage message={venue.bannerMessage} />
-          {template}
+          {[VenueTemplate.posterhall, VenueTemplate.posterpage].includes(
+            venue.template
+          ) ? (
+            <PostersProvider venueId={venue.id}>{template}</PostersProvider>
+          ) : (
+            template
+          )}
           <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>
