@@ -67,6 +67,10 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     display: flex;
     flex-wrap: wrap;
     margin: $spacing--sm 0;
+
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
   }
 
   &__authorBox {
