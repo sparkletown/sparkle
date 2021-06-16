@@ -236,7 +236,10 @@ export const getDayInterval = (date: Date | number) => ({
 });
 
 export const labelDayRoomSchedule = (startUtcSeconds: number) => {
-  if (isToday(fromUnixTime(startUtcSeconds))) return "";
-  else if (isTomorrow(fromUnixTime(startUtcSeconds))) return "Tomorrow";
-  else return formatDate(startUtcSeconds);
+  const date = fromUnixTime(startUtcSeconds);
+
+  if (isToday(date)) return "";
+  if (isTomorrow(date)) return "Tomorrow";
+
+  return formatDate(startUtcSeconds);
 };
