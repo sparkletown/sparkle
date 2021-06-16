@@ -26,7 +26,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
-  const relatedVenueRoomIds = useMemo(
+  const childVenueIds = useMemo(
     () =>
       relatedVenues
         .filter(
@@ -38,7 +38,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   );
 
   const { events: relatedVenueEvents } = useVenueEvents({
-    venueIds: relatedVenueRoomIds,
+    venueIds: childVenueIds,
   });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
