@@ -1,0 +1,27 @@
+@import "scss/constants.scss";
+
+.Login {
+  &__login-box {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    margin-bottom: $spacing--md;
+  }
+
+  &__alternative-logins {
+    margin-top: $spacing--md;
+    display: flex;
+    justify-content: center;
+    margin-bottom: $spacing--xs;
+  }
+
+  &__saml-login {
+    height: 50px;
+    width: 50px;
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
+}
