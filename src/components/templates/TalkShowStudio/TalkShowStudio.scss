@@ -14,8 +14,16 @@
 
   &__mode--play {
     width: 326px;
-    height: 178px;
+    height: $screen-share-player-height;
     margin: 10px;
+  }
+
+  &__mode--local-play {
+    width: 326px;
+    height: $screen-share-player-height;
+    position: absolute;
+    bottom: $spacing--lg;
+    right: $spacing--lg;
   }
 
   &__scene {
@@ -30,8 +38,11 @@
     &--sharing {
       border: 1px solid rgba(255, 255, 255, 0.5);
       border-radius: $border-radius--lg;
-      margin-bottom: $spacing--lg;
-      width: 100%;
+      margin: $spacing--lg;
+      width: calc(100% - 2 * #{$spacing--lg});
+      min-height: calc(#{$screen-share-player-height} + 2 * #{$spacing--lg});
+      position: relative;
+      z-index: 1;
     }
   }
 

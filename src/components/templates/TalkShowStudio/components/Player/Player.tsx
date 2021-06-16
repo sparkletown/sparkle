@@ -102,7 +102,7 @@ const Player = ({
           </div>
         </div>
       )}
-      {user && <UserAvatar user={user} containerClassName="avatar-container" />}
+      {user && <UserAvatar user={user} containerClassName="Player__avatar" />}
     </div>
   );
 };

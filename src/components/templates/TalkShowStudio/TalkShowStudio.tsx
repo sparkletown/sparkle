@@ -1,8 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
-import AgoraRTC, {
-  IAgoraRTCClient,
-  // IAgoraRTCRemoteUser,
-} from "agora-rtc-sdk-ng";
+import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 
 import { WithId } from "utils/id";
 import { useStage } from "./useStage";
@@ -17,13 +14,11 @@ import {
 } from "hooks/video/agora";
 
 import AppButton from "components/atoms/Button";
-import Player from "./components/Player/Player";
-// import Player, { VideoPlayerProps } from "./components/Player/Player";
+import Player, { VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
 import { currentVenueSelectorData } from "utils/selectors";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
-// import { useVenueId } from "hooks/useVenueId";
 
 import "./TalkShowStudio.scss";
 
@@ -49,7 +44,6 @@ export interface TalkShowStudioProps {
 export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const stage = useStage();
   const { userId, profile } = useUser();
-  // const venueId = useVenueId();
   const currentVenue = useSelector(currentVenueSelectorData);
   const remoteUsers = useAgoraRemotes({ client: remotesClient });
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
@@ -72,10 +66,10 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     leaveChannel: screenClientLeave,
   } = useAgoraScreenShare({ client: screenClient });
 
-  // const [localUser] = useMemo(
-  //   () => stage.peopleOnStage.filter(({ id }) => id === userId),
-  //   [userId, stage.peopleOnStage]
-  // );
+  const [localUser] = useMemo(
+    () => stage.peopleOnStage.filter(({ id }) => id === userId),
+    [userId, stage.peopleOnStage]
+  );
 
   const isUserOwner = useMemo(
     () => !!userId && currentVenue?.owners.includes(userId),
@@ -83,13 +77,28 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   );
 
   const remoteUsersPlayers = useMemo(() => {
+    const setremoteUserAvatar = (remoteUserId: number | string) => {
+      if (!venue.id) return;
+      const [remoteUser] = stage.peopleOnStage.filter(
+        ({ data }) => data?.[`${venue.id}`]?.cameraClientUid === remoteUserId
+      );
+      console.log(
+        "remoteUser: ",
+        remoteUser,
+        stage.peopleOnStage,
+        remoteUserId
+      );
+      return remoteUser;
+    };
     return remoteUsers.map(
       (user) =>
         user.uid !== screenClient.uid &&
         user.uid !== cameraClient.uid && (
           <div key={user.uid}>
+            {console.log(user)}
             {user.hasVideo && (
               <Player
+                user={setremoteUserAvatar(user.uid)}
                 videoTrack={user.videoTrack}
                 audioTrack={user.audioTrack}
                 containerClass="TalkShowStudio__mode--play"
@@ -98,7 +107,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
           </div>
         )
     );
-  }, [remoteUsers]);
+  }, [remoteUsers, venue.id, stage.peopleOnStage]);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin();
@@ -168,51 +177,46 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   //     ));
   // }, [stage.peopleOnStage, remoteUsers, venueId]);
 
-  // const renderScreenSharing = (
-  //   screenTrack: VideoPlayerProps["videoTrack"],
-  //   cameraTrack: VideoPlayerProps["videoTrack"]
-  // ) => {
-  //   return (
-  //     <div className="ScreenShare__scene--sharing">
-  //       {screenTrack && (
-  //         <Player
-  //           videoTrack={screenTrack}
-  //           containerClass="ScreenShare__mode--share"
-  //         />
-  //       )}
-  //       {cameraTrack && (
-  //         <Player
-  //           user={localUser}
-  //           videoTrack={cameraTrack}
-  //           showButtons
-  //           isCamOn={isCameraOn}
-  //           isMicOn={isMicrophoneOn}
-  //           isSharing={!!screenTrack}
-  //           toggleCam={toggleCamera}
-  //           toggleMic={toggleMicrophone}
-  //           containerClass="ScreenShare__mode--local-play"
-  //         />
-  //       )}
-  //     </div>
-  //   );
-  // };
+  const renderScreenSharing = (
+    screenTrack: VideoPlayerProps["videoTrack"],
+    cameraTrack: VideoPlayerProps["videoTrack"]
+  ) => {
+    if (!screenTrack || !cameraTrack) return;
+    return (
+      <div className="TalkShowStudio__scene--sharing">
+        {screenTrack && (
+          <Player
+            videoTrack={screenTrack}
+            containerClass="TalkShowStudio__mode--share"
+          />
+        )}
+        {cameraTrack && (
+          <Player
+            user={localUser}
+            videoTrack={cameraTrack}
+            showButtons
+            isCamOn={isCameraOn}
+            isMicOn={isMicrophoneOn}
+            isSharing={!!screenTrack}
+            toggleCam={toggleCamera}
+            toggleMic={toggleMicrophone}
+            containerClass="TalkShowStudio__mode--local-play"
+          />
+        )}
+      </div>
+    );
+  };
 
   return (
     <>
       <div className="TalkShowStudio">
         <div className="TalkShowStudio__scene">
-          {localScreenTrack && (
-            <div className="TalkShowStudio__scene--sharing">
-              <Player
-                videoTrack={localScreenTrack}
-                containerClass="TalkShowStudio__mode--share"
-              />
-            </div>
-          )}
+          {renderScreenSharing(localScreenTrack, localCameraTrack)}
           <div className="TalkShowStudio__players">
-            {localCameraTrack && (
+            {localCameraTrack && !localScreenTrack && (
               <div>
                 <Player
+                  user={localUser}
                   videoTrack={localCameraTrack}
                   showButtons
                   isCamOn={isCameraOn}
