@@ -14,6 +14,8 @@ export interface PosterHallSearchProps {
 
   liveFilterValue: boolean;
   setLiveValue: (isLive: boolean) => void;
+
+  searchTitleBase?: string;
 }
 
 export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
@@ -22,6 +24,8 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
 
   liveFilterValue,
   setLiveValue,
+
+  searchTitleBase,
 }) => {
   const onInputFieldChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,13 +39,15 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
     [setLiveValue]
   );
 
+  const searchTitle = `Search ${searchTitleBase}` ?? "Search Posters/Demos";
+
   return (
     <div className="PosterHallSearch">
       <InputField
         containerClassName="PosterHallSearch__input-container"
         inputClassName="PosterHallSearch__input"
         iconStart={faSearch}
-        placeholder="Search Posters/Demos"
+        placeholder={searchTitle}
         value={searchInputValue}
         onChange={onInputFieldChange}
       />

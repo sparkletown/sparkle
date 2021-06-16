@@ -46,6 +46,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         searchInputValue={searchInputValue}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
+        searchTitleBase={venue?.chatTitle}
       />
 
       <div className="PosterHall__posters">
