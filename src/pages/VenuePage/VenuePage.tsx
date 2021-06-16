@@ -181,7 +181,7 @@ const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return <Login formType="initial" venue={venue} />;
+    return <Login venue={venue} />;
   }
 
   if (!profile) {
