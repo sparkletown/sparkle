@@ -8,10 +8,12 @@ import { PosterPageVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { externalUrlAdditionalProps } from "utils/url";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 import { useWorldUsers } from "hooks/users";
 
 import { VideoParticipant } from "components/organisms/Video";
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { UserList } from "components/molecules/UserList";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { PosterCategory } from "components/atoms/PosterCategory";
@@ -45,6 +47,9 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     contactEmail,
     moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
   } = poster ?? {};
+
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const canBeBookmarked = parentVenue?.canBeBookmarked;
 
   const {
     isShown: isIntroVideoShown,
@@ -110,6 +115,11 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
 
         <div className="PosterPage__header--middle-cell">
           <div className="PosterPage__headerInfo">
+            {canBeBookmarked && (
+              <div className="PosterPage__bookmark">
+                <PosterBookmark posterVenue={venue} />
+              </div>
+            )}
             {moreInfoUrl && (
               <div className="PosterPage__posterId">
                 <a

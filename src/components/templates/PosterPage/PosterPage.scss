@@ -32,6 +32,13 @@ $poster-cell-optimal-height: 195px;
   &__headerInfo {
     display: flex;
     justify-content: space-between;
+    margin-bottom: $spacing--sm;
+  }
+
+  &__bookmark {
+    display: inline;
+    text-align: left;
+    margin-right: $spacing--sm;
   }
 
   &__posterId {
