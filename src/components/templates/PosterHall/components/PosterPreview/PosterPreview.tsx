@@ -45,13 +45,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
+  const posterBookmarkClassname = "PosterPreview__bookmark";
+
   const { push: openUrlUsingRouter } = useHistory();
 
   const handleEnterVenue = useCallback(
     (e) => {
       if (
         e.target.closest([
-          ".PosterPreview__bookmark",
+          `.${posterBookmarkClassname}`,
           ".PosterPreview__posterId",
           ".PosterPreview__info",
           ".PosterPreview__moreInfoUrl",
@@ -99,10 +101,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     []
   );
 
-  const moreUrlInfoText = useMemo(() => posterId ?? moreInfoUrlTitle, [
-    posterId,
-    moreInfoUrlTitle,
-  ]);
+  const moreUrlInfoText = posterId ?? moreInfoUrlTitle;
 
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
@@ -125,7 +124,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       <div className="PosterPreview__header">
         <div className="PosterPreview__info">
           {canBeBookmarked && (
-            <div className="PosterPreview__bookmark">
+            <div className={posterBookmarkClassname}>
               <PosterBookmark posterVenue={posterVenue} />
             </div>
           )}
