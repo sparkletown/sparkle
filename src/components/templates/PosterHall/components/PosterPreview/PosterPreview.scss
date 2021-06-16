@@ -49,6 +49,12 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     font-size: $font-size--sm;
   }
 
+  &__posterDownload {
+    display: inline;
+    font-size: $font-size--md;
+    margin-right: $spacing--sm;
+  }
+
   &__visiting {
     display: inline;
     font-size: $font-size--sm;

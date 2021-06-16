@@ -41,6 +41,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const venueId = posterVenue.id;
 
+  const iframeUrl = posterVenue.iframeUrl;
+  const hasPdf = iframeUrl?.endsWith(".pdf");
+
   const posterClassnames = classNames("PosterPreview", {
     "PosterPreview--live": posterVenue.isLive,
   });
@@ -117,6 +120,12 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     ));
   }, [moreInfoUrls, renderInfoLink, moreUrlInfoText]);
 
+  const renderIframeUrl = useMemo(() => {
+    if (!iframeUrl) return;
+
+    return renderInfoLink(iframeUrl, "⬇");
+  }, [iframeUrl, renderInfoLink]);
+
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
   return (
@@ -126,6 +135,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
           {canBeBookmarked && (
             <div className={posterBookmarkClassname}>
               <PosterBookmark posterVenue={posterVenue} />
+            </div>
+          )}
+          {posterId && hasPdf && (
+            <div className="PosterPreview__posterDownload">
+              {renderIframeUrl}
             </div>
           )}
           {posterId && (
