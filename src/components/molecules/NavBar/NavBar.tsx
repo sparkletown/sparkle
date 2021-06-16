@@ -169,6 +169,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
+    
     enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [sovereignVenueId, openUrlUsingRouter]);
 
