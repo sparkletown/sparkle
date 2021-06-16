@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { getCurrentEvent, sortEventsByStartUtcSeconds } from "utils/event";
+import { getCurrentEvent } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -80,31 +80,25 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     onend: enterRoom,
   });
 
-  const roomEvents = useMemo(() => {
+  const renderedRoomEvents = useMemo(() => {
     if (!venueEvents) return [];
 
-    return sortEventsByStartUtcSeconds(venueEvents);
-  }, [venueEvents]);
+    const currentEvent = getCurrentEvent(venueEvents);
 
-  const currentEvent = getCurrentEvent(roomEvents);
-
-  const renderedRoomEvents = useMemo(
-    () =>
-      roomEvents.map((event, index: number) => (
-        <ScheduleItem
-          // @debt Ideally event.id would always be a unique identifier, but our types suggest it
-          //   can be undefined. Because we can't use index as a key by itself (as that is unstable
-          //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
-          //   is far less likely to clash
-          key={event.id ?? `${event.room}-${event.name}-${index}`}
-          event={event}
-          isCurrentEvent={currentEvent && event.name === currentEvent.name}
-          onRoomEnter={enterRoomWithSound}
-          roomUrl={room.url}
-        />
-      )),
-    [currentEvent, enterRoomWithSound, room.url, roomEvents]
-  );
+    return venueEvents.map((event, index: number) => (
+      <ScheduleItem
+        // @debt Ideally event.id would always be a unique identifier, but our types suggest it
+        //   can be undefined. Because we can't use index as a key by itself (as that is unstable
+        //   and causes rendering issues, we construct a key that, while not guaranteed to be unique,
+        //   is far less likely to clash
+        key={event.id ?? `${event.room}-${event.name}-${index}`}
+        event={event}
+        isCurrentEvent={currentEvent && event.name === currentEvent.name}
+        onRoomEnter={enterRoomWithSound}
+        roomUrl={room.url}
+      />
+    ));
+  }, [enterRoomWithSound, room.url, venueEvents]);
 
   const hasRoomEvents = renderedRoomEvents?.length > 0;
 
@@ -122,11 +116,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
-
-        <RoomModalOngoingEvent
-          roomEvents={roomEvents}
-          onRoomEnter={enterRoomWithSound}
-        />
+        {venueEvents && (
+          <RoomModalOngoingEvent
+            roomEvents={venueEvents}
+            onRoomEnter={enterRoomWithSound}
+          />
+        )}
       </div>
 
       <UserList
