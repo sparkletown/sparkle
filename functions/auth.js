@@ -84,14 +84,13 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
 
   const authConfig = await fetchAuthConfig(venueId);
 
-  const authClient = createOAuth2Client(authConfig);
+  const {
+    i4aApiKey,
+    i4aOAuthUserInfoUrl,
+    i4aGetUserMeetingInfoUrl,
+  } = authConfig;
 
-  // TODO: configure this in cloud config and/or firestore or similar
-  const i4aOAuthUserInfoUrl =
-    "https://www.humanbrainmapping.org/oauth/userinfo";
-  const i4aGetUserMeetingInfoUrl =
-    "https://www.humanbrainmapping.org/custom/api/Sparkle.cfm";
-  const i4aApiKey = "TODO";
+  const authClient = createOAuth2Client(authConfig);
 
   const { code: authCode } = req.query;
 

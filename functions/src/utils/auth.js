@@ -23,6 +23,7 @@ const createOAuth2Client = async ({
       tokenHost,
       tokenPath,
       revokePath,
+      // TODO: how can we ensure we add the correct redirect URL here to revokePath? Maybe use a placeholder in the revokePath string or similar?
       authorizeHost,
       authorizePath,
     },

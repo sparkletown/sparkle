@@ -13,6 +13,7 @@ const getAuthConfigsCollectionRef = () =>
 const getAuthConfigRef = (venueId) =>
   getAuthConfigsCollectionRef().doc(venueId);
 
+// TODO: do we need to implement finding the sovereign venue to implement this properly..? Probably should..
 const fetchAuthConfig = async (venueId) => {
   if (!checkIfValidVenueId(venueId)) {
     throw new HttpsError("invalid-argument", "venueId is invalid");
