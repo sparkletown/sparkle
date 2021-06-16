@@ -101,10 +101,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     []
   );
 
-  const moreUrlInfoText = useMemo(() => posterId ?? moreInfoUrlTitle, [
-    posterId,
-    moreInfoUrlTitle,
-  ]);
+  const moreUrlInfoText = posterId ?? moreInfoUrlTitle;
 
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
