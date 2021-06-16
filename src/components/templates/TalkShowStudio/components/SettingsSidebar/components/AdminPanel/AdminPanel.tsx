@@ -6,29 +6,24 @@ import {
   faMinus,
   faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
-import { useStage } from "../../../../useStage";
-import Button from "../../../../../../atoms/Button";
-import { useVenueId } from "../../../../../../../hooks/useVenueId";
-import {
-  updateUserTalkShowStudioExperience,
-  updateVenue_v2,
-} from "../../../../../../../api/admin";
-import { useUser } from "../../../../../../../hooks/useUser";
-import {
-  FullTalkShowVenue,
-  VenueTemplate,
-} from "../../../../../../../types/venues";
-import { WithId } from "../../../../../../../utils/id";
-import {
-  PlaceInTalkShowStudioVenue,
-  User,
-} from "../../../../../../../types/User";
-import { LeaveStageModal } from "../../../LeaveStageModal";
-import { useShowHide } from "../../../../../../../hooks/useShowHide";
-import {
-  AllEmojiReactions,
-  EmojiReactionType,
-} from "../../../../../../../types/reactions";
+
+import { FullTalkShowVenue, VenueTemplate } from "types/venues";
+import { PlaceInTalkShowStudioVenue, User } from "types/User";
+import { AllEmojiReactions, EmojiReactionType } from "types/reactions";
+
+import { updateUserTalkShowStudioExperience, updateVenue_v2 } from "api/admin";
+
+import { WithId } from "utils/id";
+
+import { useVenueId } from "hooks/useVenueId";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
+
+import Button from "components/atoms/Button";
+
+import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
+import { useStage } from "components/templates/TalkShowStudio/useStage";
+
 import "./AdminPanel.scss";
 
 const requestEmoji = AllEmojiReactions.find(

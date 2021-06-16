@@ -2,11 +2,11 @@ import React, { useMemo } from "react";
 
 import { User } from "types/User";
 import { ReactHook } from "types/utility";
+import { EmojiReactionType } from "types/reactions";
 
 import { WithId } from "utils/id";
 
 import { MapPartygoerOverlay } from "components/molecules/MapPartygoerOverlay";
-import { EmojiReactionType } from "../../../../../../types/reactions";
 
 interface UsePartygoersOverlay {
   showGrid?: boolean;

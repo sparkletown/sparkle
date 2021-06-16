@@ -1,5 +1,8 @@
 @import "scss/constants";
 
+$button-width: 136px;
+$button-height: 44px;
+
 .LeaveStageModal {
   .modal-content {
     width: max-content;
@@ -25,8 +28,8 @@
 
   &__cancelButton,
   &__removeButton {
-    min-width: 136px;
-    min-height: 44px;
+    min-width: $button-width;
+    min-height: $button-height;
     padding: $spacing--sm $spacing--md !important;
   }
 

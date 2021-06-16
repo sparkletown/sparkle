@@ -1,15 +1,17 @@
 import React, { FC, useCallback, useMemo } from "react";
 import classNames from "classnames";
 
-import { useStage } from "../../useStage";
-import { useUser } from "../../../../../hooks/useUser";
-import { useVenueId } from "../../../../../hooks/useVenueId";
-import { useShowHide } from "../../../../../hooks/useShowHide";
+import { updateTalkShowStudioExperience } from "api/profile";
 
-import { ButtonWithLabel } from "../Button/Button";
-import { LeaveStageModal } from "../LeaveStageModal";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useShowHide } from "hooks/useShowHide";
+
 import { AppButton } from "components/atoms/Button/Button";
-import { updateTalkShowStudioExperience } from "../../../../../api/profile";
+
+import { ButtonWithLabel } from "components/templates/TalkShowStudio/components/Button/Button";
+import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
+import { useStage } from "components/templates/TalkShowStudio/useStage";
 
 import "./ControlBar.scss";
 
@@ -64,16 +66,21 @@ export const ControlBar: FC<ControlBarProps> = ({
     "ControlBar--one-item": !showSharingControl,
   });
 
-  if (!isUserOnStage && canJoinStage && showJoinStageButton)
-    return (
-      <div className="JoinStage">
-        <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
-          Join Stage
-        </AppButton>
-      </div>
-    );
+  if (!isUserOnStage) {
+    if (canJoinStage && showJoinStageButton) {
+      return (
+        <div className="JoinStage">
+          <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
+            Join Stage
+          </AppButton>
+        </div>
+      );
+    }
 
-  return isUserOnStage ? (
+    return null;
+  }
+
+  return (
     <div className={ControlBarClasses}>
       {showSharingControl && (
         <ButtonWithLabel
@@ -102,5 +109,5 @@ export const ControlBar: FC<ControlBarProps> = ({
         onSubmit={onStageLeaving}
       />
     </div>
-  ) : null;
+  );
 };

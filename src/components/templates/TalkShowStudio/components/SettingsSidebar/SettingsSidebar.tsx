@@ -6,13 +6,18 @@ import {
   faChevronRight,
   faCog,
 } from "@fortawesome/free-solid-svg-icons";
-import "./SettingsSidebar.scss";
+
+import { FullTalkShowVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
 import AdminPanel from "./components/AdminPanel/AdminPanel";
-import { useUser } from "../../../../../hooks/useUser";
-import { useSelector } from "../../../../../hooks/useSelector";
-import { currentVenueSelectorData } from "../../../../../utils/selectors";
-import { FullTalkShowVenue } from "../../../../../types/venues";
-import { WithId } from "../../../../../utils/id";
+
+import "./SettingsSidebar.scss";
 
 export interface SettingsSidebarProps {
   venue: WithId<FullTalkShowVenue>;

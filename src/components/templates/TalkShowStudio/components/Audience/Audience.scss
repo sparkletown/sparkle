@@ -37,6 +37,8 @@
     .UserProfilePicture {
       max-width: 35px;
       max-height: 35px;
+      min-width: unset;
+      min-height: unset;
     }
 
     .seat-column {

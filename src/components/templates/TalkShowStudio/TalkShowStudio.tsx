@@ -4,20 +4,20 @@ import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 import { WithId } from "utils/id";
 import { useStage } from "./useStage";
 import { FullTalkShowVenue } from "types/venues";
-import { useUser } from "../../../hooks/useUser";
-import { useSelector } from "../../../hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { AgoraClientConnectionState } from "types/agora";
 import {
   useAgoraCamera,
   useAgoraRemotes,
   useAgoraScreenShare,
 } from "hooks/video/agora";
 
-import AppButton from "../../atoms/Button";
+import AppButton from "components/atoms/Button";
 import Player from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
-import { AgoraClientConnectionState } from "../../../types/agora";
-import { currentVenueSelectorData } from "../../../utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
 
 import "./TalkShowStudio.scss";
