@@ -172,12 +172,12 @@ const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (!venue || !venueId) {
-    return <LoadingPage />;
-  }
-
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
+  }
+
+  if (!venue || !venueId) {
+    return <LoadingPage />;
   }
 
   if (!user) {
