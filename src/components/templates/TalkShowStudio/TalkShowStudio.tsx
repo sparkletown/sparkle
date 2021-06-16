@@ -181,14 +181,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
             <span>✋</span> Request to join
           </AppButton>
         )}
-        {stage.isUserRequesting && (
-          <AppButton
-            customClass="TalkShowStudio__request-button"
-            onClick={stage.leaveStage}
-          >
-            Cancel Request
-          </AppButton>
-        )}
         <Audience venue={venue} />
       </div>
       <SettingsSidebar venue={venue} />
