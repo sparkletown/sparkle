@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 import Fuse from "fuse.js";
 
@@ -14,8 +14,12 @@ import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
 import { useRelatedVenues } from "./useRelatedVenues";
 import { useVenueEvents } from "./events";
+import { useInterval } from "./useInterval";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import {
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  POSTERHALL_SUBVENUE_STATUS_MS,
+} from "settings";
 
 import { useUser } from "hooks/useUser";
 
@@ -192,16 +196,30 @@ export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
     [relatedVenues, posterHallId]
   );
 
-  const { events: nonPosterSubVenueEvents } = useVenueEvents({
+  const { events: nonPosterSubVenueEvents, isEventsLoading } = useVenueEvents({
     venueIds: nonPosterSubVenueIds,
   });
 
-  const filteredLiveEvents = useMemo(
-    () => filterLiveEvents(nonPosterSubVenueEvents),
-    [nonPosterSubVenueEvents]
-  );
+  const [
+    liveNonPosterSubVenueEvents,
+    setLiveNonPosterSubVenueEvents,
+  ] = useState<WithVenueId<VenueEvent>[]>();
+
+  const updateLiveEvents = useCallback(() => {
+    if (isEventsLoading) return;
+
+    const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
+
+    setLiveNonPosterSubVenueEvents(filteredLiveEvents);
+  }, [nonPosterSubVenueEvents, isEventsLoading]);
+
+  useEffect(() => updateLiveEvents(), [updateLiveEvents]);
+
+  useInterval(() => {
+    updateLiveEvents();
+  }, POSTERHALL_SUBVENUE_STATUS_MS);
 
   return {
-    liveNonPosterSubVenueEvents: filteredLiveEvents,
+    liveNonPosterSubVenueEvents,
   };
 };
