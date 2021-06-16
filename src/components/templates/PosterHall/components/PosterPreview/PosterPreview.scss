@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$poster-preview-height: 300px;
+$poster-preview-height: 420px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
@@ -60,12 +60,13 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     font-size: $font-size--md;
     font-weight: $font-weight--600;
 
-    margin: $spacing--md 0;
+    margin: $spacing--sm 0;
   }
 
   &__categories {
     display: flex;
     flex-wrap: wrap;
+    margin: $spacing--sm 0;
   }
 
   &__authorBox {
@@ -75,14 +76,13 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   }
 
   &__avatar {
-    margin-right: auto;
+    margin-right: $spacing--sm;
   }
 
   &__author {
-    margin-left: $spacing--sm;
     font-size: $font-size--sm;
     font-weight: $font-weight--500;
-    @include line-clamp-with-overflow(5);
+    @include line-clamp-with-overflow(4);
   }
 
   &__contactEmail {
@@ -91,6 +91,7 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__moreInfoUrl {
     font-size: $font-size--sm;
+    margin: $spacing--sm 0;
   }
 
   &__info {

@@ -601,6 +601,9 @@ export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
 
 export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
 
+export const DEFAULT_POSTER_THUMBNAIL_IMG =
+  "https://firebasestorage.googleapis.com/v0/b/sparkle-ohbm.appspot.com/o/assets%2Fposter_thumbnail_default.png?alt=media&token=fff064bc-0c62-4a4d-8f5e-0bd25dd06680";
+
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;

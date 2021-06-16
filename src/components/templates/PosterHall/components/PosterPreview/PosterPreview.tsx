@@ -14,7 +14,10 @@ import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
 
-import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
+import {
+  POSTERPAGE_MORE_INFO_URL_TITLE,
+  DEFAULT_POSTER_THUMBNAIL_IMG,
+} from "settings";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
@@ -33,6 +36,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     moreInfoUrls,
     moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
     contactEmail,
+    thumbnailUrl,
   } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
@@ -126,6 +130,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       </div>
 
       <p className="PosterPreview__title">{title}</p>
+
+      <img
+        src={thumbnailUrl}
+        alt={title}
+        onError={(e) => {
+          e.currentTarget.src = DEFAULT_POSTER_THUMBNAIL_IMG;
+        }}
+        style={{ borderRadius: "15px" }}
+      />
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">
