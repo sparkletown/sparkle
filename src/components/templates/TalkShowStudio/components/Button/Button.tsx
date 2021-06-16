@@ -1,6 +1,9 @@
-import { AppButton } from "components/atoms/Button/Button";
 import React from "react";
+
+import { AppButton } from "components/atoms/Button/Button";
+
 import "./Button.scss";
+import classNames from "classnames";
 
 interface ButtonWithLabelProps {
   children: React.ReactNode;
@@ -21,11 +24,15 @@ export const ButtonWithLabel: React.FC<ButtonWithLabelProps> = ({
   small,
   disabled = false,
 }) => {
+  const buttonStyles = classNames("btn", `btn-${variant}`, {
+    "btn-small": small,
+  });
+
   return (
-    <div className="button-with-label">
+    <div className="ButtonWithLabel">
       {leftLabel && <p>{leftLabel}</p>}
       <AppButton
-        customClass={`btn ${small && "btn-small"} btn-${variant}`}
+        customClass={buttonStyles}
         onClick={onClick}
         disabled={disabled}
       >

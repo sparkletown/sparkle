@@ -7,21 +7,21 @@ import AgoraRTC, {
 import { WithId } from "utils/id";
 import { useStage } from "./useStage";
 import { FullTalkShowVenue } from "types/venues";
-import { useUser } from "../../../hooks/useUser";
-import { useSelector } from "../../../hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { AgoraClientConnectionState } from "types/agora";
 import {
   useAgoraCamera,
   useAgoraRemotes,
   useAgoraScreenShare,
 } from "hooks/video/agora";
 
-import AppButton from "../../atoms/Button";
+import AppButton from "components/atoms/Button";
 import Player from "./components/Player/Player";
 // import Player, { VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
-import { AgoraClientConnectionState } from "../../../types/agora";
-import { currentVenueSelectorData } from "../../../utils/selectors";
+import { currentVenueSelectorData } from "utils/selectors";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
 // import { useVenueId } from "hooks/useVenueId";
 
@@ -246,14 +246,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
             onClick={stage.requestJoinStage}
           >
             <span>✋</span> Request to join
-          </AppButton>
-        )}
-        {stage.isUserRequesting && (
-          <AppButton
-            customClass="TalkShowStudio__request-button"
-            onClick={stage.leaveStage}
-          >
-            Cancel Request
           </AppButton>
         )}
         <Audience venue={venue} />

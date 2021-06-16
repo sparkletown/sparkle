@@ -2,10 +2,9 @@ import React from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
 
-import { User } from "types/User";
-import { UserPersistentReactionType } from "../../../types/reactions";
-
 import { WithId } from "utils/id";
+import { User } from "types/User";
+import { UserPersistentReactionType } from "types/reactions";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 

@@ -1,9 +1,12 @@
-import { useRecentVenueUsers } from "../../../hooks/users";
 import { useCallback, useEffect, useMemo } from "react";
-import { PlaceInTalkShowStudioVenue } from "../../../types/User";
-import { useVenueId } from "../../../hooks/useVenueId";
-import { useUser } from "../../../hooks/useUser";
-import { updateTalkShowStudioExperience } from "../../../api/profile";
+
+import { PlaceInTalkShowStudioVenue } from "types/User";
+
+import { updateTalkShowStudioExperience } from "api/profile";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
 
 const MAX_HOSTS = 5;
 

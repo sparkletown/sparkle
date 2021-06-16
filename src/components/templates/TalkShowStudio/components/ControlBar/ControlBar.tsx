@@ -1,15 +1,17 @@
 import React, { FC, useCallback, useMemo } from "react";
 import classNames from "classnames";
 
-import { useStage } from "../../useStage";
-import { useUser } from "../../../../../hooks/useUser";
-import { useVenueId } from "../../../../../hooks/useVenueId";
-import { useShowHide } from "../../../../../hooks/useShowHide";
+import { updateTalkShowStudioExperience } from "api/profile";
 
-import { ButtonWithLabel } from "../Button/Button";
-import { LeaveStageModal } from "../LeaveStageModal";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useShowHide } from "hooks/useShowHide";
+
 import { AppButton } from "components/atoms/Button/Button";
-import { updateTalkShowStudioExperience } from "../../../../../api/profile";
+
+import { ButtonWithLabel } from "components/templates/TalkShowStudio/components/Button/Button";
+import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
+import { useStage } from "components/templates/TalkShowStudio/useStage";
 
 import "./ControlBar.scss";
 
@@ -34,7 +36,7 @@ export const ControlBar: FC<ControlBarProps> = ({
 }) => {
   const venueId = useVenueId();
   const { userId } = useUser();
-  const { isUserOnStage, canJoinStage, canShareScreen } = useStage();
+  const stage = useStage();
 
   const {
     isShown: isLeaveStageModalVisible,
@@ -42,10 +44,10 @@ export const ControlBar: FC<ControlBarProps> = ({
     hide: hideLeaveStageModal,
   } = useShowHide();
 
-  const showSharingControl = useMemo(() => canShareScreen || isSharing, [
-    canShareScreen,
-    isSharing,
-  ]);
+  const showSharingControl = useMemo(
+    () => stage.isUserOnStage && (stage.canShareScreen || isSharing),
+    [stage, isSharing]
+  );
 
   const onClickShare = useCallback(() => {
     if (venueId && userId) {
@@ -60,21 +62,24 @@ export const ControlBar: FC<ControlBarProps> = ({
     isSharing ? stopShare() : shareScreen();
   }, [venueId, userId, isSharing, stopShare, shareScreen]);
 
-  const ControlBarClasses = classNames("ControlBar", {
+  const controlBarClasses = classNames("ControlBar", {
     "ControlBar--one-item": !showSharingControl,
   });
 
-  if (!isUserOnStage && canJoinStage && showJoinStageButton)
-    return (
-      <div className="JoinStage">
-        <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
-          Join Stage
-        </AppButton>
-      </div>
-    );
+  if (!stage.isUserOnStage) {
+    if (stage.canJoinStage && showJoinStageButton) {
+      return (
+        <div className="JoinStage">
+          <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
+            Join Stage
+          </AppButton>
+        </div>
+      );
+    }
+  }
 
-  return isUserOnStage ? (
-    <div className={ControlBarClasses}>
+  return (
+    <div className={controlBarClasses}>
       {showSharingControl && (
         <ButtonWithLabel
           onClick={onClickShare}
@@ -87,20 +92,30 @@ export const ControlBar: FC<ControlBarProps> = ({
         </ButtonWithLabel>
       )}
 
-      <ButtonWithLabel
-        onClick={showLeaveStageModal}
-        leftLabel="You are on stage"
-        variant="secondary"
-        small
-      >
-        Leave Stage
-      </ButtonWithLabel>
+      {(stage.isUserOnStage || stage.isUserRequesting) && (
+        <>
+          <ButtonWithLabel
+            onClick={
+              stage.isUserRequesting ? stage.leaveStage : showLeaveStageModal
+            }
+            leftLabel={
+              stage.isUserRequesting
+                ? "You requested to join"
+                : "You are on stage"
+            }
+            variant="secondary"
+            small
+          >
+            {stage.isUserRequesting ? "Cancel Request" : "Leave Stage"}
+          </ButtonWithLabel>
 
-      <LeaveStageModal
-        show={isLeaveStageModalVisible}
-        onHide={hideLeaveStageModal}
-        onSubmit={onStageLeaving}
-      />
+          <LeaveStageModal
+            show={isLeaveStageModalVisible}
+            onHide={hideLeaveStageModal}
+            onSubmit={onStageLeaving}
+          />
+        </>
+      )}
     </div>
-  ) : null;
+  );
 };

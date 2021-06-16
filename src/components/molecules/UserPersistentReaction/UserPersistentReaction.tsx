@@ -1,5 +1,6 @@
 import React from "react";
-import { AllEmojiReactions, EmojiReactionType } from "../../../types/reactions";
+import { AllEmojiReactions, EmojiReactionType } from "types/reactions";
+
 import "./UserPersistentReaction.scss";
 
 export interface UserPersistentReactionProps {
