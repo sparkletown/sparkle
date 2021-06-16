@@ -18,6 +18,10 @@ import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
 import { WithId } from "../utils/id";
 
+import { useUser } from "hooks/useUser";
+
+export const emptySavedPosters = {};
+
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
     return [
@@ -56,6 +60,8 @@ interface PostersContextState {
   increaseDisplayedPosterCount: () => void;
   setSearchInputValue: (value: string) => void;
   setLiveFilter: (value: boolean) => void;
+  bookmarkedFilter: boolean;
+  setBookmarkedFilter: (value: boolean) => void;
 }
 
 export const usePosters = (posterHallId: string): PostersContextState => {
@@ -79,12 +85,28 @@ export const usePosters = (posterHallId: string): PostersContextState => {
     );
   }, []);
 
-  const filteredPosterVenues = useMemo(
+  const liveFilteredPosterVenues = useMemo(
     () =>
       liveFilter
         ? posterVenues.filter((posterVenue) => posterVenue.isLive)
         : posterVenues,
     [posterVenues, liveFilter]
+  );
+
+  const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
+  const { userWithId } = useUser();
+  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
+
+  const filteredPosterVenues = useMemo(
+    () =>
+      bookmarkedFilter
+        ? liveFilteredPosterVenues.filter(
+            (posterVenue) =>
+              //@ts-ignore
+              userPosterIds[posterVenue.id]?.[0] === posterVenue.id
+          )
+        : liveFilteredPosterVenues,
+    [liveFilteredPosterVenues, bookmarkedFilter, userPosterIds]
   );
 
   // See https://fusejs.io/api/options.html
@@ -154,11 +176,13 @@ export const usePosters = (posterHallId: string): PostersContextState => {
 
     searchInputValue,
     liveFilter,
+    bookmarkedFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
-  };
+    setBookmarkedFilter,
+  } as PostersContextState;
 };
 
 export const PostersContext = createContext<PostersContextState | undefined>(

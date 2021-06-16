@@ -1,5 +1,9 @@
 import React, { useMemo } from "react";
 
+import { GenericVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import { usePostersContext } from "../../../hooks/posters";
 
 import { Button } from "components/atoms/Button";
@@ -9,7 +13,11 @@ import { PosterHallSearch } from "./components/PosterHallSearch";
 
 import "./PosterHall.scss";
 
-export const PosterHall: React.FC = () => {
+export interface PosterHallProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const {
     posterVenues,
     isPostersLoaded,
@@ -21,15 +29,22 @@ export const PosterHall: React.FC = () => {
     setSearchInputValue,
     liveFilter,
     setLiveFilter,
+
+    bookmarkedFilter,
+    setBookmarkedFilter,
   } = usePostersContext();
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 
   const renderedPosterPreviews = useMemo(() => {
     return posterVenues.map((posterVenue) => (
-      <PosterPreview key={posterVenue.id} posterVenue={posterVenue} />
+      <PosterPreview
+        key={posterVenue.id}
+        posterVenue={posterVenue}
+        canBeBookmarked={venue?.canBeBookmarked}
+      />
     ));
-  }, [posterVenues]);
+  }, [posterVenues, venue]);
 
   return (
     <div className="PosterHall">
@@ -38,6 +53,9 @@ export const PosterHall: React.FC = () => {
         searchInputValue={searchInputValue}
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
+        bookmarkedFilterValue={bookmarkedFilter}
+        setBookmarkedValue={setBookmarkedFilter}
+        showBookmarks={venue?.canBeBookmarked}
       />
 
       <div className="PosterHall__posters">
