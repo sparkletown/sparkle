@@ -15,7 +15,8 @@
     "simple-oauth2": "^3.4.0",
     "stripe": "^8.71.0",
     "twilio": "^3.63.0",
-    "uuidv4": "^6.2.6"
+    "uuidv4": "^6.2.6",
+    "yup": "^0.32.9"
   },
   "devDependencies": {
     "eslint": "^7.19.0",
