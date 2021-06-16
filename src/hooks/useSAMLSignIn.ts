@@ -1,17 +1,21 @@
 import { useCallback } from "react";
 import firebase from "firebase/app";
 
-export const useSAMLSignIn = (SAMLConfigId?: string) => {
-  const signInWithSAML = useCallback(() => {
-    if (!SAMLConfigId) return;
+export const useSAMLSignIn = (samlAuthProviderId?: string) => {
+  const hasSamlAuthProviderId = samlAuthProviderId !== undefined;
 
-    const SAMLAuthProvider = new firebase.auth.SAMLAuthProvider(SAMLConfigId);
+  const signInWithSAML = useCallback(() => {
+    if (!samlAuthProviderId) return;
+
+    const SAMLAuthProvider = new firebase.auth.SAMLAuthProvider(
+      samlAuthProviderId
+    );
 
     firebase
       .auth()
       .signInWithPopup(SAMLAuthProvider)
       .catch((err) => console.log("error", err));
-  }, [SAMLConfigId]);
+  }, [samlAuthProviderId]);
 
-  return { signInWithSAML };
+  return { signInWithSAML, hasSamlAuthProviderId };
 };

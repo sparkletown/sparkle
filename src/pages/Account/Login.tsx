@@ -11,6 +11,7 @@ import { InitialForm } from "components/organisms/AuthenticationModal/InitialFor
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
+// @debt move all styles into `Login.scss`;
 import "./Account.scss";
 import "./Login.scss";
 
@@ -25,11 +26,11 @@ export const Login: React.FC<LoginProps> = ({
 }) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
-  const hasSAMLConfigId = venue.SAMLConfigId !== undefined;
-
-  const { signInWithSAML } = useSAMLSignIn(venue.SAMLConfigId);
+  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
+    venue.samlAuthProviderId
+  );
   // It will be extended with addition of new providers
-  const hasAlternativeLogins = hasSAMLConfigId;
+  const hasAlternativeLogins = hasSamlAuthProviderId;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -56,7 +57,7 @@ export const Login: React.FC<LoginProps> = ({
             <span>Quick log in with</span>
 
             <div className="Login__alternative-logins">
-              {hasSAMLConfigId && (
+              {hasSamlAuthProviderId && (
                 <img
                   className="Login__saml-login"
                   src={SAMLLoginIcon}
