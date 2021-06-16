@@ -27,36 +27,40 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
 }) => {
   const dispatch = useDispatch();
   return (
-    <div className="schedule-item-container">
-      <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-        <span className="event-date">
+    <div className="ScheduleItem">
+      <div
+        className={`ScheduleItem__time-section ${
+          isCurrentEvent ? "ScheduleItem__primary" : ""
+        }`}
+      >
+        <span className="ScheduleItem__event-date">
           {labelDayRoomSchedule(event.start_utc_seconds)}
         </span>
-        <span className="event-time">
+        <span className="ScheduleItem__event-time">
           {formatUtcSeconds(event.start_utc_seconds)}
         </span>
-        <span className="event-time">
+        <span className="ScheduleItem__event-time">
           {formatUtcSeconds(
             event.start_utc_seconds + event.duration_minutes * 60
           )}
         </span>
       </div>
-      <div className="event-section">
-        <div className={`${isCurrentEvent ? "primary" : ""}`}>
-          <span className="event-name">{event.name}</span>
-          by <span className="event-host">{event.host}</span>
-          <span className="event-description">
+      <div className="ScheduleItem__event-section">
+        <div className={`${isCurrentEvent ? "ScheduleItem__primary" : ""}`}>
+          <span className="ScheduleItem__event-name">{event.name}</span>
+          by <span className="ScheduleItem__event-host">{event.host}</span>
+          <span className="ScheduleItem__event-description">
             <RenderMarkdown text={event.description} />
           </span>
         </div>
         {isCurrentEvent && (
-          <div className="entry-room-button">
+          <div className="ScheduleItem__entry-room-button">
             <a
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
-              className="btn room-entry-button"
+              className="btn ScheduleItem__room-entry-button"
               onClick={onRoomEnter}
-              id={`enter-room-from-schedule-event-${event}`}
+              id={`ScheduleItem__enter-room-from-schedule-event-${event}`}
               href={roomUrl}
               target="_blank"
               rel="noopener noreferrer"
