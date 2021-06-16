@@ -1,5 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
-import { isEqual } from "lodash";
+import { useState, useMemo, useCallback } from "react";
 
 import Fuse from "fuse.js";
 
@@ -15,12 +14,8 @@ import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
 import { useRelatedVenues } from "./useRelatedVenues";
 import { useVenueEvents } from "./events";
-import { useInterval } from "./useInterval";
 
-import {
-  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
-  POSTERHALL_SUBVENUE_STATUS_MS,
-} from "settings";
+import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 import { useUser } from "hooks/useUser";
 
@@ -178,51 +173,35 @@ export const usePosters = (posterHallId: string) => {
 
 export const filterLiveEvents = (
   nonPosterSubVenueEvents: WithVenueId<VenueEvent>[]
-) => {
-  return nonPosterSubVenueEvents.filter((event) => isEventLive(event));
-};
+) => nonPosterSubVenueEvents.filter((event) => isEventLive(event));
 
 export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: posterHallId,
   });
 
-  const nonPosterSubVenueIds = useMemo(() => {
-    return relatedVenues
-      .filter(
-        (relatedVenue) =>
-          relatedVenue.parentId === posterHallId &&
-          relatedVenue.template !== VenueTemplate.posterpage
-      )
-      .map((venue) => venue.id);
-  }, [relatedVenues, posterHallId]);
+  const nonPosterSubVenueIds = useMemo(
+    () =>
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === posterHallId &&
+            relatedVenue.template !== VenueTemplate.posterpage
+        )
+        .map((venue) => venue.id),
+    [relatedVenues, posterHallId]
+  );
 
   const { events: nonPosterSubVenueEvents } = useVenueEvents({
     venueIds: nonPosterSubVenueIds,
   });
 
-  const [
-    liveNonPosterSubVenueEvents,
-    setLiveNonPosterSubVenueEvents,
-  ] = useState<WithVenueId<VenueEvent>[]>();
-
-  const updateLiveEvents = useCallback(() => {
-    const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
-
-    setLiveNonPosterSubVenueEvents((prevState) => {
-      if (isEqual(prevState, filteredLiveEvents)) return prevState;
-
-      return filteredLiveEvents;
-    });
-  }, [nonPosterSubVenueEvents]);
-
-  useEffect(() => updateLiveEvents(), [updateLiveEvents]);
-
-  useInterval(() => {
-    updateLiveEvents();
-  }, POSTERHALL_SUBVENUE_STATUS_MS);
+  const filteredLiveEvents = useMemo(
+    () => filterLiveEvents(nonPosterSubVenueEvents),
+    [nonPosterSubVenueEvents]
+  );
 
   return {
-    liveNonPosterSubVenueEvents,
+    liveNonPosterSubVenueEvents: filteredLiveEvents,
   };
 };

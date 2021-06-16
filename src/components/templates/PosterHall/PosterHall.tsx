@@ -54,9 +54,9 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
   const renderedNonPosterSubVenues = useMemo(() => {
     if (!liveNonPosterSubVenueEvents) return;
 
-    return liveNonPosterSubVenueEvents.map((nonPosterSubVenueEvent) => (
+    return liveNonPosterSubVenueEvents.map((nonPosterSubVenueEvent, index) => (
       <NonPosterSubVenuePreview
-        key={nonPosterSubVenueEvent.venueId}
+        key={`${nonPosterSubVenueEvent.venueId}-${index}`}
         venueId={nonPosterSubVenueEvent.venueId}
         title={nonPosterSubVenueEvent.name}
         host={nonPosterSubVenueEvent.host}
