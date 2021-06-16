@@ -153,6 +153,10 @@ $z-layers: (
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
+  // UserAvatar
+  global-profile-icon--hover: 2,
+  global-profile-icon: 1,
+  user-avatar-status-indicator: 1,
   // UserReactions
   user-reactions-shout: 2,
   user-reactions-emoji: 1,
@@ -171,8 +175,6 @@ $z-layers: (
   // Unsorted
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
-  global-profile-icon: 1,
-  user-avatar-status-indicator: 1,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
