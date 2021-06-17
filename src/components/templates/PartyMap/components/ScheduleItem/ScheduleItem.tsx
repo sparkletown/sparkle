@@ -1,6 +1,5 @@
 import React from "react";
 import classNames from "classnames";
-import { fromUnixTime } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -44,12 +43,17 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     <div className="ScheduleItem">
       <div className={scheduleItemTimeSectionClasses}>
         <span className="ScheduleItem__event-date">
-          {formatDateRelativeToNow(fromUnixTime(event.start_utc_seconds), {
+          {formatDateRelativeToNow(eventStartTime(event), {
             formatToday: () => "",
           })}
         </span>
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventStartTime(event))}
+        </span>
+        <span className="ScheduleItem__event-date">
+          {formatDateRelativeToNow(eventEndTime(event), {
+            formatToday: () => "",
+          })}
         </span>
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventEndTime(event))}
