@@ -57,7 +57,7 @@ export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
-export const DEFAULT_PARTY_NAME = "Anon";
+export const DEFAULT_PARTY_NAME = "Mona";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
