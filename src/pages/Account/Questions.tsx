@@ -60,6 +60,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const headerMessage =
     "To help other Hubbers find and get to know you, tell us a little about yourself.";
+  const REQUIRED_QUESTIONS_NUMBER = 2;
 
   return (
     <div className="page-container questions-container">
@@ -72,7 +73,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
               <div key={question.name} className="input-group question-input">
                 <p>
                   {question.name}
-                  {index < 2 && "*"}
+                  {index < REQUIRED_QUESTIONS_NUMBER && "*"}
                 </p>
                 <textarea
                   className="input-block input-centered"
