@@ -40,16 +40,19 @@
     align-items: center;
     margin-left: 10px;
   }
+
   &__event-time,
   &__event-name {
     display: block;
     font-weight: 700;
   }
+
   &__event-date {
     display: block;
     font-weight: 700;
     color: $concrete;
   }
+
   &__event-host {
     font-weight: 700;
   }
