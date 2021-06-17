@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { isBefore } from "date-fns";
 
-import { Room } from "types/rooms";
+import { Room, RoomType } from "types/rooms";
 import { AnyVenue } from "types/venues";
 
 import { eventEndTime, getCurrentEvent } from "utils/event";
@@ -13,8 +13,9 @@ import { useSelector } from "hooks/useSelector";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import VideoModal from "components/organisms/VideoModal";
 
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
@@ -27,23 +28,40 @@ export interface RoomModalProps {
   room?: Room;
 }
 
-export interface RoomModalContentProps {
-  room: Room;
-  venueName: string;
-}
-
 export const RoomModal: React.FC<RoomModalProps> = ({
   onHide,
   room,
   show,
   venue,
-}) => (
-  <Modal show={show} onHide={onHide}>
-    <div className="room-modal">
-      {room && venue && <RoomModalContent room={room} venueName={venue.name} />}
-    </div>
-  </Modal>
-);
+}) => {
+  if (!venue || !room) return null;
+
+  if (room.type === RoomType.modalFrame) {
+    return (
+      <VideoModal
+        show={show}
+        onHide={onHide}
+        caption={room.title}
+        url={room.url}
+        autoplay
+        backdrop
+      />
+    );
+  }
+
+  return (
+    <Modal show={show} onHide={onHide}>
+      <div className="room-modal">
+        <RoomModalContent room={room} venueName={venue.name} />
+      </div>
+    </Modal>
+  );
+};
+
+export interface RoomModalContentProps {
+  room: Room;
+  venueName: string;
+}
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
