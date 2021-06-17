@@ -126,19 +126,18 @@ export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
 };
 
 /**
- * Format UTC seconds as a string representing date.
+ * Format dateOrTimestamp as a string representing date.
  *
  * @example
- *   formatDate(1618509600)
- *   // 'Apr 15th'
+ *   formatDate(1623899620647)
+ *   // 'Jun 17th'
  *
- * @param utcSeconds
+ * @param dateOrTimestamp
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatDate(utcSeconds: number) {
-  return format(fromUnixTime(utcSeconds), "MMM do");
-}
+export const formatDate = (dateOrTimestamp: Date | number): string =>
+  format(dateOrTimestamp, "MMM do");
 
 /**
  * Format dateOrTimestamp as a string representing the time in long localized time format (eg. 12:00 AM).
