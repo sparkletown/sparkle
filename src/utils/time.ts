@@ -141,11 +141,11 @@ export function formatDate(utcSeconds: number) {
 }
 
 /**
- * Format UTC seconds as a string representing the time in long localized time format (eg. 12:00 AM).
+ * Format dateOrTimestamp as a string representing the time in long localized time format (eg. 12:00 AM).
  *
  * @example
- *   formatTimestampToDisplayHoursMinutes(1618509600)
- *   // '9:35 AM'
+ *   formatTimestampToDisplayHoursMinutes(1623899620647)
+ *   // '1:13 PM'
  *
  * @param dateOrTimestamp
  *
