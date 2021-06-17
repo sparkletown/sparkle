@@ -2,15 +2,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
+import { VenueAccessMode } from "types/VenueAcccess";
+
 import { useSelector } from "hooks/useSelector";
 
 import { venueSelector } from "utils/selectors";
 
-import { VenueAccessMode } from "types/VenueAcccess";
-
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
-interface PropsType {
+export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal: () => void;
@@ -24,7 +24,7 @@ interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<PropsType> = ({
+const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
