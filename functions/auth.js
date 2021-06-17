@@ -71,7 +71,7 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
  * finally returns a custom Firebase auth token that the frontend can use to login as this user.
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
-  const { venueId } = req.query;
+  const { venueId, code: authCode } = req.query;
 
   if (!AUTH_ORIGIN) {
     throw new HttpsError("internal", "auth.origin is not configured properly");
@@ -79,6 +79,10 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
 
   if (!checkIfValidVenueId(venueId)) {
     throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
+  }
+
+  if (!authCode) {
+    throw new HttpsError("invalid-argument", "code is required");
   }
 
   const authConfig = await fetchAuthConfig(venueId);
@@ -90,8 +94,6 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   } = authConfig;
 
   const authClient = createOAuth2Client(authConfig);
-
-  const { code: authCode } = req.query;
 
   functions.logger.log("Received auth code:", authCode);
   const results = await authClient.authorizationCode.getToken({
