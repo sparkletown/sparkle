@@ -80,13 +80,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     const setremoteUserAvatar = (remoteUserId: number | string) => {
       if (!venue.id) return;
       const [remoteUser] = stage.peopleOnStage.filter(
-        ({ data }) => data?.[`${venue.id}`]?.cameraClientUid === remoteUserId
-      );
-      console.log(
-        "remoteUser: ",
-        remoteUser,
-        stage.peopleOnStage,
-        remoteUserId
+        ({ data }) =>
+          data?.[`${venue.id}`]?.cameraClientUid === `${remoteUserId}`
       );
       return remoteUser;
     };
@@ -95,7 +90,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
         user.uid !== screenClient.uid &&
         user.uid !== cameraClient.uid && (
           <div key={user.uid}>
-            {console.log(user)}
             {user.hasVideo && (
               <Player
                 user={setremoteUserAvatar(user.uid)}

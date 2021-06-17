@@ -933,7 +933,7 @@ exports.updateUserTalkShowStudioExperience = functions.https.onCall(
 
     const { venueId, userId, experience } = data;
 
-    await checkUserIsOwner(venueId, context.auth.token.user_id);
+    // await checkUserIsOwner(venueId, context.auth.token.user_id);
 
     const userRef = admin.firestore().collection("users").doc(userId);
     const user = (await userRef.get()).data();
