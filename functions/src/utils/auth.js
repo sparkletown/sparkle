@@ -5,7 +5,7 @@ const oauth2 = require("simple-oauth2");
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#createoptions--module
  */
-const createOAuth2Client = async ({
+const createOAuth2Client = ({
   clientId,
   clientSecret,
   tokenHost,
