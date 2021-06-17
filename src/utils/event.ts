@@ -80,6 +80,4 @@ export const getEventStatus = (event: VenueEvent) => {
   }
 };
 
-export const sortEventsByStartUtcSeconds = (
-  events: WithVenueId<WithId<VenueEvent>>[]
-) => events.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+export const eventSort = (a: VenueEvent, b: VenueEvent) => a.start_utc_seconds - b.start_utc_seconds
