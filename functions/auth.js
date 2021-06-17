@@ -90,6 +90,8 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     i4aApiKey,
     i4aOAuthUserInfoUrl,
     i4aGetUserMeetingInfoUrl,
+    i4aMeetingIdsToCheck,
+    i4aEventIdsToCheck,
   } = authConfig;
 
   const authClient = createOAuth2Client(authConfig);
@@ -116,10 +118,6 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     return;
   }
 
-  // TODO: configure this in cloud config and/or firestore or similar
-  const meetingIdsToCheck = [131, 136];
-  const eventIdsToCheck = [504, 506, 554];
-
   const checkedMeetingResult = await postJson(i4aGetUserMeetingInfoUrl, {
     apiKey: i4aApiKey,
     ams_id: i4aUserId,
@@ -134,11 +132,11 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   } = checkedMeetingResult;
 
   const registeredMeetings = meetingIds.filter((meetingId) =>
-    meetingIdsToCheck.includes(meetingId)
+    i4aMeetingIdsToCheck.includes(meetingId)
   );
 
   const registeredEvents = eventIds.filter((eventId) =>
-    eventIdsToCheck.includes(eventId)
+    i4aEventIdsToCheck.includes(eventId)
   );
 
   const isRegistered =

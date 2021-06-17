@@ -21,6 +21,8 @@ const AuthConfigSchema = yup.object().shape({
   i4aApiKey: yup.string().required(),
   i4aOAuthUserInfoUrl: yup.string().required(),
   i4aGetUserMeetingInfoUrl: yup.string().required(),
+  i4aMeetingIdsToCheck: yup.array().of(yup.number()).default([]),
+  i4aEventIdsToCheck: yup.array().of(yup.number()).default([]),
 });
 
 exports.AuthConfigSchema = AuthConfigSchema;
