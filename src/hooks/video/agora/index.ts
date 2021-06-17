@@ -9,7 +9,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import { updateUserTalkShowStudioExperience } from "api/admin";
+import { updateTalkShowStudioExperience } from "api/profile";
 
 import { ReactHook } from "types/utility";
 import {
@@ -118,9 +118,11 @@ export const useAgoraScreenShare: ReactHook<
       process.env.REACT_APP_AGORA_TOKEN || null
     );
 
-    updateUserTalkShowStudioExperience(venueId, userId, {
+    const experience = {
       screenClientUid: `${screenClientUid}`,
-    });
+    };
+
+    updateTalkShowStudioExperience({ venueId, userId, experience });
   };
 
   const leaveChannel = useCallback(async () => {
@@ -182,9 +184,11 @@ export const useAgoraCamera: ReactHook<
       process.env.REACT_APP_AGORA_TOKEN || null
     );
 
-    updateUserTalkShowStudioExperience(venueId, userId, {
+    const experience = {
       cameraClientUid: `${cameraClientUid}`,
-    });
+    };
+
+    updateTalkShowStudioExperience({ venueId, userId, experience });
 
     setIsCameraOn(true);
     setIsMicrophoneOn(true);
