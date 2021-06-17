@@ -18,6 +18,7 @@ import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
 import Login from "pages/Account/Login";
+import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
 
@@ -33,9 +34,6 @@ import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
-
-// TODO: Add a route/some kind of related functionality here or similar for handling receiving the custom auth token back from firebase, then using that to sign in.
-//   Alternatively, should we handle this in src/index.ts?
 
 const AppRouter = () => {
   return (
@@ -57,6 +55,10 @@ const AppRouter = () => {
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
+        <Route
+          path="/login/:venueId/:customToken"
+          component={LoginWithCustomToken}
+        />
         <Route path="/login" component={Login} />
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
