@@ -17,7 +17,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { sortEventsByStartUtcSeconds, isEventLiveOrFuture } from "utils/event";
 import { venueInsideUrl } from "utils/url";
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import firebase from "firebase/app";
 import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
@@ -164,7 +164,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
 
         // TODO: is this type cast correct?
         setEventsFuture(
-          sortEventsByStartUtcSeconds(futureEvents as VenueEvent[])
+          sortEventsByStartUtcSeconds(
+            futureEvents as WithVenueId<WithId<VenueEvent>>[]
+          )
         );
       });
   }, [venue]);
