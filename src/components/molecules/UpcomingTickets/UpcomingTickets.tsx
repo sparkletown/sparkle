@@ -1,6 +1,6 @@
 import React from "react";
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { formatDate, formatTimestampToDisplayHoursMinutes } from "utils/time";
+import { formatDate, formatTimeLocalised } from "utils/time";
 import { externalUrlAdditionalProps } from "utils/url";
 
 import "./UpcomingTickets.scss";
@@ -31,9 +31,7 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
             <div className="event">
               <div className="time-section">
                 <div className="date">{formatDate(eventDate)}</div>
-                <div className="time">
-                  {formatTimestampToDisplayHoursMinutes(eventDate)}
-                </div>
+                <div className="time">{formatTimeLocalised(eventDate)}</div>
               </div>
               <div className="event-section">{event.name}</div>
             </div>

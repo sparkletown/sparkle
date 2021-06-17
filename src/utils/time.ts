@@ -196,9 +196,8 @@ export const formatDateRelativeToNow = (
  *
  * @see https://date-fns.org/docs/format
  */
-export const formatTimestampToDisplayHoursMinutes = (
-  dateOrTimestamp: Date | number
-): string => format(dateOrTimestamp, "p");
+export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
+  format(dateOrTimestamp, "p");
 
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;

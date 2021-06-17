@@ -7,10 +7,7 @@ import { VenueEvent } from "types/venues";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { eventEndTime, eventStartTime } from "utils/event";
-import {
-  formatDateRelativeToNow,
-  formatTimestampToDisplayHoursMinutes,
-} from "utils/time";
+import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { externalUrlAdditionalProps } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -52,10 +49,10 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
           })}
         </span>
         <span className="ScheduleItem__event-time">
-          {formatTimestampToDisplayHoursMinutes(eventStartTime(event))}
+          {formatTimeLocalised(eventStartTime(event))}
         </span>
         <span className="ScheduleItem__event-time">
-          {formatTimestampToDisplayHoursMinutes(eventEndTime(event))}
+          {formatTimeLocalised(eventEndTime(event))}
         </span>
       </div>
       <div className="ScheduleItem__event-section">
