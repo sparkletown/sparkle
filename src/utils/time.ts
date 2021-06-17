@@ -238,9 +238,8 @@ export const getDaysAgoInSeconds = (days: number) =>
  *
  * @see https://date-fns.org/docs/format
  */
-export const formatHourAndMinute = (utcSeconds: number) => {
-  return format(fromUnixTime(utcSeconds), "HH:mm");
-};
+export const formatHourAndMinute = (utcSeconds: number) =>
+  format(fromUnixTime(utcSeconds), "HH:mm");
 
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const time = fromUnixTime(utcSeconds);
