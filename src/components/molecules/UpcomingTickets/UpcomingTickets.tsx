@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
+
 import { formatDate, formatTimeLocalised } from "utils/time";
 import { externalUrlAdditionalProps } from "utils/url";
 
@@ -10,9 +12,13 @@ interface PropsType {
 }
 
 const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
-  const sortedEvents = [...events].sort(
-    (a: UpcomingEvent, b: UpcomingEvent) =>
-      a.ts_utc.toMillis() - b.ts_utc.toMillis()
+  const sortedEvents = useMemo(
+    () =>
+      [...events].sort(
+        (a: UpcomingEvent, b: UpcomingEvent) =>
+          a.ts_utc.toMillis() - b.ts_utc.toMillis()
+      ),
+    [events]
   );
 
   return (
