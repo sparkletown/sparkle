@@ -4,6 +4,7 @@ import {
   differenceInMinutes,
   fromUnixTime,
   isAfter,
+  isFuture,
   isWithinInterval,
 } from "date-fns";
 
@@ -21,6 +22,9 @@ export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
 
 export const isEventLive = (event: VenueEvent) =>
   isWithinInterval(Date.now(), getEventInterval(event));
+
+export const isEventFuture = (event: VenueEvent) =>
+  isFuture(fromUnixTime(event.start_utc_seconds));
 
 export const isEventLiveOrFuture = (event: VenueEvent) => {
   const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
