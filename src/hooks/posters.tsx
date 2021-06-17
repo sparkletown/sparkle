@@ -60,7 +60,7 @@ export const usePosterVenues = (posterHallId: string) => {
   );
 };
 
-interface PostersContextState {
+export interface PostersContextState {
   posterVenues: WithId<PosterPageVenue>[];
   isPostersLoaded: boolean;
   hasHiddenPosters: boolean;
