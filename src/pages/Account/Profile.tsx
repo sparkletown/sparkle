@@ -5,7 +5,7 @@ import "firebase/storage";
 
 import { IS_BURN } from "secrets";
 
-import { DEFAULT_VENUE } from "settings";
+import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
 
 import { RouterLocation } from "types/RouterLocation";
 
@@ -77,6 +77,32 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         </button>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
+            {/* @debt - this input is hidden because for github's event they fetch the names from an OKTA, and for the demo we set the default name to Mona */}
+            <input
+              name="partyName"
+              className="input-block input-centered"
+              placeholder="Your display name"
+              defaultValue="Mona"
+              type="hidden"
+              ref={register({
+                required: true,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
+              })}
+              autoComplete="off"
+            />
+            {/* <span className="input-info">
+              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
+              characters)
+            </span> */}
+            {/* {errors.partyName && errors.partyName.type === "required" && (
+              <span className="input-error">Display name is required</span>
+            )}
+            {errors.partyName &&* errors.partyName.type === "maxLength" && (
+              <span className="input-error">
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
+              </span>
+            )} */}
             {user && (
               <ProfilePictureInput
                 venueId={venueId}
