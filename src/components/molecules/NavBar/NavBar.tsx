@@ -85,16 +85,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelectorData);
-  const venueParentId = venue?.parentId;
   const radioStations = useSelector(radioStationsSelector);
   const parentVenue = useSelector(parentVenueSelector);
 
+  const { sovereignVenueId } = useSovereignVenueId({
+    venueId,
+  });
+
+  const parentVenueId = venue?.parentId;
+
   // @debt Move connect from Navbar to a hook
   useFirestoreConnect(
-    venueParentId
+    parentVenueId
       ? {
           collection: "venues",
-          doc: venueParentId,
+          doc: parentVenueId,
           storeAs: "parentVenue",
         }
       : undefined
@@ -105,9 +110,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     push: openUrlUsingRouter,
   } = useHistory();
 
-  const { sovereignVenueId } = useSovereignVenueId({
-    venueId,
-  });
+  const isSovereignVenue = venueId === sovereignVenueId;
+
+  const hasSovereignVenue = sovereignVenueId !== undefined;
+
+  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
@@ -162,14 +169,15 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(false);
   }, []);
 
-  const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
-    
+
     enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [sovereignVenueId, openUrlUsingRouter]);
 
@@ -207,14 +215,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              {sovereignVenueId && (
-                <div className="navBar__home-icon-wrapper">
-                  <FontAwesomeIcon
-                    icon={faHome}
-                    className="navBar__home-icon"
-                    onClick={navigateToHomepage}
-                  />
-                </div>
+              {shouldShowHomeButton && (
+                <FontAwesomeIcon
+                  icon={faHome}
+                  className="NavBar__home-icon"
+                  onClick={navigateToHomepage}
+                />
               )}
               <div
                 className={`nav-party-logo ${

@@ -271,19 +271,16 @@ $border-radius: 28px;
   }
 }
 
-.navBar__home-icon {
-  cursor: pointer;
-  font-size: 24px;
-  
-  &:hover {
-    font-size: 28px;
-  }
-}
+.NavBar {
+  &__home-icon {
+    cursor: pointer;
+    font-size: 24px;
 
-.navBar__home-icon-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  width: 25px;
-  margin-right: $spacing--sm;
+    margin-right: $spacing--md;
+
+    &:hover {
+      font-size: 27px;
+      margin-right: $spacing--sm;
+    }
+  }
 }
