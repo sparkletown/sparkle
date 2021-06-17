@@ -32,11 +32,10 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
     lowercaseFirstChar(actualPassword.trim());
 
 /**
- * Redirect the user to the authentication consent screen. The 'state' cookie is set for later state verification.
+ * Redirect the user to the authentication consent screen.
  *
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
-// TODO: rename this authorize or similar?
 exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
   const { venueId } = req.query;
 
@@ -52,7 +51,6 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
 
   const authClient = createOAuth2Client(authConfig);
 
-  // TODO: configure this in cloud config and/or firestore or similar
   const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
 
   // TODO: configure this in cloud config and/or firestore or similar
@@ -68,8 +66,9 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
 });
 
 /**
- * Exchanges a given auth code passed in the 'code' URL query parameter for a Firebase auth token.
- * The request also needs to specify a 'state' query parameter which will be checked against the 'state' cookie.
+ * Exchanges a given auth code passed in the 'code' URL query parameter for an access token,
+ * looks up the associated I4A user's details, creates/fetches a firebase account, and then
+ * finally returns a custom Firebase auth token that the frontend can use to login as this user.
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const { venueId } = req.query;
@@ -188,6 +187,5 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     registeredMeetings,
   });
 
-  // TODO: redirect back to the main application in a way that we can provide the custom auth token back to it
   res.redirect(`${AUTH_ORIGIN}/in/${venueId}?customToken=${customToken}`);
 });
