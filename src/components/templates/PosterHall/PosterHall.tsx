@@ -1,7 +1,5 @@
 import React, { useMemo } from "react";
 
-import { POSTER_LOGO_SIZE } from "settings";
-
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -74,7 +72,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         {venue.leftLogo && (
           <img
             src={venue.leftLogo}
-            width={POSTER_LOGO_SIZE}
+            className="PosterHall__sponsor-logo"
             alt="poster hall left logo"
           />
         )}
@@ -90,7 +88,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         {venue.rightLogo && (
           <img
             src={venue.rightLogo}
-            width={POSTER_LOGO_SIZE}
+            className="PosterHall__sponsor-logo"
             alt="poster hall right logo"
           />
         )}

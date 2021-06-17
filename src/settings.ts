@@ -153,8 +153,6 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
   },
 };
 
-export const POSTER_LOGO_SIZE = 100;
-
 export const ACCEPTED_IMAGE_TYPES =
   "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif";
 
