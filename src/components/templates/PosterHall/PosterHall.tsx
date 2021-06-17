@@ -1,5 +1,7 @@
 import React, { useMemo } from "react";
 
+import { POSTER_LOGO_SIZE } from "settings";
+
 import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -41,12 +43,28 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
   return (
     <div className="PosterHall">
-      <PosterHallSearch
-        setSearchInputValue={setSearchInputValue}
-        searchInputValue={searchInputValue}
-        liveFilterValue={liveFilter}
-        setLiveValue={setLiveFilter}
-      />
+      <div className="PosterHall__header">
+        {venue.leftLogo && (
+          <img
+            src={venue.leftLogo}
+            width={POSTER_LOGO_SIZE}
+            alt="poster hall left logo"
+          />
+        )}
+        <PosterHallSearch
+          setSearchInputValue={setSearchInputValue}
+          searchInputValue={searchInputValue}
+          liveFilterValue={liveFilter}
+          setLiveValue={setLiveFilter}
+        />
+        {venue.rightLogo && (
+          <img
+            src={venue.rightLogo}
+            width={POSTER_LOGO_SIZE}
+            alt="poster hall right logo"
+          />
+        )}
+      </div>
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
