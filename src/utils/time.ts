@@ -203,20 +203,6 @@ export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
-/**
- * Format UTC seconds as a string representing time in the format hh:mm.
- *
- * @example
- *   formatHourAndMinute(1618509600)
- *   // '21:00'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export const formatHourAndMinute = (utcSeconds: number) =>
-  format(fromUnixTime(utcSeconds), "HH:mm");
-
 export const getHoursAgoInMilliseconds = (hours: number) =>
   getTime(subHours(Date.now(), hours));
 
