@@ -205,21 +205,6 @@ export function oneHourAfterTimestamp(timestamp: number) {
 }
 
 /**
- * Format UTC seconds as a string representing time.
- *
- * @example
- *   formatUtcSeconds(1618509600)
- *   // '9:00 PM'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export function formatUtcSeconds(utcSeconds?: number | null) {
-  return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
-}
-
-/**
  * Format UTC seconds as a string representing time in the format hh:mm.
  *
  * @example

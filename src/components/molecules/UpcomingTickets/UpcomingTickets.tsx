@@ -1,6 +1,6 @@
 import React from "react";
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { formatDate, formatUtcSeconds } from "utils/time";
+import { formatDate, formatTimestampToDisplayHoursMinutes } from "utils/time";
 
 import "./UpcomingTickets.scss";
 
@@ -17,25 +17,29 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
   return (
     <div className="upcoming-tickets-overlay">
       <h2>Get Tickets for Future Events</h2>
-      {events.map((event) => (
-        <a
-          key={event.name}
-          className="link"
-          href={event.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div className="event">
-            <div className="time-section">
-              <div className="date">{formatDate(event.ts_utc.toDate())}</div>
-              <div className="time">
-                {formatUtcSeconds(event.ts_utc.toMillis() / 1000)}
+      {events.map((event) => {
+        const eventDate = event.ts_utc.toDate();
+
+        return (
+          <a
+            key={event.name}
+            className="link"
+            href={event.url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="event">
+              <div className="time-section">
+                <div className="date">{formatDate(eventDate)}</div>
+                <div className="time">
+                  {formatTimestampToDisplayHoursMinutes(eventDate)}
+                </div>
               </div>
+              <div className="event-section">{event.name}</div>
             </div>
-            <div className="event-section">{event.name}</div>
-          </div>
-        </a>
-      ))}
+          </a>
+        );
+      })}
     </div>
   );
 };
