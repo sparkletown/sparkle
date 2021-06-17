@@ -51,10 +51,9 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
 
   const authClient = createOAuth2Client(authConfig);
 
-  const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
+  const { scope } = authConfig;
 
-  // TODO: configure this in cloud config and/or firestore or similar
-  const scope = "";
+  const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
 
   const redirectUri = authClient.authorizationCode.authorizeURL({
     redirect_uri: authCodeReturnUri,

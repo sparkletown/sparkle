@@ -10,6 +10,11 @@ const AuthConfigSchema = yup.object().shape({
   revokePath: yup.string(),
   authorizeHost: yup.string(),
   authorizePath: yup.string(),
+  scope: yup
+    .lazy((val) =>
+      Array.isArray(val) ? yup.array().of(yup.string()) : yup.string()
+    )
+    .default(""),
 
   // I4A
   // @debt This is required for the current I4A implementation, but in future we should refactor this schema be more generic
