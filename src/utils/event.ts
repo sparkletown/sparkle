@@ -9,7 +9,6 @@ import {
 } from "date-fns";
 
 import { VenueEvent } from "types/venues";
-import { WithId, WithVenueId } from "./id";
 
 import {
   formatUtcSecondsRelativeToNow,
@@ -79,6 +78,5 @@ export const getEventStatus = (event: VenueEvent) => {
   }
 };
 
-export const sortEventsByStartUtcSeconds = (
-  events: WithVenueId<WithId<VenueEvent>>[]
-) => events.sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
+  a.start_utc_seconds - b.start_utc_seconds;

@@ -5,7 +5,10 @@ import { COVERT_ROOM_TYPES } from "settings";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
-import { isEventLiveOrFuture, sortEventsByStartUtcSeconds } from "utils/event";
+import {
+  isEventLiveOrFuture,
+  eventsByStartUtcSecondsSorter,
+} from "utils/event";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
@@ -50,12 +53,12 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const selectedRoomEvents = useMemo(() => {
     if (!selfAndChildVenueEvents || !selectedRoom) return [];
 
-    return sortEventsByStartUtcSeconds(
-      selfAndChildVenueEvents.filter(
+    return selfAndChildVenueEvents
+      .filter(
         (event) =>
           event.room === selectedRoom.title && isEventLiveOrFuture(event)
       )
-    );
+      .sort(eventsByStartUtcSecondsSorter);
   }, [selfAndChildVenueEvents, selectedRoom]);
 
   const selectRoom = useCallback((room: Room) => {
