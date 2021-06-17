@@ -165,7 +165,7 @@ export interface FormatDateRelativeToNowOptions {
  * @param dateOrTimestamp
  * @param options
  *
- * @see https://date-fns.org/v2.22.1/docs/format
+ * @see https://date-fns.org/docs/format
  */
 export const formatDateRelativeToNow = (
   dateOrTimestamp: Date | number,
@@ -219,14 +219,6 @@ export function formatUtcSeconds(utcSeconds?: number | null) {
   return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
 }
 
-export const getHoursAgoInMilliseconds = (hours: number) =>
-  getTime(subHours(Date.now(), hours));
-
-export const getCurrentTimeInMilliseconds = () => Date.now();
-
-export const getDaysAgoInSeconds = (days: number) =>
-  getUnixTime(subDays(Date.now(), days));
-
 /**
  * Format UTC seconds as a string representing time in the format hh:mm.
  *
@@ -240,6 +232,14 @@ export const getDaysAgoInSeconds = (days: number) =>
  */
 export const formatHourAndMinute = (utcSeconds: number) =>
   format(fromUnixTime(utcSeconds), "HH:mm");
+
+export const getHoursAgoInMilliseconds = (hours: number) =>
+  getTime(subHours(Date.now(), hours));
+
+export const getCurrentTimeInMilliseconds = () => Date.now();
+
+export const getDaysAgoInSeconds = (days: number) =>
+  getUnixTime(subDays(Date.now(), days));
 
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const time = fromUnixTime(utcSeconds);
