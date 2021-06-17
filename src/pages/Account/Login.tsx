@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import { AnyVenue } from "types/venues";
+
+import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
@@ -29,8 +31,15 @@ export const Login: React.FC<LoginProps> = ({
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     venue.samlAuthProviderId
   );
+
+  // TODO: implement this check properly + probably using a backend function that also returns this URL
+  const hasI4AOAuth = true;
+  const signInWithI4AOAuth = useCallback(() => {
+    openUrl("/auth/connect/i4a");
+  }, []);
+
   // It will be extended with addition of new providers
-  const hasAlternativeLogins = hasSamlAuthProviderId;
+  const hasAlternativeLogins = hasSamlAuthProviderId || hasI4AOAuth;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -57,6 +66,15 @@ export const Login: React.FC<LoginProps> = ({
             <span>Quick log in with</span>
 
             <div className="Login__alternative-logins">
+              {hasI4AOAuth && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithI4AOAuth}
+                  title="I4A OAuth"
+                  alt="I4A OAuth"
+                />
+              )}
               {hasSamlAuthProviderId && (
                 <img
                   className="Login__quick-login-icon"
