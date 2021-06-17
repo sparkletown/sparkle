@@ -186,5 +186,5 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     registeredMeetings,
   });
 
-  res.redirect(`${AUTH_ORIGIN}/in/${venueId}?customToken=${customToken}`);
+  res.redirect(`${AUTH_ORIGIN}/login/${venueId}/${customToken}`);
 });
