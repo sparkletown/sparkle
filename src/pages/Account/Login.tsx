@@ -59,7 +59,7 @@ export const Login: React.FC<LoginProps> = ({
             <div className="Login__alternative-logins">
               {hasSamlAuthProviderId && (
                 <img
-                  className="Login__saml-login"
+                  className="Login__quick-login-icon"
                   src={SAMLLoginIcon}
                   onClick={signInWithSAML}
                   alt="SAML SSO login"
