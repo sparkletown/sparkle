@@ -9,7 +9,7 @@ interface PropsType {
 }
 
 const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
-  events = events.sort(
+  const sortedEvents = [...events].sort(
     (a: UpcomingEvent, b: UpcomingEvent) =>
       a.ts_utc.toMillis() - b.ts_utc.toMillis()
   );
@@ -17,7 +17,7 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
   return (
     <div className="upcoming-tickets-overlay">
       <h2>Get Tickets for Future Events</h2>
-      {events.map((event) => {
+      {sortedEvents.map((event) => {
         const eventDate = event.ts_utc.toDate();
 
         return (
