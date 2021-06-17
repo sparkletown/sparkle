@@ -15,13 +15,13 @@ import { VenueEvent } from "../../src/types/venues";
 
 const usage = makeScriptUsage({
   description: "Bulk upload events from a spreadsheet ",
-  usageParams: "CREDENTIAL_PATH VENUE_ID FILE",
-  exampleParams: "fooAccountKey.json vernue_id test.csv",
+  usageParams: "CREDENTIAL_PATH FILE",
+  exampleParams: "fooAccountKey.json test.csv",
 });
 
-const [credentialPath, venueId, filePath] = process.argv.slice(2);
+const [credentialPath, filePath] = process.argv.slice(2);
 
-if (!credentialPath || !venueId || !filePath) {
+if (!credentialPath || !filePath) {
   usage();
 }
 
@@ -41,12 +41,14 @@ const app = initFirebaseAdminApp(projectId, { credentialPath });
 
 const csvHeaders = {
   eventName: "PUBLIC EVENT NAME",
-  room: "ROOM NAME - must match Sparkle room name exactly",
+  room:
+    "ROOM NAME - must match Sparkle room name exactly( if it is music venue and Auditorium set as -1)",
   host: "PUBLIC-FACING HOST NAME",
   durationMinutes: "DURATION - Calculated",
   startTime: "START TIME (PT)",
   startDate: "START DAY",
   description: "PUBLIC EVENT DESCRIPTION (1-2 SENTENCES MAX)",
+  venueId: "Map Name",
 };
 
 (async () => {
@@ -58,7 +60,6 @@ const csvHeaders = {
       );
       const event: VenueEvent = {
         name: data[csvHeaders.eventName],
-        room: data[csvHeaders.room],
         duration_minutes: data[csvHeaders.durationMinutes],
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
@@ -67,6 +68,13 @@ const csvHeaders = {
         collective_price: 0,
         host: data[csvHeaders.host],
       };
-      await app.firestore().collection(`venues/${venueId}/events`).add(event);
+
+      if (data[csvHeaders.room] !== "-1") {
+        event.room = data[csvHeaders.room];
+      }
+      await app
+        .firestore()
+        .collection(`venues/${data[csvHeaders.venueId]}/events`)
+        .add(event);
     });
 })();
