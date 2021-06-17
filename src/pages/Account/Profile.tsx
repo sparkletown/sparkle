@@ -73,7 +73,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
           {`Swing back and edit your profile anytime you like.`}
         </div>
         <button className="profile-picture-button summit-snap">
-          Take a summit snap
+          Take a Summit snap
         </button>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">

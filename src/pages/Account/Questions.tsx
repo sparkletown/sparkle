@@ -59,7 +59,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   }
 
   const headerMessage =
-    "To help other Hubbers find and get to know you, tell us a little about yourself";
+    "To help other Hubbers find and get to know you, tell us a little about yourself.";
 
   return (
     <div className="page-container questions-container">
@@ -70,11 +70,10 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
           {venue.profile_questions &&
             venue.profile_questions.map((question: QuestionType, index) => (
               <div key={question.name} className="input-group question-input">
-                {index <= 1 ? (
-                  <p> {question.name}* </p>
-                ) : (
-                  <p> {question.name} </p>
-                )}
+                <p>
+                  {question.name}
+                  {index < 2 && "*"}
+                </p>
                 <textarea
                   className="input-block input-centered"
                   name={question.name}
