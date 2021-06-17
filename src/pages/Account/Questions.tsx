@@ -70,7 +70,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
           {venue.profile_questions &&
             venue.profile_questions.map((question: QuestionType, index) => (
               <div key={question.name} className="input-group question-input">
-                {index <= 2 ? (
+                {index <= 1 ? (
                   <p> {question.name}* </p>
                 ) : (
                   <p> {question.name} </p>
