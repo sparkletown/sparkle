@@ -60,11 +60,11 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
       </div>
       <div className="ScheduleItem__event-section">
         <div className={schedulePrimaryClasses}>
-          <span className="ScheduleItem__event-name">{event.name}</span>
+          <div className="ScheduleItem__event-name">{event.name}</div>
           by <span className="ScheduleItem__event-host">{event.host}</span>
-          <span className="ScheduleItem__event-description">
+          <div className="ScheduleItem__event-description">
             <RenderMarkdown text={event.description} />
-          </span>
+          </div>
         </div>
         {isCurrentEvent && (
           <div className="ScheduleItem__entry-room-button">
@@ -73,7 +73,6 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn ScheduleItem__room-entry-button"
               onClick={onRoomEnter}
-              id={`ScheduleItem__enter-room-from-schedule-event-${event}`}
               href={roomUrl}
               {...externalUrlAdditionalProps}
             >
