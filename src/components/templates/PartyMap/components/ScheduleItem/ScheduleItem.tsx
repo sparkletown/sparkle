@@ -11,6 +11,7 @@ import {
   formatDateRelativeToNow,
   formatTimestampToDisplayHoursMinutes,
 } from "utils/time";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -74,8 +75,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               onClick={onRoomEnter}
               id={`ScheduleItem__enter-room-from-schedule-event-${event}`}
               href={roomUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...externalUrlAdditionalProps}
             >
               Live
             </a>
