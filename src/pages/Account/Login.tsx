@@ -80,6 +80,7 @@ export const Login: React.FC<LoginProps> = ({
                   className="Login__quick-login-icon"
                   src={SAMLLoginIcon}
                   onClick={signInWithSAML}
+                  title="SAML SSO login"
                   alt="SAML SSO login"
                 />
               )}
