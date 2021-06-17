@@ -28,7 +28,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 
-  const childVenueIds = useMemo(
+  const selfAndChildVenueIds = useMemo(
     () =>
       relatedVenues
         .filter(
@@ -39,8 +39,8 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
     [relatedVenues, venue]
   );
 
-  const { events: relatedVenueEvents } = useVenueEvents({
-    venueIds: childVenueIds,
+  const { events: selfAndChildVenueEvents } = useVenueEvents({
+    venueIds: selfAndChildVenueIds,
   });
 
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
@@ -48,15 +48,15 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const hasSelectedRoom = !!selectedRoom;
 
   const selectedRoomEvents = useMemo(() => {
-    if (!relatedVenueEvents || !selectedRoom) return [];
+    if (!selfAndChildVenueEvents || !selectedRoom) return [];
 
     return sortEventsByStartUtcSeconds(
-      relatedVenueEvents.filter(
+      selfAndChildVenueEvents.filter(
         (event) =>
           event.room === selectedRoom.title && isEventLiveOrFuture(event)
       )
     );
-  }, [relatedVenueEvents, selectedRoom]);
+  }, [selfAndChildVenueEvents, selectedRoom]);
 
   const selectRoom = useCallback((room: Room) => {
     if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;

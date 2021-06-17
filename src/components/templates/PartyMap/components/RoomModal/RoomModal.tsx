@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { getCurrentEvent } from "utils/event";
+import { isEventLive } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useCustomSound } from "hooks/sounds";
@@ -19,6 +19,8 @@ import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
+const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
+
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
@@ -32,7 +34,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
-  venueEvents,
+  venueEvents = emptyEvents,
 }) => {
   if (!venue || !room) return null;
 
@@ -65,7 +67,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
@@ -81,10 +83,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   });
 
   const renderedRoomEvents = useMemo(() => {
-    if (!venueEvents) return [];
-
-    const currentEvent = getCurrentEvent(venueEvents);
-
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
         // @debt Ideally event.id would always be a unique identifier, but our types suggest it
@@ -93,7 +91,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        isCurrentEvent={currentEvent && event.name === currentEvent.name}
+        isCurrentEvent={isEventLive(event)}
         onRoomEnter={enterRoomWithSound}
         roomUrl={room.url}
       />
@@ -116,12 +114,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
-        {venueEvents && (
-          <RoomModalOngoingEvent
-            roomEvents={venueEvents}
-            onRoomEnter={enterRoomWithSound}
-          />
-        )}
+        <RoomModalOngoingEvent
+          roomEvents={venueEvents}
+          onRoomEnter={enterRoomWithSound}
+        />
       </div>
 
       <UserList
