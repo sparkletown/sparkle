@@ -79,7 +79,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue || !venueId) return null;
 
   if (!user) {
-    return <Login formType="login" />;
+    return <Login formType="login" venue={venue} />;
   }
 
   return (

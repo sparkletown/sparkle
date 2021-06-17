@@ -141,6 +141,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
@@ -177,6 +178,7 @@ export interface BaseVenue {
   showZendesk?: boolean;
   leftLogo?: string;
   rightLogo?: string;
+  canBeBookmarked?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

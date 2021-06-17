@@ -6,11 +6,16 @@ import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { externalUrlAdditionalProps } from "utils/url";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useWorldUsers } from "hooks/users";
 
 import { VideoParticipant } from "components/organisms/Video";
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { UserList } from "components/molecules/UserList";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { IntroVideoPreviewModal } from "./components/IntroVideoPreviewModal";
@@ -22,6 +27,8 @@ import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
 
+import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
+
 export interface PosterPageProps {
   venue: WithId<PosterPageVenue>;
 }
@@ -29,7 +36,20 @@ export interface PosterPageProps {
 export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const { id: venueId, isLive: isPosterLive, poster, iframeUrl } = venue;
 
-  const { title, introVideoUrl, categories } = poster ?? {};
+  const {
+    title,
+    introVideoUrl,
+    categories,
+    authorName,
+    authors,
+    posterId,
+    moreInfoUrl,
+    contactEmail,
+    moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
+  } = poster ?? {};
+
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+  const canBeBookmarked = parentVenue?.canBeBookmarked;
 
   const {
     isShown: isIntroVideoShown,
@@ -53,6 +73,8 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
     becomePassiveParticipant,
     becomeActiveParticipant,
   } = usePosterVideo(venueId);
+
+  const authorList = authors?.join(", ");
 
   const videoParticipants = useMemo(
     () =>
@@ -78,6 +100,13 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
   const hasFreeSpace =
     videoParticipants.length < POSTERPAGE_MAX_VIDEO_PARTICIPANTS;
 
+  const { worldUsers } = useWorldUsers();
+
+  const presenterUser = useMemo(
+    () => worldUsers.find((user) => user.partyName === authorName),
+    [worldUsers, authorName]
+  );
+
   return (
     <div className="PosterPage">
       <div className="PosterPage__header">
@@ -85,7 +114,44 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
         <div />
 
         <div className="PosterPage__header--middle-cell">
+          <div className="PosterPage__headerInfo">
+            {canBeBookmarked && (
+              <div className="PosterPage__bookmark">
+                <PosterBookmark posterVenue={venue} />
+              </div>
+            )}
+            {moreInfoUrl && (
+              <div className="PosterPage__posterId">
+                <a
+                  className="PosterPage__moreInfoUrl"
+                  href={moreInfoUrl}
+                  {...externalUrlAdditionalProps}
+                >
+                  {posterId ?? moreInfoUrlTitle}
+                </a>
+              </div>
+            )}
+          </div>
+
           <p className="PosterPage__title">{title}</p>
+
+          <div className="PosterPage__authorBox">
+            {presenterUser && (
+              <UserProfilePicture
+                containerClassName="PosterPage__avatar"
+                user={presenterUser}
+                showStatus
+              />
+            )}
+            <span className="PosterPage__author">
+              {authorList ?? authorName}
+            </span>
+          </div>
+
+          {contactEmail && (
+            <p className="PosterPage__contactEmail">{contactEmail}</p>
+          )}
+
           <div className="PosterPage__categories">{renderedCategories}</div>
         </div>
 
@@ -121,13 +187,15 @@ export const PosterPage: React.FC<PosterPageProps> = ({ venue }) => {
       </div>
 
       <div className="PosterPage__content">
-        <iframe
-          className="PosterPage__iframe"
-          src={iframeUrl}
-          title={title}
-          allow={IFRAME_ALLOW}
-          allowFullScreen
-        />
+        {iframeUrl && (
+          <iframe
+            className="PosterPage__iframe"
+            src={iframeUrl}
+            title={title}
+            allow={IFRAME_ALLOW}
+            allowFullScreen
+          />
+        )}
 
         {videoParticipants}
 
