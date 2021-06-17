@@ -69,7 +69,6 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               onMouseOut={() => dispatch(retainAttendance(false))}
               className="btn ScheduleItem__room-entry-button"
               onClick={onRoomEnter}
-              id={`ScheduleItem__enter-room-from-schedule-event-${event}`}
               href={roomUrl}
               target="_blank"
               rel="noopener noreferrer"
