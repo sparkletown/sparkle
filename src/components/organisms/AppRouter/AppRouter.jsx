@@ -34,6 +34,8 @@ import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 const AppRouter = () => {
   return (
@@ -65,14 +67,19 @@ const AppRouter = () => {
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
+        <Route
+          path="/admin-ng/advanced-settings/:venueId?"
+          component={AdminAdvancedSettings}
+        />
+
+        <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
+        <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
 
         <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin_v2/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin_v2" component={Admin_v2} />
+        <Route path="/admin-ng" component={Admin_v2} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />

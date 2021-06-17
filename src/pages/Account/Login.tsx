@@ -1,18 +1,36 @@
-import React, { FC, useState } from "react";
+import React, { useState } from "react";
+
+import { AnyVenue } from "types/venues";
+
+import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
-import "./Account.scss";
+import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
-interface LoginProps {
+// @debt move all styles into `Login.scss`;
+import "./Account.scss";
+import "./Login.scss";
+
+export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
+  venue: AnyVenue;
 }
 
-export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
+export const Login: React.FC<LoginProps> = ({
+  formType = "initial",
+  venue,
+}) => {
   const [formToDisplay, setFormToDisplay] = useState(formType);
+
+  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
+    venue.samlAuthProviderId
+  );
+  // It will be extended with addition of new providers
+  const hasAlternativeLogins = hasSamlAuthProviderId;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -34,6 +52,22 @@ export const Login: FC<LoginProps> = ({ formType = "initial" }) => {
         <img src="/sparkle-header.png" alt="" width="100%" />
       </div>
       <div className="auth-form-container">
+        {hasAlternativeLogins && (
+          <div className="Login__login-box">
+            <span>Quick log in with</span>
+
+            <div className="Login__alternative-logins">
+              {hasSamlAuthProviderId && (
+                <img
+                  className="Login__saml-login"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithSAML}
+                  alt="SAML SSO login"
+                />
+              )}
+            </div>
+          </div>
+        )}
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}

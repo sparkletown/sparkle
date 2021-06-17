@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room, RoomType } from "types/rooms";
 import { PartyMapVenue, RoomVisibility } from "types/venues";
 
 import { useCustomSound } from "hooks/sounds";
@@ -11,6 +11,8 @@ import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
 import RoomAttendance from "../RoomAttendance";
+
+import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
 
 import "./MapRoom.scss";
 
@@ -30,7 +32,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const { recentRoomUsers } = useRoom({ room, venueName: venue.name });
   const hasRecentRoomUsers = recentRoomUsers.length > 0;
 
-  const isUnclickable = room.type === RoomTypes.unclickable;
+  const isUnclickable = room.type === RoomType.unclickable;
+  const isMapFrame = room.type === RoomType.mapFrame;
+  const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
 
   const dispatch = useDispatch();
 
@@ -43,16 +47,18 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
+    "maproom--covert": isCovertRoom,
     "maproom--unclickable": isUnclickable,
+    "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
-      !isUnclickable &&
+      !isCovertRoom &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
 
   const titleClasses = classNames("maproom__title", {
     "maproom__title--count":
-      !isUnclickable && venue.roomVisibility === RoomVisibility.count,
+      !isCovertRoom && venue.roomVisibility === RoomVisibility.count,
   });
 
   const roomInlineStyles = useMemo(
@@ -82,13 +88,23 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     <div
       className={containerClasses}
       style={roomInlineStyles}
-      onClick={isUnclickable ? noop : selectRoomWithSound}
-      onMouseEnter={isUnclickable ? noop : handleRoomHovered}
-      onMouseLeave={isUnclickable ? noop : handleRoomUnhovered}
+      onClick={isCovertRoom ? noop : selectRoomWithSound}
+      onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
+      onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
-      <img className="maproom__image" src={room.image_url} alt={room.title} />
+      {isMapFrame ? (
+        <iframe
+          className="maproom__iframe"
+          src={room.url}
+          title={room.title}
+          allow={IFRAME_ALLOW}
+          frameBorder="0"
+        />
+      ) : (
+        <img className="maproom__image" src={room.image_url} alt={room.title} />
+      )}
 
-      {!isUnclickable && (
+      {!isCovertRoom && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />
