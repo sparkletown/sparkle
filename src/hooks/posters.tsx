@@ -198,7 +198,9 @@ export const PostersContext = createContext<PostersContextState | undefined>(
   undefined
 );
 
-type PostersProviderProps = Readonly<{ venueId: string }>;
+export interface PostersProviderProps {
+  venueId: string
+}
 export const PostersProvider: React.FC<PostersProviderProps> = ({
   venueId,
   children,
