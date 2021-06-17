@@ -68,15 +68,31 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     <div className="PosterHall">
       <div className="PosterHall__related">{renderedNonPosterSubVenues}</div>
 
-      <PosterHallSearch
-        setSearchInputValue={setSearchInputValue}
-        searchInputValue={searchInputValue}
-        liveFilterValue={liveFilter}
-        setLiveValue={setLiveFilter}
-        bookmarkedFilterValue={bookmarkedFilter}
-        setBookmarkedValue={setBookmarkedFilter}
-        showBookmarks={venue?.canBeBookmarked}
-      />
+      <div className="PosterHall__header">
+        {venue.leftLogo && (
+          <img
+            src={venue.leftLogo}
+            className="PosterHall__sponsor-logo"
+            alt="poster hall left logo"
+          />
+        )}
+        <PosterHallSearch
+          setSearchInputValue={setSearchInputValue}
+          searchInputValue={searchInputValue}
+          liveFilterValue={liveFilter}
+          setLiveValue={setLiveFilter}
+          bookmarkedFilterValue={bookmarkedFilter}
+          setBookmarkedValue={setBookmarkedFilter}
+          showBookmarks={venue?.canBeBookmarked}
+        />
+        {venue.rightLogo && (
+          <img
+            src={venue.rightLogo}
+            className="PosterHall__sponsor-logo"
+            alt="poster hall right logo"
+          />
+        )}
+      </div>
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
