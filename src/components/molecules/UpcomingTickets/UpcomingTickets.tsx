@@ -27,9 +27,7 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
         >
           <div className="event">
             <div className="time-section">
-              <div className="date">
-                {formatDate(event.ts_utc.toMillis() / 1000)}
-              </div>
+              <div className="date">{formatDate(event.ts_utc.toDate())}</div>
               <div className="time">
                 {formatUtcSeconds(event.ts_utc.toMillis() / 1000)}
               </div>

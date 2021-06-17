@@ -1,15 +1,17 @@
 import React from "react";
 import classNames from "classnames";
+import { fromUnixTime } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
+import { eventEndTime, eventStartTime } from "utils/event";
 import {
-  labelDayRoomSchedule,
+  formatDateRelativeToNow,
   formatTimestampToDisplayHoursMinutes,
 } from "utils/time";
-import { eventStartTime, eventEndTime } from "utils/event";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -45,7 +47,9 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     <div className="ScheduleItem">
       <div className={scheduleItemTimeSectionClasses}>
         <span className="ScheduleItem__event-date">
-          {labelDayRoomSchedule(event.start_utc_seconds)}
+          {formatDateRelativeToNow(fromUnixTime(event.start_utc_seconds), {
+            formatToday: () => "",
+          })}
         </span>
         <span className="ScheduleItem__event-time">
           {formatTimestampToDisplayHoursMinutes(eventStartTime(event))}
@@ -70,8 +74,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               className="btn ScheduleItem__room-entry-button"
               onClick={onRoomEnter}
               href={roomUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...externalUrlAdditionalProps}
             >
               Live
             </a>
