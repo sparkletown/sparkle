@@ -1,7 +1,7 @@
 import React from "react";
 import { UpcomingEvent } from "types/UpcomingEvent";
 import { formatDate, formatTimestampToDisplayHoursMinutes } from "utils/time";
-import { externalUrlAdditionalProps } from "/utils/url";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import "./UpcomingTickets.scss";
 
