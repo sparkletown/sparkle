@@ -16,15 +16,8 @@ import {
   getDayInterval,
 } from "./time";
 
-export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return roomEvents.find(
-    (event) =>
-      event.start_utc_seconds < currentTimeInUTCSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
-  );
-};
+export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
+  roomEvents.find(isEventLive);
 
 export const isEventLive = (event: VenueEvent) =>
   isWithinInterval(Date.now(), getEventInterval(event));
