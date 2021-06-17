@@ -42,7 +42,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (!user || !profile) {
-    return <Login />;
+    return <Login venue={venue} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

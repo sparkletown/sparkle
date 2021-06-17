@@ -4,19 +4,28 @@ import React, {
   useCallback,
   useContext,
   createContext,
+  useEffect,
 } from "react";
-import { VenueTemplate, PosterPageVenue } from "types/venues";
+import { VenueTemplate, PosterPageVenue, VenueEvent } from "types/venues";
+
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
-
-import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
+import { posterVenuesSelector } from "utils/selectors";
+import { isEventLive } from "utils/event";
+import { WithVenueId, WithId } from "utils/id";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
-import { WithId } from "../utils/id";
+import { useRelatedVenues } from "./useRelatedVenues";
+import { useVenueEvents } from "./events";
+import { useInterval } from "./useInterval";
+
+import {
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  POSTERHALL_SUBVENUE_STATUS_MS,
+} from "settings";
 
 import { useUser } from "hooks/useUser";
 
@@ -209,4 +218,53 @@ export const usePostersContext = (): PostersContextState => {
   }
 
   return postersContextState;
+};
+
+export const filterLiveEvents = (
+  nonPosterSubVenueEvents: WithVenueId<VenueEvent>[]
+) => nonPosterSubVenueEvents.filter((event) => isEventLive(event));
+
+export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: posterHallId,
+  });
+
+  const nonPosterSubVenueIds = useMemo(
+    () =>
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === posterHallId &&
+            relatedVenue.template !== VenueTemplate.posterpage
+        )
+        .map((venue) => venue.id),
+    [relatedVenues, posterHallId]
+  );
+
+  const { events: nonPosterSubVenueEvents, isEventsLoading } = useVenueEvents({
+    venueIds: nonPosterSubVenueIds,
+  });
+
+  const [
+    liveNonPosterSubVenueEvents,
+    setLiveNonPosterSubVenueEvents,
+  ] = useState<WithVenueId<VenueEvent>[]>();
+
+  const updateLiveEvents = useCallback(() => {
+    if (isEventsLoading) return;
+
+    const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
+
+    setLiveNonPosterSubVenueEvents(filteredLiveEvents);
+  }, [nonPosterSubVenueEvents, isEventsLoading]);
+
+  useEffect(() => updateLiveEvents(), [updateLiveEvents]);
+
+  useInterval(() => {
+    updateLiveEvents();
+  }, POSTERHALL_SUBVENUE_STATUS_MS);
+
+  return {
+    liveNonPosterSubVenueEvents,
+  };
 };
