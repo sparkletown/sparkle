@@ -10,7 +10,7 @@ import { animateMapStageOptionsSelector } from "../../../utils/selectors";
 
 import "./AnimateMap.scss";
 
-import { Map } from "./components/Map/Map";
+import { MapContainer } from "./components/Map/MapContainer";
 import { MAP_IMAGE } from "./constants/Resources";
 
 export interface AnimateMapProps {
@@ -54,7 +54,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = () => {
   );
 };
 
-// @ts-ignore
 const LoadingContainer = () => {
   const app = useApp();
 
@@ -67,10 +66,10 @@ const LoadingContainer = () => {
 
       app.loader.reset().add(MAP_IMAGE).load();
       app.loader.onLoad.add(() => setIsLoaded(true));
-      app.loader.onError.add((
-        loader: PIXI.Loader,
-        resource: PIXI.LoaderResource //TODO: find api ref for this callback
-      ) => console.error(resource));
+      app.loader.onError.add(
+        (loader: PIXI.Loader, resource: PIXI.LoaderResource) =>
+          console.error(resource)
+      );
     }
   }, [isLoading, app]);
 
@@ -82,5 +81,5 @@ const LoadingContainer = () => {
 };
 
 const RootContainer = () => {
-  return <Map />;
+  return <MapContainer />;
 };

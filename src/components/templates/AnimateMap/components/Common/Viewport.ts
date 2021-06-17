@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import { PixiComponent } from "@inlet/react-pixi";
-import { Viewport } from "pixi-viewport";
+import { MovedEventData, Viewport, ZoomedEventData } from "pixi-viewport";
 
 type ViewportProps = {
   screenWidth?: number;
@@ -9,6 +9,8 @@ type ViewportProps = {
   worldWidth: number;
   worldHeight: number;
   interaction: PIXI.InteractionManager | undefined;
+  zoomedHandler: (data: ZoomedEventData) => void;
+  movedHandler: (data: MovedEventData) => void;
 };
 
 export default PixiComponent("Viewport", {
@@ -18,7 +20,7 @@ export default PixiComponent("Viewport", {
       worldHeight: props.worldHeight,
       interaction: props.interaction,
     })
-      .drag()
+      .drag({ factor: 0.9 })
       .pinch()
       .wheel({ percent: 0.5, smooth: 10 })
       .decelerate()
@@ -34,11 +36,9 @@ export default PixiComponent("Viewport", {
       });
 
     viewport.moveCenter(props.worldWidth / 2, props.worldHeight / 2);
+    viewport.on("zoomed", props.zoomedHandler); //Note: how unsubscribe?
+    viewport.on("moved", props.movedHandler); //Note: how unsubscribe?
 
     return viewport;
   },
-  // config: {
-  //   destroy: true,
-  //   destroyChildren: true,
-  // },
 });

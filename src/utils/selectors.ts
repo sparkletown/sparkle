@@ -20,7 +20,13 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { AnimateMapStageOptions } from "../store/reducers/AnimateMap";
+import {
+  AnimateMapStageOptions,
+  AnimateMapWorldBounds,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "../store/reducers/AnimateMap";
+import { QuadTree } from "js-quadtree";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -250,8 +256,6 @@ export const animateMapStageOptionsSelector: SparkleSelector<AnimateMapStageOpti
   state
 ) => state.animatemap.stageOptions;
 
-export type AnimateMapWorldBounds = { width: number; height: number }; //TODO: relocate to src/types/... OR to src/store/reducers/...
-
 export const animateMapWorldBoundsSelector: SparkleSelector<AnimateMapWorldBounds> = (
   state
 ) => {
@@ -260,3 +264,22 @@ export const animateMapWorldBoundsSelector: SparkleSelector<AnimateMapWorldBound
     height: state.animatemap.worldHeight,
   };
 };
+
+export const animateMapZoomSelector: SparkleSelector<number> = (state) =>
+  state.animatemap.zoom;
+
+export const animateMapUsersSelector: SparkleSelector<
+  Map<string, ReplicatedUser>
+> = (state) => state.animatemap.users;
+
+export const animateMapVenuesSelector: SparkleSelector<
+  Map<string, ReplicatedVenue>
+> = (state) => state.animatemap.venues;
+
+export const animateMapUsersQTSelector: SparkleSelector<QuadTree | null> = (
+  state
+) => state.animatemap.usersQT;
+
+export const animateMapVenuesQTSelector: SparkleSelector<QuadTree | null> = (
+  state
+) => state.animatemap.venuesQT;

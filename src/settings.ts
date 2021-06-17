@@ -248,7 +248,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.animatemap,
     name: "Animate Map",
-    description: ["Lorem ipsum dolor sit amet, consect"],
+    description: [
+      "An explorable party map into which you can place all your party rooms.",
+    ],
   },
   {
     template: VenueTemplate.artpiece,
@@ -371,7 +373,7 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.animatemap,
     name: "AnimateMap",
-    description: ["by NordBeaver with love"],
+    description: [""],
   },
 ];
 
