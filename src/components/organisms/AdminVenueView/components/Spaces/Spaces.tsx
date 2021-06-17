@@ -1,12 +1,13 @@
 import React, { useCallback, useState } from "react";
 // import { updateRoom } from "api/admin";
-import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCaretRight,
+  faCaretDown,
+  faHome,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
-
-// import { useVenueId } from "hooks/useVenueId";
-// import { useUser } from "hooks/useUser";
 
 import "./Spaces.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -14,6 +15,8 @@ import BackgroundSelect from "pages/Admin/BackgroundSelect";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 import { EditSpace } from "components/molecules/EditSpace";
 import { MapPreview } from "../MapPreview";
+import { useHistory } from "react-router";
+import { Dimensions, Position } from "types/utility";
 
 interface VenueRooms {
   text: string;
@@ -24,91 +27,92 @@ interface VenueRooms {
 const venueRooms: VenueRooms[] = [
   {
     text: "Conversation Space",
-    icon: "/icons/icon-room-conversation.svg",
+    icon: "/assets/icons/icon-room-conversation.svg",
     template: VenueTemplate.conversationspace,
   },
   {
     text: "Auditorium",
-    icon: "/icons/icon-room-auditorium.svg",
+    icon: "/assets/icons/icon-room-auditorium.svg",
     template: VenueTemplate.audience,
   },
   {
     text: "Music Bar",
-    icon: "/icons/icon-room-musicbar.svg",
+    icon: "/assets/icons/icon-room-musicbar.svg",
     template: VenueTemplate.jazzbar,
   },
   {
     text: "Burn Barrel",
-    icon: "/icons/icon-room-burnbarrel.svg",
+    icon: "/assets/icons/icon-room-burnbarrel.svg",
     template: VenueTemplate.firebarrel,
   },
   {
     text: "Art Piece",
-    icon: "/icons/icon-room-artpiece.svg",
+    icon: "/assets/icons/icon-room-artpiece.svg",
     template: VenueTemplate.artpiece,
   },
   {
     text: "Experience",
-    icon: "/icons/icon-room-experience.svg",
+    icon: "/assets/icons/icon-room-experience.svg",
     template: VenueTemplate.zoomroom,
   },
   {
     text: "External link",
-    icon: "/icons/icon-room-externallink.svg",
+    icon: "/assets/icons/icon-room-externallink.svg",
   },
   {
     text: "Map",
-    icon: "/icons/icon-room-map.svg",
+    icon: "/assets/icons/icon-room-map.svg",
     template: VenueTemplate.partymap,
   },
 ];
 
 export interface SpacesProps {
   venue: Venue_v2;
+  onClickNext: () => void;
 }
 
-export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
+export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [showRooms, setShowRooms] = useState<boolean>(false);
-  // const [showGrid, setShowGrid] = useState<boolean>(false)
-  // const [updatedRooms, setUpdatedRooms] = useState<RoomData_v2[]>(venue.rooms ?? []);
+  const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
 
   const [showAddRoom, setShowAddRoom] = useState<boolean>(false);
   const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(
     false
   );
-  // const { user } = useUser();
 
-  // const venueId = useVenueId();
+  const history = useHistory();
+
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue.rooms?.length ?? 0;
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
+    setUpdatedRoom({});
   }, []);
 
-  // const handleSavePositions = async () => {
-  //   if (!venueId || !user || updatedRooms === venue.rooms) return;
+  const updateRoomPosition = useCallback(async (position: Position) => {
+    if (!position) return;
 
-  //   const roomIndex = updatedRooms.findIndex(
-  //     (room) => room.title === selectedRoom?.title
-  //   );
-  //   const room = updatedRooms[roomIndex];
-  //   await updateRoom(room, venueId, user, roomIndex);
-  //   setSelectedRoom(undefined);
-  // };
+    setUpdatedRoom((room) => ({
+      ...room,
+      x_percent: position.left,
+      y_percent: position.top,
+    }));
+  }, []);
 
-  // const addNewRoomPreview = useCallback(() => {
-  //   const newPreview = {
-  //     x_percent: 50,
-  //     y_percent: 50,
-  //     width_percent: 5,
-  //     height_percent: 5,
-  //   }
-  // }, [])
+  const updateRoomSize = useCallback(async (size: Dimensions) => {
+    if (!size) return;
+
+    setUpdatedRoom((room) => ({
+      ...room,
+      width_percent: size.width,
+      height_percent: size.height,
+    }));
+  }, []);
 
   const selectedRoomIndex =
-    venue.rooms?.findIndex((room) => room === selectedRoom) ?? 0;
+    venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
     <div className="spaces">
@@ -116,10 +120,11 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
         {hasSelectedRoom ? (
           <EditSpace
             room={selectedRoom!}
+            updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
             onBackPress={clearSelectedRoom}
             onDelete={clearSelectedRoom}
-            onEdit={() => {}}
+            onEdit={clearSelectedRoom}
           />
         ) : (
           <>
@@ -194,12 +199,22 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
                 />
               ))}
             <div className="spaces__footer">
-              <div className="spaces__home-button">
-                <div className="spaces__home-icon" />
+              <div
+                className="spaces__home-button"
+                onClick={() => history.push("/admin-ng/")}
+              >
+                <FontAwesomeIcon icon={faHome} />
               </div>
               <div className="spaces__nav-buttons">
-                <div className="spaces__back-button">Back</div>
-                <div className="spaces__next-button">Next</div>
+                <div
+                  className="spaces__back-button"
+                  onClick={() => history.push("/admin-ng/")}
+                >
+                  Back
+                </div>
+                <div className="spaces__next-button" onClick={onClickNext}>
+                  Next
+                </div>
               </div>
             </div>
           </>
@@ -208,13 +223,11 @@ export const Spaces: React.FC<SpacesProps> = ({ venue }) => {
       <div className="spaces__map">
         <MapPreview
           isEditing={hasSelectedRoom}
-          setIsEditing={() => {}}
-          venueId={venue.id}
-          venueName={venue.name}
           mapBackground={venue.mapBackgroundImageUrl}
           setSelectedRoom={setSelectedRoom}
           rooms={venue.rooms ?? []}
-          onRoomChange={() => {}}
+          onMoveRoom={updateRoomPosition}
+          onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}
         />
       </div>

@@ -8,30 +8,34 @@ import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 import React, { useCallback, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import { RoomData_v2 } from "types/rooms";
 
 import "./EditSpace.scss";
 
 interface EditSpaceProps {
   room: RoomData_v2;
+  updatedRoom: RoomData_v2;
   roomIndex: number;
-  onBackPress: () => void;
+  onBackPress: (roomIndex: number) => void;
   onDelete?: () => void;
   onEdit?: () => void;
 }
 export const EditSpace: React.FC<EditSpaceProps> = ({
   room,
+  updatedRoom,
   roomIndex,
   onBackPress,
   onDelete,
   onEdit,
 }) => {
-  const [isDeleting, setDeleting] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
 
   const { user } = useUser();
 
   const venueId = useVenueId();
+
+  console.log("room", room);
 
   const { register, handleSubmit, setValue, watch, errors } = useForm({
     reValidateMode: "onChange",
@@ -48,12 +52,6 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
 
   const values = watch();
 
-  // // useForm doesn't trigger on props change and the default values always remain the first room
-  // // This is why this useEffect is needed to update the values every time room changes.
-  // useEffect(() => {
-  //   reset();
-  // }, [reset]);
-
   const handleImageChange = useCallback(
     (val: string) => {
       setValue("image_url", val, false);
@@ -61,16 +59,17 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
     [setValue]
   );
 
-  const onSubmit = useCallback(async () => {
+  const [{ loading: isUpdating }, updateRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
     try {
       const roomData = {
         ...(room as RoomInput),
+        ...(updatedRoom as RoomInput),
         ...values,
       };
-      console.log("12312312312", roomData, values);
-      onEdit && onEdit();
+      console.log("roomData", roomData);
       await upsertRoom(roomData, venueId, user, roomIndex);
+      onEdit && onEdit();
     } catch (e) {
       console.log(error, e);
 
@@ -81,10 +80,9 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
         });
       });
     }
-  }, [error, onEdit, room, roomIndex, user, values, venueId]);
+  }, [error, onEdit, room, roomIndex, updatedRoom, user, values, venueId]);
 
-  const deleteRoom = useCallback(async () => {
-    setDeleting(true);
+  const [{ loading: isDeleting }, deleteRoom] = useAsyncFn(async () => {
     try {
       await firebase.functions().httpsCallable("venue-deleteRoom")({
         venueId,
@@ -93,8 +91,6 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
       onDelete && onDelete();
     } catch (error) {
       setError("Can't delete room, please try again.");
-    } finally {
-      setDeleting(false);
     }
   }, [venueId, room, onDelete]);
 
@@ -103,7 +99,7 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)}>
+    <Form onSubmit={handleSubmit(updateRoom)}>
       <div className="edit-space">
         <div className="edit-space__room">
           <Form.Row>
@@ -113,7 +109,7 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
                 type="text"
                 ref={register}
                 name="template"
-                value={!room.template ? "external" : ""}
+                value={room.template}
                 placeholder="Room name"
                 custom
                 disabled={true}
@@ -203,16 +199,18 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
             </div>
           </Form.Row>
 
-          <Button onClick={deleteRoom}>Delete room</Button>
+          <Button disabled={isUpdating || isDeleting} onClick={deleteRoom}>
+            Delete room
+          </Button>
           {error && <div>Error: {error}</div>}
         </div>
 
         <div className="edit-space__footer">
-          <Button onClick={onBackPress}>Back</Button>
+          <Button onClick={() => onBackPress(roomIndex)}>Back</Button>
           <Button
             className="confirm-button"
             type="submit"
-            disabled={isDeleting}
+            disabled={isUpdating || isDeleting}
           >
             Save changes
           </Button>

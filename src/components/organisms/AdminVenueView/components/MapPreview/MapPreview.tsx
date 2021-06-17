@@ -3,7 +3,6 @@ import React, {
   SetStateAction,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import { isEqual } from "lodash";
@@ -15,37 +14,30 @@ import { useUser } from "hooks/useUser";
 import { Container } from "../Container";
 import Legend from "components/atoms/Legend";
 import { RoomData_v2 } from "types/rooms";
-import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import "./MapPreview.scss";
+import { Dimensions, Position } from "types/utility";
 
 export interface MapPreviewProps {
-  venueName: string;
   mapBackground?: string;
   rooms: RoomData_v2[];
-  venueId: string;
   isEditing: boolean;
-  setIsEditing: (value: boolean) => void;
   selectedRoom: RoomData_v2 | undefined;
-  onRoomChange: (rooms: RoomData_v2[]) => void;
+  onResizeRoom?: (size: Dimensions) => void;
+  onMoveRoom?: (position: Position) => void;
   setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
 export const MapPreview: React.FC<MapPreviewProps> = ({
-  venueName,
   mapBackground,
   rooms,
-  venueId,
   isEditing,
-  setIsEditing,
-  onRoomChange,
+  onMoveRoom,
+  onResizeRoom,
   selectedRoom,
   setSelectedRoom,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
-  // Move this state up
-  // const [updatedRooms, setUpdatedRooms] = useState<RoomData_v2[]>([]);
-  // const [isSaving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -55,9 +47,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     ) {
       setMapRooms(rooms);
     }
-  }, [isEditing, mapRooms, rooms]);
-
-  const roomRef = useRef<SubVenueIconMap>({});
+  }, [isEditing, mapRooms.length, rooms]);
 
   const iconsMap = useMemo(() => {
     const iconsRooms = isEditing || mapRooms.length ? mapRooms : rooms;
@@ -73,20 +63,6 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
 
   if (!user) return <></>;
 
-  const handleOnChange = (val: SubVenueIconMap) => {
-    if (!isEqual(roomRef.current, val)) {
-      roomRef.current = val;
-      const normalizeRooms = Object.values(val).map((room, index) => ({
-        ...rooms[index],
-        x_percent: room.left,
-        y_percent: room.top,
-        width_percent: room.width,
-        height_percent: room.height,
-      }));
-      onRoomChange(normalizeRooms);
-    }
-  };
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
@@ -97,7 +73,8 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
           rooms={mapRooms}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
-          onChange={handleOnChange}
+          onMove={onMoveRoom}
+          onResize={onResizeRoom}
           backgroundImage={mapBackground ?? ""}
           otherIcons={{}}
           // @ts-ignore

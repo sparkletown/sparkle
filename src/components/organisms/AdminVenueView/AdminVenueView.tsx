@@ -78,7 +78,10 @@ export const AdminVenueView: React.FC = () => {
         </Nav>
       </div>
       {selectedTab === AdminVenueTab.spaces && (
-        <Spaces venue={venue as Venue_v2} />
+        <Spaces
+          venue={venue as Venue_v2}
+          onClickNext={() => setSelectedTab(AdminVenueTab.timing)}
+        />
       )}
       {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}

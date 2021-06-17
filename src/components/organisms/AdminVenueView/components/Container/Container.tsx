@@ -3,14 +3,13 @@ import React, {
   useState,
   useMemo,
   CSSProperties,
-  useEffect,
   Dispatch,
   SetStateAction,
 } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import ReactResizeDetector from "react-resize-detector";
-import { Dimensions } from "types/utility";
+import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
 import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
@@ -45,13 +44,13 @@ interface PropsType {
   backgroundImage: string;
   iconImageStyle?: CSSProperties; // This is not being used ATM
   draggableIconImageStyle?: CSSProperties; // This is not being used ATM
-  onChange?: (val: SubVenueIconMap) => void;
   otherIcons: SubVenueIconMap;
   onOtherIconClick?: (key: string) => void;
   coordinatesBoundary: CoordinatesBoundary;
   interactive: boolean;
   resizable: boolean;
-  onResize?: (rawVal: Dimensions, percentageVal: Dimensions) => void;
+  onResize?: (size: Dimensions) => void;
+  onMove?: (position: Position) => void;
   otherIconsStyle?: CSSProperties;
   rounded?: boolean;
   backgroundImageStyle?: CSSProperties;
@@ -68,7 +67,6 @@ export const Container: React.FC<PropsType> = (props) => {
     iconsMap,
     backgroundImage,
     iconImageStyle,
-    onChange,
     coordinatesBoundary,
     interactive,
     resizable,
@@ -79,57 +77,23 @@ export const Container: React.FC<PropsType> = (props) => {
     rooms,
     selectedRoom,
     setSelectedRoom,
+    onResize,
+    onMove,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
 
-  useEffect(() => {
-    if (!imageDims) return;
-
-    const convertDisplayedCoordToIntrinsic = (
+  const convertDisplayedCoordToIntrinsic = useCallback(
+    (
       val: number,
-      dimension: keyof typeof imageDims,
+      dimension: "height" | "width",
       coordinateBoundary: number
-    ) => (coordinateBoundary * val) / imageDims[dimension];
-
-    //need to return the unscaled values
-    const unscaledBoxes = Object.keys(boxes).reduce(
-      (acc, val) => ({
-        ...acc,
-        [val]: {
-          ...boxes[val],
-          // resizable expects a percentage (for rooms), whereas non-resizable expects pixels
-          width: resizable
-            ? (coordinatesBoundary.width * boxes[val].width) / imageDims.width
-            : boxes[val].width,
-          height: resizable
-            ? (coordinatesBoundary.height * boxes[val].height) /
-              imageDims.height
-            : boxes[val].height,
-          top: convertDisplayedCoordToIntrinsic(
-            boxes[val].top,
-            "height",
-            coordinatesBoundary.height
-          ),
-          left: convertDisplayedCoordToIntrinsic(
-            boxes[val].left,
-            "width",
-            coordinatesBoundary.width
-          ),
-        },
-      }),
-      {}
-    );
-
-    onChange && onChange(unscaledBoxes);
-  }, [
-    boxes,
-    onChange,
-    imageDims,
-    resizable,
-    coordinatesBoundary.width,
-    coordinatesBoundary.height,
-  ]);
+    ) => {
+      if (!imageDims) return 0;
+      return (coordinateBoundary * val) / imageDims[dimension];
+    },
+    [imageDims]
+  );
 
   useMemo(() => {
     if (!imageDims) return;
@@ -166,6 +130,18 @@ export const Container: React.FC<PropsType> = (props) => {
 
   const moveBox = useCallback(
     (id: string, left: number, top: number) => {
+      onMove?.({
+        left: convertDisplayedCoordToIntrinsic(
+          left,
+          "width",
+          coordinatesBoundary.width
+        ),
+        top: convertDisplayedCoordToIntrinsic(
+          top,
+          "height",
+          coordinatesBoundary.height
+        ),
+      });
       setBoxes(
         update(boxes, {
           [id]: {
@@ -174,12 +150,29 @@ export const Container: React.FC<PropsType> = (props) => {
         })
       );
     },
-    [boxes]
+    [
+      boxes,
+      convertDisplayedCoordToIntrinsic,
+      coordinatesBoundary.height,
+      coordinatesBoundary.width,
+      onMove,
+    ]
   );
 
   const resizeBox = useCallback(
     (id: string) => (dimensions: Dimensions) => {
+      if (!imageDims) return;
+
       const { width, height } = dimensions;
+
+      onResize?.({
+        width: resizable
+          ? (coordinatesBoundary.width * width) / imageDims.width
+          : width,
+        height: resizable
+          ? (coordinatesBoundary.height * height) / imageDims.height
+          : height,
+      });
       setBoxes(
         update(boxes, {
           [id]: {
@@ -188,7 +181,14 @@ export const Container: React.FC<PropsType> = (props) => {
         })
       );
     },
-    [boxes]
+    [
+      boxes,
+      coordinatesBoundary.height,
+      coordinatesBoundary.width,
+      imageDims,
+      onResize,
+      resizable,
+    ]
   );
 
   const [, drop] = useDrop({
@@ -215,7 +215,6 @@ export const Container: React.FC<PropsType> = (props) => {
       <>
         <DraggableSubvenue
           isResizable={resizable}
-          key={index}
           id={index.toString()}
           imageStyle={iconImageStyle}
           rounded={!!rounded}
@@ -235,73 +234,73 @@ export const Container: React.FC<PropsType> = (props) => {
   };
 
   return (
-    <>
-      <div ref={drop} style={{ ...styles, ...containerStyle }}>
-        <ReactResizeDetector
-          handleWidth
-          handleHeight
-          onResize={(width, height) => setImageDims({ width, height })}
-        />
-        <img
-          alt="draggable background "
-          style={{
-            width: "100%",
-            ...backgroundImageStyle,
-          }}
-          src={backgroundImage}
-        />
+    <div ref={drop} style={{ ...styles, ...containerStyle }}>
+      <ReactResizeDetector
+        handleWidth
+        handleHeight
+        onResize={(width, height) => setImageDims({ width, height })}
+      />
+      <img
+        alt="draggable background "
+        style={{
+          width: "100%",
+          ...backgroundImageStyle,
+        }}
+        src={backgroundImage}
+      />
 
-        {backgroundImage &&
-          rooms.map((room, index) =>
-            room === selectedRoom ? (
-              <>{renderSelectedRoom(index)}</>
-            ) : (
+      {backgroundImage &&
+        rooms.map((room, index) =>
+          room === selectedRoom ? (
+            <div key={`${room.title}-${index}`}>
+              {renderSelectedRoom(index)}
+            </div>
+          ) : (
+            <div
+              className="map-preview__room"
+              key={`${room.title}-${index}`}
+              onClick={() => !selectedRoom && setSelectedRoom(room)}
+              style={{
+                position: "absolute",
+                top: `${room.y_percent}%`,
+                left: `${room.x_percent}%`,
+                width: `${room.width_percent}%`,
+                height: `${room.height_percent}%`,
+              }}
+            >
+              <img
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  filter: room.isEnabled ? "none" : "grayscale(100%)",
+                  opacity: room.isEnabled ? 1 : 0.5,
+                  transition: "filter .3s ease",
+                }}
+                src={room.image_url}
+                alt="room banner"
+                title={room.title}
+              />
               <div
-                className="map-preview__room"
-                key={room.title}
-                onClick={() => !selectedRoom && setSelectedRoom(room)}
                 style={{
                   position: "absolute",
-                  top: `${room.y_percent}%`,
-                  left: `${room.x_percent}%`,
-                  width: `${room.width_percent}%`,
-                  height: `${room.height_percent}%`,
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  display: "flex",
+                  alignContent: "center",
+                  justifyContent: "center",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  borderRadius: "22px",
+                  padding: "6px 8px",
+                  fontSize: "0.8rem",
+                  transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1)",
+                  whiteSpace: "nowrap",
                 }}
               >
-                <img
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    filter: room.isEnabled ? "none" : "grayscale(100%)",
-                    opacity: room.isEnabled ? 1 : 0.5,
-                    transition: "filter .3s ease",
-                  }}
-                  src={room.image_url}
-                  alt="room banner"
-                  title={room.title}
-                />
-                <div
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    transform: "translateX(-50%)",
-                    display: "flex",
-                    alignContent: "center",
-                    justifyContent: "center",
-                    backgroundColor: "rgba(0, 0, 0, 0.5)",
-                    borderRadius: "22px",
-                    padding: "6px 8px",
-                    fontSize: "0.8rem",
-                    transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1)",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {room.title}
-                </div>
+                {room.title}
               </div>
-            )
-          )}
-      </div>
-    </>
+            </div>
+          )
+        )}
+    </div>
   );
 };
