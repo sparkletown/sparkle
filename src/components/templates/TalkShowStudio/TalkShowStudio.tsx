@@ -139,7 +139,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
           )
       );
   }, [remoteUsers, venue.id, stage.peopleOnStage, userOnStageSharingScreen]);
-  console.log(remoteUsers, stage.peopleOnStage);
+
   const onStageJoin = useCallback(() => {
     cameraClientJoin();
     screenClientJoin();
@@ -210,8 +210,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       </div>
     );
   };
-  console.log("remoteScreenTrack", remoteScreenTrack);
-  console.log("remoteCameraTrack", remoteCameraTrack);
 
   return (
     <>
