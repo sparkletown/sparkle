@@ -19,6 +19,8 @@ import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
 
+const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
+
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
@@ -32,7 +34,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   room,
   show,
   venue,
-  venueEvents,
+  venueEvents = emptyEvents,
 }) => {
   if (!venue || !room) return null;
 
@@ -65,7 +67,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  venueEvents?: WithVenueId<WithId<VenueEvent>>[];
+  venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
@@ -81,8 +83,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   });
 
   const renderedRoomEvents = useMemo(() => {
-    if (!venueEvents) return [];
-
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
         // @debt Ideally event.id would always be a unique identifier, but our types suggest it
@@ -114,12 +114,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
-        {venueEvents && (
-          <RoomModalOngoingEvent
-            roomEvents={venueEvents}
-            onRoomEnter={enterRoomWithSound}
-          />
-        )}
+        <RoomModalOngoingEvent
+          roomEvents={venueEvents}
+          onRoomEnter={enterRoomWithSound}
+        />
       </div>
 
       <UserList
