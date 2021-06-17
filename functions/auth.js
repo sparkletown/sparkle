@@ -179,10 +179,15 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     email: userRecord.email,
   });
 
-  // Create a custom token for the frontend to use to sign into firebase auth as this user
-  const customToken = await admin.auth().createCustomToken(userRecord.uid, {
+  // Set custom claims on the user based on their registered meetings/events
+  await admin.auth().setCustomUserClaims(userRecord.uid, {
+    i4aUserId,
     registeredMeetings,
+    registeredEvents,
   });
+
+  // Create a custom token for the frontend to use to sign into firebase auth as this user
+  const customToken = await admin.auth().createCustomToken(userRecord.uid);
 
   res.redirect(`${AUTH_ORIGIN}/login/${venueId}/${customToken}`);
 });
