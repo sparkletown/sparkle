@@ -113,9 +113,7 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   functions.logger.log("I4A User ID:", i4aUserId);
 
   if (!i4aUserId) {
-    // TODO: redirect to some kind of '500 error' page?
-    res.redirect("/in/TODO/error");
-    return;
+    throw new HttpsError("internal", "failed to retrieve i4aUserId");
   }
 
   const checkedMeetingResult = await postJson(i4aGetUserMeetingInfoUrl, {
