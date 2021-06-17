@@ -32,7 +32,7 @@ export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
-export const PLATFORM_BRAND_NAME = "Sparkle";
+export const PLATFORM_BRAND_NAME = "OHBM2021";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -106,6 +106,9 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
+// How often to check for live events in subvenues of a posterhall template
+export const POSTERHALL_SUBVENUE_STATUS_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
@@ -619,6 +622,8 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/;
 
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
