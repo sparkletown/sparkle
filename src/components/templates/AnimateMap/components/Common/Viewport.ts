@@ -8,7 +8,7 @@ type ViewportProps = {
   screenHeight?: number;
   worldWidth: number;
   worldHeight: number;
-  interaction: PIXI.InteractionManager | null;
+  interaction: PIXI.InteractionManager | undefined;
 };
 
 export default PixiComponent("Viewport", {
@@ -37,8 +37,8 @@ export default PixiComponent("Viewport", {
 
     return viewport;
   },
-  config: {
-    destroy: true,
-    destroyChildren: true,
-  },
+  // config: {
+  //   destroy: true,
+  //   destroyChildren: true,
+  // },
 });

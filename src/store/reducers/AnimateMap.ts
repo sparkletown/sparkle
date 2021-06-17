@@ -4,7 +4,23 @@ import {
 } from "../actions/AnimateMap";
 import { Reducer } from "redux";
 import * as PIXI from "pixi.js";
-import { LastInTuple } from "react-pixi-fiber";
+
+// Gets the length of an array/tuple type.
+// see: https://dev.to/kjleitz/comment/gb5d
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LengthOfTuple<T extends any[]> = T extends { length: infer L } ? L : never;
+
+// Drops the first element of a tuple.
+// see: https://dev.to/kjleitz/comment/gb5d
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type DropFirstInTuple<T extends any[]> = T extends [arg: any, ...rest: infer U]
+  ? U
+  : T;
+
+// Gets the type of the last element of a tuple.
+// see: https://dev.to/kjleitz/comment/gb5d
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LastInTuple<T extends any[]> = T[LengthOfTuple<DropFirstInTuple<T>>];
 
 export type AnimateMapStageOptions = LastInTuple<
   ConstructorParameters<typeof PIXI.Application>

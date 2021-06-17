@@ -67,9 +67,10 @@ const LoadingContainer = () => {
 
       app.loader.reset().add(MAP_IMAGE).load();
       app.loader.onLoad.add(() => setIsLoaded(true));
-      app.loader.onError.add((loader: PIXI.Loader, resource: PIXI.Resource) =>
-        console.error(resource)
-      );
+      app.loader.onError.add((
+        loader: PIXI.Loader,
+        resource: PIXI.LoaderResource //TODO: find api ref for this callback
+      ) => console.error(resource));
     }
   }, [isLoading, app]);
 

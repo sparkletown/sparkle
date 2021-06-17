@@ -250,7 +250,7 @@ export const animateMapStageOptionsSelector: SparkleSelector<AnimateMapStageOpti
   state
 ) => state.animatemap.stageOptions;
 
-export type AnimateMapWorldBounds = { width: number; height: number };
+export type AnimateMapWorldBounds = { width: number; height: number }; //TODO: relocate to src/types/... OR to src/store/reducers/...
 
 export const animateMapWorldBoundsSelector: SparkleSelector<AnimateMapWorldBounds> = (
   state
