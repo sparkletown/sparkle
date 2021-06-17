@@ -141,19 +141,18 @@ export function formatDate(utcSeconds: number) {
 }
 
 /**
- * Format UTC seconds as a string representing exact hour(using 12 hour AM/PM format) and minutes.
+ * Format UTC seconds as a string representing the time in long localized time format (eg. 12:00 AM).
  *
  * @example
  *   formatTimestampToDisplayHoursMinutes(1618509600)
  *   // '9:35 AM'
  *
- * @param timestamp
+ * @param date
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatTimestampToDisplayHoursMinutes(timestamp: number) {
-  return format(timestamp, "h:mm aa");
-}
+export const formatTimestampToDisplayHoursMinutes = (date: Date | number) =>
+  format(date, "p");
 
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;

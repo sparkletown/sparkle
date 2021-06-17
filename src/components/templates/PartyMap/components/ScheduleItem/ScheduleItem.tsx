@@ -5,7 +5,11 @@ import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { formatUtcSeconds, labelDayRoomSchedule } from "utils/time";
+import {
+  labelDayRoomSchedule,
+  formatTimestampToDisplayHoursMinutes,
+} from "utils/time";
+import { eventStartTime, eventEndTime } from "utils/event";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -44,12 +48,10 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
           {labelDayRoomSchedule(event.start_utc_seconds)}
         </span>
         <span className="ScheduleItem__event-time">
-          {formatUtcSeconds(event.start_utc_seconds)}
+          {formatTimestampToDisplayHoursMinutes(eventStartTime(event))}
         </span>
         <span className="ScheduleItem__event-time">
-          {formatUtcSeconds(
-            event.start_utc_seconds + event.duration_minutes * 60
-          )}
+          {formatTimestampToDisplayHoursMinutes(eventEndTime(event))}
         </span>
       </div>
       <div className="ScheduleItem__event-section">
