@@ -1,6 +1,7 @@
 import React from "react";
 import { UpcomingEvent } from "types/UpcomingEvent";
 import { formatDate, formatTimestampToDisplayHoursMinutes } from "utils/time";
+import { externalUrlAdditionalProps } from "/utils/url";
 
 import "./UpcomingTickets.scss";
 
@@ -25,8 +26,7 @@ const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
             key={event.name}
             className="link"
             href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
+            {...externalUrlAdditionalProps}
           >
             <div className="event">
               <div className="time-section">
