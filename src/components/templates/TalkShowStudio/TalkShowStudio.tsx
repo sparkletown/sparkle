@@ -76,8 +76,34 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     [currentVenue?.owners, userId]
   );
 
+  const [userOnStageSharingScreen] = useMemo(
+    () =>
+      stage.peopleOnStage.filter(
+        ({ data }) => data?.[`${venue.id}`]?.isSharingScreen
+      ),
+    [stage.peopleOnStage, venue.id]
+  );
+  const [remoteScreenTrack] = useMemo(
+    () =>
+      remoteUsers.filter(
+        ({ uid }) =>
+          `${uid}` ===
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
+      ),
+    [userOnStageSharingScreen?.data, remoteUsers, venue.id]
+  );
+  const [remoteCameraTrack] = useMemo(
+    () =>
+      remoteUsers.filter(
+        ({ uid }) =>
+          `${uid}` ===
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.cameraClientUid
+      ),
+    [userOnStageSharingScreen?.data, remoteUsers, venue.id]
+  );
+
   const remoteUsersPlayers = useMemo(() => {
-    const setremoteUserAvatar = (remoteUserId: number | string) => {
+    const setRemoteUserAvatar = (remoteUserId: number | string) => {
       if (!venue.id) return;
       const [remoteUser] = stage.peopleOnStage.filter(
         ({ data }) =>
@@ -85,24 +111,35 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       );
       return remoteUser;
     };
-    return remoteUsers.map(
-      (user) =>
-        user.uid !== screenClient.uid &&
-        user.uid !== cameraClient.uid && (
-          <div key={user.uid}>
-            {user.hasVideo && (
-              <Player
-                user={setremoteUserAvatar(user.uid)}
-                videoTrack={user.videoTrack}
-                audioTrack={user.audioTrack}
-                containerClass="TalkShowStudio__mode--play"
-              />
-            )}
-          </div>
-        )
-    );
-  }, [remoteUsers, venue.id, stage.peopleOnStage]);
-
+    return remoteUsers
+      .filter(
+        ({ uid }) =>
+          `${uid}` !==
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.cameraClientUid
+      )
+      .filter(
+        ({ uid }) =>
+          `${uid}` !==
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
+      )
+      .map(
+        (user) =>
+          user.uid !== screenClient.uid &&
+          user.uid !== cameraClient.uid && (
+            <div key={user.uid}>
+              {user.hasVideo && (
+                <Player
+                  user={setRemoteUserAvatar(user.uid)}
+                  videoTrack={user.videoTrack}
+                  audioTrack={user.audioTrack}
+                  containerClass="TalkShowStudio__mode--play"
+                />
+              )}
+            </div>
+          )
+      );
+  }, [remoteUsers, venue.id, stage.peopleOnStage, userOnStageSharingScreen]);
+  console.log(remoteUsers, stage.peopleOnStage);
   const onStageJoin = useCallback(() => {
     cameraClientJoin();
     screenClientJoin();
@@ -144,33 +181,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     !stage.isUserOnStage &&
     !stage.isUserRequesting;
 
-  // const renderRemotesUsers = useMemo(() => {
-  //   // TODO: strict render remote user when he is screenSharing
-  //   const validateUser = (user: IAgoraRTCRemoteUser) =>
-  //     user.hasVideo &&
-  //     user.uid !== screenClient.uid &&
-  //     user.uid !== cameraClient.uid;
-  //   const setremoteUserAvatar = (remoteUserId: number | string) => {
-  //     if (!venueId) return;
-  //     const [remoteUser] = stage.peopleOnStage.filter(
-  //       ({ data }) => data?.[`${venueId}`]?.cameraClientUid === remoteUserId
-  //     );
-  //     return remoteUser;
-  //   };
-
-  //   return remoteUsers
-  //     .filter(validateUser)
-  //     .map((user) => (
-  //       <Player
-  //         key={user.uid}
-  //         videoTrack={user.videoTrack}
-  //         audioTrack={user.audioTrack}
-  //         containerClass="ScreenShare__mode--play"
-  //         user={setremoteUserAvatar(user.uid)}
-  //       />
-  //     ));
-  // }, [stage.peopleOnStage, remoteUsers, venueId]);
-
   const renderScreenSharing = (
     screenTrack: VideoPlayerProps["videoTrack"],
     cameraTrack: VideoPlayerProps["videoTrack"]
@@ -200,12 +210,17 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       </div>
     );
   };
+  console.log("remoteScreenTrack", remoteScreenTrack);
+  console.log("remoteCameraTrack", remoteCameraTrack);
 
   return (
     <>
       <div className="TalkShowStudio">
         <div className="TalkShowStudio__scene">
-          {renderScreenSharing(localScreenTrack, localCameraTrack)}
+          {renderScreenSharing(
+            localScreenTrack || remoteScreenTrack?.videoTrack,
+            localCameraTrack || remoteCameraTrack?.videoTrack
+          )}
           <div className="TalkShowStudio__players">
             {localCameraTrack && !localScreenTrack && (
               <div>
