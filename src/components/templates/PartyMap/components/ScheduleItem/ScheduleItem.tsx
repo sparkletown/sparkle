@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { fromUnixTime } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
@@ -7,8 +8,8 @@ import { retainAttendance } from "store/actions/Attendance";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import {
+  formatDateRelativeToNow,
   formatTimestampToDisplayHoursMinutes,
-  labelDayRoomSchedule,
 } from "utils/time";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -45,7 +46,9 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     <div className="ScheduleItem">
       <div className={scheduleItemTimeSectionClasses}>
         <span className="ScheduleItem__event-date">
-          {labelDayRoomSchedule(event.start_utc_seconds)}
+          {formatDateRelativeToNow(fromUnixTime(event.start_utc_seconds), {
+            formatToday: () => "",
+          })}
         </span>
         <span className="ScheduleItem__event-time">
           {formatTimestampToDisplayHoursMinutes(eventStartTime(event))}

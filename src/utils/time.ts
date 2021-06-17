@@ -11,6 +11,7 @@ import {
   isAfter,
   isToday,
   isTomorrow,
+  isYesterday,
   startOfDay,
   subDays,
   subHours,
@@ -139,6 +140,51 @@ export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
 export const formatDate = (dateOrTimestamp: Date | number): string =>
   format(dateOrTimestamp, "MMM do");
 
+export interface FormatDateRelativeToNowOptions {
+  formatYesterday?: (dateOrTimestamp: Date | number) => string;
+  formatToday?: (dateOrTimestamp: Date | number) => string;
+  formatTomorrow?: (dateOrTimestamp: Date | number) => string;
+  formatOtherDate?: (dateOrTimestamp: Date | number) => string;
+}
+
+/**
+ * Format dateOrTimestamp as a string representing the date relative to now.
+ *
+ * These formats can be customised via the options prop if desired.
+ *
+ * @example Basic Usage
+ *   formatDateRelativeToNow(yesterdayDate) // "Yesterday"
+ *   formatDateRelativeToNow(todayDate)     // "Today"
+ *   formatDateRelativeToNow(tomorrowDate)  // "Tomorrow"
+ *   formatDateRelativeToNow(someOtherDate) // "Jun 17th"
+ *
+ * @example Customised Formats Usage
+ *   formatDateRelativeToNow(todayDate, { formatToday: () => "All we have is now!" })
+ *   // "All we have is now!"
+ *
+ * @param dateOrTimestamp
+ * @param options
+ *
+ * @see https://date-fns.org/v2.22.1/docs/format
+ */
+export const formatDateRelativeToNow = (
+  dateOrTimestamp: Date | number,
+  options?: FormatDateRelativeToNowOptions
+): string => {
+  const {
+    formatYesterday = () => "Yesterday",
+    formatToday = () => "Today",
+    formatTomorrow = () => "Tomorrow",
+    formatOtherDate = formatDate,
+  } = options ?? {};
+
+  if (isYesterday(dateOrTimestamp)) return formatYesterday(dateOrTimestamp);
+  if (isToday(dateOrTimestamp)) return formatToday(dateOrTimestamp);
+  if (isTomorrow(dateOrTimestamp)) return formatTomorrow(dateOrTimestamp);
+
+  return formatOtherDate(dateOrTimestamp);
+};
+
 /**
  * Format dateOrTimestamp as a string representing the time in long localized time format (eg. 12:00 AM).
  *
@@ -233,12 +279,3 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
-
-export const labelDayRoomSchedule = (startUtcSeconds: number) => {
-  const date = fromUnixTime(startUtcSeconds);
-
-  if (isToday(date)) return "";
-  if (isTomorrow(date)) return "Tomorrow";
-
-  return formatDate(startUtcSeconds);
-};
