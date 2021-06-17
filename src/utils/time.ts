@@ -9,6 +9,7 @@ import {
   getUnixTime,
   intervalToDuration,
   isAfter,
+  isThisYear,
   isToday,
   isTomorrow,
   isYesterday,
@@ -138,7 +139,9 @@ export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
  * @see https://date-fns.org/docs/format
  */
 export const formatDate = (dateOrTimestamp: Date | number): string =>
-  format(dateOrTimestamp, "MMM do");
+  isThisYear(dateOrTimestamp)
+    ? format(dateOrTimestamp, "MMM do")
+    : format(dateOrTimestamp, "MMM do, yyyy");
 
 export interface FormatDateRelativeToNowOptions {
   formatYesterday?: (dateOrTimestamp: Date | number) => string;
