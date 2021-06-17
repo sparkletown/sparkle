@@ -53,6 +53,7 @@ $page-max-width: 1240px;
 
 .page-container {
   background-color: $dark;
+  display: flex;
   flex-direction: column;
   flex: 1;
   padding-bottom: $spacing--xxl;
@@ -73,7 +74,6 @@ $page-max-width: 1240px;
 
 .questions-container {
   padding-top: $spacing--xxl;
-  height: 100%;
 }
 
 .page-container-onboarding {
