@@ -26,13 +26,8 @@ export const isEventLive = (event: VenueEvent) =>
 export const isEventFuture = (event: VenueEvent) =>
   isFuture(fromUnixTime(event.start_utc_seconds));
 
-export const isEventLiveOrFuture = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return (
-    isEventLive(event) || event.start_utc_seconds > currentTimeInUTCSeconds
-  );
-};
+export const isEventLiveOrFuture = (event: VenueEvent) =>
+  isEventLive(event) || isEventFuture(event);
 
 export const eventHappeningNow = (
   roomName: string,
