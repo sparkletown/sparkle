@@ -1,15 +1,29 @@
-import { useState, useMemo, useCallback } from "react";
-import { VenueTemplate } from "types/venues";
+import { useState, useMemo, useCallback, useEffect } from "react";
+
 import Fuse from "fuse.js";
 
-import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
-import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
+import { posterVenuesSelector } from "utils/selectors";
+import { isEventLive } from "utils/event";
+import { WithVenueId } from "utils/id";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useDebounceSearch } from "./useDebounceSearch";
+import { useRelatedVenues } from "./useRelatedVenues";
+import { useVenueEvents } from "./events";
+import { useInterval } from "./useInterval";
+
+import {
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  POSTERHALL_SUBVENUE_STATUS_MS,
+} from "settings";
+
+import { useUser } from "hooks/useUser";
+
+export const emptySavedPosters = {};
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {
@@ -61,12 +75,28 @@ export const usePosters = (posterHallId: string) => {
     );
   }, []);
 
-  const filteredPosterVenues = useMemo(
+  const liveFilteredPosterVenues = useMemo(
     () =>
       liveFilter
         ? posterVenues.filter((posterVenue) => posterVenue.isLive)
         : posterVenues,
     [posterVenues, liveFilter]
+  );
+
+  const [bookmarkedFilter, setBookmarkedFilter] = useState<boolean>(false);
+  const { userWithId } = useUser();
+  const userPosterIds = userWithId?.savedPosters ?? emptySavedPosters;
+
+  const filteredPosterVenues = useMemo(
+    () =>
+      bookmarkedFilter
+        ? liveFilteredPosterVenues.filter(
+            (posterVenue) =>
+              //@ts-ignore
+              userPosterIds[posterVenue.id]?.[0] === posterVenue.id
+          )
+        : liveFilteredPosterVenues,
+    [liveFilteredPosterVenues, bookmarkedFilter, userPosterIds]
   );
 
   // See https://fusejs.io/api/options.html
@@ -136,9 +166,60 @@ export const usePosters = (posterHallId: string) => {
 
     searchInputValue,
     liveFilter,
+    bookmarkedFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
+    setBookmarkedFilter,
+  };
+};
+
+export const filterLiveEvents = (
+  nonPosterSubVenueEvents: WithVenueId<VenueEvent>[]
+) => nonPosterSubVenueEvents.filter((event) => isEventLive(event));
+
+export const useLiveEventNonPosterSubVenues = (posterHallId: string) => {
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: posterHallId,
+  });
+
+  const nonPosterSubVenueIds = useMemo(
+    () =>
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === posterHallId &&
+            relatedVenue.template !== VenueTemplate.posterpage
+        )
+        .map((venue) => venue.id),
+    [relatedVenues, posterHallId]
+  );
+
+  const { events: nonPosterSubVenueEvents, isEventsLoading } = useVenueEvents({
+    venueIds: nonPosterSubVenueIds,
+  });
+
+  const [
+    liveNonPosterSubVenueEvents,
+    setLiveNonPosterSubVenueEvents,
+  ] = useState<WithVenueId<VenueEvent>[]>();
+
+  const updateLiveEvents = useCallback(() => {
+    if (isEventsLoading) return;
+
+    const filteredLiveEvents = filterLiveEvents(nonPosterSubVenueEvents);
+
+    setLiveNonPosterSubVenueEvents(filteredLiveEvents);
+  }, [nonPosterSubVenueEvents, isEventsLoading]);
+
+  useEffect(() => updateLiveEvents(), [updateLiveEvents]);
+
+  useInterval(() => {
+    updateLiveEvents();
+  }, POSTERHALL_SUBVENUE_STATUS_MS);
+
+  return {
+    liveNonPosterSubVenueEvents,
   };
 };
