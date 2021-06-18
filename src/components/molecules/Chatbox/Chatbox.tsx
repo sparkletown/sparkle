@@ -55,6 +55,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     setActiveOption(undefined);
   }, []);
 
+  // @debt createPoll should be returning Promise; make sense to use useAsync here
   const onPollSubmit = useCallback(
     (data) => {
       createPoll(data);
