@@ -38,6 +38,7 @@ export const fetchCustomAuthConfig = async (
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
           location: "api/auth::fetchCustomAuthConfig",
+          venueId,
         });
       });
 
