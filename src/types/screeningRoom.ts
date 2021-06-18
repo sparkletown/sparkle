@@ -5,4 +5,5 @@ export type ScreeningRoomVideo = {
   thumbnailSrc: string;
   videoSrc: string;
   subCategory?: string;
+  introduction?: string;
 };

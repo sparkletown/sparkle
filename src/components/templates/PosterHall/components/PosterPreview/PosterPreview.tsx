@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -37,6 +37,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     moreInfoUrls,
     moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
     contactEmail,
+    thumbnailUrl,
   } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
@@ -119,6 +120,25 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
+  const [renderImg, setRenderImg] = useState(true);
+  const renderDefaultThumbnail = useCallback(() => setRenderImg(false), []);
+
+  const renderThumbnail = useMemo(
+    () => (
+      <img
+        className="PosterPreview__img"
+        src={thumbnailUrl}
+        alt={title}
+        onError={renderDefaultThumbnail}
+      />
+    ),
+    [renderDefaultThumbnail, thumbnailUrl, title]
+  );
+
+  const thumbnailClassNames = classNames("PosterPreview__thumbnail", {
+    "PosterPreview__thumbnail--empty": !renderImg,
+  });
+
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
@@ -138,6 +158,8 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
       </div>
 
       <p className="PosterPreview__title">{title}</p>
+
+      <div className={thumbnailClassNames}>{renderImg && renderThumbnail}</div>
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">
