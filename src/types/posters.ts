@@ -1,6 +1,7 @@
 export type Poster = {
   authorName: string;
   categories: string[];
+  subcategories?: string[];
   title: string;
   authors?: string[];
   contactEmail?: string;
