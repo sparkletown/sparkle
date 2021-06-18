@@ -7,8 +7,6 @@ const functions = require("firebase-functions");
 
 const functionsConfig = functions.config();
 
-console.log("functions.config()", JSON.stringify(functionsConfig, null, 2));
-
 if (!functionsConfig) throw new Error("failed: functionsConfig missing");
 if (!functionsConfig.project)
   throw new Error("failed: functionsConfig.project missing");
