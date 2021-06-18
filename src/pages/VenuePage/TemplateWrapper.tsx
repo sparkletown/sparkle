@@ -28,7 +28,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { PostersProvider } from "../../hooks/posters";
+import { PostersProvider } from "hooks/posters";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
