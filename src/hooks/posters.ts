@@ -140,6 +140,11 @@ export const usePosters = (posterHallId: string) => {
             bookmarkedFilterResultsSubCategory
               .map((posterVenue) => posterVenue.poster?.subcategories)
               .flat()
+              .filter((subcategory) =>
+                subcategory?.category.includes(categoryFilter)
+              )
+              .map((subcategory) => subcategory?.subcategory)
+              .flat()
           )
         ).filter(isTruthy)
       : [];
@@ -155,7 +160,9 @@ export const usePosters = (posterHallId: string) => {
     () =>
       subCategoryFilter
         ? filteredPostersByCategory.filter((posterVenue) =>
-            posterVenue.poster?.subcategories?.includes(subCategoryFilter)
+            posterVenue.poster?.subcategories
+              ?.map((subcategory) => subcategory?.subcategory)
+              .includes(subCategoryFilter)
           )
         : filteredPostersByCategory,
     [filteredPostersByCategory, subCategoryFilter]
