@@ -19,7 +19,7 @@ export const createCalendar = ({
     calendar.createEvent({
       start: eventStartTime(event),
       end: eventEndTime(event),
-      organizer: `${event.host} <undefined>`, // string format: "name <email>". email cannot be blank
+      organizer: parseCalenderOrganizer(event), // `${eventHostName} <undefined>`, // string format: "name <email>". email cannot be blank
       description: event.description,
       summary: event.name,
       url: getFullVenueInsideUrl(event.venueId),
@@ -27,6 +27,14 @@ export const createCalendar = ({
   );
 
   return calendar;
+};
+
+const parseCalenderOrganizer = (event: VenueEvent): string => {
+  if (event.host) {
+    return `${event.host} <undefined>`;
+  } else {
+    return `undefined <undefined>`;
+  }
 };
 
 export interface DownloadCalendarProps {
