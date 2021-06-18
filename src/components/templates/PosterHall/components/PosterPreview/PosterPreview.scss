@@ -44,6 +44,7 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     width: fit-content;
     padding: 5px 10px;
     border-radius: $border-radius--md;
+    width: 20%;
   }
 
   &__users-icon {
@@ -59,6 +60,8 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     display: inline;
     text-align: left;
     font-size: $font-size--sm;
+    width: 75%;
+    word-wrap: break-word;
   }
 
   &__title {
