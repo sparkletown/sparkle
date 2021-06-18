@@ -26,14 +26,18 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
     increaseDisplayedPosterCount,
 
-    searchInputValue,
-    setSearchInputValue,
-    liveFilter,
-    setLiveFilter,
-
     categoryList,
+    subCategoryList,
+
+    searchInputValue,
+    liveFilter,
     categoryFilter,
+    subCategoryFilter,
+
+    setSearchInputValue,
+    setLiveFilter,
     setCategoryFilter,
+    setSubCategoryFilter,
     unsetCategoryFilter,
   } = usePosters(venue.id);
 
@@ -72,6 +76,23 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]
   );
 
+  const renderedSubCategoryOptions = useMemo(
+    () => (
+      <div className="PosterHall__subcategories">
+        {subCategoryList.map((subCategory) => (
+          <PosterCategory
+            key={subCategory}
+            category={subCategory}
+            onClick={() => setSubCategoryFilter(subCategory)}
+            containerClassname="PosterHall__subcategory"
+            active={subCategory === subCategoryFilter}
+          />
+        ))}
+      </div>
+    ),
+    [subCategoryList, subCategoryFilter, setSubCategoryFilter]
+  );
+
   const showCategoriesFilter = useMemo(
     () => venue?.showCategoriesFilter ?? false,
     [venue]
@@ -87,6 +108,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
       />
 
       {showCategoriesFilter ? renderedCategoryOptions : null}
+      {showCategoriesFilter ? renderedSubCategoryOptions : null}
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}

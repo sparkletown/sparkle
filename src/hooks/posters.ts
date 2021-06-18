@@ -6,6 +6,7 @@ import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
 import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
+import { isTruthy } from "utils/types";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -50,16 +51,21 @@ export const usePosters = (posterHallId: string) => {
   } = useDebounceSearch();
 
   const [categoryFilter, _setCategoryFilter] = useState<string>();
+  const [subCategoryFilter, setSubCategoryFilter] = useState<string>();
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
     DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
   );
 
   const setCategoryFilter = useCallback((category: string) => {
+    // Clear previously chosen subcategory
+    setSubCategoryFilter(undefined);
     _setCategoryFilter(category);
   }, []);
 
   const unsetCategoryFilter = useCallback(() => {
+    // Clear chosen subcategory, if any
+    setSubCategoryFilter(undefined);
     _setCategoryFilter(undefined);
   }, []);
 
@@ -92,14 +98,39 @@ export const usePosters = (posterHallId: string) => {
     [posterVenues, categoryFilter]
   );
 
+  const subCategoryList = useMemo(
+    () =>
+      categoryFilter
+        ? Array.from(
+            new Set(
+              filteredPostersByCategory
+                .map((posterVenue) => posterVenue.poster?.subcategories)
+                .flat()
+            )
+          ).filter(isTruthy)
+        : [],
+    [filteredPostersByCategory, categoryFilter]
+  );
+
+  const filteredPostersBySubCategory = useMemo(
+    () =>
+      subCategoryFilter
+        ? filteredPostersByCategory.filter((posterVenue) =>
+            posterVenue.poster?.subcategories?.includes(subCategoryFilter)
+          )
+        : filteredPostersByCategory,
+    [filteredPostersByCategory, subCategoryFilter]
+  );
+
   const filteredPosterVenues = useMemo(
     () =>
       liveFilter
-        ? filteredPostersByCategory.filter(
-            (filteredPostersByCategory) => filteredPostersByCategory.isLive
+        ? filteredPostersBySubCategory.filter(
+            (filteredPostersBySubCategory) =>
+              filteredPostersBySubCategory.isLive
           )
-        : filteredPostersByCategory,
-    [filteredPostersByCategory, liveFilter]
+        : filteredPostersBySubCategory,
+    [filteredPostersBySubCategory, liveFilter]
   );
 
   // See https://fusejs.io/api/options.html
@@ -168,15 +199,18 @@ export const usePosters = (posterHallId: string) => {
     hasHiddenPosters,
 
     categoryList,
+    subCategoryList,
 
     searchInputValue,
     categoryFilter,
+    subCategoryFilter,
     liveFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
     setCategoryFilter,
+    setSubCategoryFilter,
     unsetCategoryFilter,
   };
 };
