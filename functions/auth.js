@@ -5,9 +5,9 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { fetchAuthConfig } = require("./src/api/auth");
 
+const { assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
-const { checkIfValidVenueId } = require("./src/utils/venue");
 
 const PROJECT_ID = functions.config().project.id;
 const { origin: AUTH_ORIGIN } = functions.config().auth;
@@ -43,9 +43,7 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
     throw new HttpsError("internal", "auth.origin is not configured properly");
   }
 
-  if (!checkIfValidVenueId(venueId)) {
-    throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
-  }
+  assertValidVenueId(venueId, "venueId");
 
   const authConfig = await fetchAuthConfig(venueId);
 
@@ -76,9 +74,7 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     throw new HttpsError("internal", "auth.origin is not configured properly");
   }
 
-  if (!checkIfValidVenueId(venueId)) {
-    throw new HttpsError("invalid-argument", "venueId is not a valid venue id");
-  }
+  assertValidVenueId(venueId, "venueId");
 
   if (!authCode) {
     throw new HttpsError("invalid-argument", "code is required");
