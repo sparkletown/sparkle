@@ -96,6 +96,11 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]
   );
 
+  const showCategoriesFilter = useMemo(
+    () => venue?.showCategoriesFilter ?? false,
+    [venue]
+  );
+
   return (
     <div className="PosterHall">
       <div className="PosterHall__related">{renderedNonPosterSubVenues}</div>
@@ -126,7 +131,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         )}
       </div>
 
-      {renderedCategoryOptions}
+      {showCategoriesFilter ? renderedCategoryOptions : null}
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
