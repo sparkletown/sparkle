@@ -5,12 +5,11 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { fetchAuthConfig } = require("./src/api/auth");
 
-const { assertValidVenueId } = require("./src/utils/assert");
+const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
 
 const PROJECT_ID = functions.config().project.id;
-const { origin: AUTH_ORIGIN } = functions.config().auth;
 
 exports.checkAuth = (context) => {
   if (!context.auth || !context.auth.token) {
@@ -37,29 +36,31 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
  * @see https://github.com/lelylan/simple-oauth2/blob/3.x/API.md#authorizeurlauthorizeoptions--string
  */
 exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
-  const { venueId } = req.query;
-
-  if (!AUTH_ORIGIN) {
-    throw new HttpsError("internal", "auth.origin is not configured properly");
-  }
+  const { venueId, returnOrigin } = req.query;
 
   assertValidVenueId(venueId, "venueId");
+  assertValidUrl(returnOrigin, "returnOrigin");
 
   const authConfig = await fetchAuthConfig(venueId);
+
+  // TODO: assert that returnOrigin matches one of the whitelisted origins
 
   const authClient = createOAuth2Client(authConfig);
 
   const { scope } = authConfig;
 
-  const authCodeReturnUri = `${AUTH_ORIGIN}/auth/connect/i4a/handler?venueId=${venueId}`;
+  // Construct the platform URL that the auth code will be returned to
+  const authCodeReturnUrl = new URL("/auth/connect/i4a/handler", returnOrigin);
+  authCodeReturnUrl.searchParams.set("venueId", venueId);
+  authCodeReturnUrl.searchParams.set("returnOrigin", returnOrigin);
 
-  const redirectUri = authClient.authorizationCode.authorizeURL({
-    redirect_uri: authCodeReturnUri,
+  const authorizeUrl = authClient.authorizationCode.authorizeURL({
+    redirect_uri: authCodeReturnUrl.toString(),
     scope,
   });
 
-  functions.logger.log("Redirecting to:", redirectUri);
-  res.redirect(redirectUri);
+  functions.logger.log("Redirecting to authorize URL:", authorizeUrl);
+  res.redirect(authorizeUrl);
 });
 
 /**
@@ -68,13 +69,10 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
  * finally returns a custom Firebase auth token that the frontend can use to login as this user.
  */
 exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
-  const { venueId, code: authCode } = req.query;
-
-  if (!AUTH_ORIGIN) {
-    throw new HttpsError("internal", "auth.origin is not configured properly");
-  }
+  const { venueId, returnOrigin, code: authCode } = req.query;
 
   assertValidVenueId(venueId, "venueId");
+  assertValidUrl(returnOrigin, "returnOrigin");
 
   if (!authCode) {
     throw new HttpsError("invalid-argument", "code is required");
@@ -89,6 +87,8 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     i4aMeetingIdsToCheck,
     i4aEventIdsToCheck,
   } = authConfig;
+
+  // TODO: assert that returnOrigin matches one of the whitelisted origins
 
   const authClient = createOAuth2Client(authConfig);
 
@@ -185,5 +185,16 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   // Create a custom token for the frontend to use to sign into firebase auth as this user
   const customToken = await admin.auth().createCustomToken(userRecord.uid);
 
-  res.redirect(`${AUTH_ORIGIN}/login/${venueId}/${customToken}`);
+  // Construct the platform URL that the custom token will be returned to
+  const customTokenReturnUrl = new URL(
+    `/login/${venueId}/${customToken}`,
+    returnOrigin
+  );
+
+  functions.logger.log(
+    "Redirecting back to platform with custom token:",
+    customTokenReturnUrl
+  );
+
+  res.redirect(customTokenReturnUrl.toString());
 });

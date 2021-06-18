@@ -36,7 +36,9 @@ export const Login: React.FC<LoginProps> = ({
   // TODO: implement this check properly + probably using a backend function that also returns this URL
   const hasI4AOAuth = true;
   const signInWithI4AOAuth = useCallback(() => {
-    openUrl(`/auth/connect/i4a?venueId=${venue.id}`);
+    openUrl(
+      `/auth/connect/i4a?venueId=${venue.id}&returnOrigin=${window.location.origin}`
+    );
   }, [venue.id]);
 
   // It will be extended with addition of new providers
