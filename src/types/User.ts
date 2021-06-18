@@ -8,6 +8,7 @@ export interface TalkShowStudioExperience {
   place?: PlaceInTalkShowStudioVenue;
   isSharingScreen?: boolean;
   isMuted?: boolean;
+  isUserCameraOff?: boolean;
 }
 
 export interface Experience extends TalkShowStudioExperience {

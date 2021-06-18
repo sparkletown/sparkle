@@ -1,23 +1,25 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
 import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
 
-import { WithId } from "utils/id";
-import { useStage } from "./useStage";
 import { FullTalkShowVenue } from "types/venues";
+import { AgoraClientConnectionState } from "types/agora";
+
+import { WithId } from "utils/id";
+import { currentVenueSelectorData } from "utils/selectors";
+
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
-import { AgoraClientConnectionState } from "types/agora";
 import {
   useAgoraCamera,
   useAgoraRemotes,
   useAgoraScreenShare,
 } from "hooks/video/agora";
 
+import { useStage } from "./useStage";
 import AppButton from "components/atoms/Button";
 import Player from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
-import { currentVenueSelectorData } from "utils/selectors";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
 
 import "./TalkShowStudio.scss";
@@ -116,12 +118,20 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   }, [stage.isUserSharing, localScreenTrack, stopShare]);
 
   useEffect(() => {
-    const isUserMuted = profile?.data?.[venue.id]?.isMuted;
+    const isUserMicOff = profile?.data?.[venue.id]?.isMuted;
 
-    if ((isUserMuted && isMicrophoneOn) || !(isUserMuted || isMicrophoneOn)) {
+    if ((isUserMicOff && isMicrophoneOn) || !(isUserMicOff || isMicrophoneOn)) {
       toggleMicrophone();
     }
   }, [isMicrophoneOn, profile?.data, toggleMicrophone, venue.id]);
+
+  useEffect(() => {
+    const isUserCameraOff = profile?.data?.[venue.id]?.isUserCameraOff;
+
+    if ((isUserCameraOff && isCameraOn) || !(isUserCameraOff || isCameraOn)) {
+      toggleCamera();
+    }
+  }, [isCameraOn, profile?.data, toggleCamera, venue.id]);
 
   const isJoinStageButtonDisplayed =
     isRequestToJoinStageEnabled &&
@@ -151,8 +161,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
                   isCamOn={isCameraOn}
                   isMicOn={isMicrophoneOn}
                   isSharing={!!localScreenTrack}
-                  toggleCam={toggleCamera}
-                  toggleMic={stage.toggleMute}
+                  toggleCam={stage.toggleCamera}
+                  toggleMic={stage.toggleMicrophone}
                   containerClass="TalkShowStudio__mode--play"
                 />
               </div>

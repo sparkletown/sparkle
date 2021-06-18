@@ -1,10 +1,11 @@
-import React, { FC, useCallback, useState } from "react";
+import React, { FC, useState } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPlus,
   faMinus,
   faVideoSlash,
+  faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { FullTalkShowVenue, VenueTemplate } from "types/venues";
@@ -19,7 +20,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
-import Button from "components/atoms/Button";
+import { Button } from "components/atoms/Button";
 
 import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
 import { useStage } from "components/templates/TalkShowStudio/useStage";
@@ -34,51 +35,33 @@ export interface AdminPanelProps {
   venue: WithId<FullTalkShowVenue>;
 }
 
-const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
+export const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
   const venueId = useVenueId();
   const { user: loggedUser, userId: loggedUserId } = useUser();
-  const { peopleOnStage, peopleRequesting, screenSharingUser } = useStage();
+  const stage = useStage();
+  const [userToRemove, setUserToRemove] = useState<WithId<User>>();
   const {
     isShown: isLeaveStageModalVisible,
     show: showLeaveStageModal,
     hide: hideLeaveStageModal,
   } = useShowHide();
-  const [userToRemove, setUserToRemove] = useState<WithId<User>>();
 
-  const removeUserFromStage = useCallback(() => {
-    venueId &&
-      userToRemove &&
-      updateUserTalkShowStudioExperience(venueId, userToRemove.id, {
-        place: PlaceInTalkShowStudioVenue.audience,
-        isSharingScreen: false,
-        isMuted: false,
-      });
-  }, [userToRemove, venueId]);
-
-  const muteUser = useCallback(
-    (userId: string) => {
-      venueId &&
-        updateUserTalkShowStudioExperience(venueId, userId, {
-          isMuted: true,
-        });
-    },
-    [venueId]
-  );
-
-  const muteButtonClasses = (isMuted: boolean) =>
-    classNames("user__buttons__mute-button", {
-      "user__buttons__mute-button--on": isMuted,
+  const controlUserButtonClasses = (isOff: boolean) =>
+    classNames("AdminPanelUser__controlUserButton", {
+      "AdminPanelUser__controlUserButton-off": isOff,
     });
 
   return (
-    <div className="admin-panel">
-      <div className="people-on-stage">
-        <p className="section-label">{peopleOnStage.length} people on stage</p>
+    <div className="AdminPanel">
+      <div className="AdminPanel__peopleOnStage">
+        <p className="AdminPanel__sectionLabel">
+          {stage.peopleOnStage.length} people on stage
+        </p>
         <div>
-          {peopleOnStage.map((user) => (
-            <div key={user.id} className="user">
-              <div className="user-info">
-                <div className="user-pic">
+          {stage.peopleOnStage.map((user) => (
+            <div key={user.id} className="AdminPanelUser">
+              <div className="AdminPanelUser__info">
+                <div className="AdminPanelUser__picture">
                   {user.pictureUrl && (
                     <img src={user.pictureUrl} alt="profile" />
                   )}
@@ -88,9 +71,9 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
               </div>
 
               {user.id !== loggedUserId && (
-                <div className="user__buttons">
+                <div className="AdminPanelUser__buttons">
                   <div
-                    className="control-user-button"
+                    className="AdminPanelUser__controlUserButton"
                     onClick={() => {
                       setUserToRemove(user);
                       showLeaveStageModal();
@@ -101,11 +84,20 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
                   <div
                     className={
                       venueId &&
-                      muteButtonClasses(!!user.data?.[venueId].isMuted)
+                      controlUserButtonClasses(!!user.data?.[venueId].isMuted)
                     }
-                    onClick={() => {
-                      muteUser(user.id);
-                    }}
+                    onClick={() => stage.toggleUserMicrophone(user)}
+                  >
+                    <FontAwesomeIcon icon={faVolumeMute} />
+                  </div>
+                  <div
+                    className={
+                      venueId &&
+                      controlUserButtonClasses(
+                        !!user.data?.[venueId].isUserCameraOff
+                      )
+                    }
+                    onClick={() => stage.toggleUserCamera(user)}
                   >
                     <FontAwesomeIcon icon={faVideoSlash} />
                   </div>
@@ -115,26 +107,26 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
           ))}
         </div>
       </div>
-      {screenSharingUser && (
-        <div className="screensharing">
-          <p className="section-label">Screenshare</p>
-          <div key={screenSharingUser.id} className="user">
-            <div className="user-info">
-              <div className="user-pic">
-                {screenSharingUser.pictureUrl && (
-                  <img src={screenSharingUser.pictureUrl} alt="profile" />
+      {stage.screenSharingUser && (
+        <div className="AdminPanel__screenSharing">
+          <p className="AdminPanel__sectionLabel">Screenshare</p>
+          <div key={stage.screenSharingUser.id} className="AdminPanelUser">
+            <div className="AdminPanelUser__info">
+              <div className="AdminPanelUser__picture">
+                {stage.screenSharingUser.pictureUrl && (
+                  <img src={stage.screenSharingUser.pictureUrl} alt="profile" />
                 )}
               </div>
-              {screenSharingUser.partyName || ""} is currently sharing
+              {stage.screenSharingUser.partyName || ""} is currently sharing
             </div>
 
             <Button
-              customClass="control-scene-button"
+              customClass="AdminPanel__controlSceneButton"
               onClick={() => {
                 venueId &&
                   updateUserTalkShowStudioExperience(
                     venueId,
-                    screenSharingUser.id,
+                    stage.screenSharingUser!.id,
                     {
                       isSharingScreen: false,
                     }
@@ -146,22 +138,22 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
           </div>
         </div>
       )}
-      <div className="requests">
+      <div className="AdminPanel__requests">
         {venue.requestToJoinStage ? (
           <>
-            <p className="section-label">
-              {peopleRequesting.length} Requests to join stage
+            <p className="AdminPanel__sectionLabel">
+              {stage.peopleRequesting.length} Requests to join stage
             </p>
             <div>
-              {peopleRequesting.map((user) => (
-                <div key={user.id} className="user">
-                  <div className="user-info">
-                    <div className="user-pic">
+              {stage.peopleRequesting.map((user) => (
+                <div key={user.id} className="AdminPanelUser">
+                  <div className="AdminPanelUser__info">
+                    <div className="AdminPanelUser__picture">
                       {user.pictureUrl && (
                         <img src={user.pictureUrl} alt="profile" />
                       )}
                       <div
-                        className="user-pic__reaction"
+                        className="AdminPanelUser__picture-reaction"
                         role="img"
                         aria-label={requestEmoji.ariaLabel}
                       >
@@ -171,7 +163,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
                     {user.partyName || ""}
                   </div>
                   <div
-                    className="control-user-button"
+                    className="AdminPanelUser__controlUserButton"
                     onClick={() => {
                       venueId &&
                         updateUserTalkShowStudioExperience(venueId, user.id, {
@@ -184,7 +176,7 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
                 </div>
               ))}
               <Button
-                customClass="control-scene-button"
+                customClass="AdminPanel__controlSceneButton"
                 onClick={() => {
                   venueId &&
                     loggedUser &&
@@ -203,10 +195,12 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
           </>
         ) : (
           <>
-            <p className="section-label">Joining stage option is disabled</p>
+            <p className="AdminPanel__sectionLabel">
+              Joining stage option is disabled
+            </p>
             <div>
               <Button
-                customClass="control-scene-button"
+                customClass="AdminPanel__controlSceneButton"
                 onClick={() => {
                   venueId &&
                     loggedUser &&
@@ -229,11 +223,9 @@ const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
       <LeaveStageModal
         show={isLeaveStageModalVisible}
         onHide={hideLeaveStageModal}
-        onSubmit={removeUserFromStage}
-        userNameToRemove={userToRemove?.partyName}
+        onSubmit={stage.removeUserFromStage}
+        userToRemove={userToRemove}
       />
     </div>
   );
 };
-
-export default AdminPanel;

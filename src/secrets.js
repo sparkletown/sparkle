@@ -14,6 +14,10 @@ export const MIXPANEL_PROJECT_TOKEN =
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
+export const AGORA_APP_ID = process.env.REACT_APP_AGORA_APP_ID;
+export const AGORA_CHANNEL = process.env.REACT_APP_AGORA_CHANNEL;
+export const AGORA_TOKEN = process.env.REACT_APP_AGORA_TOKEN;
+
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
 export const BUILD_TAG = process.env.REACT_APP_BUILD_TAG || undefined;

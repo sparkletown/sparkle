@@ -5,6 +5,8 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
+import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
+
 import { useShowHide } from "hooks/useShowHide";
 
 import { ReactHook } from "types/utility";
@@ -48,11 +50,7 @@ export const useAgoraRemotes: ReactHook<
     client.on("user-unpublished", updateRemoteUsers);
     client.on("user-joined", updateRemoteUsers);
     client.on("user-left", updateRemoteUsers);
-    client.join(
-      process.env.REACT_APP_AGORA_APP_ID || "",
-      process.env.REACT_APP_AGORA_CHANNEL || "",
-      process.env.REACT_APP_AGORA_TOKEN || null
-    );
+    client.join(AGORA_APP_ID || "", AGORA_CHANNEL || "", AGORA_TOKEN || null);
 
     return () => {
       client.off("user-published", handleUserPublished);
@@ -104,9 +102,9 @@ export const useAgoraScreenShare: ReactHook<
 
   const joinChannel = async () => {
     await client?.join(
-      process.env.REACT_APP_AGORA_APP_ID || "",
-      process.env.REACT_APP_AGORA_CHANNEL || "",
-      process.env.REACT_APP_AGORA_TOKEN || null
+      AGORA_APP_ID || "",
+      AGORA_CHANNEL || "",
+      AGORA_TOKEN || null
     );
   };
 
@@ -161,9 +159,9 @@ export const useAgoraCamera: ReactHook<
     if (!client) return;
 
     await client.join(
-      process.env.REACT_APP_AGORA_APP_ID || "",
-      process.env.REACT_APP_AGORA_CHANNEL || "",
-      process.env.REACT_APP_AGORA_TOKEN || null
+      AGORA_APP_ID || "",
+      AGORA_CHANNEL || "",
+      AGORA_TOKEN || null
     );
 
     setIsCameraOn(true);

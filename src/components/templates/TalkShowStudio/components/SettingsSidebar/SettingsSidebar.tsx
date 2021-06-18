@@ -15,7 +15,7 @@ import { currentVenueSelectorData } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
-import AdminPanel from "./components/AdminPanel/AdminPanel";
+import { AdminPanel } from "./components/AdminPanel/AdminPanel";
 
 import "./SettingsSidebar.scss";
 

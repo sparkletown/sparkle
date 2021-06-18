@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useMemo } from "react";
 
-import { PlaceInTalkShowStudioVenue } from "types/User";
+import { PlaceInTalkShowStudioVenue, User } from "types/User";
 
 import { updateTalkShowStudioExperience } from "api/profile";
+import { updateUserTalkShowStudioExperience } from "api/admin";
+
+import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -25,6 +28,7 @@ export const useStage = () => {
           isSharingScreen: false,
           place: PlaceInTalkShowStudioVenue.audience,
           isMuted: false,
+          isUserCameraOff: false,
         },
       }));
   }, [userId, venueId]);
@@ -116,7 +120,7 @@ export const useStage = () => {
       });
   };
 
-  const toggleMute = () => {
+  const toggleMicrophone = () => {
     venueId &&
       userId &&
       updateTalkShowStudioExperience({
@@ -125,6 +129,43 @@ export const useStage = () => {
         experience: {
           isMuted: !profile?.data?.[venueId].isMuted,
         },
+      });
+  };
+
+  const toggleCamera = () => {
+    venueId &&
+      userId &&
+      updateTalkShowStudioExperience({
+        venueId,
+        userId,
+        experience: {
+          isUserCameraOff: !profile?.data?.[venueId].isUserCameraOff,
+        },
+      });
+  };
+
+  const toggleUserMicrophone = (user: WithId<User>) => {
+    venueId &&
+      updateUserTalkShowStudioExperience(venueId, user.id, {
+        isMuted: !user.data?.[venueId].isMuted,
+      });
+  };
+
+  const toggleUserCamera = (user: WithId<User>) => {
+    venueId &&
+      updateUserTalkShowStudioExperience(venueId, user.id, {
+        isUserCameraOff: !user.data?.[venueId].isUserCameraOff,
+      });
+  };
+
+  const removeUserFromStage = (user?: WithId<User>) => {
+    user &&
+      venueId &&
+      updateUserTalkShowStudioExperience(venueId, user.id, {
+        place: PlaceInTalkShowStudioVenue.audience,
+        isSharingScreen: false,
+        isMuted: false,
+        isUserCameraOff: false,
       });
   };
 
@@ -140,6 +181,10 @@ export const useStage = () => {
     joinStage,
     leaveStage,
     requestJoinStage,
-    toggleMute,
+    toggleMicrophone,
+    toggleCamera,
+    toggleUserMicrophone,
+    toggleUserCamera,
+    removeUserFromStage,
   };
 };

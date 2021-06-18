@@ -7,7 +7,7 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useShowHide } from "hooks/useShowHide";
 
-import { AppButton } from "components/atoms/Button/Button";
+import { Button } from "components/atoms/Button";
 
 import { ButtonWithLabel } from "components/templates/TalkShowStudio/components/Button/Button";
 import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
@@ -70,9 +70,9 @@ export const ControlBar: FC<ControlBarProps> = ({
     if (stage.canJoinStage && showJoinStageButton) {
       return (
         <div className="JoinStage">
-          <AppButton customClass={"JoinStage__button"} onClick={onStageJoin}>
+          <Button customClass={"JoinStage__button"} onClick={onStageJoin}>
             Join Stage
-          </AppButton>
+          </Button>
         </div>
       );
     }
