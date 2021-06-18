@@ -52,10 +52,10 @@ export const EventModal: React.FC<EventModalProps> = ({
   const goToEventLocation = () => {
     onHide();
 
-    if (event.room) {
-      enterRoom();
-    } else {
+    if (event.venueId) {
       enterVenue(event.venueId);
+    } else {
+      enterRoom();
     }
   };
 
