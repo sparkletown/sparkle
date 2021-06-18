@@ -43,6 +43,8 @@ exports.stats = stats;
 exports.venue = venue;
 exports.video = video;
 
+// @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
+//   It doesn't look like anything calls it in the codebase currently?
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()
