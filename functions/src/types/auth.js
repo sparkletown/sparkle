@@ -1,3 +1,5 @@
+const { isValidUrl } = require("../utils/url");
+
 const yup = require("yup");
 
 // TODO: should we nest these different subsets of keys?
@@ -14,6 +16,14 @@ const AuthConfigSchema = yup.object().shape({
     Array.isArray(val) ? yup.array().of(yup.string()) : yup.string().default("")
   ),
 
+  // Sparkle Platform Specific
+  validReturnOrigins: yup
+    .array()
+    .of(
+      // eslint-disable-next-line no-template-curly-in-string -- This is how yup specifies it's placeholders
+      yup.string().test("isValidUrl", "${path} is not a valid url", isValidUrl)
+    )
+    .default([]),
   // I4A
   // @debt This is required for the current I4A implementation, but in future we should refactor this schema be more generic
   i4aApiKey: yup.string().required(),

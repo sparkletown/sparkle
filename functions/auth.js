@@ -43,11 +43,30 @@ exports.connectI4AOAuth = functions.https.onRequest(async (req, res) => {
 
   const authConfig = await fetchAuthConfig(venueId);
 
-  // TODO: assert that returnOrigin matches one of the whitelisted origins
+  const {
+    validReturnOrigins,
+    scope,
+    tokenHost,
+    revokePath: revokePathWithoutRedirect,
+  } = authConfig;
 
-  const authClient = createOAuth2Client(authConfig);
+  if (!validReturnOrigins.includes(returnOrigin)) {
+    throw new HttpsError(
+      "invalid-argument",
+      "returnOrigin is not an allowed origin"
+    );
+  }
 
-  const { scope } = authConfig;
+  // Construct the platform URL that the revoke endpoint will redirect back to
+  const revokeReturnUrl = new URL(`/v/${venueId}`, returnOrigin).toString();
+  const revokePathWithRedirectUrl = new URL(
+    revokePathWithoutRedirect,
+    tokenHost
+  );
+  revokePathWithRedirectUrl.searchParams.set("redirect_uri", revokeReturnUrl);
+  const revokePath = `${revokePathWithRedirectUrl.pathname}${revokePathWithRedirectUrl.search}`;
+
+  const authClient = createOAuth2Client({ ...authConfig, revokePath });
 
   // Construct the platform URL that the auth code will be returned to
   const authCodeReturnUrl = new URL("/auth/connect/i4a/handler", returnOrigin);
@@ -81,6 +100,7 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   const authConfig = await fetchAuthConfig(venueId);
 
   const {
+    validReturnOrigins,
     i4aApiKey,
     i4aOAuthUserInfoUrl,
     i4aGetUserMeetingInfoUrl,
@@ -88,7 +108,12 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
     i4aEventIdsToCheck,
   } = authConfig;
 
-  // TODO: assert that returnOrigin matches one of the whitelisted origins
+  if (!validReturnOrigins.includes(returnOrigin)) {
+    throw new HttpsError(
+      "invalid-argument",
+      "returnOrigin is not an allowed origin"
+    );
+  }
 
   const authClient = createOAuth2Client(authConfig);
 
