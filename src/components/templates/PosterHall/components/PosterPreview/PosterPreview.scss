@@ -46,14 +46,13 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__posterId {
     display: inline;
-    text-align: left;
     font-size: $font-size--sm;
   }
 
   &__visiting {
     display: inline;
-    text-align: right;
     font-size: $font-size--sm;
+    margin-left: auto;
   }
 
   &__title {
@@ -91,5 +90,15 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
 
   &__moreInfoUrl {
     font-size: $font-size--sm;
+  }
+
+  &__bookmark {
+    display: inline;
+    margin-right: $spacing--sm;
+  }
+
+  &__info {
+    display: flex;
+    text-align: left;
   }
 }
