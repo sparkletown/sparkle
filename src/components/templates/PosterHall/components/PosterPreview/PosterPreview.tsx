@@ -114,12 +114,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
 
   const [renderImg, setRenderImg] = useState(true);
-  const renderDefaultThumbnail = useCallback(
-    () => setRenderImg((prev) => false),
-    []
-  );
+  const renderDefaultThumbnail = useCallback(() => setRenderImg(false), []);
 
-  const renderThumbnailUrl = useMemo(
+  const renderThumbnail = useMemo(
     () => (
       <img
         className="PosterPreview__img"
@@ -130,6 +127,10 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     ),
     [renderDefaultThumbnail, thumbnailUrl, title]
   );
+
+  const thumbnailClassNames = classNames("PosterPreview__thumbnail", {
+    "PosterPreview__thumbnail--empty": !renderImg,
+  });
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
@@ -146,13 +147,7 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
 
       <p className="PosterPreview__title">{title}</p>
 
-      <div className="PosterPreview__thumbnail">
-        {renderImg ? (
-          renderThumbnailUrl
-        ) : (
-          <rect className="PosterPreview__rect" />
-        )}
-      </div>
+      <div className={thumbnailClassNames}>{renderImg && renderThumbnail}</div>
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">

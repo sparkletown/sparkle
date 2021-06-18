@@ -3,6 +3,7 @@
 $poster-preview-height: 420px;
 $poster-preview-width: 300px;
 $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
+$thumbnail-border-radius: 15px;
 
 .PosterPreview {
   display: flex;
@@ -64,13 +65,10 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   }
 
   &__categories {
+    @include line-clamp-with-overflow(2);
     display: flex;
     flex-wrap: wrap;
     margin: $spacing--sm 0;
-
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
   }
 
   &__authorBox {
@@ -106,15 +104,16 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
   &__thumbnail {
     display: contents;
     width: 100%;
+
+    &--empty {
+      display: block;
+      background-color: $primary;
+      height: 40%;
+      border-radius: $thumbnail-border-radius;
+    }
   }
 
   &__img {
-    border-radius: 15px;
-  }
-
-  &__rect {
-    background-color: $primary;
-    height: 40%;
-    border-radius: 15px;
+    border-radius: $thumbnail-border-radius;
   }
 }
