@@ -102,4 +102,19 @@ $active-poster-shadows: 0 10px 20px 0 rgba($primary, 0.56);
     display: inline;
     text-align: left;
   }
+
+  &__thumbnail {
+    display: contents;
+    width: 100%;
+  }
+
+  &__img {
+    border-radius: 15px;
+  }
+
+  &__rect {
+    background-color: $primary;
+    height: 40%;
+    border-radius: 15px;
+  }
 }
