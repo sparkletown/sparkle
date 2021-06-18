@@ -7,6 +7,7 @@ import { WithId } from "utils/id";
 import { usePosters, useLiveEventNonPosterSubVenues } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
+import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { PosterPreview } from "./components/PosterPreview";
 import { NonPosterSubVenuePreview } from "./components/NonPosterSubVenuePreview";
@@ -33,6 +34,10 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
     bookmarkedFilter,
     setBookmarkedFilter,
+    categoryList,
+    categoryFilter,
+    setCategoryFilter,
+    unsetCategoryFilter,
   } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
@@ -64,6 +69,33 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [liveNonPosterSubVenueEvents]);
 
+  const renderedCategoryOptions = useMemo(
+    () => (
+      <div className="PosterHall__categories">
+        <PosterCategory
+          key="All posters"
+          category="All posters"
+          onClick={unsetCategoryFilter}
+          containerClassname="PosterHall__category"
+          active={categoryFilter === undefined}
+        />
+        {categoryList.map((category, index) => {
+          if (!category) return [];
+          return (
+            <PosterCategory
+              key={category}
+              category={category}
+              onClick={() => setCategoryFilter(category)}
+              containerClassname="PosterHall__category"
+              active={category === categoryFilter}
+            />
+          );
+        })}
+      </div>
+    ),
+    [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]
+  );
+
   return (
     <div className="PosterHall">
       <div className="PosterHall__related">{renderedNonPosterSubVenues}</div>
@@ -93,6 +125,8 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
           />
         )}
       </div>
+
+      {renderedCategoryOptions}
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
