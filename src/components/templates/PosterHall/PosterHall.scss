@@ -44,4 +44,17 @@
     cursor: pointer;
     text-transform: capitalize;
   }
+
+  &__subcategories {
+    display: flex;
+    justify-content: center;
+    margin: $spacing--xs;
+    flex-wrap: wrap;
+  }
+
+  &__subcategory {
+    font-size: $font-size--xxs;
+    cursor: pointer;
+    text-transform: capitalize;
+  }
 }
