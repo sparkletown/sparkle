@@ -11,7 +11,7 @@ const { getJson, postJson } = require("./src/utils/fetch");
 
 const PROJECT_ID = functions.config().project.id;
 
-exports.checkAuth = (context) => {
+const checkAuth = (context) => {
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
@@ -20,6 +20,7 @@ exports.checkAuth = (context) => {
     throw new functions.https.HttpsError("permission-denied", "Token invalid");
   }
 };
+exports.checkAuth = checkAuth;
 
 // Case-insensitive first character for iDevices
 const lowercaseFirstChar = (password) =>
@@ -29,6 +30,18 @@ exports.passwordsMatch = (submittedPassword, actualPassword) =>
   submittedPassword.trim() === actualPassword.trim() ||
   lowercaseFirstChar(submittedPassword.trim()) ===
     lowercaseFirstChar(actualPassword.trim());
+
+exports.getCustomAuthConfig = functions.https.onCall(async (data) => {
+  const { venueId } = data;
+
+  assertValidVenueId(venueId, "venueId");
+
+  const { customAuthName, customAuthConnectPath } = await fetchAuthConfig(
+    venueId
+  ).catch(() => ({}));
+
+  return { customAuthName, customAuthConnectPath };
+});
 
 /**
  * Redirect the user to the authentication consent screen.

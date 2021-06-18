@@ -17,6 +17,8 @@ const AuthConfigSchema = yup.object().shape({
   ),
 
   // Sparkle Platform Specific
+  customAuthName: yup.string().required(),
+  customAuthConnectPath: yup.string().required(),
   validReturnOrigins: yup
     .array()
     .of(
@@ -24,6 +26,7 @@ const AuthConfigSchema = yup.object().shape({
       yup.string().test("isValidUrl", "${path} is not a valid url", isValidUrl)
     )
     .default([]),
+
   // I4A
   // @debt This is required for the current I4A implementation, but in future we should refactor this schema be more generic
   i4aApiKey: yup.string().required(),

@@ -1,8 +1,13 @@
 import React, { useCallback, useState } from "react";
+import { useAsync } from "react-use";
 
 import { AnyVenue } from "types/venues";
 
+import { fetchCustomAuthConfig } from "api/auth";
+
 import { WithId } from "utils/id";
+import { tracePromise } from "utils/performance";
+import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
@@ -11,6 +16,8 @@ import { InitialForm } from "components/organisms/AuthenticationModal/InitialFor
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
 import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
@@ -27,22 +34,40 @@ export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venue,
 }) => {
+  const venueId = venue.id;
+
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
     venue.samlAuthProviderId
   );
 
-  // TODO: implement this check properly + probably using a backend function that also returns this URL
-  const hasI4AOAuth = true;
-  const signInWithI4AOAuth = useCallback(() => {
-    openUrl(
-      `/auth/connect/i4a?venueId=${venue.id}&returnOrigin=${window.location.origin}`
+  const {
+    loading: isCustomAuthConfigLoading,
+    value: customAuthConfig,
+  } = useAsync(async () => {
+    return tracePromise(
+      "Login::fetchCustomAuthConfig",
+      () => fetchCustomAuthConfig(venueId),
+      {
+        attributes: {
+          venueId,
+        },
+        withDebugLog: true,
+      }
     );
-  }, [venue.id]);
+  }, [venueId]);
 
-  // It will be extended with addition of new providers
-  const hasAlternativeLogins = hasSamlAuthProviderId || hasI4AOAuth;
+  const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
+
+  const hasCustomAuthConnect = isDefined(customAuthConnectPath);
+  const signInWithCustomAuth = useCallback(() => {
+    openUrl(
+      `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
+    );
+  }, [customAuthConnectPath, venueId]);
+
+  const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -58,6 +83,8 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
+  if (isCustomAuthConfigLoading) return <LoadingPage />;
+
   return (
     <div className="auth-container">
       <div className="logo-container">
@@ -69,13 +96,13 @@ export const Login: React.FC<LoginProps> = ({
             <span>Quick log in with</span>
 
             <div className="Login__alternative-logins">
-              {hasI4AOAuth && (
+              {hasCustomAuthConnect && (
                 <img
                   className="Login__quick-login-icon"
                   src={SAMLLoginIcon}
-                  onClick={signInWithI4AOAuth}
-                  title="I4A OAuth"
-                  alt="I4A OAuth"
+                  onClick={signInWithCustomAuth}
+                  title={customAuthName}
+                  alt={customAuthName}
                 />
               )}
               {hasSamlAuthProviderId && (
