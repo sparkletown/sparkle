@@ -32,7 +32,7 @@ export const UserList: React.FC<UserListProps> = ({
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
   activity = "partying",
-  disableSeeAll = true,
+  disableSeeAll = false,
   isAudioEffectDisabled,
   isCamp,
   attendanceBoost,
