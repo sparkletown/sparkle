@@ -3,6 +3,7 @@ import { Redirect, useHistory, useParams } from "react-router-dom";
 
 import { EntranceStepTemplate } from "types/EntranceStep";
 
+import { withId } from "utils/id";
 import { isCompleteProfile } from "utils/profile";
 import { currentVenueSelectorData } from "utils/selectors";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
@@ -47,7 +48,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (!user || !profile) {
-    return <Login venue={venue} />;
+    return <Login venue={withId(venue, venueId)} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {

@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 
 import { AnyVenue } from "types/venues";
 
+import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
@@ -19,7 +20,7 @@ import "./Login.scss";
 
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
 }
 
 export const Login: React.FC<LoginProps> = ({
