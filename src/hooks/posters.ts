@@ -49,10 +49,19 @@ export const usePosters = (posterHallId: string) => {
     setSearchInputValue,
   } = useDebounceSearch();
 
+  const [categoryFilter, _setCategoryFilter] = useState<string>();
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
     DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT
   );
+
+  const setCategoryFilter = useCallback((category: string) => {
+    _setCategoryFilter(category);
+  }, []);
+
+  const unsetCategoryFilter = useCallback(() => {
+    _setCategoryFilter(undefined);
+  }, []);
 
   const increaseDisplayedPosterCount = useCallback(() => {
     setDisplayedPostersAmount(
@@ -61,12 +70,36 @@ export const usePosters = (posterHallId: string) => {
     );
   }, []);
 
+  const categoryList = useMemo(
+    () =>
+      Array.from(
+        new Set(
+          posterVenues
+            .map((posterVenue) => posterVenue.poster?.categories)
+            .flat()
+        )
+      ),
+    [posterVenues]
+  );
+
+  const filteredPostersByCategory = useMemo(
+    () =>
+      categoryFilter
+        ? posterVenues.filter((posterVenue) =>
+            posterVenue.poster?.categories.includes(categoryFilter)
+          )
+        : posterVenues,
+    [posterVenues, categoryFilter]
+  );
+
   const filteredPosterVenues = useMemo(
     () =>
       liveFilter
-        ? posterVenues.filter((posterVenue) => posterVenue.isLive)
-        : posterVenues,
-    [posterVenues, liveFilter]
+        ? filteredPostersByCategory.filter(
+            (filteredPostersByCategory) => filteredPostersByCategory.isLive
+          )
+        : filteredPostersByCategory,
+    [filteredPostersByCategory, liveFilter]
   );
 
   // See https://fusejs.io/api/options.html
@@ -134,11 +167,16 @@ export const usePosters = (posterHallId: string) => {
     isPostersLoaded,
     hasHiddenPosters,
 
+    categoryList,
+
     searchInputValue,
+    categoryFilter,
     liveFilter,
 
     increaseDisplayedPosterCount,
     setSearchInputValue,
     setLiveFilter,
+    setCategoryFilter,
+    unsetCategoryFilter,
   };
 };

@@ -7,6 +7,7 @@ import { WithId } from "utils/id";
 import { usePosters } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
+import { PosterCategory } from "components/atoms/PosterCategory";
 
 import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
@@ -29,6 +30,11 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     setSearchInputValue,
     liveFilter,
     setLiveFilter,
+
+    categoryList,
+    categoryFilter,
+    setCategoryFilter,
+    unsetCategoryFilter,
   } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
@@ -39,6 +45,33 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues]);
 
+  const renderedCategoryOptions = useMemo(
+    () => (
+      <div className="PosterHall__categories">
+        <PosterCategory
+          key="All posters"
+          category="All posters"
+          onClick={unsetCategoryFilter}
+          containerClassname="PosterHall__category"
+          active={categoryFilter === undefined}
+        />
+        {categoryList.map((category, index) => {
+          if (!category) return [];
+          return (
+            <PosterCategory
+              key={category}
+              category={category}
+              onClick={() => setCategoryFilter(category)}
+              containerClassname="PosterHall__category"
+              active={category === categoryFilter}
+            />
+          );
+        })}
+      </div>
+    ),
+    [categoryList, categoryFilter, setCategoryFilter, unsetCategoryFilter]
+  );
+
   return (
     <div className="PosterHall">
       <PosterHallSearch
@@ -47,6 +80,8 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
         liveFilterValue={liveFilter}
         setLiveValue={setLiveFilter}
       />
+
+      {renderedCategoryOptions}
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
