@@ -84,13 +84,14 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   return (
     <div className="form-container">
-      <div className="secondary-action">
-        {`Don't have an account yet?`}
-        <br />
-        <span className="link" onClick={displayRegisterForm}>
-          Register instead!
-        </span>
-      </div>
+      {/* @debt Removed for OHBM SSO */}
+      {/*<div className="secondary-action">*/}
+      {/*  {`Don't have an account yet?`}*/}
+      {/*  <br />*/}
+      {/*  <span className="link" onClick={displayRegisterForm}>*/}
+      {/*    Register instead!*/}
+      {/*  </span>*/}
+      {/*</div>*/}
 
       <h2>Log in</h2>
 
