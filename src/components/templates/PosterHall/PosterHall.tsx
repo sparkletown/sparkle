@@ -55,7 +55,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
           containerClassname="PosterHall__category"
           active={categoryFilter === undefined}
         />
-        {categoryList.map((category, index) => {
+        {categoryList.map((category) => {
           if (!category) return [];
           return (
             <PosterCategory
