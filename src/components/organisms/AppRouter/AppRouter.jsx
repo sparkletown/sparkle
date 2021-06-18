@@ -17,7 +17,6 @@ import Step6b from "pages/Account/Step6b";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
-import Login from "pages/Account/Login";
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
@@ -61,7 +60,8 @@ const AppRouter = () => {
           path="/login/:venueId/:customToken"
           component={LoginWithCustomToken}
         />
-        <Route path="/login" component={Login} />
+        {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
+        {/*<Route path="/login" component={Login} />*/}
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
         <Route path="/admin/venue/creation" component={VenueWizard} />
