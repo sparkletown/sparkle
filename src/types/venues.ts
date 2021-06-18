@@ -176,6 +176,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showZendesk?: boolean;
+  showCategoriesFilter?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
