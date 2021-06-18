@@ -9,7 +9,9 @@ import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
 import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
 
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
@@ -18,10 +20,12 @@ import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
 
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
+  canBeBookmarked?: boolean;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
+  canBeBookmarked = false,
 }) => {
   const {
     title,
@@ -42,12 +46,15 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
+  const posterBookmarkClassname = "PosterPreview__bookmark";
+
   const { push: openUrlUsingRouter } = useHistory();
 
   const handleEnterVenue = useCallback(
     (e) => {
       if (
         e.target.closest([
+          `.${posterBookmarkClassname}`,
           ".PosterPreview__posterId",
           ".PosterPreview__info",
           ".PosterPreview__moreInfoUrl",
@@ -136,6 +143,11 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
         <div className="PosterPreview__info">
+          {canBeBookmarked && (
+            <div className={posterBookmarkClassname}>
+              <PosterBookmark posterVenue={posterVenue} />
+            </div>
+          )}
           {posterId && (
             <div className="PosterPreview__posterId">{renderMoreInfoUrl}</div>
           )}

@@ -47,14 +47,13 @@ $thumbnail-border-radius: 15px;
 
   &__posterId {
     display: inline;
-    text-align: left;
     font-size: $font-size--sm;
   }
 
   &__visiting {
     display: inline;
-    text-align: right;
     font-size: $font-size--sm;
+    margin-left: auto;
   }
 
   &__title {
@@ -96,8 +95,13 @@ $thumbnail-border-radius: 15px;
     margin: $spacing--sm 0;
   }
 
-  &__info {
+  &__bookmark {
     display: inline;
+    margin-right: $spacing--sm;
+  }
+
+  &__info {
+    display: flex;
     text-align: left;
   }
 

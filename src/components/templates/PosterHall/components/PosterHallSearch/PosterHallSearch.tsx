@@ -14,6 +14,11 @@ export interface PosterHallSearchProps {
 
   liveFilterValue: boolean;
   setLiveValue: (isLive: boolean) => void;
+
+  bookmarkedFilterValue: boolean;
+  setBookmarkedValue: (isSaved: boolean) => void;
+
+  showBookmarks?: boolean;
 }
 
 export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
@@ -22,6 +27,11 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
 
   liveFilterValue,
   setLiveValue,
+
+  bookmarkedFilterValue,
+  setBookmarkedValue,
+
+  showBookmarks = false,
 }) => {
   const onInputFieldChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,6 +43,12 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
   const onCheckboxChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => setLiveValue(e.target.checked),
     [setLiveValue]
+  );
+
+  const onCheckboxBookmarkChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) =>
+      setBookmarkedValue(e.target.checked),
+    [setBookmarkedValue]
   );
 
   return (
@@ -51,6 +67,14 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
         label={POSTERHALL_POSTER_IS_LIVE_TEXT}
         containerClassName="PosterHallSearch__checkbox"
       />
+      {showBookmarks && (
+        <Checkbox
+          checked={bookmarkedFilterValue}
+          onChange={onCheckboxBookmarkChange}
+          label="Poster is bookmarked"
+          containerClassName="PosterHallSearch__checkbox"
+        />
+      )}
     </div>
   );
 };

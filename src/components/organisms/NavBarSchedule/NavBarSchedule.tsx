@@ -10,7 +10,11 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import {
+  PLATFORM_BRAND_NAME,
+  SCHEDULE_SHOW_DAYS_AHEAD,
+  REMOVE_EVENTS_FROM_VENUE,
+} from "settings";
 
 import {
   LocationEvents,
@@ -26,6 +30,7 @@ import {
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
+import { formatDateRelativeToNow } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -101,7 +106,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       if (isScheduleTimeshifted) {
         return format(day, "E, LLL d");
       } else {
-        return isToday(day) ? "Today" : format(day, "E");
+        return formatDateRelativeToNow(day, {
+          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "E"),
+        });
       }
     };
 
@@ -151,7 +158,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     const locatedEvents: LocationEvents[] = Object.entries(
-      groupBy(daysEvents, buildLocationString)
+      groupBy(
+        daysEvents.filter(
+          (event: { venueId: string }) =>
+            !event.venueId.match(REMOVE_EVENTS_FROM_VENUE)
+        ),
+        buildLocationString
+      )
     ).map(([group, events]) => ({
       events,
       location: getEventLocation(group),
