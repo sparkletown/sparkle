@@ -1,0 +1,51 @@
+@import "scss/constants";
+
+$nonposter-subvenue-preview-height: 150px;
+$nonposter-subvenue-preview-width: 300px;
+$nonposter-subvenue-poster-shadows: 0 10px 20px 0 rgba($dark-green, 0.56);
+
+.NonPosterSubVenuePreview {
+  display: flex;
+  flex-direction: column;
+
+  content-visibility: auto;
+
+  height: $nonposter-subvenue-preview-height;
+  width: $nonposter-subvenue-preview-width;
+
+  padding: $spacing--lg;
+  margin: $spacing--md;
+  border-radius: $border-radius--md;
+
+  background-color: $saturated-black-alt;
+  color: $white;
+
+  border: 2px solid $lighter-intermediate-grey;
+
+  cursor: pointer;
+
+  border-color: $dark-green;
+  box-shadow: $nonposter-subvenue-poster-shadows;
+
+  &:hover {
+    background-color: $lighter-intermediate-grey;
+  }
+
+  &__venue {
+    font-size: $font-size--md;
+    margin: 0;
+  }
+
+  &__title {
+    font-size: $font-size--md;
+    font-weight: $font-weight--600;
+
+    margin: $spacing--md 0;
+  }
+
+  &__author {
+    margin-top: auto;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+  }
+}
