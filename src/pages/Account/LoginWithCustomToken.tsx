@@ -3,7 +3,10 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory, useParams } from "react-router-dom";
 import { useAsync } from "react-use";
 
+import { isDefined } from "utils/types";
 import { enterVenue } from "utils/url";
+
+import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -17,6 +20,10 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
     customToken?: string;
   }>();
 
+  const { user } = useUser();
+
+  const isLoggedInUser = isDefined(user);
+
   const firebase = useFirebase();
 
   const { replace: replaceUrlUsingRouter } = useHistory();
@@ -25,8 +32,7 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
     if (!venueId || !customToken)
       throw new Error("venueId and customToken are required");
 
-    if (firebase.auth().currentUser)
-      throw new Error("there is already a logged in user");
+    if (isLoggedInUser) throw new Error("there is already a logged in user");
 
     // @debt: move this into api/auth or similar?
     await firebase
@@ -41,7 +47,7 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
       .then(() => {
         enterVenue(venueId, { customOpenRelativeUrl: replaceUrlUsingRouter });
       });
-  }, [venueId, customToken, firebase, replaceUrlUsingRouter]);
+  }, [isLoggedInUser, venueId, customToken, firebase, replaceUrlUsingRouter]);
 
   if (isCustomTokenLoginLoading) return <LoadingPage />;
 
