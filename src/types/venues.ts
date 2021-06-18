@@ -176,6 +176,8 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showZendesk?: boolean;
+  leftLogo?: string;
+  rightLogo?: string;
   canBeBookmarked?: boolean;
 }
 
