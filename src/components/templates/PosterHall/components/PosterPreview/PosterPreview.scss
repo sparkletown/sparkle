@@ -120,4 +120,14 @@ $thumbnail-border-radius: 15px;
   &__img {
     border-radius: $thumbnail-border-radius;
   }
+
+  &__video {
+    font-size: $font-size--xxs;
+    color: $white;
+    padding: $spacing--xs $spacing--sm;
+    margin: 0 $spacing--xs;
+    border-radius: $border-radius--lg;
+    background-color: $primary--light;
+    font-weight: $font-weight--500;
+  }
 }
