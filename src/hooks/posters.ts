@@ -106,9 +106,15 @@ export const usePosters = (posterHallId: string) => {
         keys: [
           "name",
           "poster.title",
-          "poster.authorName",
+          {
+            name: "poster.authorName",
+            weight: 16,
+          },
           "poster.categories",
-          "poster.authors",
+          {
+            name: "poster.authors",
+            weight: 8,
+          },
           "poster.keywords",
           "poster.introduction",
         ],

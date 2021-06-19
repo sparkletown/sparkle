@@ -71,11 +71,14 @@ $video-container-height: 500px;
     display: flex;
     justify-content: center;
     margin-bottom: $spacing--sm;
+    flex-wrap: wrap;
   }
 
   &__subcategories {
     display: flex;
+    justify-content: center;
     margin-bottom: $spacing--sm;
+    flex-wrap: wrap;
   }
 
   &__video-previews {

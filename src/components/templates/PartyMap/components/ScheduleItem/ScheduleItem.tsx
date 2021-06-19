@@ -1,10 +1,13 @@
 import React from "react";
+import classNames from "classnames";
 
 import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { formatUtcSeconds } from "utils/time";
+import { eventEndTime, eventStartTime } from "utils/event";
+import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 
@@ -26,43 +29,53 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   roomUrl,
 }) => {
   const dispatch = useDispatch();
+
+  const schedulePrimaryClasses = classNames({
+    "ScheduleItem--primary": isCurrentEvent,
+  });
+
+  const scheduleItemTimeSectionClasses = classNames(
+    "ScheduleItem__time-section",
+    schedulePrimaryClasses
+  );
+
   return (
-    <div className="schedule-item-container">
-      <div className={`time-section ${isCurrentEvent ? "primary" : ""}`}>
-        <div>
-          <b>{formatUtcSeconds(event.start_utc_seconds)}</b>
-        </div>
-        <div>
-          {formatUtcSeconds(
-            event.start_utc_seconds + event.duration_minutes * 60
-          )}
-        </div>
+    <div className="ScheduleItem">
+      <div className={scheduleItemTimeSectionClasses}>
+        <span className="ScheduleItem__event-date">
+          {formatDateRelativeToNow(eventStartTime(event), {
+            formatToday: () => "",
+          })}
+        </span>
+        <span className="ScheduleItem__event-time">
+          {formatTimeLocalised(eventStartTime(event))}
+        </span>
+        <span className="ScheduleItem__event-date">
+          {formatDateRelativeToNow(eventEndTime(event), {
+            formatToday: () => "",
+          })}
+        </span>
+        <span className="ScheduleItem__event-time">
+          {formatTimeLocalised(eventEndTime(event))}
+        </span>
       </div>
-      <div className="event-section">
-        <div>
-          <div className={`${isCurrentEvent ? "primary" : ""}`}>
-            <div>
-              <b>{event.name}</b>
-            </div>
-            <div>
-              by <b>{event.host}</b>
-            </div>
-          </div>
-          <div className="event-description">
+      <div className="ScheduleItem__event-section">
+        <div className={schedulePrimaryClasses}>
+          <div className="ScheduleItem__event-name">{event.name}</div>
+          by <span className="ScheduleItem__event-host">{event.host}</span>
+          <div className="ScheduleItem__event-description">
             <RenderMarkdown text={event.description} />
           </div>
         </div>
         {isCurrentEvent && (
-          <div className="entry-room-button">
+          <div className="ScheduleItem__entry-room-button">
             <a
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
-              className="btn room-entry-button"
+              className="btn ScheduleItem__room-entry-button"
               onClick={onRoomEnter}
-              id={`enter-room-from-schedule-event-${event}`}
               href={roomUrl}
-              target="_blank"
-              rel="noopener noreferrer"
+              {...externalUrlAdditionalProps}
             >
               Live
             </a>
