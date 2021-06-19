@@ -107,21 +107,20 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
   const tokenizedSearchQuery = tokeniseStringWithQuotesBySpaces(
     normalizedSearchQuery
   );
-  // check must remain strict i.e. length === 0 b/c of a regexp generated result
   const isEmptyQuery =
     !normalizedSearchQuery || tokenizedSearchQuery.length === 0;
 
   // for empty query, re-use the state, or in case it is empty, the shuffled that just got loaded
   const posterVenues = isEmptyQuery
-    ? previousPosterVenues.length
-      ? previousPosterVenues
-      : shuffledPosterVenues
+    ? previousPosterVenues.length === 0
+      ? shuffledPosterVenues
+      : previousPosterVenues
     : loadedPosterVenues;
 
   useEffect(() => {
     // only save the shuffled poster venues state if the previous ones were empty
     // additional logic can be added to (re-/in-)validate based on time, userId or other parameters
-    if (isEmptyQuery && isPostersLoaded && !previousPosterVenues.length) {
+    if (isEmptyQuery && isPostersLoaded && previousPosterVenues.length !== 0) {
       setPreviousPosterVenues(shuffledPosterVenues);
     }
   }, [
