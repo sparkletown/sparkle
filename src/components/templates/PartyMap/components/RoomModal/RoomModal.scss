@@ -54,6 +54,7 @@ $spacing: 20px;
   }
 
   &__description {
+    @include scrollbar;
     margin-top: $spacing;
     padding: 10px $spacing;
 
@@ -61,10 +62,12 @@ $spacing: 20px;
     border-radius: $border-radius;
 
     max-height: 25vh;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &__events {
+    max-height: 35vh;
+    overflow-y: auto;
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {

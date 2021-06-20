@@ -26,6 +26,8 @@ import { calcStartPosition } from "components/molecules/Schedule/utils";
 
 import "./ScheduleEvent.scss";
 
+const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
+
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
   scheduleStartHour: number;
@@ -77,15 +79,24 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     hide: hideEventModal,
   } = useShowHide();
 
+  const onEventBoxClick = useCallback(
+    (e) => {
+      if (e.target.closest(`.${ScheduleEventBookmarkClass}`)) return;
+
+      showEventModal();
+    },
+    [showEventModal]
+  );
+
   return (
     <>
-      <div className={containerClasses} onClick={showEventModal}>
+      <div className={containerClasses} onClick={onEventBoxClick}>
         <div className="ScheduleEvent__info">
           <div className="ScheduleEvent__title">{event.name}</div>
           <div className="ScheduleEvent__host">by {event.host}</div>
         </div>
 
-        <div className="ScheduleEvent__bookmark" onClick={bookmarkEvent}>
+        <div className={ScheduleEventBookmarkClass} onClick={bookmarkEvent}>
           <FontAwesomeIcon
             icon={event.isSaved ? solidBookmark : regularBookmark}
           />
