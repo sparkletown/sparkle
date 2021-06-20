@@ -3,7 +3,6 @@ import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import classNames from "classnames";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -14,18 +13,12 @@ import {
 import { resizeFile } from "utils/image";
 
 import { useSovereignVenueId } from "hooks/useSovereignVenueId";
-import { useShowHide } from "hooks/useShowHide";
-
-import { InputField } from "components/atoms/InputField";
-import { Button } from "components/atoms/Button";
-
-import pipetIcon from "assets/icons/profile-picture-pipet.svg";
 
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
-interface ProfilePictureInputProps {
+export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
@@ -36,7 +29,7 @@ interface ProfilePictureInputProps {
   register: any;
 }
 
-const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
+export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
   venueId,
   setValue,
   user,
@@ -48,11 +41,6 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
-  const {
-    isShown: isShownAvatarImages,
-    hide: hideAvatarImages,
-    show: showAvatarImages,
-  } = useShowHide();
 
   const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
     venueId,
@@ -107,9 +95,8 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const uploadDefaultAvatar = useCallback(
     async (avatar: string) => {
       setValue("pictureUrl", avatar, true);
-      hideAvatarImages();
     },
-    [setValue, hideAvatarImages]
+    [setValue]
   );
 
   const isLoading =
@@ -119,14 +106,6 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const defaultAvatars = customAvatars?.length
     ? customAvatars
     : DEFAULT_AVATARS;
-
-  const colorButtonClasses = classNames("ProfilePictureInput__color-button", {
-    "ProfilePictureInput__color-button--changed": isShownAvatarImages,
-  });
-
-  const profileCardColorText = isShownAvatarImages
-    ? "Change your profile card color"
-    : "Pick a profile card color";
 
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
@@ -145,67 +124,38 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   }, [defaultAvatars, uploadDefaultAvatar]);
 
   return (
-    <div className="ProfilePictureInput">
-      <div className="ProfilePictureInput__container">
+    <div className="profile-picture-upload-form">
+      <div
+        className="profile-picture-preview-container"
+        onClick={() => uploadRef.current?.click()}
+      >
         <img
           src={pictureUrl || "/default-profile-pic.png"}
-          className="profile-icon ProfilePictureInput__picture"
-          onClick={() => uploadRef.current?.click()}
+          className="profile-icon profile-picture-preview"
           alt="your profile"
         />
-        <input
-          type="file"
-          id="profile-picture-input"
-          name="profilePicture"
-          onChange={handleFileChange}
-          accept={ACCEPTED_IMAGE_TYPES}
-          className="ProfilePictureInput__picture-input"
-          ref={uploadRef}
-        />
-        <label
-          htmlFor="profile-picture-input"
-          className="ProfilePictureInput__picture-button"
-        >
-          Upload new
-        </label>
       </div>
-
+      <input
+        type="file"
+        id="profile-picture-input"
+        name="profilePicture"
+        onChange={handleFileChange}
+        accept={ACCEPTED_IMAGE_TYPES}
+        className="profile-picture-input"
+        ref={uploadRef}
+      />
+      <label htmlFor="profile-picture-input" className="profile-picture-button">
+        Upload your profile pic
+      </label>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-
-      <InputField
-        containerClassName="ProfilePictureInput__input-media-container"
-        inputClassName="ProfilePictureInput__input-media"
-        name="twitter"
-        placeholder="Twitter handle (optional)"
-      />
-      <InputField
-        containerClassName="ProfilePictureInput__input-media-container"
-        inputClassName="ProfilePictureInput__input-media"
-        name="email"
-        placeholder="Email address (optional)"
-        autoComplete="off"
-      />
-      <div className="ProfilePictureInput__color-container">
-        <Button customClass={colorButtonClasses} onClick={showAvatarImages}>
-          <img src={pipetIcon} alt="pipet" />
-        </Button>
-        <span className="ProfilePictureInput__color-text">
-          {profileCardColorText}
-        </span>
+      <small>Or pick one from our Sparkle profile pics</small>
+      <div className="default-avatars-container">
+        {isLoading ? <div>Loading...</div> : avatarImages}
       </div>
-      {isShownAvatarImages && (
-        <>
-          <small>Or pick one from our Sparkle profile pics</small>
-          <div className="default-avatars-container">
-            {isLoading ? <div>Loading...</div> : avatarImages}
-          </div>
-        </>
-      )}
-
       <input
         name="pictureUrl"
         className="profile-picture-input"
@@ -216,5 +166,3 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     </div>
   );
 };
-
-export default ProfilePictureInput;

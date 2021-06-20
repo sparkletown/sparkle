@@ -18,7 +18,7 @@ import { updateUserProfile } from "pages/Account/helpers";
 import { InputField } from "components/atoms/InputField";
 import { Button } from "components/atoms/Button";
 
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./EditProfileForm.scss";
 
