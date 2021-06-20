@@ -1,25 +1,55 @@
 import React, { useState } from "react";
+
+import { ProfileLink } from "types/User";
+import { isDefined } from "utils/types";
+
+import { useUser } from "hooks/useUser";
+
+import { EditPasswordForm } from "./EditPasswordForm";
+import { EditProfileForm } from "./EditProfileForm";
+import { EditProfileLinkForm } from "./EditProfileLinkForm";
+import { UserInformationContent } from "./UserInformationContent";
+
 import "./ProfilePopoverContent.scss";
-import UserInformationContent from "./UserInformationContent";
-import EditProfileForm from "./EditProfileForm";
-import EditPasswordForm from "./EditPasswordForm";
+
+export enum UserProfileMode {
+  DEFAULT,
+  EDIT_PROFILE,
+  EDIT_PASSWORD,
+  EDIT_PROFILE_LINK,
+}
 
 export const ProfilePopoverContent: React.FC = () => {
-  const [isEditMode, setIsEditMode] = useState(false);
-  const [isPasswordEditMode, setIsPasswordEditMode] = useState(false);
+  const [mode, setMode] = useState<UserProfileMode>(UserProfileMode.DEFAULT);
+  const [profileLink, setProfileLink] = useState<ProfileLink | undefined>(
+    undefined
+  );
+
+  const { userWithId, user } = useUser();
 
   return (
-    <div className="profile-modal-container">
-      {!isEditMode && !isPasswordEditMode && (
+    <div className="ProfilePopoverContent">
+      {mode === UserProfileMode.DEFAULT && (
         <UserInformationContent
-          setIsEditMode={setIsEditMode}
-          setIsPasswordEditMode={setIsPasswordEditMode}
-          hideModal={() => {}}
+          setUserProfileMode={setMode}
+          setProfileLinkToEdit={setProfileLink}
+          user={userWithId}
+          email={user?.email}
         />
       )}
-      {isEditMode && <EditProfileForm setIsEditMode={setIsEditMode} />}
-      {isPasswordEditMode && (
-        <EditPasswordForm setIsPasswordEditMode={setIsPasswordEditMode} />
+      {mode === UserProfileMode.EDIT_PROFILE && (
+        <EditProfileForm setUserProfileMode={setMode} />
+      )}
+      {mode === UserProfileMode.EDIT_PASSWORD && (
+        <EditPasswordForm setUserProfileMode={setMode} />
+      )}
+      {mode === UserProfileMode.EDIT_PROFILE_LINK && (
+        <EditProfileLinkForm
+          user={userWithId}
+          edit={isDefined(profileLink)}
+          profileLink={profileLink}
+          setUserProfileMode={setMode}
+        />
       )}
     </div>
   );

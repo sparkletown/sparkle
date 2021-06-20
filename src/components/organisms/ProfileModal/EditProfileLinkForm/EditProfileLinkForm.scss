@@ -1,0 +1,77 @@
+@import "scss/constants";
+
+$spacing--between: 10px;
+
+.EditProfileLinkForm {
+  display: flex;
+  flex-direction: column;
+
+  &__title {
+    font-size: $font-size--xl;
+    font-weight: $font-weight--700;
+    text-align: center;
+    margin-bottom: $spacing--between;
+  }
+
+  &__input-container {
+    margin-bottom: $spacing--between;
+  }
+
+  &__input {
+    text-align: left;
+    margin-bottom: 0;
+  }
+
+  &__input-error {
+    color: $input--invalid;
+    font-size: 0.8rem;
+    margin-top: -$spacing--sm;
+    margin-bottom: $spacing--sm;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__button {
+    flex: 1 0 40%;
+    margin-bottom: $spacing--between;
+  }
+
+  // @debt had to increase specificity because Button styles go later
+  & .EditProfileLinkForm__button--cancel {
+    background-color: $secondary;
+    margin-right: $spacing--between;
+    font-size: 0.9rem;
+
+    &:hover {
+      background-color: $secondary--light;
+    }
+  }
+
+  // @debt had to increase specificity because Button styles go later
+  & .EditProfileLinkForm__button--remove {
+    background-color: $secondary;
+    font-size: 0.9rem;
+
+    &:hover {
+      background-color: $secondary--light;
+    }
+  }
+
+  // @debt had to increase specificity because Button styles go later
+  & .EditProfileLinkForm__button--save {
+    background-color: $primary--live;
+    font-size: 0.9rem;
+
+    &:hover {
+      background-color: $primary--live-hover;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      background-color: $secondary;
+    }
+  }
+}

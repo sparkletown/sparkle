@@ -1,13 +1,17 @@
 @import "scss/constants.scss";
 
+$profile-popover--margin-top: 12px;
+
 #profile-popover {
+  margin-top: $profile-popover--margin-top;
+
   &.popover {
-    border-radius: 0 0 $border-radius--xl $border-radius--xl;
     @include scrollbar;
+    border-radius: 0 0 $border-radius--xl $border-radius--xl;
   }
 }
 
-.profile-modal-container {
+.ProfilePopoverContent {
   position: relative;
   overflow: auto;
   padding: $spacing--md;
@@ -28,23 +32,17 @@
 
   .question-section {
     margin-bottom: 30px;
+    font-size: 14px;
+    color: white;
   }
 
   .question {
-    color: $concrete;
-  }
-
-  .answer {
-    font-size: 20px;
+    opacity: 0.6;
   }
 
   .modal-title {
     font-style: normal;
     font-size: 25px;
-    margin-bottom: 10px;
-  }
-
-  input {
     margin-bottom: 10px;
   }
 

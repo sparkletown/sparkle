@@ -27,11 +27,6 @@ $button-height: 30px;
     justify-content: center;
   }
 
-  &__cancel-button {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
   &__input-container-name {
     height: $submit-button-diameter;
   }
@@ -41,13 +36,18 @@ $button-height: 30px;
     padding: $spacing--md $input-horizon-space;
     font-size: $font-size--lg;
   }
-}
 
-button.EditProfileForm__submit-button {
-  width: 100%;
-  height: $button-height;
-  padding: 0;
-  background-color: opaque-white(0.2);
-  font-size: $font-size--md;
-  margin: $spacing--md 0;
+  // @debt had to increase specificity because Button styles go later
+  & .EditProfileForm__submit-button {
+    width: 100%;
+    height: $button-height;
+    padding: 0;
+    background-color: $primary--live;
+    font-size: $font-size--md;
+    margin: $spacing--md 0;
+
+    &:hover {
+      background-color: $primary--live-hover;
+    }
+  }
 }

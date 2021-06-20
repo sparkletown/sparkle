@@ -6,6 +6,7 @@ $button-size: 30px;
   &__title {
     font-size: $font-size--md;
     line-height: $spacing--xl;
+    font-weight: normal;
     color: opaque-white(0.5);
   }
 
@@ -42,11 +43,21 @@ $button-size: 30px;
   &__status-prefix {
     padding-right: 6px;
     color: opaque-white(0.7);
+    align-self: flex-end;
   }
 
   &__edit {
     width: $button-size;
     height: $button-size;
+  }
+
+  &__profile-links {
+    list-style-type: none;
+    margin-bottom: 0;
+  }
+
+  &__add-profile-link {
+    margin-bottom: $spacing--lg;
   }
 }
 

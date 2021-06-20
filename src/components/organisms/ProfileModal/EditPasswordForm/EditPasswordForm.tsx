@@ -1,11 +1,10 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import "./EditPasswordForm.scss";
 import { useFirebase } from "react-redux-firebase";
 
-interface PropsType {
-  setIsPasswordEditMode: (value: boolean) => void;
-}
+import { UserProfileMode } from "../ProfilePopoverContent";
+
+import "./EditPasswordForm.scss";
 
 interface ChangePasswordData {
   currentPassword: string;
@@ -13,8 +12,12 @@ interface ChangePasswordData {
   confirmNewPassword: string;
 }
 
-const EditPasswordForm: React.FunctionComponent<PropsType> = ({
-  setIsPasswordEditMode,
+export interface EditPasswordFormProps {
+  setUserProfileMode: (value: UserProfileMode) => void;
+}
+
+export const EditPasswordForm: React.FunctionComponent<EditPasswordFormProps> = ({
+  setUserProfileMode,
 }) => {
   const firebase = useFirebase();
   const user = firebase.auth().currentUser;
@@ -28,7 +31,7 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: ChangePasswordData) => {
     if (!user) return;
     user.updatePassword(data.confirmNewPassword);
-    setIsPasswordEditMode(false);
+    setUserProfileMode(UserProfileMode.DEFAULT);
   };
 
   const verifyCurrentPassword = async (value: string) => {
@@ -44,13 +47,13 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
   const newPassword = watch("newPassword");
 
   return (
-    <div className="change-password-modal">
-      <h2 className="title">Change password</h2>
+    <div className="EditPasswordForm">
+      <h2 className="EditPasswordForm__title">Change password</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <input
           name="currentPassword"
           type="password"
-          className="input-block input-centered current-password-input"
+          className="EditPasswordForm__input-block input-centered EditPasswordForm__current-password-input"
           placeholder="Current password"
           ref={register({
             required: true,
@@ -59,16 +62,20 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
         />
         {errors.currentPassword &&
           errors.currentPassword.type === "required" && (
-            <div className="input-error">Current password is required</div>
+            <div className="EditPasswordForm__input-error">
+              Current password is required
+            </div>
           )}
         {errors.currentPassword &&
           errors.currentPassword.type === "validate" && (
-            <div className="input-error">Invalid password</div>
+            <div className="EditPasswordForm__input-error">
+              Invalid password
+            </div>
           )}
         <input
           name="newPassword"
           type="password"
-          className="input-block input-centered"
+          className="EditPasswordForm__input-block input-centered"
           placeholder="New password"
           ref={register({
             required: true,
@@ -78,7 +85,7 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
         <input
           name="confirmNewPassword"
           type="password"
-          className="input-block input-centered"
+          className="EditPasswordForm__input-block input-centered"
           placeholder="Confirm password"
           ref={register({
             validate: (value) =>
@@ -87,7 +94,9 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
           })}
         />
         {errors.confirmNewPassword && (
-          <div className="input-error">Passwords do not match</div>
+          <div className="EditPasswordForm__input-error">
+            Passwords do not match
+          </div>
         )}
         <div
           className={`input-${
@@ -104,14 +113,12 @@ const EditPasswordForm: React.FunctionComponent<PropsType> = ({
           value="Save changes"
         />
       </form>
-      <div
-        className="cancel-button"
-        onClick={() => setIsPasswordEditMode(false)}
+      <button
+        className="button--a"
+        onClick={() => setUserProfileMode(UserProfileMode.DEFAULT)}
       >
         Cancel
-      </div>
+      </button>
     </div>
   );
 };
-
-export default EditPasswordForm;

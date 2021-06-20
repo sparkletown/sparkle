@@ -20,14 +20,16 @@ import { Button } from "components/atoms/Button";
 
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
+import { UserProfileMode } from "../ProfilePopoverContent";
+
 import "./EditProfileForm.scss";
 
-interface PropsType {
-  setIsEditMode: (value: boolean) => void;
+export interface EditProfileFormProps {
+  setUserProfileMode: (value: UserProfileMode) => void;
 }
 
-const EditProfileForm: React.FunctionComponent<PropsType> = ({
-  setIsEditMode,
+export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
+  setUserProfileMode,
 }) => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
@@ -36,8 +38,9 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   );
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
+
     await updateUserProfile(user.uid, data);
-    setIsEditMode(false);
+    setUserProfileMode(UserProfileMode.DEFAULT);
   };
   const defaultValues = {
     partyName: profile?.partyName,
@@ -74,7 +77,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   return (
     <div className="EditProfileForm">
       <h1 className="EditProfileForm__title">Edit profile</h1>
-      <form onSubmit={handleSubmit(onSubmit)} className="form">
+      <div className="form">
         <InputField
           containerClassName="EditProfileForm__input-container-name"
           inputClassName="EditProfileForm__input-name"
@@ -106,7 +109,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
         )}
         {profileQuestions &&
           profileQuestions.map((question: QuestionType) => (
-            <>
+            <div key={question.name}>
               <div className="EditProfileForm__question">{question.text}</div>
               <div className="input-group">
                 <textarea
@@ -115,26 +118,26 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
                   ref={register()}
                 />
               </div>
-            </>
+            </div>
           ))}
+
         <Button
+          onClick={handleSubmit(onSubmit)}
           type="submit"
           disabled={!formState.isValid}
           customClass="EditProfileForm__submit-button"
         >
-          Save Change
+          Save Changes
         </Button>
-      </form>
+      </div>
       <div className="EditProfileForm__cancel-container">
-        <div
-          className="EditProfileForm__cancel-button"
-          onClick={() => setIsEditMode(false)}
+        <button
+          className="button--a"
+          onClick={() => setUserProfileMode(UserProfileMode.DEFAULT)}
         >
           Cancel
-        </div>
+        </button>
       </div>
     </div>
   );
 };
-
-export default EditProfileForm;
