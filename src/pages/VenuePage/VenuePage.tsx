@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -24,7 +24,6 @@ import {
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
-import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -48,21 +47,9 @@ import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-const Login = lazy(() =>
-  tracePromise("VenuePage::lazy-import::Login", () =>
-    import("pages/Account/Login").then(({ Login }) => ({
-      default: Login,
-    }))
-  )
-);
-
-const TemplateWrapper = lazy(() =>
-  tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
-    import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
-      default: TemplateWrapper,
-    }))
-  )
-);
+import Login from "pages/Account/Login";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { TemplateWrapper } from "./TemplateWrapper";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -99,6 +86,10 @@ export const VenuePage: React.FC = () => {
   const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
+
+  const { isRelatedVenuesLoading } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
   useEffect(() => {
     if (!venue) return;
@@ -246,7 +237,7 @@ export const VenuePage: React.FC = () => {
     }
   }
 
-  if (!user) {
+  if (!user || isRelatedVenuesLoading) {
     return <LoadingPage />;
   }
 

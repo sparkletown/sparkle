@@ -7,7 +7,6 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -29,6 +28,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 const PlayaRouter = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
