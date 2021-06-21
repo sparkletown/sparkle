@@ -12,6 +12,8 @@ import {
   startOfDay,
   subDays,
   subHours,
+  parseISO,
+  differenceInMinutes,
 } from "date-fns";
 
 /**
@@ -232,3 +234,16 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
+
+export const getDurationMinutes = function (start: string, end: string) {
+  let startDate = parseISO(start);
+  let endDate = parseISO(end);
+  // console.log(startDate, endDate);
+  // console.log(differenceInMinutes(endDate, startDate));
+  return differenceInMinutes(endDate, startDate);
+};
+
+export const getUTCStartTime = function (start: string) {
+  let startDate = parseISO(start);
+  return getUnixTime(startDate);
+};
