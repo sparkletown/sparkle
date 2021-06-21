@@ -1,0 +1,40 @@
+@import "scss/constants.scss";
+
+.RunTabToolbar {
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    padding: $spacing--xs;
+    margin: 0;
+  }
+
+  &__toolbar {
+    display: flex;
+    min-width: 50%;
+    margin: 0;
+    padding: 0;
+
+    &--left {
+      flex-direction: row;
+    }
+
+    &--right {
+      flex-direction: row-reverse;
+    }
+
+    > * {
+      margin: $spacing--xs !important;
+      height: calc(100% - 2 * #{$spacing--xs});
+    }
+
+    .input-field {
+      height: 100%;
+    }
+
+    .btn:not(.btn-primary) {
+      background-color: $secondary !important;
+      background-image: none !important;
+    }
+  }
+}

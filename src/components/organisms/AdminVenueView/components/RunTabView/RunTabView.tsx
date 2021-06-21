@@ -1,18 +1,22 @@
 import React from "react";
-import { useVenueId } from "../../../../../hooks/useVenueId";
-import { Button } from "../../../../atoms/Button";
-import { venueInsideUrl } from "../../../../../utils/url";
-import { DEFAULT_MAP_BACKGROUND } from "../../../../../settings";
-import { useConnectCurrentVenueNG } from "../../../../../hooks/useConnectCurrentVenueNG";
-import { Container } from "../../../../../pages/Account/Venue/VenueMapEdition/Container";
 import { FormControl } from "react-bootstrap";
-import { useUser } from "../../../../../hooks/useUser";
-import { AdminVenueRoomsList } from "../../../../../pages/Admin/AdminVenueRoomsList";
-import { WithId } from "../../../../../utils/id";
-import { AnyVenue } from "../../../../../types/venues";
+
+import { DEFAULT_MAP_BACKGROUND } from "settings";
+
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useUser } from "hooks/useUser";
+import { Container } from "pages/Account/Venue/VenueMapEdition/Container";
+import { AdminVenueRoomsList } from "pages/Admin/AdminVenueRoomsList";
+
+import { AdvancedSettingsButton } from "components/organisms/AdminVenueView/components/AdvancedSettingsButton/AdvancedSettingsButton";
+import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 
 import "./RunTabView.scss";
-import { AdvancedSettingsButton } from "../AdvancedSettingsButton/AdvancedSettingsButton";
 
 const noop = () => undefined;
 
@@ -34,12 +38,10 @@ export const RunTabView: React.FC = () => {
               <img src={profile?.pictureUrl} alt="profile pic" />
               {user?.displayName}
             </div>
-            {false && <div>Loading...</div>}
-            {!false && (
-              <button className="btn btn-primary" onClick={noop}>
-                (pokes with stick) C&apos;mon do something
-              </button>
-            )}
+            <div>Loading...</div>
+            <button className="btn btn-primary" onClick={noop}>
+              (pokes with stick) C&apos;mon do something
+            </button>
           </div>
           {error && <div>{error}</div>}
         </div>
@@ -52,35 +54,7 @@ export const RunTabView: React.FC = () => {
         <div className="row-container">something in the row</div>
       </div>
       <div className="RunTabView__main">
-        <div className="RunTabView__toolbars">
-          <div className="RunTabView__toolbar RunTabView__toolbar--left">
-            <Button
-              isLink={true}
-              linkTo={venueId ? venueInsideUrl(venueId) : undefined}
-              customClass="btn btn-primary btn-block"
-              newTab={true}
-            >
-              Everyone
-            </Button>{" "}
-            <input
-              name="Event search bar"
-              className="input-block search-event-input"
-              placeholder="Search for an event"
-              onChange={noop}
-              value=""
-            />
-          </div>
-          <div className="RunTabView__toolbar RunTabView__toolbar--right">
-            <Button
-              isLink={true}
-              linkTo={venueId ? venueInsideUrl(venueId) : undefined}
-              customClass="btn btn-primary btn-block"
-              newTab={true}
-            >
-              Visit Space
-            </Button>
-          </div>
-        </div>
+        <RunTabToolbar venueId={venueId} />
         <div className="RunTabView__map">
           <Container
             interactive

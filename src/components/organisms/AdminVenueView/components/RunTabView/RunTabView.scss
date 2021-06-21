@@ -19,29 +19,6 @@
     margin: $spacing--lg !important;
   }
 
-  &__toolbars {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    padding: $spacing--xs;
-    margin: 0;
-  }
-
-  &__toolbar {
-    display: flex;
-    min-width: 50%;
-    margin: 0;
-    padding: 0;
-
-    &--left {
-      flex-direction: row;
-    }
-
-    &--right {
-      flex-direction: row-reverse;
-    }
-  }
-
   &__sidebar {
     display: flex;
     flex-direction: column;
