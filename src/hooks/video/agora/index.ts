@@ -89,16 +89,18 @@ export const useAgoraScreenShare: ReactHook<
     await client.publish(screenTrack);
   }, [client]);
 
-  const stopShare = useCallback(() => {
+  const stopShare = useCallback(async () => {
     localScreenTrack?.stop();
     localScreenTrack?.close();
 
     localAudioTrack?.stop();
     localAudioTrack?.close();
 
+    await client?.unpublish();
+
     setLocalScreenTrack(undefined);
     setLocalAudioTrack(undefined);
-  }, [localAudioTrack, localScreenTrack]);
+  }, [client, localAudioTrack, localScreenTrack]);
 
   const joinChannel = async () => {
     await client?.join(

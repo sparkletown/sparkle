@@ -643,3 +643,5 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const MAX_TALK_SHOW_STUDIO_HOSTS = 5;

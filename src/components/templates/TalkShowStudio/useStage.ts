@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useMemo } from "react";
 
+import { MAX_TALK_SHOW_STUDIO_HOSTS } from "settings";
+
 import { PlaceInTalkShowStudioVenue, User } from "types/User";
 
 import { updateTalkShowStudioExperience } from "api/profile";
@@ -10,8 +12,6 @@ import { WithId } from "utils/id";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
-
-const MAX_HOSTS = 5;
 
 export const useStage = () => {
   const venueId = useVenueId();
@@ -73,9 +73,10 @@ export const useStage = () => {
     [peopleOnStage, userId]
   );
 
-  const canJoinStage = useMemo(() => peopleOnStage.length <= MAX_HOSTS, [
-    peopleOnStage,
-  ]);
+  const canJoinStage = useMemo(
+    () => peopleOnStage.length < MAX_TALK_SHOW_STUDIO_HOSTS,
+    [peopleOnStage]
+  );
 
   const screenSharingUser = useMemo(
     () =>

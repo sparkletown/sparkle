@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -7,6 +7,8 @@ import {
   faVideoSlash,
   faVolumeMute,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { MAX_TALK_SHOW_STUDIO_HOSTS } from "settings";
 
 import { FullTalkShowVenue, VenueTemplate } from "types/venues";
 import { PlaceInTalkShowStudioVenue, User } from "types/User";
@@ -50,6 +52,14 @@ export const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
     classNames("AdminPanelUser__controlUserButton", {
       "AdminPanelUser__controlUserButton-off": isOff,
     });
+
+  const slots = useMemo(
+    () =>
+      Array.from(
+        Array(MAX_TALK_SHOW_STUDIO_HOSTS - stage.peopleOnStage.length).keys()
+      ),
+    [stage.peopleOnStage]
+  );
 
   return (
     <div className="AdminPanel">
@@ -103,6 +113,14 @@ export const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
                   </div>
                 </div>
               )}
+            </div>
+          ))}
+          {slots.map((slot) => (
+            <div key={slot} className="AdminPanelSlot">
+              <div className="AdminPanelSlot__info">
+                <div className="AdminPanelSlot__picture" />
+                Slot {slot + 1 + stage.peopleOnStage.length}
+              </div>
             </div>
           ))}
         </div>
@@ -162,17 +180,19 @@ export const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
                     </div>
                     {user.partyName || ""}
                   </div>
-                  <div
-                    className="AdminPanelUser__controlUserButton"
-                    onClick={() => {
-                      venueId &&
-                        updateUserTalkShowStudioExperience(venueId, user.id, {
-                          place: PlaceInTalkShowStudioVenue.stage,
-                        });
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </div>
+                  {stage.canJoinStage && (
+                    <div
+                      className="AdminPanelUser__controlUserButton"
+                      onClick={() => {
+                        venueId &&
+                          updateUserTalkShowStudioExperience(venueId, user.id, {
+                            place: PlaceInTalkShowStudioVenue.stage,
+                          });
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </div>
+                  )}
                 </div>
               ))}
               <Button
