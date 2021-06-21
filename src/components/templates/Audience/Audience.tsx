@@ -354,6 +354,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
           ))}
           <div
             className="mute-button"
+            title="(Un)Mute audience reactions"
             onClick={() => setIsAudioEffectDisabled((state) => !state)}
           >
             <FontAwesomeIcon
