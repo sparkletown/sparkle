@@ -146,10 +146,6 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  if (POSTER_PROVIDER_TEMPLATES.includes(venue.template)) {
-    template = <PostersProvider venueId={venue.id}>{template}</PostersProvider>;
-  }
-
   // @debt remove backButton from Navbar
   return (
     <RelatedVenuesProvider venueId={venue.id}>
@@ -159,7 +155,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           hasBackButton={hasBackButton}
         >
           <AnnouncementMessage message={venue.bannerMessage} />
-          {template}
+          {POSTER_PROVIDER_TEMPLATES.includes(venue.template) ? (
+            <PostersProvider venueId={venue.id}>{template}</PostersProvider>
+          ) : (
+            template
+          )}
           <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>
