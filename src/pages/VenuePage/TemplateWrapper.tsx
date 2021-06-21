@@ -23,7 +23,7 @@ import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-// import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
@@ -153,7 +153,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         >
           <AnnouncementMessage message={venue.bannerMessage} />
           {template}
-          {/* <ChatSidebar venue={venue} /> */}
+          <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>
       </ReactionsProvider>
