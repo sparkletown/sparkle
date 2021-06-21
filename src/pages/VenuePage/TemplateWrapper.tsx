@@ -1,7 +1,7 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
-import { HAS_RANDOMIZED_POSTERS_TEMPLATES } from "settings";
+import { POSTER_PROVIDER_TEMPLATES } from "settings";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -146,7 +146,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
-  if (HAS_RANDOMIZED_POSTERS_TEMPLATES.includes(venue.template)) {
+  if (POSTER_PROVIDER_TEMPLATES.includes(venue.template)) {
     template = <PostersProvider venueId={venue.id}>{template}</PostersProvider>;
   }
 

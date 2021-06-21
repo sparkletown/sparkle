@@ -552,7 +552,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates along with the rest *_TEMPLATES constants
-export const HAS_RANDOMIZED_POSTERS_TEMPLATES = [
+export const POSTER_PROVIDER_TEMPLATES = [
   VenueTemplate.posterhall,
   VenueTemplate.posterpage,
 ];
