@@ -1,12 +1,15 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
+import { HAS_RANDOMIZED_POSTERS_TEMPLATES } from "settings";
+
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { PostersProvider } from "hooks/posters";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -28,7 +31,6 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { PostersProvider } from "hooks/posters";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -144,6 +146,10 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
+  if (HAS_RANDOMIZED_POSTERS_TEMPLATES.includes(venue.template)) {
+    template = <PostersProvider venueId={venue.id}>{template}</PostersProvider>;
+  }
+
   // @debt remove backButton from Navbar
   return (
     <RelatedVenuesProvider venueId={venue.id}>
@@ -153,13 +159,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           hasBackButton={hasBackButton}
         >
           <AnnouncementMessage message={venue.bannerMessage} />
-          {[VenueTemplate.posterhall, VenueTemplate.posterpage].includes(
-            venue.template
-          ) ? (
-            <PostersProvider venueId={venue.id}>{template}</PostersProvider>
-          ) : (
-            template
-          )}
+          {template}
           <ChatSidebar venue={venue} />
           <UserProfileModal venue={venue} />
         </WithNavigationBar>

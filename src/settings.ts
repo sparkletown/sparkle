@@ -551,6 +551,12 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
 ];
 
+// @debt Refactor this constant into types/templates along with the rest *_TEMPLATES constants
+export const HAS_RANDOMIZED_POSTERS_TEMPLATES = [
+  VenueTemplate.posterhall,
+  VenueTemplate.posterpage,
+];
+
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
