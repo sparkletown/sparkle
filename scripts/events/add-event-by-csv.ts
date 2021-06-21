@@ -2,16 +2,19 @@
 
 import {
   checkFileExists,
-  // findUserByEmail,
   initFirebaseAdminApp,
   makeScriptUsage,
   parseCredentialFile,
 } from "../lib/helpers";
 
-import csv from "csv-parser";
-import * as fs from "fs";
-import dayjs from "dayjs";
 import { VenueEvent } from "../../src/types/venues";
+import { getDurationMinutes, getUTCStartTime } from "../../src/utils/time";
+import { getCSVRows } from "../../src/utils/csv";
+
+type rawEventsOptions = {
+  // eslint-disable-next-line
+  [key: string]: any;
+};
 
 const usage = makeScriptUsage({
   description: "Bulk upload events from a spreadsheet ",
@@ -40,41 +43,36 @@ if (!projectId) {
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
 const csvHeaders = {
-  eventName: "PUBLIC EVENT NAME",
-  room:
-    "ROOM NAME - must match Sparkle room name exactly( if it is music venue and Auditorium set as -1)",
-  host: "PUBLIC-FACING HOST NAME",
-  durationMinutes: "DURATION - Calculated",
-  startTime: "START TIME (PT)",
-  startDate: "START DAY",
-  description: "PUBLIC EVENT DESCRIPTION (1-2 SENTENCES MAX)",
-  venueId: "Map Name",
+  eventName: "Event Name",
+  room: "Room Name",
+  host: "Event Host Name",
+  startDate: "Event Start",
+  endDate: "Event End",
+  description: "Event Description",
+  venueId: "Venue ID",
 };
 
 (async () => {
-  fs.createReadStream(filePath)
-    .pipe(csv())
-    .on("data", async (data) => {
-      const start = dayjs(
-        `${data[csvHeaders.startDate]} ${data[csvHeaders.startTime]}`
-      );
-      const event: VenueEvent = {
-        name: data[csvHeaders.eventName],
-        duration_minutes: data[csvHeaders.durationMinutes],
-        start_utc_seconds:
-          start.unix() || Math.floor(new Date().getTime() / 1000),
-        description: data[csvHeaders.description],
-        price: 0,
-        collective_price: 0,
-        host: data[csvHeaders.host],
-      };
-
-      if (data[csvHeaders.room] !== "-1") {
-        event.room = data[csvHeaders.room];
-      }
-      await app
-        .firestore()
-        .collection(`venues/${data[csvHeaders.venueId]}/events`)
-        .add(event);
-    });
+  let results = await getCSVRows(filePath);
+  results.forEach(async (rawEvent: rawEventsOptions) => {
+    const event: VenueEvent = {
+      name: rawEvent[csvHeaders.eventName],
+      duration_minutes: getDurationMinutes(
+        rawEvent[csvHeaders.startDate],
+        rawEvent[csvHeaders.endDate]
+      ),
+      start_utc_seconds: getUTCStartTime(rawEvent[csvHeaders.startDate]),
+      description: rawEvent[csvHeaders.description],
+      price: 0,
+      collective_price: 0,
+      host: rawEvent[csvHeaders.host],
+    };
+    if (rawEvent[csvHeaders.room] !== "-1") {
+      event.room = rawEvent[csvHeaders.room];
+    }
+    await app
+      .firestore()
+      .collection(`venues/${rawEvent[csvHeaders.venueId]}/events`)
+      .add(event);
+  });
 })();
