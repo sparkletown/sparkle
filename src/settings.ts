@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
@@ -105,6 +106,9 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
+// How often to check for live events in subvenues of a posterhall template
+export const POSTERHALL_SUBVENUE_STATUS_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
@@ -550,6 +554,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,

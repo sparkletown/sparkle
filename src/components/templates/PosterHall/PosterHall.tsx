@@ -4,11 +4,12 @@ import { GenericVenue, PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { usePosters } from "hooks/posters";
+import { usePosters, useLiveEventNonPosterSubVenues } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
 import { PosterPreview } from "./components/PosterPreview";
+import { NonPosterSubVenuePreview } from "./components/NonPosterSubVenuePreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
 
 import "./PosterHall.scss";
@@ -46,17 +47,52 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
     ));
   }, [posterVenues, venue]);
 
+  const { liveNonPosterSubVenueEvents } = useLiveEventNonPosterSubVenues(
+    venue.id
+  );
+
+  const renderedNonPosterSubVenues = useMemo(() => {
+    if (!liveNonPosterSubVenueEvents) return;
+
+    return liveNonPosterSubVenueEvents.map((nonPosterSubVenueEvent, index) => (
+      <NonPosterSubVenuePreview
+        key={`${nonPosterSubVenueEvent.venueId}-${index}`}
+        venueId={nonPosterSubVenueEvent.venueId}
+        title={nonPosterSubVenueEvent.name}
+        host={nonPosterSubVenueEvent.host}
+      />
+    ));
+  }, [liveNonPosterSubVenueEvents]);
+
   return (
     <div className="PosterHall">
-      <PosterHallSearch
-        setSearchInputValue={setSearchInputValue}
-        searchInputValue={searchInputValue}
-        liveFilterValue={liveFilter}
-        setLiveValue={setLiveFilter}
-        bookmarkedFilterValue={bookmarkedFilter}
-        setBookmarkedValue={setBookmarkedFilter}
-        showBookmarks={venue?.canBeBookmarked}
-      />
+      <div className="PosterHall__related">{renderedNonPosterSubVenues}</div>
+
+      <div className="PosterHall__header">
+        {venue.leftLogo && (
+          <img
+            src={venue.leftLogo}
+            className="PosterHall__sponsor-logo"
+            alt="poster hall left logo"
+          />
+        )}
+        <PosterHallSearch
+          setSearchInputValue={setSearchInputValue}
+          searchInputValue={searchInputValue}
+          liveFilterValue={liveFilter}
+          setLiveValue={setLiveFilter}
+          bookmarkedFilterValue={bookmarkedFilter}
+          setBookmarkedValue={setBookmarkedFilter}
+          showBookmarks={venue?.canBeBookmarked}
+        />
+        {venue.rightLogo && (
+          <img
+            src={venue.rightLogo}
+            className="PosterHall__sponsor-logo"
+            alt="poster hall right logo"
+          />
+        )}
+      </div>
 
       <div className="PosterHall__posters">
         {isPostersLoaded ? renderedPosterPreviews : "Loading posters"}
