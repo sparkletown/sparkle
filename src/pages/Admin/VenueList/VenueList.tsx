@@ -3,10 +3,9 @@ import { Link } from "react-router-dom";
 
 import { isVenueWithRooms } from "types/venues";
 
-import { orderedVenuesSelector } from "utils/selectors";
 import { canHaveSubvenues } from "utils/venue";
 
-import { useSelector } from "hooks/useSelector";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { VenueListProps } from "./VenueList.types";
 
@@ -14,10 +13,11 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const venues = useSelector(orderedVenuesSelector);
+  const { relatedVenues, isRelatedVenuesLoading } = useRelatedVenues({
+    currentVenueId: selectedVenueId,
+  });
 
-  if (!venues) return <>Loading...</>;
+  if (!isRelatedVenuesLoading) return <>Loading...</>;
 
   return (
     <>
@@ -28,7 +28,7 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {venues.map((venue, index) => (
+        {relatedVenues.map((venue, index) => (
           <li
             key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${

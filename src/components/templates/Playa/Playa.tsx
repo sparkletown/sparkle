@@ -41,7 +41,7 @@ import { WithId } from "utils/id";
 // import { updateLocationData } from "utils/userLocation";
 import {
   currentVenueSelectorData,
-  orderedVenuesSelector,
+  // orderedVenuesSelector,
 } from "utils/selectors";
 // import { getCurrentTimeInUTCSeconds } from "utils/time";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
@@ -51,7 +51,7 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+// import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 
@@ -126,10 +126,12 @@ const isPlaced = (venue: AnyVenue) => {
 
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
+const venues = [] as WithId<AnyVenue>[];
+
 const Playa = () => {
   // @debt This will currently load all venues in firebase into memory.. not very efficient
-  useFirestoreConnect("venues");
-  const venues = useSelector(orderedVenuesSelector);
+  // useFirestoreConnect("venues");
+  // const venues = useSelector(orderedVenuesSelector);
 
   const venue = useSelector(currentVenueSelectorData);
 
@@ -389,7 +391,7 @@ const Playa = () => {
         showVenue(campVenue);
       }
     }
-  }, [camp, venues, showVenue]);
+  }, [camp, showVenue]);
 
   const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>();
 
@@ -539,26 +541,23 @@ const Playa = () => {
     });
   }, [myXRef, myYRef]);
 
-  const getNearbyVenue = useCallback(
-    (x: number, y: number) => {
-      if (!venues) return;
-      let closestVenue: WithId<AnyVenue> | undefined;
-      let distanceToClosestVenue: number;
-      venues.forEach((venue) => {
-        const distance = distanceToVenue(x, y, venue.placement);
-        if (
-          distance &&
-          distance <= VENUE_NEARBY_DISTANCE &&
-          (!distanceToClosestVenue || distance < distanceToClosestVenue)
-        ) {
-          closestVenue = venue;
-          distanceToClosestVenue = distance;
-        }
-      });
-      return closestVenue;
-    },
-    [venues]
-  );
+  const getNearbyVenue = useCallback((x: number, y: number) => {
+    if (!venues) return;
+    let closestVenue: WithId<AnyVenue> | undefined;
+    let distanceToClosestVenue: number;
+    venues.forEach((venue) => {
+      const distance = distanceToVenue(x, y, venue.placement);
+      if (
+        distance &&
+        distance <= VENUE_NEARBY_DISTANCE &&
+        (!distanceToClosestVenue || distance < distanceToClosestVenue)
+      ) {
+        closestVenue = venue;
+        distanceToClosestVenue = distance;
+      }
+    });
+    return closestVenue;
+  }, []);
 
   const setMyLocation = useMemo(
     () => (x: number, y: number) => {
@@ -779,7 +778,6 @@ const Playa = () => {
     showUserTooltip,
     showVenueTooltip,
     venue,
-    venues,
     openVenues,
     showVenue,
     recentVenueUsers,
