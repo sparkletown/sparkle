@@ -1,3 +1,2 @@
-PUBLIC EVENT NAME,PUBLIC EVENT DESCRIPTION (1-2 SENTENCES MAX),PUBLIC-FACING HOST NAME,ROOM NAME - must match Sparkle room name exactly,START DAY,START TIME (PT),END TIME (PT),DURATION - Calculated
-Event 1,Dr. Smith leads a discussion on the state of the environment in tech,ermia,rooma,2021-06-07,9:00,9:30 am,20
-Event 2,How does a biking communuity come to use Github to improve their club? Find out with Jimmy Farthing,ermia,roomb,2021-06-17,9:30,10:30 am,30
+Venue ID,Event Name,Event Description,Event Host Name,Room Name,Event Start,Event End
+ermia_music,test music 11,How does a biking communuity come to use Github to improve their club? Find out with Jimmy Farthing,ermia,-1,2020-06-21T09:21:29.214Z,2020-06-21T10:22:29.214Z
