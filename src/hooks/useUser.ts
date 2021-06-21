@@ -21,7 +21,8 @@ export const useUser = (): UseUserResult => {
   return {
     user: !auth.isEmpty ? auth : undefined,
     profile: !profile.isEmpty ? profile : undefined,
-    userWithId: auth && profile ? { ...profile, id: auth.uid } : undefined,
+    userWithId:
+      auth && profile ? Object.assign(profile, { id: auth.uid }) : undefined,
     userId: auth && profile ? auth.uid : undefined,
   };
 };
