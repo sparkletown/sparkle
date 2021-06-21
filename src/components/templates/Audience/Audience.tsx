@@ -304,10 +304,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     [venueId, userId]
   );
 
-  const leaveSeat = useCallback(() => {
-    takeSeat(null, null);
-  }, [takeSeat]);
-
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
     const onSubmit = async (data: ChatOutDataType) => {
@@ -365,9 +361,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
               icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
             />
           </div>
-          <button className="leave-seat-button" onClick={leaveSeat}>
-            Leave Seat
-          </button>
         </div>
         <div className="shout-container">
           <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
@@ -497,7 +490,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     reset,
     columnsForSizedAuditorium,
     isAudioEffectDisabled,
-    leaveSeat,
     handleSubmit,
     register,
     isShoutSent,
