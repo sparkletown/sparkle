@@ -26,7 +26,6 @@
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.5.0",
     "classnames": "^2.2.6",
-    "csv-parser": "^3.0.0",
     "date-fns": "^2.22.1",
     "dayjs": "^1.8.35",
     "emoji-mart": "^3.0.1",
