@@ -37,7 +37,6 @@ import { useSelector } from "hooks/useSelector";
 import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
@@ -95,9 +94,6 @@ export const VenuePage: React.FC = () => {
   const userPurchaseHistoryRequestStatus = useSelector(
     isUserPurchaseHistoryRequestedSelector
   );
-
-  // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
-  useFirestoreConnect("venues");
 
   const userId = user?.uid;
 

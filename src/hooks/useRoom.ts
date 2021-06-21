@@ -3,13 +3,12 @@ import { useCallback, useMemo } from "react";
 import { Room } from "types/rooms";
 
 import { enterExternalRoom } from "utils/userLocation";
-import { orderedVenuesSelector } from "utils/selectors";
 import { enterVenue } from "utils/url";
 import { getExternalRoomSlug } from "utils/room";
 
-import { useSelector } from "hooks/useSelector";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+import { useRelatedVenues } from "./useRelatedVenues";
 
 export interface UseRoomProps {
   room?: Room;
@@ -22,12 +21,11 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
 
   const roomUrl = room?.url ?? "";
 
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const venues = useSelector(orderedVenuesSelector);
+  const { relatedVenues } = useRelatedVenues({});
 
   const roomVenue = useMemo(
-    () => venues?.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
-    [roomUrl, venues]
+    () => relatedVenues?.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
+    [roomUrl, relatedVenues]
   );
 
   // @debt we should replace externalRoomSlug with preferrably room id
