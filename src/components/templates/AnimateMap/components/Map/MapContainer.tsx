@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Sprite, useApp } from "@inlet/react-pixi";
 
 import Viewport from "../Common/Viewport";
@@ -10,14 +10,9 @@ import {
 import { useSelector } from "hooks/useSelector";
 import { LayerLOD } from "../LayerLOD/LayerLOD";
 import { MovedEventData, ZoomedEventData } from "pixi-viewport";
-import {
-  setAnimateMapZoom,
-  updateAnimateMapUsers,
-  updateAnimateMapVenues,
-} from "../../../../../store/actions/AnimateMap";
+import { setAnimateMapZoom } from "../../../../../store/actions/AnimateMap";
 import { useDispatch } from "../../../../../hooks/useDispatch";
 import { Box } from "js-quadtree";
-import { stubUsersData, stubVenuesData } from "../../constants/StubVenuesData";
 
 const сameraRectMultiplier = 1.2;
 
@@ -53,13 +48,6 @@ export const MapContainer = () => {
       )
     );
   };
-
-  // STUB DATA
-  useEffect(() => {
-    dispatch(updateAnimateMapVenues(stubVenuesData()));
-    dispatch(updateAnimateMapUsers(stubUsersData()));
-    // eslint-disable-next-line
-  }, []);
 
   return (
     <Viewport
