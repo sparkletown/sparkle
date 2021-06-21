@@ -11,6 +11,7 @@ import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -36,6 +37,10 @@ export const Login: React.FC<LoginProps> = ({
 }) => {
   const venueId = venue.id;
 
+  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+    venueId,
+  });
+
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
@@ -46,26 +51,29 @@ export const Login: React.FC<LoginProps> = ({
     loading: isCustomAuthConfigLoading,
     value: customAuthConfig,
   } = useAsync(async () => {
+    if (!sovereignVenueId) return;
+
     return tracePromise(
       "Login::fetchCustomAuthConfig",
-      () => fetchCustomAuthConfig(venueId),
+      () => fetchCustomAuthConfig(sovereignVenueId),
       {
         attributes: {
           venueId,
+          sovereignVenueId,
         },
         withDebugLog: true,
       }
     );
-  }, [venueId]);
+  }, [venueId, sovereignVenueId]);
 
   const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 
   const hasCustomAuthConnect = isDefined(customAuthConnectPath);
   const signInWithCustomAuth = useCallback(() => {
     openUrl(
-      `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
+      `${customAuthConnectPath}?venueId=${sovereignVenueId}&returnOrigin=${window.location.origin}`
     );
-  }, [customAuthConnectPath, venueId]);
+  }, [customAuthConnectPath, sovereignVenueId]);
 
   const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 
@@ -83,7 +91,9 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
-  if (isCustomAuthConfigLoading) return <LoadingPage />;
+  const isLoading = isSovereignVenueIdLoading || isCustomAuthConfigLoading;
+
+  if (isLoading) return <LoadingPage />;
 
   return (
     <div className="auth-container">
