@@ -6,6 +6,12 @@ import {
   Redirect,
 } from "react-router-dom";
 
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
+
+import { venueLandingUrl } from "utils/url";
+
+import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+
 // import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
@@ -25,12 +31,9 @@ import { VenueLandingPage } from "pages/VenueLandingPage";
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
-
 import { VersionPage } from "pages/VersionPage/VersionPage";
-import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import VenuePage from "pages/VenuePage";
-import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
@@ -84,7 +87,15 @@ const AppRouter = () => {
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
-        <Route path="/in/:venueId" component={VenuePage} />
+
+        <Route
+          path="/in/:venueId"
+          render={(props) => (
+            <RelatedVenuesProvider venueId={props.match.params.venueId}>
+              <VenuePage />
+            </RelatedVenuesProvider>
+          )}
+        />
         <Route path="/version" component={VersionPage} />
         <Route
           path="/venue/*"
