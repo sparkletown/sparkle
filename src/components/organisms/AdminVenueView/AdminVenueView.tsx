@@ -8,7 +8,7 @@ import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { AdminTimingView } from "../AdminTimingView";
+import { Timing } from "./components/Timing";
 
 import "./AdminVenueView.scss";
 
@@ -74,7 +74,13 @@ export const AdminVenueView: React.FC = () => {
         </Nav>
       </div>
       {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
-      {selectedTab === AdminVenueTab.timing && <AdminTimingView />}
+      {selectedTab === AdminVenueTab.timing && (
+        <Timing
+          venueId={venueId}
+          onClickNext={() => setSelectedTab(AdminVenueTab.run)}
+          onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
+        />
+      )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
   );

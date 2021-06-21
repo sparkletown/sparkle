@@ -1,19 +1,5 @@
 @import "scss/constants.scss";
 
-$side-padding: 30px;
-$primary: #7c46fb;
-$black: #000000;
-$white: #fff;
-
-$gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
-
-$dark: #1a1d24;
-$border-radius: 28px;
-$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
-$login-max-width: 540px;
-$modal-max-width: 540px;
-$page-max-width: 1240px;
-
 .creation-page-container {
   height: 100vh;
   width: 100%;
@@ -73,10 +59,10 @@ $page-max-width: 1240px;
   position: relative;
   height: 75%;
   width: 85%;
-  margin: 75px;
-  border-radius: 30px;
-  padding: 20px;
-  padding-left: 30px;
+  margin: 75px 75px 10px;
+  border-radius: $border-radius--xl;
+  box-shadow: 0px 0px 15px -4px #000000;
+  overflow: scroll;
 }
 
 .party-heading,
@@ -93,7 +79,6 @@ $page-max-width: 1240px;
 }
 
 .input-left {
-  display: inline;
   width: 59%;
   margin-right: 5px;
   float: left;
@@ -102,11 +87,32 @@ $page-max-width: 1240px;
 
 .input-right {
   width: 38%;
-  display: inline;
   float: right;
   margin-top: 10px;
 }
 
 .mb-1 {
   line-height: 1;
+}
+
+.btn-grey {
+  display: inline-block;
+  padding: $spacing--md $spacing--lg;
+  font-weight: 700;
+  border-radius: 22px;
+  text-align: center;
+  font-size: 1em;
+  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  color: #fff;
+  transform: translateY(0);
+  background-color: $light-grey;
+  border: none;
+  line-height: 1.5;
+  height: 50px;
+
+  &__home {
+    width: 50px;
+    border-radius: $border-radius--xl;
+    padding: $spacing--md;
+  }
 }

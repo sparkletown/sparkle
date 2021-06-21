@@ -1,1 +1,0 @@
-export { AdminTimingView } from "./AdminTimingView";
