@@ -9,7 +9,6 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
-import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
@@ -18,14 +17,13 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
@@ -141,25 +139,26 @@ const SuspectedLocation: React.FC<{
   currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
   // @debt This will currently load all venues in firebase into memory.. not very efficient
-  useFirestoreConnect("venues");
-  const allVenues = useSelector(orderedVenuesSelector);
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: currentVenue.id,
+  });
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: allVenues?.find(
+      venue: relatedVenues?.find(
         (v) =>
           (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
           v.name === user.room
       ),
-      room: allVenues?.find(
+      room: relatedVenues?.find(
         (v) =>
           isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
       ),
     }),
-    [user, allVenues, currentVenue]
+    [user, relatedVenues, currentVenue]
   );
 
-  if (!user.room || !allVenues) {
+  if (!user.room) {
     return null;
   }
 

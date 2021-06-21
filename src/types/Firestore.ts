@@ -27,8 +27,7 @@ export type ValidFirestoreRootCollections =
   | "purchases"
   | "roles"
   | "userprivate"
-  | "users"
-  | "venues";
+  | "users";
 
 export type ValidFirestoreKeys = keyof FirestoreData | keyof FirestoreOrdered;
 
