@@ -1,5 +1,4 @@
 import { useCallback, useMemo } from "react";
-import { useHistory } from "react-router-dom";
 
 import { Room } from "types/rooms";
 
@@ -19,7 +18,6 @@ export interface UseRoomProps {
 
 export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
-  const { push: openUrlUsingRouter } = useHistory();
   const userId = user?.uid;
 
   const roomUrl = room?.url ?? "";
@@ -43,9 +41,9 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
     if (!userId) return;
 
     roomVenue
-      ? enterVenue(roomVenue.id, { customOpenRelativeUrl: openUrlUsingRouter })
+      ? enterVenue(roomVenue.id)
       : enterExternalRoom({ userId, roomUrl, locationName: roomSlug });
-  }, [roomSlug, roomUrl, userId, roomVenue, openUrlUsingRouter]);
+  }, [roomSlug, roomUrl, userId, roomVenue]);
 
   return {
     enterRoom,
