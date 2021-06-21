@@ -172,7 +172,10 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
       new Fuse(filteredPosterVenues, {
         keys: [
           "name",
-          "poster.title",
+          {
+            name: "poster.title",
+            weight: 20,
+          },
           {
             name: "poster.authorName",
             weight: 16,
