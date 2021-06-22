@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { WithId, withId } from "utils/id";
+import { WithId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
@@ -132,7 +132,18 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
   .noUnknown()
   .required();
 
+// export const userWithLocationToUser = (
+//   user: WithId<UserWithLocation>
+// ): WithId<User> =>
+//   withId(UserSchema.validateSync(user, { stripUnknown: true }), user.id);
+
+// @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
+//  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
+//  validation rules leading to infinite recursion or similar?
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
-): WithId<User> =>
-  withId(UserSchema.validateSync(user, { stripUnknown: true }), user.id);
+): WithId<User> => {
+  const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
+
+  return userWithoutLocation;
+};
