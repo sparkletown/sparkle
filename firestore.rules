@@ -8,6 +8,10 @@ function role(name) {
   return get(/databases/$(database)/documents/roles/$(name)).data
 }
 
+function venueData() {
+  return get(/databases/$(database)/documents/venues/$(venue)).data
+}
+
 service cloud.firestore {
   match /databases/{database}/documents {
     match /authConfigs/{authConfigId} {
@@ -48,12 +52,12 @@ service cloud.firestore {
       allow read: if request.auth.uid != null;
       allow write: if true;
     }
+    match /{path=**}/events/{event} {
+      allow read: if true;
+      allow write: if request.auth.uid in venueData().owners;
+    }
     match /venues/{venue} {
       allow read: if true;
-
-      function venueData() {
-        return get(/databases/$(database)/documents/venues/$(venue)).data
-      }
 
       match /events/{event} {
         allow read: if true;

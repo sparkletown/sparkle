@@ -7,22 +7,17 @@ import { withId, WithId, WithVenueId } from "utils/id";
 export const fetchAllVenueEvents = async (): Promise<
   WithVenueId<WithId<VenueEvent>>[]
 > => {
-  console.log("Started fetching all events");
   const eventsSnapshot = await firebase
     .firestore()
     .collectionGroup("events")
     .withConverter(venueEventWithIdConverter)
     .get();
 
-  console.log({ eventsSnapshot });
-
-  const events = eventsSnapshot.docs
+  return eventsSnapshot.docs
     .map((venueEvent) => venueEvent.data())
     .filter((venueEvent) => venueEvent.venueId) as WithVenueId<
     WithId<VenueEvent>
   >[];
-
-  return events;
 };
 
 /**

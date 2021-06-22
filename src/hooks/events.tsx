@@ -24,18 +24,22 @@ export interface VenueEventsData {
   eventsError?: Error;
 }
 
-export const useVenueEvents: ReactHook<
-  VenueEventsProps,
-  VenueEventsData
-> = () => {
-  const eventsState = useEventsContext();
+export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
+  venueIds,
+}) => {
+  const { events, isError, isLoading, error } = useEventsContext();
+
+  const requestedEvents = useMemo(
+    () => events.filter((event) => venueIds.includes(event.venueId)),
+    [events, venueIds]
+  );
 
   return {
-    events: eventsState.events,
-    isError: eventsState.isError,
-    isEventsLoading: eventsState.isLoading,
+    events: requestedEvents,
+    isError: isError,
+    isEventsLoading: isLoading,
 
-    eventsError: eventsState.error,
+    eventsError: error,
   };
 };
 
@@ -58,8 +62,6 @@ export const EventsProvider: React.FC = ({ children }) => {
       tracePromise("EventsProvider::fetchAllVenueEvents", fetchAllVenueEvents),
     []
   );
-
-  // console.log({ events });
 
   const eventsState: EventsContextState = useMemo(
     () => ({
