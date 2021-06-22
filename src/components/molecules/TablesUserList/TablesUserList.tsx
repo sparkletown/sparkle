@@ -1,13 +1,12 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 
-import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -43,16 +42,6 @@ const firestoreUpdate = (doc: string, update: any) => {
 const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
   createTable(i)
 );
-
-interface TableUsers {
-  usersByTableRef: Partial<Record<string, WithId<User>[]>>;
-  unseatedUsers: WithId<User>[];
-}
-
-const emptyTableUsersState: TableUsers = {
-  usersByTableRef: {},
-  unseatedUsers: [],
-};
 
 export interface TablesUserListProps {
   venueName: string;
@@ -98,44 +87,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   }, [profile, setSeatedAtTable, user, venueName]);
 
   const tables: Table[] = customTables || defaultTables;
-
-  const tablesByTableRefMap = useMemo(
-    () => new Map(tables.map((table) => [table.reference, table])),
-    [tables]
-  );
-
-  // @debt refactor this reducer function out of this component into utils/* or similar?
-  const { usersByTableRef: usersAtTables } = useMemo(() => {
-    return recentVenueUsers.reduce<TableUsers>(
-      ({ usersByTableRef, unseatedUsers }, recentVenueUser) => {
-        // @debt refactor this to use a helper function getUserExperience(user?: User): Experience | undefined or similar?
-        const userTableRef = recentVenueUser.data?.[venueName].table;
-
-        const isSeatedAtTable = userTableRef
-          ? tablesByTableRefMap.has(userTableRef)
-          : false;
-
-        // User isn't seated at a table
-        if (!userTableRef || !isSeatedAtTable) {
-          return {
-            usersByTableRef,
-            unseatedUsers: [...unseatedUsers, recentVenueUser],
-          };
-        }
-
-        // User is seated at a table
-        const existingUsersAtTable = usersByTableRef[userTableRef] ?? [];
-
-        const updatedUsersByTableRef = {
-          ...usersByTableRef,
-          [userTableRef]: [...existingUsersAtTable, recentVenueUser],
-        };
-
-        return { usersByTableRef: updatedUsersByTableRef, unseatedUsers };
-      },
-      emptyTableUsersState
-    );
-  }, [recentVenueUsers, tablesByTableRefMap, venueName]);
 
   if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
@@ -186,13 +137,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     };
     firestoreUpdate(doc, update);
   };
-
-  const usersAtOtherTables = [];
-  for (const table of tables) {
-    if (table.reference === seatedAtTable) continue;
-
-    usersAtOtherTables.push(...(usersAtTables[table.reference] ?? []));
-  }
 
   return (
     <>
