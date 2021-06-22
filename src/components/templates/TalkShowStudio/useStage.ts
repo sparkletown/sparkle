@@ -106,6 +106,7 @@ export const useStage = () => {
   };
 
   const leaveStage = async () => {
+    // TODO: clear agoraIds for user when left Stage
     await setDefaultUserSettings();
   };
 
@@ -145,18 +146,20 @@ export const useStage = () => {
       });
   };
 
-  const toggleUserMicrophone = (user: WithId<User>) => {
-    venueId &&
+  const toggleUserMicrophone = (user?: WithId<User>) => {
+    if (user && venueId) {
       updateUserTalkShowStudioExperience(venueId, user.id, {
-        isMuted: !user.data?.[venueId].isMuted,
+        isMuted: true,
       });
+    }
   };
 
-  const toggleUserCamera = (user: WithId<User>) => {
-    venueId &&
+  const toggleUserCamera = (user?: WithId<User>) => {
+    if (user && venueId) {
       updateUserTalkShowStudioExperience(venueId, user.id, {
-        isUserCameraOff: !user.data?.[venueId].isUserCameraOff,
+        isUserCameraOff: true,
       });
+    }
   };
 
   const removeUserFromStage = (user?: WithId<User>) => {

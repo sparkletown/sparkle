@@ -68,53 +68,56 @@ export const AdminPanel: FC<AdminPanelProps> = ({ venue }) => {
           {stage.peopleOnStage.length} people on stage
         </p>
         <div>
-          {stage.peopleOnStage.map((user) => (
-            <div key={user.id} className="AdminPanelUser">
-              <div className="AdminPanelUser__info">
-                <div className="AdminPanelUser__picture">
-                  {user.pictureUrl && (
-                    <img src={user.pictureUrl} alt="profile" />
-                  )}
-                </div>
-                {user.partyName || ""}
-                {venueId && user.data?.[venueId].isMuted && " (muted)"}
-              </div>
+          {stage.peopleOnStage.map((user) => {
+            const isMuted = !!(venueId && user.data?.[venueId].isMuted);
+            const isUserCameraOff = !!(
+              venueId && user.data?.[venueId].isUserCameraOff
+            );
 
-              {user.id !== loggedUserId && (
-                <div className="AdminPanelUser__buttons">
-                  <div
-                    className="AdminPanelUser__controlUserButton"
-                    onClick={() => {
-                      setUserToRemove(user);
-                      showLeaveStageModal();
-                    }}
-                  >
-                    <FontAwesomeIcon icon={faMinus} />
+            return (
+              <div key={user.id} className="AdminPanelUser">
+                <div className="AdminPanelUser__info">
+                  <div className="AdminPanelUser__picture">
+                    {user.pictureUrl && (
+                      <img src={user.pictureUrl} alt="profile" />
+                    )}
                   </div>
-                  <div
-                    className={
-                      venueId &&
-                      controlUserButtonClasses(!!user.data?.[venueId].isMuted)
-                    }
-                    onClick={() => stage.toggleUserMicrophone(user)}
-                  >
-                    <FontAwesomeIcon icon={faVolumeMute} />
-                  </div>
-                  <div
-                    className={
-                      venueId &&
-                      controlUserButtonClasses(
-                        !!user.data?.[venueId].isUserCameraOff
-                      )
-                    }
-                    onClick={() => stage.toggleUserCamera(user)}
-                  >
-                    <FontAwesomeIcon icon={faVideoSlash} />
-                  </div>
+                  {user.partyName || ""}
+                  {isMuted && " (muted)"}
                 </div>
-              )}
-            </div>
-          ))}
+
+                {user.id !== loggedUserId && (
+                  <div className="AdminPanelUser__buttons">
+                    <div
+                      className="AdminPanelUser__controlUserButton"
+                      onClick={() => {
+                        setUserToRemove(user);
+                        showLeaveStageModal();
+                      }}
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </div>
+                    <div
+                      className={controlUserButtonClasses(isMuted)}
+                      onClick={() =>
+                        !isMuted && stage.toggleUserMicrophone(user)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faVolumeMute} />
+                    </div>
+                    <div
+                      className={controlUserButtonClasses(isUserCameraOff)}
+                      onClick={() =>
+                        !isUserCameraOff && stage.toggleUserCamera(user)
+                      }
+                    >
+                      <FontAwesomeIcon icon={faVideoSlash} />
+                    </div>
+                  </div>
+                )}
+              </div>
+            );
+          })}
           {slots.map((slot) => (
             <div key={slot} className="AdminPanelSlot">
               <div className="AdminPanelSlot__info">

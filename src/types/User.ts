@@ -9,6 +9,8 @@ export interface TalkShowStudioExperience {
   isSharingScreen?: boolean;
   isMuted?: boolean;
   isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
 }
 
 export interface Experience extends TalkShowStudioExperience {

@@ -8,6 +8,10 @@ import AgoraRTC, {
 import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
 
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { updateTalkShowStudioExperience } from "api/profile";
 
 import { ReactHook } from "types/utility";
 import {
@@ -68,6 +72,9 @@ export const useAgoraScreenShare: ReactHook<
   UseAgoraScreenShareProps,
   UseAgoraScreenShareReturn
 > = ({ client }) => {
+  const { userId } = useUser();
+  const venueId = useVenueId();
+
   const [localScreenTrack, setLocalScreenTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
@@ -103,11 +110,19 @@ export const useAgoraScreenShare: ReactHook<
   }, [client, localAudioTrack, localScreenTrack]);
 
   const joinChannel = async () => {
-    await client?.join(
+    if (!client || !venueId || !userId) return;
+
+    const screenClientUid = await client?.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
       AGORA_TOKEN || null
     );
+
+    const experience = {
+      screenClientUid: `${screenClientUid}`,
+    };
+
+    updateTalkShowStudioExperience({ venueId, userId, experience });
   };
 
   const leaveChannel = useCallback(async () => {
@@ -136,6 +151,9 @@ export const useAgoraCamera: ReactHook<
   UseAgoraCameraProps,
   UseAgoraCameraReturn
 > = ({ client }) => {
+  const { userId } = useUser();
+  const venueId = useVenueId();
+
   const [localCameraTrack, setLocalCameraTrack] = useState<ILocalVideoTrack>();
   const [
     localMicrophoneTrack,
@@ -158,13 +176,19 @@ export const useAgoraCamera: ReactHook<
   };
 
   const joinChannel = async () => {
-    if (!client) return;
+    if (!client || !venueId || !userId) return;
 
-    await client.join(
+    const cameraClientUid = await client.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
       AGORA_TOKEN || null
     );
+
+    const experience = {
+      cameraClientUid: `${cameraClientUid}`,
+    };
+
+    updateTalkShowStudioExperience({ venueId, userId, experience });
 
     setIsCameraOn(true);
     setIsMicrophoneOn(true);

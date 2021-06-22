@@ -25,6 +25,12 @@
     margin: $spacing--md;
   }
 
+  &__avatar {
+    position: absolute;
+    bottom: $spacing--md;
+    left: $spacing--md;
+  }
+
   &__icon {
     display: flex;
     justify-content: center;

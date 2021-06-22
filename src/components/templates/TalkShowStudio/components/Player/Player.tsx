@@ -27,12 +27,12 @@ export interface VideoPlayerProps {
   isCamOn?: boolean;
   isMicOn?: boolean;
   isSharing?: boolean;
-  toggleCam?: () => void;
-  toggleMic?: () => void;
+  toggleCam?: (user?: WithId<User>) => void;
+  toggleMic?: (user?: WithId<User>) => void;
   containerClass?: string;
 }
 
-const Player = ({
+const Player: React.FC<VideoPlayerProps> = ({
   user,
   videoTrack,
   audioTrack,
@@ -43,7 +43,7 @@ const Player = ({
   toggleCam,
   toggleMic,
   containerClass,
-}: VideoPlayerProps) => {
+}) => {
   const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -79,7 +79,7 @@ const Player = ({
             <div
               className={IconContainerClasses(!isMicOn)}
               onClick={() => {
-                toggleMic?.();
+                toggleMic?.(user);
               }}
             >
               <FontAwesomeIcon icon={faVolumeMute} />
@@ -88,7 +88,7 @@ const Player = ({
             <div
               className={IconContainerClasses(!isCamOn)}
               onClick={() => {
-                toggleCam?.();
+                toggleCam?.(user);
               }}
             >
               <FontAwesomeIcon icon={faVideoSlash} />
@@ -99,10 +99,10 @@ const Player = ({
                 <FontAwesomeIcon icon={faTv} />
               </div>
             )}
-            <UserAvatar user={user} containerClassName="Player__icon" />
           </div>
         </div>
       )}
+      {user && <UserAvatar user={user} containerClassName="Player__avatar" />}
     </div>
   );
 };

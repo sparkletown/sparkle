@@ -17,7 +17,7 @@ import {
 
 import { useStage } from "./useStage";
 import AppButton from "components/atoms/Button";
-import Player from "./components/Player/Player";
+import Player, { VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
@@ -68,28 +68,82 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     leaveChannel: screenClientLeave,
   } = useAgoraScreenShare({ client: screenClient });
 
+  const localUser = useMemo(
+    () => stage.peopleOnStage.find(({ id }) => id === userId),
+    [userId, stage.peopleOnStage]
+  );
+
   const isUserOwner = useMemo(
     () => !!userId && currentVenue?.owners.includes(userId),
     [currentVenue?.owners, userId]
   );
 
+  const [userOnStageSharingScreen] = useMemo(
+    () =>
+      stage.peopleOnStage.filter(
+        ({ data }) => data?.[`${venue.id}`]?.isSharingScreen
+      ),
+    [stage.peopleOnStage, venue.id]
+  );
+  const remoteScreenTrack = useMemo(
+    () =>
+      remoteUsers.find(
+        ({ uid }) =>
+          `${uid}` ===
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
+      ),
+    [userOnStageSharingScreen?.data, remoteUsers, venue.id]
+  );
+  const remoteCameraTrack = useMemo(
+    () =>
+      remoteUsers.find(
+        ({ uid }) =>
+          `${uid}` ===
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.cameraClientUid
+      ),
+    [userOnStageSharingScreen?.data, remoteUsers, venue.id]
+  );
+
   const remoteUsersPlayers = useMemo(() => {
-    return remoteUsers.map(
-      (user) =>
-        user.uid !== screenClient.uid &&
-        user.uid !== cameraClient.uid && (
-          <div key={user.uid}>
-            {user.hasVideo && (
-              <Player
-                videoTrack={user.videoTrack}
-                audioTrack={user.audioTrack}
-                containerClass="TalkShowStudio__mode--play"
-              />
-            )}
-          </div>
-        )
-    );
-  }, [remoteUsers]);
+    const setRemoteUserAvatar = (remoteUserId: number | string) => {
+      if (!venue.id) return;
+      const remoteUser = stage.peopleOnStage.find(
+        ({ data }) =>
+          data?.[`${venue.id}`]?.cameraClientUid === `${remoteUserId}`
+      );
+      return remoteUser;
+    };
+    return remoteUsers
+      .filter(
+        ({ uid }) =>
+          `${uid}` !==
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.cameraClientUid
+      )
+      .filter(
+        ({ uid }) =>
+          `${uid}` !==
+          userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
+      )
+      .map(
+        (user) =>
+          user.uid !== screenClient.uid &&
+          user.uid !== cameraClient.uid && (
+            <div key={user.uid}>
+              {user.hasVideo && (
+                <Player
+                  showButtons
+                  user={setRemoteUserAvatar(user.uid)}
+                  videoTrack={user.videoTrack}
+                  audioTrack={user.audioTrack}
+                  isCamOn={user.hasVideo}
+                  isMicOn={user.hasAudio}
+                  containerClass="TalkShowStudio__mode--play"
+                />
+              )}
+            </div>
+          )
+      );
+  }, [remoteUsers, venue.id, stage.peopleOnStage, userOnStageSharingScreen]);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin();
@@ -140,22 +194,49 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     !stage.isUserOnStage &&
     !stage.isUserRequesting;
 
+  const renderScreenSharing = (
+    screenTrack: VideoPlayerProps["videoTrack"],
+    cameraTrack: VideoPlayerProps["videoTrack"]
+  ) => {
+    if (!screenTrack || !cameraTrack) return;
+    return (
+      <div className="TalkShowStudio__scene--sharing">
+        {screenTrack && (
+          <Player
+            videoTrack={screenTrack}
+            containerClass="TalkShowStudio__mode--share"
+          />
+        )}
+        {cameraTrack && (
+          <Player
+            user={localUser}
+            videoTrack={cameraTrack}
+            showButtons
+            isCamOn={isCameraOn}
+            isMicOn={isMicrophoneOn}
+            isSharing={!!screenTrack}
+            toggleCam={toggleCamera}
+            toggleMic={toggleMicrophone}
+            containerClass="TalkShowStudio__mode--local-play"
+          />
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="TalkShowStudio">
         <div className="TalkShowStudio__scene">
-          {localScreenTrack && (
-            <div className="TalkShowStudio__scene--sharing">
-              <Player
-                videoTrack={localScreenTrack}
-                containerClass="TalkShowStudio__mode--share"
-              />
-            </div>
+          {renderScreenSharing(
+            localScreenTrack || remoteScreenTrack?.videoTrack,
+            localCameraTrack || remoteCameraTrack?.videoTrack
           )}
           <div className="TalkShowStudio__players">
-            {localCameraTrack && (
+            {localCameraTrack && !localScreenTrack && (
               <div>
                 <Player
+                  user={localUser}
                   videoTrack={localCameraTrack}
                   showButtons
                   isCamOn={isCameraOn}
