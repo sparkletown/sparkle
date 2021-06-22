@@ -1,25 +1,18 @@
 import React, { useEffect, useState } from "react";
-import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
+import firebase from "firebase/app";
 
-import "./TablesUserList.scss";
-import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
+import { User } from "types/User";
+
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
-interface PropsType {
-  venueName: string;
-  setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string;
-  customTables?: Table[];
-  TableComponent: React.FC<TableComponentPropsType>;
-  joinMessage: boolean;
-  leaveText?: string;
-}
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useRecentVenueUsers } from "hooks/users";
+
+import "./TablesUserList.scss";
 
 const TABLES = 4;
 
@@ -46,7 +39,17 @@ const firestoreUpdate = (doc: string, update: any) => {
 
 const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
 
-const TablesUserList: React.FunctionComponent<PropsType> = ({
+export interface TablesUserListProps {
+  venueName: string;
+  setSeatedAtTable: (value: string) => void;
+  seatedAtTable: string;
+  customTables?: Table[];
+  TableComponent: React.FC<TableComponentPropsType>;
+  joinMessage: boolean;
+  leaveText?: string;
+}
+
+export const TablesUserList: React.FC<TablesUserListProps> = ({
   venueName,
   setSeatedAtTable,
   seatedAtTable,
@@ -219,4 +222,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default TablesUserList;
