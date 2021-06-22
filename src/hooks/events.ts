@@ -36,7 +36,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     error: eventsError,
     value: events = emptyArray,
   } = useAsync(async () => {
-    //load from gS
+    //load from gs
     const storage = firebase.storage();
     const url = await storage
       .ref()
@@ -57,7 +57,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
       }
     );
     */
-  }, [firebase /*venueIds*/]);
+  });
   return {
     isEventsLoading,
     isError: eventsError !== undefined,
