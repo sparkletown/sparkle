@@ -4,6 +4,7 @@ import {
   differenceInMinutes,
   fromUnixTime,
   isAfter,
+  isFuture,
   isWithinInterval,
 } from "date-fns";
 
@@ -15,26 +16,17 @@ import {
   getDayInterval,
 } from "./time";
 
-export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return roomEvents.find(
-    (event) =>
-      event.start_utc_seconds < currentTimeInUTCSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
-  );
-};
+export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
+  roomEvents.find(isEventLive);
 
 export const isEventLive = (event: VenueEvent) =>
   isWithinInterval(Date.now(), getEventInterval(event));
 
-export const isEventLiveOrFuture = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+export const isEventFuture = (event: VenueEvent) =>
+  isFuture(fromUnixTime(event.start_utc_seconds));
 
-  return (
-    isEventLive(event) || event.start_utc_seconds > currentTimeInUTCSeconds
-  );
-};
+export const isEventLiveOrFuture = (event: VenueEvent) =>
+  isEventLive(event) || isEventFuture(event);
 
 export const eventHappeningNow = (
   roomName: string,
@@ -85,3 +77,6 @@ export const getEventStatus = (event: VenueEvent) => {
     return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
   }
 };
+
+export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
+  a.start_utc_seconds - b.start_utc_seconds;

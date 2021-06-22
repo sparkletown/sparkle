@@ -7,8 +7,6 @@ const functions = require("firebase-functions");
 
 const functionsConfig = functions.config();
 
-console.log("functions.config()", JSON.stringify(functionsConfig, null, 2));
-
 if (!functionsConfig) throw new Error("failed: functionsConfig missing");
 if (!functionsConfig.project)
   throw new Error("failed: functionsConfig.project missing");
@@ -31,13 +29,23 @@ admin.initializeApp({
   }),
 });
 
-const video = require("./video");
-const payment = require("./payment");
-const venue = require("./venue");
-const stats = require("./stats");
 const access = require("./access");
+const auth = require("./auth");
+const payment = require("./payment");
+const stats = require("./stats");
 const videoRoom = require("./videoRoom");
+const venue = require("./venue");
+const video = require("./video");
 
+exports.access = access;
+exports.auth = auth;
+exports.payment = payment;
+exports.stats = stats;
+exports.venue = venue;
+exports.video = video;
+
+// @debt Refactor this into ./auth if this is still used/needed, otherwise remove it
+//   It doesn't look like anything calls it in the codebase currently?
 exports.checkPassword = functions.https.onCall(async (data) => {
   await firebase
     .firestore()

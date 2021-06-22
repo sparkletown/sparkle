@@ -21,7 +21,7 @@ import Step6b from "pages/Account/Step6b";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
-import Login from "pages/Account/Login";
+import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
 import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
@@ -34,6 +34,8 @@ import { VersionPage } from "pages/VersionPage/VersionPage";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VenuePrivateRoom } from "pages/VenuePrivateRoom";
+import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 const AppRouter = () => {
   return (
@@ -55,20 +57,30 @@ const AppRouter = () => {
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
-        <Route path="/login" component={Login} />
+        <Route
+          path="/login/:venueId/:customToken"
+          component={LoginWithCustomToken}
+        />
+        {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
+        {/*<Route path="/login" component={Login} />*/}
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
+        <Route
+          path="/admin-ng/advanced-settings/:venueId?"
+          component={AdminAdvancedSettings}
+        />
+
+        <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
+        <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
 
         <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin_v2/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin_v2" component={Admin_v2} />
+        <Route path="/admin-ng" component={Admin_v2} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />

@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useFirestore } from "react-redux-firebase";
+import { useHistory } from "react-router-dom";
+import { ErrorMessage, useForm } from "react-hook-form";
+
 import Bugsnag from "@bugsnag/js";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import * as Yup from "yup";
+
 import {
   ALL_VENUE_TEMPLATES,
   PLAYA_IMAGE,
@@ -8,24 +13,32 @@ import {
   PLAYA_VENUE_STYLES,
   HAS_ROOMS_TEMPLATES,
 } from "settings";
-import { useFirestore } from "react-redux-firebase";
-import "../Venue.scss";
-import { PartyMapVenue, AnyVenue } from "types/venues";
-import { useHistory } from "react-router-dom";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
-import * as Yup from "yup";
-import { Room } from "types/rooms";
-import { validationSchema } from "./RoomsValidationSchema";
-import { ErrorMessage, useForm } from "react-hook-form";
-import { ImageInput } from "components/molecules/ImageInput";
-import { useUser } from "hooks/useUser";
+
 import { upsertRoom, RoomInput } from "api/admin";
+
+import { Room } from "types/rooms";
+import { ExtractProps } from "types/utility";
+import { PartyMapVenue, AnyVenue } from "types/venues";
+
+import { withId } from "utils/id";
+
+import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
 import { useVenueId } from "hooks/useVenueId";
-import { ExtractProps } from "types/utility";
-import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
-import RoomDeleteModal from "./RoomDeleteModal";
+
 import Login from "pages/Account/Login";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { ImageInput } from "components/molecules/ImageInput";
+
+import { validationSchema } from "./RoomsValidationSchema";
+
+import "../Venue.scss";
+
+import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
   const venueId = useVenueId();
@@ -79,7 +92,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue || !venueId) return null;
 
   if (!user) {
-    return <Login formType="login" />;
+    return <Login formType="login" venue={withId(venue, venueId)} />;
   }
 
   return (
