@@ -10,7 +10,7 @@ import { WithId, WithVenueId } from "utils/id";
 //import { tracePromise } from "utils/performance";
 import { useFirebase } from "react-redux-firebase";
 
-import { SCHEDULE_LOADFROM_GS } from "settings";
+import { SCHEDULE_LOAD_FROM_GS } from "settings";
 
 const emptyArray: never[] = [];
 
@@ -40,7 +40,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     const storage = firebase.storage();
     const url = await storage
       .ref()
-      .child(SCHEDULE_LOADFROM_GS)
+      .child(SCHEDULE_LOAD_FROM_GS)
       .getDownloadURL();
     return fetch(url).then((res) => res.json());
 

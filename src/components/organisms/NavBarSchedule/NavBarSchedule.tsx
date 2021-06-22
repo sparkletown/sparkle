@@ -13,7 +13,7 @@ import { groupBy } from "lodash";
 import {
   PLATFORM_BRAND_NAME,
   SCHEDULE_SHOW_DAYS_AHEAD,
-  SCHEDULE_LOADFROM_GS,
+  SCHEDULE_LOAD_FROM_GS,
   REMOVE_EVENTS_FROM_VENUE,
 } from "settings";
 
@@ -99,7 +99,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   const isLoadingSchedule =
-    (!SCHEDULE_LOADFROM_GS && isLoading) || isEventsLoading;
+    (!SCHEDULE_LOAD_FROM_GS && isLoading) || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
