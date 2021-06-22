@@ -15,6 +15,7 @@ import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 import { User } from "types/User";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
+import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useChatSidebarControls } from "hooks/chatSidebar";
@@ -146,12 +147,13 @@ const SuspectedLocation: React.FC<{
     currentVenueId: currentVenue.id,
   });
 
+  const { userLocation } = useWorldUserLocation(user.id);
+  const { lastSeenIn } = userLocation ?? {};
+
   const suspectedLocation = useMemo(
     () => ({
       venue: relatedVenues.find(
-        (venue) =>
-          (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
-          venue.name === user.room
+        (venue) => lastSeenIn?.[currentVenue.name] || venue.name === user.room
       ),
       room: relatedVenues.find(
         (venue) =>
@@ -159,7 +161,7 @@ const SuspectedLocation: React.FC<{
           venue.rooms?.find((r) => r.title === user.room)
       ),
     }),
-    [relatedVenues, user.lastSeenIn, user.room, currentVenue?.name]
+    [relatedVenues, lastSeenIn, currentVenue.name, user.room]
   );
 
   if (!user.room || relatedVenues.length === 0) {
