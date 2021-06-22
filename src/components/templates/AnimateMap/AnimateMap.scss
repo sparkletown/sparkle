@@ -4,26 +4,13 @@
   height: 100%;
 }
 
-.animatemap-venue-container {
+.AnimateMap {
   display: block;
   height: 100%;
 
   overflow-x: hidden;
 
-  canvas {
+  &__pixi-canvas {
     display: block;
-  }
-}
-
-body {
-  @include scrollbar;
-
-  &.no-scroll {
-    overflow: hidden;
-  }
-
-  &.modal-open {
-    padding: 0 0 0 0 !important;
-    overflow-y: scroll !important;
   }
 }

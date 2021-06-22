@@ -1,5 +1,3 @@
-import * as PIXI from "pixi.js";
-
 import { PixiComponent } from "@inlet/react-pixi";
 import { MovedEventData, Viewport, ZoomedEventData } from "pixi-viewport";
 
@@ -8,7 +6,7 @@ type ViewportProps = {
   screenHeight?: number;
   worldWidth: number;
   worldHeight: number;
-  interaction: PIXI.InteractionManager | undefined;
+  interaction?: PIXI.InteractionManager;
   zoomedHandler: (data: ZoomedEventData) => void;
   movedHandler: (data: MovedEventData) => void;
 };

@@ -3,7 +3,7 @@ import {
   ReplicatedUserData,
   ReplicatedVenue,
   ReplicatedVenueData,
-} from "../../../../../store/reducers/AnimateMap";
+} from "store/reducers/AnimateMap";
 import { Graphics, Sprite } from "@inlet/react-pixi";
 import React from "react";
 

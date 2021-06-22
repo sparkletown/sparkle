@@ -1,16 +1,13 @@
 import React, { useMemo } from "react";
 import { Container } from "@inlet/react-pixi";
-import { useSelector } from "../../../../../hooks/useSelector";
+import { useSelector } from "hooks/useSelector";
 import {
   animateMapUsersQTSelector,
   animateMapVenuesQTSelector,
   animateMapZoomSelector,
-} from "../../../../../utils/selectors";
+} from "utils/selectors";
 import { Box } from "js-quadtree";
-import {
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "../../../../../store/reducers/AnimateMap";
+import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 import { getUsersForRender, getVenuesForRender } from "./GetItemsForRender";
 
 export interface LayerLODProps {

@@ -3,7 +3,6 @@ import {
   AnimateMapActionTypes,
 } from "../actions/AnimateMap";
 import { Reducer } from "redux";
-import * as PIXI from "pixi.js";
 import { Box, QuadTree } from "js-quadtree";
 
 //Note: maybe relocate to src/types/AnimateMapVenue in the future

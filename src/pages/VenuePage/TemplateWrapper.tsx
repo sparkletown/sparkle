@@ -28,7 +28,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { AnimateMap } from "../../components/templates/AnimateMap";
+import { AnimateMap } from "components/templates/AnimateMap";
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
