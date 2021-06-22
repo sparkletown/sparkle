@@ -66,8 +66,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     leaveChannel: screenClientLeave,
   } = useAgoraScreenShare({ client: screenClient });
 
-  const [localUser] = useMemo(
-    () => stage.peopleOnStage.filter(({ id }) => id === userId),
+  const localUser = useMemo(
+    () => stage.peopleOnStage.find(({ id }) => id === userId),
     [userId, stage.peopleOnStage]
   );
 
@@ -83,18 +83,18 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       ),
     [stage.peopleOnStage, venue.id]
   );
-  const [remoteScreenTrack] = useMemo(
+  const remoteScreenTrack = useMemo(
     () =>
-      remoteUsers.filter(
+      remoteUsers.find(
         ({ uid }) =>
           `${uid}` ===
           userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
       ),
     [userOnStageSharingScreen?.data, remoteUsers, venue.id]
   );
-  const [remoteCameraTrack] = useMemo(
+  const remoteCameraTrack = useMemo(
     () =>
-      remoteUsers.filter(
+      remoteUsers.find(
         ({ uid }) =>
           `${uid}` ===
           userOnStageSharingScreen?.data?.[`${venue.id}`]?.cameraClientUid
@@ -105,7 +105,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const remoteUsersPlayers = useMemo(() => {
     const setRemoteUserAvatar = (remoteUserId: number | string) => {
       if (!venue.id) return;
-      const [remoteUser] = stage.peopleOnStage.filter(
+      const remoteUser = stage.peopleOnStage.find(
         ({ data }) =>
           data?.[`${venue.id}`]?.cameraClientUid === `${remoteUserId}`
       );
