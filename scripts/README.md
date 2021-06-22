@@ -1,4 +1,4 @@
-# Scripts: Scripts for various Sparkly things
+# Scripts for Various Sparkly Things
 
 Most scripts have their own usage instructions within the script themselves.
 
