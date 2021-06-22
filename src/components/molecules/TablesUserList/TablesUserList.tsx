@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 
+import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
@@ -27,6 +28,7 @@ const createTable = (i: number): Table => {
   };
 };
 
+// @debt Remove this eslint-disable + fix the any type properly
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const firestoreUpdate = (doc: string, update: any) => {
   const firestore = firebase.firestore();
@@ -41,6 +43,16 @@ const firestoreUpdate = (doc: string, update: any) => {
 const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
   createTable(i)
 );
+
+interface TableUsers {
+  usersByTableRef: Partial<Record<string, WithId<User>[]>>;
+  unseatedUsers: WithId<User>[];
+}
+
+const emptyTableUsersState: TableUsers = {
+  usersByTableRef: {},
+  unseatedUsers: [],
+};
 
 export interface TablesUserListProps {
   venueName: string;
@@ -85,30 +97,47 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     }
   }, [profile, setSeatedAtTable, user, venueName]);
 
-  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
-
   const tables: Table[] = customTables || defaultTables;
-  const usersAtTables: Record<string, Array<User>> = {};
-  for (const table of tables) {
-    usersAtTables[table.reference] = [];
-  }
-  const unseatedUsers = [];
-  for (const u of recentVenueUsers.filter((u: User) =>
-    u.lastSeenIn ? u.lastSeenIn[venueName] : ""
-  )) {
-    if (
-      u.data &&
-      u.data[venueName] &&
-      u.data[venueName].table &&
-      tables
-        .map((table: Table) => table.reference)
-        .includes(u.data[venueName].table)
-    ) {
-      usersAtTables[u.data[venueName].table].push(u);
-    } else {
-      unseatedUsers.push(u);
-    }
-  }
+
+  const tablesByTableRefMap = useMemo(
+    () => new Map(tables.map((table) => [table.reference, table])),
+    [tables]
+  );
+
+  // @debt refactor this reducer function out of this component into utils/* or similar?
+  const { usersByTableRef: usersAtTables } = useMemo(() => {
+    return recentVenueUsers.reduce<TableUsers>(
+      ({ usersByTableRef, unseatedUsers }, recentVenueUser) => {
+        // @debt refactor this to use a helper function getUserExperience(user?: User): Experience | undefined or similar?
+        const userTableRef = recentVenueUser.data?.[venueName].table;
+
+        const isSeatedAtTable = userTableRef
+          ? tablesByTableRefMap.has(userTableRef)
+          : false;
+
+        // User isn't seated at a table
+        if (!userTableRef || !isSeatedAtTable) {
+          return {
+            usersByTableRef,
+            unseatedUsers: [...unseatedUsers, recentVenueUser],
+          };
+        }
+
+        // User is seated at a table
+        const existingUsersAtTable = usersByTableRef[userTableRef] ?? [];
+
+        const updatedUsersByTableRef = {
+          ...usersByTableRef,
+          [userTableRef]: [...existingUsersAtTable, recentVenueUser],
+        };
+
+        return { usersByTableRef: updatedUsersByTableRef, unseatedUsers };
+      },
+      emptyTableUsersState
+    );
+  }, [recentVenueUsers, tablesByTableRefMap, venueName]);
+
+  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
   const tableLocked = (table: string) => {
     // Empty tables are never locked
@@ -160,10 +189,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const usersAtOtherTables = [];
   for (const table of tables) {
-    if (table.reference === seatedAtTable) {
-      continue;
-    }
-    usersAtOtherTables.push(...usersAtTables[table.reference]);
+    if (table.reference === seatedAtTable) continue;
+
+    usersAtOtherTables.push(...(usersAtTables[table.reference] ?? []));
   }
 
   return (
