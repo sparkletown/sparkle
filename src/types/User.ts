@@ -7,10 +7,9 @@ import { WithId, withId } from "utils/id";
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
   bartender: User;
-  // @debt refactor table to be potentially undefined
-  table: string;
-  row?: number;
-  column?: number;
+  table?: string | null;
+  row?: number | null;
+  column?: number | null;
 }
 
 // @debt typing I think this is correct from Room.tsx, need to confirm
@@ -30,8 +29,8 @@ export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
 export interface User {
   partyName?: string;
   pictureUrl?: string;
-  anonMode: boolean;
-  mirrorVideo: boolean;
+  anonMode?: boolean;
+  mirrorVideo?: boolean;
   status?: string;
   data?: UserExperienceData;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
@@ -44,7 +43,7 @@ export interface User {
   // Legacy?
   room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
-  kidsMode: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
+  kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
   // @debt these don't appear to be used by anything anymore
   // drinkOfChoice?: string;
   // favouriteRecord?: string;
@@ -73,10 +72,9 @@ export const ExperienceSchema: Yup.ObjectSchema<Experience> = Yup.object()
   .shape({
     // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
     bartender: Yup.lazy(() => UserSchema.required()),
-    // @debt refactor table to be potentially undefined
-    table: Yup.string().required(),
-    row: Yup.number(),
-    column: Yup.number(),
+    table: Yup.string().nullable(),
+    row: Yup.number().nullable(),
+    column: Yup.number().nullable(),
   })
   .required();
 
@@ -119,8 +117,8 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
   .shape<User>({
     partyName: Yup.string(),
     pictureUrl: Yup.string(),
-    anonMode: Yup.boolean().required(),
-    mirrorVideo: Yup.boolean().required(),
+    anonMode: Yup.boolean(),
+    mirrorVideo: Yup.boolean(),
     status: Yup.string(),
     data: UserExperienceDataSchema,
     myPersonalizedSchedule: MyPersonalizedScheduleSchema,
@@ -129,7 +127,7 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
     // Legacy?
     room: Yup.string(),
     video: VideoStateSchema.notRequired(),
-    kidsMode: Yup.boolean().required(),
+    kidsMode: Yup.boolean(),
   })
   .noUnknown()
   .required();
