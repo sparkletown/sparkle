@@ -158,11 +158,17 @@ export const fetchDescendantVenues = async (
 export const fetchRelatedVenues = async (
   venueId: string
 ): Promise<WithId<AnyVenue>[]> => {
-  const { sovereignVenue } = await fetchSovereignVenue(venueId);
+  // const { sovereignVenue } = await fetchSovereignVenue(venueId);
 
-  const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
+  // const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
 
-  return [sovereignVenue, ...descendantVenues];
+  const childVenuesSnapshot = await getVenueCollectionRef()
+    .withConverter(anyVenueWithIdConverter)
+    .get();
+
+  return childVenuesSnapshot.docs
+    .filter((docSnapshot) => docSnapshot.exists)
+    .map((docSnapshot) => docSnapshot.data());
 };
 
 /**
