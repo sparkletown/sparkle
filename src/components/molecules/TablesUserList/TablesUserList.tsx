@@ -14,7 +14,8 @@ import { useRecentVenueUsers } from "hooks/users";
 
 import "./TablesUserList.scss";
 
-const TABLES = 4;
+// @debt refactor this into src/settings or similar
+const DEFAULT_TABLE_COUNT = 4;
 
 const createTable = (i: number): Table => {
   return {
@@ -37,7 +38,9 @@ const firestoreUpdate = (doc: string, update: any) => {
     });
 };
 
-const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
+const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
+  createTable(i)
+);
 
 export interface TablesUserListProps {
   venueName: string;
