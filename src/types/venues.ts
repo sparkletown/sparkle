@@ -320,6 +320,7 @@ export interface VenueEvent {
   host: string;
   room?: string;
   venueId?: string;
+  sovereignVenueId?: string;
   id?: string;
 }
 
