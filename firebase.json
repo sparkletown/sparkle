@@ -34,6 +34,14 @@
       "public": "build",
       "rewrites": [
         {
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
+        },
+        {
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -221,6 +229,14 @@
       "public": "build",
       "rewrites": [
         {
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
+        },
+        {
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -239,7 +255,7 @@
       "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
     },
     {
-      "target": "sparkle-demo",
+      "target": "sparkle-demo-e65b1",
       "public": "build",
       "rewrites": [
         {
@@ -273,6 +289,28 @@
     },
     {
       "target": "sparkle-burn",
+      "public": "build",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "sparkle-burn-staging",
+      "public": "build",
+      "rewrites": [
+        {
+          "source": "**",
+          "destination": "/index.html"
+        }
+      ],
+      "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
+    },
+    {
+      "target": "sparkle-github",
       "public": "build",
       "rewrites": [
         {
