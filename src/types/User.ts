@@ -1,3 +1,5 @@
+// @debt rename this file to be user rather than User
+
 export interface Experience {
   bartender: User;
   table: string;
@@ -18,25 +20,29 @@ export type VideoState = {
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
 
 export interface User {
-  drinkOfChoice?: string;
-  favouriteRecord?: string;
-  doYouDance?: string;
   partyName?: string;
   pictureUrl?: string;
+  anonMode: boolean;
+  mirrorVideo: boolean;
+  status?: string;
   data?: UserExperienceData;
+  myPersonalizedSchedule?: MyPersonalizedSchedule;
+  enteredVenueIds?: string[];
   lastSeenIn: { [key: string]: number };
   lastSeenAt: number;
-  room?: string;
+
   // @debt typing - user also has a dynamic set of attributes for the question answers
-  // currently not possible to type them properly
+  //   currently not possible to type them properly
   // [question: string]: string;
-  video?: VideoState;
-  mirrorVideo: boolean;
-  kidsMode: boolean;
-  anonMode: boolean;
-  enteredVenueIds?: string[];
-  status?: string;
-  myPersonalizedSchedule?: MyPersonalizedSchedule;
+
+  // Legacy?
+  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
+  video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
+  kidsMode: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
+  // @debt these don't appear to be used by anything anymore
+  // drinkOfChoice?: string;
+  // favouriteRecord?: string;
+  // doYouDance?: string;
 }
 
 export enum UserStatus {
