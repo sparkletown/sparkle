@@ -9,7 +9,6 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
-import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
@@ -18,9 +17,8 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
@@ -136,30 +134,35 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   );
 };
 
+/**
+ * @debt I believe this relates to Playa features, which are legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
 const SuspectedLocation: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
-  // @debt This will currently load all venues in firebase into memory.. not very efficient
-  useFirestoreConnect("venues");
-  const allVenues = useSelector(orderedVenuesSelector);
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: currentVenue.id,
+  });
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: allVenues?.find(
-        (v) =>
+      venue: relatedVenues.find(
+        (venue) =>
           (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
-          v.name === user.room
+          venue.name === user.room
       ),
-      room: allVenues?.find(
-        (v) =>
-          isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
+      room: relatedVenues.find(
+        (venue) =>
+          isVenueWithRooms(venue) &&
+          venue.rooms?.find((r) => r.title === user.room)
       ),
     }),
-    [user, allVenues, currentVenue]
+    [relatedVenues, user.lastSeenIn, user.room, currentVenue?.name]
   );
 
-  if (!user.room || !allVenues) {
+  if (!user.room || relatedVenues.length === 0) {
     return null;
   }
 
