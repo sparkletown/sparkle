@@ -43,14 +43,15 @@ export const peopleByLastSeenIn = (
   users?: readonly WithId<User>[]
 ) => {
   const result: { [lastSeenIn: string]: WithId<User>[] } = {};
-  for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
-    if (user.lastSeenIn) {
-      if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
-      if (user.lastSeenIn && user.lastSeenIn[venueName]) {
-        result[venueName].push(user);
-      }
-    }
-  }
+  // @debt This isn't correct, but this is only used by Playa/etc, which are legacy code soon to be removed, so we don't mind
+  // for (const user of users?.filter((u) => u.id !== undefined) ?? []) {
+  //   if (user.lastSeenIn) {
+  //     if (!(user.lastSeenIn[venueName] in result)) result[venueName] = [];
+  //     if (user.lastSeenIn && user.lastSeenIn[venueName]) {
+  //       result[venueName].push(user);
+  //     }
+  //   }
+  // }
   return result;
 };
 

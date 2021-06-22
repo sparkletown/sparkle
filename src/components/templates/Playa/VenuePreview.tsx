@@ -7,11 +7,7 @@ import {
   VenueTemplate,
 } from "types/venues";
 import "./VenuePreview.scss";
-import {
-  BURN_VENUE_TEMPLATES,
-  ENABLE_PLAYA_ADDRESS,
-  LOC_UPDATE_FREQ_MS,
-} from "settings";
+import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
 import UserList from "components/molecules/UserList";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -22,7 +18,6 @@ import {
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import firebase from "firebase/app";
-import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
@@ -68,21 +63,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
-
-  const usersInVenue = recentVenueUsers.filter(
-    (partygoer) =>
-      partygoer.lastSeenIn?.[venue.name] >
-      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-  );
 
   useFirestoreConnect([
     {
@@ -248,7 +231,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         </div>
         <div className="user-list-container">
           <UserList
-            users={usersInVenue}
+            users={recentVenueUsers}
             isAudioEffectDisabled
             activity="in this location"
           />
