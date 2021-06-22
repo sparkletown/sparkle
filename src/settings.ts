@@ -624,7 +624,9 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
 export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/;
-export const SCHEDULE_LOAD_FROM_GS = "assets/cache/events.json";
+//export const SCHEDULE_LOAD_FROM_GS = "assets/cache/events.json";
+export const SCHEDULE_LOAD_FROM_GS =
+  "https://firebasestorage.googleapis.com/v0/b/sparkle-ohbm.appspot.com/o/assets%2Fcache%2Fevents.json?alt=media&token=89abdf1a-4f0c-4f13-9a5f-e50088e090bc";
 
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";

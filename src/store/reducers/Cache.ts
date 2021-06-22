@@ -2,14 +2,23 @@
 import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 
+//import firebase from "firebase/app";
+//import "firebase/storage";
+
+import { SCHEDULE_LOAD_FROM_GS } from "settings";
+
 interface cacheState {
   events: Promise<WithVenueId<WithId<VenueEvent>>[]>;
 }
 
 const initialState: cacheState = {
-  events: fetch(
-    "https://firebasestorage.googleapis.com/v0/b/sparkle-ohbm.appspot.com/o/assets%2Fcache%2Fevents.json?alt=media&token=d190d1c3-249d-4f05-ad33-ae349c8771c2"
-  ).then((res) => res.json()),
+  events: new Promise(async (resolve) => {
+    //const storage = firebase.storage();
+    //const url = await storage.ref().child(SCHEDULE_LOAD_FROM_GS).getDownloadURL();
+    fetch(SCHEDULE_LOAD_FROM_GS)
+      .then((res) => res.json())
+      .then(resolve);
+  }),
 };
 
 export const cacheReducer = (
