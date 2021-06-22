@@ -34,6 +34,10 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   return /[a-z0-9_]{1,250}/.test(venueId);
 };
 
+/**
+ * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
 export const peopleByLastSeenIn = (
   venueName: string,
   users?: readonly WithId<User>[]
@@ -50,6 +54,10 @@ export const peopleByLastSeenIn = (
   return result;
 };
 
+/**
+ * @debt this appears to only be used in OnlineStats + Playa, which are both legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
 export const peopleAttending = (
   peopleByLastSeenIn: { [lastSeenIn: string]: WithId<User>[] },
   venue: AnyVenue
