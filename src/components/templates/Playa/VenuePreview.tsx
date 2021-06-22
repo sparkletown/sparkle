@@ -15,6 +15,10 @@ import {
 import UserList from "components/molecules/UserList";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import {
+  eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
+} from "utils/event";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import firebase from "firebase/app";
@@ -158,12 +162,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .get()
       .then(function (array) {
         const futureEvents = array.docs
-          .map((doc) => doc.data())
-          .filter((event) => event.start_utc_seconds > nowSeconds)
-          .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+          .map((doc) => doc.data() as VenueEvent) // TODO: is this type cast correct?
+          .filter(isEventLiveOrFuture)
+          .sort(eventsByStartUtcSecondsSorter);
 
-        // TODO: is this type cast correct?
-        setEventsFuture(futureEvents as VenueEvent[]);
+        setEventsFuture(futureEvents);
       });
   }, [venue]);
 

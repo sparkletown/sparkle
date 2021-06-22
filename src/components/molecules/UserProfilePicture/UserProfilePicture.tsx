@@ -50,6 +50,7 @@ export interface UserProfilePictureProp {
   containerClassName?: string;
   reactionPosition?: "left" | "right";
   showNametags?: UsernameVisibility;
+  showStatus?: boolean;
   /**
    * @deprecated Note: This feature is currently disabled.
    */
@@ -62,6 +63,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
   containerClassName,
   reactionPosition = "right",
   showNametags,
+  showStatus = false,
   // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
   // miniAvatars = false,
 }) => {
@@ -114,6 +116,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
         user={user}
         containerClassName="UserProfilePicture__avatar"
         showNametag={showNametags}
+        showStatus={showStatus}
       />
 
       {userId && (
