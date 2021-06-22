@@ -1,14 +1,12 @@
 import { useAsync } from "react-use";
 
+import { fetchAllVenueEvents } from "api/events";
+
 import { ReactHook } from "types/utility";
 import { VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
-
-//import { tracePromise } from "utils/performance";
-//import { fetchAllVenueEvents } from "api/events";
-
-import { useSelector } from "hooks/useSelector";
+import { tracePromise } from "utils/performance";
 
 const emptyArray: never[] = [];
 
@@ -27,8 +25,6 @@ export interface VenueEventsData {
 export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
   venueIds,
 }) => {
-  const cache = useSelector((state) => state.cache);
-
   const {
     loading: isEventsLoading,
     error: eventsError,
@@ -36,14 +32,6 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
   } = useAsync(async () => {
     if (!venueIds) return emptyArray;
 
-    //load from cache(gs)
-    return cache.events.then((events) => {
-      return events.filter((e) => venueIds.includes(e.venueId));
-    });
-
-    //load from firebase - depends on venueIds
-    /*
-    if (!venueIds) return emptyArray;
     return tracePromise(
       "useVenueEvents::fetchAllVenueEvents",
       () => fetchAllVenueEvents(venueIds),
@@ -53,8 +41,8 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
         },
       }
     );
-    */
-  }, [cache, venueIds]);
+  }, [venueIds]); // TODO: figure out this deps in an efficient way so it doesn't keep re-rendering
+
   return {
     isEventsLoading,
     isError: eventsError !== undefined,

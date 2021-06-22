@@ -10,12 +10,7 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import {
-  PLATFORM_BRAND_NAME,
-  SCHEDULE_SHOW_DAYS_AHEAD,
-  SCHEDULE_LOAD_FROM_GS,
-  REMOVE_EVENTS_FROM_VENUE,
-} from "settings";
+import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
 import {
   LocationEvents,
@@ -98,8 +93,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     venueIds: relatedVenueIds,
   });
 
-  const isLoadingSchedule =
-    (!SCHEDULE_LOAD_FROM_GS && isLoading) || isEventsLoading;
+  const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
@@ -160,13 +154,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     const locatedEvents: LocationEvents[] = Object.entries(
-      groupBy(
-        daysEvents.filter(
-          (event: { venueId: string }) =>
-            !event.venueId.match(REMOVE_EVENTS_FROM_VENUE)
-        ),
-        buildLocationString
-      )
+      groupBy(daysEvents, buildLocationString)
     ).map(([group, events]) => ({
       events,
       location: getEventLocation(group),

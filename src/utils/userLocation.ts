@@ -8,6 +8,13 @@ import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl } from "./url";
 
+/*
+import { useDispatch } from "hooks/useDispatch";
+import {
+  updateUser,
+} from "store/actions/Cache";
+*/
+
 export type LocationData = Record<string, number>;
 
 export interface UpdateLocationDataProps {
@@ -40,6 +47,13 @@ export const setLocationData = ({
       [locationName]: getCurrentTimeInMilliseconds(),
     },
   });
+
+  /*
+  console.log("setLocationData");
+  const dispatch = useDispatch();
+  console.log(newData, userUid, newData);
+  dispatch(updateUser(userUid, newData));
+  */
 };
 
 export interface UpdateCurrentLocationDataProps {

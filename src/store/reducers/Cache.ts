@@ -50,5 +50,9 @@ export const cacheReducer = (
         });
       });
   }
+  if (action.type === "cache/updateUser") {
+    console.log("update cache");
+    console.dir(action);
+  }
   return state;
 };
