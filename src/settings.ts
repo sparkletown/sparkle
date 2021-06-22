@@ -11,7 +11,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { FIVE_MINUTES_MS } from "utils/time";
 import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
@@ -90,9 +89,8 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
-// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
-export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
+export const LOC_UPDATE_FREQ_MS = 120 * 60 * 1000; // 120 mins
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
@@ -624,9 +622,6 @@ export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
 export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
 
 export const REMOVE_EVENTS_FROM_VENUE = /^poster[0-9]{4}$/;
-//export const SCHEDULE_LOAD_FROM_GS = "assets/cache/events.json";
-export const SCHEDULE_LOAD_FROM_GS =
-  "https://firebasestorage.googleapis.com/v0/b/sparkle-ohbm.appspot.com/o/assets%2Fcache%2Fevents.json?alt=media&token=89abdf1a-4f0c-4f13-9a5f-e50088e090bc";
 
 export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
 export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
