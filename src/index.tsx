@@ -131,6 +131,13 @@ const store = createStore(
   )
 );
 
+//load users every 60 seconda
+setInterval(() => {
+  store.dispatch({ type: "cache/reloadUsers" });
+}, 1000 * 60);
+//initial loading of users
+store.dispatch({ type: "cache/reloadUsers" });
+
 export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {

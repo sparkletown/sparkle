@@ -5,15 +5,16 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
+//import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
-import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import { useSovereignVenueId } from "./useSovereignVenueId";
+//import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
+//import { useSovereignVenueId } from "./useSovereignVenueId";
 
+/*
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
@@ -39,19 +40,21 @@ export const useConnectWorldUsers = () => {
     ];
   });
 };
+*/
 
 export const useWorldUsers = (): {
   worldUsers: readonly WithId<User>[];
   isWorldUsersLoaded: boolean;
 } => {
-  useConnectWorldUsers();
+  //useConnectWorldUsers();
 
-  const selectedWorldUsers = useSelector(worldUsersSelector);
+  //const selectedWorldUsers = useSelector(worldUsersSelector);
+  const selectedWorldUsers = useSelector((state) => state.cache.usersArray);
 
   return useMemo(
     () => ({
       worldUsers: selectedWorldUsers ?? [],
-      isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+      isWorldUsersLoaded: true, //isLoaded(selectedWorldUsers),
     }),
     [selectedWorldUsers]
   );
@@ -59,14 +62,15 @@ export const useWorldUsers = (): {
 
 // @debt typing, Record implies that a User will exist for literally any given string, which is untrue
 export const useWorldUsersById = () => {
-  useConnectWorldUsers();
+  //useConnectWorldUsers();
+  //const worldUsersById = useSelector(worldUsersByIdSelector);
 
-  const worldUsersById = useSelector(worldUsersByIdSelector);
+  const worldUsersById = useSelector((state) => state.cache.usersRecord);
 
   return useMemo(
     () => ({
       worldUsersById: worldUsersById ?? {},
-      isWorldUsersLoaded: isLoaded(worldUsersById),
+      isWorldUsersLoaded: true, //isLoaded(worldUsersById),
     }),
     [worldUsersById]
   );
