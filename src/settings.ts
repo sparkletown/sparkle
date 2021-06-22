@@ -11,7 +11,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { FIVE_MINUTES_MS } from "utils/time";
 import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
@@ -90,9 +89,8 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
-// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
-export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
+export const LOC_UPDATE_FREQ_MS = 15 * 60 * 1000; // 15 mins
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
