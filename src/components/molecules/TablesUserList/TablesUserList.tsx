@@ -64,7 +64,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   };
 
   const { user, profile } = useUser();
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
+    venueName,
+  });
   const experience = useSelector(experienceSelector);
 
   useEffect(() => {

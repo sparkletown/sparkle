@@ -53,7 +53,7 @@ interface JazzProps {
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const parentVenueId = venueToUse?.parentId;
   const parentVenue = useSelector(parentVenueSelector);

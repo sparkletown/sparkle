@@ -74,7 +74,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
     setNowMs(Date.now());
   }, LOC_UPDATE_FREQ_MS);
 
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
 

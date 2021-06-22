@@ -446,7 +446,7 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
 
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(

@@ -22,7 +22,7 @@ import "./ConversationSpace.scss";
 
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 

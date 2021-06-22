@@ -61,7 +61,7 @@ export const Map: React.FC<MapProps> = ({
   );
   const [totalRows, setTotalRows] = useState<number>(0);
 
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
     [totalColumns]
