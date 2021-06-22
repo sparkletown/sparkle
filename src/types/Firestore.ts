@@ -7,7 +7,7 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
-import { VideoChatRequest } from "types/VideoRoom";
+import { VideoRoomRequest } from "types/videoRoom";
 
 import { WithId } from "utils/id";
 
@@ -72,8 +72,8 @@ export interface FirestoreData {
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
   worldUsers?: Record<string, User>;
-  videoRoomInvites?: Record<string, VideoChatRequest>;
-  currentVideoRoom?: VideoChatRequest;
+  videoRoomInvites?: Partial<Record<string, VideoRoomRequest>>;
+  currentVideoRoom?: VideoRoomRequest;
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
@@ -110,8 +110,8 @@ export interface FirestoreOrdered {
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueEvents?: WithId<VenueEvent>[];
   worldUsers?: WithId<User>[];
-  videoRoomInvites?: WithId<VideoChatRequest>[];
-  currentVideoRoom?: WithId<VideoChatRequest>[];
+  videoRoomInvites?: WithId<VideoRoomRequest>[];
+  currentVideoRoom?: WithId<VideoRoomRequest>[];
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.

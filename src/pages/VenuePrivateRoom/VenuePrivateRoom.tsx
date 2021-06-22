@@ -9,7 +9,7 @@ import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import { VideoChatRequestState } from "types/VideoRoom";
+import { VideoRoomRequestState } from "types/videoRoom";
 
 import { enterVenue } from "utils/url";
 
@@ -47,7 +47,7 @@ export const VenuePrivateRoom: React.FC = () => {
   const backToVenue = useCallback(() => {
     if (!venueId) return;
 
-    if (videoRoom && videoRoom.state === VideoChatRequestState.Accepted) {
+    if (videoRoom && videoRoom.state === VideoRoomRequestState.accepted) {
       const message = buildMessage<PrivateChatMessage>({
         text: "",
         from: videoRoom.hostUserId,
@@ -55,7 +55,7 @@ export const VenuePrivateRoom: React.FC = () => {
         to: videoRoom.invitedUserId,
       });
       sendPrivateMessage(message);
-      setVideoChatState(roomId, VideoChatRequestState.Expired);
+      setVideoChatState(roomId, VideoRoomRequestState.expired);
     }
     enterVenue(venueId);
   }, [roomId, venueId, videoRoom]);
@@ -66,7 +66,7 @@ export const VenuePrivateRoom: React.FC = () => {
     return null;
   }
 
-  const isInviteDeclined = videoRoom.state === VideoChatRequestState.Declined;
+  const isInviteDeclined = videoRoom.state === VideoRoomRequestState.declined;
 
   return (
     <WithNavigationBar hasBackButton={false} venueId={venueId}>

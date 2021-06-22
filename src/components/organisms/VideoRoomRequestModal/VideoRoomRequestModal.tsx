@@ -6,11 +6,12 @@ import { acceptVideoChat, setVideoChatState } from "api/videoRoom";
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import { useVenueId } from "hooks/useVenueId";
 import { useWorldUserById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import { hasElements } from "utils/types";
 import { WithId } from "utils/id";
 
-import { VideoChatRequestState } from "types/VideoRoom";
+import { VideoRoomRequestState } from "types/videoRoom";
 import { User } from "types/User";
 
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
@@ -19,7 +20,10 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./VideoRoomRequestModal.scss";
 
 export const VideoRoomRequestModal: React.FC = () => {
-  const videoRoomRequests = useConnectVideoRooms();
+  const { user } = useUser();
+  const userId = user?.uid ?? "";
+
+  const videoRoomRequests = useConnectVideoRooms(userId);
   const history = useHistory();
   const venueId = useVenueId();
 
@@ -44,7 +48,7 @@ export const VideoRoomRequestModal: React.FC = () => {
 
     setVideoChatState(
       currentVideoRoomRequest.id,
-      VideoChatRequestState.Declined
+      VideoRoomRequestState.declined
     );
   }, [currentVideoRoomRequest]);
 

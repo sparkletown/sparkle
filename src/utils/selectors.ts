@@ -10,6 +10,7 @@ import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 import { ScreeningRoomVideo } from "types/screeningRoom";
+import { VideoRoomRequest } from "types/videoRoom";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -20,7 +21,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { VideoChatRequest } from "types/VideoRoom";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -90,7 +90,7 @@ export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
  * @param state the Redux store
  */
 export const videoRoomInvitesByIdSelector: SparkleSelector<
-  Record<string, VideoChatRequest>
+  Partial<Record<string, VideoRoomRequest>>
 > = (state) => state.firestore.data.videoRoomInvites || {};
 
 /**
@@ -99,7 +99,7 @@ export const videoRoomInvitesByIdSelector: SparkleSelector<
  * @param state the Redux store
  */
 export const videoRoomInvitesSelector: SparkleSelector<
-  WithId<VideoChatRequest>[]
+  WithId<VideoRoomRequest>[]
 > = (state) => state.firestore.ordered.videoRoomInvites || [];
 
 /**
@@ -108,7 +108,7 @@ export const videoRoomInvitesSelector: SparkleSelector<
  * @param state the Redux store
  */
 export const currentVideoRoomSelector: SparkleSelector<
-  WithId<VideoChatRequest> | undefined
+  WithId<VideoRoomRequest> | undefined
 > = (state) => state.firestore.ordered.currentVideoRoom?.[0];
 
 /**

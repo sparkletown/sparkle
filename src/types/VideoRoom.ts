@@ -1,17 +1,15 @@
-import firebase from "firebase/app";
-
-export enum VideoChatRequestState {
-  Invited = "Invited",
-  Declined = "Declined",
-  Accepted = "Accepted",
-  Expired = "Expired",
+export enum VideoRoomRequestState {
+  invited = "invited",
+  declined = "declined",
+  accepted = "accepted",
+  expired = "expired",
 }
 
-export interface VideoChatRequest {
+export interface VideoRoomRequest {
   hostUserId: string;
   hostUserLocation: string;
   invitedUserId: string;
   invitedUserLocation: string;
-  state: VideoChatRequestState;
-  createdAt: firebase.firestore.FieldValue;
+  state: VideoRoomRequestState;
+  createdAt: number;
 }

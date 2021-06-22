@@ -1,20 +1,20 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-import { VideoChatRequest, VideoChatRequestState } from "types/VideoRoom";
+import { VideoRoomRequest, VideoRoomRequestState } from "types/videoRoom";
 
 export const inviteToVideoChat = async (
   hostUserId: string,
   hostUserLocation: string,
   invitedUserId: string
-) => {
-  const videoRoomRequest: VideoChatRequest = {
+): Promise<firebase.functions.HttpsCallableResult> => {
+  const videoRoomRequest: VideoRoomRequest = {
     hostUserId: hostUserId,
     hostUserLocation: hostUserLocation,
     invitedUserId: invitedUserId,
     invitedUserLocation: "",
-    state: VideoChatRequestState.Invited,
-    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    state: VideoRoomRequestState.invited,
+    createdAt: (firebase.firestore.FieldValue.serverTimestamp() as unknown) as number,
   };
 
   return await firebase
@@ -29,14 +29,14 @@ export const inviteToVideoChat = async (
           videoRoomRequest,
         });
       });
-      return err;
+      throw err;
     });
 };
 
 export const setVideoChatState = async (
   videoChatId: string,
-  state: VideoChatRequestState
-) => {
+  state: VideoRoomRequestState
+): Promise<firebase.functions.HttpsCallableResult> => {
   return await firebase
     .functions()
     .httpsCallable("videoRoom-setVideoChatState")({
@@ -51,18 +51,18 @@ export const setVideoChatState = async (
           state,
         });
       });
-      return err;
+      throw err;
     });
 };
 
 export const acceptVideoChat = async (
   videoChatId: string,
   invitedUserLocation: string
-) => {
+): Promise<firebase.functions.HttpsCallableResult> => {
   return await firebase
     .functions()
     .httpsCallable("videoRoom-acceptVideoRoomRequest")({
-      state: VideoChatRequestState.Accepted,
+      state: VideoRoomRequestState.accepted,
       videoChatId,
       invitedUserLocation,
     })
@@ -74,6 +74,6 @@ export const acceptVideoChat = async (
           invitedUserLocation,
         });
       });
-      return err;
+      throw err;
     });
 };

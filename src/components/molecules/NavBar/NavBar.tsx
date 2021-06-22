@@ -21,6 +21,7 @@ import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -37,7 +38,6 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./NavBar.scss";
 import * as S from "./Navbar.styles";
 import "./playa.scss";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
