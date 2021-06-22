@@ -12,9 +12,9 @@ import {
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
-import { enterVenue, venueInsideUrl, venuePreviewUrl } from "utils/url";
+import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
-import { User } from "types/User";
+import { RecentUserStatusType, User } from "types/User";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
@@ -47,24 +47,21 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   } = useProfileModalControls();
 
   const chosenUserId = selectedUserProfile?.id;
-  const { userLastSeenIn: selectedUserLastSeenInVenueId } = useRecentWorldUser(
-    chosenUserId
-  );
+  const { lastSeenAt } = useRecentWorldUser(chosenUserId);
   const status = useRecentUserStatus(chosenUserId);
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
     selectRecipientChat(chosenUserId);
-    // NOTE: Hide the modal, after the chat is opened;
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  const enterRecentUserVenue = useCallback(() => {
-    if (selectedUserLastSeenInVenueId) {
-      enterVenue(selectedUserLastSeenInVenueId);
-    }
-  }, [selectedUserLastSeenInVenueId]);
+  const renderStatus = useMemo(
+    () =>
+      status === RecentUserStatusType.offline ? status : `is ${status} in `,
+    [status]
+  );
 
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
@@ -97,13 +94,13 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <h2 className="italic">
                   {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
-                {`is ${status} in `}
-                <span
+                {renderStatus}
+                <a
+                  href={lastSeenAt.venueUrl}
                   className="profile-text__recent-venue"
-                  onClick={enterRecentUserVenue}
                 >
-                  {selectedUserLastSeenInVenueId}
-                </span>
+                  {lastSeenAt.venueName}
+                </a>
               </div>
             </div>
             <div className="profile-extras">

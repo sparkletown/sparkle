@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { createUrlSafeName } from "api/admin";
 
 import { User, RecentUserStatusType } from "types/User";
 
@@ -107,11 +108,16 @@ export const useRecentWorldUsers = (): {
   );
 };
 
+type LastSeenAt = {
+  venueName: string;
+  venueUrl: string;
+};
+
 export const useRecentWorldUser = (
   userId?: string
 ): {
   user?: WithId<User>;
-  userLastSeenIn?: string;
+  lastSeenAt: LastSeenAt;
 } => {
   const { recentWorldUsers } = useRecentWorldUsers();
 
@@ -119,9 +125,15 @@ export const useRecentWorldUser = (
     return recentWorldUsers.find((worldUser) => worldUser.id === userId);
   }, [userId, recentWorldUsers]);
 
-  const userLastSeenIn = getUserCurrentLocation(user);
+  const venueName = getUserCurrentLocation(user) ?? "";
+  const venueUrl = createUrlSafeName(venueName);
 
-  return { user, userLastSeenIn };
+  const lastSeenAt: LastSeenAt = {
+    venueName,
+    venueUrl,
+  };
+
+  return { user, lastSeenAt };
 };
 
 export const useRecentUserStatus = (userId?: string): RecentUserStatusType => {
