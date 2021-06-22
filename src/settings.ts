@@ -90,7 +90,7 @@ export const DUST_STORM_TEXT_2 =
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
 // How often to update location for counting
-export const LOC_UPDATE_FREQ_MS = 15 * 60 * 1000; // 15 mins
+export const LOC_UPDATE_FREQ_MS = 120 * 60 * 1000; // 120 mins
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
