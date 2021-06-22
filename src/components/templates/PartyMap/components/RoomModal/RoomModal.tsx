@@ -125,6 +125,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         limit={11}
         activity="in this room"
         attendanceBoost={room.attendanceBoost}
+        disableSeeAll={false}
       />
 
       {room.about && (
