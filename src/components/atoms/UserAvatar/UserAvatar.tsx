@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { User } from "types/User";
+import { User, UsernameVisibility } from "types/User";
 import { useRecentUserStatus } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 
@@ -14,6 +15,7 @@ export interface UserAvatarProps {
   user?: WithId<User>;
   containerClassName?: string;
   imageClassName?: string;
+  showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
   large?: boolean;
@@ -24,10 +26,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
+  showNametag,
   onClick,
   showStatus,
   large,
 }) => {
+  const { recentWorldUsers } = useRecentWorldUsers();
+
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
     : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
@@ -36,22 +41,35 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     ? DEFAULT_PARTY_NAME
     : user?.partyName ?? DEFAULT_PARTY_NAME;
 
-  const containerClasses = classNames("user-avatar", containerClassName, {
-    "user-avatar--clickable": onClick !== undefined,
-    "user-avatar--large": large,
+  const containerClasses = classNames("UserAvatar", containerClassName, {
+    "UserAvatar--clickable": onClick !== undefined,
+    "UserAvatar--large": large,
   });
+
+  const isOnline = useMemo(
+    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
+    [user, recentWorldUsers]
+  );
 
   const status = useRecentUserStatus(user?.id);
 
-  const imageClasses = classNames("user-avatar__image", imageClassName);
+  const nametagClasses = classNames("UserAvatar__nametag", {
+    "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
+  });
+
+  const imageClasses = classNames("UserAvatar__image", imageClassName);
 
   const statusIndicatorClasses = classNames("user-avatar__status-indicator", {
     [`user-avatar__status-indicator--${status}`]: status,
     "user-avatar__status-indicator--large": large,
+    "UserAvatar__status-indicator--online": isOnline,
+    [`UserAvatar__status-indicator--${status}`]: isOnline && status,
+    "UserAvatar__status-indicator--large": large,
   });
 
   return (
     <div className={containerClasses}>
+      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}

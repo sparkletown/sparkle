@@ -1,10 +1,19 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
-import { Room, RoomTypes } from "types/rooms";
+import { COVERT_ROOM_TYPES } from "settings";
+
+import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
+
+import {
+  isEventLiveOrFuture,
+  eventsByStartUtcSecondsSorter,
+} from "utils/event";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Map, RoomModal } from "./components";
 
@@ -20,12 +29,40 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
+
+  const selfAndChildVenueIds = useMemo(
+    () =>
+      relatedVenues
+        .filter(
+          (relatedVenue) =>
+            relatedVenue.parentId === venue.id || relatedVenue.id === venue.id
+        )
+        .map((childVenue) => childVenue.id),
+    [relatedVenues, venue]
+  );
+
+  const { events: selfAndChildVenueEvents } = useVenueEvents({
+    venueIds: selfAndChildVenueIds,
+  });
+
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
 
   const hasSelectedRoom = !!selectedRoom;
 
+  const selectedRoomEvents = useMemo(() => {
+    if (!selfAndChildVenueEvents || !selectedRoom) return [];
+
+    return selfAndChildVenueEvents
+      .filter(
+        (event) =>
+          event.room === selectedRoom.title && isEventLiveOrFuture(event)
+      )
+      .sort(eventsByStartUtcSecondsSorter);
+  }, [selfAndChildVenueEvents, selectedRoom]);
+
   const selectRoom = useCallback((room: Room) => {
-    if (room.type === RoomTypes.unclickable) return;
+    if (room.type && COVERT_ROOM_TYPES.includes(room.type)) return;
 
     setSelectedRoom(room);
   }, []);
@@ -50,6 +87,7 @@ export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
       <RoomModal
         room={selectedRoom}
         venue={venue}
+        venueEvents={selectedRoomEvents}
         show={hasSelectedRoom}
         onHide={unselectRoom}
       />
