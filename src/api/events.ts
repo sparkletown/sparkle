@@ -24,10 +24,25 @@ export const fetchVenueEvents = async (
 
 export const fetchAllVenueEvents = async (
   venueIdOrIds: string | string[]
-): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
-  Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) =>
-    result.flat()
-  );
+): Promise<WithVenueId<WithId<VenueEvent>>[]> => {
+  const allEvents = await firebase
+    .firestore()
+    .collectionGroup("events")
+    .withConverter(venueEventWithIdConverter)
+    .get()
+    .then(
+      (docSnapshot) =>
+        docSnapshot.docs
+          .map((venueEvent) => venueEvent.data())
+          .filter((venueEvent) => venueEvent.venueId) as WithVenueId<
+          WithId<VenueEvent>
+        >[]
+    );
+
+  const requiredVenueIds = asArray(venueIdOrIds);
+
+  return allEvents.filter((event) => requiredVenueIds.includes(event.venueId));
+};
 
 /**
  * Convert VenueEvent objects between the app/firestore formats (@debt:, including validation).

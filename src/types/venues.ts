@@ -319,6 +319,7 @@ export interface VenueEvent {
   collective_price: number;
   host: string;
   room?: string;
+  venueId?: string;
   id?: string;
 }
 
