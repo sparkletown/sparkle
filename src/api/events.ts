@@ -4,12 +4,13 @@ import { VenueEvent } from "types/venues";
 
 import { withId, WithId, WithVenueId } from "utils/id";
 
-export const fetchAllVenueEvents = async (): Promise<
-  WithVenueId<WithId<VenueEvent>>[]
-> => {
+export const fetchAllVenueEvents = async (
+  sovereignVenueId: string
+): Promise<WithVenueId<WithId<VenueEvent>>[]> => {
   const eventsSnapshot = await firebase
     .firestore()
     .collectionGroup("events")
+    .where("sovereignVenueId", "==", sovereignVenueId)
     .withConverter(venueEventWithIdConverter)
     .get();
 

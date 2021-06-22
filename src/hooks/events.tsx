@@ -10,6 +10,8 @@ import { WithId, WithVenueId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isTruthy } from "utils/types";
 
+import { useSovereignVenueId } from "./useSovereignVenueId";
+
 const emptyArray: never[] = [];
 
 export interface VenueEventsProps {
@@ -21,13 +23,12 @@ export interface VenueEventsData {
   isError: boolean;
 
   events: WithVenueId<WithId<VenueEvent>>[];
-  eventsError?: Error;
 }
 
 export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
   venueIds,
 }) => {
-  const { events, isError, isLoading, error } = useEventsContext();
+  const { events, isError, isLoading } = useEventsContext();
 
   const requestedEvents = useMemo(
     () => events.filter((event) => venueIds.includes(event.venueId)),
@@ -38,8 +39,6 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     events: requestedEvents,
     isError: isError,
     isEventsLoading: isLoading,
-
-    eventsError: error,
   };
 };
 
@@ -47,31 +46,57 @@ export interface EventsContextState {
   events: WithVenueId<WithId<VenueEvent>>[];
   isLoading: boolean;
   isError: boolean;
-  error?: Error;
+  venueEventsError?: Error;
+  sovereignVenueIdError?: string;
 }
 
 const EventsContext = createContext<EventsContextState | undefined>(undefined);
 
-export const EventsProvider: React.FC = ({ children }) => {
+export interface EventsProviderProps {
+  venueId?: string;
+}
+
+export const EventsProvider: React.FC<EventsProviderProps> = ({
+  children,
+  venueId,
+}) => {
+  const {
+    sovereignVenueId,
+    isSovereignVenueIdLoading,
+
+    errorMsg: sovereignVenueIdError,
+  } = useSovereignVenueId({
+    venueId,
+  });
+
   const {
     loading: isVenueEventsLoading,
     error: venueEventsError,
     value: events = emptyArray,
-  } = useAsync(
-    async () =>
-      tracePromise("EventsProvider::fetchAllVenueEvents", fetchAllVenueEvents),
-    []
-  );
+  } = useAsync(async () => {
+    if (!sovereignVenueId) return;
+
+    return tracePromise("EventsProvider::fetchAllVenueEvents", () =>
+      fetchAllVenueEvents(sovereignVenueId)
+    );
+  }, [sovereignVenueId]);
 
   const eventsState: EventsContextState = useMemo(
     () => ({
-      isLoading: isVenueEventsLoading,
-      isError: isTruthy(venueEventsError),
-      error: venueEventsError,
+      isLoading: isVenueEventsLoading || isSovereignVenueIdLoading,
+      isError: isTruthy(venueEventsError || sovereignVenueIdError),
+      venueEventsError,
+      sovereignVenueIdError,
 
       events,
     }),
-    [isVenueEventsLoading, venueEventsError, events]
+    [
+      isVenueEventsLoading,
+      venueEventsError,
+      events,
+      isSovereignVenueIdLoading,
+      sovereignVenueIdError,
+    ]
   );
 
   return (
