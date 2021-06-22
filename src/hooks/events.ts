@@ -1,16 +1,14 @@
 import { useAsync } from "react-use";
 
-//import { fetchAllVenueEvents } from "api/events";
-
 import { ReactHook } from "types/utility";
 import { VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
 
 //import { tracePromise } from "utils/performance";
-import { useFirebase } from "react-redux-firebase";
+//import { fetchAllVenueEvents } from "api/events";
 
-import { SCHEDULE_LOAD_FROM_GS } from "settings";
+import { useSelector } from "hooks/useSelector";
 
 const emptyArray: never[] = [];
 
@@ -29,20 +27,19 @@ export interface VenueEventsData {
 export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
   venueIds,
 }) => {
-  const firebase = useFirebase();
+  const cache = useSelector((state) => state.cache);
 
   const {
     loading: isEventsLoading,
     error: eventsError,
     value: events = emptyArray,
   } = useAsync(async () => {
-    //load from gs
-    const storage = firebase.storage();
-    const url = await storage
-      .ref()
-      .child(SCHEDULE_LOAD_FROM_GS)
-      .getDownloadURL();
-    return fetch(url).then((res) => res.json());
+    if (!venueIds) return emptyArray;
+
+    //load from cache(gs)
+    return cache.events.then((events) => {
+      return events.filter((e) => venueIds.includes(e.venueId));
+    });
 
     //load from firebase - depends on venueIds
     /*
@@ -57,7 +54,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
       }
     );
     */
-  });
+  }, [cache, venueIds]);
   return {
     isEventsLoading,
     isError: eventsError !== undefined,
