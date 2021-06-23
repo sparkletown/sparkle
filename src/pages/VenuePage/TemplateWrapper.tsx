@@ -10,6 +10,7 @@ import { WithId } from "utils/id";
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { PostersProvider } from "hooks/posters";
+import { EventsProvider } from "hooks/events";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -149,21 +150,23 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <RelatedVenuesProvider venueId={venue.id}>
-      <ReactionsProvider venueId={venue.id}>
-        <WithNavigationBar
-          fullscreen={fullscreen}
-          hasBackButton={hasBackButton}
-        >
-          <AnnouncementMessage message={venue.bannerMessage} />
-          {POSTER_PROVIDER_TEMPLATES.includes(venue.template) ? (
-            <PostersProvider venueId={venue.id}>{template}</PostersProvider>
-          ) : (
-            template
-          )}
-          <ChatSidebar venue={venue} />
-          <UserProfileModal venue={venue} />
-        </WithNavigationBar>
-      </ReactionsProvider>
+      <EventsProvider>
+        <ReactionsProvider venueId={venue.id}>
+          <WithNavigationBar
+            fullscreen={fullscreen}
+            hasBackButton={hasBackButton}
+          >
+            <AnnouncementMessage message={venue.bannerMessage} />
+            {POSTER_PROVIDER_TEMPLATES.includes(venue.template) ? (
+              <PostersProvider venueId={venue.id}>{template}</PostersProvider>
+            ) : (
+              template
+            )}
+            <ChatSidebar venue={venue} />
+            <UserProfileModal venue={venue} />
+          </WithNavigationBar>
+        </ReactionsProvider>
+      </EventsProvider>
     </RelatedVenuesProvider>
   );
 };
