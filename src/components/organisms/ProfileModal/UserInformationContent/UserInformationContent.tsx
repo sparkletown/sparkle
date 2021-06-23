@@ -3,7 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
 import { IS_BURN } from "secrets";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_QUESTION_ANSWER } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { QuestionType } from "types/Question";
 import { ProfileLink, User } from "types/User";
@@ -112,6 +112,22 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
     );
   }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
 
+  // @debt We need to rework the way we store answers to profile questions
+  const questions = useMemo(
+    () =>
+      profileQuestions
+        // @ts-ignore question.name is a correct index for type User
+        ?.filter((question: QuestionType) => user?.[question.name])
+        .map((question) => (
+          <div key={question.name} className="question-section">
+            <div className="question">{question.text}</div>
+            {/* @ts-ignore question.name is a correct index for type User */}
+            <div>{user?.[question.name]}</div>
+          </div>
+        )),
+    [profileQuestions, user]
+  );
+
   if (!user) return null;
 
   return (
@@ -145,17 +161,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <img src={editIcon} alt="edit" />
         </Button>
       </div>
-      {profileQuestions?.map((question: QuestionType) => (
-        <div key={question.name} className="question-section">
-          <div className="question">{question.text}</div>
-          <div>
-            {
-              // @ts-ignore question.name is a correct index for type User
-              profile?.[question.name] || DEFAULT_PROFILE_QUESTION_ANSWER
-            }
-          </div>
-        </div>
-      ))}
+      {questions}
 
       {profileLinks}
 
