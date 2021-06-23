@@ -18,7 +18,6 @@ export const cacheReducer = (
   state = initialState,
   action: CacheActions
 ): CacheState => {
-  console.log("cacheReduer", action.type);
   switch (action.type) {
     case CacheActionTypes.RELOAD_USER_CACHE:
       console.log("reloading user cache");
@@ -39,14 +38,6 @@ export const cacheReducer = (
       return state;
 
     case CacheActionTypes.UPDATE_USER_CACHE:
-      /*
-      const user = state.usersRecord[action.payload.id];
-      Object.assign(user, action.payload.user);
-
-      const idx = state.usersArray.find(u=>u.id == action.payload.id);
-      if(idx) state.usersArray[idx] = action.payload.user;
-      */
-      //console.log("action.payload", action.payload.id);
       return {
         ...state,
         usersRecord: {
