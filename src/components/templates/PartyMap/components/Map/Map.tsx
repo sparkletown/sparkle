@@ -26,6 +26,8 @@ import { useMapGrid } from "./hooks/useMapGrid";
 import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 
+import { useUserInvalidateCache } from "hooks/useUser";
+
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -84,6 +86,8 @@ export const Map: React.FC<MapProps> = ({
     };
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
+  const { invalidateUserCache } = useUserInvalidateCache(userUid);
+
   const takeSeat = useCallback(
     (row: number | null, column: number | null) => {
       if (!userUid) return;
@@ -94,8 +98,9 @@ export const Map: React.FC<MapProps> = ({
       })(row, column);
 
       setLocationData({ userId: userUid, locationName: venueName });
+      invalidateUserCache();
     },
-    [userUid, venueId, venueName]
+    [userUid, venueId, venueName, invalidateUserCache]
   );
 
   const currentPosition = profileData?.[venue.id];
