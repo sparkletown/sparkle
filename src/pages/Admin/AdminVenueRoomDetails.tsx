@@ -56,13 +56,13 @@ export const AdminVenueRoomDetails = ({
   const { user } = useUser();
   const history = useHistory();
 
-  const updateRoom = async (newState: boolean) => {
+  const updateRoom = async (newState: boolean, field: string) => {
     if (!user) return;
 
     try {
       const roomValues: RoomInput = {
         ...room,
-        isEnabled: newState,
+        [field]: newState,
       };
       await upsertRoom(roomValues, venue.id, user, index);
       history.push(`/admin/${venue.id}`);
@@ -122,12 +122,27 @@ export const AdminVenueRoomDetails = ({
                       name={"toggle-" + index}
                       checked={room.isEnabled}
                       onClick={() => {
-                        updateRoom(!room.isEnabled);
+                        updateRoom(!room.isEnabled, "isEnabled");
                       }}
                     />
                     <span className="slider round"></span>
                   </label>
                   <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
+                </div>
+                <div className="toggle-room">
+                  <label id={"toggle2-" + index} className="switch">
+                    <input
+                      type="checkbox"
+                      id={"toggle2-" + index}
+                      name={"toggle2-" + index}
+                      checked={room.isLabeled}
+                      onClick={() => {
+                        updateRoom(!room.isLabeled, "isLabeled");
+                      }}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                  <div>Label: {room.isLabeled ? "On" : "Off"}</div>
                 </div>
               </div>
             </div>
