@@ -1,12 +1,15 @@
 import React from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
+import { POSTER_PROVIDER_TEMPLATES } from "settings";
+
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { PostersProvider } from "hooks/posters";
 import { EventsProvider } from "hooks/events";
 
 import { FriendShipPage } from "pages/FriendShipPage";
@@ -154,7 +157,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
             hasBackButton={hasBackButton}
           >
             <AnnouncementMessage message={venue.bannerMessage} />
-            {template}
+            {POSTER_PROVIDER_TEMPLATES.includes(venue.template) ? (
+              <PostersProvider venueId={venue.id}>{template}</PostersProvider>
+            ) : (
+              template
+            )}
             <ChatSidebar venue={venue} />
             <UserProfileModal venue={venue} />
           </WithNavigationBar>
