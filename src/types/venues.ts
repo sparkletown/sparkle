@@ -32,6 +32,7 @@ export enum VenueTemplate {
   posterpage = "posterpage",
   preplaya = "preplaya",
   screeningroom = "screeningroom",
+  talkshowstudio = "talkshowstudio",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -48,6 +49,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
+  | VenueTemplate.talkshowstudio
   | VenueTemplate.themecamp
 >;
 
@@ -57,7 +59,8 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterPageVenue;
+  | PosterPageVenue
+  | FullTalkShowVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -235,6 +238,11 @@ export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
+}
+
+export interface FullTalkShowVenue extends BaseVenue {
+  template: VenueTemplate.talkshowstudio;
+  requestToJoinStage?: boolean;
 }
 
 export interface Question {
