@@ -16,7 +16,7 @@ import { useUser } from "hooks/useUser";
 
 import { updateUserProfile } from "./helpers";
 
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./Account.scss";
 

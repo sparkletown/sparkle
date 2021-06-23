@@ -322,7 +322,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar user={userWithId} showStatus large />
+                  <UserAvatar user={userWithId} showStatus medium />
                 </OverlayTrigger>
               </div>
             )}
