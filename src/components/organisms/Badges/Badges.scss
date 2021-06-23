@@ -1,5 +1,8 @@
 @import "scss/constants.scss";
 
+$image--size: 30px;
+$image--margin: 3px;
+
 .Badges {
   &__container {
     padding: $spacing--lg 0;
@@ -18,32 +21,33 @@
   }
 
   &__item-image {
-    width: 30px;
-    height: 30px;
+    width: $image--size;
+    height: $image--size;
     border-radius: $border-radius--max;
-    margin: 3px 3px 0 0;
+    margin: $image--margin $image--margin 0 0;
   }
-}
 
-.visits {
-  display: flex;
-  background-color: $dark;
-  border-radius: 22px;
-  padding: 15px;
-  justify-content: space-evenly;
+  &__visits {
+    display: flex;
+    background-color: $dark;
+    border-radius: $border-radius--xl;
+    padding: $spacing--lg;
+    justify-content: space-around;
+  }
 
-  &__item {
+  &__visit {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  &__item-value {
-    font-weight: 900;
-    font-size: $spacing--lg;
-  }
 
-  &__item-label {
-    color: $concrete;
-    font-size: $font-size--md;
+    &-value {
+      font-weight: 900;
+      font-size: $spacing--lg;
+    }
+
+    &-label {
+      color: $concrete;
+      font-size: $font-size--md;
+    }
   }
 }

@@ -147,21 +147,19 @@ export const Badges: React.FC<{
 
   return (
     <div className="Badges">
-      <div className="Badges__visits visits">
-        <div className="visits__item">
-          <span className="visits__item-value">
-            {visitHours > 1 ? `${visitHours}` : "< 1"} hrs
+      <div className="Badges__visits">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
+            {visitHours > 1 ? visitHours : "< 1"} hrs
           </span>
-          <span className="visits__item-label">Time spent in Sparkle</span>
+          <span className="Badges__visit-label">Time spent in Sparkle</span>
         </div>
 
-        <div className="visits__separator" />
-
-        <div className="visits__item">
-          <span className="visits__item-value">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
             {relevantVisits?.length ?? 0}
           </span>
-          <span className="visits__item-label">Venues visited</span>
+          <span className="Badges__visit-label">Venues visited</span>
         </div>
       </div>
 

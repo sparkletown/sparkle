@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
@@ -80,13 +80,37 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
     }
   }, [user]);
 
-  const editProfileLink = useCallback(
-    (profileLink) => () => {
+  const profileLinks = useMemo(() => {
+    const makeEditProfileLink = (profileLink?: ProfileLink) => () => {
       setProfileLinkToEdit(profileLink);
       setUserProfileMode(UserProfileMode.EDIT_PROFILE_LINK);
-    },
-    [setProfileLinkToEdit, setUserProfileMode]
-  );
+    };
+
+    return (
+      <>
+        <ul className="UserInformationContent__profile-links">
+          {user?.profileLinks?.map((profileLink) => (
+            <li key={profileLink.title}>
+              {profileLink.title}{" "}
+              <button
+                className="button--a"
+                onClick={makeEditProfileLink(profileLink)}
+              >
+                Edit
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        <button
+          className="UserInformationContent__add-profile-link button--a"
+          onClick={makeEditProfileLink(undefined)}
+        >
+          Add a profile link
+        </button>
+      </>
+    );
+  }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
 
   if (!user) return null;
 
@@ -121,40 +145,19 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <img src={editIcon} alt="edit" />
         </Button>
       </div>
-      {profileQuestions &&
-        profileQuestions.map((question: QuestionType) => (
-          <div key={question.name} className="question-section">
-            <div className="question">{question.text}</div>
-            <div>
-              {
-                // @ts-ignore question.name is a correct index for type User
-                (profile && profile[question.name]) ||
-                  DEFAULT_PROFILE_QUESTION_ANSWER
-              }
-            </div>
+      {profileQuestions?.map((question: QuestionType) => (
+        <div key={question.name} className="question-section">
+          <div className="question">{question.text}</div>
+          <div>
+            {
+              // @ts-ignore question.name is a correct index for type User
+              profile?.[question.name] || DEFAULT_PROFILE_QUESTION_ANSWER
+            }
           </div>
-        ))}
+        </div>
+      ))}
 
-      <ul className="UserInformationContent__profile-links">
-        {user?.profileLinks?.map((profileLink) => (
-          <li key={profileLink.title}>
-            {profileLink.title}{" "}
-            <button
-              className="button--a"
-              onClick={editProfileLink(profileLink)}
-            >
-              Edit
-            </button>
-          </li>
-        ))}
-      </ul>
-
-      <button
-        className="UserInformationContent__add-profile-link button--a"
-        onClick={editProfileLink(undefined)}
-      >
-        Add a profile link
-      </button>
+      {profileLinks}
 
       {IS_BURN && (
         <>

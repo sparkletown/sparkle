@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
@@ -45,6 +45,11 @@ export const EditPasswordForm: React.FunctionComponent<EditPasswordFormProps> = 
   };
 
   const newPassword = watch("newPassword");
+
+  const cancelEdition = useCallback(
+    () => setUserProfileMode(UserProfileMode.DEFAULT),
+    [setUserProfileMode]
+  );
 
   return (
     <div className="EditPasswordForm">
@@ -113,10 +118,7 @@ export const EditPasswordForm: React.FunctionComponent<EditPasswordFormProps> = 
           value="Save changes"
         />
       </form>
-      <button
-        className="button--a"
-        onClick={() => setUserProfileMode(UserProfileMode.DEFAULT)}
-      >
+      <button className="button--a" onClick={cancelEdition}>
         Cancel
       </button>
     </div>

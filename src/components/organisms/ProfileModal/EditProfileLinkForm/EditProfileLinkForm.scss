@@ -1,6 +1,8 @@
 @import "scss/constants";
 
 $spacing--between: 10px;
+$inputs--font-size: 0.8rem;
+$buttons--font-size: 0.9rem;
 
 .EditProfileLinkForm {
   display: flex;
@@ -22,13 +24,6 @@ $spacing--between: 10px;
     margin-bottom: 0;
   }
 
-  &__input-error {
-    color: $input--invalid;
-    font-size: 0.8rem;
-    margin-top: -$spacing--sm;
-    margin-bottom: $spacing--sm;
-  }
-
   &__buttons {
     display: flex;
     flex-wrap: wrap;
@@ -43,7 +38,7 @@ $spacing--between: 10px;
   & .EditProfileLinkForm__button--cancel {
     background-color: $secondary;
     margin-right: $spacing--between;
-    font-size: 0.9rem;
+    font-size: $buttons--font-size;
 
     &:hover {
       background-color: $secondary--light;
@@ -53,7 +48,7 @@ $spacing--between: 10px;
   // @debt had to increase specificity because Button styles go later
   & .EditProfileLinkForm__button--remove {
     background-color: $secondary;
-    font-size: 0.9rem;
+    font-size: $buttons--font-size;
 
     &:hover {
       background-color: $secondary--light;
@@ -63,7 +58,7 @@ $spacing--between: 10px;
   // @debt had to increase specificity because Button styles go later
   & .EditProfileLinkForm__button--save {
     background-color: $primary--live;
-    font-size: 0.9rem;
+    font-size: $buttons--font-size;
 
     &:hover {
       background-color: $primary--live-hover;

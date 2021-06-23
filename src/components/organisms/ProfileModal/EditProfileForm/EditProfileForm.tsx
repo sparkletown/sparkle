@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
 import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
@@ -23,6 +24,16 @@ import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 import { UserProfileMode } from "../ProfilePopoverContent";
 
 import "./EditProfileForm.scss";
+
+const validationSchema = Yup.object().shape<Pick<ProfileFormData, "partyName">>(
+  {
+    partyName: Yup.string().required("Display name is required").max(
+      DISPLAY_NAME_MAX_CHAR_COUNT,
+      `Display name must be ${DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+  less`
+    ),
+  }
+);
 
 export interface EditProfileFormProps {
   setUserProfileMode: (value: UserProfileMode) => void;
@@ -63,6 +74,7 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
     triggerValidation,
     watch,
   } = useForm<ProfileFormData & QuestionsFormData>({
+    validationSchema,
     mode: "onChange",
     defaultValues,
   });
@@ -77,26 +89,16 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
   return (
     <div className="EditProfileForm">
       <h1 className="EditProfileForm__title">Edit profile</h1>
-      <div className="form">
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
         <InputField
           containerClassName="EditProfileForm__input-container-name"
           inputClassName="EditProfileForm__input-name"
           name="partyName"
           placeholder="Your display name"
-          ref={register({
-            required: true,
-            maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
-          })}
+          error={errors.partyName}
+          ref={register()}
         />
-        {errors.partyName && errors.partyName.type === "required" && (
-          <span className="input-error">Display name is required</span>
-        )}
-        {errors.partyName && errors.partyName.type === "maxLength" && (
-          <span className="input-error">
-            Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
-            less
-          </span>
-        )}
+
         {user && venueId && (
           <ProfilePictureInput
             venueId={venueId}
@@ -122,14 +124,13 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
           ))}
 
         <Button
-          onClick={handleSubmit(onSubmit)}
           type="submit"
           disabled={!formState.isValid}
           customClass="EditProfileForm__submit-button"
         >
           Save Changes
         </Button>
-      </div>
+      </form>
       <div className="EditProfileForm__cancel-container">
         <button
           className="button--a"

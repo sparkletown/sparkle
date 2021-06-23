@@ -33,18 +33,15 @@ export const EditProfileLinkForm: React.FC<EditProfileLinkFormProps> = ({
   const saveButtonText = edit ? "Save changes" : "Add link";
 
   const validateUniqueTitle = useCallback(
-    (title) => {
-      const allowedCountOfSameTitles = edit ? 1 : 0;
-      const sameTitleCount =
-        user?.profileLinks?.filter(
-          (userProfileLink) =>
-            userProfileLink.title === profileLink?.title ||
-            userProfileLink.title === title
-        ).length ?? 0;
+    (checkTitle: string) => {
+      if (checkTitle === profileLink?.title) return true;
 
-      return sameTitleCount === allowedCountOfSameTitles;
+      const isDuplicateTitle =
+        user?.profileLinks?.find((link) => link.title === checkTitle) ?? false;
+
+      return !isDuplicateTitle;
     },
-    [profileLink, user?.profileLinks, edit]
+    [profileLink, user?.profileLinks]
   );
 
   const validationSchema = useMemo(
@@ -70,13 +67,13 @@ export const EditProfileLinkForm: React.FC<EditProfileLinkFormProps> = ({
     async (profileLinkFormData: ProfileLink) => {
       if (!isDefined(user)) return;
 
-      const newProfileLinks = user.profileLinks ?? [];
-      const profileLinkToEdit = newProfileLinks.find(
-        (userProfileLink) => userProfileLink.title === profileLink?.title
+      const newProfileLinks = [...(user.profileLinks ?? [])];
+      const profileLinkToEdit = newProfileLinks.findIndex(
+        (link) => link.title === profileLink?.title
       );
 
-      if (profileLinkToEdit) {
-        Object.assign(profileLinkToEdit, profileLinkFormData);
+      if (profileLinkToEdit > -1) {
+        newProfileLinks[profileLinkToEdit] = profileLinkFormData;
       } else {
         newProfileLinks.push(profileLinkFormData);
       }
