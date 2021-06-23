@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import { Button, Modal } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
-import { inviteToVideoChat } from "api/videoRoom";
+import { inviteToVideoRoom } from "api/videoRoom";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -58,15 +58,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  const startVideoChat = useCallback(async () => {
+  const startVideoRoom = useCallback(async () => {
     if (!user?.uid || !chosenUserId || !venue.id) return;
 
-    const response = await inviteToVideoChat(user.uid, venue.id, chosenUserId);
+    const response = await inviteToVideoRoom(user.uid, venue.id, chosenUserId);
 
-    const roomId = response.data;
+    const videoRoomId = response.data;
 
-    if (roomId) {
-      history.push(`/pr/${roomId}`);
+    if (videoRoomId) {
+      history.push(`/video-room/${videoRoomId}`);
     }
   }, [chosenUserId, history, user?.uid, venue.id]);
 
@@ -143,7 +143,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           )}
           {chosenUserId !== user.uid && (
             <>
-              <Button onClick={startVideoChat}>Start a Video Chat</Button>
+              <Button onClick={startVideoRoom}>Start a Video Chat</Button>
               <Button onClick={openChosenUserChat}>Send message</Button>
             </>
           )}

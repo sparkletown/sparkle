@@ -7,9 +7,9 @@ export enum VideoRoomRequestState {
 
 export interface VideoRoomRequest {
   hostUserId: string;
-  hostUserLocation: string;
+  hostUserLocation?: string;
   invitedUserId: string;
-  invitedUserLocation: string;
+  invitedUserLocation?: string;
   state: VideoRoomRequestState;
   createdAt: number;
 }

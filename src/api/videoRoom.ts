@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 
 import { VideoRoomRequest, VideoRoomRequestState } from "types/videoRoom";
 
-export const inviteToVideoChat = async (
+export const inviteToVideoRoom = async (
   hostUserId: string,
   hostUserLocation: string,
   invitedUserId: string
@@ -12,20 +12,19 @@ export const inviteToVideoChat = async (
     hostUserId: hostUserId,
     hostUserLocation: hostUserLocation,
     invitedUserId: invitedUserId,
-    invitedUserLocation: "",
     state: VideoRoomRequestState.invited,
     createdAt: (firebase.firestore.FieldValue.serverTimestamp() as unknown) as number,
   };
 
   return await firebase
     .functions()
-    .httpsCallable("videoRoom-addVideoRoomRequest")({
+    .httpsCallable("videoRoom-inviteToVideoRoom")({
       videoRoomRequest,
     })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
-          location: "api/videoRoom::inviteToVideoChat",
+          location: "api/videoRoom::inviteToVideoRoom",
           videoRoomRequest,
         });
       });
@@ -33,21 +32,21 @@ export const inviteToVideoChat = async (
     });
 };
 
-export const setVideoChatState = async (
-  videoChatId: string,
+export const setVideoRoomState = async (
+  videoRoomId: string,
   state: VideoRoomRequestState
 ): Promise<firebase.functions.HttpsCallableResult> => {
   return await firebase
     .functions()
-    .httpsCallable("videoRoom-setVideoChatState")({
-      videoChatId,
+    .httpsCallable("videoRoom-setVideoRoomState")({
+      videoRoomId,
       state,
     })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
-          location: "api/videoRoom::setVideoChatState",
-          videoChatId,
+          location: "api/videoRoom::setVideoRoomState",
+          videoRoomId,
           state,
         });
       });
@@ -55,22 +54,22 @@ export const setVideoChatState = async (
     });
 };
 
-export const acceptVideoChat = async (
-  videoChatId: string,
+export const acceptVideoRoomInvite = async (
+  videoRoomId: string,
   invitedUserLocation: string
 ): Promise<firebase.functions.HttpsCallableResult> => {
   return await firebase
     .functions()
     .httpsCallable("videoRoom-acceptVideoRoomRequest")({
       state: VideoRoomRequestState.accepted,
-      videoChatId,
+      videoRoomId,
       invitedUserLocation,
     })
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
-          location: "api/videoRoom::acceptVideoChat",
-          videoChatId,
+          location: "api/videoRoom::acceptVideoRoom",
+          videoRoomId,
           invitedUserLocation,
         });
       });

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useParams } from "react-router";
 
-import { setVideoChatState } from "api/videoRoom";
+import { setVideoRoomState } from "api/videoRoom";
 import { sendPrivateMessage } from "api/chat";
 
 import { useCurrentVideoRoom } from "hooks/useCurrentVideoRoom";
@@ -55,7 +55,7 @@ export const VenuePrivateRoom: React.FC = () => {
         to: videoRoom.invitedUserId,
       });
       sendPrivateMessage(message);
-      setVideoChatState(roomId, VideoRoomRequestState.expired);
+      setVideoRoomState(roomId, VideoRoomRequestState.expired);
     }
     enterVenue(venueId);
   }, [roomId, venueId, videoRoom]);

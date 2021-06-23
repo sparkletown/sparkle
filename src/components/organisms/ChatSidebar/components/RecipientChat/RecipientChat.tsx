@@ -3,7 +3,7 @@ import { useHistory } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft, faVideo } from "@fortawesome/free-solid-svg-icons";
 
-import { inviteToVideoChat } from "api/videoRoom";
+import { inviteToVideoRoom } from "api/videoRoom";
 
 import { AnyVenue } from "types/venues";
 
@@ -52,15 +52,15 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     }
   }, [messagesToDisplay, recipientId, markMessageRead]);
 
-  const startVideoChat = useCallback(async () => {
+  const startVideoRoom = useCallback(async () => {
     if (!user?.uid || !recipientId || !venue.id) return;
 
-    const response = await inviteToVideoChat(user.uid, venue.id, recipientId);
+    const response = await inviteToVideoRoom(user.uid, venue.id, recipientId);
 
-    const roomId = response.data;
+    const videoRoomId = response.data;
 
-    if (roomId) {
-      history.push(`/pr/${roomId}`);
+    if (videoRoomId) {
+      history.push(`/video-room/${videoRoomId}`);
     }
   }, [history, recipientId, user, venue.id]);
 
@@ -82,7 +82,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           icon={faVideo}
           className="recipient-chat__video-icon"
           size="sm"
-          onClick={startVideoChat}
+          onClick={startVideoRoom}
         />
       </div>
       <Chatbox

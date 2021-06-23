@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router";
 
-import { acceptVideoChat, setVideoChatState } from "api/videoRoom";
+import { acceptVideoRoomInvite, setVideoRoomState } from "api/videoRoom";
 
 import { useConnectVideoRooms } from "hooks/useConnectVideoRooms";
 import { useVenueId } from "hooks/useVenueId";
@@ -39,14 +39,14 @@ export const VideoRoomRequestModal: React.FC = () => {
   const acceptVideoRoomRequest = useCallback(() => {
     if (!currentVideoRoomRequest || !venueId) return;
 
-    acceptVideoChat(currentVideoRoomRequest.id, venueId);
+    acceptVideoRoomInvite(currentVideoRoomRequest.id, venueId);
     history.push(`/pr/${currentVideoRoomRequest.id}`);
   }, [currentVideoRoomRequest, history, venueId]);
 
   const declineVideoRoomRequest = useCallback(() => {
     if (!currentVideoRoomRequest) return;
 
-    setVideoChatState(
+    setVideoRoomState(
       currentVideoRoomRequest.id,
       VideoRoomRequestState.declined
     );
