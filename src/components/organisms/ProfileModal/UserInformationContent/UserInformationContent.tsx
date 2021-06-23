@@ -142,6 +142,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
             {user?.partyName ?? DEFAULT_PARTY_NAME}
           </h3>
           <div
+            // @debt the reason of the nullish coalescing here is that email property of AuthTypes.UserInfo interface accepts null
             title={email ?? ""}
             className="UserInformationContent__ellipsis-text"
           >
