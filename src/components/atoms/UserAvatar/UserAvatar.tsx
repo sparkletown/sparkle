@@ -1,10 +1,10 @@
-import React, { useMemo } from "react";
+import React from "react";
 import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
-import { useRecentWorldUsers } from "hooks/users";
+// import { useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 
@@ -30,7 +30,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   showStatus,
   large,
 }) => {
-  const { recentWorldUsers } = useRecentWorldUsers();
+  // const { recentWorldUsers } = useRecentWorldUsers();
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -45,10 +45,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "UserAvatar--large": large,
   });
 
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
+  // const isOnline = useMemo(
+  //   () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
+  //   [user, recentWorldUsers]
+  // );
+
+  const isOnline = false;
 
   const status = user?.status;
 

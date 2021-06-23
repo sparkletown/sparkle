@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 
@@ -9,17 +9,23 @@ import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
 import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
 
+import { PosterBookmark } from "components/molecules/PosterBookmark";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";
 
+import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
+
 export interface PosterPreviewProps {
   posterVenue: WithId<PosterPageVenue>;
+  canBeBookmarked?: boolean;
 }
 
 export const PosterPreview: React.FC<PosterPreviewProps> = ({
   posterVenue,
+  canBeBookmarked = false,
 }) => {
   const {
     title,
@@ -29,7 +35,9 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     posterId,
     moreInfoUrl,
     moreInfoUrls,
+    moreInfoUrlTitle = POSTERPAGE_MORE_INFO_URL_TITLE,
     contactEmail,
+    thumbnailUrl,
   } = posterVenue.poster ?? {};
 
   const venueId = posterVenue.id;
@@ -38,10 +46,25 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
     "PosterPreview--live": posterVenue.isLive,
   });
 
+  const posterBookmarkClassname = "PosterPreview__bookmark";
+
   const { push: openUrlUsingRouter } = useHistory();
 
   const handleEnterVenue = useCallback(
-    () => enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter }),
+    (e) => {
+      if (
+        e.target.closest([
+          `.${posterBookmarkClassname}`,
+          ".PosterPreview__posterId",
+          ".PosterPreview__info",
+          ".PosterPreview__moreInfoUrl",
+          ".PosterPreview__avatar",
+        ])
+      )
+        return;
+
+      enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
+    },
     [venueId, openUrlUsingRouter]
   );
 
@@ -71,44 +94,72 @@ export const PosterPreview: React.FC<PosterPreviewProps> = ({
   }`;
 
   const renderInfoLink = useCallback(
-    (url: string) => (
+    (url: string, text: string) => (
       <a href={url} {...externalUrlAdditionalProps}>
-        {url.replace(/(^\w+:|^)\/\//, "")}
+        {text}
       </a>
     ),
     []
   );
 
+  const moreUrlInfoText = posterId ?? moreInfoUrlTitle;
+
   const renderMoreInfoUrl = useMemo(() => {
     if (!moreInfoUrl) return;
 
-    return renderInfoLink(moreInfoUrl);
-  }, [moreInfoUrl, renderInfoLink]);
+    return renderInfoLink(moreInfoUrl, moreUrlInfoText);
+  }, [moreInfoUrl, renderInfoLink, moreUrlInfoText]);
 
   const renderMoreInfoUrls = useMemo(() => {
     if (!moreInfoUrls) return;
 
     return moreInfoUrls.map((infoUrl) => (
-      <div key={infoUrl}>{renderInfoLink(infoUrl)}</div>
+      <div key={infoUrl}>{renderInfoLink(infoUrl, moreUrlInfoText)}</div>
     ));
-  }, [moreInfoUrls, renderInfoLink]);
+  }, [moreInfoUrls, renderInfoLink, moreUrlInfoText]);
 
   const hasMoreInfo = renderMoreInfoUrl || renderMoreInfoUrls;
+
+  const [renderImg, setRenderImg] = useState(true);
+  const renderDefaultThumbnail = useCallback(() => setRenderImg(false), []);
+
+  const renderThumbnail = useMemo(
+    () => (
+      <img
+        className="PosterPreview__img"
+        src={thumbnailUrl}
+        alt={title}
+        onError={renderDefaultThumbnail}
+      />
+    ),
+    [renderDefaultThumbnail, thumbnailUrl, title]
+  );
+
+  const thumbnailClassNames = classNames("PosterPreview__thumbnail", {
+    "PosterPreview__thumbnail--empty": !renderImg,
+  });
 
   return (
     <div className={posterClassnames} onClick={handleEnterVenue}>
       <div className="PosterPreview__header">
-        {posterId && (
-          <div className="PosterPreview__posterId">
-            {renderMoreInfoUrl || posterId}
-          </div>
-        )}
+        <div className="PosterPreview__info">
+          {canBeBookmarked && (
+            <div className={posterBookmarkClassname}>
+              <PosterBookmark posterVenue={posterVenue} />
+            </div>
+          )}
+          {posterId && (
+            <div className="PosterPreview__posterId">{renderMoreInfoUrl}</div>
+          )}
+        </div>
         {hasUsers && (
           <div className="PosterPreview__visiting">{userCountText}</div>
         )}
       </div>
 
       <p className="PosterPreview__title">{title}</p>
+
+      <div className={thumbnailClassNames}>{renderImg && renderThumbnail}</div>
 
       {!posterId && hasMoreInfo && (
         <p className="PosterPreview__moreInfoUrl">

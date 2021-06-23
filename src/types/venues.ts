@@ -176,6 +176,9 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showZendesk?: boolean;
+  leftLogo?: string;
+  rightLogo?: string;
+  canBeBookmarked?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -316,6 +319,8 @@ export interface VenueEvent {
   collective_price: number;
   host: string;
   room?: string;
+  venueId?: string;
+  sovereignVenueId?: string;
   id?: string;
 }
 

@@ -25,6 +25,7 @@ export type VideoState = {
 
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
+export type SavedPosters = Partial<Record<string, string[]>>;
 
 export interface User {
   partyName?: string;
@@ -35,6 +36,7 @@ export interface User {
   data?: UserExperienceData;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   enteredVenueIds?: string[];
+  savedPosters?: SavedPosters;
 
   // @debt typing - user also has a dynamic set of attributes for the question answers
   //   currently not possible to type them properly

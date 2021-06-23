@@ -5,7 +5,7 @@ import { isEqual } from "lodash";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import {
-  DEFAULT_PARTY_NAME,
+  // DEFAULT_PARTY_NAME,
   DEFAULT_VENUE_LOGO,
   COVERT_ROOM_TYPES,
 } from "settings";
@@ -19,9 +19,9 @@ import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { isTruthy, isDefined } from "utils/types";
 
 import { useVenueEvents } from "hooks/events";
-import { useWorldUsers } from "hooks/users";
+// import { useWorldUsers } from "hooks/users";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+// import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RoomModal } from "components/templates/PartyMap/components";
@@ -112,26 +112,26 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     );
   }, [searchQuery, relatedRooms, clearSearch, relatedVenues]);
 
-  const { worldUsers } = useWorldUsers();
-  const { openUserProfileModal } = useProfileModalControls();
+  // const { worldUsers } = useWorldUsers();
+  // const { openUserProfileModal } = useProfileModalControls();
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  // const foundUsers = useMemo<JSX.Element[]>(() => {
+  //   if (!searchQuery) return [];
 
-    return worldUsers
-      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
-      .map((user) => (
-        <NavSearchResult
-          key={`user-${user.id}`}
-          title={user.partyName ?? DEFAULT_PARTY_NAME}
-          user={user}
-          onClick={() => {
-            openUserProfileModal(user);
-            clearSearch();
-          }}
-        />
-      ));
-  }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
+  //   return worldUsers
+  //     .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
+  //     .map((user) => (
+  //       <NavSearchResult
+  //         key={`user-${user.id}`}
+  //         title={user.partyName ?? DEFAULT_PARTY_NAME}
+  //         user={user}
+  //         onClick={() => {
+  //           openUserProfileModal(user);
+  //           clearSearch();
+  //         }}
+  //       />
+  //     ));
+  // }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
     if (!searchQuery) return [];
@@ -162,8 +162,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       });
   }, [searchQuery, relatedEvents, relatedRooms, relatedVenues, clearSearch]);
 
-  const numberOfSearchResults =
-    foundRooms.length + foundEvents.length + foundUsers.length;
+  const numberOfSearchResults = foundRooms.length + foundEvents.length;
 
   const clearSearchIcon = (
     <img
@@ -198,7 +197,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           <div className="NavSearchBar__search-results">
             {foundRooms}
             {foundEvents}
-            {foundUsers}
+            {/* {foundUsers} */}
           </div>
         )}
       </div>
@@ -207,7 +206,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
-        placeholder="Search for people, rooms, events..."
+        placeholder="Search for rooms and events"
         autoComplete="off"
         iconStart={faSearch}
         iconEnd={isTruthy(searchQuery) ? clearSearchIcon : undefined}
