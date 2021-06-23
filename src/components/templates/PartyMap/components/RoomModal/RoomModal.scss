@@ -66,6 +66,8 @@ $spacing: 20px;
   }
 
   &__events {
+    max-height: 35vh;
+    overflow-y: auto;
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {

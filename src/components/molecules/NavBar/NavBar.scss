@@ -270,3 +270,17 @@ $border-radius: 28px;
     display: none;
   }
 }
+
+.NavBar {
+  &__home-icon {
+    cursor: pointer;
+    font-size: 24px;
+
+    margin-right: $spacing--md;
+
+    &:hover {
+      font-size: 27px;
+      margin-right: $spacing--sm;
+    }
+  }
+}
