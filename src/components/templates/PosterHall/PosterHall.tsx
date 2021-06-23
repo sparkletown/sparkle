@@ -4,10 +4,7 @@ import { GenericVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import {
-  usePostersContext,
-  useLiveEventNonPosterSubVenues,
-} from "hooks/posters";
+import { usePosters, useLiveEventNonPosterSubVenues } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
@@ -36,7 +33,7 @@ export const PosterHall: React.FC<PosterHallProps> = ({ venue }) => {
 
     bookmarkedFilter,
     setBookmarkedFilter,
-  } = usePostersContext();
+  } = usePosters(venue.id);
 
   const shouldShowMorePosters = isPostersLoaded && hasHiddenPosters;
 

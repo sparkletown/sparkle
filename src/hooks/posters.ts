@@ -1,26 +1,13 @@
-import React, {
-  useState,
-  useMemo,
-  useCallback,
-  useContext,
-  createContext,
-  useEffect,
-} from "react";
-
-import {
-  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
-  POSTERHALL_SUBVENUE_STATUS_MS,
-} from "settings";
-
-import { VenueTemplate, PosterPageVenue, VenueEvent } from "types/venues";
-
-import { isEventLive } from "utils/event";
-import { WithVenueId, WithId } from "utils/id";
-import { tokeniseStringWithQuotesBySpaces } from "utils/text";
-import { posterVenuesSelector } from "utils/selectors";
+import { useState, useMemo, useCallback, useEffect } from "react";
 
 import Fuse from "fuse.js";
-import { shuffle } from "lodash";
+
+import { VenueEvent, VenueTemplate } from "types/venues";
+
+import { tokeniseStringWithQuotesBySpaces } from "utils/text";
+import { posterVenuesSelector } from "utils/selectors";
+import { isEventLive } from "utils/event";
+import { WithVenueId } from "utils/id";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
@@ -28,7 +15,13 @@ import { useDebounceSearch } from "./useDebounceSearch";
 import { useRelatedVenues } from "./useRelatedVenues";
 import { useVenueEvents } from "./events";
 import { useInterval } from "./useInterval";
-import { useUser } from "./useUser";
+
+import {
+  DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT,
+  POSTERHALL_SUBVENUE_STATUS_MS,
+} from "settings";
+
+import { useUser } from "hooks/useUser";
 
 export const emptySavedPosters = {};
 
@@ -61,74 +54,14 @@ export const usePosterVenues = (posterHallId: string) => {
   );
 };
 
-export interface PostersContextState {
-  posterVenues: WithId<PosterPageVenue>[];
-  isPostersLoaded: boolean;
-  hasHiddenPosters: boolean;
-  searchInputValue: string;
-  liveFilter: boolean;
-  increaseDisplayedPosterCount: () => void;
-  setSearchInputValue: (value: string) => void;
-  setLiveFilter: (value: boolean) => void;
-  bookmarkedFilter: boolean;
-  setBookmarkedFilter: (value: boolean) => void;
-}
+export const usePosters = (posterHallId: string) => {
+  const { posterVenues, isPostersLoaded } = usePosterVenues(posterHallId);
 
-export const PostersContext = createContext<PostersContextState | undefined>(
-  undefined
-);
-
-export interface PostersProviderProps {
-  venueId: string;
-}
-
-export const PostersProvider: React.FC<PostersProviderProps> = ({
-  venueId,
-  children,
-}) => {
   const {
     searchInputValue,
     searchQuery,
     setSearchInputValue,
   } = useDebounceSearch();
-  const { posterVenues: loadedPosterVenues, isPostersLoaded } = usePosterVenues(
-    venueId
-  );
-
-  // newly loaded poster venues will get shuffled, but previous state takes priority
-  const [previousPosterVenues, setPreviousPosterVenues] = useState<
-    WithId<PosterPageVenue>[]
-  >([]);
-  const shuffledPosterVenues = useMemo(() => shuffle(loadedPosterVenues), [
-    loadedPosterVenues,
-  ]);
-
-  const normalizedSearchQuery = searchQuery.trim();
-  const tokenizedSearchQuery = tokeniseStringWithQuotesBySpaces(
-    normalizedSearchQuery
-  );
-  const isEmptyQuery =
-    !normalizedSearchQuery || tokenizedSearchQuery.length === 0;
-
-  // for empty query, re-use the state, or in case it is empty, the shuffled that just got loaded
-  const posterVenues = isEmptyQuery
-    ? previousPosterVenues.length === 0
-      ? shuffledPosterVenues
-      : previousPosterVenues
-    : loadedPosterVenues;
-
-  useEffect(() => {
-    // only save the shuffled poster venues state if the previous ones were empty
-    // additional logic can be added to (re-/in-)validate based on time, userId or other parameters
-    if (isEmptyQuery && isPostersLoaded && previousPosterVenues.length !== 0) {
-      setPreviousPosterVenues(shuffledPosterVenues);
-    }
-  }, [
-    isEmptyQuery,
-    isPostersLoaded,
-    shuffledPosterVenues,
-    previousPosterVenues.length,
-  ]);
 
   const [liveFilter, setLiveFilter] = useState<boolean>(false);
   const [displayedPostersCount, setDisplayedPostersAmount] = useState(
@@ -195,31 +128,37 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
     [filteredPosterVenues]
   );
 
-  const searchedPosterVenues = useMemo(
-    () =>
-      isEmptyQuery
-        ? filteredPosterVenues
-        : fuseVenues
-            .search({
-              $and: tokenizedSearchQuery.map((searchToken: string) => {
-                const orFields: Fuse.Expression[] = [
-                  { name: searchToken },
-                  { "poster.title": searchToken },
-                  { "poster.authorName": searchToken },
-                  { "poster.categories": searchToken },
-                  { "poster.authors": searchToken },
-                  { "poster.keywords": searchToken },
-                  { "poster.introduction": searchToken },
-                ];
+  const searchedPosterVenues = useMemo(() => {
+    const normalizedSearchQuery = searchQuery.trim();
 
-                return {
-                  $or: orFields,
-                };
-              }),
-            })
-            .map((fuseResult) => fuseResult.item),
-    [fuseVenues, filteredPosterVenues, isEmptyQuery, tokenizedSearchQuery]
-  );
+    if (!normalizedSearchQuery) return filteredPosterVenues;
+
+    const tokenisedSearchQuery = tokeniseStringWithQuotesBySpaces(
+      normalizedSearchQuery
+    );
+
+    if (tokenisedSearchQuery.length === 0) return filteredPosterVenues;
+
+    return fuseVenues
+      .search({
+        $and: tokenisedSearchQuery.map((searchToken: string) => {
+          const orFields: Fuse.Expression[] = [
+            { name: searchToken },
+            { "poster.title": searchToken },
+            { "poster.authorName": searchToken },
+            { "poster.categories": searchToken },
+            { "poster.authors": searchToken },
+            { "poster.keywords": searchToken },
+            { "poster.introduction": searchToken },
+          ];
+
+          return {
+            $or: orFields,
+          };
+        }),
+      })
+      .map((fuseResult) => fuseResult.item);
+  }, [searchQuery, fuseVenues, filteredPosterVenues]);
 
   const displayedPosterVenues = useMemo(
     () => searchedPosterVenues.slice(0, displayedPostersCount),
@@ -229,7 +168,7 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
   const hasHiddenPosters =
     searchedPosterVenues.length > displayedPosterVenues.length;
 
-  const value = {
+  return {
     posterVenues: displayedPosterVenues,
     isPostersLoaded,
     hasHiddenPosters,
@@ -243,22 +182,6 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
     setLiveFilter,
     setBookmarkedFilter,
   };
-
-  return (
-    <PostersContext.Provider value={value}>{children}</PostersContext.Provider>
-  );
-};
-
-export const usePostersContext = (): PostersContextState => {
-  const postersContextState = useContext(PostersContext);
-
-  if (!postersContextState) {
-    throw new Error(
-      "<PostersContext/> not found. Did you forget to include it in your component hierarchy?"
-    );
-  }
-
-  return postersContextState;
 };
 
 export const filterLiveEvents = (

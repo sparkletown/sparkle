@@ -2,24 +2,32 @@ import firebase from "firebase/app";
 
 import { VenueEvent } from "types/venues";
 
-import { withId, WithId, WithVenueId } from "utils/id";
+import { withId, WithId, withVenueId, WithVenueId } from "utils/id";
+import { asArray } from "utils/types";
+
+import { getVenueRef } from "./venue";
+
+export const getVenueEventCollectionRef = (venueId: string) =>
+  getVenueRef(venueId).collection("events");
+
+export const fetchVenueEvents = async (
+  venueId: string
+): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
+  getVenueEventCollectionRef(venueId)
+    .withConverter(venueEventWithIdConverter)
+    .get()
+    .then((docSnapshot) =>
+      docSnapshot.docs.map((venueEvent) =>
+        withVenueId(venueEvent.data(), venueId)
+      )
+    );
 
 export const fetchAllVenueEvents = async (
-  sovereignVenueId: string
-): Promise<WithVenueId<WithId<VenueEvent>>[]> => {
-  const eventsSnapshot = await firebase
-    .firestore()
-    .collectionGroup("events")
-    .where("sovereignVenueId", "==", sovereignVenueId)
-    .withConverter(venueEventWithIdConverter)
-    .get();
-
-  return eventsSnapshot.docs
-    .map((venueEvent) => venueEvent.data())
-    .filter((venueEvent) => venueEvent.venueId) as WithVenueId<
-    WithId<VenueEvent>
-  >[];
-};
+  venueIdOrIds: string | string[]
+): Promise<WithVenueId<WithId<VenueEvent>>[]> =>
+  Promise.all(asArray(venueIdOrIds).map(fetchVenueEvents)).then((result) =>
+    result.flat()
+  );
 
 /**
  * Convert VenueEvent objects between the app/firestore formats (@debt:, including validation).
