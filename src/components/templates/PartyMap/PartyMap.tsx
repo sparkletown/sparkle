@@ -27,7 +27,7 @@ export interface PartyMapProps {
 
 export const PartyMap: React.FC<PartyMapProps> = ({ venue }) => {
   const { user, profile } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venue.id });
 

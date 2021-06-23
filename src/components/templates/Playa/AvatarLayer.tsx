@@ -87,8 +87,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
   const { openUserProfileModal } = useProfileModalControls();
-  // @debt we don't have access to venueName here (but is legacy Playa template code to be removed so we don't mind), this is basically a noop
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: undefined });
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const dispatch = useDispatch();
   const sendUpdatedState = useMemo(
