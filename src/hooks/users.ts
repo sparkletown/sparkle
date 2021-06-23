@@ -1,18 +1,24 @@
 import { useMemo } from "react";
 
-import { User } from "types/User";
+import { User, UserLocation, userWithLocationToUser } from "types/User";
+import { ReactHook } from "types/utility";
 
-import { WithId } from "utils/id";
+import { withId, WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
+import {
+  worldUsersByIdSelector,
+  worldUsersSelector,
+  worldUsersWithoutLocationSelector,
+} from "utils/selectors";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
-import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useSovereignVenueId } from "./useSovereignVenueId";
+
+const noUsers: WithId<User>[] = [];
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
@@ -40,21 +46,20 @@ export const useConnectWorldUsers = () => {
   });
 };
 
-export const useWorldUsers = (): {
+export interface WorldUsersData {
   worldUsers: readonly WithId<User>[];
   isWorldUsersLoaded: boolean;
-} => {
+}
+
+export const useWorldUsers = (): WorldUsersData => {
   useConnectWorldUsers();
 
-  const selectedWorldUsers = useSelector(worldUsersSelector);
+  const selectedWorldUsers = useSelector(worldUsersWithoutLocationSelector);
 
-  return useMemo(
-    () => ({
-      worldUsers: selectedWorldUsers ?? [],
-      isWorldUsersLoaded: isLoaded(selectedWorldUsers),
-    }),
-    [selectedWorldUsers]
-  );
+  return {
+    worldUsers: selectedWorldUsers ?? noUsers,
+    isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+  };
 };
 
 // @debt typing, Record implies that a User will exist for literally any given string, which is untrue
@@ -85,24 +90,59 @@ export const useWorldUsersByIdWorkaround = () => {
   return { worldUsersById, isWorldUsersLoaded };
 };
 
+export const useWorldUserLocation = (
+  userId?: string
+): { userLocation?: WithId<UserLocation> } => {
+  useConnectWorldUsers();
+
+  const userLocation = useSelector((state) => {
+    if (!userId) return;
+
+    const user = worldUsersByIdSelector(state)?.[userId];
+
+    if (!user) return;
+
+    const userLocation: UserLocation = {
+      lastSeenAt: user.lastSeenAt,
+      lastSeenIn: user.lastSeenIn,
+    };
+
+    return withId(userLocation, userId);
+  });
+
+  return {
+    userLocation,
+  };
+};
+
 export const useRecentWorldUsers = (): {
   recentWorldUsers: readonly WithId<User>[];
   isRecentWorldUsersLoaded: boolean;
 } => {
   const lastSeenThreshold = useUserLastSeenThreshold();
 
-  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
+  useConnectWorldUsers();
 
-  return useMemo(
-    () => ({
-      recentWorldUsers: worldUsers.filter(
+  const { recentWorldUsers, isWorldUsersLoaded } = useSelector((state) => {
+    const worldUsers = worldUsersSelector(state);
+    const isWorldUsersLoaded = isLoaded(worldUsers);
+
+    if (!worldUsers) return { recentWorldUsers: noUsers, isWorldUsersLoaded };
+
+    const recentWorldUsers = worldUsers
+      .filter(
         (user) =>
           normalizeTimestampToMilliseconds(user.lastSeenAt) > lastSeenThreshold
-      ),
-      isRecentWorldUsersLoaded: isWorldUsersLoaded,
-    }),
-    [worldUsers, isWorldUsersLoaded, lastSeenThreshold]
-  );
+      )
+      .map(userWithLocationToUser);
+
+    return { recentWorldUsers, isWorldUsersLoaded };
+  });
+
+  return {
+    recentWorldUsers: recentWorldUsers ?? noUsers,
+    isRecentWorldUsersLoaded: isWorldUsersLoaded,
+  };
 };
 
 /**
@@ -113,35 +153,59 @@ export const useRecentWorldUsers = (): {
  * @example useRecentLocationUsers(venue.name)
  * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
  */
-export const useRecentLocationUsers = (locationName?: string) => {
+export const useRecentLocationUsers = (
+  locationName?: string
+): {
+  recentLocationUsers: readonly WithId<User>[];
+  isRecentLocationUsersLoaded: boolean;
+} => {
   const lastSeenThreshold = useUserLastSeenThreshold();
-  const { worldUsers, isWorldUsersLoaded } = useWorldUsers();
 
-  return useMemo(
-    () => ({
-      recentLocationUsers: locationName
-        ? worldUsers.filter(
-            (user) =>
-              user.lastSeenIn?.[locationName] &&
-              normalizeTimestampToMilliseconds(user.lastSeenIn[locationName]) >
-                lastSeenThreshold
-          )
-        : [],
-      isRecentLocationUsersLoaded: isWorldUsersLoaded,
-    }),
-    [worldUsers, isWorldUsersLoaded, lastSeenThreshold, locationName]
-  );
+  useConnectWorldUsers();
+
+  const { recentLocationUsers, isWorldUsersLoaded } = useSelector((state) => {
+    const worldUsers = worldUsersSelector(state);
+    const isWorldUsersLoaded = isLoaded(worldUsers);
+
+    if (!worldUsers || !locationName)
+      return { recentLocationUsers: noUsers, isWorldUsersLoaded };
+
+    const recentLocationUsers = worldUsers
+      .filter(
+        (user) =>
+          user.lastSeenIn?.[locationName] &&
+          normalizeTimestampToMilliseconds(user.lastSeenIn[locationName]) >
+            lastSeenThreshold
+      )
+      .map(userWithLocationToUser);
+
+    return { recentLocationUsers, isWorldUsersLoaded };
+  });
+
+  return {
+    recentLocationUsers: recentLocationUsers ?? noUsers,
+    isRecentLocationUsersLoaded: isWorldUsersLoaded,
+  };
 };
 
-export const useRecentVenueUsers = () => {
-  const venueId = useVenueId();
+export interface UseRecentVenueUsersProps {
+  venueName?: string;
+}
 
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+export interface RecentVenueUsersData {
+  recentVenueUsers: readonly WithId<User>[];
+  isRecentVenueUsersLoaded: boolean;
+}
 
+// @debt refactor this to use venueId as soon as we refactor location tracking to use venueId instead of venueName
+export const useRecentVenueUsers: ReactHook<
+  UseRecentVenueUsersProps,
+  RecentVenueUsersData
+> = ({ venueName }) => {
   const {
     recentLocationUsers,
     isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(currentVenue?.name);
+  } = useRecentLocationUsers(venueName);
 
   return {
     recentVenueUsers: recentLocationUsers,
