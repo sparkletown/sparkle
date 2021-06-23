@@ -54,7 +54,7 @@ service cloud.firestore {
     match /venues/{venue} {
       allow read: if true;
 
-       function venueData() {
+      function venueData() {
         return get(/databases/$(database)/documents/venues/$(venue)).data
       }
 
