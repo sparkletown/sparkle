@@ -52,7 +52,6 @@ export const Map: React.FC<MapProps> = ({
   selectRoom,
   unselectRoom,
 }) => {
-  console.log("partymap");
   const venueId = venue.id;
   const venueName = venue.name;
   const userUid = user?.uid;
