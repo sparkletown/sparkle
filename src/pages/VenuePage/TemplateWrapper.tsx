@@ -150,7 +150,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <RelatedVenuesProvider venueId={venue.id}>
-      <EventsProvider>
+      <EventsProvider venueId={venue.id}>
         <ReactionsProvider venueId={venue.id}>
           <WithNavigationBar
             fullscreen={fullscreen}
