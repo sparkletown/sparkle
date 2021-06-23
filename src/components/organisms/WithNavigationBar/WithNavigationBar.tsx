@@ -1,5 +1,6 @@
 import React from "react";
 
+import { EventsProvider } from "hooks/events";
 import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
@@ -32,7 +33,12 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    works on the user side of things.
        */}
       <RelatedVenuesProvider venueId={venueId}>
-        <NavBar redirectionUrl={redirectionUrl} hasBackButton={hasBackButton} />
+        <EventsProvider venueId={venueId}>
+          <NavBar
+            redirectionUrl={redirectionUrl}
+            hasBackButton={hasBackButton}
+          />
+        </EventsProvider>
       </RelatedVenuesProvider>
 
       <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
