@@ -29,6 +29,7 @@ $button-height: 30px;
 
   &__input-container-name {
     height: $submit-button-diameter;
+    margin-bottom: $spacing--xl;
   }
 
   &__input-name {
