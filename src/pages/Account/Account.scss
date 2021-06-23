@@ -53,6 +53,7 @@ $page-max-width: 1240px;
 
 .page-container {
   background-color: $dark;
+  display: flex;
   flex-direction: column;
   flex: 1;
   padding-bottom: $spacing--xxl;
@@ -62,12 +63,17 @@ $page-max-width: 1240px;
 
     .header-message {
       text-align: center;
+      margin-bottom: $spacing--xxl;
     }
 
     .subheader-message {
       text-align: center;
     }
   }
+}
+
+.questions-container {
+  padding-top: $spacing--xxl;
 }
 
 .page-container-onboarding {
@@ -87,6 +93,11 @@ $page-max-width: 1240px;
   .login-welcome-subtitle {
     text-align: center;
     padding-bottom: 30px;
+    margin-top: $spacing--xl;
+  }
+
+  .summit-snap {
+    margin: auto;
   }
 }
 
@@ -121,6 +132,16 @@ $page-max-width: 1240px;
     background-repeat: no-repeat;
     background-position: center;
     width: 280px;
+    height: 225px;
+    background-size: 280px;
+  }
+
+  &.github {
+    margin: 0 auto;
+    background-image: url(/assets/images/Summit_Logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 580px;
     height: 225px;
     background-size: 280px;
   }
@@ -201,6 +222,7 @@ $page-max-width: 1240px;
   padding: 15px 50px;
   color: $white;
   font-weight: 700;
+  background-color: $black;
 
   &:hover {
     transform: translateY(-1px);
@@ -225,6 +247,10 @@ $page-max-width: 1240px;
   .login-container {
     border-radius: 0;
   }
+}
+
+.question-input {
+  text-align: center;
 }
 
 .splash-page-container {

@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { TalkShowStudioExperience, UserStatus } from "types/User";
+import { TalkShowStudioExperience, UserStatus, ProfileLink } from "types/User";
 
 import { VenueEvent } from "types/venues";
 
@@ -85,12 +85,7 @@ export const updateUserOnlineStatus = async ({
   });
 };
 
-export interface UpdatePersonalizedScheduleProps {
-  event: WithVenueId<VenueEvent>;
-  userId: string;
-  removeMode?: boolean;
-}
-
+// ================================================= Personalized Schedule
 export const addEventToPersonalizedSchedule = ({
   event,
   userId,
@@ -113,24 +108,73 @@ export const updatePersonalizedSchedule = async ({
   event,
   userId,
   removeMode = false,
-}: UpdatePersonalizedScheduleProps): Promise<void> => {
+}: UpdatePersonalizedScheduleProps): Promise<void> =>
+  updateUserCollection({
+    userId,
+    removeMode,
+    collectionKey: `myPersonalizedSchedule.${event.venueId}`,
+    collectionValue: [event.id],
+  });
+
+// ================================================= Profile Links
+export interface UpdateProfileLinksProps {
+  profileLinks: ProfileLink[];
+  userId: string;
+}
+
+export const updateProfileLinks = async ({
+  profileLinks,
+  userId,
+}: UpdateProfileLinksProps): Promise<void> => {
+  const userProfileRef = getUserRef(userId);
+
+  return userProfileRef.update({ profileLinks }).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateProfileLinks",
+        profileLinks,
+        userId,
+        event,
+      });
+
+      throw err;
+    });
+  });
+};
+
+// ================================================= User Collection
+export interface UpdateUserCollectionProps {
+  collectionKey: string;
+  collectionValue: unknown[];
+  userId: string;
+  removeMode?: boolean;
+}
+
+export const updateUserCollection = async ({
+  collectionKey,
+  collectionValue,
+  userId,
+  removeMode = false,
+}: UpdateUserCollectionProps): Promise<void> => {
   const userProfileRef = getUserRef(userId);
 
   const modify = removeMode
     ? firebase.firestore.FieldValue.arrayRemove
     : firebase.firestore.FieldValue.arrayUnion;
 
-  const newSavedEvents = {
-    [`myPersonalizedSchedule.${event.venueId}`]: modify(event.id),
+  const modifiedCollection = {
+    [collectionKey]: modify(...collectionValue),
   };
 
-  return userProfileRef.update(newSavedEvents).catch((err) => {
+  return userProfileRef.update(modifiedCollection).catch((err) => {
     Bugsnag.notify(err, (event) => {
       event.addMetadata("context", {
-        location: "api/profile::saveEventToProfile",
+        location: "api/profile::updateUserCollectionProps",
+        collectionKey,
+        collectionValue,
         userId,
-        event,
         removeMode,
+        event,
       });
 
       throw err;
