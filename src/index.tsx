@@ -63,8 +63,6 @@ import { authSelector } from "utils/selectors";
 import { initializeZendesk } from "utils/zendesk";
 
 import { CustomSoundsProvider } from "hooks/sounds";
-
-import { CacheActionTypes } from "store/actions/Cache";
 import { useSelector } from "hooks/useSelector";
 
 import AppRouter from "components/organisms/AppRouter";
@@ -132,13 +130,6 @@ const store = createStore(
     )
   )
 );
-
-//load users every 60 seconda
-setInterval(() => {
-  store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
-}, 1000 * 60);
-//initial loading of users
-store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
 
 export type AppDispatch = typeof store.dispatch;
 

@@ -51,9 +51,10 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
+  // @debt refactor to remove fireStore venue and just use venue from props
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const parentVenueId = venueToUse?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
