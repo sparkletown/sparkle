@@ -43,7 +43,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const { user, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
+  const { recentVenueUsers } = useRecentVenueUsers();
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(

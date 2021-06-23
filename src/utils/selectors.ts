@@ -7,7 +7,7 @@ import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User, UserWithLocation, userWithLocationToUser } from "types/User";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
@@ -58,22 +58,22 @@ export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
  *
  * @param state the Redux store
  */
-export const worldUsersSelector: SparkleSelector<
-  WithId<UserWithLocation>[] | undefined
-> = (state) => state.firestore.ordered.worldUsers;
-
-export const worldUsersWithoutLocationSelector: SparkleSelector<
-  WithId<User>[] | undefined
-> = (state) => worldUsersSelector(state)?.map(userWithLocationToUser);
+/*
+export const worldUsersSelector: SparkleSelector<WithId<User>[] | undefined> = (
+  state
+) => state.firestore.ordered.worldUsers;
+*/
 
 /**
  * Selector to retrieve an object with world-related users from the Redux Firestore.
  *
  * @param state the Redux store
  */
+/*
 export const worldUsersByIdSelector: SparkleSelector<
-  Record<string, UserWithLocation> | undefined
+  Record<string, User> | undefined
 > = (state) => state.firestore.data.worldUsers;
+*/
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
@@ -164,10 +164,9 @@ export const privateChatMessagesSelector: SparkleSelector<
   WithId<PrivateChatMessage>[] | undefined
 > = (state) => state.firestore.ordered.privateChatMessages;
 
-// @debt this doesn't appear to be used by anything anymore
-// export const chatUsersByIdSelector: SparkleSelector<
-//   Record<string, User> | undefined
-// > = (state) => state.firestore.data.chatUsers;
+export const chatUsersByIdSelector: SparkleSelector<
+  Record<string, User> | undefined
+> = (state) => state.firestore.data.chatUsers;
 
 export const experienceSelector: SparkleSelector<Experience | undefined> = (
   state

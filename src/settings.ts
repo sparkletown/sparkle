@@ -159,7 +159,6 @@ export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
 
-// @debt I believe this relates to Playa features, which are legacy code that will be removed soon
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
