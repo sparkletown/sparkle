@@ -15,6 +15,10 @@ import {
 import UserList from "components/molecules/UserList";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import {
+  eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
+} from "utils/event";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import firebase from "firebase/app";
@@ -24,6 +28,8 @@ import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
 import { useDispatch } from "hooks/useDispatch";
 import { retainAttendance } from "store/actions/Attendance";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "components/molecules/OnlineStats/OnlineStats.scss";
 
@@ -156,12 +162,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .get()
       .then(function (array) {
         const futureEvents = array.docs
-          .map((doc) => doc.data())
-          .filter((event) => event.start_utc_seconds > nowSeconds)
-          .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+          .map((doc) => doc.data() as VenueEvent) // TODO: is this type cast correct?
+          .filter(isEventLiveOrFuture)
+          .sort(eventsByStartUtcSecondsSorter);
 
-        // TODO: is this type cast correct?
-        setEventsFuture(futureEvents as VenueEvent[]);
+        setEventsFuture(futureEvents);
       });
   }, [venue]);
 
@@ -249,7 +254,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           />
         </div>
         <div className="description">
-          {venue.config?.landingPageConfig?.description}
+          <RenderMarkdown text={venue.config?.landingPageConfig?.description} />
         </div>
         {ENABLE_PLAYA_ADDRESS && venue.placement?.x && venue.placement?.y && (
           <div className="address">

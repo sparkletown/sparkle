@@ -1,20 +1,22 @@
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
+
+import { DEFAULT_PARTY_NAME } from "settings";
+
 import { IS_BURN } from "secrets";
-import { QuestionType } from "types/Question";
-import { Badges } from "components/organisms/Badges";
-import { DEFAULT_PROFILE_VALUES } from "../constants";
-import { updateUserProfile } from "pages/Account/helpers";
-import { useVenueId } from "hooks/useVenueId";
+
 import { venueLandingUrl } from "utils/url";
-import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-} from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { updateUserProfile } from "pages/Account/helpers";
+import { Badges } from "components/organisms/Badges";
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -28,11 +30,10 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   hideModal,
 }) => {
   const { user, profile, userWithId } = useUser();
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
+
+  const profileQuestions = venue?.profile_questions;
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -66,6 +67,26 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
     }
   }, [profile, user]);
 
+  const renderedProfileQuestionAnswers = useMemo(
+    () =>
+      profile
+        ? profileQuestions?.map((question) => {
+            // @ts-ignore User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
+            const questionAnswer = profile[question.name];
+
+            if (!questionAnswer) return undefined;
+
+            return (
+              <div key={question.name} className="question-section">
+                <div className="question">{question.text}</div>
+                <div className="answer">{questionAnswer}</div>
+              </div>
+            );
+          })
+        : undefined,
+    [profile, profileQuestions]
+  );
+
   if (!user || !userWithId) return null;
 
   return (
@@ -73,34 +94,15 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
       <h1 className="title modal-title">My Profile</h1>
 
       <div className="user-information">
-        <img
-          className="profile-icon profile-modal-avatar"
-          src={profile?.pictureUrl || DEFAULT_PROFILE_IMAGE}
-          alt="profile avatar"
-          width="50"
-          height="50"
-        />
+        <UserAvatar user={userWithId} showStatus large />
         <div className="text-container">
-          <h2 className="title ellipsis-text">
-            {profile?.partyName || DEFAULT_PROFILE_VALUES.partyName}
-          </h2>
+          <h3>{profile?.partyName || DEFAULT_PARTY_NAME}</h3>
           <div className="ellipsis-text">{user.email}</div>
+          <UserStatusDropdown />
         </div>
       </div>
 
-      {profileQuestions &&
-        profileQuestions.map((question: QuestionType) => (
-          <div key={question.name} className="question-section">
-            <div className="question">{question.text}</div>
-            <div className="answer">
-              {
-                // @ts-ignore question.name is a correct index for type User
-                (profile && profile[question.name]) ||
-                  DEFAULT_PROFILE_VALUES.questionAnswer
-              }
-            </div>
-          </div>
-        ))}
+      {renderedProfileQuestionAnswers}
 
       {IS_BURN && (
         <>

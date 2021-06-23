@@ -190,36 +190,40 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ? recentVenueUsers.find((pg) => pg.id === user.uid)
     : undefined;
 
-  const menu: MenuConfig = {
-    prompt: "This is your avatar",
-    choices: [
-      {
-        text: "My Profile",
-        onClick: () => {
-          if (selfUserProfile) openUserProfileModal(selfUserProfile);
+  const menu: MenuConfig = useMemo(
+    () => ({
+      prompt: "This is your avatar",
+      choices: [
+        {
+          text: "My Profile",
+          onClick: () => {
+            if (selfUserProfile) openUserProfileModal(selfUserProfile);
+          },
         },
-      },
-      {
-        text: (
-          <div className="video-chat-text-row">
-            <Switch
-              height={20}
-              width={40}
-              checkedIcon={false}
-              uncheckedIcon={false}
-              onChange={() => {}}
-              checked={videoState !== UserVideoState.Locked}
-            />
-            <div className="video-chat-text">
-              {videoState === UserVideoState.Locked ? "closed" : "open"} to
-              video chat
+        {
+          text: (
+            <div className="video-chat-text-row">
+              <Switch
+                height={20}
+                width={40}
+                checkedIcon={false}
+                uncheckedIcon={false}
+                onChange={() => {}}
+                checked={videoState !== UserVideoState.Locked}
+              />
+              <div className="video-chat-text">
+                {videoState === UserVideoState.Locked ? "closed" : "open"} to
+                video chat
+              </div>
             </div>
-          </div>
-        ),
-        onClick: () => toggleVideoState(),
-      },
-    ],
-  };
+          ),
+          onClick: () => toggleVideoState(),
+        },
+      ],
+    }),
+    [openUserProfileModal, selfUserProfile, toggleVideoState, videoState]
+  );
+
   if (
     !selfUserProfile?.video?.inRoomOwnedBy ||
     selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id

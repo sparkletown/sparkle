@@ -1,12 +1,13 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
-admin.firestore().settings({ ignoreUndefinedProperties: true });
+const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { checkAuth } = require("./auth");
 
 const PLAYA_VENUE_ID = "jamonline";
-const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
+
+admin.firestore().settings({ ignoreUndefinedProperties: true });
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -22,7 +23,10 @@ const VenueTemplate = {
   partymap: "partymap",
   performancevenue: "performancevenue",
   playa: "playa",
+  posterhall: "posterhall",
+  posterpage: "posterpage",
   preplaya: "preplaya",
+  screeningroom: "screeningroom",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
 
@@ -69,6 +73,82 @@ const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
   Hidden: "HIDDEN",
+};
+
+const checkUserIsOwner = async (venueId, uid) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then(async (doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
+      }
+      const venue = doc.data();
+      if (venue.owners && venue.owners.includes(uid)) return;
+
+      if (venue.parentId) {
+        const doc = await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
+      }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
+};
+
+// @debt extract this into a new functions/chat backend script file
+const checkIfUserHasVoted = async (venueId, pollId, userId) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("chats")
+    .doc(pollId)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
+      }
+
+      const poll = doc.data();
+
+      return poll.votes.some(
+        ({ userId: existingUserId }) => userId === existingUserId
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
 };
 
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
@@ -191,57 +271,12 @@ const createVenueData_v2 = (data, context) => ({
   rooms: [],
 });
 
-const getVenueId = (name) => {
-  return name.replace(/\W/g, "").toLowerCase();
-};
-
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
-};
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);
 
 /** Add a user to the list of admins
  *
@@ -570,6 +605,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
@@ -601,12 +640,15 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
+
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
+
   if (data.description) {
     updated.config.landingPageConfig.description = data.description;
   }
+
   if (data.primaryColor) {
     if (!updated.theme) {
       updated.theme = {};
@@ -691,7 +733,48 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.bannerMessage = data.bannerMessage;
   }
 
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
   admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+exports.updateTables = functions.https.onCall((data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+
+  return admin.firestore().runTransaction(async (transaction) => {
+    const venueDoc = await transaction.get(venueRef);
+
+    if (!venueDoc.exists) {
+      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+    }
+
+    const venueTables = [...data.tables];
+
+    const currentTableIndex = venueTables.findIndex(
+      (table) => table.reference === data.updatedTable.reference
+    );
+
+    if (currentTableIndex < 0) {
+      throw new HttpsError(
+        "not-found",
+        `current table does not exist in the venue`
+      );
+    }
+
+    venueTables[currentTableIndex] = data.updatedTable;
+
+    transaction.update(venueRef, { "config.tables": venueTables });
+  });
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
@@ -702,6 +785,40 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
+
+// @debt extract this into a new functions/chat backend script file
+exports.voteInPoll = functions.https.onCall(
+  async ({ venueId, pollVote }, context) => {
+    checkAuth(context);
+
+    const { pollId, questionId } = pollVote;
+
+    try {
+      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
+
+      const newVote = {
+        questionId,
+        userId: context.auth.token.user_id,
+      };
+
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("chats")
+        .doc(pollId)
+        .update({
+          votes: admin.firestore.FieldValue.arrayUnion(newVote),
+        });
+    } catch (error) {
+      throw new HttpsError(
+        "has-voted",
+        `User ${userId} has voted in ${pollId} Poll`,
+        error
+      );
+    }
+  }
+);
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
@@ -774,53 +891,6 @@ exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
     .update({ iframeUrl: iframeUrl || null });
 });
 
-exports.getVenueEvents = functions.https.onCall(
-  async ({ venueId }, context) => {
-    try {
-      checkAuth(context);
-      const now = new Date().getTime();
-
-      const venueEvents = [];
-      const venue = await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .get();
-      const events = await venue.ref.collection("events").get();
-
-      const liveAndFutureEvents = events.docs
-        .map((eventRef) => {
-          const event = eventRef.data();
-          if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
-            event.start_utc_seconds = now / 1000;
-          }
-          return event;
-        })
-        .filter((event) => {
-          const nowSeconds = now / 1000;
-
-          const eventIsTransient =
-            event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
-
-          const eventIsInFuture = nowSeconds < event.start_utc_seconds;
-
-          const eventEndSeconds =
-            60 * event.duration_minutes + event.start_utc_seconds;
-          const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
-
-          return eventIsTransient && (eventIsInFuture || eventIsNow);
-        });
-      if (liveAndFutureEvents) {
-        venueEvents.push(...liveAndFutureEvents);
-      }
-
-      return venueEvents;
-    } catch (error) {
-      throw new HttpsError("internal", e.toString());
-    }
-  }
-);
-
 exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   const user = (
     await admin.firestore().collection("users").doc(userId).get()
@@ -829,9 +899,22 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   return user;
 });
 
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);
+exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  if (typeof data.isLive !== "boolean") {
+    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+  }
+
+  const update = {
+    isLive: Boolean(data.isLive),
+  };
+
+  await admin.firestore().collection("venues").doc(data.venueId).update(update);
+});

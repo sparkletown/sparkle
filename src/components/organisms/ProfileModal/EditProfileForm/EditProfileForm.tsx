@@ -1,21 +1,22 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import "./EditProfileForm.scss";
+
+import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { QuestionType } from "types/Question";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import { QuestionType } from "types/Question";
 import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { useUser } from "hooks/useUser";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
 
-interface EditProfileFormValuesType {
-  partyName: string;
-  pictureUrl: string;
-  [questionId: string]: string;
-}
+import "./EditProfileForm.scss";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -24,6 +25,7 @@ interface PropsType {
 const EditProfileForm: React.FunctionComponent<PropsType> = ({
   setIsEditMode,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
@@ -76,7 +78,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
             placeholder="Your display name"
             ref={register({
               required: true,
-              maxLength: 16,
+              maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
             })}
           />
           {errors.partyName && errors.partyName.type === "required" && (
@@ -84,11 +86,13 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
           )}
           {errors.partyName && errors.partyName.type === "maxLength" && (
             <span className="input-error">
-              Display name must be 16 characters or less
+              Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+              less
             </span>
           )}
-          {user && (
+          {user && venueId && (
             <ProfilePictureInput
+              venueId={venueId}
               setValue={setValue}
               user={user}
               errors={errors}
@@ -105,9 +109,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
                 <textarea
                   className="input-block input-centered"
                   name={question.name}
-                  ref={register({
-                    required: true,
-                  })}
+                  ref={register()}
                 />
               </div>
             </>

@@ -45,7 +45,7 @@ $page-max-width: 1240px;
     &:before {
       background-color: $primaryColor;
       box-shadow: 0 0 0 2px rgba($white, 0);
-      background-image: url("./img/checkbox-checked.png");
+      background-image: url(/assets/icons/checkbox-checked.png);
       background-size: 30px 30px;
     }
   }
@@ -55,11 +55,21 @@ $page-max-width: 1240px;
   background-color: $dark;
   flex-direction: column;
   flex: 1;
+  padding-bottom: $spacing--xxl;
 
   .login-container {
     align-self: center;
+
+    .header-message {
+      text-align: center;
+    }
+
+    .subheader-message {
+      text-align: center;
+    }
   }
 }
+
 .page-container-onboarding {
   max-height: 100%;
   overflow: hidden;
@@ -99,7 +109,7 @@ $page-max-width: 1240px;
 .hero-logo {
   &.coreality {
     margin: 0 auto 50px;
-    background-image: url("./img/coreality-logo-sparkles.png");
+    background-image: url(/assets/images/coreality-logo-sparkles.png);
     width: 270px;
     height: 106px;
     background-size: 270px 106px;
@@ -107,7 +117,9 @@ $page-max-width: 1240px;
 
   &.sparkle {
     margin: 0 auto;
-    background-image: url("/sparkle-logo.png");
+    background-image: url(/assets/images/Sparkle_logo_white_yellow.png);
+    background-repeat: no-repeat;
+    background-position: center;
     width: 280px;
     height: 225px;
     background-size: 280px;
