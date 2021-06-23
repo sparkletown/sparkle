@@ -6,13 +6,6 @@ import { VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 
-/*
-import { useDispatch } from "hooks/useDispatch";
-import {
-  updateUser,
-} from "store/actions/Cache";
-*/
-
 export const getUserRef = (userId: string) =>
   firebase.firestore().collection("users").doc(userId);
 
@@ -38,20 +31,11 @@ export const makeUpdateUserGridLocation = ({
   };
 
   const firestore = firebase.firestore();
-  /*
-  const dispatch = useDispatch();
-  */
 
   // @debt refactor this to use a proper upsert pattern instead of error based try/catch logic
   firestore
     .doc(doc)
     .update(newData)
-    /*
-    .then(()=>{
-      console.log(newData, userUid, newData);
-      dispatch(updateUser(userUid, newData));
-    })
-    */
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.severity = "info";

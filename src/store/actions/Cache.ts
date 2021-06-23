@@ -1,27 +1,53 @@
 import { ReduxAction } from "types/redux";
 
-//import { User } from "types/User";
+import { WithId } from "utils/id";
+import { User } from "types/User";
 
 export enum CacheActionTypes {
-  UPDATE_USER = "SET_USER",
+  RELOAD_USER_CACHE = "RELOAD_USER_CACHE",
+  INVALIDATE_USER_CACHE = "INVALIDATE_USER_CACHE",
+  UPDATE_USER_CACHE = "UPDATE_USER_CACHE",
 }
 
-export type UpdateUserAction = ReduxAction<
-  CacheActionTypes.UPDATE_USER,
+type ReloadUserCacheAction = ReduxAction<
+  CacheActionTypes.RELOAD_USER_CACHE,
+  {}
+>;
+
+type InvalidateUserCacheAction = ReduxAction<
+  CacheActionTypes.INVALIDATE_USER_CACHE,
+  { id: string }
+>;
+
+type UpdateUserCacheAction = ReduxAction<
+  CacheActionTypes.UPDATE_USER_CACHE,
   {
     id: string;
     // eslint-disable-next-line
-    data: any;
+    user: WithId<User>;
   }
 >;
 
-export const updateUser = (
-  id: string,
-  // eslint-disable-next-line
-  data: any
-): UpdateUserAction => ({
-  type: CacheActionTypes.UPDATE_USER,
-  payload: { id, data },
+export const reloadUserCache = (): ReloadUserCacheAction => ({
+  type: CacheActionTypes.RELOAD_USER_CACHE,
+  payload: {},
 });
 
-export type CacheActions = UpdateUserAction;
+export const invalidateUserCache = (id: string): InvalidateUserCacheAction => ({
+  type: CacheActionTypes.INVALIDATE_USER_CACHE,
+  payload: { id },
+});
+
+// eslint-disable-next-line
+export const updateUserCache = (
+  id: string,
+  user: WithId<User>
+): UpdateUserCacheAction => ({
+  type: CacheActionTypes.UPDATE_USER_CACHE,
+  payload: { id, user },
+});
+
+export type CacheActions =
+  | InvalidateUserCacheAction
+  | UpdateUserCacheAction
+  | ReloadUserCacheAction;
