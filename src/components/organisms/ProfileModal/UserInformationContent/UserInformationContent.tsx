@@ -12,13 +12,12 @@ import { currentVenueSelector } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { Badges } from "components/organisms/Badges";
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { useConnectSovereignVenue } from "hooks/useConnectSovereignVenue";
 
 interface PropsType {
   setIsEditMode: (value: boolean) => void;
@@ -34,10 +33,7 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const { user, profile, userWithId } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-  const { sovereignVenueId } = useSovereignVenueId({ venueId });
-  const { currentVenue: sovereignVenue } = useRelatedVenues({
-    currentVenueId: sovereignVenueId,
-  });
+  const { sovereignVenue } = useConnectSovereignVenue(venueId);
 
   const profileQuestions = venue?.profile_questions;
 

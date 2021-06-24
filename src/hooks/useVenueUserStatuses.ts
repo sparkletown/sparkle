@@ -4,19 +4,12 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRelatedVenues } from "./useRelatedVenues";
-import { useSovereignVenueId } from "./useSovereignVenueId";
+import { useConnectSovereignVenue } from "./useConnectSovereignVenue";
 
 export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
-  const { sovereignVenueId } = useSovereignVenueId({ venueId });
+  const { sovereignVenue } = useConnectSovereignVenue(venueId);
 
-  // Using currentVenueNG hook
-  const { currentVenue: venue } = useRelatedVenues({
-    currentVenueId: sovereignVenueId,
-  });
-
-  console.log(venue?.id, venue?.userStatuses);
-  const venueStatuses = venue?.userStatuses ?? [];
+  const venueStatuses = sovereignVenue?.userStatuses ?? [];
 
   const statuses = [...USER_STATUSES, ...venueStatuses];
 
@@ -26,7 +19,7 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
 
   return {
     venueUserStatuses: venueStatuses,
-    isStatusEnabledForVenue: venue?.showUserStatus ?? false,
+    isStatusEnabledForVenue: sovereignVenue?.showUserStatus ?? false,
     userStatus: userStatus ?? ONLINE_USER_STATUS,
   };
 };

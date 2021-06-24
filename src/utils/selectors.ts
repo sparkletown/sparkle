@@ -92,6 +92,15 @@ export const orderedVenuesSelector: SparkleSelector<
 > = (state) => state.firestore.ordered.venues;
 
 /**
+ *
+ * @param state This is the redux state which is usually provided by useCallback
+ * @returns The sovereign venue
+ */
+export const sovereignVenueSelector: SparkleSelector<AnyVenue | undefined> = (
+  state
+) => state.firestore.data.sovereignVenue;
+
+/**
  * Makes a venueSelector selector for a given venueId, which when called
  * will retrieve the specified venue from the Redux Firestore.
  *
@@ -150,6 +159,10 @@ export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsR
 
 export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "userPurchaseHistory"
+);
+
+export const isSovereignVenueRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
+  "sovereignVenue"
 );
 
 export const venueChatMessagesSelector: SparkleSelector<

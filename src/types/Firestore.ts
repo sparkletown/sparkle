@@ -56,6 +56,7 @@ export interface FirestoreData {
   chatUsers?: Record<string, User>;
   currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
+  sovereignVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   eventPurchase?: Record<string, Purchase>;
@@ -84,6 +85,7 @@ export interface FirestoreOrdered {
   chatRequests?: WithId<ChatRequest>[];
   currentEvent?: WithId<VenueEvent>[];
   currentVenue?: WithId<AnyVenue>[];
+  sovereignVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   eventPurchase?: WithId<Purchase>[];

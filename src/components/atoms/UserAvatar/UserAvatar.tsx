@@ -38,8 +38,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     user
   );
 
-  console.log(isStatusEnabledForVenue);
-
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
     : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
