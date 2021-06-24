@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -105,6 +107,14 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
+            {/* TODO: cover case for in contact list user */}
+            {chosenUserId !== user.uid && (
+              <FontAwesomeIcon
+                className="UserProfileModal__icon--bookmark"
+                icon={faBookmark}
+                onClick={() => console.log(chosenUserId)}
+              />
+            )}
             <div className="profile-basics">
               <div className="profile-pic">
                 {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
