@@ -53,7 +53,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     "maproom--unclickable": isUnclickable,
     "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
-      !isCovertRoom &&
+      shouldShowLabel &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
