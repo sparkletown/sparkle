@@ -35,7 +35,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const isUnclickable = room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
-  const isLabeled = room.isLabeled !== undefined ? room.isLabeled : true;
+  const isLabelHidden = room.isLabelHidden ?? false;
 
   const dispatch = useDispatch();
 
@@ -81,10 +81,10 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const [play] = useCustomSound(room.enterSound, { interrupt: true });
   const selectRoomWithSound = useCallback(() => {
-    if (!isLabeled) return;
+    if (!isLabelHidden) return;
     play();
     selectRoom();
-  }, [play, selectRoom, isLabeled]);
+  }, [play, selectRoom, isLabelHidden]);
 
   return (
     <div
@@ -106,7 +106,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
-      {!isCovertRoom && isLabeled && (
+      {!isCovertRoom && !isLabelHidden && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />

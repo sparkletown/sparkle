@@ -19,7 +19,7 @@ export interface Room {
   width_percent: number;
   height_percent: number;
   isEnabled: boolean;
-  isLabeled?: boolean;
+  isLabelHidden?: boolean;
   image_url: string;
   enterSound?: SoundConfigReference;
   // Legacy?

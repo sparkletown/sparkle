@@ -332,7 +332,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     </label>
                   </div>
                   <div className="toggle-room">
-                    <div className="input-title">Labeled ?</div>
+                    <div className="input-title">Is label hidden?</div>
                     <label className="switch">
                       <input
                         disabled={disable}

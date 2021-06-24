@@ -58,7 +58,7 @@ export const AdminVenueRoomDetails = ({
 
   const updateRoom = async (
     newState: boolean,
-    field: "isEnabled" | "isLabeled"
+    field: "isEnabled" | "isLabelHidden"
   ) => {
     if (!user) return;
 
@@ -101,6 +101,7 @@ export const AdminVenueRoomDetails = ({
                   alt="room icon"
                 />
               </div>
+
               <div>
                 <h4>{room.title}</h4>
                 <div>
@@ -108,6 +109,7 @@ export const AdminVenueRoomDetails = ({
                   <span>{room.subtitle}</span>
                 </div>
               </div>
+
               <div className="room-options">
                 <div className="edit-room">
                   {
@@ -119,6 +121,7 @@ export const AdminVenueRoomDetails = ({
                     </Link>
                   }
                 </div>
+
                 <div className="toggle-room">
                   <label id={"toggle-" + index} className="switch">
                     <input
@@ -134,23 +137,27 @@ export const AdminVenueRoomDetails = ({
                   </label>
                   <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
                 </div>
+
                 <div className="toggle-room">
                   <label id={"toggle2-" + index} className="switch">
                     <input
                       type="checkbox"
                       id={"toggle2-" + index}
                       name={"toggle2-" + index}
-                      checked={room.isLabeled}
+                      checked={room.isLabelHidden}
                       onClick={() => {
-                        updateRoom(!room.isLabeled, "isLabeled");
+                        updateRoom(!room.isLabelHidden, "isLabelHidden");
                       }}
                     />
                     <span className="slider round"></span>
                   </label>
-                  <div>Label: {room.isLabeled ? "On" : "Off"}</div>
+                  <div>
+                    Label is {room.isLabelHidden ? "hidden" : "visible"}
+                  </div>
                 </div>
               </div>
             </div>
+
             <div className="venue-content">
               <div className="sub-content">
                 <div>
@@ -166,6 +173,7 @@ export const AdminVenueRoomDetails = ({
               </div>
             </div>
           </div>
+
           {filteredEvents && filteredEvents.length > 0 && (
             <>
               {filteredEvents.map((venueEvent) => {
@@ -183,6 +191,7 @@ export const AdminVenueRoomDetails = ({
               })}
             </>
           )}
+
           <div className="page-container-adminpanel-actions">
             <a
               href="?"
