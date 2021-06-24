@@ -297,6 +297,10 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.profile_questions = data.profile_questions;
   }
 
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
   if (data.mapBackgroundImageUrl) {
     updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
@@ -694,11 +698,6 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.showRadio = data.showRadio;
     // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
     updated.radioStations = [data.radioStations];
-  }
-
-  // @debt this is missing from updateVenue
-  if (data.entrance) {
-    updated.entrance = data.entrance;
   }
 
   // @debt this is exactly the same as in updateVenue
