@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { CirclePicker, ColorResult } from "react-color";
 import { faEyeDropper, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -26,14 +26,23 @@ export const UserStatusPanel: React.FC<UserStatusPanelProps> = ({
   onPickColor,
   onChangeInput,
 }) => {
-  const { isShown, show, hide } = useShowHide();
+  const {
+    isShown: isColorPickerShown,
+    hide: hideColorPicker,
+    toggle: toggleColorPicker,
+  } = useShowHide();
 
   const pickColor = useCallback(
     (value: ColorResult) => {
       onPickColor && onPickColor(value.hex);
-      hide();
+      hideColorPicker();
     },
-    [hide, onPickColor]
+    [hideColorPicker, onPickColor]
+  );
+
+  const statusIndicatorStyles = useMemo(
+    () => ({ backgroundColor: userStatus.color }),
+    [userStatus.color]
   );
 
   return (
@@ -45,9 +54,9 @@ export const UserStatusPanel: React.FC<UserStatusPanelProps> = ({
           disabled={disabled}
         />
         <div
-          style={{ backgroundColor: userStatus.color }}
+          style={statusIndicatorStyles}
           className="UserStatusPanel__picker-icon"
-          onClick={isShown ? hide : show}
+          onClick={toggleColorPicker}
         >
           <FontAwesomeIcon icon={faEyeDropper} />
         </div>
@@ -57,7 +66,7 @@ export const UserStatusPanel: React.FC<UserStatusPanelProps> = ({
           </div>
         )}
       </div>
-      {isShown && !disabled && <CirclePicker onChange={pickColor} />}
+      {isColorPickerShown && !disabled && <CirclePicker onChange={pickColor} />}
     </>
   );
 };

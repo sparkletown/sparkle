@@ -1,7 +1,9 @@
-import { DefaultUserStatus, User } from "types/User";
+import { ONLINE_USER_STATUS, USER_STATUSES } from "settings";
 
-import { USER_STATUSES } from "settings";
+import { User } from "types/User";
+
 import { WithId } from "utils/id";
+
 import { useRelatedVenues } from "./useRelatedVenues";
 import { useSovereignVenueId } from "./useSovereignVenueId";
 
@@ -13,6 +15,7 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
     currentVenueId: sovereignVenueId,
   });
 
+  console.log(venue?.id, venue?.userStatuses);
   const venueStatuses = venue?.userStatuses ?? [];
 
   const statuses = [...USER_STATUSES, ...venueStatuses];
@@ -23,10 +26,7 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
 
   return {
     venueUserStatuses: venueStatuses,
-    venueStatusEnabled: venue?.showUserStatus ?? false,
-    userStatus: userStatus ?? {
-      status: DefaultUserStatus.online,
-      color: "#4BCC4B",
-    },
+    isStatusEnabledForVenue: venue?.showUserStatus ?? false,
+    userStatus: userStatus ?? ONLINE_USER_STATUS,
   };
 };

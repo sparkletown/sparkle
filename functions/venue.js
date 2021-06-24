@@ -200,7 +200,7 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
-    showUserStatus: data.showUserStatus || false,
+    showUserStatus: data.showUserStatus || true,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 

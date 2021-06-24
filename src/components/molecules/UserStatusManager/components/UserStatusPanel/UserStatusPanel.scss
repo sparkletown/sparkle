@@ -1,5 +1,8 @@
 @import "scss/constants";
 
+$picker-icon--size: 35px;
+$delete-icon--size: 25px;
+
 .UserStatusPanel {
   &__status {
     display: flex;
@@ -13,9 +16,13 @@
     justify-content: center;
     align-items: center;
     border-radius: $border-radius--max;
-    width: 35px;
-    height: 35px;
+    width: $picker-icon--size;
+    height: $picker-icon--size;
     cursor: pointer;
+
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 
   &__delete-icon {
@@ -23,9 +30,14 @@
     justify-content: center;
     align-items: center;
     border-radius: $border-radius--max;
-    width: 25px;
-    height: 25px;
+    width: $delete-icon--size;
+    height: $delete-icon--size;
+    margin-left: 5px;
     background-color: $lighter-intermediate-grey;
     cursor: pointer;
+
+    &:hover {
+      transform: scale(1.2);
+    }
   }
 }

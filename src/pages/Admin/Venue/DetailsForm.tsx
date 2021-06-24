@@ -849,10 +849,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const {
     isShown: hasUserStatuses,
-    hide: hideUserStatuses,
     show: showUserStatuses,
+    toggle: toggleUserStatus,
   } = useShowHide(venue?.showUserStatus);
 
+  // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
   useEffect(() => {
     if (!venue) return;
     const venueUserStatuses = venue?.userStatuses ?? [];
@@ -869,10 +870,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     statuses.splice(index, 1);
     setUserStatuses(statuses);
   };
-
-  const toggleUserStatus = useCallback(() => {
-    hasUserStatuses ? hideUserStatuses() : showUserStatuses();
-  }, [hasUserStatuses, hideUserStatuses, showUserStatuses]);
 
   const addUserStatus = () =>
     setUserStatuses([...userStatuses, { status: "", color: "#4BCC4B" }]);

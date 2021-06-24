@@ -10,8 +10,9 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { FIVE_MINUTES_MS } from "utils/time";
 import { DefaultUserStatus } from "types/User";
+
+import { FIVE_MINUTES_MS } from "utils/time";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -602,10 +603,17 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const USER_STATUSES = [
-  { status: DefaultUserStatus.online, color: "#53E52A" },
-  { status: DefaultUserStatus.busy, color: "#F44336" },
-];
+export const ONLINE_USER_STATUS = {
+  status: DefaultUserStatus.online,
+  color: "#53E52A",
+};
+
+export const BUSY_USER_STATUS = {
+  status: DefaultUserStatus.busy,
+  color: "#F44336",
+};
+
+export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 // @debt probably would be better to adjust max hour based on user's display size

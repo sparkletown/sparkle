@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 
 import { USER_STATUSES } from "settings";
 
@@ -8,6 +8,14 @@ import { Checkbox } from "components/atoms/Checkbox";
 import { UserStatusPanel } from "./components/UserStatusPanel";
 
 import "./UserStatusManager.scss";
+
+const renderDefaultUserStatuses = USER_STATUSES.map((userStatus, index) => (
+  <UserStatusPanel
+    key={userStatus.status + index}
+    userStatus={userStatus}
+    disabled
+  />
+));
 
 export interface UserStatusManagerProps {
   venueId?: string;
@@ -53,6 +61,23 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
     [onPickColor]
   );
 
+  const renderVenueUserStatuses = useMemo(
+    () =>
+      userStatuses.map((userStatus, index) => (
+        <UserStatusPanel
+          key={`panel-${index}`}
+          userStatus={{
+            status: userStatus.status,
+            color: userStatus.color,
+          }}
+          onPickColor={(color) => pickColor(color, index)}
+          onChangeInput={(value) => changeInput(value, index)}
+          onDelete={() => deleteStatus(index)}
+        />
+      )),
+    [changeInput, deleteStatus, pickColor, userStatuses]
+  );
+
   return (
     <div className="UserStatusManager">
       <div className="UserStatusManager__checkbox">
@@ -69,28 +94,8 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
       </div>
       {checked && (
         <>
-          {USER_STATUSES.map((userStatus, index) => (
-            <UserStatusPanel
-              key={userStatus.status + index}
-              userStatus={{
-                status: userStatus.status,
-                color: userStatus.color,
-              }}
-              disabled
-            />
-          ))}
-          {userStatuses.map((userStatus, index) => (
-            <UserStatusPanel
-              key={`panel-${index}`}
-              userStatus={{
-                status: userStatus.status,
-                color: userStatus.color,
-              }}
-              onPickColor={(color) => pickColor(color, index)}
-              onChangeInput={(value) => changeInput(value, index)}
-              onDelete={() => deleteStatus(index)}
-            />
-          ))}
+          {renderDefaultUserStatuses}
+          {renderVenueUserStatuses}
           <div onClick={onAdd}>Add a status</div>
         </>
       )}

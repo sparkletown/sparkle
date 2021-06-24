@@ -4,11 +4,12 @@ import classNames from "classnames";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User } from "types/User";
+
+import { WithId } from "utils/id";
+
 import { useRecentWorldUsers } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
-
-import { WithId } from "utils/id";
 
 import "./UserAvatar.scss";
 
@@ -32,10 +33,12 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
   const { recentWorldUsers } = useRecentWorldUsers();
-  const { userStatus, venueStatusEnabled } = useVenueUserStatuses(
+  const { userStatus, isStatusEnabledForVenue } = useVenueUserStatuses(
     venueId,
     user
   );
+
+  console.log(isStatusEnabledForVenue);
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -61,6 +64,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "user-avatar__status-indicator--large": large,
   });
 
+  const statusIndicatorStyles = useMemo(
+    () => ({ backgroundColor: userStatus.color }),
+    [userStatus.color]
+  );
+
   return (
     <div className={containerClasses}>
       <img
@@ -70,13 +78,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         onClick={onClick}
       />
       {/*
-        'venueStatusEnabled' checks if the user status is enabled from the venue config.
+        'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
         'showStatus' is used to render this conditionally only in some of the screens.
       */}
-      {venueStatusEnabled && showStatus && isOnline && (
+      {isStatusEnabledForVenue && showStatus && isOnline && (
         <span
           className={statusIndicatorClasses}
-          style={{ backgroundColor: userStatus.color }}
+          style={statusIndicatorStyles}
         />
       )}
     </div>

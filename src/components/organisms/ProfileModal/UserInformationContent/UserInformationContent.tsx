@@ -12,6 +12,8 @@ import { currentVenueSelector } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { updateUserProfile } from "pages/Account/helpers";
 import { Badges } from "components/organisms/Badges";
@@ -32,6 +34,10 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
   const { user, profile, userWithId } = useUser();
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
+  const { sovereignVenueId } = useSovereignVenueId({ venueId });
+  const { currentVenue: sovereignVenue } = useRelatedVenues({
+    currentVenueId: sovereignVenueId,
+  });
 
   const profileQuestions = venue?.profile_questions;
 
@@ -98,7 +104,9 @@ const UserInformationContent: React.FunctionComponent<PropsType> = ({
         <div className="text-container">
           <h3>{profile?.partyName || DEFAULT_PARTY_NAME}</h3>
           <div className="ellipsis-text">{user.email}</div>
-          <UserStatusDropdown userStatuses={venue?.userStatuses ?? []} />
+          <UserStatusDropdown
+            userStatuses={sovereignVenue?.userStatuses ?? []}
+          />
         </div>
       </div>
 
