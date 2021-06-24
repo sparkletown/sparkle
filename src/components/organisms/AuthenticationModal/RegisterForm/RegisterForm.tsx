@@ -3,7 +3,7 @@ import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+// import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
 import { checkIsEmailWhitelisted } from "api/auth";
 
@@ -45,11 +45,11 @@ export interface RegisterData {
   date_of_birth: string;
 }
 
-const sparkleTermsAndConditions = {
-  name: `I agree to Sparkle's terms and conditions`,
-  text: `I agree to Sparkle's terms and conditions`,
-  link: SPARKLE_TERMS_AND_CONDITIONS_URL,
-};
+// const sparkleTermsAndConditions = {
+//   name: `I agree to Sparkle's terms and conditions`,
+//   text: `I agree to Sparkle's terms and conditions`,
+//   link: SPARKLE_TERMS_AND_CONDITIONS_URL,
+// };
 
 const RegisterForm: React.FunctionComponent<PropsType> = ({
   displayLoginForm,
@@ -229,7 +229,9 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <span className="input-error">{errors.backend.message}</span>
         )}
 
-        <div className="input-group" key={sparkleTermsAndConditions.name}>
+        {/* @debt: the t&cs are likely going to be removed; so i commented it out instead of deleting in case it's needed */}
+
+        {/* <div className="input-group" key={sparkleTermsAndConditions.name}>
           <label
             htmlFor={sparkleTermsAndConditions.name}
             className={`checkbox input-info ${
@@ -255,11 +257,13 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
               required: true,
             })}
           />
-          {/* @ts-ignore @debt term should be typed if possible */}
+          @ts-ignore @debt term should be typed if possible
           {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
             <span className="input-error">Required</span>
           )}
-        </div>
+
+        </div> */}
+
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             /* @ts-ignore @debt term should be typed if possible */
