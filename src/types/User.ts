@@ -17,6 +17,10 @@ export type VideoState = {
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
 
+export interface ProfileLink {
+  title: string;
+  url: string;
+}
 export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
@@ -37,9 +41,16 @@ export interface User {
   enteredVenueIds?: string[];
   status?: string;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
+  profileLinks?: ProfileLink[];
 }
 
 export enum UserStatus {
   available = "available",
   busy = "busy",
+}
+
+export enum UsernameVisibility {
+  none = "none",
+  hover = "hover",
+  inline = "inline",
 }
