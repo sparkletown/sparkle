@@ -44,6 +44,8 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   user,
   email,
 }) => {
+  // TODO: get user contact list
+  const contactsList = [];
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
   );
@@ -162,6 +164,12 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <img src={editIcon} alt="edit" />
         </Button>
       </div>
+      <Button
+        customClass="UserInformationContent__contacts"
+        onClick={() => setUserProfileMode(UserProfileMode.CONTACTS_LIST)}
+      >
+        {`${contactsList.length} Contacts`}
+      </Button>
       {questions}
 
       {profileLinks}

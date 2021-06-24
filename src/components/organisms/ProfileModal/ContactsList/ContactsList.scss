@@ -1,0 +1,28 @@
+@import "scss/constants";
+
+$inputs--font-size: 0.8rem;
+$buttons--font-size: 0.9rem;
+
+.ContactsList {
+  display: flex;
+  flex-direction: column;
+
+  &__title {
+    font-size: $font-size--md;
+    line-height: $spacing--xl;
+    color: opaque-white(0.5);
+    text-align: start;
+    margin-bottom: $spacing--lg;
+  }
+
+  // @debt had to increase specificity because Button styles go later
+  & .ContactsList__button--cancel {
+    width: 100%;
+    background-color: $secondary;
+    font-size: $buttons--font-size;
+
+    &:hover {
+      background-color: $secondary--light;
+    }
+  }
+}
