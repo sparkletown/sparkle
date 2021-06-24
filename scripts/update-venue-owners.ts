@@ -30,24 +30,31 @@ const VALID_MODES: string[] = [Mode.Add, Mode.Remove];
 
 const usage = makeScriptUsage({
   description: `Bulk add users to the owners list based on the supplied email address(es).\n\n(Note: the accounts must already exist.)`,
-  usageParams: `CREDENTIAL_PATH [${Mode.Add}/${Mode.Remove}] EMAIL1 EMAIL2 EMAIlN...`,
-  exampleParams: `fooAccountKey.json ADD foouser@example.com baruser@example.com`,
+  usageParams: `CREDENTIAL_PATH VENUE1 VENUE2 VENUEN [${Mode.Add}/${Mode.Remove}] EMAIL1 EMAIL2 EMAILN...`,
+  exampleParams: `fooAccountKey.json home park ADD foouser@example.com baruser@example.com`,
 });
 
-const [credentialPath, mode, ...extraEmailAddresses] = process.argv.slice(2);
-if (!credentialPath || !VALID_MODES.includes(mode)) {
+const [credentialPath, ...extraArgs] = process.argv.slice(2);
+const modeIndex = extraArgs.findIndex((arg) => VALID_MODES.includes(arg));
+
+if (!credentialPath || modeIndex === -1) {
   usage();
 }
 
+const mode = extraArgs[modeIndex];
+const extraVenues = extraArgs.slice(0, modeIndex);
+const extraEmailAddresses = extraArgs.slice(modeIndex + 1);
+
+const allVenuesToUpdate = [...VENUES_TO_CHANGE_OWNERSHIP, ...extraVenues];
 const allEmailAddresses = [...EMAIL_ADDRESSES, ...extraEmailAddresses];
 
-if (allEmailAddresses.length === 0) {
-  console.error("Error: No email addresses provided");
+if (allVenuesToUpdate.length === 0) {
+  console.error("Error: No venues provided");
   process.exit(1);
 }
 
-if (VENUES_TO_CHANGE_OWNERSHIP.length === 0) {
-  console.error("Error: No venues provided");
+if (allEmailAddresses.length === 0) {
+  console.error("Error: No email addresses provided");
   process.exit(1);
 }
 
@@ -66,7 +73,7 @@ if (!projectId) {
 const app = initFirebaseAdminApp(projectId, { credentialPath });
 
 (async () => {
-  for (const venue of VENUES_TO_CHANGE_OWNERSHIP) {
+  for (const venue of allVenuesToUpdate) {
     console.log(
       `\n===== Updating the ownership of the following venue: ${venue}`
     );
