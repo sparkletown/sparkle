@@ -41,21 +41,15 @@ read -p "  Press enter to continue"
 # Modern branch names
 
 echo
-echo "About to deploy to memrise, unesco, pa, clever, unity, demo:"
+echo "About to deploy to memrise, unesco, ohbm, pa, github:"
 read -p "  Press enter to continue"
 
 #(set -x; git push origin master:env/kotr) # Note: This runs custom code/is no longer used/required. Don't deploy to it.
 (set -x; git push origin master:env/memrise)
 (set -x; git push origin master:env/unesco)
-# (set -x; git push origin master:env/ohbm) # Note: This runs custom code.
+(set -x; git push origin master:env/ohbm)
 (set -x; git push origin master:env/pa)
-(set -x; git push origin master:env/clever)
-(set -x; git push origin master:env/unity)
-(set -x; git push origin master:env/demo)
-
-echo "Note: ohbm environment was not updated as it has custom code. To update the environment you should create a PR. (example: https://github.com/sparkletown/sparkle/pull/1519)"
-echo
-echo "Also: please, ask the Burning Man development team to update their branches - env/burn-staging, env/burn - from master"
+(set -x; git push origin master:env/github)
 
 echo
 echo "All done!"
