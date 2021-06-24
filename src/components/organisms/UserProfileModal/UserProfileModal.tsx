@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark } from "@fortawesome/free-solid-svg-icons";
 
@@ -11,7 +12,7 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
-import { updateContactsList } from "api/profile";
+import { addToContactsList, removeFromContactsList } from "api/profile";
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
@@ -38,7 +39,7 @@ export interface UserProfileModalProps {
 export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   venue,
 }) => {
-  const { user } = useUser();
+  const { user, userWithId } = useUser();
 
   const { selectRecipientChat } = useChatSidebarControls();
 
@@ -96,14 +97,31 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     [selectedUserProfile?.profileLinks]
   );
 
+  const isInContactsList = useMemo(() => {
+    if (!userWithId || !chosenUserId) return false;
+
+    return userWithId?.contactsList?.includes(chosenUserId);
+  }, [userWithId, chosenUserId]);
+
   const handleContactListUpdate = useCallback(async () => {
     if (!user || !chosenUserId) return;
-    // TODO handle case to remove chosenUserId from user?.contactsList
-    await updateContactsList({
-      contactsList: [chosenUserId],
-      userId: user.uid,
-    });
-  }, [user, chosenUserId]);
+
+    if (isInContactsList) {
+      await removeFromContactsList({
+        contactsListUserId: chosenUserId,
+        userId: user.uid,
+      });
+    } else {
+      await addToContactsList({
+        contactsListUserId: chosenUserId,
+        userId: user.uid,
+      });
+    }
+  }, [user, chosenUserId, isInContactsList]);
+
+  const bookmarkIconStyles = classNames("UserProfileModal__icon--bookmark", {
+    "UserProfileModal__icon--bookmark-full": isInContactsList,
+  });
 
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
@@ -118,10 +136,9 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
-            {/* TODO: cover case for in contact list user */}
             {chosenUserId !== user.uid && (
               <FontAwesomeIcon
-                className="UserProfileModal__icon--bookmark"
+                className={bookmarkIconStyles}
                 icon={faBookmark}
                 onClick={handleContactListUpdate}
               />

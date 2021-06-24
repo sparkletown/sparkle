@@ -32,7 +32,7 @@ export const ContactsList: React.FC<ContactsListProps> = ({
     [openUserProfileModal]
   );
 
-  const renderList = useMemo(
+  const renderContactsList = useMemo(
     () =>
       contactsList.map((user) => (
         <div
@@ -53,8 +53,10 @@ export const ContactsList: React.FC<ContactsListProps> = ({
 
   return (
     <div className="ContactsList">
-      <div className="ContactsList__title">My Contacts</div>
-      <div className="ContactsList__users">{renderList}</div>
+      <div className="ContactsList__title">
+        My Contacts ({contactsList.length})
+      </div>
+      <div className="ContactsList__users">{renderContactsList}</div>
       <Button
         customClass="ContactsList__button--cancel"
         onClick={() => setUserProfileMode(UserProfileMode.DEFAULT)}

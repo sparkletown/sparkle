@@ -15,6 +15,14 @@ $profile-link--padding: 6px 18px;
     position: absolute;
     top: 0;
     right: 0;
+
+    path {
+      fill: $secondary--light;
+    }
+  }
+
+  &__icon--bookmark-full path {
+    fill: $white;
   }
 
   &__profile-link {
