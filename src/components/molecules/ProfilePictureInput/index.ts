@@ -1,1 +1,1 @@
-export { default } from "./ProfilePictureInput";
+export { ProfilePictureInput } from "./ProfilePictureInput";
