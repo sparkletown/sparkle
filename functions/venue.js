@@ -149,6 +149,7 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+// @debt Presumably this function should check if the user is an admin or an owner, not just call checkUserIsOwner
 const checkUserIsAdminOrOwner = async (venueId, uid) => {
   try {
     return await checkUserIsOwner(venueId, uid);
