@@ -11,6 +11,7 @@ import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
 import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
 import { useVenueId } from "./useVenueId";
+import { useUser } from "./useUser";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
 import { useSovereignVenueId } from "./useSovereignVenueId";
 
@@ -147,4 +148,17 @@ export const useRecentVenueUsers = () => {
     recentVenueUsers: recentLocationUsers,
     isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
   };
+};
+
+export const useContactsListToDisplay = () => {
+  const { worldUsers } = useWorldUsers();
+  const { userWithId } = useUser();
+
+  return useMemo(
+    () =>
+      worldUsers.filter((recentUser) =>
+        userWithId?.contactsList?.includes(recentUser.id)
+      ),
+    [worldUsers, userWithId?.contactsList]
+  );
 };

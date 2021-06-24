@@ -4,7 +4,7 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useContactsListToDisplay } from "hooks/privateChats";
+import { useContactsListToDisplay } from "hooks/users";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import Button from "components/atoms/Button";

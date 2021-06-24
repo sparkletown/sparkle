@@ -15,7 +15,7 @@ import {
 } from "utils/selectors";
 import { venueLandingUrl } from "utils/url";
 
-import { useContactsListToDisplay } from "hooks/privateChats";
+import { useContactsListToDisplay } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 
