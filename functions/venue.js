@@ -4,6 +4,7 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 const { checkAuth } = require("./auth");
+const { assertValidVenueId } = require("./src/utils/assert");
 
 const PLAYA_VENUE_ID = "jamonline";
 
@@ -368,9 +369,19 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueData = createVenueData_v2(data, context);
   const venueId = getVenueId(data.name);
 
-  await admin.firestore().collection("venues").doc(venueId).set(venueData);
+  assertValidVenueId(venueId, "venueId");
 
-  return venueData;
+  const venue = await admin.firestore().collection("venues").doc(venueId).get();
+
+  if (venue.exists) {
+    throw new HttpsError("already-exists", "Venue already exists");
+  }
+
+  return await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .set(venueData);
 });
 
 exports.upsertRoom = functions.https.onCall(async (data, context) => {

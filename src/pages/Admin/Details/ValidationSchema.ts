@@ -56,25 +56,11 @@ const venueNameLengthValidation = Yup.string()
   );
 
 // @debt Firebase check should be moved out of here because it can be very expensive when the form revalidateMode is onChange
-const venueNameValidation = venueNameLengthValidation
-  .test(
-    "name",
-    "Must have alphanumeric characters",
-    (val: string) => createUrlSafeName(val).length > 0
-  )
-  .test(
-    "name",
-    "This venue name is already taken",
-    async (val: string) =>
-      !val ||
-      !(
-        await firebase
-          .firestore()
-          .collection("venues")
-          .doc(createUrlSafeName(val))
-          .get()
-      ).exists
-  );
+const venueNameValidation = venueNameLengthValidation.test(
+  "name",
+  "Must have alphanumeric characters",
+  (val: string) => createUrlSafeName(val).length > 0
+);
 
 const createFileSchema = (
   name: string,

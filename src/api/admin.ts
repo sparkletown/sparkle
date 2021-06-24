@@ -324,9 +324,12 @@ export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
     },
     user
   );
-  return await firebase.functions().httpsCallable("venue-createVenue_v2")(
-    firestoreVenueInput
-  );
+  return await firebase
+    .functions()
+    .httpsCallable("venue-createVenue_v2")(firestoreVenueInput)
+    .catch((error) => {
+      throw Error(error.message);
+    });
 };
 
 export const updateVenue = async (

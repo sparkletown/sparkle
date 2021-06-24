@@ -4,7 +4,7 @@ import classNames from "classnames";
 
 import { AnyVenue, isPartyMapVenue } from "types/venues";
 
-import { useModalControls } from "hooks/useModalControls";
+import { useShowHide } from "hooks/useShowHide";
 
 import { WithId } from "utils/id";
 
@@ -18,7 +18,11 @@ export interface AdminVenuesProps {
 }
 
 export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
-  const { isModalVisible, showModal, hideModal } = useModalControls();
+  const {
+    isShown: isModalVisible,
+    show: showModal,
+    hide: hideModal,
+  } = useShowHide();
 
   const renderedPartyVenues = useMemo(
     () =>

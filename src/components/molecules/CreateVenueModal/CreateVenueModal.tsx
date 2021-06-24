@@ -1,7 +1,9 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback } from "react";
 import { Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import Bugsnag from "@bugsnag/js";
+import classNames from "classnames";
 
 import { createVenue_v2, generateVenueLandingUrl } from "api/admin";
 
@@ -27,8 +29,6 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
   isVisible,
   onHide,
 }) => {
-  const [isLoading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string>();
   const venueId = useVenueId();
   const { user } = useUser();
 
@@ -36,7 +36,7 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
     onHide && onHide();
   }, [onHide]);
 
-  const onSubmit = useCallback(
+  const [{ loading: isLoading, error }, createVenue] = useAsyncFn(
     async (vals: FormValues) => {
       if (!user || isLoading) return;
 
@@ -45,29 +45,25 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
         template: VenueTemplate.partymap,
       };
 
-      setLoading(true);
-      createVenue_v2(venue, user)
+      await createVenue_v2(venue, user)
         .then(() => {
           hide();
         })
         .catch((e) => {
-          setError(e);
           Bugsnag.notify(e, (event) => {
             event.addMetadata("context", {
               location: "api::createVenueModal::createVenue_v2",
             });
           });
-        })
-        .finally(() => {
-          setLoading(false);
+          throw new Error(e);
         });
     },
-    [hide, isLoading, user]
+    [hide, user]
   );
 
   const { watch, register, errors, handleSubmit } = useForm<FormValues>({
     mode: "onSubmit",
-    reValidateMode: "onSubmit",
+    reValidateMode: "onBlur",
     validationSchema: newVenueSchema,
     validationContext: {
       editing: !!venueId,
@@ -85,14 +81,12 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
       centered
       backdropClassName="modal-backdrop in"
     >
-      <Modal.Body className="create-venue-modal modal-content in">
+      <Modal.Body className="CreateVenueModal modal-content in">
         <Form
-          onSubmit={handleSubmit(onSubmit)}
-          className="create-venue-modal__content"
+          onSubmit={handleSubmit(createVenue)}
+          className="CreateVenueModal__content"
         >
-          <label className="create-venue-modal__title">
-            Name your new space
-          </label>
+          <label className="CreateVenueModal__title">Name your new space</label>
           <Form.Control
             name="name"
             placeholder="Enter the name of your new space"
@@ -101,29 +95,33 @@ export const CreateVenueModal: React.FC<CreateVenueModalProps> = ({
             disabled={isLoading}
           />
           {errors.name && (
-            <span className="input-error">{errors.name.message}</span>
+            <div className="input-error">{errors.name.message}</div>
           )}
           {error && (
-            <span className="input-error">
-              An error occurred, please try again!
-            </span>
+            <div className="input-error">
+              {error?.message ?? "An error occurred, please try again!"}
+            </div>
           )}
 
-          <div className="create-venue-modal__url-info">
+          <div className="CreateVenueModal__url-info">
             The url of your party will be:{" "}
-            <span className="create-venue-modal__url">{venueUrl}</span>
+            <span className="CreateVenueModal__url">{venueUrl}</span>
           </div>
 
-          <div className="create-venue-modal__buttons">
+          <div className="CreateVenueModal__buttons">
             <button
-              className="create-venue-modal__buttons--back"
+              className={classNames("CreateVenueModal__buttons--back", {
+                isLoading: "btn disabled",
+              })}
               onClick={hide}
               disabled={isLoading}
             >
               Cancel
             </button>
             <button
-              className="create-venue-modal__buttons--next"
+              className={classNames("CreateVenueModal__buttons--next", {
+                isLoading: "btn disabled",
+              })}
               type="submit"
               disabled={isLoading}
             >
