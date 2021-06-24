@@ -1,3 +1,4 @@
+// @debt is this component used? looks like we can get rid of it.
 import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -15,16 +16,16 @@ import { useVenueId } from "hooks/useVenueId";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./EditProfileModal.scss";
 
-interface PropsType {
+export interface EditProfileModalProps {
   show: boolean;
   onHide: () => void;
 }
 
-const EditProfileModal: React.FunctionComponent<PropsType> = ({
+export const EditProfileModal: React.FunctionComponent<EditProfileModalProps> = ({
   show,
   onHide,
 }) => {
@@ -114,9 +115,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
                   <textarea
                     className="input-block input-centered"
                     name={question.name}
-                    ref={register({
-                      required: true,
-                    })}
+                    ref={register()}
                   />
                 </div>
               </>
@@ -139,5 +138,3 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-export default EditProfileModal;
