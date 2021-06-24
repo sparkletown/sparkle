@@ -198,12 +198,14 @@ export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
   image_url: roomImageUrlSchema,
 });
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const venueEditSchema = Yup.object()
   .shape<Partial<SchemaShape>>({})
   .from("subtitle", "subtitle")
   .from("config.landingPageConfig.description", "description");
 
 // this is used to transform the api data to conform to the yup schema
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
   // possible locations for the subtitle
@@ -225,6 +227,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("mapIconImageUrl", "mapIconImageUrl");
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 
