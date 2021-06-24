@@ -207,19 +207,6 @@ export const SUBVENUE_TEMPLATES = [
   VenueTemplate.animatemap,
 ];
 
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const PLACEABLE_VENUE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.zoomroom,
-];
-
 export const COVERT_ROOM_TYPES: RoomType[] = [
   RoomType.unclickable,
   RoomType.mapFrame,
