@@ -141,6 +141,21 @@ export const useOnlineUsersToDisplay = () => {
   ]);
 };
 
+// TODO: fixed contacts list users
+export const useContactsListToDisplay = () => {
+  const { recentWorldUsers } = useRecentWorldUsers();
+  const { user } = useUser();
+
+  // user?.contactsList
+  const userId = user?.uid;
+
+  // Filter out self
+  return useMemo(() => recentWorldUsers.filter((user) => user.id !== userId), [
+    recentWorldUsers,
+    userId,
+  ]);
+};
+
 export const useNumberOfUnreadChats = () => {
   const { user } = useUser();
   const { privateChatPreviews } = usePrivateChatPreviews();

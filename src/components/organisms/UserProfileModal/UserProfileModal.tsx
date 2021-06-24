@@ -11,6 +11,8 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
+import { updateContactsList } from "api/profile";
+
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
@@ -94,6 +96,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     [selectedUserProfile?.profileLinks]
   );
 
+  const handleContactListUpdate = useCallback(async () => {
+    if (!user || !chosenUserId) return;
+    // TODO handle case to remove chosenUserId from user?.contactsList
+    await updateContactsList({
+      contactsList: [chosenUserId],
+      userId: user.uid,
+    });
+  }, [user, chosenUserId]);
+
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
   }
@@ -112,7 +123,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <FontAwesomeIcon
                 className="UserProfileModal__icon--bookmark"
                 icon={faBookmark}
-                onClick={() => console.log(chosenUserId)}
+                onClick={handleContactListUpdate}
               />
             )}
             <div className="profile-basics">

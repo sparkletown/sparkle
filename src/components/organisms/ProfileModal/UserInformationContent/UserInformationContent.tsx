@@ -15,6 +15,7 @@ import {
 } from "utils/selectors";
 import { venueLandingUrl } from "utils/url";
 
+import { useContactsListToDisplay } from "hooks/privateChats";
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 
@@ -44,8 +45,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   user,
   email,
 }) => {
-  // TODO: get user contact list
-  const contactsList = [];
+  const contactsList = useContactsListToDisplay();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
   );

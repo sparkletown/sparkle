@@ -142,6 +142,32 @@ export const updateProfileLinks = async ({
   });
 };
 
+// ================================================= Contact List
+export interface UpdateContactsListProps {
+  contactsList: string[];
+  userId: string;
+}
+
+export const updateContactsList = async ({
+  contactsList,
+  userId,
+}: UpdateContactsListProps): Promise<void> => {
+  const userProfileRef = getUserRef(userId);
+
+  return userProfileRef.update({ contactsList }).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::updateProfileLinks",
+        contactsList,
+        userId,
+        event,
+      });
+
+      throw err;
+    });
+  });
+};
+
 // ================================================= User Collection
 export interface UpdateUserCollectionProps {
   collectionKey: string;

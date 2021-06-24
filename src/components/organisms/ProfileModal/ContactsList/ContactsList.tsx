@@ -4,7 +4,7 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useOnlineUsersToDisplay } from "hooks/privateChats";
+import { useContactsListToDisplay } from "hooks/privateChats";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import Button from "components/atoms/Button";
@@ -22,8 +22,7 @@ export interface ContactsListProps {
 export const ContactsList: React.FC<ContactsListProps> = ({
   setUserProfileMode,
 }) => {
-  // TODO: replace online users with contact list users
-  const onlineUsers = useOnlineUsersToDisplay();
+  const contactsList = useContactsListToDisplay();
   const { openUserProfileModal } = useProfileModalControls();
 
   const openAuthorProfile = useCallback(
@@ -33,22 +32,24 @@ export const ContactsList: React.FC<ContactsListProps> = ({
     [openUserProfileModal]
   );
 
-  const renderList = useMemo(() => {
-    return onlineUsers.map((user) => (
-      <div
-        key={user.id}
-        className="ContactsList__user"
-        onClick={() => openAuthorProfile(user)}
-      >
-        <UserAvatar
-          user={user}
-          showStatus
-          containerClassName="ContactsList__user--avatar"
-        />
-        <span className="ContactsList__user--name">{user.partyName}</span>
-      </div>
-    ));
-  }, [openAuthorProfile, onlineUsers]);
+  const renderList = useMemo(
+    () =>
+      contactsList.map((user) => (
+        <div
+          key={user.id}
+          className="ContactsList__user"
+          onClick={() => openAuthorProfile(user)}
+        >
+          <UserAvatar
+            user={user}
+            showStatus
+            containerClassName="ContactsList__user--avatar"
+          />
+          <span className="ContactsList__user--name">{user.partyName}</span>
+        </div>
+      )),
+    [openAuthorProfile, contactsList]
+  );
 
   return (
     <div className="ContactsList">
