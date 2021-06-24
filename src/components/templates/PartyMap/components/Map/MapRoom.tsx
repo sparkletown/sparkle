@@ -81,10 +81,9 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const [play] = useCustomSound(room.enterSound, { interrupt: true });
   const selectRoomWithSound = useCallback(() => {
-    if (!isLabelHidden) return;
     play();
     selectRoom();
-  }, [play, selectRoom, isLabelHidden]);
+  }, [play, selectRoom]);
 
   return (
     <div
