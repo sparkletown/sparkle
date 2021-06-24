@@ -101,7 +101,7 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
 
       {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
       {!isMuted && (
-        <audio autoPlay loop>
+        <audio autoPlay>
           <source src={audioPath} />
         </audio>
       )}

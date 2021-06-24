@@ -17,7 +17,7 @@ import {
 
 import { useStage } from "./useStage";
 import AppButton from "components/atoms/Button";
-import Player, { VideoPlayerProps } from "./components/Player/Player";
+import { Player, VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
 import Audience from "./components/Audience/Audience";
 import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
@@ -105,14 +105,16 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   );
 
   const remoteUsersPlayers = useMemo(() => {
+    const uniqueUsersIds = new Set();
     const setRemoteUserAvatar = (remoteUserId: number | string) => {
       if (!venue.id) return;
-      const remoteUser = stage.peopleOnStage.find(
+
+      return stage.peopleOnStage.find(
         ({ data }) =>
           data?.[`${venue.id}`]?.cameraClientUid === `${remoteUserId}`
       );
-      return remoteUser;
     };
+
     return remoteUsers
       .filter(
         ({ uid }) =>
@@ -124,26 +126,44 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
           `${uid}` !==
           userOnStageSharingScreen?.data?.[`${venue.id}`]?.screenClientUid
       )
-      .map(
-        (user) =>
-          user.uid !== screenClient.uid &&
-          user.uid !== cameraClient.uid && (
-            <div key={user.uid}>
-              {user.hasVideo && (
+      .map((agoraRemoteUser) => {
+        const user = setRemoteUserAvatar(agoraRemoteUser.uid);
+        if (!user) return null;
+
+        const isUniqueUser = !uniqueUsersIds.has(user.id);
+        if (isUniqueUser) {
+          uniqueUsersIds.add(user.id);
+        }
+
+        return (
+          agoraRemoteUser.uid !== screenClient.uid &&
+          agoraRemoteUser.uid !== cameraClient.uid && (
+            <div key={agoraRemoteUser.uid}>
+              {isUniqueUser && (
                 <Player
                   showButtons
-                  user={setRemoteUserAvatar(user.uid)}
-                  videoTrack={user.videoTrack}
-                  audioTrack={user.audioTrack}
-                  isCamOn={user.hasVideo}
-                  isMicOn={user.hasAudio}
+                  user={setRemoteUserAvatar(agoraRemoteUser.uid)}
+                  videoTrack={agoraRemoteUser.videoTrack}
+                  audioTrack={agoraRemoteUser.audioTrack}
+                  isCamOn={agoraRemoteUser.hasVideo}
+                  isMicOn={agoraRemoteUser.hasAudio}
+                  toggleCam={stage.toggleUserCamera}
+                  toggleMic={stage.toggleUserMicrophone}
                   containerClass="TalkShowStudio__mode--play"
                 />
               )}
             </div>
           )
-      );
-  }, [remoteUsers, venue.id, stage.peopleOnStage, userOnStageSharingScreen]);
+        );
+      });
+  }, [
+    remoteUsers,
+    venue.id,
+    stage.peopleOnStage,
+    userOnStageSharingScreen,
+    stage.toggleUserCamera,
+    stage.toggleUserMicrophone,
+  ]);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin();

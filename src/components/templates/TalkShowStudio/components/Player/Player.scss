@@ -9,6 +9,13 @@
   width: 100%;
   height: 100%;
 
+  &__background {
+    position: absolute;
+    background-color: $black;
+    width: 100%;
+    height: 100%;
+  }
+
   &__overlay {
     position: absolute;
     z-index: z(player-overlay);
