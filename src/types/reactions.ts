@@ -4,12 +4,13 @@ import { isTruthy } from "utils/types";
 export enum EmojiReactionType {
   heart = "heart",
   clap = "clap",
-  wolf = "wolf",
+  hundred = "hundred",
   laugh = "laugh",
   thatsjazz = "thatsjazz",
   boo = "boo",
-  burn = "burn",
+  confetti = "confetti",
   sparkle = "sparkle",
+  request = "request",
 }
 
 export const TextReactionType = "messageToTheBand" as const;
@@ -35,6 +36,11 @@ export interface TextReaction extends BaseReaction {
 
 export type Reaction = EmojiReaction | TextReaction;
 
+export type UserPersistentReactionType = {
+  isReaction: boolean;
+  emojiReaction: EmojiReactionType;
+};
+
 export type ReactionData<T extends ReactionType = ReactionType> = {
   type: T;
   name: string;
@@ -59,11 +65,11 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
     audioPath: "/sounds/clap.mp3",
   },
   {
-    type: EmojiReactionType.wolf,
-    name: "wolf",
-    text: "🐺",
-    ariaLabel: "wolf-emoji",
-    audioPath: "/sounds/wolf.mp3",
+    type: EmojiReactionType.hundred,
+    name: "hundred",
+    text: "💯",
+    ariaLabel: "hundred-emoji",
+    audioPath: "/sounds/ding-ding.wav",
   },
   {
     type: EmojiReactionType.laugh,
@@ -87,18 +93,29 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
     audioPath: "/sounds/boo.mp3",
   },
   {
-    type: EmojiReactionType.burn,
-    name: "burn",
-    text: "🔥",
-    ariaLabel: "burn-emoji",
-    audioPath: "/sounds/burn.mpeg",
+    type: EmojiReactionType.confetti,
+    name: "confetti",
+    text: "🎉",
+    ariaLabel: "confetti-emoji",
+    audioPath: "/sounds/confetti.wav",
   },
   {
     type: EmojiReactionType.sparkle,
     name: "sparkle",
     text: "✨",
     ariaLabel: "sparkle-emoji",
-    audioPath: "/sounds/sparkle.mpeg",
+    audioPath: "/sounds/sparkle.wav",
+  },
+];
+
+export const AllEmojiReactions: ReactionData<EmojiReactionType>[] = [
+  ...EmojiReactions,
+  {
+    type: EmojiReactionType.request,
+    name: "request",
+    text: "✋",
+    ariaLabel: "request-emoji",
+    audioPath: "",
   },
 ];
 

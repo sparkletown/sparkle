@@ -29,6 +29,7 @@ $EventModal--padding-top: 40px;
     opacity: 0.8;
     padding-top: $spacing--xl;
     padding-bottom: $spacing--xl;
+    white-space: pre-wrap;
   }
 
   // @debt we need to transform the rule to `&__button { ... }` once `<Button />` styles stop appearing later than the styles from this file

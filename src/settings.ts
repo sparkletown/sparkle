@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
@@ -56,7 +57,7 @@ export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
-export const DEFAULT_PARTY_NAME = "Anon";
+export const DEFAULT_PARTY_NAME = "Mona";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
@@ -280,6 +281,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     description: [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
+  },
+  {
+    template: VenueTemplate.talkshowstudio,
+    name: "Talk Show Studio",
+    description: ["test"],
   },
 ];
 
@@ -550,6 +556,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
@@ -597,6 +604,10 @@ export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
+export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
+
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
@@ -632,3 +643,5 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const MAX_TALK_SHOW_STUDIO_HOSTS = 5;

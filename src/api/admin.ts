@@ -11,9 +11,11 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
+import { UsernameVisibility } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { TalkShowStudioExperience } from "../types/User";
 
 export interface EventInput {
   name: string;
@@ -105,7 +107,9 @@ export type VenueInput = AdvancedVenueInput &
     showReactions?: boolean;
     showRadio?: boolean;
     radioStations?: string;
+    showNametags?: UsernameVisibility;
     showZendesk?: boolean;
+    requestToJoinStage?: boolean;
   };
 
 export interface VenueInput_v2
@@ -123,6 +127,7 @@ export interface VenueInput_v2
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
   iframeUrl?: string;
+  requestToJoinStage?: boolean;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -560,4 +565,17 @@ export const removeVenueOwner = async (venueId: string, ownerId: string) =>
   firebase.functions().httpsCallable("venue-removeVenueOwner")({
     venueId,
     ownerId,
+  });
+
+export const updateUserTalkShowStudioExperience = async (
+  venueId: string,
+  userId: string,
+  experience: TalkShowStudioExperience
+) =>
+  firebase
+    .functions()
+    .httpsCallable("venue-updateUserTalkShowStudioExperience")({
+    venueId,
+    userId,
+    experience,
   });

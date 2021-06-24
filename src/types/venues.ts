@@ -10,6 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { UsernameVisibility } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -31,6 +32,7 @@ export enum VenueTemplate {
   posterpage = "posterpage",
   preplaya = "preplaya",
   screeningroom = "screeningroom",
+  talkshowstudio = "talkshowstudio",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -47,6 +49,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
+  | VenueTemplate.talkshowstudio
   | VenueTemplate.themecamp
 >;
 
@@ -56,7 +59,8 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterPageVenue;
+  | PosterPageVenue
+  | FullTalkShowVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -96,6 +100,7 @@ export interface Venue_v2_AdvancedConfig {
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
+  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
   showZendesk?: boolean;
@@ -139,6 +144,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
@@ -171,6 +177,7 @@ export interface BaseVenue {
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
   showZendesk?: boolean;
 }
 
@@ -231,6 +238,11 @@ export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
+}
+
+export interface FullTalkShowVenue extends BaseVenue {
+  template: VenueTemplate.talkshowstudio;
+  requestToJoinStage?: boolean;
 }
 
 export interface Question {

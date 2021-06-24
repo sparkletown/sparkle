@@ -1,4 +1,19 @@
-export interface Experience {
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table: string;
   row?: number;
@@ -17,6 +32,10 @@ export type VideoState = {
 // the structure is { [key: venueId] : eventId[] }
 export type MyPersonalizedSchedule = Partial<Record<string, string[]>>;
 
+export interface ProfileLink {
+  title: string;
+  url: string;
+}
 export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
@@ -37,9 +56,16 @@ export interface User {
   enteredVenueIds?: string[];
   status?: string;
   myPersonalizedSchedule?: MyPersonalizedSchedule;
+  profileLinks?: ProfileLink[];
 }
 
 export enum UserStatus {
   available = "available",
   busy = "busy",
+}
+
+export enum UsernameVisibility {
+  none = "none",
+  hover = "hover",
+  inline = "inline",
 }
