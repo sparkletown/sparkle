@@ -19,7 +19,11 @@ export interface UseConnectSovereignVenueReturn {
 export const useConnectSovereignVenue = (
   venueId?: string
 ): UseConnectSovereignVenueReturn => {
+  console.log(0, venueId);
+
   const { sovereignVenueId } = useSovereignVenueId({ venueId });
+
+  console.log("1", sovereignVenueId);
 
   useFirestoreConnect(() => {
     if (!sovereignVenueId) return [];

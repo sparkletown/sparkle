@@ -35,6 +35,8 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const isUnclickable = room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
+  const isLabelHidden = room.isLabelHidden ?? false;
+  const shouldShowLabel = !isCovertRoom && !isLabelHidden;
 
   const dispatch = useDispatch();
 
@@ -47,10 +49,11 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [dispatch]);
 
   const containerClasses = classNames("maproom", {
-    "maproom--covert--unclickable": isUnclickable,
-    "maproom--covert--iframe": isMapFrame,
+    "maproom--covert": isCovertRoom,
+    "maproom--unclickable": isUnclickable,
+    "maproom--iframe": isMapFrame,
     "maproom--always-show-label":
-      !isCovertRoom &&
+      shouldShowLabel &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
@@ -103,7 +106,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
-      {!isCovertRoom && (
+      {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />

@@ -814,6 +814,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowNametagsToggle = () => (
+    <>
+      <h4 className="italic input-header">
+        Display user names on their avatars
+      </h4>
+      <label className="input-container">
+        <Form.Control as="select" name="showNametags" ref={register} custom>
+          <option value="none">None</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
+      </label>
+    </>
+  );
+
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
@@ -961,6 +977,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
+        {renderShowNametagsToggle()}
         {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&

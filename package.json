@@ -105,6 +105,8 @@
     "cy:run": "cypress run",
     "firebase": "npx --no-install -- firebase",
     "firebase:emulate-functions": "npm run firebase -- emulators:start --only functions",
+    "firebase:emulate-functions-hosting": "npm run firebase -- emulators:start --only functions,hosting",
+    "firebase:emulate-functions-hosting:debug": "npm run firebase -- emulators:start --only functions,hosting --inspect-functions",
     "browserslist:update-db": "npx browserslist@latest --update-db"
   },
   "proxy": "http://localhost:3001",

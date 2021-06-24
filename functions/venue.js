@@ -1,7 +1,9 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+
+const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const { checkAuth } = require("./auth");
 
 const PLAYA_VENUE_ID = "jamonline";
 
@@ -268,12 +270,6 @@ const createVenueData_v2 = (data, context) => ({
   template: data.template || VenueTemplate.partymap,
   rooms: [],
 });
-
-const getVenueId = (name) => {
-  return name.replace(/\W/g, "").toLowerCase();
-};
-
-const checkIfValidVenueId = (venueId) => /[a-z0-9_]{1,250}/.test(venueId);
 
 const dataOrUpdateKey = (data, updated, key) =>
   (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
@@ -617,6 +613,10 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.radioStations = [data.radioStations];
   }
 
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
+
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
@@ -739,6 +739,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
 
   if (data.bannerMessage) {
     updated.bannerMessage = data.bannerMessage;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
   }
 
   admin.firestore().collection("venues").doc(venueId).update(updated);

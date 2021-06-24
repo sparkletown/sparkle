@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { User } from "types/User";
+import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
@@ -17,9 +17,11 @@ export interface UserAvatarProps {
   user?: WithId<User>;
   containerClassName?: string;
   imageClassName?: string;
+  showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
   large?: boolean;
+  medium?: boolean;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -27,9 +29,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
+  showNametag,
   onClick,
   showStatus,
   large,
+  medium,
 }) => {
   const venueId = useVenueId();
   const { recentWorldUsers } = useRecentWorldUsers();
@@ -46,9 +50,10 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     ? DEFAULT_PARTY_NAME
     : user?.partyName ?? DEFAULT_PARTY_NAME;
 
-  const containerClasses = classNames("user-avatar", containerClassName, {
-    "user-avatar--clickable": onClick !== undefined,
-    "user-avatar--large": large,
+  const containerClasses = classNames("UserAvatar", containerClassName, {
+    "UserAvatar--clickable": onClick !== undefined,
+    "UserAvatar--large": large,
+    "UserAvatar--medium": medium,
   });
 
   const isOnline = useMemo(
@@ -56,10 +61,18 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     [user, recentWorldUsers]
   );
 
-  const imageClasses = classNames("user-avatar__image", imageClassName);
+  const status = user?.status;
 
-  const statusIndicatorClasses = classNames("user-avatar__status-indicator", {
-    "user-avatar__status-indicator--large": large,
+  const nametagClasses = classNames("UserAvatar__nametag", {
+    "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
+  });
+
+  const imageClasses = classNames("UserAvatar__image", imageClassName);
+
+  const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
+    "UserAvatar__status-indicator--online": isOnline,
+    [`UserAvatar__status-indicator--${status}`]: isOnline && status,
+    "UserAvatar__status-indicator--large": large,
   });
 
   const statusIndicatorStyles = useMemo(
@@ -69,6 +82,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerClasses}>
+      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}

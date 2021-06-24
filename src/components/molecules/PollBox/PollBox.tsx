@@ -12,7 +12,7 @@ import { InputField } from "components/atoms/InputField";
 import "./PollBox.scss";
 
 export interface PollBoxProps {
-  createPoll: (poll: PollValues) => void;
+  onPollSubmit: (poll: PollValues) => void;
 }
 
 const DEFAULT_QUESTION: Partial<PollQuestion> = { name: "" };
@@ -21,23 +21,20 @@ const DEFAULT_VALUES = {
   questions: [DEFAULT_QUESTION, DEFAULT_QUESTION],
 };
 
-export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
-  const { register, control, handleSubmit, reset, watch } = useForm<PollValues>(
-    {
-      defaultValues: DEFAULT_VALUES,
-    }
-  );
+export const PollBox: React.FC<PollBoxProps> = ({ onPollSubmit }) => {
+  const { register, control, handleSubmit, watch } = useForm<PollValues>({
+    defaultValues: DEFAULT_VALUES,
+  });
   const { fields, append } = useFieldArray({ name: "questions", control });
   const [question1, question2] = watch("questions");
   const topic = watch("topic");
 
-  const onPollSubmit = handleSubmit(({ topic, questions }) => {
-    createPoll({
+  const handlePollSubmit = handleSubmit(({ topic, questions }) =>
+    onPollSubmit({
       topic,
       questions: questions.map(({ name }, id) => ({ name, id })),
-    });
-    reset();
-  });
+    })
+  );
 
   const isDisabled = !(topic && question1.name && question2.name);
 
@@ -70,7 +67,7 @@ export const PollBox: React.FC<PollBoxProps> = ({ createPoll }) => {
   );
 
   return (
-    <form className="PollBox" onSubmit={onPollSubmit}>
+    <form className="PollBox" onSubmit={handlePollSubmit}>
       <section className="PollBox__section">
         <InputField
           ref={register({ required: true })}

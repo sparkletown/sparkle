@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
@@ -551,6 +552,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
@@ -597,6 +599,10 @@ export const ZENDESK_URL_PREFIXES = ["/admin"];
 export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
+
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
+export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
 
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
