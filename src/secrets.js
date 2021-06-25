@@ -16,9 +16,9 @@ export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
 // @debt doing this for GitHub demo
 export const AGORA_APP_ID = "6f46c1a52afc445c94901fa64877cd05";
-export const AGORA_CHANNEL = "TestSparkle";
+export const AGORA_CHANNEL = "talkshowstudio";
 export const AGORA_TOKEN =
-  "0066f46c1a52afc445c94901fa64877cd05IAAzOVWNGWxPaIM6/imvMqJoOMLMl6sn4k9OSmlaL7PZ0bjtc7kAAAAAEAAm+nFWKabUYAEAAQApptRg";
+  "006326d39518f21448dba28fb95a2cb421fIADeMEq7nQ/uK6aVGfsTcZGWkFbYk7IiUJ7oHZeTCsejOTeRmI4AAAAAEACqPfBqwlvXYAEAAQDBW9dg";
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
