@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { useSelector } from "hooks/useSelector";
+// import { useUser } from "hooks/useUser";
 
 import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -39,6 +40,7 @@ export const UserList: React.FC<UserListProps> = ({
   showEvenWhenNoUsers = false,
   containerClassName,
 }) => {
+  // const { userWithId } = useUser();
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
   const usersSanitized = _users.filter(
@@ -58,8 +60,11 @@ export const UserList: React.FC<UserListProps> = ({
     containerClassName
   );
 
+  // const userProfileClassName = useCallback((id: string) => userWithId?.contactsList?.includes(id) ? classNames('UserProfilePicture__contact') : undefined, [userWithId]);
+
   if (!showEvenWhenNoUsers && attendance < 1) return null;
 
+  // console.log(userWithId?.contactsList, usersToDisplay)
   return (
     <div className={containerClasses}>
       <div className="row header no-margin">
@@ -88,6 +93,7 @@ export const UserList: React.FC<UserListProps> = ({
                 user={user}
                 isAudioEffectDisabled={isAudioEffectDisabled}
                 key={`${user.id}-${activity}-${imageSize}`}
+                // containerClassName={userProfileClassName(user.id)}
               />
             )
         )}

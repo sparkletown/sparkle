@@ -40,11 +40,7 @@ export const ContactsList: React.FC<ContactsListProps> = ({
           className="ContactsList__user"
           onClick={() => openAuthorProfile(user)}
         >
-          <UserAvatar
-            user={user}
-            showStatus
-            containerClassName="ContactsList__user--avatar"
-          />
+          <UserAvatar user={user} showStatus />
           <span className="ContactsList__user--name">{user.partyName}</span>
         </div>
       )),

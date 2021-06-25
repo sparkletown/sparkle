@@ -2,7 +2,6 @@
 
 $button-size: 30px;
 $contact-size: 53px;
-$avatar-radius-color: #9a6ffe;
 
 .ContactsList {
   display: flex;
@@ -47,12 +46,6 @@ $avatar-radius-color: #9a6ffe;
     &:last-child {
       margin-bottom: 0;
     }
-  }
-  & .ContactsList__user--avatar {
-    width: 28px;
-    height: 28px;
-    border: 3px solid $avatar-radius-color;
-    border-radius: $border-radius--max;
   }
 
   // @debt had to increase specificity because Button styles go later
