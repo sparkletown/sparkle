@@ -14,11 +14,9 @@ export const MIXPANEL_PROJECT_TOKEN =
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
-// @debt doing this for GitHub demo
-export const AGORA_APP_ID = "6f46c1a52afc445c94901fa64877cd05";
-export const AGORA_CHANNEL = "TestSparkle";
-export const AGORA_TOKEN =
-  "0066f46c1a52afc445c94901fa64877cd05IAAzOVWNGWxPaIM6/imvMqJoOMLMl6sn4k9OSmlaL7PZ0bjtc7kAAAAAEAAm+nFWKabUYAEAAQApptRg";
+export const AGORA_APP_ID = process.env.REACT_APP_AGORA_APP_ID;
+export const AGORA_CHANNEL = process.env.REACT_APP_AGORA_CHANNEL;
+export const AGORA_TOKEN = process.env.REACT_APP_AGORA_TOKEN;
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
