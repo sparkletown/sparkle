@@ -229,8 +229,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           <span className="input-error">{errors.backend.message}</span>
         )}
 
-        {/* @debt: the t&cs are likely going to be removed; so i commented it out instead of deleting in case it's needed */}
-
         <div className="input-group" key={sparkleTermsAndConditions.name}>
           <label
             htmlFor={sparkleTermsAndConditions.name}
@@ -261,9 +259,7 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
           {errors?.[sparkleTermsAndConditions.name]?.type === "required" && (
             <span className="input-error">Required</span>
           )}
-
         </div>
-
         {hasTermsAndConditions &&
           termsAndConditions.map((term) => {
             /* @ts-ignore @debt term should be typed if possible */
