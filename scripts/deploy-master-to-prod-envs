@@ -49,7 +49,7 @@ read -p "  Press enter to continue"
 (set -x; git push origin master:env/unesco)
 # (set -x; git push origin master:env/ohbm) # Note: This runs custom code.
 (set -x; git push origin master:env/pa)
-# (set -x; git push origin master:env/github)
+# (set -x; git push origin master:env/github) # Note: This runs custom code.
 (set -x; git push origin master:env/clever)
 (set -x; git push origin master:env/unity)
 (set -x; git push origin master:env/demo)
