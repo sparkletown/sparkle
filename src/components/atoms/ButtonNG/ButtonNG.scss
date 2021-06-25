@@ -72,7 +72,7 @@
     @include squareSize(4);
   }
 
-  @mixin kind($color, $normal-bg, $hover-bg: $normal-bg) {
+  @mixin variant($color, $normal-bg, $hover-bg: $normal-bg) {
     color: $color;
     background-color: $normal-bg;
 
@@ -83,19 +83,19 @@
   }
 
   &--primary {
-    @include kind($white, $primary--live, $primary--live-hover);
+    @include variant($white, $primary--live, $primary--live-hover);
   }
 
   &--secondary {
-    @include kind($white, opaque-white(0.2), opaque-white(0.25));
+    @include variant($white, opaque-white(0.2), opaque-white(0.25));
   }
 
   &--white {
-    @include kind($primary--live, $white);
+    @include variant($primary--live, $white);
   }
 
   &--dark {
-    @include kind($white, opaque-black(0.4), opaque-black(0.6));
+    @include variant($white, opaque-black(0.4), opaque-black(0.6));
   }
 
   &--gradient:enabled {
