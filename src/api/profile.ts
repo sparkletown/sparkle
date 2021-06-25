@@ -1,7 +1,7 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { ProfileLink, UserStatus } from "types/User";
 
+import { ProfileLink, UserStatus } from "types/User";
 import { VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";

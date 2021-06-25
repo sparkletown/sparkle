@@ -5,6 +5,8 @@ export interface Experience {
   column?: number;
 }
 
+export type Mapping = { name: string; path: string };
+
 //@debt typing I think this is correct from Room.tsx, need to confirm
 export type UserExperienceData = Record<string, Experience>;
 
@@ -25,6 +27,9 @@ export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
   doYouDance?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
+  realName?: string;
   partyName?: string;
   pictureUrl?: string;
   data?: UserExperienceData;

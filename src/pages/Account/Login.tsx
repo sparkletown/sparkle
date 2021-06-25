@@ -46,6 +46,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn({
     samlAuthProviderId: venue.samlAuthProviderId,
+    samlProfileMappings: venue.samlProfileMappings,
     showLoginLoading,
     hideLoginLoading,
   });

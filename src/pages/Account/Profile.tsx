@@ -23,6 +23,8 @@ import "./Account.scss";
 export interface ProfileFormData {
   partyName: string;
   pictureUrl: string;
+  companyTitle?: string;
+  companyDepartment?: string;
 }
 
 interface PropsType {
@@ -60,6 +62,14 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
+  const data = sessionStorage.getItem("profileData") ?? "{}";
+  const refinedData = JSON.parse(data);
+
+  const realName =
+    refinedData.firstName &&
+    refinedData.lastName &&
+    `${refinedData.firstName} ${refinedData.lastName}`;
+
   const pictureUrl = watch("pictureUrl");
 
   return (
@@ -77,16 +87,17 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="partyName"
               className="input-block input-centered"
               placeholder="Your display name"
+              defaultValue={refinedData.partyName}
               ref={register({
                 required: true,
                 maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
               autoComplete="off"
             />
-            <span className="input-info">
+            <p className="input-info">
               This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
               characters)
-            </span>
+            </p>
             {errors.partyName && errors.partyName.type === "required" && (
               <span className="input-error">Display name is required</span>
             )}
@@ -96,6 +107,33 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 less
               </span>
             )}
+            <input
+              name="realName"
+              className="input-block input-centered"
+              placeholder="Your real name"
+              defaultValue={realName}
+              ref={register()}
+              autoComplete="off"
+            />
+            <p className="input-info">This is your real name</p>
+            <input
+              name="companyTitle"
+              className="input-block input-centered"
+              placeholder="Your title"
+              defaultValue={refinedData.companyTitle}
+              ref={register()}
+              autoComplete="off"
+            />
+            <p className="input-info">This is your title</p>
+            <input
+              name="companyDepartment"
+              className="input-block input-centered"
+              placeholder="Your department"
+              defaultValue={refinedData.companyDepartment}
+              ref={register()}
+              autoComplete="off"
+            />
+            <p className="input-info">This is your department</p>
             {user && (
               <ProfilePictureInput
                 venueId={venueId}

@@ -133,6 +133,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               {renderedProfileQuestionAnswers}
             </div>
             <div>{renderedProfileLinks}</div>
+            {selectedUserProfile.realName && (
+              <p>{selectedUserProfile.realName}</p>
+            )}
+            {selectedUserProfile.companyDepartment && (
+              <p>{selectedUserProfile.companyDepartment}</p>
+            )}
+            {selectedUserProfile.companyTitle && (
+              <p>{selectedUserProfile.companyTitle}</p>
+            )}
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
