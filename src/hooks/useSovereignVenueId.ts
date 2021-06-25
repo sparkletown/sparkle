@@ -54,12 +54,9 @@ export const useSovereignVenueId: ReactHook<
       }
     )
       .then(({ sovereignVenue }) => {
-        console.log("succcess", sovereignVenue);
-
         dispatch(setSovereignVenueId(sovereignVenue.id));
       })
       .catch((errorMsg) => {
-        console.log("error", errorMsg);
         // @debt Just to stop spamming firebase with requests
         dispatch(setSovereignVenueIdError(errorMsg));
       })

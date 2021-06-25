@@ -52,8 +52,6 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   const venue = useSelector(currentVenueSelector);
   const { sovereignVenue } = useConnectSovereignVenue(venueId);
 
-  console.log("1", sovereignVenue);
-
   const history = useHistory();
   const firebase = useFirebase();
 
