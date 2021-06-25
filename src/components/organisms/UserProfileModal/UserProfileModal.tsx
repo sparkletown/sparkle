@@ -132,6 +132,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div className="profile-extras">
               {renderedProfileQuestionAnswers}
             </div>
+            {/* Proper styling + add editing possibility */}
             <div>{renderedProfileLinks}</div>
             {selectedUserProfile.realName && (
               <p>{selectedUserProfile.realName}</p>

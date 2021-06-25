@@ -62,6 +62,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
+  // TODO: use functions from utils/sessionStorage or similar to retrieve the data
   const data = sessionStorage.getItem("profileData") ?? "{}";
   const refinedData = JSON.parse(data);
 
@@ -107,6 +108,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 less
               </span>
             )}
+            {/* TODO: Proper text, namings */}
             <input
               name="realName"
               className="input-block input-centered"

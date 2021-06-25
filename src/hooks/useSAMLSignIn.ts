@@ -9,9 +9,7 @@ import { Mapping } from "types/User";
 
 import { isDefined } from "utils/types";
 
-// TODO: Move to a type file
-
-// TODO: Fetch from backend
+// TODO: Use as an example to populate backend. Delete afterwards
 export const SAMLMappings: Mapping[] = [
   { name: "partyName", path: "additionalUserInfo.profile.githubName" },
   { name: "companyTitle", path: "additionalUserInfo.profile.title" },
@@ -20,12 +18,10 @@ export const SAMLMappings: Mapping[] = [
   { name: "lastName", path: "additionalUserInfo.profile.title" },
 ];
 
-// TODO: Move to utils
-export const applyMappings = (mappings: Mapping[], source: Object) =>
+// TODO: Move somewhere to utils
+export const getMappedValues = (mappings: Mapping[], source: Object) =>
   mappings.reduce((acc, mapping) => {
     const mappingValue: string = get(source, mapping.path);
-
-    console.log({ mapping, mappingValue });
 
     if (!isDefined(mappingValue)) {
       return acc;
@@ -48,7 +44,12 @@ export interface UseSAMLSignInReturn {
 export const useSAMLSignIn: ReactHook<
   UseSAMLSignInProps,
   UseSAMLSignInReturn
-> = ({ samlAuthProviderId, showLoginLoading, hideLoginLoading }) => {
+> = ({
+  samlAuthProviderId,
+  showLoginLoading,
+  hideLoginLoading,
+  samlProfileMappings,
+}) => {
   const hasSamlAuthProviderId = samlAuthProviderId !== undefined;
 
   const signInWithSAML = useCallback(() => {
@@ -66,11 +67,19 @@ export const useSAMLSignIn: ReactHook<
       .auth()
       .signInWithPopup(SAMLAuthProvider)
       .then((result) => {
-        if (!result.additionalUserInfo?.isNewUser || !result.user?.uid) return;
+        if (
+          !result.additionalUserInfo?.isNewUser ||
+          !result.user?.uid ||
+          !samlProfileMappings
+        )
+          return;
 
-        const mappingValues = applyMappings(SAMLMappings, result);
-        sessionStorage.setItem("profileData", JSON.stringify(mappingValues));
-        console.log(result, mappingValues);
+        const mappedProfileData = getMappedValues(samlProfileMappings, result);
+        // TODO: Make a utils sessionStorage. Move PrefillProfileData into const/enum
+        sessionStorage.setItem(
+          "PrefillProfileData",
+          JSON.stringify(mappedProfileData)
+        );
       })
       .catch((err) => {
         Bugsnag.notify(err, (event) => {
@@ -87,7 +96,12 @@ export const useSAMLSignIn: ReactHook<
           hideLoginLoading();
         }
       });
-  }, [samlAuthProviderId, showLoginLoading, hideLoginLoading]);
+  }, [
+    samlAuthProviderId,
+    samlProfileMappings,
+    showLoginLoading,
+    hideLoginLoading,
+  ]);
 
   return { signInWithSAML, hasSamlAuthProviderId };
 };
