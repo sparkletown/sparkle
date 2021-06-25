@@ -66,9 +66,9 @@ export const Player: React.FC<VideoPlayerProps> = ({
     };
   }, [audioTrack]);
 
-  const iconContainerClasses = (isOn: boolean) =>
+  const iconContainerClasses = (isOff: boolean) =>
     classNames("Player__icon", {
-      "Player__icon--on": isOn,
+      "Player__icon--off": isOff,
     });
 
   return (

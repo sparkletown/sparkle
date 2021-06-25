@@ -27,6 +27,7 @@
   }
 
   &__buttons {
+    visibility: hidden;
     display: flex;
     justify-content: flex-end;
     margin: $spacing--md;
@@ -58,8 +59,15 @@
       user-select: none;
     }
 
-    &--on {
+    &--off {
+      visibility: visible;
       background: rgb(124, 70, 251);
+    }
+  }
+
+  &:hover {
+    .Player__buttons {
+      visibility: visible;
     }
   }
 }
