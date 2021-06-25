@@ -224,14 +224,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   onClick={navigateToHomepage}
                 />
               )}
-              <div
-                className={`nav-party-logo ${
-                  isEventScheduleVisible && "clicked"
-                }`}
-                onClick={toggleEventSchedule}
-              >
-                {navbarTitle} <span className="schedule-text">Schedule</span>
-              </div>
+
+              {shouldShowSchedule ? (
+                <div
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
+                  onClick={toggleEventSchedule}
+                >
+                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                </div>
+              ) : (
+                <div>{navbarTitle}</div>
+              )}
+
               <VenuePartygoers venueId={venueId} />
             </div>
 
