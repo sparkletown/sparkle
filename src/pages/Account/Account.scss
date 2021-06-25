@@ -76,7 +76,7 @@ $page-max-width: 1240px;
   padding-top: $spacing--xxl;
 }
 
-.page-container-onboarding {
+.Profile {
   max-height: 100%;
   overflow: hidden;
   position: absolute;
@@ -96,8 +96,15 @@ $page-max-width: 1240px;
     margin-top: $spacing--xl;
   }
 
-  .summit-snap {
+  &__summit-snap {
     margin: auto;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+
+    &:hover {
+      color: white;
+    }
   }
 }
 

@@ -10,6 +10,7 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
 import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -63,7 +64,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
+    <div className="Profile">
       <div className="login-container">
         <h2 className="login-welcome-title">
           Hey, Mona. We’re so glad you’re here! Upload or take a photo and share
@@ -72,9 +73,13 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <div className="login-welcome-subtitle">
           {`Swing back and edit your profile anytime you like.`}
         </div>
-        <button className="profile-picture-button summit-snap">
+        <a
+          className="profile-picture-button Profile__summit-snap"
+          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+          {...externalUrlAdditionalProps}
+        >
           Take a Summit snap
-        </button>
+        </a>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             {/* @debt - this input is hidden because for github's event they fetch the names from an OKTA, and for the demo we set the default name to Mona */}
