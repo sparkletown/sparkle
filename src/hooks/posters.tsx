@@ -120,7 +120,7 @@ export const PostersProvider: React.FC<PostersProviderProps> = ({
   useEffect(() => {
     // only save the shuffled poster venues state if the previous ones were empty
     // additional logic can be added to (re-/in-)validate based on time, userId or other parameters
-    if (isEmptyQuery && isPostersLoaded && previousPosterVenues.length !== 0) {
+    if (isEmptyQuery && isPostersLoaded && previousPosterVenues.length === 0) {
       setPreviousPosterVenues(shuffledPosterVenues);
     }
   }, [
