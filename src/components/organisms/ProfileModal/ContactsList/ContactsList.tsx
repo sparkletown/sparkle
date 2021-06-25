@@ -1,9 +1,5 @@
 import React, { useMemo, useCallback } from "react";
 
-import { User } from "types/User";
-
-import { WithId } from "utils/id";
-
 import { useContactsListToDisplay } from "hooks/users";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -15,7 +11,6 @@ import { UserProfileMode } from "../ProfilePopoverContent";
 import "./ContactsList.scss";
 
 export interface ContactsListProps {
-  user?: WithId<User>;
   setUserProfileMode: (mode: UserProfileMode) => void;
 }
 
