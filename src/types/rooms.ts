@@ -3,7 +3,6 @@ import { SoundConfigReference } from "./sounds";
 export enum RoomType {
   unclickable = "UNCLICKABLE",
   mapFrame = "MAPFRAME",
-  modalFrame = "MODALFRAME",
 }
 
 // @debt We should end up with 1 canonical room type
