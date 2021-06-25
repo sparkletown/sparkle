@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { WithId } from "utils/id";
 import { VenueEvent } from "types/venues";
-import { format, getUnixTime } from "date-fns";
+import { formatTimeLocalised } from "utils/time";
+import { format } from "date-fns";
 import { eventStartTime, eventEndTime } from "utils/event";
-import { formatHourAndMinute } from "utils/time";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 
@@ -39,9 +39,9 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
       <div className="event-time">
         <p>{format(eventStartTime(event), "do MMM")}</p>
         <p className="event-time__start">
-          {formatHourAndMinute(event.start_utc_seconds)}
+          {formatTimeLocalised(eventStartTime(event))}
         </p>
-        <p>{formatHourAndMinute(getUnixTime(eventEndTime(event)))}</p>
+        <p>{formatTimeLocalised(eventEndTime(event))}</p>
       </div>
       <div className="event-details">
         <p>
