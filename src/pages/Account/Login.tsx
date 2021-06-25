@@ -28,19 +28,27 @@ import "./Login.scss";
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   venue: WithId<AnyVenue>;
+  isLoadingShown?: boolean;
+  showLoginLoading?: () => void;
+  hideLoginLoading?: () => void;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venue,
+  showLoginLoading,
+  hideLoginLoading,
+  isLoadingShown,
 }) => {
   const venueId = venue.id;
 
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
-  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    venue.samlAuthProviderId
-  );
+  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn({
+    samlAuthProviderId: venue.samlAuthProviderId,
+    showLoginLoading,
+    hideLoginLoading,
+  });
 
   const {
     loading: isCustomAuthConfigLoading,
@@ -83,7 +91,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
-  if (isCustomAuthConfigLoading) return <LoadingPage />;
+  if (isCustomAuthConfigLoading || isLoadingShown) return <LoadingPage />;
 
   return (
     <div className="auth-container">
