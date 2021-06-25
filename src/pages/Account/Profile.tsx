@@ -75,8 +75,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <a
           className="profile-picture-button summit-snap"
           href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-          target="_blank"
-          rel="noreferrer"
+          {...externalUrlAdditionalProps}
         >
           Take a Summit snap
         </a>
