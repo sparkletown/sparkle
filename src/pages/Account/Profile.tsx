@@ -10,6 +10,7 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
 import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -63,7 +64,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
+    <div className="Profile">
       <div className="login-container">
         <h2 className="login-welcome-title">
           Hey, Mona. We’re so glad you’re here! Upload or take a photo and share
@@ -73,7 +74,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
           {`Swing back and edit your profile anytime you like.`}
         </div>
         <a
-          className="profile-picture-button summit-snap"
+          className="profile-picture-button Profile__summit-snap"
           href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
           {...externalUrlAdditionalProps}
         >
