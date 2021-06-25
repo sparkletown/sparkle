@@ -82,6 +82,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     onend: enterRoom,
   });
 
+  // @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule?
   const renderedRoomEvents = useMemo(() => {
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
@@ -98,6 +99,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     ));
   }, [enterRoomWithSound, room.url, venueEvents]);
 
+  // @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule?
   const hasRoomEvents = renderedRoomEvents?.length > 0;
 
   const iconStyles = {
@@ -114,6 +116,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
+        {/* @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule? */}
         <RoomModalOngoingEvent
           roomEvents={venueEvents}
           onRoomEnter={enterRoomWithSound}
@@ -133,6 +136,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         </div>
       )}
 
+      {/* @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule? */}
       {hasRoomEvents && (
         <div className="room-modal__events">
           <div className="room-modal__title">Room Schedule</div>
