@@ -194,7 +194,8 @@ const createVenueData = (data, context) => {
     profile_questions: data.profile_questions,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
-    showSchedule: data.showSchedule ? data.showSchedule : true,
+    showSchedule:
+      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
