@@ -69,7 +69,6 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
         </div>
 
         {isCurrentEvent && (
-          //  @debt Does ScheduleItem__entry-room-button even exist? Can we remove this?
           <div className="ScheduleItem__entry-room-button">
             <a
               onMouseOver={() => dispatch(retainAttendance(true))}
