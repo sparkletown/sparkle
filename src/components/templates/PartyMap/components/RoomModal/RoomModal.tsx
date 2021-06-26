@@ -1,12 +1,15 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
+import { retainAttendance } from "store/actions/Attendance";
+
 import { isEventLive } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
 
@@ -75,14 +78,28 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venueName,
   venueEvents,
 }) => {
+  const dispatch = useDispatch();
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const triggerAttendance = useCallback(() => {
+    dispatch(retainAttendance(true));
+  }, [dispatch]);
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const clearAttendance = useCallback(() => {
+    dispatch(retainAttendance(false));
+  }, [dispatch]);
+
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
-  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
-  // @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule?
+  // note: this is here just to change the type on it in an easy way
+  const enterRoomWithSound: () => void = _enterRoomWithSound;
+
   const renderedRoomEvents = useMemo(() => {
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
@@ -117,13 +134,23 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
         {/* @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule? */}
-        <RoomModalOngoingEvent
-          roomEvents={venueEvents}
-          onRoomEnter={enterRoomWithSound}
-        />
+
+        <div className="room-modal__content">
+          <RoomModalOngoingEvent roomEvents={venueEvents} />
+
+          <button
+            className="btn btn-primary room-modal__btn-enter"
+            onMouseOver={triggerAttendance}
+            onMouseOut={clearAttendance}
+            onClick={enterRoomWithSound}
+          >
+            Enter
+          </button>
+        </div>
       </div>
 
       <UserList
+        containerClassName="room-modal__userlist"
         users={recentRoomUsers}
         limit={11}
         activity="in this room"
