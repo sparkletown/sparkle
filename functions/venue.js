@@ -193,6 +193,7 @@ const createVenueData = (data, context) => {
     code_of_conduct_questions: [],
     owners,
     profile_questions: data.profile_questions,
+    entrance: data.entrance,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
