@@ -270,6 +270,7 @@ const createVenueData_v2 = (data, context) => ({
   rooms: [],
 });
 
+// @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
 const createBaseUpdateVenueData = (data, updated) => {
   if (data.subtitle) {
     updated.config.landingPageConfig.subtitle = data.subtitle;
@@ -567,7 +568,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   // @debt this is exactly the same as in updateVenue_v2
   const updated = doc.data();
 
-  // note: This function will mutate the passed in updated object
+  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   createBaseUpdateVenueData(data, updated);
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
@@ -668,7 +669,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   // @debt this is exactly the same as in updateVenue
   const updated = doc.data();
 
-  // note: This function will mutate the passed in updated object
+  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   createBaseUpdateVenueData(data, updated);
 
   // @debt in updateVenue we're checking/creating the updated.config object here if needed.
