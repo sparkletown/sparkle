@@ -48,7 +48,13 @@ const PasswordResetForm: React.FunctionComponent<PropsType> = ({
 
   return (
     <div className="form-container">
-      <h2>Reset Password</h2>
+      <h2>Reset Password for non-Hubbers</h2>
+
+      <em>
+        Are you a Hubber with an Okta account? If so, you should use &apos;Quick
+        log in with Okta&apos; above instead of this form! ☝
+      </em>
+
       <div className="secondary-action">
         {`Finished resetting your password?`}
         <br />

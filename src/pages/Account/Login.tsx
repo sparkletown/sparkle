@@ -15,7 +15,7 @@ import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
-import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
+// import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -93,7 +93,7 @@ export const Login: React.FC<LoginProps> = ({
       <div className="auth-form-container">
         {hasAlternativeLogins && (
           <div className="Login__login-box">
-            <span>Quick log in with</span>
+            <span>Quick log in with Okta</span>
 
             <div className="Login__alternative-logins">
               {hasCustomAuthConnect && (
@@ -117,20 +117,22 @@ export const Login: React.FC<LoginProps> = ({
             </div>
           </div>
         )}
-        {formToDisplay === "initial" && (
+        {/* @debt Changed for Okta SSO */}
+        {["initial", "register"].includes(formToDisplay) && (
           <InitialForm
             displayLoginForm={displayLoginForm}
             displayRegisterForm={displayRegisterForm}
           />
         )}
-        {formToDisplay === "register" && (
-          <RegisterForm
-            displayLoginForm={displayLoginForm}
-            displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={redirectAfterLogin}
-            closeAuthenticationModal={() => null}
-          />
-        )}
+        {/* @debt Removed for Okta SSO */}
+        {/*{formToDisplay === "register" && (*/}
+        {/*  <RegisterForm*/}
+        {/*    displayLoginForm={displayLoginForm}*/}
+        {/*    displayPasswordResetForm={displayPasswordResetForm}*/}
+        {/*    afterUserIsLoggedIn={redirectAfterLogin}*/}
+        {/*    closeAuthenticationModal={() => null}*/}
+        {/*  />*/}
+        {/*)}*/}
         {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
