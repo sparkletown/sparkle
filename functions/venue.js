@@ -190,10 +190,10 @@ const createVenueData = (data, context) => {
     host: {
       icon: data.logoImageUrl,
     },
-    code_of_conduct_questions: [],
     owners,
+    code_of_conduct_questions: data.code_of_conduct_questions || [],
     profile_questions: data.profile_questions,
-    entrance: data.entrance,
+    entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
     showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
     showChat: true,
