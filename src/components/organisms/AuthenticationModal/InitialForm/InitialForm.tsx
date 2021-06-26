@@ -13,9 +13,19 @@ export const InitialForm: FC<InitialFormProps> = ({
 }) => {
   return (
     <div className="initial-form">
+      {/* @debt Removed for Okta SSO */}
+      {/*<div*/}
+      {/*  className="btn btn-primary btn-block btn-centered create-account-button"*/}
+      {/*  onClick={displayRegisterForm}*/}
+      {/*>*/}
+      {/*  Create your account*/}
+      {/*</div>*/}
       <div className="buttons-separator">or</div>
-      <div className="btn btn-centered login-button" onClick={displayLoginForm}>
-        Login for non-Hubbers
+      <div
+        className="btn btn-block btn-centered login-button"
+        onClick={displayLoginForm}
+      >
+        Log in for non-Hubbers
       </div>
     </div>
   );
