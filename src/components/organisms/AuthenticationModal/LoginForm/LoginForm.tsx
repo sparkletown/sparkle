@@ -84,15 +84,21 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
 
   return (
     <div className="form-container">
-      <div className="secondary-action">
-        {`Don't have an account yet?`}
-        <br />
-        <span className="link" onClick={displayRegisterForm}>
-          Register instead!
-        </span>
-      </div>
+      {/* @debt Removed for Okta SSO */}
+      {/*<div className="secondary-action">*/}
+      {/*  {`Don't have an account yet?`}*/}
+      {/*  <br />*/}
+      {/*  <span className="link" onClick={displayRegisterForm}>*/}
+      {/*    Register instead!*/}
+      {/*  </span>*/}
+      {/*</div>*/}
 
-      <h2>Log in</h2>
+      <h2>Log in for non-Hubbers</h2>
+
+      <em>
+        Are you a Hubber with an Okta account? If so, you should use &apos;Quick
+        log in with Okta&apos; above instead of this form! ☝
+      </em>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
