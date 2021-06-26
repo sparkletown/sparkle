@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
+
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
@@ -61,6 +63,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           room={room}
           venueName={venue.name}
           venueEvents={venueEvents}
+          showSchedule={venue.showSchedule}
         />
       </div>
     </Modal>
@@ -71,12 +74,14 @@ export interface RoomModalContentProps {
   room: Room;
   venueName: string;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
+  showSchedule?: boolean;
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
   venueEvents,
+  showSchedule = DEFAULT_SHOW_SCHEDULE,
 }) => {
   const dispatch = useDispatch();
 
@@ -101,6 +106,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const enterRoomWithSound: () => void = _enterRoomWithSound;
 
   const renderedRoomEvents = useMemo(() => {
+    if (!showSchedule) return [];
+
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
         // @debt Ideally event.id would always be a unique identifier, but our types suggest it
@@ -114,10 +121,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         roomUrl={room.url}
       />
     ));
-  }, [enterRoomWithSound, room.url, venueEvents]);
+  }, [enterRoomWithSound, room.url, showSchedule, venueEvents]);
 
-  // @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule?
-  const hasRoomEvents = renderedRoomEvents?.length > 0;
+  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
@@ -133,10 +139,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
-        {/* @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule? */}
 
         <div className="room-modal__content">
-          <RoomModalOngoingEvent roomEvents={venueEvents} />
+          {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
 
           <button
             className="btn btn-primary room-modal__btn-enter"
@@ -163,8 +168,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         </div>
       )}
 
-      {/* @debt do we want to show/hide the schedule on RoomModal based on venue.showSchedule? */}
-      {hasRoomEvents && (
+      {showRoomEvents && (
         <div className="room-modal__events">
           <div className="room-modal__title">Room Schedule</div>
 
