@@ -87,9 +87,7 @@ export const Login: React.FC<LoginProps> = ({
 
   return (
     <div className="auth-container">
-      <div className="logo-container">
-        <img src="/sparkle-header.png" alt="" width="100%" />
-      </div>
+      <div className="hero-logo github-plain" />
       <div className="auth-form-container">
         {hasAlternativeLogins && (
           <div className="Login__login-box">
