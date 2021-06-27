@@ -40,9 +40,11 @@ exports.getAgoraToken = functions.https.onCall((data, context) => {
   //       - Role.SUBSCRIBER: ONLY use this role if your live-broadcast scenario requires authentication for Hosting-in .
   //         In order for this role to take effect, please contact our support team to enable authentication for Hosting-in for you.
   //         Otherwise, Role_Subscriber still has the same privileges as Role_Publisher.
-  //   Based on that, do we need to contact sales? Or is this just not something that matters for our use case?
-  //   See also:
-  //     https://github.com/AgoraIO/Tools/issues/83
+  //   See my discovery + explanation + solution at:
+  //     https://github.com/AgoraIO/Tools/issues/83#issuecomment-869149777
+  //   tl;dr We need to enable 'Co-Host token authentication' in the Agora admin console
+  //     In a live streaming channel, when an audience member applies to co-host, you can use a token to authenticate whether the user can publish a stream. This feature is co-host token authentication.
+  //   We need to check against firebase to ensure that the user requesting the host permissions is actually allowed to have them.
   const token = generateAgoraTokenForAccount({
     channelName: data.channelName,
     account: context.auth.uid,
