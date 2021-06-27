@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { VenueEvent } from "types/venues";
@@ -39,6 +39,16 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     schedulePrimaryClasses
   );
 
+  const onRoomEnterPreventDefault = useCallback(
+    (e) => {
+      // Ensure the <a href> doesn't cause link navigation again when onRoomEnter is already doing it
+      e.preventDefault();
+
+      onRoomEnter();
+    },
+    [onRoomEnter]
+  );
+
   return (
     <div className="ScheduleItem">
       <div className={scheduleItemTimeSectionClasses}>
@@ -74,10 +84,10 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             {/* @debt extract this 'enter room' button/link concept into a reusable component */}
             {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}
             <a
+              className="btn ScheduleItem__room-entry-button"
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
-              className="btn ScheduleItem__room-entry-button"
-              onClick={onRoomEnter}
+              onClick={onRoomEnterPreventDefault}
               href={roomUrl}
               {...externalUrlAdditionalProps}
             >
