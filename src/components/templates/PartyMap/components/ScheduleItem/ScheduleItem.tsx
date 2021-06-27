@@ -5,7 +5,7 @@ import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { eventEndTime, eventStartTime } from "utils/event";
+import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { externalUrlAdditionalProps } from "utils/url";
 
@@ -17,21 +17,21 @@ import "./ScheduleItem.scss";
 
 interface PropsType {
   event: VenueEvent;
-  isCurrentEvent?: boolean;
   onRoomEnter: () => void;
   roomUrl: string;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
-  isCurrentEvent,
   onRoomEnter,
   roomUrl,
 }) => {
   const dispatch = useDispatch();
 
+  const isCurrentEventLive = isEventLive(event);
+
   const schedulePrimaryClasses = classNames({
-    "ScheduleItem--primary": isCurrentEvent,
+    "ScheduleItem--primary": isCurrentEventLive,
   });
 
   const scheduleItemTimeSectionClasses = classNames(
@@ -79,7 +79,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
           </div>
         </div>
 
-        {isCurrentEvent && (
+        {isCurrentEventLive && (
           <div className="ScheduleItem__entry-room-button">
             {/* @debt extract this 'enter room' button/link concept into a reusable component */}
             {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}

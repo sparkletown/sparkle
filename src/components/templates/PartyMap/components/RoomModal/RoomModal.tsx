@@ -8,7 +8,6 @@ import { AnyVenue, VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { isEventLive } from "utils/event";
 import { WithId, WithVenueId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -116,7 +115,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        isCurrentEvent={isEventLive(event)}
         onRoomEnter={enterRoomWithSound}
         roomUrl={room.url}
       />
