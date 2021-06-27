@@ -11,13 +11,13 @@ export interface TalkShowStudioExperience {
   isUserCameraOff?: boolean;
   cameraClientUid?: string;
   screenClientUid?: string;
+  row?: number;
+  column?: number;
 }
 
 export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table: string;
-  row?: number;
-  column?: number;
 }
 
 //@debt typing I think this is correct from Room.tsx, need to confirm

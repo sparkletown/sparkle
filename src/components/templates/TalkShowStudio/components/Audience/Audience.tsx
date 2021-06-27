@@ -3,11 +3,10 @@ import classNames from "classnames";
 
 import { FullTalkShowVenue } from "types/venues";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+import { updateTalkShowStudioExperience } from "api/profile";
 
 import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
-import { setLocationData } from "utils/userLocation";
 
 import { useStage } from "../../useStage";
 import { useUser } from "hooks/useUser";
@@ -27,7 +26,7 @@ const TOTAL_COLUMNS = 30;
 const TOTAL_ROWS = 8;
 
 const Audience: React.FC<AudienceProps> = ({ venue }) => {
-  const { name, id: venueId } = venue;
+  const { id: venueId } = venue;
   const { userId, profile } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
   const { peopleRequesting } = useStage();
@@ -35,17 +34,18 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const isHidden = isDefined(profile?.data?.[venueId]?.row);
 
   const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
-      if (!userId) return;
-
-      makeUpdateUserGridLocation({
+    async (row: number | null, column: number | null) => {
+      if (!userId || !row || !column) return;
+      await updateTalkShowStudioExperience({
         venueId,
-        userUid: userId,
-      })(row, column);
-
-      setLocationData({ userId: userId, locationName: name });
+        userId,
+        experience: {
+          row,
+          column,
+        },
+      });
     },
-    [userId, venueId, name]
+    [userId, venueId]
   );
 
   const onSeatClick = useCallback(

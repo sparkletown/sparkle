@@ -106,7 +106,6 @@ export const useStage = () => {
   };
 
   const leaveStage = async () => {
-    // TODO: clear agoraIds for user when left Stage
     await setDefaultUserSettings();
   };
 
