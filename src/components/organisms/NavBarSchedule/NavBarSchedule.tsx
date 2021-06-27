@@ -113,6 +113,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
+  // TODO: extract a new useMemo'd  const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+  //  Then reuse that in all the places that are currently duplicating this logic
   const renderedScheduleDayTabs = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -179,7 +181,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const daysEvents = relatedVenueEvents
       .filter(
         isScheduleTimeshifted
-          ? isEventWithinDate(startOfSelectedDay)
+          ? // @debt do we need this ternary here? Can we just always use one of isEventWithinDate / isEventWithinDateAndNotFinished ?
+            isEventWithinDate(startOfSelectedDay)
           : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
       .map(
@@ -215,6 +218,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const downloadPersonalEventsCalendar = useCallback(() => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+    // @debt this seems to only download events for the currently selected day, yet the UI implies as though it will download all of my events
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
       .map(
         prepareForSchedule({
@@ -250,6 +254,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           {hasSavedEvents && (
             <Button
               onClick={downloadPersonalEventsCalendar}
+              // @debt downloadPersonalEventsCalendar seems to only download events for the currently selected day,
+              //  yet the UI here implies as though it will download all of my events
               customClass="NavBarSchedule__download-schedule-btn"
             >
               Download your schedule
