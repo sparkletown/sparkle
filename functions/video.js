@@ -5,6 +5,8 @@ const { RtcRole, generateAgoraTokenForAccount } = require("./src/utils/agora");
 const { assertValidAuth } = require("./src/utils/assert");
 const { twilioVideoToken } = require("./src/utils/twilio");
 
+// @debt either remove data.identity entirely, or validate that it matches the context.auth.uid
+//   (once checking that this won't break anything in the app)
 exports.getTwilioToken = functions.https.onCall((data, context) => {
   assertValidAuth(context);
 
