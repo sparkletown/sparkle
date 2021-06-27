@@ -11,7 +11,7 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { PLATFORM_BRAND_NAME, SCHEDULE_MAX_DAYS_AHEAD } from "settings";
 
 import {
   LocationEvents,
@@ -138,8 +138,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       : undefined;
 
     const scheduleDaysToShowCount = isDefined(daysTillScheduleEnded)
-      ? Math.min(daysTillScheduleEnded, SCHEDULE_SHOW_DAYS_AHEAD)
-      : SCHEDULE_SHOW_DAYS_AHEAD;
+      ? Math.min(daysTillScheduleEnded, SCHEDULE_MAX_DAYS_AHEAD)
+      : SCHEDULE_MAX_DAYS_AHEAD;
 
     return range(scheduleDaysToShowCount).map((dayIndex) => {
       const day = addDays(firstDayOfSchedule, dayIndex);
