@@ -115,7 +115,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        onRoomEnter={enterRoomWithSound}
+        enterEventLocation={enterRoomWithSound}
         roomUrl={room.url}
       />
     ));

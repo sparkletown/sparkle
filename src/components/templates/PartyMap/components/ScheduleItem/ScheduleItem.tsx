@@ -17,13 +17,13 @@ import "./ScheduleItem.scss";
 
 interface PropsType {
   event: VenueEvent;
-  onRoomEnter: () => void;
+  enterEventLocation: () => void;
   roomUrl: string;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
-  onRoomEnter,
+  enterEventLocation,
   roomUrl,
 }) => {
   const dispatch = useDispatch();
@@ -39,14 +39,14 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
     schedulePrimaryClasses
   );
 
-  const onRoomEnterPreventDefault = useCallback(
+  const enterEventLocationPreventDefault = useCallback(
     (e) => {
       // Ensure the <a href> doesn't cause link navigation again when onRoomEnter is already doing it
       e.preventDefault();
 
-      onRoomEnter();
+      enterEventLocation();
     },
-    [onRoomEnter]
+    [enterEventLocation]
   );
 
   return (
@@ -57,14 +57,17 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             formatToday: () => "",
           })}
         </span>
+
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventStartTime(event))}
         </span>
+
         <span className="ScheduleItem__event-date">
           {formatDateRelativeToNow(eventEndTime(event), {
             formatToday: () => "",
           })}
         </span>
+
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventEndTime(event))}
         </span>
@@ -87,7 +90,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
               className="btn ScheduleItem__room-entry-button"
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
-              onClick={onRoomEnterPreventDefault}
+              onClick={enterEventLocationPreventDefault}
               href={roomUrl}
               {...externalUrlAdditionalProps}
             >
