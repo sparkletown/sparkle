@@ -193,7 +193,9 @@ const createVenueData = (data, context) => {
     owners,
     profile_questions: data.profile_questions,
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
+    // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
+    showSchedule:
+      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
@@ -547,8 +549,8 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  if (typeof data.showLiveSchedule === "boolean") {
-    updated.showLiveSchedule = data.showLiveSchedule;
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
   }
 
   if (typeof data.showGrid === "boolean") {
@@ -670,8 +672,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.columns = data.columns;
   }
 
-  if (typeof data.showLiveSchedule === "boolean") {
-    updated.showLiveSchedule = data.showLiveSchedule;
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
   }
 
   if (typeof data.showBadges === "boolean") {
