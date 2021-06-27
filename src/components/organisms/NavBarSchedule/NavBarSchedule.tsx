@@ -3,7 +3,7 @@ import {
   addDays,
   format,
   fromUnixTime,
-  isToday,
+  isBefore,
   startOfDay,
   startOfToday,
 } from "date-fns";
@@ -78,13 +78,21 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
-  const firstDayOfSchedule = useMemo(() => {
-    return scheduledStartDate
+  const { firstDayOfSchedule, isScheduleTimeshifted } = useMemo(() => {
+    const today = startOfToday();
+    const firstDayOfEvent = scheduledStartDate
       ? startOfDay(fromUnixTime(scheduledStartDate))
-      : startOfToday();
-  }, [scheduledStartDate]);
+      : today;
 
-  const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
+    const isScheduleTimeshifted = isBefore(today, firstDayOfEvent);
+
+    const firstDayOfSchedule = isScheduleTimeshifted ? firstDayOfEvent : today;
+
+    return {
+      firstDayOfSchedule,
+      isScheduleTimeshifted,
+    };
+  }, [scheduledStartDate]);
 
   const {
     isEventsLoading,
@@ -178,11 +186,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const hasSavedEvents = schedule.personalEvents.length > 0;
 
   const downloadPersonalEventsCalendar = useCallback(() => {
-    const dayStart = addDays(startOfToday(), selectedDayIndex);
+    const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
     const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
       .map(
         prepareForSchedule({
-          day: dayStart,
+          day: startOfSelectedDay,
           usersEvents: userEventIds,
           isForCalendarFile: true,
         })
@@ -193,7 +201,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       calendar: createCalendar({ events: allPersonalEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
     });
-  }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
+  }, [firstDayOfSchedule, selectedDayIndex, relatedVenueEvents, userEventIds]);
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({
