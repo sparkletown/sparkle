@@ -31,3 +31,30 @@ export const getTwilioVideoToken = async ({
       throw err;
     });
 };
+
+export interface GetAgoraTokenProps {
+  channelName: string;
+}
+
+export type AgoraToken = string;
+
+export const getAgoraToken = async ({
+  channelName,
+}: GetAgoraTokenProps): Promise<AgoraToken> => {
+  return firebase
+    .functions()
+    .httpsCallable("video-getAgoraToken")({
+      channelName,
+    })
+    .then<AgoraToken>((result) => result.data.token)
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/video::getAgoraToken",
+          channelName,
+        });
+      });
+
+      throw err;
+    });
+};
