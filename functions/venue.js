@@ -149,15 +149,6 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
-// @debt Presumably this function should check if the user is an admin or an owner, not just call checkUserIsOwner
-const checkUserIsAdminOrOwner = async (venueId, uid) => {
-  try {
-    return await checkUserIsOwner(venueId, uid);
-  } catch (e) {
-    return e.toString();
-  }
-};
-
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
@@ -657,7 +648,7 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
   // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
   // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
