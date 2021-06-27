@@ -7,7 +7,7 @@ const { VideoGrant } = AccessToken;
 const PROJECT_ID = functions.config().project.id;
 const TWILIO_CONFIG = functions.config().twilio;
 
-const generateToken = () => {
+const generateTwilioToken = () => {
   return new AccessToken(
     TWILIO_CONFIG.account_sid,
     TWILIO_CONFIG.api_key,
@@ -15,15 +15,15 @@ const generateToken = () => {
   );
 };
 
-const videoToken = (identity, room) => {
+const twilioVideoToken = (identity, room) => {
   const videoGrant = new VideoGrant({ room });
-  const token = generateToken();
+  const token = generateTwilioToken();
   token.addGrant(videoGrant);
   token.identity = identity;
   return token;
 };
 
-exports.getToken = functions.https.onCall((data, context) => {
+exports.getTwilioToken = functions.https.onCall((data, context) => {
   if (!context.auth || !context.auth.token) {
     throw new functions.https.HttpsError("unauthenticated", "Please log in");
   }
@@ -33,7 +33,7 @@ exports.getToken = functions.https.onCall((data, context) => {
   }
 
   if (data && data.identity && data.room) {
-    const token = videoToken(data.identity, data.room);
+    const token = twilioVideoToken(data.identity, data.room);
     return {
       token: token.toJwt(),
     };
