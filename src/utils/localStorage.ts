@@ -8,3 +8,9 @@ export const getLocalStorageToken = (venueId: string) =>
 
 export const removeLocalStorageToken = (venueId: string) =>
   localStorage.removeItem(accessTokenKey(venueId));
+
+export enum LocalStorageItem {
+  'prefillProfileData' = "prefillProfileData"
+}
+
+export const setLocalStorageItem = (item: LocalStorageItem)
