@@ -186,7 +186,9 @@ const createVenueData = (data, context) => {
     profile_questions: data.profile_questions,
     entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
+    // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
+    showSchedule:
+      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
@@ -311,8 +313,8 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.roomVisibility = data.roomVisibility;
   }
 
-  if (typeof data.showLiveSchedule === "boolean") {
-    updated.showLiveSchedule = data.showLiveSchedule;
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
   }
 
   if (typeof data.showBadges === "boolean") {
