@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo, useState } from "react";
 import {
   addDays,
+  differenceInCalendarDays,
   format,
   fromUnixTime,
   isBefore,
@@ -27,6 +28,7 @@ import {
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
+import { isDefined } from "utils/types";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -77,6 +79,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
+  const scheduledEndDate = sovereignVenue?.end_utc_seconds;
 
   const { firstDayOfSchedule, isScheduleTimeshifted } = useMemo(() => {
     const today = startOfToday();
@@ -94,6 +97,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
   }, [scheduledStartDate]);
 
+  const lastDayOfSchedule = useMemo(() => {
+    return scheduledEndDate
+      ? startOfDay(fromUnixTime(scheduledEndDate))
+      : undefined;
+  }, [scheduledEndDate]);
   const {
     isEventsLoading,
     events: relatedVenueEvents = emptyRelatedEvents,
@@ -105,7 +113,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
-  const weekdays = useMemo(() => {
+  const renderedScheduleDayTabs = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
         return format(day, "E, LLL d");
@@ -116,7 +124,22 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       }
     };
 
-    return range(SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
+    // we add 1 day so that we will still show the last day on the schedule
+    const daysTillScheduleEnded = lastDayOfSchedule
+      ? Math.max(
+          0,
+          differenceInCalendarDays(
+            addDays(lastDayOfSchedule, 1),
+            startOfToday()
+          )
+        )
+      : undefined;
+
+    const scheduleDaysToShowCount = isDefined(daysTillScheduleEnded)
+      ? Math.min(daysTillScheduleEnded, SCHEDULE_SHOW_DAYS_AHEAD)
+      : SCHEDULE_SHOW_DAYS_AHEAD;
+
+    return range(scheduleDaysToShowCount).map((dayIndex) => {
       const day = addDays(firstDayOfSchedule, dayIndex);
       const classes = classNames("NavBarSchedule__weekday", {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
@@ -134,7 +157,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         </li>
       );
     });
-  }, [selectedDayIndex, firstDayOfSchedule, isScheduleTimeshifted]);
+  }, [
+    isScheduleTimeshifted,
+    firstDayOfSchedule,
+    lastDayOfSchedule,
+    selectedDayIndex,
+  ]);
 
   const getEventLocation = useCallback(
     (locString: string): VenueLocation => {
@@ -236,9 +264,20 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           </Button>
         </div>
       )}
-      <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <Schedule isLoading={isLoadingSchedule} {...schedule} />
+      {/* TODO: refactor this to be cleaner + follow our standards better */}
+      {renderedScheduleDayTabs.length > 0 ? (
+        <>
+          <ul className="NavBarSchedule__weekdays">
+            {renderedScheduleDayTabs}
+          </ul>
+
+          <Schedule isLoading={isLoadingSchedule} {...schedule} />
+        </>
+      ) : (
+        // TODO: Improve how this displays
+        <div>Scheduled events have ended</div>
+      )}
     </div>
   );
 };
