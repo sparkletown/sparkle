@@ -878,9 +878,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
+          editing={state.detailsPage?.venue.profile_questions}
         />
 
-        <EntranceInput register={register} fieldName="entrance" />
+        <EntranceInput
+          fieldName="entrance"
+          register={register}
+          editing={state.detailsPage?.venue.entrance}
+        />
 
         {renderShowScheduleToggle()}
         {templateID &&
