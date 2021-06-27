@@ -59,6 +59,7 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
           {formatTimeLocalised(eventEndTime(event))}
         </span>
       </div>
+
       <div className="ScheduleItem__event-section">
         <div className={schedulePrimaryClasses}>
           <div className="ScheduleItem__event-name">{event.name}</div>
@@ -70,6 +71,8 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
 
         {isCurrentEvent && (
           <div className="ScheduleItem__entry-room-button">
+            {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+            {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}
             <a
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}

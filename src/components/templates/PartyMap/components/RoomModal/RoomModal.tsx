@@ -143,6 +143,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         <div className="room-modal__content">
           {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
 
+          {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+          {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
           <button
             className="btn btn-primary room-modal__btn-enter"
             onMouseOver={triggerAttendance}
