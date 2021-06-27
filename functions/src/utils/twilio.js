@@ -14,7 +14,7 @@ const generateTwilioToken = () => {
   );
 };
 
-export const twilioVideoToken = (identity, room) => {
+const twilioVideoToken = (identity, room) => {
   const videoGrant = new VideoGrant({ room });
   const token = generateTwilioToken();
 
