@@ -39,6 +39,8 @@ export const useAgoraCameraNG: ReactHook<
     isAudioTrackEnabled,
     toggleVideoTrack,
     toggleAudioTrack,
+    enableVideoTrack,
+    enableAudioTrack,
     setLocalVideoTrack,
     setLocalAudioTrack,
     joinChannel,
@@ -61,8 +63,18 @@ export const useAgoraCameraNG: ReactHook<
 
     await client.publish([microphoneTrack, cameraTrack]);
 
+    enableVideoTrack();
+    enableAudioTrack();
+
     return channelId;
-  }, [client, joinChannel, setLocalAudioTrack, setLocalVideoTrack]);
+  }, [
+    client,
+    enableAudioTrack,
+    enableVideoTrack,
+    joinChannel,
+    setLocalAudioTrack,
+    setLocalVideoTrack,
+  ]);
 
   return {
     client,
