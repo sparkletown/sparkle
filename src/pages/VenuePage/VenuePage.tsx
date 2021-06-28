@@ -38,7 +38,6 @@ import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { useShowHide } from "hooks/useShowHide";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
@@ -64,12 +63,6 @@ const VenuePage: React.FC = () => {
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
-
-  const {
-    isShown: isLoginLoadingShown,
-    show: showLoginLoading,
-    hide: hideLoginLoading,
-  } = useShowHide(false);
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -187,15 +180,8 @@ const VenuePage: React.FC = () => {
     return <LoadingPage />;
   }
 
-  if (!user || isLoginLoadingShown) {
-    return (
-      <Login
-        venue={venue}
-        isLoadingShown={isLoginLoadingShown}
-        showLoginLoading={showLoginLoading}
-        hideLoginLoading={hideLoginLoading}
-      />
-    );
+  if (!user) {
+    return <Login venue={venue} />;
   }
 
   if (!profile) {

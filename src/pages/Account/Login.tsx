@@ -11,6 +11,7 @@ import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
+import { useShowHide } from "hooks/useShowHide";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -28,21 +29,21 @@ import "./Login.scss";
 export interface LoginProps {
   formType?: "initial" | "login" | "register" | "passwordReset";
   venue: WithId<AnyVenue>;
-  isLoadingShown?: boolean;
-  showLoginLoading?: () => void;
-  hideLoginLoading?: () => void;
 }
 
 export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venue,
-  showLoginLoading,
-  hideLoginLoading,
-  isLoadingShown,
 }) => {
   const venueId = venue.id;
 
   const [formToDisplay, setFormToDisplay] = useState(formType);
+
+  const {
+    isShown: isLoginLoadingShown,
+    show: showLoginLoading,
+    hide: hideLoginLoading,
+  } = useShowHide(false);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn({
     samlAuthProviderId: venue.samlAuthProviderId,
@@ -92,7 +93,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
-  if (isCustomAuthConfigLoading || isLoadingShown) return <LoadingPage />;
+  if (isCustomAuthConfigLoading || isLoginLoadingShown) return <LoadingPage />;
 
   return (
     <div className="auth-container">

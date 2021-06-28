@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
@@ -27,6 +33,7 @@ export interface ProfilePictureInputProps {
   pictureUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: any;
+  githubHandle?: string;
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -36,6 +43,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   errors,
   pictureUrl,
   register,
+  githubHandle,
 }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
@@ -92,6 +100,15 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const githubImageSrc =
+    githubHandle && `https://github.com/${githubHandle}.png?size=120`;
+
+  useEffect(() => {
+    if (!githubImageSrc) return;
+
+    setValue("pictureUrl", githubImageSrc, true);
+  }, [githubImageSrc, setValue]);
+
   const uploadDefaultAvatar = useCallback(
     async (avatar: string) => {
       setValue("pictureUrl", avatar, true);
@@ -107,21 +124,34 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     ? customAvatars
     : DEFAULT_AVATARS;
 
-  const avatarImages = useMemo(() => {
-    return defaultAvatars.map((avatar, index) => (
+  const getRenderedAvatarImageComponent = useCallback(
+    (avatarSrc: string, key: string | number) => (
       <div
-        key={`${avatar}-${index}`}
+        key={`${avatarSrc}-${key}`}
         className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
+        onClick={() => uploadDefaultAvatar(avatarSrc)}
       >
         <img
-          src={avatar}
+          src={avatarSrc}
           className="profile-icon profile-picture-preview"
-          alt={`default avatar ${index}`}
+          alt={`default avatar ${key}`}
         />
       </div>
-    ));
-  }, [defaultAvatars, uploadDefaultAvatar]);
+    ),
+    [uploadDefaultAvatar]
+  );
+
+  const gitHubImage = useMemo(
+    () =>
+      githubImageSrc &&
+      getRenderedAvatarImageComponent(githubImageSrc, "github-avatar"),
+    [githubImageSrc, getRenderedAvatarImageComponent]
+  );
+
+  const avatarImages = useMemo(
+    () => defaultAvatars.map(getRenderedAvatarImageComponent),
+    [defaultAvatars, getRenderedAvatarImageComponent]
+  );
 
   return (
     <div className="profile-picture-upload-form">
@@ -152,8 +182,9 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>Or pick one from our Sparkle profile pics</small>
+      <small>Or pick one of the suggested options</small>
       <div className="default-avatars-container">
+        {gitHubImage}
         {isLoading ? <div>Loading...</div> : avatarImages}
       </div>
       <input

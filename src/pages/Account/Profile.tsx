@@ -10,6 +10,8 @@ import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
+import { getLocalStorageItem, LocalStorageItem } from "utils/localStorage";
+import { isTruthy } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -62,14 +64,16 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
-  // TODO: use functions from utils/sessionStorage or similar to retrieve the data
-  const data = sessionStorage.getItem("profileData") ?? "{}";
-  const refinedData = JSON.parse(data);
+  const profilePrefilledData = getLocalStorageItem(
+    LocalStorageItem.prefillProfileData
+  );
 
-  const realName =
-    refinedData.firstName &&
-    refinedData.lastName &&
-    `${refinedData.firstName} ${refinedData.lastName}`;
+  const realName = [
+    profilePrefilledData?.firstName,
+    profilePrefilledData?.lastName,
+  ]
+    .filter(isTruthy)
+    .join(" ");
 
   const pictureUrl = watch("pictureUrl");
 
@@ -88,7 +92,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="partyName"
               className="input-block input-centered"
               placeholder="Your display name"
-              defaultValue={refinedData.partyName}
+              defaultValue={profilePrefilledData?.githubName}
               ref={register({
                 required: true,
                 maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
@@ -122,7 +126,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyTitle"
               className="input-block input-centered"
               placeholder="Your title"
-              defaultValue={refinedData.companyTitle}
+              defaultValue={profilePrefilledData?.companyTitle}
               ref={register()}
               autoComplete="off"
             />
@@ -131,7 +135,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyDepartment"
               className="input-block input-centered"
               placeholder="Your department"
-              defaultValue={refinedData.companyDepartment}
+              defaultValue={profilePrefilledData?.companyDepartment}
               ref={register()}
               autoComplete="off"
             />
@@ -140,6 +144,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               <ProfilePictureInput
                 venueId={venueId}
                 setValue={setValue}
+                githubHandle={profilePrefilledData?.githubName}
                 user={user}
                 errors={errors}
                 pictureUrl={pictureUrl}

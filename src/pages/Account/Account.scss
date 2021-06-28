@@ -71,12 +71,12 @@ $page-max-width: 1240px;
 }
 
 .page-container-onboarding {
-  max-height: 100%;
-  overflow: hidden;
+  height: 100%;
   position: absolute;
-  top: 20%;
-  left: 20%;
-  right: 20%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .login-welcome-title {
     font-style: italic;
