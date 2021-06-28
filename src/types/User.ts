@@ -20,8 +20,6 @@ export interface Experience extends TalkShowStudioExperience {
   column?: number;
 }
 
-export type Mappings = Record<string, string>;
-
 //@debt typing I think this is correct from Room.tsx, need to confirm
 export type UserExperienceData = Record<string, Experience>;
 

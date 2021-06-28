@@ -1,11 +1,9 @@
 import firebase from "firebase/app";
-import { get } from "lodash";
 import { FirebaseReducer } from "react-redux-firebase";
 
-import { User, Mappings } from "types/User";
+import { User } from "types/User";
 
 import { isTruthy } from "./types";
-import { isDefined } from "utils/types";
 
 export const updateProfileEnteredVenueIds = async (
   prevEnteredVenueIds: readonly string[] | undefined,
@@ -25,14 +23,3 @@ export const updateProfileEnteredVenueIds = async (
 
 export const isCompleteProfile = (profile: FirebaseReducer.Profile<User>) =>
   isTruthy(profile.partyName) && isTruthy(profile.pictureUrl);
-
-export const getMappedValues = (mappings: Mappings, source: Object) =>
-  Object.entries(mappings).reduce((acc, [name, path]) => {
-    const mappingValue: string = get(source, path);
-
-    if (!isDefined(mappingValue)) {
-      return acc;
-    }
-
-    return { ...acc, [name]: mappingValue };
-  }, {});

@@ -10,7 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { Mappings, UsernameVisibility } from "./User";
+import { UsernameVisibility } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -145,7 +145,7 @@ export interface BaseVenue {
   miniAvatars?: boolean;
   adultContent?: boolean;
   samlAuthProviderId?: string;
-  samlProfileMappings?: Mappings;
+  samlProfileMappings?: Partial<Record<string, string>>;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;

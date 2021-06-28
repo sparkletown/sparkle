@@ -1,17 +1,16 @@
 import { useCallback } from "react";
 import Bugsnag from "@bugsnag/js";
+import { get, mapValues } from "lodash";
 
 import firebase from "firebase/app";
 
 import { ReactHook } from "types/utility";
-import { Mappings } from "types/User";
 
 import { setLocalStorageItem, LocalStorageItem } from "utils/localStorage";
-import { getMappedValues } from "utils/profile";
 
 export interface UseSAMLSignInProps {
   samlAuthProviderId?: string;
-  samlProfileMappings?: Mappings;
+  samlProfileMappings?: Partial<Record<string, string>>;
   showLoginLoading?: () => void;
   hideLoginLoading?: () => void;
 }
@@ -54,7 +53,11 @@ export const useSAMLSignIn: ReactHook<
         )
           return;
 
-        const mappedProfileData = getMappedValues(samlProfileMappings, result);
+        const mappedProfileData = mapValues(samlProfileMappings, (path) => {
+          if (!path) return;
+
+          return get(samlProfileMappings, path, undefined);
+        });
 
         setLocalStorageItem(
           LocalStorageItem.prefillProfileData,
