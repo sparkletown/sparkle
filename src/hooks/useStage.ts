@@ -8,6 +8,7 @@ import { updateTalkShowStudioExperience } from "api/profile";
 import { updateUserTalkShowStudioExperience } from "api/admin";
 
 import { WithId } from "utils/id";
+import { isDefined } from "utils/types";
 
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
@@ -21,20 +22,21 @@ export const useStage = ({ venueId }: UseStageProps) => {
   const { userId, profile } = useUser();
 
   const setDefaultUserSettings = useCallback(async () => {
-    venueId &&
-      userId &&
-      (await updateTalkShowStudioExperience({
-        venueId,
-        userId,
-        experience: {
-          isSharingScreen: false,
-          place: PlaceInTalkShowStudioVenue.audience,
-          isMuted: false,
-          isUserCameraOff: false,
-        },
-      }));
+    if (!venueId || !userId) return;
+
+    await updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        isSharingScreen: false,
+        place: PlaceInTalkShowStudioVenue.audience,
+        isMuted: false,
+        isUserCameraOff: false,
+      },
+    });
   }, [userId, venueId]);
 
+  // @debt we probably shouldn't be using beforeunload here
   useEffect(() => {
     window.addEventListener("beforeunload", setDefaultUserSettings);
     return () => {
@@ -42,28 +44,22 @@ export const useStage = ({ venueId }: UseStageProps) => {
     };
   }, [setDefaultUserSettings]);
 
-  const peopleOnStage = useMemo(
-    () =>
-      venueId
-        ? recentVenueUsers.filter(
-            (user) =>
-              user.data?.[venueId]?.place === PlaceInTalkShowStudioVenue.stage
-          )
-        : [],
-    [recentVenueUsers, venueId]
-  );
+  const peopleOnStage = useMemo(() => {
+    if (!venueId) return [];
 
-  const peopleRequesting = useMemo(
-    () =>
-      venueId
-        ? recentVenueUsers.filter(
-            (user) =>
-              user.data?.[venueId]?.place ===
-              PlaceInTalkShowStudioVenue.requesting
-          )
-        : [],
-    [recentVenueUsers, venueId]
-  );
+    return recentVenueUsers.filter(
+      (user) => user.data?.[venueId]?.place === PlaceInTalkShowStudioVenue.stage
+    );
+  }, [recentVenueUsers, venueId]);
+
+  const peopleRequesting = useMemo(() => {
+    if (!venueId) return [];
+
+    return recentVenueUsers.filter(
+      (user) =>
+        user.data?.[venueId]?.place === PlaceInTalkShowStudioVenue.requesting
+    );
+  }, [recentVenueUsers, venueId]);
 
   const isUserRequesting = useMemo(
     () => peopleRequesting.some((user) => user.id === userId),
@@ -75,36 +71,29 @@ export const useStage = ({ venueId }: UseStageProps) => {
     [peopleOnStage, userId]
   );
 
-  const canJoinStage = useMemo(
-    () => peopleOnStage.length < MAX_TALK_SHOW_STUDIO_HOSTS,
-    [peopleOnStage]
-  );
+  const canJoinStage = peopleOnStage.length < MAX_TALK_SHOW_STUDIO_HOSTS;
 
-  const screenSharingUser = useMemo(
-    () =>
-      peopleOnStage.find(
-        (user) => venueId && user.data?.[venueId].isSharingScreen
-      ),
-    [peopleOnStage, venueId]
-  );
+  const screenSharingUser = useMemo(() => {
+    if (!venueId) return;
 
-  const canShareScreen = useMemo(() => !screenSharingUser, [screenSharingUser]);
+    return peopleOnStage.find((user) => user.data?.[venueId].isSharingScreen);
+  }, [peopleOnStage, venueId]);
 
-  const isUserSharing = useMemo(
-    () => !!userId && screenSharingUser?.id === userId,
-    [screenSharingUser, userId]
-  );
+  const canShareScreen = !isDefined(screenSharingUser);
+
+  const isUserSharing = isDefined(userId) && screenSharingUser?.id === userId;
 
   const joinStage = () => {
-    venueId &&
-      userId &&
-      updateTalkShowStudioExperience({
-        venueId,
-        userId,
-        experience: {
-          place: PlaceInTalkShowStudioVenue.stage,
-        },
-      });
+    if (!venueId || !userId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        place: PlaceInTalkShowStudioVenue.stage,
+      },
+    });
   };
 
   const leaveStage = async () => {
@@ -113,66 +102,72 @@ export const useStage = ({ venueId }: UseStageProps) => {
   };
 
   const requestJoinStage = () => {
-    venueId &&
-      userId &&
-      updateTalkShowStudioExperience({
-        venueId,
-        userId,
-        experience: {
-          place: PlaceInTalkShowStudioVenue.requesting,
-        },
-      });
+    if (!venueId || !userId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        place: PlaceInTalkShowStudioVenue.requesting,
+      },
+    });
   };
 
   const toggleMicrophone = () => {
-    venueId &&
-      userId &&
-      updateTalkShowStudioExperience({
-        venueId,
-        userId,
-        experience: {
-          isMuted: !profile?.data?.[venueId].isMuted,
-        },
-      });
+    if (!venueId || !userId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        isMuted: !profile?.data?.[venueId].isMuted,
+      },
+    });
   };
 
   const toggleCamera = () => {
-    venueId &&
-      userId &&
-      updateTalkShowStudioExperience({
-        venueId,
-        userId,
-        experience: {
-          isUserCameraOff: !profile?.data?.[venueId].isUserCameraOff,
-        },
-      });
+    if (!venueId || !userId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        isUserCameraOff: !profile?.data?.[venueId].isUserCameraOff,
+      },
+    });
   };
 
   const toggleUserMicrophone = (user?: WithId<User>) => {
-    if (user && venueId) {
-      updateUserTalkShowStudioExperience(venueId, user.id, {
-        isMuted: true,
-      });
-    }
+    if (!user || !venueId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateUserTalkShowStudioExperience(venueId, user.id, {
+      isMuted: true,
+    });
   };
 
   const toggleUserCamera = (user?: WithId<User>) => {
-    if (user && venueId) {
-      updateUserTalkShowStudioExperience(venueId, user.id, {
-        isUserCameraOff: true,
-      });
-    }
+    if (!user || !venueId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateUserTalkShowStudioExperience(venueId, user.id, {
+      isUserCameraOff: true,
+    });
   };
 
   const removeUserFromStage = (user?: WithId<User>) => {
-    user &&
-      venueId &&
-      updateUserTalkShowStudioExperience(venueId, user.id, {
-        place: PlaceInTalkShowStudioVenue.audience,
-        isSharingScreen: false,
-        isMuted: false,
-        isUserCameraOff: false,
-      });
+    if (!user || !venueId) return;
+
+    // @debt promise returned from updateTalkShowStudioExperience is ignored
+    updateUserTalkShowStudioExperience(venueId, user.id, {
+      place: PlaceInTalkShowStudioVenue.audience,
+      isSharingScreen: false,
+      isMuted: false,
+      isUserCameraOff: false,
+    });
   };
 
   return {
