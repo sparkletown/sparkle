@@ -2,8 +2,8 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
+const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
-const { checkAuth } = require("./auth");
 
 const PLAYA_VENUE_ID = "jamonline";
 
