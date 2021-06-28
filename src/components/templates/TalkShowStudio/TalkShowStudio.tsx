@@ -24,20 +24,14 @@ import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
 
 import "./TalkShowStudio.scss";
 
-const remotesClient: IAgoraRTCClient = AgoraRTC.createClient({
+// @debt Should these be created in static scope like this? Are client's meant to be static?
+//   Do we need unique clients for each of the modes here?
+const agoraClient: IAgoraRTCClient = AgoraRTC.createClient({
   codec: "h264",
-  mode: "rtc",
+  mode: "live",
 });
 
-const screenClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
-const cameraClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
+agoraClient.setClientRole("host");
 
 export interface TalkShowStudioProps {
   venue: WithId<FullTalkShowVenue>;
@@ -57,7 +51,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const remoteUsers = useAgoraRemotes({
     userId,
     channelName,
-    client: remotesClient,
+    client: agoraClient,
   });
 
   const {
@@ -180,11 +174,11 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   }, [cameraClientLeave, stage, screenClientLeave]);
 
   useEffect(() => {
-    cameraClient.connectionState === AgoraClientConnectionState.DISCONNECTED &&
+    agoraClient.connectionState === AgoraClientConnectionState.DISCONNECTED &&
       stage.isUserOnStage &&
       onStageJoin();
 
-    cameraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
+    agoraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
       !stage.isUserOnStage &&
       onStageLeaving();
   }, [stage.isUserOnStage, onStageJoin, onStageLeaving]);
@@ -282,7 +276,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
           <ControlBar
             isSharing={!!localScreenTrack}
             loading={
-              screenClient.connectionState !==
+              agoraClient.connectionState !==
               AgoraClientConnectionState.CONNECTED
             }
             onStageJoin={onStageJoin}
