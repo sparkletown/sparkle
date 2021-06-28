@@ -336,7 +336,7 @@ const createBaseUpdateVenueData = (data, updated) => {
   }
 
   if (typeof data.showShoutouts === "boolean") {
-    updated.showShoutouts = data.showShou;
+    updated.showShoutouts = data.showShoutouts;
   }
 
   if (data.attendeesTitle) {
