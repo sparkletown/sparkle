@@ -19,8 +19,8 @@ export interface UseAgoraCameraProps {
   client?: IAgoraRTCClient;
 }
 export interface UseAgoraCameraReturn {
-  isCameraOn: boolean;
-  isMicrophoneOn: boolean;
+  isCameraEnabled: boolean;
+  isMicrophoneEnabled: boolean;
   localCameraTrack?: ILocalVideoTrack;
   toggleCamera(): void;
   toggleMicrophone(): void;
@@ -33,25 +33,31 @@ export const useAgoraCamera: ReactHook<
   UseAgoraCameraReturn
 > = ({ venueId, userId, client }) => {
   const [localCameraTrack, setLocalCameraTrack] = useState<ILocalVideoTrack>();
+
   const [
     localMicrophoneTrack,
     setLocalMicrophoneTrack,
   ] = useState<ILocalAudioTrack>();
-  const { isShown: isCameraOn, setShown: setIsCameraOn } = useShowHide();
+
   const {
-    isShown: isMicrophoneOn,
-    setShown: setIsMicrophoneOn,
+    isShown: isCameraEnabled,
+    show: enableCamera,
+    toggle: toggleCamera,
   } = useShowHide();
 
-  const toggleCamera = () => {
-    localCameraTrack?.setEnabled(!isCameraOn);
-    setIsCameraOn(!isCameraOn);
-  };
+  const {
+    isShown: isMicrophoneEnabled,
+    show: enableMicrophone,
+    toggle: toggleMicrophone,
+  } = useShowHide();
 
-  const toggleMicrophone = () => {
-    localMicrophoneTrack?.setEnabled(!isMicrophoneOn);
-    setIsMicrophoneOn(!isMicrophoneOn);
-  };
+  useEffect(() => {
+    localCameraTrack?.setEnabled(!isCameraEnabled);
+  }, [isCameraEnabled, localCameraTrack]);
+
+  useEffect(() => {
+    localMicrophoneTrack?.setEnabled(!isMicrophoneEnabled);
+  }, [isMicrophoneEnabled, localMicrophoneTrack]);
 
   const joinChannel = async () => {
     if (!client || !venueId || !userId) return;
@@ -68,13 +74,15 @@ export const useAgoraCamera: ReactHook<
 
     updateTalkShowStudioExperience({ venueId, userId, experience });
 
-    setIsCameraOn(true);
-    setIsMicrophoneOn(true);
+    enableCamera();
+    enableMicrophone();
+
     const cameraTrack = await AgoraRTC.createCameraVideoTrack();
     const microphoneTrack = await AgoraRTC.createMicrophoneAudioTrack();
 
     setLocalCameraTrack(cameraTrack);
     setLocalMicrophoneTrack(microphoneTrack);
+
     await client.publish([microphoneTrack, cameraTrack]);
   };
 
@@ -104,8 +112,8 @@ export const useAgoraCamera: ReactHook<
     localCameraTrack,
     toggleCamera,
     toggleMicrophone,
-    isCameraOn,
-    isMicrophoneOn,
+    isCameraEnabled,
+    isMicrophoneEnabled,
     joinChannel,
     leaveChannel,
   };

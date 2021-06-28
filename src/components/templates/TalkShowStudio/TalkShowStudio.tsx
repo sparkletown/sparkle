@@ -56,8 +56,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     localCameraTrack,
     toggleCamera,
     toggleMicrophone,
-    isCameraOn,
-    isMicrophoneOn,
+    isCameraEnabled,
+    isMicrophoneEnabled,
     joinChannel: cameraClientJoin,
     leaveChannel: cameraClientLeave,
   } = useAgoraCamera({ venueId: venue.id, userId, client: agoraClient });
@@ -176,18 +176,24 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   useEffect(() => {
     const isUserMicOff = profile?.data?.[venue.id]?.isMuted;
 
-    if ((isUserMicOff && isMicrophoneOn) || !(isUserMicOff || isMicrophoneOn)) {
+    if (
+      (isUserMicOff && isMicrophoneEnabled) ||
+      !(isUserMicOff || isMicrophoneEnabled)
+    ) {
       toggleMicrophone();
     }
-  }, [isMicrophoneOn, profile?.data, toggleMicrophone, venue.id]);
+  }, [isMicrophoneEnabled, profile?.data, toggleMicrophone, venue.id]);
 
   useEffect(() => {
     const isUserCameraOff = profile?.data?.[venue.id]?.isUserCameraOff;
 
-    if ((isUserCameraOff && isCameraOn) || !(isUserCameraOff || isCameraOn)) {
+    if (
+      (isUserCameraOff && isCameraEnabled) ||
+      !(isUserCameraOff || isCameraEnabled)
+    ) {
       toggleCamera();
     }
-  }, [isCameraOn, profile?.data, toggleCamera, venue.id]);
+  }, [isCameraEnabled, profile?.data, toggleCamera, venue.id]);
 
   const isJoinStageButtonDisplayed =
     isRequestToJoinStageEnabled &&
@@ -214,8 +220,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
             user={localUser}
             videoTrack={cameraTrack}
             showButtons
-            isCamOn={isCameraOn}
-            isMicOn={isMicrophoneOn}
+            isCamOn={isCameraEnabled}
+            isMicOn={isMicrophoneEnabled}
             isSharing={!!screenTrack}
             toggleCam={toggleCamera}
             toggleMic={toggleMicrophone}
@@ -241,8 +247,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
                   user={localUser}
                   videoTrack={localCameraTrack}
                   showButtons
-                  isCamOn={isCameraOn}
-                  isMicOn={isMicrophoneOn}
+                  isCamOn={isCameraEnabled}
+                  isMicOn={isMicrophoneEnabled}
                   isSharing={!!localScreenTrack}
                   toggleCam={stage.toggleCamera}
                   toggleMic={stage.toggleMicrophone}
