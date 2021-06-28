@@ -25,7 +25,7 @@ export const InitialForm: FC<InitialFormProps> = ({
         className="btn btn-block btn-centered login-button"
         onClick={displayLoginForm}
       >
-        Log in for non-Hubbers
+        Log in for non-Okta users
       </div>
     </div>
   );
