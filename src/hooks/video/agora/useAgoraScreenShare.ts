@@ -6,8 +6,6 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
-import { AGORA_CHANNEL } from "secrets";
-
 import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
@@ -16,6 +14,7 @@ import { getAgoraToken } from "api/video";
 export interface UseAgoraScreenShareProps {
   venueId?: string;
   userId?: string;
+  channelName?: string;
   client?: IAgoraRTCClient;
 }
 
@@ -30,7 +29,7 @@ export interface UseAgoraScreenShareReturn {
 export const useAgoraScreenShare: ReactHook<
   UseAgoraScreenShareProps,
   UseAgoraScreenShareReturn
-> = ({ venueId, userId, client }) => {
+> = ({ venueId, userId, channelName, client }) => {
   const [localScreenTrack, setLocalScreenTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
@@ -69,10 +68,10 @@ export const useAgoraScreenShare: ReactHook<
   }, [client, localAudioTrack, localScreenTrack]);
 
   const joinChannel = async () => {
-    if (!client || !venueId || !userId) return;
+    if (!client || !venueId || !userId || !channelName) return;
 
-    const { appId, channelName, account, token } = await getAgoraToken({
-      channelName: AGORA_CHANNEL,
+    const { appId, account, token } = await getAgoraToken({
+      channelName,
     });
 
     const screenClientUid = await client?.join(

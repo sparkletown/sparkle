@@ -46,11 +46,19 @@ export interface TalkShowStudioProps {
 export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const { userId, profile } = useUser();
   const currentVenue = useSelector(currentVenueSelectorData);
+
+  // @debt retrieve/generate this in a better/more secure way
+  const channelName = venue.id;
+
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
 
   const stage = useStage({ venueId: venue.id });
 
-  const remoteUsers = useAgoraRemotes({ userId, client: remotesClient });
+  const remoteUsers = useAgoraRemotes({
+    userId,
+    channelName,
+    client: remotesClient,
+  });
 
   const {
     localCameraTrack,
@@ -60,7 +68,12 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     isMicrophoneEnabled,
     joinChannel: cameraClientJoin,
     leaveChannel: cameraClientLeave,
-  } = useAgoraCamera({ venueId: venue.id, userId, client: agoraClient });
+  } = useAgoraCamera({
+    venueId: venue.id,
+    userId,
+    channelName,
+    client: agoraClient,
+  });
 
   const {
     localScreenTrack,
@@ -68,7 +81,12 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     stopShare,
     joinChannel: screenClientJoin,
     leaveChannel: screenClientLeave,
-  } = useAgoraScreenShare({ venueId: venue.id, userId, client: agoraClient });
+  } = useAgoraScreenShare({
+    venueId: venue.id,
+    userId,
+    channelName,
+    client: agoraClient,
+  });
 
   const localUser = useMemo(
     () => stage.peopleOnStage.find(({ id }) => id === userId),
@@ -87,6 +105,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       ),
     [stage.peopleOnStage, venue.id]
   );
+
   const remoteScreenTrack = useMemo(
     () =>
       remoteUsers.find(
@@ -96,6 +115,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       ),
     [userOnStageSharingScreen?.data, remoteUsers, venue.id]
   );
+
   const remoteCameraTrack = useMemo(
     () =>
       remoteUsers.find(

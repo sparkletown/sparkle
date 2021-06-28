@@ -6,8 +6,6 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
-import { AGORA_CHANNEL } from "secrets";
-
 import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
@@ -18,6 +16,7 @@ import { useShowHide } from "hooks/useShowHide";
 export interface UseAgoraCameraProps {
   venueId?: string;
   userId?: string;
+  channelName?: string;
   client?: IAgoraRTCClient;
 }
 
@@ -34,7 +33,7 @@ export interface UseAgoraCameraReturn {
 export const useAgoraCamera: ReactHook<
   UseAgoraCameraProps,
   UseAgoraCameraReturn
-> = ({ venueId, userId, client }) => {
+> = ({ venueId, userId, channelName, client }) => {
   const [localCameraTrack, setLocalCameraTrack] = useState<ILocalVideoTrack>();
 
   const [
@@ -63,10 +62,10 @@ export const useAgoraCamera: ReactHook<
   }, [isMicrophoneEnabled, localMicrophoneTrack]);
 
   const joinChannel = async () => {
-    if (!client || !venueId || !userId) return;
+    if (!client || !venueId || !userId || !channelName) return;
 
-    const { appId, channelName, account, token } = await getAgoraToken({
-      channelName: AGORA_CHANNEL,
+    const { appId, account, token } = await getAgoraToken({
+      channelName,
     });
 
     const cameraClientUid = await client.join(

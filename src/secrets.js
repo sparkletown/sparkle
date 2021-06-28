@@ -14,9 +14,6 @@ export const MIXPANEL_PROJECT_TOKEN =
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
-// @debt doing this for GitHub demo
-export const AGORA_CHANNEL = "talkshowstudio";
-
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;
 export const BUILD_TAG = process.env.REACT_APP_BUILD_TAG || undefined;
