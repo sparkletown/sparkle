@@ -205,6 +205,7 @@ const createVenueData = (data, context) => {
 
   if (data.template === VenueTemplate.audience) {
     venueData.showReactions = data.showReactions;
+
     venueData.showShoutouts = data.showShoutouts;
 
     if (data.auditoriumColumns) {
@@ -335,7 +336,7 @@ const createBaseUpdateVenueData = (data, updated) => {
   }
 
   if (typeof data.showShoutouts === "boolean") {
-    updated.showShoutouts = data.showShoutouts;
+    updated.showShoutouts = data.showShou;
   }
 
   if (data.attendeesTitle) {
