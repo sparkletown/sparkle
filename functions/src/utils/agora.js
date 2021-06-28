@@ -21,7 +21,8 @@ const generateAgoraTokenForAccount = ({ channelName, account, role }) => {
   if (typeof channelName !== "string" && channelName.length <= 0)
     throw new Error("channelName must be a string");
 
-  if (typeof account !== "string") throw new Error("account must be a string");
+  if (typeof account !== "string" && account.length <= 0)
+    throw new Error("account must be a string");
 
   if (![RtcRole.PUBLISHER, RtcRole.SUBSCRIBER].includes(role))
     throw new Error("role must be a valid value from the RtcRole enum");
