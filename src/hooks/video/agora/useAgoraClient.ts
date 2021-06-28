@@ -48,14 +48,17 @@ export const useAgoraClient: ReactHook<
   UseAgoraClientProps,
   UseAgoraClientData
 > = ({ channelName }) => {
-  const client = useMemo(
-    () =>
-      AgoraRTC.createClient({
-        codec: "h264",
-        mode: "live",
-      }),
-    []
-  );
+  const client = useMemo(() => {
+    const client = AgoraRTC.createClient({
+      codec: "h264",
+      mode: "live",
+    });
+
+    // TODO: handle this somewhere better
+    client.setClientRole("host");
+
+    return client;
+  }, []);
 
   const [localVideoTrack, setLocalVideoTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
