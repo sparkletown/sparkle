@@ -1,6 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useAsync } from "react-use";
+import { mapValues, get } from "lodash";
+import firebase from "firebase/app";
 import "firebase/storage";
 
 import { IS_BURN } from "secrets";
@@ -10,12 +13,12 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
 import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
-import { getLocalStorageItem, LocalStorageItem } from "utils/localStorage";
 import { isTruthy } from "utils/types";
 import { externalUrlAdditionalProps } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { updateUserProfile } from "./helpers";
 
@@ -44,6 +47,10 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     DEFAULT_VENUE;
   const { returnUrl } = getQueryParameters(window.location.search);
 
+  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+
+  const samlProfileMappings = currentVenue?.samlProfileMappings;
+
   const {
     register,
     handleSubmit,
@@ -65,16 +72,28 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
-  const profilePrefilledData = getLocalStorageItem(
-    LocalStorageItem.prefillProfileData
-  );
+  const { value: samlPrefillData } = useAsync(async () => {
+    if (!samlProfileMappings) return;
 
-  const githubHandle = profilePrefilledData?.githubName;
+    return firebase
+      .auth()
+      .currentUser?.getIdTokenResult()
+      .then((result) =>
+        mapValues(samlProfileMappings, (path) => {
+          if (!path) return;
 
-  const realName = [
-    profilePrefilledData?.firstName,
-    profilePrefilledData?.lastName,
-  ]
+          return get(
+            result.claims.firebase.sign_in_attributes,
+            path,
+            undefined
+          );
+        })
+      );
+  }, [samlProfileMappings]);
+
+  const githubHandle = samlPrefillData?.githubName;
+
+  const realName = [samlPrefillData?.firstName, samlPrefillData?.lastName]
     .filter(isTruthy)
     .join(" ");
 
@@ -131,7 +150,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyTitle"
               className="input-block input-centered"
               placeholder="Your title"
-              defaultValue={profilePrefilledData?.companyTitle}
+              defaultValue={samlPrefillData?.companyTitle}
               ref={register()}
               autoComplete="off"
             />
@@ -140,7 +159,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyDepartment"
               className="input-block input-centered"
               placeholder="Your department"
-              defaultValue={profilePrefilledData?.companyDepartment}
+              defaultValue={samlPrefillData?.companyDepartment}
               ref={register()}
               autoComplete="off"
             />

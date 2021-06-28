@@ -41,15 +41,12 @@ export const Login: React.FC<LoginProps> = ({
 
   const {
     isShown: isLoginLoadingShown,
-    show: showLoginLoading,
-    hide: hideLoginLoading,
+    // show: showLoginLoading,
+    // hide: hideLoginLoading,
   } = useShowHide(false);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn({
     samlAuthProviderId: venue.samlAuthProviderId,
-    samlProfileMappings: venue.samlProfileMappings,
-    showLoginLoading,
-    hideLoginLoading,
   });
 
   const {
