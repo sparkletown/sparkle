@@ -123,11 +123,11 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const remoteUsersPlayers = useMemo(() => {
     const setRemoteUserAvatar = (remoteUserId: number | string) => {
       if (!venue.id) return;
-      const remoteUser = stage.peopleOnStage.find(
+
+      return stage.peopleOnStage.find(
         ({ data }) =>
           data?.[`${venue.id}`]?.cameraClientUid === `${remoteUserId}`
       );
-      return remoteUser;
     };
     return remoteUsers
       .filter(
