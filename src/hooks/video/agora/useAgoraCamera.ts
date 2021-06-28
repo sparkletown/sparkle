@@ -54,11 +54,11 @@ export const useAgoraCamera: ReactHook<
   } = useShowHide();
 
   useEffect(() => {
-    localCameraTrack?.setEnabled(!isCameraEnabled);
+    localCameraTrack?.setEnabled(isCameraEnabled);
   }, [isCameraEnabled, localCameraTrack]);
 
   useEffect(() => {
-    localMicrophoneTrack?.setEnabled(!isMicrophoneEnabled);
+    localMicrophoneTrack?.setEnabled(isMicrophoneEnabled);
   }, [isMicrophoneEnabled, localMicrophoneTrack]);
 
   const joinChannel = async () => {
