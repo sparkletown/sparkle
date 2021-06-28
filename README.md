@@ -10,9 +10,9 @@ What you will need:
 - Your favorite command-line interface (e.g. Terminal or zsh on a Mac)
 - Optional: accounts with Stripe, Twillio
 - A little fairy dust
+
 ## Set Up Your Local Environment
 
-<!-- section 1 -->
 ### Step 1: Clone the Sparkle Repository
 
 First, clone the repo and `cd` into it:
@@ -34,21 +34,18 @@ npm install
 
 ### Step 3: Set up Firebase project
 
+If you haven't followed through these steps before then you're going to need to set up a new Firebase environment and configure it. That process is a little longer than would fit comfortably in this README, so we split it out for you:
+
 See [Firebase setup](docs/create-new-environment.md)
-### Step 4: Bootstrap application
 
-See [Bootstrap application](docs/bootstrap-application.md)
+### Step 4: Start Your Engines
 
-### Step 5: Start Your Engines
-
-See [Start application](docs/bootstrap-application.md)
+See [Start application](docs/getting-started.md)
 
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
-### Step 6: Firebase Emulators
+### Step 5: Firebase Emulators
 See [Firebase Emulators](docs/firebase-emulators.md)
-
-<!-- section 3 -->
 
 ## Part Three: Configure Third-Party Integrations
 
@@ -84,8 +81,6 @@ const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
 ```
 
 ---
-<!-- section 4 -->
-
 ## Part Four: Contribute to Sparkle
 
 ### Our Git Flow

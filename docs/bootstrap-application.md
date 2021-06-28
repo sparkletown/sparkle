@@ -1,11 +1,6 @@
-# Sparkle Web App
-
-Codebase for the Sparkle platform, brought to you by [Sparkle](https://sparklespaces.com/), a platform for the most immersive & interactive virtual events.
-
 ### Connect your application to Firebase
 
 <!-- section 1 -->
-
 ## 'Bootstrap' the platform
 
 Make sure that you're located in ./scripts folder.
@@ -106,4 +101,4 @@ npm run firebase --project TODO-PROJECT-ID deploy --only functions
 
 # You may need to run this a couple of times, as it seems to cause various Google cloud APIs to get enabled/etc, which sometimes fail/time out. As a result you should see Deploy complete! message
 
-Proceed to ./start-application.md to launch your application.
+Proceed to ./getting-started.md to launch your application.

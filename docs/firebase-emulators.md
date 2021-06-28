@@ -7,18 +7,22 @@ You can find out more at https://firebase.google.com/docs/emulator-suite.
 To prevent this, you might opt in to use a Firebase project name beginning with `demo-` (e.g. `demo-staging`) in which case no production resources will be used.
 
 First though, a **major version of 8** for the Firebase client is required:
+
 ```bash
 npm i firebase@8
 ```
+
 This might entail some code changes as well, to enable the emulation, e.g.
-```javascript
+
+```typescript
 // Enable the functions emulator when running in development at specific port
 if (process.env.NODE_ENV === "development" && window.location.port === "5000") {
   firebaseApp.firestore().useEmulator("localhost", 8080);
 }
 ```
 or to account for changed and/or deprecated Firebase client API, e.g.
-```javascript
+
+```typescript
 // deprecated
 // import firebase, { UserInfo } from "firebase/app";
 // use instead
@@ -27,16 +31,20 @@ type UserInfo = firebase.UserInfo;
 ```
 
 You can start the emulators in a manner that can persist the data locally:
+
 ```bash
 npx --no-install -- firebase "emulators:start" --import=./tmp --export-on-exit
 ```
 
 You should be greeted with
+
 ```bash
 All emulators ready! View status and logs at http://localhost:4000
 ```
+
 That's the location you can access and manage the running emulators.
 The data between emulator runs should be persisted at
+
 ```bash
 tmp/firebase-export-metadata.json
 tmp/firestore_export

@@ -1,11 +1,4 @@
-# Sparkle Web App
-
-Codebase for the Sparkle platform, brought to you by [Sparkle](https://sparklespaces.com/), a platform for the most immersive & interactive virtual events.
-
 ### Firebase Project Setup
-
-<!-- section 1 -->
-
 ### Step 1: Create New Firebase Project
 
 1. Go to https://console.firebase.google.com.
@@ -119,8 +112,13 @@ This part of the setup is complete!
 
 Now you can proceed to bootstrapping your application ./bootstrap-application.md
 
+### Step 6: Bootstrap application environment
 
-### Step 6: Additional Notes
+In order to run Sparkle you'd need to bootstrap and connect your local application with the Firebase environment that you've created. Please follow the link below for detailed information.
+
+See [Bootstrap application](docs/bootstrap-application.md)
+
+### Step 7: Additional Notes
 
 If you're interested in setting up the project to run in your own environment but you're not sure how to go about it, feel free to [open an issue](https://github.com/sparkletown/sparkle/issues/new) asking for assistance.
 
