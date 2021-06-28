@@ -7,19 +7,14 @@ import {
   RANDOM_AVATARS,
   DEFAULT_PROFILE_PIC,
   DEFAULT_PARTY_NAME,
-  DEFAULT_EDIT_PROFILE_TEXT,
 } from "settings";
 
-import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-  orderedVenuesSelector,
-} from "utils/selectors";
+import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
-import { isVenueWithRooms } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
@@ -32,9 +27,13 @@ import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
 
-export const UserProfileModal: React.FC = () => {
-  const venue = useSelector(currentVenueSelector);
+export interface UserProfileModalProps {
+  venue: WithId<AnyVenue>;
+}
 
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  venue,
+}) => {
   const { user } = useUser();
 
   const { selectRecipientChat } = useChatSidebarControls();
@@ -47,6 +46,8 @@ export const UserProfileModal: React.FC = () => {
 
   const chosenUserId = selectedUserProfile?.id;
 
+  const profileQuestions = venue?.profile_questions;
+
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
@@ -55,12 +56,52 @@ export const UserProfileModal: React.FC = () => {
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
+  const renderedProfileQuestionAnswers = useMemo(
+    () =>
+      selectedUserProfile
+        ? profileQuestions?.map((question) => {
+            // @ts-ignore User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
+            const questionAnswer = selectedUserProfile[question.name];
+
+            if (!questionAnswer) return undefined;
+
+            return (
+              <React.Fragment key={question.text}>
+                <p className="light question">{question.text}</p>
+                <h6>{questionAnswer}</h6>
+              </React.Fragment>
+            );
+          })
+        : undefined,
+    [selectedUserProfile, profileQuestions]
+  );
+
+  const renderedProfileLinks = useMemo(
+    () =>
+      selectedUserProfile?.profileLinks?.map((link) => (
+        <a
+          key={link.title}
+          className="UserProfileModal__profile-link"
+          href={link.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {link.title}
+        </a>
+      )),
+    [selectedUserProfile?.profileLinks]
+  );
+
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
   }
 
   return (
-    <Modal show={hasSelectedProfile} onHide={closeUserProfileModal}>
+    <Modal
+      className="UserProfileModal"
+      show={hasSelectedProfile}
+      onHide={closeUserProfileModal}
+    >
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
@@ -89,24 +130,17 @@ export const UserProfileModal: React.FC = () => {
               </div>
             </div>
             <div className="profile-extras">
-              {venue?.profile_questions?.map((question) => (
-                <React.Fragment key="question.text">
-                  <p className="light question">{question.text}</p>
-                  <h6>
-                    {/*
-                    // @debt typing - need to support known User interface with unknown question keys
-                    // @ts-ignore */}
-                    {selectedUserProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      DEFAULT_EDIT_PROFILE_TEXT}
-                  </h6>
-                </React.Fragment>
-              ))}
+              {renderedProfileQuestionAnswers}
             </div>
+            <div>{renderedProfileLinks}</div>
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={selectedUserProfile} />
+                  <SuspectedLocation
+                    user={selectedUserProfile}
+                    currentVenue={venue}
+                  />
                 </h6>
               </div>
             )}
@@ -123,9 +157,12 @@ export const UserProfileModal: React.FC = () => {
   );
 };
 
-const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
+const SuspectedLocation: React.FC<{
+  user: WithId<User>;
+  currentVenue: WithId<AnyVenue>;
+}> = ({ user, currentVenue }) => {
+  // @debt This will currently load all venues in firebase into memory.. not very efficient
   useFirestoreConnect("venues");
-  const currentVenue = useSelector(currentVenueSelectorData);
   const allVenues = useSelector(orderedVenuesSelector);
 
   const suspectedLocation = useMemo(

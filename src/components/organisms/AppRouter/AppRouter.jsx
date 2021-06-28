@@ -6,7 +6,7 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import SplashPage from "pages/Account/SplashPage";
+// import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
 import Step3 from "pages/Account/Step3";
@@ -17,7 +17,7 @@ import Step6b from "pages/Account/Step6b";
 import Profile from "pages/Account/Profile";
 import Questions from "pages/Account/Questions";
 import CodeOfConduct from "pages/Account/CodeOfConduct";
-import Login from "pages/Account/Login";
+import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
 
@@ -32,9 +32,10 @@ import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
-import { SchedulePage } from "pages/Schedule/SchedulePage";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminTemplates } from "pages/AdminTemplates";
+import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 const AppRouter = () => {
   return (
@@ -51,36 +52,45 @@ const AppRouter = () => {
         <Route path="/enter/step5" component={Step5} />
         <Route path="/enter/step6a" component={Step6a} />
         <Route path="/enter/step6b" component={Step6b} />
-        <Route path="/enter" component={SplashPage} />
+        {/* @debt This appears to be a legacy route related to the old Playa template. Likely to be removed in future. */}
+        {/*<Route path="/enter" component={SplashPage} />*/}
         <Route path="/account/profile" component={Profile} />
         <Route path="/account/questions" component={Questions} />
         <Route path="/account/code-of-conduct" component={CodeOfConduct} />
-        <Route path="/login" component={Login} />
+        <Route
+          path="/login/:venueId/:customToken"
+          component={LoginWithCustomToken}
+        />
+        {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
+        {/*<Route path="/login" component={Login} />*/}
         <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
 
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
-
         <Route
           exact
-          path="/admin_v2/templates/:venueId"
+          path="/admin-ng/templates/:venueId"
           component={AdminTemplates}
         />
-        <Route path="/admin_v2/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin_v2/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
+        <Route
+          path="/admin-ng/advanced-settings/:venueId?"
+          component={AdminAdvancedSettings}
+        />
+
+        <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
+        <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
 
         <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin_v2/:venueId" component={Admin_v2} />
 
         <Route path="/admin" component={Admin} />
-        <Route path="/admin_v2" component={Admin_v2} />
+        <Route path="/admin-ng" component={Admin_v2} />
 
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
-        <Route path="/playa/schedule" component={SchedulePage} />
         <Route
           path="/venue/*"
           render={(props) => (

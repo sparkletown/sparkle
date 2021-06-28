@@ -1,16 +1,24 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { updateUserProfile } from "./helpers";
 import "firebase/storage";
-import "./Account.scss";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { RouterLocation } from "types/RouterLocation";
-import { useUser } from "hooks/useUser";
+
 import { IS_BURN } from "secrets";
+
+import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { RouterLocation } from "types/RouterLocation";
+
 import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE } from "settings";
+
 import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
+
+import { updateUserProfile } from "./helpers";
+
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+
+import "./Account.scss";
 
 export interface ProfileFormData {
   partyName: string;
@@ -71,23 +79,26 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 16,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
               autoComplete="off"
             />
             <span className="input-info">
-              This is your public name (max 16 characters)
+              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
+              characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
               <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 16 characters or less
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
               </span>
             )}
             {user && (
               <ProfilePictureInput
+                venueId={venueId}
                 setValue={setValue}
                 user={user}
                 errors={errors}

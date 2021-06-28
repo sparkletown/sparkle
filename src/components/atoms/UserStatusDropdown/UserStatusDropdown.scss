@@ -1,0 +1,47 @@
+@import "scss/constants";
+
+$dropdown-width: 100px;
+
+.UserStatusDropdown {
+  // @debt override the default Dropdown classes
+  .dropdown-toggle.btn {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    text-decoration: none;
+    border: none;
+
+    font-size: $font-size--sm;
+    font-weight: $font-weight--400;
+    color: opaque-white(0.7);
+    border-bottom: thin solid opaque-white(0.8);
+
+    &:focus {
+      box-shadow: none;
+    }
+
+    &:hover {
+      background-color: initial;
+      transform: none;
+      color: opaque-white(0.9);
+      border-bottom: thin solid opaque-white(0.9);
+    }
+
+    &::after {
+      display: none;
+    }
+  }
+
+  .dropdown-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0 $spacing--md;
+    text-decoration: none;
+    opacity: 0.8;
+
+    &:hover,
+    &:focus {
+      opacity: 1;
+    }
+  }
+}

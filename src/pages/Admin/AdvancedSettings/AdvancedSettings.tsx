@@ -1,22 +1,21 @@
 import React from "react";
 import * as Yup from "yup";
-import { updateVenue_v2 } from "api/admin";
-
-// Hooks
-import { useForm } from "react-hook-form";
-import { useUser } from "hooks/useUser";
-
-// Components
 import { Button, Form } from "react-bootstrap";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
-
-// Typings
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
-import { Venue_v2_AdvancedConfig } from "types/venues";
+import { useForm } from "react-hook-form";
 
 import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
 
-// Styles
+import { updateVenue_v2 } from "api/admin";
+
+import { Venue_v2_AdvancedConfig } from "types/venues";
+import { UsernameVisibility } from "types/User";
+
+import { useUser } from "hooks/useUser";
+
+import { Checkbox } from "components/atoms/Checkbox";
+
+import { AdvancedSettingsProps } from "./AdvancedSettings.types";
+
 import * as S from "../Admin.styles";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
@@ -43,12 +42,11 @@ const ToggleElement: React.FC<ToggleElementProps> = ({
     </S.ItemHeader>
 
     <S.ItemBody>
-      <ToggleSwitch
+      <Checkbox
         name={name}
-        forwardRef={forwardRef}
-        withText
-        isChecked={isChecked}
-        isLarge
+        forwardedRef={forwardRef}
+        defaultChecked={isChecked}
+        toggler
       />
 
       {children}
@@ -73,6 +71,9 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
+  showNametags: Yup.mixed()
+    .oneOf(Object.values(UsernameVisibility))
+    .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
   showZendesk: Yup.bool().notRequired(),
@@ -100,6 +101,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
+      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
       showZendesk: venue.showZendesk,
@@ -173,6 +175,27 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         )}
       </Form.Group>
     </ToggleElement>
+  );
+
+  const renderShowNametags = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Show Nametags</S.ItemTitle>
+        </S.TitleWrapper>
+
+        <S.ItemSubtitle>Display user names on their avatars</S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control as="select" custom name="showNametags" ref={register}>
+          <option value="none">None</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
+      </S.ItemBody>
+    </S.ItemWrapper>
   );
 
   const renderRoomVisibility = () => (
@@ -290,6 +313,8 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           name="showBadges"
           title="Show badges"
         />
+
+        {renderShowNametags()}
 
         <ToggleElement
           forwardRef={register}

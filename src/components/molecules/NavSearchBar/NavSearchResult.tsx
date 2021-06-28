@@ -3,7 +3,6 @@ import React, { useMemo } from "react";
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { isTruthy } from "utils/types";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -33,8 +32,12 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
 
   return (
     <div className="NavSearchResult font-size--small" onClick={onClick}>
-      {isTruthy(user) ? (
-        <UserAvatar user={user} containerClassName="NavSearchResult__avatar" />
+      {user ? (
+        <UserAvatar
+          user={user}
+          showStatus
+          containerClassName="NavSearchResult__avatar"
+        />
       ) : (
         <div className="NavSearchResult__image" style={imageStyles} />
       )}

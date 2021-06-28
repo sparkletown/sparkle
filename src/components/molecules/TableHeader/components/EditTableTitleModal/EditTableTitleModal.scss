@@ -1,0 +1,36 @@
+@import "scss/constants.scss";
+
+$edit-table-wrapper-padding: 0 10px;
+$edit-table-footer-padding: 10px 0 0 0;
+$edit-table-capacity-padding: 5px 0;
+$edit-table-input-spacing: 5px 0;
+
+.EditTableTitleModal {
+  padding: $edit-table-wrapper-padding;
+
+  &__input {
+    &--spacing {
+      padding: $edit-table-input-spacing;
+    }
+  }
+
+  &__capacity {
+    display: flex;
+    padding: $edit-table-capacity-padding;
+  }
+
+  &__max-capacity {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0;
+  }
+
+  &__footer-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: $edit-table-footer-padding;
+  }
+}

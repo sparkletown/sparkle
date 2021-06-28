@@ -1,19 +1,34 @@
-import { fetchSovereignVenueId } from "api/sovereignVenue";
-
+import { useEffect } from "react";
 import {
   setSovereignVenueId,
   setSovereignVenueIdIsLoading,
   setSovereignVenueIdError,
 } from "store/actions/SovereignVenue";
 
+import { fetchSovereignVenue } from "api/venue";
+
+import { ReactHook } from "types/utility";
+
 import { sovereignVenueIdSelector } from "utils/selectors";
+import { tracePromise } from "utils/performance";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";
-import { useVenueId } from "./useVenueId";
 
-export const useSovereignVenueId = () => {
-  const venueId = useVenueId();
+export interface UseSovereignVenueIdProps {
+  venueId?: string;
+}
+
+export interface UseSovereignVenueIdData {
+  sovereignVenueId?: string;
+  isSovereignVenueIdLoading: boolean;
+  errorMsg?: string;
+}
+
+export const useSovereignVenueId: ReactHook<
+  UseSovereignVenueIdProps,
+  UseSovereignVenueIdData
+> = ({ venueId }) => {
   const dispatch = useDispatch();
 
   const {
@@ -22,12 +37,24 @@ export const useSovereignVenueId = () => {
     errorMsg,
   } = useSelector(sovereignVenueIdSelector);
 
-  // NOTE: Force to fetch it only once
-  if (!sovereignVenueId && !isSovereignVenueIdLoading && !errorMsg && venueId) {
+  useEffect(() => {
+    // NOTE: Force to fetch it only once
+    if (!venueId || sovereignVenueId || isSovereignVenueIdLoading || errorMsg)
+      return;
+
     dispatch(setSovereignVenueIdIsLoading(true));
-    fetchSovereignVenueId(venueId)
-      .then((sovereignVenueId) => {
-        dispatch(setSovereignVenueId(sovereignVenueId));
+
+    tracePromise(
+      "useSovereignVenueId::fetchSovereignVenue",
+      () => fetchSovereignVenue(venueId),
+      {
+        attributes: {
+          venueId,
+        },
+      }
+    )
+      .then(({ sovereignVenue }) => {
+        dispatch(setSovereignVenueId(sovereignVenue.id));
       })
       .catch((errorMsg) => {
         // @debt Just to stop spamming firebase with requests
@@ -36,10 +63,17 @@ export const useSovereignVenueId = () => {
       .finally(() => {
         dispatch(setSovereignVenueIdIsLoading(false));
       });
-  }
+  }, [
+    dispatch,
+    errorMsg,
+    isSovereignVenueIdLoading,
+    sovereignVenueId,
+    venueId,
+  ]);
 
   return {
     sovereignVenueId,
     isSovereignVenueIdLoading,
+    errorMsg,
   };
 };

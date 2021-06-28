@@ -21,10 +21,9 @@ $label-visible: flex;
     .maproom__label {
       display: $label-visible;
 
-      background-color: $room-info-bg;
+      background-color: $primary;
       opacity: 1;
-      box-shadow: 0 0 0 3px lighten($room-info-bg, 10%),
-        0 2px 4px rgba($black, 0.2);
+      box-shadow: 0 0 0 3px lighten($primary, 10%), 0 2px 4px rgba($black, 0.2);
     }
 
     .maproom__title--count {
@@ -37,19 +36,31 @@ $label-visible: flex;
     }
   }
 
-  &--unclickable {
-    z-index: z(map-room--unclickable);
-
+  &--covert {
     cursor: default;
 
     &:hover {
-      z-index: z(map-room--unclickable);
-
       transform: none;
 
       .maproom__image {
         filter: none;
       }
+    }
+  }
+
+  &--unclickable {
+    z-index: z(map-room--unclickable);
+
+    &:hover {
+      z-index: z(map-room--unclickable);
+    }
+  }
+
+  &--iframe {
+    z-index: z(map-room--iframe);
+
+    &:hover {
+      z-index: z(map-room--iframe);
     }
   }
 
@@ -61,7 +72,13 @@ $label-visible: flex;
 
   &__image {
     position: relative;
+    flex-shrink: 0;
 
+    width: 100%;
+    height: 100%;
+  }
+
+  &__iframe {
     width: 100%;
     height: 100%;
   }

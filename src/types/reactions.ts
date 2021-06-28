@@ -13,6 +13,7 @@ export enum EmojiReactionType {
 }
 
 export const TextReactionType = "messageToTheBand" as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the type the same as the const
 export type TextReactionType = typeof TextReactionType;
 
 export type ReactionType = EmojiReactionType | TextReactionType;
@@ -132,9 +133,11 @@ export const isTextReaction = (r: unknown): r is TextReaction => {
 export const isReaction = (r: unknown): r is Reaction =>
   isEmojiReaction(r) || isTextReaction(r);
 
-export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
-  created_at: chat.ts_utc.toMillis() / 1000,
-  created_by: chat.from,
+export const chatMessageAsTextReaction = (
+  message: ChatMessage
+): TextReaction => ({
+  created_at: message.ts_utc.toMillis() / 1000,
+  created_by: message.from,
   reaction: TextReactionType,
-  text: chat.text,
+  text: message.text,
 });
