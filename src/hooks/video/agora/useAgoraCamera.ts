@@ -12,8 +12,6 @@ import { ReactHook } from "types/utility";
 import { updateTalkShowStudioExperience } from "api/profile";
 
 import { useShowHide } from "hooks/useShowHide";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 
 export interface UseAgoraCameraProps {
   venueId?: string;
@@ -33,10 +31,7 @@ export interface UseAgoraCameraReturn {
 export const useAgoraCamera: ReactHook<
   UseAgoraCameraProps,
   UseAgoraCameraReturn
-> = ({ client }) => {
-  const { userId } = useUser();
-  const venueId = useVenueId();
-
+> = ({ venueId, userId, client }) => {
   const [localCameraTrack, setLocalCameraTrack] = useState<ILocalVideoTrack>();
   const [
     localMicrophoneTrack,

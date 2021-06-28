@@ -60,7 +60,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     isMicrophoneOn,
     joinChannel: cameraClientJoin,
     leaveChannel: cameraClientLeave,
-  } = useAgoraCamera({ client: cameraClient });
+  } = useAgoraCamera({ venueId: venue.id, userId, client: agoraClient });
 
   const {
     localScreenTrack,
