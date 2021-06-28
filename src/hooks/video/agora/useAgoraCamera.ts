@@ -6,11 +6,12 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
-import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
+import { AGORA_APP_ID, AGORA_CHANNEL } from "secrets";
 
 import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
+import { getAgoraToken } from "api/video";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -63,10 +64,12 @@ export const useAgoraCamera: ReactHook<
   const joinChannel = async () => {
     if (!client || !venueId || !userId) return;
 
+    const token = await getAgoraToken({ channelName: AGORA_CHANNEL });
+
     const cameraClientUid = await client.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
-      AGORA_TOKEN || null
+      token
     );
 
     const experience = {
