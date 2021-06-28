@@ -69,6 +69,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     LocalStorageItem.prefillProfileData
   );
 
+  const githubHandle = profilePrefilledData?.githubName;
+
   const realName = [
     profilePrefilledData?.firstName,
     profilePrefilledData?.lastName,
@@ -82,19 +84,12 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     <div className="Profile">
       <div className="login-container">
         <h2 className="login-welcome-title">
-          Hey, Mona. We’re so glad you’re here! Upload or take a photo and share
-          your Summit snap here.
+          Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
+          and share your Summit snap here.
         </h2>
         <div className="login-welcome-subtitle">
           {`Swing back and edit your profile anytime you like.`}
         </div>
-        <a
-          className="profile-picture-button Profile__summit-snap"
-          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-          {...externalUrlAdditionalProps}
-        >
-          Take a Summit snap
-        </a>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
             {/* @debt - this input is hidden because for github's event they fetch the names from an OKTA, and for the demo we set the default name to Mona */}
@@ -102,7 +97,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="partyName"
               className="input-block input-centered"
               placeholder="Your display name"
-              defaultValue={profilePrefilledData?.githubName}
+              defaultValue={githubHandle}
               ref={register({
                 required: true,
                 maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
@@ -150,11 +145,18 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               autoComplete="off"
             />
             <p className="input-info">This is your department</p>
+            <a
+              className="profile-picture-button Profile__summit-snap"
+              href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+              {...externalUrlAdditionalProps}
+            >
+              Take a Summit snap
+            </a>
             {user && (
               <ProfilePictureInput
                 venueId={venueId}
                 setValue={setValue}
-                githubHandle={profilePrefilledData?.githubName}
+                githubHandle={githubHandle}
                 user={user}
                 errors={errors}
                 pictureUrl={pictureUrl}
