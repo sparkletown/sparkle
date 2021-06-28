@@ -44,11 +44,13 @@ export interface TalkShowStudioProps {
 }
 
 export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
-  const stage = useStage();
   const { userId, profile } = useUser();
   const currentVenue = useSelector(currentVenueSelectorData);
-  const remoteUsers = useAgoraRemotes({ client: remotesClient });
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
+
+  const stage = useStage({ venueId: venue.id });
+
+  const remoteUsers = useAgoraRemotes({ client: remotesClient });
 
   const {
     localCameraTrack,

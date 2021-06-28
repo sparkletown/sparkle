@@ -10,11 +10,13 @@ import { updateUserTalkShowStudioExperience } from "api/admin";
 import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 
-export const useStage = () => {
-  const venueId = useVenueId();
+export interface UseStageProps {
+  venueId?: string;
+}
+
+export const useStage = ({ venueId }: UseStageProps) => {
   const { recentVenueUsers } = useRecentVenueUsers();
   const { userId, profile } = useUser();
 
