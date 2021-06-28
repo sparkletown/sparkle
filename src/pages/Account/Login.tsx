@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { AnyVenue } from "types/venues";
 
@@ -104,12 +106,12 @@ export const Login: React.FC<LoginProps> = ({
                 />
               )}
               {hasSamlAuthProviderId && (
-                <img
+                <FontAwesomeIcon
                   className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
+                  icon={faGithub}
+                  size="4x"
                   onClick={signInWithSAML}
                   title="SAML SSO login"
-                  alt="SAML SSO login"
                 />
               )}
             </div>
