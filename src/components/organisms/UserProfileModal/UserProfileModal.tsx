@@ -154,7 +154,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             {companyTitle && (
               <>
                 <p className="light no-margin">Title</p>
-                <h6>{realName}</h6>
+                <h6>{companyTitle}</h6>
               </>
             )}
             {ENABLE_SUSPECTED_LOCATION && (
