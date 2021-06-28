@@ -117,7 +117,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="profile-pic">
                 {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
                 <img
-                  src={pictureUrl || DEFAULT_PROFILE_PIC}
+                  src={pictureUrl ?? DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
