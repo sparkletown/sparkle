@@ -10,5 +10,9 @@
     "account_sid": "",
     "api_key": "",
     "api_secret": ""
+  },
+  "agora": {
+    "app_id": "",
+    "app_certificate": ""
   }
 }
