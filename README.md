@@ -45,43 +45,11 @@ See [Start application](docs/getting-started.md)
 **Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
 
 ### Step 5: Firebase Emulators
+
 See [Firebase Emulators](docs/firebase-emulators.md)
 
-## Part Three: Configure Third-Party Integrations
-
-### Optional: Twilio
-
-TODO: Add steps.
-
-
-### Optional: Stripe
-
-**Note**: Stripe is NOT REQUIRED unless you will be testing ticketing integration.
-
-First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli). Make sure that you have a Stripe account with the right credentials.
-
-```bash
-brew install stripe/stripe-cli/stripe
-stripe login
-stripe listen --forward-to http://localhost:5001/co-reality-staging/us-central1/payment-webhooks
-```
-
-You should see
-
-```
-> Ready! Your webhook signing secret is {YOUR_LOCAL_SIGNING_SECRET_KEY} (^C to quit)
-```
-
-Copy this value and add it to the file `functions/secrets.js`.
-
-```js
-// functions/secrets.js
-...
-const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
-```
-
 ---
-## Part Four: Contribute to Sparkle
+## Part Three: Contribute to Sparkle
 
 ### Our Git Flow
 
@@ -127,9 +95,7 @@ Deploys are handled by CircleCI.
 - Pushing the `master` branch to any of our other configured production branches will deploy to that environment
 
 ---
-<!-- section 5 -->
-
-## Part Five: Addenda
+## Part Four: Addenda
 
 Sparkle is using Bugsnag! We are proud to be part of Bugsnag's open source program and are glad that Bugsnag supports open source.
 

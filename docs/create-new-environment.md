@@ -107,10 +107,48 @@ You can close this page and return to the Firebase console.
          * 'Duration (days)' must be between `1` and `7`
     * Click _Save_
     * Notice the 'Sign-up quota change scheduled' notification
+### Step 6: Configure Firebase Functions
+
+Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
+
+In a new terminal, from the directory you cloned the code to, enter the following commands:
+
+```bash
+# While not necessary (as we already include it in our devDependencies), you can install the firebase-tools globally if desired
+# npm install -g firebase-tools@latest
+
+# Move into the firebase functions directory
+cd functions
+
+# Install the function dependencies
+npm install
+
+# Go back to the root app directory to use firebase package
+cd ..
+
+# Login to firebase with the account that has access to this project. You'll be prompted to log in via Google OAuth.
+npx firebase login
+
+# Find the ID of the project that you'd like to use from the output of the command below:
+npx firebase projects:list
+
+# If you are contributing to the Sparkle main code base, switch to the 'staging' project, otherwise switch to 'example-project' or whichever environment you are developing against
+npx firebase use TODO-PROJECT-ID
+
+# Copy the runtime config locally
+npx --silent firebase functions:config:get > ./functions/.runtimeconfig.json
+
+# Finally, we need to perform the first deploy to the functions manually, to make sure all of the required cloud API's get enabled/etc, then after that, CI should be able to do it for us going forward:
+
+npx firebase --project TODO-PROJECT-ID deploy --only functions
+
+# You may need to run this a couple of times, as it seems to cause various Google cloud APIs to get enabled/etc, which sometimes fail/time out. As a result you should see following message:
+
+```
+Deploy complete!
+```
 
 This part of the setup is complete!
-
-Now you can proceed to bootstrapping your application ./bootstrap-application.md
 
 ### Step 6: Bootstrap application environment
 
