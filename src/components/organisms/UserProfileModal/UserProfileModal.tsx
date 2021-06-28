@@ -135,10 +135,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <h2 className="italic">{partyName ?? DEFAULT_PARTY_NAME}</h2>
               </div>
             </div>
-            <div className="profile-extras">
-              {renderedProfileQuestionAnswers}
-            </div>
-            <div>{renderedProfileLinks}</div>
             {realName && (
               <>
                 <p className="light no-margin">Full Name</p>
@@ -157,6 +153,10 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 <p className="h6">{companyTitle}</p>
               </>
             )}
+            <div className="profile-extras">
+              {renderedProfileQuestionAnswers}
+            </div>
+            <div>{renderedProfileLinks}</div>
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
