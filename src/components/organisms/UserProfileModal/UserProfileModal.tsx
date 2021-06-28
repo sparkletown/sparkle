@@ -76,7 +76,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             return (
               <React.Fragment key={question.text}>
                 <p className="light no-margin">{question.text}</p>
-                <h6>{questionAnswer}</h6>
+                <p className="h6">{questionAnswer}</p>
               </React.Fragment>
             );
           })
@@ -142,30 +142,30 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             {realName && (
               <>
                 <p className="light no-margin">Full Name</p>
-                <h6>{realName}</h6>
+                <p className="h6">{realName}</p>
               </>
             )}
             {companyDepartment && (
               <>
                 <p className="light no-margin">Department</p>
-                <h6>{companyDepartment}</h6>
+                <p className="h6">{companyDepartment}</p>
               </>
             )}
             {companyTitle && (
               <>
                 <p className="light no-margin">Title</p>
-                <h6>{companyTitle}</h6>
+                <p className="h6">{companyTitle}</p>
               </>
             )}
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
-                <h6 className="location">
+                <p className="h6 location">
                   <SuspectedLocation
                     user={selectedUserProfile}
                     currentVenue={venue}
                   />
-                </h6>
+                </p>
               </div>
             )}
           </div>
