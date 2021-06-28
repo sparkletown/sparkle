@@ -57,7 +57,7 @@ export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 
-export const DEFAULT_PARTY_NAME = "Anon";
+export const DEFAULT_PARTY_NAME = "Mona";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
 export const VENUE_NAME_MIN_CHAR_COUNT = 3;
@@ -157,6 +157,7 @@ export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone`;
 
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
@@ -281,6 +282,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     description: [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
+  },
+  {
+    template: VenueTemplate.talkshowstudio,
+    name: "Talk Show Studio",
+    description: ["test"],
   },
 ];
 
@@ -583,10 +589,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  "/avatars/default-octocat-1.png",
+  "/avatars/default-octocat-2.png",
+  "/avatars/default-octocat-3.png",
+  "/avatars/default-octocat-4.png",
+  "/avatars/default-octocat-5.png",
+  "/avatars/default-octocat-6.png",
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
@@ -640,3 +648,5 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const MAX_TALK_SHOW_STUDIO_HOSTS = 5;
