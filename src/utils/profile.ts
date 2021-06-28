@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import get from "lodash/get";
+import { get } from "lodash";
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { User, Mappings } from "types/User";
