@@ -17,6 +17,9 @@ export interface UseStageProps {
   venueId?: string;
 }
 
+// @debt Most of the controls here are using firebase to store state/propogate it.. but we didn't need
+//   to do any of that for Twilio since the library inherently manages a lot of the state itself.. I wonder
+//   if we can simplify this right down by doing similar?
 export const useStage = ({ venueId }: UseStageProps) => {
   const { recentVenueUsers } = useRecentVenueUsers();
   const { userId, profile } = useUser();
@@ -83,92 +86,94 @@ export const useStage = ({ venueId }: UseStageProps) => {
 
   const isUserSharing = isDefined(userId) && screenSharingUser?.id === userId;
 
-  const joinStage = () => {
+  const joinStage = useCallback(async () => {
     if (!venueId || !userId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateTalkShowStudioExperience({
+    await updateTalkShowStudioExperience({
       venueId,
       userId,
       experience: {
         place: PlaceInTalkShowStudioVenue.stage,
       },
     });
-  };
+  }, [userId, venueId]);
 
-  const leaveStage = async () => {
+  const leaveStage = useCallback(async () => {
     // TODO: clear agoraIds for user when left Stage
     await setDefaultUserSettings();
-  };
+  }, [setDefaultUserSettings]);
 
-  const requestJoinStage = () => {
+  const requestJoinStage = useCallback(async () => {
     if (!venueId || !userId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateTalkShowStudioExperience({
+    await updateTalkShowStudioExperience({
       venueId,
       userId,
       experience: {
         place: PlaceInTalkShowStudioVenue.requesting,
       },
     });
-  };
+  }, [userId, venueId]);
 
-  const toggleMicrophone = () => {
+  const toggleMicrophone = useCallback(async () => {
     if (!venueId || !userId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateTalkShowStudioExperience({
+    await updateTalkShowStudioExperience({
       venueId,
       userId,
       experience: {
         isMuted: !profile?.data?.[venueId].isMuted,
       },
     });
-  };
+  }, [profile?.data, userId, venueId]);
 
-  const toggleCamera = () => {
+  const toggleCamera = useCallback(async () => {
     if (!venueId || !userId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateTalkShowStudioExperience({
+    await updateTalkShowStudioExperience({
       venueId,
       userId,
       experience: {
         isUserCameraOff: !profile?.data?.[venueId].isUserCameraOff,
       },
     });
-  };
+  }, [profile?.data, userId, venueId]);
 
-  const toggleUserMicrophone = (user?: WithId<User>) => {
-    if (!user || !venueId) return;
+  const toggleUserMicrophone = useCallback(
+    async (user?: WithId<User>) => {
+      if (!user || !venueId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateUserTalkShowStudioExperience(venueId, user.id, {
-      isMuted: true,
-    });
-  };
+      await updateUserTalkShowStudioExperience(venueId, user.id, {
+        isMuted: true,
+      });
+    },
+    [venueId]
+  );
 
-  const toggleUserCamera = (user?: WithId<User>) => {
-    if (!user || !venueId) return;
+  const toggleUserCamera = useCallback(
+    async (user?: WithId<User>) => {
+      if (!user || !venueId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateUserTalkShowStudioExperience(venueId, user.id, {
-      isUserCameraOff: true,
-    });
-  };
+      await updateUserTalkShowStudioExperience(venueId, user.id, {
+        isUserCameraOff: true,
+      });
+    },
+    [venueId]
+  );
 
-  const removeUserFromStage = (user?: WithId<User>) => {
-    if (!user || !venueId) return;
+  const removeUserFromStage = useCallback(
+    async (user?: WithId<User>) => {
+      if (!user || !venueId) return;
 
-    // @debt promise returned from updateTalkShowStudioExperience is ignored
-    updateUserTalkShowStudioExperience(venueId, user.id, {
-      place: PlaceInTalkShowStudioVenue.audience,
-      isSharingScreen: false,
-      isMuted: false,
-      isUserCameraOff: false,
-    });
-  };
+      await updateUserTalkShowStudioExperience(venueId, user.id, {
+        place: PlaceInTalkShowStudioVenue.audience,
+        isSharingScreen: false,
+        isMuted: false,
+        isUserCameraOff: false,
+      });
+    },
+    [venueId]
+  );
 
   return {
     peopleOnStage,
