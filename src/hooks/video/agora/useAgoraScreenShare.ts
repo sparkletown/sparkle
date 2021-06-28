@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
+import { useUnmount } from "react-use";
 import AgoraRTC, {
   IAgoraRTCClient,
   ILocalAudioTrack,
@@ -88,14 +89,9 @@ export const useAgoraScreenShare: ReactHook<
     await client?.leave();
   }, [client, stopShare]);
 
-  useEffect(() => {
-    return () => {
-      leaveChannel();
-    };
-    // Otherwise, it will fire when local tracks are updated
-    // @debt We shouldn't be disabling our linting rules like this
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  useUnmount(async () => {
+    await leaveChannel();
+  });
 
   return {
     localScreenTrack,
