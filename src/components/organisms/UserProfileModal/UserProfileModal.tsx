@@ -44,7 +44,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const chosenUserId = selectedUserProfile?.id;
+  const {
+    id: chosenUserId,
+    profileLinks,
+    pictureUrl,
+    partyName,
+    realName,
+    companyDepartment,
+    companyTitle,
+  } = selectedUserProfile ?? {};
 
   const profileQuestions = venue?.profile_questions;
 
@@ -67,8 +75,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
             return (
               <React.Fragment key={question.text}>
-                <p className="light question">{question.text}</p>
-                <h6>{questionAnswer}</h6>
+                <p className="light no-margin">{question.text}</p>
+                <p className="h6">{questionAnswer}</p>
               </React.Fragment>
             );
           })
@@ -78,7 +86,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const renderedProfileLinks = useMemo(
     () =>
-      selectedUserProfile?.profileLinks?.map((link) => (
+      profileLinks?.map((link) => (
         <a
           key={link.title}
           className="UserProfileModal__profile-link"
@@ -89,7 +97,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           {link.title}
         </a>
       )),
-    [selectedUserProfile?.profileLinks]
+    [profileLinks]
   );
 
   if (!selectedUserProfile || !chosenUserId || !user) {
@@ -109,7 +117,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="profile-pic">
                 {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
                 <img
-                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
+                  src={pictureUrl ?? DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -124,24 +132,40 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 />
               </div>
               <div className="profile-text">
-                <h2 className="italic">
-                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
-                </h2>
+                <h2 className="italic">{partyName ?? DEFAULT_PARTY_NAME}</h2>
               </div>
             </div>
             <div className="profile-extras">
               {renderedProfileQuestionAnswers}
             </div>
             <div>{renderedProfileLinks}</div>
+            {realName && (
+              <>
+                <p className="light no-margin">Full Name</p>
+                <p className="h6">{realName}</p>
+              </>
+            )}
+            {companyDepartment && (
+              <>
+                <p className="light no-margin">Department</p>
+                <p className="h6">{companyDepartment}</p>
+              </>
+            )}
+            {companyTitle && (
+              <>
+                <p className="light no-margin">Title</p>
+                <p className="h6">{companyTitle}</p>
+              </>
+            )}
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
-                <h6 className="location">
+                <p className="h6 location">
                   <SuspectedLocation
                     user={selectedUserProfile}
                     currentVenue={venue}
                   />
-                </h6>
+                </p>
               </div>
             )}
           </div>

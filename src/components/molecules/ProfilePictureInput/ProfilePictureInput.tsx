@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
@@ -11,6 +17,7 @@ import {
 } from "settings";
 
 import { resizeFile } from "utils/image";
+import { isDefined } from "utils/types";
 
 import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
@@ -27,6 +34,7 @@ export interface ProfilePictureInputProps {
   pictureUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: any;
+  githubHandle?: string;
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -36,6 +44,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   errors,
   pictureUrl,
   register,
+  githubHandle,
 }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
@@ -92,6 +101,16 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const githubImageSrc =
+    githubHandle && `https://github.com/${githubHandle}.png?size=120`;
+
+  // Set GitHub image as a default picture
+  useEffect(() => {
+    if (!githubImageSrc || pictureUrl) return;
+
+    setValue("pictureUrl", githubImageSrc, true);
+  }, [githubImageSrc, setValue, pictureUrl]);
+
   const uploadDefaultAvatar = useCallback(
     async (avatar: string) => {
       setValue("pictureUrl", avatar, true);
@@ -107,21 +126,25 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     ? customAvatars
     : DEFAULT_AVATARS;
 
-  const avatarImages = useMemo(() => {
-    return defaultAvatars.map((avatar, index) => (
-      <div
-        key={`${avatar}-${index}`}
-        className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
-      >
-        <img
-          src={avatar}
-          className="profile-icon profile-picture-preview"
-          alt={`default avatar ${index}`}
-        />
-      </div>
-    ));
-  }, [defaultAvatars, uploadDefaultAvatar]);
+  const avatarImages = useMemo(
+    () =>
+      [githubImageSrc, ...defaultAvatars]
+        .filter(isDefined)
+        .map((avatarSrc, index) => (
+          <div
+            key={`${avatarSrc}-${index}`}
+            className="profile-picture-preview-container"
+            onClick={() => uploadDefaultAvatar(avatarSrc)}
+          >
+            <img
+              src={avatarSrc}
+              className="profile-icon profile-picture-preview"
+              alt={`default avatar ${index}`}
+            />
+          </div>
+        )),
+    [defaultAvatars, githubImageSrc, uploadDefaultAvatar]
+  );
 
   return (
     <div className="profile-picture-upload-form">
