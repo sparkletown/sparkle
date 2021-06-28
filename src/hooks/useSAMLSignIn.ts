@@ -28,7 +28,7 @@ export const useSAMLSignIn: ReactHook<
       samlAuthProviderId
     );
 
-    firebase
+    return firebase
       .auth()
       .signInWithPopup(SAMLAuthProvider)
       .catch((err) => {
