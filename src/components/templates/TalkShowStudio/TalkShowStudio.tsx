@@ -68,7 +68,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     stopShare,
     joinChannel: screenClientJoin,
     leaveChannel: screenClientLeave,
-  } = useAgoraScreenShare({ client: screenClient });
+  } = useAgoraScreenShare({ venueId: venue.id, userId, client: agoraClient });
 
   const localUser = useMemo(
     () => stage.peopleOnStage.find(({ id }) => id === userId),

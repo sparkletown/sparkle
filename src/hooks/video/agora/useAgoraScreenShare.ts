@@ -12,10 +12,9 @@ import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
 
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-
 export interface UseAgoraScreenShareProps {
+  venueId?: string;
+  userId?: string;
   client?: IAgoraRTCClient;
 }
 
@@ -31,9 +30,6 @@ export const useAgoraScreenShare: ReactHook<
   UseAgoraScreenShareProps,
   UseAgoraScreenShareReturn
 > = ({ client }) => {
-  const { userId } = useUser();
-  const venueId = useVenueId();
-
   const [localScreenTrack, setLocalScreenTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
