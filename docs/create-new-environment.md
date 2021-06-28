@@ -107,7 +107,16 @@ You can close this page and return to the Firebase console.
          * 'Duration (days)' must be between `1` and `7`
     * Click _Save_
     * Notice the 'Sign-up quota change scheduled' notification
-### Step 6: Configure Firebase Functions
+
+### Step 6: Set up Twilio Account
+
+Please see [Twilio Account Setup](/docs/twilio-configuration.md)
+
+### Step 7: Generate Private Key File
+
+Please refer to [Generate Private Key File](../scripts/README.md)
+
+### Step 8: Configure Firebase Functions
 
 Before you run the following steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI.
 
@@ -135,6 +144,31 @@ npx firebase projects:list
 # If you are contributing to the Sparkle main code base, switch to the 'staging' project, otherwise switch to 'example-project' or whichever environment you are developing against
 npx firebase use TODO-PROJECT-ID
 
+# Now you need to set up the function config
+
+```
+npx firebase --project TODO-PROJECT-ID functions:config:set project.id=TODO-PROJECT-ID twilio.account_sid=TODO twilio.api_key=TODO twilio.api_secret=TODO stripe.endpoint_secret=TODO stripe.secret_key=TODO
+```
+```
+
+```bash
+# Generate a service account key at Firebase - Project Settings - Service Accounts
+
+Click Generate new private key ( located at  the bottom of the screen )
+
+Save this file somewhere safe locally
+
+# Go to <projectRoot>/scripts
+
+Now we need to upload function config to Firebase. Use the .json file with private key that you've downloaded just recently:
+
+```
+./upload-function-config-service-account.ts TODO-PROJECT-ID [PRIVATE-KEY-FILE].json
+```
+
+```
+```bash
+
 # Copy the runtime config locally
 npx --silent firebase functions:config:get > ./functions/.runtimeconfig.json
 
@@ -148,15 +182,16 @@ npx firebase --project TODO-PROJECT-ID deploy --only functions
 Deploy complete!
 ```
 
+```
 This part of the setup is complete!
 
-### Step 6: Bootstrap application environment
+### Step 9: Bootstrap application environment
 
 In order to run Sparkle you'd need to bootstrap and connect your local application with the Firebase environment that you've created. Please follow the link below for detailed information.
 
 See [Bootstrap application](docs/bootstrap-application.md)
 
-### Step 7: Additional Notes
+### Step 10: Additional Notes
 
 If you're interested in setting up the project to run in your own environment but you're not sure how to go about it, feel free to [open an issue](https://github.com/sparkletown/sparkle/issues/new) asking for assistance.
 

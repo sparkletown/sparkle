@@ -43,6 +43,7 @@ As a result you'll see this message:
 ```
 User successfully added to ( or already existed in ) 'admin' role
 ```
+
 ## Configure ENV file
 
 In order for your application to connect to the proper Firebase environment you'd need to set up `.env.local` config. Please follow steps below:
