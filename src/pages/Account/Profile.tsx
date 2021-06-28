@@ -5,13 +5,14 @@ import "firebase/storage";
 
 import { IS_BURN } from "secrets";
 
-import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
 
 import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
 import { getLocalStorageItem, LocalStorageItem } from "utils/localStorage";
 import { isTruthy } from "utils/types";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -78,16 +79,25 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="page-container-onboarding">
+    <div className="Profile">
       <div className="login-container">
         <h2 className="login-welcome-title">
-          Well done! Now create your profile
+          Hey, Mona. We’re so glad you’re here! Upload or take a photo and share
+          your Summit snap here.
         </h2>
         <div className="login-welcome-subtitle">
-          {`Don't fret, you'll be able to edit it at any time later`}
+          {`Swing back and edit your profile anytime you like.`}
         </div>
+        <a
+          className="profile-picture-button Profile__summit-snap"
+          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+          {...externalUrlAdditionalProps}
+        >
+          Take a Summit snap
+        </a>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
+            {/* @debt - this input is hidden because for github's event they fetch the names from an OKTA, and for the demo we set the default name to Mona */}
             <input
               name="partyName"
               className="input-block input-centered"

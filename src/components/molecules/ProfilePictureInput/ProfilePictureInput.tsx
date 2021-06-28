@@ -182,7 +182,9 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>Or pick one of the suggested options</small>
+      <small>
+        Feeling camera shy? Choose from one of these Summit profile avatars.
+      </small>
       <div className="default-avatars-container">
         {gitHubImage}
         {isLoading ? <div>Loading...</div> : avatarImages}

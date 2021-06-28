@@ -53,6 +53,7 @@ $page-max-width: 1240px;
 
 .page-container {
   background-color: $dark;
+  display: flex;
   flex-direction: column;
   flex: 1;
   padding-bottom: $spacing--xxl;
@@ -62,12 +63,17 @@ $page-max-width: 1240px;
 
     .header-message {
       text-align: center;
+      margin-bottom: $spacing--xxl;
     }
 
     .subheader-message {
       text-align: center;
     }
   }
+}
+
+.questions-container {
+  padding-top: $spacing--xxl;
 }
 
 .page-container-onboarding {
@@ -123,6 +129,26 @@ $page-max-width: 1240px;
     width: 280px;
     height: 225px;
     background-size: 280px;
+  }
+
+  &.github {
+    margin: 0 auto;
+    background-image: url(/assets/images/Summit_Logo.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 580px;
+    height: 225px;
+    background-size: 280px;
+  }
+
+  &.github-plain {
+    margin: 0 auto;
+    background-image: url(/assets/images/Summit-logo-plain.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 580px;
+    height: 225px;
+    background-size: 400px;
   }
 }
 
@@ -201,6 +227,7 @@ $page-max-width: 1240px;
   padding: 15px 50px;
   color: $white;
   font-weight: 700;
+  background-color: $black;
 
   &:hover {
     transform: translateY(-1px);
@@ -210,6 +237,39 @@ $page-max-width: 1240px;
       rgba(0, 0, 0, 0.6) 100%
     );
     background-color: darken($primary, 20%);
+  }
+}
+
+.Profile {
+  max-height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  right: 20%;
+
+  .login-welcome-title {
+    font-style: italic;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .login-welcome-subtitle {
+    text-align: center;
+    padding-bottom: 30px;
+    margin-top: $spacing--xl;
+  }
+
+  &__summit-snap {
+    margin: auto;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+
+    &:hover {
+      color: white;
+      text-decoration: none;
+    }
   }
 }
 
@@ -225,6 +285,10 @@ $page-max-width: 1240px;
   .login-container {
     border-radius: 0;
   }
+}
+
+.question-input {
+  text-align: center;
 }
 
 .splash-page-container {

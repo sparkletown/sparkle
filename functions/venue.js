@@ -25,6 +25,7 @@ const VenueTemplate = {
   posterpage: "posterpage",
   preplaya: "preplaya",
   screeningroom: "screeningroom",
+  talkshowstudio: "talkshowstudio",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
 
@@ -48,6 +49,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
   VenueTemplate.performancevenue,
+  VenueTemplate.talkshowstudio,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
@@ -735,6 +737,10 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     updated.showNametags = data.showNametags;
   }
 
+  if (typeof data.requestToJoinStage === "boolean") {
+    updated.requestToJoinStage = data.requestToJoinStage;
+  }
+
   admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
@@ -916,3 +922,24 @@ exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
 
   await admin.firestore().collection("venues").doc(data.venueId).update(update);
 });
+
+exports.updateUserTalkShowStudioExperience = functions.https.onCall(
+  async (data, context) => {
+    checkAuth(context);
+
+    const { venueId, userId, experience } = data;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const userRef = admin.firestore().collection("users").doc(userId);
+    const user = (await userRef.get()).data();
+
+    if (!user) return;
+
+    const newUserData = {
+      [`data.${venueId}`]: { ...user.data[venueId], ...experience },
+    };
+
+    await userRef.update(newUserData);
+  }
+);
