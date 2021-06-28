@@ -56,6 +56,9 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
   const defaultValues = {
     partyName: profile?.partyName,
     pictureUrl: profile?.pictureUrl || DEFAULT_PROFILE_IMAGE,
+    realName: profile?.realName,
+    companyTitle: profile?.companyTitle,
+    companyDepartment: profile?.companyDepartment,
   };
 
   profileQuestions &&
@@ -90,12 +93,40 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
     <div className="EditProfileForm">
       <h1 className="EditProfileForm__title">Edit profile</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="EditProfileForm__edit-input-title">Display name</div>
         <InputField
           containerClassName="EditProfileForm__input-container-name"
           inputClassName="EditProfileForm__input-name"
           name="partyName"
           placeholder="Your display name"
           error={errors.partyName}
+          ref={register()}
+        />
+
+        <div className="EditProfileForm__edit-input-title">Real name</div>
+        <InputField
+          containerClassName="EditProfileForm__input-container-name"
+          inputClassName="EditProfileForm__input-name"
+          name="realName"
+          placeholder="Your real name"
+          ref={register()}
+        />
+
+        <div className="EditProfileForm__edit-input-title">Department</div>
+        <InputField
+          containerClassName="EditProfileForm__input-container-name"
+          inputClassName="EditProfileForm__input-name"
+          name="companyDepartment"
+          placeholder="Your department"
+          ref={register()}
+        />
+
+        <div className="EditProfileForm__edit-input-title">Title</div>
+        <InputField
+          containerClassName="EditProfileForm__input-container-name"
+          inputClassName="EditProfileForm__input-name"
+          name="companyTitle"
+          placeholder="Your title"
           ref={register()}
         />
 

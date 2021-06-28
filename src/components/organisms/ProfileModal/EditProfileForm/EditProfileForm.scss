@@ -9,6 +9,13 @@ $button-height: 30px;
     line-height: $spacing--xl;
     color: opaque-white(0.5);
     text-align: start;
+    margin-bottom: $spacing--md;
+  }
+
+  &__edit-input-title {
+    font-size: $font-size--md;
+    margin-bottom: $spacing--sm;
+    opacity: 0.8;
   }
 
   &__question {
