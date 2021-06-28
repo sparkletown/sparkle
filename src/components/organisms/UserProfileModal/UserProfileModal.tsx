@@ -44,7 +44,15 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const chosenUserId = selectedUserProfile?.id;
+  const {
+    id: chosenUserId,
+    profileLinks,
+    pictureUrl,
+    partyName,
+    realName,
+    companyDepartment,
+    companyTitle,
+  } = selectedUserProfile ?? {};
 
   const profileQuestions = venue?.profile_questions;
 
@@ -67,7 +75,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
             return (
               <React.Fragment key={question.text}>
-                <p className="light question">{question.text}</p>
+                <p className="light no-margin">{question.text}</p>
                 <h6>{questionAnswer}</h6>
               </React.Fragment>
             );
@@ -78,7 +86,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
 
   const renderedProfileLinks = useMemo(
     () =>
-      selectedUserProfile?.profileLinks?.map((link) => (
+      profileLinks?.map((link) => (
         <a
           key={link.title}
           className="UserProfileModal__profile-link"
@@ -89,7 +97,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           {link.title}
         </a>
       )),
-    [selectedUserProfile?.profileLinks]
+    [profileLinks]
   );
 
   if (!selectedUserProfile || !chosenUserId || !user) {
@@ -109,7 +117,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
               <div className="profile-pic">
                 {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
                 <img
-                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
+                  src={pictureUrl || DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -124,24 +132,30 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 />
               </div>
               <div className="profile-text">
-                <h2 className="italic">
-                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
-                </h2>
+                <h2 className="italic">{partyName || DEFAULT_PARTY_NAME}</h2>
               </div>
             </div>
             <div className="profile-extras">
               {renderedProfileQuestionAnswers}
             </div>
-            {/* Proper styling + add editing possibility */}
             <div>{renderedProfileLinks}</div>
-            {selectedUserProfile.realName && (
-              <p>{selectedUserProfile.realName}</p>
+            {realName && (
+              <>
+                <p className="light no-margin">Full Name</p>
+                <h6>{realName}</h6>
+              </>
             )}
-            {selectedUserProfile.companyDepartment && (
-              <p>{selectedUserProfile.companyDepartment}</p>
+            {companyDepartment && (
+              <>
+                <p className="light no-margin">Department</p>
+                <h6>{companyDepartment}</h6>
+              </>
             )}
-            {selectedUserProfile.companyTitle && (
-              <p>{selectedUserProfile.companyTitle}</p>
+            {companyTitle && (
+              <>
+                <p className="light no-margin">Title</p>
+                <h6>{realName}</h6>
+              </>
             )}
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">

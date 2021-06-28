@@ -23,6 +23,7 @@ import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { updateUserProfile } from "./helpers";
 
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Account.scss";
 
@@ -47,7 +48,9 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     DEFAULT_VENUE;
   const { returnUrl } = getQueryParameters(window.location.search);
 
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
 
   const samlProfileMappings = currentVenue?.samlProfileMappings;
 
@@ -64,6 +67,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
+
     await updateUserProfile(user.uid, data);
     const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
       returnUrl ? "&returnUrl=" + returnUrl : ""
@@ -72,7 +76,10 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
-  const { value: samlPrefillData } = useAsync(async () => {
+  const {
+    value: samlPrefillData,
+    loading: isPrefillDataLoading,
+  } = useAsync(async () => {
     if (!samlProfileMappings) return;
 
     return firebase
@@ -98,6 +105,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     .join(" ");
 
   const pictureUrl = watch("pictureUrl");
+
+  if (!isCurrentVenueLoaded || isPrefillDataLoading) return <LoadingPage />;
 
   return (
     <div className="Profile">
