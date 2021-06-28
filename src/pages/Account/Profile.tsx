@@ -22,8 +22,8 @@ import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { updateUserProfile } from "./helpers";
 
-import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./Account.scss";
 
@@ -98,9 +98,15 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
       );
   }, [samlProfileMappings]);
 
-  const githubHandle = samlPrefillData?.githubName;
+  const {
+    githubName: githubHandle,
+    firstName,
+    lastName,
+    companyTitle,
+    companyDepartment,
+  } = samlPrefillData ?? {};
 
-  const realName = [samlPrefillData?.firstName, samlPrefillData?.lastName]
+  const realName = [firstName, lastName]
     .filter(isTruthy)
     .join(" ");
 
@@ -120,7 +126,6 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         </div>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
-            {/* @debt - this input is hidden because for github's event they fetch the names from an OKTA, and for the demo we set the default name to Mona */}
             <input
               name="partyName"
               className="input-block input-centered"
@@ -158,7 +163,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyTitle"
               className="input-block input-centered"
               placeholder="Your title"
-              defaultValue={samlPrefillData?.companyTitle}
+              defaultValue={companyTitle}
               ref={register()}
               autoComplete="off"
             />
@@ -167,7 +172,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               name="companyDepartment"
               className="input-block input-centered"
               placeholder="Your department"
-              defaultValue={samlPrefillData?.companyDepartment}
+              defaultValue={companyDepartment}
               ref={register()}
               autoComplete="off"
             />

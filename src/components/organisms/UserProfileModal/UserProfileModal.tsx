@@ -132,7 +132,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                 />
               </div>
               <div className="profile-text">
-                <h2 className="italic">{partyName || DEFAULT_PARTY_NAME}</h2>
+                <h2 className="italic">{partyName ?? DEFAULT_PARTY_NAME}</h2>
               </div>
             </div>
             <div className="profile-extras">

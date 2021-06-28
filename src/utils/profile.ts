@@ -3,7 +3,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import { User } from "types/User";
 
-import { isTruthy } from "./types";
+import { isTruthy } from "utils/types";
 
 export const updateProfileEnteredVenueIds = async (
   prevEnteredVenueIds: readonly string[] | undefined,
