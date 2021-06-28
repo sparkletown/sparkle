@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState } from "react";
-import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
+import { IAgoraRTCClient, IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 
 import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
 
-import { UseAgoraRemotesProps, UseAgoraRemotesReturn } from "types/agora";
 import { ReactHook } from "types/utility";
+
+export interface UseAgoraRemotesProps {
+  client?: IAgoraRTCClient;
+}
+export type UseAgoraRemotesReturn = IAgoraRTCRemoteUser[];
 
 export const useAgoraRemotes: ReactHook<
   UseAgoraRemotesProps,

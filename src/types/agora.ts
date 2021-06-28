@@ -1,8 +1,4 @@
-import {
-  IAgoraRTCClient,
-  IAgoraRTCRemoteUser,
-  ILocalVideoTrack,
-} from "agora-rtc-sdk-ng";
+import { IAgoraRTCClient, ILocalVideoTrack } from "agora-rtc-sdk-ng";
 
 export enum AgoraClientConnectionState {
   CONNECTED = "CONNECTED",
@@ -11,11 +7,6 @@ export enum AgoraClientConnectionState {
   RECONNECTING = "RECONNECTING",
   DISCONNECTING = "DISCONNECTING",
 }
-
-export interface UseAgoraRemotesProps {
-  client?: IAgoraRTCClient;
-}
-export type UseAgoraRemotesReturn = IAgoraRTCRemoteUser[];
 
 export interface UseAgoraScreenShareProps {
   client?: IAgoraRTCClient;
