@@ -1,9 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
-import AgoraRTC, { ILocalAudioTrack, ILocalVideoTrack } from "agora-rtc-sdk-ng";
+import AgoraRTC, {
+  IAgoraRTCClient,
+  ILocalAudioTrack,
+  ILocalVideoTrack,
+} from "agora-rtc-sdk-ng";
 
 import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
 
-import { UseAgoraCameraProps, UseAgoraCameraReturn } from "types/agora";
 import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
@@ -11,6 +14,21 @@ import { updateTalkShowStudioExperience } from "api/profile";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+export interface UseAgoraCameraProps {
+  venueId?: string;
+  userId?: string;
+  client?: IAgoraRTCClient;
+}
+export interface UseAgoraCameraReturn {
+  isCameraOn: boolean;
+  isMicrophoneOn: boolean;
+  localCameraTrack?: ILocalVideoTrack;
+  toggleCamera(): void;
+  toggleMicrophone(): void;
+  joinChannel(): Promise<void>;
+  leaveChannel(): Promise<void>;
+}
 
 export const useAgoraCamera: ReactHook<
   UseAgoraCameraProps,

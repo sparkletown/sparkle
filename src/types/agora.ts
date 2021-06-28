@@ -27,16 +27,3 @@ export interface UseAgoraScreenShareReturn {
   joinChannel(): Promise<void>;
   leaveChannel(): Promise<void>;
 }
-
-export interface UseAgoraCameraProps {
-  client?: IAgoraRTCClient;
-}
-export interface UseAgoraCameraReturn {
-  isCameraOn: boolean;
-  isMicrophoneOn: boolean;
-  localCameraTrack?: ILocalVideoTrack;
-  toggleCamera(): void;
-  toggleMicrophone(): void;
-  joinChannel(): Promise<void>;
-  leaveChannel(): Promise<void>;
-}
