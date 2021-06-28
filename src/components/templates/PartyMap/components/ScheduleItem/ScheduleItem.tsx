@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
-import { eventEndTime, eventStartTime } from "utils/event";
+import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import { externalUrlAdditionalProps } from "utils/url";
 
@@ -17,26 +17,36 @@ import "./ScheduleItem.scss";
 
 interface PropsType {
   event: VenueEvent;
-  isCurrentEvent?: boolean;
-  onRoomEnter: () => void;
+  enterEventLocation: () => void;
   roomUrl: string;
 }
 
 export const ScheduleItem: React.FunctionComponent<PropsType> = ({
   event,
-  isCurrentEvent,
-  onRoomEnter,
+  enterEventLocation,
   roomUrl,
 }) => {
   const dispatch = useDispatch();
 
+  const isCurrentEventLive = isEventLive(event);
+
   const schedulePrimaryClasses = classNames({
-    "ScheduleItem--primary": isCurrentEvent,
+    "ScheduleItem--primary": isCurrentEventLive,
   });
 
   const scheduleItemTimeSectionClasses = classNames(
     "ScheduleItem__time-section",
     schedulePrimaryClasses
+  );
+
+  const enterEventLocationPreventDefault = useCallback(
+    (e) => {
+      // Ensure the <a href> doesn't cause link navigation again when onRoomEnter is already doing it
+      e.preventDefault();
+
+      enterEventLocation();
+    },
+    [enterEventLocation]
   );
 
   return (
@@ -47,18 +57,22 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             formatToday: () => "",
           })}
         </span>
+
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventStartTime(event))}
         </span>
+
         <span className="ScheduleItem__event-date">
           {formatDateRelativeToNow(eventEndTime(event), {
             formatToday: () => "",
           })}
         </span>
+
         <span className="ScheduleItem__event-time">
           {formatTimeLocalised(eventEndTime(event))}
         </span>
       </div>
+
       <div className="ScheduleItem__event-section">
         <div className={schedulePrimaryClasses}>
           <div className="ScheduleItem__event-name">{event.name}</div>
@@ -67,13 +81,16 @@ export const ScheduleItem: React.FunctionComponent<PropsType> = ({
             <RenderMarkdown text={event.description} />
           </div>
         </div>
-        {isCurrentEvent && (
+
+        {isCurrentEventLive && (
           <div className="ScheduleItem__entry-room-button">
+            {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+            {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}
             <a
+              className="btn ScheduleItem__room-entry-button"
               onMouseOver={() => dispatch(retainAttendance(true))}
               onMouseOut={() => dispatch(retainAttendance(false))}
-              className="btn ScheduleItem__room-entry-button"
-              onClick={onRoomEnter}
+              onClick={enterEventLocationPreventDefault}
               href={roomUrl}
               {...externalUrlAdditionalProps}
             >

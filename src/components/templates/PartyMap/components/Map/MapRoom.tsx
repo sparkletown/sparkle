@@ -35,13 +35,17 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   const isUnclickable = room.type === RoomType.unclickable;
   const isMapFrame = room.type === RoomType.mapFrame;
   const isCovertRoom = room.type && COVERT_ROOM_TYPES.includes(room.type);
+  const isLabelHidden = room.isLabelHidden ?? false;
+  const shouldShowLabel = !isCovertRoom && !isLabelHidden;
 
   const dispatch = useDispatch();
 
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
   const handleRoomHovered = useCallback(() => {
     dispatch(retainAttendance(true));
   }, [dispatch]);
 
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
   const handleRoomUnhovered = useCallback(() => {
     dispatch(retainAttendance(false));
   }, [dispatch]);
@@ -50,7 +54,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     "maproom--covert--unclickable": isUnclickable,
     "maproom--covert--iframe": isMapFrame,
     "maproom--always-show-label":
-      !isCovertRoom &&
+      shouldShowLabel &&
       (venue.roomVisibility === RoomVisibility.nameCount ||
         (venue.roomVisibility === RoomVisibility.count && hasRecentRoomUsers)),
   });
@@ -103,7 +107,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
         <img className="maproom__image" src={room.image_url} alt={room.title} />
       )}
 
-      {!isCovertRoom && (
+      {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
           <RoomAttendance venue={venue} room={room} />

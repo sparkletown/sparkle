@@ -331,6 +331,19 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       <span className="slider round"></span>
                     </label>
                   </div>
+                  <div className="toggle-room">
+                    <div className="input-title">Is label hidden?</div>
+                    <label className="switch">
+                      <input
+                        disabled={disable}
+                        type="checkbox"
+                        id="isLabeled"
+                        name={"isLabeled"}
+                        ref={register}
+                      />
+                      <span className="slider round"></span>
+                    </label>
+                  </div>
                 </div>
                 <div className="page-container-left-bottombar">
                   <div />
