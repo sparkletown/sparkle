@@ -145,7 +145,6 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 less
               </span>
             )}
-            {/* TODO: Proper text, namings */}
             <input
               name="realName"
               className="input-block input-centered"
