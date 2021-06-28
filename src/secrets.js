@@ -15,7 +15,6 @@ export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
 
 // @debt doing this for GitHub demo
-export const AGORA_APP_ID = "6f46c1a52afc445c94901fa64877cd05";
 export const AGORA_CHANNEL = "talkshowstudio";
 
 // Build environment data from CI

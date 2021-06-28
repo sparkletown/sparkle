@@ -6,7 +6,7 @@ import AgoraRTC, {
   ILocalVideoTrack,
 } from "agora-rtc-sdk-ng";
 
-import { AGORA_APP_ID, AGORA_CHANNEL } from "secrets";
+import { AGORA_CHANNEL } from "secrets";
 
 import { ReactHook } from "types/utility";
 
@@ -71,13 +71,15 @@ export const useAgoraScreenShare: ReactHook<
   const joinChannel = async () => {
     if (!client || !venueId || !userId) return;
 
-    const token = await getAgoraToken({ channelName: AGORA_CHANNEL });
+    const { appId, channelName, account, token } = await getAgoraToken({
+      channelName: AGORA_CHANNEL,
+    });
 
     const screenClientUid = await client?.join(
-      AGORA_APP_ID || "",
-      AGORA_CHANNEL || "",
+      appId,
+      channelName,
       token,
-      userId
+      account
     );
 
     const experience = {

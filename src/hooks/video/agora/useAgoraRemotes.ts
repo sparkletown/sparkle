@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { IAgoraRTCClient, IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
 import { useAsync } from "react-use";
 
-import { AGORA_APP_ID, AGORA_CHANNEL } from "secrets";
+import { AGORA_CHANNEL } from "secrets";
 
 import { ReactHook } from "types/utility";
 
@@ -36,12 +36,15 @@ export const useAgoraRemotes: ReactHook<
     [client, updateRemoteUsers]
   );
 
-  const { value: token } = useAsync(async () =>
-    getAgoraToken({ channelName: AGORA_CHANNEL })
+  const { value: agoraTokenData } = useAsync(
+    async () => getAgoraToken({ channelName: AGORA_CHANNEL }),
+    []
   );
 
   useEffect(() => {
-    if (!client || !token) return;
+    if (!client || !agoraTokenData) return;
+
+    const { appId, channelName, account, token } = agoraTokenData;
 
     updateRemoteUsers();
 
@@ -51,7 +54,7 @@ export const useAgoraRemotes: ReactHook<
     client.on("user-left", updateRemoteUsers);
 
     // @debt promise returned from .join is ignored
-    client.join(AGORA_APP_ID || "", AGORA_CHANNEL || "", token, userId);
+    client.join(appId, channelName, token, account);
 
     return () => {
       client.off("user-published", handleUserPublished);
@@ -62,7 +65,7 @@ export const useAgoraRemotes: ReactHook<
       // @debt promise returned from .leave is ignored
       client.leave();
     };
-  }, [client, handleUserPublished, token, updateRemoteUsers, userId]);
+  }, [agoraTokenData, client, handleUserPublished, updateRemoteUsers, userId]);
 
   return remoteUsers;
 };
