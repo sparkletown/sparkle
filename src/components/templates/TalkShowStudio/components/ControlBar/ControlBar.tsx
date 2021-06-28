@@ -3,15 +3,15 @@ import classNames from "classnames";
 
 import { updateTalkShowStudioExperience } from "api/profile";
 
+import { useShowHide } from "hooks/useShowHide";
+import { useStage } from "hooks/useStage";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useShowHide } from "hooks/useShowHide";
 
 import { Button } from "components/atoms/Button";
 
 import { ButtonWithLabel } from "components/templates/TalkShowStudio/components/Button/Button";
 import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
-import { useStage } from "components/templates/TalkShowStudio/useStage";
 
 import "./ControlBar.scss";
 

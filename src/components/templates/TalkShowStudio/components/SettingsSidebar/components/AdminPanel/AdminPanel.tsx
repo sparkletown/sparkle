@@ -18,14 +18,14 @@ import { updateUserTalkShowStudioExperience, updateVenue_v2 } from "api/admin";
 
 import { WithId } from "utils/id";
 
-import { useVenueId } from "hooks/useVenueId";
 import { useShowHide } from "hooks/useShowHide";
+import { useStage } from "hooks/useStage";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { Button } from "components/atoms/Button";
 
 import { LeaveStageModal } from "components/templates/TalkShowStudio/components/LeaveStageModal";
-import { useStage } from "components/templates/TalkShowStudio/useStage";
 
 import "./AdminPanel.scss";
 
