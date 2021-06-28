@@ -30,7 +30,7 @@ export interface UseAgoraScreenShareReturn {
 export const useAgoraScreenShare: ReactHook<
   UseAgoraScreenShareProps,
   UseAgoraScreenShareReturn
-> = ({ client }) => {
+> = ({ venueId, userId, client }) => {
   const [localScreenTrack, setLocalScreenTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
