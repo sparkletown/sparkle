@@ -369,25 +369,28 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
             Leave Seat
           </button>
         </div>
-        <div className="shout-container">
-          <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
-            <input
-              name="text"
-              className="text"
-              placeholder="Shout out to the crowd"
-              ref={register({ required: true })}
-              disabled={isShoutSent}
-              autoComplete="off"
-            />
-            <input
-              className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
-              type="submit"
-              id={`send-shout-out-${venue.name}`}
-              value={isShoutSent ? "Sent!" : "Send"}
-              disabled={isShoutSent}
-            />
-          </form>
-        </div>
+
+        {venue.showShoutouts && (
+          <div className="shout-container">
+            <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+              <input
+                name="text"
+                className="text"
+                placeholder="Shout out to the crowd"
+                ref={register({ required: true })}
+                disabled={isShoutSent}
+                autoComplete="off"
+              />
+              <input
+                className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
+                type="submit"
+                id={`send-shout-out-${venue.name}`}
+                value={isShoutSent ? "Sent!" : "Send"}
+                disabled={isShoutSent}
+              />
+            </form>
+          </div>
+        )}
       </>
     );
 
