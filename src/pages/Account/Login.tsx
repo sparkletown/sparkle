@@ -11,7 +11,6 @@ import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
-import { useShowHide } from "hooks/useShowHide";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -39,13 +38,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
-  const {
-    isShown: isLoginLoadingShown,
-    // show: showLoginLoading,
-    // hide: hideLoginLoading,
-  } = useShowHide(false);
-
-  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn({
+  const { signInWithSAML, hasSamlAuthProviderId, isSigningIn } = useSAMLSignIn({
     samlAuthProviderId: venue.samlAuthProviderId,
   });
 
@@ -90,7 +83,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
-  if (isCustomAuthConfigLoading || isLoginLoadingShown) return <LoadingPage />;
+  if (isCustomAuthConfigLoading || isSigningIn) return <LoadingPage />;
 
   return (
     <div className="auth-container">

@@ -1,5 +1,5 @@
-import { useCallback } from "react";
 import Bugsnag from "@bugsnag/js";
+import { useAsyncFn } from "react-use";
 
 import firebase from "firebase/app";
 
@@ -12,6 +12,7 @@ export interface UseSAMLSignInProps {
 export interface UseSAMLSignInReturn {
   hasSamlAuthProviderId: boolean;
   signInWithSAML: () => void;
+  isSigningIn: boolean;
 }
 
 export const useSAMLSignIn: ReactHook<
@@ -20,7 +21,7 @@ export const useSAMLSignIn: ReactHook<
 > = ({ samlAuthProviderId }) => {
   const hasSamlAuthProviderId = samlAuthProviderId !== undefined;
 
-  const signInWithSAML = useCallback(() => {
+  const [{ loading }, signInWithSAML] = useAsyncFn(async () => {
     if (!samlAuthProviderId) return;
 
     const SAMLAuthProvider = new firebase.auth.SAMLAuthProvider(
@@ -42,5 +43,5 @@ export const useSAMLSignIn: ReactHook<
       });
   }, [samlAuthProviderId]);
 
-  return { signInWithSAML, hasSamlAuthProviderId };
+  return { signInWithSAML, hasSamlAuthProviderId, isSigningIn: loading };
 };

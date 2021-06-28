@@ -17,6 +17,7 @@ import {
 } from "settings";
 
 import { resizeFile } from "utils/image";
+import { isDefined } from "utils/types";
 
 import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
@@ -103,11 +104,12 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const githubImageSrc =
     githubHandle && `https://github.com/${githubHandle}.png?size=120`;
 
+  // Set GitHub image as a default picture
   useEffect(() => {
-    if (!githubImageSrc) return;
+    if (!githubImageSrc || pictureUrl) return;
 
     setValue("pictureUrl", githubImageSrc, true);
-  }, [githubImageSrc, setValue]);
+  }, [githubImageSrc, setValue, pictureUrl]);
 
   const uploadDefaultAvatar = useCallback(
     async (avatar: string) => {
@@ -124,37 +126,25 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     ? customAvatars
     : DEFAULT_AVATARS;
 
-  const getRenderedAvatarImageComponent = useCallback(
-    (avatarSrc: string, key: string | number) => (
-      <div
-        key={`${avatarSrc}-${key}`}
-        className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatarSrc)}
-      >
-        <img
-          src={avatarSrc}
-          className="profile-icon profile-picture-preview"
-          alt={`default avatar ${key}`}
-        />
-      </div>
-    ),
-    [uploadDefaultAvatar]
+  const avatarImages = useMemo(
+    () =>
+      [githubImageSrc, ...defaultAvatars]
+        .filter(isDefined)
+        .map((avatarSrc, index) => (
+          <div
+            key={`${avatarSrc}-${index}`}
+            className="profile-picture-preview-container"
+            onClick={() => uploadDefaultAvatar(avatarSrc)}
+          >
+            <img
+              src={avatarSrc}
+              className="profile-icon profile-picture-preview"
+              alt={`default avatar ${index}`}
+            />
+          </div>
+        )),
+    [defaultAvatars, githubImageSrc, uploadDefaultAvatar]
   );
-
-  const avatarImages = useMemo(() => {
-    const renderedAvatarImages = defaultAvatars.map(
-      getRenderedAvatarImageComponent
-    );
-
-    if (!githubImageSrc) return renderedAvatarImages;
-
-    const githubAvatarImage = getRenderedAvatarImageComponent(
-      githubImageSrc,
-      "github-avatar"
-    );
-
-    return [githubAvatarImage, ...renderedAvatarImages];
-  }, [defaultAvatars, githubImageSrc, getRenderedAvatarImageComponent]);
 
   return (
     <div className="profile-picture-upload-form">
