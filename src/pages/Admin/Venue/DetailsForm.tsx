@@ -41,6 +41,7 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_SHOW_SCHEDULE,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -536,15 +537,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderLiveScheduleToggle = () => (
+  const renderShowScheduleToggle = () => (
     <div className="toggle-room">
-      <h4 className="italic input-header">Show live schedule</h4>
-      <label id={"showLiveSchedule"} className="switch">
+      <h4 className="italic input-header">Show Schedule</h4>
+      <label id={"showSchedule"} className="switch">
         <input
           type="checkbox"
-          id={"showLiveSchedule"}
-          name={"showLiveSchedule"}
+          id={"showSchedule"}
+          name={"showSchedule"}
           ref={register}
+          defaultChecked={DEFAULT_SHOW_SCHEDULE}
         />
         <span className="slider round"></span>
       </label>
@@ -876,11 +878,16 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
+          editing={state.detailsPage?.venue.profile_questions}
         />
 
-        <EntranceInput register={register} fieldName="entrance" />
+        <EntranceInput
+          fieldName="entrance"
+          register={register}
+          editing={state.detailsPage?.venue.entrance}
+        />
 
-        {renderLiveScheduleToggle()}
+        {renderShowScheduleToggle()}
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
