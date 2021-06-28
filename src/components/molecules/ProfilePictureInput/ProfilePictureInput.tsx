@@ -141,17 +141,20 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     [uploadDefaultAvatar]
   );
 
-  const gitHubImage = useMemo(
-    () =>
-      githubImageSrc &&
-      getRenderedAvatarImageComponent(githubImageSrc, "github-avatar"),
-    [githubImageSrc, getRenderedAvatarImageComponent]
-  );
+  const avatarImages = useMemo(() => {
+    const renderedAvatarImages = defaultAvatars.map(
+      getRenderedAvatarImageComponent
+    );
 
-  const avatarImages = useMemo(
-    () => defaultAvatars.map(getRenderedAvatarImageComponent),
-    [defaultAvatars, getRenderedAvatarImageComponent]
-  );
+    if (!githubImageSrc) return renderedAvatarImages;
+
+    const githubAvatarImage = getRenderedAvatarImageComponent(
+      githubImageSrc,
+      "github-avatar"
+    );
+
+    return [githubAvatarImage, ...renderedAvatarImages];
+  }, [defaultAvatars, githubImageSrc, getRenderedAvatarImageComponent]);
 
   return (
     <div className="profile-picture-upload-form">
@@ -186,7 +189,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         Feeling camera shy? Choose from one of these Summit profile avatars.
       </small>
       <div className="default-avatars-container">
-        {gitHubImage}
         {isLoading ? <div>Loading...</div> : avatarImages}
       </div>
       <input
