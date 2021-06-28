@@ -1,18 +1,30 @@
 import { useCallback, useEffect, useState } from "react";
-import AgoraRTC, { ILocalAudioTrack, ILocalVideoTrack } from "agora-rtc-sdk-ng";
+import AgoraRTC, {
+  IAgoraRTCClient,
+  ILocalAudioTrack,
+  ILocalVideoTrack,
+} from "agora-rtc-sdk-ng";
 
 import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
 
-import {
-  UseAgoraScreenShareProps,
-  UseAgoraScreenShareReturn,
-} from "types/agora";
 import { ReactHook } from "types/utility";
 
 import { updateTalkShowStudioExperience } from "api/profile";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+export interface UseAgoraScreenShareProps {
+  client?: IAgoraRTCClient;
+}
+
+export interface UseAgoraScreenShareReturn {
+  localScreenTrack?: ILocalVideoTrack;
+  stopShare(): void;
+  shareScreen(): Promise<void>;
+  joinChannel(): Promise<void>;
+  leaveChannel(): Promise<void>;
+}
 
 export const useAgoraScreenShare: ReactHook<
   UseAgoraScreenShareProps,
