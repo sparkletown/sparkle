@@ -14,8 +14,9 @@ $button-height: 30px;
 
   &__edit-input-title {
     font-size: $font-size--md;
-    margin-bottom: $spacing--sm;
+    margin-bottom: $spacing--lg;
     opacity: 0.8;
+    width: 100%;
   }
 
   &__question {
@@ -36,7 +37,7 @@ $button-height: 30px;
 
   &__input-container-name {
     height: $submit-button-diameter;
-    margin-bottom: $spacing--xl;
+    margin-top: $spacing--sm;
   }
 
   &__input-name {
