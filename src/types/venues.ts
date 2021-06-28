@@ -167,7 +167,6 @@ export interface BaseVenue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
-  showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;
