@@ -76,6 +76,27 @@ $page-max-width: 1240px;
   padding-top: $spacing--xxl;
 }
 
+.page-container-onboarding {
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .login-welcome-title {
+    font-style: italic;
+    font-weight: 900;
+    text-align: center;
+    margin: 20px 40px 0;
+  }
+
+  .login-welcome-subtitle {
+    text-align: center;
+    padding-bottom: 30px;
+  }
+}
+
 .code-of-conduct-container {
   padding-top: 30px;
 
@@ -221,23 +242,28 @@ $page-max-width: 1240px;
 }
 
 .Profile {
-  max-height: 100%;
-  overflow: hidden;
+  height: 100%;
   position: absolute;
-  top: 20%;
-  left: 20%;
-  right: 20%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column;
+  padding-top: 40px;
 
   .login-welcome-title {
+    margin-top: $spacing--xxl;
     font-style: italic;
     font-weight: 900;
+    text-align: center;
+    width: 50%;
     text-align: center;
   }
 
   .login-welcome-subtitle {
     text-align: center;
-    padding-bottom: 30px;
-    margin-top: $spacing--xl;
+    margin-bottom: $spacing--lg;
+    margin-top: $spacing--md;
   }
 
   &__summit-snap {
