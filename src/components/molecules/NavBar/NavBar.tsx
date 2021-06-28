@@ -358,9 +358,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       {hasBackButton && venue?.parentId && parentVenue?.name && (
         <div className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
-          <span className="back-link">
-            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-          </span>
+          <span className="back-link">Back</span>
         </div>
       )}
     </>

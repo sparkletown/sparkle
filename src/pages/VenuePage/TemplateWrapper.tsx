@@ -87,7 +87,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
             className="btn btn-primary"
             onClick={() => history.goBack()}
           >
-            Go Back
+            Back
           </button>
         </p>
       );
