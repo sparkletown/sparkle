@@ -76,31 +76,6 @@ $page-max-width: 1240px;
   padding-top: $spacing--xxl;
 }
 
-.page-container-onboarding {
-  max-height: 100%;
-  overflow: hidden;
-  position: absolute;
-  top: 20%;
-  left: 20%;
-  right: 20%;
-
-  .login-welcome-title {
-    font-style: italic;
-    font-weight: 900;
-    text-align: center;
-  }
-
-  .login-welcome-subtitle {
-    text-align: center;
-    padding-bottom: 30px;
-    margin-top: $spacing--xl;
-  }
-
-  .summit-snap {
-    margin: auto;
-  }
-}
-
 .code-of-conduct-container {
   padding-top: 30px;
 
@@ -144,6 +119,16 @@ $page-max-width: 1240px;
     width: 580px;
     height: 225px;
     background-size: 280px;
+  }
+
+  &.github-plain {
+    margin: 0 auto;
+    background-image: url(/assets/images/Summit-logo-plain.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 580px;
+    height: 225px;
+    background-size: 400px;
   }
 }
 
@@ -232,6 +217,39 @@ $page-max-width: 1240px;
       rgba(0, 0, 0, 0.6) 100%
     );
     background-color: darken($primary, 20%);
+  }
+}
+
+.Profile {
+  max-height: 100%;
+  overflow: hidden;
+  position: absolute;
+  top: 20%;
+  left: 20%;
+  right: 20%;
+
+  .login-welcome-title {
+    font-style: italic;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .login-welcome-subtitle {
+    text-align: center;
+    padding-bottom: 30px;
+    margin-top: $spacing--xl;
+  }
+
+  &__summit-snap {
+    margin: auto;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+
+    &:hover {
+      color: white;
+      text-decoration: none;
+    }
   }
 }
 
