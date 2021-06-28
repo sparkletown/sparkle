@@ -20,6 +20,7 @@ export interface UseAgoraCameraProps {
   userId?: string;
   client?: IAgoraRTCClient;
 }
+
 export interface UseAgoraCameraReturn {
   isCameraEnabled: boolean;
   isMicrophoneEnabled: boolean;
@@ -69,7 +70,8 @@ export const useAgoraCamera: ReactHook<
     const cameraClientUid = await client.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
-      token
+      token,
+      userId
     );
 
     const experience = {

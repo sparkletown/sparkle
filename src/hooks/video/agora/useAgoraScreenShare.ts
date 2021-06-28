@@ -41,10 +41,13 @@ export const useAgoraScreenShare: ReactHook<
 
     if (Array.isArray(screenTrack)) {
       const [screenVideoTrack, screenAudioTrack] = screenTrack;
+
       setLocalScreenTrack(screenVideoTrack);
       setLocalAudioTrack(screenAudioTrack);
+
       await client.publish(screenVideoTrack);
       await client.publish(screenAudioTrack);
+
       return;
     }
 
@@ -73,7 +76,8 @@ export const useAgoraScreenShare: ReactHook<
     const screenClientUid = await client?.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
-      token
+      token,
+      userId
     );
 
     const experience = {

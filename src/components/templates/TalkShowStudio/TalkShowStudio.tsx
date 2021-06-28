@@ -50,7 +50,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
 
   const stage = useStage({ venueId: venue.id });
 
-  const remoteUsers = useAgoraRemotes({ client: remotesClient });
+  const remoteUsers = useAgoraRemotes({ userId, client: remotesClient });
 
   const {
     localCameraTrack,

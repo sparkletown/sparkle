@@ -9,6 +9,7 @@ import { ReactHook } from "types/utility";
 import { getAgoraToken } from "api/video";
 
 export interface UseAgoraRemotesProps {
+  userId?: string;
   client?: IAgoraRTCClient;
 }
 export type UseAgoraRemotesReturn = IAgoraRTCRemoteUser[];
@@ -16,7 +17,7 @@ export type UseAgoraRemotesReturn = IAgoraRTCRemoteUser[];
 export const useAgoraRemotes: ReactHook<
   UseAgoraRemotesProps,
   UseAgoraRemotesReturn
-> = ({ client }) => {
+> = ({ userId, client }) => {
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
 
   const updateRemoteUsers = useCallback(() => {
@@ -50,7 +51,7 @@ export const useAgoraRemotes: ReactHook<
     client.on("user-left", updateRemoteUsers);
 
     // @debt promise returned from .join is ignored
-    client.join(AGORA_APP_ID || "", AGORA_CHANNEL || "", token);
+    client.join(AGORA_APP_ID || "", AGORA_CHANNEL || "", token, userId);
 
     return () => {
       client.off("user-published", handleUserPublished);
@@ -61,7 +62,7 @@ export const useAgoraRemotes: ReactHook<
       // @debt promise returned from .leave is ignored
       client.leave();
     };
-  }, [client, handleUserPublished, token, updateRemoteUsers]);
+  }, [client, handleUserPublished, token, updateRemoteUsers, userId]);
 
   return remoteUsers;
 };
