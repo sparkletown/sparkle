@@ -88,6 +88,7 @@ $page-max-width: 1240px;
     font-style: italic;
     font-weight: 900;
     text-align: center;
+    margin: 20px 40px 0;
   }
 
   .login-welcome-subtitle {
@@ -247,18 +248,22 @@ $page-max-width: 1240px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-flow: column;
+  padding-top: 40px;
 
   .login-welcome-title {
     margin-top: $spacing--xxl;
     font-style: italic;
     font-weight: 900;
     text-align: center;
+    width: 50%;
+    text-align: center;
   }
 
   .login-welcome-subtitle {
     text-align: center;
-    padding-bottom: 30px;
-    margin-top: $spacing--xl;
+    margin-bottom: $spacing--lg;
+    margin-top: $spacing--md;
   }
 
   &__summit-snap {

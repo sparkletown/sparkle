@@ -106,9 +106,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     companyDepartment,
   } = samlPrefillData ?? {};
 
-  const realName = [firstName, lastName]
-    .filter(isTruthy)
-    .join(" ");
+  const realName = [firstName, lastName].filter(isTruthy).join(" ");
 
   const pictureUrl = watch("pictureUrl");
 
@@ -116,94 +114,92 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="Profile">
-      <div className="login-container">
-        <h2 className="login-welcome-title">
-          Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
-          and share your Summit snap here.
-        </h2>
-        <div className="login-welcome-subtitle">
-          {`Swing back and edit your profile anytime you like.`}
-        </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="form">
-          <div className="input-group profile-form">
-            <input
-              name="partyName"
-              className="input-block input-centered"
-              placeholder="Your display name"
-              defaultValue={githubHandle}
-              ref={register({
-                required: true,
-                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
-              })}
-              autoComplete="off"
-            />
-            <p className="input-info">
-              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
-              characters)
-            </p>
-            {errors.partyName && errors.partyName.type === "required" && (
-              <span className="input-error">Display name is required</span>
-            )}
-            {errors.partyName && errors.partyName.type === "maxLength" && (
-              <span className="input-error">
-                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
-                less
-              </span>
-            )}
-            <input
-              name="realName"
-              className="input-block input-centered"
-              placeholder="Your real name"
-              defaultValue={realName}
-              ref={register()}
-              autoComplete="off"
-            />
-            <p className="input-info">This is your real name</p>
-            <input
-              name="companyTitle"
-              className="input-block input-centered"
-              placeholder="Your title"
-              defaultValue={companyTitle}
-              ref={register()}
-              autoComplete="off"
-            />
-            <p className="input-info">This is your title</p>
-            <input
-              name="companyDepartment"
-              className="input-block input-centered"
-              placeholder="Your department"
-              defaultValue={companyDepartment}
-              ref={register()}
-              autoComplete="off"
-            />
-            <p className="input-info">This is your department</p>
-            <a
-              className="profile-picture-button Profile__summit-snap"
-              href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-              {...externalUrlAdditionalProps}
-            >
-              Take a Summit snap
-            </a>
-            {user && (
-              <ProfilePictureInput
-                venueId={venueId}
-                setValue={setValue}
-                githubHandle={githubHandle}
-                user={user}
-                errors={errors}
-                pictureUrl={pictureUrl}
-                register={register}
-              />
-            )}
-          </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Create my profile"
-            disabled={!formState.isValid}
-          />
-        </form>
+      <h2 className="login-welcome-title">
+        Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
+        and share your Summit snap here.
+      </h2>
+      <div className="login-welcome-subtitle">
+        {`Swing back and edit your profile anytime you like.`}
       </div>
+      <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <div className="input-group profile-form">
+          <input
+            name="partyName"
+            className="input-block input-centered"
+            placeholder="Your display name"
+            defaultValue={githubHandle}
+            ref={register({
+              required: true,
+              maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
+            })}
+            autoComplete="off"
+          />
+          <p className="input-info">
+            This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
+            characters)
+          </p>
+          {errors.partyName && errors.partyName.type === "required" && (
+            <span className="input-error">Display name is required</span>
+          )}
+          {errors.partyName && errors.partyName.type === "maxLength" && (
+            <span className="input-error">
+              Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+              less
+            </span>
+          )}
+          <input
+            name="realName"
+            className="input-block input-centered"
+            placeholder="Your real name"
+            defaultValue={realName}
+            ref={register()}
+            autoComplete="off"
+          />
+          <p className="input-info">This is your real name</p>
+          <input
+            name="companyTitle"
+            className="input-block input-centered"
+            placeholder="Your title"
+            defaultValue={companyTitle}
+            ref={register()}
+            autoComplete="off"
+          />
+          <p className="input-info">This is your title</p>
+          <input
+            name="companyDepartment"
+            className="input-block input-centered"
+            placeholder="Your department"
+            defaultValue={companyDepartment}
+            ref={register()}
+            autoComplete="off"
+          />
+          <p className="input-info">This is your department</p>
+          <a
+            className="profile-picture-button Profile__summit-snap"
+            href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+            {...externalUrlAdditionalProps}
+          >
+            Take a Summit snap
+          </a>
+          {user && (
+            <ProfilePictureInput
+              venueId={venueId}
+              setValue={setValue}
+              githubHandle={githubHandle}
+              user={user}
+              errors={errors}
+              pictureUrl={pictureUrl}
+              register={register}
+            />
+          )}
+        </div>
+        <input
+          className="btn btn-primary btn-block btn-centered"
+          type="submit"
+          value="Create my profile"
+          disabled={!formState.isValid}
+        />
+      </form>
     </div>
   );
 };
