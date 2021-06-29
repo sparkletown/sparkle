@@ -25,7 +25,8 @@ export const useAgoraScreenShare: ReactHook<
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
   const stopShare = useCallback(async () => {
-    if (!venueId || !userId || !client) return;
+    if (!venueId || !userId || !client || !localScreenTrack || !localAudioTrack)
+      return;
 
     updateTalkShowStudioExperience({
       venueId,
@@ -35,11 +36,11 @@ export const useAgoraScreenShare: ReactHook<
       },
     });
 
-    localScreenTrack?.stop();
-    localScreenTrack?.close();
+    localScreenTrack.stop();
+    localScreenTrack.close();
 
-    localAudioTrack?.stop();
-    localAudioTrack?.close();
+    localAudioTrack.stop();
+    localAudioTrack.close();
 
     await client.unpublish();
 
@@ -48,8 +49,10 @@ export const useAgoraScreenShare: ReactHook<
   }, [venueId, userId, client, localAudioTrack, localScreenTrack]);
 
   const leaveChannel = useCallback(async () => {
+    if (!client) return;
+
     stopShare();
-    await client?.leave();
+    await client.leave();
   }, [client, stopShare]);
 
   const shareScreen = useCallback(async () => {
@@ -78,7 +81,7 @@ export const useAgoraScreenShare: ReactHook<
   const joinChannel = async () => {
     if (!client || !venueId || !userId) return;
 
-    const screenClientUid = await client?.join(
+    const screenClientUid = await client.join(
       AGORA_APP_ID || "",
       AGORA_CHANNEL || "",
       AGORA_TOKEN || null
