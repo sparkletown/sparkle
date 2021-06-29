@@ -80,37 +80,37 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
     }
   }, [user]);
 
-  const profileLinks = useMemo(() => {
-    const makeEditProfileLink = (profileLink?: ProfileLink) => () => {
-      setProfileLinkToEdit(profileLink);
-      setUserProfileMode(UserProfileMode.EDIT_PROFILE_LINK);
-    };
+  // const profileLinks = useMemo(() => {
+  //   const makeEditProfileLink = (profileLink?: ProfileLink) => () => {
+  //     setProfileLinkToEdit(profileLink);
+  //     setUserProfileMode(UserProfileMode.EDIT_PROFILE_LINK);
+  //   };
 
-    return (
-      <>
-        <ul className="UserInformationContent__profile-links">
-          {user?.profileLinks?.map((profileLink) => (
-            <li key={profileLink.title}>
-              {profileLink.title}{" "}
-              <button
-                className="button--a"
-                onClick={makeEditProfileLink(profileLink)}
-              >
-                Edit
-              </button>
-            </li>
-          ))}
-        </ul>
+  //   return (
+  //     <>
+  //       <ul className="UserInformationContent__profile-links">
+  //         {user?.profileLinks?.map((profileLink) => (
+  //           <li key={profileLink.title}>
+  //             {profileLink.title}{" "}
+  //             <button
+  //               className="button--a"
+  //               onClick={makeEditProfileLink(profileLink)}
+  //             >
+  //               Edit
+  //             </button>
+  //           </li>
+  //         ))}
+  //       </ul>
 
-        <button
-          className="UserInformationContent__add-profile-link button--a"
-          onClick={makeEditProfileLink(undefined)}
-        >
-          Add a profile link
-        </button>
-      </>
-    );
-  }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
+  //       <button
+  //         className="UserInformationContent__add-profile-link button--a"
+  //         onClick={makeEditProfileLink(undefined)}
+  //       >
+  //         Add a profile link
+  //       </button>
+  //     </>
+  //   );
+  // }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
 
   // @debt We need to rework the way we store answers to profile questions
   const questions = useMemo(
@@ -164,7 +164,8 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
       </div>
       {questions}
 
-      {profileLinks}
+      {/* Hide profile link button for GitHub environment */}
+      {/* {profileLinks} */}
 
       {IS_BURN && (
         <>
