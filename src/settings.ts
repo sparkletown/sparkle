@@ -8,9 +8,6 @@ import {
   BUCKET_URL,
   PROJECT_ID,
   IS_BURN,
-  AGORA_APP_ID,
-  AGORA_CHANNEL,
-  AGORA_TOKEN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
@@ -564,9 +561,6 @@ export const FIREBASE_CONFIG = {
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
-  agoraAppId: AGORA_APP_ID,
-  agoraChannel: AGORA_CHANNEL,
-  agoraToken: AGORA_TOKEN,
 };
 
 export const DEFAULT_VENUE = "zilloween";

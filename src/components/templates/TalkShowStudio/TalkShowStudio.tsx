@@ -96,8 +96,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   );
 
   const remoteUsersPlayers = useMemo(() => {
-    const uniqueUsersIds = new Set();
-    const setRemoteUserAvatar = (remoteUserId: number | string) => {
+    const findUserByAgoraUid = (remoteUserId: number | string) => {
       if (!venue.id) return;
 
       return stage.peopleOnStage.find(
@@ -107,33 +106,29 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     };
 
     return remoteUsers.map((agoraRemoteUser) => {
-      const user = setRemoteUserAvatar(agoraRemoteUser.uid);
-      if (!user) return null;
-
-      const isUniqueUser = !uniqueUsersIds.has(user.id);
-      if (isUniqueUser) {
-        uniqueUsersIds.add(user.id);
-      }
+      const user = findUserByAgoraUid(agoraRemoteUser.uid);
+      if (
+        !user ||
+        agoraRemoteUser.uid === screenClient.uid ||
+        agoraRemoteUser.uid === cameraClient.uid
+      )
+        return null;
 
       return (
-        agoraRemoteUser.uid !== screenClient.uid &&
-        agoraRemoteUser.uid !== cameraClient.uid && (
-          <div key={agoraRemoteUser.uid}>
-            {isUniqueUser && (
-              <Player
-                showButtons
-                user={setRemoteUserAvatar(agoraRemoteUser.uid)}
-                videoTrack={agoraRemoteUser.videoTrack}
-                audioTrack={agoraRemoteUser.audioTrack}
-                isCamOn={agoraRemoteUser.hasVideo}
-                isMicOn={agoraRemoteUser.hasAudio}
-                toggleCam={isUserOwner ? stage.toggleUserCamera : undefined}
-                toggleMic={isUserOwner ? stage.toggleUserMicrophone : undefined}
-                containerClass="TalkShowStudio__mode--play"
-              />
-            )}
-          </div>
-        )
+        <div key={agoraRemoteUser.uid}>
+          <Player
+            showButtons
+            user={user}
+            videoTrack={agoraRemoteUser.videoTrack}
+            audioTrack={agoraRemoteUser.audioTrack}
+            isCamOn={agoraRemoteUser.hasVideo}
+            isMicOn={agoraRemoteUser.hasAudio}
+            isSharing={user.data?.[`${venue.id}`]?.isSharingScreen}
+            toggleCam={isUserOwner ? stage.toggleUserCamera : undefined}
+            toggleMic={isUserOwner ? stage.toggleUserMicrophone : undefined}
+            containerClass="TalkShowStudio__mode--play"
+          />
+        </div>
       );
     });
   }, [
@@ -194,8 +189,10 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     !stage.isUserOnStage &&
     !stage.isUserRequesting;
 
-  const renderScreenSharing = (screenTrack: VideoPlayerProps["videoTrack"]) =>
-    screenTrack && (
+  const renderScreenSharing = (screenTrack: VideoPlayerProps["videoTrack"]) => {
+    if (!screenTrack) return;
+
+    return (
       <div className="TalkShowStudio__scene--sharing">
         <Player
           videoTrack={screenTrack}
@@ -203,6 +200,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
         />
       </div>
     );
+  };
 
   return (
     <>

@@ -66,9 +66,9 @@ export const Player: React.FC<VideoPlayerProps> = ({
     };
   }, [audioTrack]);
 
-  const iconContainerClasses = (isOff: boolean) =>
+  const iconContainerClasses = (isOn?: boolean) =>
     classNames("Player__icon", {
-      "Player__icon--off": isOff,
+      "Player__icon--off": !isOn,
     });
 
   return (
@@ -78,7 +78,7 @@ export const Player: React.FC<VideoPlayerProps> = ({
         <div className="Player__overlay">
           <div className="Player__buttons">
             <div
-              className={iconContainerClasses(!isMicOn)}
+              className={iconContainerClasses(isMicOn)}
               onClick={() => {
                 toggleMic?.(user);
               }}
@@ -87,7 +87,7 @@ export const Player: React.FC<VideoPlayerProps> = ({
             </div>
 
             <div
-              className={iconContainerClasses(!isCamOn)}
+              className={iconContainerClasses(isCamOn)}
               onClick={() => {
                 toggleCam?.(user);
               }}
@@ -96,7 +96,7 @@ export const Player: React.FC<VideoPlayerProps> = ({
             </div>
 
             {isSharing && (
-              <div className={iconContainerClasses(true)}>
+              <div className="Player__icon Player__icon--off">
                 <FontAwesomeIcon icon={faTv} />
               </div>
             )}

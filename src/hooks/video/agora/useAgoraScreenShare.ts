@@ -24,10 +24,43 @@ export const useAgoraScreenShare: ReactHook<
   const [localScreenTrack, setLocalScreenTrack] = useState<ILocalVideoTrack>();
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
+  const stopShare = useCallback(async () => {
+    if (!venueId || !userId || !client) return;
+
+    updateTalkShowStudioExperience({
+      venueId,
+      userId,
+      experience: {
+        isSharingScreen: false,
+      },
+    });
+
+    localScreenTrack?.stop();
+    localScreenTrack?.close();
+
+    localAudioTrack?.stop();
+    localAudioTrack?.close();
+
+    await client.unpublish();
+
+    setLocalScreenTrack(undefined);
+    setLocalAudioTrack(undefined);
+  }, [venueId, userId, client, localAudioTrack, localScreenTrack]);
+
+  const leaveChannel = useCallback(async () => {
+    stopShare();
+    await client?.leave();
+  }, [client, stopShare]);
+
   const shareScreen = useCallback(async () => {
     if (!client) return;
 
     const screenTrack = await AgoraRTC.createScreenVideoTrack({}, "auto");
+    // We add a check since there is no "on" method in screenTrack types,
+    // but in fact there is one and this is the main way to track browser "Stop sharing" button click.
+    if (!screenTrack || !("on" in screenTrack)) return;
+
+    screenTrack.on("track-ended", stopShare);
 
     if (Array.isArray(screenTrack)) {
       const [screenVideoTrack, screenAudioTrack] = screenTrack;
@@ -40,20 +73,7 @@ export const useAgoraScreenShare: ReactHook<
 
     setLocalScreenTrack(screenTrack);
     await client.publish(screenTrack);
-  }, [client]);
-
-  const stopShare = useCallback(async () => {
-    localScreenTrack?.stop();
-    localScreenTrack?.close();
-
-    localAudioTrack?.stop();
-    localAudioTrack?.close();
-
-    await client?.unpublish();
-
-    setLocalScreenTrack(undefined);
-    setLocalAudioTrack(undefined);
-  }, [client, localAudioTrack, localScreenTrack]);
+  }, [client, stopShare]);
 
   const joinChannel = async () => {
     if (!client || !venueId || !userId) return;
@@ -70,11 +90,6 @@ export const useAgoraScreenShare: ReactHook<
 
     updateTalkShowStudioExperience({ venueId, userId, experience });
   };
-
-  const leaveChannel = useCallback(async () => {
-    stopShare();
-    await client?.leave();
-  }, [client, stopShare]);
 
   useEffect(() => {
     return () => {
