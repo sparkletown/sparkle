@@ -149,7 +149,7 @@ export const Login: React.FC<LoginProps> = ({
         )}
       </div>
       <p className="Login__issues-text">
-        Issues with OKTA? Send a Slack message to:{" "}
+        Issues with Okta? Send a Slack message to:{" "}
         <strong>#summit-21-registration</strong>
       </p>
     </div>
