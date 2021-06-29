@@ -4,8 +4,7 @@ import classNames from "classnames";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
-import { useRecentUserStatus } from "hooks/users";
-import { useRecentWorldUsers } from "hooks/users";
+import { useRecentUserStatus, useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 
