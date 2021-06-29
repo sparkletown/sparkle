@@ -155,10 +155,15 @@ export const useCustomSound = (
   const hasSoundConfig = isDefined(soundConfig);
   const hasSprites = isDefined(sprites);
   const wantsSprites = isDefined(spriteName);
+  // @debt we don't use hasSprites / wantsSprites here as TypeScript then seems to think spriteName can be undefined still
+  //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
+  const wantedSpriteExists =
+    sprites && spriteName ? sprites.hasOwnProperty(spriteName) : false;
   const enableSprites = hasSprites && wantsSprites;
 
   // We must both haveSprites && wantSprites or not have either for the config to be valid
-  const hasValidSpriteConfig = enableSprites || (!hasSprites && !wantsSprites);
+  const hasValidSpriteConfig =
+    (enableSprites && wantedSpriteExists) || (!hasSprites && !wantsSprites);
 
   // Track when we don't find the soundConfig that corresponds to soundRef. This will probably
   // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
@@ -183,21 +188,14 @@ export const useCustomSound = (
   // Track when soundConfig.sprites doesn't contain soundRef.spriteName. This will probably
   // just mean that there is some stale/broken reference in our firestore DB. The app shouldn't
   // break, as we should gracefully fall back to not playing any sound here in this case.
-  //
-  // @debt we don't use hasSprites / wantsSprites here as TypeScript then seems to think spriteName can be undefined still
-  //   see https://github.com/microsoft/TypeScript/issues/12798#issuecomment-800824801
   useEffect(() => {
-    if (
-      isDefined(sprites) &&
-      isDefined(spriteName) &&
-      !sprites.hasOwnProperty(spriteName)
-    ) {
+    if (hasSprites && wantsSprites && !wantedSpriteExists) {
       const msg =
         "[useCustomSound] requested sprite missing from soundConfig.sprites";
       const context = {
         location: "hooks::sounds::useCustomSound",
         soundRef,
-        spritesKeys: Object.keys(sprites),
+        spritesKeys: sprites ? Object.keys(sprites) : [],
       };
 
       console.warn(msg, context);
@@ -206,7 +204,14 @@ export const useCustomSound = (
         event.addMetadata("context", context);
       });
     }
-  }, [soundRef, spriteName, sprites]);
+  }, [
+    hasSprites,
+    soundRef,
+    spriteName,
+    sprites,
+    wantedSpriteExists,
+    wantsSprites,
+  ]);
 
   // Track when "hasSprites but not wantsSprites", or when we "wantsSprites but not hasSprites".
   // This will probably just mean that there is some stale/broken reference in our firestore DB.

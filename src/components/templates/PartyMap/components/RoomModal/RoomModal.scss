@@ -49,13 +49,25 @@ $spacing: 20px;
     background-position: center;
   }
 
-  .userlist-container {
+  &__content {
+    background: $dark;
+    padding: 10px $spacing;
+    border-radius: $border-radius;
+    height: fit-content;
+  }
+
+  &__btn-enter {
+    width: 100%;
+  }
+
+  &__userlist {
     margin-top: $spacing;
   }
 
   &__description {
     @include scrollbar;
     margin-top: $spacing;
+    margin-bottom: $spacing;
     padding: 10px $spacing;
 
     background: $dark;

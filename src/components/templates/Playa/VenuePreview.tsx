@@ -225,6 +225,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
                 </p>
               )}
               <p className="template-name">{templateName}</p>
+              {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}
               <a
                 onMouseOver={() => dispatch(retainAttendance(true))}
                 onMouseOut={() => dispatch(retainAttendance(false))}
