@@ -20,9 +20,10 @@ import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
+// @debt refactor this to pass in venue as a prop
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
