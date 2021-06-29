@@ -7,19 +7,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
 import { IFRAME_ALLOW } from "settings";
-import { UserInfo } from "firebase/app";
 
+import { addReaction } from "store/actions/Reactions";
+
+import { EmojiReactionType, EmojiReactions } from "types/reactions";
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
+import { createEmojiReaction } from "utils/reactions";
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
-
-import {
-  EmojiReactionType,
-  Reactions,
-  TextReactionType,
-} from "utils/reactions";
 
 import Room from "../components/JazzBarRoom";
 
@@ -28,14 +25,16 @@ import Room from "../components/JazzBarRoom";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
+import UserList from "components/molecules/UserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useRecentVenueUsers } from "hooks/users";
 
-import { addReaction } from "store/actions/Reactions";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -51,21 +50,10 @@ interface JazzProps {
 //   messageToTheBand: string;
 // }
 
-type ReactionType =
-  | { reaction: EmojiReactionType }
-  | { reaction: TextReactionType; text: string };
-
-const createReaction = (reaction: ReactionType, user: UserInfo) => {
-  return {
-    created_at: Date.now(),
-    created_by: user.uid,
-    ...reaction,
-  };
-};
-
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const firestoreVenue = useSelector(currentVenueSelectorData);
   const venueToUse = venue ? venue : firestoreVenue;
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const parentVenueId = venueToUse?.parentId;
   const parentVenue = useSelector(parentVenueSelector);
@@ -79,7 +67,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   useExperiences(venueToUse?.name);
 
-  const { user } = useUser();
+  const { userWithId } = useUser();
 
   const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
 
@@ -89,15 +77,23 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const dispatch = useDispatch();
   const venueId = useVenueId();
 
-  const reactionClicked = (user: UserInfo, reaction: EmojiReactionType) => {
-    dispatch(
-      addReaction({
-        venueId,
-        reaction: createReaction({ reaction }, user),
-      })
-    );
-    setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
-  };
+  // @debt de-duplicate this with version in src/components/templates/Audience/Audience.tsx
+  const reactionClicked = useCallback(
+    (emojiReaction: EmojiReactionType) => {
+      if (!venueId || !userWithId) return;
+
+      dispatch(
+        addReaction({
+          venueId,
+          reaction: createEmojiReaction(emojiReaction, userWithId),
+        })
+      );
+
+      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
+      setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
+    },
+    [venueId, userWithId, dispatch]
+  );
 
   // NOTE: This functionality will probably be returned in the nearest future.
 
@@ -126,7 +122,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //       addReaction({
   //         venueId,
   //         reaction: createReaction(
-  //           { reaction: "messageToTheBand", text: data.messageToTheBand },
+  //           { reaction: TextReactionType, text: data.messageToTheBand },
   //           user
   //         ),
   //       })
@@ -145,7 +141,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       {venueToUse.description?.text && (
         <div className="row">
           <div className="col">
-            <div className="description">{venueToUse.description?.text}</div>
+            <div className="description">
+              <RenderMarkdown text={venueToUse.description?.text} />
+            </div>
           </div>
         </div>
       )}
@@ -156,6 +154,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           <div className="back-icon" />
           <span className="back-link">Back to {parentVenue.name}</span>
         </div>
+      )}
+
+      {!seatedAtTable && (
+        <UserList
+          users={recentVenueUsers}
+          activity={venue?.activity ?? "here"}
+          disableSeeAll={false}
+        />
       )}
 
       {seatedAtTable && (
@@ -190,13 +196,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {seatedAtTable && (
                 <div className="actions-container">
                   <div className="emoji-container">
-                    {Reactions.map((reaction) => (
+                    {EmojiReactions.map((reaction) => (
                       <div
                         key={reaction.name}
                         className="reaction"
-                        onClick={() =>
-                          user && reactionClicked(user, reaction.type)
-                        }
+                        onClick={() => reactionClicked(reaction.type)}
                         id={`send-reaction-${reaction.type}`}
                       >
                         <span role="img" aria-label={reaction.ariaLabel}>
@@ -234,6 +238,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             venueName={venueToUse.name}
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
+            isAudioEffectDisabled={isAudioEffectDisabled}
           />
         )}
         <TablesUserList

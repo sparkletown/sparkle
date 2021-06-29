@@ -3,12 +3,14 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "index";
 
 import { AuditoriumSection } from "types/auditorium";
+import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
+import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
-import { AnyVenue, VenueEvent } from "types/venues";
-import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
+import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
@@ -19,7 +21,6 @@ import {
   makeIsRequestingSelector,
   makeOrderedSelector,
 } from "./firestoreSelectors";
-import { MessageToTheBandReaction, Reaction } from "./reactions";
 
 /**
  * Selector to retrieve Firebase auth from Redux.
@@ -75,11 +76,18 @@ export const worldUsersByIdSelector: SparkleSelector<
  * Selector to retrieve venues from the Redux Firestore.
  *
  * @param state the Redux store
+ *
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
   state
 ) => state.firestore.data.venues || {};
 
+/**
+ * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
+ */
 export const orderedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.venues;
@@ -95,6 +103,9 @@ export const orderedVenuesSelector: SparkleSelector<
  *   const venueId = 'abc123'
  *   const venueSelector = useCallback(makeVenueSelector(venueId), [venueId])
  *   const venue = useSelector(venueSelector, shallowEqual)
+ *
+ * @deprecated This function relies on a selector that requires all of the venues data in firebase to be loaded into memory. Find a different way.
+ * @debt Refactor all places that rely on this, then remove it from the codebase
  */
 export const makeVenueSelector = (venueId: string) => (
   state: RootState
@@ -154,63 +165,46 @@ export const chatUsersByIdSelector: SparkleSelector<
   Record<string, User> | undefined
 > = (state) => state.firestore.data.chatUsers;
 
-export const experienceSelector: SparkleSelector<Experience> = (state) =>
-  state.firestore.data.experience;
+export const experienceSelector: SparkleSelector<Experience | undefined> = (
+  state
+) => state.firestore.data.experience;
 
 export const reactionsSelector: SparkleSelector<
   WithId<Reaction>[] | undefined
 > = (state) => state.firestore.ordered.reactions;
 
 export const messagesToTheBandSelector: SparkleSelector<
-  WithId<MessageToTheBandReaction>[] | undefined
+  WithId<TextReaction>[] | undefined
 > = (state) =>
   reactionsSelector(state)?.filter(
-    (reaction): reaction is WithId<MessageToTheBandReaction> =>
-      reaction.reaction === "messageToTheBand"
+    (reaction): reaction is WithId<TextReaction> =>
+      reaction.reaction === TextReactionType
   );
 
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const parentVenueOrderedSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.parentVenue;
-
 export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
   state
 ) => state.firestore.data.parentVenue;
 
-export const subvenuesSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.subvenues;
-
-export const siblingVenuesSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.siblingVenues;
-
 export const venueEventsSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = (state) => state.firestore.ordered.venueEvents;
-
-export const parentVenueEventsSelector: SparkleSelector<
-  WithId<VenueEvent>[] | undefined
-> = (state: RootState) => state.firestore.ordered.parentVenueEvents;
-
-export const makeSubvenueEventsSelector = (venueId?: string) => (
-  state: RootState
-): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as never)[`subvenueEvents-${venueId}`];
-
-export const makeSiblingVenueEventsSelector = (venueId?: string) => (
-  state: RootState
-): WithId<VenueEvent>[] | undefined =>
-  (state.firestore.ordered as never)[`siblingVenueEvents-${venueId}`];
 
 export const userModalVisitsSelector = (state: RootState) =>
   state.firestore.ordered.userModalVisits;
 
 export const radioStationsSelector = (state: RootState) =>
   state.firestore.data.currentVenue?.radioStations;
+
+export const posterVenuesSelector: SparkleSelector<
+  WithId<PosterPageVenue>[] | undefined
+> = (state) => state.firestore.ordered.posterVenues;
+
+export const screeningRoomVideosSelector: SparkleSelector<
+  WithId<ScreeningRoomVideo>[] | undefined
+> = (state) => state.firestore.ordered.screeningRoomVideos;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.
@@ -223,16 +217,6 @@ export const radioStationsSelector = (state: RootState) =>
 export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
-
-export const maybeSelector = <T extends SparkleSelector<U>, U>(
-  ifTrue: boolean,
-  selector: SparkleSelector<U>
-) => (ifTrue ? selector : noopSelector);
-
-export const maybeArraySelector = <T extends SparkleSelector<U[]>, U>(
-  ifTrue: boolean,
-  selector: SparkleSelector<U[]>
-) => (ifTrue ? selector : emptyArraySelector);
 
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
@@ -252,8 +236,18 @@ export const selectedChatSettingsSelector: SparkleSelector<ChatSettings> = (
   state
 ) => state.chat.settings;
 
+export const maybeSelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T>
+): SparkleSelector<T> | SparkleSelector<undefined> =>
+  ifTrue ? selector : noopSelector;
+
+export const maybeArraySelector = <T>(
+  ifTrue: boolean,
+  selector: SparkleSelector<T[]>
+): SparkleSelector<T[]> => (ifTrue ? selector : emptyArraySelector);
+
 export const noopSelector: SparkleSelector<undefined> = () => undefined;
 
 export const emptyArray = [];
-export const emptyArraySelector = <T extends SparkleSelector<U>, U>() =>
-  emptyArray as U[];
+export const emptyArraySelector = <T>(): T[] => emptyArray;

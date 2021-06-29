@@ -1,12 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo } from "react";
 
-// Components
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 
-// Typings
 import { User } from "types/User";
 
 export interface ParticipantProps {
@@ -16,6 +14,7 @@ export interface ParticipantProps {
   profileData: User;
   profileDataId: string;
   showIcon?: boolean;
+  isAudioEffectDisabled?: boolean;
 }
 
 type VideoTracks = Array<Video.LocalVideoTrack | Video.RemoteVideoTrack>;
@@ -29,6 +28,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
   children,
   defaultMute = false,
   showIcon = true,
+  isAudioEffectDisabled,
 }) => {
   const [videoTracks, setVideoTracks] = useState<VideoTracks>([]);
   const [audioTracks, setAudioTracks] = useState<AudioTracks>([]);
@@ -133,6 +133,7 @@ const Participant: React.FC<React.PropsWithChildren<ParticipantProps>> = ({
           <UserProfilePicture
             user={{ ...profileData, id: participant.identity }}
             reactionPosition="right"
+            isAudioEffectDisabled={isAudioEffectDisabled}
           />
         </div>
       )}

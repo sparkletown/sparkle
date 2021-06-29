@@ -1,83 +1,27 @@
 @import "scss/constants.scss";
 
-$fadedWhite: rgba(255, 255, 255, 0.8);
-$borderWidth: 5px;
+$avatarUrl: var(--user-profile-picture-avatar-url, none);
 
-.profile-picture-container {
-  position: relative;
+.UserProfilePicture {
+  width: $avatarSize;
+  height: $avatarSize;
+  min-width: $avatarSize;
+  min-height: $avatarSize;
+
+  background-color: $black;
+  background-image: $avatarUrl;
   background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
 
-  .profile-icon {
-    width: 44px;
-    height: 44px;
-    background-size: 100%;
-    background-repeat: no-repeat;
-  }
+  border-radius: 10rem;
 
-  .messageToBand {
-    width: max-content;
-    max-width: 20em;
-    padding: 6px 10px;
+  cursor: pointer;
 
-    position: absolute;
-    top: 0;
-    left: 0;
-
-    background: $fadedWhite;
-
-    color: $black;
-    font-size: 20px;
-    border-radius: 10px;
-
-    transform-origin: 2vh center;
-
-    animation: expand-bounce 5s ease;
-  }
-
-  .reaction {
-    width: 50px;
-
-    position: absolute;
-    top: -25px;
-    right: -20px;
-    z-index: z(user-profile-picture-reaction);
-
-    font-size: 50px;
-
-    animation: pulse 4s ease-in-out infinite;
-  }
-
-  .heart {
-    fill: red;
-    z-index: z(user-profile-picture-heart);
-  }
-
-  @keyframes expand-bounce {
-    0%,
-    100% {
-      transform: scale(0) translateX(0);
-    }
-
-    25% {
-      transform: scale(1.25) translateX(5vh); // 5vh = imageWidth (4vh) + 1v (padding)
-    }
-
-    40%,
-    80% {
-      transform: scale(1) translateX(5vh);
-    }
-  }
-
-  @keyframes pulse {
-    0% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(1.3);
-    }
-    100% {
-      transform: scale(1);
-    }
+  // Note: this is only needed to pass down to UserAvatar, if we go back to using the
+  // direct styles above to render the image within this component, then this won't be needed anymore.
+  &__avatar {
+    width: 100%;
+    height: 100%;
   }
 }

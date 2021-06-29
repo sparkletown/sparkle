@@ -53,6 +53,7 @@ export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
                 row={row}
                 column={column}
                 showGrid={showGrid}
+                // @debt do we need these *partygoer* props here anymore? See debt notes in MapCell for more details
                 seatedPartygoer={seatedPartygoer}
                 hasSeatedPartygoer={hasSeatedPartygoer}
                 seatedPartygoerIsMe={isMe}

@@ -6,14 +6,22 @@ import { WithId } from "utils/id";
 interface MapCellProps {
   row: number;
   column: number;
+
+  // @debt We seem to only use this to pass in to onSeatClick. Is it even needed in that function?
+  //  We don't really handle user avatars in this layer anymore, so it seems out of place here..
   seatedPartygoer?: WithId<User>;
 
   /** @default false **/
   showGrid?: boolean;
 
+  // @debt we seem to only use this to apply the 'avatar' class, but I don't think we
+  //  need those styles anymore as UserProfilePicture wraps it all up anyway
   /** @default false **/
   hasSeatedPartygoer?: boolean;
 
+  // @debt we seem to only use this to apply the 'seat' class instead of the `not-seat` class,
+  //  which seems to remove the translucent 'grid bubble' (but seemingly not much else). I don't
+  //  think we need this here anymore.
   /** @default false **/
   seatedPartygoerIsMe?: boolean;
 

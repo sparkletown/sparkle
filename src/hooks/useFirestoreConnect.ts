@@ -1,8 +1,8 @@
-// eslint-disable-next-line no-restricted-imports
 import {
   isEmpty as _isEmpty,
   isLoaded as _isLoaded,
   ReduxFirestoreQuerySetting,
+  // eslint-disable-next-line no-restricted-imports
   useFirestoreConnect as _useFirestoreConnect,
   WhereOptions,
 } from "react-redux-firebase";

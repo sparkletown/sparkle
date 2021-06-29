@@ -3,13 +3,20 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
+import { RoomType } from "types/rooms";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { UserStatus } from "types/User";
+
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -17,11 +24,15 @@ export const SPARKLE_TERMS_AND_CONDITIONS_URL =
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
 
+// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
+export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
+
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -39,17 +50,22 @@ export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
-export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
+export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
+export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+
 export const DEFAULT_PARTY_NAME = "Anon";
-export const DEFAULT_EDIT_PROFILE_TEXT =
-  "I haven't edited my profile to tell you yet";
-export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+export const VENUE_NAME_MIN_CHAR_COUNT = 3;
+export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
+export const GIFT_TICKET_MODAL_URL =
+  "https://here.burningman.org/event/virtualburn";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -60,7 +76,7 @@ export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
-export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
@@ -74,6 +90,7 @@ export const DUST_STORM_TEXT_2 =
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 
+// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
@@ -84,11 +101,20 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+
+// How often to refresh event status (passed / happening now / haven't started)
+export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
+
+export const MIN_TABLE_CAPACITY = 2;
+export const MAX_TABLE_CAPACITY = 10;
 
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
@@ -177,6 +203,11 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
+];
+
+export const COVERT_ROOM_TYPES: RoomType[] = [
+  RoomType.unclickable,
+  RoomType.mapFrame,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -520,6 +551,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
@@ -548,7 +580,16 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const REACTION_TIMEOUT = 5000; // time im ms
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
+
+export const DEFAULT_AVATARS = [
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
+];
+
+export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
@@ -560,3 +601,49 @@ export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
 export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
 export const DEFAULT_SECTION_PREVIEW_TITLE = "Empty section";
+// Max questions number for Poll inside Chat
+export const MAX_POLL_QUESTIONS = 8;
+
+export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
+
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
+export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
+
+export const SEARCH_DEBOUNCE_TIME = 200; // ms
+
+export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
+export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
+
+export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
+
+// SCHEDULE
+export const DEFAULT_SHOW_SCHEDULE = true;
+// @debt probably would be better to adjust max hour based on user's display size
+export const SCHEDULE_MAX_START_HOUR = 16;
+export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
+export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
+export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
+
+// Markdown
+
+export const MARKDOWN_BASIC_FORMATTING_TAGS = [
+  "p",
+  "strong",
+  "em",
+  "blockquote",
+  "hr",
+  "del",
+];
+export const MARKDOWN_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
+export const MARKDOWN_IMAGE_TAGS = ["img"];
+export const MARKDOWN_LINK_TAGS = ["a"];
+export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
+export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];

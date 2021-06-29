@@ -55,8 +55,8 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import {
-  createPerformanceTrace,
   PerformanceTrace,
+  tracePromise,
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -100,15 +100,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Load Stripe
-const traceStripeLoad = createPerformanceTrace(
-  PerformanceTrace.initStripeLoad,
-  {
-    startNow: true,
-  }
+const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
+  loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")
 );
-const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY ?? "").finally(() => {
-  traceStripeLoad.stop();
-});
 
 const rrfConfig = {
   userProfile: "users",
@@ -169,6 +163,13 @@ if (BUGSNAG_API_KEY) {
     "env/memrise",
     "env/unesco",
     "env/ohbm",
+    "env/pa",
+    "env/demo",
+    "env/unity",
+    "env/clever",
+    "env/burn",
+    "env/burn-staging",
+    "env/github",
   ];
 
   const releaseStage = () => {
@@ -275,11 +276,14 @@ traceReactScheduler("initial render", performance.now(), () => {
           <DndProvider backend={HTML5Backend}>
             <Provider store={store}>
               <ReactReduxFirebaseProvider {...rrfProps}>
-                <CustomSoundsProvider>
-                  <AuthIsLoaded>
+                <AuthIsLoaded>
+                  <CustomSoundsProvider
+                    loadingComponent={<LoadingPage />}
+                    waitTillConfigLoaded
+                  >
                     <AppRouter />
-                  </AuthIsLoaded>
-                </CustomSoundsProvider>
+                  </CustomSoundsProvider>
+                </AuthIsLoaded>
               </ReactReduxFirebaseProvider>
             </Provider>
           </DndProvider>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import classNames from "classnames";
 
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { useSelector } from "hooks/useSelector";
 
@@ -24,6 +25,7 @@ interface UserListProps {
   attendanceBoost?: number;
   showEvenWhenNoUsers?: boolean;
   showTitle?: boolean;
+  containerClassName?: string;
 }
 
 export const UserList: React.FC<UserListProps> = ({
@@ -37,6 +39,7 @@ export const UserList: React.FC<UserListProps> = ({
   attendanceBoost,
   showEvenWhenNoUsers = false,
   showTitle = true,
+  containerClassName,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
@@ -51,10 +54,16 @@ export const UserList: React.FC<UserListProps> = ({
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
+  const containerClasses = classNames(
+    "container",
+    "userlist-container",
+    containerClassName
+  );
+
   if (!showEvenWhenNoUsers && attendance < 1) return null;
 
   return (
-    <div className="container userlist-container">
+    <div className={containerClasses}>
       {showTitle && (
         <div className="row header no-margin">
           <p>
@@ -72,9 +81,19 @@ export const UserList: React.FC<UserListProps> = ({
               See {isExpanded ? "less" : "all"}
             </p>
           )}
+
+          {!disableSeeAll && usersSanitized.length > limit && (
+            <p
+              className="clickable-text"
+              onClick={() => setIsExpanded(!isExpanded)}
+              id={`see-venue-information-${venue?.name}`}
+            >
+              See {isExpanded ? "less" : "all"}
+            </p>
+          )}
         </div>
       )}
-
+      )
       <div className="row no-margin">
         {usersToDisplay.map(
           (user) =>

@@ -1,10 +1,13 @@
 import * as Yup from "yup";
 
 import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
+
 import firebase from "firebase/app";
 import "firebase/functions";
 import {
   PLAYA_VENUE_SIZE,
+  VENUE_NAME_MIN_CHAR_COUNT,
+  VENUE_NAME_MAX_CHAR_COUNT,
   MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
   PLAYA_WIDTH,
@@ -74,8 +77,14 @@ export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
     name: Yup.string()
       .required("Name is required!")
-      .min(3, ({ min }) => `Name must be at least ${min} characters`)
-      .max(20, ({ max }) => `Name must be less than ${max} characters`)
+      .min(
+        VENUE_NAME_MIN_CHAR_COUNT,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        VENUE_NAME_MAX_CHAR_COUNT,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -124,7 +133,10 @@ export const validationSchema_v2 = Yup.object()
 
 const roomTitleSchema = Yup.string()
   .required("Room name is required")
-  .min(3, ({ min }) => `Name must be at least ${min} characters`);
+  .min(
+    VENUE_NAME_MIN_CHAR_COUNT,
+    ({ min }) => `Name must be at least ${min} characters`
+  );
 
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
@@ -141,8 +153,14 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
       is: false,
       then: Yup.string()
         .required("Venue name is required")
-        .min(3, ({ min }) => `Name must be at least ${min} characters`)
-        .max(20, ({ max }) => `Name must be less than ${max} characters`),
+        .min(
+          VENUE_NAME_MIN_CHAR_COUNT,
+          ({ min }) => `Name must be at least ${min} characters`
+        )
+        .max(
+          VENUE_NAME_MAX_CHAR_COUNT,
+          ({ max }) => `Name must be less than ${max} characters`
+        ),
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl
@@ -180,12 +198,14 @@ export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
   image_url: roomImageUrlSchema,
 });
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const venueEditSchema = Yup.object()
   .shape<Partial<SchemaShape>>({})
   .from("subtitle", "subtitle")
   .from("config.landingPageConfig.description", "description");
 
 // this is used to transform the api data to conform to the yup schema
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
   // possible locations for the subtitle
@@ -193,7 +213,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profileQuestions")
+  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
@@ -207,6 +227,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("mapIconImageUrl", "mapIconImageUrl");
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 

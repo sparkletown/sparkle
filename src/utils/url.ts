@@ -1,4 +1,6 @@
 import Bugsnag from "@bugsnag/js";
+import { generatePath } from "react-router";
+
 import { VALID_URL_PROTOCOLS } from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
@@ -8,6 +10,16 @@ export const venueLandingUrl = (venueId: string) => {
 export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
+
+export const adminNGVenueUrl = (venueId?: string) =>
+  generatePath("/admin-ng/venue/:venueId?", {
+    venueId: venueId,
+  });
+
+export const adminNGSettigsUrl = (venueId?: string) =>
+  generatePath("/admin-ng/advanced-settings/:venueId?", {
+    venueId: venueId,
+  });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -19,7 +31,7 @@ export const venueEntranceUrl = (venueId: string, step?: number) => {
 
 export const isExternalUrl = (url: string) => {
   try {
-    return new URL(url).host !== window.location.host;
+    return new URL(url, window.location.origin).host !== window.location.host;
   } catch (error) {
     Bugsnag.notify(new Error(error), (event) => {
       event.severity = "info";
@@ -33,13 +45,21 @@ export const isExternalUrl = (url: string) => {
 export const getRoomUrl = (roomUrl: string) =>
   roomUrl.includes("http") ? roomUrl : "//" + roomUrl;
 
-export const openRoomUrl = (url: string) => {
-  openUrl(getRoomUrl(url));
+export const openRoomUrl = (url: string, options?: OpenUrlOptions) => {
+  openUrl(getRoomUrl(url), options);
 };
 
-export const enterVenue = (venueId: string) => openUrl(venueInsideUrl(venueId));
+export const enterVenue = (venueId: string, options?: OpenUrlOptions) =>
+  openUrl(venueInsideUrl(venueId), options);
 
-export const openUrl = (url: string) => {
+export interface OpenUrlOptions {
+  customOpenRelativeUrl?: (url: string) => void;
+  customOpenExternalUrl?: (url: string) => void;
+}
+
+export const openUrl = (url: string, options?: OpenUrlOptions) => {
+  const { customOpenExternalUrl, customOpenRelativeUrl } = options ?? {};
+
   if (!isValidUrl(url)) {
     Bugsnag.notify(
       // new Error(`Invalid URL ${url} on page ${window.location.href}; ignoring`),
@@ -55,10 +75,14 @@ export const openUrl = (url: string) => {
   }
 
   if (isExternalUrl(url)) {
-    window.open(url, "_blank", "noopener,noreferrer");
+    customOpenExternalUrl
+      ? customOpenExternalUrl(url)
+      : window.open(url, "_blank", "noopener,noreferrer");
   } else {
-    // @debt Possibly use react router here with window.location.pathname.
-    window.location.href = url;
+    // @debt Is this a decent enough way to use react router here? Should we just use it always and get rid of window.location.href?
+    customOpenRelativeUrl
+      ? customOpenRelativeUrl(url)
+      : (window.location.href = url);
   }
 };
 
@@ -82,3 +106,6 @@ export const externalUrlAdditionalProps = {
 
 export const getExtraLinkProps = (isExternal: boolean) =>
   isExternal ? externalUrlAdditionalProps : {};
+
+export const getFullVenueInsideUrl = (venueId: string) =>
+  new URL(venueInsideUrl(venueId), window.location.origin).href;
