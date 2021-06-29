@@ -69,7 +69,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
         </a>
       </>
     );
-  }, [status, lastSeenAt.venueName, lastSeenAt.venueUrl]);
+  }, [status, lastSeenAt]);
 
   const renderedProfileQuestionAnswers = useMemo(
     () =>
