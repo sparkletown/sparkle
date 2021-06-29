@@ -93,7 +93,7 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       {/*  </span>*/}
       {/*</div>*/}
 
-      <h2>Log in for non-Hubbers</h2>
+      <h2>Log in for non-Okta users</h2>
 
       <em>
         Are you a Hubber with an Okta account? If so, you should use &apos;Quick

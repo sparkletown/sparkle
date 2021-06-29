@@ -24,4 +24,10 @@
       opacity: 0.8;
     }
   }
+
+  &__issues-text {
+    margin-top: $spacing--xxl;
+    color: $secondary--light;
+    font-style: italic;
+  }
 }
