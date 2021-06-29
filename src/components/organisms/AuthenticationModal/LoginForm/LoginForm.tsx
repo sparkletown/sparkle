@@ -96,8 +96,11 @@ const LoginForm: React.FunctionComponent<LoginFormProps> = ({
       <h2>Log in for non-Hubbers</h2>
 
       <em>
-        Are you a Hubber with an Okta account? If so, you should use &apos;Quick
-        log in with Okta&apos; above instead of this form! ☝
+        Are you a Hubber with an Okta account? <br /> <strong>If so</strong>,
+        you should use &apos;Quick log in with Okta&apos; above! ☝ <br />{" "}
+        <br />
+        <strong>If not</strong>, use the whitelisted email and temporary
+        password <br /> that Github has sent you. 👇
       </em>
 
       <form
