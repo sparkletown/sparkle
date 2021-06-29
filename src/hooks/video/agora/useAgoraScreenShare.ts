@@ -25,8 +25,7 @@ export const useAgoraScreenShare: ReactHook<
   const [localAudioTrack, setLocalAudioTrack] = useState<ILocalAudioTrack>();
 
   const stopShare = useCallback(async () => {
-    if (!venueId || !userId || !client || !localScreenTrack || !localAudioTrack)
-      return;
+    if (!venueId || !userId || !client) return;
 
     updateTalkShowStudioExperience({
       venueId,
@@ -36,11 +35,11 @@ export const useAgoraScreenShare: ReactHook<
       },
     });
 
-    localScreenTrack.stop();
-    localScreenTrack.close();
+    localScreenTrack?.stop();
+    localScreenTrack?.close();
 
-    localAudioTrack.stop();
-    localAudioTrack.close();
+    localAudioTrack?.stop();
+    localAudioTrack?.close();
 
     await client.unpublish();
 
