@@ -33,7 +33,7 @@ import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
-import { AdminTemplates } from "pages/AdminTemplates";
+import { AdminTemplates } from "pages/Admin/AdminTemplates";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
@@ -67,11 +67,7 @@ const AppRouter = () => {
 
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
-        <Route
-          exact
-          path="/admin-ng/templates/:venueId"
-          component={AdminTemplates}
-        />
+        <Route path="/admin-ng/templates/:venueId" component={AdminTemplates} />
         <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
         <Route
           path="/admin-ng/advanced-settings/:venueId?"

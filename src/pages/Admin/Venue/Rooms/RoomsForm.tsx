@@ -27,7 +27,7 @@ import { useQuery } from "hooks/useQuery";
 import { useVenueId } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { RoomsContainer } from "pages/Account/Venue/VenueMapEdition";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -180,7 +180,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
 
   const iconPositionFieldName = "iconPosition";
   const onBoxChange: ExtractProps<
-    typeof PartyMapContainer
+    typeof RoomsContainer
   >["onChange"] = useCallback(
     (val) => {
       if (!(iconPositionFieldName in val)) return;
@@ -398,7 +398,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
           </p>
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
-              <PartyMapContainer
+              <RoomsContainer
                 interactive
                 resizable
                 coordinatesBoundary={{
