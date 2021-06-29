@@ -37,7 +37,15 @@ export const EventModal: React.FC<EventModalProps> = ({
   });
 
   const eventRoom = useMemo<Room | undefined>(
-    () => eventVenue?.rooms?.find((room) => room.title === event.room),
+    () =>
+      eventVenue?.rooms?.find((room) => {
+        const noSlashUrl = room.url.endsWith("/")
+          ? room.url.slice(0, -1)
+          : room.url;
+        const [roomName] = noSlashUrl.split("/").slice(-1);
+
+        return event?.room?.endsWith(`${roomName}`);
+      }),
     [eventVenue, event]
   );
 
