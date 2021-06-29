@@ -60,7 +60,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   const headerMessage =
     "To help other Hubbers find and get to know you, tell us a little about yourself.";
-  const REQUIRED_QUESTIONS_NUMBER = 2;
+  const REQUIRED_QUESTIONS_NUMBER = 1;
 
   return (
     <div className="page-container questions-container">

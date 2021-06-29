@@ -24,6 +24,7 @@ import { Badges } from "components/organisms/Badges";
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { Button } from "components/atoms/Button";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import editIcon from "assets/icons/profile-edit-icon.svg";
 
@@ -122,7 +123,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <div key={question.name} className="question-section">
             <div className="question">{question.text}</div>
             {/* @ts-ignore question.name is a correct index for type User */}
-            <div>{user?.[question.name]}</div>
+            <RenderMarkdown text={user?.[question.name]} />
           </div>
         )),
     [profileQuestions, user]
