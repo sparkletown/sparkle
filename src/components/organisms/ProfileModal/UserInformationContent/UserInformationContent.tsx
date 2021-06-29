@@ -122,10 +122,8 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
         .map((question) => (
           <div key={question.name} className="question-section">
             <div className="question">{question.text}</div>
-            <div>
-              {/* @ts-ignore question.name is a correct index for type User */}
-              <RenderMarkdown text={user?.[question.name]} />
-            </div>
+            {/* @ts-ignore question.name is a correct index for type User */}
+            <RenderMarkdown text={user?.[question.name]} />
           </div>
         )),
     [profileQuestions, user]
