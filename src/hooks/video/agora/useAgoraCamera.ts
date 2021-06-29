@@ -31,7 +31,9 @@ export const useAgoraCamera: ReactHook<
   } = useShowHide();
 
   const toggleCamera = () => {
-    localCameraTrack?.setEnabled(!isCameraOn);
+    if (!localCameraTrack) return;
+
+    localCameraTrack.setEnabled(!isCameraOn);
     setIsCameraOn(!isCameraOn);
   };
 
@@ -66,16 +68,18 @@ export const useAgoraCamera: ReactHook<
   };
 
   const leaveChannel = useCallback(async () => {
-    localCameraTrack?.stop();
-    localCameraTrack?.close();
+    if (!localCameraTrack || !localMicrophoneTrack || !client) return;
 
-    localMicrophoneTrack?.stop();
-    localMicrophoneTrack?.close();
+    localCameraTrack.stop();
+    localCameraTrack.close();
+
+    localMicrophoneTrack.stop();
+    localMicrophoneTrack.close();
 
     setLocalCameraTrack(undefined);
     setLocalMicrophoneTrack(undefined);
 
-    await client?.leave();
+    await client.leave();
   }, [client, localCameraTrack, localMicrophoneTrack]);
 
   useEffect(() => {
