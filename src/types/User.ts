@@ -40,6 +40,9 @@ export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
   doYouDance?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
+  realName?: string;
   partyName?: string;
   pictureUrl?: string;
   data?: UserExperienceData;

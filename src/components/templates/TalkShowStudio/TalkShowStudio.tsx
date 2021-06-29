@@ -9,13 +9,13 @@ import { currentVenueSelectorData } from "utils/selectors";
 
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useStage } from "hooks/useStage";
 import {
   useAgoraCamera,
   useAgoraRemotes,
   useAgoraScreenShare,
 } from "hooks/video/agora";
 
-import { useStage } from "./useStage";
 import AppButton from "components/atoms/Button";
 import { Player, VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";

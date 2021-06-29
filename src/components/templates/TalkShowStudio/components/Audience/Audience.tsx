@@ -9,10 +9,10 @@ import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 import { setLocationData } from "utils/userLocation";
 
-import { useStage } from "../../useStage";
-import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
+import { useUser } from "hooks/useUser";
+import { useStage } from "hooks/useStage";
 
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 import { useMapGrid } from "components/templates/PartyMap/components/Map/hooks/useMapGrid";

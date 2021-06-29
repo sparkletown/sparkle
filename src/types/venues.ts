@@ -145,6 +145,7 @@ export interface BaseVenue {
   miniAvatars?: boolean;
   adultContent?: boolean;
   samlAuthProviderId?: string;
+  samlProfileMappings?: Partial<Record<string, string>>;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
