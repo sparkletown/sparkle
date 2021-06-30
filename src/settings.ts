@@ -524,6 +524,7 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
+// @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
   // @debt VenueTemplate.jazzbar should be added here and ensure that all places that use this array correctly account for it (eg. venue.showReactions feature)

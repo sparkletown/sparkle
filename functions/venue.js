@@ -67,6 +67,13 @@ const IFRAME_TEMPLATES = [
 // @debt unify this with ZOOM_URL_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
+// @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
+export const HAS_REACTIONS_TEMPLATES = [
+  VenueTemplate.audience,
+  // @debt VenueTemplate.jazzbar should be added here and ensure that all places that use this array correctly account for it (eg. venue.showReactions feature)
+  // VenueTemplate.jazzbar
+];
+
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
@@ -205,7 +212,7 @@ const createVenueData = (data, context) => {
   }
 
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
-  if (data.template === VenueTemplate.audience) {
+  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     // @debt showReactions should probably only be getting set when: if (typeof data.showRangers === "boolean")
     venueData.showReactions = data.showReactions;
 
