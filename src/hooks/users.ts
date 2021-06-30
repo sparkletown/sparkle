@@ -5,8 +5,7 @@ import { User, RecentUserStatusType } from "types/User";
 
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
-import { getUserCurrentLocation } from "utils/profile";
-import { getUserDisplayStatus } from "utils/profile";
+import { getUserCurrentLocation, getUserDisplayStatus } from "utils/profile";
 
 import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
@@ -108,7 +107,7 @@ export const useRecentWorldUsers = (): {
   );
 };
 
-type LastSeenAt = {
+export interface LastSeenAt {
   venueName: string;
   venueUrl: string;
 };
