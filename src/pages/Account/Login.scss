@@ -14,19 +14,19 @@
     transition: all 400ms $transition-function;
     font-weight: $font-weight--500;
 
-    &:hover {
-      background-color: darken($color: $primary, $amount: 20%);
-      cursor: pointer;
-    }
+    // @debt will need this in the future so just leaving it here
+    // &:hover {
+    //   background-color: darken($color: $primary, $amount: 20%);
+    //   cursor: pointer;
+    // }
   }
 
-  // @debt removed because rather than the icon being a button, the whole login box is supposed to be a button
-  // &__quick-login-icon {
-  //   &:hover {
-  //     cursor: pointer;
-  //     opacity: 0.8;
-  //   }
-  // }
+  &__quick-login-icon {
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
 
   &__alternative-logins {
     margin-top: $spacing--md;
