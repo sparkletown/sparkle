@@ -14,7 +14,6 @@ import { RouterLocation } from "types/RouterLocation";
 
 import getQueryParameters from "utils/getQueryParameters";
 import { isTruthy } from "utils/types";
-import { externalUrlAdditionalProps } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
@@ -115,11 +114,11 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="Profile">
       <h2 className="login-welcome-title">
-        Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
-        and share your Summit snap here.
+        Hey, {githubHandle}. We’re so glad you’re here!
       </h2>
       <div className="login-welcome-subtitle">
-        {`Swing back and edit your profile anytime you like.`}
+        We&apos;ve pre-populated your profile with details from Okta - please{" "}
+        <br /> review and click Next if it all looks good.
       </div>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group profile-form">
@@ -174,13 +173,6 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             autoComplete="off"
           />
           <p className="input-info">This is your department</p>
-          <a
-            className="profile-picture-button Profile__summit-snap"
-            href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-            {...externalUrlAdditionalProps}
-          >
-            Take a Summit snap
-          </a>
           {user && (
             <ProfilePictureInput
               venueId={venueId}
@@ -196,10 +188,15 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <input
           className="btn btn-primary btn-block btn-centered"
           type="submit"
-          value="Create my profile"
+          value="Next"
           disabled={!formState.isValid}
         />
       </form>
+
+      <p className="Profile__issues-text">
+        Trouble registering? Find help at:{" "}
+        <strong>#summit-21-registration</strong> or email events@github.com
+      </p>
     </div>
   );
 };
