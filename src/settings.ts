@@ -526,6 +526,8 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  // @debt VenueTemplate.jazzbar should be added here and ensure that all places that use this array correctly account for it (eg. venue.showReactions feature)
+  // VenueTemplate.jazzbar
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it

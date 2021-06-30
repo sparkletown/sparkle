@@ -45,6 +45,7 @@ interface JazzProps {
   venue?: JazzbarVenue;
 }
 
+// @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
 // NOTE: This functionality will probably be returned in the nearest future.
 // interface ChatOutDataType {
 //   messageToTheBand: string;
@@ -97,8 +98,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   // NOTE: This functionality will probably be returned in the nearest future.
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // useEffect(() => {
   //   if (isMessageToTheBandSent) {
   //     setTimeout(() => {
@@ -107,6 +110,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   }
   // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const {
   //   register: registerBandMessage,
   //   handleSubmit: handleBandMessageSubmit,
@@ -115,6 +119,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   mode: "onSubmit",
   // });
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const onBandMessageSubmit = async (data: ChatOutDataType) => {
   //   setIsMessageToTheBandSent(true);
   //   user &&
@@ -193,6 +198,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
+
+              {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
+              {/* @debt this template should be added to HAS_REACTIONS_TEMPLATES */}
+              {/* @debt this reactions container should be conditionally rendered based on venue.showReactions */}
               {seatedAtTable && (
                 <div className="actions-container">
                   <div className="emoji-container">
@@ -220,6 +229,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       />
                     </div>
                   </div>
+
+                  {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}
                   {/* <CallOutMessageForm
                   onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}

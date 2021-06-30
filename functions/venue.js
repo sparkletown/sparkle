@@ -64,7 +64,7 @@ const IFRAME_TEMPLATES = [
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 const PlacementState = {
@@ -149,6 +149,7 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+// @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
@@ -203,9 +204,12 @@ const createVenueData = (data, context) => {
     venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
+  // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
   if (data.template === VenueTemplate.audience) {
+    // @debt showReactions should probably only be getting set when: if (typeof data.showRangers === "boolean")
     venueData.showReactions = data.showReactions;
 
+    // @debt showShoutouts should probably only be getting set when: if (typeof data.showRangers === "boolean")
     venueData.showShoutouts = data.showShoutouts;
 
     if (data.auditoriumColumns) {
@@ -244,6 +248,7 @@ const createVenueData = (data, context) => {
   return venueData;
 };
 
+// @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
 const createVenueData_v2 = (data, context) => ({
   name: data.name,
   config: {
@@ -435,6 +440,7 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
+// @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -447,6 +453,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
   return venueData;
 });
 
+// @debt this should be de-duplicated + aligned with createVenue to ensure they both cover all needed cases
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -502,6 +509,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
+// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
 exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   checkAuth(context);
 
