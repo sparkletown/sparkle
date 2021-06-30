@@ -68,11 +68,7 @@ const IFRAME_TEMPLATES = [
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
-export const HAS_REACTIONS_TEMPLATES = [
-  VenueTemplate.audience,
-  // @debt VenueTemplate.jazzbar should be added here and ensure that all places that use this array correctly account for it (eg. venue.showReactions feature)
-  // VenueTemplate.jazzbar
-];
+const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
@@ -213,17 +209,11 @@ const createVenueData = (data, context) => {
 
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
-    // @debt showReactions seems to be missing from createVenueData_v2, should it be?
-    // @debt showReactions should probably be defaulted to being enabled
-    if (typeof data.showReactions === "boolean") {
-      venueData.showReactions = data.showReactions;
-    }
+    venueData.showReactions =
+      typeof data.showReactions === "boolean" ? data.showReactions : true;
 
-    // @debt showShoutouts seems to be missing from createVenueData_v2, should it be?
-    // @debt showShoutouts should probably be defaulted to being enabled
-    if (typeof data.showShoutouts === "boolean") {
-      venueData.showShoutouts = data.showShoutouts;
-    }
+    venueData.showShoutouts =
+      typeof data.showShoutouts === "boolean" ? data.showShoutouts : true;
 
     if (data.auditoriumColumns) {
       venueData.auditoriumColumns = data.auditoriumColumns;
@@ -262,27 +252,38 @@ const createVenueData = (data, context) => {
 };
 
 // @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
-const createVenueData_v2 = (data, context) => ({
-  name: data.name,
-  config: {
-    landingPageConfig: {
-      coverImageUrl: data.bannerImageUrl,
-      subtitle: data.subtitle,
-      description: data.description,
+const createVenueData_v2 = (data, context) => {
+  const venueData_v2 = {
+    name: data.name,
+    config: {
+      landingPageConfig: {
+        coverImageUrl: data.bannerImageUrl,
+        subtitle: data.subtitle,
+        description: data.description,
+      },
     },
-  },
-  theme: {
-    primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-  },
-  host: {
-    icon: data.logoImageUrl,
-  },
-  owners: [context.auth.token.user_id],
-  showGrid: data.showGrid || false,
-  ...(data.showGrid && { columns: data.columns }),
-  template: data.template || VenueTemplate.partymap,
-  rooms: [],
-});
+    theme: {
+      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
+    },
+    host: {
+      icon: data.logoImageUrl,
+    },
+    owners: [context.auth.token.user_id],
+    showGrid: data.showGrid || false,
+    ...(data.showGrid && { columns: data.columns }),
+    template: data.template || VenueTemplate.partymap,
+    rooms: [],
+  };
+
+  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
+    venueData_v2.showReactions =
+      typeof data.showReactions === "boolean" ? data.showReactions : true;
+    venueData_v2.showShoutouts =
+      typeof data.showShoutouts === "boolean" ? data.showShoutouts : true;
+  }
+
+  return venueData_v2;
+};
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
 const createBaseUpdateVenueData = (data, updated) => {

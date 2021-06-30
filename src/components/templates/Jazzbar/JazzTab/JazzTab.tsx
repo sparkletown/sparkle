@@ -202,7 +202,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
               {/* @debt this template should be added to HAS_REACTIONS_TEMPLATES */}
               {/* @debt this reactions container should be conditionally rendered based on venue.showReactions */}
-              {seatedAtTable && (
+              {seatedAtTable && venueToUse.showReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -232,12 +232,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                  {/* <CallOutMessageForm
-                  onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                  ref={registerBandMessage({ required: true })}
-                  isMessageToTheBandSent={isMessageToTheBandSent}
-                  placeholder="Shout out..."
-                /> */}
+                  {/* {venue.showShoutouts && (
+                    <CallOutMessageForm
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    ref={registerBandMessage({ required: true })}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out..."
+                    />
+                  )} */}
                 </div>
               )}
             </>
