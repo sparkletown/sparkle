@@ -4,4 +4,14 @@
   position: relative;
   overflow: hidden;
   border-radius: 40px;
+
+  &__header {
+    padding: 1.1em;
+    position: absolute;
+    top: 0;
+    z-index: 5;
+    background: rgba(0, 0, 0, 0.4);
+    font-size: 0.9rem;
+    border-radius: 0 0 2em 0;
+  }
 }

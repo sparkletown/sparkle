@@ -1,19 +1,25 @@
-import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-import {
-  venueRoomSchema,
-  roomSchema,
-} from "pages/Admin/Details/ValidationSchema";
 import React, { useCallback, useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+
 import { DEFAULT_VENUE_LOGO } from "settings";
-import { VenueTemplate } from "types/venues";
+
+import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+
 import { venueInsideUrl } from "utils/url";
 
-interface VenueRoomItemProps {
+import { VenueTemplate } from "types/venues";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import {
+  venueRoomSchema,
+  roomSchema,
+} from "pages/Admin/Details/ValidationSchema";
+
+export interface VenueRoomItemProps {
   icon: string;
   text: string;
   template?: VenueTemplate;
@@ -88,9 +94,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     }
   }, [getValues, template, user, venueId]);
 
-  const [{ value, loading }, addRoom] = useAsyncFn(createVenueRoom);
-
-  console.log(value, loading);
+  const [{ loading }, addRoom] = useAsyncFn(createVenueRoom);
 
   return (
     <>
@@ -164,9 +168,9 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <div className="spaces__venue-room" onClick={() => setModalVisible(true)}>
+      <div className="Spaces__venue-room" onClick={() => setModalVisible(true)}>
         <div
-          className="spaces__room-external-link"
+          className="Spaces__room-external-link"
           style={{ backgroundImage: `url(${icon})` }}
         />
         <div>{text}</div>

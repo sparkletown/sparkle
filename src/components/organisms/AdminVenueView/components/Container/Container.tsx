@@ -5,12 +5,15 @@ import React, {
   CSSProperties,
   Dispatch,
   SetStateAction,
+  useEffect,
 } from "react";
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import ReactResizeDetector from "react-resize-detector";
+
 import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
+
 import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
@@ -22,15 +25,17 @@ const styles: React.CSSProperties = {
   position: "relative",
 };
 
-export interface SubVenueIconMap {
-  [key: string]: {
-    top: number;
-    left: number;
-    url: string;
-    width: number;
-    height: number;
-    roomIndex?: number;
-  };
+export interface RoomIcon {
+  top: number;
+  left: number;
+  url: string;
+  width: number;
+  height: number;
+  roomIndex?: number;
+}
+
+export interface RoomIconsMap {
+  [key: string]: RoomIcon;
 }
 
 interface CoordinatesBoundary {
@@ -40,11 +45,11 @@ interface CoordinatesBoundary {
 
 interface PropsType {
   snapToGrid?: boolean;
-  iconsMap: SubVenueIconMap;
+  roomIcons?: RoomIcon[];
   backgroundImage: string;
   iconImageStyle?: CSSProperties; // This is not being used ATM
   draggableIconImageStyle?: CSSProperties; // This is not being used ATM
-  otherIcons: SubVenueIconMap;
+  roomIconsMap?: RoomIconsMap;
   onOtherIconClick?: (key: string) => void;
   coordinatesBoundary: CoordinatesBoundary;
   interactive: boolean;
@@ -61,26 +66,27 @@ interface PropsType {
   setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
-export const Container: React.FC<PropsType> = (props) => {
-  const {
-    snapToGrid,
-    iconsMap,
-    backgroundImage,
-    iconImageStyle,
-    coordinatesBoundary,
-    interactive,
-    resizable,
-    rounded,
-    backgroundImageStyle,
-    containerStyle,
-    lockAspectRatio,
-    rooms,
-    selectedRoom,
-    setSelectedRoom,
-    onResize,
-    onMove,
-  } = props;
-  const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
+export const Container: React.FC<PropsType> = ({
+  snapToGrid,
+  roomIcons,
+  backgroundImage,
+  iconImageStyle,
+  coordinatesBoundary,
+  interactive,
+  resizable,
+  rounded,
+  backgroundImageStyle,
+  containerStyle,
+  lockAspectRatio,
+  rooms,
+  selectedRoom,
+  setSelectedRoom,
+  onResize,
+  onMove,
+}) => {
+  const roomIconsArray = useMemo(() => roomIcons ?? [], [roomIcons]);
+
+  const [boxes, setBoxes] = useState<RoomIconsMap>({});
   const [imageDims, setImageDims] = useState<Dimensions>();
 
   const convertDisplayedCoordToIntrinsic = useCallback(
@@ -95,37 +101,42 @@ export const Container: React.FC<PropsType> = (props) => {
     [imageDims]
   );
 
-  useMemo(() => {
+  useEffect(() => {
     if (!imageDims) return;
-    const copy = Object.keys(iconsMap).reduce(
-      (acc, val) => ({
-        ...acc,
-        [val]: {
-          ...iconsMap[val],
-          width: resizable
-            ? (imageDims.width * iconsMap[val].width) /
-              coordinatesBoundary.width
-            : iconsMap[val].width,
-          height: resizable
-            ? (imageDims.height * iconsMap[val].height) /
-              coordinatesBoundary.height
-            : iconsMap[val].height,
-          top:
-            (imageDims.height * iconsMap[val].top) / coordinatesBoundary.height,
-          left:
-            (imageDims.width * iconsMap[val].left) / coordinatesBoundary.width,
-        },
-      }),
+    const iconsMap = Object.keys(roomIconsArray).reduce(
+      (acc, stringIndex: string) => {
+        const index = parseInt(stringIndex);
+        return {
+          ...acc,
+          [index]: {
+            ...roomIconsArray[index],
+            width: resizable
+              ? (imageDims.width * roomIconsArray[index].width) /
+                coordinatesBoundary.width
+              : roomIconsArray[index].width,
+            height: resizable
+              ? (imageDims.height * roomIconsArray[index].height) /
+                coordinatesBoundary.height
+              : roomIconsArray[index].height,
+            top:
+              (imageDims.height * roomIconsArray[index].top) /
+              coordinatesBoundary.height,
+            left:
+              (imageDims.width * roomIconsArray[index].left) /
+              coordinatesBoundary.width,
+          },
+        };
+      },
       {}
     );
 
-    setBoxes(copy);
+    setBoxes(iconsMap);
   }, [
     coordinatesBoundary.height,
     coordinatesBoundary.width,
-    iconsMap,
     imageDims,
     resizable,
+    roomIconsArray,
   ]);
 
   const moveBox = useCallback(
@@ -226,7 +237,7 @@ export const Container: React.FC<PropsType> = (props) => {
           <CustomDragLayer
             snapToGrid={!!snapToGrid}
             rounded={!!rounded}
-            iconSize={boxes[Object.keys(boxes)[index]]} // @debt - this gets the size from the first box
+            iconSize={boxes[Object.keys(boxes)[index]]}
           />
         )}
       </>

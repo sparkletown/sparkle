@@ -1,15 +1,19 @@
-import Bugsnag from "@bugsnag/js";
-import { RoomInput, upsertRoom } from "api/admin";
-import ImageInput from "components/atoms/ImageInput";
-import firebase from "firebase/app";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 import React, { useCallback, useState } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import firebase from "firebase/app";
+import Bugsnag from "@bugsnag/js";
+
+import { RoomInput, upsertRoom } from "api/admin";
+
 import { RoomData_v2 } from "types/rooms";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import ImageInput from "components/atoms/ImageInput";
+import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import "./EditSpace.scss";
 
@@ -34,8 +38,6 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
   const { user } = useUser();
 
   const venueId = useVenueId();
-
-  console.log("room", room);
 
   const { register, handleSubmit, setValue, watch, errors } = useForm({
     reValidateMode: "onChange",
@@ -100,8 +102,8 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
 
   return (
     <Form onSubmit={handleSubmit(updateRoom)}>
-      <div className="edit-space">
-        <div className="edit-space__room">
+      <div className="EditSpace">
+        <div className="EditSpace__room">
           <Form.Row>
             <div className="room-edit-modal__input">
               <Form.Label>Room type</Form.Label>
@@ -205,7 +207,7 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
           {error && <div>Error: {error}</div>}
         </div>
 
-        <div className="edit-space__footer">
+        <div className="EditSpace__footer">
           <Button onClick={() => onBackPress(roomIndex)}>Back</Button>
           <Button
             className="confirm-button"

@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
+import { Venue_v2 } from "types/venues";
+
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
@@ -11,7 +13,6 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 import { Spaces } from "./components/Spaces";
 
 import "./AdminVenueView.scss";
-import { Venue_v2 } from "types/venues";
 
 export enum AdminVenueTab {
   spaces = "spaces",

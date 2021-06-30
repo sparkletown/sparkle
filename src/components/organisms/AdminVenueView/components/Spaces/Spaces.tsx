@@ -115,8 +115,8 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
-    <div className="spaces">
-      <div className="spaces__rooms">
+    <div className="Spaces">
+      <div className="Spaces__rooms">
         {hasSelectedRoom ? (
           <EditSpace
             room={selectedRoom!}
@@ -128,12 +128,12 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           />
         ) : (
           <>
-            <div className="spaces__background">
-              <div className="spaces__title">Build your spaces</div>
+            <div className="Spaces__background">
+              <div className="Spaces__title">Build your spaces</div>
             </div>
             <div>
               <div
-                className="spaces__venue-rooms"
+                className="Spaces__venue-rooms"
                 onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
               >
                 <div>Map background</div>
@@ -148,7 +148,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
 
             <div>
               <div
-                className="spaces__venue-rooms"
+                className="Spaces__venue-rooms"
                 onClick={() => setShowRooms(!showRooms)}
               >
                 <div>Rooms {numberOfRooms}</div>
@@ -163,14 +163,14 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
                     return (
                       <div
                         key={`${index}-${room.title}`}
-                        className="spaces__venue-room"
+                        className="Spaces__venue-room"
                         onClick={() => setSelectedRoom(room)}
                       >
                         <div
-                          className="spaces__venue-room-logo"
+                          className="Spaces__venue-room-logo"
                           style={{ backgroundImage: `url(${room.image_url})` }}
                         />
-                        <div className="spaces__venue-room-title">
+                        <div className="Spaces__venue-room-title">
                           {room.title}
                         </div>
                       </div>
@@ -181,7 +181,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
             </div>
 
             <div
-              className="spaces__venue-rooms"
+              className="Spaces__venue-rooms"
               onClick={() => setShowAddRoom(!showAddRoom)}
             >
               <div>Add rooms</div>
@@ -198,21 +198,21 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
                   icon={venueRoom.icon}
                 />
               ))}
-            <div className="spaces__footer">
+            <div className="Spaces__footer">
               <div
-                className="spaces__home-button"
+                className="Spaces__home-button"
                 onClick={() => history.push("/admin-ng/")}
               >
                 <FontAwesomeIcon icon={faHome} />
               </div>
-              <div className="spaces__nav-buttons">
+              <div className="Spaces__nav-buttons">
                 <div
-                  className="spaces__back-button"
+                  className="Spaces__back-button"
                   onClick={() => history.push("/admin-ng/")}
                 >
                   Back
                 </div>
-                <div className="spaces__next-button" onClick={onClickNext}>
+                <div className="Spaces__next-button" onClick={onClickNext}>
                   Next
                 </div>
               </div>
@@ -220,7 +220,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           </>
         )}
       </div>
-      <div className="spaces__map">
+      <div className="Spaces__map">
         <MapPreview
           isEditing={hasSelectedRoom}
           mapBackground={venue.mapBackgroundImageUrl}
