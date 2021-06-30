@@ -94,6 +94,7 @@ export const Login: React.FC<LoginProps> = ({
         {hasAlternativeLogins && (
           <div className="Login__login-box">
             <span>Quick log in with Okta</span>
+
             <div className="Login__alternative-logins">
               {hasCustomAuthConnect && (
                 <img
