@@ -8,7 +8,12 @@ import { VenueEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
-import { enterVenue } from "utils/url";
+import {
+  enterVenue,
+  openUrl,
+  getUrlWithoutTrailingSlash,
+  getLastUrlParam,
+} from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -39,12 +44,13 @@ export const EventModal: React.FC<EventModalProps> = ({
   const eventRoom = useMemo<Room | undefined>(
     () =>
       eventVenue?.rooms?.find((room) => {
-        const noSlashUrl = room.url.endsWith("/")
-          ? room.url.slice(0, -1)
-          : room.url;
-        const [roomName] = noSlashUrl.split("/").slice(-1);
+        const { room: eventRoom = "" } = event;
 
-        return event?.room?.endsWith(`${roomName}`);
+        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
+
+        const [roomName] = getLastUrlParam(noTrailSlashUrl);
+
+        return eventRoom.endsWith(`${roomName}`);
       }),
     [eventVenue, event]
   );
@@ -59,6 +65,14 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const goToEventLocation = () => {
     onHide();
+
+    const { room = "" } = event;
+
+    if (!eventRoom) {
+      openUrl(room);
+
+      return;
+    }
 
     if (event.room) {
       enterRoom();
