@@ -115,8 +115,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="Profile">
       <h2 className="login-welcome-title">
-        Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
-        and share your Summit snap here.
+        Hey, {githubHandle}. We’re so glad you’re here!
       </h2>
       <div className="login-welcome-subtitle">
         {`Swing back and edit your profile anytime you like.`}
@@ -200,6 +199,11 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
           disabled={!formState.isValid}
         />
       </form>
+
+      <p className="Profile__issues-text">
+        Trouble registering? Find help at:{" "}
+        <strong>#summit-21-registration</strong> or email events@github.com
+      </p>
     </div>
   );
 };
