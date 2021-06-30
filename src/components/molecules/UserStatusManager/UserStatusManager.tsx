@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { Button } from "react-bootstrap";
 
 import { USER_STATUSES } from "settings";
 
@@ -96,7 +97,7 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
         <>
           {renderDefaultUserStatuses}
           {renderVenueUserStatuses}
-          <div onClick={onAdd}>Add a status</div>
+          <Button onClick={onAdd}>Add a status</Button>
         </>
       )}
     </div>

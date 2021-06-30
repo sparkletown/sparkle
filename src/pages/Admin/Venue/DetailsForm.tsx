@@ -41,6 +41,7 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  USER_STATUSES,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -96,6 +97,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     control,
     handleSubmit,
     errors,
+    setError,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -139,7 +141,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       userStatuses: UserStatus[],
       showUserStatuses: boolean
     ) => {
-      if (!user) return;
+      if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) {
@@ -178,7 +180,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, venueId, history, sovereignVenueId]
+    [user, formError, venueId, history, sovereignVenueId]
   );
 
   const mapIconUrl = useMemo(() => {
@@ -244,9 +246,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               onSubmit={onSubmit}
               editing={!!venueId}
               formError={formError}
+              setFormError={setFormError}
               control={control}
               handleSubmit={handleSubmit}
               errors={errors}
+              setError={setError}
             />
           </div>
         </div>
@@ -326,9 +330,11 @@ interface DetailsFormLeftProps {
   ) => Promise<void>;
   handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
+  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
+  setFormError: (value: boolean) => void;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
@@ -340,11 +346,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   register,
   watch,
   errors,
+  setError,
   previous,
   onSubmit,
   handleSubmit,
   setValue,
   formError,
+  setFormError,
 }) => {
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -900,7 +908,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     event: React.FormEvent<HTMLInputElement>,
     index: number
   ) => {
+    const allUserStatuses = [...USER_STATUSES, ...userStatuses];
     const statuses = [...userStatuses];
+
+    const userStatusExists = allUserStatuses.find(
+      (userStatus) => userStatus.status === event.currentTarget.value
+    );
+
+    // @debt Move user statuses to useForm with useDynamicInput, add schema for this validation instead
+    if (userStatusExists) {
+      setError("User statuses", "Already exists");
+      setFormError(true);
+    } else {
+      setError("", "");
+      setFormError(false);
+    }
+
     statuses[index] = {
       color: statuses[index].color,
       status: event.currentTarget.value,
