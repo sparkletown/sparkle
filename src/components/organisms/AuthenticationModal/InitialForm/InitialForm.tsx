@@ -23,9 +23,9 @@ export const InitialForm: FC<InitialFormProps> = ({
       <div className="buttons-separator">or</div>
       <p className="login-text">
         No Okta?{" "}
-        <span className="login-button" onClick={displayLoginForm}>
+        <button className="login-button button--a" onClick={displayLoginForm}>
           Login here
-        </span>
+        </button>
       </p>
     </div>
   );

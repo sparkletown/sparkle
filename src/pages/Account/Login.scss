@@ -2,22 +2,31 @@
 
 .Login {
   &__login-box {
+    width: 250px;
     display: flex;
     flex-flow: column;
     align-items: center;
-    margin-bottom: $spacing--md;
+    margin: $spacing--md auto;
     padding: $spacing--lg $spacing--lg;
     box-shadow: inset 0 0 0 3px #6f43ff;
     border-radius: 0.25rem;
-    font-size: 19px;
+    font-size: $font-size--xl;
     transition: all 400ms $transition-function;
-    font-weight: 500;
+    font-weight: $font-weight--500;
 
     &:hover {
       background-color: darken($color: $primary, $amount: 20%);
       cursor: pointer;
     }
   }
+
+  // @debt removed because rather than the icon being a button, the whole login box is supposed to be a button
+  // &__quick-login-icon {
+  //   &:hover {
+  //     cursor: pointer;
+  //     opacity: 0.8;
+  //   }
+  // }
 
   &__alternative-logins {
     margin-top: $spacing--md;
