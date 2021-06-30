@@ -92,46 +92,29 @@ export const Login: React.FC<LoginProps> = ({
       <div className="hero-logo github-plain" />
       <div className="auth-form-container">
         {hasAlternativeLogins && (
-          <>
-            {hasCustomAuthConnect && (
-              <div
-                className="Login__login-box"
-                onClick={signInWithSAML}
-                title="SAML SSO login"
-              >
-                <span>Quick log in with Okta</span>
-                <div
-                  className="Login__alternative-logins"
+          <div className="Login__login-box">
+            <span>Quick log in with Okta</span>
+            <div className="Login__alternative-logins">
+              {hasCustomAuthConnect && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
                   onClick={signInWithCustomAuth}
                   title={customAuthName}
-                >
-                  <img
-                    className="Login__quick-login-icon"
-                    src={SAMLLoginIcon}
-                    alt={customAuthName}
-                  />
-                </div>
-              </div>
-            )}
-
-            {hasSamlAuthProviderId && (
-              <div
-                className="Login__login-box"
-                onClick={signInWithSAML}
-                title="SAML SSO login"
-              >
-                <span>Quick log in with Okta</span>
-                <div className="Login__alternative-logins">
-                  <FontAwesomeIcon
-                    className="Login__quick-login-icon"
-                    icon={faGithub}
-                    size="4x"
-                    title="SAML SSO login"
-                  />
-                </div>
-              </div>
-            )}
-          </>
+                  alt={customAuthName}
+                />
+              )}
+              {hasSamlAuthProviderId && (
+                <FontAwesomeIcon
+                  className="Login__quick-login-icon"
+                  icon={faGithub}
+                  size="4x"
+                  onClick={signInWithSAML}
+                  title="SAML SSO login"
+                />
+              )}
+            </div>
+          </div>
         )}
         {/* @debt Changed for Okta SSO */}
         {["initial", "register"].includes(formToDisplay) && (
