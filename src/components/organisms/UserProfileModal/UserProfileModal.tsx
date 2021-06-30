@@ -9,6 +9,8 @@ import {
   DEFAULT_PARTY_NAME,
 } from "settings";
 
+import { createUrlSafeName } from "api/admin";
+
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
@@ -46,23 +48,36 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   } = useProfileModalControls();
 
   const chosenUserId = selectedUserProfile?.id;
-  const { lastSeenAt } = useRecentWorldUser(chosenUserId);
-  const status = useRecentUserStatus(chosenUserId);
-
+  const { recentUser } = useRecentWorldUser(chosenUserId ?? "");
+  const status = useRecentUserStatus(recentUser);
   const profileQuestions = venue?.profile_questions;
 
   const openChosenUserChat = useCallback(() => {
     if (!chosenUserId) return;
 
     selectRecipientChat(chosenUserId);
+    // NOTE: Hide the modal, after the chat is opened;
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
-  const renderStatus = useMemo(
-    () =>
-      status === RecentUserStatusType.offline ? status : `is ${status} in `,
-    [status]
-  );
+  const renderStatus = useMemo(() => {
+    if (!recentUser) return;
+
+    const venueName = Object.keys(recentUser.lastSeenIn)[0] ?? "";
+
+    return (
+      <>
+        {status !== RecentUserStatusType.offline ? `is ${status} in ` : status}
+        <a
+          href={createUrlSafeName(venueName)}
+          className="profile-text__recent-venue"
+        >
+          {venueName}
+        </a>
+      </>
+    );
+  }, [recentUser, status]);
+
   const renderedProfileQuestionAnswers = useMemo(
     () =>
       selectedUserProfile
@@ -135,12 +150,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
                   {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
                 {renderStatus}
-                <a
-                  href={lastSeenAt.venueUrl}
-                  className="profile-text__recent-venue"
-                >
-                  {lastSeenAt.venueName}
-                </a>
               </div>
             </div>
             <div className="profile-extras">

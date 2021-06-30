@@ -1,11 +1,9 @@
 import { useMemo } from "react";
-import { createUrlSafeName } from "api/admin";
 
 import { User, RecentUserStatusType } from "types/User";
 
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
-import { getUserCurrentLocation, getUserDisplayStatus } from "utils/profile";
 
 import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
@@ -107,38 +105,21 @@ export const useRecentWorldUsers = (): {
   );
 };
 
-export interface LastSeenAt {
-  venueName: string;
-  venueUrl: string;
+export const useRecentWorldUser = (userId: string): { recentUser?: User } => {
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
+
+  return { recentUser: worldUsersById[userId] };
 };
 
-export const useRecentWorldUser = (
-  userId?: string
-): {
-  user?: WithId<User>;
-  lastSeenAt: LastSeenAt;
-} => {
-  const { recentWorldUsers } = useRecentWorldUsers();
+export const useRecentUserStatus = (user?: User): RecentUserStatusType => {
+  const lastSeenThreshold = useUserLastSeenThreshold();
+  if (!user) return RecentUserStatusType.offline;
 
-  const user = useMemo(() => {
-    return recentWorldUsers.find((worldUser) => worldUser.id === userId);
-  }, [userId, recentWorldUsers]);
-
-  const venueName = getUserCurrentLocation(user) ?? "";
-  const venueUrl = createUrlSafeName(venueName);
-
-  const lastSeenAt: LastSeenAt = {
-    venueName,
-    venueUrl,
-  };
-
-  return { user, lastSeenAt };
-};
-
-export const useRecentUserStatus = (userId?: string): RecentUserStatusType => {
-  const { user } = useRecentWorldUser(userId);
-
-  return getUserDisplayStatus(user);
+  if (user.status === RecentUserStatusType.busy)
+    return RecentUserStatusType.busy;
+  if (normalizeTimestampToMilliseconds(user.lastSeenAt) > lastSeenThreshold)
+    return RecentUserStatusType.online;
+  return RecentUserStatusType.offline;
 };
 
 /**
