@@ -40,10 +40,12 @@ export const MapRoom: React.FC<MapRoomProps> = ({
 
   const dispatch = useDispatch();
 
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
   const handleRoomHovered = useCallback(() => {
     dispatch(retainAttendance(true));
   }, [dispatch]);
 
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
   const handleRoomUnhovered = useCallback(() => {
     dispatch(retainAttendance(false));
   }, [dispatch]);
