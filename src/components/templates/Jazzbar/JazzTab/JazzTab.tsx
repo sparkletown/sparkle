@@ -135,6 +135,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
+  const shouldShowReactions = venueToUse?.showReactions;
+
+  // @debt will be needed if shoutouts are restored
+  // const shouldShowShoutouts = venueToUse?.showShoutouts;
+
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
   });
@@ -200,7 +205,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               </div>
 
               {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
-              {seatedAtTable && venueToUse.showReactions && (
+              {seatedAtTable && shouldShowReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -230,7 +235,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                  {/* {venueToUse.showShoutouts && (
+                  {/* {shouldShowShoutouts && (
                     <CallOutMessageForm
                     onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
                     ref={registerBandMessage({ required: true })}
