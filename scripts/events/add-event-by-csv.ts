@@ -1,5 +1,3 @@
-#!/usr/bin/env node -r esm -r ts-node/register
-
 import {
   checkFileExists,
   initFirebaseAdminApp,
@@ -18,8 +16,8 @@ type rawEventsOptions = {
 
 const usage = makeScriptUsage({
   description: "Bulk upload events from a spreadsheet ",
-  usageParams: "CREDENTIAL_PATH FILE",
-  exampleParams: "fooAccountKey.json test.csv",
+  usageParams: "FILE CREDENTIAL_PATH",
+  exampleParams: "test.csv fooAccountKey.json",
 });
 
 const [credentialPath, filePath] = process.argv.slice(2);

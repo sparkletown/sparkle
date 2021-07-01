@@ -1,0 +1,9 @@
+@import "scss/constants.scss";
+
+.admin-rooms-label-options {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding-left: $spacing--xxl;
+}

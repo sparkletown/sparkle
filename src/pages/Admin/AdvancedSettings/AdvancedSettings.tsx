@@ -17,6 +17,7 @@ import { Checkbox } from "components/atoms/Checkbox";
 import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
 import * as S from "../Admin.styles";
+import { AdminRoomsLabelOptions } from "components/organisms/AdminRoomsLabelOptions";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
@@ -205,17 +206,16 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           <S.ItemTitle>Room appearance</S.ItemTitle>
         </S.TitleWrapper>
 
-        <S.ItemSubtitle>
-          Choose how you&apos;d like your rooms to appear on the map
-        </S.ItemSubtitle>
+        <S.ItemSubtitle>Set global portal label appearance</S.ItemSubtitle>
       </S.ItemHeader>
 
       <S.ItemBody>
-        <Form.Control as="select" custom name="roomVisibility" ref={register}>
+        <AdminRoomsLabelOptions />
+        {/* <Form.Control as="select" custom name="roomVisibility" ref={register}>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
           <option value="count/name">Count and names</option>
-        </Form.Control>
+        </Form.Control> */}
       </S.ItemBody>
     </S.ItemWrapper>
   );

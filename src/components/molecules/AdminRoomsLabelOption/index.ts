@@ -1,0 +1,1 @@
+export { AdminRoomsLabelOption } from "./AdminRoomsLabelOption";

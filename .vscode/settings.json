@@ -5,7 +5,8 @@
   "files.insertFinalNewline": true,
 
   "[javascript]": {
-    "editor.tabSize": 2
+    "editor.tabSize": 2,
+    "editor.defaultFormatter": "vscode.typescript-language-features"
   },
   "eslint.workingDirectories": ["./src"],
   "eslint.validate": [
@@ -21,6 +22,12 @@
   "editor.tabSize": 2,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
   "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "vscode.typescript-language-features"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   }
 }
