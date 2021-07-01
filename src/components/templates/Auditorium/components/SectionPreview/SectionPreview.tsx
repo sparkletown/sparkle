@@ -41,30 +41,30 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const seatedUsers = useSectionSeatedUsers(venueId, section.id);
   const seatedUsersCount = seatedUsers.length;
 
-  const containerClasses = classNames("section-preview", {
-    "section-preview--locked": isLocked,
-    "section-preview--empty": seatedUsersCount === 0,
+  const containerClasses = classNames("SectionPreview", {
+    "SectionPreview--locked": isLocked,
+    "SectionPreview--empty": seatedUsersCount === 0,
   });
 
   return (
     <div className={containerClasses} onClick={handleClick}>
-      <div className="section-preview__status-icons">
+      <div className="SectionPreview__status-icons">
         {isLocked && (
           <FontAwesomeIcon
             icon={faLock}
             size="sm"
-            className="section-preview__lock-icon"
+            className="SectionPreview__lock-icon"
           />
         )}
       </div>
 
-      <div className="section-preview__title">
+      <div className="SectionPreview__title">
         {title ?? DEFAULT_SECTION_PREVIEW_TITLE}
       </div>
 
-      <div className="section-preview__people-count">
+      <div className="SectionPreview__people-count">
         <FontAwesomeIcon icon={faUserFriends} size="sm" />
-        <span className="section-preview__people-count-number">
+        <span className="SectionPreview__people-count-number">
           {seatedUsersCount}
         </span>
       </div>

@@ -1,11 +1,11 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { WithId } from "utils/id";
-import { chooseAuditoriumSize } from "utils/auditorium";
-
 import { AuditoriumSize } from "types/auditorium";
 import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+import { chooseAuditoriumSize } from "utils/auditorium";
 
 import { useAuditoriumSections } from "hooks/auditoriumSections";
 
@@ -38,21 +38,21 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     [auditoriumSections, venueId]
   );
 
-  const containerClasses = classNames("section-previews", {
-    "section-previews--small": auditoriumSize === AuditoriumSize.SMALL,
-    "section-previews--medium": auditoriumSize === AuditoriumSize.MEDIUM,
-    "section-previews--large": auditoriumSize === AuditoriumSize.LARGE,
+  const containerClasses = classNames("AllSectionPreviews", {
+    "AllSectionPreviews--small": auditoriumSize === AuditoriumSize.SMALL,
+    "AllSectionPreviews--medium": auditoriumSize === AuditoriumSize.MEDIUM,
+    "AllSectionPreviews--large": auditoriumSize === AuditoriumSize.LARGE,
   });
 
   return (
     <div className={containerClasses}>
-      <div className="section-previews__empty-space--left" />
-      <div className="section-previews__empty-space--right" />
+      <div className="AllSectionPreviews__empty-space--left" />
+      <div className="AllSectionPreviews__empty-space--right" />
 
       <IFrame
         src={iframeUrl}
-        containerClassname="section-previews__iframe-overlay"
-        iframeClassname="section-previews__iframe"
+        containerClassname="AllSectionPreviews__iframe-overlay"
+        iframeClassname="AllSectionPreviews__iframe"
       />
 
       {sectionPreviews}

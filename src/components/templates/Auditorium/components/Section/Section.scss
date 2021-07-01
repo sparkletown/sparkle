@@ -9,7 +9,7 @@ $section-seat-spacing: 3px;
 
 $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 
-.section {
+.Section {
   --section-seat-size: #{$section-seat-size};
   --section-seat-size-min: #{$section-seat-size-min};
   --section-seat-spacing: #{$section-seat-spacing};

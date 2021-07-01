@@ -2,7 +2,7 @@
 
 $spacing: 15px;
 
-.section-preview {
+.SectionPreview {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -28,7 +28,7 @@ $spacing: 15px;
   }
 
   &--empty {
-    .section-preview__title {
+    .SectionPreview__title {
       opacity: 0.7;
     }
   }

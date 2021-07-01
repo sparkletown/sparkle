@@ -82,11 +82,11 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
-    <div className="section">
-      <div className="section__seats">
+    <div className="Section">
+      <div className="Section__seats">
         <IFrame
-          containerClassname="section__iframe-overlay"
-          iframeClassname="section__iframe"
+          containerClassname="Section__iframe-overlay"
+          iframeClassname="Section__iframe"
           iframeStyles={iframeInlineStyles}
           src={iframeUrl}
         />
