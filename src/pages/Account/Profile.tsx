@@ -114,7 +114,7 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="Profile">
       <h2 className="login-welcome-title">
-        Hey, {githubHandle}. We’re so glad you’re here!
+        Hey, {firstName ?? "you"}. We’re so glad you’re here!
       </h2>
       <div className="login-welcome-subtitle">
         We&apos;ve pre-populated your profile with details from Okta - please{" "}
