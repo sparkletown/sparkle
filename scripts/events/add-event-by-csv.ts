@@ -1,5 +1,3 @@
-#!/usr/bin/env node -r esm -r ts-node/register
-
 import {
   checkFileExists,
   initFirebaseAdminApp,
@@ -7,22 +5,16 @@ import {
   parseCredentialFile,
 } from "../lib/helpers";
 
+import { eventsFromCSVFile } from "../../src/utils/event";
 import { VenueEvent } from "../../src/types/venues";
-import { getDurationMinutes, getUTCStartTime } from "../../src/utils/time";
-import { getCSVRows } from "../../src/utils/csv";
-
-type rawEventsOptions = {
-  // eslint-disable-next-line
-  [key: string]: any;
-};
 
 const usage = makeScriptUsage({
   description: "Bulk upload events from a spreadsheet ",
-  usageParams: "CREDENTIAL_PATH FILE",
-  exampleParams: "fooAccountKey.json test.csv",
+  usageParams: "PROJECT_ID FILE CREDENTIAL_PATH",
+  exampleParams: "co-reality-map test.csv fooAccountKey.json",
 });
 
-const [credentialPath, filePath] = process.argv.slice(2);
+const [projectId, filePath, credentialPath] = process.argv.slice(2);
 
 if (!credentialPath || !filePath) {
   usage();
@@ -33,46 +25,32 @@ if (!checkFileExists(credentialPath)) {
   process.exit(1);
 }
 
-const { project_id: projectId } = parseCredentialFile(credentialPath);
+const { project_id: projectIdCredentialFile } = parseCredentialFile(
+  credentialPath
+);
 
-if (!projectId) {
-  console.error("Credential file has no project_id:", credentialPath);
+if (projectId !== projectIdCredentialFile) {
+  console.error(
+    "Project_Id is not the same with project_Id in credential file"
+  );
   process.exit(1);
 }
 
-const app = initFirebaseAdminApp(projectId, { credentialPath });
+const app = initFirebaseAdminApp(projectIdCredentialFile, { credentialPath });
 
-const csvHeaders = {
-  eventName: "Event Name",
-  room: "Room Name",
-  host: "Event Host Name",
-  startDate: "Event Start",
-  endDate: "Event End",
-  description: "Event Description",
-  venueId: "Venue ID",
+type eventWithVenueId = {
+  event: VenueEvent;
+  venueId: string;
 };
 
 (async () => {
-  let results = await getCSVRows(filePath);
-  results.forEach(async (rawEvent: rawEventsOptions) => {
-    const event: VenueEvent = {
-      name: rawEvent[csvHeaders.eventName],
-      duration_minutes: getDurationMinutes(
-        rawEvent[csvHeaders.startDate],
-        rawEvent[csvHeaders.endDate]
-      ),
-      start_utc_seconds: getUTCStartTime(rawEvent[csvHeaders.startDate]),
-      description: rawEvent[csvHeaders.description],
-      price: 0,
-      collective_price: 0,
-      host: rawEvent[csvHeaders.host],
-    };
-    if (rawEvent[csvHeaders.room] !== "-1") {
-      event.room = rawEvent[csvHeaders.room];
-    }
-    await app
-      .firestore()
-      .collection(`venues/${rawEvent[csvHeaders.venueId]}/events`)
-      .add(event);
-  });
+  const events = await eventsFromCSVFile(filePath);
+  if (events) {
+    events.map(async (event: eventWithVenueId) => {
+      await app
+        .firestore()
+        .collection(`venues/${event.venueId}/events`)
+        .add(event.event);
+    });
+  }
 })();
