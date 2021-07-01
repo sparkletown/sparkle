@@ -1,14 +1,4 @@
 import React, { useCallback } from "react";
-
-import "./Timing.scss";
-import { EventsView } from "../EventsView";
-import { useSelector } from "hooks/useSelector";
-import { shallowEqual } from "react-redux";
-import { makeVenueSelector } from "utils/selectors";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import React, { useCallback } from "react";
 import { shallowEqual } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";

@@ -1,12 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
-import "./EventsView.scss";
-import { WithId } from "utils/id";
-import { AnyVenue, VenueEvent } from "types/venues";
-import { TimingEventModal } from "components/organisms/TimingEventModal";
-import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
-import React, { useState, useCallback } from "react";
 
 import { WithId } from "utils/id";
 
