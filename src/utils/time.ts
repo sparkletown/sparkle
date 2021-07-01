@@ -254,13 +254,13 @@ export const getDayInterval = (date: Date | number) => ({
   end: endOfDay(date),
 });
 
-export const getDurationMinutes = function (start: string, end: string) {
-  let startDate = parseISO(start);
-  let endDate = parseISO(end);
+export const getDurationMinutes = (start: string, end: string) => {
+  const startDate = parseISO(start);
+  const endDate = parseISO(end);
   return differenceInMinutes(endDate, startDate);
 };
 
-export const getUTCStartTime = function (start: string) {
-  let startDate = parseISO(start);
+export const getUTCStartTime = (start: string) => {
+  const startDate = parseISO(start);
   return getUnixTime(startDate);
 };
