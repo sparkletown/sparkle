@@ -1,5 +1,4 @@
 import {
-  checkFileExists,
   initFirebaseAdminApp,
   makeScriptUsage,
   parseCredentialFile,
@@ -7,22 +6,18 @@ import {
 
 import { eventsFromCSVFile } from "../../src/utils/event";
 import { VenueEvent } from "../../src/types/venues";
+import { resolve } from "path";
 
 const usage = makeScriptUsage({
   description: "Bulk upload events from a spreadsheet ",
   usageParams: "PROJECT_ID FILE CREDENTIAL_PATH",
-  exampleParams: "co-reality-map test.csv fooAccountKey.json",
+  exampleParams: "co-reality-staging add-event-by-csv.example.csv key.json",
 });
 
 const [projectId, filePath, credentialPath] = process.argv.slice(2);
 
 if (!credentialPath || !filePath) {
   usage();
-}
-
-if (!checkFileExists(credentialPath)) {
-  console.error("Credential file path does not exists:", credentialPath);
-  process.exit(1);
 }
 
 const { project_id: projectIdCredentialFile } = parseCredentialFile(
@@ -36,7 +31,11 @@ if (projectId !== projectIdCredentialFile) {
   process.exit(1);
 }
 
-const app = initFirebaseAdminApp(projectIdCredentialFile, { credentialPath });
+const app = initFirebaseAdminApp(projectIdCredentialFile, {
+  credentialPath: credentialPath
+    ? resolve(__dirname, credentialPath)
+    : undefined,
+});
 
 type eventWithVenueId = {
   event: VenueEvent;
