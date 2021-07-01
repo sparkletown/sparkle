@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
@@ -13,6 +13,7 @@ import { VenueTemplate } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useShowHide } from "hooks/useShowHide";
 
 import {
   venueRoomSchema,
@@ -30,7 +31,11 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   text,
   template,
 }) => {
-  const [isModalVisible, setModalVisible] = useState<boolean>(false);
+  const {
+    isShown: isModalVisible,
+    show: showModal,
+    hide: hideModal,
+  } = useShowHide();
 
   const { user } = useUser();
 
@@ -46,11 +51,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     },
   });
 
-  const closeModal = useCallback(() => {
-    setModalVisible(false);
-  }, []);
-
-  const createVenueRoom = useCallback(async () => {
+  const [{ loading }, addRoom] = useAsyncFn(async () => {
     if (!user || !venueId) return;
 
     const roomValues = getValues();
@@ -88,17 +89,15 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       }
 
       await createRoom(roomData, venueId, user);
-      setModalVisible(false);
+      hideModal();
     } catch (err) {
       console.error(err);
     }
-  }, [getValues, template, user, venueId]);
-
-  const [{ loading }, addRoom] = useAsyncFn(createVenueRoom);
+  }, [getValues, hideModal, template, user, venueId]);
 
   return (
     <>
-      <Modal show={isModalVisible} onHide={closeModal}>
+      <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
             <Form.Row>
@@ -168,7 +167,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <div className="Spaces__venue-room" onClick={() => setModalVisible(true)}>
+      <div className="Spaces__venue-room" onClick={showModal}>
         <div
           className="Spaces__room-external-link"
           style={{ backgroundImage: `url(${icon})` }}

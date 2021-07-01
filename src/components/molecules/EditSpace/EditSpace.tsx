@@ -69,20 +69,18 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
         ...(updatedRoom as RoomInput),
         ...values,
       };
-      console.log("roomData", roomData);
+
       await upsertRoom(roomData, venueId, user, roomIndex);
       onEdit && onEdit();
     } catch (e) {
-      console.log(error, e);
-
       Bugsnag.notify(e, (event) => {
-        event.addMetadata("AdminEditSpace::updateRoom", {
+        event.addMetadata("EditSpace::updateRoom", {
           venueId: venueId,
           roomIndex,
         });
       });
     }
-  }, [error, onEdit, room, roomIndex, updatedRoom, user, values, venueId]);
+  }, [onEdit, room, roomIndex, updatedRoom, user, values, venueId]);
 
   const [{ loading: isDeleting }, deleteRoom] = useAsyncFn(async () => {
     try {

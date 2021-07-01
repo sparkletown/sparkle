@@ -1,39 +1,53 @@
 import React from "react";
+import classNames from "classnames";
 
-// Typings
-import { FileButtonProps } from "./FileButton.types";
+import "./FileButton.scss";
 
-// Styles
-import * as S from "./FileButton.styles";
+export interface FileButtonProps {
+  title: string;
+  description?: string;
+  disabled?: boolean;
+  onChange: (url: string, file: FileList) => void;
+}
 
-const FileButton: React.FC<FileButtonProps> = ({
-  text = "Import a map background",
-  recommendedSize = "Recommended size: 2000px / 1200px",
+export const FileButton: React.FC<FileButtonProps> = ({
+  title,
+  description,
+  disabled,
   onChange,
 }) => {
   const handleChange = (files: FileList | null) => {
-    if (!files) return;
+    if (!files || disabled) return;
 
     const url = URL.createObjectURL(files[0]);
 
     onChange(url, files);
   };
 
+  const buttonClasses = classNames("btn btn-primary", {
+    "btn-disabled": disabled,
+  });
+
   return (
-    <S.Wrapper>
-      <S.Label htmlFor="backgroundMap" as="label">
-        {text}
-      </S.Label>
+    <div className="FileButton">
+      <button className={buttonClasses} disabled={disabled}>
+        <label className="FileButton__label" htmlFor="fileButton">
+          {title}
+        </label>
+      </button>
 
       <input
         hidden
         type="file"
-        id="backgroundMap"
+        id="fileButton"
+        disabled={disabled}
         onChange={(event) => handleChange(event.target.files)}
       />
 
-      <S.Recommended>{recommendedSize}</S.Recommended>
-    </S.Wrapper>
+      {description && (
+        <span className="FileButton__description">{description}</span>
+      )}
+    </div>
   );
 };
 

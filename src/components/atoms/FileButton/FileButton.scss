@@ -1,0 +1,23 @@
+@import "scss/constants";
+
+.FileButton {
+  display: flex;
+  margin-bottom: 3rem;
+  flex-direction: column;
+
+  &.button,
+  div,
+  .btn {
+    padding: 0px;
+  }
+
+  &__label {
+    width: 100%;
+    cursor: pointer;
+    margin: 10px 0 10px 0;
+  }
+
+  &__description {
+    color: $light-grey--lightest;
+  }
+}
