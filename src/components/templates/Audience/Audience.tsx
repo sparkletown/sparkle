@@ -112,21 +112,17 @@ const DEFAULT_ROWS_NUMBER = 19;
 
 // But it takes up the same amount of space.
 
-const capacity = (
-  auditoriumSize: number,
-  minColumns: number,
-  minRows: number
-) =>
-  (minColumns - 1 + auditoriumSize * 2) * (minRows + auditoriumSize * 2) * 0.75;
+const capacity = (auditoriumSize: number, columns: number, rows: number) =>
+  (columns - 1 + auditoriumSize * 2) * (rows + auditoriumSize * 2) * 0.75;
 
 // Never let the auditorium get more than 80% full
 const requiredAuditoriumSize = (
   occupants: number,
-  minColumns: number,
-  minRows: number
+  columns: number,
+  rows: number
 ) => {
   let size = 0;
-  while (size < 10 && capacity(size, minColumns, minRows) * 0.8 < occupants) {
+  while (size < 10 && capacity(size, columns, rows) * 0.8 < occupants) {
     size++;
   }
   return size;
@@ -150,8 +146,8 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const minColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
-  const minRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
+  const baseColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
+  const baseRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 
@@ -238,12 +234,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
   useEffect(() => {
     setAuditoriumSize(
-      requiredAuditoriumSize(seatedVenueUsersCount, minColumns, minRows)
+      requiredAuditoriumSize(seatedVenueUsersCount, baseColumns, baseRows)
     );
-  }, [minColumns, minRows, seatedVenueUsersCount]);
+  }, [baseColumns, baseRows, seatedVenueUsersCount]);
 
-  const rowsForSizedAuditorium = minRows + auditoriumSize * 2;
-  const columnsForSizedAuditorium = minColumns + auditoriumSize * 2;
+  const rowsForSizedAuditorium = baseRows + auditoriumSize * 2;
+  const columnsForSizedAuditorium = baseColumns + auditoriumSize * 2;
 
   // We use 3 because 1/3 of the size of the auditorium, and * 2 because we're calculating in halves due to using cartesian coordinates + Math.abs
   const carvedOutWidthInSeats = Math.max(

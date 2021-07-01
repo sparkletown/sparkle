@@ -50,7 +50,7 @@ export const setGridData = async ({
   userId,
   gridData,
 }: SetGridDataProps): Promise<void> => {
-  const userProfileRef = firebase.firestore().collection("users").doc(userId);
+  const userProfileRef = getUserRef(userId);
 
   const newGridData = {
     [`data.${venueId}`]: gridData ?? firebase.firestore.FieldValue.delete(),
