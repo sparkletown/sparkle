@@ -75,15 +75,23 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const defaultTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
   const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
 
-  const notLockedTables = defaultTables.filter(
-    (table) => !experience?.tables?.[table.title]?.locked
-  );
+  // not locked and not full tables
+  const freeTables = defaultTables
+    .filter((table) => !experience?.tables?.[table.title]?.locked)
+    .filter((table) => {
+      if (!venueToUse || !table.capacity) return false;
+
+      const usersSeatedAtTable = recentVenueUsers.filter(
+        (u) => u.data?.[venueToUse.name]?.table === table.reference
+      );
+      return table.capacity - usersSeatedAtTable.length > 0;
+    });
 
   const toggleJazzbarTables = useCallback(() => {
     setJazzbarTables(
-      jazzbarTables === defaultTables ? notLockedTables : defaultTables
+      jazzbarTables === defaultTables ? freeTables : defaultTables
     );
-  }, [jazzbarTables, setJazzbarTables, defaultTables, notLockedTables]);
+  }, [jazzbarTables, setJazzbarTables, defaultTables, freeTables]);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
