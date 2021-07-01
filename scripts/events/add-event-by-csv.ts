@@ -37,6 +37,8 @@ const app = initFirebaseAdminApp(projectIdCredentialFile, {
     : undefined,
 });
 
+const appBatch = app.firestore().batch();
+
 type eventWithVenueId = {
   event: VenueEvent;
   venueId: string;
@@ -45,11 +47,16 @@ type eventWithVenueId = {
 (async () => {
   const events = await eventsFromCSVFile(filePath);
   if (events) {
-    events.map(async (event: eventWithVenueId) => {
-      await app
+    await events.map(async (event: eventWithVenueId) => {
+      const destVenueEventsRef = app
         .firestore()
         .collection(`venues/${event.venueId}/events`)
-        .add(event.event);
+        .doc();
+
+      appBatch.set(destVenueEventsRef, event.event);
     });
+
+    const writeResult = await appBatch.commit();
+    console.log(writeResult);
   }
 })();
