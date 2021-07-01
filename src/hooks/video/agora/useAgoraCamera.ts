@@ -41,7 +41,7 @@ export const useAgoraCamera: ReactHook<
   };
 
   const joinChannel = async () => {
-    if (!client || !venueId || !userId) return;
+    if (!venueId || !userId) return;
 
     const cameraClientUid = await client.join(
       AGORA_APP_ID || "",
@@ -66,8 +66,6 @@ export const useAgoraCamera: ReactHook<
   };
 
   const leaveChannel = useCallback(async () => {
-    if (!client) return;
-
     localCameraTrack?.stop();
     localCameraTrack?.close();
 

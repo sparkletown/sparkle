@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
-import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
+import AgoraRTC from "agora-rtc-sdk-ng";
 
 import { FullTalkShowVenue } from "types/venues";
 import { AgoraClientConnectionState } from "types/agora";
@@ -16,28 +16,12 @@ import {
   useAgoraScreenShare,
 } from "hooks/video/agora";
 
-import AppButton from "components/atoms/Button";
 import { Player, VideoPlayerProps } from "./components/Player/Player";
 import { ControlBar } from "./components/ControlBar";
-import Audience from "./components/Audience/Audience";
-import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
+import { Audience } from "./components/Audience/Audience";
+import { SettingsSidebar } from "./components/SettingsSidebar/SettingsSidebar";
 
 import "./TalkShowStudio.scss";
-
-const remotesClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
-const screenClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
-const cameraClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
 
 export interface TalkShowStudioProps {
   venue: WithId<FullTalkShowVenue>;
@@ -47,8 +31,18 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const stage = useStage();
   const { userId, profile } = useUser();
   const currentVenue = useSelector(currentVenueSelectorData);
-  const remoteUsers = useAgoraRemotes({ client: remotesClient });
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
+
+  const [remotesClient, screenClient, cameraClient] = React.useMemo(() => {
+    return Array.from({ length: 3 }).map(() =>
+      AgoraRTC.createClient({
+        codec: "h264",
+        mode: "rtc",
+      })
+    );
+  }, []);
+
+  const remoteUsers = useAgoraRemotes({ client: remotesClient });
 
   const {
     localCameraTrack,
@@ -135,6 +129,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     isUserOwner,
     remoteUsers,
     venue.id,
+    cameraClient.uid,
+    screenClient.uid,
     stage.peopleOnStage,
     stage.toggleUserCamera,
     stage.toggleUserMicrophone,
@@ -160,7 +156,12 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     cameraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
       !stage.isUserOnStage &&
       onStageLeaving();
-  }, [stage.isUserOnStage, onStageJoin, onStageLeaving]);
+  }, [
+    stage.isUserOnStage,
+    onStageJoin,
+    onStageLeaving,
+    cameraClient.connectionState,
+  ]);
 
   useEffect(() => {
     !stage.isUserSharing && localScreenTrack && stopShare();
@@ -181,13 +182,6 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       toggleCamera();
     }
   }, [isCameraOn, profile?.data, toggleCamera, venue.id]);
-
-  const isJoinStageButtonDisplayed =
-    isRequestToJoinStageEnabled &&
-    stage.canJoinStage &&
-    !isUserOwner &&
-    !stage.isUserOnStage &&
-    !stage.isUserRequesting;
 
   const renderScreenSharing = (screenTrack: VideoPlayerProps["videoTrack"]) => {
     if (!screenTrack) return;
@@ -238,17 +232,9 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
             onStageLeaving={onStageLeaving}
             shareScreen={shareScreen}
             stopShare={stopShare}
-            showJoinStageButton={isUserOwner}
+            isRequestToJoinStageEnabled={isRequestToJoinStageEnabled}
           />
         </div>
-        {isJoinStageButtonDisplayed && (
-          <AppButton
-            customClass="TalkShowStudio__request-button"
-            onClick={stage.requestJoinStage}
-          >
-            <span>✋</span> Request to join
-          </AppButton>
-        )}
         <Audience venue={venue} />
       </div>
       <SettingsSidebar venue={venue} />
