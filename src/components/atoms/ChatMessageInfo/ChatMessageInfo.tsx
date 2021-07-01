@@ -5,7 +5,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { BaseMessageToDisplay } from "types/chat";
 
-import { formatTimestampToDisplayHoursMinutes } from "utils/time";
+import { formatTimeLocalised } from "utils/time";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -42,7 +42,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       <UserAvatar user={author} showStatus />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
-        {formatTimestampToDisplayHoursMinutes(timestamp)}
+        {formatTimeLocalised(timestamp)}
       </span>
       {canBeDeleted && (
         <FontAwesomeIcon

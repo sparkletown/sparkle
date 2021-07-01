@@ -1,17 +1,23 @@
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import React, { useEffect } from "react";
+import { Redirect, useHistory, useParams } from "react-router-dom";
+
+import { EntranceStepTemplate } from "types/EntranceStep";
+
+import { withId } from "utils/id";
+import { isCompleteProfile } from "utils/profile";
+import { currentVenueSelectorData } from "utils/selectors";
+import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+import { showZendeskWidget } from "utils/zendesk";
+
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
-import React, { useEffect } from "react";
-import { Redirect, useHistory, useParams } from "react-router-dom";
-import { EntranceStepTemplate } from "types/EntranceStep";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
+
 import Login from "pages/Account/Login";
-import { isCompleteProfile } from "utils/profile";
-import { showZendeskWidget } from "utils/zendesk";
+import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
+
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
@@ -42,7 +48,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (!user || !profile) {
-    return <Login />;
+    return <Login venue={withId(venue, venueId)} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
