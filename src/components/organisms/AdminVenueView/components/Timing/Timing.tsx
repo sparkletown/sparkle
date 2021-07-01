@@ -8,10 +8,21 @@ import { makeVenueSelector } from "utils/selectors";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+import React, { useCallback } from "react";
+import { shallowEqual } from "react-redux";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 
+import { makeVenueSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
+import { EventsView } from "../EventsView";
+
+import "./Timing.scss";
+
 export type TimingProps = {
-  venueId: string | undefined;
+  venueId?: string;
   onClickNext: () => void;
   onClickBack: () => void;
 };

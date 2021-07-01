@@ -5,7 +5,17 @@ import { formatTimeLocalised } from "utils/time";
 import { format } from "date-fns";
 import { eventStartTime, eventEndTime } from "utils/event";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useState } from "react";
+import { format } from "date-fns";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
+
+import { WithId } from "utils/id";
+import { formatTimeLocalised } from "utils/time";
+import { eventStartTime, eventEndTime } from "utils/event";
+
+import { VenueEvent } from "types/venues";
+
 
 export type TimingEventProps = {
   event: WithId<VenueEvent>;
