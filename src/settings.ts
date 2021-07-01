@@ -18,7 +18,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
+export const SPARKLE_HOMEPAGE_URL = "/v/register/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
 export const SPARKLE_PRIVACY_POLICY =
@@ -156,8 +156,8 @@ export const ACCEPTED_IMAGE_TYPES =
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
-  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
-export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone`;
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
+export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;

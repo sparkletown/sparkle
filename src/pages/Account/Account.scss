@@ -277,6 +277,12 @@ $page-max-width: 1240px;
       text-decoration: none;
     }
   }
+
+  &__issues-text {
+    margin-top: $spacing--xxl;
+    color: $secondary--light;
+    font-style: italic;
+  }
 }
 
 .profile-picture-upload-form {
