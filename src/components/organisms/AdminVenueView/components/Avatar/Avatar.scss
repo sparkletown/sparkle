@@ -1,0 +1,48 @@
+@use "sass:math";
+
+@import "scss/constants.scss";
+
+.Avatar {
+  $sizes--enum: (16, 24, 32, 64);
+  $default: 24px;
+  $min: 16px;
+  $max: 64px;
+
+  @include square-size($default, $min, $max);
+  border-radius: $border-radius--max;
+
+  display: inline-block;
+  padding: $spacing--xs;
+  position: relative;
+
+  &__image {
+    @include square-size($default, $min, $max);
+    border-radius: 50%;
+    position: absolute;
+    inset: 0;
+  }
+
+  @each $size in $sizes--enum {
+    &--#{$size},
+    &--#{$size} &__image {
+      @include square-size(#{$size}px);
+    }
+  }
+
+  &__dot {
+    display: none;
+    visibility: hidden;
+    @include square-size(8px);
+    border-radius: $border-radius--max;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
+
+  &--available &__dot,
+  &--unknown-status &__dot {
+    display: block;
+    visibility: visible;
+    background-color: #4aff41;
+  }
+}

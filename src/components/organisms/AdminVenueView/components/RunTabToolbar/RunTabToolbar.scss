@@ -5,36 +5,44 @@
     display: flex;
     flex-direction: row;
     width: 100%;
-    padding: $spacing--xs;
     margin: 0;
   }
 
   &__toolbar {
     display: flex;
-    min-width: 50%;
     margin: 0;
     padding: 0;
+    align-items: center;
+    gap: $spacing--xs;
 
     &--left {
+      min-width: 65%;
       flex-direction: row;
     }
 
     &--right {
+      min-width: 35%;
       flex-direction: row-reverse;
-    }
-
-    > * {
-      margin: $spacing--xs !important;
-      height: calc(100% - 2 * #{$spacing--xs});
-    }
-
-    .input-field {
-      height: 100%;
     }
 
     .btn:not(.btn-primary) {
       background-color: $secondary !important;
       background-image: none !important;
     }
+  }
+
+  &__input,
+  &__drop {
+    height: calc(100% - 2 * #{$spacing--xs});
+  }
+
+  &__announce {
+    width: 30em;
+    margin: -1px; // to avoid border artefacts
+    padding: 1px; // to avoid child artefacts
+  }
+
+  &__drop {
+    margin-right: calc(1px + #{$spacing--xs}) !important;
   }
 }

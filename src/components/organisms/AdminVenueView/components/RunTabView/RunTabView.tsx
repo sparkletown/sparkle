@@ -1,61 +1,50 @@
 import React from "react";
-import { FormControl } from "react-bootstrap";
+import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { adminNGSettigsUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useUser } from "hooks/useUser";
-import { Container } from "pages/Account/Venue/VenueMapEdition/Container";
-import { AdminVenueRoomsList } from "pages/Admin/AdminVenueRoomsList";
 
-import { AdvancedSettingsButton } from "components/organisms/AdminVenueView/components/AdvancedSettingsButton/AdvancedSettingsButton";
+import { Container } from "pages/Account/Venue/VenueMapEdition/Container";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
+import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
+import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import "./RunTabView.scss";
 
 const noop = () => undefined;
 
 export const RunTabView: React.FC = () => {
-  const { user, profile } = useUser();
   const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const error = null;
+
+  if (!venue) {
+    return <>{`Venue doesn't exit`}</>;
+  }
 
   return (
     <div className="RunTabView">
       <div className="RunTabView__sidebar">
-        <h3 className="RunTabView__title">Run your space</h3>
-        <AdvancedSettingsButton id={venueId} />
-        <div className="row-container">
-          <h4>Current Venue Owners</h4>
-          <div className="user-row">
-            <div className="info-container">
-              <img src={profile?.pictureUrl} alt="profile pic" />
-              {user?.displayName}
-            </div>
-            <div>Loading...</div>
-            <button className="btn btn-primary" onClick={noop}>
-              (pokes with stick) C&apos;mon do something
-            </button>
-          </div>
-          {error && <div>{error}</div>}
-        </div>
-        <FormControl
-          className="text-input"
-          autoFocus
-          placeholder="Search users..."
-          onChange={noop}
-        />
-        <div className="row-container">something in the row</div>
+        <div className="RunTabView__title">Run your space</div>
+        <ButtonNG
+          className="RunTabView__advanced"
+          isLink={true}
+          linkTo={adminNGSettigsUrl(venueId)}
+          iconName={faCog}
+        >
+          Advanced Settings
+        </ButtonNG>
+        <RunTabUsers venueId={venueId} />
       </div>
       <div className="RunTabView__main">
-        <RunTabToolbar venueId={venueId} />
-        <div className="RunTabView__map">
+        <div className="RunTabView__toolbar RunTabView--spacing">
+          <RunTabToolbar venueId={venueId} />
+        </div>
+        <div className="RunTabView__map RunTabView--spacing">
           <Container
             interactive
             resizable
@@ -75,8 +64,8 @@ export const RunTabView: React.FC = () => {
             otherIcons={{}}
           />
         </div>
-        <div className="RunTabView__cards">
-          <AdminVenueRoomsList venue={venue as WithId<AnyVenue>} />
+        <div className="RunTabView__cards RunTabView--spacing">
+          <RunTabRooms venue={venue} />
         </div>
       </div>
     </div>
