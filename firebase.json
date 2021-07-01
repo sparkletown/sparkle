@@ -34,6 +34,14 @@
       "public": "build",
       "rewrites": [
         {
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
+        },
+        {
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
+        },
+        {
           "source": "**",
           "destination": "/index.html"
         }
@@ -220,6 +228,14 @@
       "target": "sparkle-ohbm",
       "public": "build",
       "rewrites": [
+        {
+          "source": "/auth/connect/i4a",
+          "function": "auth-connectI4AOAuth"
+        },
+        {
+          "source": "/auth/connect/i4a/handler",
+          "function": "auth-connectI4AOAuthHandler"
+        },
         {
           "source": "**",
           "destination": "/index.html"

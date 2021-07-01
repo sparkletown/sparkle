@@ -3,6 +3,7 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
@@ -550,6 +551,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
@@ -597,6 +599,10 @@ export const MAX_POLL_QUESTIONS = 8;
 
 export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
 
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
+export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
+
 export const SEARCH_DEBOUNCE_TIME = 200; // ms
 
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
@@ -605,10 +611,12 @@ export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
 // SCHEDULE
+export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
 export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+
 /**
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */

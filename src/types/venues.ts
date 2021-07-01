@@ -141,6 +141,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
@@ -149,7 +150,7 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showLiveSchedule?: boolean;
+  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -159,7 +160,6 @@ export interface BaseVenue {
     text: string;
   };
   showLearnMoreLink?: boolean;
-  liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
