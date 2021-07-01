@@ -7,7 +7,7 @@ import { VenueEvent } from "types/venues";
 
 import { WithVenueId, WithId } from "utils/id";
 import { isEventLive } from "utils/event";
-import { formatHourAndMinute } from "utils/time";
+import { formatTimeLocalised } from "utils/time";
 
 import "./EventCard.scss";
 
@@ -48,7 +48,7 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
 
       {nextEvent && (
         <div className="EventCard__time EventCard__time--first">
-          {formatHourAndMinute(nextEvent.start_utc_seconds)}
+          {formatTimeLocalised(nextEvent.start_utc_seconds)}
         </div>
       )}
 
@@ -60,7 +60,7 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
 
       {followingEvent && (
         <div className="EventCard__time EventCard__time--subsequent">
-          {formatHourAndMinute(followingEvent.start_utc_seconds)}
+          {formatTimeLocalised(followingEvent.start_utc_seconds)}
         </div>
       )}
 
