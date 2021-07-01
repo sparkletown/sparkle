@@ -1,13 +1,13 @@
-$spacing: 10px;
+@import "scss/constants";
 
 .AllSectionPreviews {
   overflow: auto;
   height: 100%;
   width: 100%;
-  padding: 0 $spacing 50px;
+  padding: 0 $spacing--md 50px;
 
   display: grid;
-  gap: $spacing;
+  gap: $spacing--md;
 
   grid-auto-rows: 120px;
   grid-auto-columns: minmax(250px, 1fr);

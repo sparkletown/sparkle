@@ -1,7 +1,5 @@
 @import "scss/constants";
 
-$spacing: 15px;
-
 .SectionPreview {
   display: flex;
   flex-direction: column;
@@ -10,7 +8,7 @@ $spacing: 15px;
   justify-self: center;
   position: relative;
 
-  padding: $spacing;
+  padding: $spacing--lg;
   height: 100%;
   width: 100%;
 
@@ -35,29 +33,29 @@ $spacing: 15px;
 
   &__status-icons {
     position: absolute;
-    top: 5px;
-    right: 5px;
+    top: $spacing--xs;
+    right: $spacing--xs;
     justify-content: flex-end;
   }
 
   &__lock-icon {
-    margin-left: 5px;
+    margin-left: $spacing--xs;
   }
 
   &__title {
-    font-size: 15px;
-    font-weight: 500;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
   }
 
   &__people-count {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 5px;
+    margin: $spacing--xs;
   }
 
   &__people-count-number {
-    font-size: 13px;
-    margin-left: 5px;
+    font-size: $font-size--md;
+    margin-left: $spacing--xs;
   }
 }

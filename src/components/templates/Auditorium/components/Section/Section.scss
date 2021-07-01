@@ -45,7 +45,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 
     width: 100%;
     height: 100%;
-    border: 1px black;
+    border: thin $black;
     border-radius: 15px;
     box-shadow: 2px 2px 20px $white;
   }
@@ -90,20 +90,20 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   }
 
   &__seat {
-    background-color: rgba($white, 0.2);
+    background-color: opaque-white(0.2);
 
     &:hover {
-      background-color: rgba($white, 0.4);
+      background-color: opaque-white(0.4);
       cursor: pointer;
     }
 
     &:active {
-      background-color: rgba($white, 0.6);
+      background-color: opaque-white(0.6);
       cursor: pointer;
     }
   }
 
   &__empty-circle {
-    background-color: rgba($black, 0);
+    background-color: opaque-white(0);
   }
 }
