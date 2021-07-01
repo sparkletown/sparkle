@@ -17,6 +17,7 @@ import { JazzbarVenue } from "types/venues";
 import { createEmojiReaction } from "utils/reactions";
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
+import { experienceSelector } from "utils/selectors";
 
 import Room from "../components/JazzBarRoom";
 
@@ -69,7 +70,20 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const { userWithId } = useUser();
 
-  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
+  const experience = useSelector(experienceSelector);
+
+  const defaultTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
+  const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
+
+  const notLockedTables = defaultTables.filter(
+    (table) => !experience?.tables?.[table.title]?.locked
+  );
+
+  const toggleJazzbarTables = useCallback(() => {
+    setJazzbarTables(
+      jazzbarTables === defaultTables ? notLockedTables : defaultTables
+    );
+  }, [jazzbarTables, setJazzbarTables, defaultTables, notLockedTables]);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -193,7 +207,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              {seatedAtTable && (
+              {seatedAtTable ? (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -227,6 +241,24 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   isMessageToTheBandSent={isMessageToTheBandSent}
                   placeholder="Shout out..."
                 /> */}
+                </div>
+              ) : (
+                <div className="control-bar">
+                  <label
+                    htmlFor="chk-hide-tables"
+                    className={`checkbox ${
+                      jazzbarTables !== defaultTables && "checkbox-checked"
+                    }`}
+                  >
+                    Hide full/locked tables
+                  </label>
+                  <input
+                    type="checkbox"
+                    name="hide-tables"
+                    id="chk-hide-tables"
+                    defaultChecked={false}
+                    onClick={toggleJazzbarTables}
+                  />
                 </div>
               )}
             </>

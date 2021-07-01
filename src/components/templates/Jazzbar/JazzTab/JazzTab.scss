@@ -1,6 +1,8 @@
 @import "scss/constants";
 @import "../jazzbar-constants.scss";
 
+$control-bar-height: 40px;
+
 .music-bar {
   margin-top: 40px;
 
@@ -108,6 +110,12 @@
           }
         }
       }
+    }
+
+    .control-bar {
+      width: 100%;
+      height: $control-bar-height;
+      margin-top: 13px;
     }
   }
 
