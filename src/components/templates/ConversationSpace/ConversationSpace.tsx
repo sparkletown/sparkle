@@ -15,6 +15,7 @@ import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
+import { TableControlBar } from "components/molecules/TableControlBar";
 
 import { TABLES } from "./constants";
 
@@ -24,13 +25,14 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers();
 
+  const defaultTables = venue?.config?.tables ?? TABLES;
+  const [tables, setTables] = useState(defaultTables);
+
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
 
   if (!venue) return <>Loading...</>;
-
-  const tables = venue?.config?.tables ?? TABLES;
 
   return (
     <>
@@ -89,6 +91,13 @@ export const ConversationSpace: React.FunctionComponent = () => {
             </div>
           </div>
           <div className="seated-area">
+            <TableControlBar
+              defaultTables={defaultTables}
+              venue={venue}
+              users={recentVenueUsers}
+              updateTables={setTables}
+              isChecked={tables !== defaultTables}
+            />
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}

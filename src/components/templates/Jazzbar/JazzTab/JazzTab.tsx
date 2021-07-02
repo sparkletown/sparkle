@@ -17,7 +17,6 @@ import { JazzbarVenue } from "types/venues";
 import { createEmojiReaction } from "utils/reactions";
 import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
-import { experienceSelector } from "utils/selectors";
 
 import Room from "../components/JazzBarRoom";
 
@@ -27,6 +26,7 @@ import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
+import { TableControlBar } from "components/molecules/TableControlBar";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
@@ -70,28 +70,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const { userWithId } = useUser();
 
-  const experience = useSelector(experienceSelector);
-
   const defaultTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
   const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
-
-  // not locked and not full tables
-  const freeTables = defaultTables
-    .filter((table) => !experience?.tables?.[table.title]?.locked)
-    .filter((table) => {
-      if (!venueToUse || !table.capacity) return false;
-
-      const usersSeatedAtTable = recentVenueUsers.filter(
-        (u) => u.data?.[venueToUse.name]?.table === table.reference
-      );
-      return table.capacity - usersSeatedAtTable.length > 0;
-    });
-
-  const toggleJazzbarTables = useCallback(() => {
-    setJazzbarTables(
-      jazzbarTables === defaultTables ? freeTables : defaultTables
-    );
-  }, [jazzbarTables, setJazzbarTables, defaultTables, freeTables]);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -251,23 +231,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 /> */}
                 </div>
               ) : (
-                <div className="control-bar">
-                  <label
-                    htmlFor="chk-hide-tables"
-                    className={`checkbox ${
-                      jazzbarTables !== defaultTables && "checkbox-checked"
-                    }`}
-                  >
-                    Hide full/locked tables
-                  </label>
-                  <input
-                    type="checkbox"
-                    name="hide-tables"
-                    id="chk-hide-tables"
-                    defaultChecked={false}
-                    onClick={toggleJazzbarTables}
-                  />
-                </div>
+                <TableControlBar
+                  defaultTables={defaultTables}
+                  venue={venueToUse}
+                  users={recentVenueUsers}
+                  updateTables={setJazzbarTables}
+                  isChecked={jazzbarTables !== defaultTables}
+                />
               )}
             </>
           )}
