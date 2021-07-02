@@ -9,7 +9,7 @@ import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 
 import { venueInsideUrl } from "utils/url";
 
-import { VenueTemplate } from "types/venues";
+import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -23,7 +23,7 @@ import {
 export interface VenueRoomItemProps {
   icon: string;
   text: string;
-  template?: VenueTemplate;
+  template?: VenueRoomTemplate;
 }
 
 export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
@@ -67,7 +67,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     };
 
     try {
-      if (template) {
+      if (template !== RoomTemplate.external) {
         const list = new DataTransfer();
 
         const fileList = list.files;
@@ -100,65 +100,55 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <Form.Row>
+            <div className="room-edit-modal__input">
+              <Form.Label>Room title</Form.Label>
+              <Form.Control
+                disabled={loading}
+                type="text"
+                ref={register}
+                name="roomTitle"
+                placeholder="Room title"
+                custom
+              />
+              {errors.roomTitle && (
+                <span className="input-error">{errors.roomTitle.message}</span>
+              )}
+            </div>
+
+            {template && (
               <div className="room-edit-modal__input">
-                <Form.Label>Room title</Form.Label>
+                <Form.Label>Venue name</Form.Label>
                 <Form.Control
                   disabled={loading}
                   type="text"
                   ref={register}
-                  name="roomTitle"
-                  placeholder="Room title"
+                  name="venueName"
+                  placeholder="Venue name"
                   custom
                 />
-                {errors.roomTitle && (
+                {errors.venueName && (
                   <span className="input-error">
-                    {errors.roomTitle.message}
+                    {errors.venueName.message}
                   </span>
                 )}
               </div>
-            </Form.Row>
-
-            {template && (
-              <Form.Row>
-                <div className="room-edit-modal__input">
-                  <Form.Label>Venue name</Form.Label>
-                  <Form.Control
-                    disabled={loading}
-                    type="text"
-                    ref={register}
-                    name="venueName"
-                    placeholder="Venue name"
-                    custom
-                  />
-                  {errors.venueName && (
-                    <span className="input-error">
-                      {errors.venueName.message}
-                    </span>
-                  )}
-                </div>
-              </Form.Row>
             )}
 
             {!template && (
-              <Form.Row>
-                <div className="room-edit-modal__input">
-                  <Form.Label>Room url</Form.Label>
-                  <Form.Control
-                    disabled={loading}
-                    type="text"
-                    ref={register}
-                    name="roomUrl"
-                    placeholder="Room url"
-                    custom
-                  />
-                  {errors.roomUrl && (
-                    <span className="input-error">
-                      {errors.roomUrl.message}
-                    </span>
-                  )}
-                </div>
-              </Form.Row>
+              <div className="room-edit-modal__input">
+                <Form.Label>Room url</Form.Label>
+                <Form.Control
+                  disabled={loading}
+                  type="text"
+                  ref={register}
+                  name="roomUrl"
+                  placeholder="Room url"
+                  custom
+                />
+                {errors.roomUrl && (
+                  <span className="input-error">{errors.roomUrl.message}</span>
+                )}
+              </div>
             )}
 
             <Button disabled={loading} title="Add room" type="submit">

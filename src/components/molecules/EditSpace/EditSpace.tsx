@@ -110,7 +110,7 @@ export const EditSpace: React.FC<EditSpaceProps> = ({
                 ref={register}
                 name="template"
                 value={room.template}
-                placeholder="Room name"
+                placeholder={room.template ?? "External"}
                 custom
                 disabled={true}
               />

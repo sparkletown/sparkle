@@ -52,7 +52,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
           <FileButton
             disabled={isUploading}
             title="Import a map background"
-            description={"Recommended size: 2000px / 1200px"}
+            description="Recommended size: 2000px / 1200px"
             onChange={uploadMapBackground}
           />
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from "react";
-// import { updateRoom } from "api/admin";
+import { useHistory } from "react-router";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCaretRight,
   faCaretDown,
@@ -7,20 +8,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
-import { RoomData_v2 } from "types/rooms";
+import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
 
-import "./Spaces.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import BackgroundSelect from "pages/Admin/BackgroundSelect";
+import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 import { EditSpace } from "components/molecules/EditSpace";
-import { MapPreview } from "../MapPreview";
-import { useHistory } from "react-router";
-import { Dimensions, Position } from "types/utility";
+import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
+
+import "./Spaces.scss";
 
 interface VenueRooms {
   text: string;
-  template?: VenueTemplate;
+  template?: VenueRoomTemplate;
   icon: string;
 }
 
@@ -58,6 +58,7 @@ const venueRooms: VenueRooms[] = [
   {
     text: "External link",
     icon: "/assets/icons/icon-room-externallink.svg",
+    template: RoomTemplate.external,
   },
   {
     text: "Map",
