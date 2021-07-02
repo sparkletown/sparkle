@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 import { User, UserLocation, userWithLocationToUser } from "types/User";
 import { ReactHook } from "types/utility";
@@ -6,60 +6,26 @@ import { ReactHook } from "types/utility";
 import { withId, WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import {
-  worldUsersByIdSelector,
-  worldUsersSelector,
-  worldUsersWithoutLocationSelector,
-} from "utils/selectors";
+import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
+import { useWorldUsersContext } from "./users/useWorldUsers";
 
 import { useSelector } from "./useSelector";
 import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
-import { useVenueId } from "./useVenueId";
-import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import { useSovereignVenueId } from "./useSovereignVenueId";
+import { isLoaded } from "./useFirestoreConnect";
+
+export { useWorldUsers } from "./users/useWorldUsers";
 
 const noUsers: WithId<User>[] = [];
 
 export const useConnectWorldUsers = () => {
-  const venueId = useVenueId();
+  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
+  useWorldUsersContext();
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
-    venueId,
-  });
-
-  useFirestoreConnect(() => {
-    if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
-
-    const relatedLocationIds = [venueId];
-
-    if (sovereignVenueId) {
-      relatedLocationIds.push(sovereignVenueId);
-    }
-
-    return [
-      {
-        collection: "users",
-        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
-        storeAs: "worldUsers",
-      },
-    ];
-  });
-};
-
-export interface WorldUsersData {
-  worldUsers: readonly WithId<User>[];
-  isWorldUsersLoaded: boolean;
-}
-
-export const useWorldUsers = (): WorldUsersData => {
-  useConnectWorldUsers();
-
-  const selectedWorldUsers = useSelector(worldUsersWithoutLocationSelector);
-
-  return {
-    worldUsers: selectedWorldUsers ?? noUsers,
-    isWorldUsersLoaded: isLoaded(selectedWorldUsers),
-  };
+  useEffect(() => {
+    console.log(
+      "useConnectWorldUsers is practically a noop at the moment, all the real work happens in WorldUsersProvider in src/hooks/users/useWorldUsers.tsx"
+    );
+  }, []);
 };
 
 // @debt typing, Record implies that a User will exist for literally any given string, which is untrue
@@ -93,7 +59,8 @@ export const useWorldUsersByIdWorkaround = () => {
 export const useWorldUserLocation = (
   userId?: string
 ): { userLocation?: WithId<UserLocation> } => {
-  useConnectWorldUsers();
+  // TODO: Currently this throws an error because VenuePage doesn't have WorldUsersProvider in scope. Fix this.
+  // useConnectWorldUsers();
 
   const userLocation = useSelector((state) => {
     if (!userId) return;
