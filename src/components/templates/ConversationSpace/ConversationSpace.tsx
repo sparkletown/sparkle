@@ -15,7 +15,7 @@ import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
-import { TableControlBar } from "components/molecules/TableControlBar";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
 
 import { TABLES } from "./constants";
 
@@ -90,16 +90,17 @@ export const ConversationSpace: React.FunctionComponent = () => {
               )}
             </div>
           </div>
+          {!seatedAtTable && (
+            <TablesControlBar
+              className="control-bar"
+              defaultTables={defaultTables}
+              venue={venue}
+              users={recentVenueUsers}
+              updateTables={setTables}
+              isChecked={tables !== defaultTables}
+            />
+          )}
           <div className="seated-area">
-            {!seatedAtTable && (
-              <TableControlBar
-                defaultTables={defaultTables}
-                venue={venue}
-                users={recentVenueUsers}
-                updateTables={setTables}
-                isChecked={tables !== defaultTables}
-              />
-            )}
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}

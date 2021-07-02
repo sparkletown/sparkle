@@ -26,7 +26,7 @@ import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
-import { TableControlBar } from "components/molecules/TableControlBar";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
@@ -231,12 +231,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 /> */}
                 </div>
               ) : (
-                <TableControlBar
+                <TablesControlBar
                   defaultTables={defaultTables}
                   venue={venueToUse}
                   users={recentVenueUsers}
                   updateTables={setJazzbarTables}
                   isChecked={jazzbarTables !== defaultTables}
+                  className="control-bar"
                 />
               )}
             </>

@@ -254,6 +254,10 @@
     grid-gap: 1rem;
   }
 
+  .control-bar {
+    margin: $spacing--md 40px 0 auto;
+  }
+
   .seated-area {
     border: 0px solid white;
     display: flex;

@@ -10,22 +10,24 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
 
-import "./TableControlBar.scss";
+import "./TablesControlBar.scss";
 
-export interface TableControlBarProps {
+export interface TablesControlBarProps {
   defaultTables: Table[];
   isChecked: boolean;
   venue: AnyVenue;
   users: WithId<User>[];
   updateTables: (value: React.SetStateAction<Table[]>) => void;
+  className?: string;
 }
 
-export const TableControlBar: React.FC<TableControlBarProps> = ({
+export const TablesControlBar: React.FC<TablesControlBarProps> = ({
   defaultTables,
   isChecked,
   venue,
   users,
   updateTables,
+  className,
 }) => {
   const experience = useSelector(experienceSelector);
 
@@ -46,12 +48,14 @@ export const TableControlBar: React.FC<TableControlBarProps> = ({
     [isChecked, updateTables, defaultTables, freeTables]
   );
 
+  const containerClasses = classNames("TablesControlBar", className);
+
   const checkboxClasses = classNames("checkbox", {
     "checkbox-checked": isChecked,
   });
 
   return (
-    <div className="TableControlBar">
+    <div className={containerClasses}>
       <label htmlFor="chk-toggle-tables" className={checkboxClasses}>
         Hide full/locked tables
       </label>
