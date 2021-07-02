@@ -7,12 +7,12 @@ import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
-import { useSelector } from "./useSelector";
-import { useUserLastSeenThreshold } from "./useUserLastSeenThreshold";
-import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
-import { useVenueId } from "./useVenueId";
-import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import { useSovereignVenueId } from "./useSovereignVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
+import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
+import { useSelector } from "hooks/useSelector";
+import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useVenueId } from "hooks/useVenueId";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
