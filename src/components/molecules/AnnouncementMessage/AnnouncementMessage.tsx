@@ -52,6 +52,11 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
     "AnnouncementMessage__container--admin": !isAnnouncementForUser,
   });
 
+  const announcementMessageClasses = classNames("AnnouncementMessage", {
+    "AnnouncementMessage--fullscreen":
+      banner?.isFullScreen && isAnnouncementForUser,
+  });
+
   if (!isAnnouncementForUser && !banner?.content)
     return (
       <div className="AnnouncementMessage">
@@ -65,7 +70,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   return (
     <div className={containerClasses} onClick={hideAnnouncementMessage}>
-      <div className="AnnouncementMessage" onClick={noop}>
+      <div className={announcementMessageClasses} onClick={noop}>
         {banner?.title && (
           <h2 className="AnnouncementMessage__title">{banner.title}</h2>
         )}

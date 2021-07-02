@@ -71,6 +71,8 @@ $footer-height: 30px;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
 $admin-spaces-sidebar-width: 20%;
+$announcement-container-width: 640px;
+$announcement-container-width-fullscreen: 430px;
 
 $avatarSize: max(4vh, 3vw);
 $avatarSizeMin: 25px;
@@ -97,9 +99,10 @@ $spacing--md: 12px;
 $spacing--lg: 16px;
 $spacing--xl: 24px;
 $spacing--xxl: 30px;
+$spacing--xxxl: 40px;
 
 $submit-button-diameter: 44px;
-$button-width: 136px;
+$announce-button-width: 136px;
 
 $font-size--xxs: 10px;
 $font-size--xs: 11px;
