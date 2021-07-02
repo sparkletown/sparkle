@@ -9,6 +9,8 @@ import { chooseAuditoriumSize } from "utils/auditorium";
 
 import { useAuditoriumSections } from "hooks/auditoriumSections";
 
+import { Button } from "components/atoms/Button";
+import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
 
 import { SectionPreview } from "../SectionPreview";
@@ -38,6 +40,19 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     [auditoriumSections, venue]
   );
 
+  const emptyBlocks = useMemo(
+    () =>
+      Array(4)
+        .fill(0)
+        .map((_, index) => (
+          <div
+            key={index}
+            className={`AllSectionPreviews__empty-block--${index + 1}`}
+          />
+        )),
+    []
+  );
+
   const containerClasses = classNames("AllSectionPreviews", {
     "AllSectionPreviews--small": auditoriumSize === AuditoriumSize.SMALL,
     "AllSectionPreviews--medium": auditoriumSize === AuditoriumSize.MEDIUM,
@@ -46,14 +61,32 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   return (
     <div className={containerClasses}>
-      <div className="AllSectionPreviews__empty-space--left" />
-      <div className="AllSectionPreviews__empty-space--right" />
+      {emptyBlocks}
 
-      <IFrame
-        src={iframeUrl}
-        containerClassname="AllSectionPreviews__iframe-overlay"
-        iframeClassname="AllSectionPreviews__iframe"
-      />
+      <div className="AllSectionPreviews__main">
+        <IFrame
+          src={iframeUrl}
+          containerClassname="AllSectionPreviews__iframe-overlay"
+          iframeClassname="AllSectionPreviews__iframe"
+        />
+        <div className="AllSectionPreviews__welcome-text">
+          Welcome to the {venue.name}
+        </div>
+        <div className="AllSectionPreviews__description-text">
+          Please choose a section or say hi to Sabrina! What do you think of
+          having this little area here a place to leave a message to people?
+        </div>
+        <div className="AllSectionPreviews__action-buttons">
+          <Checkbox
+            defaultChecked={false}
+            onChange={() => {}}
+            containerClassName="AllSectionPreviews__toggler"
+            label="Hide full sections"
+          />
+
+          <Button>Take a random seat</Button>
+        </div>
+      </div>
 
       {sectionPreviews}
     </div>

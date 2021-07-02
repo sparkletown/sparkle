@@ -14,43 +14,79 @@
 
   &--small {
     grid-template-areas:
-      "left-space left-space video video video video right-space right-space"
-      "left-space left-space video video video video right-space right-space"
-      "left-space left-space video video video video right-space right-space"
-      "left-space left-space   .     .     .     .   right-space right-space"
-      "left-space left-space   .     .     .     .   right-space right-space"
-      "left-space left-space   .     .     .     .   right-space right-space"
-      "left-space left-space   .     .     .     .   right-space right-space";
+      "empty-1 empty-1  main  main  main  main empty-2 empty-2"
+      "empty-1 empty-1  main  main  main  main empty-2 empty-2"
+      "empty-3    .      main  main  main  main   .   empty-4"
+      "empty-3    .      main  main  main  main   .   empty-4";
   }
 
   &--medium {
     grid-template-areas:
-      " left-space video video right-space "
-      " left-space video video right-space "
-      "     .      video video      .      "
-      "     .        .     .        .      ";
+      " empty-1 main main empty-2 "
+      " empty-1 main main empty-2 "
+      "     .      main main      .      "
+      "     .      main main      .      "
+      "     .        .     .      .      ";
   }
 
   &--large {
     grid-template-areas:
-      ".      video video      ."
-      ".      video video      ."
-      ".      video video      ."
-      ".        .     .        .";
+      ".      main main      ."
+      ".      main main      ."
+      ".      main main      ."
+      ".      main main      ."
+      ".       .    .        .";
   }
 
-  &__empty-space {
-    &--left {
-      grid-area: left-space;
+  &__empty-block {
+    &--1 {
+      grid-area: empty-1;
     }
+    &--2 {
+      grid-area: empty-2;
+    }
+    &--3 {
+      grid-area: empty-3;
+    }
+    &--4 {
+      grid-area: empty-4;
+    }
+  }
 
-    &--right {
-      grid-area: right-space;
-    }
+  &__main {
+    grid-area: main;
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__welcome-text {
+    font-weight: $font-weight--500;
+    font-size: $font-size--xl;
+    text-align: center;
+    margin: $spacing--xl;
+  }
+
+  &__description-text {
+    font-weight: $font-weight--500;
+    font-size: $font-size--md;
+    $font-size--md: 14px;
+    text-align: center;
+
+    color: opaque-white(0.53);
+  }
+
+  &__action-buttons {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__toggler {
+    justify-content: start;
   }
 
   &__iframe-overlay {
-    grid-area: video;
+    height: 70%;
   }
 
   &__iframe {
