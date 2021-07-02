@@ -9,23 +9,12 @@ const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
 
-const PROJECT_ID = functions.config().project.id;
-
-const checkAuth = (context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
-};
-exports.checkAuth = checkAuth;
-
+// @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
 // Case-insensitive first character for iDevices
 const lowercaseFirstChar = (password) =>
   password.charAt(0).toLowerCase() + password.substring(1);
 
+// @debt refactor passwordsMatch into utils/*
 exports.passwordsMatch = (submittedPassword, actualPassword) =>
   submittedPassword.trim() === actualPassword.trim() ||
   lowercaseFirstChar(submittedPassword.trim()) ===
