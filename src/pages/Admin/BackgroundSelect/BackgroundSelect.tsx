@@ -80,5 +80,3 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     </div>
   );
 };
-
-export default BackgroundSelect;

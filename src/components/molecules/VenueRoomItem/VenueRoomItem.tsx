@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+import { createRoom, createVenue_v2 } from "api/admin";
 
 import { venueInsideUrl } from "utils/url";
+import { buildEmptyVenue } from "utils/venue";
 
 import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
 
@@ -19,6 +20,10 @@ import {
   venueRoomSchema,
   roomSchema,
 } from "pages/Admin/Details/ValidationSchema";
+
+import { InputField } from "components/atoms/InputField";
+
+import "./VenueRoomItem.scss";
 
 export interface VenueRoomItemProps {
   icon: string;
@@ -52,12 +57,16 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
   });
 
   const [{ loading }, addRoom] = useAsyncFn(async () => {
-    if (!user || !venueId) return;
+    if (!user || !venueId || !template) return;
+
+    const isVenuePortal = template !== RoomTemplate.external;
 
     const roomValues = getValues();
-    const roomUrl = template
+
+    const roomUrl = isVenuePortal
       ? window.origin + venueInsideUrl(roomValues.venueName)
       : roomValues.roomUrl;
+
     const roomData = {
       title: roomValues.roomTitle,
       isEnabled: true,
@@ -66,89 +75,63 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       template,
     };
 
-    try {
-      if (template !== RoomTemplate.external) {
-        const list = new DataTransfer();
+    if (template !== RoomTemplate.external) {
+      const venueData = buildEmptyVenue(roomValues.venueName, template);
 
-        const fileList = list.files;
-
-        const venueInput: VenueInput_v2 = {
-          name: roomValues.venueName,
-          subtitle: "",
-          description: "",
-          template: template,
-          bannerImageFile: fileList,
-          bannerImageUrl: "",
-          logoImageUrl: "",
-          mapBackgroundImageUrl: "",
-          logoImageFile: fileList,
-          rooms: [],
-        };
-
-        await createVenue_v2(venueInput, user);
-      }
-
-      await createRoom(roomData, venueId, user);
-      hideModal();
-    } catch (err) {
-      console.error(err);
+      await createVenue_v2(venueData, user);
     }
+
+    await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, template, user, venueId]);
+
+  const roomIconStyles = useMemo(() => ({ backgroundImage: `url(${icon})` }), [
+    icon,
+  ]);
 
   return (
     <>
       <Modal show={isModalVisible} onHide={hideModal}>
         <Modal.Body>
           <Form onSubmit={handleSubmit(addRoom)}>
-            <div className="room-edit-modal__input">
-              <Form.Label>Room title</Form.Label>
-              <Form.Control
-                disabled={loading}
-                type="text"
-                ref={register}
-                name="roomTitle"
-                placeholder="Room title"
-                custom
-              />
-              {errors.roomTitle && (
-                <span className="input-error">{errors.roomTitle.message}</span>
-              )}
-            </div>
+            <Form.Label>Room title</Form.Label>
+            <InputField
+              name="roomTitle"
+              type="text"
+              autoComplete="off"
+              placeholder="Room title"
+              error={errors.roomTitle}
+              ref={register()}
+              disabled={loading}
+            />
 
             {template && (
-              <div className="room-edit-modal__input">
+              <>
                 <Form.Label>Venue name</Form.Label>
-                <Form.Control
-                  disabled={loading}
-                  type="text"
-                  ref={register}
+                <InputField
                   name="venueName"
+                  type="text"
+                  autoComplete="off"
                   placeholder="Venue name"
-                  custom
+                  error={errors.venueName}
+                  ref={register()}
+                  disabled={loading}
                 />
-                {errors.venueName && (
-                  <span className="input-error">
-                    {errors.venueName.message}
-                  </span>
-                )}
-              </div>
+              </>
             )}
 
             {!template && (
-              <div className="room-edit-modal__input">
+              <>
                 <Form.Label>Room url</Form.Label>
-                <Form.Control
-                  disabled={loading}
-                  type="text"
-                  ref={register}
+                <InputField
                   name="roomUrl"
+                  type="text"
+                  autoComplete="off"
                   placeholder="Room url"
-                  custom
+                  error={errors.roomUrl}
+                  ref={register()}
+                  disabled={loading}
                 />
-                {errors.roomUrl && (
-                  <span className="input-error">{errors.roomUrl.message}</span>
-                )}
-              </div>
+              </>
             )}
 
             <Button disabled={loading} title="Add room" type="submit">
@@ -157,11 +140,8 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
           </Form>
         </Modal.Body>
       </Modal>
-      <div className="Spaces__venue-room" onClick={showModal}>
-        <div
-          className="Spaces__room-external-link"
-          style={{ backgroundImage: `url(${icon})` }}
-        />
+      <div className="VenueRoomItem" onClick={showModal}>
+        <div className="VenueRoomItem__room-icon" style={roomIconStyles} />
         <div>{text}</div>
       </div>
     </>

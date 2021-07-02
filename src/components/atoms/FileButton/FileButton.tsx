@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import "./FileButton.scss";
@@ -16,13 +16,18 @@ export const FileButton: React.FC<FileButtonProps> = ({
   disabled,
   onChange,
 }) => {
-  const handleChange = (files: FileList | null) => {
-    if (!files || disabled) return;
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const files = event.target.files;
 
-    const url = URL.createObjectURL(files[0]);
+      if (!files || disabled) return;
 
-    onChange(url, files);
-  };
+      const url = URL.createObjectURL(files[0]);
+
+      onChange(url, files);
+    },
+    [disabled, onChange]
+  );
 
   const buttonClasses = classNames("btn btn-primary", {
     "btn-disabled": disabled,
@@ -41,7 +46,7 @@ export const FileButton: React.FC<FileButtonProps> = ({
         type="file"
         id="fileButton"
         disabled={disabled}
-        onChange={(event) => handleChange(event.target.files)}
+        onChange={handleChange}
       />
 
       {description && (
@@ -50,5 +55,3 @@ export const FileButton: React.FC<FileButtonProps> = ({
     </div>
   );
 };
-
-export default FileButton;

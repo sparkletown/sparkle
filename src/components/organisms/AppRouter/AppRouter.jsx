@@ -67,7 +67,6 @@ const AppRouter = () => {
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
         <Route
           path="/admin-ng/advanced-settings/:venueId?"
           component={AdminAdvancedSettings}
@@ -75,6 +74,7 @@ const AppRouter = () => {
 
         <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
         <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
 
         <Route path="/admin/:venueId" component={Admin} />
 

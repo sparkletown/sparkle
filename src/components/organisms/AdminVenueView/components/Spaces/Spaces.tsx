@@ -13,8 +13,17 @@ import { Dimensions, Position } from "types/utility";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
-import { EditSpace } from "components/molecules/EditSpace";
+import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
+
+import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
+import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
+import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
+import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
+import RoomIconExperience from "assets/icons/icon-room-experience.svg";
+import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
+import RoomIconMap from "assets/icons/icon-room-map.svg";
 
 import "./Spaces.scss";
 
@@ -27,42 +36,42 @@ interface VenueRooms {
 const venueRooms: VenueRooms[] = [
   {
     text: "Conversation Space",
-    icon: "/assets/icons/icon-room-conversation.svg",
+    icon: RoomIconConversation,
     template: VenueTemplate.conversationspace,
   },
   {
     text: "Auditorium",
-    icon: "/assets/icons/icon-room-auditorium.svg",
+    icon: RoomIconAuditorium,
     template: VenueTemplate.audience,
   },
   {
     text: "Music Bar",
-    icon: "/assets/icons/icon-room-musicbar.svg",
+    icon: RoomIconMusicBar,
     template: VenueTemplate.jazzbar,
   },
   {
     text: "Burn Barrel",
-    icon: "/assets/icons/icon-room-burnbarrel.svg",
+    icon: RoomIconBurnBarrel,
     template: VenueTemplate.firebarrel,
   },
   {
     text: "Art Piece",
-    icon: "/assets/icons/icon-room-artpiece.svg",
+    icon: RoomIconArtPiece,
     template: VenueTemplate.artpiece,
   },
   {
     text: "Experience",
-    icon: "/assets/icons/icon-room-experience.svg",
+    icon: RoomIconExperience,
     template: VenueTemplate.zoomroom,
   },
   {
     text: "External link",
-    icon: "/assets/icons/icon-room-externallink.svg",
+    icon: RoomIconExternalLink,
     template: RoomTemplate.external,
   },
   {
     text: "Map",
-    icon: "/assets/icons/icon-room-map.svg",
+    icon: RoomIconMap,
     template: VenueTemplate.partymap,
   },
 ];
@@ -119,11 +128,11 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     <div className="Spaces">
       <div className="Spaces__rooms">
         {hasSelectedRoom ? (
-          <EditSpace
+          <EditRoomForm
             room={selectedRoom!}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
-            onBackPress={clearSelectedRoom}
+            onBackClick={clearSelectedRoom}
             onDelete={clearSelectedRoom}
             onEdit={clearSelectedRoom}
           />
@@ -152,7 +161,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
                 className="Spaces__venue-rooms"
                 onClick={() => setShowRooms(!showRooms)}
               >
-                <div>Rooms {numberOfRooms}</div>
+                <div>{numberOfRooms} Rooms</div>
                 <FontAwesomeIcon
                   icon={!showRooms ? faCaretRight : faCaretDown}
                 />
