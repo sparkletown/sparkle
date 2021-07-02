@@ -91,13 +91,15 @@ export const ConversationSpace: React.FunctionComponent = () => {
             </div>
           </div>
           <div className="seated-area">
-            <TableControlBar
-              defaultTables={defaultTables}
-              venue={venue}
-              users={recentVenueUsers}
-              updateTables={setTables}
-              isChecked={tables !== defaultTables}
-            />
+            {!seatedAtTable && (
+              <TableControlBar
+                defaultTables={defaultTables}
+                venue={venue}
+                users={recentVenueUsers}
+                updateTables={setTables}
+                isChecked={tables !== defaultTables}
+              />
+            )}
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
               seatedAtTable={seatedAtTable}
