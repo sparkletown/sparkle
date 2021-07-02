@@ -1,23 +1,21 @@
 @import "scss/constants";
 
-.bold {
-  font-weight: 700;
-}
+.UserList {
+  .clickable-text {
+    text-decoration: underline;
+    cursor: pointer;
 
-.header {
-  display: flex;
-  justify-content: space-between;
-}
-
-.clickable-text {
-  text-decoration: underline;
-  cursor: pointer;
-
-  &:hover {
-    color: $primaryColor;
+    &:hover {
+      color: $primaryColor;
+    }
   }
-}
 
-.no-margin {
-  margin: 0;
+  &__avatars {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  &__avatar {
+    margin: 2px;
+  }
 }

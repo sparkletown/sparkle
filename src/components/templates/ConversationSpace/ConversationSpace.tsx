@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
+
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -101,7 +103,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <UserList
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
-            disableSeeAll={false}
+            limit={DEFAULT_USER_LIST_LIMIT}
           />
         </div>
       </div>

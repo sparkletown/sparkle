@@ -10,15 +10,17 @@
   gap: $spacing--md;
 
   grid-auto-rows: 120px;
-  grid-auto-columns: minmax(250px, 1fr);
+  grid-auto-columns: minmax(125px, 1fr);
 
   &--small {
     grid-template-areas:
-      "left-space video video right-space"
-      "left-space video video right-space"
-      "left-space video video right-space"
-      "left-space   .     .   right-space"
-      "left-space   .     .   right-space";
+      "left-space left-space video video video video right-space right-space"
+      "left-space left-space video video video video right-space right-space"
+      "left-space left-space video video video video right-space right-space"
+      "left-space left-space   .     .     .     .   right-space right-space"
+      "left-space left-space   .     .     .     .   right-space right-space"
+      "left-space left-space   .     .     .     .   right-space right-space"
+      "left-space left-space   .     .     .     .   right-space right-space";
   }
 
   &--medium {
@@ -30,12 +32,11 @@
   }
 
   &--large {
-    grid-auto-columns: minmax(150px, 1fr);
     grid-template-areas:
-      " left-space left-space video video video video right-space right-space "
-      "     .          .      video video video video      .           .      "
-      "     .          .      video video video video      .           .      "
-      "     .          .        .     .     .     .        .           .      ";
+      ".      video video      ."
+      ".      video video      ."
+      ".      video video      ."
+      ".        .     .        .";
   }
 
   &__empty-space {

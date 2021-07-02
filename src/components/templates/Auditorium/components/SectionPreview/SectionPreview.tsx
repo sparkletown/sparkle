@@ -4,7 +4,8 @@ import { useHistory } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends, faLock } from "@fortawesome/free-solid-svg-icons";
 
-import { DEFAULT_SECTION_PREVIEW_TITLE } from "settings";
+import { AuditoriumVenue } from "types/venues";
+import { AuditoriumSection } from "types/auditorium";
 
 import { WithId } from "utils/id";
 
@@ -12,20 +13,20 @@ import { useSectionSeatedUsers } from "hooks/auditoriumSections";
 
 import { UserList } from "components/molecules/UserList";
 
-import { AuditoriumSection } from "types/auditorium";
+import { getSectionCapacity } from "../../utils";
 
 import "./SectionPreview.scss";
 
 export interface SectionPreviewProps {
   section: WithId<AuditoriumSection>;
-  venueId: string;
+  venue: WithId<AuditoriumVenue>;
 }
 
 export const SectionPreview: React.FC<SectionPreviewProps> = ({
   section,
-  venueId,
+  venue,
 }) => {
-  const { isLocked, title } = section;
+  const { isLocked } = section;
 
   const history = useHistory();
 
@@ -38,8 +39,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
     history.push(`${history.location.pathname}/section/${section.id}`);
   };
 
-  const seatedUsers = useSectionSeatedUsers(venueId, section.id);
+  const maxUsers = getSectionCapacity(venue, section);
+
+  const seatedUsers = useSectionSeatedUsers(venue.id, section.id);
   const seatedUsersCount = seatedUsers.length;
+
+  const userAmountText = `${seatedUsersCount}/${maxUsers}`;
 
   const containerClasses = classNames("SectionPreview", {
     "SectionPreview--locked": isLocked,
@@ -48,7 +53,9 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   return (
     <div className={containerClasses} onClick={handleClick}>
-      <div className="SectionPreview__status-icons">
+      <div className="SectionPreview__status-icons"></div>
+
+      <div className="SectionPreview__people-count">
         {isLocked && (
           <FontAwesomeIcon
             icon={faLock}
@@ -56,20 +63,18 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
             className="SectionPreview__lock-icon"
           />
         )}
-      </div>
-
-      <div className="SectionPreview__title">
-        {title ?? DEFAULT_SECTION_PREVIEW_TITLE}
-      </div>
-
-      <div className="SectionPreview__people-count">
         <FontAwesomeIcon icon={faUserFriends} size="sm" />
         <span className="SectionPreview__people-count-number">
-          {seatedUsersCount}
+          {userAmountText}
         </span>
       </div>
 
-      <UserList users={seatedUsers} showTitle={false} />
+      <UserList
+        users={seatedUsers}
+        showTitle={false}
+        limit={12}
+        avatarClassName="SectionPreview__avatar"
+      />
     </div>
   );
 };

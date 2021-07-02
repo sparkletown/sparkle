@@ -21,7 +21,10 @@ import {
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import { useRecentVenueUsers } from "./users";
+import {
+  // useRecentVenueUsers,
+  useWorldUsers,
+} from "./users";
 import { useUser } from "./useUser";
 import { GetUserByPostion, useGetUserByPosition } from "./useGetUserByPosition";
 
@@ -142,16 +145,19 @@ export const useAuditoriumSection = ({
 };
 
 export const useSectionSeatedUsers = (venueId?: string, sectionId?: string) => {
-  const { recentVenueUsers } = useRecentVenueUsers();
+  // const { recentVenueUsers } = useRecentVenueUsers();
+  const { worldUsers } = useWorldUsers();
 
-  return useMemo(
-    () =>
-      recentVenueUsers.filter(
-        (user) =>
-          venueId && sectionId && user.data?.[venueId]?.sectionId === sectionId
-      ),
-    [recentVenueUsers, venueId, sectionId]
-  );
+  return worldUsers;
+
+  // return useMemo(
+  //   () =>
+  //     recentVenueUsers.filter(
+  //       (user) =>
+  //         venueId && sectionId && user.data?.[venueId]?.sectionId === sectionId
+  //     ),
+  //   [recentVenueUsers, venueId, sectionId]
+  // );
 };
 
 export const useAuditoriumSections = (venueId?: string) => {
@@ -186,7 +192,7 @@ export const useAuditoriumGrid = ({
   useMemo(
     () =>
       Array.from(Array(rows)).map((_, rowIndex) => (
-        <div key={rowIndex} className="section__seats-row">
+        <div key={rowIndex} className="Section__seats-row">
           {Array.from(Array(columns)).map((_, columnIndex) => {
             const user = getUserBySeat({
               row: rowIndex,
@@ -198,7 +204,7 @@ export const useAuditoriumGrid = ({
                 <UserProfilePicture
                   key={columnIndex}
                   user={user}
-                  avatarClassName="section__user-avatar"
+                  containerClassName="Section__user-avatar"
                   isAudioEffectDisabled
                 />
               );
@@ -210,7 +216,7 @@ export const useAuditoriumGrid = ({
               return (
                 <div
                   key={columnIndex}
-                  className="section__seat"
+                  className="Section__seat"
                   onClick={() =>
                     takeSeat({ row: rowIndex, column: columnIndex })
                   }
@@ -220,7 +226,7 @@ export const useAuditoriumGrid = ({
               );
             }
 
-            return <div key={columnIndex} className="section__empty-circle" />;
+            return <div key={columnIndex} className="Section__empty-circle" />;
           })}
         </div>
       )),

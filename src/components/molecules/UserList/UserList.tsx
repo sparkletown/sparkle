@@ -1,49 +1,40 @@
-import React, { useState } from "react";
+import React from "react";
 import classNames from "classnames";
 
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-
-import { useSelector } from "hooks/useSelector";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
-import { IS_BURN } from "secrets";
 
-import { User } from "types/User";
+import { useShowHide } from "hooks/useShowHide";
+
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./UserList.scss";
 
 interface UserListProps {
   users: readonly WithId<User>[];
   limit?: number;
-  imageSize?: number;
   activity?: string;
-  disableSeeAll?: boolean;
+  containerClassName?: string;
+  avatarClassName?: string;
   isAudioEffectDisabled?: boolean;
-  isCamp?: boolean;
-  attendanceBoost?: number;
   showEvenWhenNoUsers?: boolean;
   showTitle?: boolean;
-  containerClassName?: string;
 }
 
 export const UserList: React.FC<UserListProps> = ({
-  users: _users,
-  limit = DEFAULT_USER_LIST_LIMIT,
-  imageSize = 40,
+  users,
+  limit,
   activity = "partying",
-  disableSeeAll = true,
+  containerClassName,
+  avatarClassName,
   isAudioEffectDisabled,
-  isCamp,
-  attendanceBoost,
   showEvenWhenNoUsers = false,
   showTitle = true,
-  containerClassName,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(disableSeeAll);
+  const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
 
-  const usersSanitized = _users.filter(
+  const usersSanitized = users.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
 
@@ -51,60 +42,40 @@ export const UserList: React.FC<UserListProps> = ({
     ? usersSanitized
     : usersSanitized?.slice(0, limit);
 
-  const attendance = usersSanitized.length + (attendanceBoost ?? 0);
-  const venue = useSelector(currentVenueSelectorData);
+  const userCount = usersSanitized.length;
 
-  const containerClasses = classNames(
-    "container",
-    "userlist-container",
-    containerClassName
-  );
+  const hasExcessiveUserCount = limit !== undefined && userCount > limit;
 
-  if (!showEvenWhenNoUsers && attendance < 1) return null;
+  const label = `${userCount} ${
+    userCount === 1 ? "person" : "people"
+  } ${activity}`;
+
+  const containerClasses = classNames("UserList", containerClassName);
+  const avatarClasses = classNames("UserList__avatar", avatarClassName);
+
+  if (!showEvenWhenNoUsers && userCount < 1) return null;
 
   return (
     <div className={containerClasses}>
-      {showTitle && (
-        <div className="row header no-margin">
-          <p>
-            <span className="bold">{attendance}</span>{" "}
-            {attendance === 1 ? "person" : "people"}{" "}
-            {isCamp && IS_BURN ? "in the camp" : activity}
+      <div className="UserList__label">
+        {showTitle && <p>{label}</p>}
+
+        {hasExcessiveUserCount && (
+          <p className="clickable-text" onClick={toggleExpanded}>
+            See {isExpanded ? "less" : "all"}
           </p>
-
-          {!disableSeeAll && usersSanitized.length > limit && (
-            <p
-              className="clickable-text"
-              onClick={() => setIsExpanded(!isExpanded)}
-              id={`see-venue-information-${venue?.name}`}
-            >
-              See {isExpanded ? "less" : "all"}
-            </p>
-          )}
-
-          {!disableSeeAll && usersSanitized.length > limit && (
-            <p
-              className="clickable-text"
-              onClick={() => setIsExpanded(!isExpanded)}
-              id={`see-venue-information-${venue?.name}`}
-            >
-              See {isExpanded ? "less" : "all"}
-            </p>
-          )}
-        </div>
-      )}
-      )
-      <div className="row no-margin">
-        {usersToDisplay.map(
-          (user) =>
-            user && (
-              <UserProfilePicture
-                user={user}
-                isAudioEffectDisabled={isAudioEffectDisabled}
-                key={`${user.id}-${activity}-${imageSize}`}
-              />
-            )
         )}
+      </div>
+
+      <div className="UserList__avatars">
+        {usersToDisplay.map((user) => (
+          <UserProfilePicture
+            user={user}
+            isAudioEffectDisabled={isAudioEffectDisabled}
+            key={user.id}
+            containerClassName={avatarClasses}
+          />
+        ))}
       </div>
     </div>
   );

@@ -66,10 +66,13 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     justify-content: center;
   }
 
+  &__seat {
+    display: flex;
+  }
+
   &__seat,
   &__empty-circle,
   &__user-avatar {
-    display: flex;
     justify-content: center;
     align-items: center;
 

@@ -1,8 +1,8 @@
 export type AuditoriumSection = {
-  title?: string;
   isLocked?: boolean;
   rowsCount?: number;
   columnsCount?: number;
+  capacity?: number;
 };
 
 export enum AuditoriumSize {

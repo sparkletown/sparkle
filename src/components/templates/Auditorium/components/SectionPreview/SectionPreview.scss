@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$avatar-diameter: 20px;
+
 .SectionPreview {
   display: flex;
   flex-direction: column;
@@ -39,12 +41,7 @@
   }
 
   &__lock-icon {
-    margin-left: $spacing--xs;
-  }
-
-  &__title {
-    font-size: $font-size--lg;
-    font-weight: $font-weight--500;
+    margin-right: $spacing--xs;
   }
 
   &__people-count {
@@ -57,5 +54,12 @@
   &__people-count-number {
     font-size: $font-size--md;
     margin-left: $spacing--xs;
+  }
+
+  &__avatar {
+    min-height: $avatar-diameter;
+    min-width: $avatar-diameter;
+    height: $avatar-diameter;
+    width: $avatar-diameter;
   }
 }

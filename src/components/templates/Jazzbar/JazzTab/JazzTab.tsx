@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW } from "settings";
+import { IFRAME_ALLOW, DEFAULT_USER_LIST_LIMIT } from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -160,7 +160,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <UserList
           users={recentVenueUsers}
           activity={venue?.activity ?? "here"}
-          disableSeeAll={false}
+          limit={DEFAULT_USER_LIST_LIMIT}
         />
       )}
 

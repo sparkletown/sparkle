@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo } from "react";
 import { useParams } from "react-router";
 
-import { AnyVenue } from "types/venues";
+import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -20,7 +20,7 @@ export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
 export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
 
 export interface SectionProps {
-  venue: WithId<AnyVenue>;
+  venue: WithId<AuditoriumVenue>;
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {

@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { AuditoriumSize } from "types/auditorium";
-import { AnyVenue } from "types/venues";
+import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
@@ -16,7 +16,7 @@ import { SectionPreview } from "../SectionPreview";
 import "./AllSectionPreviews.scss";
 
 export interface SectionPreviewsProps {
-  venue: WithId<AnyVenue>;
+  venue: WithId<AuditoriumVenue>;
 }
 
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
@@ -33,9 +33,9 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const sectionPreviews = useMemo(
     () =>
       auditoriumSections.map((section) => (
-        <SectionPreview key={section.id} section={section} venueId={venueId} />
+        <SectionPreview key={section.id} section={section} venue={venue} />
       )),
-    [auditoriumSections, venueId]
+    [auditoriumSections, venue]
   );
 
   const containerClasses = classNames("AllSectionPreviews", {

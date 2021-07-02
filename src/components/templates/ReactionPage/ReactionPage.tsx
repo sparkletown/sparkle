@@ -58,7 +58,6 @@ export const ReactionPage: React.FC = () => {
           <UserList
             users={recentVenueUsers}
             isAudioEffectDisabled
-            imageSize={50}
             showEvenWhenNoUsers
           />
         </div>
