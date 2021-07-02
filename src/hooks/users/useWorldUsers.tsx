@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
+import { isEqual } from "lodash";
 
 import { User } from "types/User";
 
@@ -107,7 +108,11 @@ export const useWorldUsers = (): WorldUsersData => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
   useWorldUsersContext();
 
-  const selectedWorldUsers = useSelector(worldUsersWithoutLocationSelector);
+  // @debt we use lodash's isEqual here to do a deep compare to prevent re-renders, but ideally we wouldn't need to
+  const selectedWorldUsers = useSelector(
+    worldUsersWithoutLocationSelector,
+    isEqual
+  );
 
   return useMemo(
     () => ({
