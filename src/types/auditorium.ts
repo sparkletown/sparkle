@@ -2,6 +2,7 @@ export type AuditoriumSection = {
   rowsCount?: number;
   columnsCount?: number;
   capacity?: number;
+  isVip?: boolean;
 };
 
 export enum AuditoriumSize {

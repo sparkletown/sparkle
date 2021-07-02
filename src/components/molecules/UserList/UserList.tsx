@@ -1,5 +1,7 @@
 import React from "react";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 
 import { User } from "types/User";
 
@@ -8,6 +10,7 @@ import { WithId } from "utils/id";
 import { useShowHide } from "hooks/useShowHide";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
 
@@ -16,8 +19,9 @@ interface UserListProps {
   limit?: number;
   activity?: string;
   containerClassName?: string;
-  avatarClassName?: string;
+  cellClassName?: string;
   isAudioEffectDisabled?: boolean;
+  hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
   showMoreUsersToggler?: boolean;
   showTitle?: boolean;
@@ -28,8 +32,9 @@ export const UserList: React.FC<UserListProps> = ({
   limit,
   activity = "partying",
   containerClassName,
-  avatarClassName,
+  cellClassName,
   isAudioEffectDisabled,
+  hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
   showMoreUsersToggler = true,
   showTitle = true,
@@ -53,7 +58,7 @@ export const UserList: React.FC<UserListProps> = ({
   } ${activity}`;
 
   const containerClasses = classNames("UserList", containerClassName);
-  const avatarClasses = classNames("UserList__avatar", avatarClassName);
+  const cellClasses = classNames("UserList__cell", cellClassName);
 
   if (!showEvenWhenNoUsers && userCount < 1) return null;
 
@@ -71,13 +76,25 @@ export const UserList: React.FC<UserListProps> = ({
 
       <div className="UserList__avatars">
         {usersToDisplay.map((user) => (
-          <UserProfilePicture
-            user={user}
-            isAudioEffectDisabled={isAudioEffectDisabled}
-            key={user.id}
-            containerClassName={avatarClasses}
-          />
+          <div key={user.id} className={cellClasses}>
+            {hasClickableAvatars ? (
+              <UserProfilePicture
+                user={user}
+                isAudioEffectDisabled={isAudioEffectDisabled}
+                containerClassName="UserList__avatar"
+              />
+            ) : (
+              <UserAvatar user={user} containerClassName="UserList__avatar" />
+            )}
+          </div>
         ))}
+        <div className={cellClasses}>
+          <FontAwesomeIcon
+            icon={faEllipsisH}
+            size="xs"
+            className="UserList__dots-icon"
+          />
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ $avatar-diameter: 20px;
   justify-self: center;
   position: relative;
 
-  padding: $spacing--lg;
+  padding: $spacing--md;
   height: 100%;
   width: 100%;
 
@@ -25,6 +25,10 @@ $avatar-diameter: 20px;
 
   &--full {
     cursor: not-allowed;
+
+    .SectionPreview__people-count {
+      color: $red;
+    }
   }
 
   &--empty {
@@ -33,11 +37,19 @@ $avatar-diameter: 20px;
     }
   }
 
-  &__status-icons {
+  &--vip {
+    background-color: $primary;
+  }
+
+  &__vip-label {
     position: absolute;
-    top: $spacing--xs;
-    right: $spacing--xs;
-    justify-content: flex-end;
+    top: $spacing--sm;
+    right: $spacing--sm;
+    border-radius: $border-radius--lg;
+    background-color: opaque-white(0.1);
+    font-size: $font-size--xs;
+    padding: 2px $spacing--sm;
+    font-weight: $font-weight--500;
   }
 
   &__lock-icon {
@@ -52,7 +64,7 @@ $avatar-diameter: 20px;
   }
 
   &__people-count-number {
-    font-size: $font-size--md;
+    font-size: $font-size--xs;
     margin-left: $spacing--xs;
   }
 

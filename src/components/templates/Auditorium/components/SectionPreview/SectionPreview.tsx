@@ -28,15 +28,6 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 }) => {
   const history = useHistory();
 
-  const handleClick = () => {
-    // if (isLocked) {
-    // TODO: Show fancy modal, explainig why a person can't access the preveiw
-    // return;
-    // }
-
-    history.push(`${history.location.pathname}/section/${section.id}`);
-  };
-
   const maxUsers = getSectionCapacity(venue, section);
 
   const seatedUsers = useSectionSeatedUsers(venue.id, section.id);
@@ -47,14 +38,24 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   const userAmountText = `${seatedUsersCount}/${maxUsers}`;
 
+  const handleClick = () => {
+    if (isFull) {
+      // TODO: Show fancy modal, explainig why a person can't access the preveiw
+      return;
+    }
+
+    history.push(`${history.location.pathname}/section/${section.id}`);
+  };
+
   const containerClasses = classNames("SectionPreview", {
     "SectionPreview--full": isFull,
     "SectionPreview--empty": isEmpty,
+    "SectionPreview--vip": section.isVip,
   });
 
   return (
     <div className={containerClasses} onClick={handleClick}>
-      <div className="SectionPreview__status-icons"></div>
+      {section.isVip && <div className="SectionPreview__vip-label">VIP</div>}
 
       <div className="SectionPreview__people-count">
         <FontAwesomeIcon icon={faUserFriends} size="sm" />
@@ -66,9 +67,10 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       <UserList
         users={seatedUsers}
         showTitle={false}
-        limit={12}
+        limit={11}
         showMoreUsersToggler={false}
-        avatarClassName="SectionPreview__avatar"
+        hasClickableAvatars={false}
+        cellClassName="SectionPreview__avatar"
       />
     </div>
   );
