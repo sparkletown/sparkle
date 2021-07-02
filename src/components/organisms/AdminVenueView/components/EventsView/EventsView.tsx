@@ -42,9 +42,9 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
   return (
     <>
-      <div className="events-container">
-        <h4 className="events-title">Events Schedule</h4>
-        <div className="event-container">
+      <div className="EventsView">
+        <h4 className="EventsView__title">Events Schedule</h4>
+        <div className="EventsView__content">
           {events?.map((event) => {
             return (
               <TimingEvent
@@ -56,7 +56,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
             );
           })}
           {events?.length === 0 && (
-            <div className="no-events-text">
+            <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
               <button
                 className="btn btn-primary"
@@ -70,10 +70,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           )}
         </div>
       </div>
+
       {events?.length !== 0 && (
-        <div className="right-align">
+        <div className="create-button">
           <button
-            className="btn btn-primary btn-create-event"
+            className="btn btn-primary"
             onClick={() => {
               setShowCreateEventModal(true);
             }}
@@ -82,6 +83,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           </button>
         </div>
       )}
+
       {showCreateEventModal && (
         <TimingEventModal
           show={showCreateEventModal}

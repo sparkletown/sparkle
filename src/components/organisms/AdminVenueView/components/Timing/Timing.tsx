@@ -30,11 +30,14 @@ export const Timing: React.FC<TimingProps> = ({
   const venue = useSelector(venueSelector, shallowEqual);
 
   return (
-    <div className="creation-page-container creation-page-container--timing">
-      <div className="creation-page-left">
-        <div className="creation-page-left-bottombar">
-          <div className="creation-page-left-bottombar-btnleft">
-            <a href="/admin-ng" className="btn-grey btn-grey__home">
+    <div className="Timing">
+      <div className="Timing__left">
+        <div className="Timing__left-bottombar">
+          <div className="Timing__left-bottombar-btnleft">
+            <a
+              href="/admin-ng"
+              className="Timing__left-bottombar-btngrey btn-grey__home"
+            >
               <FontAwesomeIcon
                 icon={faHome}
                 className="edit-button__icon"
@@ -42,8 +45,11 @@ export const Timing: React.FC<TimingProps> = ({
               />
             </a>
           </div>
-          <div className="creation-page-left-bottombar-btnright">
-            <button className="btn-grey" onClick={onClickBack}>
+          <div className="Timing__left-bottombar-btnright">
+            <button
+              className="Timing__left-bottombar-btngrey"
+              onClick={onClickBack}
+            >
               Back
             </button>
             <button className="btn btn-primary" onClick={onClickNext}>
@@ -51,7 +57,7 @@ export const Timing: React.FC<TimingProps> = ({
             </button>
           </div>
         </div>
-        <div className="creation-page-left-content">
+        <div className="Timing__left-content">
           <h2 className="mb-1">Plan your events</h2>
 
           {/* @debt: global start/end times will be added later
@@ -92,8 +98,8 @@ export const Timing: React.FC<TimingProps> = ({
             </div> */}
         </div>
       </div>
-      <div className="creation-page-right">
-        <div className="creation-page-right-content">
+      <div className="Timing__right">
+        <div className="Timing__right-content">
           <EventsView venueId={venueId!} venue={venue!} />
         </div>
       </div>
