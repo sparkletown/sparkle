@@ -8,37 +8,14 @@ import { normalizeTimestampToMilliseconds } from "utils/time";
 import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
+import { isLoaded } from "hooks/useFirestoreConnect";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 import { useSelector } from "hooks/useSelector";
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 import { useVenueId } from "hooks/useVenueId";
 
-export const useConnectWorldUsers = () => {
-  const venueId = useVenueId();
+import { useConnectWorldUsers } from "./useConnectWorldUsers";
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
-    venueId,
-  });
-
-  useFirestoreConnect(() => {
-    if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
-
-    const relatedLocationIds = [venueId];
-
-    if (sovereignVenueId) {
-      relatedLocationIds.push(sovereignVenueId);
-    }
-
-    return [
-      {
-        collection: "users",
-        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
-        storeAs: "worldUsers",
-      },
-    ];
-  });
-};
+export { useConnectWorldUsers } from "./useConnectWorldUsers";
 
 export const useWorldUsers = (): {
   worldUsers: readonly WithId<User>[];
