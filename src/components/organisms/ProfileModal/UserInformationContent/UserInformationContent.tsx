@@ -151,9 +151,6 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
             {email}
           </div>
           <div className="UserInformationContent__status-container">
-            <span className="UserInformationContent__status-prefix">
-              Available
-            </span>
             <UserStatusDropdown
               userStatuses={sovereignVenue?.userStatuses ?? []}
             />

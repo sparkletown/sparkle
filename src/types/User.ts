@@ -45,8 +45,12 @@ export interface User {
 }
 
 export enum DefaultUserStatus {
-  online = "Online",
-  busy = "Busy",
+  isNoob = "is a n00b",
+  isAFK = "is AFK",
+  isChatting = "is chatting",
+  isExploring = "is exploring",
+  isSpectating = "is spectating",
+  isHereForIt = "is here for it",
 }
 
 export interface UserStatus {
