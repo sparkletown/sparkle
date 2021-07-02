@@ -19,6 +19,7 @@ interface UserListProps {
   avatarClassName?: string;
   isAudioEffectDisabled?: boolean;
   showEvenWhenNoUsers?: boolean;
+  showMoreUsersToggler?: boolean;
   showTitle?: boolean;
 }
 
@@ -30,6 +31,7 @@ export const UserList: React.FC<UserListProps> = ({
   avatarClassName,
   isAudioEffectDisabled,
   showEvenWhenNoUsers = false,
+  showMoreUsersToggler = true,
   showTitle = true,
 }) => {
   const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
@@ -60,7 +62,7 @@ export const UserList: React.FC<UserListProps> = ({
       <div className="UserList__label">
         {showTitle && <p>{label}</p>}
 
-        {hasExcessiveUserCount && (
+        {showMoreUsersToggler && hasExcessiveUserCount && (
           <p className="clickable-text" onClick={toggleExpanded}>
             See {isExpanded ? "less" : "all"}
           </p>
