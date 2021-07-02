@@ -149,7 +149,7 @@ Save this file somewhere safe locally
 Now we need to upload function config to Firebase. Use the .json file with private key that you've downloaded just recently:
 
 ```
-./upload-function-config-service-account.ts TODO-PROJECT-ID [PRIVATE-KEY-FILE].json
+./upload-function-config-service-account.ts TODO-PROJECT-ID example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json
 ```
 
 ```bash

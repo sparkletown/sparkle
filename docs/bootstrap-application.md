@@ -8,7 +8,7 @@ First of all you'd need to boostrap an environment using the following command:
 * Run the bootstrap script
 
 ```
-./bootstrap-new-environment.ts TODO-PROJECT-ID [PRIVATE-KEY-FILE].json
+./bootstrap-new-environment.ts TODO-PROJECT-ID example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json
 ```
 
 As a result you should be able to see the 'Bootstraping complete' message:
@@ -23,16 +23,17 @@ Bootstrapping complete!
 Then we'll be able to add a user (or few) to your application:
 
 ```
-⇒ ./create-users.ts [PRIVATE-KEY-FILE].json user@sparkle.space
+./create-users.ts example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json user1@example.com user2@example.com
 
-User created: email=user@sparkle.space, password=REDACTED
+User created: email=user1@example.com, password=REDACTED
+User created: email=user2@example.com, password=REDACTED
 ```
 
 Once complete you should be able to make that user an admin. To do so run this command:
 * Run this
 
 ```
-./create-users.ts [PRIVATE-KEY-FILE].json user1@example.com user2@example.com
+./update-admin-role-users.ts example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json ADD user1@example.com user2@example.com
 
 User created: email=user1@example.com, password=REDACTED
 User created: email=user2@example.com, password=REDACTED
@@ -42,6 +43,24 @@ As a result you'll see this message:
 
 ```
 User successfully added to ( or already existed in ) 'admin' role
+```
+
+## Update Firestore rules
+
+Please run the following command:
+
+```
+npx firebase deploy --only firestore:rules
+```
+
+It should finish with a message saying:
+
+```
+Deploy started.
+
+...
+
+Deploy Completed!
 ```
 
 ## Configure ENV file
