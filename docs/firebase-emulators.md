@@ -6,12 +6,6 @@ You can find out more at https://firebase.google.com/docs/emulator-suite.
 **Note**: If your code accidentally invokes non-emulated (production) resources, there is a chance of data change, usage and billing.
 To prevent this, you might opt in to use a Firebase project name beginning with `demo-` (e.g. `demo-staging`) in which case no production resources will be used.
 
-First though, a **major version of 8** for the Firebase client is required:
-
-```bash
-npm i firebase@8
-```
-
 This might entail some code changes as well, to enable the emulation, e.g.
 
 ```typescript
@@ -33,7 +27,7 @@ type UserInfo = firebase.UserInfo;
 You can start the emulators in a manner that can persist the data locally:
 
 ```bash
-npx --no-install -- firebase "emulators:start" --import=./tmp --export-on-exit
+npx firebase "emulators:start" --import=./tmp --export-on-exit
 ```
 
 You should be greeted with
