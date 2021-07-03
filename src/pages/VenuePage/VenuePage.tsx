@@ -41,7 +41,7 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import TemplateWrapper from "./TemplateWrapper";
+import { TemplateWrapper } from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
@@ -54,7 +54,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const VenuePage: React.FC = () => {
+export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const mixpanel = useMixpanel();
 
@@ -237,5 +237,3 @@ const VenuePage: React.FC = () => {
 
   return <TemplateWrapper venue={venue} />;
 };
-
-export default VenuePage;

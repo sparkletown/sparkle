@@ -4,6 +4,7 @@ import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
+import { lazyImport } from "utils/lazy";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
@@ -23,17 +24,34 @@ import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { UserProfileModal } from "components/organisms/UserProfileModal";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+// these static imports are replaced with dynamic ones using React.lazy() further down
+// import { ChatSidebar } from "components/organisms/ChatSidebar";
+// import { UserProfileModal } from "components/organisms/UserProfileModal";
+// import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+// import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+const ChatSidebar = lazyImport(
+  "components/organisms/ChatSidebar",
+  "ChatSidebar"
+);
+const UserProfileModal = lazyImport(
+  "components/organisms/UserProfileModal",
+  "UserProfileModal"
+);
+const WithNavigationBar = lazyImport(
+  "components/organisms/WithNavigationBar",
+  "WithNavigationBar"
+);
+const AnnouncementMessage = lazyImport(
+  "components/molecules/AnnouncementMessage",
+  "AnnouncementMessage"
+);
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
 
-const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
+export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
   const match = useRouteMatch();
 
@@ -160,5 +178,3 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     </RelatedVenuesProvider>
   );
 };
-
-export default TemplateWrapper;
