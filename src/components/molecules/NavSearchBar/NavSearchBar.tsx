@@ -87,6 +87,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
         ?.filter(
           (room) =>
             (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
+            room.isEnabled &&
             room.title.toLowerCase().includes(searchQuery)
         )
         .map((room, index) => (
