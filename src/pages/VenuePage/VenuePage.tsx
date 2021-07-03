@@ -46,6 +46,7 @@ import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import Login from "pages/Account/Login";
+import { PreloadVenue } from "pages/VenuePage/PreloadVenue";
 
 import "./VenuePage.scss";
 
@@ -169,18 +170,25 @@ const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
+    console.log("VenuePage()", "01 bail out reason:", {
+      venueRequestStatus,
+      venue,
+    });
     return <>This venue does not exist</>;
   }
 
   if (!venue || !venueId) {
+    console.log("VenuePage()", "02 bail out reason:", { venueId, venue });
     return <LoadingPage />;
   }
 
   if (!user) {
+    console.log("VenuePage()", "03 bail out reason:", { venue });
     return <Login venue={venue} />;
   }
 
   if (!profile) {
+    console.log("VenuePage()", "04 bail out reason:", { profile });
     return <LoadingPage />;
   }
 
@@ -191,6 +199,10 @@ const VenuePage: React.FC = () => {
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
   if (hasEntrance && !hasEntered) {
+    console.log("VenuePage()", "05 bail out reason:", {
+      hasEntrance,
+      hasEntered,
+    });
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
@@ -200,10 +212,19 @@ const VenuePage: React.FC = () => {
     !isUserVenueOwner
   ) {
     if (eventRequestStatus && !event) {
+      console.log("VenuePage()", "06 bail out reason:", {
+        eventRequestStatus,
+        event,
+      });
       return <>This event does not exist</>;
     }
 
     if (!event || !venue || !userPurchaseHistoryRequestStatus) {
+      console.log("VenuePage()", "07 bail out reason:", {
+        event,
+        venue,
+        userPurchaseHistoryRequestStatus,
+      });
       return <LoadingPage />;
     }
 
@@ -214,10 +235,19 @@ const VenuePage: React.FC = () => {
         !hasUserBoughtTicket) ||
       isEventFinished
     ) {
+      console.log("VenuePage()", "08 bail out reason:", {
+        isMember,
+        "event.price > 0": event.price > 0,
+        userPurchaseHistoryRequestStatus,
+        hasUserBoughtTicket,
+      });
       return <>Forbidden</>;
     }
 
     if (isEventStartingSoon(event)) {
+      console.log("VenuePage()", "09 bail out reason:", {
+        isEventStartingSoon: true,
+      });
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}
@@ -228,6 +258,7 @@ const VenuePage: React.FC = () => {
   }
 
   if (!user) {
+    console.log("VenuePage()", "10 bail out reason:", { user });
     return <LoadingPage />;
   }
 
@@ -238,4 +269,10 @@ const VenuePage: React.FC = () => {
   return <TemplateWrapper venue={venue} />;
 };
 
-export default VenuePage;
+const VenuePageWrapper = () => (
+  <PreloadVenue>
+    <VenuePage />
+  </PreloadVenue>
+);
+
+export default VenuePageWrapper;

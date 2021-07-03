@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
+const { assertValidVenueId } = require("./src/utils/assert");
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 
@@ -34,7 +35,7 @@ const VenueTemplate = {
   avatargrid: "avatargrid",
 };
 
-const DEFAULT_PRIMARY_COLOR = "#bc271a";
+const DEFAULT_PRIMARY_COLOR = "#BC271A";
 
 // These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
 const VALID_CREATE_TEMPLATES = [
@@ -84,7 +85,9 @@ const checkUserIsOwner = async (venueId, uid) => {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
+      if (venue.owners && venue.owners.includes(uid)) {
+        return;
+      }
 
       if (venue.parentId) {
         const doc = await admin
@@ -426,7 +429,9 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
     .collection("venues")
     .where("owners", "array-contains", ownerId)
     .get();
-  if (snap.empty) removeAdmin(ownerId);
+  if (snap.empty) {
+    removeAdmin(ownerId);
+  }
 });
 
 exports.createVenue = functions.https.onCall(async (data, context) => {
@@ -541,6 +546,26 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
         .update(updated);
     }
   }
+});
+
+exports.getVenue = functions.https.onCall(async (data) => {
+  const { venueId } = data;
+
+  assertValidVenueId(venueId, "venueId");
+
+  // Note: we're explicitly not calling checkAuth(context) here as this function needs to work even before the user is logged in.
+
+  const venueDoc = await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get();
+
+  if (!venueDoc || !venueDoc.exists) {
+    throw new HttpsError("not-found", `Venue ${venueId} not found`);
+  }
+
+  return venueDoc.data();
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
