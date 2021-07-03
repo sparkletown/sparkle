@@ -3,6 +3,13 @@ import React from "react";
 import { Helmet } from "react-helmet";
 import { useAsync } from "react-use";
 
+import {
+  SPARKLE_ICON,
+  DEFAULT_MAP_BACKGROUND,
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
+} from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { withId } from "utils/id";
@@ -11,13 +18,13 @@ import { isDefined } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";
 
-export const PreloadVenue: React.FC = ({ children }) => {
+export const VenuePreloader: React.FC = ({ children }) => {
   const venueId = useVenueId();
   const { loading, error, value: venue } = useAsync(async () => {
     if (!venueId) return;
 
     return tracePromise(
-      "VenuePage::getVenue",
+      "VenuePreloader::getVenue",
       () =>
         firebase
           .functions()
@@ -35,8 +42,8 @@ export const PreloadVenue: React.FC = ({ children }) => {
     );
   }, [venueId]);
 
-  console.log(
-    "PreloadVenue()",
+  console[error ? "warn" : "log"](
+    "VenuePreloader()",
     "loading:",
     loading,
     "error:",
@@ -46,25 +53,20 @@ export const PreloadVenue: React.FC = ({ children }) => {
   );
 
   const links = [
-    venue?.mapBackgroundImageUrl,
-    venue?.host?.icon,
-    venue?.config?.landingPageConfig?.bannerImageUrl,
+    SPARKLE_ICON,
+    venue?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND,
+    venue?.host?.icon ?? DEFAULT_VENUE_LOGO,
+    venue?.config?.landingPageConfig?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
     venue?.config?.landingPageConfig?.coverImageUrl,
   ]
-    .concat((venue?.rooms ?? []).map((room) => room?.image_url))
+    // .concat((venue?.rooms ?? []).map((room) => room?.image_url))
     .filter((url) => url);
 
   return (
     <>
       <Helmet>
         {links.map((href) => (
-          <link
-            key={href}
-            href={href}
-            rel="preload"
-            as="image"
-            crossOrigin="anonymous"
-          />
+          <link key={href} href={href} rel="preload" as="image" />
         ))}
       </Helmet>
       {children}

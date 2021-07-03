@@ -46,7 +46,7 @@ import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import Login from "pages/Account/Login";
-import { PreloadVenue } from "pages/VenuePage/PreloadVenue";
+import { VenuePreloader } from "pages/VenuePage/VenuePreloader";
 
 import "./VenuePage.scss";
 
@@ -270,9 +270,9 @@ const VenuePage: React.FC = () => {
 };
 
 const VenuePageWrapper = () => (
-  <PreloadVenue>
+  <VenuePreloader>
     <VenuePage />
-  </PreloadVenue>
+  </VenuePreloader>
 );
 
 export default VenuePageWrapper;
