@@ -70,7 +70,13 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     () =>
       relatedVenues
         .flatMap((venue) => venue.rooms ?? [])
-        .filter((room) => room),
+        .filter((room) => {
+          if (isDefined(room.type) && COVERT_ROOM_TYPES.includes(room.type)) {
+            return false;
+          }
+
+          return room.isEnabled;
+        }),
     [relatedVenues]
   );
 
@@ -96,12 +102,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
     return (
       relatedRooms
-        ?.filter(
-          (room) =>
-            (!room.type || !COVERT_ROOM_TYPES.includes(room.type)) &&
-            room.isEnabled &&
-            room.title.toLowerCase().includes(searchQuery)
-        )
+        .filter((room) => room.title.toLowerCase().includes(searchQuery))
         .map((room, index) => (
           <NavSearchResult
             key={`room-${room.title}-${index}`}
