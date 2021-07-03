@@ -74,6 +74,18 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     [relatedVenues]
   );
 
+  const relatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
+    () =>
+      relatedRooms.reduce(
+        (relatedRoomsByTitle, room) => ({
+          ...relatedRoomsByTitle,
+          [room.title]: room,
+        }),
+        {}
+      ),
+    [relatedRooms]
+  );
+
   const { isEventsLoading, events: relatedEvents } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
@@ -138,7 +150,13 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     if (!searchQuery) return [];
 
     return relatedEvents
-      .filter((event) => event.name.toLowerCase().includes(searchQuery))
+      .filter((event) => {
+        const isRoomEnabled = isDefined(event.room)
+          ? relatedRoomsByTitle[event.room]?.isEnabled ?? true
+          : true;
+
+        return isRoomEnabled && event.name.toLowerCase().includes(searchQuery);
+      })
       .map((event) => {
         const imageUrl =
           relatedRooms.find((room) => room.title === event.room)?.image_url ??
@@ -161,7 +179,14 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           />
         );
       });
-  }, [searchQuery, relatedEvents, relatedRooms, relatedVenues, clearSearch]);
+  }, [
+    searchQuery,
+    relatedEvents,
+    relatedRoomsByTitle,
+    relatedRooms,
+    relatedVenues,
+    clearSearch,
+  ]);
 
   const numberOfSearchResults =
     foundRooms.length + foundEvents.length + foundUsers.length;
