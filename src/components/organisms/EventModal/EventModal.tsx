@@ -11,7 +11,6 @@ import { WithVenueId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
