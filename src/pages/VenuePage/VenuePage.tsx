@@ -1,18 +1,22 @@
+import firebase from "firebase/app";
 import React, { useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useTitle } from "react-use";
+import { useTitle, useAsync } from "react-use";
+import { Helmet } from "react-helmet";
 
-import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
+import {
+  LOC_UPDATE_FREQ_MS,
+  PLATFORM_BRAND_NAME,
+  SPARKLE_ICON,
+} from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { VenueTemplate, AnyVenue } from "types/venues";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
   currentEventSelector,
-  currentVenueSelector,
   isCurrentEventRequestedSelector,
-  isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
@@ -25,8 +29,10 @@ import {
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
+import { tracePromise } from "utils/performance";
+import { withId } from "utils/id";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -46,7 +52,6 @@ import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import Login from "pages/Account/Login";
-import { VenuePreloader } from "pages/VenuePage/VenuePreloader";
 
 import "./VenuePage.scss";
 
@@ -55,8 +60,70 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
+interface PreloadProps {
+  venue?: AnyVenue;
+}
+
+const Preload: React.FC<PreloadProps> = ({ venue }) => (
+  <Helmet>
+    <link href={SPARKLE_ICON} rel="preload" as="image" />
+    {venue?.mapBackgroundImageUrl && (
+      <link href={venue?.mapBackgroundImageUrl} rel="preload" as="image" />
+    )}
+    {
+      // NOTE: if there is significant number of rooms, preload might degrade performance, cut down to few
+      (venue?.rooms ?? []).map(
+        (room) =>
+          room?.image_url && (
+            <link
+              key={room?.image_url}
+              href={room.image_url}
+              rel="preload"
+              as="image"
+            />
+          )
+      )
+    }
+  </Helmet>
+);
+
+const usePreloadedVenue = (venueId?: string) => {
+  const { loading, error, value: venue } = useAsync(async () => {
+    if (!venueId) return;
+
+    return tracePromise(
+      "usePreloadedVenue::getVenue",
+      () =>
+        firebase
+          .functions()
+          .httpsCallable("venue-getVenue")({ venueId })
+          .then((result) => {
+            const data: AnyVenue | undefined = result.data;
+            return isDefined(data) ? withId(data, venueId) : undefined;
+          }),
+      {
+        attributes: { venueId },
+        withDebugLog: true,
+      }
+    );
+  }, [venueId]);
+
+  if (error) {
+    console.warn("usePreloadedVenue()", error);
+  }
+
+  return {
+    venue,
+    error,
+    isVenueLoading: loading,
+    venueRequestStatus: !loading && !error,
+  };
+};
+
 const VenuePage: React.FC = () => {
   const venueId = useVenueId();
+  const { venue, venueRequestStatus } = usePreloadedVenue(venueId);
+
   const mixpanel = useMixpanel();
 
   const history = useHistory();
@@ -66,8 +133,8 @@ const VenuePage: React.FC = () => {
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
-  const venue = useSelector(currentVenueSelector);
-  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+  // const venue = useSelector(currentVenueSelector);
+  // const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
@@ -177,19 +244,41 @@ const VenuePage: React.FC = () => {
     return <>This venue does not exist</>;
   }
 
-  if (!venue || !venueId) {
-    console.log("VenuePage()", "02 bail out reason:", { venueId, venue });
-    return <LoadingPage />;
+  if (!venueId) {
+    // this should be happening only if invalid url param
+    // no sense in displaying loading page, another message or action is needed
+    // @debt use/display proper message/action when !venueId
+    console.log("VenuePage()", "02 bail out reason:", { venueId });
+    return null;
+  }
+
+  if (!venue) {
+    // too common, don't spam console, also be optimistic venue will load soon
+    // return <LoadingPage />;
+    return null;
   }
 
   if (!user) {
-    console.log("VenuePage()", "03 bail out reason:", { venue });
-    return <Login venue={venue} />;
+    console.log("VenuePage()", "03 bail out reason:", { user });
+    return (
+      <>
+        <Preload venue={venue} />
+        <Login venue={venue} />
+      </>
+    );
   }
 
   if (!profile) {
     console.log("VenuePage()", "04 bail out reason:", { profile });
-    return <LoadingPage />;
+    return (
+      <>
+        <Preload venue={venue} />
+        {
+          // is it really necessary to display loading page here?
+          // <LoadingPage />
+        }
+      </>
+    );
   }
 
   // if (isAccessDenied) {
@@ -216,7 +305,12 @@ const VenuePage: React.FC = () => {
         eventRequestStatus,
         event,
       });
-      return <>This event does not exist</>;
+      return (
+        <>
+          <Preload venue={venue} />
+          This event does not exist
+        </>
+      );
     }
 
     if (!event || !venue || !userPurchaseHistoryRequestStatus) {
@@ -225,7 +319,13 @@ const VenuePage: React.FC = () => {
         venue,
         userPurchaseHistoryRequestStatus,
       });
-      return <LoadingPage />;
+      // considering there is prior !venue check, venue should exist at this point
+      return (
+        <>
+          <Preload venue={venue} />
+          <LoadingPage />
+        </>
+      );
     }
 
     if (
@@ -249,30 +349,38 @@ const VenuePage: React.FC = () => {
         isEventStartingSoon: true,
       });
       return (
-        <CountDown
-          startUtcSeconds={event.start_utc_seconds}
-          textBeforeCountdown="Bar opens in"
-        />
+        <>
+          <Preload venue={venue} />
+          <CountDown
+            startUtcSeconds={event.start_utc_seconds}
+            textBeforeCountdown="Bar opens in"
+          />
+        </>
       );
     }
   }
 
+  // @debt there is already !user check above, this is superfluous
   if (!user) {
     console.log("VenuePage()", "10 bail out reason:", { user });
-    return <LoadingPage />;
+    return (
+      <>
+        <Preload venue={venue} />
+        <LoadingPage />
+      </>
+    );
   }
 
   if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  return <TemplateWrapper venue={venue} />;
+  return (
+    <>
+      <Preload venue={venue} />
+      <TemplateWrapper venue={venue} />
+    </>
+  );
 };
 
-const VenuePageWrapper = () => (
-  <VenuePreloader>
-    <VenuePage />
-  </VenuePreloader>
-);
-
-export default VenuePageWrapper;
+export default VenuePage;

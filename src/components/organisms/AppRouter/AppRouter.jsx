@@ -31,7 +31,7 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import VenuePage from "pages/VenuePage";
+import VenuePage from "pages/VenuePage/VenuePage";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";

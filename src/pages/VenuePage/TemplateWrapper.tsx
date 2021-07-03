@@ -26,7 +26,6 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 
 export interface TemplateWrapperProps {
