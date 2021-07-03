@@ -10,8 +10,6 @@ import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
 import { venueLandingUrl } from "utils/url";
 
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-
 // import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
@@ -87,15 +85,7 @@ const AppRouter = () => {
         <Route path="/v/:venueId" component={VenueLandingPage} />
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
-
-        <Route
-          path="/in/:venueId"
-          render={(props) => (
-            <RelatedVenuesProvider venueId={props.match.params.venueId}>
-              <VenuePage />
-            </RelatedVenuesProvider>
-          )}
-        />
+        <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
         <Route
           path="/venue/*"

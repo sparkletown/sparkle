@@ -45,10 +45,9 @@ import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
-import "./VenuePage.scss";
-
 import Login from "pages/Account/Login";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+
+import "./VenuePage.scss";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -85,10 +84,6 @@ const VenuePage: React.FC = () => {
   const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
-
-  const { isRelatedVenuesLoading } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
 
   useEffect(() => {
     if (!venue) return;
@@ -232,7 +227,7 @@ const VenuePage: React.FC = () => {
     }
   }
 
-  if (!user || isRelatedVenuesLoading) {
+  if (!user) {
     return <LoadingPage />;
   }
 

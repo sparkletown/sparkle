@@ -18,12 +18,12 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
