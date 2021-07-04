@@ -8,7 +8,11 @@ import { ReactHook } from "types/utility";
 import { withId, WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
-import { worldUsersByIdSelector, worldUsersSelector } from "utils/selectors";
+import {
+  worldUsersByIdSelector,
+  worldUsersByIdWithoutLocationSelector,
+  worldUsersSelector,
+} from "utils/selectors";
 import { useWorldUsersContext } from "./users/useWorldUsers";
 
 import { useSelector } from "./useSelector";
@@ -35,7 +39,10 @@ export const useConnectWorldUsers = () => {
 export const useWorldUsersById = () => {
   useConnectWorldUsers();
 
-  const worldUsersById = useSelector(worldUsersByIdSelector);
+  const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
+    worldUsersByIdWithoutLocationSelector,
+    isEqual
+  );
 
   return {
     worldUsersById: worldUsersById ?? noUsersById,
