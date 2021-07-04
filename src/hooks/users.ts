@@ -105,7 +105,7 @@ export const useRecentWorldUsers = (): {
       .map(userWithLocationToUser);
 
     return { recentWorldUsers, isWorldUsersLoaded };
-  });
+  }, isEqual);
 
   return {
     recentWorldUsers: recentWorldUsers ?? noUsers,
