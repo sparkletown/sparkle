@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { shallowEqual } from "react-redux";
 import { isEqual } from "lodash";
 
 import { User, UserLocation, userWithLocationToUser } from "types/User";
@@ -76,7 +77,7 @@ export const useWorldUserLocation = (
     };
 
     return withId(userLocation, userId);
-  });
+  }, shallowEqual);
 
   return {
     userLocation,
