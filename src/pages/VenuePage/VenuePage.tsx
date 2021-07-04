@@ -16,7 +16,9 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import {
   currentEventSelector,
+  currentVenueSelector,
   isCurrentEventRequestedSelector,
+  isCurrentVenueRequestedSelector,
   isUserPurchaseHistoryRequestedSelector,
   userPurchaseHistorySelector,
 } from "utils/selectors";
@@ -119,10 +121,6 @@ const usePreloadedVenue = (venueId?: string) => {
     );
   }, [venueId]);
 
-  if (error) {
-    console.warn("usePreloadedVenue()", error);
-  }
-
   return {
     venue: value,
     error,
@@ -133,7 +131,11 @@ const usePreloadedVenue = (venueId?: string) => {
 
 const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const { venue, venueRequestStatus } = usePreloadedVenue(venueId);
+  const {
+    venue: preVenue,
+    error: preError,
+    venueRequestStatus: preStatus,
+  } = usePreloadedVenue(venueId);
 
   const mixpanel = useMixpanel();
 
@@ -144,8 +146,14 @@ const VenuePage: React.FC = () => {
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
-  // const venue = useSelector(currentVenueSelector);
-  // const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+  const postVenue = useSelector(currentVenueSelector);
+  const postStatus = useSelector(isCurrentVenueRequestedSelector);
+
+  if (preError) {
+    console.warn("VenuePage()", "preload failed:", preError);
+  }
+  const venue = preError ? postVenue : preVenue;
+  const venueRequestStatus = preError ? postStatus : preStatus;
 
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
