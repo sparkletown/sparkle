@@ -1,4 +1,5 @@
 import { FirebaseReducer } from "react-redux-firebase";
+import { mapValues } from "lodash";
 
 import { RootState } from "index";
 
@@ -13,7 +14,7 @@ import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
-import { WithId } from "utils/id";
+import { withId, WithId } from "utils/id";
 
 import {
   makeIsRequestedSelector,
@@ -74,6 +75,16 @@ export const worldUsersWithoutLocationSelector: SparkleSelector<
 export const worldUsersByIdSelector: SparkleSelector<
   Record<string, UserWithLocation> | undefined
 > = (state) => state.firestore.data.worldUsers;
+
+export const worldUsersByIdWithoutLocationSelector: SparkleSelector<
+  Record<string, WithId<User>> | undefined
+> = (state) => {
+  const worldUsersById = worldUsersByIdSelector(state);
+
+  return mapValues(worldUsersById, (user, userId) =>
+    userWithLocationToUser(withId(user, userId))
+  );
+};
 
 /**
  * Selector to retrieve venues from the Redux Firestore.
