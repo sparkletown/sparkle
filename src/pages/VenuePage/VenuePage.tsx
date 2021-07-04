@@ -35,7 +35,6 @@ import { tracePromise } from "utils/performance";
 import { withId } from "utils/id";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
@@ -120,28 +119,16 @@ const usePreloadedVenue = (venueId?: string) => {
     );
   }, [venueId]);
 
-  // fallback scenario, when useAsync returns error
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
-
   if (error) {
     console.warn("usePreloadedVenue()", error);
   }
 
-  return error
-    ? {
-        venue: currentVenue ?? value,
-        error,
-        isVenueLoading: !isCurrentVenueLoaded,
-        venueRequestStatus: isCurrentVenueLoaded,
-      }
-    : {
-        venue: value ?? currentVenue,
-        error,
-        isVenueLoading: loading,
-        venueRequestStatus: !loading,
-      };
+  return {
+    venue: value,
+    error,
+    isVenueLoading: loading,
+    venueRequestStatus: !loading && !error,
+  };
 };
 
 const VenuePage: React.FC = () => {

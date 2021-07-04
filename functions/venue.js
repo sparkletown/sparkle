@@ -35,7 +35,7 @@ const VenueTemplate = {
   avatargrid: "avatargrid",
 };
 
-const DEFAULT_PRIMARY_COLOR = "#BC271A";
+const DEFAULT_PRIMARY_COLOR = "#bc271a";
 
 // These templates are allowed to be used with createVenueData (they should remain alphabetically sorted)
 const VALID_CREATE_TEMPLATES = [
@@ -85,9 +85,7 @@ const checkUserIsOwner = async (venueId, uid) => {
         throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
       }
       const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) {
-        return;
-      }
+      if (venue.owners && venue.owners.includes(uid)) return;
 
       if (venue.parentId) {
         const doc = await admin
@@ -429,9 +427,7 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
     .collection("venues")
     .where("owners", "array-contains", ownerId)
     .get();
-  if (snap.empty) {
-    removeAdmin(ownerId);
-  }
+  if (snap.empty) removeAdmin(ownerId);
 });
 
 exports.createVenue = functions.https.onCall(async (data, context) => {
