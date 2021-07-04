@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { shallowEqual } from "react-redux";
 import { isEqual } from "lodash";
 
@@ -18,6 +18,7 @@ import { isLoaded } from "./useFirestoreConnect";
 export { useWorldUsers } from "./users/useWorldUsers";
 
 const noUsers: WithId<User>[] = [];
+const noUsersById: Record<string, WithId<User>> = {};
 
 export const useConnectWorldUsers = () => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
@@ -36,13 +37,10 @@ export const useWorldUsersById = () => {
 
   const worldUsersById = useSelector(worldUsersByIdSelector);
 
-  return useMemo(
-    () => ({
-      worldUsersById: worldUsersById ?? {},
-      isWorldUsersLoaded: isLoaded(worldUsersById),
-    }),
-    [worldUsersById]
-  );
+  return {
+    worldUsersById: worldUsersById ?? noUsersById,
+    isWorldUsersLoaded: isLoaded(worldUsersById),
+  };
 };
 
 // @debt typing, this uses Partial<Record<K,T>> to work around the bug where Record implies that a User will exist for literally any given string, which is untrue
