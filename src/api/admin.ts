@@ -1,5 +1,5 @@
 import firebase, { UserInfo } from "firebase/app";
-import { omit } from "lodash";
+import { omit } from "lodash-es";
 import Bugsnag from "@bugsnag/js";
 
 import { Room } from "types/rooms";

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
+import { chunk } from "lodash-es";
 import { User } from "@bugsnag/js";
 
 import { useFirestore } from "react-redux-firebase";

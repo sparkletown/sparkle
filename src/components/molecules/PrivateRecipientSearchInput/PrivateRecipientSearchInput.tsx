@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo, useCallback } from "react";
 import { User } from "types/User";
 import { Dropdown, FormControl } from "react-bootstrap";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 import { useWorldUsers } from "hooks/users";
 import { WithId } from "utils/id";
 

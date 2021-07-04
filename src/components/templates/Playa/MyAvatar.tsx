@@ -5,7 +5,7 @@ import {
   stateBoolean,
   UserVideoState,
 } from "types/RelayMessage";
-import { throttle } from "lodash";
+import { throttle } from "lodash-es";
 import {
   PLAYA_AVATAR_SIZE,
   DEFAULT_PARTY_NAME,

@@ -10,7 +10,7 @@ import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
 import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
-import { throttle } from "lodash";
+import { throttle } from "lodash-es";
 
 import { IS_BURN } from "secrets";
 import {

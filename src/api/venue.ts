@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { chunk } from "lodash";
+import { chunk } from "lodash-es";
 
 import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 

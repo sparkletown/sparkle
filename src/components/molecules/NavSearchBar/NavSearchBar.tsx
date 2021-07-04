@@ -1,6 +1,6 @@
 import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual } from "lodash-es";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 

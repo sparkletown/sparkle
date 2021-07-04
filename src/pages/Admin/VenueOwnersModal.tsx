@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useFirestore } from "react-redux-firebase";
 import { Modal, FormControl } from "react-bootstrap";
-import { debounce } from "lodash";
+import { debounce } from "lodash-es";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 

@@ -8,7 +8,7 @@ import {
   startOfToday,
 } from "date-fns";
 import classNames from "classnames";
-import { groupBy } from "lodash";
+import { groupBy } from "lodash-es";
 
 import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 

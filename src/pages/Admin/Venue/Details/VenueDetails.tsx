@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import firebase from "firebase/app";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { isEqual } from "lodash";
+import { isEqual } from "lodash-es";
 import { Link } from "react-router-dom";
 
 import { updateRoom } from "api/admin";
