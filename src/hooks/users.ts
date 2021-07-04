@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { isEqual } from "lodash";
 
 import { User, UserLocation, userWithLocationToUser } from "types/User";
 import { ReactHook } from "types/utility";
@@ -147,7 +148,7 @@ export const useRecentLocationUsers = (
       .map(userWithLocationToUser);
 
     return { recentLocationUsers, isWorldUsersLoaded };
-  });
+  }, isEqual);
 
   return {
     recentLocationUsers: recentLocationUsers ?? noUsers,
