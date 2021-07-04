@@ -16,17 +16,42 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
-import { PartyMap } from "components/templates/PartyMap";
+// import { PartyMap } from "components/templates/PartyMap";
 import { PlayaRouter } from "components/templates/Playa/Router";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { UserProfileModal } from "components/organisms/UserProfileModal";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+// import { ChatSidebar } from "components/organisms/ChatSidebar";
+// import { UserProfileModal } from "components/organisms/UserProfileModal";
+// import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+// import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+
+const PartyMap = React.lazy(() =>
+  import("components/templates/PartyMap").then((m) => ({ default: m.PartyMap }))
+);
+
+const ChatSidebar = React.lazy(() =>
+  import("components/organisms/ChatSidebar").then((m) => ({
+    default: m.ChatSidebar,
+  }))
+);
+const UserProfileModal = React.lazy(() =>
+  import("components/organisms/UserProfileModal").then((m) => ({
+    default: m.UserProfileModal,
+  }))
+);
+const WithNavigationBar = React.lazy(() =>
+  import("components/organisms/WithNavigationBar").then((m) => ({
+    default: m.WithNavigationBar,
+  }))
+);
+const AnnouncementMessage = React.lazy(() =>
+  import("components/molecules/AnnouncementMessage").then((m) => ({
+    default: m.AnnouncementMessage,
+  }))
+);
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -57,7 +82,11 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = <PartyMap venue={venue} />;
+      template = (
+        <React.Suspense fallback={<></>}>
+          <PartyMap venue={venue} />
+        </React.Suspense>
+      );
       break;
 
     case VenueTemplate.artpiece:
@@ -146,15 +175,23 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     <RelatedVenuesProvider venueId={venue.id}>
       <ReactionsProvider venueId={venue.id}>
-        <WithNavigationBar
-          fullscreen={fullscreen}
-          hasBackButton={hasBackButton}
-        >
-          <AnnouncementMessage message={venue.bannerMessage} />
-          {template}
-          <ChatSidebar venue={venue} />
-          <UserProfileModal venue={venue} />
-        </WithNavigationBar>
+        <React.Suspense fallback={<></>}>
+          <WithNavigationBar
+            fullscreen={fullscreen}
+            hasBackButton={hasBackButton}
+          >
+            <React.Suspense fallback={<></>}>
+              <AnnouncementMessage message={venue.bannerMessage} />
+            </React.Suspense>
+            {template}
+            <React.Suspense fallback={<></>}>
+              <ChatSidebar venue={venue} />
+            </React.Suspense>
+            <React.Suspense fallback={<></>}>
+              <UserProfileModal venue={venue} />
+            </React.Suspense>
+          </WithNavigationBar>
+        </React.Suspense>
       </ReactionsProvider>
     </RelatedVenuesProvider>
   );

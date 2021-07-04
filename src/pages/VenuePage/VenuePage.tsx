@@ -35,6 +35,7 @@ import { tracePromise } from "utils/performance";
 import { withId } from "utils/id";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
@@ -44,16 +45,27 @@ import { useVenueId } from "hooks/useVenueId";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-import { CountDown } from "components/molecules/CountDown";
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+// import { CountDown } from "components/molecules/CountDown";
+// import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import TemplateWrapper from "./TemplateWrapper";
-
+// import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import Login from "pages/Account/Login";
 
 import "./VenuePage.scss";
+
+const CountDown = React.lazy(() =>
+  import("components/molecules/CountDown").then((m) => ({
+    default: m.CountDown,
+  }))
+);
+const LoadingPage = React.lazy(() =>
+  import("components/molecules/LoadingPage/LoadingPage").then((m) => ({
+    default: m.LoadingPage,
+  }))
+);
+const TemplateWrapper = React.lazy(() => import("./TemplateWrapper"));
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -88,7 +100,7 @@ const Preload: React.FC<PreloadProps> = ({ venue }) => (
 );
 
 const usePreloadedVenue = (venueId?: string) => {
-  const { loading, error, value: venue } = useAsync(async () => {
+  const { loading, error, value } = useAsync(async () => {
     if (!venueId) return;
 
     return tracePromise(
@@ -108,16 +120,28 @@ const usePreloadedVenue = (venueId?: string) => {
     );
   }, [venueId]);
 
+  // fallback scenario, when useAsync returns error
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
+
   if (error) {
     console.warn("usePreloadedVenue()", error);
   }
 
-  return {
-    venue,
-    error,
-    isVenueLoading: loading,
-    venueRequestStatus: !loading && !error,
-  };
+  return error
+    ? {
+        venue: currentVenue ?? value,
+        error,
+        isVenueLoading: !isCurrentVenueLoaded,
+        venueRequestStatus: isCurrentVenueLoaded,
+      }
+    : {
+        venue: value ?? currentVenue,
+        error,
+        isVenueLoading: loading,
+        venueRequestStatus: !loading,
+      };
 };
 
 const VenuePage: React.FC = () => {
@@ -253,9 +277,13 @@ const VenuePage: React.FC = () => {
   }
 
   if (!venue) {
-    // too common, don't spam console, also be optimistic venue will load soon
-    // return <LoadingPage />;
-    return null;
+    // too common, don't spam console, be optimistic venue will load soon
+    // return null;
+    return (
+      <React.Suspense fallback={<></>}>
+        <LoadingPage />
+      </React.Suspense>
+    );
   }
 
   if (!user) {
@@ -323,7 +351,9 @@ const VenuePage: React.FC = () => {
       return (
         <>
           <Preload venue={venue} />
-          <LoadingPage />
+          <React.Suspense fallback={<></>}>
+            <LoadingPage />
+          </React.Suspense>
         </>
       );
     }
@@ -351,10 +381,12 @@ const VenuePage: React.FC = () => {
       return (
         <>
           <Preload venue={venue} />
-          <CountDown
-            startUtcSeconds={event.start_utc_seconds}
-            textBeforeCountdown="Bar opens in"
-          />
+          <React.Suspense fallback={<></>}>
+            <CountDown
+              startUtcSeconds={event.start_utc_seconds}
+              textBeforeCountdown="Bar opens in"
+            />
+          </React.Suspense>
         </>
       );
     }
@@ -366,7 +398,9 @@ const VenuePage: React.FC = () => {
     return (
       <>
         <Preload venue={venue} />
-        <LoadingPage />
+        <React.Suspense fallback={<></>}>
+          <LoadingPage />
+        </React.Suspense>
       </>
     );
   }
@@ -378,7 +412,9 @@ const VenuePage: React.FC = () => {
   return (
     <>
       <Preload venue={venue} />
-      <TemplateWrapper venue={venue} />
+      <React.Suspense fallback={<></>}>
+        <TemplateWrapper venue={venue} />
+      </React.Suspense>
     </>
   );
 };
