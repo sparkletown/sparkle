@@ -16,7 +16,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VenueLandingPage } from "pages/VenueLandingPage";
-import VenuePage from "pages/VenuePage";
+import { VenuePage } from "pages/VenuePage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
