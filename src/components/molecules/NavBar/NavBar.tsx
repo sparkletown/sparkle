@@ -89,8 +89,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   });
   const parentVenueId = parentVenue?.id;
 
-  console.log(venueId, currentVenue, parentVenue);
-
   const {
     location: { pathname },
     push: openUrlUsingRouter,

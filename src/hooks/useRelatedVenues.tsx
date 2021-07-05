@@ -162,7 +162,5 @@ export const useRelatedVenues: ReactHook<
     return findVenueInRelatedVenues(currentVenue.parentId);
   }, [currentVenue, findVenueInRelatedVenues]);
 
-  console.log({ relatedVenuesState, currentVenueId });
-
   return { ...relatedVenuesState, currentVenue, parentVenue };
 };

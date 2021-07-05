@@ -76,10 +76,12 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   return (
     <>
-      <BackButton
-        onClick={backToParentVenue}
-        locationName={parentVenue?.name}
-      />
+      {parentVenue && (
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
+      )}
       <div className={containerClasses}>
         {emptyBlocks}
 

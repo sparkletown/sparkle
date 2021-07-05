@@ -1,15 +1,18 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
+import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { enterVenue } from "utils/url";
 
 import {
   useAuditoriumSection,
   useAuditoriumGrid,
 } from "hooks/auditoriumSections";
 
+import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
 
 import "./Section.scss";
@@ -32,6 +35,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   } = venue;
 
   const { sectionId } = useParams<{ sectionId?: string }>();
+  const { push: openUrlUsingRouter } = useHistory();
 
   const {
     auditoriumSection,
@@ -79,10 +83,17 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
+  const backToMain = useCallback(() => {
+    if (!venueId) return;
+
+    enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [venueId, openUrlUsingRouter]);
+
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
     <div className="Section">
+      <BackButton onClick={backToMain} locationName="main" />
       <div className="Section__seats">
         <IFrame
           containerClassname="Section__iframe-overlay"
