@@ -65,7 +65,7 @@ import { initializeZendesk } from "utils/zendesk";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
-import AppRouter from "components/organisms/AppRouter";
+import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
