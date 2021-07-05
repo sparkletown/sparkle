@@ -7,7 +7,6 @@ import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
@@ -41,7 +40,6 @@ import {
   BUILD_SHA1,
   BUILD_TAG,
   LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
@@ -236,10 +234,6 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
@@ -256,10 +250,6 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
         displayName,
         email,
       });
-    }
-
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
     }
   }, [auth]);
 
