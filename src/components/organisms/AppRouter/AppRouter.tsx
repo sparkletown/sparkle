@@ -47,6 +47,7 @@ const AppRouter: React.FC = () => {
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
         <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
+
         <Route
           path="/venue/*"
           render={(props) => (
@@ -64,9 +65,9 @@ const AppRouter: React.FC = () => {
 
         <Route
           path="/"
-          component={() => {
+          render={() => {
             window.location.href = DEFAULT_REDIRECT_URL;
-            return null;
+            return <LoadingPage />;
           }}
         />
       </Switch>
