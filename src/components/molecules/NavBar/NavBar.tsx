@@ -193,7 +193,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   );
 
 
-  const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction:any) => {
+  const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction: { (): void; (): void; (): void; }) => {
     const enterOrSpace =
     e.key === "Enter" ||
     e.key === " " ||

@@ -90,7 +90,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [play, selectRoom]);
 
 
- const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction:any) => {
+ const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction: { (): void; (): void; }) => {
   const enterOrSpace =
   e.key === "Enter" ||
   e.key === " " ||
