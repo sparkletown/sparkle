@@ -44,7 +44,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   const isFull = seatedUsersCount >= maxUsers;
   const isEmpty = seatedUsersCount === 0;
 
-  const userAmountText = `${seatedUsersCount}/${maxUsers}`;
+  const userAmountText = isFull ? "Full" : `${seatedUsersCount}/${maxUsers}`;
 
   const handleClick = () => {
     if (isFull) {
