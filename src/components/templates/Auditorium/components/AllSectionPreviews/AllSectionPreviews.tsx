@@ -1,6 +1,7 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import { sample } from "lodash";
 
 import { AuditoriumSize } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -39,6 +40,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     auditoriumSections,
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
+    enterSection,
   } = useAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
@@ -48,9 +50,14 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   const sectionPreviews = useMemo(
     () =>
       auditoriumSections.map((section) => (
-        <SectionPreview key={section.id} section={section} venue={venue} />
+        <SectionPreview
+          key={section.id}
+          section={section}
+          venue={venue}
+          enterSection={enterSection}
+        />
       )),
-    [auditoriumSections, venue]
+    [auditoriumSections, venue, enterSection]
   );
 
   const emptyBlocks = useMemo(
@@ -65,6 +72,18 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         )),
     []
   );
+
+  const sectionIds = useMemo(
+    () => auditoriumSections.map((section) => section.id),
+    [auditoriumSections]
+  );
+
+  const enterRandomSection = useCallback(() => {
+    const randomSectionId = sample(sectionIds);
+    if (!randomSectionId) return;
+
+    enterSection(randomSectionId);
+  }, [enterSection, sectionIds]);
 
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;
@@ -110,7 +129,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
               label="Hide full sections"
             />
 
-            <Button>Take a random seat</Button>
+            <Button onClick={enterRandomSection}>Take a random seat</Button>
           </div>
         </div>
 

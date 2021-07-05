@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useHistory } from "react-router";
 
 import { setGridData } from "api/profile";
 
@@ -161,6 +162,8 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   const venueId = venue.id;
   useConnectAuditoriumSections(venueId);
 
+  const history = useHistory();
+
   const {
     isShown: isFullAuditoriumsShown,
     toggle: toggleFullAuditoriums,
@@ -172,6 +175,13 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   const { worldUsers } = useWorldUsers();
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
+
+  const enterSection = useCallback(
+    (sectionId: string) => {
+      history.push(`${history.location.pathname}/section/${sectionId}`);
+    },
+    [history]
+  );
 
   const filteredSections = useMemo(() => {
     if (!isFullAuditoriumsHidden) return sections;
@@ -196,8 +206,15 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
       isAuditoriumSectionsLoaded: isLoaded(sections),
       isFullAuditoriumsHidden,
       toggleFullAuditoriums,
+      enterSection,
     }),
-    [sections, filteredSections, isFullAuditoriumsHidden, toggleFullAuditoriums]
+    [
+      sections,
+      filteredSections,
+      isFullAuditoriumsHidden,
+      toggleFullAuditoriums,
+      enterSection,
+    ]
   );
 };
 

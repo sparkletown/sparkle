@@ -1,6 +1,5 @@
 import React from "react";
 import classNames from "classnames";
-import { useHistory } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 
@@ -22,14 +21,14 @@ import "./SectionPreview.scss";
 export interface SectionPreviewProps {
   section: WithId<AuditoriumSection>;
   venue: WithId<AuditoriumVenue>;
+  enterSection: (sectionId: string) => void;
 }
 
 export const SectionPreview: React.FC<SectionPreviewProps> = ({
   section,
   venue,
+  enterSection,
 }) => {
-  const history = useHistory();
-
   // const { recentVenueUsers } = useRecentVenueUsers();
   const { worldUsers } = useWorldUsers();
 
@@ -53,7 +52,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       return;
     }
 
-    history.push(`${history.location.pathname}/section/${section.id}`);
+    enterSection(section.id);
   };
 
   const containerClasses = classNames("SectionPreview", {
@@ -76,7 +75,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       <UserList
         users={seatedUsers}
         showTitle={false}
-        limit={11}
+        limit={14}
         showMoreUsersToggler={false}
         hasClickableAvatars={false}
         cellClassName="SectionPreview__avatar"
