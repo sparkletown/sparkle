@@ -1,5 +1,5 @@
 import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+// import { useSelector } from "hooks/useSelector";
 
 export const useConnectVenueEvents = (venueId?: string) => {
   useFirestoreConnect(
@@ -15,6 +15,5 @@ export const useConnectVenueEvents = (venueId?: string) => {
         ]
       : []
   );
-
-  return useSelector((state) => state.firestore.ordered.events);
+  // return useSelector((state) => state.firestore.ordered.events);
 };

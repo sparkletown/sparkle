@@ -5,10 +5,13 @@ import { WithId } from "utils/id";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
+import { useSelector } from "hooks/useSelector";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
+
+import { venueEventsNGSelector } from "utils/selectors";
 
 import "./EventsView.scss";
 
@@ -18,7 +21,8 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
-  const events = useConnectVenueEvents(venueId);
+  useConnectVenueEvents(venueId);
+  const events = useSelector(venueEventsNGSelector);
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
