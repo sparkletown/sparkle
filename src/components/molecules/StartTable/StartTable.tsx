@@ -10,6 +10,8 @@ import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
+import { DEFAULT_TABLE_CAPACITY } from "../TablesUserList/TablesUserList";
+
 import "./StartTable.scss";
 
 export interface StartTablePropsType {
@@ -37,8 +39,7 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       tableOfUser: newTable,
       tables: [...tables, newTable],
       title: newTable.title,
-      // TODO: fix default capacity
-      capacity: newTable.capacity ?? 6,
+      capacity: newTable.capacity ?? DEFAULT_TABLE_CAPACITY,
     });
   }, [newTable, tables, venue?.id]);
 

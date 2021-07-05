@@ -24,12 +24,13 @@ interface PropsType {
 }
 
 const TABLES = 4;
+export const DEFAULT_TABLE_CAPACITY = 8;
 
 const createTable = (i: number): Table => {
   return {
     title: `Table ${i + 1}`,
     reference: `Table ${i + 1}`,
-    capacity: 8,
+    capacity: DEFAULT_TABLE_CAPACITY,
     rows: 2,
     columns: 4,
   };
