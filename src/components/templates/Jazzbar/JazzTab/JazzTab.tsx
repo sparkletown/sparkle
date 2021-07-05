@@ -135,7 +135,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
-  const shouldShowReactions = venueToUse?.showReactions;
+  const shouldShowReactions = seatedAtTable && venueToUse?.showReactions ?? DEFAULT_SHOW_REACTIONS;
 
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts;
@@ -205,7 +205,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               </div>
 
               {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
-              {seatedAtTable && shouldShowReactions && (
+              {shouldShowReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (

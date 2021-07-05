@@ -70,8 +70,7 @@ const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
 // @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
 
-// @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_REACTIONS here
-
+// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS in src/settings.ts + share the same code between frontend/backend
 const DEFAULT_SHOW_REACTIONS = true;
 const DEFAULT_SHOW_SHOUTOUTS = true;
 
@@ -213,7 +212,6 @@ const createVenueData = (data, context) => {
   }
 
   // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
-  // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_REACTIONS here
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData.showReactions =
       typeof data.showReactions === "boolean"
@@ -285,12 +283,12 @@ const createVenueData_v2 = (data, context) => {
     rooms: [],
   };
 
-  // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_REACTIONS here
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
     venueData_v2.showReactions =
       typeof data.showReactions === "boolean"
         ? data.showReactions
         : DEFAULT_SHOW_REACTIONS;
+
     venueData_v2.showShoutouts =
       typeof data.showShoutouts === "boolean"
         ? data.showShoutouts
