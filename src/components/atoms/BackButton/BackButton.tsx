@@ -5,20 +5,24 @@ import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import "./BackButton.scss";
 
 export interface BackButtonProps {
-  label?: string;
+  locationName?: string;
   onClick: () => void;
 }
 
 export const BackButton: React.FC<BackButtonProps> = ({
-  label = "Back",
+  locationName,
   onClick,
-}) => (
-  <div className="BackButton" onClick={onClick}>
-    <FontAwesomeIcon
-      className="BackButton__icon"
-      icon={faChevronLeft}
-      size="sm"
-    />
-    <span className="BackButton__label">{label}</span>
-  </div>
-);
+}) => {
+  const backButtonText = locationName ? `Back to ${locationName}` : "Back";
+
+  return (
+    <div className="BackButton" onClick={onClick}>
+      <FontAwesomeIcon
+        className="BackButton__icon"
+        icon={faChevronLeft}
+        size="sm"
+      />
+      <span className="BackButton__label">{backButtonText}</span>
+    </div>
+  );
+};

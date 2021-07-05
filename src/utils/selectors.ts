@@ -184,10 +184,6 @@ export const messagesToTheBandSelector: SparkleSelector<
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.parentVenue;
-
 export const venueEventsSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = (state) => state.firestore.ordered.venueEvents;

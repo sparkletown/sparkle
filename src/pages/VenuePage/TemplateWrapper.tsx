@@ -46,7 +46,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route component={Jazzbar} />
+          <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
       // NOTE: Remove the back button, because we don't need it in Table view

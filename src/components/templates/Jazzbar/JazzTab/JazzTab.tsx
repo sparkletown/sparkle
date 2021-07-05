@@ -15,8 +15,8 @@ import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
 import { createEmojiReaction } from "utils/reactions";
-import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
 
 import Room from "../components/JazzBarRoom";
 
@@ -30,10 +30,10 @@ import { BackButton } from "components/atoms/BackButton";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -43,7 +43,7 @@ import "./JazzTab.scss";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: JazzbarVenue;
+  venue: WithId<JazzbarVenue>;
 }
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -52,12 +52,11 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const firestoreVenue = useSelector(currentVenueSelectorData);
-  const venueToUse = venue ? venue : firestoreVenue;
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const parentVenueId = venueToUse?.parentId;
-  const parentVenue = useSelector(parentVenueSelector);
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+
+  const parentVenueId = parentVenue?.id;
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -66,11 +65,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
 
-  useExperiences(venueToUse?.name);
+  useExperiences(venue?.name);
 
   const { userWithId } = useUser();
 
-  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
+  const jazzbarTables = venue?.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -135,15 +134,15 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     "music-bar--tableview": seatedAtTable,
   });
 
-  if (!venueToUse) return <>Loading...</>;
+  if (!venue) return <>Loading...</>;
 
   return (
     <div className={containerClasses}>
-      {venueToUse.description?.text && (
+      {venue.description?.text && (
         <div className="row">
           <div className="col">
             <div className="description">
-              <RenderMarkdown text={venueToUse.description?.text} />
+              <RenderMarkdown text={venue.description?.text} />
             </div>
           </div>
         </div>
@@ -152,7 +151,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       {!seatedAtTable && parentVenue && (
         <BackButton
           onClick={backToParentVenue}
-          label={`Back to ${parentVenue.name}`}
+          locationName={parentVenue?.name}
         />
       )}
 
@@ -168,22 +167,22 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TableHeader
           seatedAtTable={seatedAtTable}
           setSeatedAtTable={setSeatedAtTable}
-          venueName={venueToUse.name}
+          venueName={venue.name}
           tables={jazzbarTables}
         />
       )}
 
       <div className="music-bar-content">
         <div className="video-container">
-          {!venueToUse.hideVideo && (
+          {!venue.hideVideo && (
             <>
               <div className="iframe-container">
-                {venueToUse.iframeUrl ? (
+                {venue.iframeUrl ? (
                   <iframe
                     key="main-event"
                     title="main event"
                     className="iframe-video"
-                    src={`${venueToUse.iframeUrl}?autoplay=1`}
+                    src={`${venue.iframeUrl}?autoplay=1`}
                     frameBorder="0"
                     allow={IFRAME_ALLOW}
                   />
@@ -234,8 +233,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
         {seatedAtTable && (
           <Room
-            roomName={`${venueToUse.name}-${seatedAtTable}`}
-            venueName={venueToUse.name}
+            roomName={`${venue.name}-${seatedAtTable}`}
+            venueName={venue.name}
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isAudioEffectDisabled}
@@ -244,9 +243,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TablesUserList
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
-          venueName={venueToUse.name}
+          venueName={venue.name}
           TableComponent={JazzBarTableComponent}
-          joinMessage={!venueToUse?.hideVideo ?? true}
+          joinMessage={!venue?.hideVideo ?? true}
           customTables={jazzbarTables}
         />
       </div>

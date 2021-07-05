@@ -63,7 +63,6 @@ export interface FirestoreData {
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
-  parentVenue?: AnyVenue;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -92,7 +91,6 @@ export interface FirestoreOrdered {
   eventPurchase?: WithId<Purchase>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
-  parentVenue?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];

@@ -63,7 +63,7 @@ import UserList from "components/molecules/UserList";
 import AvatarLayer from "./AvatarLayer";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
-import VenuePreview from "./VenuePreview";
+// import VenuePreview from "./VenuePreview";
 import VideoChatLayer from "./VideoChatLayer";
 
 import "./Playa.scss";
@@ -1039,22 +1039,12 @@ const Playa = () => {
         >
           <VideoChatLayer />
         </div>
-        <Modal show={showModal} onHide={hideVenue}>
-          {selectedVenue && user && (
-            <VenuePreview
-              user={user}
-              venue={selectedVenue}
-              allowHideVenue={isUserVenueOwner === true}
-            />
-          )}
-        </Modal>
+        <Modal show={showModal} onHide={hideVenue}></Modal>
       </>
     );
   }, [
     hideVenue,
-    selectedVenue,
     showModal,
-    user,
     bikeMode,
     toggleBikeMode,
     centeredOnMe,
