@@ -19,6 +19,8 @@ import { venueLandingUrl } from "utils/url";
 
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
+import { LoadingPage } from "components/molecules/LoadingPage";
+
 import { AccountSubrouter } from "./AccountSubrouter";
 import { AdminNGSubrouter } from "./AdminNGSubrouter";
 import { AdminV1Subrouter } from "./AdminV1Subrouter";
@@ -28,10 +30,6 @@ const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
       <Switch>
-        <Route
-          path="/SparkleVerse"
-          component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
-        />
         <Route path="/enter" component={EnterSubrouter} />
         <Route path="/account" component={AccountSubrouter} />
         <Route path="/admin" component={AdminV1Subrouter} />
@@ -55,6 +53,15 @@ const AppRouter: React.FC = () => {
             <Redirect to={venueLandingUrl(props.match.params[0])} />
           )}
         />
+
+        <Route
+          path="/sparkleverse"
+          render={() => {
+            window.location.href = SPARKLEVERSE_HOMEPAGE_URL;
+            return <LoadingPage />;
+          }}
+        />
+
         <Route
           path="/"
           component={() => {
