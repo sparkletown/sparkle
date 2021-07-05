@@ -192,6 +192,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
+
+  const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction:any) => {
+    const enterOrSpace =
+    e.key === "Enter" ||
+    e.key === " " ||
+    e.key === "Spacebar" ||
+    e.which === 13 ||
+    e.which === 32;
+    if (enterOrSpace) {
+      e.preventDefault();
+      keyPressFunction();
+    }
+   }
+
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -227,6 +241,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
               {shouldShowSchedule ? (
                 <div
+                  role="button"
+                  tabIndex={0}
+                  onKeyPress={(e) => handleKeyPress(e, toggleEventSchedule)}
                   className={`nav-party-logo ${
                     isEventScheduleVisible && "clicked"
                   }`}
@@ -340,11 +357,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {shouldShowSchedule && (
         <div
+          role="button"
+          tabIndex={0}
           className={`schedule-dropdown-backdrop ${
-            isEventScheduleVisible ? "show" : ""
-          }`}
-          onClick={hideEventSchedule}
-        >
+              isEventScheduleVisible ? "show" : ""
+            }`}
+            onClick={hideEventSchedule}
+          >
           <div className={navBarScheduleClassName}>
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
@@ -356,7 +375,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
+        <div className="back-map-btn"
+        role="button"
+        tabIndex={0}
+        onKeyPress={(e) => handleKeyPress(e, backToParentVenue)}
+        onClick={backToParentVenue}>
           <div className="back-icon" />
           <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}
