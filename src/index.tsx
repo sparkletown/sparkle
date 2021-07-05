@@ -69,7 +69,6 @@ import AppRouter from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
