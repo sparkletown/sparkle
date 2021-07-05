@@ -2,6 +2,8 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
+import "./BackButton.scss";
+
 export interface BackButtonProps {
   label?: string;
   onClick: () => void;

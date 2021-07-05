@@ -9,6 +9,7 @@ import { chooseAuditoriumSize } from "utils/auditorium";
 
 import { useAuditoriumSections } from "hooks/auditoriumSections";
 
+import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
@@ -24,9 +25,7 @@ export interface SectionPreviewsProps {
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
-  const { iframeUrl, id: venueId } = venue;
-
-  const { auditoriumSections } = useAuditoriumSections(venueId);
+  const { auditoriumSections } = useAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
 
@@ -60,35 +59,38 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   });
 
   return (
-    <div className={containerClasses}>
-      {emptyBlocks}
+    <>
+      <BackButton onClick={() => {}} />
+      <div className={containerClasses}>
+        {emptyBlocks}
 
-      <div className="AllSectionPreviews__main">
-        <IFrame
-          src={iframeUrl}
-          containerClassname="AllSectionPreviews__iframe-overlay"
-          iframeClassname="AllSectionPreviews__iframe"
-        />
-        <div className="AllSectionPreviews__welcome-text">
-          Welcome to the {venue.name}
-        </div>
-        <div className="AllSectionPreviews__description-text">
-          Please choose a section or say hi to Sabrina! What do you think of
-          having this little area here a place to leave a message to people?
-        </div>
-        <div className="AllSectionPreviews__action-buttons">
-          <Checkbox
-            defaultChecked={false}
-            onChange={() => {}}
-            containerClassName="AllSectionPreviews__toggler"
-            label="Hide full sections"
+        <div className="AllSectionPreviews__main">
+          <IFrame
+            src={venue.iframeUrl}
+            containerClassname="AllSectionPreviews__iframe-overlay"
+            iframeClassname="AllSectionPreviews__iframe"
           />
+          <div className="AllSectionPreviews__welcome-text">
+            Welcome to the {venue.name}
+          </div>
+          <div className="AllSectionPreviews__description-text">
+            Please choose a section or say hi to Sabrina! What do you think of
+            having this little area here a place to leave a message to people?
+          </div>
+          <div className="AllSectionPreviews__action-buttons">
+            <Checkbox
+              defaultChecked={false}
+              onChange={() => {}}
+              containerClassName="AllSectionPreviews__toggler"
+              label="Hide full sections"
+            />
 
-          <Button>Take a random seat</Button>
+            <Button>Take a random seat</Button>
+          </div>
         </div>
-      </div>
 
-      {sectionPreviews}
-    </div>
+        {sectionPreviews}
+      </div>
+    </>
   );
 };

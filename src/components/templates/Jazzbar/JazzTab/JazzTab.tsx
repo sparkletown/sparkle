@@ -26,6 +26,7 @@ import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
+import { BackButton } from "components/atoms/BackButton";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
@@ -148,12 +149,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
       )}
 
-      {/* @debt Move the logic of Back button into a separate reusable hook/component */}
-      {!seatedAtTable && parentVenueId && parentVenue && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">Back to {parentVenue.name}</span>
-        </div>
+      {!seatedAtTable && parentVenue && (
+        <BackButton
+          onClick={backToParentVenue}
+          label={`Back to ${parentVenue.name}`}
+        />
       )}
 
       {!seatedAtTable && (

@@ -37,11 +37,13 @@ import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
-import { NavBarLogin } from "./NavBarLogin";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { BackButton } from "components/atoms/BackButton";
 
-import "./NavBar.scss";
+import { NavBarLogin } from "./NavBarLogin";
+
 import * as S from "./Navbar.styles";
+import "./NavBar.scss";
 import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
@@ -356,12 +358,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">
-            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-          </span>
-        </div>
+        <BackButton
+          onClick={backToParentVenue}
+          label={`Back to ${parentVenue.name}`}
+        />
       )}
     </>
   );

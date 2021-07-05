@@ -1,3 +1,7 @@
+import { DEFAULT_AUDITORIUM_SECTION_CAPACITY } from "settings";
+
+import { AuditoriumSection } from "types/auditorium";
+import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSize } from "types/auditorium";
 
 export interface ConvertCoordinateProps {
@@ -19,3 +23,11 @@ export const chooseAuditoriumSize = (sectionsCount: number) => {
 
   return AuditoriumSize.LARGE;
 };
+
+export const getSectionCapacity = (
+  venue: AuditoriumVenue,
+  section: AuditoriumSection
+) =>
+  section.capacity ??
+  venue.sectionCapacity ??
+  DEFAULT_AUDITORIUM_SECTION_CAPACITY;

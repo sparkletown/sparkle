@@ -8,12 +8,11 @@ import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSection } from "types/auditorium";
 
 import { WithId } from "utils/id";
+import { getSectionCapacity } from "utils/auditorium";
 
 import { useSectionSeatedUsers } from "hooks/auditoriumSections";
 
 import { UserList } from "components/molecules/UserList";
-
-import { getSectionCapacity } from "../../utils";
 
 import "./SectionPreview.scss";
 

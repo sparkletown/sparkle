@@ -1,7 +1,5 @@
 import React, { useCallback, useMemo } from "react";
 
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-
 import { setGridData } from "api/profile";
 
 import {
@@ -10,14 +8,17 @@ import {
   SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
 } from "settings";
 
-import { convertToCartesianCoordinate } from "utils/auditorium";
-
 import { GridPosition } from "types/grid";
+import { AuditoriumVenue } from "types/venues";
 
+import { convertToCartesianCoordinate } from "utils/auditorium";
+import { WithId } from "utils/id";
 import {
   currentAuditoriumSectionsSelector,
   currentAuditoriumSectionsByIdSelector,
 } from "utils/selectors";
+
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
@@ -160,8 +161,8 @@ export const useSectionSeatedUsers = (venueId?: string, sectionId?: string) => {
   // );
 };
 
-export const useAuditoriumSections = (venueId?: string) => {
-  useConnectAuditoriumSections(venueId);
+export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
+  useConnectAuditoriumSections(venue.id);
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 

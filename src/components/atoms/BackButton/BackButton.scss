@@ -7,7 +7,7 @@ $back-button-icon-diameter: 22px;
 
   top: $navbar-height;
   z-index: z(navbar-map-back-button);
-  left: 0px;
+  left: 0;
   height: 40px;
   width: auto;
   cursor: pointer;
@@ -19,12 +19,13 @@ $back-button-icon-diameter: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 $spacing--sm 0 0;
+  padding: $spacing--md;
   font-size: $font-size--md;
 
   &:hover {
     background-color: $lighter-intermediate-grey;
-    .back-icon {
+
+    .BackButton__icon {
       opacity: 1;
     }
   }
@@ -32,5 +33,16 @@ $back-button-icon-diameter: 22px;
   &__icon {
     height: $back-button-icon-diameter;
     width: $back-button-icon-diameter;
+    opacity: 0.7;
+  }
+
+  &__label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    cursor: pointer;
+    margin-left: $spacing--sm;
   }
 }

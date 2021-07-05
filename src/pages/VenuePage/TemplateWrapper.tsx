@@ -106,6 +106,8 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
+      // NOTE: Remove the back button, because we need to implement it differently in Section
+      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
