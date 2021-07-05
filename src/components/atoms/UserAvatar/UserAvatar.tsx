@@ -5,7 +5,8 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility, RecentUserStatusType } from "types/User";
 
-import { useRecentUserStatus, useRecentWorldUsers } from "hooks/users";
+import { useRecentWorldUsers, useRecentUserStatus } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import { WithId } from "utils/id";
 
@@ -33,7 +34,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   large,
   medium,
 }) => {
+  const { userWithId } = useUser();
   const { recentWorldUsers } = useRecentWorldUsers();
+  const isInContactsList = useMemo(() => {
+    if (!userWithId || !user?.id) return false;
+
+    return userWithId?.contactsList?.includes(user.id);
+  }, [userWithId, user?.id]);
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -44,6 +51,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     : user?.partyName ?? DEFAULT_PARTY_NAME;
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
+    "UserAvatar--contact": isInContactsList,
     "UserAvatar--clickable": onClick !== undefined,
     "UserAvatar--large": large,
     "UserAvatar--medium": medium,
