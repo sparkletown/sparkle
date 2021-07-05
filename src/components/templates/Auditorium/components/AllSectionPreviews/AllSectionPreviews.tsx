@@ -35,7 +35,11 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   });
   const parentVenueId = parentVenue?.id;
 
-  const { auditoriumSections } = useAuditoriumSections(venue);
+  const {
+    auditoriumSections,
+    toggleFullAuditoriums,
+    isFullAuditoriumsHidden,
+  } = useAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
 
@@ -100,8 +104,8 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
           </div>
           <div className="AllSectionPreviews__action-buttons">
             <Checkbox
-              defaultChecked={false}
-              onChange={() => {}}
+              defaultChecked={isFullAuditoriumsHidden}
+              onChange={toggleFullAuditoriums}
               containerClassName="AllSectionPreviews__toggler"
               label="Hide full sections"
             />

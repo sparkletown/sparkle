@@ -11,7 +11,11 @@ import {
 import { GridPosition } from "types/grid";
 import { AuditoriumVenue } from "types/venues";
 
-import { convertToCartesianCoordinate } from "utils/auditorium";
+import {
+  convertToCartesianCoordinate,
+  getAuditoriumSeatedUsers,
+  getSectionCapacity,
+} from "utils/auditorium";
 import { WithId } from "utils/id";
 import {
   currentAuditoriumSectionsSelector,
@@ -28,6 +32,7 @@ import {
 } from "./users";
 import { useUser } from "./useUser";
 import { GetUserByPostion, useGetUserByPosition } from "./useGetUserByPosition";
+import { useShowHide } from "./useShowHide";
 
 const useConnectAuditoriumSections = (venueId?: string) => {
   useFirestoreConnect(() => {
@@ -62,6 +67,9 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
+  // const { recentVenueUsers } = useRecentVenueUsers();
+  const { worldUsers } = useWorldUsers();
+
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
 
@@ -79,7 +87,11 @@ export const useAuditoriumSection = ({
   // Keep the 16:9 ratio
   const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
-  const seatedUsers = useSectionSeatedUsers(venueId, sectionId);
+  const seatedUsers = getAuditoriumSeatedUsers({
+    auditoriumUsers: worldUsers,
+    venueId,
+    sectionId,
+  });
 
   const getUserBySeat = useGetUserByPosition({
     venueId,
@@ -145,33 +157,47 @@ export const useAuditoriumSection = ({
   };
 };
 
-export const useSectionSeatedUsers = (venueId?: string, sectionId?: string) => {
+export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
+  const venueId = venue.id;
+  useConnectAuditoriumSections(venueId);
+
+  const {
+    isShown: isFullAuditoriumsShown,
+    toggle: toggleFullAuditoriums,
+  } = useShowHide(true);
+
+  const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
+
   // const { recentVenueUsers } = useRecentVenueUsers();
   const { worldUsers } = useWorldUsers();
 
-  return worldUsers;
-
-  // return useMemo(
-  //   () =>
-  //     recentVenueUsers.filter(
-  //       (user) =>
-  //         venueId && sectionId && user.data?.[venueId]?.sectionId === sectionId
-  //     ),
-  //   [recentVenueUsers, venueId, sectionId]
-  // );
-};
-
-export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
-  useConnectAuditoriumSections(venue.id);
-
   const sections = useSelector(currentAuditoriumSectionsSelector);
+
+  const filteredSections = useMemo(() => {
+    if (!isFullAuditoriumsHidden) return sections;
+
+    if (!sections) return;
+
+    return sections.filter((section) => {
+      const maxUsers = getSectionCapacity(venue, section);
+      const seatedUsers = getAuditoriumSeatedUsers({
+        auditoriumUsers: worldUsers,
+        venueId,
+        sectionId: section.id,
+      });
+
+      return seatedUsers.length < maxUsers;
+    });
+  }, [worldUsers, venue, venueId, isFullAuditoriumsHidden, sections]);
 
   return useMemo(
     () => ({
-      auditoriumSections: sections ?? [],
+      auditoriumSections: filteredSections ?? [],
       isAuditoriumSectionsLoaded: isLoaded(sections),
+      isFullAuditoriumsHidden,
+      toggleFullAuditoriums,
     }),
-    [sections]
+    [sections, filteredSections, isFullAuditoriumsHidden, toggleFullAuditoriums]
   );
 };
 

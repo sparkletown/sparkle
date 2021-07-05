@@ -3,6 +3,11 @@ import { DEFAULT_AUDITORIUM_SECTION_CAPACITY } from "settings";
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSize } from "types/auditorium";
+import { User } from "types/User";
+
+import { WithId } from "./id";
+
+const emptyFilteredUsers: never[] = [];
 
 export interface ConvertCoordinateProps {
   index: number;
@@ -31,3 +36,21 @@ export const getSectionCapacity = (
   section.capacity ??
   venue.sectionCapacity ??
   DEFAULT_AUDITORIUM_SECTION_CAPACITY;
+
+export interface GetSeatedUsersProps {
+  auditoriumUsers: readonly WithId<User>[];
+  venueId?: string;
+  sectionId?: string;
+}
+
+export const getAuditoriumSeatedUsers = ({
+  auditoriumUsers,
+  venueId,
+  sectionId,
+}: GetSeatedUsersProps) =>
+  venueId && sectionId
+    ? // ? auditoriumUsers.filter(
+      //     (user) => user.data?.[venueId]?.sectionId === sectionId
+      //   )
+      auditoriumUsers
+    : emptyFilteredUsers;

@@ -8,9 +8,12 @@ import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSection } from "types/auditorium";
 
 import { WithId } from "utils/id";
-import { getSectionCapacity } from "utils/auditorium";
+import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
 
-import { useSectionSeatedUsers } from "hooks/auditoriumSections";
+import {
+  // useRecentVenueUsers,
+  useWorldUsers,
+} from "hooks/users";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -27,9 +30,16 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 }) => {
   const history = useHistory();
 
+  // const { recentVenueUsers } = useRecentVenueUsers();
+  const { worldUsers } = useWorldUsers();
+
   const maxUsers = getSectionCapacity(venue, section);
 
-  const seatedUsers = useSectionSeatedUsers(venue.id, section.id);
+  const seatedUsers = getAuditoriumSeatedUsers({
+    auditoriumUsers: worldUsers,
+    venueId: venue.id,
+    sectionId: section.id,
+  });
   const seatedUsersCount = seatedUsers.length;
 
   const isFull = seatedUsersCount >= maxUsers;
