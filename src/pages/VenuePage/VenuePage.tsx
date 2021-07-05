@@ -23,7 +23,6 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
-import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -161,12 +160,6 @@ export const VenuePage: React.FC = () => {
       });
     }
   }, [user, profile, venueId, venueTemplate, mixpanel]);
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 
