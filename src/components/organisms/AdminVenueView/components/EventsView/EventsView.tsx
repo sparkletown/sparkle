@@ -4,8 +4,7 @@ import { WithId } from "utils/id";
 
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
+import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
@@ -19,17 +18,7 @@ export type EventsViewProps = {
 };
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      doc: venueId,
-      subcollections: [{ collection: "events" }],
-      orderBy: ["start_utc_seconds", "asc"],
-      storeAs: "events",
-    },
-  ]);
-
-  const events = useSelector((state) => state.firestore.ordered.events);
+  const events = useConnectVenueEvents(venueId);
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
