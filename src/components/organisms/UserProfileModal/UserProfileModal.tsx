@@ -13,6 +13,7 @@ import {
 } from "settings";
 
 import { addToContactsList, removeFromContactsList } from "api/profile";
+import { createUrlSafeName } from "api/admin";
 
 import { orderedVenuesSelector } from "utils/selectors";
 import { WithId } from "utils/id";
@@ -51,8 +52,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   } = useProfileModalControls();
 
   const chosenUserId = selectedUserProfile?.id;
-  const { lastSeenAt } = useRecentWorldUser(chosenUserId);
-  const status = useRecentUserStatus(chosenUserId);
+  const { recentUser } = useRecentWorldUser(chosenUserId);
+  const status = useRecentUserStatus(recentUser);
 
   const profileQuestions = venue?.profile_questions;
 
@@ -64,17 +65,22 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
 
   const renderStatus = useMemo(() => {
-    if (status === RecentUserStatusType.incognito) return;
+    if (!recentUser || status === RecentUserStatusType.incognito) return;
+
+    const venueName = Object.keys(recentUser.lastSeenIn)[0] ?? "";
 
     return (
       <>
-        {status === RecentUserStatusType.offline ? status : `is ${status} in `}
-        <a href={lastSeenAt.venueUrl} className="profile-text__recent-venue">
-          {lastSeenAt.venueName}
+        {status !== RecentUserStatusType.offline ? `is ${status} in ` : status}
+        <a
+          href={createUrlSafeName(venueName)}
+          className="profile-text__recent-venue"
+        >
+          {venueName}
         </a>
       </>
     );
-  }, [status, lastSeenAt]);
+  }, [recentUser, status]);
 
   const renderedProfileQuestionAnswers = useMemo(
     () =>
