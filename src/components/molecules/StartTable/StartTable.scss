@@ -1,0 +1,37 @@
+@import "scss/constants.scss";
+
+.StartTable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  background: $dark;
+  border-radius: 22px;
+  color: $white;
+  margin: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten($dark, 10%);
+    transform: scale(1.05);
+
+    .StartTable-sign {
+      display: none;
+    }
+
+    .StartTable-title {
+      display: block;
+    }
+  }
+
+  &-sign {
+    font-size: $font-size--xxxl;
+  }
+
+  &-title {
+    display: none;
+    font-size: $font-size--lg;
+    line-height: 18px;
+  }
+}

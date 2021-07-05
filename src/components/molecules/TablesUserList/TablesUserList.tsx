@@ -11,6 +11,8 @@ import { useRecentVenueUsers } from "hooks/users";
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
+import { StartTable } from "../StartTable";
+
 interface PropsType {
   venueName: string;
   setSeatedAtTable: (value: string) => void;
@@ -58,6 +60,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [joiningTable, setJoiningTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
+  const startTable = true;
 
   const nameOfVideoRoom = (i: number) => {
     return `${venueName}-table${i + 1}`;
@@ -175,6 +178,9 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />
           ))}
+          {startTable && (
+            <StartTable tables={tables} newTable={createTable(tables.length)} />
+          )}
         </>
       )}
 
