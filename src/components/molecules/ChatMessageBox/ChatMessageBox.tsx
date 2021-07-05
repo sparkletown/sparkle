@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import classNames from "classnames";
 import { useForm } from "react-hook-form";
-import { BaseEmoji, Picker } from "emoji-mart";
+import { EmojiData } from "emoji-mart";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 
@@ -13,9 +13,10 @@ import { MessageToDisplay, SendChatReply, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
 
+import { EmojiPicker } from "components/molecules/EmojiPicker";
+
 import { InputField } from "components/atoms/InputField";
 
-import "emoji-mart/css/emoji-mart.css";
 import "./ChatMessageBox.scss";
 
 export interface ChatMessageBoxProps {
@@ -85,8 +86,8 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   } = useShowHide();
 
   const addEmoji = useCallback(
-    (emoji: BaseEmoji) => {
-      if (emoji.native) {
+    (emoji: EmojiData) => {
+      if ("native" in emoji && emoji.native) {
         const message = getValues("message");
         setValue("message", message + emoji.native);
       }
@@ -143,7 +144,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
       {isEmojiPickerVisible && (
         <div className="Chatbox__emoji-picker">
-          <Picker theme={"dark"} onSelect={addEmoji} native />
+          <EmojiPicker onSelect={addEmoji} />
         </div>
       )}
     </>
