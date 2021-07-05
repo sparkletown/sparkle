@@ -24,20 +24,25 @@ export const useAgoraCamera: ReactHook<
     localMicrophoneTrack,
     setLocalMicrophoneTrack,
   ] = useState<ILocalAudioTrack>();
-  const { isShown: isCameraOn, setShown: setIsCameraOn } = useShowHide();
+  const {
+    isShown: isCameraOn,
+    setShown: setIsCameraOn,
+    toggle: toggleCameraOn,
+  } = useShowHide();
   const {
     isShown: isMicrophoneOn,
     setShown: setIsMicrophoneOn,
+    toggle: toggleMicrophoneOn,
   } = useShowHide();
 
   const toggleCamera = () => {
     localCameraTrack?.setEnabled(!isCameraOn);
-    setIsCameraOn(!isCameraOn);
+    toggleCameraOn();
   };
 
   const toggleMicrophone = () => {
     localMicrophoneTrack?.setEnabled(!isMicrophoneOn);
-    setIsMicrophoneOn(!isMicrophoneOn);
+    toggleMicrophoneOn();
   };
 
   const joinChannel = async () => {
