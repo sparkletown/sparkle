@@ -156,10 +156,8 @@ export const fetchDescendantVenues = async (
 };
 
 export const fetchRelatedVenues = async (
-  venueId: string
+  sovereignVenue: WithId<AnyVenue>
 ): Promise<WithId<AnyVenue>[]> => {
-  const { sovereignVenue } = await fetchSovereignVenue(venueId);
-
   const descendantVenues = await fetchDescendantVenues(sovereignVenue.id);
 
   return [sovereignVenue, ...descendantVenues];
