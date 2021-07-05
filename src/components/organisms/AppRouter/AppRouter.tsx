@@ -36,7 +36,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
-const AppRouter = () => {
+const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
       <Switch>
