@@ -63,7 +63,6 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   );
 
   const status = useRecentUserStatus(user);
-  console.log("status", status, user);
 
   const nametagClasses = classNames("UserAvatar__nametag", {
     "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
