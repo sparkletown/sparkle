@@ -41,6 +41,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     toggleFullAuditoriums,
     isFullAuditoriumsHidden,
     enterSection,
+    notFullSections,
   } = useAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
@@ -73,17 +74,17 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     []
   );
 
-  const sectionIds = useMemo(
-    () => auditoriumSections.map((section) => section.id),
-    [auditoriumSections]
+  const notFullSectionIds = useMemo(
+    () => notFullSections.map((section) => section.id),
+    [notFullSections]
   );
 
   const enterRandomSection = useCallback(() => {
-    const randomSectionId = sample(sectionIds);
+    const randomSectionId = sample(notFullSectionIds);
     if (!randomSectionId) return;
 
     enterSection(randomSectionId);
-  }, [enterSection, sectionIds]);
+  }, [enterSection, notFullSectionIds]);
 
   const backToParentVenue = useCallback(() => {
     if (!parentVenueId) return;

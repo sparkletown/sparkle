@@ -183,9 +183,7 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     [history]
   );
 
-  const filteredSections = useMemo(() => {
-    if (!isFullAuditoriumsHidden) return sections;
-
+  const notFullSections = useMemo(() => {
     if (!sections) return;
 
     return sections.filter((section) => {
@@ -198,19 +196,21 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
       return seatedUsers.length < maxUsers;
     });
-  }, [worldUsers, venue, venueId, isFullAuditoriumsHidden, sections]);
+  }, [worldUsers, venue, venueId, sections]);
 
   return useMemo(
     () => ({
-      auditoriumSections: filteredSections ?? [],
+      auditoriumSections:
+        (isFullAuditoriumsHidden ? notFullSections : sections) ?? [],
       isAuditoriumSectionsLoaded: isLoaded(sections),
       isFullAuditoriumsHidden,
+      notFullSections: notFullSections ?? [],
       toggleFullAuditoriums,
       enterSection,
     }),
     [
       sections,
-      filteredSections,
+      notFullSections,
       isFullAuditoriumsHidden,
       toggleFullAuditoriums,
       enterSection,
