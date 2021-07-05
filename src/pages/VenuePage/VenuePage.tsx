@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet";
 import {
   LOC_UPDATE_FREQ_MS,
   PLATFORM_BRAND_NAME,
-  SPARKLE_ICON,
+  // SPARKLE_ICON,
 } from "settings";
 
 import { VenueTemplate, AnyVenue } from "types/venues";
@@ -79,7 +79,10 @@ interface PreloadProps {
 
 const Preload: React.FC<PreloadProps> = ({ venue }) => (
   <Helmet>
-    <link href={SPARKLE_ICON} rel="preload" as="image" />
+    {
+      // preload the icon only when TemplateWrapper with the navbar icon aren't loaded lazily
+      // <link href={SPARKLE_ICON} rel="preload" as="image" />
+    }
     {venue?.mapBackgroundImageUrl && (
       <link href={venue?.mapBackgroundImageUrl} rel="preload" as="image" />
     )}
