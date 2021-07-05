@@ -33,6 +33,8 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     setEditedEvent(undefined);
   }, []);
 
+  const hasVenueEvents = events?.length !== 0;
+
   return (
     <>
       <div className="EventsView">
@@ -48,7 +50,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
               />
             );
           })}
-          {events?.length === 0 && (
+          {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
               <button
@@ -64,7 +66,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         </div>
       </div>
 
-      {events?.length !== 0 && (
+      {hasVenueEvents && (
         <div className="create-button">
           <button
             className="btn btn-primary"
