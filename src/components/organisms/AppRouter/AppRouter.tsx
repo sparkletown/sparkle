@@ -36,7 +36,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
-const AppRouter = () => {
+const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
       <Switch>
@@ -95,7 +95,7 @@ const AppRouter = () => {
         <Route
           path="/"
           component={() => {
-            window.location = DEFAULT_REDIRECT_URL;
+            window.location.href = DEFAULT_REDIRECT_URL;
             return null;
           }}
         />
