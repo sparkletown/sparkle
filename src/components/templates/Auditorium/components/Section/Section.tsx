@@ -93,7 +93,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   return (
     <div className="Section">
-      <BackButton onClick={backToMain} locationName="main" />
+      <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <IFrame
           containerClassname="Section__iframe-overlay"

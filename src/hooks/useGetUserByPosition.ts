@@ -5,6 +5,7 @@ import { GridPosition } from "types/grid";
 
 import { WithId } from "utils/id";
 import { getPositionHash } from "utils/grid";
+import { isDefined } from "utils/types";
 
 export interface UseGetUserByPositionProps {
   positionedUsers: readonly WithId<User>[];
@@ -22,10 +23,14 @@ export const useGetUserByPosition: (
     () =>
       positionedUsers.reduce<Map<string, WithId<User>>>((acc, user) => {
         if (!venueId) return acc;
-
         const gridData = user.data?.[venueId];
 
-        if (!gridData?.row || !gridData?.column) return acc;
+        if (
+          !gridData ||
+          !isDefined(gridData.row) ||
+          !isDefined(gridData.column)
+        )
+          return acc;
 
         const { row, column } = gridData;
 
