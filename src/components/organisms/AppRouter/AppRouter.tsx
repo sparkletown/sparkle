@@ -95,7 +95,7 @@ const AppRouter = () => {
         <Route
           path="/"
           component={() => {
-            window.location = DEFAULT_REDIRECT_URL;
+            window.location.href = DEFAULT_REDIRECT_URL;
             return null;
           }}
         />
