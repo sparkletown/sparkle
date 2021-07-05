@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isTruthy } from "utils/types";
 
-import { useSovereignVenueId } from "./useSovereignVenueId";
+import { useSovereignVenue } from "./useSovereignVenue";
 
 const emptyArray: never[] = [];
 
@@ -18,7 +18,7 @@ export interface RelatedVenuesContextState {
   isLoading: boolean;
   isError: boolean;
 
-  isSovereignVenueIdLoading: boolean;
+  isSovereignVenueLoading: boolean;
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
 
@@ -48,9 +48,9 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 }) => {
   const {
     sovereignVenueId,
-    isSovereignVenueIdLoading,
+    isSovereignVenueLoading,
     errorMsg: sovereignVenueIdError,
-  } = useSovereignVenueId({
+  } = useSovereignVenue({
     venueId,
   });
 
@@ -89,10 +89,10 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
-      isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
+      isLoading: isSovereignVenueLoading || isRelatedVenuesLoading,
       isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
 
-      isSovereignVenueIdLoading,
+      isSovereignVenueLoading,
       sovereignVenue: findVenueInRelatedVenues(sovereignVenueId),
       sovereignVenueId,
       sovereignVenueIdError,
@@ -107,7 +107,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     [
       findVenueInRelatedVenues,
       isRelatedVenuesLoading,
-      isSovereignVenueIdLoading,
+      isSovereignVenueLoading,
       relatedVenues,
       relatedVenueIds,
       relatedVenuesError,
