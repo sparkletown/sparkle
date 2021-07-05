@@ -129,7 +129,7 @@ const usePreloadedVenue = (venueId?: string) => {
   };
 };
 
-const VenuePage: React.FC = () => {
+export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const {
     venue: preVenue,
@@ -413,5 +413,3 @@ const VenuePage: React.FC = () => {
     </>
   );
 };
-
-export default VenuePage;
