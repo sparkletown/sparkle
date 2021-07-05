@@ -6,9 +6,6 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import Profile from "pages/Account/Profile";
-import Questions from "pages/Account/Questions";
-import CodeOfConduct from "pages/Account/CodeOfConduct";
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
@@ -28,6 +25,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
+import { AccountSubrouter } from "./AccountSubrouter";
 import { EnterSubrouter } from "./EnterSubrouter";
 
 const AppRouter: React.FC = () => {
@@ -39,9 +37,7 @@ const AppRouter: React.FC = () => {
           component={() => <Redirect to={SPARKLEVERSE_HOMEPAGE_URL} />}
         />
         <Route path="/enter" component={EnterSubrouter} />
-        <Route path="/account/profile" component={Profile} />
-        <Route path="/account/questions" component={Questions} />
-        <Route path="/account/code-of-conduct" component={CodeOfConduct} />
+        <Route path="/account" component={AccountSubrouter} />
         <Route
           path="/login/:venueId/:customToken"
           component={LoginWithCustomToken}
