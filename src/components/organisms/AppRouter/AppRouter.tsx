@@ -6,18 +6,18 @@ import {
   Redirect,
 } from "react-router-dom";
 
-import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-
-import { VenueLandingPage } from "pages/VenueLandingPage";
-import { VenueEntrancePage } from "pages/VenueEntrancePage";
-
-import { VersionPage } from "pages/VersionPage/VersionPage";
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
 
-import VenuePage from "pages/VenuePage";
 import { venueLandingUrl } from "utils/url";
 
+import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
+
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+
+import { VenueEntrancePage } from "pages/VenueEntrancePage";
+import { VenueLandingPage } from "pages/VenueLandingPage";
+import VenuePage from "pages/VenuePage";
+import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
