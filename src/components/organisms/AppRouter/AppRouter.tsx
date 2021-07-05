@@ -26,7 +26,7 @@ import { AdminNGSubrouter } from "./AdminNGSubrouter";
 import { AdminV1Subrouter } from "./AdminV1Subrouter";
 import { EnterSubrouter } from "./EnterSubrouter";
 
-const AppRouter: React.FC = () => {
+export const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
       <Switch>
@@ -74,5 +74,3 @@ const AppRouter: React.FC = () => {
     </Router>
   );
 };
-
-export default AppRouter;
