@@ -7,11 +7,11 @@ import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { useShowHide } from "hooks/useShowHide";
-
 import { MessageToDisplay, SendChatReply, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
+
+import { useShowHide } from "hooks/useShowHide";
 
 import { EmojiPicker } from "components/molecules/EmojiPicker";
 
