@@ -4,13 +4,9 @@ import { Redirect, useHistory } from "react-router-dom";
 import { useTitle, useAsync } from "react-use";
 import { Helmet } from "react-helmet";
 
-import {
-  LOC_UPDATE_FREQ_MS,
-  PLATFORM_BRAND_NAME,
-  // SPARKLE_ICON,
-} from "settings";
+import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
-import { VenueTemplate, AnyVenue } from "types/venues";
+import { VenueTemplate, AnyVenue, VenueEvent } from "types/venues";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -34,7 +30,7 @@ import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { tracePromise } from "utils/performance";
-import { withId } from "utils/id";
+import { withVenueId, WithId } from "utils/id";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -103,7 +99,7 @@ const Preload: React.FC<PreloadProps> = ({ venue }) => (
   </Helmet>
 );
 
-const usePreloadedVenue = (venueId?: string) => {
+const usePreloaded = (venueId?: string) => {
   const { loading, error, value } = useAsync(async () => {
     if (!venueId) return;
 
@@ -114,8 +110,16 @@ const usePreloadedVenue = (venueId?: string) => {
           .functions()
           .httpsCallable("venue-getVenue")({ venueId })
           .then((result) => {
-            const data: AnyVenue | undefined = result.data;
-            return isDefined(data) ? withId(data, venueId) : undefined;
+            const data: {
+              venue?: WithId<AnyVenue>;
+              events?: WithId<VenueEvent>[];
+            } = result.data;
+            return {
+              venue: data?.venue,
+              events: isDefined(data?.events)
+                ? data.events.map((event) => withVenueId(event, venueId))
+                : undefined,
+            };
           }),
       {
         attributes: { venueId },
@@ -125,10 +129,10 @@ const usePreloadedVenue = (venueId?: string) => {
   }, [venueId]);
 
   return {
-    venue: value,
+    venue: value?.venue,
+    events: value?.events,
     error,
-    isVenueLoading: loading,
-    venueRequestStatus: !loading && !error,
+    isLoaded: !loading && !error,
   };
 };
 
@@ -136,9 +140,10 @@ export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const {
     venue: preVenue,
+    events: preEvents,
     error: preError,
-    venueRequestStatus: preStatus,
-  } = usePreloadedVenue(venueId);
+    isLoaded: preLoaded,
+  } = usePreloaded(venueId);
 
   const mixpanel = useMixpanel();
 
@@ -150,17 +155,21 @@ export const VenuePage: React.FC = () => {
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
   const postVenue = useSelector(currentVenueSelector);
-  const postStatus = useSelector(isCurrentVenueRequestedSelector);
-
-  if (preError) {
-    console.warn("VenuePage()", "preload failed:", preError);
-  }
-  const venue = preError ? postVenue : preVenue;
-  const venueRequestStatus = preError ? postStatus : preStatus;
+  const postVenueLoaded = useSelector(isCurrentVenueRequestedSelector);
 
   useConnectCurrentEvent();
-  const currentEvent = useSelector(currentEventSelector);
-  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
+  const postEvents = useSelector(currentEventSelector);
+  const postEventsLoaded = useSelector(isCurrentEventRequestedSelector);
+
+  if (preError) {
+    console.warn("VenuePage()", "preload failed:", preError.message);
+  }
+
+  const venue = (preError ? undefined : preVenue) ?? postVenue;
+  const isVenueLoaded = (preError ? undefined : preLoaded) ?? postVenueLoaded;
+
+  const events = (preError ? undefined : preEvents) ?? postEvents;
+  const isEventLoaded = (preError ? undefined : preLoaded) ?? postEventsLoaded;
 
   useConnectUserPurchaseHistory();
   const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
@@ -173,7 +182,7 @@ export const VenuePage: React.FC = () => {
   const venueName = venue?.name ?? "";
   const venueTemplate = venue?.template;
 
-  const event = currentEvent?.[0];
+  const event = events?.[0];
 
   useEffect(() => {
     if (!venue) return;
@@ -258,9 +267,9 @@ export const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (venueRequestStatus && !venue) {
+  if (isVenueLoaded && !venue) {
     console.log("VenuePage()", "01 bail out reason:", {
-      venueRequestStatus,
+      isVenueLoaded,
       venue,
     });
     return <>This venue does not exist</>;
@@ -326,9 +335,9 @@ export const VenuePage: React.FC = () => {
     venue.hasPaidEvents &&
     !isUserVenueOwner
   ) {
-    if (eventRequestStatus && !event) {
+    if (isEventLoaded && !event) {
       console.log("VenuePage()", "06 bail out reason:", {
-        eventRequestStatus,
+        isEventLoaded,
         event,
       });
       return (

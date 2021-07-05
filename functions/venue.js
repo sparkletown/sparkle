@@ -551,17 +551,32 @@ exports.getVenue = functions.https.onCall(async (data) => {
 
   // Note: we're explicitly not calling checkAuth(context) here as this function needs to work even before the user is logged in.
 
-  const venueDoc = await admin
+  const venueDocumentSnapshot = await admin
     .firestore()
     .collection("venues")
     .doc(venueId)
     .get();
 
-  if (!venueDoc || !venueDoc.exists) {
+  if (!venueDocumentSnapshot || !venueDocumentSnapshot.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  return venueDoc.data();
+  const eventsQuerySnapshot = await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("events")
+    .orderBy("start_utc_seconds")
+    .get();
+
+  return {
+    venue: Object.assign(venueDocumentSnapshot.data(), {
+      id: venueDocumentSnapshot.id,
+    }),
+    events: eventsQuerySnapshot.docs.map((doc) =>
+      Object.assign(doc.data(), { id: doc.id })
+    ),
+  };
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
