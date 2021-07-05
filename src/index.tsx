@@ -5,9 +5,9 @@ import { render } from "react-dom";
 
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import LogRocket from "logrocket";
+// import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
+// import mixpanel from "mixpanel-browser";
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
@@ -28,8 +28,8 @@ import "firebase/firestore";
 import "firebase/functions";
 import "firebase/performance";
 
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
+// import { Elements } from "@stripe/react-stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -40,9 +40,9 @@ import {
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-  LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
-  STRIPE_PUBLISHABLE_KEY,
+  // LOGROCKET_APP_ID,
+  // MIXPANEL_PROJECT_TOKEN,
+  // STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
@@ -55,8 +55,8 @@ import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
 import {
-  PerformanceTrace,
-  tracePromise,
+  // PerformanceTrace,
+  // tracePromise,
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -77,15 +77,15 @@ import { theme } from "theme/theme";
 activatePolyFills();
 initializeZendesk();
 
-if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID, {
-    release: BUILD_SHA1,
-  });
+// if (LOGROCKET_APP_ID) {
+//   LogRocket.init(LOGROCKET_APP_ID, {
+//     release: BUILD_SHA1,
+//   });
 
-  Bugsnag.addOnError((event) => {
-    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
-  });
-}
+//   Bugsnag.addOnError((event) => {
+//     event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
+//   });
+// }
 
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
@@ -100,9 +100,9 @@ if (process.env.NODE_ENV === "development") {
 }
 
 // Load Stripe
-const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
-  loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")
-);
+// const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
+//   loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")
+// );
 
 const rrfConfig = {
   userProfile: "users",
@@ -125,8 +125,8 @@ const store = createStore(
   initialState,
   composeWithDevTools(
     applyMiddleware(
-      thunkMiddleware,
-      LogRocket.reduxMiddleware() // logrocket needs to be last
+      thunkMiddleware
+      // LogRocket.reduxMiddleware() // logrocket needs to be last
     )
   )
 );
@@ -236,9 +236,9 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
+// if (MIXPANEL_PROJECT_TOKEN) {
+//   mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
+// }
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
@@ -248,19 +248,19 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   useEffect(() => {
     if (!auth || !auth.uid) return;
 
-    const displayName = auth.displayName || "N/A";
-    const email = auth.email || "N/A";
+    // const displayName = auth.displayName || "N/A";
+    // const email = auth.email || "N/A";
 
-    if (LOGROCKET_APP_ID) {
-      LogRocket.identify(auth.uid, {
-        displayName,
-        email,
-      });
-    }
+    // if (LOGROCKET_APP_ID) {
+    //   LogRocket.identify(auth.uid, {
+    //     displayName,
+    //     email,
+    //   });
+    // }
 
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
-    }
+    // if (MIXPANEL_PROJECT_TOKEN) {
+    //   mixpanel.identify(email);
+    // }
   }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
@@ -272,22 +272,22 @@ traceReactScheduler("initial render", performance.now(), () => {
   render(
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
-        <Elements stripe={stripePromise}>
-          <DndProvider backend={HTML5Backend}>
-            <Provider store={store}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <CustomSoundsProvider
-                    loadingComponent={<LoadingPage />}
-                    waitTillConfigLoaded
-                  >
-                    <AppRouter />
-                  </CustomSoundsProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
-            </Provider>
-          </DndProvider>
-        </Elements>
+        {/* <Elements stripe={stripePromise}> */}
+        <DndProvider backend={HTML5Backend}>
+          <Provider store={store}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+              <AuthIsLoaded>
+                <CustomSoundsProvider
+                  loadingComponent={<LoadingPage />}
+                  waitTillConfigLoaded
+                >
+                  <AppRouter />
+                </CustomSoundsProvider>
+              </AuthIsLoaded>
+            </ReactReduxFirebaseProvider>
+          </Provider>
+        </DndProvider>
+        {/* </Elements> */}
       </ThemeProvider>
     </BugsnagErrorBoundary>,
     document.getElementById("root")

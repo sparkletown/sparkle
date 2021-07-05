@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal } from "react-bootstrap";
 
 import { AnyVenue, VenueEvent } from "types/venues";
@@ -8,7 +8,7 @@ import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
 import { Purchase } from "types/Purchase";
 import "./PaymentModal.scss";
-import PaymentForm from "./PaymentForm";
+// import PaymentForm from "./PaymentForm";
 import PaymentConfirmation from "./PaymentConfirmation";
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
@@ -30,7 +30,7 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
   show,
   onHide,
   selectedEvent,
-  setEventPaidSuccessfully,
+  // setEventPaidSuccessfully,
   eventPaidSuccessfully,
 }) => {
   useConnectUserPurchaseHistory();
@@ -43,17 +43,17 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     (state) => state.firestore.status.requested.userPurchaseHistory
   );
 
-  const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
-  const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);
+  // const [isPaymentProceeding, setIsPaymentProceeding] = useState(false);
+  // const [isCardBeingSaved, setIsCardBeingSaved] = useState(false);
 
   const hasUserBoughtTicket =
     hasUserBoughtTicketForEvent(purchaseHistory, selectedEvent.id) ||
     (user && isUserAMember(user.email, venue.config?.memberEmails));
 
   const closePaymentModal = () => {
-    if (!isPaymentProceeding && !isCardBeingSaved) {
-      onHide();
-    }
+    // if (!isCardBeingSaved) {
+    //   onHide();
+    // }
   };
 
   let modalContent;
@@ -65,14 +65,15 @@ const PaymentModal: React.FunctionComponent<PropsType> = ({
     );
   } else if (!hasUserBoughtTicket) {
     modalContent = (
-      <PaymentForm
-        setIsPaymentSuccess={() => setEventPaidSuccessfully(selectedEvent.id)}
-        setIsPaymentProceeding={setIsPaymentProceeding}
-        setIsCardBeingSaved={setIsCardBeingSaved}
-        isPaymentProceeding={isPaymentProceeding}
-        isCardBeingSaved={isCardBeingSaved}
-        event={selectedEvent}
-      />
+      <div></div>
+      // <PaymentForm
+      //   setIsPaymentSuccess={() => setEventPaidSuccessfully(selectedEvent.id)}
+      //   setIsPaymentProceeding={setIsPaymentProceeding}
+      //   setIsCardBeingSaved={setIsCardBeingSaved}
+      //   isPaymentProceeding={isPaymentProceeding}
+      //   isCardBeingSaved={isCardBeingSaved}
+      //   event={selectedEvent}
+      // />
     );
   } else {
     modalContent = <>Oops, an error occured</>;
