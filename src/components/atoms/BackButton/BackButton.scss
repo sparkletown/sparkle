@@ -1,0 +1,36 @@
+@import "scss/constants";
+
+$back-button-icon-diameter: 22px;
+
+.BackButton {
+  position: fixed;
+
+  top: $navbar-height;
+  z-index: z(navbar-map-back-button);
+  left: 0px;
+  height: 40px;
+  width: auto;
+  cursor: pointer;
+  background-color: $secondary;
+  box-shadow: 0 10px 20px rgba($secondary, 0.2);
+  backdrop-filter: blur(8px);
+
+  border-radius: 0 0 $border-radius--lg 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $spacing--sm 0 0;
+  font-size: $font-size--md;
+
+  &:hover {
+    background-color: $lighter-intermediate-grey;
+    .back-icon {
+      opacity: 1;
+    }
+  }
+
+  &__icon {
+    height: $back-button-icon-diameter;
+    width: $back-button-icon-diameter;
+  }
+}
