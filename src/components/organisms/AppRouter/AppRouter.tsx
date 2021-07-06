@@ -23,12 +23,19 @@ import { VersionPage } from "pages/VersionPage/VersionPage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AccountSubrouter } from "./AccountSubrouter";
-import { EnterSubrouter } from "./EnterSubrouter";
 
 const AdminSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubrouter", () =>
     import("./AdminSubrouter").then(({ AdminSubrouter }) => ({
       default: AdminSubrouter,
+    }))
+  )
+);
+
+const EnterSubrouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::EnterSubrouter", () =>
+    import("./EnterSubrouter").then(({ EnterSubrouter }) => ({
+      default: EnterSubrouter,
     }))
   )
 );
