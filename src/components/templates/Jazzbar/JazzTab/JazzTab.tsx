@@ -150,10 +150,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
       {/* @debt Move the logic of Back button into a separate reusable hook/component */}
       {!seatedAtTable && parentVenueId && parentVenue && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
+        <button className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
           <span className="back-link">Back to {parentVenue.name}</span>
-        </div>
+        </button>
       )}
 
       {!seatedAtTable && (

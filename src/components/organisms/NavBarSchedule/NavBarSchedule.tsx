@@ -114,31 +114,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
-      const handleKeyPress = (e:React.KeyboardEvent<HTMLLIElement>) => {
-        const enterOrSpace =
-        e.key === "Enter" ||
-        e.key === " " ||
-        e.key === "Spacebar" ||
-        e.which === 13 ||
-        e.which === 32;
-        if (enterOrSpace) {
-          e.preventDefault();
-          setSelectedDayIndex(dayIndex)
-        }
-       }
-
       return (
         <li
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => handleKeyPress(e)}
           key={day.toISOString()}
           className={classes}
           onClick={() => {
             setSelectedDayIndex(dayIndex);
           }}
         >
-          {formatDayLabel(day)}
+          <button>{formatDayLabel(day)}
+          </button>
         </li>
       );
     });

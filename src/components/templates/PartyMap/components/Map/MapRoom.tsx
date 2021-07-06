@@ -65,7 +65,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       !isCovertRoom && venue.roomVisibility === RoomVisibility.count,
   });
 
-
   const roomInlineStyles = useMemo(
     () => ({
       left: `${room.x_percent}%`,
@@ -89,28 +88,11 @@ export const MapRoom: React.FC<MapRoomProps> = ({
     selectRoom();
   }, [play, selectRoom]);
 
-
- const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction: { (): void; (): void; }) => {
-  const enterOrSpace =
-  e.key === "Enter" ||
-  e.key === " " ||
-  e.key === "Spacebar" ||
-  e.which === 13 ||
-  e.which === 32;
-  if (enterOrSpace) {
-    e.preventDefault();
-    keyPressFunction();
-  }
- }
-
   return (
-    <div
-      role="button"
-      tabIndex={0}
+    <button
       className={containerClasses}
       style={roomInlineStyles}
       onClick={isCovertRoom ? noop : selectRoomWithSound}
-      onKeyPress={isCovertRoom ? noop: (e) => handleKeyPress(e, selectRoomWithSound)}
       onMouseEnter={isCovertRoom ? noop : handleRoomHovered}
       onMouseLeave={isCovertRoom ? noop : handleRoomUnhovered}
     >
@@ -132,6 +114,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
           <RoomAttendance venue={venue} room={room} />
         </div>
       )}
-    </div>
+    </button>
   );
 };

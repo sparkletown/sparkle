@@ -192,20 +192,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
-
-  const handleKeyPress = (e:React.KeyboardEvent<HTMLDivElement>, keyPressFunction: { (): void; (): void; (): void; }) => {
-    const enterOrSpace =
-    e.key === "Enter" ||
-    e.key === " " ||
-    e.key === "Spacebar" ||
-    e.which === 13 ||
-    e.which === 32;
-    if (enterOrSpace) {
-      e.preventDefault();
-      keyPressFunction();
-    }
-   }
-
   if (!venueId || !venue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -240,17 +226,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               )}
 
               {shouldShowSchedule ? (
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onKeyPress={(e) => handleKeyPress(e, toggleEventSchedule)}
+                <button
                   className={`nav-party-logo ${
                     isEventScheduleVisible && "clicked"
                   }`}
                   onClick={toggleEventSchedule}
                 >
                   {navbarTitle} <span className="schedule-text">Schedule</span>
-                </div>
+                </button>
               ) : (
                 <div>{navbarTitle}</div>
               )}
@@ -356,9 +339,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       </header>
 
       {shouldShowSchedule && (
-        <div
-          role="button"
-          tabIndex={0}
+        <button
           className={`schedule-dropdown-backdrop ${
               isEventScheduleVisible ? "show" : ""
             }`}
@@ -370,21 +351,18 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               venueId={venueId}
             />
           </div>
-        </div>
+        </button>
       )}
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn"
-        role="button"
-        tabIndex={0}
-        onKeyPress={(e) => handleKeyPress(e, backToParentVenue)}
+        <button className="back-map-btn"
         onClick={backToParentVenue}>
           <div className="back-icon" />
           <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}
           </span>
-        </div>
+        </button>
       )}
     </>
   );
