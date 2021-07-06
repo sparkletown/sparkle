@@ -12,30 +12,46 @@
   grid-auto-rows: 140px;
   grid-auto-columns: minmax(125px, 1fr);
 
-  &--small {
+  &--extra-small {
     grid-template-areas:
       "empty-1 empty-1  main  main  main  main empty-2 empty-2"
       "empty-1 empty-1  main  main  main  main empty-2 empty-2"
-      "empty-3    .      main  main  main  main   .   empty-4"
-      "empty-3    .      main  main  main  main   .   empty-4";
+      "empty-3    .      main  main  main  main   .    empty-4"
+      "empty-3    .      main  main  main  main   .    empty-4";
+  }
+
+  &--small {
+    grid-template-areas:
+      "empty-1  empty-1  main  main  main  main empty-2 empty-2"
+      "empty-3    .      main  main  main  main    .    empty-4"
+      "empty-3    .      main  main  main  main    .    empty-4"
+      "empty-3    .      main  main  main  main    .    empty-4";
   }
 
   &--medium {
     grid-template-areas:
-      " empty-1 main main empty-2 "
-      " empty-1 main main empty-2 "
-      "     .      main main      .      "
-      "     .      main main      .      "
-      "     .        .     .      .      ";
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2";
   }
 
   &--large {
     grid-template-areas:
-      ".      main main      ."
-      ".      main main      ."
-      ".      main main      ."
-      ".      main main      ."
-      ".       .    .        .";
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .       .      .     .     .     .    empty-2";
+  }
+
+  &--extra-large {
+    grid-template-areas:
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .       .      .     .     .     .    .";
   }
 
   &__empty-block {

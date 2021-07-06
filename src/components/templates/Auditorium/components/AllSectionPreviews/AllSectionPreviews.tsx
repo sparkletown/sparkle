@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 import { sample } from "lodash";
 
-import { AuditoriumSize } from "types/auditorium";
+import { AuditoriumSize, AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -63,7 +63,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   const emptyBlocks = useMemo(
     () =>
-      Array(4)
+      Array(AuditoriumEmptyBlocksCount[auditoriumSize])
         .fill(0)
         .map((_, index) => (
           <div
@@ -71,7 +71,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
             className={`AllSectionPreviews__empty-block--${index + 1}`}
           />
         )),
-    []
+    [auditoriumSize]
   );
 
   const notFullSectionIds = useMemo(
