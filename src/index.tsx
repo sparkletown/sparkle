@@ -6,7 +6,6 @@ import { render } from "react-dom";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
-// eslint-disable-next-line no-restricted-imports
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
