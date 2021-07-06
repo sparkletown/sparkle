@@ -1,13 +1,3 @@
-import Bugsnag from "@bugsnag/js";
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
-import { ImageInput } from "components/molecules/ImageInput";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import React, {
   useCallback,
   useMemo,
@@ -17,16 +7,18 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { VenuePlacementState, VenueTemplate } from "types/venues";
-import { createJazzbar } from "utils/venue";
+import { Form } from "react-bootstrap";
+import Bugsnag from "@bugsnag/js";
+import "firebase/functions";
 import * as Yup from "yup";
+
 import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
-import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
-import { venueLandingUrl } from "utils/url";
+  createUrlSafeName,
+  createVenue,
+  updateVenue,
+  VenueInput,
+} from "api/admin";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -43,21 +35,39 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   USER_STATUSES,
   DEFAULT_SHOW_SCHEDULE,
+  ONLINE_USER_STATUS,
 } from "settings";
-import "./Venue.scss";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ExtractProps } from "types/utility";
+
 import { IS_BURN } from "secrets";
-import { useQuery } from "hooks/useQuery";
-import { Form } from "react-bootstrap";
-import QuestionInput from "./QuestionInput";
-import EntranceInput from "./EntranceInput";
-import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
-import { UserStatusManager } from "components/molecules/UserStatusManager";
+
+import { createJazzbar } from "utils/venue";
+import { venueLandingUrl } from "utils/url";
+
+import { VenuePlacementState, VenueTemplate } from "types/venues";
+import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
+
+import { useUser } from "hooks/useUser";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 import { useShowHide } from "hooks/useShowHide";
+import { useQuery } from "hooks/useQuery";
+
+import { ImageInput } from "components/molecules/ImageInput";
+import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { UserStatusManager } from "components/molecules/UserStatusManager";
+
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+
+import {
+  editVenueCastSchema,
+  validationSchema,
+} from "./DetailsValidationSchema";
+import { WizardPage } from "./VenueWizard";
+import QuestionInput from "./QuestionInput";
+import EntranceInput from "./EntranceInput";
+
+import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -148,7 +158,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         if (!!venueId) {
           await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
 
-          if (!!sovereignVenueId)
+          if (sovereignVenueId)
             await updateVenue(
               {
                 ...(vals as VenueInput),
@@ -892,17 +902,19 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   }, [showUserStatuses, venue]);
 
   const removeUserStatus = (index: number) => {
-    const statuses = [...userStatuses];
-    statuses.splice(index, 1);
+    const statuses = [...userStatuses].slice(index, 1);
     setUserStatuses(statuses);
   };
 
   const addUserStatus = () =>
-    setUserStatuses([...userStatuses, { status: "", color: "#4BCC4B" }]);
+    setUserStatuses([
+      ...userStatuses,
+      { status: "", color: ONLINE_USER_STATUS.color },
+    ]);
 
   const updateStatusColor = (color: string, index: number) => {
     const statuses = [...userStatuses];
-    statuses[index] = { status: statuses[index].status, color: color };
+    statuses[index] = { color, status: statuses[index].status };
     setUserStatuses(statuses);
   };
 
@@ -919,7 +931,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
     // @debt Move user statuses to useForm with useDynamicInput, add schema for this validation instead
     if (userStatusExists) {
-      setError("User statuses", "Already exists");
+      setError("User statuses", {
+        type: "manual",
+        message: "User status already exists.",
+      });
       setFormError(true);
     } else {
       setError("", "");

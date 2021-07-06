@@ -6,16 +6,13 @@ import { USER_STATUSES } from "settings";
 import { UserStatus } from "types/User";
 
 import { Checkbox } from "components/atoms/Checkbox";
+
 import { UserStatusPanel } from "./components/UserStatusPanel";
 
 import "./UserStatusManager.scss";
 
-const renderDefaultUserStatuses = USER_STATUSES.map((userStatus, index) => (
-  <UserStatusPanel
-    key={userStatus.status + index}
-    userStatus={userStatus}
-    disabled
-  />
+const renderDefaultUserStatuses = USER_STATUSES.map((userStatus) => (
+  <UserStatusPanel key={userStatus.status} userStatus={userStatus} disabled />
 ));
 
 export interface UserStatusManagerProps {
@@ -66,11 +63,8 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
     () =>
       userStatuses.map((userStatus, index) => (
         <UserStatusPanel
-          key={`panel-${index}`}
-          userStatus={{
-            status: userStatus.status,
-            color: userStatus.color,
-          }}
+          key={`${userStatus}-${index}`}
+          userStatus={userStatus}
           onPickColor={(color) => pickColor(color, index)}
           onChangeInput={(value) => changeInput(value, index)}
           onDelete={() => deleteStatus(index)}

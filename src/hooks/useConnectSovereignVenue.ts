@@ -1,15 +1,16 @@
 import { useMemo } from "react";
 
-import { AnyVenue } from "types/venues";
-
-import { useSelector } from "./useSelector";
-import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useSovereignVenueId } from "./useSovereignVenueId";
 import {
   isSovereignVenueRequestedSelector,
   sovereignVenueSelector,
 } from "utils/selectors";
 import { WithId, withId } from "utils/id";
+
+import { AnyVenue } from "types/venues";
+
+import { useSelector } from "./useSelector";
+import { useFirestoreConnect } from "./useFirestoreConnect";
+import { useSovereignVenueId } from "./useSovereignVenueId";
 
 export interface UseConnectSovereignVenueReturn {
   sovereignVenue?: WithId<AnyVenue>;

@@ -1,4 +1,8 @@
-import { ONLINE_USER_STATUS, USER_STATUSES } from "settings";
+import {
+  ONLINE_USER_STATUS,
+  DEFAULT_SHOW_USER_STATUSES,
+  USER_STATUSES,
+} from "settings";
 
 import { User } from "types/User";
 
@@ -19,7 +23,8 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
 
   return {
     venueUserStatuses: venueStatuses,
-    isStatusEnabledForVenue: sovereignVenue?.showUserStatus ?? false,
+    isStatusEnabledForVenue:
+      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
     userStatus: userStatus ?? ONLINE_USER_STATUS,
   };
 };

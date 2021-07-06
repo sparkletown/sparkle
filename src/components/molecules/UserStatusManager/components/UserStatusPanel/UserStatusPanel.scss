@@ -11,7 +11,8 @@ $delete-icon--size: 25px;
     padding: 5px 0;
   }
 
-  &__picker-icon {
+  &__picker-icon,
+  &__delete-icon {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -26,18 +27,7 @@ $delete-icon--size: 25px;
   }
 
   &__delete-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: $border-radius--max;
-    width: $delete-icon--size;
-    height: $delete-icon--size;
     margin-left: 5px;
     background-color: $lighter-intermediate-grey;
-    cursor: pointer;
-
-    &:hover {
-      transform: scale(1.2);
-    }
   }
 }

@@ -80,6 +80,10 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     [userStatus.color]
   );
 
+  //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
+  //'showStatus' is used to render this conditionally only in some of the screens.
+  const hasUserStatus = isStatusEnabledForVenue && showStatus && isOnline;
+
   return (
     <div className={containerClasses}>
       {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
@@ -89,11 +93,8 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {/*
-        'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
-        'showStatus' is used to render this conditionally only in some of the screens.
-      */}
-      {isStatusEnabledForVenue && showStatus && isOnline && (
+
+      {hasUserStatus && (
         <span
           className={statusIndicatorClasses}
           style={statusIndicatorStyles}

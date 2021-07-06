@@ -154,9 +154,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
             {email}
           </div>
           <div className="UserInformationContent__status-container">
-            <UserStatusDropdown
-              userStatuses={sovereignVenue?.userStatuses ?? []}
-            />
+            <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
           </div>
         </div>
         <Button

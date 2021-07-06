@@ -45,6 +45,8 @@ export const UserStatusPanel: React.FC<UserStatusPanelProps> = ({
     [userStatus.color]
   );
 
+  const showColorPicker = isColorPickerShown && !disabled;
+
   return (
     <>
       <div className="UserStatusPanel__status">
@@ -66,7 +68,8 @@ export const UserStatusPanel: React.FC<UserStatusPanelProps> = ({
           </div>
         )}
       </div>
-      {isColorPickerShown && !disabled && <CirclePicker onChange={pickColor} />}
+
+      {showColorPicker && <CirclePicker onChange={pickColor} />}
     </>
   );
 };

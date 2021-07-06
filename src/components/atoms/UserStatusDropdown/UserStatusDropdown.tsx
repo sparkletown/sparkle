@@ -10,7 +10,7 @@ import { UserStatus } from "types/User";
 import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
-  userStatuses: UserStatus[];
+  userStatuses?: UserStatus[];
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
@@ -18,9 +18,10 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 }) => {
   const { status, changeUserStatus } = useProfileStatus();
 
-  const allUserStatuses = useMemo(() => [...USER_STATUSES, ...userStatuses], [
-    userStatuses,
-  ]);
+  const allUserStatuses = useMemo(
+    () => (userStatuses ? [...USER_STATUSES, ...userStatuses] : USER_STATUSES),
+    [userStatuses]
+  );
 
   const userStatusDropdownOptions = useMemo(
     () =>
