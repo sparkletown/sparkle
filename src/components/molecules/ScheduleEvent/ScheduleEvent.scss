@@ -44,6 +44,10 @@ $description--margin-top: 2px;
     }
   }
 
+  &--wide {
+    width: var(--event--widen) !important;
+  }
+
   &--live {
     background-color: $primary--live;
     color: $white;
@@ -86,6 +90,24 @@ $description--margin-top: 2px;
 
     &:hover {
       padding-top: $bookmark-hover--padding-top;
+    }
+  }
+
+  &__expand {
+    color: $concrete-dark;
+
+    &--square {
+      position: absolute;
+      height: $spacing--xl;
+    }
+
+    &--arrows {
+      height: $spacing--lg;
+      margin-top: $spacing--xs;
+    }
+
+    &:hover {
+      color: $white;
     }
   }
 }
