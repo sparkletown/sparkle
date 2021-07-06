@@ -15,6 +15,7 @@ import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
+import { useAudio } from "hooks/audio/useAudio";
 
 import "./UserReactions.scss";
 
@@ -94,17 +95,11 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   isMuted = false,
 }) => {
   const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  useAudio({ audioPath, isMuted });
 
   return (
     <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
       {emojiText}
-
-      {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
-      {!isMuted && (
-        <audio autoPlay loop>
-          <source src={audioPath} />
-        </audio>
-      )}
     </div>
   );
 };
