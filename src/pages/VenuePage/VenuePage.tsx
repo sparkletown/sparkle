@@ -42,10 +42,6 @@ import { useVenueId } from "hooks/useVenueId";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-// import { CountDown } from "components/molecules/CountDown";
-// import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
-// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-// import TemplateWrapper from "./TemplateWrapper";
 import { updateTheme } from "./helpers";
 
 import Login from "pages/Account/Login";
@@ -268,10 +264,6 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (isVenueLoaded && !venue) {
-    console.log("VenuePage()", "01 bail out reason:", {
-      isVenueLoaded,
-      venue,
-    });
     return <>This venue does not exist</>;
   }
 
@@ -279,13 +271,10 @@ export const VenuePage: React.FC = () => {
     // this should be happening only if invalid url param
     // no sense in displaying loading page, another message or action is needed
     // @debt use/display proper message/action when !venueId
-    console.log("VenuePage()", "02 bail out reason:", { venueId });
     return null;
   }
 
   if (!venue) {
-    // too common, don't spam console, be optimistic venue will load soon
-    // return null;
     return (
       <React.Suspense fallback={<></>}>
         <LoadingPage />
@@ -294,7 +283,6 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    console.log("VenuePage()", "03 bail out reason:", { user });
     return (
       <>
         <Preload venue={venue} />
@@ -304,7 +292,6 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!profile) {
-    console.log("VenuePage()", "04 bail out reason:", { profile });
     return (
       <>
         <Preload venue={venue} />
@@ -323,10 +310,6 @@ export const VenuePage: React.FC = () => {
   const hasEntrance = isTruthy(venue?.entrance);
   const hasEntered = profile?.enteredVenueIds?.includes(venueId);
   if (hasEntrance && !hasEntered) {
-    console.log("VenuePage()", "05 bail out reason:", {
-      hasEntrance,
-      hasEntered,
-    });
     return <Redirect to={venueEntranceUrl(venueId)} />;
   }
 
@@ -336,10 +319,6 @@ export const VenuePage: React.FC = () => {
     !isUserVenueOwner
   ) {
     if (isEventLoaded && !event) {
-      console.log("VenuePage()", "06 bail out reason:", {
-        isEventLoaded,
-        event,
-      });
       return (
         <>
           <Preload venue={venue} />
@@ -349,11 +328,6 @@ export const VenuePage: React.FC = () => {
     }
 
     if (!event || !venue || !userPurchaseHistoryRequestStatus) {
-      console.log("VenuePage()", "07 bail out reason:", {
-        event,
-        venue,
-        userPurchaseHistoryRequestStatus,
-      });
       // considering there is prior !venue check, venue should exist at this point
       return (
         <>
@@ -372,19 +346,10 @@ export const VenuePage: React.FC = () => {
         !hasUserBoughtTicket) ||
       isEventFinished
     ) {
-      console.log("VenuePage()", "08 bail out reason:", {
-        isMember,
-        "event.price > 0": event.price > 0,
-        userPurchaseHistoryRequestStatus,
-        hasUserBoughtTicket,
-      });
       return <>Forbidden</>;
     }
 
     if (isEventStartingSoon(event)) {
-      console.log("VenuePage()", "09 bail out reason:", {
-        isEventStartingSoon: true,
-      });
       return (
         <>
           <Preload venue={venue} />
@@ -401,7 +366,6 @@ export const VenuePage: React.FC = () => {
 
   // @debt there is already !user check above, this is superfluous
   if (!user) {
-    console.log("VenuePage()", "10 bail out reason:", { user });
     return (
       <>
         <Preload venue={venue} />
