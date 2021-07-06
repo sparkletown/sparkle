@@ -134,6 +134,7 @@
     }
   },
   "devDependencies": {
+    "@craco/craco": "^6.2.0",
     "@types/classnames": "^2.2.11",
     "@types/emoji-mart": "^3.0.4",
     "@types/howler": "^2.2.1",
