@@ -341,10 +341,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
       {shouldShowSchedule && (
         <button
           className={`schedule-dropdown-backdrop ${
-              isEventScheduleVisible ? "show" : ""
-            }`}
-            onClick={hideEventSchedule}
-          >
+            isEventScheduleVisible ? "show" : ""
+          }`}
+          onClick={hideEventSchedule}
+        >
           <div className={navBarScheduleClassName}>
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
@@ -356,8 +356,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <button className="back-map-btn"
-        onClick={backToParentVenue}>
+        <button className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
           <span className="back-link">
             Back{parentVenue ? ` to ${parentVenue.name}` : ""}

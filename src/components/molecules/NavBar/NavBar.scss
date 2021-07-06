@@ -171,7 +171,8 @@ $border-radius: 28px;
   img {
     height: 40px;
   }
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     outline: none;
     border: none;
     background-color: rgba($white, 0.14);
@@ -254,7 +255,8 @@ $border-radius: 28px;
   -webkit-appearance: none;
   border: none;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     outline: none;
     background-color: $lighter-intermediate-grey;
     .back-icon {

@@ -20,7 +20,8 @@ $label-visible: flex;
 
   transition: transform 600ms $transition-function;
 
-  &:hover, &:focus {
+  &:hover,
+  &:focus {
     outline: none;
     z-index: z(map-room--hovered);
     transform: scale(1.1);
@@ -46,7 +47,8 @@ $label-visible: flex;
   &--covert {
     cursor: default;
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       transform: none;
 
       .maproom__image {
@@ -58,7 +60,8 @@ $label-visible: flex;
   &--unclickable {
     z-index: z(map-room--unclickable);
 
-    &:hover, &:focus {
+    &:hover,
+    &:focus {
       z-index: z(map-room--unclickable);
     }
   }

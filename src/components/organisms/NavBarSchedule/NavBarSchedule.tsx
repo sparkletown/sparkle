@@ -122,8 +122,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             setSelectedDayIndex(dayIndex);
           }}
         >
-          <button>{formatDayLabel(day)}
-          </button>
+          <button>{formatDayLabel(day)}</button>
         </li>
       );
     });
@@ -202,7 +201,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
     });
   }, [relatedVenueEvents]);
-
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
