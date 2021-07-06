@@ -66,10 +66,23 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  const sortedEvents = useMemo(
+    () =>
+      locatedEvents.sort((a, b) => {
+        const nameA =
+          a.location.roomTitle ?? a.location.venueName ?? a.location.venueId;
+        const nameB =
+          b.location.roomTitle ?? b.location.venueName ?? b.location.venueId;
+
+        return nameA.localeCompare(nameB);
+      }),
+    [locatedEvents]
+  );
+
   // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
-      locatedEvents.map(({ location, events }) => (
+      sortedEvents.map(({ location, events }) => (
         <div
           key={`RoomCell-${location.venueId}-${location.roomTitle}`}
           className="Schedule__room"
@@ -82,7 +95,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           </span>
         </div>
       )),
-    [locatedEvents]
+    [sortedEvents]
   );
 
   const hoursRow = useMemo(
