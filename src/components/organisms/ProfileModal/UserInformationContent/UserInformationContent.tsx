@@ -140,6 +140,9 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <UserAvatar user={user} showStatus large />
         </div>
         <div className="UserInformationContent__text-container">
+          <span className="UserInformationContent__status-prefix">
+            Available
+          </span>
           <h3 className="UserInformationContent__user-name">
             {user?.partyName ?? DEFAULT_PARTY_NAME}
           </h3>

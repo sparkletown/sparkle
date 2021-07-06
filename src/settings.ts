@@ -609,44 +609,17 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const ISNOOB_USER_STATUS = {
-  status: DefaultUserStatus.isNoob,
-  color: "#EF77C7",
+export const ONLINE_USER_STATUS = {
+  status: DefaultUserStatus.online,
+  color: "#53E52A",
 };
 
-export const ISAFK_USER_STATUS = {
-  status: DefaultUserStatus.isAFK,
-  color: "#F12C18",
+export const BUSY_USER_STATUS = {
+  status: DefaultUserStatus.busy,
+  color: "#F44336",
 };
 
-export const ISCHATTING_USER_STATUS = {
-  status: DefaultUserStatus.isChatting,
-  color: "#FAD114",
-};
-
-export const ISEXPLORING_USER_STATUS = {
-  status: DefaultUserStatus.isExploring,
-  color: "#F79A23",
-};
-
-export const ISSPECTATING_USER_STATUS = {
-  status: DefaultUserStatus.isSpectating,
-  color: "#10B0F0",
-};
-
-export const ISHEREFORIT_USER_STATUS = {
-  status: DefaultUserStatus.isHereForIt,
-  color: "#40DC24",
-};
-
-export const USER_STATUSES = [
-  ISNOOB_USER_STATUS,
-  ISAFK_USER_STATUS,
-  ISCHATTING_USER_STATUS,
-  ISEXPLORING_USER_STATUS,
-  ISSPECTATING_USER_STATUS,
-  ISHEREFORIT_USER_STATUS,
-];
+export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;

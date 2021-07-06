@@ -617,38 +617,6 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
   }
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
-  }
-
-  if (typeof data.showZendesk === "boolean") {
-    updated.showZendesk = data.showZendesk;
-  }
-
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
-  }
-
-  if (typeof data.showReactions === "boolean") {
-    updated.showReactions = data.showReactions;
-  }
-
-  if (typeof data.showUserStatus === "boolean") {
-    updated.showUserStatus = data.showUserStatus;
-  }
-
-  if (data.userStatuses) {
-    updated.userStatuses = data.userStatuses;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
   if (data.auditoriumColumns) {
     updated.auditoriumColumns = data.auditoriumColumns;
   }
