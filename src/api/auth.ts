@@ -1,5 +1,4 @@
 import firebase from "firebase/app";
-import Bugsnag from "@bugsnag/js";
 
 type CheckAccessTypes = {
   venueId: string;
@@ -26,21 +25,3 @@ export interface CustomAuthConfig {
   customAuthName: string;
   customAuthConnectPath: string;
 }
-
-export const fetchCustomAuthConfig = async (
-  venueId: string
-): Promise<CustomAuthConfig> =>
-  await firebase
-    .functions()
-    .httpsCallable("auth-getCustomAuthConfig")({ venueId })
-    .then<CustomAuthConfig>((result) => result.data)
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.addMetadata("context", {
-          location: "api/auth::fetchCustomAuthConfig",
-          venueId,
-        });
-      });
-
-      throw err;
-    });
