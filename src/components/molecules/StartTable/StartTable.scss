@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$jazzbar-table-height: 189px;
+
 .StartTable {
   display: flex;
   align-items: center;
@@ -12,24 +14,29 @@
   margin: 5px;
   cursor: pointer;
 
+  &__jazzbar {
+    margin: 0;
+    min-height: $jazzbar-table-height;
+  }
+
   &:hover {
     background-color: lighten($dark, 10%);
     transform: scale(1.05);
 
-    .StartTable-sign {
+    .StartTable__sign {
       display: none;
     }
 
-    .StartTable-title {
+    .StartTable__title {
       display: block;
     }
   }
 
-  &-sign {
+  &__sign {
     font-size: $font-size--xxxl;
   }
 
-  &-title {
+  &__title {
     display: none;
     font-size: $font-size--lg;
     line-height: 18px;

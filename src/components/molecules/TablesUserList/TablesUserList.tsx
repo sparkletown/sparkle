@@ -2,16 +2,21 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import "./TablesUserList.scss";
+import { DEFAULT_TABLE_CAPACITY } from "settings";
+
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
+
 import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
 
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useRecentVenueUsers } from "hooks/users";
+
 import { StartTable } from "../StartTable";
+
+import "./TablesUserList.scss";
 
 interface PropsType {
   venueName: string;
@@ -24,7 +29,6 @@ interface PropsType {
 }
 
 const TABLES = 4;
-export const DEFAULT_TABLE_CAPACITY = 8;
 
 const createTable = (i: number): Table => {
   return {
@@ -32,7 +36,7 @@ const createTable = (i: number): Table => {
     reference: `Table ${i + 1}`,
     capacity: DEFAULT_TABLE_CAPACITY,
     rows: 2,
-    columns: 4,
+    columns: 3,
   };
 };
 

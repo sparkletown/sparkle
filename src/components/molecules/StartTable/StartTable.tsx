@@ -1,4 +1,5 @@
 import React from "react";
+import classNames from "classnames";
 import { useAsyncFn } from "react-use";
 
 import { updateVenueTable } from "api/table";
@@ -9,8 +10,6 @@ import { VenueTemplate } from "types/venues";
 import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
-
-import { DEFAULT_TABLE_CAPACITY } from "../TablesUserList/TablesUserList";
 
 import "./StartTable.scss";
 
@@ -30,6 +29,10 @@ export const StartTable: React.FC<StartTablePropsType> = ({
     table.columns &&
     venue?.template !== VenueTemplate.jazzbar &&
     (table.columns + 1) * 55;
+  const startTableHeight =
+    table.rows &&
+    venue?.template !== VenueTemplate.jazzbar &&
+    table.rows * 50 + 65;
 
   const [, updateTables] = useAsyncFn(async () => {
     if (!venue?.id) return;
@@ -39,21 +42,25 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       tableOfUser: newTable,
       tables: [...tables, newTable],
       title: newTable.title,
-      capacity: newTable.capacity ?? DEFAULT_TABLE_CAPACITY,
+      capacity: newTable.capacity,
     });
   }, [newTable, tables, venue?.id]);
 
+  const containerClasses = classNames("StartTable", {
+    StartTable__jazzbar: venue?.template === VenueTemplate.jazzbar,
+  });
+
   return (
     <div
-      className="StartTable"
+      className={containerClasses}
       onClick={updateTables}
       style={{
-        height: `${table.rows && table.rows * 50 + 65}px`,
+        height: `${startTableHeight}px`,
         width: `${startTableWidth}px`,
       }}
     >
-      <div className="StartTable-sign">+</div>
-      <div className="StartTable-title">Start a table</div>
+      <div className="StartTable__sign">+</div>
+      <div className="StartTable__title">Start a table</div>
     </div>
   );
 };
