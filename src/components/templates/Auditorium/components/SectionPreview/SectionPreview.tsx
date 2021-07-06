@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
@@ -34,10 +34,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   const maxUsers = getSectionCapacity(venue, section);
 
+  const sectionId = section.id;
+
   const seatedUsers = getAuditoriumSeatedUsers({
     auditoriumUsers: worldUsers,
     venueId: venue.id,
-    sectionId: section.id,
+    sectionId,
   });
   const seatedUsersCount = seatedUsers.length;
 
@@ -46,14 +48,11 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   const userAmountText = isFull ? "Full" : `${seatedUsersCount}/${maxUsers}`;
 
-  const handleClick = () => {
-    if (isFull) {
-      // TODO: Show fancy modal, explainig why a person can't access the preveiw
-      return;
-    }
+  const onSectionEnter = useCallback(() => {
+    if (isFull) return;
 
-    enterSection(section.id);
-  };
+    enterSection(sectionId);
+  }, [isFull, enterSection, sectionId]);
 
   const containerClasses = classNames("SectionPreview", {
     "SectionPreview--full": isFull,
@@ -62,7 +61,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   });
 
   return (
-    <div className={containerClasses} onClick={handleClick}>
+    <div className={containerClasses} onClick={onSectionEnter}>
       {section.isVip && <div className="SectionPreview__vip-label">VIP</div>}
 
       <div className="SectionPreview__people-count">
