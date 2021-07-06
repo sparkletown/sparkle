@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { useHistory } from "react-router-dom";
 import { sample } from "lodash";
 
-import { AuditoriumSize, AuditoriumEmptyBlocksCount } from "types/auditorium";
+import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -92,11 +92,10 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
-  const containerClasses = classNames("AllSectionPreviews", {
-    "AllSectionPreviews--small": auditoriumSize === AuditoriumSize.SMALL,
-    "AllSectionPreviews--medium": auditoriumSize === AuditoriumSize.MEDIUM,
-    "AllSectionPreviews--large": auditoriumSize === AuditoriumSize.LARGE,
-  });
+  const containerClasses = classNames(
+    "AllSectionPreviews",
+    `AllSectionPreviews--${auditoriumSize}`
+  );
 
   return (
     <>
