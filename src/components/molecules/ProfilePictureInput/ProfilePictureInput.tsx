@@ -18,7 +18,7 @@ import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
-interface ProfilePictureInputProps {
+export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
@@ -29,7 +29,7 @@ interface ProfilePictureInputProps {
   register: any;
 }
 
-const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
+export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
   venueId,
   setValue,
   user,
@@ -166,5 +166,3 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     </div>
   );
 };
-
-export default ProfilePictureInput;

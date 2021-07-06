@@ -55,6 +55,15 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     setActiveOption(undefined);
   }, []);
 
+  // @debt createPoll should be returning Promise; make sense to use useAsync here
+  const onPollSubmit = useCallback(
+    (data) => {
+      createPoll(data);
+      unselectOption();
+    },
+    [createPoll, unselectOption]
+  );
+
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
   const renderedMessages = useMemo(
@@ -105,7 +114,7 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )}
         {activeOption === ChatOptionType.poll ? (
-          <PollBox createPoll={createPoll} />
+          <PollBox onPollSubmit={onPollSubmit} />
         ) : (
           <ChatMessageBox
             selectedThread={selectedThread}
