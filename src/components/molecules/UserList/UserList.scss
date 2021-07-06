@@ -1,7 +1,7 @@
 @import "scss/constants";
 
 .UserList {
-  .clickable-text {
+  &__toggler-text {
     text-decoration: underline;
     cursor: pointer;
 

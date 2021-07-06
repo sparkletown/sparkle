@@ -68,7 +68,7 @@ export const UserList: React.FC<UserListProps> = ({
         {showTitle && <p>{label}</p>}
 
         {showMoreUsersToggler && hasExcessiveUserCount && (
-          <p className="clickable-text" onClick={toggleExpanded}>
+          <p className="UserList__toggler-text" onClick={toggleExpanded}>
             See {isExpanded ? "less" : "all"}
           </p>
         )}
