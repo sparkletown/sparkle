@@ -149,6 +149,7 @@
     "@types/styled-components": "^5.1.4",
     "@types/twilio-video": "^2.7.2",
     "@types/yup": "^0.29.3",
+    "babel-plugin-lodash": "^3.3.4",
     "cypress": "^4.11.0",
     "cypress-file-upload": "^4.0.7",
     "eslint-plugin-promise": "^4.2.1",
