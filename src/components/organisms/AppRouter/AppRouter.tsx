@@ -22,8 +22,7 @@ import { VersionPage } from "pages/VersionPage/VersionPage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AccountSubrouter } from "./AccountSubrouter";
-import { AdminNGSubrouter } from "./AdminNGSubrouter";
-import { AdminV1Subrouter } from "./AdminV1Subrouter";
+import { AdminSubrouter } from "./AdminSubrouter";
 import { EnterSubrouter } from "./EnterSubrouter";
 
 export const AppRouter: React.FC = () => {
@@ -32,8 +31,8 @@ export const AppRouter: React.FC = () => {
       <Switch>
         <Route path="/enter" component={EnterSubrouter} />
         <Route path="/account" component={AccountSubrouter} />
-        <Route path="/admin" component={AdminV1Subrouter} />
-        <Route path="/admin-ng" component={AdminNGSubrouter} />
+        <Route path="/admin" component={AdminSubrouter} />
+        <Route path="/admin-ng" component={AdminSubrouter} />
 
         <Route
           path="/login/:venueId/:customToken"
