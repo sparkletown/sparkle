@@ -12,10 +12,7 @@ import { tracePromise } from "utils/performance";
 import { venueLandingUrl } from "utils/url";
 
 import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
-
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
-
-import { VenueEntrancePage } from "pages/VenueEntrancePage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -48,6 +45,14 @@ const VenueLandingPage = lazy(() =>
   tracePromise("AppRouter::lazy-import::VenueLandingPage", () =>
     import("pages/VenueLandingPage").then(({ VenueLandingPage }) => ({
       default: VenueLandingPage,
+    }))
+  )
+);
+
+const VenueEntrancePage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::VenueEntrancePage", () =>
+    import("pages/VenueEntrancePage").then(({ VenueEntrancePage }) => ({
+      default: VenueEntrancePage,
     }))
   )
 );
