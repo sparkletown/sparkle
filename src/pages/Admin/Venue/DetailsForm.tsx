@@ -902,7 +902,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   }, [showUserStatuses, venue]);
 
   const removeUserStatus = (index: number) => {
-    const statuses = [...userStatuses].slice(index, 1);
+    const statuses = [...userStatuses];
+    statuses.splice(index, 1);
     setUserStatuses(statuses);
   };
 
