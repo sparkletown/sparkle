@@ -62,11 +62,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
 
-  const {
-    isLoading: isRoomsLoading,
-    relatedVenues,
-    relatedVenueIds,
-  } = useRelatedVenues({
+  const { isLoading, relatedVenues, relatedVenueIds } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -196,11 +192,15 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           search results
         </div>
 
-        <div className="NavSearchBar__search-results">
-          {isRoomsLoading ? <Loading /> : foundRooms}
-          {isEventsLoading ? <Loading /> : foundEvents}
-          {foundUsers}
-        </div>
+        {isLoading || isEventsLoading ? (
+          <Loading />
+        ) : (
+          <div className="NavSearchBar__search-results">
+            {foundRooms}
+            {foundEvents}
+            {foundUsers}
+          </div>
+        )}
       </div>
 
       <InputField
