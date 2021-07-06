@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -80,9 +80,9 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = (
-        <React.Suspense fallback={<></>}>
+        <Suspense fallback={<></>}>
           <PartyMap venue={venue} />
-        </React.Suspense>
+        </Suspense>
       );
       break;
 
@@ -172,23 +172,23 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     <RelatedVenuesProvider venueId={venue.id}>
       <ReactionsProvider venueId={venue.id}>
-        <React.Suspense fallback={<></>}>
+        <Suspense fallback={<></>}>
           <WithNavigationBar
             fullscreen={fullscreen}
             hasBackButton={hasBackButton}
           >
-            <React.Suspense fallback={<></>}>
+            <Suspense fallback={<></>}>
               <AnnouncementMessage message={venue.bannerMessage} />
-            </React.Suspense>
+            </Suspense>
             {template}
-            <React.Suspense fallback={<></>}>
+            <Suspense fallback={<></>}>
               <ChatSidebar venue={venue} />
-            </React.Suspense>
-            <React.Suspense fallback={<></>}>
+            </Suspense>
+            <Suspense fallback={<></>}>
               <UserProfileModal venue={venue} />
-            </React.Suspense>
+            </Suspense>
           </WithNavigationBar>
-        </React.Suspense>
+        </Suspense>
       </ReactionsProvider>
     </RelatedVenuesProvider>
   );

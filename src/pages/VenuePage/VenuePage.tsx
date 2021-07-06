@@ -1,5 +1,5 @@
 import firebase from "firebase/app";
-import React, { useEffect } from "react";
+import React, { useEffect, Suspense } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle, useAsync } from "react-use";
 import { Helmet } from "react-helmet";
@@ -276,9 +276,9 @@ export const VenuePage: React.FC = () => {
 
   if (!venue) {
     return (
-      <React.Suspense fallback={<></>}>
+      <Suspense fallback={<></>}>
         <LoadingPage />
-      </React.Suspense>
+      </Suspense>
     );
   }
 
@@ -332,9 +332,9 @@ export const VenuePage: React.FC = () => {
       return (
         <>
           <Preload venue={venue} />
-          <React.Suspense fallback={<></>}>
+          <Suspense fallback={<></>}>
             <LoadingPage />
-          </React.Suspense>
+          </Suspense>
         </>
       );
     }
@@ -353,12 +353,12 @@ export const VenuePage: React.FC = () => {
       return (
         <>
           <Preload venue={venue} />
-          <React.Suspense fallback={<></>}>
+          <Suspense fallback={<></>}>
             <CountDown
               startUtcSeconds={event.start_utc_seconds}
               textBeforeCountdown="Bar opens in"
             />
-          </React.Suspense>
+          </Suspense>
         </>
       );
     }
@@ -369,9 +369,9 @@ export const VenuePage: React.FC = () => {
     return (
       <>
         <Preload venue={venue} />
-        <React.Suspense fallback={<></>}>
+        <Suspense fallback={<></>}>
           <LoadingPage />
-        </React.Suspense>
+        </Suspense>
       </>
     );
   }
@@ -383,9 +383,9 @@ export const VenuePage: React.FC = () => {
   return (
     <>
       <Preload venue={venue} />
-      <React.Suspense fallback={<></>}>
+      <Suspense fallback={<></>}>
         <TemplateWrapper venue={venue} />
-      </React.Suspense>
+      </Suspense>
     </>
   );
 };
