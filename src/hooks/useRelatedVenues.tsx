@@ -60,17 +60,17 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     error: relatedVenuesError,
     value: relatedVenues = emptyArray,
   } = useAsync(async () => {
-    if (!sovereignVenueId || !sovereignVenue) return emptyArray;
+    if (!sovereignVenue) return emptyArray;
 
     return tracePromise(
       "RelatedVenuesProvider::fetchRelatedVenues",
       () => fetchRelatedVenues(sovereignVenue),
       {
-        attributes: { sovereignVenueId },
+        attributes: { sovereignVenueId: sovereignVenue.id },
         withDebugLog: true,
       }
     );
-  }, [sovereignVenueId, sovereignVenue]);
+  }, [sovereignVenue]);
 
   const relatedVenueIds = useMemo(
     () => relatedVenues.map((venue) => venue.id),
