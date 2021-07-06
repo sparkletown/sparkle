@@ -104,6 +104,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
             limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
           />
         </div>
       </div>

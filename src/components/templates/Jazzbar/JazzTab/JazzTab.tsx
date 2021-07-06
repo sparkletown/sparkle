@@ -160,6 +160,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           users={recentVenueUsers}
           activity={venue?.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
+          showMoreUsersToggler
         />
       )}
 

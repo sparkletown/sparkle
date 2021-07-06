@@ -1,10 +1,10 @@
-export type GridPosition = {
+export interface GridPosition {
   row: number;
   column: number;
-};
+}
 
-export type SectionGridData = GridPosition & {
+export interface SectionGridData extends GridPosition {
   sectionId: string;
-};
+}
 
 export type AnyGridData = GridPosition | SectionGridData;
