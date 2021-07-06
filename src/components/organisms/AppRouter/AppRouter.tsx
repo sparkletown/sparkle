@@ -16,7 +16,6 @@ import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 
 import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import { VenuePage } from "pages/VenuePage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -49,6 +48,14 @@ const VenueLandingPage = lazy(() =>
   tracePromise("AppRouter::lazy-import::VenueLandingPage", () =>
     import("pages/VenueLandingPage").then(({ VenueLandingPage }) => ({
       default: VenueLandingPage,
+    }))
+  )
+);
+
+const VenuePage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::VenuePage", () =>
+    import("pages/VenuePage").then(({ VenuePage }) => ({
+      default: VenuePage,
     }))
   )
 );
