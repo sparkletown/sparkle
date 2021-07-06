@@ -92,6 +92,7 @@
     "build:bundle-stats": "craco build --stats",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "analyze:bundle-stats": "npx webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html",
+    "analyze:bundle-stats:statoscope": "npx @statoscope/cli serve ./build/bundle-stats.json",
     "analyze:bundle-stats:duplicates-1": "npx inspectpack --action duplicates --stats build/bundle-stats.json",
     "analyze:bundle-stats:duplicates-2": "npx webpack-stats-duplicates ./build/bundle-stats.json",
     "lint": "npm run prettier:check && npm run eslint:check",
