@@ -1,25 +1,35 @@
+// @debt is this component used? looks like we can get rid of it.
 import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import "./EditProfileModal.scss";
+
+import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { QuestionType } from "types/Question";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useUser } from "hooks/useUser";
+import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import { QuestionType } from "types/Question";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
-interface PropsType {
+import "./EditProfileModal.scss";
+
+export interface EditProfileModalProps {
   show: boolean;
   onHide: () => void;
 }
 
-const EditProfileModal: React.FunctionComponent<PropsType> = ({
+export const EditProfileModal: React.FunctionComponent<EditProfileModalProps> = ({
   show,
   onHide,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
   const profileQuestions = useSelector(
     (state) => currentVenueSelectorData(state)?.profile_questions
@@ -74,7 +84,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 16,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
             />
             {errors.partyName && errors.partyName.type === "required" && (
@@ -82,11 +92,13 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 16 characters or less
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
               </span>
             )}
-            {user && (
+            {user && venueId && (
               <ProfilePictureInput
+                venueId={venueId}
                 setValue={setValue}
                 user={user}
                 errors={errors}
@@ -103,9 +115,7 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
                   <textarea
                     className="input-block input-centered"
                     name={question.name}
-                    ref={register({
-                      required: true,
-                    })}
+                    ref={register()}
                   />
                 </div>
               </>
@@ -128,5 +138,3 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-export default EditProfileModal;

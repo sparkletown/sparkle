@@ -1,9 +1,11 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
-const { checkAuth } = require("./auth");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
+
+const { checkAuth } = require("./src/utils/assert");
+const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+
 const PLAYA_VENUE_ID = "jamonline";
-const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6;
 
 // These represent all of our venue templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in src/types/venues.ts + share the same code between frontend/backend
@@ -19,7 +21,10 @@ const VenueTemplate = {
   partymap: "partymap",
   performancevenue: "performancevenue",
   playa: "playa",
+  posterhall: "posterhall",
+  posterpage: "posterpage",
   preplaya: "preplaya",
+  screeningroom: "screeningroom",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
 
@@ -68,12 +73,80 @@ const PlacementState = {
   Hidden: "HIDDEN",
 };
 
-const checkUserIsAdminOrOwner = async (venueId, uid) => {
-  try {
-    return await checkUserIsOwner(venueId, uid);
-  } catch (e) {
-    return e.toString();
-  }
+const checkUserIsOwner = async (venueId, uid) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .get()
+    .then(async (doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
+      }
+      const venue = doc.data();
+      if (venue.owners && venue.owners.includes(uid)) return;
+
+      if (venue.parentId) {
+        const doc = await admin
+          .firestore()
+          .collection("venues")
+          .doc(venue.parentId)
+          .get();
+
+        if (!doc.exists) {
+          throw new HttpsError(
+            "not-found",
+            `Venue ${venueId} references missing parent ${venue.parentId}`
+          );
+        }
+        const parentVenue = doc.data();
+        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
+          throw new HttpsError(
+            "permission-denied",
+            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
+          );
+        }
+      }
+
+      throw new HttpsError(
+        "permission-denied",
+        `User is not an owner of ${venueId}`
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
+};
+
+// @debt extract this into a new functions/chat backend script file
+const checkIfUserHasVoted = async (venueId, pollId, userId) => {
+  await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .collection("chats")
+    .doc(pollId)
+    .get()
+    .then((doc) => {
+      if (!doc.exists) {
+        throw new HttpsError("not-found", `Poll ${pollId} does not exist`);
+      }
+
+      const poll = doc.data();
+
+      return poll.votes.some(
+        ({ userId: existingUserId }) => userId === existingUserId
+      );
+    })
+    .catch((err) => {
+      throw new HttpsError(
+        "internal",
+        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
+      );
+    });
 };
 
 const createVenueData = (data, context) => {
@@ -108,11 +181,14 @@ const createVenueData = (data, context) => {
     host: {
       icon: data.logoImageUrl,
     },
-    code_of_conduct_questions: [],
     owners,
+    code_of_conduct_questions: data.code_of_conduct_questions || [],
     profile_questions: data.profile_questions,
+    entrance: data.entrance || [],
     placement: { ...data.placement, state: PlacementState.SelfPlaced },
-    showLiveSchedule: data.showLiveSchedule ? data.showLiveSchedule : false,
+    // @debt find a way to share src/settings with backend functions, then use DEFAULT_SHOW_SCHEDULE here
+    showSchedule:
+      typeof data.showSchedule === "boolean" ? data.showSchedule : true,
     showChat: true,
     showRangers: data.showRangers || false,
     parentId: data.parentId,
@@ -188,57 +264,98 @@ const createVenueData_v2 = (data, context) => ({
   rooms: [],
 });
 
-const getVenueId = (name) => {
-  return name.replace(/\W/g, "").toLowerCase();
+// @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
+const createBaseUpdateVenueData = (data, updated) => {
+  if (data.subtitle) {
+    updated.config.landingPageConfig.subtitle = data.subtitle;
+  }
+
+  if (data.description) {
+    updated.config.landingPageConfig.description = data.description;
+  }
+
+  if (data.primaryColor) {
+    if (!updated.theme) {
+      updated.theme = {};
+    }
+    updated.theme.primaryColor = data.primaryColor;
+  }
+
+  if (data.logoImageUrl) {
+    if (!updated.host) {
+      updated.host = {};
+    }
+    updated.host.icon = data.logoImageUrl;
+  }
+
+  if (data.profile_questions) {
+    updated.profile_questions = data.profile_questions;
+  }
+
+  if (data.entrance) {
+    updated.entrance = data.entrance;
+  }
+
+  if (data.mapBackgroundImageUrl) {
+    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
+  }
+
+  // @debt do we need to be able to set this here anymore? I think we have a dedicated function for it?
+  if (data.bannerMessage) {
+    updated.bannerMessage = data.bannerMessage;
+  }
+
+  if (data.parentId) {
+    updated.parentId = data.parentId;
+  }
+
+  if (data.roomVisibility) {
+    updated.roomVisibility = data.roomVisibility;
+  }
+
+  if (typeof data.showSchedule === "boolean") {
+    updated.showSchedule = data.showSchedule;
+  }
+
+  if (typeof data.showBadges === "boolean") {
+    updated.showBadges = data.showBadges;
+  }
+
+  if (typeof data.showZendesk === "boolean") {
+    updated.showZendesk = data.showZendesk;
+  }
+
+  if (typeof data.showRangers === "boolean") {
+    updated.showRangers = data.showRangers;
+  }
+
+  if (typeof data.showReactions === "boolean") {
+    updated.showReactions = data.showReactions;
+  }
+
+  if (data.attendeesTitle) {
+    updated.attendeesTitle = data.attendeesTitle;
+  }
+
+  if (data.chatTitle) {
+    updated.chatTitle = data.chatTitle;
+  }
+
+  if (data.code_of_conduct_questions) {
+    updated.code_of_conduct_questions = data.code_of_conduct_questions;
+  }
+
+  if (data.showNametags) {
+    updated.showNametags = data.showNametags;
+  }
 };
 
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
-};
+const dataOrUpdateKey = (data, updated, key) =>
+  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
+  (updated &&
+    updated[key] &&
+    typeof updated[key] !== "undefined" &&
+    updated[key]);
 
 /** Add a user to the list of admins
  *
@@ -426,20 +543,29 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   }
 });
 
+// @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
 exports.updateVenue = functions.https.onCall(async (data, context) => {
   const venueId = data.id || getVenueId(data.name);
   checkAuth(context);
 
+  // @debt updateVenue_v2 uses checkUserIsAdminOrOwner rather than checkUserIsOwner. Should these be the same? Which is correct?
   await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
+  // @debt this is exactly the same as in updateVenue_v2
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   const updated = doc.data();
 
+  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
+  createBaseUpdateVenueData(data, updated);
+
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
     if (!updated.config) {
       updated.config = {};
@@ -449,40 +575,15 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     }
   }
 
+  // @debt in updateVenue_v2 this is configured as:
+  //   updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl
+  //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl;
   }
 
-  if (data.subtitle) {
-    updated.config.landingPageConfig.subtitle = data.subtitle;
-  }
-
-  if (data.description) {
-    updated.config.landingPageConfig.description = data.description;
-  }
-
-  if (data.primaryColor) {
-    if (!updated.theme) {
-      updated.theme = {};
-    }
-    updated.theme.primaryColor = data.primaryColor;
-  }
-
-  if (data.logoImageUrl) {
-    if (!updated.host) {
-      updated.host = {};
-    }
-    updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
-  if (data.mapBackgroundImageUrl) {
-    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  }
-
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
+  //   I expect this may be legacy functionality related to the Playa template?
   if (
     !data.placement.state ||
     data.placement.state === PlacementState.SelfPlaced
@@ -495,200 +596,144 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     updated.placementRequests = data.placementRequests;
   }
 
-  if (data.bannerMessage) {
-    updated.bannerMessage = data.bannerMessage;
-  }
-
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
+  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showGrid is a boolean
   if (data.columns) {
     updated.columns = data.columns;
   }
 
-  if (data.roomVisibility) {
-    updated.roomVisibility = data.roomVisibility;
-  }
-
-  if (typeof data.showLiveSchedule === "boolean") {
-    updated.showLiveSchedule = data.showLiveSchedule;
-  }
-
+  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.columns within this if as well
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
   }
 
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
-  }
-
-  if (typeof data.showZendesk === "boolean") {
-    updated.showZendesk = data.showZendesk;
-  }
-
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
-  }
-
-  if (typeof data.showReactions === "boolean") {
-    updated.showReactions = data.showReactions;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.auditoriumColumns) {
     updated.auditoriumColumns = data.auditoriumColumns;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.auditoriumRows) {
     updated.auditoriumRows = data.auditoriumRows;
   }
 
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
+  // @debt this is almost the same as in updateVenue_v2, though v2 includes data.radioStations within this if as well
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
   }
 
+  // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showRadio is a boolean
   if (data.radioStations) {
     updated.radioStations = [data.radioStations];
   }
 
+  // @debt the logic here differs from updateVenue_v2,
   // @debt this would currently allow any value to be set in this field, not just booleans
   updated.requiresDateOfBirth = data.requiresDateOfBirth || false;
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (IFRAME_TEMPLATES.includes(updated.template) && data.iframeUrl) {
     updated.iframeUrl = data.iframeUrl;
   }
 
+  // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (ZOOM_URL_TEMPLATES.includes(updated.template) && data.zoomUrl) {
     updated.zoomUrl = data.zoomUrl;
   }
 
+  // @debt this is exactly the same as in updateVenue_v2
   await admin.firestore().collection("venues").doc(venueId).update(updated);
 });
 
+// @debt this is almost a line for line duplicate of exports.updateVenue, we should de-duplicate/DRY these up
 exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
   const venueId = getVenueId(data.name);
   checkAuth(context);
 
-  await checkUserIsAdminOrOwner(venueId, context.auth.token.user_id);
+  // @debt updateVenue uses checkUserIsOwner rather than checkUserIsAdminOrOwner. Should these be the same? Which is correct?
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
 
+  // @debt We should validate venueId conforms to our valid patterns before attempting to use it in a query
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
 
+  // @debt this is exactly the same as in updateVenue
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
+  // @debt this is exactly the same as in updateVenue
   const updated = doc.data();
 
+  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
+  createBaseUpdateVenueData(data, updated);
+
+  // @debt in updateVenue we're checking/creating the updated.config object here if needed.
+  //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?
+
+  // @debt in updateVenue this is configured as:
+  //   updated.config.landingPageConfig.bannerImageUrl = data.bannerImageUrl
+  //     Should they be the same? If so, which is correct?
   if (data.bannerImageUrl) {
     updated.config.landingPageConfig.coverImageUrl = data.bannerImageUrl;
   }
-  if (data.subtitle) {
-    updated.config.landingPageConfig.subtitle = data.subtitle;
-  }
-  if (data.description) {
-    updated.config.landingPageConfig.description = data.description;
-  }
-  if (data.primaryColor) {
-    if (!updated.theme) {
-      updated.theme = {};
-    }
-    updated.theme.primaryColor = data.primaryColor;
-  }
 
-  if (data.logoImageUrl) {
-    if (!updated.host) {
-      updated.host = {};
-    }
-    updated.host.icon = data.logoImageUrl;
-  }
-
-  if (data.parentId) {
-    updated.parentId = data.parentId;
-  }
-
+  // @debt aside from the data.columns part, this is exactly the same as in updateVenue
   if (typeof data.showGrid === "boolean") {
     updated.showGrid = data.showGrid;
+    // @debt the logic here differs from updateVenue, as data.columns is always set when present there
     updated.columns = data.columns;
   }
 
-  if (typeof data.showLiveSchedule === "boolean") {
-    updated.showLiveSchedule = data.showLiveSchedule;
-  }
-
-  if (typeof data.showBadges === "boolean") {
-    updated.showBadges = data.showBadges;
-  }
-
-  if (typeof data.showZendesk === "boolean") {
-    updated.showZendesk = data.showZendesk;
-  }
-
-  if (typeof data.showRangers === "boolean") {
-    updated.showRangers = data.showRangers;
-  }
-
-  if (typeof data.showReactions === "boolean") {
-    updated.showReactions = data.showReactions;
-  }
-
+  // @debt the logic here differs from updateVenue
   if (typeof data.requiresDateOfBirth === "boolean") {
     updated.requiresDateOfBirth = data.requiresDateOfBirth;
   }
 
+  // @debt aside from the data.radioStations part, this is exactly the same as in updateVenue
   if (typeof data.showRadio === "boolean") {
     updated.showRadio = data.showRadio;
+    // @debt the logic here differs from updateVenue, as data.radioStations is always set when present there
     updated.radioStations = [data.radioStations];
   }
 
-  if (data.mapBackgroundImageUrl) {
-    updated.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
-  }
-
-  if (data.roomVisibility) {
-    updated.roomVisibility = data.roomVisibility;
-  }
-
-  if (data.profile_questions) {
-    updated.profile_questions = data.profile_questions;
-  }
-
-  if (data.code_of_conduct_questions) {
-    updated.code_of_conduct_questions = data.code_of_conduct_questions;
-  }
-
-  if (data.entrance) {
-    updated.entrance = data.entrance;
-  }
-
-  if (data.attendeesTitle) {
-    updated.attendeesTitle = data.attendeesTitle;
-  }
-
-  if (data.chatTitle) {
-    updated.chatTitle = data.chatTitle;
-  }
-
-  if (data.bannerMessage) {
-    updated.bannerMessage = data.bannerMessage;
-  }
-
+  // @debt this is exactly the same as in updateVenue
   admin.firestore().collection("venues").doc(venueId).update(updated);
+});
+
+exports.updateTables = functions.https.onCall((data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  const venueRef = admin.firestore().collection("venues").doc(data.venueId);
+
+  return admin.firestore().runTransaction(async (transaction) => {
+    const venueDoc = await transaction.get(venueRef);
+
+    if (!venueDoc.exists) {
+      throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+    }
+
+    const venueTables = [...data.tables];
+
+    const currentTableIndex = venueTables.findIndex(
+      (table) => table.reference === data.updatedTable.reference
+    );
+
+    if (currentTableIndex < 0) {
+      throw new HttpsError(
+        "not-found",
+        `current table does not exist in the venue`
+      );
+    }
+
+    venueTables[currentTableIndex] = data.updatedTable;
+
+    transaction.update(venueRef, { "config.tables": venueTables });
+  });
 });
 
 exports.deleteVenue = functions.https.onCall(async (data, context) => {
@@ -699,6 +744,40 @@ exports.deleteVenue = functions.https.onCall(async (data, context) => {
 
   admin.firestore().collection("venues").doc(venueId).delete();
 });
+
+// @debt extract this into a new functions/chat backend script file
+exports.voteInPoll = functions.https.onCall(
+  async ({ venueId, pollVote }, context) => {
+    checkAuth(context);
+
+    const { pollId, questionId } = pollVote;
+
+    try {
+      await checkIfUserHasVoted(venueId, pollId, context.auth.token.user_id);
+
+      const newVote = {
+        questionId,
+        userId: context.auth.token.user_id,
+      };
+
+      admin
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("chats")
+        .doc(pollId)
+        .update({
+          votes: admin.firestore.FieldValue.arrayUnion(newVote),
+        });
+    } catch (error) {
+      throw new HttpsError(
+        "has-voted",
+        `User ${userId} has voted in ${pollId} Poll`,
+        error
+      );
+    }
+  }
+);
 
 exports.adminUpdatePlacement = functions.https.onCall(async (data, context) => {
   const venueId = data.id;
@@ -771,53 +850,6 @@ exports.adminUpdateIframeUrl = functions.https.onCall(async (data, context) => {
     .update({ iframeUrl: iframeUrl || null });
 });
 
-exports.getVenueEvents = functions.https.onCall(
-  async ({ venueId }, context) => {
-    try {
-      checkAuth(context);
-      const now = new Date().getTime();
-
-      const venueEvents = [];
-      const venue = await admin
-        .firestore()
-        .collection("venues")
-        .doc(venueId)
-        .get();
-      const events = await venue.ref.collection("events").get();
-
-      const liveAndFutureEvents = events.docs
-        .map((eventRef) => {
-          const event = eventRef.data();
-          if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
-            event.start_utc_seconds = now / 1000;
-          }
-          return event;
-        })
-        .filter((event) => {
-          const nowSeconds = now / 1000;
-
-          const eventIsTransient =
-            event.duration_minutes <= MAX_TRANSIENT_EVENT_DURATION_HOURS * 60;
-
-          const eventIsInFuture = nowSeconds < event.start_utc_seconds;
-
-          const eventEndSeconds =
-            60 * event.duration_minutes + event.start_utc_seconds;
-          const eventIsNow = !eventIsInFuture && nowSeconds < eventEndSeconds;
-
-          return eventIsTransient && (eventIsInFuture || eventIsNow);
-        });
-      if (liveAndFutureEvents) {
-        venueEvents.push(...liveAndFutureEvents);
-      }
-
-      return venueEvents;
-    } catch (error) {
-      throw new HttpsError("internal", e.toString());
-    }
-  }
-);
-
 exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   const user = (
     await admin.firestore().collection("users").doc(userId).get()
@@ -826,9 +858,22 @@ exports.getOwnerData = functions.https.onCall(async ({ userId }) => {
   return user;
 });
 
-const dataOrUpdateKey = (data, updated, key) =>
-  (data && data[key] && typeof data[key] !== "undefined" && data[key]) ||
-  (updated &&
-    updated[key] &&
-    typeof updated[key] !== "undefined" &&
-    updated[key]);
+exports.setVenueLiveStatus = functions.https.onCall(async (data, context) => {
+  checkAuth(context);
+
+  const isValidVenueId = checkIfValidVenueId(data.venueId);
+
+  if (!isValidVenueId) {
+    throw new HttpsError("invalid-argument", `venueId is not a valid venue id`);
+  }
+
+  if (typeof data.isLive !== "boolean") {
+    throw new HttpsError("invalid-argument", `isLive is not a boolean`);
+  }
+
+  const update = {
+    isLive: Boolean(data.isLive),
+  };
+
+  await admin.firestore().collection("venues").doc(data.venueId).update(update);
+});

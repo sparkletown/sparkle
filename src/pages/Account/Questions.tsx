@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { currentVenueSelectorData } from "utils/selectors";
@@ -42,6 +42,13 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   };
 
+  useEffect(() => {
+    if (!venue) return;
+
+    // @debt replace this with useCss?
+    updateTheme(venue);
+  }, [venue]);
+
   if (!venue) {
     return <>Loading...</>;
   }
@@ -50,8 +57,6 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
   if (!venue?.profile_questions?.length) {
     proceed();
   }
-
-  venue && updateTheme(venue);
 
   const numberOfQuestions = venue?.profile_questions?.length;
   const oneQuestionOnly = numberOfQuestions === 1;
@@ -63,8 +68,10 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     <div className="page-container">
       <div className="hero-logo sparkle"></div>
       <div className="login-container">
-        <h2>{headerMessage}</h2>
-        <p>This will help your fellow partygoers break the ice</p>
+        <h2 className="header-message">{headerMessage}</h2>
+        <p className="subheader-message">
+          This will help your fellow partygoers break the ice
+        </p>
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions &&
             venue.profile_questions.map((question: QuestionType) => (
@@ -73,9 +80,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
                   className="input-block input-centered"
                   name={question.name}
                   placeholder={question.text}
-                  ref={register({
-                    required: true,
-                  })}
+                  ref={register()}
                 />
               </div>
             ))}

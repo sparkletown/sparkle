@@ -1,16 +1,12 @@
 import React, { forwardRef } from "react";
+import { FieldError } from "react-hook-form";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
-import { isTruthy } from "utils/types";
+import { isDefined, isTruthy } from "utils/types";
 
 import "./InputField.scss";
-
-export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
-  iconStart?: IconProp | JSX.Element;
-  iconEnd?: IconProp | JSX.Element;
-}
 
 const isJsxElement = (
   component: IconProp | JSX.Element
@@ -29,33 +25,57 @@ const renderIcon = (
   );
 
   return (
-    <div className={classNames("input-field__icon", modifiedClassName)}>
+    <div className={classNames("InputField__icon", modifiedClassName)}>
       {iconComponent}
     </div>
   );
 };
 
-const InputField: React.ForwardRefRenderFunction<
-  HTMLDivElement,
+export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
+  containerClassName?: string;
+  inputClassName?: string;
+  iconStart?: IconProp | JSX.Element;
+  iconEnd?: IconProp | JSX.Element;
+  error?: FieldError;
+}
+
+export const _InputField: React.ForwardRefRenderFunction<
+  HTMLInputElement,
   InputFieldProps
-> = ({ className, iconStart, iconEnd, ...extraInputProps }, ref) => {
-  const wrapperClassNames = classNames(
-    "input-field",
+> = (
+  {
+    containerClassName,
+    inputClassName,
+    iconStart,
+    iconEnd,
+    error,
+    ...extraInputProps
+  },
+  ref
+) => {
+  const containerClassNames = classNames(
+    "InputField",
     {
-      "input-field--icon-start": isTruthy(iconStart),
-      "input-field--icon-end": isTruthy(iconEnd),
+      "InputField--icon-start": isTruthy(iconStart),
+      "InputField--icon-end": isTruthy(iconEnd),
+      "InputField--invalid": isDefined(error),
     },
-    className
+    containerClassName
   );
 
-  return (
-    <div ref={ref} className={wrapperClassNames}>
-      <input className="input-field__input" {...extraInputProps} />
+  const inputClassNames = classNames("InputField__input", inputClassName);
 
-      {iconStart && renderIcon(iconStart, "input-field__icon--start")}
-      {iconEnd && renderIcon(iconEnd, "input-field__icon--end")}
+  return (
+    <div className={containerClassNames}>
+      <div>
+        <input ref={ref} className={inputClassNames} {...extraInputProps} />
+
+        {iconStart && renderIcon(iconStart, "InputField__icon--start")}
+        {iconEnd && renderIcon(iconEnd, "InputField__icon--end")}
+      </div>
+      {error && <span className="InputField__error">{error.message}</span>}
     </div>
   );
 };
 
-export default forwardRef(InputField);
+export const InputField = forwardRef(_InputField);

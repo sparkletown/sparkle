@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+import { DEFAULT_PARTY_NAME } from "settings";
 
 import { ChatMessage } from "types/chat";
 import {
@@ -16,7 +16,6 @@ import { withId } from "utils/id";
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-import { UserAvatar } from "components/atoms/UserAvatar";
 
 export interface ReactionListProps {
   reactions: Reaction[];
@@ -48,10 +47,6 @@ export const ReactionList: React.FC<ReactionListProps> = ({
           ? withId(messageSender, message.created_by)
           : undefined;
 
-      const messageSenderImage = messageSender?.anonMode
-        ? DEFAULT_PROFILE_IMAGE
-        : messageSender?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
-
       const messageSenderName = messageSender?.anonMode
         ? DEFAULT_PARTY_NAME
         : messageSender?.partyName ?? DEFAULT_PARTY_NAME;
@@ -61,12 +56,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
           className="message"
           key={`${message.created_by}-${message.created_at}`}
         >
-          {/* @debt Ideally we would only have one type of 'user avatar' component that would work for all of our needs */}
-          {messageSenderWithId !== undefined ? (
-            <UserProfilePicture user={messageSenderWithId} />
-          ) : (
-            <UserAvatar avatarSrc={messageSenderImage} />
-          )}
+          <UserProfilePicture user={messageSenderWithId} />
 
           <div className="partyname-bubble">{messageSenderName}</div>
 
@@ -76,7 +66,7 @@ export const ReactionList: React.FC<ReactionListProps> = ({
             })}
           >
             {isEmojiReaction(message)
-              ? EmojiReactionsMap.get(message.reaction)?.text ?? null
+              ? EmojiReactionsMap.get(message.reaction)?.text
               : message.text}
           </div>
         </div>

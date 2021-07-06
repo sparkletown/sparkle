@@ -15,9 +15,12 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   MINIMUM_COLUMNS,
   MAXIMUM_COLUMNS,
+  VENUE_NAME_MAX_CHAR_COUNT,
+  VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
+import { UsernameVisibility } from "types/User";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -58,8 +61,14 @@ export const validationSchema = Yup.object()
     template: Yup.mixed<VenueTemplate>().required(),
     name: Yup.string()
       .required("Venue name is required")
-      .min(1, ({ min }) => `Name must be at least ${min} characters`)
-      .max(25, ({ max }) => `Name must be less than ${max} characters`)
+      .min(
+        VENUE_NAME_MIN_CHAR_COUNT,
+        ({ min }) => `Name must be at least ${min} characters`
+      )
+      .max(
+        VENUE_NAME_MAX_CHAR_COUNT,
+        ({ max }) => `Name must be less than ${max} characters`
+      )
       .when(
         "$editing",
         (editing: boolean, schema: Yup.StringSchema) =>
@@ -175,6 +184,9 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
+    showNametags: Yup.mixed()
+      .oneOf(Object.values(UsernameVisibility))
+      .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(5, "Columns must be at least 5"),
@@ -185,6 +197,7 @@ export const validationSchema = Yup.object()
   .required();
 
 // this is used to transform the api data to conform to the yup schema
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
   // possible locations for the subtitle
@@ -192,7 +205,7 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profileQuestions")
+  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
@@ -213,6 +226,7 @@ export const editVenueCastSchema = Yup.object()
   .from("code_of_conduct_questions", "code_of_conduct_questions")
   .from("profile_questions", "profile_questions");
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 

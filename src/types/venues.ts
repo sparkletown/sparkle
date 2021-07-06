@@ -2,11 +2,15 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { WithVenueId } from "utils/id";
+
 import { EntranceStepConfig } from "./EntranceStep";
+import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { UsernameVisibility } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -24,7 +28,10 @@ export enum VenueTemplate {
   partymap = "partymap",
   performancevenue = "performancevenue",
   playa = "playa",
+  posterhall = "posterhall",
+  posterpage = "posterpage",
   preplaya = "preplaya",
+  screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
 
@@ -37,15 +44,20 @@ export enum VenueTemplate {
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
 export type GenericVenueTemplates = Exclude<
   VenueTemplate,
-  VenueTemplate.partymap | VenueTemplate.embeddable | VenueTemplate.jazzbar
+  | VenueTemplate.embeddable
+  | VenueTemplate.jazzbar
+  | VenueTemplate.partymap
+  | VenueTemplate.posterpage
+  | VenueTemplate.themecamp
 >;
 
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
 export type AnyVenue =
   | GenericVenue
-  | PartyMapVenue
+  | EmbeddableVenue
   | JazzbarVenue
-  | EmbeddableVenue;
+  | PartyMapVenue
+  | PosterPageVenue;
 
 // --- VENUE V2
 export interface Venue_v2
@@ -85,6 +97,7 @@ export interface Venue_v2_AdvancedConfig {
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
+  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
   showZendesk?: boolean;
@@ -128,6 +141,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
@@ -136,7 +150,7 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showLiveSchedule?: boolean;
+  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -146,7 +160,6 @@ export interface BaseVenue {
     text: string;
   };
   showLearnMoreLink?: boolean;
-  liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
@@ -160,6 +173,7 @@ export interface BaseVenue {
   termsAndConditions: TermOfService[];
   showRadio?: boolean;
   showBadges?: boolean;
+  showNametags?: UsernameVisibility;
   showZendesk?: boolean;
 }
 
@@ -171,7 +185,7 @@ export interface GenericVenue extends BaseVenue {
 // @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
   id: string;
-  template: VenueTemplate.partymap;
+  template: VenueTemplate.partymap | VenueTemplate.themecamp;
 
   // @debt The following keys are marked as required on this type, but i'm not sure they should be:
   //   url, name (we seem to be using icon to hold the URL of the image)
@@ -214,6 +228,12 @@ export interface EmbeddableVenue extends BaseVenue {
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
+}
+
+export interface PosterPageVenue extends BaseVenue {
+  template: VenueTemplate.posterpage;
+  poster?: Poster;
+  isLive?: boolean;
 }
 
 export interface Question {
@@ -296,6 +316,21 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+}
+
+export interface VenueLocation {
+  venueId: string;
+  roomTitle?: string;
+  venueName?: string;
+}
+
+export interface LocationEvents {
+  location: VenueLocation;
+  events: PersonalizedVenueEvent[];
+}
+
+export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+  isSaved: boolean;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

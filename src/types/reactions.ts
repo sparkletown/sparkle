@@ -1,4 +1,5 @@
 import { ChatMessage } from "types/chat";
+import { isTruthy } from "utils/types";
 
 export enum EmojiReactionType {
   heart = "heart",
@@ -12,6 +13,7 @@ export enum EmojiReactionType {
 }
 
 export const TextReactionType = "messageToTheBand" as const;
+// eslint-disable-next-line @typescript-eslint/no-redeclare -- intentionally naming the type the same as the const
 export type TextReactionType = typeof TextReactionType;
 
 export type ReactionType = EmojiReactionType | TextReactionType;
@@ -19,6 +21,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 interface BaseReaction {
   created_at: number;
   created_by: string;
+  reaction: unknown;
 }
 
 export interface EmojiReaction extends BaseReaction {
@@ -112,15 +115,29 @@ export const EmojiReactionsMap: Map<
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
 
-export const isEmojiReaction = (r: Reaction): r is EmojiReaction =>
-  EmojiReactionType[r.reaction as EmojiReactionType] !== undefined;
+export const isBaseReaction = (r: unknown): r is BaseReaction =>
+  typeof r === "object" && isTruthy(r) && r.hasOwnProperty("reaction");
 
-export const isTextReaction = (r: Reaction): r is TextReaction =>
-  r.reaction === TextReactionType;
+export const isEmojiReaction = (r: unknown): r is EmojiReaction => {
+  if (!isBaseReaction(r)) return false;
 
-export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
-  created_at: chat.ts_utc.toMillis() / 1000,
-  created_by: chat.from,
+  return EmojiReactionType[r.reaction as EmojiReactionType] !== undefined;
+};
+
+export const isTextReaction = (r: unknown): r is TextReaction => {
+  if (!isBaseReaction(r)) return false;
+
+  return r.reaction === TextReactionType;
+};
+
+export const isReaction = (r: unknown): r is Reaction =>
+  isEmojiReaction(r) || isTextReaction(r);
+
+export const chatMessageAsTextReaction = (
+  message: ChatMessage
+): TextReaction => ({
+  created_at: message.ts_utc.toMillis() / 1000,
+  created_by: message.from,
   reaction: TextReactionType,
-  text: chat.text,
+  text: message.text,
 });

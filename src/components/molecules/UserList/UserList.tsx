@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import classNames from "classnames";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -13,7 +14,7 @@ import { User } from "types/User";
 
 import "./UserList.scss";
 
-interface PropsType {
+interface UserListProps {
   users: readonly WithId<User>[];
   limit?: number;
   imageSize?: number;
@@ -23,9 +24,10 @@ interface PropsType {
   isCamp?: boolean;
   attendanceBoost?: number;
   showEvenWhenNoUsers?: boolean;
+  containerClassName?: string;
 }
 
-const UserList: React.FunctionComponent<PropsType> = ({
+export const UserList: React.FC<UserListProps> = ({
   users: _users,
   limit = DEFAULT_USER_LIST_LIMIT,
   imageSize = 40,
@@ -35,6 +37,7 @@ const UserList: React.FunctionComponent<PropsType> = ({
   isCamp,
   attendanceBoost,
   showEvenWhenNoUsers = false,
+  containerClassName,
 }) => {
   const [isExpanded, setIsExpanded] = useState(disableSeeAll);
 
@@ -49,10 +52,16 @@ const UserList: React.FunctionComponent<PropsType> = ({
   const attendance = usersSanitized.length + (attendanceBoost ?? 0);
   const venue = useSelector(currentVenueSelectorData);
 
+  const containerClasses = classNames(
+    "container",
+    "userlist-container",
+    containerClassName
+  );
+
   if (!showEvenWhenNoUsers && attendance < 1) return null;
 
   return (
-    <div className="container userlist-container">
+    <div className={containerClasses}>
       <div className="row header no-margin">
         <p>
           <span className="bold">{attendance}</span>{" "}

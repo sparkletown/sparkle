@@ -1,26 +1,27 @@
 @import "scss/constants.scss";
 
-// TODO: this was copied from Audience.scss (do we want to move the variable to constants?)
-$avatarSize: max(4vh, 3vw);
+$avatarUrl: var(--user-profile-picture-avatar-url, none);
 
 .UserProfilePicture {
-  width: 100%;
-  height: 100%;
+  width: $avatarSize;
+  height: $avatarSize;
+  min-width: $avatarSize;
+  min-height: $avatarSize;
 
+  background-color: $black;
+  background-image: $avatarUrl;
   background-position: center;
   background-size: cover;
+  background-repeat: no-repeat;
 
+  border-radius: 10rem;
+
+  cursor: pointer;
+
+  // Note: this is only needed to pass down to UserAvatar, if we go back to using the
+  // direct styles above to render the image within this component, then this won't be needed anymore.
   &__avatar {
-    width: $avatarSize;
-    height: $avatarSize;
-
-    background-color: transparent;
-    // TODO: how can we use a default image here if none set? Can we use CSS --variables here? I think we could..
-    //background-image: url(${({ backgroundImage }) => backgroundImage ?? DEFAULT_PROFILE_IMAGE});
-    background-position: center;
-    background-size: cover;
-    background-repeat: no-repeat;
-
-    border-radius: 10rem;
+    width: 100%;
+    height: 100%;
   }
 }

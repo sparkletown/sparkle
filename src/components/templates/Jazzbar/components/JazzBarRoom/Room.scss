@@ -68,7 +68,7 @@
     }
   }
 
-  @media (min-width: $small-laptop-width) {
+  @media (min-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: center;
       .jazzbar-room__participant {
@@ -77,7 +77,7 @@
     }
   }
 
-  @media (max-width: $small-laptop-width) {
+  @media (max-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: space-around;
       .jazzbar-room__participant {

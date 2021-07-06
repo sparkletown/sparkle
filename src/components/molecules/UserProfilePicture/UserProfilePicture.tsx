@@ -1,143 +1,127 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback } from "react";
 import classNames from "classnames";
+
+import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useVenueId } from "hooks/useVenueId";
 
-import {
-  DEFAULT_PARTY_NAME,
-  DEFAULT_PROFILE_IMAGE,
-  RANDOM_AVATARS,
-} from "settings";
+import { UserReactions } from "components/molecules/UserReactions";
 
-import { User } from "types/User";
-
-import { UserReactions } from "./UserReactions";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserProfilePicture.scss";
 
-const randomAvatarUrl = (id: string) =>
-  "/avatars/" +
-  RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
+// @debt This miniAvatars/'random avatar url' feature is currently disabled, it might be legacy code to be deleted?
+// const generateRandomAvatarUrl = (id: string) =>
+//   "/avatars/" +
+//   RANDOM_AVATARS[Math.floor(id?.charCodeAt(0) % RANDOM_AVATARS.length)];
 
-// TODO: refactor this to accept named props instead of positional args
-const avatarUrl = (
-  id: string,
-  anonMode?: boolean,
-  pictureUrl?: string,
-  miniAvatars?: boolean
-): string => {
-  if (anonMode || !id) {
-    return DEFAULT_PROFILE_IMAGE;
-  }
-
-  if (!miniAvatars && pictureUrl) {
-    return pictureUrl;
-  }
-
-  // TODO: how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
-  if (miniAvatars) {
-    return randomAvatarUrl(id);
-  }
-
-  return DEFAULT_PROFILE_IMAGE;
-};
+// @debt This code may no longer be needed if we remove the miniAvatars feature + handle anonMode in a similar way to
+//   how it is currently being handled in UserAvatar
+// export interface AvatarUrlProps {
+//   user?: WithId<User>;
+//   miniAvatars?: boolean;
+// }
+//
+// const getAvatarUrl = ({ user, miniAvatars }: AvatarUrlProps): string => {
+//   const { id: userId, anonMode, pictureUrl } = user ?? {};
+//
+//   if (!userId || anonMode) {
+//     return DEFAULT_PROFILE_IMAGE;
+//   }
+//
+//   if (!miniAvatars && pictureUrl) {
+//     return pictureUrl;
+//   }
+//
+//   // @debt how is this intended to be used? Why doesn't it use the profile image? It seems to be something set on venue config..
+//   if (miniAvatars) {
+//     return generateRandomAvatarUrl(userId);
+//   }
+//
+//   return DEFAULT_PROFILE_IMAGE;
+// };
 
 export interface UserProfilePictureProp {
-  user: WithId<User>;
+  user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
-  miniAvatars?: boolean;
-  avatarClassName?: string;
-  avatarStyle?: object;
-  containerStyle?: object;
+  containerClassName?: string;
   reactionPosition?: "left" | "right";
+  showNametags?: UsernameVisibility;
+  showStatus?: boolean;
+  /**
+   * @deprecated Note: This feature is currently disabled.
+   */
+  miniAvatars?: boolean;
 }
 
-// @debt This component should be divided into a few with simpler logic. Also, remove `styled components`
-// @debt the UserAvatar component serves a very similar purpose to this, we should unify them as much as possible
 export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
-  isAudioEffectDisabled = true,
-  miniAvatars = false,
-  avatarClassName = "UserProfilePicture__avatar",
-  avatarStyle, // TODO: do we need this prop? Can we remove it? Or at least rename it? Only seems to be used in MapPartygoersOverlay
-  containerStyle, // TODO: do we need this prop? Can we remove it? Or at least rename it? Only seems to be used in MapPartygoersOverlay
-  reactionPosition = "right",
   user,
+  isAudioEffectDisabled = true,
+  containerClassName,
+  reactionPosition = "right",
+  showNametags,
+  showStatus = false,
+  // @debt This feature is currently disabled and might be part of legacy code to be removed, see comment on generateRandomAvatarUrl above
+  // miniAvatars = false,
 }) => {
-  const venueId = useVenueId();
+  const userId = user?.id;
 
   const { openUserProfileModal } = useProfileModalControls();
-
-  // TODO: I believe we only need this state to support the imageErrorHandler functionality.. can we just remove it?
-  const [pictureUrl, setPictureUrl] = useState(
-    avatarUrl(user.id, user.anonMode, user.pictureUrl, miniAvatars)
-  );
-  useEffect(() => {
-    setPictureUrl(
-      avatarUrl(user.id, user.anonMode, user.pictureUrl, miniAvatars)
-    );
-  }, [miniAvatars, user.anonMode, user.id, user.pictureUrl]);
 
   const openProfileModal = useCallback(() => openUserProfileModal(user), [
     openUserProfileModal,
     user,
   ]);
 
-  // // TODO: extract this logic into a generic custom component + improve it?
-  // const imageErrorHandler = useCallback(
-  //   (event: React.SyntheticEvent<HTMLImageElement, Event>) => {
-  //     const randomAvatar = randomAvatarUrl(user.id);
-  //     setPictureUrl(randomAvatar);
+  // @debt useImage tries to load the images twice, which is made worse by us not caching images retrieved from firebase,
+  //  it's only used to handle the edgecase of showing a default when images are missing. Can we live without it?
+  // const { loadedImageUrl: pictureUrl } = useImage({
+  //   src: avatarUrl({ user, miniAvatars }),
+  //   fallbackSrc: () => randomAvatarUrl(user.id),
+  // });
+
+  // @debt For some reason when using this the image seems to be re-fetched every time the component is re-rendered
+  //   even though it seemed to be working fine earlier)
+  // const pictureUrl = getAvatarUrl({ user, miniAvatars });
   //
-  //     // TODO: this isn't very reacty.. is it even needed..?
-  //     // event.currentTarget.onerror = null;
-  //     // event.currentTarget.src = randomAvatar;
-  //   },
-  //   [user.id]
-  // );
+  // const containerVars = useCss({
+  //   "--user-profile-picture-avatar-url": pictureUrl
+  //     ? `url(${pictureUrl})`
+  //     : `url(${DEFAULT_PROFILE_IMAGE})`,
+  // });
 
-  const avatarClasses = classNames(
-    "UserProfilePicture__avatar",
-    avatarClassName
+  const containerClasses = classNames(
+    "UserProfilePicture",
+    containerClassName
+    // containerVars
   );
 
-  const avatarStyles = useMemo(
-    () => ({
-      backgroundImage: `url(${pictureUrl})`,
-      ...avatarStyle,
-    }),
-    [avatarStyle, pictureUrl]
-  );
-
-  const userDisplayName = user.anonMode ? DEFAULT_PARTY_NAME : user.partyName;
+  // @debt This is currently being handled within UserAvatar, so we may not need to keep it here anymore
+  // const userDisplayName: string = user?.anonMode
+  //   ? DEFAULT_PARTY_NAME
+  //   : user?.partyName ?? DEFAULT_PARTY_NAME;
 
   return (
-    <div className="UserProfilePicture" style={containerStyle}>
-      {/* TODO: extract this logic into a generic custom component + improve it? Or just remove it entirely? */}
-      {/* Hidden image, used to handle error if image is not loaded */}
-      {/*<img*/}
-      {/*  src={pictureUrl}*/}
-      {/*  onError={(event) => imageErrorHandler(event)}*/}
-      {/*  hidden*/}
-      {/*  style={{ display: "none" }}*/}
-      {/*  alt={user.anonMode ? DEFAULT_PARTY_NAME : user.partyName}*/}
-      {/*/>*/}
-
-      {/* TODO: can we use src/components/atoms/UserAvatar/UserAvatar.tsx here? Should we? */}
-      <div
-        role="img"
-        aria-label={`${userDisplayName}'s avatar`}
-        className={avatarClasses}
-        style={avatarStyles}
-        onClick={openProfileModal}
+    <div
+      className={containerClasses}
+      onClick={openProfileModal}
+      // @debt This is cuyrrently being handled within UserAvatar, so we may not need to keep it here anymore
+      // role="img"
+      // aria-label={`${userDisplayName}'s avatar`}
+    >
+      <UserAvatar
+        user={user}
+        containerClassName="UserProfilePicture__avatar"
+        showNametag={showNametags}
+        showStatus={showStatus}
       />
 
-      {venueId && (
+      {userId && (
         <UserReactions
-          venueId={venueId}
-          user={user}
+          userId={userId}
           isMuted={isAudioEffectDisabled}
           reactionPosition={reactionPosition}
         />

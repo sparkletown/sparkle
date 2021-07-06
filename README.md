@@ -73,7 +73,7 @@ npm run firebase login
 npm run firebase use staging
 
 # Copy the runtime config locally
-npm run --silent firebase functions:config:get > .runtimeconfig.json
+npm run --silent firebase functions:config:get > ./functions/.runtimeconfig.json
 ```
 
 Now you're ready to launch the backend function emulator! ✨
@@ -84,6 +84,50 @@ npm run firebase:emulate-functions
 
 # Or if you don't want to use our helper scripts, you can do this directly:
 # npm run firebase emulators:start --only functions
+```
+
+### Firebase emulators
+
+Instead of running just the functions' emulator, the full suite of emulators can be used.
+You can find out more at https://firebase.google.com/docs/emulator-suite.
+
+**Note**: If your code accidentally invokes non-emulated (production) resources, there is a chance of data change, usage and billing.
+To prevent this, you might opt in to use a Firebase project name beginning with `demo-` (e.g. `demo-staging`) in which case no production resources will be used.
+
+First though, a **major version of 8** for the Firebase client is required:
+```bash
+npm i firebase@8
+```
+This might entail some code changes as well, to enable the emulation, e.g.
+```javascript
+// Enable the functions emulator when running in development at specific port
+if (process.env.NODE_ENV === "development" && window.location.port === "5000") {
+  firebaseApp.firestore().useEmulator("localhost", 8080);
+}
+```
+or to account for changed and/or deprecated Firebase client API, e.g.
+```javascript
+// deprecated
+// import firebase, { UserInfo } from "firebase/app";
+// use instead
+import firebase from "firebase/app";
+type UserInfo = firebase.UserInfo;
+```
+
+You can start the emulators in a manner that can persist the data locally:
+```bash
+npx --no-install -- firebase "emulators:start" --import=./tmp --export-on-exit
+```
+
+You should be greeted with
+```bash
+All emulators ready! View status and logs at http://localhost:4000
+```
+That's the location you can access and manage the running emulators.
+The data between emulator runs should be persisted at
+```bash
+tmp/firebase-export-metadata.json
+tmp/firestore_export
 ```
 
 ### Stripe
@@ -112,15 +156,31 @@ Copy this value and add it to the file `functions/secrets.js`.
 const STRIPE_ENDPOINT_KEY = `${YOUR_LOCAL_SIGNING_SECRET_KEY}`;
 ```
 
-## Git flow
+## Our Git flow
+
+If you're new to Git / GitHub flows, then you may find these guides helpful:
+
+- https://guides.github.com/introduction/git-handbook/
+- https://guides.github.com/activities/forking/
+- https://guides.github.com/introduction/flow/
 
 To contribute to the code base, please follow these steps:
 
-- create a branch from `staging`
-- code
-- create a pull request on `staging`
+- fork the repository (note: Sparkle team skip this step)
+- create a new branch from `staging`
+- write your code
+- create a pull request to merge your branch into `staging`
+- wait for code review
+- fix any review comments
+- once the review has been finalised, a team member will **squash-merge** the PR into `staging`, which will trigger the CI to deploy the `staging` environment
 
-Then, to deploy to production, **merge staging into `master`**.
+Then, to deploy to `production`:
+
+- (a Sparkle team member will) create a PR to **merge staging into `master`** with a name such as **`deploy staging -> master`**
+- add the `🚀 deployment` label
+- copy the commit messages (including the `#1234` PR they were made in) and paste it into the PR description after `Deploys:` (see [example](https://github.com/sparkletown/sparkle/pull/1355))
+- **merge (not squash-merge)** this 'deployment PR' into `master`, this will trigger the CI system to deploy to the '[OG](https://www.dictionary.com/e/slang/og/) `production`' environment
+- push the `master` branch to any other environment branches (eg. `env/foo`) to trigger the CI system to deploy those environments as well
 
 > When adding a quick fix to production:
 >
@@ -155,8 +215,8 @@ Paste into a google sheet. Leftmost column is the [UNIX timestamp](https://en.wi
 3. Fill down to get all values
 4. Sort by timestamp or the calculated, human date
 5. Consider not adding any with a "+"
-6. Be mindful this is PII (personally identifiable information) so we should handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
-7. Share the google sheet, ready to import the users into our other email lists.
+6. Be mindful this is PII (personally identifiable information) so handle it carefully and treat it as sensitive. It may be subject to the GDPR data privacy requirements in the EU and the CCPA privacy laws in California.
+7. Share the Google sheet, ready to import the users into our other email lists.
 8. Email the new folks, welcome them, and say thanks for coming to the party!
 
 ## Addenda

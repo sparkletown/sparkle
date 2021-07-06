@@ -29,7 +29,7 @@
       ".  video video ."
       ".  video video  .";
 
-    @media (max-width: $small-laptop-width) {
+    @media (max-width: $media-breakpoint--lg) {
       display: flex;
       flex-flow: wrap;
     }
@@ -103,7 +103,7 @@
     margin-top: 0;
 
     .music-bar-content {
-      @media (min-width: $small-laptop-width) {
+      @media (min-width: $media-breakpoint--lg) {
         grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;
         grid-template-rows: repeat(
           auto-fill,

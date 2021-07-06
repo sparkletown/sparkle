@@ -8,7 +8,7 @@ $gradient: linear-gradient(-124deg, #e15ada 0%, #6f43ff 50%, #00f6d5 100%);
 
 $dark: #1a1d24;
 $border-radius: 28px;
-$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+$large-shadow: box-shadow--large(0.34);
 $login-max-width: 540px;
 $modal-max-width: 540px;
 $page-max-width: 1240px;
@@ -25,9 +25,10 @@ $sand: #937c63;
   height: 66px;
   background-color: rgba($black, 0.2);
   border-bottom: 1px solid rgba($white, 0.2);
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.1);
+  box-shadow: box-shadow--large(0.1);
   backdrop-filter: blur(5px);
   background-color: $black;
+  padding: 0 1rem;
 
   .navbar-container {
     display: flex;
@@ -37,7 +38,6 @@ $sand: #937c63;
     height: 100%;
     margin-left: auto;
     margin-right: auto;
-    background-color: transparent;
 
     .navbar-logo_container {
       display: flex;
@@ -60,12 +60,14 @@ $sand: #937c63;
     }
 
     .navbar-links {
-      padding: 12px 20px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      align-content: space-between;
       justify-content: flex-end;
+
+      // @debt hack-fix to hide dropdown under navbar replacing transparent color by inherited black
+      //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
+      background-color: inherit;
 
       .navbar-link-message,
       .navbar-link-profile,
@@ -78,19 +80,19 @@ $sand: #937c63;
         width: 40px;
         background-color: rgba($black, 0.4);
         border-radius: 20px;
-        margin-right: 8px;
+        margin-right: $margin-right--navbar-links;
         &:hover {
           box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2);
         }
         &.navbar-link-message {
-          background-image: url(./navbar-link-message.png);
+          background-image: url(/assets/icons/navbar-link-message.png);
           background-size: 40px 40px;
         }
         &.navbar-link-profile {
           background-size: 40px 40px;
         }
         &.navbar-link-menu {
-          background-image: url(./navbar-link-menu.png);
+          background-image: url(/assets/icons/navbar-link-menu.png);
           background-size: 40px 40px;
           background-color: rgba($black, 0);
 
@@ -99,12 +101,12 @@ $sand: #937c63;
           }
         }
         &.navbar-link-radio {
-          background-image: url(/navbar-link-radio.png);
+          background-image: url(/assets/icons/navbar-link-radio.png);
           background-size: 80px 40px;
           animation: radioanim 2s steps(2) infinite;
 
           &.off {
-            background-image: url(/navbar-link-radio-off.png);
+            background-image: url(/assets/icons/navbar-link-radio-off.png);
             background-size: 40px 40px;
             animation: none;
           }
@@ -120,7 +122,7 @@ $sand: #937c63;
           text-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
         }
         &.navbar-link-gift {
-          background-image: url(/navbar-link-gift.png);
+          background-image: url(/assets/icons/navbar-link-gift.png);
           background-size: 40px 40px;
         }
       }
@@ -160,7 +162,7 @@ $sand: #937c63;
         bottom: -16px;
         left: 50%;
         transform: translateX(-50%);
-        background-image: url(./navbar-dropdown-middle-after.png);
+        background-image: url(/assets/icons/navbar-dropdown-middle-after.png);
         background-size: 74px 64px;
       }
       &:hover {
