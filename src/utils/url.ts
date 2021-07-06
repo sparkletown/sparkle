@@ -117,3 +117,7 @@ export const getUrlWithoutTrailingSlash = (url: string) => {
 export const getLastUrlParam = (url: string) => {
   return url.split("/").slice(-1);
 };
+
+export const getUrlParamFromString = (data: string) => {
+  return data.replace(" ", "").toLowerCase();
+};

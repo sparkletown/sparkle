@@ -13,6 +13,7 @@ import {
   openUrl,
   getUrlWithoutTrailingSlash,
   getLastUrlParam,
+  getUrlParamFromString,
 } from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
@@ -49,8 +50,9 @@ export const EventModal: React.FC<EventModalProps> = ({
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
+        const roomUrlParam = getUrlParamFromString(eventRoom);
 
-        return eventRoom.endsWith(`${roomName}`);
+        return roomUrlParam.endsWith(`${roomName}`);
       }),
     [eventVenue, event]
   );
@@ -67,9 +69,10 @@ export const EventModal: React.FC<EventModalProps> = ({
     onHide();
 
     const { room = "" } = event;
+    const roomUrlParam = getUrlParamFromString(room);
 
     if (!eventRoom) {
-      openUrl(room);
+      openUrl(roomUrlParam);
 
       return;
     }
