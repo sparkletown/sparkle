@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { isEqual } from "lodash";
 
 import {
   setSovereignVenue,
@@ -36,10 +37,10 @@ export const useSovereignVenue: ReactHook<
   const dispatch = useDispatch();
 
   const {
-    venue: sovereignVenue,
-    isLoading: isSovereignVenueLoading,
+    sovereignVenue,
     errorMsg,
-  } = useSelector(sovereignVenueSelector);
+    isLoading: isSovereignVenueLoading,
+  } = useSelector(sovereignVenueSelector, isEqual);
 
   useEffect(() => {
     // NOTE: Force to fetch it only once

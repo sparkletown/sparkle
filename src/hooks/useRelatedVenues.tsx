@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useAsync } from "react-use";
 
-import { fetchRelatedVenues } from "api/venue";
+import { fetchDescendantVenues, fetchRelatedVenues } from "api/venue";
 
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
@@ -60,17 +60,32 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     error: relatedVenuesError,
     value: relatedVenues = emptyArray,
   } = useAsync(async () => {
-    if (!sovereignVenue) return emptyArray;
+    if (!sovereignVenueId) return emptyArray;
+
+    if (!sovereignVenue) {
+      return tracePromise(
+        "RelatedVenuesProvider::fetchRelatedVenues",
+        () => fetchRelatedVenues(sovereignVenueId),
+        {
+          attributes: { sovereignVenueId },
+          withDebugLog: true,
+        }
+      );
+    }
 
     return tracePromise(
-      "RelatedVenuesProvider::fetchRelatedVenues",
-      () => fetchRelatedVenues(sovereignVenue),
+      "RelatedVenuesProvider::fetchDescendantVenues",
+      async () => {
+        const descendantVenues = await fetchDescendantVenues(sovereignVenueId);
+
+        return [sovereignVenue, ...descendantVenues];
+      },
       {
-        attributes: { sovereignVenueId: sovereignVenue.id },
+        attributes: { sovereignVenueId },
         withDebugLog: true,
       }
     );
-  }, [sovereignVenue]);
+  }, [sovereignVenue, sovereignVenueId]);
 
   const relatedVenueIds = useMemo(
     () => relatedVenues.map((venue) => venue.id),

@@ -8,7 +8,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 export type SovereignVenueState = {
-  venue?: WithId<AnyVenue>;
+  sovereignVenue?: WithId<AnyVenue>;
   errorMsg?: string;
   isLoading: boolean;
 };
@@ -25,7 +25,7 @@ export const sovereignVenueReducer = (
     case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE:
       return {
         ...state,
-        venue: action.payload.sovereignVenue,
+        sovereignVenue: action.payload.sovereignVenue,
         isLoading: false,
         errorMsg: undefined,
       };
@@ -36,7 +36,7 @@ export const sovereignVenueReducer = (
         ...state,
         errorMsg: action.payload.errorMsg,
         isLoading: false,
-        venue: undefined,
+        sovereignVenue: undefined,
       };
     default:
       return state;
