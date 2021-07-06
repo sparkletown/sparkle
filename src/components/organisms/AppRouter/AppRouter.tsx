@@ -22,7 +22,13 @@ import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { AccountSubrouter } from "./AccountSubrouter";
+const AccountSubrouter = lazy(() =>
+  tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
+    import("./AccountSubrouter").then(({ AccountSubrouter }) => ({
+      default: AccountSubrouter,
+    }))
+  )
+);
 
 const AdminSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AdminSubrouter", () =>
