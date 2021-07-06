@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW } from "settings";
+import { IFRAME_ALLOW, DEFAULT_SHOW_REACTIONS } from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -135,10 +135,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
-  const shouldShowReactions = seatedAtTable && venueToUse?.showReactions ?? DEFAULT_SHOW_REACTIONS;
+  const shouldShowReactions =
+    (seatedAtTable && venueToUse?.showReactions) ?? DEFAULT_SHOW_REACTIONS;
 
   // @debt will be needed if shoutouts are restored
-  // const shouldShowShoutouts = venueToUse?.showShoutouts;
+  // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
