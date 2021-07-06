@@ -251,3 +251,5 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
+
+export const getMinuteValue = (data: number) => data / ONE_HOUR_IN_MINUTES;

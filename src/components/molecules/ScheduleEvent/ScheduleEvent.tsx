@@ -26,7 +26,7 @@ import {
 import { PersonalizedVenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
-import { ONE_HOUR_IN_MINUTES } from "utils/time";
+import { getMinuteValue } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
@@ -67,12 +67,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const isShowExpand = !isShortEvent || isExpanded;
 
   // @debt ONE_HOUR_IN_MINUTES is deprectated; refactor to use utils/time or date-fns functions
-  const eventWidthPx =
-    (event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX) /
-    ONE_HOUR_IN_MINUTES;
+  const eventWidthPx = getMinuteValue(
+    event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX
+  );
 
-  const widenShortEvent =
-    (60 * SCHEDULE_HOUR_COLUMN_WIDTH_PX) / ONE_HOUR_IN_MINUTES;
+  const expandedEventPx = getMinuteValue(
+    longEventLength * SCHEDULE_HOUR_COLUMN_WIDTH_PX
+  );
 
   const eventMarginLeftPx = calcStartPosition(
     event.start_utc_seconds,
@@ -82,7 +83,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const containerCssVars = useCss({
     "--event--margin-left": `${eventMarginLeftPx}px`,
     "--event--width": `${eventWidthPx}px`,
-    "--event--widen": `${widenShortEvent}px`,
+    "--event--widen": `${expandedEventPx}px`,
   });
 
   const containerClasses = classNames(
