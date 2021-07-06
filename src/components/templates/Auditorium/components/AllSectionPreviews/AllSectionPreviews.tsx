@@ -114,12 +114,9 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
             containerClassname="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />
-          <div className="AllSectionPreviews__welcome-text">
-            Welcome to the {venue.name}
-          </div>
+          <div className="AllSectionPreviews__welcome-text">{venue.title}</div>
           <div className="AllSectionPreviews__description-text">
-            Please choose a section or say hi to Sabrina! What do you think of
-            having this little area here a place to leave a message to people?
+            {venue.description}
           </div>
           <div className="AllSectionPreviews__action-buttons">
             <Checkbox

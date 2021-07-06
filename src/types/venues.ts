@@ -241,6 +241,7 @@ export interface PosterPageVenue extends BaseVenue {
 
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
+  title?: string;
   sectionCapacity?: number;
 }
 
