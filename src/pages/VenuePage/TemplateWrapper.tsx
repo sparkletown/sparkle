@@ -33,7 +33,7 @@ export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
 
-const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
+export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
   const match = useRouteMatch();
 
@@ -160,5 +160,3 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     </RelatedVenuesProvider>
   );
 };
-
-export default TemplateWrapper;
