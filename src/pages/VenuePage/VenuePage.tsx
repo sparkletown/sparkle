@@ -48,6 +48,7 @@ import Login from "pages/Account/Login";
 
 import "./VenuePage.scss";
 
+
 const CountDown = React.lazy(() =>
   import("components/molecules/CountDown").then((m) => ({
     default: m.CountDown,
@@ -59,6 +60,7 @@ const LoadingPage = React.lazy(() =>
   }))
 );
 const TemplateWrapper = React.lazy(() => import("./TemplateWrapper"));
+
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -179,6 +181,10 @@ export const VenuePage: React.FC = () => {
   const venueTemplate = venue?.template;
 
   const event = events?.[0];
+
+  const { isRelatedVenuesLoading } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
 
   useEffect(() => {
     if (!venue) return;

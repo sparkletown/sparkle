@@ -19,6 +19,8 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
+  if (!isRelatedVenuesLoading) return <>Loading...</>;
+
   return (
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>

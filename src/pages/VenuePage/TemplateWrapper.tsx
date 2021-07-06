@@ -6,7 +6,6 @@ import { AnyVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 
 import { ReactionsProvider } from "hooks/reactions";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 

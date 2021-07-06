@@ -24,6 +24,7 @@ import { Badges } from "components/organisms/Badges";
 import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
