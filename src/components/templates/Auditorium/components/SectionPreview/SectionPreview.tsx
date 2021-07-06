@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
@@ -9,10 +9,7 @@ import { AuditoriumSection } from "types/auditorium";
 import { WithId } from "utils/id";
 import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
 
-import {
-  // useRecentVenueUsers,
-  useWorldUsers,
-} from "hooks/users";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -29,18 +26,23 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  // const { recentVenueUsers } = useRecentVenueUsers();
-  const { worldUsers } = useWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const maxUsers = getSectionCapacity(venue, section);
 
   const sectionId = section.id;
+  const venueId = venue.id;
 
-  const seatedUsers = getAuditoriumSeatedUsers({
-    auditoriumUsers: worldUsers,
-    venueId: venue.id,
-    sectionId,
-  });
+  const seatedUsers = useMemo(
+    () =>
+      getAuditoriumSeatedUsers({
+        auditoriumUsers: recentVenueUsers,
+        venueId,
+        sectionId,
+      }),
+    [recentVenueUsers, venueId, sectionId]
+  );
+
   const seatedUsersCount = seatedUsers.length;
 
   const isFull = seatedUsersCount >= maxUsers;

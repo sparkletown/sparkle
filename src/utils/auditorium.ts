@@ -20,13 +20,15 @@ export const convertToCartesianCoordinate = ({
 }: ConvertCoordinateProps) => index - Math.floor(totalAmount / 2);
 
 export const chooseAuditoriumSize = (sectionsCount: number) => {
-  if (sectionsCount <= 4) return AuditoriumSize.SMALL;
+  if (sectionsCount <= 4) return AuditoriumSize.EXTRASMALL;
 
-  if (sectionsCount > 4 && sectionsCount <= 10) {
-    return AuditoriumSize.MEDIUM;
-  }
+  if (sectionsCount > 4 && sectionsCount <= 6) return AuditoriumSize.SMALL;
 
-  return AuditoriumSize.LARGE;
+  if (sectionsCount > 6 && sectionsCount <= 8) return AuditoriumSize.MEDIUM;
+
+  if (sectionsCount > 8 && sectionsCount <= 14) return AuditoriumSize.LARGE;
+
+  return AuditoriumSize.EXTRALARGE;
 };
 
 export const getSectionCapacity = (
@@ -49,8 +51,7 @@ export const getAuditoriumSeatedUsers = ({
   sectionId,
 }: GetSeatedUsersProps) =>
   venueId && sectionId
-    ? // ? auditoriumUsers.filter(
-      //     (user) => user.data?.[venueId]?.sectionId === sectionId
-      //   )
-      auditoriumUsers
+    ? auditoriumUsers.filter(
+        (user) => user.data?.[venueId]?.sectionId === sectionId
+      )
     : emptyFilteredUsers;

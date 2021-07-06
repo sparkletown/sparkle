@@ -27,10 +27,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect, isLoaded } from "./useFirestoreConnect";
-import {
-  // useRecentVenueUsers,
-  useWorldUsers,
-} from "./users";
+import { useRecentVenueUsers } from "./users";
 import { useUser } from "./useUser";
 import { GetUserByPostion, useGetUserByPosition } from "./useGetUserByPosition";
 import { useShowHide } from "./useShowHide";
@@ -68,8 +65,7 @@ export const useAuditoriumSection = ({
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  // const { recentVenueUsers } = useRecentVenueUsers();
-  const { worldUsers } = useWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;
@@ -89,7 +85,7 @@ export const useAuditoriumSection = ({
   const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
   const seatedUsers = getAuditoriumSeatedUsers({
-    auditoriumUsers: worldUsers,
+    auditoriumUsers: recentVenueUsers,
     venueId,
     sectionId,
   });
@@ -171,8 +167,7 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
 
   const isFullAuditoriumsHidden = !isFullAuditoriumsShown;
 
-  // const { recentVenueUsers } = useRecentVenueUsers();
-  const { worldUsers } = useWorldUsers();
+  const { recentVenueUsers } = useRecentVenueUsers();
 
   const sections = useSelector(currentAuditoriumSectionsSelector);
 
@@ -189,14 +184,14 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     return sections.filter((section) => {
       const maxUsers = getSectionCapacity(venue, section);
       const seatedUsers = getAuditoriumSeatedUsers({
-        auditoriumUsers: worldUsers,
+        auditoriumUsers: recentVenueUsers,
         venueId,
         sectionId: section.id,
       });
 
       return seatedUsers.length < maxUsers;
     });
-  }, [worldUsers, venue, venueId, sections]);
+  }, [recentVenueUsers, venue, venueId, sections]);
 
   return useMemo(
     () => ({
