@@ -52,6 +52,7 @@ const firestoreUpdate = (doc: string, update: any) => {
 };
 
 const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
+const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 
 const TablesUserList: React.FunctionComponent<PropsType> = ({
   venueName,
@@ -65,7 +66,6 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   const [showJoinMessage, setShowJoinMessage] = useState(false);
   const [joiningTable, setJoiningTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
-  const startTable = true;
 
   const nameOfVideoRoom = (i: number) => {
     return `${venueName}-table${i + 1}`;
@@ -88,6 +88,18 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
   if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
+
+  const emptyTables = tables.filter((table) => {
+    if (!table.capacity) return false;
+
+    const usersSeatedAtTable = recentVenueUsers.filter(
+      (u) => u.data?.[venueName].table === table.reference
+    );
+    return table.capacity - usersSeatedAtTable.length > 0;
+  });
+
+  const startTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
+
   const usersAtTables: Record<string, Array<User>> = {};
   for (const table of tables) {
     usersAtTables[table.reference] = [];
