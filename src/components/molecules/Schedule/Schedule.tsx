@@ -66,6 +66,23 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  locatedEvents.sort((a, b) =>
+    a.location.roomTitle!.localeCompare(b.location.roomTitle!, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    })
+  );
+
+  const hasMainStage = locatedEvents.find(
+    (venue) => venue.location.roomTitle === "Main Stage"
+  );
+  hasMainStage &&
+    locatedEvents.splice(
+      0,
+      0,
+      locatedEvents.splice(locatedEvents.indexOf(hasMainStage), 1)[0]
+    );
+
   // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
