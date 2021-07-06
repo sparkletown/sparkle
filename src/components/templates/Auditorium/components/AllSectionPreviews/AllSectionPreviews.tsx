@@ -129,7 +129,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
               label="Hide full sections"
             />
 
-            <Button onClick={enterRandomSection}>Take a random seat</Button>
+            <Button onClick={enterRandomSection}>Enter random section</Button>
           </div>
         </div>
 
