@@ -107,7 +107,6 @@ export type VenueInput = AdvancedVenueInput &
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
-    showZendesk?: boolean;
   };
 
 export interface VenueInput_v2
@@ -231,11 +230,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
-
-  // Default to showing Zendesk
-  if (input.showZendesk === undefined) {
-    input.showZendesk = true;
-  }
 
   return firestoreVenueInput;
 };

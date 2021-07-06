@@ -100,7 +100,6 @@ export interface Venue_v2_AdvancedConfig {
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
-  showZendesk?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -174,7 +173,6 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
-  showZendesk?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {

@@ -592,8 +592,6 @@ export const DEFAULT_AVATARS = [
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
-export const ZENDESK_URL_PREFIXES = ["/admin"];
-
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 
