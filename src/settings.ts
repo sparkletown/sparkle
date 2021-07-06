@@ -524,8 +524,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
+// @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.jazzbar,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -591,6 +593,8 @@ export const DEFAULT_AVATARS = [
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
+export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
