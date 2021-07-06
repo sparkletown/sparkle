@@ -1,12 +1,22 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
+
+import { tracePromise } from "utils/performance";
 
 import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
-import { NavBar } from "components/molecules/NavBar";
 import { Footer } from "components/molecules/Footer";
+import { Loading } from "components/molecules/Loading";
 
 import "./WithNavigationBar.scss";
+
+const NavBar = lazy(() =>
+  tracePromise("WithNavigationBar::lazy-import::NavBar", () =>
+    import("components/molecules/NavBar").then(({ NavBar }) => ({
+      default: NavBar,
+    }))
+  )
+);
 
 export interface WithNavigationBarProps {
   redirectionUrl?: string;
@@ -32,7 +42,12 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    works on the user side of things.
        */}
       <RelatedVenuesProvider venueId={venueId}>
-        <NavBar redirectionUrl={redirectionUrl} hasBackButton={hasBackButton} />
+        <Suspense fallback={<Loading />}>
+          <NavBar
+            redirectionUrl={redirectionUrl}
+            hasBackButton={hasBackButton}
+          />
+        </Suspense>
       </RelatedVenuesProvider>
 
       <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
