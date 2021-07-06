@@ -86,9 +86,9 @@
     "yup": "^0.29.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "init": "node scripts/init.js",
-    "build": "react-scripts build",
+    "build": "craco build",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "lint": "npm run prettier:check && npm run eslint:check",
     "eslint:check": "eslint src scripts functions --ext .js,.jsx,.ts,.tsx",
