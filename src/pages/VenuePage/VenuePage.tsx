@@ -49,7 +49,13 @@ import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-import Login from "pages/Account/Login";
+const Login = lazy(() =>
+  tracePromise("VenuePage::lazy-import::Login", () =>
+    import("pages/Account/Login").then(({ Login }) => ({
+      default: Login,
+    }))
+  )
+);
 
 const TemplateWrapper = lazy(() =>
   tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
@@ -190,7 +196,11 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return <Login venue={venue} />;
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venue={venue} />
+      </Suspense>
+    );
   }
 
   if (!profile) {
