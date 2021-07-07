@@ -41,7 +41,7 @@ $back-button-icon-diameter: 22px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+    text-shadow: 0 2px 4px opaque-black(0.21);
     cursor: pointer;
     margin-left: $spacing--sm;
   }
