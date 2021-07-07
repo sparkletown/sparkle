@@ -10,12 +10,10 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { VenueEvent } from "types/venues";
 import { Firestore } from "types/Firestore";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
-import { WithId } from "utils/id";
 import { isUserAMember } from "utils/isUserAMember";
 import { getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
@@ -39,11 +37,9 @@ import {
   AuthenticationModal,
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
-import PaymentModal from "components/organisms/PaymentModal";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { CountDown } from "components/molecules/CountDown";
-import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
@@ -88,17 +84,10 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   );
 
   dayjs.extend(advancedFormat);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<
-    WithId<VenueEvent> | undefined
-  >();
+
   const [isAuthenticationModalOpen, setIsAuthenticationModalOpen] = useState(
     false
   );
-  const [shouldOpenPaymentModal, setShouldOpenPaymentModal] = useState(false);
-  const [eventPaidSuccessfully, setEventPaidSuccessfully] = useState<
-    string | undefined
-  >();
 
   const { user } = useUser();
 
@@ -114,13 +103,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   }, [venue]);
 
   useEffect(() => {
-    if (shouldOpenPaymentModal && !isAuthenticationModalOpen) {
-      setIsPaymentModalOpen(true);
-      setShouldOpenPaymentModal(false);
-    }
-  }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
-
-  useEffect(() => {
     if (venue?.showZendesk) {
       showZendeskWidget();
     }
@@ -134,13 +116,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     return <>Loading...</>;
   }
 
-  const isUserVenueOwner = user && venue.owners?.includes(user.uid);
-
   const nextVenueEventId = futureOrOngoingVenueEvents?.[0]?.id;
-
-  const closePaymentModal = () => {
-    setIsPaymentModalOpen(false);
-  };
 
   const openAuthenticationModal = () => {
     setIsAuthenticationModalOpen(true);
@@ -349,28 +325,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                             </div>
                           )}
 
-                          {user ? (
-                            <EventPaymentButton
-                              event={venueEvent}
-                              venueId={venueId}
-                              isUserVenueOwner={!!isUserVenueOwner}
-                              selectEvent={() => setSelectedEvent(venueEvent)}
-                              setIsPaymentModalOpen={setIsPaymentModalOpen}
-                              paymentConfirmationPending={
-                                eventPaidSuccessfully === venueEvent.id
-                              }
-                            />
-                          ) : (
-                            <button
-                              className="btn btn-primary buy-tickets-button"
-                              onClick={() => {
-                                setSelectedEvent(venueEvent);
-                                openAuthenticationModal();
-                              }}
-                            >
-                              Buy tickets
-                            </button>
-                          )}
+                          <button
+                            className="btn btn-primary buy-tickets-button"
+                            onClick={() => {
+                              openAuthenticationModal();
+                            }}
+                          >
+                            Buy tickets
+                          </button>
                         </div>
                       </InformationCard>
                     );
@@ -380,19 +342,10 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           </div>
         </div>
       </div>
-      {user && selectedEvent && (
-        <PaymentModal
-          selectedEvent={selectedEvent}
-          show={isPaymentModalOpen}
-          onHide={closePaymentModal}
-          setEventPaidSuccessfully={setEventPaidSuccessfully}
-          eventPaidSuccessfully={eventPaidSuccessfully}
-        />
-      )}
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
-        afterUserIsLoggedIn={() => setShouldOpenPaymentModal(true)}
+        afterUserIsLoggedIn={() => {}}
         showAuth={AuthOptions.register}
       />
     </WithNavigationBar>
