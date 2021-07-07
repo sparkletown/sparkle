@@ -1,24 +1,14 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 
-import ReactMarkdown from "react-markdown";
-import glm from "remark-gfm";
-import emoji from "remark-emoji";
-import externalLinks from "remark-external-links";
-import sanitize from "rehype-sanitize";
+import { tracePromise } from "utils/performance";
 
-import {
-  MARKDOWN_BASIC_FORMATTING_TAGS,
-  MARKDOWN_HEADING_TAGS,
-  MARKDOWN_IMAGE_TAGS,
-  MARKDOWN_LINK_TAGS,
-  MARKDOWN_LIST_TAGS,
-  MARKDOWN_PRE_CODE_TAGS,
-} from "settings";
-
-import { isTruthy } from "utils/types";
-
-const REMARK_PLUGINS = [glm, emoji, externalLinks];
-const REHYPE_PLUGINS = [sanitize];
+const RenderMarkdownInner = lazy(() =>
+  tracePromise("RenderMarkdown::lazy-import::RenderMarkdownInner", () =>
+    import("./RenderMarkdownInner").then(({ RenderMarkdownInner }) => ({
+      default: RenderMarkdownInner,
+    }))
+  )
+);
 
 export interface RenderMarkdownProps {
   text?: string;
@@ -38,28 +28,21 @@ const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
   allowLinks = true,
   allowImages = true,
   allowLists = true,
-}) => {
-  const allowedElements: string[] = [
-    ...(allowBasicFormatting ? MARKDOWN_BASIC_FORMATTING_TAGS : []),
-    ...(allowHeadings ? MARKDOWN_HEADING_TAGS : []),
-    ...(allowImages ? MARKDOWN_IMAGE_TAGS : []),
-    ...(allowLinks ? MARKDOWN_LINK_TAGS : []),
-    ...(allowLists ? MARKDOWN_LIST_TAGS : []),
-    ...(allowPreAndCode ? MARKDOWN_PRE_CODE_TAGS : []),
-  ].filter(isTruthy);
-
-  if (!text) return null;
-
-  return (
-    <ReactMarkdown
-      remarkPlugins={REMARK_PLUGINS}
-      rehypePlugins={REHYPE_PLUGINS}
-      linkTarget="_blank"
-      allowedElements={allowedElements}
+}) => (
+  <Suspense fallback={<div>{text}</div>}>
+    <RenderMarkdownInner
+      {...{
+        allowBasicFormatting,
+        allowPreAndCode,
+        allowHeadings,
+        allowLinks,
+        allowImages,
+        allowLists,
+      }}
     >
       {text}
-    </ReactMarkdown>
-  );
-};
+    </RenderMarkdownInner>
+  </Suspense>
+);
 
 export const RenderMarkdown = React.memo(_RenderMarkdown);
