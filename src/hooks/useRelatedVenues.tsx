@@ -22,10 +22,10 @@ export interface RelatedVenuesContextState {
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
 
-  sovereignVenueIdError?: string;
+  sovereignVenueError?: string;
 
   isDescendantVenuesLoading: boolean;
-  descendantVenues: WithId<AnyVenue>[];
+  relatedVenues: WithId<AnyVenue>[];
   relatedVenueIds: string[];
   descendantVenuesError?: Error;
 
@@ -50,7 +50,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     sovereignVenue,
     sovereignVenueId,
     isSovereignVenueLoading,
-    errorMsg: sovereignVenueIdError,
+    errorMsg: sovereignVenueError,
   } = useSovereignVenue({
     venueId,
   });
@@ -72,10 +72,11 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
     );
   }, [sovereignVenueId]);
 
-  const relatedVenues = useMemo(() => [...descendantVenues, sovereignVenue], [
-    descendantVenues,
-    sovereignVenue,
-  ]);
+  const relatedVenues = useMemo(() => {
+    if (!sovereignVenue) return descendantVenues;
+
+    return [...descendantVenues, sovereignVenue];
+  }, [descendantVenues, sovereignVenue]);
 
   const relatedVenueIds = useMemo(
     () => relatedVenues.map((venue) => venue.id),
@@ -94,15 +95,15 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
       isLoading: isSovereignVenueLoading || isDescendantVenuesLoading,
-      isError: isTruthy(sovereignVenueIdError || descendantVenuesError),
+      isError: isTruthy(sovereignVenueError || descendantVenuesError),
 
       isSovereignVenueLoading,
-      sovereignVenue: findVenueInRelatedVenues(sovereignVenueId),
+      sovereignVenue,
       sovereignVenueId,
-      sovereignVenueIdError,
+      sovereignVenueError,
 
       isDescendantVenuesLoading,
-      descendantVenues,
+      relatedVenues,
       relatedVenueIds,
       descendantVenuesError,
 
@@ -112,11 +113,12 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       findVenueInRelatedVenues,
       isDescendantVenuesLoading,
       isSovereignVenueLoading,
-      descendantVenues,
+      relatedVenues,
       relatedVenueIds,
       descendantVenuesError,
+      sovereignVenue,
       sovereignVenueId,
-      sovereignVenueIdError,
+      sovereignVenueError,
     ]
   );
 
