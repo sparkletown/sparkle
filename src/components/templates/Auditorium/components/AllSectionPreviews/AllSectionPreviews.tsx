@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
 import { enterVenue } from "utils/url";
 
-import { useAuditoriumSections } from "hooks/auditoriumSections";
+import { useAllAuditoriumSections } from "hooks/auditorium";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { BackButton } from "components/atoms/BackButton";
@@ -42,7 +42,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     isFullAuditoriumsHidden,
     enterSection,
     notFullSections,
-  } = useAuditoriumSections(venue);
+  } = useAllAuditoriumSections(venue);
 
   const sectionsCount = auditoriumSections.length;
 

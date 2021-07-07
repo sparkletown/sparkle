@@ -56,11 +56,11 @@ export type GenericVenueTemplates = Exclude<
 // We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
 export type AnyVenue =
   | GenericVenue
+  | AuditoriumVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | PosterPageVenue
-  | AuditoriumVenue;
+  | PosterPageVenue;
 
 // --- VENUE V2
 export interface Venue_v2

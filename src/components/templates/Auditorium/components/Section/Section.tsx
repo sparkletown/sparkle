@@ -7,10 +7,7 @@ import { AuditoriumVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import {
-  useAuditoriumSection,
-  useAuditoriumGrid,
-} from "hooks/auditoriumSections";
+import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
 
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
