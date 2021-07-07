@@ -10,6 +10,8 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
 
+import { Checkbox } from "components/atoms/Checkbox";
+
 import "./TablesControlBar.scss";
 
 export interface TablesControlBarProps {
@@ -52,21 +54,13 @@ export const TablesControlBar: React.FC<TablesControlBarProps> = ({
 
   const containerClasses = classNames("TablesControlBar", className);
 
-  const checkboxClasses = classNames("checkbox", {
-    "checkbox-checked": isChecked,
-  });
-
   return (
     <div className={containerClasses}>
-      <label htmlFor="chk-toggle-tables" className={checkboxClasses}>
-        Hide full/locked tables
-      </label>
-      <input
-        type="checkbox"
-        name="toggle-tables"
-        id="chk-toggle-tables"
-        defaultChecked={false}
-        onClick={toggleTables}
+      <Checkbox
+        checked={isChecked}
+        onChange={toggleTables}
+        label="Hide full/locked tables"
+        containerClassName="TablesControlBar__checkbox"
       />
     </div>
   );
