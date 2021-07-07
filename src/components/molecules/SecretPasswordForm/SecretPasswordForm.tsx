@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from "react";
+import React, { ChangeEventHandler, useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { checkAccess } from "api/auth";
 
 import { venueEntranceUrl } from "utils/url";
 import { setLocalStorageToken } from "utils/localStorage";
-import { isTruthy } from "utils/types";
+import { isDefined, isTruthy } from "utils/types";
 
 import { useVenueId } from "hooks/useVenueId";
 
@@ -15,19 +15,33 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
   const history = useHistory();
   const venueId = useVenueId();
 
-  const [error, setError] = useState();
-  const [password, setPassword] = useState();
-  const [message, setMessage] = useState();
+  const [error, setError] = useState(false);
+  const [password, setPassword] = useState<string>();
+  const [message, setMessage] = useState<string>();
 
-  function passwordChanged(e) {
+  const passwordChanged: ChangeEventHandler<HTMLInputElement> = (e) => {
     setPassword(e.target.value);
-    setMessage("");
-    setError(false);
-  }
 
+    if (message !== "") {
+      setMessage("");
+    }
+
+    if (error) {
+      setError(false);
+    }
+  };
+
+  // @debt replace this with useAsync / useAsyncFn
   const passwordSubmitted = useCallback(
     async (e) => {
       e.preventDefault();
+
+      if (!isDefined(venueId)) {
+        setMessage("Missing venueId");
+        setError(true);
+        return;
+      }
+
       setMessage("Checking password...");
 
       await checkAccess({
@@ -40,13 +54,15 @@ const SecretPasswordForm = ({ buttonText = "Join the party" }) => {
             history.push(venueEntranceUrl(venueId));
           } else {
             setMessage(`Wrong password!`);
+            setError(true);
           }
         })
-        .catch(() => {
-          setMessage(`Password error: ${error.toString()}`);
+        .catch((err) => {
+          setMessage(`Password error: ${err.toString()}`);
+          setError(true);
         });
     },
-    [error, history, password, venueId]
+    [history, password, venueId]
   );
 
   return (
