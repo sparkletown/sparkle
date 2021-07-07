@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useAsync } from "react-use";
 
-import { fetchRelatedVenues } from "api/venue";
+import { fetchDescendantVenues } from "api/venue";
 
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 import { isTruthy } from "utils/types";
 
-import { useSovereignVenueId } from "./useSovereignVenueId";
+import { useSovereignVenue } from "./useSovereignVenue";
 
 const emptyArray: never[] = [];
 
@@ -18,16 +18,17 @@ export interface RelatedVenuesContextState {
   isLoading: boolean;
   isError: boolean;
 
-  isSovereignVenueIdLoading: boolean;
+  isSovereignVenueLoading: boolean;
   sovereignVenue?: WithId<AnyVenue>;
   sovereignVenueId?: string;
+  sovereignVenueError?: string;
 
-  sovereignVenueIdError?: string;
-
-  isRelatedVenuesLoading: boolean;
   relatedVenues: WithId<AnyVenue>[];
   relatedVenueIds: string[];
-  relatedVenuesError?: Error;
+
+  isDescendantVenuesLoading: boolean;
+  descendantVenues: WithId<AnyVenue>[];
+  descendantVenuesError?: Error;
 
   findVenueInRelatedVenues: (
     searchedForVenueId?: string
@@ -47,31 +48,36 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
   children,
 }) => {
   const {
+    sovereignVenue,
     sovereignVenueId,
-    isSovereignVenueIdLoading,
-    errorMsg: sovereignVenueIdError,
-  } = useSovereignVenueId({
+    isSovereignVenueLoading,
+    errorMsg: sovereignVenueError,
+  } = useSovereignVenue({
     venueId,
   });
 
   const {
-    loading: isRelatedVenuesLoading,
-    error: relatedVenuesError,
-    value: relatedVenues = emptyArray,
+    loading: isDescendantVenuesLoading,
+    error: descendantVenuesError,
+    value: descendantVenues = emptyArray,
   } = useAsync(async () => {
     if (!sovereignVenueId) return emptyArray;
 
     return tracePromise(
-      "RelatedVenuesProvider::fetchRelatedVenues",
-      () => fetchRelatedVenues(sovereignVenueId),
+      "RelatedVenuesProvider::fetchDescendantVenues",
+      async () => fetchDescendantVenues(sovereignVenueId),
       {
-        attributes: {
-          sovereignVenueId: sovereignVenueId,
-        },
+        attributes: { sovereignVenueId },
         withDebugLog: true,
       }
     );
   }, [sovereignVenueId]);
+
+  const relatedVenues = useMemo(() => {
+    if (!sovereignVenue) return descendantVenues;
+
+    return [...descendantVenues, sovereignVenue];
+  }, [descendantVenues, sovereignVenue]);
 
   const relatedVenueIds = useMemo(
     () => relatedVenues.map((venue) => venue.id),
@@ -89,30 +95,34 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
   const relatedVenuesState: RelatedVenuesContextState = useMemo(
     () => ({
-      isLoading: isSovereignVenueIdLoading || isRelatedVenuesLoading,
-      isError: isTruthy(sovereignVenueIdError || relatedVenuesError),
+      isLoading: isSovereignVenueLoading || isDescendantVenuesLoading,
+      isError: isTruthy(sovereignVenueError || descendantVenuesError),
 
-      isSovereignVenueIdLoading,
-      sovereignVenue: findVenueInRelatedVenues(sovereignVenueId),
+      isSovereignVenueLoading,
+      sovereignVenue,
       sovereignVenueId,
-      sovereignVenueIdError,
+      sovereignVenueError,
 
-      isRelatedVenuesLoading,
       relatedVenues,
       relatedVenueIds,
-      relatedVenuesError,
+
+      isDescendantVenuesLoading,
+      descendantVenues,
+      descendantVenuesError,
 
       findVenueInRelatedVenues,
     }),
     [
-      findVenueInRelatedVenues,
-      isRelatedVenuesLoading,
-      isSovereignVenueIdLoading,
+      isSovereignVenueLoading,
+      sovereignVenue,
+      sovereignVenueId,
+      sovereignVenueError,
       relatedVenues,
       relatedVenueIds,
-      relatedVenuesError,
-      sovereignVenueId,
-      sovereignVenueIdError,
+      isDescendantVenuesLoading,
+      descendantVenues,
+      descendantVenuesError,
+      findVenueInRelatedVenues,
     ]
   );
 
