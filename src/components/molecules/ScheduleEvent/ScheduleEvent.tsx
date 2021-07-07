@@ -161,7 +161,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   }, [isExpandedStatic, handleCollapse, toggleExpandedStatic]);
 
   useEffect(() => {
-    function handleClickOutside(event: Event) {
+    const handleClickOutside = (event: Event) => {
       const eventTarget = event.target as Node;
       if (
         eventRef.current &&
@@ -170,7 +170,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       ) {
         handleCollapse();
       }
-    }
+    };
 
     window.addEventListener("mousedown", handleClickOutside, false);
 
