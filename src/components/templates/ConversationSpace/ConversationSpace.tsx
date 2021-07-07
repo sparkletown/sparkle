@@ -96,7 +96,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
               defaultTables={defaultTables}
               venue={venue}
               users={recentVenueUsers}
-              updateTables={setTables}
+              onToggleTables={setTables}
               isChecked={tables !== defaultTables}
             />
           )}

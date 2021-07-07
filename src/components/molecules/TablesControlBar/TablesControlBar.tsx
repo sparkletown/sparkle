@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
 
 import { Table } from "types/Table";
@@ -17,7 +17,7 @@ export interface TablesControlBarProps {
   isChecked: boolean;
   venue: AnyVenue;
   users: WithId<User>[];
-  updateTables: (value: React.SetStateAction<Table[]>) => void;
+  onToggleTables: (value: React.SetStateAction<Table[]>) => void;
   className?: string;
 }
 
@@ -26,26 +26,30 @@ export const TablesControlBar: React.FC<TablesControlBarProps> = ({
   isChecked,
   venue,
   users,
-  updateTables,
+  onToggleTables,
   className,
 }) => {
   const experience = useSelector(experienceSelector);
 
   // not locked and not full tables
-  const freeTables = defaultTables
-    .filter((table) => !experience?.tables[table.title]?.locked)
-    .filter((table) => {
-      if (!table.capacity) return false;
+  const freeTables = useMemo(
+    () =>
+      defaultTables
+        .filter((table) => !experience?.tables[table.title]?.locked)
+        .filter((table) => {
+          if (!table.capacity) return false;
 
-      const usersSeatedAtTable = users.filter(
-        (u) => u.data?.[venue.name].table === table.reference
-      );
-      return table.capacity - usersSeatedAtTable.length > 0;
-    });
+          const usersSeatedAtTable = users.filter(
+            (u) => u.data?.[venue.name].table === table.reference
+          );
+          return table.capacity - usersSeatedAtTable.length > 0;
+        }),
+    [defaultTables, experience?.tables, users, venue.name]
+  );
 
   const toggleTables = useCallback(
-    () => updateTables(isChecked ? defaultTables : freeTables),
-    [isChecked, updateTables, defaultTables, freeTables]
+    () => onToggleTables(isChecked ? defaultTables : freeTables),
+    [isChecked, onToggleTables, defaultTables, freeTables]
   );
 
   const containerClasses = classNames("TablesControlBar", className);
