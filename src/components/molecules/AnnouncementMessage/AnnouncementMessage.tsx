@@ -33,6 +33,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   return (
     <div
+      role="dialog"
       className={classNames("announcement-container", {
         centered: !isExpanded,
       })}
@@ -40,9 +41,13 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       <div className="announcement-message">
         <RenderMarkdown text={message} />
       </div>
-      <span className="close-button" onClick={hideAnnouncement}>
+      <button
+        aria-label="Close announcement message"
+        className="close-button"
+        onClick={hideAnnouncement}
+      >
         <FontAwesomeIcon icon={faTimesCircle} />
-      </span>
+      </button>
     </div>
   );
 };
