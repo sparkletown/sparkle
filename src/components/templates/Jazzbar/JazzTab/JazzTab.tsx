@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -73,6 +73,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const defaultTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
   const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
+
+  useEffect(() => setJazzbarTables(defaultTables), [defaultTables]);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);

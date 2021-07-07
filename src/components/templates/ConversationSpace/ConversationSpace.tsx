@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
@@ -27,6 +27,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
 
   const defaultTables = venue?.config?.tables ?? TABLES;
   const [tables, setTables] = useState(defaultTables);
+
+  useEffect(() => setTables(defaultTables), [defaultTables]);
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
