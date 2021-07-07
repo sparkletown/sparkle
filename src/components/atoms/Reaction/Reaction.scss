@@ -1,10 +1,14 @@
+@import "scss/constants";
+
+$reaction-size: 30px;
+
 .Reaction {
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: transparent;
   border-color: transparent;
-  font-size: 20px;
+  font-size: $font-size--xl;
   animation: sway 2200ms 1200ms ease-in-out;
 
   &:focus {
@@ -13,7 +17,7 @@
 
   & > span {
     cursor: pointer;
-    height: 30px;
-    width: 30px;
+    height: $reaction-size;
+    width: $reaction-size;
   }
 }
