@@ -89,6 +89,9 @@ export const DUST_STORM_TEXT_2 =
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const SHORT_EVENT_LENGTH = 10;
+export const MIN_LONG_EVENT_LENGTH = 15;
+export const LONG_EVENT_LENGTH = 60;
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting

@@ -1,5 +1,4 @@
 import React, {
-  useState,
   RefObject,
   MouseEventHandler,
   useCallback,
@@ -16,7 +15,12 @@ import { faExpandAlt as expandAlt } from "@fortawesome/free-solid-svg-icons";
 import { faCompressAlt as compressAlt } from "@fortawesome/free-solid-svg-icons";
 import { faSquare as squareIcon } from "@fortawesome/free-regular-svg-icons";
 
-import { SCHEDULE_HOUR_COLUMN_WIDTH_PX } from "settings";
+import {
+  SCHEDULE_HOUR_COLUMN_WIDTH_PX,
+  SHORT_EVENT_LENGTH,
+  MIN_LONG_EVENT_LENGTH,
+  LONG_EVENT_LENGTH,
+} from "settings";
 
 import {
   addEventToPersonalizedSchedule,
@@ -39,10 +43,6 @@ import "./ScheduleEvent.scss";
 const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
 const ScheduleEventExpandClass = "ScheduleEvent__expand";
 
-const shortEventLength = 10;
-const minLongEventLength = 15;
-const longEventLength = 60;
-
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
   scheduleStartHour: number;
@@ -55,16 +55,26 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   personalizedEvent: isPersonalizedEvent = false,
 }) => {
   const eventRef: RefObject<HTMLDivElement> = useRef(null);
-  const isLongEvent = event.duration_minutes >= minLongEventLength;
-  const isShortEvent = event.duration_minutes <= shortEventLength;
-  const { userId } = useUser();
-  const [isExpanded, toggleExpanded] = useState(false);
-  const [isExpandedStatic, toggleExpandedStatic] = useState(false);
+  const isMinimallyLongEvent = event.duration_minutes >= MIN_LONG_EVENT_LENGTH;
+  const isShortEvent = event.duration_minutes <= SHORT_EVENT_LENGTH;
+  const isEventLong = event.duration_minutes >= LONG_EVENT_LENGTH;
 
-  const isBookmarkDisplayed = isLongEvent || isExpanded || isExpandedStatic;
-  const isContentDisplayed =
-    isExpanded || isExpandedStatic || event.duration_minutes >= longEventLength;
-  const isShowExpand = !isShortEvent || isExpanded;
+  const { userId } = useUser();
+  const {
+    isShown: isExpanded,
+    hide: hideExpanded,
+    show: showExpanded,
+  } = useShowHide();
+  const {
+    isShown: isExpandedStatic,
+    toggle: toggleExpandedStatic,
+    hide: hideExpandedStatic,
+  } = useShowHide();
+
+  const isBookmarkDisplayed =
+    isMinimallyLongEvent || isExpanded || isExpandedStatic;
+  const isContentDisplayed = isExpanded || isExpandedStatic || isEventLong;
+  const isShowExpand = (!isShortEvent || isExpanded) && !isEventLong;
 
   // @debt ONE_HOUR_IN_MINUTES is deprectated; refactor to use utils/time or date-fns functions
   const eventWidthPx = getMinuteValue(
@@ -72,7 +82,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   const expandedEventPx = getMinuteValue(
-    longEventLength * SCHEDULE_HOUR_COLUMN_WIDTH_PX
+    LONG_EVENT_LENGTH * SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 
   const eventMarginLeftPx = calcStartPosition(
@@ -123,32 +133,32 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     [showEventModal]
   );
 
-  const handleMouseOver = () => {
-    if (isLongEvent) return;
+  const handleMouseOver = useCallback(() => {
+    if (isMinimallyLongEvent) return;
 
-    toggleExpanded(true);
-  };
+    showExpanded();
+  }, [isMinimallyLongEvent, showExpanded]);
 
-  const handleMouseOut = () => {
+  const handleMouseOut = useCallback(() => {
     if (isExpandedStatic) return;
 
-    toggleExpanded(false);
-  };
+    hideExpanded();
+  }, [isExpandedStatic, hideExpanded]);
 
   const handleCollapse = useCallback(() => {
-    toggleExpandedStatic(false);
-    toggleExpanded(false);
-  }, []);
+    hideExpandedStatic();
+    hideExpanded();
+  }, [hideExpanded, hideExpandedStatic]);
 
   const handleToggleExpand = useCallback(() => {
     if (!isExpandedStatic) {
-      toggleExpandedStatic(!isExpandedStatic);
+      toggleExpandedStatic();
 
       return;
     }
 
     handleCollapse();
-  }, [isExpandedStatic, handleCollapse]);
+  }, [isExpandedStatic, handleCollapse, toggleExpandedStatic]);
 
   useEffect(() => {
     function handleClickOutside(event: Event) {
@@ -186,15 +196,15 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
             <FontAwesomeIcon
               icon={squareIcon}
               className="ScheduleEvent__expand--square"
-              style={{ width: "24px" }}
             />
+
             <FontAwesomeIcon
               icon={isExpandedStatic ? compressAlt : expandAlt}
               className="ScheduleEvent__expand--arrows"
-              style={{ width: "24px" }}
             />
           </div>
         )}
+
         {isContentDisplayed && (
           <div className="ScheduleEvent__info">
             <div className="ScheduleEvent__title">{event.name}</div>

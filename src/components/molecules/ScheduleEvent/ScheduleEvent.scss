@@ -44,8 +44,8 @@ $description--margin-top: 2px;
     }
   }
 
-  &--wide {
-    width: var(--event--widen) !important;
+  & .ScheduleEvent--wide {
+    width: var(--event--widen);
   }
 
   &--live {
@@ -109,5 +109,13 @@ $description--margin-top: 2px;
     &:hover {
       color: $white;
     }
+  }
+
+  & .ScheduleEvent__expand--square {
+    width: 24px;
+  }
+
+  & .ScheduleEvent__expand--arrows {
+    width: 24px;
   }
 }
