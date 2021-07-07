@@ -71,14 +71,10 @@ const GiftPopover = (
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
-  redirectionUrl?: string;
   hasBackButton?: boolean;
 }
 
-export const NavBar: React.FC<NavBarPropsType> = ({
-  redirectionUrl,
-  hasBackButton = true,
-}) => {
+export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 

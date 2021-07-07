@@ -601,6 +601,8 @@ export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
 export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
 
 export const DEFAULT_AUDITORIUM_SECTION_CAPACITY = 100;
+
+export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 

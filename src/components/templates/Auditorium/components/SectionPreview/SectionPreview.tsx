@@ -3,6 +3,8 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 
+import { SECTION_PREVIEW_USER_DISPLAY_COUNT } from "settings";
+
 import { AuditoriumVenue } from "types/venues";
 import { AuditoriumSection } from "types/auditorium";
 
@@ -76,7 +78,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
       <UserList
         users={seatedUsers}
         showTitle={false}
-        limit={14}
+        limit={SECTION_PREVIEW_USER_DISPLAY_COUNT}
         showMoreUsersToggler={false}
         hasClickableAvatars={false}
         cellClassName="SectionPreview__avatar"

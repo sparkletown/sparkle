@@ -9,12 +9,10 @@ import { Footer } from "components/molecules/Footer";
 import "./WithNavigationBar.scss";
 
 export interface WithNavigationBarProps {
-  redirectionUrl?: string;
   hasBackButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
-  redirectionUrl,
   hasBackButton,
   children,
 }) => {
@@ -30,7 +28,7 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    works on the user side of things.
        */}
       <RelatedVenuesProvider venueId={venueId}>
-        <NavBar redirectionUrl={redirectionUrl} hasBackButton={hasBackButton} />
+        <NavBar hasBackButton={hasBackButton} />
       </RelatedVenuesProvider>
 
       <div className="navbar-margin">{children}</div>
