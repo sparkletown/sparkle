@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import React, { useEffect, Suspense } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle, useAsync } from "react-use";
-import { Helmet } from "react-helmet";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
@@ -36,6 +35,7 @@ import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
+import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -64,36 +64,6 @@ const TemplateWrapper = React.lazy(() => import("./TemplateWrapper"));
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
-
-interface PreloadProps {
-  venue?: AnyVenue;
-}
-
-const Preload: React.FC<PreloadProps> = ({ venue }) => (
-  <Helmet>
-    {
-      // preload the icon only when TemplateWrapper with the navbar icon aren't loaded lazily
-      // <link href={SPARKLE_ICON} rel="preload" as="image" />
-    }
-    {venue?.mapBackgroundImageUrl && (
-      <link href={venue?.mapBackgroundImageUrl} rel="preload" as="image" />
-    )}
-    {
-      // NOTE: if there is significant number of rooms, preload might degrade performance, cut down to few
-      (venue?.rooms ?? []).map(
-        (room) =>
-          room?.image_url && (
-            <link
-              key={room?.image_url}
-              href={room.image_url}
-              rel="preload"
-              as="image"
-            />
-          )
-      )
-    }
-  </Helmet>
-);
 
 const usePreloaded = (venueId?: string) => {
   const { loading, error, value } = useAsync(async () => {
@@ -166,6 +136,15 @@ export const VenuePage: React.FC = () => {
 
   const events = (preError ? undefined : preEvents) ?? postEvents;
   const isEventLoaded = (preError ? undefined : preLoaded) ?? postEventsLoaded;
+
+  usePreloadAssets(
+    [
+      venue?.mapBackgroundImageUrl,
+      ...(venue?.rooms ?? []).map((room) => room?.image_url),
+    ]
+      .filter(isDefined)
+      .map((url) => ({ url }))
+  );
 
   useConnectUserPurchaseHistory();
   const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
@@ -283,24 +262,13 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return (
-      <>
-        <Preload venue={venue} />
-        <Login venue={venue} />
-      </>
-    );
+    return <Login venue={venue} />;
   }
 
   if (!profile) {
-    return (
-      <>
-        <Preload venue={venue} />
-        {
-          // is it really necessary to display loading page here?
-          // <LoadingPage />
-        }
-      </>
-    );
+    // is it really necessary to display loading page here?
+    // return <LoadingPage /> ;
+    return <></>;
   }
 
   // if (isAccessDenied) {
@@ -319,23 +287,15 @@ export const VenuePage: React.FC = () => {
     !isUserVenueOwner
   ) {
     if (isEventLoaded && !event) {
-      return (
-        <>
-          <Preload venue={venue} />
-          This event does not exist
-        </>
-      );
+      return <>This event does not exist</>;
     }
 
     if (!event || !venue || !userPurchaseHistoryRequestStatus) {
       // considering there is prior !venue check, venue should exist at this point
       return (
-        <>
-          <Preload venue={venue} />
-          <Suspense fallback={<></>}>
-            <LoadingPage />
-          </Suspense>
-        </>
+        <Suspense fallback={<></>}>
+          <LoadingPage />
+        </Suspense>
       );
     }
 
@@ -351,15 +311,12 @@ export const VenuePage: React.FC = () => {
 
     if (isEventStartingSoon(event)) {
       return (
-        <>
-          <Preload venue={venue} />
-          <Suspense fallback={<></>}>
-            <CountDown
-              startUtcSeconds={event.start_utc_seconds}
-              textBeforeCountdown="Bar opens in"
-            />
-          </Suspense>
-        </>
+        <Suspense fallback={<></>}>
+          <CountDown
+            startUtcSeconds={event.start_utc_seconds}
+            textBeforeCountdown="Bar opens in"
+          />
+        </Suspense>
       );
     }
   }
@@ -367,12 +324,9 @@ export const VenuePage: React.FC = () => {
   // @debt there is already !user check above, this is superfluous
   if (!user) {
     return (
-      <>
-        <Preload venue={venue} />
-        <Suspense fallback={<></>}>
-          <LoadingPage />
-        </Suspense>
-      </>
+      <Suspense fallback={<></>}>
+        <LoadingPage />
+      </Suspense>
     );
   }
 
@@ -381,11 +335,8 @@ export const VenuePage: React.FC = () => {
   }
 
   return (
-    <>
-      <Preload venue={venue} />
-      <Suspense fallback={<></>}>
-        <TemplateWrapper venue={venue} />
-      </Suspense>
-    </>
+    <Suspense fallback={<></>}>
+      <TemplateWrapper venue={venue} />
+    </Suspense>
   );
 };
