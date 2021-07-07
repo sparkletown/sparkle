@@ -98,7 +98,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
         <IFrame
           containerClassname="Section__iframe-overlay"
           iframeClassname="Section__iframe"
-          iframeStyles={iframeInlineStyles}
+          iframeInlineStyles={iframeInlineStyles}
           src={iframeUrl}
         />
         {seatsGrid}
