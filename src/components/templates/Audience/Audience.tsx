@@ -289,7 +289,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
       makeUpdateUserGridLocation({
         venueId,
-        userUid: userId,
+        userId,
       })(row, column);
     },
     [venueId, userId]

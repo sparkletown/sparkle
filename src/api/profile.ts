@@ -12,13 +12,13 @@ export const getUserRef = (userId: string) =>
 
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
-  userUid: string;
+  userId: string;
 }
 
 /** @deprecated use setGridData instead **/
 export const makeUpdateUserGridLocation = ({
   venueId,
-  userUid,
+  userId,
 }: MakeUpdateUserGridLocationProps) => (
   row: number | null,
   column: number | null
@@ -26,14 +26,14 @@ export const makeUpdateUserGridLocation = ({
   if (row === null || column === null) {
     return setGridData({
       venueId,
-      userId: userUid,
+      userId,
       gridData: undefined,
     });
   }
 
   return setGridData({
     venueId,
-    userId: userUid,
+    userId,
     gridData: { row, column },
   });
 };
