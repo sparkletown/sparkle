@@ -163,7 +163,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       {!seatedAtTable && parentVenueId && parentVenue && (
         <div className="back-map-btn" onClick={backToParentVenue}>
           <div className="back-icon" />
-          <span className="back-link">Back to {parentVenue.name}</span>
+          <span className="back-link">Back</span>
         </div>
       )}
 

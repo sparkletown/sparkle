@@ -1,18 +1,15 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import {
   ACCEPTED_IMAGE_TYPES,
-  DEFAULT_AVATARS,
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
 
 import { resizeFile } from "utils/image";
-
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import "./ProfilePictureInput.scss";
 
@@ -27,6 +24,7 @@ export interface ProfilePictureInputProps {
   pictureUrl: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   register: any;
+  githubHandle?: string;
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -36,29 +34,12 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   errors,
   pictureUrl,
   register,
+  githubHandle,
 }) => {
   const [isPictureUploading, setIsPictureUploading] = useState(false);
   const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
-
-  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
-    venueId,
-  });
-
-  const {
-    value: customAvatars,
-    loading: isLoadingCustomAvatars,
-  } = useAsync(async () => {
-    if (!sovereignVenueId) return;
-
-    const storageRef = firebase.storage().ref();
-    const list = await storageRef
-      .child(`/assets/avatars/${sovereignVenueId}`)
-      .listAll();
-
-    return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [firebase, sovereignVenueId]);
 
   const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
@@ -92,36 +73,15 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
-  const uploadDefaultAvatar = useCallback(
-    async (avatar: string) => {
-      setValue("pictureUrl", avatar, true);
-    },
-    [setValue]
-  );
+  const githubImageSrc =
+    githubHandle && `https://github.com/${githubHandle}.png?size=120`;
 
-  const isLoading =
-    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
-    (customAvatars !== undefined || error !== undefined);
+  // Set GitHub image as a default picture
+  useEffect(() => {
+    if (!githubImageSrc || pictureUrl) return;
 
-  const defaultAvatars = customAvatars?.length
-    ? customAvatars
-    : DEFAULT_AVATARS;
-
-  const avatarImages = useMemo(() => {
-    return defaultAvatars.map((avatar, index) => (
-      <div
-        key={`${avatar}-${index}`}
-        className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
-      >
-        <img
-          src={avatar}
-          className="profile-icon profile-picture-preview"
-          alt={`default avatar ${index}`}
-        />
-      </div>
-    ));
-  }, [defaultAvatars, uploadDefaultAvatar]);
+    setValue("pictureUrl", githubImageSrc, true);
+  }, [githubImageSrc, setValue, pictureUrl]);
 
   return (
     <div className="profile-picture-upload-form">
@@ -130,32 +90,39 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/default-profile-pic.png"}
+          src={pictureUrl || "/avatars/default-octocat-3.png"}
           className="profile-icon profile-picture-preview"
           alt="your profile"
         />
       </div>
-      <input
-        type="file"
-        id="profile-picture-input"
-        name="profilePicture"
-        onChange={handleFileChange}
-        accept={ACCEPTED_IMAGE_TYPES}
-        className="profile-picture-input"
-        ref={uploadRef}
-      />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
-        Upload your profile pic
-      </label>
+      <p className="profile-picture-options">
+        Want to change your profile photo? Take a{" "}
+        <a
+          className="button--a"
+          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+          {...externalUrlAdditionalProps}
+        >
+          Summit snap
+        </a>{" "}
+        or{" "}
+        <input
+          type="file"
+          id="profile-picture-input"
+          name="profilePicture"
+          onChange={handleFileChange}
+          accept={ACCEPTED_IMAGE_TYPES}
+          className="profile-picture-input"
+          ref={uploadRef}
+        />
+        <label htmlFor="profile-picture-input" className="button--a">
+          upload a photo.
+        </label>
+      </p>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>Or pick one from our Sparkle profile pics</small>
-      <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
-      </div>
       <input
         name="pictureUrl"
         className="profile-picture-input"

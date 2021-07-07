@@ -1,4 +1,19 @@
-export interface Experience {
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table: string;
   row?: number;
@@ -25,6 +40,9 @@ export interface User {
   drinkOfChoice?: string;
   favouriteRecord?: string;
   doYouDance?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
+  realName?: string;
   partyName?: string;
   pictureUrl?: string;
   data?: UserExperienceData;

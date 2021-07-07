@@ -2,9 +2,9 @@ import React from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
 
-import { User } from "types/User";
-
 import { WithId } from "utils/id";
+import { User } from "types/User";
+import { UserPersistentReactionType } from "types/reactions";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
@@ -17,6 +17,7 @@ export interface MapPartygoerOverlayProps {
   myUserUid: string;
   totalRows: number;
   totalColumns: number;
+  userPersistentReaction?: UserPersistentReactionType;
 
   /** @default false **/
   withMiniAvatars?: boolean;
@@ -29,6 +30,7 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
   myUserUid,
   totalRows,
   totalColumns,
+  userPersistentReaction,
   withMiniAvatars = false,
 }) => {
   const isMe = partygoer.id === myUserUid;
@@ -52,6 +54,7 @@ export const MapPartygoerOverlay: React.FC<MapPartygoerOverlayProps> = ({
     <UserProfilePicture
       user={partygoer}
       containerClassName={containerClasses}
+      userPersistentReaction={userPersistentReaction}
       miniAvatars={withMiniAvatars}
     />
   );
