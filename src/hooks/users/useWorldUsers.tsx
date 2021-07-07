@@ -11,6 +11,8 @@ import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
+const noUsers: WithId<User>[] = [];
+
 export interface WorldUsersContextState {
   isSovereignVenueIdLoading: boolean;
   sovereignVenueId?: string;
@@ -114,11 +116,8 @@ export const useWorldUsers = (): WorldUsersData => {
     isEqual
   );
 
-  return useMemo(
-    () => ({
-      worldUsers: selectedWorldUsers ?? [],
-      isWorldUsersLoaded: isLoaded(selectedWorldUsers),
-    }),
-    [selectedWorldUsers]
-  );
+  return {
+    worldUsers: selectedWorldUsers ?? noUsers,
+    isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+  };
 };
