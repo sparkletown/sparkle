@@ -30,7 +30,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 }) => {
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const maxUsers = getSectionCapacity(venue, section);
+  const sectionCapacity = getSectionCapacity(venue, section);
 
   const sectionId = section.id;
   const venueId = venue.id;
@@ -47,10 +47,12 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
 
   const seatedUsersCount = seatedUsers.length;
 
-  const isFull = seatedUsersCount >= maxUsers;
+  const isFull = seatedUsersCount >= sectionCapacity;
   const isEmpty = seatedUsersCount === 0;
 
-  const userAmountText = isFull ? "Full" : `${seatedUsersCount}/${maxUsers}`;
+  const userAmountText = isFull
+    ? "Full"
+    : `${seatedUsersCount}/${sectionCapacity}`;
 
   const onSectionEnter = useCallback(() => {
     if (isFull) return;

@@ -1,6 +1,6 @@
 @import "scss/constants";
 
-$avatar-diameter: 20px;
+$avatar-size: 20px;
 
 .SectionPreview {
   display: flex;
@@ -15,7 +15,7 @@ $avatar-diameter: 20px;
   width: 100%;
 
   background-color: $dark;
-  border-radius: $medium-border-radius;
+  border-radius: $border-radius--lg;
 
   cursor: pointer;
 
@@ -69,9 +69,9 @@ $avatar-diameter: 20px;
   }
 
   &__avatar {
-    min-height: $avatar-diameter;
-    min-width: $avatar-diameter;
-    height: $avatar-diameter;
-    width: $avatar-diameter;
+    min-height: $avatar-size;
+    min-width: $avatar-size;
+    height: $avatar-size;
+    width: $avatar-size;
   }
 }
