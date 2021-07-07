@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -24,6 +24,7 @@ import {
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
+import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -41,21 +42,35 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-import Login from "pages/Account/Login";
+const Login = lazy(() =>
+  tracePromise("VenuePage::lazy-import::Login", () =>
+    import("pages/Account/Login").then(({ Login }) => ({
+      default: Login,
+    }))
+  )
+);
+
+const TemplateWrapper = lazy(() =>
+  tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
+    import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
+      default: TemplateWrapper,
+    }))
+  )
+);
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const VenuePage: React.FC = () => {
+export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const mixpanel = useMixpanel();
 
@@ -181,7 +196,11 @@ const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return <Login venue={venue} />;
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venue={venue} />
+      </Suspense>
+    );
   }
 
   if (!profile) {
@@ -239,7 +258,9 @@ const VenuePage: React.FC = () => {
     history.push(`/account/profile?venueId=${venueId}`);
   }
 
-  return <TemplateWrapper venue={venue} />;
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <TemplateWrapper venue={venue} />
+    </Suspense>
+  );
 };
-
-export default VenuePage;
