@@ -1,6 +1,8 @@
 @import "scss/constants";
 
 $back-button-icon-diameter: 22px;
+$back-button-height: 40px;
+$back-button-filter: blur(8px);
 
 .BackButton {
   position: fixed;
@@ -8,12 +10,12 @@ $back-button-icon-diameter: 22px;
   top: $navbar-height;
   z-index: z(navbar-map-back-button);
   left: 0;
-  height: 40px;
+  height: $back-button-height;
   width: auto;
   cursor: pointer;
   background-color: $secondary;
   box-shadow: 0 10px 20px rgba($secondary, 0.2);
-  backdrop-filter: blur(8px);
+  backdrop-filter: $back-button-filter;
 
   border-radius: 0 0 $border-radius--lg 0;
   display: flex;
