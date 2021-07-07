@@ -2,12 +2,9 @@ import React from "react";
 
 import { IFRAME_ALLOW } from "settings";
 
-export interface IFrameProps {
+export interface IFrameProps extends React.HTMLProps<HTMLIFrameElement>{
   containerClassname?: string;
   iframeClassname?: string;
-  iframeStyles?: React.CSSProperties;
-  src?: string;
-  title?: string;
 }
 
 export const IFrame: React.FC<IFrameProps> = ({
