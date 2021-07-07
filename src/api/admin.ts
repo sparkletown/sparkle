@@ -105,6 +105,7 @@ export type VenueInput = AdvancedVenueInput &
     auditoriumRows?: number;
     auditoriumColumns?: number;
     showReactions?: boolean;
+    showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
