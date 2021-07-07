@@ -36,14 +36,12 @@ export const TablesControlBar: React.FC<TablesControlBarProps> = ({
     () =>
       defaultTables
         .filter((table) => !experience?.tables[table.title]?.locked)
-        .filter((table) => {
-          if (!table.capacity) return false;
-
-          const usersSeatedAtTable = users.filter(
-            (u) => u.data?.[venue.name].table === table.reference
-          );
-          return table.capacity - usersSeatedAtTable.length > 0;
-        }),
+        .filter(
+          (table) =>
+            !users.filter(
+              (u) => u.data?.[venue.name]?.table === table.reference
+            ).length
+        ),
     [defaultTables, experience?.tables, users, venue.name]
   );
 
