@@ -8,11 +8,13 @@ import { User } from "types/User";
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
+
+const noop = () => {};
 
 interface UserListProps {
   users: readonly WithId<User>[];
@@ -60,6 +62,8 @@ export const UserList: React.FC<UserListProps> = ({
   const containerClasses = classNames("UserList", containerClassName);
   const cellClasses = classNames("UserList__cell", cellClassName);
 
+  const { openUserProfileModal } = useProfileModalControls();
+
   if (!showEvenWhenNoUsers && userCount < 1) return null;
 
   return (
@@ -77,15 +81,13 @@ export const UserList: React.FC<UserListProps> = ({
       <div className="UserList__avatars">
         {usersToDisplay.map((user) => (
           <div key={user.id} className={cellClasses}>
-            {hasClickableAvatars ? (
-              <UserProfilePicture
-                user={user}
-                isAudioEffectDisabled={isAudioEffectDisabled}
-                containerClassName="UserList__avatar"
-              />
-            ) : (
-              <UserAvatar user={user} containerClassName="UserList__avatar" />
-            )}
+            <UserAvatar
+              user={user}
+              containerClassName="UserList__avatar"
+              onClick={
+                hasClickableAvatars ? () => openUserProfileModal(user) : noop
+              }
+            />
           </div>
         ))}
         {hasExcessiveUserCount && (
