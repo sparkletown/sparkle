@@ -6,7 +6,7 @@ import "./Reaction.scss";
 
 export interface PropsType {
   reaction: ReactionData<EmojiReactionType>;
-  reactionClicked: (emojiReaction: EmojiReactionType) => void;
+  reactionClicked?: (emojiReaction: EmojiReactionType) => void;
 }
 
 export const Reaction: React.FC<PropsType> = ({
@@ -14,7 +14,7 @@ export const Reaction: React.FC<PropsType> = ({
   reactionClicked,
 }) => {
   const handleReactionClick = useCallback(() => {
-    reactionClicked(reaction.type);
+    reactionClicked && reactionClicked(reaction.type);
   }, [reactionClicked, reaction]);
 
   return (
