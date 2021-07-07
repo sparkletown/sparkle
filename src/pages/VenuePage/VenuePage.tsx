@@ -56,7 +56,7 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const VenuePage: React.FC = () => {
+export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const mixpanel = useMixpanel();
 
@@ -244,5 +244,3 @@ const VenuePage: React.FC = () => {
 
   return <TemplateWrapper venue={venue} />;
 };
-
-export default VenuePage;

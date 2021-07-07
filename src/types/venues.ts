@@ -150,7 +150,7 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showLiveSchedule?: boolean;
+  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -160,7 +160,6 @@ export interface BaseVenue {
     text: string;
   };
   showLearnMoreLink?: boolean;
-  liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
@@ -168,6 +167,7 @@ export interface BaseVenue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
+  showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;

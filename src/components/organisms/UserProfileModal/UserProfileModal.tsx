@@ -75,12 +75,32 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     [selectedUserProfile, profileQuestions]
   );
 
+  const renderedProfileLinks = useMemo(
+    () =>
+      selectedUserProfile?.profileLinks?.map((link) => (
+        <a
+          key={link.title}
+          className="UserProfileModal__profile-link"
+          href={link.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {link.title}
+        </a>
+      )),
+    [selectedUserProfile?.profileLinks]
+  );
+
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
   }
 
   return (
-    <Modal show={hasSelectedProfile} onHide={closeUserProfileModal}>
+    <Modal
+      className="UserProfileModal"
+      show={hasSelectedProfile}
+      onHide={closeUserProfileModal}
+    >
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
@@ -111,6 +131,7 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             <div className="profile-extras">
               {renderedProfileQuestionAnswers}
             </div>
+            <div>{renderedProfileLinks}</div>
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>

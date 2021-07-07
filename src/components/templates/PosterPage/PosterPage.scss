@@ -103,6 +103,7 @@ $poster-cell-optimal-height: 195px;
     width: 100%;
     // Take exactly the same amount of space as 3 participants would take
     height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
+    border: none;
   }
 
   &__video-participant {

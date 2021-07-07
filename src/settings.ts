@@ -525,8 +525,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
+// @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.jazzbar,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -592,6 +594,8 @@ export const DEFAULT_AVATARS = [
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
+export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
@@ -612,10 +616,12 @@ export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
 
 // SCHEDULE
+export const DEFAULT_SHOW_SCHEDULE = true;
 // @debt probably would be better to adjust max hour based on user's display size
 export const SCHEDULE_MAX_START_HOUR = 16;
 export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
 export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+
 /**
  * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
  */

@@ -7,7 +7,7 @@ import { faTicketAlt, faHome } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
-import { PLAYA_VENUE_ID } from "settings";
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
@@ -116,6 +116,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
+  const shouldShowSchedule = venue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
@@ -222,14 +224,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   onClick={navigateToHomepage}
                 />
               )}
-              <div
-                className={`nav-party-logo ${
-                  isEventScheduleVisible && "clicked"
-                }`}
-                onClick={toggleEventSchedule}
-              >
-                {navbarTitle} <span className="schedule-text">Schedule</span>
-              </div>
+
+              {shouldShowSchedule ? (
+                <div
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
+                  onClick={toggleEventSchedule}
+                >
+                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                </div>
+              ) : (
+                <div>{navbarTitle}</div>
+              )}
+
               <VenuePartygoers venueId={venueId} />
             </div>
 
@@ -322,7 +330,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar user={userWithId} showStatus large />
+                  <UserAvatar user={userWithId} showStatus medium />
                 </OverlayTrigger>
               </div>
             )}
@@ -330,19 +338,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
-      <div
-        className={`schedule-dropdown-backdrop ${
-          isEventScheduleVisible ? "show" : ""
-        }`}
-        onClick={hideEventSchedule}
-      >
-        <div className={navBarScheduleClassName}>
-          <NavBarSchedule
-            isVisible={isEventScheduleVisible}
-            venueId={venueId}
-          />
+      {shouldShowSchedule && (
+        <div
+          className={`schedule-dropdown-backdrop ${
+            isEventScheduleVisible ? "show" : ""
+          }`}
+          onClick={hideEventSchedule}
+        >
+          <div className={navBarScheduleClassName}>
+            <NavBarSchedule
+              isVisible={isEventScheduleVisible}
+              venueId={venueId}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && venue?.parentId && parentVenue?.name && (
