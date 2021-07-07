@@ -35,6 +35,8 @@ $header-height: 45px;
   }
 
   &__tab {
+    background: transparent;
+    border: none;
     display: flex;
     flex: 1;
     font-size: 0.9rem;
@@ -60,6 +62,8 @@ $header-height: 45px;
   }
 
   &__controller {
+    color: white;
+    border: none;
     display: flex;
     justify-content: center;
     align-items: center;
