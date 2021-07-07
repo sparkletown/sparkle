@@ -1,6 +1,6 @@
 import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual, reduce } from "lodash";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
@@ -66,7 +66,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     currentVenueId: venueId,
   });
 
-  const relatedRooms = useMemo<Room[]>(
+  const enabledRelatedRooms = useMemo<Room[]>(
     () =>
       relatedVenues
         .flatMap((venue) => venue.rooms ?? [])
@@ -80,16 +80,17 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     [relatedVenues]
   );
 
-  const relatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
+  const enabledRelatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
     () =>
-      relatedRooms.reduce(
-        (relatedRoomsByTitle, room) => ({
-          ...relatedRoomsByTitle,
+      reduce(
+        enabledRelatedRooms,
+        (enabledRelatedRoomsByTitle, room) => ({
+          ...enabledRelatedRoomsByTitle,
           [room.title]: room,
         }),
         {}
       ),
-    [relatedRooms]
+    [enabledRelatedRooms]
   );
 
   const { isEventsLoading, events: relatedEvents } = useVenueEvents({
@@ -101,7 +102,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
     return (
-      relatedRooms
+      enabledRelatedRooms
         .filter((room) => room.title.toLowerCase().includes(searchQuery))
         .map((room, index) => (
           <NavSearchResult
@@ -124,7 +125,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           />
         )) ?? []
     );
-  }, [searchQuery, relatedRooms, clearSearch, relatedVenues]);
+  }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
   const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
@@ -152,19 +153,19 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
     return relatedEvents
       .filter((event) => {
-        const isEventRoomEnabledAndExists =
+        const isEventRoomEnabled =
           isDefined(event.room) && event.room !== ""
-            ? isDefined(relatedRoomsByTitle[event.room])
+            ? isDefined(enabledRelatedRoomsByTitle[event.room])
             : true;
 
         return (
-          isEventRoomEnabledAndExists &&
-          event.name.toLowerCase().includes(searchQuery)
+          isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
         );
       })
       .map((event) => {
         const imageUrl =
-          relatedRooms.find((room) => room.title === event.room)?.image_url ??
+          enabledRelatedRooms.find((room) => room.title === event.room)
+            ?.image_url ??
           relatedVenues.find((venue) => venue.id === event.venueId)?.host
             ?.icon ??
           DEFAULT_VENUE_LOGO;
@@ -187,8 +188,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   }, [
     searchQuery,
     relatedEvents,
-    relatedRoomsByTitle,
-    relatedRooms,
+    enabledRelatedRoomsByTitle,
+    enabledRelatedRooms,
     relatedVenues,
     clearSearch,
   ]);
