@@ -88,14 +88,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
 
   const tables: Table[] = customTables || defaultTables;
 
-  const emptyTables = tables.filter((table) => {
-    if (!table.capacity) return false;
-
-    const usersSeatedAtTable = recentVenueUsers.filter(
-      (u) => u.data?.[venueName]?.table === table.reference
-    );
-    return table.capacity - usersSeatedAtTable.length > 0;
-  });
+  const emptyTables = tables.filter(
+    (table) =>
+      !recentVenueUsers.filter(
+        (u) => u.data?.[venueName]?.table === table.reference
+      ).length
+  );
 
   const isShowStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
 
