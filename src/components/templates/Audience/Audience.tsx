@@ -32,7 +32,8 @@ import { useUser } from "hooks/useUser";
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-import Reaction from "components/atoms/Reaction";
+
+import { Reaction } from "components/atoms/Reaction";
 
 import "./Audience.scss";
 

@@ -23,10 +23,11 @@ import Room from "../components/JazzBarRoom";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
-import Reaction from "components/atoms/Reaction";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
+
+import { Reaction } from "components/atoms/Reaction";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";

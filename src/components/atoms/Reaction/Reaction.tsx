@@ -1,20 +1,25 @@
 import React, { useCallback } from "react";
-import "./Reaction.scss";
+
 import { EmojiReactionType, ReactionData } from "types/reactions";
 
-interface PropsType {
+import "./Reaction.scss";
+
+export interface PropsType {
   reaction: ReactionData<EmojiReactionType>;
   reactionClicked: (emojiReaction: EmojiReactionType) => void;
 }
 
-const Reaction: React.FC<PropsType> = ({ reaction, reactionClicked }) => {
+export const Reaction: React.FC<PropsType> = ({
+  reaction,
+  reactionClicked,
+}) => {
   const handleReactionClick = useCallback(() => {
     reactionClicked(reaction.type);
   }, [reactionClicked, reaction]);
 
   return (
     <button
-      className="reaction"
+      className="Reaction"
       onClick={handleReactionClick}
       id={`send-reaction-${reaction.type}`}
     >
@@ -24,5 +29,3 @@ const Reaction: React.FC<PropsType> = ({ reaction, reactionClicked }) => {
     </button>
   );
 };
-
-export default Reaction;
