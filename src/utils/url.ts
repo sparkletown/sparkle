@@ -109,3 +109,15 @@ export const getExtraLinkProps = (isExternal: boolean) =>
 
 export const getFullVenueInsideUrl = (venueId: string) =>
   new URL(venueInsideUrl(venueId), window.location.origin).href;
+
+export const getUrlWithoutTrailingSlash = (url: string) => {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+};
+
+export const getLastUrlParam = (url: string) => {
+  return url.split("/").slice(-1);
+};
+
+export const getUrlParamFromString = (data: string) => {
+  return data.replace(" ", "").toLowerCase();
+};
