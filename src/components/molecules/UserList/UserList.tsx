@@ -99,6 +99,3 @@ export const UserList: React.FC<UserListProps> = ({
     </div>
   );
 };
-
-/** @deprecated use named export instead **/
-export default UserList;

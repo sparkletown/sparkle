@@ -1,6 +1,12 @@
 @import "scss/constants";
 
 .UserList {
+  &__label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   &__toggler-text {
     text-decoration: underline;
     cursor: pointer;

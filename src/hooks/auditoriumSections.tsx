@@ -182,14 +182,14 @@ export const useAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     if (!sections) return;
 
     return sections.filter((section) => {
-      const maxUsers = getSectionCapacity(venue, section);
+      const sectionCapacity = getSectionCapacity(venue, section);
       const seatedUsers = getAuditoriumSeatedUsers({
-        auditoriumUsers: recentVenueUsers,
         venueId,
+        auditoriumUsers: recentVenueUsers,
         sectionId: section.id,
       });
 
-      return seatedUsers.length < maxUsers;
+      return seatedUsers.length < sectionCapacity;
     });
   }, [recentVenueUsers, venue, venueId, sections]);
 

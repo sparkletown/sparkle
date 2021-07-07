@@ -1,4 +1,4 @@
-export type AuditoriumSection = {
+export interface AuditoriumSection {
   rowsCount?: number;
   columnsCount?: number;
   capacity?: number;
