@@ -2,13 +2,15 @@
 
 $picker-icon--size: 35px;
 $delete-icon--size: 25px;
+$status--spacing: 5px 0;
+$icon--spacing: 5px;
 
 .UserStatusPanel {
   &__status {
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding: 5px 0;
+    padding: $status--spacing;
   }
 
   &__picker-icon,
@@ -27,7 +29,7 @@ $delete-icon--size: 25px;
   }
 
   &__delete-icon {
-    margin-left: 5px;
+    margin-left: $icon--spacing;
     background-color: $lighter-intermediate-grey;
   }
 }

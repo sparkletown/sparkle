@@ -140,9 +140,6 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <UserAvatar user={user} showStatus large />
         </div>
         <div className="UserInformationContent__text-container">
-          <span className="UserInformationContent__status-prefix">
-            Available
-          </span>
           <h3 className="UserInformationContent__user-name">
             {user?.partyName ?? DEFAULT_PARTY_NAME}
           </h3>
@@ -153,9 +150,11 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           >
             {email}
           </div>
-          <div className="UserInformationContent__status-container">
-            <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
-          </div>
+          {sovereignVenue?.showUserStatus && (
+            <div className="UserInformationContent__status-container">
+              <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
+            </div>
+          )}
         </div>
         <Button
           customClass="UserInformationContent__edit"

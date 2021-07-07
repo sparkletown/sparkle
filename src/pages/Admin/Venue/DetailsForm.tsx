@@ -36,16 +36,17 @@ import {
   USER_STATUSES,
   DEFAULT_SHOW_SCHEDULE,
   ONLINE_USER_STATUS,
+  DEFAULT_SHOW_USER_STATUSES,
 } from "settings";
 
 import { IS_BURN } from "secrets";
 
-import { createJazzbar } from "utils/venue";
-import { venueLandingUrl } from "utils/url";
-
 import { VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
+
+import { createJazzbar } from "utils/venue";
+import { venueLandingUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
@@ -154,9 +155,19 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     ) => {
       if (!user || formError) return;
       try {
+        console.log("1");
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) {
-          await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
+          console.log("2");
+          await updateVenue(
+            {
+              ...(vals as VenueInput),
+              id: venueId,
+              userStatuses,
+              showUserStatus: showUserStatuses,
+            },
+            user
+          );
 
           if (sovereignVenueId)
             await updateVenue(
@@ -878,16 +889,18 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const { sovereignVenueId } = useSovereignVenueId({ venueId });
+  console.log(sovereignVenueId);
 
-  const { currentVenue: venue } = useConnectCurrentVenueNG(sovereignVenueId);
+  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
 
   const {
     isShown: hasUserStatuses,
     show: showUserStatuses,
+    hide: hideUserStatuses,
     toggle: toggleUserStatus,
-  } = useShowHide(venue?.showUserStatus);
+  } = useShowHide(DEFAULT_SHOW_USER_STATUSES);
 
   // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
   useEffect(() => {
@@ -896,10 +909,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
     setUserStatuses(venueUserStatuses);
 
-    if (venue.showUserStatus) {
+    if ("showUserStatus" in venue && venue.showUserStatus) {
       showUserStatuses();
     }
-  }, [showUserStatuses, venue]);
+
+    if ("showUserStatus" in venue && !venue.showUserStatus) {
+      hideUserStatuses();
+    }
+  }, [hideUserStatuses, showUserStatuses, venue]);
 
   const removeUserStatus = (index: number) => {
     const statuses = [...userStatuses];

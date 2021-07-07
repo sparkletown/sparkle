@@ -326,8 +326,9 @@ export const updateVenue = async (
   input: WithId<VenueInput>,
   user: UserInfo
 ) => {
+  console.log("3");
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-
+  console.log("4", firestoreVenueInput);
   return await firebase.functions().httpsCallable("venue-updateVenue")(
     firestoreVenueInput
   );

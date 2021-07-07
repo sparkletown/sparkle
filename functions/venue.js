@@ -197,7 +197,8 @@ const createVenueData = (data, context) => {
     requiresDateOfBirth: data.requiresDateOfBirth || false,
     userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
-    showUserStatus: data.showUserStatus || true,
+    showUserStatus:
+      typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
@@ -335,6 +336,7 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.showReactions = data.showReactions;
   }
 
+  console.log(data.showUserStatus);
   if (typeof data.showUserStatus === "boolean") {
     updated.showUserStatus = data.showUserStatus;
   }
@@ -555,6 +557,7 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
 
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up
 exports.updateVenue = functions.https.onCall(async (data, context) => {
+  console.log("asdasdasd");
   const venueId = data.id || getVenueId(data.name);
   checkAuth(context);
 
@@ -569,12 +572,14 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
+  console.log("asdasdasd");
   // @debt this is exactly the same as in updateVenue_v2
   const updated = doc.data();
 
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
   createBaseUpdateVenueData(data, updated);
 
+  console.log(updated);
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
     if (!updated.config) {
