@@ -7,6 +7,9 @@ export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
     const nameB =
       b.location.roomTitle ?? b.location.venueName ?? b.location.venueId;
 
-    return nameA.localeCompare(nameB);
+    return nameA.localeCompare(nameB, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
   });
 };
