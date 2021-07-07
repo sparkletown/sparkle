@@ -152,11 +152,15 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
     return relatedEvents
       .filter((event) => {
-        const isRoomEnabled = isDefined(event.room)
-          ? relatedRoomsByTitle[event.room]?.isEnabled ?? true
-          : true;
+        const isEventRoomEnabledAndExists =
+          isDefined(event.room) && event.room !== ""
+            ? isDefined(relatedRoomsByTitle[event.room])
+            : true;
 
-        return isRoomEnabled && event.name.toLowerCase().includes(searchQuery);
+        return (
+          isEventRoomEnabledAndExists &&
+          event.name.toLowerCase().includes(searchQuery)
+        );
       })
       .map((event) => {
         const imageUrl =
