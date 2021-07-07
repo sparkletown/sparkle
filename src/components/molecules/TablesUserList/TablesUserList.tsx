@@ -14,6 +14,8 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
 
+import { Loading } from "components/molecules/Loading";
+
 import "./TablesUserList.scss";
 
 // @debt refactor this into src/settings or similar
@@ -188,7 +190,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     venueName,
   ]);
 
-  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
+  if (!isRecentVenueUsersLoaded) return <Loading />;
 
   return (
     <>
