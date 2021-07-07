@@ -296,7 +296,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -306,7 +306,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}

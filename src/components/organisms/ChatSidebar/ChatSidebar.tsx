@@ -33,18 +33,19 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
 
+  const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
+  const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
+
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
   });
 
   const venueChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected":
-      chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
+    "chat-sidebar__tab--selected": isVenueChat,
   });
 
   const privateChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected":
-      chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
+    "chat-sidebar__tab--selected": isPrivateChat,
   });
 
   return (
@@ -73,7 +74,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           <button
             role="tab"
             aria-label={venueChatTabTitle}
-            aria-selected={chatSettings.openedChatType === ChatTypes.VENUE_CHAT}
+            aria-selected={isVenueChat}
             className={venueChatTabStyles}
             onClick={selectVenueChat}
           >
@@ -82,9 +83,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           <button
             role="tab"
             aria-label={privateChatTabTitle}
-            aria-selected={
-              chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
-            }
+            aria-selected={isPrivateChat}
             className={privateChatTabStyles}
             onClick={selectPrivateChat}
           >
@@ -93,10 +92,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
         </div>
       </div>
       <div role="tabpanel" className="chat-sidebar__tab-content">
-        {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-          <VenueChat venue={venue} />
-        )}
-        {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
+        {isVenueChat && <VenueChat venue={venue} />}
+        {isPrivateChat && (
           <PrivateChats recipientId={chatSettings.recipientId} venue={venue} />
         )}
       </div>

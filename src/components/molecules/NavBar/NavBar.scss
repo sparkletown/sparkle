@@ -180,6 +180,9 @@ $border-radius: 28px;
       opacity: 0.7;
     }
   }
+  &:focus {
+    outline: none;
+  }
   &:after {
     content: "";
     position: absolute;
