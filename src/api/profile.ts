@@ -65,6 +65,8 @@ export const setGridData = async ({
         gridData,
       });
     });
+
+    throw err;
   });
 };
 
