@@ -31,6 +31,7 @@ const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
 }) => (
   <Suspense fallback={<div>{text}</div>}>
     <RenderMarkdownInner
+      text={text}
       {...{
         allowBasicFormatting,
         allowPreAndCode,
@@ -39,9 +40,7 @@ const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
         allowImages,
         allowLists,
       }}
-    >
-      {text}
-    </RenderMarkdownInner>
+    />
   </Suspense>
 );
 
