@@ -12,6 +12,9 @@ export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
       return -1;
     }
 
-    return nameA.localeCompare(nameB);
+    return nameA.localeCompare(nameB, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
   });
 };
