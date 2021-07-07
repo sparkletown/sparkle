@@ -652,6 +652,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowShoutouts = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show shoutouts</h4>
+      <label id="showShoutouts" className="switch">
+        <input
+          type="checkbox"
+          id="showShoutouts"
+          name="showShoutouts"
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
@@ -897,6 +912,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
+        {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          renderShowShoutouts()}
         {renderShowRangersToggle()}
         {renderRestrictDOBToggle()}
 
