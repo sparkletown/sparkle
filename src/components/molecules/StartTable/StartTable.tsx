@@ -2,6 +2,12 @@ import React from "react";
 import classNames from "classnames";
 import { useAsyncFn } from "react-use";
 
+import {
+  TABLE_COLUMN_WIDTH,
+  TABLE_COLUMN_HEIGHT,
+  TABLE_COLUMN_INDENT,
+} from "settings";
+
 import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
@@ -28,11 +34,11 @@ export const StartTable: React.FC<StartTablePropsType> = ({
   const startTableWidth =
     table.columns &&
     venue?.template !== VenueTemplate.jazzbar &&
-    (table.columns + 1) * 55;
+    (table.columns + 1) * TABLE_COLUMN_WIDTH;
   const startTableHeight =
     table.rows &&
     venue?.template !== VenueTemplate.jazzbar &&
-    table.rows * 50 + 65;
+    table.rows * TABLE_COLUMN_HEIGHT + TABLE_COLUMN_INDENT;
 
   const [, updateTables] = useAsyncFn(async () => {
     if (!venue?.id) return;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_TABLE_CAPACITY } from "settings";
+import { DEFAULT_TABLE_CAPACITY, ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
 
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
@@ -52,7 +52,6 @@ const firestoreUpdate = (doc: string, update: any) => {
 };
 
 const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
-const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 
 const TablesUserList: React.FunctionComponent<PropsType> = ({
   venueName,
@@ -93,12 +92,12 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     if (!table.capacity) return false;
 
     const usersSeatedAtTable = recentVenueUsers.filter(
-      (u) => u.data?.[venueName].table === table.reference
+      (u) => u.data?.[venueName]?.table === table.reference
     );
     return table.capacity - usersSeatedAtTable.length > 0;
   });
 
-  const startTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
+  const isShowStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
 
   const usersAtTables: Record<string, Array<User>> = {};
   for (const table of tables) {
@@ -195,7 +194,7 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />
           ))}
-          {startTable && (
+          {isShowStartTable && (
             <StartTable tables={tables} newTable={createTable(tables.length)} />
           )}
         </>

@@ -642,3 +642,9 @@ export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
 
 export const DEFAULT_TABLE_CAPACITY = 6;
+export const ALLOWED_EMPTY_TABLES_NUMBER = 20;
+export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
+export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+export const TABLE_COLUMN_WIDTH = 55; // px
+export const TABLE_COLUMN_HEIGHT = 50; // px
+export const TABLE_COLUMN_INDENT = 65; // px
