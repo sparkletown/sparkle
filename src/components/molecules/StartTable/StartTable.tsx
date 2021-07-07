@@ -6,6 +6,7 @@ import {
   TABLE_COLUMN_WIDTH,
   TABLE_COLUMN_HEIGHT,
   TABLE_COLUMN_INDENT,
+  DEFAULT_TABLE_CAPACITY,
 } from "settings";
 
 import { updateVenueTable } from "api/table";
@@ -40,7 +41,7 @@ export const StartTable: React.FC<StartTablePropsType> = ({
     venue?.template !== VenueTemplate.jazzbar &&
     table.rows * TABLE_COLUMN_HEIGHT + TABLE_COLUMN_INDENT;
 
-  const [, updateTables] = useAsyncFn(async () => {
+  const [{ loading: isUpdatingTables }, updateTables] = useAsyncFn(async () => {
     if (!venue?.id) return;
 
     await updateVenueTable({
@@ -48,7 +49,7 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       tableOfUser: newTable,
       tables: [...tables, newTable],
       title: newTable.title,
-      capacity: newTable.capacity,
+      capacity: newTable.capacity ?? DEFAULT_TABLE_CAPACITY,
     });
   }, [newTable, tables, venue?.id]);
 
@@ -57,7 +58,8 @@ export const StartTable: React.FC<StartTablePropsType> = ({
   });
 
   return (
-    <div
+    <button
+      disabled={isUpdatingTables}
       className={containerClasses}
       onClick={updateTables}
       style={{
@@ -67,6 +69,6 @@ export const StartTable: React.FC<StartTablePropsType> = ({
     >
       <div className="StartTable__sign">+</div>
       <div className="StartTable__title">Start a table</div>
-    </div>
+    </button>
   );
 };

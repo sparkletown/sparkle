@@ -7,7 +7,7 @@ export interface UpdateVenueTableProps {
   tables: Table[];
   title: string;
   subtitle?: string;
-  capacity?: number;
+  capacity: number;
 }
 
 export const updateVenueTable = async ({
