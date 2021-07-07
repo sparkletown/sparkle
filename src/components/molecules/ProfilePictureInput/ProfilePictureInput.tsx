@@ -12,7 +12,7 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import "./ProfilePictureInput.scss";
 
@@ -42,7 +42,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
@@ -100,7 +100,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   );
 
   const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
+    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length

@@ -1,16 +1,16 @@
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
 
 export const useConnectWorldUsers = () => {
   const venueId = useVenueId();
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
   useFirestoreConnect(() => {
-    if (isSovereignVenueIdLoading || !sovereignVenueId || !venueId) return [];
+    if (isSovereignVenueLoading || !sovereignVenueId || !venueId) return [];
 
     const relatedLocationIds = [venueId];
 
