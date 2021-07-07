@@ -51,7 +51,7 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
     [history]
   );
 
-  const notFullSections = useMemo(() => {
+  const availableSections = useMemo(() => {
     if (!sections) return;
 
     return sections.filter((section) => {
@@ -69,16 +69,16 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   return useMemo(
     () => ({
       auditoriumSections:
-        (isFullAuditoriumsHidden ? notFullSections : sections) ?? [],
+        (isFullAuditoriumsHidden ? availableSections : sections) ?? [],
       isAuditoriumSectionsLoaded: isLoaded(sections),
       isFullAuditoriumsHidden,
-      notFullSections: notFullSections ?? [],
+      availableSections: availableSections ?? [],
       toggleFullAuditoriums,
       enterSection,
     }),
     [
       sections,
-      notFullSections,
+      availableSections,
       isFullAuditoriumsHidden,
       toggleFullAuditoriums,
       enterSection,

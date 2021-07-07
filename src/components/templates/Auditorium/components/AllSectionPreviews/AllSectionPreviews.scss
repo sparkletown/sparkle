@@ -1,16 +1,21 @@
 @import "scss/constants";
 
+$section-height: 140px;
+$section-min-width: 125px;
+
+$all-section-previews-bottom-spacing: 50px;
+
 .AllSectionPreviews {
   overflow: auto;
   height: 100%;
   width: 100%;
-  padding: 0 $spacing--md 50px;
+  padding: 0 $spacing--md $all-section-previews-bottom-spacing;
 
   display: grid;
   gap: $spacing--md;
 
-  grid-auto-rows: 140px;
-  grid-auto-columns: minmax(125px, 1fr);
+  grid-auto-rows: $section-height;
+  grid-auto-columns: minmax($section-min-width, 1fr);
 
   &--extra-small {
     grid-template-areas:
