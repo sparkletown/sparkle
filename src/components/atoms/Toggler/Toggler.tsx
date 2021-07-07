@@ -12,7 +12,7 @@ export const Toggler: React.FC<TogglerProps> = ({
   defaultToggled,
   onToggle,
   containerClassName,
-  ...other
+  ...extraTogglerProps
 }) => (
   <Checkbox
     {...other}
