@@ -16,7 +16,7 @@ import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import { TABLES } from "./constants";
 

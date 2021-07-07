@@ -58,7 +58,7 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import AvatarLayer from "./AvatarLayer";
 import { PlayaBackground } from "./PlayaBackground";

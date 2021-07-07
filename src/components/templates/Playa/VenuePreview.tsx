@@ -12,7 +12,7 @@ import {
   ENABLE_PLAYA_ADDRESS,
   LOC_UPDATE_FREQ_MS,
 } from "settings";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import {
