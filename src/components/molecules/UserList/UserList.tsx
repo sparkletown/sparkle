@@ -88,13 +88,15 @@ export const UserList: React.FC<UserListProps> = ({
             )}
           </div>
         ))}
-        <div className={cellClasses}>
-          <FontAwesomeIcon
-            icon={faEllipsisH}
-            size="xs"
-            className="UserList__dots-icon"
-          />
-        </div>
+        {hasExcessiveUserCount && (
+          <div className={cellClasses}>
+            <FontAwesomeIcon
+              icon={faEllipsisH}
+              size="xs"
+              className="UserList__dots-icon"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
