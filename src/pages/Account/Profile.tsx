@@ -16,6 +16,7 @@ import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import { updateUserProfile } from "./helpers";
 
+// @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 
 export interface ProfileFormData {

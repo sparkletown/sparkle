@@ -39,6 +39,7 @@ export const Questions: React.FC = () => {
 
   const venueId = useVenueId();
 
+  // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
