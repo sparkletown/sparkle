@@ -19,7 +19,7 @@
       .video {
         .frame {
           border: 1px black;
-          border-radius: $border-radius--none;
+          border-radius: 0;
           box-shadow: none;
         }
       }
