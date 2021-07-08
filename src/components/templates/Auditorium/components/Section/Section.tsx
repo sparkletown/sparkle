@@ -26,8 +26,8 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const {
     iframeUrl,
-    rows: venueRowsCount,
-    columns: venueColumnsCount,
+    auditoriumRows: venueRowsCount,
+    auditoriumColumns: venueColumnsCount,
     id: venueId,
   } = venue;
 
