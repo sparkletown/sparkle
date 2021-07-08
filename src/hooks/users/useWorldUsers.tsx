@@ -9,7 +9,7 @@ import { isDefined } from "utils/types";
 
 import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 const noUsers: WithId<User>[] = [];
 
@@ -35,14 +35,14 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
 }) => {
   const {
     sovereignVenueId,
-    isSovereignVenueIdLoading,
+    isSovereignVenueLoading,
     errorMsg: sovereignVenueIdError,
-  } = useSovereignVenueId({
+  } = useSovereignVenue({
     venueId,
   });
 
   const shouldConnect =
-    !isSovereignVenueIdLoading &&
+    !isSovereignVenueLoading &&
     isDefined(sovereignVenueId) &&
     isDefined(venueId);
 
@@ -68,14 +68,14 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
   const worldUsersState: WorldUsersContextState = useMemo(
     () => ({
       venueId,
-      isSovereignVenueIdLoading,
+      isSovereignVenueIdLoading: isSovereignVenueLoading,
       sovereignVenueId,
       sovereignVenueIdError,
       shouldConnect,
     }),
     [
       venueId,
-      isSovereignVenueIdLoading,
+      isSovereignVenueLoading,
       sovereignVenueId,
       sovereignVenueIdError,
       shouldConnect,
