@@ -250,8 +250,7 @@ export const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
-      // considering there is prior !venue check, venue should exist at this point
+    if (!event || !userPurchaseHistoryRequestStatus) {
       return (
         <Suspense fallback={<></>}>
           <LoadingPage />
