@@ -109,3 +109,13 @@ export const getExtraLinkProps = (isExternal: boolean) =>
 
 export const getFullVenueInsideUrl = (venueId: string) =>
   new URL(venueInsideUrl(venueId), window.location.origin).href;
+
+export const removeTrailingSlash = (url: string) => {
+  const urlCharCount = url.length - 1;
+  const lastUrlChar = url[urlCharCount];
+  const hasTrailingSlash = lastUrlChar === "/";
+
+  if (!hasTrailingSlash) return url;
+
+  return url.substring(0, urlCharCount);
+};
