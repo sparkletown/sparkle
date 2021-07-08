@@ -18,7 +18,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "/v/register/";
+export const SPARKLE_HOMEPAGE_URL = "/in/register/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
 export const SPARKLE_PRIVACY_POLICY =
@@ -86,6 +86,7 @@ export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
+export const GITHUB_MAIN_STAGE_NAME = "Main Stage";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
@@ -530,8 +531,10 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
+// @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.jazzbar,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -599,6 +602,8 @@ export const DEFAULT_AVATARS = [
 
 export const REACTION_TIMEOUT = 5000; // time in ms
 export const SHOW_EMOJI_IN_REACTION_PAGE = true;
+export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 

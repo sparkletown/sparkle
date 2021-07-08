@@ -87,10 +87,15 @@
     "yup": "^0.29.2"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "craco start",
     "init": "node scripts/init.js",
-    "build": "react-scripts build",
+    "build": "craco build",
+    "build:bundle-stats": "craco build --stats",
     "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "analyze:bundle-stats": "npx webpack-bundle-analyzer build/bundle-stats.json -m static -r build/bundle-stats.html",
+    "analyze:bundle-stats:statoscope": "npx @statoscope/cli serve ./build/bundle-stats.json",
+    "analyze:bundle-stats:duplicates-1": "npx inspectpack --action duplicates --stats build/bundle-stats.json",
+    "analyze:bundle-stats:duplicates-2": "npx webpack-stats-duplicates ./build/bundle-stats.json",
     "lint": "npm run prettier:check && npm run eslint:check",
     "eslint:check": "eslint src scripts functions --ext .js,.jsx,.ts,.tsx",
     "eslint:fix": "eslint src scripts functions --fix --ext .js,.jsx,.ts,.tsx",
@@ -135,6 +140,7 @@
     }
   },
   "devDependencies": {
+    "@craco/craco": "^6.2.0",
     "@types/classnames": "^2.2.11",
     "@types/emoji-mart": "^3.0.4",
     "@types/howler": "^2.2.1",
@@ -149,6 +155,7 @@
     "@types/styled-components": "^5.1.4",
     "@types/twilio-video": "^2.7.2",
     "@types/yup": "^0.29.3",
+    "babel-plugin-lodash": "^3.3.4",
     "cypress": "^4.11.0",
     "cypress-file-upload": "^4.0.7",
     "eslint-plugin-promise": "^4.2.1",

@@ -15,6 +15,7 @@ import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
+import { useAudio } from "hooks/audio/useAudio";
 
 import "./UserReactions.scss";
 
@@ -94,6 +95,7 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   isMuted = false,
 }) => {
   const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  useAudio({ audioPath, isMuted });
 
   useEffect(() => {
     if (isMuted) return;
