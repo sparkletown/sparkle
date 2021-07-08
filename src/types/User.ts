@@ -65,6 +65,9 @@ export interface User {
   room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
+  realName?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
   // @debt these don't appear to be used by anything anymore
   // drinkOfChoice?: string;
   // favouriteRecord?: string;
