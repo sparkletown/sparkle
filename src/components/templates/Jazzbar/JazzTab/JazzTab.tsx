@@ -24,7 +24,7 @@ import Room from "../components/JazzBarRoom";
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
 import UserList from "components/molecules/UserList";
 
 import { useDispatch } from "hooks/useDispatch";

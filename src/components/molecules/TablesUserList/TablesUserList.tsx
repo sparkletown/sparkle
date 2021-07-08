@@ -236,8 +236,3 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     </>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default TablesUserList;
