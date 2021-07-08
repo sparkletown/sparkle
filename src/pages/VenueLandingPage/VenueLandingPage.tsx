@@ -174,11 +174,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 alt="host"
               />
             </div>
+
             <div className="title">{venue.name}</div>
+
             <div className="subtitle">
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
+
           {isPasswordRequired && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
@@ -186,6 +189,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               />
             </div>
           )}
+
           {!isPasswordRequired &&
             (!futureOrOngoingVenueEvents ||
               futureOrOngoingVenueEvents.length === 0) && (
@@ -203,6 +207,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               </button>
             )}
         </div>
+
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
             <div>
@@ -211,6 +216,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               >
                 {venue.config?.landingPageConfig.description}
               </div>
+
               <div>
                 {venue.config?.landingPageConfig.checkList &&
                   venue.config?.landingPageConfig.checkList.map(
@@ -228,6 +234,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   )}
               </div>
             </div>
+
             {venue.config?.landingPageConfig.iframeUrl && (
               <iframe
                 title="entrance video"
@@ -239,6 +246,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 allow={IFRAME_ALLOW}
               />
             )}
+
             {venue.config?.landingPageConfig.quotations &&
               venue.config?.landingPageConfig.quotations.map(
                 (quotation, index) => (
@@ -248,6 +256,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   </div>
                 )
               )}
+
             {venue.config?.landingPageConfig.presentation &&
               venue.config?.landingPageConfig.presentation.map(
                 (paragraph: string, index: number) => (
@@ -260,6 +269,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 )
               )}
           </div>
+
           <div className="col-lg-6 col-12 oncoming-events">
             {venueId &&
               futureOrOngoingVenueEvents &&
@@ -270,12 +280,15 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                     const startingDate = new Date(
                       venueEvent.start_utc_seconds * 1000
                     );
+
                     const endingDate = new Date(
                       (venueEvent.start_utc_seconds +
                         60 * venueEvent.duration_minutes) *
                         1000
                     );
+
                     const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+
                     const hasUserBoughtTicket =
                       user &&
                       (hasUserBoughtTicketForEvent(
@@ -283,6 +296,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                         venueEvent.id
                       ) ||
                         isUserAMember(user.email, venue.config?.memberEmails));
+
                     return (
                       <InformationCard
                         title={venueEvent.name}
@@ -296,6 +310,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                             "dddd MMMM Do"
                           )}`}
                         </div>
+
                         <div className="event-description">
                           <RenderMarkdown text={venueEvent.description} />
 
@@ -308,6 +323,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                             )
                           )}
                         </div>
+
                         <div className="button-container">
                           {hasUserBoughtTicket ? (
                             <div>
@@ -367,6 +383,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           </div>
         </div>
       </div>
+
       {user && selectedEvent && (
         <PaymentModal
           selectedEvent={selectedEvent}
@@ -376,6 +393,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           eventPaidSuccessfully={eventPaidSuccessfully}
         />
       )}
+
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}
