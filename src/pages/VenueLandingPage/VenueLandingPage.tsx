@@ -73,9 +73,11 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const redirectUrl = venue?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
-  if (redirectUrl && redirectUrl !== hostname) {
-    window.location.hostname = redirectUrl;
-  }
+  useEffect(() => {
+    if (redirectUrl && redirectUrl !== hostname) {
+      window.location.hostname = redirectUrl;
+    }
+  }, [hostname, redirectUrl]);
 
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
