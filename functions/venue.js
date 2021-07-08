@@ -2,7 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
-const { assertValidVenueId, checkAuth } = require("./src/utils/assert");
+const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 
 const PLAYA_VENUE_ID = "jamonline";
@@ -541,41 +541,6 @@ exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
         .update(updated);
     }
   }
-});
-
-exports.getVenue = functions.https.onCall(async (data) => {
-  const { venueId } = data;
-
-  assertValidVenueId(venueId, "venueId");
-
-  // Note: we're explicitly not calling checkAuth(context) here as this function needs to work even before the user is logged in.
-
-  const venueDocumentSnapshot = await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get();
-
-  if (!venueDocumentSnapshot || !venueDocumentSnapshot.exists) {
-    throw new HttpsError("not-found", `Venue ${venueId} not found`);
-  }
-
-  const eventsQuerySnapshot = await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .collection("events")
-    .orderBy("start_utc_seconds")
-    .get();
-
-  return {
-    venue: Object.assign(venueDocumentSnapshot.data(), {
-      id: venueDocumentSnapshot.id,
-    }),
-    events: eventsQuerySnapshot.docs.map((doc) =>
-      Object.assign(doc.data(), { id: doc.id })
-    ),
-  };
 });
 
 // @debt this is almost a line for line duplicate of exports.updateVenue_v2, we should de-duplicate/DRY these up

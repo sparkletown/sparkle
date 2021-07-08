@@ -1,11 +1,10 @@
-import firebase from "firebase/app";
 import React, { useEffect, Suspense } from "react";
 import { Redirect, useHistory } from "react-router-dom";
-import { useTitle, useAsync } from "react-use";
+import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
-import { VenueTemplate, AnyVenue, VenueEvent } from "types/venues";
+import { VenueTemplate } from "types/venues";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
 import { isUserAMember } from "utils/isUserAMember";
@@ -28,8 +27,6 @@ import { showZendeskWidget } from "utils/zendesk";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
-import { tracePromise } from "utils/performance";
-import { withVenueId, WithId } from "utils/id";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
@@ -65,52 +62,8 @@ const hasPaidEvents = (template: VenueTemplate) => {
   return template === VenueTemplate.jazzbar;
 };
 
-const usePreloaded = (venueId?: string) => {
-  const { loading, error, value } = useAsync(async () => {
-    if (!venueId) return;
-
-    return tracePromise(
-      "usePreloadedVenue::getVenue",
-      () =>
-        firebase
-          .functions()
-          .httpsCallable("venue-getVenue")({ venueId })
-          .then((result) => {
-            const data: {
-              venue?: WithId<AnyVenue>;
-              events?: WithId<VenueEvent>[];
-            } = result.data;
-            return {
-              venue: data?.venue,
-              events: isDefined(data?.events)
-                ? data.events.map((event) => withVenueId(event, venueId))
-                : undefined,
-            };
-          }),
-      {
-        attributes: { venueId },
-        withDebugLog: true,
-      }
-    );
-  }, [venueId]);
-
-  return {
-    venue: value?.venue,
-    events: value?.events,
-    error,
-    isLoaded: !loading && !error,
-  };
-};
-
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const {
-    venue: preVenue,
-    events: preEvents,
-    error: preError,
-    isLoaded: preLoaded,
-  } = usePreloaded(venueId);
-
   const mixpanel = useMixpanel();
 
   const history = useHistory();
@@ -120,22 +73,8 @@ export const VenuePage: React.FC = () => {
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
-  const postVenue = useSelector(currentVenueSelector);
-  const postVenueLoaded = useSelector(isCurrentVenueRequestedSelector);
-
-  useConnectCurrentEvent();
-  const postEvents = useSelector(currentEventSelector);
-  const postEventsLoaded = useSelector(isCurrentEventRequestedSelector);
-
-  if (preError) {
-    console.warn("VenuePage()", "preload failed:", preError.message);
-  }
-
-  const venue = (preError ? undefined : preVenue) ?? postVenue;
-  const isVenueLoaded = (preError ? undefined : preLoaded) ?? postVenueLoaded;
-
-  const events = (preError ? undefined : preEvents) ?? postEvents;
-  const isEventLoaded = (preError ? undefined : preLoaded) ?? postEventsLoaded;
+  const venue = useSelector(currentVenueSelector);
+  const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
   usePreloadAssets(
     [
@@ -145,6 +84,10 @@ export const VenuePage: React.FC = () => {
       .filter(isDefined)
       .map((url) => ({ url }))
   );
+
+  useConnectCurrentEvent();
+  const currentEvent = useSelector(currentEventSelector);
+  const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
 
   useConnectUserPurchaseHistory();
   const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
@@ -157,7 +100,7 @@ export const VenuePage: React.FC = () => {
   const venueName = venue?.name ?? "";
   const venueTemplate = venue?.template;
 
-  const event = events?.[0];
+  const event = currentEvent?.[0];
 
   useEffect(() => {
     if (!venue) return;
@@ -242,7 +185,7 @@ export const VenuePage: React.FC = () => {
 
   // useVenueAccess(venue, handleAccessDenied);
 
-  if (isVenueLoaded && !venue) {
+  if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
@@ -286,7 +229,7 @@ export const VenuePage: React.FC = () => {
     venue.hasPaidEvents &&
     !isUserVenueOwner
   ) {
-    if (isEventLoaded && !event) {
+    if (eventRequestStatus && !event) {
       return <>This event does not exist</>;
     }
 
