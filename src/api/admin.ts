@@ -11,7 +11,7 @@ import {
   Venue_v2_EntranceConfig,
 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
-import { UsernameVisibility } from "types/User";
+import { TalkShowStudioExperience, UsernameVisibility } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
