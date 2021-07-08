@@ -1,19 +1,21 @@
 import React, { useEffect } from "react";
+import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 
 import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
-import { AnyVenue } from "types/venues";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { updateUserProfile } from "./helpers";
 
@@ -25,16 +27,20 @@ export interface QuestionsFormData {
   likeAboutParties: string;
 }
 
-interface PropsType {
+export interface QuestionsProps {
   location: RouterLocation;
 }
 
-const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
+const Questions: React.FC<QuestionsProps> = ({ location }) => {
+  const venueId = useVenueId();
+
+  // @debt replace this with useConnectCurrentVenueNG or similar?
   useConnectCurrentVenue();
+  const venue = useSelector(currentVenueSelectorData);
 
   const history = useHistory();
   const { user } = useUser();
-  const venue = useSelector(currentVenueSelectorData) as AnyVenue;
+
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
   });
@@ -56,8 +62,16 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     updateTheme(venue);
   }, [venue]);
 
+  if (!venueId) {
+    return <>Error: Missing required venueId param</>;
+  }
+
+  if (isLoaded(venue) && !venue) {
+    return <>Error: venue not found for venueId={venueId}</>;
+  }
+
   if (!venue) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   // Skip this screen if there are no profile questions for the venue
@@ -65,7 +79,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
     proceed();
   }
 
-  const numberOfQuestions = venue?.profile_questions?.length;
+  const numberOfQuestions = venue.profile_questions.length;
   const oneQuestionOnly = numberOfQuestions === 1;
   const headerMessage = oneQuestionOnly
     ? "Now complete your profile by answering this question"
@@ -73,12 +87,14 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
 
   return (
     <div className="page-container">
-      <div className="hero-logo sparkle"></div>
+      <div className="hero-logo sparkle" />
       <div className="login-container">
         <h2 className="header-message">{headerMessage}</h2>
+
         <p className="subheader-message">
           This will help your fellow partygoers break the ice
         </p>
+
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions &&
             venue.profile_questions.map((question: QuestionType) => (
@@ -91,6 +107,7 @@ const Questions: React.FunctionComponent<PropsType> = ({ location }) => {
                 />
               </div>
             ))}
+
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
