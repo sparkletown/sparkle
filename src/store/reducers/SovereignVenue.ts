@@ -23,8 +23,6 @@ export const sovereignVenueReducer = (
 ): SovereignVenueState => {
   switch (action.type) {
     case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE:
-      console.log("reducer", action.payload.sovereignVenue);
-
       return {
         ...state,
         sovereignVenue: action.payload.sovereignVenue,

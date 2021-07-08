@@ -42,8 +42,6 @@ export const useSovereignVenue: ReactHook<
     isLoading: isSovereignVenueLoading,
   } = useSelector(sovereignVenueSelector, isEqual);
 
-  console.log("hook", sovereignVenue);
-
   useEffect(() => {
     // NOTE: Force to fetch it only once
     if (!venueId || sovereignVenue || isSovereignVenueLoading || errorMsg)

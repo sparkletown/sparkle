@@ -171,8 +171,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          console.log(sovereignVenueId);
-
           if (sovereignVenueId)
             await updateVenue(
               {
@@ -184,14 +182,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               },
               user
             ).then(() => {
-              console.log(sovereignVenue);
-
               if (sovereignVenue) {
-                console.log(
-                  "updating redux sov venue",
-                  showUserStatuses,
-                  userStatuses
-                );
                 dispatch(
                   setSovereignVenue({
                     ...sovereignVenue,
@@ -948,8 +939,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
   useEffect(() => {
     if (!sovereignVenue) return;
-
-    console.log("sov", sovereignVenue);
 
     const venueUserStatuses = sovereignVenue?.userStatuses ?? [];
     const venueShowUserStatus =
