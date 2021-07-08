@@ -35,7 +35,7 @@ export const Questions: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
 
-  const { user } = useUser();
+  const { user, userWithId } = useUser();
 
   const venueId = useVenueId();
 
@@ -46,6 +46,10 @@ export const Questions: React.FC = () => {
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({
     mode: "onChange",
+    // @ts-ignore @debt Figure a way to type this properly
+    defaultValues: {
+      ...userWithId,
+    },
   });
 
   const proceed = useCallback(() => {

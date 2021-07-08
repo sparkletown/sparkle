@@ -70,7 +70,7 @@ export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
   const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
-  const { user } = useUser();
+  const { user, userWithId } = useUser();
 
   const venueId = useVenueId();
 
@@ -87,6 +87,10 @@ export const CodeOfConduct: React.FC = () => {
     watch,
   } = useForm<CodeOfConductFormData>({
     mode: "onChange",
+    // @ts-ignore @debt Figure a way to type this properly
+    defaultValues: {
+      ...userWithId,
+    },
   });
 
   const proceed = useCallback(() => {

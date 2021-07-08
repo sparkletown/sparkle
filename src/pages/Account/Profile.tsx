@@ -26,7 +26,7 @@ export interface ProfileFormData {
 
 export const Profile: React.FC = () => {
   const history = useHistory();
-  const { user } = useUser();
+  const { user, userWithId } = useUser();
 
   const venueId = useVenueId() ?? DEFAULT_VENUE;
 
@@ -42,6 +42,10 @@ export const Profile: React.FC = () => {
     watch,
   } = useForm<ProfileFormData>({
     mode: "onChange",
+    defaultValues: {
+      partyName: userWithId?.partyName,
+      pictureUrl: userWithId?.pictureUrl,
+    },
   });
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
