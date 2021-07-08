@@ -2,7 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import "firebase/storage";
-import { useSearchParam } from "react-use";
+import { useAsyncFn, useSearchParam } from "react-use";
 
 import { IS_BURN } from "secrets";
 
@@ -11,6 +11,7 @@ import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
 
+import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import { updateUserProfile } from "./helpers";
@@ -42,23 +43,25 @@ export const Profile: React.FC = () => {
     mode: "onChange",
   });
 
-  // @debt replace this with useAsyncFn ?
-  const onSubmit = async (data: ProfileFormData) => {
-    if (!user) return;
+  const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
+    async (data: ProfileFormData) => {
+      if (!user) return;
 
-    await updateUserProfile(user.uid, data);
+      await updateUserProfile(user.uid, data);
 
-    const accountQuestionsUrl = new URL("/account/questions");
-    accountQuestionsUrl.searchParams.set("venueId", venueId);
-    if (returnUrl) {
-      accountQuestionsUrl.searchParams.set("returnUrl", returnUrl);
-    }
+      const accountQuestionsUrlParams = new URLSearchParams();
+      accountQuestionsUrlParams.set("venueId", venueId);
+      returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
 
-    // @debt Should we throw an error here rather than defaulting to empty string?
-    const nextUrl = venueId ? accountQuestionsUrl : returnUrl ?? "";
+      // @debt Should we throw an error here rather than defaulting to empty string?
+      const nextUrl = venueId
+        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+        : returnUrl ?? "";
 
-    history.push(IS_BURN ? `/enter/step3` : nextUrl);
-  };
+      history.push(IS_BURN ? `/enter/step3` : nextUrl);
+    },
+    [history, returnUrl, user, venueId]
+  );
 
   const pictureUrl = watch("pictureUrl");
 
@@ -107,12 +110,19 @@ export const Profile: React.FC = () => {
             )}
           </div>
 
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Create my profile"
-            disabled={!formState.isValid}
-          />
+          <div className="input-group">
+            <button
+              type="submit"
+              className="btn btn-primary btn-block btn-centered"
+              disabled={!formState.isValid || isUpdating}
+            >
+              Create my profile
+            </button>
+            {isUpdating && <Loading />}
+            {httpError && (
+              <span className="input-error">{httpError.message}</span>
+            )}
+          </div>
         </form>
       </div>
     </div>
