@@ -1,16 +1,23 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { currentVenueSelectorData } from "utils/selectors";
-import { updateUserProfile } from "./helpers";
-import "./Account.scss";
+import { useForm } from "react-hook-form";
+
 import { QuestionType } from "types/Question";
 import { RouterLocation } from "types/RouterLocation";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { updateTheme } from "pages/VenuePage/helpers";
 import { AnyVenue } from "types/venues";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+
 import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import { updateUserProfile } from "./helpers";
+
+import "./Account.scss";
 
 export interface QuestionsFormData {
   islandCompanion: string;
