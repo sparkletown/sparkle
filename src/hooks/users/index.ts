@@ -1,4 +1,4 @@
-export { useWorldUsers } from "./useWorldUsers";
+export { useWorldUsers, WorldUsersProvider } from "./useWorldUsers";
 export { useWorldUserLocation } from "./useWorldUserLocation";
 export {
   useWorldUsersById,
