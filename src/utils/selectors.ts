@@ -168,7 +168,7 @@ export const screeningRoomVideosSelector: SparkleSelector<
  * @see SovereignVenueState
  * @see RootState
  */
-export const sovereignVenueIdSelector: SparkleSelector<SovereignVenueState> = (
+export const sovereignVenueSelector: SparkleSelector<SovereignVenueState> = (
   state
 ) => state.sovereignVenue;
 
