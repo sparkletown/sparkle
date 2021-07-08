@@ -3,8 +3,12 @@ import {
   SovereignVenueActionTypes,
 } from "store/actions/SovereignVenue";
 
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 export type SovereignVenueState = {
-  id?: string;
+  sovereignVenue?: WithId<AnyVenue>;
   errorMsg?: string;
   isLoading: boolean;
 };
@@ -18,10 +22,12 @@ export const sovereignVenueReducer = (
   action: SovereignVenueActions
 ): SovereignVenueState => {
   switch (action.type) {
-    case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ID:
+    case SovereignVenueActionTypes.SET_SOVEREIGN_VENUE:
+      console.log("reducer", action.payload.sovereignVenue);
+
       return {
         ...state,
-        id: action.payload.sovereignVenueId,
+        sovereignVenue: action.payload.sovereignVenue,
         isLoading: false,
         errorMsg: undefined,
       };
@@ -32,7 +38,7 @@ export const sovereignVenueReducer = (
         ...state,
         errorMsg: action.payload.errorMsg,
         isLoading: false,
-        id: undefined,
+        sovereignVenue: undefined,
       };
     default:
       return state;

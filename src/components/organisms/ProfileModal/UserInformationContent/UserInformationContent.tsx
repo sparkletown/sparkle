@@ -17,6 +17,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -24,7 +25,6 @@ import { Badges } from "components/organisms/Badges";
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { Button } from "components/atoms/Button";
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { useConnectSovereignVenue } from "hooks/useConnectSovereignVenue";
 
 import editIcon from "assets/icons/profile-edit-icon.svg";
 
@@ -50,7 +50,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
-  const { sovereignVenue } = useConnectSovereignVenue(venueId);
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const history = useHistory();
   const firebase = useFirebase();

@@ -19,6 +19,8 @@ import {
   VenueInput,
 } from "api/admin";
 
+import { setSovereignVenue } from "store/actions/SovereignVenue";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -41,7 +43,7 @@ import {
 
 import { IS_BURN } from "secrets";
 
-import { VenuePlacementState, VenueTemplate } from "types/venues";
+import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
 
@@ -49,10 +51,10 @@ import { createJazzbar } from "utils/venue";
 import { venueLandingUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useShowHide } from "hooks/useShowHide";
 import { useQuery } from "hooks/useQuery";
+import { useDispatch } from "hooks/useDispatch";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -99,7 +101,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
-  const { sovereignVenueId } = useSovereignVenueId({ venueId });
+
+  const dispatch = useDispatch();
+  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
 
   const {
     watch,
@@ -155,10 +159,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     ) => {
       if (!user || formError) return;
       try {
-        console.log("1");
         // unfortunately the typing is off for react-hook-forms.
         if (!!venueId) {
-          console.log("2");
           await updateVenue(
             {
               ...(vals as VenueInput),
@@ -169,16 +171,36 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
+          console.log(sovereignVenueId);
+
           if (sovereignVenueId)
             await updateVenue(
               {
                 ...(vals as VenueInput),
                 id: sovereignVenueId,
+                parentId: sovereignVenue?.parentId,
                 userStatuses,
                 showUserStatus: showUserStatuses,
               },
               user
-            );
+            ).then(() => {
+              console.log(sovereignVenue);
+
+              if (sovereignVenue) {
+                console.log(
+                  "updating redux sov venue",
+                  showUserStatuses,
+                  userStatuses
+                );
+                dispatch(
+                  setSovereignVenue({
+                    ...sovereignVenue,
+                    userStatuses,
+                    showUserStatus: showUserStatuses,
+                  })
+                );
+              }
+            });
         } else
           await createVenue(
             {
@@ -202,7 +224,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, formError, venueId, history, sovereignVenueId]
+    [
+      user,
+      formError,
+      venueId,
+      history,
+      sovereignVenueId,
+      sovereignVenue,
+      dispatch,
+    ]
   );
 
   const mapIconUrl = useMemo(() => {
@@ -262,6 +292,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               state={state}
               previous={previous}
               values={values}
+              sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
               watch={watch}
@@ -338,6 +369,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
 interface DetailsFormLeftProps {
   venueId?: string;
+  sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   values: FormValues;
@@ -361,6 +393,7 @@ interface DetailsFormLeftProps {
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   venueId,
+  sovereignVenue,
   editing,
   state,
   values,
@@ -717,6 +750,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowShoutouts = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show shoutouts</h4>
+      <label id="showShoutouts" className="switch">
+        <input
+          type="checkbox"
+          id="showShoutouts"
+          name="showShoutouts"
+          ref={register}
+        />
+        <span className="slider round"></span>
+      </label>
+    </div>
+  );
+
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
@@ -888,11 +936,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const { sovereignVenueId } = useSovereignVenueId({ venueId });
-  console.log(sovereignVenueId);
-
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
 
   const {
@@ -904,19 +947,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
   useEffect(() => {
-    if (!venue) return;
-    const venueUserStatuses = venue?.userStatuses ?? [];
+    if (!sovereignVenue) return;
+
+    console.log("sov", sovereignVenue);
+
+    const venueUserStatuses = sovereignVenue?.userStatuses ?? [];
+    const venueShowUserStatus =
+      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES;
 
     setUserStatuses(venueUserStatuses);
 
-    if ("showUserStatus" in venue && venue.showUserStatus) {
+    if (venueShowUserStatus) {
       showUserStatuses();
-    }
-
-    if ("showUserStatus" in venue && !venue.showUserStatus) {
+    } else {
       hideUserStatuses();
     }
-  }, [hideUserStatuses, showUserStatuses, venue]);
+  }, [hideUserStatuses, showUserStatuses, sovereignVenue]);
 
   const removeUserStatus = (index: number) => {
     const statuses = [...userStatuses];
@@ -1045,6 +1091,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
+        {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          renderShowShoutouts()}
         {renderShowRangersToggle()}
         {renderRestrictDOBToggle()}
 

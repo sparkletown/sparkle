@@ -8,10 +8,10 @@ import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useConnectSovereignVenue } from "./useConnectSovereignVenue";
+import { useSovereignVenue } from "./useSovereignVenue";
 
 export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
-  const { sovereignVenue } = useConnectSovereignVenue(venueId);
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const venueStatuses = sovereignVenue?.userStatuses ?? [];
 
