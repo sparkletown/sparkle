@@ -1,4 +1,8 @@
-import { DEFAULT_AUDITORIUM_SECTION_CAPACITY } from "settings";
+import {
+  SECTION_DEFAULT_COLUMNS_COUNT,
+  SECTION_DEFAULT_ROWS_COUNT,
+  SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
+} from "settings";
 
 import { AuditoriumSection } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
@@ -31,13 +35,44 @@ export const chooseAuditoriumSize = (sectionsCount: number) => {
   return AuditoriumSize.EXTRALARGE;
 };
 
+export const getVideoSizeInSeats = (columnCount: number) => {
+  // Video takes 1/3 of the seats
+  const videoWidthInSeats = Math.max(
+    Math.floor(columnCount / 3),
+    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
+  );
+
+  // Keep the 16:9 ratio
+  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
+
+  return {
+    videoHeightInSeats,
+    videoWidthInSeats,
+  };
+};
+
 export const getSectionCapacity = (
   venue: AuditoriumVenue,
   section: AuditoriumSection
-) =>
-  section.capacity ??
-  venue.sectionCapacity ??
-  DEFAULT_AUDITORIUM_SECTION_CAPACITY;
+) => {
+  const baseColumnsCount =
+    section.columnsCount ??
+    venue.auditoriumColumns ??
+    SECTION_DEFAULT_COLUMNS_COUNT;
+
+  const baseRowsCount =
+    section.rowsCount ?? venue.auditoriumRows ?? SECTION_DEFAULT_ROWS_COUNT;
+
+  const { videoWidthInSeats, videoHeightInSeats } = getVideoSizeInSeats(
+    baseColumnsCount
+  );
+
+  const notValidSeats = videoHeightInSeats * videoWidthInSeats;
+
+  const generalSeatsCount = baseColumnsCount * baseRowsCount;
+
+  return generalSeatsCount - notValidSeats;
+};
 
 export interface GetSeatedUsersProps {
   auditoriumUsers: readonly WithId<User>[];

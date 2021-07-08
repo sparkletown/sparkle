@@ -1,9 +1,8 @@
 export interface AuditoriumSection {
   rowsCount?: number;
   columnsCount?: number;
-  capacity?: number;
   isVip?: boolean;
-};
+}
 
 export enum AuditoriumSize {
   EXTRASMALL = "extra-small",

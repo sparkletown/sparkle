@@ -5,7 +5,6 @@ import { setGridData } from "api/profile";
 import {
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
-  SECTION_VIDEO_MIN_WIDTH_IN_SEATS,
 } from "settings";
 
 import { GridPosition } from "types/grid";
@@ -13,6 +12,7 @@ import { GridPosition } from "types/grid";
 import {
   convertToCartesianCoordinate,
   getAuditoriumSeatedUsers,
+  getVideoSizeInSeats,
 } from "utils/auditorium";
 import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
 
@@ -52,14 +52,9 @@ export const useAuditoriumSection = ({
   const baseColumnsCount =
     section?.columnsCount ?? venueColumnsCount ?? SECTION_DEFAULT_COLUMNS_COUNT;
 
-  // Video takes 1/3 of the seats
-  const videoWidthInSeats = Math.max(
-    Math.floor(baseColumnsCount / 3),
-    SECTION_VIDEO_MIN_WIDTH_IN_SEATS
+  const { videoHeightInSeats, videoWidthInSeats } = getVideoSizeInSeats(
+    baseColumnsCount
   );
-
-  // Keep the 16:9 ratio
-  const videoHeightInSeats = Math.ceil(videoWidthInSeats * (9 / 16));
 
   const seatedUsers = getAuditoriumSeatedUsers({
     auditoriumUsers: recentVenueUsers,
