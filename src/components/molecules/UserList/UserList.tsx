@@ -13,6 +13,7 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
+import { useMemo } from "react";
 
 const noop = () => {};
 
@@ -64,6 +65,22 @@ export const UserList: React.FC<UserListProps> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
+  const renderedUserAvatars = useMemo(
+    () =>
+      usersToDisplay.map((user) => (
+        <div key={user.id} className={cellClasses}>
+          <UserAvatar
+            user={user}
+            containerClassName="UserList__avatar"
+            onClick={
+              hasClickableAvatars ? () => openUserProfileModal(user) : noop
+            }
+          />
+        </div>
+      )),
+    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
+  );
+
   if (!showEvenWhenNoUsers && userCount < 1) return null;
 
   return (
@@ -79,17 +96,7 @@ export const UserList: React.FC<UserListProps> = ({
       </div>
 
       <div className="UserList__avatars">
-        {usersToDisplay.map((user) => (
-          <div key={user.id} className={cellClasses}>
-            <UserAvatar
-              user={user}
-              containerClassName="UserList__avatar"
-              onClick={
-                hasClickableAvatars ? () => openUserProfileModal(user) : noop
-              }
-            />
-          </div>
-        ))}
+        {renderedUserAvatars}
         {hasExcessiveUserCount && (
           <div className={cellClasses}>
             <FontAwesomeIcon
