@@ -2,21 +2,18 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import "firebase/storage";
+import { useSearchParam } from "react-use";
 
 import { IS_BURN } from "secrets";
 
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
-import { RouterLocation } from "types/RouterLocation";
-
-import getQueryParameters from "utils/getQueryParameters";
-
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
 
-import { updateUserProfile } from "./helpers";
-
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+
+import { updateUserProfile } from "./helpers";
 
 import "./Account.scss";
 
@@ -25,19 +22,14 @@ export interface ProfileFormData {
   pictureUrl: string;
 }
 
-interface PropsType {
-  location?: RouterLocation;
-}
-
-const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
+export const Profile: React.FC = () => {
   const history = useHistory();
   const { user } = useUser();
-  const venueName = useVenueId();
-  const venueId =
-    venueName ??
-    getQueryParameters(window.location.search)?.venueId?.toString() ??
-    DEFAULT_VENUE;
-  const { returnUrl } = getQueryParameters(window.location.search);
+
+  const venueId = useVenueId() ?? DEFAULT_VENUE;
+
+  const returnUrl: string | undefined =
+    useSearchParam("returnUrl") ?? undefined;
 
   const {
     register,
@@ -50,13 +42,21 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     mode: "onChange",
   });
 
+  // @debt replace this with useAsyncFn ?
   const onSubmit = async (data: ProfileFormData) => {
     if (!user) return;
+
     await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
-      returnUrl ? "&returnUrl=" + returnUrl : ""
-    }`;
-    const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
+
+    const accountQuestionsUrl = new URL("/account/questions");
+    accountQuestionsUrl.searchParams.set("venueId", venueId);
+    if (returnUrl) {
+      accountQuestionsUrl.searchParams.set("returnUrl", returnUrl);
+    }
+
+    // @debt Should we throw an error here rather than defaulting to empty string?
+    const nextUrl = venueId ? accountQuestionsUrl : returnUrl ?? "";
+
     history.push(IS_BURN ? `/enter/step3` : nextUrl);
   };
 
@@ -68,11 +68,14 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>
+
         <div className="login-welcome-subtitle">
           {`Don't fret, you'll be able to edit it at any time later`}
         </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
+            {/* @debt refactor this to use InputField */}
             <input
               name="partyName"
               className="input-block input-centered"
@@ -96,17 +99,14 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
                 less
               </span>
             )}
+
             {user && (
               <ProfilePictureInput
-                venueId={venueId}
-                setValue={setValue}
-                user={user}
-                errors={errors}
-                pictureUrl={pictureUrl}
-                register={register}
+                {...{ venueId, setValue, user, errors, pictureUrl, register }}
               />
             )}
           </div>
+
           <input
             className="btn btn-primary btn-block btn-centered"
             type="submit"
@@ -118,5 +118,3 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     </div>
   );
 };
-
-export default Profile;
