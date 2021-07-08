@@ -24,12 +24,7 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const {
-    iframeUrl,
-    auditoriumRows: venueRowsCount,
-    auditoriumColumns: venueColumnsCount,
-    id: venueId,
-  } = venue;
+  const { iframeUrl, id: venueId } = venue;
 
   const { sectionId } = useParams<{ sectionId?: string }>();
   const { push: openUrlUsingRouter } = useHistory();
@@ -48,10 +43,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     leaveSeat,
     checkIfSeat,
   } = useAuditoriumSection({
-    venueId,
+    venue,
     sectionId,
-    venueRowsCount,
-    venueColumnsCount,
   });
 
   // Ensure the user leaves their seat when they leave the section

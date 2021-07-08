@@ -57,7 +57,7 @@ interface JazzProps {
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
@@ -70,11 +70,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
 
-  useExperiences(venue?.name);
+  useExperiences(venue.name);
 
   const { userWithId } = useUser();
 
-  const jazzbarTables = venue?.config?.tables ?? JAZZBAR_TABLES;
+  const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -140,7 +140,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   // };
 
   const shouldShowReactions =
-    (seatedAtTable && venueToUse?.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
 
   // @debt will be needed if shoutouts are restored
   // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
@@ -166,14 +166,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       {!seatedAtTable && parentVenue && (
         <BackButton
           onClick={backToParentVenue}
-          locationName={parentVenue?.name}
+          locationName={parentVenue.name}
         />
       )}
 
       {!seatedAtTable && (
         <UserList
           users={recentVenueUsers}
-          activity={venue?.activity ?? "here"}
+          activity={venue.activity ?? "here"}
           limit={DEFAULT_USER_LIST_LIMIT}
           showMoreUsersToggler
         />
@@ -267,7 +267,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           seatedAtTable={seatedAtTable}
           venueName={venue.name}
           TableComponent={JazzBarTableComponent}
-          joinMessage={!venue?.hideVideo ?? true}
+          joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
         />
       </div>

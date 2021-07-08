@@ -8,6 +8,7 @@ import {
 } from "settings";
 
 import { GridPosition } from "types/grid";
+import { AuditoriumVenue } from "types/venues";
 
 import {
   convertToCartesianCoordinate,
@@ -15,6 +16,7 @@ import {
   getVideoSizeInSeats,
 } from "utils/auditorium";
 import { currentAuditoriumSectionsByIdSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
 import { useSelector } from "../useSelector";
 import { isLoaded } from "../useFirestoreConnect";
@@ -25,24 +27,27 @@ import { useGetUserByPosition } from "../useGetUserByPosition";
 import { useConnectAllAuditoriumSections } from "./useAllAuditoriumSections";
 
 export interface UseAuditoriumSectionProps {
-  venueRowsCount?: number;
-  venueColumnsCount?: number;
+  venue: WithId<AuditoriumVenue>;
   sectionId?: string;
-  venueId?: string;
 }
 
 export const useAuditoriumSection = ({
-  venueId,
+  venue,
   sectionId,
-  venueRowsCount,
-  venueColumnsCount,
 }: UseAuditoriumSectionProps) => {
+  const {
+    id: venueId,
+    name: venueName,
+    auditoriumColumns: venueColumnsCount,
+    auditoriumRows: venueRowsCount,
+  } = venue;
+
   useConnectAllAuditoriumSections(venueId);
 
   const { userWithId } = useUser();
   const userId = userWithId?.id;
 
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
 
   const sectionsById = useSelector(currentAuditoriumSectionsByIdSelector);
   const section = sectionId ? sectionsById?.[sectionId] : undefined;

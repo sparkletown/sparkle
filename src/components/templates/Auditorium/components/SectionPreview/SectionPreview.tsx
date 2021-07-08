@@ -28,7 +28,7 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
   venue,
   enterSection,
 }) => {
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const sectionCapacity = getSectionCapacity(venue, section);
 
