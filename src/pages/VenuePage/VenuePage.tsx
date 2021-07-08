@@ -203,12 +203,8 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!venue || !venueId) {
-    // if !venueID is true loading page might display indefinitely, another message or action may be appropriate
-    return (
-      <Suspense fallback={<></>}>
-        <LoadingPage />
-      </Suspense>
-    );
+    // if !venueId is true loading page might display indefinitely, another message or action may be appropriate
+    return <LoadingPage />;
   }
 
   if (!user) {
@@ -220,9 +216,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!profile) {
-    // is it really necessary to display loading page here?
-    // return <LoadingPage /> ;
-    return <></>;
+    return <LoadingPage />;
   }
 
   // if (isAccessDenied) {
