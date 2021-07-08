@@ -281,15 +281,6 @@ export const VenuePage: React.FC = () => {
     }
   }
 
-  // @debt there is already !user check above, this is superfluous
-  if (!user) {
-    return (
-      <Suspense fallback={<></>}>
-        <LoadingPage />
-      </Suspense>
-    );
-  }
-
   if (profile && !isCompleteProfile(profile)) {
     history.push(`/account/profile?venueId=${venueId}`);
   }
