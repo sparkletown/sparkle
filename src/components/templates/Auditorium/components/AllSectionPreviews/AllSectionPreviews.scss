@@ -1,0 +1,116 @@
+@import "scss/constants";
+
+$section-height: 140px;
+$section-min-width: 125px;
+
+$all-section-previews-bottom-spacing: 50px;
+
+.AllSectionPreviews {
+  overflow: auto;
+  height: 100%;
+  width: 100%;
+  padding: 0 $spacing--md $all-section-previews-bottom-spacing;
+
+  display: grid;
+  gap: $spacing--md;
+
+  grid-auto-rows: $section-height;
+  grid-auto-columns: minmax($section-min-width, 1fr);
+
+  &--extra-small {
+    grid-template-areas:
+      "empty-1 empty-1  main  main  main  main empty-2 empty-2"
+      "empty-1 empty-1  main  main  main  main empty-2 empty-2"
+      "empty-3    .      main  main  main  main   .    empty-4"
+      "empty-3    .      main  main  main  main   .    empty-4";
+  }
+
+  &--small {
+    grid-template-areas:
+      "empty-1  empty-1  main  main  main  main empty-2 empty-2"
+      "empty-3    .      main  main  main  main    .    empty-4"
+      "empty-3    .      main  main  main  main    .    empty-4"
+      "empty-3    .      main  main  main  main    .    empty-4";
+  }
+
+  &--medium {
+    grid-template-areas:
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2";
+  }
+
+  &--large {
+    grid-template-areas:
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .      main  main  main  main    .    empty-2"
+      "empty-1    .       .      .     .     .     .    empty-2";
+  }
+
+  &--extra-large {
+    grid-template-areas:
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .      main  main  main  main    .    ."
+      ".    .       .      .     .     .     .    .";
+  }
+
+  &__empty-block {
+    &--1 {
+      grid-area: empty-1;
+    }
+    &--2 {
+      grid-area: empty-2;
+    }
+    &--3 {
+      grid-area: empty-3;
+    }
+    &--4 {
+      grid-area: empty-4;
+    }
+  }
+
+  &__main {
+    grid-area: main;
+    display: flex;
+    flex-flow: column;
+  }
+
+  &__welcome-text {
+    font-weight: $font-weight--500;
+    font-size: $font-size--xl;
+    text-align: center;
+    margin: $spacing--xl;
+  }
+
+  &__description-text {
+    font-weight: $font-weight--500;
+    font-size: $font-size--md;
+    text-align: center;
+
+    color: opaque-white(0.53);
+  }
+
+  &__action-buttons {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__toggler {
+    justify-content: start;
+  }
+
+  &__iframe-overlay {
+    height: 70%;
+  }
+
+  &__iframe {
+    height: 100%;
+    width: 100%;
+  }
+}

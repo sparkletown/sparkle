@@ -19,14 +19,10 @@ const NavBar = lazy(() =>
 );
 
 export interface WithNavigationBarProps {
-  redirectionUrl?: string;
-  fullscreen?: boolean;
   hasBackButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
-  redirectionUrl,
-  fullscreen,
   hasBackButton,
   children,
 }) => {
@@ -43,16 +39,11 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        */}
       <RelatedVenuesProvider venueId={venueId}>
         <Suspense fallback={<Loading />}>
-          <NavBar
-            redirectionUrl={redirectionUrl}
-            hasBackButton={hasBackButton}
-          />
+          <NavBar hasBackButton={hasBackButton} />
         </Suspense>
       </RelatedVenuesProvider>
 
-      <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
-        {children}
-      </div>
+      <div className="navbar-margin">{children}</div>
 
       <Footer />
     </>
