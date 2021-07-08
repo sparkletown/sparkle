@@ -17,6 +17,7 @@ import { venueLandingUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -49,6 +50,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const history = useHistory();
   const firebase = useFirebase();
@@ -148,12 +150,11 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           >
             {email}
           </div>
-          <div className="UserInformationContent__status-container">
-            <span className="UserInformationContent__status-prefix">
-              Available
-            </span>
-            <UserStatusDropdown />
-          </div>
+          {sovereignVenue?.showUserStatus && (
+            <div className="UserInformationContent__status-container">
+              <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
+            </div>
+          )}
         </div>
         <Button
           customClass="UserInformationContent__edit"
