@@ -64,7 +64,7 @@ export const setGridData = async ({
         userId,
         gridData,
       });
-      
+
       throw err;
     });
 
