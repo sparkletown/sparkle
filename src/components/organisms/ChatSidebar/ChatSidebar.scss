@@ -46,6 +46,7 @@ $header-height: 45px;
     border-bottom: rgba(0, 0, 0, 0) thin solid;
     color: rgba(255, 255, 255, 0.6);
 
+    &:focus,
     &:hover {
       color: rgba(255, 255, 255, 0.7);
     }
@@ -54,6 +55,7 @@ $header-height: 45px;
       border-bottom: $white 2px solid;
       color: $white;
 
+      &:focus,
       &:hover {
         color: $white;
         border-bottom: $white 2px solid;

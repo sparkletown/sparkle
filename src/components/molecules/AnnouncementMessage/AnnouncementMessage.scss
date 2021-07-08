@@ -31,7 +31,8 @@ $message-margin: $spacing + $close-icon-width + 5px;
     position: absolute;
     top: $spacing;
     right: $spacing;
-    :hover {
+    &:focus,
+    &:hover {
       color: var(--primary-color);
       text-decoration: underline;
     }

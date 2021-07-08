@@ -772,3 +772,9 @@ span.link {
 .flex-one {
   flex: 1;
 }
+
+.no-outline-on-focus {
+  &:focus {
+    outline: none;
+  }
+}

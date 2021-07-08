@@ -35,25 +35,37 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
+  const recipientId =
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipientId
+      : undefined;
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
   });
 
-  const venueChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected": isVenueChat,
-  });
+  const venueChatTabStyles = classNames(
+    "chat-sidebar__tab",
+    "no-outline-on-focus",
+    {
+      "chat-sidebar__tab--selected": isVenueChat,
+    }
+  );
 
-  const privateChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected": isPrivateChat,
-  });
+  const privateChatTabStyles = classNames(
+    "chat-sidebar__tab",
+    "no-outline-on-focus",
+    {
+      "chat-sidebar__tab--selected": isPrivateChat,
+    }
+  );
 
   return (
     <div role="dialog" className={containerStyles}>
       <div className="chat-sidebar__header">
         <button
           aria-label={isExpanded ? "Hide chat" : "Show chat"}
-          className="chat-sidebar__controller"
+          className="chat-sidebar__controller no-outline-on-focus"
           onClick={toggleSidebar}
         >
           {isExpanded ? (
@@ -94,7 +106,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       <div role="tabpanel" className="chat-sidebar__tab-content">
         {isVenueChat && <VenueChat venue={venue} />}
         {isPrivateChat && (
-          <PrivateChats recipientId={chatSettings.recipientId} venue={venue} />
+          <PrivateChats recipientId={recipientId} venue={venue} />
         )}
       </div>
     </div>
