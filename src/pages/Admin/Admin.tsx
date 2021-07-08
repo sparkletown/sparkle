@@ -52,7 +52,7 @@ import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { WorldUsersProvider } from "hooks/users/useWorldUsers";
+import { WorldUsersProvider } from "hooks/users";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
