@@ -41,9 +41,11 @@ import {
 import PaymentModal from "components/organisms/PaymentModal";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
 import "./VenueLandingPage.scss";
@@ -118,7 +120,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   }
 
   if (!venue) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);
