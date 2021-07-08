@@ -6,7 +6,11 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW, DEFAULT_USER_LIST_LIMIT } from "settings";
+import {
+  IFRAME_ALLOW,
+  DEFAULT_USER_LIST_LIMIT,
+  DEFAULT_SHOW_REACTIONS,
+} from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -24,9 +28,9 @@ import Room from "../components/JazzBarRoom";
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
 import { BackButton } from "components/atoms/BackButton";
+import { TablesUserList } from "components/molecules/TablesUserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
@@ -46,13 +50,14 @@ interface JazzProps {
   venue: WithId<JazzbarVenue>;
 }
 
+// @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
 // NOTE: This functionality will probably be returned in the nearest future.
 // interface ChatOutDataType {
 //   messageToTheBand: string;
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
@@ -97,8 +102,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   // NOTE: This functionality will probably be returned in the nearest future.
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // useEffect(() => {
   //   if (isMessageToTheBandSent) {
   //     setTimeout(() => {
@@ -107,6 +114,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   }
   // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const {
   //   register: registerBandMessage,
   //   handleSubmit: handleBandMessageSubmit,
@@ -115,6 +123,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   mode: "onSubmit",
   // });
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const onBandMessageSubmit = async (data: ChatOutDataType) => {
   //   setIsMessageToTheBandSent(true);
   //   user &&
@@ -129,6 +138,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //     );
   //   reset();
   // };
+
+  const shouldShowReactions =
+    (seatedAtTable && venueToUse?.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+
+  // @debt will be needed if shoutouts are restored
+  // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
 
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
@@ -193,7 +208,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              {seatedAtTable && (
+
+              {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
+              {shouldShowReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -220,13 +237,17 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       />
                     </div>
                   </div>
+
+                  {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                  {/* <CallOutMessageForm
-                  onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                  ref={registerBandMessage({ required: true })}
-                  isMessageToTheBandSent={isMessageToTheBandSent}
-                  placeholder="Shout out..."
-                /> */}
+                  {/* {shouldShowShoutouts && (
+                    <CallOutMessageForm
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    ref={registerBandMessage({ required: true })}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out..."
+                    />
+                  )} */}
                 </div>
               )}
             </>

@@ -6,7 +6,7 @@ import { AuditoriumVenue } from "types/venues";
 import { getAuditoriumSeatedUsers, getSectionCapacity } from "utils/auditorium";
 import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
-import { removeTrailingSlash } from "utils/url";
+import { getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useSelector } from "../useSelector";
 import { useFirestoreConnect, isLoaded } from "../useFirestoreConnect";
@@ -48,7 +48,9 @@ export const useAllAuditoriumSections = (venue: WithId<AuditoriumVenue>) => {
   const enterSection = useCallback(
     (sectionId: string) => {
       history.push(
-        `${removeTrailingSlash(history.location.pathname)}/section/${sectionId}`
+        `${getUrlWithoutTrailingSlash(
+          history.location.pathname
+        )}/section/${sectionId}`
       );
     },
     [history]

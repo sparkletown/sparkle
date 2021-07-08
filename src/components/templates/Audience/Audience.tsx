@@ -145,7 +145,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const venueId = venue.id;
 
   const { userId, userWithId } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const baseColumns =
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
@@ -196,8 +196,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     [venueId, userWithId, dispatch]
   );
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   const [isShoutSent, setIsShoutSent] = useState(false);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   useEffect(() => {
     if (isShoutSent) {
       setTimeout(() => {
@@ -303,6 +305,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
 
   // @debt this return useMemo antipattern should be rewritten
   return useMemo(() => {
+    // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
     const onSubmit = async (data: ChatOutDataType) => {
       if (!venueId || !userWithId) return;
 
@@ -334,6 +337,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
       seated: userSeated,
     });
 
+    // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
     const renderReactionsContainer = () => (
       <>
         <div className="emoji-container">
@@ -362,25 +366,29 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
             Leave Seat
           </button>
         </div>
-        <div className="shout-container">
-          <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
-            <input
-              name="text"
-              className="text"
-              placeholder="Shout out to the crowd"
-              ref={register({ required: true })}
-              disabled={isShoutSent}
-              autoComplete="off"
-            />
-            <input
-              className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
-              type="submit"
-              id={`send-shout-out-${venue.name}`}
-              value={isShoutSent ? "Sent!" : "Send"}
-              disabled={isShoutSent}
-            />
-          </form>
-        </div>
+
+        {venue.showShoutouts && (
+          //  @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
+          <div className="shout-container">
+            <form onSubmit={handleSubmit(onSubmit)} className="shout-form">
+              <input
+                name="text"
+                className="text"
+                placeholder="Shout out to the crowd"
+                ref={register({ required: true })}
+                disabled={isShoutSent}
+                autoComplete="off"
+              />
+              <input
+                className={`shout-button ${isShoutSent ? "btn-success" : ""} `}
+                type="submit"
+                id={`send-shout-out-${venue.name}`}
+                value={isShoutSent ? "Sent!" : "Send"}
+                disabled={isShoutSent}
+              />
+            </form>
+          </div>
+        )}
       </>
     );
 

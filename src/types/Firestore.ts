@@ -6,7 +6,7 @@ import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { User } from "types/User";
+import { UserWithLocation } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -54,7 +54,8 @@ export interface FirestoreStatus {
 export interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
-  chatUsers?: Record<string, User>;
+  // @debt this doesn't appear to be used by anything anymore
+  // chatUsers?: Record<string, User>;
   currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
@@ -66,12 +67,13 @@ export interface FirestoreData {
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
-  userModalVisits?: Record<string, UserVisit>;
+  // @debt this doesn't appear to be used by anything anymore
+  // userModalVisits?: Record<string, UserVisit>;
   userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
-  worldUsers?: Record<string, User>;
+  worldUsers?: Record<string, UserWithLocation>;
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
@@ -97,9 +99,10 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  statsOnlineUsers?: WithId<User>[];
-  statsOpenVenues?: WithId<AnyVenue>[];
-  subvenues?: WithId<AnyVenue>[];
+  // @debt this doesn't appear to be used by anything anymore
+  // statsOnlineUsers?: WithId<User>[];
+  // statsOpenVenues?: WithId<AnyVenue>[];
+  // subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: WithId<UserVisit>[];
   userPurchaseHistory?: WithId<Purchase>[];
@@ -107,7 +110,7 @@ export interface FirestoreOrdered {
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueEvents?: WithId<VenueEvent>[];
-  worldUsers?: WithId<User>[];
+  worldUsers?: WithId<UserWithLocation>[];
 
   /**
    * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.

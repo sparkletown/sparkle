@@ -15,16 +15,17 @@ import Room from "components/organisms/Room";
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
 
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
+// @debt refactor this to pass in venue as a prop
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 

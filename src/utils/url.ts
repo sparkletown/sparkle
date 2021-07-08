@@ -110,12 +110,14 @@ export const getExtraLinkProps = (isExternal: boolean) =>
 export const getFullVenueInsideUrl = (venueId: string) =>
   new URL(venueInsideUrl(venueId), window.location.origin).href;
 
-export const removeTrailingSlash = (url: string) => {
-  const urlCharCount = url.length - 1;
-  const lastUrlChar = url[urlCharCount];
-  const hasTrailingSlash = lastUrlChar === "/";
+export const getUrlWithoutTrailingSlash = (url: string) => {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+};
 
-  if (!hasTrailingSlash) return url;
+export const getLastUrlParam = (url: string) => {
+  return url.split("/").slice(-1);
+};
 
-  return url.substring(0, urlCharCount);
+export const getUrlParamFromString = (data: string) => {
+  return data.replace(" ", "").toLowerCase();
 };
