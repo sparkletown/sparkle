@@ -41,20 +41,15 @@ import { useVenueId } from "hooks/useVenueId";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
-// import { CountDown } from "components/molecules/CountDown";
+import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
+
 import { updateTheme } from "./helpers";
 
-// import Login from "pages/Account/Login";
 import "./VenuePage.scss";
 
-const CountDown = React.lazy(() =>
-  import("components/molecules/CountDown").then((m) => ({
-    default: m.CountDown,
-  }))
-);
 const Login = lazy(() =>
   tracePromise("VenuePage::lazy-import::Login", () =>
     import("pages/Account/Login").then(({ Login }) => ({
@@ -257,14 +252,16 @@ export const VenuePage: React.FC = () => {
 
     if (isEventStartingSoon(event)) {
       return (
-        <Suspense fallback={<></>}>
-          <CountDown
-            startUtcSeconds={event.start_utc_seconds}
-            textBeforeCountdown="Bar opens in"
-          />
-        </Suspense>
+        <CountDown
+          startUtcSeconds={event.start_utc_seconds}
+          textBeforeCountdown="Bar opens in"
+        />
       );
     }
+  }
+
+  if (!user) {
+    return <LoadingPage />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
