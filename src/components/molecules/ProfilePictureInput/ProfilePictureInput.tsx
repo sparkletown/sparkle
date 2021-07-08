@@ -14,6 +14,8 @@ import { resizeFile } from "utils/image";
 
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 
+import { Loading } from "components/molecules/Loading";
+
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
@@ -154,7 +156,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
+        {isLoading ? <Loading /> : avatarImages}
       </div>
       <input
         name="pictureUrl"
