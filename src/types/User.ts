@@ -4,8 +4,22 @@ import * as Yup from "yup";
 
 import { WithId } from "utils/id";
 
-export interface Experience {
-  // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table?: string | null;
   row?: number | null;

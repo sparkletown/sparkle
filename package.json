@@ -23,6 +23,7 @@
     "@types/styled-components": "^5.1.4",
     "@types/ws": "^7.2.6",
     "@welldone-software/why-did-you-render": "^4.3.2",
+    "agora-rtc-sdk-ng": "^4.4.0",
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.5.0",
     "classnames": "^2.2.6",
