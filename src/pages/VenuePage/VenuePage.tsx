@@ -202,14 +202,8 @@ export const VenuePage: React.FC = () => {
     return <>This venue does not exist</>;
   }
 
-  if (!venueId) {
-    // this should be happening only if invalid url param
-    // no sense in displaying loading page, another message or action is needed
-    // @debt use/display proper message/action when !venueId
-    return null;
-  }
-
-  if (!venue) {
+  if (!venue || !venueId) {
+    // if !venueID is true loading page might display indefinitely, another message or action may be appropriate
     return (
       <Suspense fallback={<></>}>
         <LoadingPage />
