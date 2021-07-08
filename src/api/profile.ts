@@ -3,6 +3,7 @@ import firebase from "firebase/app";
 import { ProfileLink, UserStatus } from "types/User";
 
 import { VenueEvent } from "types/venues";
+import { AnyGridData } from "types/grid";
 
 import { WithVenueId } from "utils/id";
 
@@ -11,50 +12,64 @@ export const getUserRef = (userId: string) =>
 
 export interface MakeUpdateUserGridLocationProps {
   venueId: string;
-  userUid: string;
+  userId: string;
 }
 
+/** @deprecated use setGridData instead **/
 export const makeUpdateUserGridLocation = ({
   venueId,
-  userUid,
+  userId,
 }: MakeUpdateUserGridLocationProps) => (
   row: number | null,
   column: number | null
 ) => {
-  const doc = `users/${userUid}`;
+  if (row === null || column === null) {
+    return setGridData({
+      venueId,
+      userId,
+      gridData: undefined,
+    });
+  }
 
-  const newData = {
-    [`data.${venueId}`]: {
-      row,
-      column,
-    },
+  return setGridData({
+    venueId,
+    userId,
+    gridData: { row, column },
+  });
+};
+
+export interface SetGridDataProps {
+  venueId: string;
+  userId: string;
+
+  gridData?: AnyGridData;
+}
+
+export const setGridData = async ({
+  venueId,
+  userId,
+  gridData,
+}: SetGridDataProps): Promise<void> => {
+  const userProfileRef = getUserRef(userId);
+
+  const newGridData = {
+    [`data.${venueId}`]: gridData ?? firebase.firestore.FieldValue.delete(),
   };
 
-  const firestore = firebase.firestore();
-
-  // @debt refactor this to use a proper upsert pattern instead of error based try/catch logic
-  firestore
-    .doc(doc)
-    .update(newData)
-    .catch((err) => {
-      Bugsnag.notify(err, (event) => {
-        event.severity = "info";
-
-        event.addMetadata(
-          "notes",
-          "TODO",
-          "refactor this to use a proper upsert pattern (eg. check that the doc exists, then insert or update accordingly), rather than using try/catch"
-        );
-
-        event.addMetadata("api::profile::makeUpdateUserGridLocation", {
-          venueId,
-          userUid,
-          doc,
-        });
+  return userProfileRef.update(newGridData).catch((err) => {
+    Bugsnag.notify(err, (event) => {
+      event.addMetadata("context", {
+        location: "api/profile::setGridData",
+        venueId,
+        userId,
+        gridData,
       });
 
-      firestore.doc(doc).set(newData);
+      throw err;
     });
+
+    throw err;
+  });
 };
 
 export interface UpdateUserOnlineStatusProps {

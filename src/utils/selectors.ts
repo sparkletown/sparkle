@@ -3,6 +3,7 @@ import { mapValues } from "lodash";
 
 import { RootState } from "index";
 
+import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
@@ -199,10 +200,6 @@ export const messagesToTheBandSelector: SparkleSelector<
 export const venueSelector = (state: RootState) =>
   state.firestore.ordered.currentVenue?.[0];
 
-export const parentVenueSelector: SparkleSelector<AnyVenue | undefined> = (
-  state
-) => state.firestore.data.parentVenue;
-
 export const venueEventsSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = (state) => state.firestore.ordered.venueEvents;
@@ -236,6 +233,13 @@ export const sovereignVenueSelector: SparkleSelector<SovereignVenueState> = (
 export const chatVisibilitySelector: SparkleSelector<boolean> = (state) =>
   state.chat.isChatSidebarVisible;
 
+export const currentAuditoriumSectionsSelector: SparkleSelector<
+  WithId<AuditoriumSection>[] | undefined
+> = (state) => state.firestore.ordered.currentAuditoriumSections;
+
+export const currentAuditoriumSectionsByIdSelector: SparkleSelector<
+  Partial<Record<string, AuditoriumSection>> | undefined
+> = (state) => state.firestore.data.currentAuditoriumSections;
 export const userProfileSelector: SparkleSelector<WithId<User> | undefined> = (
   state
 ) => state.userProfile.userProfile;

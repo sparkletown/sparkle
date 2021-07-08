@@ -42,6 +42,8 @@ import {
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   DEFAULT_SHOW_SCHEDULE,
+  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  DEFAULT_AUDIENCE_ROWS_NUMBER,
 } from "settings";
 import "./Venue.scss";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
@@ -604,7 +606,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <h4 className="italic input-header">Number of seats columns</h4>
         <input
           disabled={disable}
-          defaultValue={25}
+          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
           min={5}
           name="auditoriumColumns"
           type="number"
@@ -622,7 +624,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <h4 className="italic input-header">Number of seats rows</h4>
         <input
           disabled={disable}
-          defaultValue={19}
+          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
           name="auditoriumRows"
           type="number"
           ref={register}

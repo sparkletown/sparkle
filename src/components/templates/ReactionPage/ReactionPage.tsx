@@ -11,7 +11,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useVenueChat } from "hooks/useVenueChat";
 import { useVenueId } from "hooks/useVenueId";
 
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import { ReactionList } from "./ReactionList";
 
@@ -60,7 +60,6 @@ export const ReactionPage: React.FC = () => {
           <UserList
             users={recentVenueUsers}
             isAudioEffectDisabled
-            imageSize={50}
             showEvenWhenNoUsers
           />
         </div>

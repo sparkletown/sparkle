@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
+
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -13,8 +15,8 @@ import Room from "components/organisms/Room";
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
+import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
 
 import { TABLES } from "./constants";
 
@@ -102,7 +104,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <UserList
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
-            disableSeeAll={false}
+            limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
           />
         </div>
       </div>

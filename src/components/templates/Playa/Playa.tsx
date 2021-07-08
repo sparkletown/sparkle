@@ -57,12 +57,12 @@ import { DustStorm } from "components/organisms/DustStorm/DustStorm";
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import AvatarLayer from "./AvatarLayer";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
-import VenuePreview from "./VenuePreview";
+// import VenuePreview from "./VenuePreview";
 import VideoChatLayer from "./VideoChatLayer";
 
 import "./Playa.scss";
@@ -868,9 +868,6 @@ const Playa = () => {
           <div className="playa-userlist">
             <UserList
               users={recentVenueUsers}
-              imageSize={50}
-              disableSeeAll={false}
-              isCamp={true}
               activity={venue?.activity ?? "partying"}
             />
           </div>
@@ -1031,22 +1028,12 @@ const Playa = () => {
         >
           <VideoChatLayer />
         </div>
-        <Modal show={showModal} onHide={hideVenue}>
-          {selectedVenue && user && (
-            <VenuePreview
-              user={user}
-              venue={selectedVenue}
-              allowHideVenue={isUserVenueOwner === true}
-            />
-          )}
-        </Modal>
+        <Modal show={showModal} onHide={hideVenue}></Modal>
       </>
     );
   }, [
     hideVenue,
-    selectedVenue,
     showModal,
-    user,
     bikeMode,
     toggleBikeMode,
     centeredOnMe,

@@ -599,6 +599,18 @@ export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+// Audience
+// Always have an odd number of rows and columns (because of the firelane delimiter).
+export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
+export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
+
+// These must both be odd, otherwise the video won't be centered properly
+export const SECTION_DEFAULT_ROWS_COUNT = 17;
+export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
+
+export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
+
+export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 

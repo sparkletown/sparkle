@@ -10,8 +10,9 @@ import {
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
+import { GridPosition } from "types/grid";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+import { setGridData } from "api/profile";
 
 import { hasElements } from "utils/types";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
@@ -23,8 +24,8 @@ import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
 import { useMapGrid } from "./hooks/useMapGrid";
-import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
+import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 
 import { MapRoom } from "./MapRoom";
 
@@ -85,15 +86,16 @@ export const Map: React.FC<MapProps> = ({
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
   const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
+    (gridPosition: GridPosition) => {
       if (!userUid) return;
 
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid,
-      })(row, column);
-
       setLocationData({ userId: userUid, locationName: venueName });
+
+      return setGridData({
+        venueId,
+        userId: userUid,
+        gridData: gridPosition,
+      });
     },
     [userUid, venueId, venueName]
   );
@@ -158,7 +160,7 @@ export const Map: React.FC<MapProps> = ({
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
-        takeSeat(row, column);
+        takeSeat({ row, column });
       } else {
         checkForRoomHit(row, column);
       }
@@ -166,10 +168,13 @@ export const Map: React.FC<MapProps> = ({
     [checkForRoomHit, takeSeat]
   );
 
-  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+  const getUserBySeat = useGetUserByPosition({
     venueId,
-    partygoers,
+    positionedUsers: partygoers,
   });
+
+  const isSeatTaken = (gridPosition: GridPosition) =>
+    getUserBySeat(gridPosition) !== undefined;
 
   useKeyboardControls({
     venueId,
@@ -184,7 +189,7 @@ export const Map: React.FC<MapProps> = ({
     userUid,
     columnsArray,
     rowsArray,
-    partygoersBySeat,
+    getUserBySeat,
     onSeatClick,
   });
 

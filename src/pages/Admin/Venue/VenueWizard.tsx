@@ -140,5 +140,5 @@ const VenueWizardCreate: React.FC = () => {
     return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
-  return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;
+  return <WithNavigationBar>{Page}</WithNavigationBar>;
 };
