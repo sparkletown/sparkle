@@ -11,8 +11,9 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
+import { DefaultUserStatus } from "types/User";
+
 import { FIVE_MINUTES_MS } from "utils/time";
-import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -597,6 +598,8 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
+export const DEFAULT_SHOW_USER_STATUSES = true;
+
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
 // Audience
@@ -625,7 +628,17 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
+export const ONLINE_USER_STATUS = {
+  status: DefaultUserStatus.online,
+  color: "#53E52A",
+};
+
+export const BUSY_USER_STATUS = {
+  status: DefaultUserStatus.busy,
+  color: "#F44336",
+};
+
+export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;

@@ -1,6 +1,6 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
-import { ProfileLink, UserStatus } from "types/User";
+import { ProfileLink } from "types/User";
 
 import { VenueEvent } from "types/venues";
 import { AnyGridData } from "types/grid";
@@ -73,7 +73,7 @@ export const setGridData = async ({
 };
 
 export interface UpdateUserOnlineStatusProps {
-  status?: UserStatus;
+  status?: string;
   userId: string;
 }
 
