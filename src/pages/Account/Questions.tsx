@@ -31,7 +31,7 @@ export interface QuestionsProps {
   location: RouterLocation;
 }
 
-const Questions: React.FC<QuestionsProps> = ({ location }) => {
+export const Questions: React.FC<QuestionsProps> = ({ location }) => {
   const venueId = useVenueId();
 
   // @debt replace this with useConnectCurrentVenueNG or similar?
@@ -119,5 +119,3 @@ const Questions: React.FC<QuestionsProps> = ({ location }) => {
     </div>
   );
 };
-
-export default Questions;
