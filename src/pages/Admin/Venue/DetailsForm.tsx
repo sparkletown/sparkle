@@ -160,7 +160,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) {
+        if (venueId) {
           await updateVenue(
             {
               ...(vals as VenueInput),

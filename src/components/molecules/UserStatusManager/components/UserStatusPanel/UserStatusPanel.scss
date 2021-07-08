@@ -2,8 +2,8 @@
 
 $picker-icon--size: 35px;
 $delete-icon--size: 25px;
-$status--spacing: 5px 0;
 $icon--spacing: 5px;
+$status--spacing: $icon--spacing 0;
 
 .UserStatusPanel {
   &__status {
