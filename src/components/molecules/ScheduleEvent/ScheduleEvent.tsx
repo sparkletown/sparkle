@@ -9,17 +9,21 @@ import classNames from "classnames";
 import { useCss } from "react-use";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
-import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faExpandAlt as expandAlt } from "@fortawesome/free-solid-svg-icons";
-import { faCompressAlt as compressAlt } from "@fortawesome/free-solid-svg-icons";
-import { faSquare as squareIcon } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBookmark as solidBookmark,
+  faExpandAlt as solidExpand,
+  faCompressAlt as solidCompress,
+} from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as regularBookmark,
+  faSquare as regularSquare,
+} from "@fortawesome/free-regular-svg-icons";
 
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
-  SHORT_EVENT_LENGTH,
-  MIN_LONG_EVENT_LENGTH,
-  LONG_EVENT_LENGTH,
+  SCHEDULE_SHORT_EVENT_LENGTH_MIN,
+  SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN,
+  SCHEDULE_LONG_EVENT_LENGTH_MIN,
 } from "settings";
 
 import {
@@ -30,7 +34,7 @@ import {
 import { PersonalizedVenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
-import { getMinuteValue } from "utils/time";
+import { convertHoursToMinutes } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
@@ -55,9 +59,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   personalizedEvent: isPersonalizedEvent = false,
 }) => {
   const eventRef: RefObject<HTMLDivElement> = useRef(null);
-  const isMinimallyLongEvent = event.duration_minutes >= MIN_LONG_EVENT_LENGTH;
-  const isShortEvent = event.duration_minutes <= SHORT_EVENT_LENGTH;
-  const isEventLong = event.duration_minutes >= LONG_EVENT_LENGTH;
 
   const { userId } = useUser();
   const {
@@ -71,18 +72,12 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     hide: hideExpandedStatic,
   } = useShowHide();
 
-  const isBookmarkDisplayed =
-    isMinimallyLongEvent || isExpanded || isExpandedStatic;
-  const isContentDisplayed = isExpanded || isExpandedStatic || isEventLong;
-  const isShowExpand = (!isShortEvent || isExpanded) && !isEventLong;
-
-  // @debt ONE_HOUR_IN_MINUTES is deprectated; refactor to use utils/time or date-fns functions
-  const eventWidthPx = getMinuteValue(
+  const eventWidthPx = convertHoursToMinutes(
     event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 
-  const expandedEventPx = getMinuteValue(
-    LONG_EVENT_LENGTH * SCHEDULE_HOUR_COLUMN_WIDTH_PX
+  const expandedEventPx = convertHoursToMinutes(
+    SCHEDULE_LONG_EVENT_LENGTH_MIN * SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 
   const eventMarginLeftPx = calcStartPosition(
@@ -93,18 +88,42 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const containerCssVars = useCss({
     "--event--margin-left": `${eventMarginLeftPx}px`,
     "--event--width": `${eventWidthPx}px`,
-    "--event--widen": `${expandedEventPx}px`,
+    "--event--expanded-width": `${expandedEventPx}px`,
   });
+
+  const isMinimallyLongEvent =
+    event.duration_minutes >= SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN;
+  const isShortEvent =
+    event.duration_minutes <= SCHEDULE_SHORT_EVENT_LENGTH_MIN;
+  const isEventLong = event.duration_minutes >= SCHEDULE_LONG_EVENT_LENGTH_MIN;
+
+  const isEventExpanded = isExpanded || isExpandedStatic;
+  const isLongEventExpanded = !isShortEvent || isExpanded;
+  const isBookmarkDisplayed = isMinimallyLongEvent || isEventExpanded;
+  const isContentDisplayed = isEventExpanded || isEventLong;
+  const isShowExpand = isLongEventExpanded && !isEventLong;
 
   const containerClasses = classNames(
     "ScheduleEvent",
     {
       "ScheduleEvent--live": isEventLive(event),
       "ScheduleEvent--users": isPersonalizedEvent,
-      "ScheduleEvent--wide": isExpanded || isExpandedStatic,
+      "ScheduleEvent--expanded": isEventExpanded,
     },
     containerCssVars
   );
+
+  const expandClasses = classNames("ScheduleEvent__expand", {
+    "ScheduleEvent__expand--hidden": !isShowExpand,
+  });
+
+  const bookmarkClasses = classNames("ScheduleEvent__bookmark", {
+    "ScheduleEvent__bookmark--hidden": !isBookmarkDisplayed,
+  });
+
+  const contentClasses = classNames("ScheduleEvent__info", {
+    "ScheduleEvent__info--hidden": !isContentDisplayed,
+  });
 
   const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {
     if (!userId || !event.id) return;
@@ -161,11 +180,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   }, [isExpandedStatic, handleCollapse, toggleExpandedStatic]);
 
   useEffect(() => {
-    const handleClickOutside = (event: Event) => {
-      const eventTarget = event.target as Node;
+    const handleClickOutside = (event: MouseEvent) => {
+      const { target } = event;
+
       if (
         eventRef.current &&
-        !eventRef?.current?.contains(eventTarget) &&
+        target instanceof Node &&
+        !eventRef?.current?.contains(target) &&
         !isEventModalVisible
       ) {
         handleCollapse();
@@ -188,37 +209,27 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
         onMouseEnter={handleMouseOver}
         onMouseLeave={handleMouseOut}
       >
-        {isShowExpand && (
-          <div
-            className={ScheduleEventExpandClass}
-            onClick={handleToggleExpand}
-          >
-            <FontAwesomeIcon
-              icon={squareIcon}
-              className="ScheduleEvent__expand--square"
-            />
+        <button className={expandClasses} onClick={handleToggleExpand}>
+          <FontAwesomeIcon
+            icon={regularSquare}
+            className="ScheduleEvent__expand--square"
+          />
+          <FontAwesomeIcon
+            icon={isExpandedStatic ? solidCompress : solidExpand}
+            className="ScheduleEvent__expand--arrows"
+          />
+        </button>
 
-            <FontAwesomeIcon
-              icon={isExpandedStatic ? compressAlt : expandAlt}
-              className="ScheduleEvent__expand--arrows"
-            />
-          </div>
-        )}
+        <div className={contentClasses}>
+          <div className="ScheduleEvent__title">{event.name}</div>
+          <div className="ScheduleEvent__host">by {event.host}</div>
+        </div>
 
-        {isContentDisplayed && (
-          <div className="ScheduleEvent__info">
-            <div className="ScheduleEvent__title">{event.name}</div>
-            <div className="ScheduleEvent__host">by {event.host}</div>
-          </div>
-        )}
-
-        {isBookmarkDisplayed && (
-          <div className={ScheduleEventBookmarkClass} onClick={bookmarkEvent}>
-            <FontAwesomeIcon
-              icon={event.isSaved ? solidBookmark : regularBookmark}
-            />
-          </div>
-        )}
+        <div className={bookmarkClasses} onClick={bookmarkEvent}>
+          <FontAwesomeIcon
+            icon={event.isSaved ? solidBookmark : regularBookmark}
+          />
+        </div>
       </div>
 
       <EventModal

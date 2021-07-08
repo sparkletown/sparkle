@@ -44,8 +44,8 @@ $description--margin-top: 2px;
     }
   }
 
-  & .ScheduleEvent--wide {
-    width: var(--event--widen);
+  &--expanded {
+    width: var(--event--expanded-width);
   }
 
   &--live {
@@ -64,6 +64,10 @@ $description--margin-top: 2px;
   &__info {
     font-size: $font-size--sm;
     overflow: hidden;
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &__title {
@@ -91,10 +95,25 @@ $description--margin-top: 2px;
     &:hover {
       padding-top: $bookmark-hover--padding-top;
     }
+
+    &--hidden {
+      display: none;
+    }
   }
 
   &__expand {
-    color: $concrete-dark;
+    color: $concrete--dark;
+    outline: none;
+    border: none;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &:hover {
+      color: $white;
+    }
 
     &--square {
       position: absolute;
@@ -106,16 +125,16 @@ $description--margin-top: 2px;
       margin-top: $spacing--xs;
     }
 
-    &:hover {
-      color: $white;
+    &--hidden {
+      display: none;
     }
   }
 
   & .ScheduleEvent__expand--square {
-    width: 24px;
+    width: $spacing--xl;
   }
 
   & .ScheduleEvent__expand--arrows {
-    width: 24px;
+    width: $spacing--xl;
   }
 }
