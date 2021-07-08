@@ -59,7 +59,9 @@ const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
   },
 ];
 
-const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
+export const CodeOfConduct: React.FunctionComponent<PropsType> = ({
+  location,
+}) => {
   useConnectCurrentVenue();
 
   const { user } = useUser();
@@ -166,5 +168,3 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     </div>
   );
 };
-
-export default CodeOfConduct;
