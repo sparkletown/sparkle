@@ -8,8 +8,9 @@ import { worldUsersSelector } from "utils/selectors";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { useSelector } from "hooks/useSelector";
-import { useConnectWorldUsers } from "hooks/users";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
+
+import { useWorldUsersContext } from "./useWorldUsers";
 
 const noUsers: WithId<User>[] = [];
 
@@ -19,7 +20,8 @@ export const useRecentWorldUsers = (): {
 } => {
   const lastSeenThreshold = useUserLastSeenThreshold();
 
-  useConnectWorldUsers();
+  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
+  useWorldUsersContext();
 
   const { recentWorldUsers, isWorldUsersLoaded } = useSelector((state) => {
     const worldUsers = worldUsersSelector(state);

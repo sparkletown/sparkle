@@ -8,7 +8,7 @@ import { worldUsersByIdWithoutLocationSelector } from "utils/selectors";
 import { isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
-import { useConnectWorldUsers } from "./useConnectWorldUsers";
+import { useWorldUsersContext } from "./useWorldUsers";
 
 const noUsersById: Record<string, WithId<User>> = {};
 
@@ -17,7 +17,8 @@ const noUsersById: Record<string, WithId<User>> = {};
  * @deprecated use useWorldUsersByIdWorkaround until we refactor this to fix the typing issue across the codebase
  */
 export const useWorldUsersById = () => {
-  useConnectWorldUsers();
+  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
+  useWorldUsersContext();
 
   const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
     worldUsersByIdWithoutLocationSelector,

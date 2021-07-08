@@ -1,4 +1,3 @@
-export { useConnectWorldUsers } from "./useConnectWorldUsers";
 export { useWorldUsers } from "./useWorldUsers";
 export { useWorldUserLocation } from "./useWorldUserLocation";
 export {
