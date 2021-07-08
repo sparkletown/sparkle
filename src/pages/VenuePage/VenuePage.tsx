@@ -245,11 +245,7 @@ export const VenuePage: React.FC = () => {
     }
 
     if (!event || !userPurchaseHistoryRequestStatus) {
-      return (
-        <Suspense fallback={<></>}>
-          <LoadingPage />
-        </Suspense>
-      );
+      return <LoadingPage />;
     }
 
     if (
