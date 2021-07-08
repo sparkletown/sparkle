@@ -1,5 +1,5 @@
-export { useConnectWorldUsers } from "./useConnectWorldUsers";
-export { useWorldUsers } from "./useWorldUsers";
+export { useWorldUsers, WorldUsersProvider } from "./useWorldUsers";
+export { useWorldUserLocation } from "./useWorldUserLocation";
 export {
   useWorldUsersById,
   useWorldUsersByIdWorkaround,

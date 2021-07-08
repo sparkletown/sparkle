@@ -1,0 +1,50 @@
+@import "scss/constants";
+
+$back-button-icon-diameter: 22px;
+$back-button-height: 40px;
+$back-button-filter: blur(8px);
+
+.BackButton {
+  position: fixed;
+
+  top: $navbar-height;
+  z-index: z(navbar-map-back-button);
+  left: 0;
+  height: $back-button-height;
+  width: auto;
+  cursor: pointer;
+  background-color: $secondary;
+  box-shadow: 0 10px 20px rgba($secondary, 0.2);
+  backdrop-filter: $back-button-filter;
+
+  border-radius: 0 0 $border-radius--lg 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing--md;
+  font-size: $font-size--md;
+
+  &:hover {
+    background-color: $lighter-intermediate-grey;
+
+    .BackButton__icon {
+      opacity: 1;
+    }
+  }
+
+  &__icon {
+    height: $back-button-icon-diameter;
+    width: $back-button-icon-diameter;
+    opacity: 0.7;
+  }
+
+  &__label {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: 0 2px 4px opaque-black(0.21);
+    cursor: pointer;
+    margin-left: $spacing--sm;
+  }
+}
