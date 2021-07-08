@@ -30,7 +30,6 @@ import { showZendeskWidget } from "utils/zendesk";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
@@ -74,18 +73,6 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   if (redirectUrl && redirectUrl !== hostname) {
     window.location.hostname = redirectUrl;
   }
-
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "events" }],
-          orderBy: ["start_utc_seconds", "asc"],
-          storeAs: "venueEvents",
-        }
-      : undefined
-  );
 
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
