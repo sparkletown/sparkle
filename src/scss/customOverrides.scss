@@ -17,13 +17,13 @@
   .audience-overlay {
     .video-container {
       .reaction-container {
-        box-shadow: none;
+        box-shadow: none !important;
       }
 
       .video {
         .frame {
-          border-radius: 0;
-          box-shadow: none;
+          border-radius: 0 !important;
+          box-shadow: none !important;
         }
       }
     }
