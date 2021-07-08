@@ -1,17 +1,24 @@
 import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { updateUserProfile } from "./helpers";
-import "./Account.scss";
-import getQueryParameters from "utils/getQueryParameters";
-import { RouterLocation } from "types/RouterLocation";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { updateTheme } from "pages/VenuePage/helpers";
-import { useUser } from "hooks/useUser";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "hooks/useSelector";
-import { venueInsideUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
+import { useForm } from "react-hook-form";
+
 import { IS_BURN } from "secrets";
+
+import { RouterLocation } from "types/RouterLocation";
+
+import getQueryParameters from "utils/getQueryParameters";
+import { currentVenueSelectorData } from "utils/selectors";
+import { venueInsideUrl } from "utils/url";
+
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import { updateUserProfile } from "./helpers";
+
+import "./Account.scss";
 
 interface PropsType {
   location: RouterLocation;
