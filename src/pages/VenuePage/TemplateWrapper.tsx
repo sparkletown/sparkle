@@ -1,9 +1,10 @@
-import React, { Suspense } from "react";
+import React, { Suspense, lazy } from "react";
 import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
+import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
@@ -16,45 +17,32 @@ import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
-import { PlayaRouter } from "components/templates/Playa/Router";
+import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-const PartyMap = React.lazy(() =>
-  import("components/templates/PartyMap").then((m) => ({ default: m.PartyMap }))
-);
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-const ChatSidebar = React.lazy(() =>
-  import("components/organisms/ChatSidebar").then((m) => ({
-    default: m.ChatSidebar,
-  }))
-);
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
-const UserProfileModal = React.lazy(() =>
-  import("components/organisms/UserProfileModal").then((m) => ({
-    default: m.UserProfileModal,
-  }))
-);
-
-const WithNavigationBar = React.lazy(() =>
-  import("components/organisms/WithNavigationBar").then((m) => ({
-    default: m.WithNavigationBar,
-  }))
-);
-
-const AnnouncementMessage = React.lazy(() =>
-  import("components/molecules/AnnouncementMessage").then((m) => ({
-    default: m.AnnouncementMessage,
-  }))
+const PlayaRouter = lazy(() =>
+  tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
+    import("components/templates/Playa/Router").then(({ PlayaRouter }) => ({
+      default: PlayaRouter,
+    }))
+  )
 );
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
 
-const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
+export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const history = useHistory();
   const match = useRouteMatch();
 
@@ -79,11 +67,7 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = (
-        <Suspense fallback={<></>}>
-          <PartyMap venue={venue} />
-        </Suspense>
-      );
+      template = <PartyMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:
@@ -172,26 +156,18 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   return (
     <RelatedVenuesProvider venueId={venue.id}>
       <ReactionsProvider venueId={venue.id}>
-        <Suspense fallback={<></>}>
-          <WithNavigationBar
-            fullscreen={fullscreen}
-            hasBackButton={hasBackButton}
-          >
-            <Suspense fallback={<></>}>
-              <AnnouncementMessage message={venue.bannerMessage} />
-            </Suspense>
-            {template}
-            <Suspense fallback={<></>}>
-              <ChatSidebar venue={venue} />
-            </Suspense>
-            <Suspense fallback={<></>}>
-              <UserProfileModal venue={venue} />
-            </Suspense>
-          </WithNavigationBar>
-        </Suspense>
+        <WithNavigationBar
+          fullscreen={fullscreen}
+          hasBackButton={hasBackButton}
+        >
+          <AnnouncementMessage message={venue.bannerMessage} />
+
+          <Suspense fallback={<LoadingPage />}>{template}</Suspense>
+
+          <ChatSidebar venue={venue} />
+          <UserProfileModal venue={venue} />
+        </WithNavigationBar>
       </ReactionsProvider>
     </RelatedVenuesProvider>
   );
 };
-
-export default TemplateWrapper;

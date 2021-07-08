@@ -1,4 +1,4 @@
-import React, { useEffect, Suspense } from "react";
+import React, { Suspense, lazy, useEffect } from "react";
 import { Redirect, useHistory } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -24,6 +24,7 @@ import {
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
+import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -39,10 +40,13 @@ import { useVenueId } from "hooks/useVenueId";
 // import { useVenueAccess } from "hooks/useVenueAccess";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
+// import { CountDown } from "components/molecules/CountDown";
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
+// import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
-import Login from "pages/Account/Login";
-
+// import Login from "pages/Account/Login";
 import "./VenuePage.scss";
 
 const CountDown = React.lazy(() =>
@@ -50,12 +54,21 @@ const CountDown = React.lazy(() =>
     default: m.CountDown,
   }))
 );
-const LoadingPage = React.lazy(() =>
-  import("components/molecules/LoadingPage/LoadingPage").then((m) => ({
-    default: m.LoadingPage,
-  }))
+const Login = lazy(() =>
+  tracePromise("VenuePage::lazy-import::Login", () =>
+    import("pages/Account/Login").then(({ Login }) => ({
+      default: Login,
+    }))
+  )
 );
-const TemplateWrapper = React.lazy(() => import("./TemplateWrapper"));
+
+const TemplateWrapper = lazy(() =>
+  tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
+    import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
+      default: TemplateWrapper,
+    }))
+  )
+);
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -205,7 +218,11 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return <Login venue={venue} />;
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venue={venue} />
+      </Suspense>
+    );
   }
 
   if (!profile) {
@@ -278,7 +295,7 @@ export const VenuePage: React.FC = () => {
   }
 
   return (
-    <Suspense fallback={<></>}>
+    <Suspense fallback={<LoadingPage />}>
       <TemplateWrapper venue={venue} />
     </Suspense>
   );
