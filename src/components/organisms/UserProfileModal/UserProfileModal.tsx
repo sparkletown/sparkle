@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 
 import {
   ENABLE_SUSPECTED_LOCATION,
@@ -119,10 +119,6 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     }
   }, [user, chosenUserId, isInContactsList]);
 
-  const bookmarkIconStyles = classNames("UserProfileModal__icon--bookmark", {
-    "UserProfileModal__icon--bookmark-full": isInContactsList,
-  });
-
   if (!selectedUserProfile || !chosenUserId || !user) {
     return null;
   }
@@ -138,8 +134,8 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
           <div className="profile-information-container">
             {chosenUserId !== user.uid && (
               <FontAwesomeIcon
-                className={bookmarkIconStyles}
-                icon={faBookmark}
+                className="UserProfileModal__icon--bookmark"
+                icon={isInContactsList ? solidBookmark : regularBookmark}
                 onClick={handleContactListUpdate}
               />
             )}
