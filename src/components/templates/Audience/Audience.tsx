@@ -10,7 +10,12 @@ import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { IFRAME_ALLOW, REACTION_TIMEOUT } from "settings";
+import {
+  IFRAME_ALLOW,
+  REACTION_TIMEOUT,
+  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  DEFAULT_AUDIENCE_ROWS_NUMBER,
+} from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -46,10 +51,6 @@ const SEAT_SIZE_MIN = "var(--seat-size-min)";
 const VIDEO_MIN_WIDTH_IN_SEATS = 8;
 // We should keep the 16/9 ratio
 const VIDEO_MIN_HEIGHT_IN_SEATS = VIDEO_MIN_WIDTH_IN_SEATS * (9 / 16);
-
-// Always have an odd number of rows and columns (because of the firelane delimiter).
-const DEFAULT_COLUMNS_NUMBER = 25;
-const DEFAULT_ROWS_NUMBER = 19;
 
 // The seat grid is designed so we can dynamically add rows and columns around the outside when occupancy gets too high.
 // That way we never run out of digital seats.
@@ -146,8 +147,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const { userId, userWithId } = useUser();
   const { recentVenueUsers } = useRecentVenueUsers();
 
-  const baseColumns = venue?.auditoriumColumns ?? DEFAULT_COLUMNS_NUMBER;
-  const baseRows = venue?.auditoriumRows ?? DEFAULT_ROWS_NUMBER;
+  const baseColumns =
+    venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
+  const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
 

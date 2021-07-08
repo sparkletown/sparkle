@@ -594,6 +594,11 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+// Audience
+// Always have an odd number of rows and columns (because of the firelane delimiter).
+export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
+export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
+
 // These must both be odd, otherwise the video won't be centered properly
 export const SECTION_DEFAULT_ROWS_COUNT = 17;
 export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
