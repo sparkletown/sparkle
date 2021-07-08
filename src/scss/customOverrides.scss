@@ -5,10 +5,10 @@
 // hide time on site and number of venues visited box (when badges are turned on)
 .Badges {
   &__visits {
-    display: none;
+    display: none !important;
   }
   &__visit {
-    display: none;
+    display: none !important;
   }
 }
 
