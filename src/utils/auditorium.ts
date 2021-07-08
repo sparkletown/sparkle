@@ -7,7 +7,7 @@ import { User } from "types/User";
 
 import { WithId } from "./id";
 
-const emptyFilteredUsers: never[] = [];
+const emptyFilteredUsers: WithId<User>[] = [];
 
 export interface ConvertCoordinateProps {
   index: number;
