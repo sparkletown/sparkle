@@ -20,6 +20,7 @@ export enum VenueTemplate {
   artcar = "artcar",
   artpiece = "artpiece",
   audience = "audience",
+  auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
@@ -49,11 +50,13 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
+  | VenueTemplate.auditorium
 >;
 
-// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
 export type AnyVenue =
   | GenericVenue
+  | AuditoriumVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -237,6 +240,11 @@ export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
+}
+
+export interface AuditoriumVenue extends BaseVenue {
+  template: VenueTemplate.auditorium;
+  title?: string;
 }
 
 export interface Question {
