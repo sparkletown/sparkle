@@ -1,17 +1,28 @@
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useVenueId } from "hooks/useVenueId";
+import { User } from "types/User";
+import { ReactHook } from "types/utility";
 
-import { useRecentLocationUsers } from "./useRecentLocationUsers";
+import { WithId } from "utils/id";
 
-export const useRecentVenueUsers = () => {
-  const venueId = useVenueId();
+import { useRecentLocationUsers } from "hooks/users";
 
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
+export interface UseRecentVenueUsersProps {
+  venueName?: string;
+}
 
+export interface RecentVenueUsersData {
+  recentVenueUsers: readonly WithId<User>[];
+  isRecentVenueUsersLoaded: boolean;
+}
+
+// @debt refactor this to use venueId as soon as we refactor location tracking to use venueId instead of venueName
+export const useRecentVenueUsers: ReactHook<
+  UseRecentVenueUsersProps,
+  RecentVenueUsersData
+> = ({ venueName }) => {
   const {
     recentLocationUsers,
     isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(currentVenue?.name);
+  } = useRecentLocationUsers(venueName);
 
   return {
     recentVenueUsers: recentLocationUsers,
