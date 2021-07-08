@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
@@ -74,7 +74,6 @@ export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const mixpanel = useMixpanel();
 
-  const history = useHistory();
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
@@ -255,7 +254,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 
   return (
