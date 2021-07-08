@@ -26,7 +26,9 @@ const Admin_v2: React.FC = () => {
   useAdminVenues(user?.uid);
 
   // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const { relatedVenues, isRelatedVenuesLoading } = useRelatedVenues({});
+  const { relatedVenues, isLoading: isRelatedVenuesLoading } = useRelatedVenues(
+    {}
+  );
 
   const { roles } = useRoles();
 

@@ -79,11 +79,13 @@ const VenueList: React.FC<VenueListProps> = ({
   roomIndex,
 }) => {
   // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const { isRelatedVenuesLoading, relatedVenues } = useRelatedVenues({
-    currentVenueId: selectedVenueId,
-  });
+  const { isLoading: isRelatedVenuesLoading, relatedVenues } = useRelatedVenues(
+    {
+      currentVenueId: selectedVenueId,
+    }
+  );
 
-  if (!isRelatedVenuesLoading) return <>Loading...</>;
+  if (isRelatedVenuesLoading) return <>Loading...</>;
 
   return (
     <>

@@ -7,19 +7,19 @@ import { canHaveSubvenues } from "utils/venue";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { Loading } from "components/molecules/Loading";
-
 import { VenueListProps } from "./VenueList.types";
 
 const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { relatedVenues, isRelatedVenuesLoading } = useRelatedVenues({
-    currentVenueId: selectedVenueId,
-  });
+  const { relatedVenues, isLoading: isRelatedVenuesLoading } = useRelatedVenues(
+    {
+      currentVenueId: selectedVenueId,
+    }
+  );
 
-  if (!isRelatedVenuesLoading) return <>Loading...</>;
+  if (isRelatedVenuesLoading) return <>Loading...</>;
 
   return (
     <>
@@ -30,34 +30,30 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {isRelatedVenuesLoading ? (
-          <Loading />
-        ) : (
-          relatedVenues.map((venue, index) => (
-            <li
-              key={index}
-              className={`${selectedVenueId === venue.id ? "selected" : ""} ${
-                canHaveSubvenues(venue) ? "camp" : ""
-              }`}
-            >
-              <Link to={`/admin-ng/venue/${venue.id}`}>{venue.name}</Link>
-              {isVenueWithRooms(venue) && venue.rooms && (
-                <ul className="page-container-adminsidebar-subvenueslist">
-                  {venue.rooms.map((room, idx) => (
-                    <li
-                      key={idx}
-                      className={`${idx === roomIndex ? "selected" : ""}`}
-                    >
-                      <Link to={`/admin-ng/venue/${venue.id}?roomIndex=${idx}`}>
-                        {room.title}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))
-        )}
+        {relatedVenues.map((venue, index) => (
+          <li
+            key={index}
+            className={`${selectedVenueId === venue.id ? "selected" : ""} ${
+              canHaveSubvenues(venue) ? "camp" : ""
+            }`}
+          >
+            <Link to={`/admin-ng/venue/${venue.id}`}>{venue.name}</Link>
+            {isVenueWithRooms(venue) && venue.rooms && (
+              <ul className="page-container-adminsidebar-subvenueslist">
+                {venue.rooms.map((room, idx) => (
+                  <li
+                    key={idx}
+                    className={`${idx === roomIndex ? "selected" : ""}`}
+                  >
+                    <Link to={`/admin-ng/venue/${venue.id}?roomIndex=${idx}`}>
+                      {room.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
       </ul>
     </>
   );

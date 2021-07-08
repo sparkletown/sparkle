@@ -22,7 +22,6 @@ import {
   DEFAULT_PARTY_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
-  LOC_UPDATE_FREQ_MS,
 } from "settings";
 
 import firebase from "firebase/app";
@@ -422,11 +421,6 @@ const Playa = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
   const [shoutText, setShoutText] = useState("");
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
 
   const shout = useCallback(() => {
     if (!user || !shoutText || !shoutText.length) return;
@@ -448,7 +442,7 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
 
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
@@ -459,12 +453,6 @@ const Playa = () => {
         hoveredVenue
       ),
     [recentVenueUsers, hoveredVenue, venueName]
-  );
-
-  const usersInCurrentVenue = recentVenueUsers.filter(
-    (partygoer) =>
-      partygoer.lastSeenIn?.[venueName] >
-      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
   );
 
   useEffect(() => {
@@ -599,11 +587,13 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = recentVenueUsers.filter(
-            (partygoer) =>
-              partygoer.lastSeenIn?.[v.name] >
-              (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-          );
+          // @debt This isn't strictly correct here.. but this is an unused legacy template soon to be deleted, so we don't mind
+          const usersInVenue = recentVenueUsers;
+          // const usersInVenue = recentVenueUsers.filter(
+          //   (partygoer) =>
+          //     partygoer.lastSeenIn?.[v.name] >
+          //     (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
+          // );
           return (
             <>
               <div
@@ -768,7 +758,6 @@ const Playa = () => {
       </>
     );
   }, [
-    nowMs,
     hoveredUser,
     hoveredVenue,
     menu,
@@ -873,10 +862,10 @@ const Playa = () => {
 
         {IS_BURN && dustStorm && <DustStorm />}
 
-        {usersInCurrentVenue && (
+        {recentVenueUsers && (
           <div className="playa-userlist">
             <UserList
-              users={usersInCurrentVenue}
+              users={recentVenueUsers}
               imageSize={50}
               disableSeeAll={false}
               isCamp={true}
@@ -1073,7 +1062,7 @@ const Playa = () => {
     videoChatHeight,
     mapContainer,
     venue,
-    usersInCurrentVenue,
+    recentVenueUsers,
   ]);
 };
 

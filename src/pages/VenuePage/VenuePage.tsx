@@ -35,6 +35,7 @@ import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useSelector } from "hooks/useSelector";
+import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 // import { useVenueAccess } from "hooks/useVenueAccess";
@@ -83,6 +84,8 @@ export const VenuePage: React.FC = () => {
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
+  const { userLocation } = useWorldUserLocation(user?.uid);
+  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -134,11 +137,11 @@ export const VenuePage: React.FC = () => {
   // NOTE: User location updates
 
   useInterval(() => {
-    if (!userId || !profile?.lastSeenIn) return;
+    if (!userId || !userLastSeenIn) return;
 
     updateCurrentLocationData({
       userId,
-      profileLocationData: profile.lastSeenIn,
+      profileLocationData: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
