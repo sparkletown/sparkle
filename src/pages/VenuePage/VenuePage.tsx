@@ -204,7 +204,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!venue || !venueId) {
-    // if !venueId is true loading page might display indefinitely, another message or action may be appropriate
+    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
