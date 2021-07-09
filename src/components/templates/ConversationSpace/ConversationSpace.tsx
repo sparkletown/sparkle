@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
+
 import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
@@ -21,9 +23,10 @@ import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
+// @debt refactor this to pass in venue as a prop
 export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const defaultTables = venue?.config?.tables ?? TABLES;
   const [tables, setTables] = useState(defaultTables);
@@ -115,7 +118,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <UserList
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
-            disableSeeAll={false}
+            limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
           />
         </div>
       </div>

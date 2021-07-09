@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Admin from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
@@ -13,25 +13,23 @@ import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 export const AdminSubrouter: React.FC = () => {
   return (
-    <Router basename="/">
-      <Switch>
-        {/* Admin V1 */}
-        <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
-        <Route path="/admin/venue/creation" component={VenueWizard} />
-        <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
-        <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin" component={Admin} />
+    <Switch>
+      {/* Admin V1 */}
+      <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
+      <Route path="/admin/venue/creation" component={VenueWizard} />
+      <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
+      <Route path="/admin/:venueId" component={Admin} />
+      <Route path="/admin" component={Admin} />
 
-        {/* Admin V2/3/NG */}
-        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
-        <Route
-          path="/admin-ng/advanced-settings/:venueId?"
-          component={AdminAdvancedSettings}
-        />
-        <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
-        <Route path="/admin-ng" component={Admin_v2} />
-      </Switch>
-    </Router>
+      {/* Admin V2/3/NG */}
+      <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
+      <Route
+        path="/admin-ng/advanced-settings/:venueId?"
+        component={AdminAdvancedSettings}
+      />
+      <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
+      <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
+      <Route path="/admin-ng" component={Admin_v2} />
+    </Switch>
   );
 };
