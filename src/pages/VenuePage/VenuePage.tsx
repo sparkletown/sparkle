@@ -86,14 +86,18 @@ export const VenuePage: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
-  usePreloadAssets(
-    [
-      venue?.mapBackgroundImageUrl,
-      ...(venue?.rooms ?? []).map((room) => room?.image_url),
-    ]
-      .filter(isDefined)
-      .map((url) => ({ url }))
+  const assetsToPreload = useMemo(
+    () =>
+      [
+        venue?.mapBackgroundImageUrl,
+        ...(venue?.rooms ?? []).map((room) => room?.image_url),
+      ]
+        .filter(isDefined)
+        .map((url) => ({ url })),
+    [venue]
   );
+
+  usePreloadAssets(assetsToPreload);
 
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
