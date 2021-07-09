@@ -3,8 +3,8 @@
 // Eventually, we we get rid of Audience template, these will be the only styles available
 
 // If you change this, make sure to also change it in ./Section.tsx
-$section-seat-size: 4vh;
-$section-seat-size-min: 25px;
+$section-seat-size: $avatarSize;
+$section-seat-size-min: $avatarSizeMin;
 $section-seat-spacing: 3px;
 
 $iframe-box-shadow: 2px 2px $spacing--lg $white;
@@ -84,7 +84,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     min-height: var(--section-seat-size-min);
 
     font-size: calc(
-      0.75 * min(var(--section-seat-size), var(--section-seat-size-min))
+      0.6 * max(var(--section-seat-size), var(--section-seat-size-min))
     );
 
     border-radius: 100%;
