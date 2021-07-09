@@ -151,6 +151,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
+  // @debt refactor via useShowHide hook
   const toggleMute = useCallback(
     () => setIsAudioEffectDisabled((state) => !state),
     []
@@ -328,9 +329,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
         <ReactionsBar
           reactions={burningReactions}
           venueId={venueId}
-          leaveSeat={leaveSeat}
+          onClickLeaveSeat={leaveSeat}
           isAudioEffectDisabled={isAudioEffectDisabled}
-          handleMute={toggleMute}
+          onClickMute={toggleMute}
         />
 
         {venue.showShoutouts && (

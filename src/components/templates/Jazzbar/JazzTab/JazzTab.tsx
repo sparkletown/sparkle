@@ -70,6 +70,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
+  // @debt refactor via useShowHide hook
   const toggleMute = useCallback(
     () => setIsAudioEffectDisabled((state) => !state),
     []
@@ -191,7 +192,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     reactions={EmojiReactions}
                     venueId={venue.id}
                     isAudioEffectDisabled={isAudioEffectDisabled}
-                    handleMute={toggleMute}
+                    onClickMute={toggleMute}
                   />
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}

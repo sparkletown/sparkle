@@ -10,28 +10,28 @@
   &__mute-button {
     display: flex;
     align-items: center;
-    font-size: 20px;
+    font-size: $font-size--xl;
     cursor: pointer;
   }
 
   &__leave-seat-button {
     display: inline-block;
-    font-weight: 700;
+    font-weight: $font-weight--700;
     text-decoration: none;
-    border-radius: 8px;
+    border-radius: $border-radius--sm;
     text-align: center;
-    font-size: 0.7em;
+    font-size: $font-size--sm;
     transition: all 400ms $transition-function;
     line-height: 1.5;
     border: 1px solid transparent;
     transform: translateY(0);
     cursor: pointer;
-    padding: 4px 10px;
-    background: rgb(0, 0, 0);
+    padding: $spacing--xs $spacing--sm;
+    background: $black;
     color: $white;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.5);
+      background-color: rgba($white, 0.5);
     }
   }
 }

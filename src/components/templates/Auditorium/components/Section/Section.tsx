@@ -31,6 +31,7 @@ export interface SectionProps {
 export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { userWithId } = useUser();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
+  // @debt refactor via useShowHide hook
   const toggleMute = useCallback(
     () => setIsAudioEffectDisabled((state) => !state),
     []
@@ -128,9 +129,9 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
               <ReactionsBar
                 reactions={EmojiReactions}
                 venueId={venueId}
-                leaveSeat={leaveSeat}
+                onClickLeaveSeat={leaveSeat}
                 isAudioEffectDisabled={isAudioEffectDisabled}
-                handleMute={toggleMute}
+                onClickMute={toggleMute}
               />
             ) : (
               "Welcome! Click on an empty seat to claim it!"

@@ -18,17 +18,17 @@ import "./ReactionsBar.scss";
 export interface ReactionsBarProps {
   reactions: ReactionData<EmojiReactionType>[];
   venueId: string;
-  leaveSeat?: () => void;
+  onClickLeaveSeat?: () => void;
   isAudioEffectDisabled: boolean;
-  handleMute: () => void;
+  onClickMute: () => void;
 }
 
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   reactions,
   venueId,
-  leaveSeat,
+  onClickLeaveSeat,
   isAudioEffectDisabled,
-  handleMute,
+  onClickMute,
 }) => {
   const dispatch = useDispatch();
   const { userWithId } = useUser();
@@ -56,13 +56,16 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
           onClickReaction={sendReaction}
         />
       ))}
-      <div className="ReactionsBar__mute-button" onClick={handleMute}>
+      <div className="ReactionsBar__mute-button" onClick={onClickMute}>
         <FontAwesomeIcon
           icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
         />
       </div>
-      {leaveSeat && (
-        <button className="ReactionsBar__leave-seat-button" onClick={leaveSeat}>
+      {onClickLeaveSeat && (
+        <button
+          className="ReactionsBar__leave-seat-button"
+          onClick={onClickLeaveSeat}
+        >
           Leave Seat
         </button>
       )}
