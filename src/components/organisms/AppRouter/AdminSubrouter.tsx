@@ -1,6 +1,9 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
 
+import { WorldUsersProvider } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
+
 import Admin from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
@@ -10,8 +13,6 @@ import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-import { WorldUsersProvider } from "hooks/users";
-import { useVenueId } from "hooks/useVenueId";
 
 export const AdminSubrouter: React.FC = () => {
   const venueId = useVenueId();
