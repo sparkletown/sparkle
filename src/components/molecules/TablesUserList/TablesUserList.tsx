@@ -190,7 +190,7 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
       ).length
   );
 
-  const canStartTable = emptyTables.length <= 20 || ALLOWED_EMPTY_TABLES_NUMBER;
+  const canStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
 
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;

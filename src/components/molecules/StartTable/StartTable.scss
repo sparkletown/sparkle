@@ -24,11 +24,6 @@ $start-table-internal-indent: 25px;
     $start-table-button-indent;
   cursor: pointer;
 
-  &--jazzbar {
-    margin: 0;
-    min-height: $jazzbar-start-table-height;
-  }
-
   &:hover {
     background-color: lighten($dark, 10%);
     transform: scale(1.05);
@@ -40,6 +35,15 @@ $start-table-internal-indent: 25px;
     .StartTable__title {
       display: block;
     }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
+  &--jazzbar {
+    margin: 0;
+    min-height: $jazzbar-start-table-height;
   }
 
   &__sign {

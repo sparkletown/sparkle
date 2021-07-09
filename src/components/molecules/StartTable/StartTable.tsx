@@ -13,6 +13,8 @@ import { currentVenueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
+import { Loading } from "components/molecules/Loading";
+
 import "./StartTable.scss";
 
 export interface StartTablePropsType {
@@ -49,7 +51,11 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       onClick={updateTables}
     >
       <div className="StartTable__sign">+</div>
-      <div className="StartTable__title">Start a table</div>
+      {isUpdatingTables ? (
+        <Loading />
+      ) : (
+        <div className="StartTable__title">Start a table</div>
+      )}
     </button>
   );
 };
