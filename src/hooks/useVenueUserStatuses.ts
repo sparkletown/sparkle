@@ -13,7 +13,7 @@ import { useUser } from "./useUser";
 
 export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
   const { sovereignVenue } = useSovereignVenue({ venueId });
-  const { userId } = useUser();
+  const { userId, profile } = useUser();
 
   const changeUserStatus = useCallback(
     (newStatus?: string) => {
@@ -38,6 +38,9 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
     venueUserStatuses: venueStatuses,
     isStatusEnabledForVenue:
       sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
-    userStatus: userStatus ?? DEFAULT_USER_STATUS,
+    userStatus: userStatus ?? {
+      status: profile?.status ?? "",
+      color: DEFAULT_USER_STATUS.color,
+    },
   };
 };

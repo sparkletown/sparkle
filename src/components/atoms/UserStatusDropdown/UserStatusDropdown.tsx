@@ -18,8 +18,6 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
 
   // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
   useEffect(() => {
-    if (!userStatus) return;
-
     const statusTexts = userStatuses.map((userStatus) => userStatus.status);
 
     const defaultUserStatus = userStatuses[0].status;
