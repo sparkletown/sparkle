@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import firebase from "firebase/app";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_TABLE_CAPACITY, ALLOWED_EMPTY_TABLES_NUMBER } from "settings";
+import {
+  DEFAULT_TABLE_ROWS,
+  DEFAULT_TABLE_COLUMNS,
+  DEFAULT_TABLE_CAPACITY,
+  ALLOWED_EMPTY_TABLES_NUMBER,
+} from "settings";
 
 import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
@@ -35,8 +40,8 @@ const createTable = (i: number): Table => {
     title: `Table ${i + 1}`,
     reference: `Table ${i + 1}`,
     capacity: DEFAULT_TABLE_CAPACITY,
-    rows: 2,
-    columns: 3,
+    rows: DEFAULT_TABLE_ROWS,
+    columns: DEFAULT_TABLE_COLUMNS,
   };
 };
 

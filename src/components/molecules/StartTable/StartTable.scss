@@ -1,12 +1,19 @@
 @import "scss/constants.scss";
 
-$jazzbar-table-height: 189px;
+$jazzbar-start-table-height: 189px;
+$start-table-height: 165px;
 $start-table-button-indent: 5px;
+$table-column-width: 55px;
+$start-table-internal-indent: 25px;
 
 .StartTable {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-basis: calc(
+    3 * #{$table-column-width} + 2 * #{$start-table-internal-indent}
+  );
+  min-height: $start-table-height;
 
   width: 100%;
   background: $dark;
@@ -19,7 +26,7 @@ $start-table-button-indent: 5px;
 
   &--jazzbar {
     margin: 0;
-    min-height: $jazzbar-table-height;
+    min-height: $jazzbar-start-table-height;
   }
 
   &:hover {

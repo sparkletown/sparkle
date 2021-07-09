@@ -2,12 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import { useAsyncFn } from "react-use";
 
-import {
-  TABLE_COLUMN_WIDTH,
-  TABLE_COLUMN_HEIGHT,
-  TABLE_COLUMN_INDENT,
-  DEFAULT_TABLE_CAPACITY,
-} from "settings";
+import { DEFAULT_TABLE_CAPACITY } from "settings";
 
 import { updateVenueTable } from "api/table";
 
@@ -31,16 +26,6 @@ export const StartTable: React.FC<StartTablePropsType> = ({
 }) => {
   const venue = useSelector(currentVenueSelector);
 
-  const [table] = tables;
-  const startTableWidth =
-    table.columns &&
-    venue?.template !== VenueTemplate.jazzbar &&
-    (table.columns + 1) * TABLE_COLUMN_WIDTH;
-  const startTableHeight =
-    table.rows &&
-    venue?.template !== VenueTemplate.jazzbar &&
-    table.rows * TABLE_COLUMN_HEIGHT + TABLE_COLUMN_INDENT;
-
   const [{ loading: isUpdatingTables }, updateTables] = useAsyncFn(async () => {
     if (!venue?.id) return;
 
@@ -62,10 +47,6 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       disabled={isUpdatingTables}
       className={containerClasses}
       onClick={updateTables}
-      style={{
-        height: `${startTableHeight}px`,
-        width: `${startTableWidth}px`,
-      }}
     >
       <div className="StartTable__sign">+</div>
       <div className="StartTable__title">Start a table</div>
