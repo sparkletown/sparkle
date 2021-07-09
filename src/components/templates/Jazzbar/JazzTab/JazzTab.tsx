@@ -3,8 +3,6 @@ import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
 import {
   IFRAME_ALLOW,
@@ -12,36 +10,30 @@ import {
   DEFAULT_SHOW_REACTIONS,
 } from "settings";
 
-import { addReaction } from "store/actions/Reactions";
-
-import { EmojiReactionType, EmojiReactions } from "types/reactions";
+import { EmojiReactions } from "types/reactions";
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
-import { createEmojiReaction } from "utils/reactions";
 import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 
-import Room from "../components/JazzBarRoom";
-
-// NOTE: This functionality will probably be returned in the nearest future.
-// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
-import TableHeader from "components/molecules/TableHeader";
-import { UserList } from "components/molecules/UserList";
-import { BackButton } from "components/atoms/BackButton";
-import { TablesUserList } from "components/molecules/TablesUserList";
-
-import { Reaction } from "components/atoms/Reaction";
-
-import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { ReactionsBar } from "components/molecules/ReactionsBar";
+// NOTE: This functionality will probably be returned in the nearest future.
+// import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
+import TableHeader from "components/molecules/TableHeader";
+import { UserList } from "components/molecules/UserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
+
+import { BackButton } from "components/atoms/BackButton";
+
+import JazzBarTableComponent from "../components/JazzBarTableComponent";
+import Room from "../components/JazzBarRoom";
 
 import { JAZZBAR_TABLES } from "./constants";
 
@@ -74,32 +66,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   useExperiences(venue.name);
 
-  const { userWithId } = useUser();
-
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-
-  const dispatch = useDispatch();
-  const venueId = useVenueId();
-
-  // @debt de-duplicate this with version in src/components/templates/Audience/Audience.tsx
-  const sendReaction = useCallback(
-    (emojiReaction: EmojiReactionType) => {
-      if (!venueId || !userWithId) return;
-
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createEmojiReaction(emojiReaction, userWithId),
-        })
-      );
-
-      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
-      setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
-    },
-    [venueId, userWithId, dispatch]
+  const toggleMute = useCallback(
+    () => setIsAudioEffectDisabled((state) => !state),
+    []
   );
 
   // NOTE: This functionality will probably be returned in the nearest future.
@@ -214,25 +187,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
               {shouldShowReactions && (
                 <div className="actions-container">
-                  <div className="emoji-container">
-                    {EmojiReactions.map((reaction) => (
-                      <Reaction
-                        key={reaction.name}
-                        reaction={reaction}
-                        onClickReaction={sendReaction}
-                      />
-                    ))}
-                    <div
-                      className="mute-button"
-                      onClick={() =>
-                        setIsAudioEffectDisabled((state) => !state)
-                      }
-                    >
-                      <FontAwesomeIcon
-                        icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-                      />
-                    </div>
-                  </div>
+                  <ReactionsBar
+                    reactions={EmojiReactions}
+                    venueId={venue.id}
+                    isAudioEffectDisabled={isAudioEffectDisabled}
+                    handleMute={toggleMute}
+                  />
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}

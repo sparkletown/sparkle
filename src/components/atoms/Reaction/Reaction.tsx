@@ -4,12 +4,12 @@ import { EmojiReactionType, ReactionData } from "types/reactions";
 
 import "./Reaction.scss";
 
-export interface PropsType {
+export interface ReactionProps {
   reaction: ReactionData<EmojiReactionType>;
   onClickReaction?: (emojiReaction: EmojiReactionType) => void;
 }
 
-export const Reaction: React.FC<PropsType> = ({
+export const Reaction: React.FC<ReactionProps> = ({
   reaction,
   onClickReaction,
 }) => {

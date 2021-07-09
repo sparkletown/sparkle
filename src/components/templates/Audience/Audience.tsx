@@ -6,8 +6,6 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import {
@@ -27,7 +25,7 @@ import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-import { createEmojiReaction, createTextReaction } from "utils/reactions";
+import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
@@ -37,8 +35,7 @@ import { useUser } from "hooks/useUser";
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
-
-import { Reaction } from "components/atoms/Reaction";
+import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import "./Audience.scss";
 
@@ -154,6 +151,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
+  const toggleMute = useCallback(
+    () => setIsAudioEffectDisabled((state) => !state),
+    []
+  );
 
   const [iframeUrl, setIframeUrl] = useState("");
   useLayoutEffect(() => {
@@ -179,24 +180,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   );
 
   const dispatch = useDispatch();
-
-  // @debt de-duplicate this with version in src/components/templates/Jazzbar/JazzTab/JazzTab.tsx
-  const sendReaction = useCallback(
-    (emojiReaction: EmojiReactionType) => {
-      if (!venueId || !userWithId) return;
-
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createEmojiReaction(emojiReaction, userWithId),
-        })
-      );
-
-      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
-      setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
-    },
-    [venueId, userWithId, dispatch]
-  );
 
   // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -342,27 +325,13 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
     const renderReactionsContainer = () => (
       <>
-        <div className="emoji-container">
-          {burningReactions.map((reaction) => (
-            <Reaction
-              key={reaction.name}
-              reaction={reaction}
-              onClickReaction={sendReaction}
-            />
-          ))}
-          <div
-            className="mute-button"
-            onClick={() => setIsAudioEffectDisabled((state) => !state)}
-          >
-            <FontAwesomeIcon
-              className="reaction"
-              icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-            />
-          </div>
-          <button className="leave-seat-button" onClick={leaveSeat}>
-            Leave Seat
-          </button>
-        </div>
+        <ReactionsBar
+          reactions={burningReactions}
+          venueId={venueId}
+          leaveSeat={leaveSeat}
+          isAudioEffectDisabled={isAudioEffectDisabled}
+          handleMute={toggleMute}
+        />
 
         {venue.showShoutouts && (
           //  @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
@@ -495,11 +464,11 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     reset,
     columnsForSizedAuditorium,
     isAudioEffectDisabled,
+    toggleMute,
     leaveSeat,
     handleSubmit,
     register,
     isShoutSent,
-    sendReaction,
     isSeat,
     partygoersBySeat,
     takeSeat,
