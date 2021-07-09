@@ -135,7 +135,7 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
 
 export const useRelatedVenuesContext = (): RelatedVenuesContextState => {
   const relatedVenuesState = useContext(RelatedVenuesContext);
-  console.log(relatedVenuesState);
+
   if (!relatedVenuesState) {
     throw new Error(
       "<RelatedVenuesProvider/> not found. Did you forget to include it in your component hierarchy?"
