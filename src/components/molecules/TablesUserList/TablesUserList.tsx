@@ -53,7 +53,7 @@ const firestoreUpdate = (doc: string, update: any) => {
 
 const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
 
-const TablesUserList: React.FunctionComponent<PropsType> = ({
+export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
   venueName,
   setSeatedAtTable,
   seatedAtTable,
@@ -236,5 +236,3 @@ const TablesUserList: React.FunctionComponent<PropsType> = ({
     </>
   );
 };
-
-export default TablesUserList;
