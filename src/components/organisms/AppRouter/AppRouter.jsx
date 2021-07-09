@@ -86,10 +86,7 @@ const AppRouter = () => {
         <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
         <Route path="/in/:venueId/admin" component={VenueAdminPage} />
 
-        <Route
-          path="/in/:venueId"
-          component={VenuePage}
-        />
+        <Route path="/in/:venueId" component={VenuePage} />
         <Route path="/version" component={VersionPage} />
         <Route
           path="/venue/*"
