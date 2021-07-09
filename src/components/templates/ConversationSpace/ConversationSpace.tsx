@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
@@ -7,6 +7,8 @@ import { currentVenueSelectorData } from "utils/selectors";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
+import { useShowHide } from "hooks/useShowHide";
+import { useTables } from "hooks/useTables";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -28,7 +30,11 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
+  const { isShown: isChecked, toggle: toggleTables } = useShowHide();
+
   const defaultTables = venue?.config?.tables ?? TABLES;
+  const { availableTables } = useTables({ defaultTables });
+
   const [tables, setTables] = useState(defaultTables);
 
   useEffect(() => setTables(defaultTables), [defaultTables]);
@@ -36,6 +42,11 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
+
+  const onToggleTables = useCallback(() => {
+    toggleTables();
+    setTables(isChecked ? defaultTables : availableTables);
+  }, [isChecked, defaultTables, availableTables, toggleTables]);
 
   if (!venue) return <>Loading...</>;
 
@@ -98,11 +109,8 @@ export const ConversationSpace: React.FunctionComponent = () => {
           {!seatedAtTable && (
             <TablesControlBar
               className="control-bar"
-              defaultTables={defaultTables}
-              venue={venue}
-              users={recentVenueUsers}
-              onToggleTables={setTables}
-              isChecked={tables !== defaultTables}
+              handleChecked={onToggleTables}
+              isChecked={isChecked}
             />
           )}
           <div className="seated-area">

@@ -39,6 +39,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
+import { useTables } from "hooks/useTables";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -60,6 +62,8 @@ interface JazzProps {
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
+  const { isShown: isChecked, toggle: toggleTables } = useShowHide();
+
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
   const parentVenueId = parentVenue?.id;
@@ -76,7 +80,14 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { userWithId } = useUser();
 
   const defaultTables = venue.config?.tables ?? JAZZBAR_TABLES;
+  const { availableTables } = useTables({ defaultTables });
+
   const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
+
+  const onToggleTables = useCallback(() => {
+    toggleTables();
+    setJazzbarTables(isChecked ? defaultTables : availableTables);
+  }, [isChecked, defaultTables, availableTables, toggleTables]);
 
   useEffect(() => setJazzbarTables(defaultTables), [defaultTables]);
 
@@ -255,12 +266,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 </div>
               ) : (
                 <TablesControlBar
-                  defaultTables={defaultTables}
-                  venue={venue}
-                  users={recentVenueUsers}
-                  onToggleTables={setJazzbarTables}
-                  isChecked={jazzbarTables !== defaultTables}
                   className="control-bar"
+                  handleChecked={onToggleTables}
+                  isChecked={isChecked}
                 />
               )}
             </>
