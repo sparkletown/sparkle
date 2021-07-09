@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -24,14 +24,16 @@ import {
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
+import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
+import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useSelector } from "hooks/useSelector";
 import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
@@ -48,9 +50,21 @@ import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-import Login from "pages/Account/Login";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { TemplateWrapper } from "./TemplateWrapper";
+const Login = lazy(() =>
+  tracePromise("VenuePage::lazy-import::Login", () =>
+    import("pages/Account/Login").then(({ Login }) => ({
+      default: Login,
+    }))
+  )
+);
+
+const TemplateWrapper = lazy(() =>
+  tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
+    import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
+      default: TemplateWrapper,
+    }))
+  )
+);
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -72,6 +86,19 @@ export const VenuePage: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
+  const assetsToPreload = useMemo(
+    () =>
+      [
+        venue?.mapBackgroundImageUrl,
+        ...(venue?.rooms ?? []).map((room) => room?.image_url),
+      ]
+        .filter(isDefined)
+        .map((url) => ({ url })),
+    [venue]
+  );
+
+  usePreloadAssets(assetsToPreload);
+
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
@@ -88,10 +115,6 @@ export const VenuePage: React.FC = () => {
   const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
-
-  const { isLoading } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
 
   useEffect(() => {
     if (!venue) return;
@@ -181,6 +204,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!venue || !venueId) {
+    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
@@ -215,7 +239,7 @@ export const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
+    if (!event || !userPurchaseHistoryRequestStatus) {
       return <LoadingPage />;
     }
 
@@ -239,7 +263,7 @@ export const VenuePage: React.FC = () => {
     }
   }
 
-  if (!user || isLoading) {
+  if (!user) {
     return <LoadingPage />;
   }
 
