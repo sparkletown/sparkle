@@ -20,6 +20,7 @@ import { PersonalizedVenueEvent, LocationEvents } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
+import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -29,7 +30,6 @@ import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 import { calcStartPosition } from "./utils";
 
 import "./Schedule.scss";
-import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 export interface ScheduleProps {
   locatedEvents: LocationEvents[];

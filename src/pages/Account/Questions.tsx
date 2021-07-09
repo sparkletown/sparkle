@@ -95,14 +95,13 @@ export const Questions: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = venue?.profile_questions.length;
-  const headerMessage = `Now complete your profile by answering ${
-    numberOfQuestions === 1 ? "this question" : "some short questions"
-  }`;
+  const headerMessage =
+    "To help other Hubbers find and get to know you, tell us a little about yourself.";
+  const REQUIRED_QUESTIONS_NUMBER = 1;
 
   return (
-    <div className="Questions page-container">
-      <div className="hero-logo sparkle" />
+    <div className="Questions page-container questions-container">
+      <div className="hero-logo github" />
       <div className="login-container">
         <h2 className="header-message">{headerMessage}</h2>
 
@@ -111,10 +110,13 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {venue.profile_questions.map((question: QuestionType) => (
+          {venue.profile_questions.map((question: QuestionType, index) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
-                <strong>{question.name}</strong>
+                <p>
+                  {question.name}
+                  {index < REQUIRED_QUESTIONS_NUMBER && "*"}
+                </p>
                 <textarea
                   className="input-block input-centered"
                   name={question.name}

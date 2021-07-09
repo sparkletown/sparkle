@@ -1,0 +1,25 @@
+@import "scss/constants";
+
+.ButtonWithLabel {
+  display: flex;
+  align-items: center;
+
+  p {
+    margin: 0 $spacing--lg;
+    font-size: $font-size--md;
+  }
+
+  .btn {
+    color: white;
+    font-weight: $font-weight--500;
+
+    &-primary {
+      background-image: none !important;
+      background-color: rgb(124, 70, 251) !important;
+    }
+
+    &-secondary {
+      background-color: rgba(255, 255, 255, 0.2) !important;
+    }
+  }
+}
