@@ -32,7 +32,7 @@ export const useTables: ReactHook<UseTablesProps, UseTablesData> = ({
         const lockedTable = experience?.tables[table.title]?.locked;
         const areUsersAtTable = recentVenueUsers.some(
           (user: User) =>
-            getUserExperience(venue?.name)(user)?.table === table.title
+            getUserExperience(venue?.name)(user)?.table === table.reference
         );
 
         return !lockedTable && !areUsersAtTable;
