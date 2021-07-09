@@ -117,11 +117,10 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       </S.Flex>
       <S.Flex>
         <Toggler
-          labelClassName="switch"
           id="useUrl"
           name="useUrl"
-          ref={register}
-          defaultToggled={useUrl}
+          forwardedRef={register}
+          checked={useUrl}
           onToggle={handleUrlToggle}
         />
       </S.Flex>

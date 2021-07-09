@@ -3,7 +3,7 @@ import React, { ChangeEventHandler } from "react";
 import { Checkbox, CheckboxProps } from "components/atoms/Checkbox";
 
 export interface TogglerProps extends CheckboxProps {
-  defaultToggled: boolean;
+  defaultToggled?: boolean;
   onToggle: ChangeEventHandler<HTMLInputElement>;
   containerClassName?: string;
 }

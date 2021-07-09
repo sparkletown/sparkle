@@ -17,12 +17,15 @@ const TableFooter: React.FC<TableFooterProps> = ({
         <div className="focus">Focus on:</div>
         <div className="focus-option">Jazz</div>
         <Toggler
-          labelClassName="switch"
           id="showRadio"
           name="showRadio"
-          defaultToggled={!isVideoFocused}
+          checked={!isVideoFocused}
           onToggle={() => setIsVideoFocused(!isVideoFocused)}
-        />
+        >
+          <label className="switch">
+            <span className="slider" />
+          </label>
+        </Toggler>
         <div className="focus-option">Friends</div>
       </div>
     </div>
