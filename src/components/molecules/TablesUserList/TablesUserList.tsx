@@ -88,15 +88,6 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
 
   const tables: Table[] = customTables || defaultTables;
 
-  const emptyTables = tables.filter(
-    (table) =>
-      !recentVenueUsers.filter(
-        (u) => u.data?.[venueName]?.table === table.reference
-      ).length
-  );
-
-  const isShowStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
-
   const usersAtTables: Record<string, Array<User>> = {};
   for (const table of tables) {
     usersAtTables[table.reference] = [];
@@ -118,6 +109,12 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
       unseatedUsers.push(u);
     }
   }
+
+  const emptyTablesCount = Object.values(usersAtTables).filter(
+    (usersAtTable) => usersAtTable.length === 0
+  ).length;
+
+  const isShowStartTable = emptyTablesCount <= ALLOWED_EMPTY_TABLES_NUMBER;
 
   const tableLocked = (table: string) => {
     // Empty tables are never locked
