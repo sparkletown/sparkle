@@ -31,7 +31,8 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     justify-content: space-around;
     text-align: center;
 
-    width: 90%;
+    pointer-events: all;
+
     min-height: 105px;
     padding: 15px;
 
@@ -48,6 +49,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     height: 100%;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 

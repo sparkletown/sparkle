@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
-import classNames from "classnames";
 
 import { AuditoriumVenue } from "types/venues";
 import { EmojiReactions } from "types/reactions";
@@ -23,6 +22,7 @@ import "./Section.scss";
 export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
 export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
 export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
+export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 export interface SectionProps {
   venue: WithId<AuditoriumVenue>;
@@ -70,11 +70,23 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   const iframeInlineStyles: React.CSSProperties = useMemo(
     () => ({
       width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      height: `calc(${
+        videoHeightInSeats - REACTIONS_CONTAINER_HEIGHT_IN_SEATS
+      } * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
       minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      minHeight: `calc(${
+        videoHeightInSeats - REACTIONS_CONTAINER_HEIGHT_IN_SEATS
+      } * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
     }),
     [videoWidthInSeats, videoHeightInSeats]
+  );
+
+  const reactionsContainerInlineStyles: React.CSSProperties = useMemo(
+    () => ({
+      width: `calc(0.9 * ${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      minWidth: `calc(0.9 * ${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+    }),
+    [videoWidthInSeats]
   );
 
   const seatsGrid = useAuditoriumGrid({
@@ -92,47 +104,38 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [venueId, openUrlUsingRouter]);
 
-  const renderInstructions = () => (
-    <div className="instructions">
-      Welcome! Click on an empty seat to claim it!
-    </div>
-  );
-
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   const userSeated =
     typeof userWithId?.data?.[venue.id]?.row === "number" &&
     typeof userWithId?.data?.[venue.id]?.row === "number";
 
-  const reactionContainerClassnames = classNames(
-    "Section__reactions-container",
-    {
-      seated: userSeated,
-    }
-  );
-
   return (
     <div className="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
-        <IFrame
-          containerClassname="Section__iframe-overlay"
-          iframeClassname="Section__iframe"
-          iframeInlineStyles={iframeInlineStyles}
-          src={iframeUrl}
-        />
-        <div className={reactionContainerClassnames}>
-          {userSeated ? (
-            <ReactionsBar
-              reactions={EmojiReactions}
-              venueId={venueId}
-              leaveSeat={leaveSeat}
-              isAudioEffectDisabled={isAudioEffectDisabled}
-              handleMute={toggleMute}
-            />
-          ) : (
-            renderInstructions()
-          )}
+        <div className="Section__iframe-overlay">
+          <IFrame
+            iframeClassname="Section__iframe"
+            iframeInlineStyles={iframeInlineStyles}
+            src={iframeUrl}
+          />
+          <div
+            style={reactionsContainerInlineStyles}
+            className="Section__reactions-container"
+          >
+            {userSeated ? (
+              <ReactionsBar
+                reactions={EmojiReactions}
+                venueId={venueId}
+                leaveSeat={leaveSeat}
+                isAudioEffectDisabled={isAudioEffectDisabled}
+                handleMute={toggleMute}
+              />
+            ) : (
+              "Welcome! Click on an empty seat to claim it!"
+            )}
+          </div>
         </div>
         {seatsGrid}
       </div>
