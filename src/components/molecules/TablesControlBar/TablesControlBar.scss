@@ -4,7 +4,7 @@ $control-bar-height: 40px;
 
 .TablesControlBar {
   height: $control-bar-height;
-  margin-top: 13px;
+  margin-top: $spacing--md;
 
   &__checkbox {
     justify-content: start;
