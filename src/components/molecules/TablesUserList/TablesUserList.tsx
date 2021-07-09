@@ -114,7 +114,7 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
     (usersAtTable) => usersAtTable.length === 0
   ).length;
 
-  const isShowStartTable = emptyTablesCount <= ALLOWED_EMPTY_TABLES_NUMBER;
+  const canStartTable = emptyTablesCount <= ALLOWED_EMPTY_TABLES_NUMBER;
 
   const tableLocked = (table: string) => {
     // Empty tables are never locked
@@ -189,7 +189,7 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
               nameOfVideoRoom={nameOfVideoRoom(i)}
             />
           ))}
-          {isShowStartTable && (
+          {canStartTable && (
             <StartTable tables={tables} newTable={createTable(tables.length)} />
           )}
         </>
