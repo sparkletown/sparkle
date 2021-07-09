@@ -14,11 +14,11 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 
-import { StartTable } from "../StartTable";
+import { StartTable } from "components/molecules/StartTable";
 
 import "./TablesUserList.scss";
 
-interface PropsType {
+export interface TablesUserListProps {
   venueName: string;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
