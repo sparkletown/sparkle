@@ -48,6 +48,7 @@ const runner = async () => {
     "Full name",
     "Company title",
     "Company department",
+    "I'm loving this song - book - show: ",
     "Last Sign In",
   ].join(",");
   csv += "\n";
@@ -59,6 +60,7 @@ const runner = async () => {
     const realName = doc.data().realName;
     const companyTitle = doc.data().companyTitle;
     const companyDepartment = doc.data().companyDepartment;
+    const Q2 = doc.data()["I'm loving this song - book - show: "];
     const lastSignInTime = new Date(doc.data().lastSeenAt).getTime();
     csv += [
       user?.email ?? doc.id,
@@ -66,6 +68,7 @@ const runner = async () => {
       realName,
       companyTitle,
       companyDepartment,
+      Q2,
       lastSignInTime ? new Date(lastSignInTime).toISOString() : "never",
     ].join(",");
     csv += "\n";
