@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $jazzbar-table-height: 189px;
+$start-table-button-indent: 5px;
 
 .StartTable {
   display: flex;
@@ -12,7 +13,8 @@ $jazzbar-table-height: 189px;
   border: none;
   border-radius: 22px;
   color: $white;
-  margin: 10px 5px 5px;
+  margin: 2 * $start-table-button-indent $start-table-button-indent
+    $start-table-button-indent;
   cursor: pointer;
 
   &--jazzbar {
