@@ -15,8 +15,8 @@ import Room from "components/organisms/Room";
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import { TablesUserList } from "components/molecules/TablesUserList";
 import { UserList } from "components/molecules/UserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 
 import { TABLES } from "./constants";
