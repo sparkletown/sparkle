@@ -1,5 +1,7 @@
 import React from "react";
 
+import { Toggler } from "components/atoms/Toggler";
+
 interface TableFooterProps {
   isVideoFocused: boolean;
   setIsVideoFocused: (val: boolean) => void;
@@ -14,14 +16,13 @@ const TableFooter: React.FC<TableFooterProps> = ({
       <div className="action">
         <div className="focus">Focus on:</div>
         <div className="focus-option">Jazz</div>
-        <label className="switch">
-          <input
-            type="checkbox"
-            checked={!isVideoFocused}
-            onChange={() => setIsVideoFocused(!isVideoFocused)}
-          />
-          <span className="slider" />
-        </label>
+        <Toggler
+          labelClassName="switch"
+          id="showRadio"
+          name="showRadio"
+          defaultToggled={!isVideoFocused}
+          onToggle={() => setIsVideoFocused(!isVideoFocused)}
+        />
         <div className="focus-option">Friends</div>
       </div>
     </div>

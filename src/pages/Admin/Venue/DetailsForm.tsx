@@ -61,6 +61,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
+import { Toggler } from "components/atoms/Toggler";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -631,61 +632,56 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderShowScheduleToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Schedule</h4>
-      <label id={"showSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showSchedule"}
-          name={"showSchedule"}
-          ref={register}
-          defaultChecked={DEFAULT_SHOW_SCHEDULE}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showSchedule"
+        name="showSchedule"
+        ref={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showGrid"
+        name="showGrid"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showBadges"
+        name="showBadges"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderShowZendeskToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showZendesk"
+        name="showZendesk"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
@@ -731,60 +727,56 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showReactions"
+        name="showReactions"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderShowShoutouts = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
-      <label id="showShoutouts" className="switch">
-        <input
-          type="checkbox"
-          id="showShoutouts"
-          name="showShoutouts"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showShoutouts"
+        name="showShoutouts"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showRangers"
+        name="showRangers"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="requiresDateOfBirth"
+        name="requiresDateOfBirth"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 
@@ -905,10 +897,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
+      <Toggler
+        labelClassName="switch"
+        id="showRadio"
+        name="showRadio"
+        ref={register}
+        defaultToggled={false}
+        onToggle={() => undefined}
+      />
     </div>
   );
 

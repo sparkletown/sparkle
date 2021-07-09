@@ -11,6 +11,8 @@ import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import VenueEventDetails from "./VenueEventDetails";
 
 import "./Admin.scss";
@@ -115,18 +117,15 @@ export const AdminVenueRoomDetails = ({
                   }
                 </div>
                 <div className="toggle-room">
-                  <label id={"toggle-" + index} className="switch">
-                    <input
-                      type="checkbox"
-                      id={"toggle-" + index}
-                      name={"toggle-" + index}
-                      checked={room.isEnabled}
-                      onClick={() => {
-                        updateRoom(!room.isEnabled);
-                      }}
-                    />
-                    <span className="slider round"></span>
-                  </label>
+                  <Toggler
+                    labelClassName="switch"
+                    id={"toggle-" + index}
+                    name={"toggle-" + index}
+                    defaultToggled={room.isEnabled}
+                    onToggle={() => {
+                      updateRoom(!room.isEnabled);
+                    }}
+                  />
                   <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
                 </div>
               </div>

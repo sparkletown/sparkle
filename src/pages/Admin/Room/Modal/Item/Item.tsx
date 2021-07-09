@@ -15,6 +15,7 @@ import { CustomInputsType } from "settings";
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import { Toggler } from "components/atoms/Toggler";
 
 import { RoomModalItemProps } from "./Item.types";
 
@@ -115,17 +116,14 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <h4 className="italic input-header">Create venue</h4>
       </S.Flex>
       <S.Flex>
-        <label id={"useUrl"} className="switch">
-          <input
-            type="checkbox"
-            id={"useUrl"}
-            name={"useUrl"}
-            checked={useUrl}
-            onChange={handleUrlToggle}
-            ref={register}
-          />
-          <span className="slider round"></span>
-        </label>
+        <Toggler
+          labelClassName="switch"
+          id="useUrl"
+          name="useUrl"
+          ref={register}
+          defaultToggled={useUrl}
+          onToggle={handleUrlToggle}
+        />
       </S.Flex>
       <S.Flex>
         <h4 className="italic input-header">Use url</h4>
