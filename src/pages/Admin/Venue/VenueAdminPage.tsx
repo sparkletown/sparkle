@@ -7,12 +7,11 @@ import {
 
 import { IFRAME_TEMPLATES } from "settings";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
-import { useVenueId } from "hooks/useVenueId";
+import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { IframeAdmin } from "components/molecules/IframeAdmin";
@@ -20,7 +19,7 @@ import { BannerAdmin } from "components/organisms/BannerAdmin";
 
 import "./VenueAdminPage.scss";
 
-const VenueAdminPageContents: React.FC = () => {
+export const VenueAdminPage: React.FC = () => {
   const { profile, user } = useUser();
   const venueId = useVenueId();
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
@@ -57,14 +56,5 @@ const VenueAdminPageContents: React.FC = () => {
       <BannerAdmin venueId={venueId} venue={venue} />
       {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
     </>
-  );
-};
-
-export const VenueAdminPage = () => {
-  const venueId = useVenueId();
-  return (
-    <RelatedVenuesProvider venueId={venueId}>
-      <VenueAdminPageContents />
-    </RelatedVenuesProvider>
   );
 };

@@ -16,6 +16,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { Provided } from "components/organisms/AppRouter/Provided";
 
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
@@ -72,7 +73,14 @@ export const AppRouter: React.FC = () => {
         <Switch>
           <Route path="/enter" component={EnterSubrouter} />
           <Route path="/account" component={AccountSubrouter} />
-          <Route path="/admin" component={AdminSubrouter} />
+          <Route
+            path="/admin"
+            render={() => (
+              <Provided withWorldUsers>
+                <AdminSubrouter />
+              </Provided>
+            )}
+          />
           <Route path="/admin-ng" component={AdminSubrouter} />
 
           <Route
@@ -84,7 +92,14 @@ export const AppRouter: React.FC = () => {
 
           <Route path="/v/:venueId" component={VenueLandingPage} />
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
-          <Route path="/in/:venueId/admin" component={VenueAdminPage} />
+          <Route
+            path="/in/:venueId/admin"
+            render={() => (
+              <Provided withRelatedVenues>
+                <VenueAdminPage />
+              </Provided>
+            )}
+          />
           <Route path="/in/:venueId" component={VenuePage} />
           <Route path="/version" component={VersionPage} />
 
