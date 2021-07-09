@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 
 import { UserStatus } from "types/User";
 
-import { useProfileStatus } from "hooks/useProfileStatus";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserStatusDropdown.scss";
 
@@ -14,20 +14,20 @@ export interface UserStatusDropdownProps {
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   userStatuses,
 }) => {
-  const { status, changeUserStatus } = useProfileStatus();
+  const { userStatus, changeUserStatus } = useVenueUserStatuses();
 
   // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
   useEffect(() => {
-    if (!status) return;
+    if (!userStatus) return;
 
     const statusTexts = userStatuses.map((userStatus) => userStatus.status);
 
     const defaultUserStatus = userStatuses[0].status;
 
-    if (!statusTexts.includes(status)) {
+    if (!statusTexts.includes(userStatus.status)) {
       changeUserStatus(defaultUserStatus);
     }
-  }, [changeUserStatus, status, userStatuses]);
+  }, [changeUserStatus, userStatus, userStatuses]);
 
   const userStatusDropdownOptions = useMemo(
     () =>
@@ -46,7 +46,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
     // @debt replace with our own dropdown component
     <DropdownButton
       id="user-status-dropdown"
-      title={status ?? "change status"}
+      title={userStatus.status ?? "change status"}
       className="UserStatusDropdown"
     >
       {userStatusDropdownOptions}
