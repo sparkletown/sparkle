@@ -185,7 +185,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [recentVenueUsers, tables, venueName]
   );
 
-  const canStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
+  const canStartTable =
+    emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
 
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;

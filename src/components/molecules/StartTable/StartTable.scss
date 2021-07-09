@@ -20,7 +20,7 @@ $start-table-internal-indent: 25px;
   border: none;
   border-radius: 22px;
   color: $white;
-  margin: 2 * $start-table-button-indent $start-table-button-indent
+  margin: calc(2 * #{$start-table-button-indent}) $start-table-button-indent
     $start-table-button-indent;
   cursor: pointer;
 
@@ -37,18 +37,18 @@ $start-table-internal-indent: 25px;
     }
   }
 
- &:disabled {
-   cursor: not-allowed;
+  &:disabled {
+    cursor: not-allowed;
 
-   .StartTable__sign,
-   .StartTable__title {
-     display: none;
-   }
+    .StartTable__sign,
+    .StartTable__title {
+      display: none;
+    }
 
-   .StartTable__loading {
-     display: block;
-   }
- }
+    .StartTable__loading {
+      display: block;
+    }
+  }
 
   &--jazzbar {
     margin: 0;
