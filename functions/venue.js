@@ -203,7 +203,10 @@ const createVenueData = (data, context) => {
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
+    userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
+    showUserStatus:
+      typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
@@ -367,8 +370,16 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.showReactions = data.showReactions;
   }
 
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
   if (typeof data.showShoutouts === "boolean") {
     updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
   }
 
   if (data.attendeesTitle) {

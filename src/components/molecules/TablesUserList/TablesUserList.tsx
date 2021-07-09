@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import firebase from "firebase/app";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
+import firebase from "firebase/app";
 
 import {
   DEFAULT_TABLE_ROWS,
@@ -9,17 +9,20 @@ import {
   ALLOWED_EMPTY_TABLES_NUMBER,
 } from "settings";
 
-import { User } from "types/User";
 import { Table, TableComponentPropsType } from "types/Table";
+import { User } from "types/User";
 
-import { isTruthy } from "utils/types";
 import { experienceSelector } from "utils/selectors";
+import { isTruthy } from "utils/types";
+import { getUserExperience } from "utils/user";
 
-import { useUser } from "hooks/useUser";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
 
 import { StartTable } from "components/molecules/StartTable";
+import { Loading } from "components/molecules/Loading";
 
 import "./TablesUserList.scss";
 
@@ -33,8 +36,10 @@ export interface TablesUserListProps {
   leaveText?: string;
 }
 
-const TABLES = 4;
+// @debt refactor this into src/settings or similar
+const DEFAULT_TABLE_COUNT = 4;
 
+// @debt replace this with generateTables from src/utils/table.ts
 const createTable = (i: number): Table => {
   return {
     title: `Table ${i + 1}`,
@@ -45,6 +50,7 @@ const createTable = (i: number): Table => {
   };
 };
 
+// @debt Remove this eslint-disable + fix the any type properly + move to api/* or remove outright
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const firestoreUpdate = (doc: string, update: any) => {
   const firestore = firebase.firestore();
@@ -56,7 +62,19 @@ const firestoreUpdate = (doc: string, update: any) => {
     });
 };
 
-const defaultTables = [...Array(TABLES)].map((_, i: number) => createTable(i));
+const defaultTables = [...Array(DEFAULT_TABLE_COUNT)].map((_, i: number) =>
+  createTable(i)
+);
+
+export interface TablesUserListProps {
+  venueName: string;
+  setSeatedAtTable: (value: string) => void;
+  seatedAtTable: string;
+  customTables?: Table[];
+  TableComponent: React.FC<TableComponentPropsType>;
+  joinMessage: boolean;
+  leaveText?: string;
+}
 
 export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
   venueName,
@@ -66,169 +84,178 @@ export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
   TableComponent,
   joinMessage,
 }) => {
-  const [showLockedMessage, setShowLockedMessage] = useState(false);
-  const [showJoinMessage, setShowJoinMessage] = useState(false);
+  const {
+    isShown: isLockedMessageVisible,
+    show: showLockedMessage,
+    hide: hideLockedMessage,
+  } = useShowHide(false);
+
+  const {
+    isShown: isJoinMessageVisible,
+    show: showJoinMessage,
+    hide: hideJoinMessage,
+  } = useShowHide(false);
+
   const [joiningTable, setJoiningTable] = useState("");
   const [videoRoom, setVideoRoom] = useState("");
 
-  const nameOfVideoRoom = (i: number) => {
-    return `${venueName}-table${i + 1}`;
-  };
-
   const { user, profile } = useUser();
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
+    venueName,
+  });
   const experience = useSelector(experienceSelector);
-
-  useEffect(() => {
-    if (!profile) return;
-    const table = profile.data?.[venueName]?.table;
-    if (table) {
-      setSeatedAtTable(table);
-    } else {
-      setSeatedAtTable("");
-    }
-  }, [profile, setSeatedAtTable, user, venueName]);
-
-  if (!isRecentVenueUsersLoaded) return <>Loading...</>;
 
   const tables: Table[] = customTables || defaultTables;
 
-  const usersAtTables: Record<string, Array<User>> = {};
-  for (const table of tables) {
-    usersAtTables[table.reference] = [];
-  }
-  const unseatedUsers = [];
-  for (const u of recentVenueUsers.filter((u: User) =>
-    u.lastSeenIn ? u.lastSeenIn[venueName] : ""
-  )) {
-    if (
-      u.data &&
-      u.data[venueName] &&
-      u.data[venueName].table &&
-      tables
-        .map((table: Table) => table.reference)
-        .includes(u.data[venueName].table)
-    ) {
-      usersAtTables[u.data[venueName].table].push(u);
-    } else {
-      unseatedUsers.push(u);
-    }
-  }
+  const { table: userTable } = getUserExperience(venueName)(profile) ?? {};
 
-  const emptyTablesCount = Object.values(usersAtTables).filter(
-    (usersAtTable) => usersAtTable.length === 0
-  ).length;
+  useEffect(() => {
+    userTable ? setSeatedAtTable(userTable) : setSeatedAtTable("");
+  }, [setSeatedAtTable, userTable]);
 
-  const canStartTable = emptyTablesCount <= ALLOWED_EMPTY_TABLES_NUMBER;
-
-  const tableLocked = (table: string) => {
-    // Empty tables are never locked
-    if (
-      recentVenueUsers.filter(
-        (user: User) => user.data?.[venueName]?.table === table
-      ).length === 0
-    ) {
-      return false;
-    }
-    // Locked state is in the experience record
-    return isTruthy(experience?.tables?.[table]?.locked);
-  };
-
-  const onJoinClicked = (table: string, locked: boolean, videoRoom: string) => {
-    if (locked) {
-      setShowLockedMessage(true);
-    } else {
-      setJoiningTable(table);
-      setVideoRoom(videoRoom);
-      joinMessage ? setShowJoinMessage(true) : onAcceptJoinMessage(table);
-    }
-  };
-
-  const onAcceptJoinMessage = (table: string) => {
-    window.scrollTo(0, 0);
-    setShowJoinMessage(false);
-    takeSeat(table);
-    setSeatedAtTable(table);
-  };
+  const isSeatedAtTable = seatedAtTable !== "";
 
   // @debt can we refactor this to make use of makeUpdateUserGridLocation ?
-  const takeSeat = (table: string) => {
-    if (!user) return;
-    const doc = `users/${user.uid}`;
-    const existingData = recentVenueUsers.find((u) => u.id === user.uid)?.data;
+  // @debt refactor this into api/* layer or similar?
+  const takeSeat = useCallback(
+    (table: string) => {
+      if (!user) return;
 
-    const update = {
-      data: {
-        ...existingData,
-        [venueName]: {
-          table,
-          videoRoom,
+      const doc = `users/${user.uid}`;
+      const existingData = recentVenueUsers.find((u) => u.id === user.uid)
+        ?.data;
+
+      const update = {
+        data: {
+          ...existingData,
+          [venueName]: {
+            table,
+            videoRoom,
+          },
         },
-      },
-    };
-    firestoreUpdate(doc, update);
-  };
+      };
 
-  const usersAtOtherTables = [];
-  for (const table of tables) {
-    if (table.reference === seatedAtTable) {
-      continue;
-    }
-    usersAtOtherTables.push(...usersAtTables[table.reference]);
-  }
+      firestoreUpdate(doc, update);
+    },
+    [recentVenueUsers, user, venueName, videoRoom]
+  );
+
+  const tableLocked = useCallback(
+    (table: string) => {
+      const areUsersAtTable = recentVenueUsers.some(
+        (user: User) => getUserExperience(venueName)(user)?.table === table
+      );
+
+      // Empty tables are never locked
+      if (!areUsersAtTable) return false;
+
+      // Locked state is in the experience record
+      return isTruthy(experience?.tables?.[table]?.locked);
+    },
+    [experience?.tables, recentVenueUsers, venueName]
+  );
+
+  const onAcceptJoinMessage = useCallback(
+    (table: string) => {
+      window.scrollTo(0, 0);
+      hideJoinMessage();
+      takeSeat(table);
+      setSeatedAtTable(table);
+    },
+    [hideJoinMessage, setSeatedAtTable, takeSeat]
+  );
+
+  const acceptJoiningTable = useCallback(
+    () => onAcceptJoinMessage(joiningTable),
+    [joiningTable, onAcceptJoinMessage]
+  );
+
+  const onJoinClicked = useCallback(
+    (table: string, locked: boolean, videoRoom: string) => {
+      if (locked) {
+        showLockedMessage();
+      } else {
+        setJoiningTable(table);
+        setVideoRoom(videoRoom);
+        joinMessage ? showJoinMessage() : onAcceptJoinMessage(table);
+      }
+    },
+    [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
+  );
+
+  const emptyTables = tables.filter(
+    (table) =>
+      !recentVenueUsers.filter(
+        (u) => u.data?.[venueName]?.table === table.reference
+      ).length
+  );
+
+  const canStartTable = emptyTables.length <= 20 || ALLOWED_EMPTY_TABLES_NUMBER;
+
+  const renderedTables = useMemo(() => {
+    if (isSeatedAtTable) return;
+
+    return tables.map((table: Table, index: number) => (
+      <TableComponent
+        key={table.reference}
+        experienceName={venueName}
+        users={recentVenueUsers}
+        table={table}
+        tableLocked={tableLocked}
+        onJoinClicked={onJoinClicked}
+        // @debt should this be using the table.reference (rather than index) for nameOfVideoRoom?
+        nameOfVideoRoom={`${venueName}-table${index + 1}`}
+      />
+    ));
+  }, [
+    TableComponent,
+    isSeatedAtTable,
+    onJoinClicked,
+    recentVenueUsers,
+    tableLocked,
+    tables,
+    venueName,
+  ]);
+
+  if (!isRecentVenueUsersLoaded) return <Loading />;
 
   return (
     <>
-      {seatedAtTable !== "" ? (
-        <></>
-      ) : (
-        <>
-          {tables.map((table: Table, i: number) => (
-            <TableComponent
-              key={table.reference}
-              experienceName={venueName}
-              users={recentVenueUsers}
-              table={table}
-              tableLocked={tableLocked}
-              onJoinClicked={onJoinClicked}
-              nameOfVideoRoom={nameOfVideoRoom(i)}
-            />
-          ))}
-          {canStartTable && (
-            <StartTable tables={tables} newTable={createTable(tables.length)} />
-          )}
-        </>
+      {renderedTables}
+      {canStartTable && (
+        <StartTable tables={tables} newTable={createTable(tables.length)} />
       )}
-
-      <Modal
-        show={showLockedMessage}
-        onHide={() => setShowLockedMessage(false)}
-      >
+      <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>{`Can't join this table because it's been locked.`}</p>
+
             <p>Perhaps ask in the chat?</p>
+
             <button
               type="button"
               className="btn btn-block btn-centered"
-              onClick={() => setShowLockedMessage(false)}
+              onClick={hideLockedMessage}
             >
               Back
             </button>
           </div>
         </Modal.Body>
       </Modal>
-      <Modal show={showJoinMessage} onHide={() => setShowJoinMessage(false)}>
+
+      <Modal show={isJoinMessageVisible} onHide={hideJoinMessage}>
         <Modal.Body>
           <div className="modal-container modal-container_message">
             <p>
               To avoid feedback from the music, we recommend wearing headphones.
             </p>
+
             <p>You can also adjust the volume on the live stream.</p>
+
             <button
               type="button"
               className="btn btn-block btn-centered"
-              onClick={() => onAcceptJoinMessage(joiningTable)}
+              onClick={acceptJoiningTable}
             >
               OK
             </button>

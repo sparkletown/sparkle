@@ -1,21 +1,31 @@
-import React, { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { updateUserProfile } from "./helpers";
-import "./Account.scss";
-import getQueryParameters from "utils/getQueryParameters";
-import { RouterLocation } from "types/RouterLocation";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-import { updateTheme } from "pages/VenuePage/helpers";
-import { useUser } from "hooks/useUser";
+import React, { useCallback, useEffect } from "react";
+import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { useSelector } from "hooks/useSelector";
-import { venueInsideUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
+import { useForm } from "react-hook-form";
+import { useAsyncFn, useSearchParam } from "react-use";
+
 import { IS_BURN } from "secrets";
 
-interface PropsType {
-  location: RouterLocation;
-}
+import { currentVenueSelectorData } from "utils/selectors";
+import { externalUrlAdditionalProps, venueInsideUrl } from "utils/url";
+
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
+import { updateTheme } from "pages/VenuePage/helpers";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
+import { Loading } from "components/molecules/Loading";
+
+import { updateUserProfile } from "./helpers";
+
+// @debt refactor the questions related styles from Account.scss into CodeOfConduct.scss
+import "./Account.scss";
+
+import "./CodeOfConduct.scss";
+
 export interface CodeOfConductFormData {
   contributeToExperience: string;
   cheerBand: string;
@@ -33,6 +43,10 @@ export interface CodeOfConductQuestion {
   link?: string;
 }
 
+/**
+ * @debt remove this along with Playa cleanup
+ * @deprecated
+ */
 const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
   {
     name: "commonDecency",
@@ -52,13 +66,19 @@ const BURN_CODE_OF_CONDUCT_QUESTIONS: CodeOfConductQuestion[] = [
   },
 ];
 
-const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
-  useConnectCurrentVenue();
-
-  const { user } = useUser();
-  const venue = useSelector(currentVenueSelectorData);
+export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
-  const { venueId, returnUrl } = getQueryParameters(location.search);
+  const returnUrl = useSearchParam("returnUrl") ?? undefined;
+
+  const { user, userWithId } = useUser();
+
+  const venueId = useVenueId();
+
+  // @debt this should probably be retrieving the sovereign venue
+  // @debt replace this with useConnectCurrentVenueNG or similar?
+  useConnectCurrentVenue();
+  const venue = useSelector(currentVenueSelectorData);
+
   const {
     register,
     handleSubmit,
@@ -67,22 +87,38 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     watch,
   } = useForm<CodeOfConductFormData>({
     mode: "onChange",
+    // @ts-ignore @debt Figure a way to type this properly
+    defaultValues: {
+      ...userWithId,
+    },
   });
 
-  const proceed = () => {
-    const nextUrl = venueId
-      ? venueInsideUrl(venueId.toString())
-      : returnUrl
-      ? returnUrl.toString()
-      : "";
-    history.push(nextUrl);
-  };
+  const proceed = useCallback(() => {
+    // @debt Should we throw an error here rather than defaulting to empty string?
+    const nextUrl = venueId ? venueInsideUrl(venueId) : returnUrl ?? "";
 
-  const onSubmit = async (data: CodeOfConductFormData) => {
-    if (!user) return;
-    await updateUserProfile(user.uid, data);
-    proceed();
-  };
+    history.push(nextUrl);
+  }, [history, returnUrl, venueId]);
+
+  useEffect(() => {
+    if (!venue) return;
+
+    // Skip this screen if there are no code of conduct questions for the venue
+    if (!venue?.code_of_conduct_questions.length) {
+      proceed();
+    }
+  }, [proceed, venue]);
+
+  const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
+    async (data: CodeOfConductFormData) => {
+      if (!user) return;
+
+      await updateUserProfile(user.uid, data);
+
+      proceed();
+    },
+    [proceed, user]
+  );
 
   useEffect(() => {
     if (!venue) return;
@@ -91,15 +127,16 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     updateTheme(venue);
   }, [venue]);
 
-  if (!venue) {
-    return <>Loading...</>;
+  if (!venueId) {
+    return <>Error: Missing required venueId param</>;
   }
 
-  if (
-    !venue.code_of_conduct_questions ||
-    venue.code_of_conduct_questions.length === 0
-  ) {
-    proceed();
+  if (isLoaded(venue) && !venue) {
+    return <>Error: venue not found for venueId={venueId}</>;
+  }
+
+  if (!venue) {
+    return <LoadingPage />;
   }
 
   const codeOfConductQuestions = IS_BURN
@@ -107,57 +144,65 @@ const CodeOfConduct: React.FunctionComponent<PropsType> = ({ location }) => {
     : venue.code_of_conduct_questions;
 
   return (
-    <div className="page-container code-of-conduct-container">
-      <div className="code-of-conduct-form">
+    <div className="CodeOfConduct page-container">
+      <div className="CodeOfConduct__form">
         <div>
-          <h2 className="final-step-title">Final step: agree to our terms</h2>
-          <form onSubmit={handleSubmit(onSubmit)} className="form">
-            {codeOfConductQuestions &&
-              codeOfConductQuestions.map((q) => (
-                <div className="input-group" key={q.name}>
-                  <label
-                    htmlFor={q.name}
-                    className={`checkbox ${
-                      watch(q.name) && "checkbox-checked"
-                    }`}
-                  >
-                    {q.link && (
-                      <a
-                        href={q.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {q.text}
-                      </a>
-                    )}
-                    {!q.link && q.text}
-                  </label>
-                  <input
-                    type="checkbox"
-                    name={q.name}
-                    id={q.name}
-                    ref={register({
-                      required: true,
-                    })}
-                  />
-                  {/* @ts-ignore @debt questions should be typed if possible */}
-                  {q.name in errors && errors[q.name].type === "required" && (
-                    <span className="input-error">Required</span>
-                  )}
-                </div>
-              ))}
+          <h2 className="CodeOfConduct__title">
+            Final step: agree to our terms
+          </h2>
 
-            <input
-              className="btn btn-primary btn-block btn-centered"
-              type="submit"
-              value="Enter the event"
-              disabled={!formState.isValid}
-            />
+          <form onSubmit={handleSubmit(onSubmit)} className="form">
+            {codeOfConductQuestions.map((question) => (
+              <div className="input-group" key={question.name}>
+                {/* @debt we should probably be rendering the question.name here as a label */}
+                {/*<strong>{question.name}</strong>*/}
+                <label
+                  htmlFor={question.name}
+                  className={`checkbox ${
+                    watch(question.name) && "checkbox-checked"
+                  }`}
+                >
+                  {question.link && (
+                    <a href={question.link} {...externalUrlAdditionalProps}>
+                      {question.text}
+                    </a>
+                  )}
+                  {!question.link && question.text}
+                </label>
+
+                <input
+                  type="checkbox"
+                  name={question.name}
+                  id={question.name}
+                  ref={register({
+                    required: true,
+                  })}
+                />
+                {
+                  /* @ts-ignore @debt questions should be typed if possible */
+                  errors[question.name]?.type === "required" && (
+                    <span className="input-error">Required</span>
+                  )
+                }
+              </div>
+            ))}
+
+            <div className="input-group">
+              <button
+                type="submit"
+                className="btn btn-primary btn-block btn-centered"
+                disabled={!formState.isValid || isUpdating}
+              >
+                Enter the event
+              </button>
+              {isUpdating && <Loading />}
+              {httpError && (
+                <span className="input-error">{httpError.message}</span>
+              )}
+            </div>
           </form>
         </div>
       </div>
     </div>
   );
 };
-
-export default CodeOfConduct;
