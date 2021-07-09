@@ -21,11 +21,7 @@ const TableFooter: React.FC<TableFooterProps> = ({
           name="showRadio"
           checked={!isVideoFocused}
           onToggle={() => setIsVideoFocused(!isVideoFocused)}
-        >
-          <label className="switch">
-            <span className="slider" />
-          </label>
-        </Toggler>
+        />
         <div className="focus-option">Friends</div>
       </div>
     </div>

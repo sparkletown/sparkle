@@ -124,8 +124,8 @@ export const AdminVenueRoomDetails = ({
                     onToggle={() => {
                       updateRoom(!room.isEnabled);
                     }}
+                    label={"Turn room" + (room.isEnabled ? "Off" : "On")}
                   />
-                  <div>Turn room {room.isEnabled ? "Off" : "On"}</div>
                 </div>
               </div>
             </div>
