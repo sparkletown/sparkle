@@ -54,7 +54,7 @@ export const StartTable: React.FC<StartTablePropsType> = ({
   }, [newTable, tables, venue?.id]);
 
   const containerClasses = classNames("StartTable", {
-    StartTable__jazzbar: venue?.template === VenueTemplate.jazzbar,
+    "StartTable--jazzbar": venue?.template === VenueTemplate.jazzbar,
   });
 
   return (
