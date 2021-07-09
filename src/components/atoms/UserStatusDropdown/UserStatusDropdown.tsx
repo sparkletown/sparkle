@@ -8,19 +8,17 @@ import { useProfileStatus } from "hooks/useProfileStatus";
 import "./UserStatusDropdown.scss";
 
 export interface UserStatusDropdownProps {
-  userStatuses?: UserStatus[];
+  userStatuses: UserStatus[];
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
-  userStatuses = [],
+  userStatuses,
 }) => {
   const { status, changeUserStatus } = useProfileStatus();
 
   // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
   useEffect(() => {
-    const hasUserStatuses = !!userStatuses.length;
-
-    if (!status || !hasUserStatuses) return;
+    if (!status) return;
 
     const statusTexts = userStatuses.map((userStatus) => userStatus.status);
 

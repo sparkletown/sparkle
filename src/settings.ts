@@ -11,7 +11,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { DefaultUserStatus } from "types/User";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -629,7 +628,7 @@ export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
 export const DEFAULT_USER_STATUS = {
-  status: DefaultUserStatus.online,
+  status: "Online",
   color: "#53E52A",
 };
 
