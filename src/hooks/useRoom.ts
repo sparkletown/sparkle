@@ -24,7 +24,7 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { relatedVenues } = useRelatedVenues({});
 
   const roomVenue = useMemo(
-    () => relatedVenues?.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
+    () => relatedVenues.find((venue) => roomUrl.endsWith(`/${venue.id}`)),
     [roomUrl, relatedVenues]
   );
 
