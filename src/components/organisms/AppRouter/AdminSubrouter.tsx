@@ -26,11 +26,12 @@ export const AdminSubrouter: React.FC = () => {
       />
       <Route
         path="/admin/venue/creation"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <VenueWizard />
-          </Provided>
-        )}
+        component={
+          // for some state related reasons, Provided fails this VenueWizard
+          // and using function here will cause the error
+          // so WithNavigationBar wraps the RelatedVenuesProvider for it
+          VenueWizard
+        }
       />
       <Route
         path="/admin/venue/edit/:venueId"
