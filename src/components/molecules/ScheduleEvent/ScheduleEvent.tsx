@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
+import { minutesToHours } from "date-fns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -34,7 +35,6 @@ import {
 import { PersonalizedVenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
-import { convertHoursToMinutes } from "utils/time";
 
 import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
@@ -72,13 +72,13 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     hide: hideExpandedStatic,
   } = useShowHide();
 
-  const eventWidthPx = convertHoursToMinutes(
+  const eventWidthPx = minutesToHours(
     event.duration_minutes * SCHEDULE_HOUR_COLUMN_WIDTH_PX
   );
 
-  const expandedEventPx = convertHoursToMinutes(
-    SCHEDULE_LONG_EVENT_LENGTH_MIN * SCHEDULE_HOUR_COLUMN_WIDTH_PX
-  );
+  const expandedEventPx =
+    minutesToHours(SCHEDULE_LONG_EVENT_LENGTH_MIN) *
+    SCHEDULE_HOUR_COLUMN_WIDTH_PX;
 
   const eventMarginLeftPx = calcStartPosition(
     event.start_utc_seconds,

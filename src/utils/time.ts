@@ -251,7 +251,3 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
-
-// @debt replace with hoursToMinutes from date-fns 2.21 after upgrade from 2.12
-export const convertHoursToMinutes = (data: number) =>
-  data / ONE_HOUR_IN_MINUTES;
