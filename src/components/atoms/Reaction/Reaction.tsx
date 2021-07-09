@@ -6,23 +6,19 @@ import "./Reaction.scss";
 
 export interface PropsType {
   reaction: ReactionData<EmojiReactionType>;
-  reactionClicked?: (emojiReaction: EmojiReactionType) => void;
+  onClickReaction?: (emojiReaction: EmojiReactionType) => void;
 }
 
 export const Reaction: React.FC<PropsType> = ({
   reaction,
-  reactionClicked,
+  onClickReaction,
 }) => {
   const handleReactionClick = useCallback(() => {
-    reactionClicked && reactionClicked(reaction.type);
-  }, [reactionClicked, reaction]);
+    onClickReaction && onClickReaction(reaction.type);
+  }, [onClickReaction, reaction]);
 
   return (
-    <button
-      className="Reaction"
-      onClick={handleReactionClick}
-      id={`send-reaction-${reaction.type}`}
-    >
+    <button className="Reaction" onClick={handleReactionClick}>
       <span role="img" aria-label={reaction.ariaLabel}>
         {reaction.text}
       </span>

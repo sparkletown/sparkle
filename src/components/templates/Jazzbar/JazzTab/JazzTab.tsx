@@ -85,7 +85,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const venueId = useVenueId();
 
   // @debt de-duplicate this with version in src/components/templates/Audience/Audience.tsx
-  const reactionClicked = useCallback(
+  const sendReaction = useCallback(
     (emojiReaction: EmojiReactionType) => {
       if (!venueId || !userWithId) return;
 
@@ -219,7 +219,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       <Reaction
                         key={reaction.name}
                         reaction={reaction}
-                        reactionClicked={reactionClicked}
+                        onClickReaction={sendReaction}
                       />
                     ))}
                     <div

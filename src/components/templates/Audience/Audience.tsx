@@ -181,7 +181,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const dispatch = useDispatch();
 
   // @debt de-duplicate this with version in src/components/templates/Jazzbar/JazzTab/JazzTab.tsx
-  const reactionClicked = useCallback(
+  const sendReaction = useCallback(
     (emojiReaction: EmojiReactionType) => {
       if (!venueId || !userWithId) return;
 
@@ -347,7 +347,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
             <Reaction
               key={reaction.name}
               reaction={reaction}
-              reactionClicked={reactionClicked}
+              onClickReaction={sendReaction}
             />
           ))}
           <div
@@ -499,7 +499,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     handleSubmit,
     register,
     isShoutSent,
-    reactionClicked,
+    sendReaction,
     isSeat,
     partygoersBySeat,
     takeSeat,
