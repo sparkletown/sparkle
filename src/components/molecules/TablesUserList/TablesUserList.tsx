@@ -173,12 +173,16 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
   );
 
-  const emptyTables = tables.filter(
-    (table) =>
-      !recentVenueUsers.some(
-        (user: User) =>
-          getUserExperience(venueName)(user)?.table === table.reference
-      )
+  const emptyTables = useMemo(
+    () =>
+      tables.filter(
+        (table) =>
+          !recentVenueUsers.some(
+            (user: User) =>
+              getUserExperience(venueName)(user)?.table === table.reference
+          )
+      ),
+    [recentVenueUsers, tables, venueName]
   );
 
   const canStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
