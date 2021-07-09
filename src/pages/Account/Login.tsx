@@ -1,17 +1,17 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
 
-import { DEFAULT_CUSTOM_AUTH_CONFIG } from "settings";
-
 import { AnyVenue } from "types/venues";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
 import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
+import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -36,16 +36,16 @@ export const Login: React.FC<LoginProps> = ({
   venue,
 }) => {
   const venueId = venue.id;
-
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    venue.samlAuthProviderId
+    sovereignVenue?.samlAuthProviderId
   );
 
   const {
     loading: isCustomAuthConfigLoading,
-    value: fetchedCustomAuthConfig,
+    value: customAuthConfig,
   } = useAsync(async () => {
     return tracePromise(
       "Login::fetchCustomAuthConfig",
@@ -59,18 +59,16 @@ export const Login: React.FC<LoginProps> = ({
     );
   }, [venueId]);
 
-  const {
-    customAuthName,
-    customAuthConnectPath,
-  } = !!fetchedCustomAuthConfig?.customAuthConnectPath
-    ? fetchedCustomAuthConfig
-    : DEFAULT_CUSTOM_AUTH_CONFIG;
+  const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
 
+  const hasCustomAuthConnect = isDefined(customAuthConnectPath);
   const signInWithCustomAuth = useCallback(() => {
     openUrl(
       `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
     );
   }, [customAuthConnectPath, venueId]);
+
+  const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -94,28 +92,32 @@ export const Login: React.FC<LoginProps> = ({
         <img src="/sparkle-header.png" alt="" width="100%" />
       </div>
       <div className="auth-form-container">
-        <div className="Login__login-box">
-          <span>Quick log in with</span>
+        {hasAlternativeLogins && (
+          <div className="Login__login-box">
+            <span>Quick log in with</span>
 
-          <div className="Login__alternative-logins">
-            <img
-              className="Login__quick-login-icon"
-              src={SAMLLoginIcon}
-              onClick={signInWithCustomAuth}
-              title={customAuthName}
-              alt={customAuthName}
-            />
-            {hasSamlAuthProviderId && (
-              <img
-                className="Login__quick-login-icon"
-                src={SAMLLoginIcon}
-                onClick={signInWithSAML}
-                title="SAML SSO login"
-                alt="SAML SSO login"
-              />
-            )}
+            <div className="Login__alternative-logins">
+              {hasCustomAuthConnect && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithCustomAuth}
+                  title={customAuthName}
+                  alt={customAuthName}
+                />
+              )}
+              {hasSamlAuthProviderId && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithSAML}
+                  title="SAML SSO login"
+                  alt="SAML SSO login"
+                />
+              )}
+            </div>
           </div>
-        </div>
+        )}
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}

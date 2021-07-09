@@ -9,12 +9,9 @@ import {
   PROJECT_ID,
   IS_BURN,
 } from "secrets";
-
-import { RoomType } from "types/rooms";
 import { VenueTemplate } from "types/venues";
+import { RoomType } from "types/rooms";
 import { DefaultUserStatus } from "types/User";
-
-import { CustomAuthConfig } from "api/auth";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -562,11 +559,6 @@ export const FIREBASE_CONFIG = {
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
-};
-
-export const DEFAULT_CUSTOM_AUTH_CONFIG: CustomAuthConfig = {
-  customAuthName: "I4A",
-  customAuthConnectPath: "/auth/connect/i4a",
 };
 
 export const DEFAULT_VENUE = "zilloween";
