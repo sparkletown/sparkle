@@ -105,10 +105,6 @@ export const Questions: React.FC = () => {
       <div className="login-container">
         <h2 className="header-message">{headerMessage}</h2>
 
-        <p className="subheader-message">
-          This will help your fellow partygoers break the ice
-        </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           {venue.profile_questions.map((question: QuestionType, index) => (
             <div key={question.name} className="Questions__question form-group">
