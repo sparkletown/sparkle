@@ -4,6 +4,7 @@ import { tracePromise } from "utils/performance";
 
 import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { WorldUsersProvider } from "hooks/users";
 
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
@@ -37,11 +38,13 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    all to have a standard 'admin wrapper frame' in a similar way to how src/pages/VenuePage/TemplateWrapper.tsx
        *    works on the user side of things.
        */}
-      <RelatedVenuesProvider venueId={venueId}>
-        <Suspense fallback={<Loading />}>
-          <NavBar hasBackButton={hasBackButton} />
-        </Suspense>
-      </RelatedVenuesProvider>
+      <WorldUsersProvider venueId={venueId}>
+        <RelatedVenuesProvider venueId={venueId}>
+          <Suspense fallback={<Loading />}>
+            <NavBar hasBackButton={hasBackButton} />
+          </Suspense>
+        </RelatedVenuesProvider>
+      </WorldUsersProvider>
 
       <div className="navbar-margin">{children}</div>
 
