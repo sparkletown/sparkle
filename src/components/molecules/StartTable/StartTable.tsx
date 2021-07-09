@@ -50,12 +50,9 @@ export const StartTable: React.FC<StartTablePropsType> = ({
       className={containerClasses}
       onClick={updateTables}
     >
+      <Loading containerClassName="StartTable__loading" />
       <div className="StartTable__sign">+</div>
-      {isUpdatingTables ? (
-        <Loading />
-      ) : (
-        <div className="StartTable__title">Start a table</div>
-      )}
+      <div className="StartTable__title">Start a table</div>
     </button>
   );
 };

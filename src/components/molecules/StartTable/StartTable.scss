@@ -37,9 +37,18 @@ $start-table-internal-indent: 25px;
     }
   }
 
-  &:disabled {
-    cursor: not-allowed;
-  }
+ &:disabled {
+   cursor: not-allowed;
+
+   .StartTable__sign,
+   .StartTable__title {
+     display: none;
+   }
+
+   .StartTable__loading {
+     display: block;
+   }
+ }
 
   &--jazzbar {
     margin: 0;
@@ -54,5 +63,9 @@ $start-table-internal-indent: 25px;
     display: none;
     font-size: $font-size--lg;
     line-height: 18px;
+  }
+
+  &__loading {
+    display: none;
   }
 }
