@@ -75,7 +75,7 @@ export const AppRouter: React.FC = () => {
           <Route path="/account" component={AccountSubrouter} />
           <Route
             path="/admin"
-            render={() => (
+            component={() => (
               <Provided withWorldUsers>
                 <AdminSubrouter />
               </Provided>
@@ -90,17 +90,31 @@ export const AppRouter: React.FC = () => {
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path="/login" component={Login} />*/}
 
-          <Route path="/v/:venueId" component={VenueLandingPage} />
+          <Route
+            path="/v/:venueId"
+            component={() => (
+              <Provided withWorldUsers withRelatedVenues>
+                <VenueLandingPage />
+              </Provided>
+            )}
+          />
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
           <Route
             path="/in/:venueId/admin"
-            render={() => (
+            component={() => (
               <Provided withRelatedVenues>
                 <VenueAdminPage />
               </Provided>
             )}
           />
-          <Route path="/in/:venueId" component={VenuePage} />
+          <Route
+            path="/in/:venueId"
+            component={() => (
+              <Provided withWorldUsers withRelatedVenues>
+                <VenuePage />
+              </Provided>
+            )}
+          />
           <Route path="/version" component={VersionPage} />
 
           <Route
@@ -112,7 +126,7 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/sparkleverse"
-            render={() => {
+            component={() => {
               window.location.href = SPARKLEVERSE_HOMEPAGE_URL;
               return <LoadingPage />;
             }}
@@ -120,7 +134,7 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/"
-            render={() => {
+            component={() => {
               window.location.href = DEFAULT_REDIRECT_URL;
               return <LoadingPage />;
             }}
