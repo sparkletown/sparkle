@@ -11,8 +11,9 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
+import { DefaultUserStatus } from "types/User";
+
 import { FIVE_MINUTES_MS } from "utils/time";
-import { UserStatus } from "types/User";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -597,8 +598,22 @@ export const SHOW_EMOJI_IN_REACTION_PAGE = true;
 export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
+export const DEFAULT_SHOW_USER_STATUSES = true;
+
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+// Audience
+// Always have an odd number of rows and columns (because of the firelane delimiter).
+export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
+export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
+
+// These must both be odd, otherwise the video won't be centered properly
+export const SECTION_DEFAULT_ROWS_COUNT = 17;
+export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
+
+export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
+
+export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
 // Max questions number for Poll inside Chat
 export const MAX_POLL_QUESTIONS = 8;
 
@@ -613,7 +628,17 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const USER_STATUSES = [UserStatus.available, UserStatus.busy];
+export const ONLINE_USER_STATUS = {
+  status: DefaultUserStatus.online,
+  color: "#53E52A",
+};
+
+export const BUSY_USER_STATUS = {
+  status: DefaultUserStatus.busy,
+  color: "#F44336",
+};
+
+export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;

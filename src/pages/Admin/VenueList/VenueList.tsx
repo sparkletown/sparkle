@@ -13,13 +13,11 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { relatedVenues, isLoading: isRelatedVenuesLoading } = useRelatedVenues(
-    {
-      currentVenueId: selectedVenueId,
-    }
-  );
+  const { relatedVenues, isLoading } = useRelatedVenues({
+    currentVenueId: selectedVenueId,
+  });
 
-  if (isRelatedVenuesLoading) return <>Loading...</>;
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>

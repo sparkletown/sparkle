@@ -7,8 +7,8 @@ import {
   VenueTemplate,
 } from "types/venues";
 import "./VenuePreview.scss";
+import { UserList } from "components/molecules/UserList";
 import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
-import UserList from "components/molecules/UserList";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import {

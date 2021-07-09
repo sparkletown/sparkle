@@ -10,6 +10,7 @@ export interface Experience {
   table?: string | null;
   row?: number | null;
   column?: number | null;
+  sectionId?: string;
 }
 
 // @debt typing I think this is correct from Room.tsx, need to confirm
@@ -56,17 +57,22 @@ export interface User {
   // doYouDance?: string;
 }
 
+export enum DefaultUserStatus {
+  online = "Online",
+  busy = "Busy",
+}
+
+export interface UserStatus {
+  status: string;
+  color: string;
+}
+
 export interface UserLocation {
   lastSeenIn: { [key: string]: number };
   lastSeenAt: number;
 }
 
 export type UserWithLocation = User & UserLocation;
-
-export enum UserStatus {
-  available = "available",
-  busy = "busy",
-}
 
 export enum UsernameVisibility {
   none = "none",

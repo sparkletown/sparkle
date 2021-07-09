@@ -1,3 +1,4 @@
+import { AuditoriumSection } from "types/auditorium";
 import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Purchase } from "types/Purchase";
@@ -57,12 +58,13 @@ export interface FirestoreData {
   // chatUsers?: Record<string, User>;
   currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
+  sovereignVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
+  currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
-  parentVenue?: AnyVenue;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -86,12 +88,13 @@ export interface FirestoreOrdered {
   chatRequests?: WithId<ChatRequest>[];
   currentEvent?: WithId<VenueEvent>[];
   currentVenue?: WithId<AnyVenue>[];
+  sovereignVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
+  currentAuditoriumSections?: WithId<AuditoriumSection>[];
   eventPurchase?: WithId<Purchase>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
-  parentVenue?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];

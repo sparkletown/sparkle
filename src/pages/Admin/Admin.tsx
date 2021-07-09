@@ -49,10 +49,8 @@ import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import {
-  useRelatedVenues,
-  RelatedVenuesProvider,
-} from "hooks/useRelatedVenues";
+import { WorldUsersProvider } from "hooks/users";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -79,13 +77,11 @@ const VenueList: React.FC<VenueListProps> = ({
   roomIndex,
 }) => {
   // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const { isLoading: isRelatedVenuesLoading, relatedVenues } = useRelatedVenues(
-    {
-      currentVenueId: selectedVenueId,
-    }
-  );
+  const { isLoading, relatedVenues } = useRelatedVenues({
+    currentVenueId: selectedVenueId,
+  });
 
-  if (isRelatedVenuesLoading) return <>Loading...</>;
+  if (isLoading) return <>Loading...</>;
 
   return (
     <>
@@ -461,8 +457,8 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <RelatedVenuesProvider venueId={venueId}>
-      <WithNavigationBar fullscreen>
+    <WorldUsersProvider venueId={venueId}>
+      <WithNavigationBar>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">
             <div className="page-container-adminsidebar">
@@ -478,7 +474,7 @@ const Admin: React.FC = () => {
           </div>
         </div>
       </WithNavigationBar>
-    </RelatedVenuesProvider>
+    </WorldUsersProvider>
   );
 };
 
