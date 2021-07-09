@@ -175,9 +175,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
 
   const emptyTables = tables.filter(
     (table) =>
-      !recentVenueUsers.filter(
-        (u) => u.data?.[venueName]?.table === table.reference
-      ).length
+      !recentVenueUsers.some(
+        (user: User) =>
+          getUserExperience(venueName)(user)?.table === table.reference
+      )
   );
 
   const canStartTable = emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER;
