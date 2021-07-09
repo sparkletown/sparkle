@@ -4,7 +4,7 @@ import { Checkbox, CheckboxProps } from "components/atoms/Checkbox";
 
 export interface TogglerProps extends CheckboxProps {
   defaultToggled?: boolean;
-  onToggle: ChangeEventHandler<HTMLInputElement>;
+  onToggle?: ChangeEventHandler<HTMLInputElement>;
   containerClassName?: string;
 }
 

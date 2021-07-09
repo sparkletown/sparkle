@@ -326,7 +326,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       name="isEnabled"
                       forwardedRef={register}
                       disabled={disable}
-                      onToggle={() => undefined}
                     />
                   </div>
                   <div className="toggle-room">
@@ -335,7 +334,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       id="isLabeled"
                       name="isLabeled"
                       forwardedRef={register}
-                      onToggle={() => undefined}
                       disabled={disable}
                     />
                   </div>

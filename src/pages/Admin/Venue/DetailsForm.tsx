@@ -637,7 +637,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         name="showSchedule"
         forwardedRef={register}
         defaultToggled={DEFAULT_SHOW_SCHEDULE}
-        onToggle={() => undefined}
       />
     </div>
   );
@@ -645,36 +644,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <Toggler
-        id="showGrid"
-        name="showGrid"
-        forwardedRef={register}
-        onToggle={() => undefined}
-      />
+      <Toggler id="showGrid" name="showGrid" forwardedRef={register} />
     </div>
   );
 
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <Toggler
-        id="showBadges"
-        name="showBadges"
-        forwardedRef={register}
-        onToggle={() => undefined}
-      />
+      <Toggler id="showBadges" name="showBadges" forwardedRef={register} />
     </div>
   );
 
   const renderShowZendeskToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <Toggler
-        id="showZendesk"
-        name="showZendesk"
-        forwardedRef={register}
-        onToggle={() => undefined}
-      />
+      <Toggler id="showZendesk" name="showZendesk" forwardedRef={register} />
     </div>
   );
 
@@ -724,7 +708,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         id="showReactions"
         name="showReactions"
         forwardedRef={register}
-        onToggle={() => undefined}
       />
     </div>
   );
@@ -736,7 +719,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         id="showShoutouts"
         name="showShoutouts"
         forwardedRef={register}
-        onToggle={() => undefined}
       />
     </div>
   );
@@ -744,12 +726,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <Toggler
-        id="showRangers"
-        name="showRangers"
-        forwardedRef={register}
-        onToggle={() => undefined}
-      />
+      <Toggler id="showRangers" name="showRangers" forwardedRef={register} />
     </div>
   );
 
@@ -760,7 +737,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         id="requiresDateOfBirth"
         name="requiresDateOfBirth"
         forwardedRef={register}
-        onToggle={() => undefined}
       />
     </div>
   );
@@ -882,12 +858,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <Toggler
-        id="showRadio"
-        name="showRadio"
-        forwardedRef={register}
-        onToggle={() => undefined}
-      />
+      <Toggler id="showRadio" name="showRadio" forwardedRef={register} />
     </div>
   );
 
