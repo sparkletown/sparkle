@@ -25,6 +25,22 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
+  &__reactions-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: center;
+
+    width: 90%;
+    min-height: 105px;
+    padding: 15px;
+
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    box-shadow: 2px 2px 20px $white;
+    background-color: #1a1d24;
+  }
+
   &__iframe-overlay {
     position: absolute;
 

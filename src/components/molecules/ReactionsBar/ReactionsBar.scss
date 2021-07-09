@@ -7,14 +7,14 @@
   margin: 5px 0;
   width: 100%;
 
-  &--mute-button {
+  &__mute-button {
     display: flex;
     align-items: center;
     font-size: 20px;
     cursor: pointer;
   }
 
-  &--leave-seat-button {
+  &__leave-seat-button {
     display: inline-block;
     font-weight: 700;
     text-decoration: none;

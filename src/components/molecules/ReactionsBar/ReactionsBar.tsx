@@ -56,13 +56,13 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
           onClickReaction={sendReaction}
         />
       ))}
-      <div className="ReactionsBar--mute-button" onClick={handleMute}>
+      <div className="ReactionsBar__mute-button" onClick={handleMute}>
         <FontAwesomeIcon
           icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
         />
       </div>
       {leaveSeat && (
-        <button className="ReactionsBar--leave-seat-button" onClick={leaveSeat}>
+        <button className="ReactionsBar__leave-seat-button" onClick={leaveSeat}>
           Leave Seat
         </button>
       )}
