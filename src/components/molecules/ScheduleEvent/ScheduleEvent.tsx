@@ -30,12 +30,14 @@ const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
 
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
-  scheduleStartHour: number;
   personalizedEvent?: boolean;
+  scaleFactor: number;
+  scheduleStartHour: number;
 }
 
 export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   event,
+  scaleFactor,
   scheduleStartHour,
   personalizedEvent: isPersonalizedEvent = false,
 }) => {
@@ -52,8 +54,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   const containerCssVars = useCss({
-    "--event--margin-left": `${eventMarginLeftPx}px`,
-    "--event--width": `${eventWidthPx}px`,
+    "--event--margin-left": `${eventMarginLeftPx * scaleFactor}px`,
+    "--event--width": `${eventWidthPx * scaleFactor}px`,
   });
 
   const containerClasses = classNames(
