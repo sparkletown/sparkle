@@ -66,7 +66,7 @@ export interface TablesUserListProps {
   leaveText?: string;
 }
 
-export const TablesUserList: React.FunctionComponent<TablesUserListProps> = ({
+export const TablesUserList: React.FC<TablesUserListProps> = ({
   venueName,
   setSeatedAtTable,
   seatedAtTable,
