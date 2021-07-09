@@ -1,10 +1,12 @@
 @import "scss/constants";
 
+$reaction-bar-indent: 5px;
+
 .ReactionsBar {
   display: flex;
   flex: 1;
   justify-content: space-around;
-  margin: 5px 0;
+  margin: $reaction-bar-indent 0;
   width: 100%;
 
   &__mute-button {
