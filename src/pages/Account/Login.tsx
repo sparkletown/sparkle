@@ -1,13 +1,14 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
 
+import { DEFAULT_CUSTOM_AUTH_CONFIG } from "settings";
+
 import { AnyVenue } from "types/venues";
 
 import { fetchCustomAuthConfig } from "api/auth";
 
 import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
-import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
@@ -44,7 +45,7 @@ export const Login: React.FC<LoginProps> = ({
 
   const {
     loading: isCustomAuthConfigLoading,
-    value: customAuthConfig,
+    value: fetchedCustomAuthConfig,
   } = useAsync(async () => {
     return tracePromise(
       "Login::fetchCustomAuthConfig",
@@ -58,16 +59,18 @@ export const Login: React.FC<LoginProps> = ({
     );
   }, [venueId]);
 
-  const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
+  const {
+    customAuthName,
+    customAuthConnectPath,
+  } = !!fetchedCustomAuthConfig?.customAuthConnectPath
+    ? fetchedCustomAuthConfig
+    : DEFAULT_CUSTOM_AUTH_CONFIG;
 
-  const hasCustomAuthConnect = isDefined(customAuthConnectPath);
   const signInWithCustomAuth = useCallback(() => {
     openUrl(
       `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
     );
   }, [customAuthConnectPath, venueId]);
-
-  const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
 
   const displayLoginForm = () => {
     setFormToDisplay("login");
@@ -91,32 +94,28 @@ export const Login: React.FC<LoginProps> = ({
         <img src="/sparkle-header.png" alt="" width="100%" />
       </div>
       <div className="auth-form-container">
-        {hasAlternativeLogins && (
-          <div className="Login__login-box">
-            <span>Quick log in with</span>
+        <div className="Login__login-box">
+          <span>Quick log in with</span>
 
-            <div className="Login__alternative-logins">
-              {hasCustomAuthConnect && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithCustomAuth}
-                  title={customAuthName}
-                  alt={customAuthName}
-                />
-              )}
-              {hasSamlAuthProviderId && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithSAML}
-                  title="SAML SSO login"
-                  alt="SAML SSO login"
-                />
-              )}
-            </div>
+          <div className="Login__alternative-logins">
+            <img
+              className="Login__quick-login-icon"
+              src={SAMLLoginIcon}
+              onClick={signInWithCustomAuth}
+              title={customAuthName}
+              alt={customAuthName}
+            />
+            {hasSamlAuthProviderId && (
+              <img
+                className="Login__quick-login-icon"
+                src={SAMLLoginIcon}
+                onClick={signInWithSAML}
+                title="SAML SSO login"
+                alt="SAML SSO login"
+              />
+            )}
           </div>
-        )}
+        </div>
         {formToDisplay === "initial" && (
           <InitialForm
             displayLoginForm={displayLoginForm}
