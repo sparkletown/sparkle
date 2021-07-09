@@ -8,7 +8,7 @@ import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 import Admin_v2 from "pages/Admin/Admin_v2";
 import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
-
+import VenueUsers from "pages/Admin/Venue/Users/VenueUsers";
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 export const AdminSubrouter: React.FC = () => {
@@ -18,6 +18,7 @@ export const AdminSubrouter: React.FC = () => {
       <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
       <Route path="/admin/venue/creation" component={VenueWizard} />
       <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
+      <Route path="/admin/venue/usersdata/:venueId" component={VenueUsers} />
       <Route path="/admin/:venueId" component={Admin} />
       <Route path="/admin" component={Admin} />
 
