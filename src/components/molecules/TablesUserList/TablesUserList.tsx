@@ -26,16 +26,6 @@ import { Loading } from "components/molecules/Loading";
 
 import "./TablesUserList.scss";
 
-export interface TablesUserListProps {
-  venueName: string;
-  setSeatedAtTable: (value: string) => void;
-  seatedAtTable: string;
-  customTables?: Table[];
-  TableComponent: React.FC<TableComponentPropsType>;
-  joinMessage: boolean;
-  leaveText?: string;
-}
-
 // @debt refactor this into src/settings or similar
 const DEFAULT_TABLE_COUNT = 4;
 
