@@ -15,6 +15,7 @@ import { UsernameVisibility } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { UserStatus } from "types/User";
 
 export interface EventInput {
   name: string;
@@ -103,11 +104,14 @@ export type VenueInput = AdvancedVenueInput &
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
+    userStatuses?: UserStatus[];
     showReactions?: boolean;
+    showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
     showZendesk?: boolean;
+    showUserStatus?: boolean;
   };
 
 export interface VenueInput_v2

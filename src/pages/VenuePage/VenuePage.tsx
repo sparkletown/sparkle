@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { Redirect, useHistory } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
 import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
@@ -24,6 +24,7 @@ import {
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
 import { showZendeskWidget } from "utils/zendesk";
+import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
@@ -33,6 +34,7 @@ import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHisto
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
+import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -41,14 +43,28 @@ import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
-import TemplateWrapper from "./TemplateWrapper";
 
 import { updateTheme } from "./helpers";
 
 import "./VenuePage.scss";
 
-import Login from "pages/Account/Login";
+const Login = lazy(() =>
+  tracePromise("VenuePage::lazy-import::Login", () =>
+    import("pages/Account/Login").then(({ Login }) => ({
+      default: Login,
+    }))
+  )
+);
+
+const TemplateWrapper = lazy(() =>
+  tracePromise("VenuePage::lazy-import::TemplateWrapper", () =>
+    import("./TemplateWrapper").then(({ TemplateWrapper }) => ({
+      default: TemplateWrapper,
+    }))
+  )
+);
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const hasPaidEvents = (template: VenueTemplate) => {
@@ -59,10 +75,11 @@ export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
   const mixpanel = useMixpanel();
 
-  const history = useHistory();
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
+  const { userLocation } = useWorldUserLocation(user?.uid);
+  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -108,11 +125,11 @@ export const VenuePage: React.FC = () => {
   // NOTE: User location updates
 
   useInterval(() => {
-    if (!userId || !profile?.lastSeenIn) return;
+    if (!userId || !userLastSeenIn) return;
 
     updateCurrentLocationData({
       userId,
-      profileLocationData: profile.lastSeenIn,
+      profileLocationData: userLastSeenIn,
     });
   }, LOC_UPDATE_FREQ_MS);
 
@@ -181,7 +198,11 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!user) {
-    return <Login venue={venue} />;
+    return (
+      <Suspense fallback={<LoadingPage />}>
+        <Login venue={venue} />
+      </Suspense>
+    );
   }
 
   if (!profile) {
@@ -236,8 +257,12 @@ export const VenuePage: React.FC = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 
-  return <TemplateWrapper venue={venue} />;
+  return (
+    <Suspense fallback={<LoadingPage />}>
+      <TemplateWrapper venue={venue} />
+    </Suspense>
+  );
 };

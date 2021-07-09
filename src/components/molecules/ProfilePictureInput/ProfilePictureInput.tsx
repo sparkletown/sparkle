@@ -12,7 +12,9 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
+import { Loading } from "components/molecules/Loading";
 
 import "./ProfilePictureInput.scss";
 
@@ -42,7 +44,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
@@ -100,7 +102,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   );
 
   const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
+    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
@@ -154,7 +156,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
+        {isLoading ? <Loading /> : avatarImages}
       </div>
       <input
         name="pictureUrl"

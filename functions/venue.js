@@ -64,8 +64,15 @@ const IFRAME_TEMPLATES = [
 ];
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in src/settings.ts + share the same code between frontend/backend
 const ZOOM_URL_TEMPLATES = [VenueTemplate.artcar, VenueTemplate.zoomroom];
+
+// @debt unify this with HAS_REACTIONS_TEMPLATES in src/settings.ts + share the same code between frontend/backend
+const HAS_REACTIONS_TEMPLATES = [VenueTemplate.audience, VenueTemplate.jazzbar];
+
+// @debt unify this with DEFAULT_SHOW_REACTIONS / DEFAULT_SHOW_SHOUTOUTS in src/settings.ts + share the same code between frontend/backend
+const DEFAULT_SHOW_REACTIONS = true;
+const DEFAULT_SHOW_SHOUTOUTS = true;
 
 const PlacementState = {
   SelfPlaced: "SELF_PLACED",
@@ -149,6 +156,7 @@ const checkIfUserHasVoted = async (venueId, pollId, userId) => {
     });
 };
 
+// @debt this should be de-duplicated + aligned with createVenueData_v2 to ensure they both cover all needed cases
 const createVenueData = (data, context) => {
   if (!VALID_CREATE_TEMPLATES.includes(data.template)) {
     throw new HttpsError(
@@ -195,7 +203,10 @@ const createVenueData = (data, context) => {
     attendeesTitle: data.attendeesTitle || "partygoers",
     chatTitle: data.chatTitle || "Party",
     requiresDateOfBirth: data.requiresDateOfBirth || false,
+    userStatuses: data.userStatuses || [],
     showRadio: data.showRadio || false,
+    showUserStatus:
+      typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
   };
 
@@ -203,8 +214,17 @@ const createVenueData = (data, context) => {
     venueData.mapBackgroundImageUrl = data.mapBackgroundImageUrl;
   }
 
-  if (data.template === VenueTemplate.audience) {
-    venueData.showReactions = data.showReactions;
+  // @debt showReactions and showShoutouts should be toggleable for anything in HAS_REACTIONS_TEMPLATES
+  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
+    venueData.showReactions =
+      typeof data.showReactions === "boolean"
+        ? data.showReactions
+        : DEFAULT_SHOW_REACTIONS;
+
+    venueData.showShoutouts =
+      typeof data.showShoutouts === "boolean"
+        ? data.showShoutouts
+        : DEFAULT_SHOW_SHOUTOUTS;
 
     if (data.auditoriumColumns) {
       venueData.auditoriumColumns = data.auditoriumColumns;
@@ -242,27 +262,44 @@ const createVenueData = (data, context) => {
   return venueData;
 };
 
-const createVenueData_v2 = (data, context) => ({
-  name: data.name,
-  config: {
-    landingPageConfig: {
-      coverImageUrl: data.bannerImageUrl,
-      subtitle: data.subtitle,
-      description: data.description,
+// @debt this should be de-duplicated + aligned with createVenueData to ensure they both cover all needed cases
+const createVenueData_v2 = (data, context) => {
+  const venueData_v2 = {
+    name: data.name,
+    config: {
+      landingPageConfig: {
+        coverImageUrl: data.bannerImageUrl,
+        subtitle: data.subtitle,
+        description: data.description,
+      },
     },
-  },
-  theme: {
-    primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
-  },
-  host: {
-    icon: data.logoImageUrl,
-  },
-  owners: [context.auth.token.user_id],
-  showGrid: data.showGrid || false,
-  ...(data.showGrid && { columns: data.columns }),
-  template: data.template || VenueTemplate.partymap,
-  rooms: [],
-});
+    theme: {
+      primaryColor: data.primaryColor || DEFAULT_PRIMARY_COLOR,
+    },
+    host: {
+      icon: data.logoImageUrl,
+    },
+    owners: [context.auth.token.user_id],
+    showGrid: data.showGrid || false,
+    ...(data.showGrid && { columns: data.columns }),
+    template: data.template || VenueTemplate.partymap,
+    rooms: [],
+  };
+
+  if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
+    venueData_v2.showReactions =
+      typeof data.showReactions === "boolean"
+        ? data.showReactions
+        : DEFAULT_SHOW_REACTIONS;
+
+    venueData_v2.showShoutouts =
+      typeof data.showShoutouts === "boolean"
+        ? data.showShoutouts
+        : DEFAULT_SHOW_SHOUTOUTS;
+  }
+
+  return venueData_v2;
+};
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
 const createBaseUpdateVenueData = (data, updated) => {
@@ -331,6 +368,18 @@ const createBaseUpdateVenueData = (data, updated) => {
 
   if (typeof data.showReactions === "boolean") {
     updated.showReactions = data.showReactions;
+  }
+
+  if (typeof data.showUserStatus === "boolean") {
+    updated.showUserStatus = data.showUserStatus;
+  }
+
+  if (typeof data.showShoutouts === "boolean") {
+    updated.showShoutouts = data.showShoutouts;
+  }
+
+  if (data.userStatuses) {
+    updated.userStatuses = data.userStatuses;
   }
 
   if (data.attendeesTitle) {
@@ -429,6 +478,7 @@ exports.removeVenueOwner = functions.https.onCall(async (data, context) => {
   if (snap.empty) removeAdmin(ownerId);
 });
 
+// @debt this should be de-duplicated + aligned with createVenue_v2 to ensure they both cover all needed cases
 exports.createVenue = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -441,6 +491,7 @@ exports.createVenue = functions.https.onCall(async (data, context) => {
   return venueData;
 });
 
+// @debt this should be de-duplicated + aligned with createVenue to ensure they both cover all needed cases
 exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
@@ -496,6 +547,7 @@ exports.deleteRoom = functions.https.onCall(async (data, context) => {
   admin.firestore().collection("venues").doc(venueId).update(docData);
 });
 
+// @debt this is legacy functionality related to the Playa template, and should be cleaned up along with it
 exports.toggleDustStorm = functions.https.onCall(async (_data, context) => {
   checkAuth(context);
 
