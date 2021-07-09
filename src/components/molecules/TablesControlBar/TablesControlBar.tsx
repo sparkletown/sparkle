@@ -18,7 +18,7 @@ export interface TablesControlBarProps {
   defaultTables: Table[];
   isChecked: boolean;
   venue: AnyVenue;
-  users: WithId<User>[];
+  users: readonly WithId<User>[];
   onToggleTables: (value: React.SetStateAction<Table[]>) => void;
   className?: string;
 }

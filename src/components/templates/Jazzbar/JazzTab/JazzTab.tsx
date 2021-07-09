@@ -256,7 +256,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               ) : (
                 <TablesControlBar
                   defaultTables={defaultTables}
-                  venue={venueToUse}
+                  venue={venue}
                   users={recentVenueUsers}
                   onToggleTables={setJazzbarTables}
                   isChecked={jazzbarTables !== defaultTables}
