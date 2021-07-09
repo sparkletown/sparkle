@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+
 import { isDefined } from "utils/types";
 
 export interface PreloadAsset {
