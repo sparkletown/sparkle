@@ -1,11 +1,9 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
-import { USER_STATUSES } from "settings";
+import { UserStatus } from "types/User";
 
 import { useProfileStatus } from "hooks/useProfileStatus";
-
-import { UserStatus } from "types/User";
 
 import "./UserStatusDropdown.scss";
 
@@ -14,18 +12,28 @@ export interface UserStatusDropdownProps {
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
-  userStatuses,
+  userStatuses = [],
 }) => {
   const { status, changeUserStatus } = useProfileStatus();
 
-  const allUserStatuses = useMemo(
-    () => (userStatuses ? [...USER_STATUSES, ...userStatuses] : USER_STATUSES),
-    [userStatuses]
-  );
+  // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
+  useEffect(() => {
+    const hasUserStatuses = !!userStatuses.length;
+
+    if (!status || !hasUserStatuses) return;
+
+    const statusTexts = userStatuses.map((userStatus) => userStatus.status);
+
+    const defaultUserStatus = userStatuses[0].status;
+
+    if (!statusTexts.includes(status)) {
+      changeUserStatus(defaultUserStatus);
+    }
+  }, [changeUserStatus, status, userStatuses]);
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      allUserStatuses.map((userStatus) => (
+      userStatuses.map((userStatus) => (
         <Dropdown.Item
           key={userStatus.status}
           onClick={() => changeUserStatus(userStatus.status)}
@@ -33,7 +41,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
           {userStatus.status}
         </Dropdown.Item>
       )),
-    [allUserStatuses, changeUserStatus]
+    [userStatuses, changeUserStatus]
   );
 
   return (

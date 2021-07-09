@@ -1,8 +1,4 @@
-import {
-  ONLINE_USER_STATUS,
-  DEFAULT_SHOW_USER_STATUSES,
-  USER_STATUSES,
-} from "settings";
+import { DEFAULT_USER_STATUS, DEFAULT_SHOW_USER_STATUSES } from "settings";
 
 import { User } from "types/User";
 
@@ -15,9 +11,7 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
 
   const venueStatuses = sovereignVenue?.userStatuses ?? [];
 
-  const statuses = [...USER_STATUSES, ...venueStatuses];
-
-  const userStatus = statuses.find(
+  const userStatus = venueStatuses.find(
     (userStatus) => userStatus.status === user?.status
   );
 
@@ -25,6 +19,6 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
     venueUserStatuses: venueStatuses,
     isStatusEnabledForVenue:
       sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
-    userStatus: userStatus ?? ONLINE_USER_STATUS,
+    userStatus: userStatus ?? DEFAULT_USER_STATUS,
   };
 };
