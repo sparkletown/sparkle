@@ -3,12 +3,12 @@
 // This file exists for custom styles to deal with environment specific hacks/overrides
 
 // hide time on site and number of venues visited box (when badges are turned on)
-.Badges {
+div.Badges {
   &__visits {
-    display: none !important;
+    display: none;
   }
   &__visit {
-    display: none !important;
+    display: none;
   }
 }
 
