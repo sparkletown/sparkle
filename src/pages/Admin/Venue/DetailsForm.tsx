@@ -49,8 +49,9 @@ import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
 
-import { createJazzbar } from "utils/venue";
+import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
+import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
@@ -84,6 +85,8 @@ interface DetailsFormProps extends WizardPage {
 const iconPositionFieldName = "iconPosition";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -154,6 +157,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     );
   }, [state]);
 
+  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
+  // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
     async (
       vals: Partial<FormValues>,
@@ -265,9 +270,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [setValue]
   );
 
+  useEffect(() => {
+    if (!previous || isTruthy(state.templatePage)) return;
+
+    previous();
+  }, [previous, state.templatePage]);
+
   if (!state.templatePage) {
-    previous && previous();
-    return null;
+    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
+    return <>Error: state.templatePage not defined.</>;
   }
 
   const isAdminPlaced =
