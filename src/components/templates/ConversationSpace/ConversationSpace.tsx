@@ -136,8 +136,3 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     </>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ConversationSpace;
