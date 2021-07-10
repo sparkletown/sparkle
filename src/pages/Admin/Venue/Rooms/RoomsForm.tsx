@@ -33,6 +33,7 @@ import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
+
 import { Toggler } from "components/atoms/Toggler";
 
 import { validationSchema } from "./RoomsValidationSchema";
