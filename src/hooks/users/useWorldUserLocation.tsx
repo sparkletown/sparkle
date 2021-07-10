@@ -6,9 +6,7 @@ import { withId, WithId } from "utils/id";
 import { worldUsersByIdSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
-import { useWorldUsersContext } from "hooks/users/useWorldUsers";
-
-// import { useWorldUsersContext } from "./useWorldUsers";
+import { useWorldUsersContext } from "./useWorldUsers";
 
 export const useWorldUserLocation = (
   userId?: string
