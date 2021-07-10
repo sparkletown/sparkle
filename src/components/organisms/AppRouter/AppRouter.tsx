@@ -88,7 +88,6 @@ export const AppRouter: React.FC = () => {
               <VenueLandingPage />
             </Provided>
           </Route>
-          {/* TODO: change this to the same 'nested Provided' pattern we are using everywhere else here? */}
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
           <Route path="/in/:venueId/admin">
             <Provided withRelatedVenues>
