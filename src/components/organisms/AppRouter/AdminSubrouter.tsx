@@ -22,16 +22,11 @@ export const AdminSubrouter: React.FC = () => {
           <RoomsForm />
         </Provided>
       </Route>
-      {/* TODO: change this to the same 'nested Provided' pattern we are using everywhere else here? */}
-      <Route
-        path="/admin/venue/creation"
-        component={
-          // for some state related reasons, Provided fails this VenueWizard
-          // and using function here will cause the error
-          // so WithNavigationBar wraps the RelatedVenuesProvider for it
-          VenueWizard
-        }
-      />
+      <Route path="/admin/venue/creation">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizard />
+        </Provided>
+      </Route>
       <Route path="/admin/venue/edit/:venueId">
         <Provided withWorldUsers withRelatedVenues>
           <VenueWizard />
