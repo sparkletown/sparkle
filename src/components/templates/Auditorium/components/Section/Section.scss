@@ -30,13 +30,12 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     text-align: center;
 
     width: 80%;
-    height: 20%;
+    height: 15%;
 
     background-color: $secondary--dark;
 
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    z-index: 5;
   }
 
   &__central-screen {
