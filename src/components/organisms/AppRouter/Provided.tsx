@@ -4,7 +4,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { WorldUsersProvider } from "hooks/users";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
-interface ProvidedProps {
+export interface ProvidedProps {
   withWorldUsers?: boolean;
   withRelatedVenues?: boolean;
 }
