@@ -62,6 +62,7 @@ import { useDispatch } from "hooks/useDispatch";
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
+
 import { Toggler } from "components/atoms/Toggler";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
