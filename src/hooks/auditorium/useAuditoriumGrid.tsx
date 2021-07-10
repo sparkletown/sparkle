@@ -7,7 +7,7 @@ import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { GetUserByPostion } from "../useGetUserByPosition";
 
 export interface UseAuditoriumGridProps {
-  isAudioEffectDisabled: boolean;
+  isUserAudioMuted: boolean;
   rows: number;
   columns: number;
   getUserBySeat: GetUserByPostion;
@@ -16,7 +16,7 @@ export interface UseAuditoriumGridProps {
 }
 
 export const useAuditoriumGrid = ({
-  isAudioEffectDisabled,
+  isUserAudioMuted,
   rows,
   columns,
   checkIfSeat,
@@ -39,7 +39,7 @@ export const useAuditoriumGrid = ({
                   key={columnIndex}
                   user={user}
                   containerClassName="Section__user-avatar"
-                  isAudioEffectDisabled={isAudioEffectDisabled}
+                  isAudioEffectDisabled={isUserAudioMuted}
                 />
               );
             }
@@ -64,5 +64,5 @@ export const useAuditoriumGrid = ({
           })}
         </div>
       )),
-    [rows, columns, checkIfSeat, takeSeat, getUserBySeat, isAudioEffectDisabled]
+    [rows, columns, checkIfSeat, takeSeat, getUserBySeat, isUserAudioMuted]
   );

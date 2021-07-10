@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useMemo, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
-import { EmojiReactions } from "types/reactions";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
@@ -28,12 +28,9 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-  // @debt refactor via useShowHide hook
-  const toggleMute = useCallback(
-    () => setIsAudioEffectDisabled((state) => !state),
-    []
-  );
+  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
 
   const { iframeUrl, id: venueId } = venue;
 
@@ -91,7 +88,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   );
 
   const seatsGrid = useAuditoriumGrid({
-    isAudioEffectDisabled,
+    isUserAudioMuted,
     rows: baseRowsCount,
     columns: baseColumnsCount,
     checkIfSeat,
@@ -123,11 +120,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
           >
             {isUserSeated ? (
               <ReactionsBar
-                reactions={EmojiReactions}
                 venueId={venueId}
                 leaveSeat={leaveSeat}
-                isReactionsMuted={isAudioEffectDisabled}
-                toggleMute={toggleMute}
+                isReactionsMuted={isUserAudioMuted}
+                toggleMute={toggleUserAudio}
               />
             ) : (
               "Welcome! Click on an empty seat to claim it!"

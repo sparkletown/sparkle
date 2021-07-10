@@ -10,7 +10,6 @@ import {
   DEFAULT_SHOW_REACTIONS,
 } from "settings";
 
-import { EmojiReactions } from "types/reactions";
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
@@ -20,6 +19,7 @@ import { WithId } from "utils/id";
 import { useExperiences } from "hooks/useExperiences";
 import { useRecentVenueUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -69,12 +69,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
-  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-  // @debt refactor via useShowHide hook
-  const toggleMute = useCallback(
-    () => setIsAudioEffectDisabled((state) => !state),
-    []
-  );
+
+  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
 
   // NOTE: This functionality will probably be returned in the nearest future.
 
@@ -185,14 +183,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                 )}
               </div>
 
-              {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
               {shouldShowReactions && (
                 <div className="actions-container">
                   <ReactionsBar
-                    reactions={EmojiReactions}
                     venueId={venue.id}
-                    isReactionsMuted={isAudioEffectDisabled}
-                    toggleMute={toggleMute}
+                    isReactionsMuted={isUserAudioMuted}
+                    toggleMute={toggleUserAudio}
                   />
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
@@ -216,7 +212,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             venueName={venue.name}
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
-            isAudioEffectDisabled={isAudioEffectDisabled}
+            isAudioEffectDisabled={isUserAudioMuted}
           />
         )}
         <TablesUserList

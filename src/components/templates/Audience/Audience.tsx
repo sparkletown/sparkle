@@ -19,8 +19,6 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { EmojiReactions, EmojiReactionType } from "types/reactions";
-
 import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
@@ -31,6 +29,7 @@ import { isDefined } from "utils/types";
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+import { useShowHide } from "hooks/useShowHide";
 
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
@@ -128,13 +127,6 @@ const requiredAuditoriumSize = (
   return size;
 };
 
-// @debt Why are we filtering the reactions here? Presumably these should all be the same wherever they are used?
-const burningReactions = EmojiReactions.filter(
-  (reaction) =>
-    reaction.type !== EmojiReactionType.boo &&
-    reaction.type !== EmojiReactionType.thatsjazz
-);
-
 export interface AudienceProps {
   venue: WithId<GenericVenue>;
 }
@@ -150,12 +142,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
-  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
-  // @debt refactor via useShowHide hook
-  const toggleMute = useCallback(
-    () => setIsAudioEffectDisabled((state) => !state),
-    []
-  );
+  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
 
   const [iframeUrl, setIframeUrl] = useState("");
   useLayoutEffect(() => {
@@ -327,11 +316,10 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     const renderReactionsContainer = () => (
       <>
         <ReactionsBar
-          reactions={burningReactions}
           venueId={venueId}
           leaveSeat={leaveSeat}
-          isReactionsMuted={isAudioEffectDisabled}
-          toggleMute={toggleMute}
+          isReactionsMuted={isUserAudioMuted}
+          toggleMute={toggleUserAudio}
         />
 
         {venue.showShoutouts && (
@@ -436,7 +424,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 user={seatedPartygoer}
                                 reactionPosition={isOnRight ? "left" : "right"}
                                 miniAvatars={venue.miniAvatars}
-                                isAudioEffectDisabled={isAudioEffectDisabled}
+                                isAudioEffectDisabled={isUserAudioMuted}
                                 showNametags={venue.showNametags}
                               />
                             )}
@@ -464,8 +452,8 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     dispatch,
     reset,
     columnsForSizedAuditorium,
-    isAudioEffectDisabled,
-    toggleMute,
+    isUserAudioMuted,
+    toggleUserAudio,
     leaveSeat,
     handleSubmit,
     register,

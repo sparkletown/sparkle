@@ -43,7 +43,7 @@ export type ReactionData<T extends ReactionType = ReactionType> = {
   audioPath: string;
 };
 
-export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
+export const EMOJI_REACTIONS: ReactionData<EmojiReactionType>[] = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
@@ -110,7 +110,7 @@ export const reactionsDataMapReducer = <T extends ReactionType = ReactionType>(
 export const EmojiReactionsMap: Map<
   EmojiReactionType,
   ReactionData<EmojiReactionType>
-> = EmojiReactions.reduce(reactionsDataMapReducer, new Map());
+> = EMOJI_REACTIONS.reduce(reactionsDataMapReducer, new Map());
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
