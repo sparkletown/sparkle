@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { AnyVenue } from "types/venues";
+import { GenericVenue } from "types/venues";
 
 import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
@@ -28,7 +28,7 @@ import { TABLES } from "./constants";
 import "./ConversationSpace.scss";
 
 export interface ConversationSpaceProps {
-  venue: WithId<AnyVenue>;
+  venue: WithId<GenericVenue>;
 }
 
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
