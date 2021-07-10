@@ -29,6 +29,7 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { TalkShowStudio } from "../../components/templates/TalkShowStudio";
 
 const PlayaRouter = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
@@ -37,7 +38,6 @@ const PlayaRouter = lazy(() =>
     }))
   )
 );
-
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
@@ -94,7 +94,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
             className="btn btn-primary"
             onClick={() => history.goBack()}
           >
-            Go Back
+            Back
           </button>
         </p>
       );
@@ -150,6 +150,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           Legacy Template: ${venue.template} has been removed from the platform
         </div>
       );
+      break;
+
+    case VenueTemplate.talkshowstudio:
+      template = <TalkShowStudio venue={venue} />;
       break;
 
     default:

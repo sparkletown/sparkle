@@ -1,0 +1,78 @@
+@import "scss/constants";
+
+$header-height: 45px;
+
+.settings-sidebar {
+  transform: translateX(100%);
+  transition: transform 0.2s;
+  position: fixed;
+  display: flex;
+  flex-flow: column;
+  top: 66px;
+  right: 0;
+  width: $chat-sidebar-width;
+  height: calc(100vh - 96px);
+  background-color: $saturated-black;
+  z-index: z(sidebar) + 1;
+
+  &--expanded {
+    transform: translateX(0);
+    transition: transform 0.3s;
+    background-color: rgba($saturated-black, 0.9);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  .header {
+    height: $header-height;
+  }
+
+  .tabs {
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: $black;
+  }
+
+  .tab {
+    display: flex;
+    font-size: 0.9rem;
+    justify-content: center;
+    align-items: center;
+    border-bottom: rgba(0, 0, 0, 0) thin solid;
+    width: 100%;
+    height: 100%;
+    background-color: $black;
+    border-bottom: $white 2px solid;
+    color: $white;
+  }
+
+  .controller {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 13px;
+    height: 45px;
+    background-color: $secondary;
+    border-radius: 16px 0 0 16px;
+    cursor: pointer;
+    top: 46px;
+
+    position: absolute;
+    transform: translateX(-100%);
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+    }
+
+    .second-icon {
+      margin-left: 5px;
+    }
+  }
+
+  .tab-content {
+    flex: 1 1 auto;
+    height: calc(100% - #{$header-height});
+    width: 100%;
+  }
+}

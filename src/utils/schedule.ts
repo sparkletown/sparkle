@@ -1,3 +1,4 @@
+import { GITHUB_MAIN_STAGE_NAME } from "settings";
 import { LocationEvents } from "types/venues";
 
 export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
@@ -7,6 +8,13 @@ export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
     const nameB =
       b.location.roomTitle ?? b.location.venueName ?? b.location.venueId;
 
-    return nameA.localeCompare(nameB);
+    if (nameA === GITHUB_MAIN_STAGE_NAME) {
+      return -1;
+    }
+
+    return nameA.localeCompare(nameB, undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
   });
 };
