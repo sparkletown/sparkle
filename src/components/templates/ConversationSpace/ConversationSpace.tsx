@@ -34,11 +34,9 @@ export interface ConversationSpaceProps {
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   venue,
 }) => {
-  const { parentVenue } = useRelatedVenues({
+  const { parentVenue, parentVenueId } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
-
-  const parentVenueId = parentVenue?.id;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
