@@ -11,7 +11,6 @@ import {
 } from "settings";
 
 import { VenueEvent } from "types/venues";
-import { Firestore } from "types/Firestore";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -50,15 +49,7 @@ import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
 import "./VenueLandingPage.scss";
 
-export interface VenueLandingPageProps {
-  venue?: Firestore["data"]["currentVenue"];
-  venueEvents?: Firestore["ordered"]["venueEvents"];
-  venueRequestStatus?: Firestore["status"]["requested"]["currentVenue"];
-  purchaseHistory?: Firestore["ordered"]["userPurchaseHistory"];
-  venueId?: string;
-}
-
-export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
+export const VenueLandingPage: React.FC = () => {
   const venueId = useVenueId();
   useConnectCurrentVenue();
 
