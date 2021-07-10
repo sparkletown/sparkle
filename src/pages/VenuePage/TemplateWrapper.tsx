@@ -121,7 +121,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
+      template = <ConversationSpace venue={venue} />;
+      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:

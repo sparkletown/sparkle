@@ -1,12 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { AnyVenue } from "types/venues";
 
-import { useSelector } from "hooks/useSelector";
+import { openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
+
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -22,14 +25,32 @@ import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
+export type ConversationSpaceProps = {
+  venue?: WithId<AnyVenue>;
+};
+
 // @debt refactor this to pass in venue as a prop
-export const ConversationSpace: React.FunctionComponent = () => {
-  const venue = useSelector(currentVenueSelectorData);
+export const ConversationSpace: React.FunctionComponent<ConversationSpaceProps> = ({
+  venue,
+}) => {
+  const { parentVenue } = useRelatedVenues({
+    currentVenueId: venue?.id,
+  });
+
+  const parentVenueId = parentVenue?.id;
+
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
+
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    openUrl(venueInsideUrl(parentVenueId));
+  }, [parentVenueId]);
 
   if (!venue) return <>Loading...</>;
 
@@ -51,6 +72,12 @@ export const ConversationSpace: React.FunctionComponent = () => {
         </InformationCard>
       </InformationLeftColumn>
       <div className="conversation-space-container">
+        {!seatedAtTable && parentVenueId && parentVenue && (
+          <div className="back-map-btn" onClick={backToParentVenue}>
+            <div className="back-icon" />
+            <span className="back-link">Back</span>
+          </div>
+        )}
         <div
           style={{
             display: "flex",
