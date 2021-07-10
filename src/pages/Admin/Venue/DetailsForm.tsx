@@ -84,6 +84,8 @@ interface DetailsFormProps extends WizardPage {
 const iconPositionFieldName = "iconPosition";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -154,6 +156,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     );
   }, [state]);
 
+  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
+  // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
     async (
       vals: Partial<FormValues>,
