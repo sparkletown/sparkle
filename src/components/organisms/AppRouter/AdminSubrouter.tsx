@@ -10,7 +10,8 @@ import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
-import { Provided } from "components/organisms/AppRouter/Provided";
+
+import { Provided } from "./Provided";
 
 export const AdminSubrouter: React.FC = () => {
   return (
