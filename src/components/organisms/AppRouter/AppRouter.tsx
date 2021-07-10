@@ -83,31 +83,23 @@ export const AppRouter: React.FC = () => {
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path="/login" component={Login} />*/}
 
-          <Route
-            path="/v/:venueId"
-            component={() => (
-              <Provided withWorldUsers withRelatedVenues>
-                <VenueLandingPage />
-              </Provided>
-            )}
-          />
+          <Route path="/v/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <VenueLandingPage />
+            </Provided>
+          </Route>
+          {/* TODO: change this to the same 'nested Provided' pattern we are using everywhere else here? */}
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
-          <Route
-            path="/in/:venueId/admin"
-            component={() => (
-              <Provided withRelatedVenues>
-                <VenueAdminPage />
-              </Provided>
-            )}
-          />
-          <Route
-            path="/in/:venueId"
-            component={() => (
-              <Provided withWorldUsers withRelatedVenues>
-                <VenuePage />
-              </Provided>
-            )}
-          />
+          <Route path="/in/:venueId/admin">
+            <Provided withRelatedVenues>
+              <VenueAdminPage />
+            </Provided>
+          </Route>
+          <Route path="/in/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <VenuePage />
+            </Provided>
+          </Route>
           <Route path="/version" component={VersionPage} />
 
           <Route

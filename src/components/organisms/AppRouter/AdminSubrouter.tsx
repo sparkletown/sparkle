@@ -17,14 +17,12 @@ export const AdminSubrouter: React.FC = () => {
   return (
     <Switch>
       {/* Admin V1 */}
-      <Route
-        path="/admin/venue/rooms/:venueId"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <RoomsForm />
-          </Provided>
-        )}
-      />
+      <Route path="/admin/venue/rooms/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <RoomsForm />
+        </Provided>
+      </Route>
+      {/* TODO: change this to the same 'nested Provided' pattern we are using everywhere else here? */}
       <Route
         path="/admin/venue/creation"
         component={
@@ -34,72 +32,48 @@ export const AdminSubrouter: React.FC = () => {
           VenueWizard
         }
       />
-      <Route
-        path="/admin/venue/edit/:venueId"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <VenueWizard />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin/:venueId"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <Admin />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <Admin />
-          </Provided>
-        )}
-      />
+      <Route path="/admin/venue/edit/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizard />
+        </Provided>
+      </Route>
+      <Route path="/admin/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <Admin />
+        </Provided>
+      </Route>
+      <Route path="/admin">
+        <Provided withWorldUsers withRelatedVenues>
+          <Admin />
+        </Provided>
+      </Route>
 
       {/* Admin V2/3/NG */}
-      <Route
-        path="/admin-ng/venue/:venueId?"
-        component={() => (
-          <Provided withWorldUsers>
-            <AdminVenueView />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin-ng/advanced-settings/:venueId?"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <AdminAdvancedSettings />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin-ng/venue/creation"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <VenueWizardV2 />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin-ng/edit/:venueId"
-        component={() => (
-          <Provided withWorldUsers withRelatedVenues>
-            <VenueWizardV2 />
-          </Provided>
-        )}
-      />
-      <Route
-        path="/admin-ng"
-        component={() => (
-          <Provided withWorldUsers>
-            <AdminV2 />
-          </Provided>
-        )}
-      />
+      <Route path="/admin-ng/venue/:venueId?">
+        <Provided withWorldUsers>
+          <AdminVenueView />
+        </Provided>
+      </Route>
+      <Route path="/admin-ng/advanced-settings/:venueId?">
+        <Provided withWorldUsers withRelatedVenues>
+          <AdminAdvancedSettings />
+        </Provided>
+      </Route>
+      <Route path="/admin-ng/venue/creation">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizardV2 />
+        </Provided>
+      </Route>
+      <Route path="/admin-ng/edit/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizardV2 />
+        </Provided>
+      </Route>
+      <Route path="/admin-ng">
+        <Provided withWorldUsers>
+          <AdminV2 />
+        </Provided>
+      </Route>
     </Switch>
   );
 };
