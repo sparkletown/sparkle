@@ -7,18 +7,17 @@ import {
   VenueTemplate,
 } from "types/venues";
 import "./VenuePreview.scss";
-import {
-  BURN_VENUE_TEMPLATES,
-  ENABLE_PLAYA_ADDRESS,
-  LOC_UPDATE_FREQ_MS,
-} from "settings";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
+import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
 import { useRecentVenueUsers } from "hooks/users";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import {
+  eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
+} from "utils/event";
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 import firebase from "firebase/app";
-import { useInterval } from "hooks/useInterval";
 import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
 import { playaAddress } from "utils/address";
 import { Modal } from "react-bootstrap";
@@ -64,21 +63,9 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
   venue,
   allowHideVenue,
 }) => {
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
-
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const [showHiddenModal, setShowHiddenModal] = useState(false);
-
-  const usersInVenue = recentVenueUsers.filter(
-    (partygoer) =>
-      partygoer.lastSeenIn?.[venue.name] >
-      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-  );
 
   useFirestoreConnect([
     {
@@ -158,12 +145,11 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .get()
       .then(function (array) {
         const futureEvents = array.docs
-          .map((doc) => doc.data())
-          .filter((event) => event.start_utc_seconds > nowSeconds)
-          .sort((a, b) => a.start_utc_seconds - b.start_utc_seconds);
+          .map((doc) => doc.data() as VenueEvent) // TODO: is this type cast correct?
+          .filter(isEventLiveOrFuture)
+          .sort(eventsByStartUtcSecondsSorter);
 
-        // TODO: is this type cast correct?
-        setEventsFuture(futureEvents as VenueEvent[]);
+        setEventsFuture(futureEvents);
       });
   }, [venue]);
 
@@ -222,6 +208,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
                 </p>
               )}
               <p className="template-name">{templateName}</p>
+              {/* @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt? */}
               <a
                 onMouseOver={() => dispatch(retainAttendance(true))}
                 onMouseOut={() => dispatch(retainAttendance(false))}
@@ -245,7 +232,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
         </div>
         <div className="user-list-container">
           <UserList
-            users={usersInVenue}
+            users={recentVenueUsers}
             isAudioEffectDisabled
             activity="in this location"
           />

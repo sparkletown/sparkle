@@ -1,6 +1,6 @@
-import { Table } from "types/Table";
+import { DEFAULT_TABLE_COLUMNS } from "settings";
 
-const DEFAULT_COLUMNS_COUNT = 3;
+import { Table } from "types/Table";
 
 /**
  * Generate an array of Table configs that can be used with Jazz Bar/similar.
@@ -37,7 +37,7 @@ export const generateTables: (props: {
       ? `${titlePrefix} ${tableNumber}`
       : titlePrefix;
 
-    const columnsCount = columns ?? DEFAULT_COLUMNS_COUNT;
+    const columnsCount = columns ?? DEFAULT_TABLE_COLUMNS;
 
     const rowsCount =
       rows ?? Math.floor((capacity + columnsCount - 1) / columnsCount);

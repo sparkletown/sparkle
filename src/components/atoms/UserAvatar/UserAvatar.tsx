@@ -4,9 +4,12 @@ import classNames from "classnames";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
-import { useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
+
+import { useRecentWorldUsers } from "hooks/users";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useVenueId } from "hooks/useVenueId";
 
 import "./UserAvatar.scss";
 
@@ -18,6 +21,7 @@ export interface UserAvatarProps {
   showStatus?: boolean;
   onClick?: () => void;
   large?: boolean;
+  medium?: boolean;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -29,8 +33,14 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   onClick,
   showStatus,
   large,
+  medium,
 }) => {
+  const venueId = useVenueId();
   const { recentWorldUsers } = useRecentWorldUsers();
+  const { userStatus, isStatusEnabledForVenue } = useVenueUserStatuses(
+    venueId,
+    user
+  );
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -43,6 +53,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
     "UserAvatar--large": large,
+    "UserAvatar--medium": medium,
   });
 
   const isOnline = useMemo(
@@ -64,6 +75,15 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     "UserAvatar__status-indicator--large": large,
   });
 
+  const statusIndicatorStyles = useMemo(
+    () => ({ backgroundColor: userStatus.color }),
+    [userStatus.color]
+  );
+
+  //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
+  //'showStatus' is used to render this conditionally only in some of the screens.
+  const hasUserStatus = isStatusEnabledForVenue && showStatus && isOnline;
+
   return (
     <div className={containerClasses}>
       {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
@@ -73,7 +93,13 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {showStatus && <span className={statusIndicatorClasses} />}
+
+      {hasUserStatus && (
+        <span
+          className={statusIndicatorClasses}
+          style={statusIndicatorStyles}
+        />
+      )}
     </div>
   );
 };
