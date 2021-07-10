@@ -7,8 +7,6 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
-import { WorldUsersProvider } from "hooks/users/useWorldUsers";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
@@ -122,6 +120,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
+      // Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
@@ -160,19 +159,15 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   // @debt remove backButton from Navbar
   return (
-    <WorldUsersProvider venueId={venue.id}>
-      <RelatedVenuesProvider venueId={venue.id}>
-        <ReactionsProvider venueId={venue.id}>
-          <WithNavigationBar hasBackButton={hasBackButton}>
-            <AnnouncementMessage message={venue.bannerMessage} />
+    <ReactionsProvider venueId={venue.id}>
+      <WithNavigationBar hasBackButton={hasBackButton}>
+        <AnnouncementMessage message={venue.bannerMessage} />
 
-            <Suspense fallback={<LoadingPage />}>{template}</Suspense>
+        <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
-            <ChatSidebar venue={venue} />
-            <UserProfileModal venue={venue} />
-          </WithNavigationBar>
-        </ReactionsProvider>
-      </RelatedVenuesProvider>
-    </WorldUsersProvider>
+        <ChatSidebar venue={venue} />
+        <UserProfileModal venue={venue} />
+      </WithNavigationBar>
+    </ReactionsProvider>
   );
 };
