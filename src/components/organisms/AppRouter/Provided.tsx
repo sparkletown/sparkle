@@ -1,8 +1,11 @@
 import React from "react";
 
 import { useVenueId } from "hooks/useVenueId";
-import { WorldUsersProvider } from "hooks/users";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
+import {
+  RelatedVenuesProvider,
+  RelatedVenuesProviderProps,
+} from "hooks/useRelatedVenues";
 
 export interface ProvidedProps {
   withWorldUsers?: boolean;
@@ -16,29 +19,19 @@ export const Provided: React.FC<ProvidedProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  if (withWorldUsers && withRelatedVenues) {
-    return (
-      <WorldUsersProvider venueId={venueId}>
-        <RelatedVenuesProvider venueId={venueId}>
-          {children}
-        </RelatedVenuesProvider>
-      </WorldUsersProvider>
-    );
-  }
+  const MaybeWorldUsersProvider: React.FC<WorldUsersProviderProps> = withWorldUsers
+    ? WorldUsersProvider
+    : React.Fragment;
 
-  if (withWorldUsers) {
-    return (
-      <WorldUsersProvider venueId={venueId}>{children}</WorldUsersProvider>
-    );
-  }
+  const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
+    ? RelatedVenuesProvider
+    : React.Fragment;
 
-  if (withRelatedVenues) {
-    return (
-      <RelatedVenuesProvider venueId={venueId}>
+  return (
+    <MaybeWorldUsersProvider venueId={venueId}>
+      <MaybeRelatedVenuesProvider venueId={venueId}>
         {children}
-      </RelatedVenuesProvider>
-    );
-  }
-
-  return <>{children}</>;
+      </MaybeRelatedVenuesProvider>
+    </MaybeWorldUsersProvider>
+  );
 };
