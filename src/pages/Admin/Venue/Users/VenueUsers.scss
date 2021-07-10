@@ -1,0 +1,14 @@
+@import "scss/constants";
+
+.venue-users-detail {
+  width: 100vw;
+  height: 100vh;
+  padding: $spacing--xl;
+  &-filter-box {
+    width: 100%;
+    height: 250px;
+    border: 1px solid white;
+    margin: $spacing--xl auto;
+    padding: $spacing--xl;
+  }
+}
