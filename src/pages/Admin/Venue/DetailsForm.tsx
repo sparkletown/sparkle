@@ -652,7 +652,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <Toggler
         name="showSchedule"
         forwardedRef={register}
-        defaultChecked={DEFAULT_SHOW_SCHEDULE}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
       />
     </div>
   );

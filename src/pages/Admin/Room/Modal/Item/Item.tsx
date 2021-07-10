@@ -120,7 +120,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <Toggler
           name="useUrl"
           forwardedRef={register}
-          checked={useUrl}
+          toggled={useUrl}
           onChange={handleUrlToggle}
         />
       </S.Flex>
