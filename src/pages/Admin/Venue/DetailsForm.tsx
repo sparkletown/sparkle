@@ -646,8 +646,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       <h4 className="italic input-header">Show Schedule</h4>
       <Toggler
         name="showSchedule"
-        defaultToggled={DEFAULT_SHOW_SCHEDULE}
         forwardedRef={register}
+        defaultChecked={DEFAULT_SHOW_SCHEDULE}
       />
     </div>
   );

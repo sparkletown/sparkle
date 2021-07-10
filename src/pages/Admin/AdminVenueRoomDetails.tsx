@@ -119,8 +119,9 @@ export const AdminVenueRoomDetails = ({
                 <div className="toggle-room">
                   <Toggler
                     id={"toggle-" + index}
+                    name={"toggle-" + index}
                     checked={room.isEnabled}
-                    onToggle={() => {
+                    onChange={() => {
                       updateRoom(!room.isEnabled);
                     }}
                     label={room.isEnabled ? "Turn room Off" : "Turn room On"}

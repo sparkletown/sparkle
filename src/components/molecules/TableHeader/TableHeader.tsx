@@ -182,8 +182,8 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         </div>
         <Toggler
           containerClassName="TableHeader__lock-toggle"
-          defaultToggled={isCurrentTableLocked}
-          onToggle={toggleIsCurrentTableLocked}
+          defaultChecked={isCurrentTableLocked}
+          onChange={toggleIsCurrentTableLocked}
         />
       </div>
 

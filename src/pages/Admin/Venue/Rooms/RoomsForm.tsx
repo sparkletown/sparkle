@@ -324,6 +324,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">Enabled ?</div>
                     <Toggler
                       id="isEnabled"
+                      name="isEnabled"
                       forwardedRef={register}
                       disabled={disable}
                     />
