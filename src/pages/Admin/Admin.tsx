@@ -52,7 +52,6 @@ import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { WorldUsersProvider } from "hooks/users";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -456,24 +455,22 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <WorldUsersProvider venueId={venueId}>
-      <WithNavigationBar>
-        <div className="admin-dashboard">
-          <div className="page-container page-container_adminview">
-            <div className="page-container-adminsidebar">
-              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
-            </div>
-            <div className="page-container-adminpanel">
-              {venueId ? (
-                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
-              ) : (
-                <>Select a venue to see its details</>
-              )}
-            </div>
+    <WithNavigationBar>
+      <div className="admin-dashboard">
+        <div className="page-container page-container_adminview">
+          <div className="page-container-adminsidebar">
+            <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+          </div>
+          <div className="page-container-adminpanel">
+            {venueId ? (
+              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+            ) : (
+              <>Select a venue to see its details</>
+            )}
           </div>
         </div>
-      </WithNavigationBar>
-    </WorldUsersProvider>
+      </div>
+    </WithNavigationBar>
   );
 };
 
