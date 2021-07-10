@@ -119,7 +119,9 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
+      template = <ConversationSpace venue={venue} />;
+      // Remove the back button, because we don't need it in Table view
+      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:
