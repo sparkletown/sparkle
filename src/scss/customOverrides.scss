@@ -29,3 +29,9 @@ div.Badges {
     }
   }
 }
+
+// hide glow in auditorium v2 iframe
+iframe.Section__iframe {
+  border-radius: 0;
+  box-shadow: none;
+}
