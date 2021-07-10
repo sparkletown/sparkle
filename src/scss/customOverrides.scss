@@ -16,14 +16,14 @@
 .audience-container {
   .audience-overlay {
     .video-container {
-      .reaction-container {
-        box-shadow: none !important;
+      div.reaction-container {
+        box-shadow: none;
       }
 
       .video {
-        .frame {
-          border-radius: 0 !important;
-          box-shadow: none !important;
+        iframe.frame {
+          border-radius: 0;
+          box-shadow: none;
         }
       }
     }
