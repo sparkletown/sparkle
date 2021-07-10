@@ -29,10 +29,3 @@ div.Badges {
     }
   }
 }
-
-// hide glow in Auditorium v2 iframe
-iframe.AllSectionPreviews__iframe,
-iframe.Section__iframe {
-  border-radius: 0;
-  box-shadow: none;
-}
