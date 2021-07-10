@@ -121,7 +121,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
       // Remove the back button, because we don't need it in Table view
-      // Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
