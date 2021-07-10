@@ -324,7 +324,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Enabled ?</div>
                     <Toggler
-                      id="isEnabled"
                       name="isEnabled"
                       forwardedRef={register}
                       disabled={disable}
@@ -334,7 +333,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Is label hidden?</div>
                     <Toggler
-                      id="isLabeled"
                       forwardedRef={register}
                       disabled={disable}
                     />
