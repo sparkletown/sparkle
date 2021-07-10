@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { Link, useHistory } from "react-router-dom";
 import Bugsnag from "@bugsnag/js";
 
@@ -47,14 +47,11 @@ export const AdminVenueRoomDetails = ({
 
   const events = useSelector((state) => state.firestore.ordered.events);
 
-  const filteredEvents =
-    events &&
-    events.filter((e) => {
-      if (e.room === room.title) {
-        return e;
-      }
-      return null;
-    });
+  const filteredEvents = useMemo(() => {
+    if (!events) return;
+
+    return events.filter((event) => (event.room === room.title ? event : null));
+  }, [events, room.title]);
 
   const { user } = useUser();
   const history = useHistory();
