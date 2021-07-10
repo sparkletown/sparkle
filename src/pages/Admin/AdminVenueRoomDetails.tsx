@@ -118,7 +118,6 @@ export const AdminVenueRoomDetails = ({
                 </div>
                 <div className="toggle-room">
                   <Toggler
-                    id={"toggle-" + index}
                     name={"toggle-" + index}
                     checked={room.isEnabled}
                     onChange={() => {

@@ -17,7 +17,6 @@ const TableFooter: React.FC<TableFooterProps> = ({
         <div className="focus">Focus on:</div>
         <div className="focus-option">Jazz</div>
         <Toggler
-          id="showRadio"
           checked={!isVideoFocused}
           onChange={() => setIsVideoFocused(!isVideoFocused)}
         />
