@@ -641,6 +641,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Schedule</h4>
@@ -652,6 +653,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
@@ -659,6 +661,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
@@ -666,6 +669,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowZendeskToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Zendesk support popup</h4>
@@ -712,6 +716,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
@@ -719,6 +724,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowShoutouts = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
@@ -726,6 +732,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
@@ -733,6 +740,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
@@ -854,6 +862,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
