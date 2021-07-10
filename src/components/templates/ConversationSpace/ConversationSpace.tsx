@@ -27,12 +27,11 @@ import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
-export type ConversationSpaceProps = {
-  venue?: WithId<AnyVenue>;
+export interface ConversationSpaceProps {
+  venue: WithId<AnyVenue>;
 };
 
-// @debt refactor this to pass in venue as a prop
-export const ConversationSpace: React.FunctionComponent<ConversationSpaceProps> = ({
+export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   venue,
 }) => {
   const { parentVenue } = useRelatedVenues({
@@ -52,8 +51,6 @@ export const ConversationSpace: React.FunctionComponent<ConversationSpaceProps> 
 
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
-
-  if (!venue) return <>Loading...</>;
 
   const tables = venue?.config?.tables ?? TABLES;
 
