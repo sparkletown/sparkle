@@ -117,6 +117,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <h4 className="italic input-header">Create venue</h4>
       </S.Flex>
       <S.Flex>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
         <Toggler
           name="useUrl"
           forwardedRef={register}

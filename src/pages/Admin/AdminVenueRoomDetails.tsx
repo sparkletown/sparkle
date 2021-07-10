@@ -34,6 +34,7 @@ export const AdminVenueRoomDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
 }: Props) => {
+  // @debt replace this with useVenueEvents or similar?
   useFirestoreConnect([
     {
       collection: "venues",
@@ -58,6 +59,7 @@ export const AdminVenueRoomDetails = ({
   const { user } = useUser();
   const history = useHistory();
 
+  // @debt refactor this to use useAsync / useAsyncFn or similar
   const updateRoom = async (newState: boolean) => {
     if (!user) return;
 
@@ -66,7 +68,9 @@ export const AdminVenueRoomDetails = ({
         ...room,
         isEnabled: newState,
       };
+
       await upsertRoom(roomValues, venue.id, user, index);
+
       history.push(`/admin/${venue.id}`);
     } catch (e) {
       Bugsnag.notify(e, (event) => {
@@ -117,6 +121,7 @@ export const AdminVenueRoomDetails = ({
                   }
                 </div>
                 <div className="toggle-room">
+                  {/* @debt the onChange handler here should be useCallback'd */}
                   <Toggler
                     name={"toggle-" + index}
                     toggled={room.isEnabled}
