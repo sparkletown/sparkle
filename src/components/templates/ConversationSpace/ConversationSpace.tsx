@@ -29,7 +29,7 @@ import "./ConversationSpace.scss";
 
 export interface ConversationSpaceProps {
   venue: WithId<AnyVenue>;
-};
+}
 
 export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   venue,
@@ -37,6 +37,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
+
   const parentVenueId = parentVenue?.id;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
