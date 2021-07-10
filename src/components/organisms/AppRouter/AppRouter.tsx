@@ -119,7 +119,7 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/sparkleverse"
-            component={() => {
+            render={() => {
               window.location.href = SPARKLEVERSE_HOMEPAGE_URL;
               return <LoadingPage />;
             }}
@@ -127,7 +127,7 @@ export const AppRouter: React.FC = () => {
 
           <Route
             path="/"
-            component={() => {
+            render={() => {
               window.location.href = DEFAULT_REDIRECT_URL;
               return <LoadingPage />;
             }}
