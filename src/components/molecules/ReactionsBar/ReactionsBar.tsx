@@ -26,7 +26,7 @@ export interface ReactionsBarProps {
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   reactions,
   venueId,
-  onClickLeaveSeat,
+  leaveSeat,
   isAudioEffectDisabled,
   onClickMute,
 }) => {
