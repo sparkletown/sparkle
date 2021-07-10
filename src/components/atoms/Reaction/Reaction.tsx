@@ -6,7 +6,7 @@ import "./Reaction.scss";
 
 export interface ReactionProps {
   reaction: ReactionData<EmojiReactionType>;
-  onClickReaction?: (emojiReaction: EmojiReactionType) => void;
+  onReactionClick?: (emojiReaction: EmojiReactionType) => void;
 }
 
 export const Reaction: React.FC<ReactionProps> = ({
