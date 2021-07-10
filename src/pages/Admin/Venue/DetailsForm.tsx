@@ -49,8 +49,9 @@ import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
 
-import { createJazzbar } from "utils/venue";
+import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
+import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
@@ -264,9 +265,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [setValue]
   );
 
+  useEffect(() => {
+    if (!previous || isTruthy(state.templatePage)) return;
+
+    previous();
+  }, [previous, state.templatePage]);
+
   if (!state.templatePage) {
-    previous && previous();
-    return null;
+    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
+    return <>Error: state.templatePage not defined.</>;
   }
 
   const isAdminPlaced =
