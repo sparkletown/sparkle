@@ -16,6 +16,7 @@ const TableFooter: React.FC<TableFooterProps> = ({
       <div className="action">
         <div className="focus">Focus on:</div>
         <div className="focus-option">Jazz</div>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
         <Toggler
           checked={!isVideoFocused}
           onChange={() => setIsVideoFocused(!isVideoFocused)}
