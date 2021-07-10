@@ -68,7 +68,6 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       async () => fetchDescendantVenues(sovereignVenueId),
       {
         attributes: { sovereignVenueId },
-        withDebugLog: true,
       }
     );
   }, [sovereignVenueId]);
