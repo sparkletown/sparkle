@@ -1,4 +1,5 @@
 export { useWorldUsers, WorldUsersProvider } from "./useWorldUsers";
+export type { WorldUsersProviderProps } from "./useWorldUsers";
 export { useWorldUserLocation } from "./useWorldUserLocation";
 export {
   useWorldUsersById,
