@@ -191,8 +191,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   <ReactionsBar
                     reactions={EmojiReactions}
                     venueId={venue.id}
-                    isAudioEffectDisabled={isAudioEffectDisabled}
-                    onClickMute={toggleMute}
+                    isReactionsMuted={isAudioEffectDisabled}
+                    toggleMute={toggleMute}
                   />
 
                   {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}

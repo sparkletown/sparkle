@@ -329,9 +329,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
         <ReactionsBar
           reactions={burningReactions}
           venueId={venueId}
-          onClickLeaveSeat={leaveSeat}
-          isAudioEffectDisabled={isAudioEffectDisabled}
-          onClickMute={toggleMute}
+          leaveSeat={leaveSeat}
+          isReactionsMuted={isAudioEffectDisabled}
+          toggleMute={toggleMute}
         />
 
         {venue.showShoutouts && (

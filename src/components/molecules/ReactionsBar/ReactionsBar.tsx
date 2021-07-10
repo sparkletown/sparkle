@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -16,19 +16,19 @@ import { Reaction } from "components/atoms/Reaction";
 import "./ReactionsBar.scss";
 
 export interface ReactionsBarProps {
-  reactions: ReactionData<EmojiReactionType>[];
   venueId: string;
-  onClickLeaveSeat?: () => void;
-  isAudioEffectDisabled: boolean;
-  onClickMute: () => void;
+  reactions: ReactionData<EmojiReactionType>[];
+  isReactionsMuted: boolean;
+  toggleMute: () => void;
+  leaveSeat?: () => void;
 }
 
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
-  reactions,
   venueId,
+  reactions,
+  isReactionsMuted,
+  toggleMute,
   leaveSeat,
-  isAudioEffectDisabled,
-  onClickMute,
 }) => {
   const dispatch = useDispatch();
   const { userWithId } = useUser();
@@ -47,25 +47,28 @@ export const ReactionsBar: React.FC<ReactionsBarProps> = ({
     [venueId, userWithId, dispatch]
   );
 
-  return (
-    <div className="ReactionsBar">
-      {reactions.map((reaction) => (
+  const renderedReactions = useMemo(
+    () =>
+      reactions.map((reaction) => (
         <Reaction
           key={reaction.name}
           reaction={reaction}
-          onClickReaction={sendReaction}
+          onReactionClick={sendReaction}
         />
-      ))}
-      <div className="ReactionsBar__mute-button" onClick={onClickMute}>
-        <FontAwesomeIcon
-          icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-        />
+      )),
+    [reactions, sendReaction]
+  );
+
+  return (
+    <div className="ReactionsBar">
+      {renderedReactions}
+
+      <div className="ReactionsBar__mute-button" onClick={toggleMute}>
+        <FontAwesomeIcon icon={isReactionsMuted ? faVolumeMute : faVolumeUp} />
       </div>
-      {onClickLeaveSeat && (
-        <button
-          className="ReactionsBar__leave-seat-button"
-          onClick={onClickLeaveSeat}
-        >
+
+      {leaveSeat && (
+        <button className="ReactionsBar__leave-seat-button" onClick={leaveSeat}>
           Leave Seat
         </button>
       )}

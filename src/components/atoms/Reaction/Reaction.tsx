@@ -11,11 +11,11 @@ export interface ReactionProps {
 
 export const Reaction: React.FC<ReactionProps> = ({
   reaction,
-  onClickReaction,
+  onReactionClick,
 }) => {
   const handleReactionClick = useCallback(() => {
-    onClickReaction && onClickReaction(reaction.type);
-  }, [onClickReaction, reaction]);
+    onReactionClick && onReactionClick(reaction.type);
+  }, [onReactionClick, reaction]);
 
   return (
     <button className="Reaction" onClick={handleReactionClick}>

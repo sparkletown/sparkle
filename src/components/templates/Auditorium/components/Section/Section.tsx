@@ -9,7 +9,6 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
-import { useUser } from "hooks/useUser";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
@@ -29,7 +28,6 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const { userWithId } = useUser();
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
   // @debt refactor via useShowHide hook
   const toggleMute = useCallback(
@@ -50,6 +48,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
     videoWidthInSeats,
     videoHeightInSeats,
+
+    isUserSeated,
 
     getUserBySeat,
     takeSeat,
@@ -107,10 +107,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
 
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
-  const userSeated =
-    typeof userWithId?.data?.[venue.id]?.row === "number" &&
-    typeof userWithId?.data?.[venue.id]?.row === "number";
-
   return (
     <div className="Section">
       <BackButton onClick={backToMain} locationName="overview" />
@@ -125,13 +121,13 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
             style={reactionsContainerInlineStyles}
             className="Section__reactions-container"
           >
-            {userSeated ? (
+            {isUserSeated ? (
               <ReactionsBar
                 reactions={EmojiReactions}
                 venueId={venueId}
-                onClickLeaveSeat={leaveSeat}
-                isAudioEffectDisabled={isAudioEffectDisabled}
-                onClickMute={toggleMute}
+                leaveSeat={leaveSeat}
+                isReactionsMuted={isAudioEffectDisabled}
+                toggleMute={toggleMute}
               />
             ) : (
               "Welcome! Click on an empty seat to claim it!"

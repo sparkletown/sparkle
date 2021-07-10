@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { setGridData } from "api/profile";
 
@@ -67,6 +67,11 @@ export const useAuditoriumSection = ({
     sectionId,
   });
 
+  const isUserSeated = useMemo(
+    () => seatedUsers.some((seatedUser) => seatedUser.id === userId),
+    [seatedUsers, userId]
+  );
+
   const getUserBySeat = useGetUserByPosition({
     venueId,
     positionedUsers: seatedUsers,
@@ -123,6 +128,8 @@ export const useAuditoriumSection = ({
 
     videoWidthInSeats,
     videoHeightInSeats,
+
+    isUserSeated,
 
     getUserBySeat,
     takeSeat,
