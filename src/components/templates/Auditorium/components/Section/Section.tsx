@@ -21,7 +21,6 @@ import "./Section.scss";
 export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
 export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
 export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
-export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 export interface SectionProps {
   venue: WithId<AuditoriumVenue>;
@@ -43,8 +42,8 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     baseRowsCount,
     baseColumnsCount,
 
-    videoWidthInSeats,
-    videoHeightInSeats,
+    screenHeightInSeats,
+    screenWidthInSeats,
 
     isUserSeated,
 
@@ -65,26 +64,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     };
   }, [leaveSeat]);
 
-  const iframeInlineStyles: React.CSSProperties = useMemo(
+  const centralScreenInlineStyles: React.CSSProperties = useMemo(
     () => ({
-      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      height: `calc(${
-        videoHeightInSeats - REACTIONS_CONTAINER_HEIGHT_IN_SEATS
-      } * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-      minHeight: `calc(${
-        videoHeightInSeats - REACTIONS_CONTAINER_HEIGHT_IN_SEATS
-      } * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      width: `calc(${screenWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      height: `calc(${screenHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
+      minWidth: `calc(${screenWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
+      minHeight: `calc(${screenHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
     }),
-    [videoWidthInSeats, videoHeightInSeats]
-  );
-
-  const reactionsContainerInlineStyles: React.CSSProperties = useMemo(
-    () => ({
-      width: `calc(0.9 * ${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      minWidth: `calc(0.9 * ${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-    }),
-    [videoWidthInSeats]
+    [screenWidthInSeats, screenHeightInSeats]
   );
 
   const seatsGrid = useAuditoriumGrid({
@@ -109,25 +96,27 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__iframe-overlay">
-          <IFrame
-            iframeClassname="Section__iframe"
-            iframeInlineStyles={iframeInlineStyles}
-            src={iframeUrl}
-          />
           <div
-            style={reactionsContainerInlineStyles}
-            className="Section__reactions-container"
+            className="Section__central-screen"
+            style={centralScreenInlineStyles}
           >
-            {isUserSeated ? (
-              <ReactionsBar
-                venueId={venueId}
-                leaveSeat={leaveSeat}
-                isReactionsMuted={isUserAudioMuted}
-                toggleMute={toggleUserAudio}
-              />
-            ) : (
-              "Welcome! Click on an empty seat to claim it!"
-            )}
+            <IFrame
+              iframeClassname="Section__iframe"
+              containerClassname="Section__iframe"
+              src={iframeUrl}
+            />
+            <div className="Section__reactions">
+              {isUserSeated ? (
+                <ReactionsBar
+                  venueId={venueId}
+                  leaveSeat={leaveSeat}
+                  isReactionsMuted={isUserAudioMuted}
+                  toggleMute={toggleUserAudio}
+                />
+              ) : (
+                "Welcome! Click on an empty seat to claim it!"
+              )}
+            </div>
           </div>
         </div>
         {seatsGrid}

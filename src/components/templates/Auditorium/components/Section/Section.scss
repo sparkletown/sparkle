@@ -7,8 +7,6 @@ $section-seat-size: $avatarSize;
 $section-seat-size-min: $avatarSizeMin;
 $section-seat-spacing: 3px;
 
-$iframe-box-shadow: 2px 2px $spacing--lg $white;
-
 $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 
 .Section {
@@ -25,21 +23,27 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  &__reactions-container {
+  &__reactions {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
     text-align: center;
 
-    pointer-events: all;
+    width: 80%;
+    height: 20%;
 
-    min-height: 105px;
-    padding: 15px;
+    background-color: $secondary--dark;
 
     border-bottom-left-radius: 20px;
     border-bottom-right-radius: 20px;
-    box-shadow: 2px 2px 20px $white;
-    background-color: #1a1d24;
+    z-index: 5;
+  }
+
+  &__central-screen {
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
   }
 
   &__iframe-overlay {
@@ -67,7 +71,6 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     height: 100%;
     border: thin $black;
     border-radius: $border-radius--lg;
-    box-shadow: $iframe-box-shadow;
   }
 
   &__seats {

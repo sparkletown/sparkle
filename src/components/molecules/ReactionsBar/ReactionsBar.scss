@@ -6,6 +6,7 @@ $reaction-bar-indent: 5px;
   display: flex;
   flex: 1;
   justify-content: space-around;
+  align-items: center;
   margin: $reaction-bar-indent 0;
   width: 100%;
 
@@ -24,7 +25,7 @@ $reaction-bar-indent: 5px;
     text-align: center;
     font-size: $font-size--sm;
     transition: all 400ms $transition-function;
-    line-height: 1.5;
+    height: 50%;
     border: 1px solid transparent;
     transform: translateY(0);
     cursor: pointer;

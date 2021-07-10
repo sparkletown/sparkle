@@ -11,6 +11,11 @@ $reaction-size: 30px;
   font-size: $font-size--xl;
   animation: sway 2200ms 1200ms ease-in-out;
 
+  &:hover {
+    cursor: pointer;
+    opacity: 0.9;
+  }
+
   &:focus {
     outline: none;
   }
