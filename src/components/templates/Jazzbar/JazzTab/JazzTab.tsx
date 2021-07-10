@@ -164,7 +164,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
       )}
 
       {!seatedAtTable && parentVenue && (
-        <BackButton onClick={backToParentVenue} />
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
       )}
 
       {!seatedAtTable && (

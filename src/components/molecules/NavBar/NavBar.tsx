@@ -339,7 +339,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
       {/* @debt Remove back button from Navbar */}
       {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton onClick={backToParentVenue} />
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
       )}
     </>
   );
