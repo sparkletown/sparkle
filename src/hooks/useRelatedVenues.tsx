@@ -151,6 +151,7 @@ export interface RelatedVenuesProps {
 export interface RelatedVenuesData extends RelatedVenuesContextState {
   parentVenue?: WithId<AnyVenue>;
   currentVenue?: WithId<AnyVenue>;
+  parentVenueId?: string;
 }
 
 export const useRelatedVenues: ReactHook<
@@ -171,5 +172,7 @@ export const useRelatedVenues: ReactHook<
     return findVenueInRelatedVenues(currentVenue.parentId);
   }, [currentVenue, findVenueInRelatedVenues]);
 
-  return { ...relatedVenuesState, currentVenue, parentVenue };
+  const parentVenueId = parentVenue?.id;
+
+  return { ...relatedVenuesState, currentVenue, parentVenue, parentVenueId };
 };
