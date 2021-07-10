@@ -6,9 +6,9 @@ import { enterExternalRoom } from "utils/userLocation";
 import { enterVenue } from "utils/url";
 import { getExternalRoomSlug } from "utils/room";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentLocationUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
-import { useRelatedVenues } from "./useRelatedVenues";
 
 export interface UseRoomProps {
   room?: Room;
