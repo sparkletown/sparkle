@@ -28,6 +28,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
   labelClassName,
 
   forwardedRef,
+  id,
+  name,
   ...extraInputProps
 }) => {
   const containerClasses = classNames("Checkbox", containerClassName);
@@ -43,6 +45,8 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         hidden
         type="checkbox"
         ref={forwardedRef}
+        id={id}
+        name={name ?? id}
         {...extraInputProps}
       />
       <div className={checkboxClasses}>

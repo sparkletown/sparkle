@@ -323,7 +323,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">Enabled ?</div>
                     <Toggler
                       id="isEnabled"
-                      name="isEnabled"
                       forwardedRef={register}
                       disabled={disable}
                     />
@@ -332,7 +331,6 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     <div className="input-title">Is label hidden?</div>
                     <Toggler
                       id="isLabeled"
-                      name="isLabeled"
                       forwardedRef={register}
                       disabled={disable}
                     />
