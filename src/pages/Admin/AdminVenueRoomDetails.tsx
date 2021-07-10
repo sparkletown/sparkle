@@ -50,7 +50,7 @@ export const AdminVenueRoomDetails = ({
   const filteredEvents = useMemo(() => {
     if (!events) return;
 
-    return events.filter((event) => (event.room === room.title ? event : null));
+    return events.filter((event) => event.room === room.title);
   }, [events, room.title]);
 
   const { user } = useUser();
