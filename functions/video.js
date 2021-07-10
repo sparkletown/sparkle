@@ -38,7 +38,7 @@ exports.getAgoraToken = functions.https.onCall((data, context) => {
 
   try {
     assertValidAgoraConfig();
-  } catch (err) {
+  } catch (error) {
     // Log the specific error details for further investigation
     functions.logger.error("assertValidAgoraConfig() failed", {
       error,
