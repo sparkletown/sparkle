@@ -7,12 +7,12 @@ import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
-import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
+import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
 import { FireBarrel } from "components/templates/FireBarrel";
@@ -49,15 +49,15 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
-  let fullscreen = false;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
         <Switch>
           <Route path={`${match.path}/reactions`} component={ReactionPage} />
-          <Route component={Jazzbar} />
+          <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
+      // NOTE: Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
@@ -77,7 +77,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.playa:
     case VenueTemplate.preplaya:
       template = <PlayaRouter />;
-      fullscreen = true;
       break;
 
     case VenueTemplate.zoomroom:
@@ -101,7 +100,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       );
       break;
 
-    // Note: This is the template that is used for the Auditorium
+    // Note: This is the template that is used for Auditorium (v1)
     case VenueTemplate.audience:
       template = (
         <Switch>
@@ -111,16 +110,22 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           </Route>
         </Switch>
       );
-      fullscreen = true;
+      break;
+
+    case VenueTemplate.auditorium:
+      template = <Auditorium venue={venue} />;
+      // NOTE: Remove the back button, because we need to implement it differently in Section
+      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
+      template = <ConversationSpace venue={venue} />;
+      // Remove the back button, because we don't need it in Table view
+      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:
       template = <Embeddable venue={venue} />;
-      fullscreen = true;
       break;
 
     case VenueTemplate.firebarrel:
@@ -158,20 +163,15 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
   // @debt remove backButton from Navbar
   return (
-    <RelatedVenuesProvider venueId={venue.id}>
-      <ReactionsProvider venueId={venue.id}>
-        <WithNavigationBar
-          fullscreen={fullscreen}
-          hasBackButton={hasBackButton}
-        >
-          <AnnouncementMessage message={venue.bannerMessage} />
+    <ReactionsProvider venueId={venue.id}>
+      <WithNavigationBar hasBackButton={hasBackButton}>
+        <AnnouncementMessage message={venue.bannerMessage} />
 
-          <Suspense fallback={<LoadingPage />}>{template}</Suspense>
+        <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
-          <ChatSidebar venue={venue} />
-          <UserProfileModal venue={venue} />
-        </WithNavigationBar>
-      </ReactionsProvider>
-    </RelatedVenuesProvider>
+        <ChatSidebar venue={venue} />
+        <UserProfileModal venue={venue} />
+      </WithNavigationBar>
+    </ReactionsProvider>
   );
 };

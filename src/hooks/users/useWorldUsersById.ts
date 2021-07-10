@@ -1,30 +1,34 @@
-import { useMemo } from "react";
+import { isEqual } from "lodash";
 
 import { User } from "types/User";
 
-import { worldUsersByIdSelector } from "utils/selectors";
+import { WithId } from "utils/id";
+import { worldUsersByIdWithoutLocationSelector } from "utils/selectors";
 
 import { isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
-import { useConnectWorldUsers } from "./useConnectWorldUsers";
+import { useWorldUsersContext } from "./useWorldUsers";
+
+const noUsersById: Record<string, WithId<User>> = {};
 
 /**
  * @debt typing, Record implies that a User will exist for literally any given string, which is untrue
  * @deprecated use useWorldUsersByIdWorkaround until we refactor this to fix the typing issue across the codebase
  */
 export const useWorldUsersById = () => {
-  useConnectWorldUsers();
+  // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
+  useWorldUsersContext();
 
-  const worldUsersById = useSelector(worldUsersByIdSelector);
-
-  return useMemo(
-    () => ({
-      worldUsersById: worldUsersById ?? {},
-      isWorldUsersLoaded: isLoaded(worldUsersById),
-    }),
-    [worldUsersById]
+  const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
+    worldUsersByIdWithoutLocationSelector,
+    isEqual
   );
+
+  return {
+    worldUsersById: worldUsersById ?? noUsersById,
+    isWorldUsersLoaded: isLoaded(worldUsersById),
+  };
 };
 
 // @debt typing, this uses Partial<Record<K,T>> to work around the bug where Record implies that a User will exist for literally any given string, which is untrue
