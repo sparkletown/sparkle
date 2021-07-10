@@ -63,6 +63,8 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import {
@@ -643,64 +645,39 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Schedule</h4>
-      <label id={"showSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showSchedule"}
-          name={"showSchedule"}
-          ref={register}
-          defaultChecked={DEFAULT_SHOW_SCHEDULE}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        name="showSchedule"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+      />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showGrid" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowZendeskToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showZendesk" forwardedRef={register} />
     </div>
   );
 
@@ -743,63 +720,35 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showReactions" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowShoutouts = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
-      <label id="showShoutouts" className="switch">
-        <input
-          type="checkbox"
-          id="showShoutouts"
-          name="showShoutouts"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showShoutouts" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showRangers" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -917,13 +866,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
+      <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 
