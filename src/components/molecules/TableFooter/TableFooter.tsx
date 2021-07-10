@@ -2,7 +2,7 @@ import React from "react";
 
 import { Toggler } from "components/atoms/Toggler";
 
-interface TableFooterProps {
+export interface TableFooterProps {
   isVideoFocused: boolean;
   setIsVideoFocused: (val: boolean) => void;
 }
