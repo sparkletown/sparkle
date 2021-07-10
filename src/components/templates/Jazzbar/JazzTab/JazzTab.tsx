@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -62,7 +62,10 @@ interface JazzProps {
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
-  const { isShown: isChecked, toggle: toggleTables } = useShowHide();
+  const {
+    isShown: showAvailableTables,
+    toggle: togglAvailableTables,
+  } = useShowHide();
 
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
@@ -80,16 +83,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { userWithId } = useUser();
 
   const defaultTables = venue.config?.tables ?? JAZZBAR_TABLES;
-  const { availableTables } = useTables({ defaultTables });
-
-  const [jazzbarTables, setJazzbarTables] = useState(defaultTables);
-
-  const onToggleTables = useCallback(() => {
-    toggleTables();
-    setJazzbarTables(isChecked ? defaultTables : availableTables);
-  }, [isChecked, defaultTables, availableTables, toggleTables]);
-
-  useEffect(() => setJazzbarTables(defaultTables), [defaultTables]);
+  const { tablesToShow } = useTables({ defaultTables, showAvailableTables });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -199,7 +193,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           seatedAtTable={seatedAtTable}
           setSeatedAtTable={setSeatedAtTable}
           venueName={venue.name}
-          tables={jazzbarTables}
+          tables={tablesToShow}
         />
       )}
 
@@ -225,7 +219,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               </div>
 
               {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
-              {shouldShowReactions ? (
+              {shouldShowReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -264,11 +258,12 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                     />
                   )} */}
                 </div>
-              ) : (
+              )}
+              {!seatedAtTable && (
                 <TablesControlBar
-                  className="control-bar"
-                  handleChecked={onToggleTables}
-                  isChecked={isChecked}
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={togglAvailableTables}
+                  showAvailableTables={showAvailableTables}
                 />
               )}
             </>
@@ -289,7 +284,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           venueName={venue.name}
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
-          customTables={jazzbarTables}
+          customTables={tablesToShow}
         />
       </div>
     </div>

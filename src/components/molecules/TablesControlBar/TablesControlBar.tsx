@@ -1,5 +1,4 @@
 import React from "react";
-
 import classNames from "classnames";
 
 import { Checkbox } from "components/atoms/Checkbox";
@@ -7,23 +6,23 @@ import { Checkbox } from "components/atoms/Checkbox";
 import "./TablesControlBar.scss";
 
 export interface TablesControlBarProps {
-  isChecked: boolean;
-  handleChecked: () => void;
-  className?: string;
+  showAvailableTables: boolean;
+  onToggleAvailableTables: () => void;
+  containerClassName?: string;
 }
 
 export const TablesControlBar: React.FC<TablesControlBarProps> = ({
-  isChecked,
-  handleChecked,
-  className,
+  showAvailableTables,
+  onToggleAvailableTables,
+  containerClassName,
 }) => {
-  const containerClasses = classNames("TablesControlBar", className);
+  const containerClasses = classNames("TablesControlBar", containerClassName);
 
   return (
     <div className={containerClasses}>
       <Checkbox
-        checked={isChecked}
-        onChange={handleChecked}
+        checked={showAvailableTables}
+        onChange={onToggleAvailableTables}
         label="Hide full/locked tables"
         containerClassName="TablesControlBar__checkbox"
       />

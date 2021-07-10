@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useState } from "react";
 
 import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
@@ -30,23 +30,18 @@ export const ConversationSpace: React.FunctionComponent = () => {
   const venue = useSelector(currentVenueSelectorData);
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
-  const { isShown: isChecked, toggle: toggleTables } = useShowHide();
+  const {
+    isShown: showAvailableTables,
+    toggle: togglAvailableTables,
+  } = useShowHide();
 
   const defaultTables = venue?.config?.tables ?? TABLES;
-  const { availableTables } = useTables({ defaultTables });
 
-  const [tables, setTables] = useState(defaultTables);
-
-  useEffect(() => setTables(defaultTables), [defaultTables]);
+  const { tablesToShow } = useTables({ defaultTables, showAvailableTables });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
-
-  const onToggleTables = useCallback(() => {
-    toggleTables();
-    setTables(isChecked ? defaultTables : availableTables);
-  }, [isChecked, defaultTables, availableTables, toggleTables]);
 
   if (!venue) return <>Loading...</>;
 
@@ -92,7 +87,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
-                  tables={tables}
+                  tables={tablesToShow}
                 />
               )}
               {seatedAtTable && (
@@ -108,9 +103,9 @@ export const ConversationSpace: React.FunctionComponent = () => {
           </div>
           {!seatedAtTable && (
             <TablesControlBar
-              className="control-bar"
-              handleChecked={onToggleTables}
-              isChecked={isChecked}
+              containerClassName="ControlBar__container"
+              onToggleAvailableTables={togglAvailableTables}
+              showAvailableTables={showAvailableTables}
             />
           )}
           <div className="seated-area">
@@ -120,7 +115,7 @@ export const ConversationSpace: React.FunctionComponent = () => {
               venueName={venue.name}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
-              customTables={tables}
+              customTables={tablesToShow}
             />
           </div>
           <UserList
