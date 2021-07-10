@@ -30,12 +30,15 @@ export const useTables: ReactHook<UseTablesProps, UseTablesData> = ({
     () =>
       defaultTables.filter((table) => {
         const lockedTable = experience?.tables[table.title]?.locked;
-        const areUsersAtTable = recentVenueUsers.some(
+        const usersSeatedAtTable = recentVenueUsers.filter(
           (user: User) =>
             getUserExperience(venue?.name)(user)?.table === table.reference
         );
+        const numberOfSeatsLeft =
+          table.capacity && table.capacity - usersSeatedAtTable.length;
+        const fullTable = numberOfSeatsLeft === 0;
 
-        return !lockedTable && !areUsersAtTable;
+        return !lockedTable && !fullTable;
       }),
     [defaultTables, experience?.tables, recentVenueUsers, venue?.name]
   );
