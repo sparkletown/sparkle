@@ -22,6 +22,7 @@ import { Badges } from "components/organisms/Badges";
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import { Button } from "components/atoms/Button";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import editIcon from "assets/icons/profile-edit-icon.svg";
 
@@ -78,38 +79,6 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
     }
   }, [user]);
 
-  const profileLinks = useMemo(() => {
-    const makeEditProfileLink = (profileLink?: ProfileLink) => () => {
-      setProfileLinkToEdit(profileLink);
-      setUserProfileMode(UserProfileMode.EDIT_PROFILE_LINK);
-    };
-
-    return (
-      <>
-        <ul className="UserInformationContent__profile-links">
-          {user?.profileLinks?.map((profileLink) => (
-            <li key={profileLink.title}>
-              {profileLink.title}{" "}
-              <button
-                className="button--a"
-                onClick={makeEditProfileLink(profileLink)}
-              >
-                Edit
-              </button>
-            </li>
-          ))}
-        </ul>
-
-        <button
-          className="UserInformationContent__add-profile-link button--a"
-          onClick={makeEditProfileLink(undefined)}
-        >
-          Add a profile link
-        </button>
-      </>
-    );
-  }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
-
   // @debt We need to rework the way we store answers to profile questions
   const questions = useMemo(
     () =>
@@ -120,7 +89,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           <div key={question.name} className="question-section">
             <div className="question">{question.text}</div>
             {/* @ts-ignore question.name is a correct index for type User */}
-            <div>{user?.[question.name]}</div>
+            <RenderMarkdown text={user?.[question.name]} />
           </div>
         )),
     [profileQuestions, user]
@@ -160,8 +129,6 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
         </Button>
       </div>
       {questions}
-
-      {profileLinks}
 
       {IS_BURN && (
         <>
