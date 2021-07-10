@@ -16,6 +16,7 @@ import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { Provided } from "components/organisms/AppRouter/Provided";
 
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>
@@ -82,10 +83,22 @@ export const AppRouter: React.FC = () => {
           {/* @debt The /login route doesn't work since we added non-defaulted props to the Login component */}
           {/*<Route path="/login" component={Login} />*/}
 
-          <Route path="/v/:venueId" component={VenueLandingPage} />
+          <Route path="/v/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <VenueLandingPage />
+            </Provided>
+          </Route>
           <Route path="/e/:step/:venueId" component={VenueEntrancePage} />
-          <Route path="/in/:venueId/admin" component={VenueAdminPage} />
-          <Route path="/in/:venueId" component={VenuePage} />
+          <Route path="/in/:venueId/admin">
+            <Provided withRelatedVenues>
+              <VenueAdminPage />
+            </Provided>
+          </Route>
+          <Route path="/in/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <VenuePage />
+            </Provided>
+          </Route>
           <Route path="/version" component={VersionPage} />
 
           <Route
