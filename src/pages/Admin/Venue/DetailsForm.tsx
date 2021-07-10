@@ -73,6 +73,9 @@ import { WizardPage } from "./VenueWizard";
 import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
 
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
+
 import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -285,8 +288,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
+  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
-    <div className="page page--admin">
+    <div className="page page--admin admin-dashboard">
       <div className="page-side page-side--admin">
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
