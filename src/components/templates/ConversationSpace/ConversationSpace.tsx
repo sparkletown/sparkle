@@ -21,6 +21,8 @@ import TableHeader from "components/molecules/TableHeader";
 import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
 
+import { BackButton } from "components/atoms/BackButton";
+
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
@@ -36,7 +38,6 @@ export const ConversationSpace: React.FunctionComponent<ConversationSpaceProps> 
   const { parentVenue } = useRelatedVenues({
     currentVenueId: venue?.id,
   });
-
   const parentVenueId = parentVenue?.id;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
@@ -73,10 +74,10 @@ export const ConversationSpace: React.FunctionComponent<ConversationSpaceProps> 
       </InformationLeftColumn>
       <div className="conversation-space-container">
         {!seatedAtTable && parentVenueId && parentVenue && (
-          <div className="back-map-btn" onClick={backToParentVenue}>
-            <div className="back-icon" />
-            <span className="back-link">Back</span>
-          </div>
+          <BackButton
+            onClick={backToParentVenue}
+            locationName={parentVenue.name}
+          />
         )}
         <div
           style={{
