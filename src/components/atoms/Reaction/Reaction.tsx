@@ -13,9 +13,10 @@ export const Reaction: React.FC<ReactionProps> = ({
   reaction,
   onReactionClick,
 }) => {
-  const handleReactionClick = useCallback(() => {
-    onReactionClick && onReactionClick(reaction.type);
-  }, [onReactionClick, reaction]);
+  const handleReactionClick = useCallback(
+    () => void onReactionClick?.(reaction.type),
+    [onReactionClick, reaction]
+  );
 
   return (
     <button className="Reaction" onClick={handleReactionClick}>
