@@ -43,7 +43,7 @@ export type ReactionData<T extends ReactionType = ReactionType> = {
   audioPath: string;
 };
 
-export const EMOJI_REACTIONS: ReactionData<EmojiReactionType>[] = [
+export const EMOJI_REACTIONS: Readonly<ReactionData<EmojiReactionType>[]> = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
@@ -98,7 +98,7 @@ export const EMOJI_REACTIONS: ReactionData<EmojiReactionType>[] = [
     name: "sparkle",
     text: "✨",
     ariaLabel: "sparkle-emoji",
-    audioPath: "/sounds/sparkle.mpeg",
+    audioPath: "/sounds/sparkle.mp3",
   },
 ];
 
