@@ -16,6 +16,7 @@ export const useAudio: ReactHook<UseAudioProps, void> = ({
 
     const audio = new Audio(audioPath);
 
+    audio.muted = isMuted;
     audio.play().catch((e) => console.error("Error playing audio", e));
 
     return () => {
