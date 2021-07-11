@@ -142,7 +142,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
-  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
 

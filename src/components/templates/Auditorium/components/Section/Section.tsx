@@ -27,7 +27,7 @@ export interface SectionProps {
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
-  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
 

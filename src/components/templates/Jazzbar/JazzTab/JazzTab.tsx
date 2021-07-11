@@ -70,7 +70,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
-  const { show: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
 
   const isUserAudioMuted = !isUserAudioOn;
 
