@@ -9,11 +9,8 @@ import { QuestionType } from "types/Question";
 import { ProfileLink, User } from "types/User";
 
 import { WithId } from "utils/id";
-import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-} from "utils/selectors";
 import { venueLandingUrl } from "utils/url";
+import { currentVenueSelector } from "utils/selectors";
 
 import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
@@ -45,15 +42,14 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   user,
   email,
 }) => {
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
   const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const history = useHistory();
   const firebase = useFirebase();
+
+  const profileQuestions = sovereignVenue?.profile_questions;
 
   const logout = useCallback(async () => {
     await firebase.auth().signOut();

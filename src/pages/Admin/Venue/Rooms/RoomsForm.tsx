@@ -34,6 +34,8 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { validationSchema } from "./RoomsValidationSchema";
 
 import "../Venue.scss";
@@ -319,30 +321,22 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Enabled ?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isEnabled"
-                        name={"isEnabled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isEnabled"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Is label hidden?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isLabeled"
-                        name={"isLabeled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isLabeled"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
