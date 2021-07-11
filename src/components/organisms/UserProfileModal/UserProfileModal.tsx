@@ -166,11 +166,9 @@ const SuspectedLocation: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
-  // @debt This will currently load all venues in firebase into memory.. not very efficient
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: currentVenue.id,
   });
-
   const { userLocation } = useWorldUserLocation(user.id);
   const { lastSeenIn } = userLocation ?? {};
 
