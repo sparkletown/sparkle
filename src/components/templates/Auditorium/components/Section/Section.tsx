@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
+import classNames from "classnames";
+import { useCss } from "react-use";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -16,11 +18,6 @@ import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
 
 import "./Section.scss";
-
-// If you change this, make sure to also change it in Section.scss
-export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
-export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
-export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
 
 export interface SectionProps {
   venue: WithId<AuditoriumVenue>;
@@ -64,14 +61,14 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     };
   }, [leaveSeat]);
 
-  const centralScreenInlineStyles: React.CSSProperties = useMemo(
-    () => ({
-      width: `calc(${screenWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      height: `calc(${screenHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      minWidth: `calc(${screenWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-      minHeight: `calc(${screenHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-    }),
-    [screenWidthInSeats, screenHeightInSeats]
+  const centralScreenVars = useCss({
+    "--central-screen-width-in-seats": screenWidthInSeats,
+    "--central-screen-height-in-seats": screenHeightInSeats,
+  });
+
+  const centralScreenClasses = classNames(
+    "Section__central-screen",
+    centralScreenVars
   );
 
   const seatsGrid = useAuditoriumGrid({
@@ -96,10 +93,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
-          <div
-            className="Section__central-screen"
-            style={centralScreenInlineStyles}
-          >
+          <div className={centralScreenClasses}>
             <IFrame containerClassname="Section__iframe" src={iframeUrl} />
             <div className="Section__reactions">
               {isUserSeated ? (

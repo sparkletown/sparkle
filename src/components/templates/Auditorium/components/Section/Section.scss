@@ -7,13 +7,12 @@ $section-seat-size: $avatarSize;
 $section-seat-size-min: $avatarSizeMin;
 $section-seat-spacing: 3px;
 
+$section-screen-width-in-seats: var(--central-screen-width-in-seats);
+$section-screen-height-in-seats: var(--central-screen-height-in-seats);
+
 $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 
 .Section {
-  --section-seat-size: #{$section-seat-size};
-  --section-seat-size-min: #{$section-seat-size-min};
-  --section-seat-spacing: #{$section-seat-spacing};
-
   background-attachment: fixed;
   background-position: center;
 
@@ -59,6 +58,19 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     flex-flow: column;
     justify-content: center;
     align-items: center;
+
+    width: calc(
+      #{$section-screen-width-in-seats} * (#{$section-seat-size} + #{$section-seat-spacing})
+    );
+    height: calc(
+      #{$section-screen-height-in-seats} * (#{$section-seat-size} + #{$section-seat-spacing})
+    );
+    min-width: calc(
+      #{$section-screen-width-in-seats} * (#{$section-seat-size-min} + #{$section-seat-spacing})
+    );
+    min-height: calc(
+      #{$section-screen-height-in-seats} * (#{$section-seat-size-min} + #{$section-seat-spacing})
+    );
   }
 
   &__iframe {
@@ -94,17 +106,17 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     justify-content: center;
     align-items: center;
 
-    width: var(--section-seat-size);
-    height: var(--section-seat-size);
-    min-width: var(--section-seat-size-min);
-    min-height: var(--section-seat-size-min);
+    width: $section-seat-size;
+    height: $section-seat-size;
+    min-width: $section-seat-size-min;
+    min-height: $section-seat-size-min;
 
     font-size: calc(
-      0.6 * max(var(--section-seat-size), var(--section-seat-size-min))
+      0.6 * max(#{$section-seat-size}, #{$section-seat-size-min})
     );
 
     border-radius: 100%;
-    margin: var(--section-seat-spacing);
+    margin: $section-seat-spacing;
 
     color: $black;
     user-select: none;
