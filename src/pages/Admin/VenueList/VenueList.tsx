@@ -7,8 +7,9 @@ import { canHaveSubvenues } from "utils/venue";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { VenueListProps } from "./VenueList.types";
 import { Loading } from "components/molecules/Loading";
+
+import { VenueListProps } from "./VenueList.types";
 
 const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,

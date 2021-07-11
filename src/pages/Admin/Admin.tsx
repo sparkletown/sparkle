@@ -54,6 +54,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { Loading } from "components/molecules/Loading";
 
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import AdminEventModal from "./AdminEventModal";
@@ -63,7 +64,6 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
-import { Loading } from "components/molecules/Loading";
 
 dayjs.extend(advancedFormat);
 
