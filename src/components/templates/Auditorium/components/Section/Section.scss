@@ -29,6 +29,8 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     justify-content: space-around;
     text-align: center;
 
+    pointer-events: all;
+
     width: 80%;
     height: 15%;
 
@@ -38,14 +40,7 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     border-bottom-right-radius: 20px;
   }
 
-  &__central-screen {
-    display: flex;
-    flex-flow: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  &__iframe-overlay {
+  &__central-screen-overlay {
     position: absolute;
 
     width: 100%;
@@ -59,15 +54,16 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     pointer-events: none;
   }
 
-  &__iframe {
+  &__central-screen {
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
+    justify-content: center;
     align-items: center;
+  }
 
+  &__iframe {
     pointer-events: all;
 
-    width: 100%;
-    height: 100%;
     border: thin $black;
     border-radius: $border-radius--lg;
   }

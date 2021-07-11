@@ -95,16 +95,12 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     <div className="Section">
       <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
-        <div className="Section__iframe-overlay">
+        <div className="Section__central-screen-overlay">
           <div
             className="Section__central-screen"
             style={centralScreenInlineStyles}
           >
-            <IFrame
-              iframeClassname="Section__iframe"
-              containerClassname="Section__iframe"
-              src={iframeUrl}
-            />
+            <IFrame containerClassname="Section__iframe" src={iframeUrl} />
             <div className="Section__reactions">
               {isUserSeated ? (
                 <ReactionsBar
