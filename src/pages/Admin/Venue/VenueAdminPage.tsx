@@ -5,7 +5,7 @@ import {
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useConnectCurrentVenueNG  } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
@@ -16,8 +16,8 @@ import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { LoadingPage } from "components/molecules/LoadingPage";
+import { AnnouncementMessage  } from "components/molecules/AnnouncementMessage";
+import { LoadingPage  } from "components/molecules/LoadingPage";
 
 import { AnnouncementOptions } from "./AnnouncementOptions";
 
@@ -64,13 +64,15 @@ export const VenueAdminPage: React.FC = () => {
           Current Announcement in Space Title
         </h4>
 
-        {isBannerAdminVisibile ? (
+        {isBannerAdminVisibile && (
           <BannerAdmin
             venueId={venueId}
             venue={venue}
             onClose={hideBannerAdmin}
           />
-        ) : venue?.banner ? (
+        )}
+
+        {!isBannerAdminVisibile && venue?.banner && (
           <>
             <AnnouncementMessage banner={venue.banner} />
 
@@ -79,7 +81,7 @@ export const VenueAdminPage: React.FC = () => {
               onEdit={showBannerAdmin}
             />
           </>
-        ) : null}
+        )}
       </div>
       <NewProfileModal venue={venue} />
     </WithNavigationBar>
