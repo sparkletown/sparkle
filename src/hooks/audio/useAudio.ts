@@ -16,7 +16,7 @@ export const useAudio: ReactHook<UseAudioProps, void> = ({
 
     const audio = new Audio(audioPath);
 
-    audio.play();
+    audio.play().catch((e) => console.error("Error playing audio", e));
 
     return () => {
       // https://developer.mozilla.org/en-US/docs/Web/API/HTMLAudioElement/Audio#memory_usage_and_management
