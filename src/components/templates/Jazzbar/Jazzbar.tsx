@@ -2,11 +2,13 @@ import React from "react";
 
 import { JazzbarVenue } from "types/venues";
 
+import { WithId } from "utils/id";
+
 import JazzBarSkeletonPage from "./JazzBarSkeletonPage";
 import JazzTab from "./JazzTab";
 
 export interface JazzbarProps {
-  venue?: JazzbarVenue;
+  venue: WithId<JazzbarVenue>;
 }
 
 // @debt This whole venue component looks ugly. There are a lot of places to improve it, but

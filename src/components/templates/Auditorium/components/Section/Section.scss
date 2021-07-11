@@ -1,0 +1,114 @@
+@import "scss/constants";
+// @debt These styles are mostly taken/copy-pasted from Audience.scss
+// Eventually, we we get rid of Audience template, these will be the only styles available
+
+// If you change this, make sure to also change it in ./Section.tsx
+$section-seat-size: $avatarSize;
+$section-seat-size-min: $avatarSizeMin;
+$section-seat-spacing: 3px;
+
+$iframe-box-shadow: 2px 2px $spacing--lg $white;
+
+$spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
+
+.Section {
+  --section-seat-size: #{$section-seat-size};
+  --section-seat-size-min: #{$section-seat-size-min};
+  --section-seat-spacing: #{$section-seat-spacing};
+
+  background-attachment: fixed;
+  background-position: center;
+
+  position: relative;
+  overflow: auto;
+  height: 100%;
+  padding: $spacing;
+  min-width: fit-content;
+
+  &__iframe-overlay {
+    position: absolute;
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    pointer-events: none;
+  }
+
+  &__iframe {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    pointer-events: all;
+
+    width: 100%;
+    height: 100%;
+    border: thin $black;
+    border-radius: $border-radius--lg;
+    box-shadow: $iframe-box-shadow;
+  }
+
+  &__seats {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    overflow: auto;
+  }
+
+  &__seats-row {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__seat {
+    display: flex;
+  }
+
+  &__seat,
+  &__empty-circle,
+  &__user-avatar {
+    justify-content: center;
+    align-items: center;
+
+    width: var(--section-seat-size);
+    height: var(--section-seat-size);
+    min-width: var(--section-seat-size-min);
+    min-height: var(--section-seat-size-min);
+
+    font-size: calc(
+      0.6 * max(var(--section-seat-size), var(--section-seat-size-min))
+    );
+
+    border-radius: 100%;
+    margin: var(--section-seat-spacing);
+
+    color: $black;
+    user-select: none;
+  }
+
+  &__seat {
+    background-color: opaque-white(0.2);
+
+    &:hover {
+      background-color: opaque-white(0.4);
+      cursor: pointer;
+    }
+
+    &:active {
+      background-color: opaque-white(0.6);
+      cursor: pointer;
+    }
+  }
+
+  &__empty-circle {
+    background-color: opaque-white(0);
+  }
+}
