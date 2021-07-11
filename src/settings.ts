@@ -672,3 +672,11 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const DEFAULT_TABLE_ROWS = 2;
+export const DEFAULT_TABLE_COLUMNS = 3;
+export const DEFAULT_TABLE_CAPACITY =
+  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
+export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
+export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
+export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;

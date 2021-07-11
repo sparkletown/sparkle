@@ -2,6 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
+import {
+  DEFAULT_TABLE_ROWS,
+  DEFAULT_TABLE_COLUMNS,
+  DEFAULT_TABLE_CAPACITY,
+  ALLOWED_EMPTY_TABLES_NUMBER,
+} from "settings";
+
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 
@@ -14,6 +21,7 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers } from "hooks/users";
 
+import { StartTable } from "components/molecules/StartTable";
 import { Loading } from "components/molecules/Loading";
 
 import "./TablesUserList.scss";
@@ -26,9 +34,9 @@ const createTable = (i: number): Table => {
   return {
     title: `Table ${i + 1}`,
     reference: `Table ${i + 1}`,
-    capacity: 8,
-    rows: 2,
-    columns: 4,
+    capacity: DEFAULT_TABLE_CAPACITY,
+    rows: DEFAULT_TABLE_ROWS,
+    columns: DEFAULT_TABLE_COLUMNS,
   };
 };
 
@@ -165,6 +173,21 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
   );
 
+  const emptyTables = useMemo(
+    () =>
+      tables.filter(
+        (table) =>
+          !recentVenueUsers.some(
+            (user: User) =>
+              getUserExperience(venueName)(user)?.table === table.reference
+          )
+      ),
+    [recentVenueUsers, tables, venueName]
+  );
+
+  const canStartTable =
+    emptyTables.length <= ALLOWED_EMPTY_TABLES_NUMBER && !isSeatedAtTable;
+
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
 
@@ -195,7 +218,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   return (
     <>
       {renderedTables}
-
+      {canStartTable && (
+        <StartTable tables={tables} newTable={createTable(tables.length)} />
+      )}
       <Modal show={isLockedMessageVisible} onHide={hideLockedMessage}>
         <Modal.Body>
           <div className="modal-container modal-container_message">
