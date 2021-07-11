@@ -63,6 +63,7 @@ import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
+import { Loading } from "components/molecules/Loading";
 
 dayjs.extend(advancedFormat);
 
@@ -80,7 +81,7 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <Loading />;
 
   return (
     <>

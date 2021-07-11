@@ -8,6 +8,7 @@ import { canHaveSubvenues } from "utils/venue";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { VenueListProps } from "./VenueList.types";
+import { Loading } from "components/molecules/Loading";
 
 const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
@@ -17,7 +18,7 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
-  if (isLoading) return <>Loading...</>;
+  if (isLoading) return <Loading />;
 
   return (
     <>
