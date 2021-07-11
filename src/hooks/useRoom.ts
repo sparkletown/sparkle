@@ -14,13 +14,14 @@ export interface UseRoomProps {
   room?: Room;
   venueName: string;
 }
-
+// @debt refactor useRoom to take venueId instead of venueName
 export const useRoom = ({ room, venueName }: UseRoomProps) => {
   const { user } = useUser();
   const userId = user?.uid;
 
   const roomUrl = room?.url ?? "";
 
+  // @debt pass venueId taken from UseRoomProps through to useRelatedVenues
   const { relatedVenues } = useRelatedVenues({});
 
   const roomVenue = useMemo(
