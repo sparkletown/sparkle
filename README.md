@@ -1,3 +1,5 @@
+# Welcome to the Sparkle Summit 21 Hackathon!
+
 # Sparkle Web App
 
 Codebase for the Sparkle Platform, brought to you by [Sparkle](https://sparklespaces.com/).
