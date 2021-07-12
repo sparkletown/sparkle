@@ -4,10 +4,11 @@ import classNames from "classnames";
 
 import { Venue_v2 } from "types/venues";
 
-import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
+import { useVenueId } from "hooks/useVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
@@ -32,6 +33,7 @@ const DEFAULT_TAB = AdminAdvancedTab.basicInfo;
 
 export const AdminAdvancedSettings: React.FC = () => {
   const venueId = useVenueId();
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const [selectedTab, setSelectedTab] = useState<AdminAdvancedTab>(DEFAULT_TAB);
 
   const { userId } = useUser();
@@ -88,6 +90,7 @@ export const AdminAdvancedSettings: React.FC = () => {
         <EntranceExperience
           // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
           venue={venue as Venue_v2}
+          sovereignVenue={sovereignVenue}
           onSave={selectDefaultTab}
         />
       )}

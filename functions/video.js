@@ -1,7 +1,11 @@
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
-const { RtcRole, generateAgoraTokenForAccount } = require("./src/utils/agora");
+const {
+  RtcRole,
+  assertValidAgoraConfig,
+  generateAgoraTokenForAccount,
+} = require("./src/utils/agora");
 const { assertValidAuth } = require("./src/utils/assert");
 const { twilioVideoToken } = require("./src/utils/twilio");
 
@@ -30,6 +34,19 @@ exports.getAgoraToken = functions.https.onCall((data, context) => {
       "invalid-argument",
       "channelName is required, and must be a string"
     );
+  }
+
+  try {
+    assertValidAgoraConfig();
+  } catch (error) {
+    // Log the specific error details for further investigation
+    functions.logger.error("assertValidAgoraConfig() failed", {
+      error,
+      channelName: data.channelName,
+      account: context.auth.uid,
+    });
+
+    throw new HttpsError("internal", "agora config missing or invalid");
   }
 
   // TODO: Figure out how we decide between using RtcRole.PUBLISHER / RtcRole.SUBSCRIBER, and when they are used

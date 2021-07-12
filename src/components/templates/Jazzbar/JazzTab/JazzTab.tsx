@@ -6,7 +6,11 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 
-import { IFRAME_ALLOW } from "settings";
+import {
+  IFRAME_ALLOW,
+  DEFAULT_USER_LIST_LIMIT,
+  DEFAULT_SHOW_REACTIONS,
+} from "settings";
 
 import { addReaction } from "store/actions/Reactions";
 
@@ -15,8 +19,8 @@ import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
 import { createEmojiReaction } from "utils/reactions";
-import { currentVenueSelectorData, parentVenueSelector } from "utils/selectors";
 import { openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
 
 import Room from "../components/JazzBarRoom";
 
@@ -24,15 +28,16 @@ import Room from "../components/JazzBarRoom";
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
+import { BackButton } from "components/atoms/BackButton";
+import { TablesUserList } from "components/molecules/TablesUserList";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useExperiences } from "hooks/useExperiences";
-import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -42,21 +47,21 @@ import "./JazzTab.scss";
 
 interface JazzProps {
   setUserList: (value: User[]) => void;
-  venue?: JazzbarVenue;
+  venue: WithId<JazzbarVenue>;
 }
 
+// @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
 // NOTE: This functionality will probably be returned in the nearest future.
 // interface ChatOutDataType {
 //   messageToTheBand: string;
 // }
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
-  const firestoreVenue = useSelector(currentVenueSelectorData);
-  const venueToUse = venue ? venue : firestoreVenue;
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
-  const parentVenueId = venueToUse?.parentId;
-  const parentVenue = useSelector(parentVenueSelector);
+  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
+
+  const parentVenueId = parentVenue?.id;
 
   // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
   const backToParentVenue = useCallback(() => {
@@ -65,11 +70,11 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
 
-  useExperiences(venueToUse?.name);
+  useExperiences(venue.name);
 
   const { userWithId } = useUser();
 
-  const jazzbarTables = venueToUse?.config?.tables ?? JAZZBAR_TABLES;
+  const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -97,8 +102,10 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   // NOTE: This functionality will probably be returned in the nearest future.
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const [isMessageToTheBandSent, setIsMessageToTheBandSent] = useState(false);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // useEffect(() => {
   //   if (isMessageToTheBandSent) {
   //     setTimeout(() => {
@@ -107,6 +114,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   }
   // }, [isMessageToTheBandSent, setIsMessageToTheBandSent]);
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const {
   //   register: registerBandMessage,
   //   handleSubmit: handleBandMessageSubmit,
@@ -115,6 +123,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   mode: "onSubmit",
   // });
 
+  // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   // const onBandMessageSubmit = async (data: ChatOutDataType) => {
   //   setIsMessageToTheBandSent(true);
   //   user &&
@@ -130,37 +139,40 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   //   reset();
   // };
 
+  const shouldShowReactions =
+    (seatedAtTable && venue.showReactions) ?? DEFAULT_SHOW_REACTIONS;
+
+  // @debt will be needed if shoutouts are restored
+  // const shouldShowShoutouts = venueToUse?.showShoutouts ?? DEFAULT_SHOW_SHOUTOUTS;
+
   const containerClasses = classNames("music-bar", {
     "music-bar--tableview": seatedAtTable,
   });
 
-  if (!venueToUse) return <>Loading...</>;
+  if (!venue) return <>Loading...</>;
 
   return (
     <div className={containerClasses}>
-      {venueToUse.description?.text && (
+      {venue.description?.text && (
         <div className="row">
           <div className="col">
             <div className="description">
-              <RenderMarkdown text={venueToUse.description?.text} />
+              <RenderMarkdown text={venue.description?.text} />
             </div>
           </div>
         </div>
       )}
 
-      {/* @debt Move the logic of Back button into a separate reusable hook/component */}
-      {!seatedAtTable && parentVenueId && parentVenue && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">Back to {parentVenue.name}</span>
-        </div>
+      {!seatedAtTable && parentVenue && (
+        <BackButton onClick={backToParentVenue} />
       )}
 
       {!seatedAtTable && (
         <UserList
           users={recentVenueUsers}
-          activity={venue?.activity ?? "here"}
-          disableSeeAll={false}
+          activity={venue.activity ?? "here"}
+          limit={DEFAULT_USER_LIST_LIMIT}
+          showMoreUsersToggler
         />
       )}
 
@@ -168,22 +180,22 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TableHeader
           seatedAtTable={seatedAtTable}
           setSeatedAtTable={setSeatedAtTable}
-          venueName={venueToUse.name}
+          venueName={venue.name}
           tables={jazzbarTables}
         />
       )}
 
       <div className="music-bar-content">
         <div className="video-container">
-          {!venueToUse.hideVideo && (
+          {!venue.hideVideo && (
             <>
               <div className="iframe-container">
-                {venueToUse.iframeUrl ? (
+                {venue.iframeUrl ? (
                   <iframe
                     key="main-event"
                     title="main event"
                     className="iframe-video"
-                    src={`${venueToUse.iframeUrl}?autoplay=1`}
+                    src={`${venue.iframeUrl}?autoplay=1`}
                     frameBorder="0"
                     allow={IFRAME_ALLOW}
                   />
@@ -193,7 +205,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   </div>
                 )}
               </div>
-              {seatedAtTable && (
+
+              {/* @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc*/}
+              {shouldShowReactions && (
                 <div className="actions-container">
                   <div className="emoji-container">
                     {EmojiReactions.map((reaction) => (
@@ -220,13 +234,17 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                       />
                     </div>
                   </div>
+
+                  {/* @debt if/when this functionality is restored, it should be conditionally rendered using venue.showShoutouts */}
                   {/* NOTE: This functionality will probably be returned in the nearest future. */}
-                  {/* <CallOutMessageForm
-                  onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
-                  ref={registerBandMessage({ required: true })}
-                  isMessageToTheBandSent={isMessageToTheBandSent}
-                  placeholder="Shout out..."
-                /> */}
+                  {/* {shouldShowShoutouts && (
+                    <CallOutMessageForm
+                    onSubmit={handleBandMessageSubmit(onBandMessageSubmit)}
+                    ref={registerBandMessage({ required: true })}
+                    isMessageToTheBandSent={isMessageToTheBandSent}
+                    placeholder="Shout out..."
+                    />
+                  )} */}
                 </div>
               )}
             </>
@@ -234,8 +252,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         </div>
         {seatedAtTable && (
           <Room
-            roomName={`${venueToUse.name}-${seatedAtTable}`}
-            venueName={venueToUse.name}
+            roomName={`${venue.name}-${seatedAtTable}`}
+            venueName={venue.name}
             setUserList={setUserList}
             setSeatedAtTable={setSeatedAtTable}
             isAudioEffectDisabled={isAudioEffectDisabled}
@@ -244,9 +262,9 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
         <TablesUserList
           setSeatedAtTable={setSeatedAtTable}
           seatedAtTable={seatedAtTable}
-          venueName={venueToUse.name}
+          venueName={venue.name}
           TableComponent={JazzBarTableComponent}
-          joinMessage={!venueToUse?.hideVideo ?? true}
+          joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
         />
       </div>

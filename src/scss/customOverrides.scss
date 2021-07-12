@@ -2,11 +2,30 @@
 
 // This file exists for custom styles to deal with environment specific hacks/overrides
 
+// hide time on site and number of venues visited box (when badges are turned on)
 .Badges {
   &__visits {
     display: none;
   }
   &__visit {
     display: none;
+  }
+}
+
+// hide glow from Auditorium v1 iframe
+.audience-container {
+  .audience-overlay {
+    .video-container {
+      .reaction-container {
+        box-shadow: none;
+      }
+
+      .video {
+        .frame {
+          border-radius: 0;
+          box-shadow: none;
+        }
+      }
+    }
   }
 }

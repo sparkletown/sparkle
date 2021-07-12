@@ -11,11 +11,16 @@ import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRecentVenueUsers } from "hooks/users";
+// import { useRecentVenueUsers } from "hooks/users";
+
+const recentVenueUsers = ([] as unknown) as WithId<User>[];
 
 export const useStage = () => {
   const venueId = useVenueId();
-  const { recentVenueUsers } = useRecentVenueUsers();
+  // @debt it conflicts witht the recent changes. This template is not used by the platform. When have time, remove the comments and fix the issue
+
+  // const { recentVenueUsers } = useRecentVenueUsers();
+
   const { userId, profile } = useUser();
 
   const setDefaultUserSettings = useCallback(async () => {
@@ -48,7 +53,7 @@ export const useStage = () => {
               user.data?.[venueId]?.place === PlaceInTalkShowStudioVenue.stage
           )
         : [],
-    [recentVenueUsers, venueId]
+    [venueId]
   );
 
   const peopleRequesting = useMemo(
@@ -60,7 +65,7 @@ export const useStage = () => {
               PlaceInTalkShowStudioVenue.requesting
           )
         : [],
-    [recentVenueUsers, venueId]
+    [venueId]
   );
 
   const isUserRequesting = useMemo(

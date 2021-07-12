@@ -1,21 +1,21 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 
 import { FullTalkShowVenue } from "types/venues";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+// import { makeUpdateUserGridLocation } from "api/profile";
 
 import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
-import { setLocationData } from "utils/userLocation";
+// import { setLocationData } from "utils/userLocation";
 
 import { useRecentVenueUsers } from "hooks/users";
-import { useKeyboardControls } from "hooks/useKeyboardControls";
+// import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useUser } from "hooks/useUser";
 import { useStage } from "hooks/useStage";
 
-import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
-import { useMapGrid } from "components/templates/PartyMap/components/Map/hooks/useMapGrid";
+// import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
+// import { useMapGrid } from "components/templates/PartyMap/components/Map/hooks/useMapGrid";
 import { usePartygoersOverlay } from "components/templates/PartyMap/components/Map/hooks/usePartygoersOverlay";
 
 import "./Audience.scss";
@@ -29,35 +29,37 @@ const TOTAL_ROWS = 8;
 const Audience: React.FC<AudienceProps> = ({ venue }) => {
   const { name, id: venueId } = venue;
   const { userId, profile } = useUser();
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: name });
   const { peopleRequesting } = useStage();
 
   const isHidden = isDefined(profile?.data?.[venueId]?.row);
 
-  const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
-      if (!userId) return;
+  // @debt it conflicts witht the recent changes. This template is not used by the platform. When have time, remove the comments and fix the issue
 
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid: userId,
-      })(row, column);
+  // const takeSeat = useCallback(
+  //   (row: number | null, column: number | null) => {
+  //     if (!userId) return;
 
-      setLocationData({ userId: userId, locationName: name });
-    },
-    [userId, venueId, name]
-  );
+  //     makeUpdateUserGridLocation({
+  //       venueId,
+  //       userId,
+  //     })(row, column);
 
-  const onSeatClick = useCallback(
-    (row: number, column: number) => takeSeat(row, column),
-    [takeSeat]
-  );
+  //     setLocationData({ userId: userId, locationName: name });
+  //   },
+  //   [userId, venueId, name]
+  // );
 
-  const columnsArray = useMemo(
-    () => Array.from(Array<JSX.Element>(TOTAL_COLUMNS)),
-    []
-  );
-  const rowsArray = useMemo(() => Array.from(Array(TOTAL_ROWS)), []);
+  // const onSeatClick = useCallback(
+  //   (row: number, column: number) => takeSeat(row, column),
+  //   [takeSeat]
+  // );
+
+  // const columnsArray = useMemo(
+  //   () => Array.from(Array<JSX.Element>(TOTAL_COLUMNS)),
+  //   []
+  // );
+  // const rowsArray = useMemo(() => Array.from(Array(TOTAL_ROWS)), []);
 
   const gridContainerStyles = useMemo(
     () => ({
@@ -66,27 +68,29 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
     }),
     []
   );
-  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
-    venueId,
-    partygoers: recentVenueUsers,
-  });
+  // @debt it conflicts witht the recent changes. This template is not used by the platform. When have time, remove the comments and fix the issue
 
-  useKeyboardControls({
-    venueId,
-    totalRows: TOTAL_ROWS,
-    totalColumns: TOTAL_COLUMNS,
-    isSeatTaken,
-    takeSeat,
-  });
+  // const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+  //   venueId,
+  //   partygoers: recentVenueUsers,
+  // });
 
-  const mapGrid = useMapGrid({
-    showGrid: true,
-    userUid: userId,
-    columnsArray,
-    rowsArray,
-    partygoersBySeat,
-    onSeatClick,
-  });
+  // useKeyboardControls({
+  //   venueId,
+  //   totalRows: TOTAL_ROWS,
+  //   totalColumns: TOTAL_COLUMNS,
+  //   isSeatTaken,
+  //   takeSeat,
+  // });
+
+  // const mapGrid = useMapGrid({
+  //   showGrid: true,
+  //   userUid: userId,
+  //   columnsArray,
+  //   rowsArray,
+  //   partygoersBySeat,
+  //   onSeatClick,
+  // });
 
   const partygoersOverlay = usePartygoersOverlay({
     showGrid: true,
@@ -110,7 +114,7 @@ const Audience: React.FC<AudienceProps> = ({ venue }) => {
         className="Screenshare__audience-container"
         style={gridContainerStyles}
       >
-        {mapGrid}
+        {/* {mapGrid} */}
         {partygoersOverlay}
       </div>
     </div>
