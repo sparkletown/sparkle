@@ -133,7 +133,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const isLockedTable = useCallback(
-    (table: string) => isTruthy(experience?.tables[table]?.locked),
+    (table: string) => isTruthy(experience?.tables?.[table]?.locked),
     [experience?.tables]
   );
 
