@@ -6,8 +6,6 @@ export enum EmojiReactionType {
   clap = "clap",
   hundred = "hundred",
   laugh = "laugh",
-  thatsjazz = "thatsjazz",
-  boo = "boo",
   confetti = "confetti",
   sparkle = "sparkle",
   request = "request",
