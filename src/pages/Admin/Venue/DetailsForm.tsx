@@ -187,6 +187,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           if (sovereignVenueId && sovereignVenue)
             await updateVenue(
               {
+                id: sovereignVenueId,
                 name: sovereignVenue.name,
                 subtitle:
                   sovereignVenue.config?.landingPageConfig.subtitle ?? "",
@@ -196,8 +197,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 profile_questions: sovereignVenue.profile_questions,
                 code_of_conduct_questions:
                   sovereignVenue.code_of_conduct_questions,
-                id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
                 userStatuses,
                 showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
