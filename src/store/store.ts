@@ -42,12 +42,14 @@ export const store = configureStore({
   preloadedState: initialState,
 
   /**
-   * Note: It is preferable to use the chainable .concat(...) and .prepend(...) methods of the returned MiddlewareArray
-   * instead of the array spread operator, as the latter can lose valuable type information under some circumstances.
+   * Note: As TypeScript often widens array types when combining arrays using the spread operator, we suggest using the
+   * .concat(...) and .prepend(...) methods of the MiddlewareArray returned by getDefaultMiddleware() instead of the array
+   * spread operator, as the latter can lose valuable type information under some circumstances.
    *
    * @see https://redux-toolkit.js.org/api/configureStore#middleware
    * @see https://redux-toolkit.js.org/api/getDefaultMiddleware
    * @see https://redux-toolkit.js.org/api/getDefaultMiddleware#customizing-the-included-middleware
+   * @see https://redux-toolkit.js.org/usage/usage-with-typescript#correct-typings-for-the-dispatch-type
    */
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -88,7 +90,7 @@ export const store = configureStore({
        *
        * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
        */
-      LogRocket.reduxMiddleware()
+      LogRocket.reduxMiddleware() as ReturnType<typeof getDefaultMiddleware>
     ),
 
   /**
