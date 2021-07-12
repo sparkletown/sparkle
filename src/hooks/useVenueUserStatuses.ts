@@ -39,8 +39,8 @@ export const useVenueUserStatuses = (venueId?: string, user?: WithId<User>) => {
     isStatusEnabledForVenue:
       sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES,
     userStatus: userStatus ?? {
-      status: profile?.status ?? "",
-      color: DEFAULT_USER_STATUS.color,
+      status: profile?.status ?? DEFAULT_USER_STATUS.status,
+      color: venueStatuses[0]?.color ?? DEFAULT_USER_STATUS.color,
     },
   };
 };
