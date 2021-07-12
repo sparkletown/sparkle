@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -100,6 +100,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
+
+  // @debt remove when back button is removed from NavBar and/or admin v1 is no longer used
+  const isInAdmin = useRouteMatch("/admin/");
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
@@ -338,12 +341,15 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
       )}
 
       {/* @debt Remove back button from Navbar */}
-      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
-      )}
+      {hasBackButton &&
+        !isInAdmin &&
+        currentVenue?.parentId &&
+        parentVenue?.name && (
+          <BackButton
+            onClick={backToParentVenue}
+            locationName={parentVenue.name}
+          />
+        )}
     </>
   );
 };
