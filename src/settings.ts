@@ -176,6 +176,7 @@ export const ZOOM_URL_TEMPLATES = [
 export const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.embeddable,
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
@@ -272,6 +273,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
@@ -322,6 +328,11 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     description: [
       "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
+  },
+  {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -455,6 +466,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: "Add an NEW auditorium with an embedded video and sections",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
     template: VenueTemplate.zoomroom,
     name: "Experience",
     description:
@@ -528,6 +552,7 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 // @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.jazzbar,
 ];
 
@@ -547,6 +572,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
 ];
@@ -600,6 +626,8 @@ export const DEFAULT_SHOW_SHOUTOUTS = true;
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
+
+export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 // Audience
 // Always have an odd number of rows and columns (because of the firelane delimiter).
@@ -662,3 +690,11 @@ export const MARKDOWN_IMAGE_TAGS = ["img"];
 export const MARKDOWN_LINK_TAGS = ["a"];
 export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
 export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const DEFAULT_TABLE_ROWS = 2;
+export const DEFAULT_TABLE_COLUMNS = 3;
+export const DEFAULT_TABLE_CAPACITY =
+  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
+export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
+export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
+export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;

@@ -48,8 +48,9 @@ import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
 
-import { createJazzbar } from "utils/venue";
+import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
+import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
@@ -61,6 +62,8 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import {
@@ -70,6 +73,9 @@ import {
 import { WizardPage } from "./VenueWizard";
 import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
+
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
 
 import "./Venue.scss";
 
@@ -82,6 +88,8 @@ interface DetailsFormProps extends WizardPage {
 const iconPositionFieldName = "iconPosition";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -152,6 +160,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     );
   }, [state]);
 
+  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
+  // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
     async (
       vals: Partial<FormValues>,
@@ -172,14 +182,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          if (sovereignVenueId)
+          //@debt Create separate function that updates the userStatuses separately by venue id.
+          if (
+            sovereignVenueId &&
+            sovereignVenue &&
+            sovereignVenueId !== venueId
+          )
             await updateVenue(
               {
-                ...(vals as VenueInput),
                 id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
+                name: sovereignVenue.name,
+                subtitle:
+                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                description:
+                  sovereignVenue.config?.landingPageConfig.description ?? "",
+                adultContent: sovereignVenue.adultContent ?? false,
+                profile_questions: sovereignVenue.profile_questions,
+                code_of_conduct_questions:
+                  sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
+                template: sovereignVenue.template,
               },
               user
             ).then(() => {
@@ -263,9 +286,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [setValue]
   );
 
+  useEffect(() => {
+    if (!previous || isTruthy(state.templatePage)) return;
+
+    previous();
+  }, [previous, state.templatePage]);
+
   if (!state.templatePage) {
-    previous && previous();
-    return null;
+    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
+    return <>Error: state.templatePage not defined.</>;
   }
 
   const isAdminPlaced =
@@ -273,8 +302,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
+  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
-    <div className="page page--admin">
+    <div className="page page--admin admin-dashboard">
       <div className="page-side page-side--admin">
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
@@ -627,64 +657,39 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Schedule</h4>
-      <label id={"showSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showSchedule"}
-          name={"showSchedule"}
-          ref={register}
-          defaultChecked={DEFAULT_SHOW_SCHEDULE}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        name="showSchedule"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+      />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showGrid" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowZendeskToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showZendesk" forwardedRef={register} />
     </div>
   );
 
@@ -727,63 +732,35 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showReactions" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowShoutouts = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
-      <label id="showShoutouts" className="switch">
-        <input
-          type="checkbox"
-          id="showShoutouts"
-          name="showShoutouts"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showShoutouts" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showRangers" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -901,13 +878,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
+      <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 

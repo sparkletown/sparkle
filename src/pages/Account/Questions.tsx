@@ -8,10 +8,11 @@ import { QuestionType } from "types/Question";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
+import { useSelector } from "hooks/useSelector";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -38,6 +39,9 @@ export const Questions: React.FC = () => {
   const { user, userWithId } = useUser();
 
   const venueId = useVenueId();
+  const { sovereignVenue, isSovereignVenueLoading } = useSovereignVenue({
+    venueId,
+  });
 
   // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
@@ -57,13 +61,13 @@ export const Questions: React.FC = () => {
   }, [history, location.search]);
 
   useEffect(() => {
-    if (!venue) return;
+    if (!sovereignVenue) return;
 
     // Skip this screen if there are no profile questions for the venue
-    if (!venue?.profile_questions.length) {
+    if (!sovereignVenue.profile_questions.length) {
       proceed();
     }
-  }, [proceed, venue]);
+  }, [proceed, sovereignVenue]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data: QuestionsFormData) => {
@@ -91,11 +95,11 @@ export const Questions: React.FC = () => {
     return <>Error: venue not found for venueId={venueId}</>;
   }
 
-  if (!venue) {
+  if (!venue || isSovereignVenueLoading) {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = venue?.profile_questions.length;
+  const numberOfQuestions = sovereignVenue?.profile_questions.length;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
@@ -111,7 +115,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {venue.profile_questions.map((question: QuestionType) => (
+          {sovereignVenue?.profile_questions.map((question: QuestionType) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>
