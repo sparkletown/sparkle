@@ -7,7 +7,7 @@ import {
   RelatedVenuesProviderProps,
 } from "hooks/useRelatedVenues";
 
-interface EmptyProviderProps {
+export interface EmptyProviderProps {
   venueId?: string;
 }
 
