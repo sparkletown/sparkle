@@ -3,7 +3,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import thunkMiddleware from "redux-thunk";
 import { FirebaseReducer, firebaseReducer } from "react-redux-firebase";
 import { firestoreReducer } from "redux-firestore";
-import { reduxMiddleware as logrocketReduxMiddleware } from "logrocket";
+import LogRocket from "logrocket";
 
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
@@ -27,7 +27,7 @@ export const store = createStore(
   composeWithDevTools(
     applyMiddleware(
       thunkMiddleware,
-      logrocketReduxMiddleware() // logrocket needs to be last
+      LogRocket.reduxMiddleware() // logrocket needs to be last
     )
   )
 );
