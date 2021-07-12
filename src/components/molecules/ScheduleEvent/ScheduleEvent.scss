@@ -15,7 +15,6 @@ $description--margin-top: 2px;
   display: flex;
   position: absolute;
   border-radius: $ScheduleEvent--border-radius;
-  padding: $ScheduleEvent--padding;
   cursor: pointer;
   height: $ScheduleEvent--height;
   justify-content: space-between;
@@ -64,6 +63,7 @@ $description--margin-top: 2px;
   &__info {
     font-size: $font-size--sm;
     overflow: hidden;
+    padding: $ScheduleEvent--padding;
 
     &--hidden {
       display: none;
