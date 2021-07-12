@@ -1,7 +1,7 @@
 import { FirebaseReducer } from "react-redux-firebase";
 import { mapValues } from "lodash";
 
-import { RootState } from "index";
+import { RootState } from "store";
 
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
