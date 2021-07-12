@@ -141,7 +141,7 @@ export const CodeOfConduct: React.FC = () => {
 
   const codeOfConductQuestions = IS_BURN
     ? BURN_CODE_OF_CONDUCT_QUESTIONS
-    : venue?.code_of_conduct_questions || [];
+    : venue?.code_of_conduct_questions ?? [];
 
   return (
     <div className="CodeOfConduct page-container">
