@@ -99,7 +99,7 @@ export const Questions: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions.length;
+  const numberOfQuestions = sovereignVenue?.profile_questions?.length;
   const headerMessage = `Now complete your profile by answering ${
     numberOfQuestions === 1 ? "this question" : "some short questions"
   }`;
