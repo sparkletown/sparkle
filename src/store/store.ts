@@ -2,6 +2,7 @@ import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import {
   FirebaseReducer,
   firebaseReducer,
+  getFirebase,
   actionTypes as reactReduxFirebaseActionTypes,
 } from "react-redux-firebase";
 import {
@@ -69,6 +70,15 @@ export const store = configureStore({
 
         // Ignore all react-redux-firebase and redux-firestore data stored in Redux
         ignoredPaths: ["firebase", "firestore"],
+      },
+
+      thunk: {
+        /**
+         * @see https://github.com/reduxjs/redux-thunk#injecting-a-custom-argument
+         */
+        extraArgument: {
+          getFirebase,
+        },
       },
     }).concat(
       // Note: LogRocket middleware needs to be last to be able to capture everything correctly
