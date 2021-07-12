@@ -5,7 +5,11 @@ Make sure that you're located in ./scripts folder.
 
 In order to complete following steps you'd need to log in your Firebase account via CLI.
 
+
 ```
+# Note that if you were already logged in via Firebase CLI you'd first need to run:
+npx firebase logout
+
 # Login to firebase with the account that has access to this project. You'll be prompted to log in via Google OAuth.
 npx firebase login
 
