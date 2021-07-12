@@ -66,6 +66,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
     [onlineUsers, selectRecipientChat, userSearchQuery]
   );
 
+  const numberOfSearchResults = renderedSearchResults.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
 
   if (recipientId) {
@@ -85,7 +86,9 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
       {userSearchQuery ? (
         <>
-          <p className="private-chats__title-text">Search results</p>
+          <p className="private-chats__title-text">
+            {numberOfSearchResults} search results
+          </p>
 
           {renderedSearchResults}
         </>
