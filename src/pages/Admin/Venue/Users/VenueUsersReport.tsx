@@ -75,7 +75,10 @@ const VenueUsersReport: React.FC = () => {
 
   const renderDownloadBtn = () => {
     return (
-      <button className="btn btn-primary" onClick={() => downloadCSV()}>
+      <button
+        className="btn btn-primary download-btn"
+        onClick={() => downloadCSV()}
+      >
         Download{" "}
       </button>
     );
