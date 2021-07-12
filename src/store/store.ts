@@ -1,6 +1,13 @@
 import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
-import { FirebaseReducer, firebaseReducer } from "react-redux-firebase";
-import { firestoreReducer } from "redux-firestore";
+import {
+  FirebaseReducer,
+  firebaseReducer,
+  actionTypes as reactReduxFirebaseActionTypes,
+} from "react-redux-firebase";
+import {
+  firestoreReducer,
+  constants as reduxFirestoreConstants,
+} from "redux-firestore";
 import LogRocket from "logrocket";
 
 import { Firestore } from "types/Firestore";
@@ -41,7 +48,29 @@ export const store = configureStore({
    * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
    */
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
+    getDefaultMiddleware({
+      /**
+       * @see https://redux-toolkit.js.org/api/serializabilityMiddleware
+       * @see https://redux-toolkit.js.org/usage/usage-guide#working-with-non-serializable-data
+       * @see https://redux-toolkit.js.org/usage/usage-guide#use-with-react-redux-firebase
+       */
+      serializableCheck: {
+        ignoredActions: [
+          // Ignore all react-redux-firebase action types
+          ...Object.keys(reactReduxFirebaseActionTypes).map(
+            (type) => `@@reactReduxFirebase/${type}`
+          ),
+
+          // Ignore all redux-firestore action types
+          ...Object.keys(reduxFirestoreConstants.actionTypes).map(
+            (type) => `${reduxFirestoreConstants.actionsPrefix}/${type}`
+          ),
+        ],
+
+        // Ignore all react-redux-firebase and redux-firestore data stored in Redux
+        ignoredPaths: ["firebase", "firestore"],
+      },
+    }).concat(
       // Note: LogRocket middleware needs to be last to be able to capture everything correctly
       // (though if we want to add middleware profiling checks, they should probably be after LogRocket)
       LogRocket.reduxMiddleware()
