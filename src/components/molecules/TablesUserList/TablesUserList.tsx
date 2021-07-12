@@ -132,13 +132,29 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [recentVenueUsers, user, venueName, videoRoom]
   );
 
+  // @debt refactor table properties into one place
   const isLockedTable = useCallback(
     (table: string) => isTruthy(experience?.tables?.[table]?.locked),
     [experience?.tables]
   );
 
+  // @debt refactor table properties into one place
+  const isFullTable = useCallback(
+    (table: Table) => {
+      const usersSeatedAtTable = recentVenueUsers.filter(
+        (user: User) =>
+          getUserExperience(venueName)(user)?.table === table.reference
+      );
+      const numberOfSeatsLeft =
+        table.capacity && table.capacity - usersSeatedAtTable.length;
+      return numberOfSeatsLeft === 0;
+    },
+    [recentVenueUsers, venueName]
+  );
+
   const tableLocked = useCallback(
     (table: string) => {
+      // @debt refactor table properties into one place
       const areUsersAtTable = recentVenueUsers.some(
         (user: User) => getUserExperience(venueName)(user)?.table === table
       );
@@ -180,6 +196,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
   );
 
+  // @debt refactor table properties into one place
   const emptyTables = useMemo(
     () =>
       tables.filter(
@@ -198,8 +215,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
 
+    // @debt refactor table properties into one place
     const tablesToShow = showAvailableTables
-      ? emptyTables.filter((table) => !isLockedTable(table.title))
+      ? tables.filter(
+          (table) => !(isFullTable(table) || isLockedTable(table.title))
+        )
       : tables;
 
     return tablesToShow.map((table: Table, index: number) => (
@@ -221,9 +241,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     recentVenueUsers,
     tableLocked,
     tables,
-    emptyTables,
     showAvailableTables,
     isLockedTable,
+    isFullTable,
     venueName,
   ]);
 
