@@ -10,7 +10,6 @@ import { WithId } from "utils/id";
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 import { useShowHide } from "hooks/useShowHide";
-import { useAvailableTables } from "hooks/useAvailableTables";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -60,13 +59,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   }, [parentVenueId]);
 
   const tables = venue?.config?.tables ?? TABLES;
-
-  const { tablesToShow } = useAvailableTables({
-    tables,
-    showAvailableTables,
-    venueName: venue.name,
-    users: recentVenueUsers,
-  });
 
   return (
     <>
@@ -144,7 +136,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               venueName={venue.name}
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
-              customTables={tablesToShow}
+              customTables={tables}
+              showAvailableTables={showAvailableTables}
             />
           </div>
           <UserList

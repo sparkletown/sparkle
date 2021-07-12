@@ -60,7 +60,8 @@ export interface TablesUserListProps {
   venueName: string;
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
-  customTables?: Table[];
+  customTables: Table[];
+  showAvailableTables: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
@@ -71,6 +72,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   setSeatedAtTable,
   seatedAtTable,
   customTables,
+  showAvailableTables,
   TableComponent,
   joinMessage,
 }) => {
@@ -130,6 +132,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [recentVenueUsers, user, venueName, videoRoom]
   );
 
+  const isLockedTable = useCallback(
+    (table: string) => isTruthy(experience?.tables[table]?.locked),
+    [experience?.tables]
+  );
+
   const tableLocked = useCallback(
     (table: string) => {
       const areUsersAtTable = recentVenueUsers.some(
@@ -140,9 +147,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       if (!areUsersAtTable) return false;
 
       // Locked state is in the experience record
-      return isTruthy(experience?.tables?.[table]?.locked);
+      return isLockedTable(table);
     },
-    [experience?.tables, recentVenueUsers, venueName]
+    [recentVenueUsers, venueName, isLockedTable]
   );
 
   const onAcceptJoinMessage = useCallback(
@@ -191,7 +198,11 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
 
-    return tables.map((table: Table, index: number) => (
+    const tablesToShow = showAvailableTables
+      ? emptyTables.filter((table) => !isLockedTable(table.title))
+      : tables;
+
+    return tablesToShow.map((table: Table, index: number) => (
       <TableComponent
         key={table.reference}
         experienceName={venueName}
@@ -210,6 +221,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     recentVenueUsers,
     tableLocked,
     tables,
+    emptyTables,
+    showAvailableTables,
+    isLockedTable,
     venueName,
   ]);
 
