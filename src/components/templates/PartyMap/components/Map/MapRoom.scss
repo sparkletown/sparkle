@@ -46,21 +46,21 @@ $label-visible: flex;
         filter: none;
       }
     }
-  }
 
-  &--unclickable {
-    z-index: z(map-room--unclickable);
-
-    &:hover {
+    &--unclickable {
       z-index: z(map-room--unclickable);
+
+      &:hover {
+        z-index: z(map-room--unclickable);
+      }
     }
-  }
 
-  &--iframe {
-    z-index: z(map-room--iframe);
-
-    &:hover {
+    &--iframe {
       z-index: z(map-room--iframe);
+
+      &:hover {
+        z-index: z(map-room--iframe);
+      }
     }
   }
 
