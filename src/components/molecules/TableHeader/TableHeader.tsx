@@ -34,7 +34,7 @@ export interface TableHeaderProps {
   tables: Table[];
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({
+export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
   venueName,
@@ -180,10 +180,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="TableHeader__lock-indication">
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
+        {/* @debt should this use 'toggled' instead of 'defaultToggled' to make it a controlled component? */}
         <Toggler
           containerClassName="TableHeader__lock-toggle"
           defaultToggled={isCurrentTableLocked}
-          onToggle={toggleIsCurrentTableLocked}
+          onChange={toggleIsCurrentTableLocked}
         />
       </div>
 
@@ -198,4 +200,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default TableHeader;

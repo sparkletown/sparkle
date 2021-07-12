@@ -602,6 +602,8 @@ export const DEFAULT_SHOW_USER_STATUSES = true;
 
 export const ZENDESK_URL_PREFIXES = ["/admin"];
 
+export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
+
 // Audience
 // Always have an odd number of rows and columns (because of the firelane delimiter).
 export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
