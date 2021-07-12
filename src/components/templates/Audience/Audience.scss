@@ -1,7 +1,6 @@
 @import "scss/constants";
 
 $light: #ffffff;
-
 $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
 .audience-container {
@@ -47,7 +46,7 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
           width: 100%;
           height: 100%;
           border: 1px black;
-          border-radius: 15px;
+          border-radius: $border-radius--lg;
           box-shadow: 2px 2px 20px $light;
         }
       }
@@ -60,25 +59,25 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
 
         width: 90%;
         min-height: 105px;
-        padding: 15px;
+        padding: $spacing--lg;
 
-        border-bottom-left-radius: 20px;
-        border-bottom-right-radius: 20px;
+        border-bottom-left-radius: $border-radius--xl;
+        border-bottom-right-radius: $border-radius--xl;
         box-shadow: 2px 2px 20px $light;
         background-color: #1a1d24;
 
         .shout-container {
-          margin: 0 8px 4px 8px;
-          padding-bottom: 4px;
+          margin: 0 $spacing--sm $spacing--xs $spacing--sm;
+          padding-bottom: $spacing--xs;
 
           .shout-form {
             display: flex;
 
             input {
-              margin: 0 8px;
-              border-radius: 8px;
+              margin: 0 $spacing--sm;
+              border-radius: $border-radius--sm;
               font-size: 1em;
-              font-weight: 500;
+              font-weight: $font-weight--500;
               text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
               padding: 10px;
             }
