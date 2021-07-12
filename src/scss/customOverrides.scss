@@ -1,3 +1,37 @@
 @import "scss/constants.scss";
 
 // This file exists for custom styles to deal with environment specific hacks/overrides
+
+// hide time on site and number of venues visited box (when badges are turned on)
+div.Badges {
+  &__visits {
+    display: none;
+  }
+  &__visit {
+    display: none;
+  }
+}
+
+// hide glow from Auditorium v1 iframe
+.audience-container {
+  .audience-overlay {
+    .video-container {
+      div.reaction-container {
+        box-shadow: none;
+      }
+
+      .video {
+        iframe.frame {
+          border-radius: 0;
+          box-shadow: none;
+        }
+      }
+    }
+  }
+}
+
+// hide glow in auditorium v2 iframe
+iframe.Section__iframe {
+  border-radius: 0;
+  box-shadow: none;
+}

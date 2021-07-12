@@ -20,6 +20,7 @@ import { PersonalizedVenueEvent, LocationEvents } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
+import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -66,10 +67,15 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  const sortedEvents = useMemo(
+    () => sortScheduleRoomsAlphabetically(locatedEvents),
+    [locatedEvents]
+  );
+
   // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
-      locatedEvents.map(({ location, events }) => (
+      sortedEvents.map(({ location, events }) => (
         <div
           key={`RoomCell-${location.venueId}-${location.roomTitle}`}
           className="Schedule__room"
@@ -82,7 +88,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           </span>
         </div>
       )),
-    [locatedEvents]
+    [sortedEvents]
   );
 
   const hoursRow = useMemo(

@@ -1,30 +1,28 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { useAsync } from "react-use";
+import { useAsync, useAsyncFn, useSearchParam } from "react-use";
 import { mapValues, get } from "lodash";
 import firebase from "firebase/app";
 import "firebase/storage";
 
 import { IS_BURN } from "secrets";
 
-import { DISPLAY_NAME_MAX_CHAR_COUNT, DEFAULT_VENUE } from "settings";
+import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
-import { RouterLocation } from "types/RouterLocation";
-
-import getQueryParameters from "utils/getQueryParameters";
 import { isTruthy } from "utils/types";
-import { externalUrlAdditionalProps } from "utils/url";
 
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import { updateUserProfile } from "./helpers";
-
+import { Loading } from "components/molecules/Loading";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
+import { updateUserProfile } from "./helpers";
+
+// @debt refactor the Profile related styles from Account.scss into Profile.scss
 import "./Account.scss";
 
 export interface ProfileFormData {
@@ -34,19 +32,14 @@ export interface ProfileFormData {
   companyDepartment?: string;
 }
 
-interface PropsType {
-  location?: RouterLocation;
-}
-
-const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
+export const Profile: React.FC = () => {
   const history = useHistory();
-  const { user } = useUser();
-  const venueName = useVenueId();
-  const venueId =
-    venueName ??
-    getQueryParameters(window.location.search)?.venueId?.toString() ??
-    DEFAULT_VENUE;
-  const { returnUrl } = getQueryParameters(window.location.search);
+  const { user, userWithId } = useUser();
+
+  const venueId = useVenueId() ?? DEFAULT_VENUE;
+
+  const returnUrl: string | undefined =
+    useSearchParam("returnUrl") ?? undefined;
 
   const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
     venueId
@@ -63,18 +56,13 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     watch,
   } = useForm<ProfileFormData>({
     mode: "onChange",
+    defaultValues: {
+      partyName: userWithId?.partyName,
+      pictureUrl: userWithId?.pictureUrl,
+      companyTitle: userWithId?.companyTitle,
+      companyDepartment: userWithId?.companyDepartment,
+    },
   });
-
-  const onSubmit = async (data: ProfileFormData) => {
-    if (!user) return;
-
-    await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
-      returnUrl ? "&returnUrl=" + returnUrl : ""
-    }`;
-    const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
-    history.push(IS_BURN ? `/enter/step3` : nextUrl);
-  };
 
   const {
     value: samlPrefillData,
@@ -98,6 +86,26 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
       );
   }, [samlProfileMappings]);
 
+  const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
+    async (data: ProfileFormData) => {
+      if (!user) return;
+
+      await updateUserProfile(user.uid, data);
+
+      const accountQuestionsUrlParams = new URLSearchParams();
+      accountQuestionsUrlParams.set("venueId", venueId);
+      returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
+
+      // @debt Should we throw an error here rather than defaulting to empty string?
+      const nextUrl = venueId
+        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+        : returnUrl ?? "";
+
+      history.push(IS_BURN ? `/enter/step3` : nextUrl);
+    },
+    [history, returnUrl, user, venueId]
+  );
+
   const {
     githubName: githubHandle,
     firstName,
@@ -115,14 +123,17 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
   return (
     <div className="Profile">
       <h2 className="login-welcome-title">
-        Hey, {githubHandle}. We’re so glad you’re here! Upload or take a photo
-        and share your Summit snap here.
+        Hey, {firstName ?? "you"}. We’re so glad you’re here!
       </h2>
+
       <div className="login-welcome-subtitle">
-        {`Swing back and edit your profile anytime you like.`}
+        We&apos;ve pre-populated your profile with details from Okta - please{" "}
+        <br /> review and click Next if it all looks good.
       </div>
+
       <form onSubmit={handleSubmit(onSubmit)} className="form">
         <div className="input-group profile-form">
+          {/* @debt refactor this to use InputField */}
           <input
             name="partyName"
             className="input-block input-centered"
@@ -147,6 +158,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
               less
             </span>
           )}
+
+          {/* @debt refactor this to use InputField */}
           <input
             name="realName"
             className="input-block input-centered"
@@ -156,6 +169,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             autoComplete="off"
           />
           <p className="input-info">This is your real name</p>
+
+          {/* @debt refactor this to use InputField */}
           <input
             name="companyTitle"
             className="input-block input-centered"
@@ -165,6 +180,8 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             autoComplete="off"
           />
           <p className="input-info">This is your title</p>
+
+          {/* @debt refactor this to use InputField */}
           <input
             name="companyDepartment"
             className="input-block input-centered"
@@ -174,34 +191,41 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
             autoComplete="off"
           />
           <p className="input-info">This is your department</p>
-          <a
-            className="profile-picture-button Profile__summit-snap"
-            href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-            {...externalUrlAdditionalProps}
-          >
-            Take a Summit snap
-          </a>
+
           {user && (
             <ProfilePictureInput
-              venueId={venueId}
-              setValue={setValue}
-              githubHandle={githubHandle}
-              user={user}
-              errors={errors}
-              pictureUrl={pictureUrl}
-              register={register}
+              {...{
+                venueId,
+                setValue,
+                githubHandle,
+                user,
+                errors,
+                pictureUrl,
+                register,
+              }}
             />
           )}
         </div>
-        <input
-          className="btn btn-primary btn-block btn-centered"
-          type="submit"
-          value="Create my profile"
-          disabled={!formState.isValid}
-        />
+
+        <div className="input-group">
+          <button
+            type="submit"
+            className="btn btn-primary btn-block btn-centered"
+            disabled={!formState.isValid || isUpdating}
+          >
+            Next
+          </button>
+          {isUpdating && <Loading />}
+          {httpError && (
+            <span className="input-error">{httpError.message}</span>
+          )}
+        </div>
       </form>
+
+      <p className="Profile__issues-text">
+        Trouble registering? Find help at:{" "}
+        <strong>#summit-21-registration</strong> or email events@github.com
+      </p>
     </div>
   );
 };
-
-export default Profile;

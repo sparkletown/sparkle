@@ -1,25 +1,15 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
-import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import {
   ACCEPTED_IMAGE_TYPES,
-  DEFAULT_AVATARS,
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
 
 import { resizeFile } from "utils/image";
-import { isDefined } from "utils/types";
-
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
 
 import "./ProfilePictureInput.scss";
 
@@ -50,24 +40,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const [error, setError] = useState("");
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
-
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
-    venueId,
-  });
-
-  const {
-    value: customAvatars,
-    loading: isLoadingCustomAvatars,
-  } = useAsync(async () => {
-    if (!sovereignVenueId) return;
-
-    const storageRef = firebase.storage().ref();
-    const list = await storageRef
-      .child(`/assets/avatars/${sovereignVenueId}`)
-      .listAll();
-
-    return Promise.all(list.items.map((item) => item.getDownloadURL()));
-  }, [firebase, sovereignVenueId]);
 
   const uploadPicture = async (profilePictureRef: Reference, file: File) => {
     setIsPictureUploading(true);
@@ -111,41 +83,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", githubImageSrc, true);
   }, [githubImageSrc, setValue, pictureUrl]);
 
-  const uploadDefaultAvatar = useCallback(
-    async (avatar: string) => {
-      setValue("pictureUrl", avatar, true);
-    },
-    [setValue]
-  );
-
-  const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
-    (customAvatars !== undefined || error !== undefined);
-
-  const defaultAvatars = customAvatars?.length
-    ? customAvatars
-    : DEFAULT_AVATARS;
-
-  const avatarImages = useMemo(
-    () =>
-      [githubImageSrc, ...defaultAvatars]
-        .filter(isDefined)
-        .map((avatarSrc, index) => (
-          <div
-            key={`${avatarSrc}-${index}`}
-            className="profile-picture-preview-container"
-            onClick={() => uploadDefaultAvatar(avatarSrc)}
-          >
-            <img
-              src={avatarSrc}
-              className="profile-icon profile-picture-preview"
-              alt={`default avatar ${index}`}
-            />
-          </div>
-        )),
-    [defaultAvatars, githubImageSrc, uploadDefaultAvatar]
-  );
-
   return (
     <div className="profile-picture-upload-form">
       <div
@@ -153,34 +90,39 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/default-profile-pic.png"}
+          src={pictureUrl || "/avatars/default-octocat-3.png"}
           className="profile-icon profile-picture-preview"
           alt="your profile"
         />
       </div>
-      <input
-        type="file"
-        id="profile-picture-input"
-        name="profilePicture"
-        onChange={handleFileChange}
-        accept={ACCEPTED_IMAGE_TYPES}
-        className="profile-picture-input"
-        ref={uploadRef}
-      />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
-        Upload your profile pic
-      </label>
+      <p className="profile-picture-options">
+        Want to change your profile photo? Take a{" "}
+        <a
+          className="button--a"
+          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
+          {...externalUrlAdditionalProps}
+        >
+          Summit snap
+        </a>{" "}
+        or{" "}
+        <input
+          type="file"
+          id="profile-picture-input"
+          name="profilePicture"
+          onChange={handleFileChange}
+          accept={ACCEPTED_IMAGE_TYPES}
+          className="profile-picture-input"
+          ref={uploadRef}
+        />
+        <label htmlFor="profile-picture-input" className="button--a">
+          upload a photo.
+        </label>
+      </p>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
-      <small>
-        Feeling camera shy? Choose from one of these Summit profile avatars.
-      </small>
-      <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
-      </div>
       <input
         name="pictureUrl"
         className="profile-picture-input"

@@ -21,12 +21,12 @@ export const InitialForm: FC<InitialFormProps> = ({
       {/*  Create your account*/}
       {/*</div>*/}
       <div className="buttons-separator">or</div>
-      <div
-        className="btn btn-block btn-centered login-button"
-        onClick={displayLoginForm}
-      >
-        Log in for non-Okta users
-      </div>
+      <p className="login-text">
+        No Okta?{" "}
+        <button className="login-button button--a" onClick={displayLoginForm}>
+          Login here
+        </button>
+      </p>
     </div>
   );
 };

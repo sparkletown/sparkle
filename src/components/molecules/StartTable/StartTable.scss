@@ -1,0 +1,71 @@
+@import "scss/constants.scss";
+
+$jazzbar-start-table-height: 189px;
+$start-table-height: 165px;
+$start-table-button-indent: 5px;
+$table-column-width: 55px;
+$start-table-internal-indent: 25px;
+
+.StartTable {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-basis: calc(
+    3 * #{$table-column-width} + 2 * #{$start-table-internal-indent}
+  );
+  min-height: $start-table-height;
+
+  width: 100%;
+  background: $dark;
+  border: none;
+  border-radius: 22px;
+  color: $white;
+  margin: calc(2 * #{$start-table-button-indent}) $start-table-button-indent
+    $start-table-button-indent;
+  cursor: pointer;
+
+  &:hover {
+    background-color: lighten($dark, 10%);
+    transform: scale(1.05);
+
+    .StartTable__sign {
+      display: none;
+    }
+
+    .StartTable__title {
+      display: block;
+    }
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+
+    .StartTable__sign,
+    .StartTable__title {
+      display: none;
+    }
+
+    .StartTable__loading {
+      display: block;
+    }
+  }
+
+  &--jazzbar {
+    margin: 0;
+    min-height: $jazzbar-start-table-height;
+  }
+
+  &__sign {
+    font-size: $font-size--xxxl;
+  }
+
+  &__title {
+    display: none;
+    font-size: $font-size--lg;
+    line-height: 18px;
+  }
+
+  &__loading {
+    display: none;
+  }
+}

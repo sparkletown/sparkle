@@ -97,22 +97,6 @@ $page-max-width: 1240px;
   }
 }
 
-.code-of-conduct-container {
-  padding-top: 30px;
-
-  .code-of-conduct-form {
-    align-self: center;
-    display: flex;
-    flex: 1;
-    justify-content: center;
-    align-items: center;
-
-    .final-step-title {
-      padding-bottom: 30px;
-    }
-  }
-}
-
 .hero-logo {
   &.coreality {
     margin: 0 auto 50px;
@@ -276,6 +260,12 @@ $page-max-width: 1240px;
       color: white;
       text-decoration: none;
     }
+  }
+
+  &__issues-text {
+    margin-top: $spacing--xxl;
+    color: $secondary--light;
+    font-style: italic;
   }
 }
 
