@@ -1,5 +1,5 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
-import AgoraRTC, { IAgoraRTCClient } from "agora-rtc-sdk-ng";
+import AgoraRTC from "agora-rtc-sdk-ng";
 
 import { FullTalkShowVenue } from "types/venues";
 import { AgoraClientConnectionState } from "types/agora";
@@ -24,21 +24,6 @@ import SettingsSidebar from "./components/SettingsSidebar/SettingsSidebar";
 
 import "./TalkShowStudio.scss";
 
-const remotesClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
-const screenClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
-const cameraClient: IAgoraRTCClient = AgoraRTC.createClient({
-  codec: "h264",
-  mode: "rtc",
-});
-
 export interface TalkShowStudioProps {
   venue: WithId<FullTalkShowVenue>;
 }
@@ -47,8 +32,18 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const stage = useStage();
   const { userId, profile } = useUser();
   const currentVenue = useSelector(currentVenueSelectorData);
-  const remoteUsers = useAgoraRemotes({ client: remotesClient });
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
+
+  const [remotesClient, screenClient, cameraClient] = React.useMemo(() => {
+    return Array.from({ length: 3 }).map(() =>
+      AgoraRTC.createClient({
+        codec: "h264",
+        mode: "rtc",
+      })
+    );
+  }, []);
+
+  const remoteUsers = useAgoraRemotes({ client: remotesClient });
 
   const {
     localCameraTrack,
@@ -143,7 +138,14 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
             </div>
           )
       );
-  }, [remoteUsers, venue.id, stage.peopleOnStage, userOnStageSharingScreen]);
+  }, [
+    remoteUsers,
+    venue.id,
+    stage.peopleOnStage,
+    userOnStageSharingScreen,
+    cameraClient.uid,
+    screenClient.uid,
+  ]);
 
   const onStageJoin = useCallback(() => {
     cameraClientJoin();
@@ -165,7 +167,12 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     cameraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
       !stage.isUserOnStage &&
       onStageLeaving();
-  }, [stage.isUserOnStage, onStageJoin, onStageLeaving]);
+  }, [
+    stage.isUserOnStage,
+    onStageJoin,
+    onStageLeaving,
+    cameraClient.connectionState,
+  ]);
 
   useEffect(() => {
     !stage.isUserSharing && localScreenTrack && stopShare();
