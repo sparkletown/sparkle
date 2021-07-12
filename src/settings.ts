@@ -11,7 +11,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { DefaultUserStatus } from "types/User";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -656,17 +655,10 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const ONLINE_USER_STATUS = {
-  status: DefaultUserStatus.online,
+export const DEFAULT_USER_STATUS = {
+  status: "Online",
   color: "#53E52A",
 };
-
-export const BUSY_USER_STATUS = {
-  status: DefaultUserStatus.busy,
-  color: "#F44336",
-};
-
-export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;
