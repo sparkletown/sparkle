@@ -1,6 +1,4 @@
-import { applyMiddleware, combineReducers, createStore, Reducer } from "redux";
-import { composeWithDevTools } from "redux-devtools-extension";
-import thunkMiddleware from "redux-thunk";
+import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import { FirebaseReducer, firebaseReducer } from "react-redux-firebase";
 import { firestoreReducer } from "redux-firestore";
 import LogRocket from "logrocket";
@@ -17,19 +15,44 @@ export const rootReducer = combineReducers({
   ...MiscReducers,
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
-
 export const initialState: Readonly<{}> = {};
 
-export const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      LogRocket.reduxMiddleware() // logrocket needs to be last
-    )
-  )
-);
+/**
+ * Configure the Redux store along with any associated middleware, enhancers, etc.
+ *
+ * @see https://redux-toolkit.js.org/api/configureStore
+ */
+export const store = configureStore({
+  /**
+   * @see https://redux-toolkit.js.org/api/configureStore#reducer
+   */
+  reducer: rootReducer,
 
+  /**
+   * @see https://redux-toolkit.js.org/api/configureStore#preloadedstate
+   */
+  preloadedState: initialState,
+
+  /**
+   * Note: It is preferable to use the chainable .concat(...) and .prepend(...) methods of the returned MiddlewareArray
+   * instead of the array spread operator, as the latter can lose valuable type information under some circumstances.
+   *
+   * @see https://redux-toolkit.js.org/api/configureStore#middleware
+   * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
+   */
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(
+      // Note: LogRocket middleware needs to be last to be able to capture everything correctly
+      // (though if we want to add middleware profiling checks, they should probably be after LogRocket)
+      LogRocket.reduxMiddleware()
+    ),
+
+  /**
+   * @see https://redux-toolkit.js.org/api/configureStore#devtools
+   */
+  devTools: true,
+});
+
+// Infer the RootState and AppDispatch types from the store itself
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
