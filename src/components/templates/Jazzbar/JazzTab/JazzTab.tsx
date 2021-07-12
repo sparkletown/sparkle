@@ -40,7 +40,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { useRecentVenueUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
-import { useTables } from "hooks/useTables";
+import { useAvailableTables } from "hooks/useAvailableTables";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -82,8 +82,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
 
   const { userWithId } = useUser();
 
-  const defaultTables = venue.config?.tables ?? JAZZBAR_TABLES;
-  const { tablesToShow } = useTables({ defaultTables, showAvailableTables });
+  const jazzbarTables = venue.config?.tables ?? JAZZBAR_TABLES;
+  const { tablesToShow } = useAvailableTables({
+    tables: jazzbarTables,
+    showAvailableTables,
+    venueName: venue.name,
+    users: recentVenueUsers,
+  });
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
   const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
@@ -193,7 +198,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           seatedAtTable={seatedAtTable}
           setSeatedAtTable={setSeatedAtTable}
           venueName={venue.name}
-          tables={tablesToShow}
+          tables={jazzbarTables}
         />
       )}
 

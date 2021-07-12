@@ -255,6 +255,8 @@
 
   .ControlBar__container {
     margin: $spacing--md 40px 0 auto;
+    padding-right: 40px;
+    width: max-content;
   }
 
   .seated-area {

@@ -4,28 +4,27 @@ import { Table } from "types/Table";
 import { ReactHook } from "types/utility";
 import { User } from "types/User";
 
-import { currentVenueSelectorData } from "utils/selectors";
 import { experienceSelector } from "utils/selectors";
 import { getUserExperience } from "utils/user";
+import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
 
-export interface UseTablesProps {
-  defaultTables: Table[];
+export interface UseAvailableTablesProps {
+  tables: Table[];
   showAvailableTables: boolean;
+  venueName: string;
+  users: readonly WithId<User>[];
 }
 
-export interface UseTablesData {
+export interface UseAvailableTablesData {
   tablesToShow: Table[];
 }
 
-export const useTables: ReactHook<UseTablesProps, UseTablesData> = ({
-  defaultTables,
-  showAvailableTables,
-}) => {
-  const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+export const useAvailableTables: ReactHook<
+  UseAvailableTablesProps,
+  UseAvailableTablesData
+> = ({ tables, showAvailableTables, venueName, users }) => {
   const experience = useSelector(experienceSelector);
 
   const isLockedTable = useCallback(
@@ -35,26 +34,26 @@ export const useTables: ReactHook<UseTablesProps, UseTablesData> = ({
 
   const isFullTable = useCallback(
     (table: Table) => {
-      const usersSeatedAtTable = recentVenueUsers.filter(
+      const usersSeatedAtTable = users.filter(
         (user: User) =>
-          getUserExperience(venue?.name)(user)?.table === table.reference
+          getUserExperience(venueName)(user)?.table === table.reference
       );
       const numberOfSeatsLeft =
         table.capacity && table.capacity - usersSeatedAtTable.length;
 
       return numberOfSeatsLeft === 0;
     },
-    [recentVenueUsers, venue?.name]
+    [users, venueName]
   );
 
   const tablesToShow = useMemo(
     () =>
-      defaultTables.filter((table) => {
+      tables.filter((table) => {
         return showAvailableTables
           ? !(isLockedTable(table) || isFullTable(table))
           : table;
       }),
-    [defaultTables, showAvailableTables, isLockedTable, isFullTable]
+    [tables, showAvailableTables, isLockedTable, isFullTable]
   );
 
   return {

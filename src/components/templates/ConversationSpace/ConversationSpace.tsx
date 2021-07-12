@@ -10,7 +10,7 @@ import { WithId } from "utils/id";
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
 import { useShowHide } from "hooks/useShowHide";
-import { useTables } from "hooks/useTables";
+import { useAvailableTables } from "hooks/useAvailableTables";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -48,10 +48,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
     toggle: togglAvailableTables,
   } = useShowHide();
 
-  const defaultTables = venue?.config?.tables ?? TABLES;
-
-  const { tablesToShow } = useTables({ defaultTables, showAvailableTables });
-
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
@@ -62,6 +58,15 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
     openUrl(venueInsideUrl(parentVenueId));
   }, [parentVenueId]);
+
+  const tables = venue?.config?.tables ?? TABLES;
+
+  const { tablesToShow } = useAvailableTables({
+    tables,
+    showAvailableTables,
+    venueName: venue.name,
+    users: recentVenueUsers,
+  });
 
   return (
     <>
@@ -111,7 +116,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   seatedAtTable={seatedAtTable}
                   setSeatedAtTable={setSeatedAtTable}
                   venueName={venue.name}
-                  tables={tablesToShow}
+                  tables={tables}
                 />
               )}
               {seatedAtTable && (
@@ -123,15 +128,15 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   />
                 </div>
               )}
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={togglAvailableTables}
+                  showAvailableTables={showAvailableTables}
+                />
+              )}
             </div>
           </div>
-          {!seatedAtTable && (
-            <TablesControlBar
-              containerClassName="ControlBar__container"
-              onToggleAvailableTables={togglAvailableTables}
-              showAvailableTables={showAvailableTables}
-            />
-          )}
           <div className="seated-area">
             <TablesUserList
               setSeatedAtTable={setSeatedAtTable}
