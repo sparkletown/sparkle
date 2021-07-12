@@ -46,7 +46,8 @@ export const store = configureStore({
    * instead of the array spread operator, as the latter can lose valuable type information under some circumstances.
    *
    * @see https://redux-toolkit.js.org/api/configureStore#middleware
-   * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
+   * @see https://redux-toolkit.js.org/api/getDefaultMiddleware
+   * @see https://redux-toolkit.js.org/api/getDefaultMiddleware#customizing-the-included-middleware
    */
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
@@ -81,8 +82,12 @@ export const store = configureStore({
         },
       },
     }).concat(
-      // Note: LogRocket middleware needs to be last to be able to capture everything correctly
-      // (though if we want to add middleware profiling checks, they should probably be after LogRocket)
+      /**
+       * Note: LogRocket middleware needs to be last to be able to capture everything correctly
+       * (though if we want to add middleware profiling checks, they should probably be after LogRocket)
+       *
+       * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
+       */
       LogRocket.reduxMiddleware()
     ),
 
