@@ -19,10 +19,10 @@ export const useVenuePoll = () => {
   const { userId } = useUser();
 
   const voteInPoll = useCallback(
-    (pollVote: PollVoteBase) => {
+    async (pollVote: PollVoteBase) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ pollVote, venueId });
+      await voteInVenuePoll({ pollVote, venueId });
     },
     [venueId]
   );

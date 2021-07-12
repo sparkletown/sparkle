@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
@@ -17,10 +18,12 @@ import { WithId } from "utils/id";
 import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Loading } from "components/molecules/Loading";
+
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import Button from "components/atoms/Button";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatPoll.scss";
 
@@ -65,9 +68,9 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     "ChatPoll--me": isMine,
   });
 
-  const handleVote = useCallback(
-    (question) =>
-      voteInPoll({
+  const [{ loading: isVoting }, handleVote] = useAsyncFn(
+    async (question) =>
+      await voteInPoll({
         questionId: question.id,
         pollId: id,
       }),
@@ -120,6 +123,18 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     ));
   }, [questions, calculateVotePercentage]);
 
+  const renderPollContent = useMemo(() => {
+    if (isVoting) {
+      return <Loading />;
+    }
+
+    if (hasVoted) {
+      return renderResults;
+    }
+
+    return renderQuestions;
+  }, [hasVoted, isVoting, renderQuestions, renderResults]);
+
   const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
     id,
     deletePollMessage,
@@ -132,7 +147,8 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         <div className="ChatPoll__topic">
           <RenderMarkdown text={topic} />
         </div>
-        <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
+        {renderPollContent}
+
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
         </div>
