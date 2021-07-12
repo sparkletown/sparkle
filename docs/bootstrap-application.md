@@ -16,7 +16,7 @@ npx firebase login
 # Find the ID of the project that you'd like to use from the output of the command below:
 npx firebase projects:list
 
-# If you are contributing to the Sparkle main code base, switch to the 'staging' project, otherwise switch to 'example-project' or whichever environment you are developing against
+# Switch to 'example-project' or whichever environment you are developing against
 npx firebase use TODO-PROJECT-ID
 ```
 
