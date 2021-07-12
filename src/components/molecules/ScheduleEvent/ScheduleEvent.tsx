@@ -23,7 +23,6 @@ import {
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
   SCHEDULE_SHORT_EVENT_LENGTH_MIN,
-  SCHEDULE_MIN_LENGTH_FOR_PREVIEW,
   SCHEDULE_LONG_EVENT_LENGTH_MIN,
 } from "settings";
 
@@ -92,7 +91,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   });
 
   const isMinimallyLongEvent =
-    event.duration_minutes >= SCHEDULE_MIN_LENGTH_FOR_PREVIEW;
+    event.duration_minutes >= SCHEDULE_LONG_EVENT_LENGTH_MIN;
   const isShortEvent =
     event.duration_minutes <= SCHEDULE_SHORT_EVENT_LENGTH_MIN;
   const isEventLong = event.duration_minutes >= SCHEDULE_LONG_EVENT_LENGTH_MIN;
@@ -115,6 +114,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   const expandClasses = classNames("ScheduleEvent__expand", {
     "ScheduleEvent__expand--hidden": !isShowExpand,
+    "ScheduleEvent__expand--marged": !isEventExpanded,
   });
 
   const bookmarkClasses = classNames("ScheduleEvent__bookmark", {
