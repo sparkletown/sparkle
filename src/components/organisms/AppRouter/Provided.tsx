@@ -10,6 +10,7 @@ import {
 interface EmptyProviderProps {
   venueId?: string;
 }
+
 const EmptyProvider: React.FC<EmptyProviderProps> = ({ children }) => {
   return <>{children}</>;
 };
