@@ -49,6 +49,7 @@ import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
 
+import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
@@ -183,17 +184,21 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          if (sovereignVenueId)
-            await updateVenue(
-              {
-                ...(vals as VenueInput),
-                id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
-                userStatuses,
-                showUserStatus: showUserStatuses,
-              },
-              user
-            ).then(() => {
+          if (sovereignVenueId) {
+            const venueInput: WithId<VenueInput> = {
+              ...(vals as VenueInput),
+              id: sovereignVenueId,
+              parentId: sovereignVenue?.parentId,
+              userStatuses,
+              showUserStatus: showUserStatuses,
+            };
+
+            if (venueId !== sovereignVenueId) {
+              venueInput.mapBackgroundImageUrl =
+                sovereignVenue?.mapBackgroundImageUrl;
+            }
+
+            await updateVenue(venueInput, user).then(() => {
               if (sovereignVenue) {
                 dispatch(
                   setSovereignVenue({
@@ -204,6 +209,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 );
               }
             });
+          }
         } else
           await createVenue(
             {
