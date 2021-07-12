@@ -218,7 +218,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     // @debt refactor table properties into one place
     const tablesToShow = showAvailableTables
       ? tables.filter(
-          (table) => !(isFullTable(table) || isLockedTable(table.title))
+          (table) => !(isFullTable(table) || isLockedTable(table.reference))
         )
       : tables;
 
