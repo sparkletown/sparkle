@@ -167,6 +167,7 @@ if (BUGSNAG_API_KEY) {
     "env/burn",
     "env/burn-staging",
     "env/github",
+    "env/summit-hack",
   ];
 
   const releaseStage = () => {

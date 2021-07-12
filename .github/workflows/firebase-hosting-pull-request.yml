@@ -60,6 +60,6 @@ jobs:
           channelId: 'preview-pr-${{ github.event.pull_request.number }}'
           projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
           target: staging
-          expires: 14d
+          expires: 7d
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels

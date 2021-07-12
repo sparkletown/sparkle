@@ -1,37 +1,84 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 
 import Admin from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
 
-import Admin_v2 from "pages/Admin/Admin_v2";
-import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
+import AdminV2 from "pages/Admin/Admin_v2";
+import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
+import { Provided } from "./Provided";
+
 export const AdminSubrouter: React.FC = () => {
   return (
-    <Router basename="/">
-      <Switch>
-        {/* Admin V1 */}
-        <Route path="/admin/venue/rooms/:venueId" component={RoomsForm} />
-        <Route path="/admin/venue/creation" component={VenueWizard} />
-        <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
-        <Route path="/admin/:venueId" component={Admin} />
-        <Route path="/admin" component={Admin} />
+    <Switch>
+      {/* Admin V1 */}
 
-        {/* Admin V2/3/NG */}
-        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
-        <Route
-          path="/admin-ng/advanced-settings/:venueId?"
-          component={AdminAdvancedSettings}
-        />
-        <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
-        <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
-        <Route path="/admin-ng" component={Admin_v2} />
-      </Switch>
-    </Router>
+      <Route path="/admin/venue/rooms/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <RoomsForm />
+        </Provided>
+      </Route>
+
+      <Route path="/admin/venue/creation">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizard />
+        </Provided>
+      </Route>
+
+      <Route path="/admin/venue/edit/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizard />
+        </Provided>
+      </Route>
+
+      <Route path="/admin/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <Admin />
+        </Provided>
+      </Route>
+
+      <Route path="/admin">
+        <Provided withWorldUsers withRelatedVenues>
+          <Admin />
+        </Provided>
+      </Route>
+
+      {/* Admin V2/3/NG */}
+
+      <Route path="/admin-ng/venue/:venueId?">
+        <Provided withWorldUsers>
+          <AdminVenueView />
+        </Provided>
+      </Route>
+
+      <Route path="/admin-ng/advanced-settings/:venueId?">
+        <Provided withWorldUsers withRelatedVenues>
+          <AdminAdvancedSettings />
+        </Provided>
+      </Route>
+
+      <Route path="/admin-ng/venue/creation">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizardV2 />
+        </Provided>
+      </Route>
+
+      <Route path="/admin-ng/edit/:venueId">
+        <Provided withWorldUsers withRelatedVenues>
+          <VenueWizardV2 />
+        </Provided>
+      </Route>
+
+      <Route path="/admin-ng">
+        <Provided withWorldUsers>
+          <AdminV2 />
+        </Provided>
+      </Route>
+    </Switch>
   );
 };

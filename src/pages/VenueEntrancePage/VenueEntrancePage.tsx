@@ -23,6 +23,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const history = useHistory();
   const { step } = useParams<{ step?: string }>();
   const venueId = useVenueId();
+
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
 
@@ -45,7 +46,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 
   const proceed = () => {
