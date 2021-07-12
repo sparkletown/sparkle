@@ -128,12 +128,12 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       return <Loading />;
     }
 
-    if (hasVoted) {
+    if (hasVoted || isMine) {
       return renderResults;
     }
 
     return renderQuestions;
-  }, [hasVoted, isVoting, renderQuestions, renderResults]);
+  }, [hasVoted, isVoting, isMine, renderQuestions, renderResults]);
 
   const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
     id,
