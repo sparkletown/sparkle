@@ -26,7 +26,7 @@ cd sparkle
 
 Install the platform dependencies with `npm`:
 
-**Important Note:** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions. Check your current npm version with `npm -v`.
+**Important** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions. Check your current npm version with `npm -v`.
 
 ```bash
 npm install
