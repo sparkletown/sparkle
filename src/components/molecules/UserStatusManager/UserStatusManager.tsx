@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Button } from "react-bootstrap";
 
-import { USER_STATUSES } from "settings";
-
 import { UserStatus } from "types/User";
 
 import { Checkbox } from "components/atoms/Checkbox";
@@ -10,10 +8,6 @@ import { Checkbox } from "components/atoms/Checkbox";
 import { UserStatusPanel } from "./components/UserStatusPanel";
 
 import "./UserStatusManager.scss";
-
-const renderDefaultUserStatuses = USER_STATUSES.map((userStatus) => (
-  <UserStatusPanel key={userStatus.status} userStatus={userStatus} disabled />
-));
 
 export interface UserStatusManagerProps {
   venueId?: string;
@@ -89,7 +83,6 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
       </div>
       {checked && (
         <>
-          {renderDefaultUserStatuses}
           {renderVenueUserStatuses}
           <Button onClick={onAdd}>Add a status</Button>
         </>
