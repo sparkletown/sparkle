@@ -35,12 +35,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const onlineUsers = useOnlineUsersToDisplay();
   const { selectRecipientChat } = useChatSidebarControls();
 
-  const privateChatUserIds = useMemo(
-    () =>
-      privateChatPreviews.map((chatPreview) => chatPreview.counterPartyUser.id),
-    [privateChatPreviews]
-  );
-
   const renderedPrivateChatPreviews = useMemo(
     () =>
       privateChatPreviews
@@ -54,20 +48,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
           />
         )),
     [privateChatPreviews, selectRecipientChat]
-  );
-
-  const renderedOnlineUsers = useMemo(
-    () =>
-      onlineUsers
-        .filter((user) => !privateChatUserIds.includes(user.id))
-        .map((user) => (
-          <OnlineUser
-            key={user.id}
-            user={user}
-            onClick={() => selectRecipientChat(user.id)}
-          />
-        )),
-    [onlineUsers, privateChatUserIds, selectRecipientChat]
   );
 
   const renderedSearchResults = useMemo(
@@ -86,9 +66,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
     [onlineUsers, selectRecipientChat, userSearchQuery]
   );
 
-  const numberOfSearchResults = renderedSearchResults.length;
   const hasChatPreviews = renderedPrivateChatPreviews.length > 0;
-  const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
     return <RecipientChat recipientId={recipientId} venue={venue} />;
@@ -107,9 +85,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
 
       {userSearchQuery ? (
         <>
-          <p className="private-chats__title-text">
-            {numberOfSearchResults} search results
-          </p>
+          <p className="private-chats__title-text">Search results</p>
 
           {renderedSearchResults}
         </>
@@ -120,12 +96,6 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
               {renderedPrivateChatPreviews}
             </div>
           )}
-
-          <p className="private-chats__title-text">
-            {numberOfOtherOnlineUsers} other online people
-          </p>
-
-          {renderedOnlineUsers}
         </>
       )}
     </div>
