@@ -67,7 +67,7 @@
     "react-use": "^17.2.3",
     "react-webcam": "^5.2.0",
     "read": "^1.0.7",
-    "redux": "^4.0.5",
+    "redux": "^4.1.0",
     "redux-devtools-extension": "^2.13.8",
     "redux-firestore": "sparkletown/redux-firestore#fix/introduce-batch-store-updates-on-addition",
     "redux-thunk": "^2.3.0",
