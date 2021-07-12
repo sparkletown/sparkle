@@ -79,20 +79,6 @@ export const EMOJI_REACTIONS: Readonly<ReactionData<EmojiReactionType>[]> = [
     audioPath: "/sounds/laugh.mp3",
   },
   {
-    type: EmojiReactionType.thatsjazz,
-    name: "thatsjazz",
-    text: "🎹",
-    ariaLabel: "piano-emoji",
-    audioPath: "/sounds/thatsjazz.mp3",
-  },
-  {
-    type: EmojiReactionType.boo,
-    name: "boo",
-    text: "👻",
-    ariaLabel: "boo-emoji",
-    audioPath: "/sounds/boo.mp3",
-  },
-  {
     type: EmojiReactionType.confetti,
     name: "confetti",
     text: "🎉",
