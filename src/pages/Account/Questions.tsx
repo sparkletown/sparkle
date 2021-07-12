@@ -64,7 +64,7 @@ export const Questions: React.FC = () => {
     if (!sovereignVenue) return;
 
     // Skip this screen if there are no profile questions for the venue
-    if (!sovereignVenue.profile_questions.length) {
+    if (!sovereignVenue.profile_questions?.length) {
       proceed();
     }
   }, [proceed, sovereignVenue]);
@@ -115,7 +115,7 @@ export const Questions: React.FC = () => {
         </p>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions.map((question: QuestionType) => (
+          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
             <div key={question.name} className="Questions__question form-group">
               <label className="input-block input-centered">
                 <strong>{question.name}</strong>
