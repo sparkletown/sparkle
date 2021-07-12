@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { addReaction } from "store/actions/Reactions";
 
 import {
-  AllEmojiReactions,
+  EMOJI_REACTIONS,
   EmojiReactionType,
   ReactionData,
 } from "types/reactions";
@@ -30,7 +30,7 @@ export interface ReactionsBarProps {
 export const ReactionsBar: React.FC<ReactionsBarProps> = ({
   venueId,
   isReactionsMuted,
-  reactions = AllEmojiReactions,
+  reactions = EMOJI_REACTIONS,
   toggleMute,
   leaveSeat,
 }) => {
