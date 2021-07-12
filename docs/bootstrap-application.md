@@ -3,6 +3,21 @@
 
 Make sure that you're located in ./scripts folder.
 
+In order to complete following steps you'd need to log in your Firebase account via CLI.
+
+```
+# Login to firebase with the account that has access to this project. You'll be prompted to log in via Google OAuth.
+npx firebase login
+
+# Find the ID of the project that you'd like to use from the output of the command below:
+npx firebase projects:list
+
+# If you are contributing to the Sparkle main code base, switch to the 'staging' project, otherwise switch to 'example-project' or whichever environment you are developing against
+npx firebase use TODO-PROJECT-ID
+```
+
+Now you're ready to proceed.
+
 First of all you'd need to boostrap an environment using the following command:
 
 * Run the bootstrap script

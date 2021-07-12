@@ -93,8 +93,6 @@ You can close this page and return to the Firebase console.
 
 This part of the setup is complete!
 
-Now you can proceed to [bootstrapping your application](./bootstrap-application.md)
-
 ### Step 6: Set up Twilio Account
 
 Please see [Twilio Account Setup](/docs/twilio-configuration.md)
@@ -109,7 +107,7 @@ Before you run the following steps, you will need to ensure you have access to t
 
 In a new terminal, from the directory you cloned the code to, enter the following commands:
 
-```bash
+```
 # While not necessary (as we already include it in our devDependencies), you can install the firebase-tools globally if desired
 # npm install -g firebase-tools@latest
 
@@ -130,19 +128,13 @@ npx firebase projects:list
 
 # If you are contributing to the Sparkle main code base, switch to the 'staging' project, otherwise switch to 'example-project' or whichever environment you are developing against
 npx firebase use TODO-PROJECT-ID
+```
 
-# Now you need to set up the function config
+Now you need to set up the function config
 
 ```
 npx firebase --project TODO-PROJECT-ID functions:config:set project.id=TODO-PROJECT-ID twilio.account_sid=TODO twilio.api_key=TODO twilio.api_secret=TODO stripe.endpoint_secret=TODO stripe.secret_key=TODO
 ```
-
-```bash
-# Generate a service account key at Firebase - Project Settings - Service Accounts
-
-Click Generate new private key ( located at  the bottom of the screen )
-
-Save this file somewhere safe locally
 
 # Go to <projectRoot>/scripts
 
@@ -152,14 +144,15 @@ Now we need to upload function config to Firebase. Use the .json file with priva
 ./upload-function-config-service-account.ts TODO-PROJECT-ID example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json
 ```
 
-```bash
+```
 
 # Copy the runtime config locally
-npx --silent firebase functions:config:get > ./functions/.runtimeconfig.json
+npx firebase functions:config:get > ./functions/.runtimeconfig.json
 
 # Finally, we need to perform the first deploy to the functions manually, to make sure all of the required cloud API's get enabled/etc, then after that, CI should be able to do it for us going forward:
 
 npx firebase --project TODO-PROJECT-ID deploy --only functions
+```
 
 # You may need to run this a couple of times, as it seems to cause various Google cloud APIs to get enabled/etc, which sometimes fail/time out. As a result you should see following message:
 
