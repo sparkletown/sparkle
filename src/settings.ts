@@ -177,6 +177,7 @@ export const ZOOM_URL_TEMPLATES = [
 export const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.embeddable,
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
@@ -273,6 +274,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
@@ -323,6 +329,11 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     description: [
       "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
+  },
+  {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
   },
   {
     template: VenueTemplate.firebarrel,
@@ -456,6 +467,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: "Add an NEW auditorium with an embedded video and sections",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
     template: VenueTemplate.zoomroom,
     name: "Experience",
     description:
@@ -529,6 +553,7 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 // @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.jazzbar,
 ];
 
@@ -548,6 +573,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
 ];
