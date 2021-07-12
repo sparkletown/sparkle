@@ -8,7 +8,7 @@ What you will need:
 
 - A free Firebase account
 - Your favorite command-line interface (e.g. Terminal or zsh on a Mac)
-- Optional: accounts with Stripe, Twillio
+- Optional: accounts with Stripe, Twilio
 - A little fairy dust
 
 ## Set Up Your Local Environment
@@ -42,13 +42,14 @@ See [Firebase setup](docs/create-new-environment.md)
 
 See [Start application](docs/getting-started.md)
 
-**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing the actual staging functions, try that.
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing your actual deployed environment functions, try that.
 
 ### Step 5: Firebase Emulators
 
 See [Firebase Emulators](docs/firebase-emulators.md)
 
 ---
+
 ## Part Three: Contribute to Sparkle
 
 ### Our Git Flow
@@ -95,6 +96,7 @@ Deploys are handled by CircleCI.
 - Pushing the `master` branch to any of our other configured production branches will deploy to that environment
 
 ---
+
 ## Part Four: Addenda
 
 Sparkle is using Bugsnag! We are proud to be part of Bugsnag's open source program and are glad that Bugsnag supports open source.
