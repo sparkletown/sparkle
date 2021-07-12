@@ -39,8 +39,6 @@ const app = initFirebaseAdminApp(projectIdCredentialFile, {
     : undefined,
 });
 
-const appBatch = app.firestore().batch();
-
 type eventWithVenueId = {
   event: VenueEvent;
   venueId: string;
@@ -52,7 +50,9 @@ type eventWithVenueId = {
     const venuesRef = app.firestore().collection("venues");
     const allVenueIds = (await venuesRef.get()).docs.map((venue) => venue.id);
 
-    await events.map(async (event: eventWithVenueId) => {
+    const appBatch = app.firestore().batch();
+
+    events.forEach((event: eventWithVenueId) => {
       const eventRef = app
         .firestore()
         .collection("venues")
@@ -61,13 +61,15 @@ type eventWithVenueId = {
         .doc();
 
       if (!allVenueIds.includes(event.venueId)) {
-        console.log("No venue: ", event.venueId);
+        console.log("no venue id", event);
+
+        return;
       }
 
       appBatch.set(eventRef, event.event);
     });
 
-    const writeResult = await appBatch.commit();
-    console.log(writeResult);
+    await appBatch.commit();
+    console.log("Run successfully");
   }
 })();
