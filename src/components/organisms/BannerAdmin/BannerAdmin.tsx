@@ -2,6 +2,7 @@ import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
+import { useAsyncFn } from "react-use";
 
 import { makeUpdateBanner } from "api/bannerAdmin";
 
@@ -62,7 +63,7 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({
   }, [showBannerChangeModal, reset]);
 
   const confirmChangeBannerData = useCallback(() => {
-    saveBanner(undefined);
+    saveBanner();
     hideBannerChangeModal();
   }, [saveBanner, hideBannerChangeModal]);
 
