@@ -159,7 +159,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         users={recentRoomUsers}
         limit={11}
         activity="in this room"
-        attendanceBoost={room.attendanceBoost}
       />
 
       {room.about && (

@@ -8,7 +8,13 @@ import { VenueEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
-import { enterVenue } from "utils/url";
+import {
+  enterVenue,
+  openUrl,
+  getUrlWithoutTrailingSlash,
+  getLastUrlParam,
+  getUrlParamFromString,
+} from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -37,7 +43,17 @@ export const EventModal: React.FC<EventModalProps> = ({
   });
 
   const eventRoom = useMemo<Room | undefined>(
-    () => eventVenue?.rooms?.find((room) => room.title === event.room),
+    () =>
+      eventVenue?.rooms?.find((room) => {
+        const { room: eventRoom = "" } = event;
+
+        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
+
+        const [roomName] = getLastUrlParam(noTrailSlashUrl);
+        const roomUrlParam = getUrlParamFromString(eventRoom);
+
+        return roomUrlParam.endsWith(`${roomName}`);
+      }),
     [eventVenue, event]
   );
 
@@ -51,6 +67,15 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const goToEventLocation = () => {
     onHide();
+
+    const { room = "" } = event;
+    const roomUrlParam = getUrlParamFromString(room);
+
+    if (!eventRoom) {
+      openUrl(roomUrlParam);
+
+      return;
+    }
 
     if (event.room) {
       enterRoom();
@@ -71,12 +96,7 @@ export const EventModal: React.FC<EventModalProps> = ({
     <Modal show={show} onHide={onHide} className="EventModal">
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
-        <span className="EventModal__subtitle">
-          by {event.host} in{" "}
-          <button className="button--a" onClick={goToEventLocation}>
-            {eventLocationToDisplay}
-          </button>
-        </span>
+        <span className="EventModal__subtitle">by {event.host}</span>
 
         <div className="EventModal__description">
           <RenderMarkdown text={event.description} />
@@ -87,7 +107,7 @@ export const EventModal: React.FC<EventModalProps> = ({
           onClick={goToEventLocation}
           disabled={!isLive}
         >
-          {eventStatus} in the {eventLocationToDisplay}
+          {eventStatus} in {eventLocationToDisplay}
         </Button>
       </div>
     </Modal>
