@@ -1,11 +1,13 @@
+#!/usr/bin/env node -r esm -r ts-node/register
+
 import {
   initFirebaseAdminApp,
   makeScriptUsage,
   parseCredentialFile,
-} from "../lib/helpers";
+} from "./lib/helpers";
 
-import { eventsFromCSVFile } from "../../src/utils/event";
-import { VenueEvent } from "../../src/types/venues";
+import { eventsFromCSVFile } from "../src/utils/event";
+import { VenueEvent } from "../src/types/venues";
 import { resolve } from "path";
 
 const usage = makeScriptUsage({
@@ -47,13 +49,22 @@ type eventWithVenueId = {
 (async () => {
   const events = await eventsFromCSVFile(filePath);
   if (events) {
+    const venuesRef = app.firestore().collection("venues");
+    const allVenueIds = (await venuesRef.get()).docs.map((venue) => venue.id);
+
     await events.map(async (event: eventWithVenueId) => {
-      const destVenueEventsRef = app
+      const eventRef = app
         .firestore()
-        .collection(`venues/${event.venueId}/events`)
+        .collection("venues")
+        .doc(event.venueId)
+        .collection("events")
         .doc();
 
-      appBatch.set(destVenueEventsRef, event.event);
+      if (!allVenueIds.includes(event.venueId)) {
+        console.log("No venue: ", event.venueId);
+      }
+
+      appBatch.set(eventRef, event.event);
     });
 
     const writeResult = await appBatch.commit();
