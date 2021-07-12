@@ -183,14 +183,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          if (sovereignVenueId)
+          //@debt Create separate function that updates the userStatuses separately by venue id.
+          if (
+            sovereignVenueId &&
+            sovereignVenue &&
+            sovereignVenueId !== venueId
+          )
             await updateVenue(
               {
-                ...(vals as VenueInput),
                 id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
+                name: sovereignVenue.name,
+                subtitle:
+                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                description:
+                  sovereignVenue.config?.landingPageConfig.description ?? "",
+                adultContent: sovereignVenue.adultContent ?? false,
+                profile_questions: sovereignVenue.profile_questions,
+                code_of_conduct_questions:
+                  sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
+                template: sovereignVenue.template,
               },
               user
             ).then(() => {
