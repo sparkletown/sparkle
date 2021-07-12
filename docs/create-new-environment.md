@@ -21,7 +21,7 @@ This part of the setup is complete!
 1. Go to https://console.firebase.google.com/ and find the `Example Project` you chose in step 1
 
 2. From _Project Overview_, hover over the gear icon and click _Project Settings_
-  - In the 'General' tab:
+  - In the _General_ tab:
     - Set the public-facing name
   - In the 'Users & Permissions' tab:
     - Add any other users who will need 'Owner' level access to this project (e.g. a backup owner who can change things if needed, deployments, etc).
@@ -33,8 +33,8 @@ This part of the setup is complete!
 ### Step 3: Add a New Web App to the Firebase Project
 
 1. Click on _Project Overview_, then again on _Project Settings_
-  - In the 'General' tab:
-    - Go to the 'Your Apps' section at the bottom.
+  - In the _General_ tab:
+    - Go to the _Your Apps_ section at the bottom.
     - Click on the `</>` button to create a new web app
     - Add firebase to your web app
     - Choose an app nickname (eg. `example-project`)
@@ -48,7 +48,7 @@ This part of the setup is complete!
 This part of the setup is now complete!
 
 ### Step 4: Set up Firebase Hosting
-1. From the Firebase console, within the appropriate project, click on 'Hosting' on the left hand menu.
+1. From the Firebase console, within the appropriate project, click on _Hosting_ on the left hand menu.
 
 2. Click on _Get started_
   - You can skip through these next screens by clicking _Next_
