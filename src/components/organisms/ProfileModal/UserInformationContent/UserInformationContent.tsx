@@ -150,11 +150,14 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           >
             {email}
           </div>
-          {sovereignVenue?.showUserStatus && sovereignVenue?.userStatuses && (
-            <div className="UserInformationContent__status-container">
-              <UserStatusDropdown userStatuses={sovereignVenue.userStatuses} />
-            </div>
-          )}
+          {sovereignVenue?.showUserStatus &&
+            !!sovereignVenue?.userStatuses?.length && (
+              <div className="UserInformationContent__status-container">
+                <UserStatusDropdown
+                  userStatuses={sovereignVenue.userStatuses}
+                />
+              </div>
+            )}
         </div>
         <Button
           customClass="UserInformationContent__edit"
