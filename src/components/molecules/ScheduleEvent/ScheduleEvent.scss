@@ -132,6 +132,10 @@ $description--margin-top: 2px;
     &--marged {
       margin: auto;
     }
+
+    &--padded {
+      padding: $ScheduleEvent--padding;
+    }
   }
 
   & .ScheduleEvent__expand--square {

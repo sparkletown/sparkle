@@ -114,7 +114,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   const expandClasses = classNames("ScheduleEvent__expand", {
     "ScheduleEvent__expand--hidden": !isShowExpand,
-    "ScheduleEvent__expand--marged": !isEventExpanded,
+    "ScheduleEvent__expand--marged": !isEventExpanded && !isEventLong,
+    "ScheduleEvent__expand--padded": isContentDisplayed,
   });
 
   const bookmarkClasses = classNames("ScheduleEvent__bookmark", {
