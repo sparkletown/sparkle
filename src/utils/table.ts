@@ -2,6 +2,16 @@ import { DEFAULT_TABLE_ROWS, DEFAULT_TABLE_COLUMNS } from "settings";
 
 import { Table } from "types/Table";
 
+export interface GenerateTablesProps {
+  num: number;
+  capacity: number;
+  rows?: number;
+  columns?: number;
+  titlePrefix?: string;
+  appendTableNumber?: boolean;
+  startFrom?: number;
+}
+
 /**
  * Generate an array of Table configs that can be used with Jazz Bar/similar.
  *
@@ -13,15 +23,7 @@ import { Table } from "types/Table";
  * @param appendTableNumber whether to append the table number to the title or not
  * @param startFrom what number should we start from when generating table numbers in the title
  */
-export const generateTables: (props: {
-  num: number;
-  capacity: number;
-  rows?: number;
-  columns?: number;
-  titlePrefix?: string;
-  appendTableNumber?: boolean;
-  startFrom?: number;
-}) => Table[] = ({
+export const generateTables = ({
   num,
   capacity,
   rows = DEFAULT_TABLE_ROWS,
@@ -29,7 +31,7 @@ export const generateTables: (props: {
   titlePrefix = "Table",
   appendTableNumber = true,
   startFrom = 1,
-}) =>
+}: GenerateTablesProps): Table[] =>
   Array.from(Array(num)).map((_, idx) => {
     const tableNumber = startFrom + idx;
 
