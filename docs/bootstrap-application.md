@@ -1,4 +1,5 @@
-### Connect your application to Firebase
+# Connect your application to Firebase
+
 ## 'Bootstrap' the platform
 
 Make sure that you're located in ./scripts folder.
@@ -22,7 +23,7 @@ npx firebase use TODO-PROJECT-ID
 
 Now you're ready to proceed.
 
-First of all you'd need to boostrap an environment using the following command:
+First of all, you need to boostrap an environment using the following command:
 
 * Run the bootstrap script
 
@@ -48,8 +49,7 @@ User created: email=user1@example.com, password=REDACTED
 User created: email=user2@example.com, password=REDACTED
 ```
 
-Once complete you should be able to make that user an admin. To do so run this command:
-* Run this
+Once complete you should be able to make that user an admin by running:
 
 ```
 ./update-admin-role-users.ts example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json ADD user1@example.com user2@example.com
@@ -65,6 +65,7 @@ User successfully added to ( or already existed in ) 'admin' role
 ```
 
 ## Update Firestore rules
+
 
 Please run the following command:
 
@@ -84,7 +85,7 @@ Deploy Completed!
 
 ## Configure ENV file
 
-In order for your application to connect to the proper Firebase environment you'd need to set up `.env.local` config. Please follow steps below:
+In order for your application to connect to the proper Firebase environment you'll need to set up `.env.local` config. Please follow steps below:
 
 * Locate or create `.env.local` file inside project root folder
 * Paste the following config
@@ -99,8 +100,6 @@ REACT_APP_BUCKET_URL=
 
 You can find all of these values in the Firebase - Project Settings - General tab.
 
-REACT_APP_MEASUREMENT_ID can be found at https://analytics.google.com/analytics/web. You can search for Measurement ID in the search bar at the top of the page
+Once you've populated the ENV file with correct data, please proceed to the next part where you will be able to launch your project.
 
-Once you've populated ENV file with correct data, please proceed to the next part where you will be able to launch your project.
-
-Proceed to [Getting Started](docs/getting-started.md) to launch your application.
+Proceed to [Getting Started](getting-started.md) to launch your application.

@@ -1,4 +1,5 @@
-### Firebase Project Setup
+## Firebase Project Setup
+
 ### Step 1: Create New Firebase Project
 
 1. Go to https://console.firebase.google.com
@@ -18,6 +19,7 @@ This part of the setup is complete!
 
 
 ### Step 2: Configure Firebase Project Settings
+
 1. Go to https://console.firebase.google.com/ and find the `Example Project` you chose in step 1
 
 2. From _Project Overview_, hover over the gear icon and click _Project Settings_
@@ -48,6 +50,7 @@ This part of the setup is complete!
 This part of the setup is now complete!
 
 ### Step 4: Set up Firebase Hosting
+
 1. From the Firebase console, within the appropriate project, click on _Hosting_ on the left hand menu.
 
 2. Click on _Get started_
@@ -95,7 +98,7 @@ This part of the setup is complete!
 
 ### Step 6: Set up Twilio Account
 
-Please see [Twilio Account Setup](/docs/twilio-configuration.md)
+Please see [Twilio Account Setup](twilio-configuration.md)
 
 ### Step 7: Generate Private Key File
 
@@ -107,7 +110,7 @@ Before you run the following steps, you will need to ensure you have access to t
 
 In a new terminal, from the directory you cloned the code to, enter the following commands:
 
-```
+```bash
 # While not necessary (as we already include it in our devDependencies), you can install the firebase-tools globally if desired
 # npm install -g firebase-tools@latest
 
@@ -132,20 +135,19 @@ npx firebase use TODO-PROJECT-ID
 
 Now you need to set up the function config
 
-```
+```bash
 npx firebase --project TODO-PROJECT-ID functions:config:set project.id=TODO-PROJECT-ID twilio.account_sid=TODO twilio.api_key=TODO twilio.api_secret=TODO stripe.endpoint_secret=TODO stripe.secret_key=TODO
 ```
 
 # Go to <projectRoot>/scripts
 
-Now we need to upload function config to Firebase. Use the .json file with private key that you've downloaded just recently:
+Now we need to upload function config to Firebase. Use the `.json` file with private key that you've downloaded just recently:
 
-```
+```bash
 ./upload-function-config-service-account.ts TODO-PROJECT-ID example-project-firebase-adminsdk-XXXXX-XXXXXXXXXX.json
 ```
 
-```
-
+```bash
 # Copy the runtime config locally
 npx firebase functions:config:get > ./functions/.runtimeconfig.json
 
@@ -166,4 +168,4 @@ This part of the setup is complete!
 
 In order to run Sparkle you'd need to bootstrap and connect your local application with the Firebase environment that you've created. Please follow the link below for detailed information.
 
-See [Bootstrap application](docs/bootstrap-application.md)
+See [Bootstrap application](bootstrap-application.md)
