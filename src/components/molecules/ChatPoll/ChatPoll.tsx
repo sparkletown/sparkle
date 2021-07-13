@@ -85,7 +85,12 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           customClass="ChatPoll__question"
           onClick={() => handleVote(question)}
         >
-          <RenderMarkdown text={question.name} />
+          <RenderMarkdown
+            text={question.name}
+            components={{
+              p: "span",
+            }}
+          />
         </Button>
       )),
     [questions, handleVote]
@@ -118,12 +123,17 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           style={{ width: `${question.share}%` }}
         />
         <span className="ChatPoll__text-count">{question.share}%</span>
-        <RenderMarkdown text={question.name} />
+        <RenderMarkdown
+          text={question.name}
+          components={{
+            p: "span",
+          }}
+        />
       </div>
     ));
   }, [questions, calculateVotePercentage]);
 
-  const renderPollContent = useMemo(() => {
+  const renderPollContent = () => {
     if (isVoting) {
       return <Loading />;
     }
@@ -133,7 +143,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     }
 
     return renderQuestions;
-  }, [hasVoted, isVoting, isMine, renderQuestions, renderResults]);
+  };
 
   const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
     id,
@@ -147,7 +157,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         <div className="ChatPoll__topic">
           <RenderMarkdown text={topic} />
         </div>
-        {renderPollContent}
+        {renderPollContent()}
 
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>

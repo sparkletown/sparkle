@@ -11,15 +11,6 @@ button.ChatPoll__question {
   width: 100%;
   background-color: $secondary--light;
 
-  &:focus {
-    outline: none;
-  }
-
-  // This direct element style is used with RenderMarkdown
-  p {
-    margin-bottom: 0;
-  }
-
   &:hover {
     background-color: $secondary--lightest;
   }
@@ -55,11 +46,6 @@ button.ChatPoll__question {
   &__text {
     font-size: $font-size--lg;
     margin-bottom: $spacing--md;
-
-    // This direct element style is used with RenderMarkdown
-    p {
-      margin-bottom: 0;
-    }
   }
 
   &--me {
@@ -79,7 +65,6 @@ button.ChatPoll__question {
   }
 
   &__text {
-    display: flex;
     position: relative;
     font-weight: $font-weight--500;
     margin-bottom: $spacing--md;
