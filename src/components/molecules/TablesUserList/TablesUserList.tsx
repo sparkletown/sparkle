@@ -61,7 +61,7 @@ export interface TablesUserListProps {
   setSeatedAtTable: (value: string) => void;
   seatedAtTable: string;
   customTables: Table[];
-  showAvailableTables: boolean;
+  showOnlyAvailableTables?: boolean;
   TableComponent: React.FC<TableComponentPropsType>;
   joinMessage: boolean;
   leaveText?: string;
@@ -72,7 +72,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   setSeatedAtTable,
   seatedAtTable,
   customTables,
-  showAvailableTables,
+  showOnlyAvailableTables = false,
   TableComponent,
   joinMessage,
 }) => {
@@ -133,12 +133,6 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   // @debt refactor table properties into one place
-  const isLockedTable = useCallback(
-    (table: string) => isTruthy(experience?.tables?.[table]?.locked),
-    [experience?.tables]
-  );
-
-  // @debt refactor table properties into one place
   const isFullTable = useCallback(
     (table: Table) => {
       const usersSeatedAtTable = recentVenueUsers.filter(
@@ -163,9 +157,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
       if (!areUsersAtTable) return false;
 
       // Locked state is in the experience record
-      return isLockedTable(table);
+      return isTruthy(experience?.tables?.[table]?.locked);
     },
-    [recentVenueUsers, venueName, isLockedTable]
+    [experience?.tables, recentVenueUsers, venueName]
   );
 
   const onAcceptJoinMessage = useCallback(
@@ -215,10 +209,9 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   const renderedTables = useMemo(() => {
     if (isSeatedAtTable) return;
 
-    // @debt refactor table properties into one place
-    const tablesToShow = showAvailableTables
+    const tablesToShow = showOnlyAvailableTables
       ? tables.filter(
-          (table) => !(isFullTable(table) || isLockedTable(table.reference))
+          (table) => !(isFullTable(table) || tableLocked(table.reference))
         )
       : tables;
 
@@ -241,8 +234,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     recentVenueUsers,
     tableLocked,
     tables,
-    showAvailableTables,
-    isLockedTable,
+    showOnlyAvailableTables,
     isFullTable,
     venueName,
   ]);

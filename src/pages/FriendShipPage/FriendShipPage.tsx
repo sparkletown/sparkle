@@ -54,7 +54,6 @@ export const FriendShipPage: React.FunctionComponent = () => {
               customTables={FRIENDSHIP_CUSTOM_TABLES}
               leaveText="Return to Isle of Friends"
               joinMessage={true}
-              showAvailableTables={false}
             />
             {seatedAtTable && (
               <div className="col wrapper">

@@ -43,8 +43,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const {
-    isShown: showAvailableTables,
-    toggle: togglAvailableTables,
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
   } = useShowHide();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -123,8 +123,8 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               {!seatedAtTable && (
                 <TablesControlBar
                   containerClassName="ControlBar__container"
-                  onToggleAvailableTables={togglAvailableTables}
-                  showAvailableTables={showAvailableTables}
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
                 />
               )}
             </div>
@@ -137,7 +137,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
-              showAvailableTables={showAvailableTables}
+              showOnlyAvailableTables={showOnlyAvailableTables}
             />
           </div>
           <UserList

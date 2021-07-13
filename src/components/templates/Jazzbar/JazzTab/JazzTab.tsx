@@ -55,8 +55,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
 
   const {
-    isShown: showAvailableTables,
-    toggle: togglAvailableTables,
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
   } = useShowHide();
 
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
@@ -212,8 +212,8 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
               {!seatedAtTable && (
                 <TablesControlBar
                   containerClassName="ControlBar__container"
-                  onToggleAvailableTables={togglAvailableTables}
-                  showAvailableTables={showAvailableTables}
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
                 />
               )}
             </>
@@ -235,7 +235,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
-          showAvailableTables={showAvailableTables}
+          showOnlyAvailableTables={showOnlyAvailableTables}
         />
       </div>
     </div>
