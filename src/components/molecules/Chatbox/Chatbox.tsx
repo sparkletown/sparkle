@@ -90,6 +90,15 @@ export const _Chatbox: React.FC<ChatboxProps> = ({
     [messages, deleteMessage, voteInPoll, venue]
   );
 
+  const onReplyToThread = useCallback(
+    ({ replyText, threadId }) => {
+      sendThreadReply({ replyText, threadId });
+      unselectOption();
+      closeThread();
+    },
+    [unselectOption, closeThread, sendThreadReply]
+  );
+
   return (
     <div className="Chatbox">
       <div className="Chatbox__messages">{renderedMessages}</div>
@@ -120,9 +129,9 @@ export const _Chatbox: React.FC<ChatboxProps> = ({
           <ChatMessageBox
             selectedThread={selectedThread}
             sendMessage={sendMessage}
-            sendThreadReply={sendThreadReply}
             unselectOption={unselectOption}
             isQuestion={isQuestionOptions}
+            onReplyToThread={onReplyToThread}
           />
         )}
       </div>
