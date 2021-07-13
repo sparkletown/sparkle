@@ -25,6 +25,7 @@ export interface ChatMessageBoxProps {
   sendThreadReply: SendChatReply;
   unselectOption: () => void;
   isQuestion?: boolean;
+  closeThread: () => void;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
@@ -32,6 +33,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   sendMessage,
   sendThreadReply,
   unselectOption,
+  closeThread,
   isQuestion = false,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
@@ -77,6 +79,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
     unselectOption();
+    closeThread();
   });
 
   const {
