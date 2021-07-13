@@ -1,9 +1,4 @@
-import React, {
-  RefObject,
-  MouseEventHandler,
-  useCallback,
-  useRef,
-} from "react";
+import React, { MouseEventHandler, useCallback } from "react";
 import classNames from "classnames";
 import { useCss } from "react-use";
 import { minutesToHours } from "date-fns";
@@ -55,8 +50,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   scheduleStartHour,
   personalizedEvent: isPersonalizedEvent = false,
 }) => {
-  const eventRef: RefObject<HTMLDivElement> = useRef(null);
-
   const { userId } = useUser();
 
   const eventWidthPx = minutesToHours(
@@ -126,11 +119,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   return (
     <>
-      <div
-        ref={eventRef}
-        className={containerClasses}
-        onClick={onEventBoxClick}
-      >
+      <div className={containerClasses} onClick={onEventBoxClick}>
         <button className={expandClasses}>
           <FontAwesomeIcon
             icon={regularSquare}
