@@ -125,6 +125,10 @@ $reply-icon-radius: 20px;
     &:hover {
       background-color: $secondary--lightest;
     }
+
+    &:focus {
+      opacity: 1;
+    }
   }
 
   &__replies-content {
