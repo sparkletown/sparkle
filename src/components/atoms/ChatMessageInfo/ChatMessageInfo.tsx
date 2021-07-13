@@ -13,6 +13,8 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./ChatMessageInfo.scss";
 
+const deleteIconClass = "ChatMessageInfo__delete-icon";
+
 export interface ChatMessageInfoProps {
   message: BaseMessageToDisplay;
   deleteMessage: () => void;
@@ -29,9 +31,14 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   const timestamp = ts_utc.toMillis();
 
-  const openAuthorProfile = useCallback(() => {
-    openUserProfileModal(author);
-  }, [openUserProfileModal, author]);
+  const openAuthorProfile = useCallback(
+    (event) => {
+      if (event.target.closest(`.${deleteIconClass}`)) return;
+
+      openUserProfileModal(author);
+    },
+    [openUserProfileModal, author]
+  );
 
   const containerClasses = classNames("ChatMessageInfo", {
     "ChatMessageInfo--reverse": isReversed,
@@ -48,7 +55,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
         <FontAwesomeIcon
           onClick={deleteMessage}
           icon={faTrash}
-          className="ChatMessageInfo__delete-icon"
+          className={deleteIconClass}
           size="sm"
         />
       )}
