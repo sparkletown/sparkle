@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, SyntheticEvent } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -33,6 +33,14 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
     openUserProfileModal(author);
   }, [openUserProfileModal, author]);
 
+  const handleDelete = useCallback(
+    (e: SyntheticEvent) => {
+      e.stopPropagation();
+      deleteMessage();
+    },
+    [deleteMessage]
+  );
+
   const containerClasses = classNames("ChatMessageInfo", {
     "ChatMessageInfo--reverse": isReversed,
   });
@@ -46,7 +54,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       </span>
       {canBeDeleted && (
         <FontAwesomeIcon
-          onClick={deleteMessage}
+          onClick={handleDelete}
           icon={faTrash}
           className="ChatMessageInfo__delete-icon"
           size="sm"
