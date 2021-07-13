@@ -25,7 +25,7 @@ const createLinkElement = ({ url, type, as = "image" }: PreloadAsset) => {
 export const usePreloadAssets = (assets: PreloadAsset[]) => {
   const headRef = useRef<HTMLHeadElement>(document.head);
 
-  return useEffect(() => {
+  useEffect(() => {
     const links = assets.map((asset) => {
       const link = createLinkElement(asset);
       headRef.current.appendChild(link);
