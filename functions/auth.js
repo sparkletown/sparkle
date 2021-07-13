@@ -8,6 +8,7 @@ const { fetchAuthConfig } = require("./src/api/auth");
 const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
+const { addAdmin } = require("./src/utils/user");
 
 // @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
 // Case-insensitive first character for iDevices
@@ -224,4 +225,26 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   );
 
   res.redirect(customTokenReturnUrl.toString());
+});
+
+/** Automatically make user admin upon register.
+ *
+ *  A function that triggers when a Firebase user is created, not on https request
+ *
+ *  Firebase accounts will trigger user creation events for Cloud Functions when:
+ *    - A user creates an email account and password.
+ *    - A user signs in for the first time using a federated identity provider.
+ *    - The developer creates an account using the Firebase Admin SDK.
+ *    - A user signs in to a new anonymous auth session for the first time.
+ *
+ *  NOTE: A Cloud Functions event is not triggered when a user signs in for the first time using a custom token.
+ *
+ *  @see https://firebase.google.com/docs/functions/auth-events
+ */
+exports.autoAdminOnRegister = functions.auth.user().onCreate(async (user) => {
+  const flag = functions.config().flag || {};
+
+  if (flag.autoadmin) {
+    await addAdmin(user.uid);
+  }
 });
