@@ -25,7 +25,7 @@ You can register a new user by pressing _Log In_ in the top right corner:
 
 Once redirected to authorization form select _Create account_:
 
-* Fill in necessary data and press Continue
+* Fill in necessary data and press _Continue_
 * Fill in your Username and upload custom avatar, or select from the default ones. Then press 'Create my profile':
 
 Navigate to http://localhost:3000/v/bootstrap where you can enter your first venue.
