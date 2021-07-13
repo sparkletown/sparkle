@@ -15,6 +15,7 @@ import { User } from "types/User";
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import { getUserExperience } from "utils/user";
+import { WithId } from "utils/id";
 
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
@@ -132,34 +133,41 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [recentVenueUsers, user, venueName, videoRoom]
   );
 
-  // @debt refactor table properties into one place
-  const isFullTable = useCallback(
-    (table: Table) => {
-      const usersSeatedAtTable = recentVenueUsers.filter(
+  const itemsToObjectByRefReducer = useCallback(
+    (obj: Record<string, WithId<User>[]>, table: Table) => ({
+      ...obj,
+      [table.reference]: recentVenueUsers.filter(
         (user: User) =>
           getUserExperience(venueName)(user)?.table === table.reference
-      );
+      ),
+    }),
+    [recentVenueUsers, venueName]
+  );
+
+  const usersSeatedAtTables = useMemo(
+    () => tables.reduce(itemsToObjectByRefReducer, {}),
+    [tables, itemsToObjectByRefReducer]
+  );
+
+  const isFullTable = useCallback(
+    (table: Table) => {
       const numberOfSeatsLeft =
-        table.capacity && table.capacity - usersSeatedAtTable.length;
+        table.capacity &&
+        table.capacity - usersSeatedAtTables[table.reference].length;
       return numberOfSeatsLeft === 0;
     },
-    [recentVenueUsers, venueName]
+    [usersSeatedAtTables]
   );
 
   const tableLocked = useCallback(
     (table: string) => {
-      // @debt refactor table properties into one place
-      const areUsersAtTable = recentVenueUsers.some(
-        (user: User) => getUserExperience(venueName)(user)?.table === table
-      );
-
       // Empty tables are never locked
-      if (!areUsersAtTable) return false;
+      if (!usersSeatedAtTables[table].length) return false;
 
       // Locked state is in the experience record
       return isTruthy(experience?.tables?.[table]?.locked);
     },
-    [experience?.tables, recentVenueUsers, venueName]
+    [experience?.tables, usersSeatedAtTables]
   );
 
   const onAcceptJoinMessage = useCallback(
@@ -190,17 +198,10 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [joinMessage, onAcceptJoinMessage, showJoinMessage, showLockedMessage]
   );
 
-  // @debt refactor table properties into one place
   const emptyTables = useMemo(
     () =>
-      tables.filter(
-        (table) =>
-          !recentVenueUsers.some(
-            (user: User) =>
-              getUserExperience(venueName)(user)?.table === table.reference
-          )
-      ),
-    [recentVenueUsers, tables, venueName]
+      tables.filter((table) => !usersSeatedAtTables[table.reference].length),
+    [tables, usersSeatedAtTables]
   );
 
   const canStartTable =
