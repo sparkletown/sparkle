@@ -22,7 +22,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   background-color: $black;
-  color: white;
+  color: $white;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
@@ -471,7 +471,7 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
     background-color: $dark;
-    color: white;
+    color: $white;
   }
 }
 
@@ -771,10 +771,4 @@ span.link {
 
 .flex-one {
   flex: 1;
-}
-
-.no-outline-on-focus {
-  &:focus {
-    outline: none;
-  }
 }

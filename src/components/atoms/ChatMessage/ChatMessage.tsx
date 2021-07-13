@@ -75,7 +75,10 @@ export const ChatMessage: React.FC<ChatProps> = ({
             <RenderMarkdown text={text} allowHeadings={false} />
           </div>
 
-          <button className="ChatMessage__reply-icon">
+          <button
+            aria-label={replyButtonText}
+            className="ChatMessage__reply-icon"
+          >
             <FontAwesomeIcon
               icon={faReply}
               size="sm"

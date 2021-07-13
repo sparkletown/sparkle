@@ -13,16 +13,14 @@ $label-visible: flex;
   align-items: center;
 
   appearance: none;
-  -webkit-appearance: none;
   background: none;
   border: none;
-  color: white;
+  color: $white;
 
   transition: transform 600ms $transition-function;
 
   &:hover,
   &:focus {
-    outline: none;
     z-index: z(map-room--hovered);
     transform: scale(1.1);
 

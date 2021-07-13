@@ -43,7 +43,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
       </div>
       <button
         aria-label="Close announcement message"
-        className="close-button no-outline-on-focus"
+        className="close-button"
         onClick={hideAnnouncement}
       >
         <FontAwesomeIcon icon={faTimesCircle} />

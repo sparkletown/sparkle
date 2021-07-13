@@ -10,7 +10,11 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import {
+  PLATFORM_BRAND_NAME,
+  SCHEDULE_SHOW_DAYS_AHEAD,
+  WEEKDAYS,
+} from "settings";
 
 import {
   LocationEvents,
@@ -122,7 +126,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             setSelectedDayIndex(dayIndex);
           }}
         >
-          <button>{formatDayLabel(day)}</button>
+          <button
+            aria-label={WEEKDAYS[day.getDay()]}
+            className="NavBarSchedule__weekday-button"
+          >
+            {formatDayLabel(day)}
+          </button>
         </li>
       );
     });

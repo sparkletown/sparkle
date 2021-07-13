@@ -58,7 +58,6 @@ $weekday--margin-right: 10px;
     &:hover,
     &:focus {
       opacity: 1;
-      outline: none;
     }
   }
 
@@ -70,9 +69,7 @@ $weekday--margin-right: 10px;
     border-radius: $border-radius--xl;
     opacity: 0.8;
 
-    button {
-      appearance: none;
-      -webkit-appearance: none;
+    &-button {
       border: none;
       background: inherit;
       color: $white;
@@ -81,7 +78,6 @@ $weekday--margin-right: 10px;
         color: $white;
         opacity: 1;
         font-weight: bold;
-        outline: none;
       }
     }
 

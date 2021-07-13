@@ -280,7 +280,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     defaultShow={showRadioOverlay}
                   >
                     <button
-                      className={`profile-icon navbar-link-radio no-outline-on-focus ${
+                      className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
                     />
@@ -290,7 +290,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
                     <button
-                      className={`profile-icon navbar-link-radio no-outline-on-focus ${
+                      className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
                       onClick={toggleShowRadioPopover}
