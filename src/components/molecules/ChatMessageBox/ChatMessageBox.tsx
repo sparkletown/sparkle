@@ -74,7 +74,6 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     if (!selectedThread) return;
 
     setMessageSending(true);
-    reset();
     onReplyToThread({ replyText: message, threadId: selectedThread.id });
     reset();
   });
