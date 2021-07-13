@@ -1,66 +1,35 @@
 #!/usr/bin/env node -r esm -r ts-node/register
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+
+import { resolve } from "path";
+
 import admin from "firebase-admin";
-import * as path from "path";
-import * as fs from "fs";
-import { FormatterOptionsArgs, Row, writeToStream } from "@fast-csv/format";
+import { writeToPath } from "@fast-csv/format";
 
-type CsvFileOpts = {
-  headers: string[];
-  path: string;
-};
-
-class CsvFile {
-  static write(
-    stream: NodeJS.WritableStream,
-    rows: Row[],
-    options: FormatterOptionsArgs<Row, Row>
-  ): Promise<void> {
-    return new Promise((res, rej) => {
-      writeToStream(stream, rows, options)
-        .on("error", (err: Error) => rej(err))
-        .on("finish", () => res());
-    });
-  }
-
-  private readonly headers: string[];
-
-  private readonly path: string;
-
-  private readonly writeOpts: FormatterOptionsArgs<Row, Row>;
-
-  constructor(opts: CsvFileOpts) {
-    this.headers = opts.headers;
-    this.path = opts.path;
-    this.writeOpts = { headers: this.headers, quote: true };
-  }
-
-  create(rows: Row[]): Promise<void> {
-    return CsvFile.write(fs.createWriteStream(this.path), rows, {
-      ...this.writeOpts,
-    });
-  }
-}
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
 const usage = makeScriptUsage({
-  description: "Bulk upload events from a spreadsheet ",
+  description: "Generate a CSV report of all users on the platform environment",
   usageParams: "PROJECT_ID CREDENTIAL_PATH",
-  exampleParams: "co-reality-staging add-event-by-csv.example.csv key.json",
+  exampleParams: "co-reality-staging [theMatchingAccountServiceKey.json]",
 });
 
 const [projectId, credentialPath] = process.argv.slice(2);
 
-if (!credentialPath) {
+// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
+if (!projectId) {
   usage();
 }
 
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
-    ? path.resolve(__dirname, credentialPath)
+    ? resolve(__dirname, credentialPath)
     : undefined,
 });
 
-const runner = async () => {
+(async () => {
+  console.log("Loading all platform 'auth' users into memory...");
+
+  // @debt Replace this with 'chunked user fetching' pattern from get-badges script, and don't iterate over all users on the platform.
   const allUsers: admin.auth.UserRecord[] = [];
   let nextPageToken: string | undefined;
   const { users, pageToken } = await admin.auth().listUsers(10);
@@ -76,7 +45,7 @@ const runner = async () => {
     nextPageToken = pageToken;
   }
 
-  let headers = [
+  const headers = [
     "Email",
     "Party Name",
     "Full name",
@@ -90,47 +59,63 @@ const runner = async () => {
     "Last Sign In",
   ];
 
-  const csvFile = new CsvFile({
-    path: path.resolve(
-      __dirname,
-      "users-report-" + new Date().getTime() + ".csv"
-    ),
-    headers: headers,
-  });
+  console.log("Loading all platform firebase user profiles into memory...");
 
-  let rows: Row[] = [];
+  // @debt refactor this to only fetch users that have entered the venues we care about (similar to how get-badges works)
   const firestoreUsers = await admin.firestore().collection("users").get();
-  firestoreUsers.docs.forEach(async (doc) => {
+
+  console.log("Extracting data to be used to generate the CSV...");
+
+  const rows = firestoreUsers.docs.map((doc) => {
     const user = allUsers.find((u) => u.uid === doc.id);
-    const partyName = doc.data().partyName;
-    const realName = doc.data().realName;
-    const companyTitle = doc.data().companyTitle;
-    const companyDepartment = doc.data().companyDepartment;
+
+    const { partyName, realName, companyTitle, companyDepartment } = doc.data();
+
+    // @debt handle reading questions in a less hacky way
     const Q1 = doc.data()[headers[5]];
     const Q2 = doc.data()[headers[6]];
     const Q3 = doc.data()[headers[7]];
     const Q4 = doc.data()[headers[8]];
     const Q5 = doc.data()[headers[9]];
-    const lastSignInTime = new Date(doc.data().lastSeenAt).getTime();
-    rows.push({
-      [headers[0]]: user?.email ?? doc.id,
-      [headers[1]]: partyName,
-      [headers[2]]: realName,
-      [headers[3]]: companyTitle,
-      [headers[4]]: companyDepartment,
-      [headers[5]]: Q1,
-      [headers[6]]: Q2,
-      [headers[7]]: Q3,
-      [headers[8]]: Q4,
-      [headers[9]]: Q5,
-      [headers[10]]: lastSignInTime
-        ? new Date(lastSignInTime).toISOString()
-        : "ٔٔNever",
-    });
-  });
-  await csvFile.create(rows);
-  console.log("File generated sucessfuly!");
-  process.exit(0);
-};
 
-runner();
+    const lastSignInTime = new Date(doc.data().lastSeenAt).getTime();
+
+    return [
+      user?.email ?? doc.id,
+      partyName,
+      realName,
+      companyTitle,
+      companyDepartment,
+      Q1,
+      Q2,
+      Q3,
+      Q4,
+      Q5,
+      lastSignInTime ? new Date(lastSignInTime).toISOString() : "ٔٔNever",
+    ];
+  });
+
+  const rowsWithHeaders = [headers, ...rows];
+
+  const csvFilePath = resolve(
+    __dirname,
+    `users-report-${new Date().getTime()}.csv`
+  );
+
+  console.log("Writing CSV report to file...");
+
+  await new Promise<void>((resolve, reject) => {
+    writeToPath(csvFilePath, rowsWithHeaders)
+      .on("error", (err) => reject(err))
+      .on("finish", () => resolve());
+  });
+
+  console.log(`CSV report successfully generated: ${csvFilePath}`);
+})()
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(() => {
+    process.exit(0);
+  });
