@@ -10,7 +10,7 @@ $ScheduleEvent--box-shadow: 0 5px 10px rgba(0, 0, 0, 0.65);
 $bookmark--padding: 0.5rem;
 $expand--margin: 0.3rem;
 $bookmark-hover--padding-top: 0.375rem;
-$expand-hover--margin-top: -0.075rem;
+$expand-hover--margin-top: 0.375rem;
 
 $description--margin-top: 2px;
 
@@ -45,8 +45,34 @@ $description--margin-top: 2px;
     }
   }
 
-  &--expanded {
-    width: var(--event--expanded-width);
+  &--short {
+    & .ScheduleEvent__info {
+      display: none;
+    }
+
+    & .ScheduleEvent__bookmark {
+      display: none;
+    }
+
+    &:hover {
+      width: var(--event--expanded-width);
+
+      & .ScheduleEvent__info {
+        display: block;
+      }
+
+      & .ScheduleEvent__bookmark {
+        display: flex;
+      }
+
+      & .ScheduleEvent__expand--arrows {
+        display: none;
+      }
+
+      & .ScheduleEvent__expand--arrows--out {
+        display: inline-block;
+      }
+    }
   }
 
   &--live {
@@ -110,14 +136,9 @@ $description--margin-top: 2px;
     outline: none;
     border: none;
     background-color: transparent;
-    margin-top: $expand--margin;
 
     &:focus {
       outline: none;
-    }
-
-    &:hover {
-      margin-top: $expand-hover--margin-top;
     }
 
     &--square {
@@ -127,7 +148,12 @@ $description--margin-top: 2px;
 
     &--arrows {
       height: $spacing--lg;
-      margin-top: $spacing--xs;
+      margin-top: $spacing--sm;
+      margin-left: $spacing--xs;
+
+      &--out {
+        display: none;
+      }
     }
 
     &--hidden {

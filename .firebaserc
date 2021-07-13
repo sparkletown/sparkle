@@ -1,7 +1,7 @@
 {
   "projects": {
     "default": "co-reality-map",
-    "staging": "co-reality-staging",
+    "staging": "sparkleapp-cacd9",
     "prod": "co-reality-map",
     "sparkleverse": "sparkle-verse",
     "sparkle1": "sparkle-1",
