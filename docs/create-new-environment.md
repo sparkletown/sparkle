@@ -95,7 +95,7 @@ This part of the setup is complete!
 
 ### Step 6: Set up Twilio Account
 
-Please see [Twilio Account Setup](/docs/twilio-configuration.md)
+Please see [Twilio Account Setup](twilio-configuration.md)
 
 ### Step 7: Generate Private Key File
 
@@ -166,4 +166,4 @@ This part of the setup is complete!
 
 In order to run Sparkle you'd need to bootstrap and connect your local application with the Firebase environment that you've created. Please follow the link below for detailed information.
 
-See [Bootstrap application](docs/bootstrap-application.md)
+See [Bootstrap application](bootstrap-application.md)
