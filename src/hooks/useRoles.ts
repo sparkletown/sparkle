@@ -4,20 +4,24 @@ import { useSelector } from "./useSelector";
 
 export const useRoles = () => {
   const { user } = useUser();
+
   useFirestoreConnect({
     collection: "roles",
     where: [["users", "array-contains", user?.uid || ""]],
     storeAs: "userRoles",
   });
+
   useFirestoreConnect({
     collection: "roles",
     where: [["allowAll", "==", true]],
     storeAs: "allowAllRoles",
   });
-  const { userRoles, allowAllRoles } = useSelector((state) => ({
-    userRoles: state.firestore.data.userRoles,
-    allowAllRoles: state.firestore.data.allowAllRoles,
-  }));
+
+  const userRoles = useSelector((state) => state.firestore.data.userRoles);
+
+  const allowAllRoles = useSelector(
+    (state) => state.firestore.data.allowAllRoles
+  );
 
   // Note: null here means data is loaded, but there was none.
   // A value of undefined indicates data is not loaded yet.
