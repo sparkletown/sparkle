@@ -4,8 +4,22 @@ import * as Yup from "yup";
 
 import { WithId } from "utils/id";
 
-export interface Experience {
-  // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table?: string | null;
   row?: number | null;
@@ -51,6 +65,9 @@ export interface User {
   room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
+  realName?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
   // @debt these don't appear to be used by anything anymore
   // drinkOfChoice?: string;
   // favouriteRecord?: string;
