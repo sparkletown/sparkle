@@ -1,15 +1,15 @@
 import { useCallback, useEffect, useState } from "react";
-import { IAgoraRTCRemoteUser } from "agora-rtc-sdk-ng";
+import AgoraRTC, {
+  IAgoraRTCClient,
+  IAgoraRTCRemoteUser,
+} from "agora-rtc-sdk-ng";
 
 import { AGORA_APP_ID, AGORA_CHANNEL, AGORA_TOKEN } from "secrets";
 
-import { UseAgoraRemotesProps, UseAgoraRemotesReturn } from "types/agora";
-import { ReactHook } from "types/utility";
+import { UseAgoraRemotesReturn } from "types/agora";
 
-export const useAgoraRemotes: ReactHook<
-  UseAgoraRemotesProps,
-  UseAgoraRemotesReturn
-> = ({ client }) => {
+export const useAgoraRemotes = (): UseAgoraRemotesReturn => {
+  const [client, setClient] = useState<IAgoraRTCClient>();
   const [remoteUsers, setRemoteUsers] = useState<IAgoraRTCRemoteUser[]>([]);
 
   const updateRemoteUsers = useCallback(() => {
@@ -29,7 +29,16 @@ export const useAgoraRemotes: ReactHook<
   );
 
   useEffect(() => {
-    if (!client) return;
+    if (!client) {
+      setClient(
+        AgoraRTC.createClient({
+          codec: "h264",
+          mode: "rtc",
+        })
+      );
+
+      return;
+    }
 
     updateRemoteUsers();
 
@@ -49,6 +58,7 @@ export const useAgoraRemotes: ReactHook<
 
       // @debt promise returned from .leave is ignored
       client.leave();
+      setClient(undefined);
     };
   }, [client, handleUserPublished, updateRemoteUsers]);
 

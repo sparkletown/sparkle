@@ -1,5 +1,4 @@
 import React, { FC, useCallback, useEffect, useMemo } from "react";
-import AgoraRTC from "agora-rtc-sdk-ng";
 
 import { FullTalkShowVenue } from "types/venues";
 import { AgoraClientConnectionState } from "types/agora";
@@ -34,16 +33,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   const currentVenue = useSelector(currentVenueSelectorData);
   const isRequestToJoinStageEnabled = venue.requestToJoinStage;
 
-  const [remotesClient, screenClient, cameraClient] = React.useMemo(() => {
-    return Array.from({ length: 3 }).map(() =>
-      AgoraRTC.createClient({
-        codec: "h264",
-        mode: "rtc",
-      })
-    );
-  }, []);
-
-  const remoteUsers = useAgoraRemotes({ client: remotesClient });
+  const remoteUsers = useAgoraRemotes();
 
   const {
     localCameraTrack,
@@ -51,17 +41,19 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     toggleMicrophone,
     isCameraOn,
     isMicrophoneOn,
+    client: cameraClient,
     joinChannel: cameraClientJoin,
     leaveChannel: cameraClientLeave,
-  } = useAgoraCamera({ client: cameraClient });
+  } = useAgoraCamera();
 
   const {
     localScreenTrack,
     shareScreen,
     stopShare,
+    client: screenClient,
     joinChannel: screenClientJoin,
     leaveChannel: screenClientLeave,
-  } = useAgoraScreenShare({ client: screenClient });
+  } = useAgoraScreenShare();
 
   const localUser = useMemo(
     () => stage.peopleOnStage.find(({ id }) => id === userId),
@@ -121,8 +113,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
       )
       .map(
         (user) =>
-          user.uid !== screenClient.uid &&
-          user.uid !== cameraClient.uid && (
+          user.uid !== screenClient?.uid &&
+          user.uid !== cameraClient?.uid && (
             <div key={user.uid}>
               {user.hasVideo && (
                 <Player
@@ -143,8 +135,8 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
     venue.id,
     stage.peopleOnStage,
     userOnStageSharingScreen,
-    cameraClient.uid,
-    screenClient.uid,
+    cameraClient?.uid,
+    screenClient?.uid,
   ]);
 
   const onStageJoin = useCallback(() => {
@@ -160,18 +152,18 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
   }, [cameraClientLeave, stage, screenClientLeave]);
 
   useEffect(() => {
-    cameraClient.connectionState === AgoraClientConnectionState.DISCONNECTED &&
+    cameraClient?.connectionState === AgoraClientConnectionState.DISCONNECTED &&
       stage.isUserOnStage &&
       onStageJoin();
 
-    cameraClient.connectionState === AgoraClientConnectionState.CONNECTED &&
+    cameraClient?.connectionState === AgoraClientConnectionState.CONNECTED &&
       !stage.isUserOnStage &&
       onStageLeaving();
   }, [
     stage.isUserOnStage,
     onStageJoin,
     onStageLeaving,
-    cameraClient.connectionState,
+    cameraClient?.connectionState,
   ]);
 
   useEffect(() => {
@@ -261,7 +253,7 @@ export const TalkShowStudio: FC<TalkShowStudioProps> = ({ venue }) => {
           <ControlBar
             isSharing={!!localScreenTrack}
             loading={
-              screenClient.connectionState !==
+              screenClient?.connectionState !==
               AgoraClientConnectionState.CONNECTED
             }
             onStageJoin={onStageJoin}
