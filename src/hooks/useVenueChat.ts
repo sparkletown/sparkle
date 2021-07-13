@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -29,6 +30,8 @@ import { useUser } from "./useUser";
 import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
 
+const noMessages: WithId<VenueChatMessage>[] = [];
+
 export const useConnectVenueChatMessages = (venueId?: string) => {
   useFirestoreConnect(
     venueId
@@ -49,7 +52,8 @@ export const useVenueChat = (venueId?: string) => {
 
   useConnectVenueChatMessages(venueId);
 
-  const chatMessages = useSelector(venueChatMessagesSelector) ?? [];
+  const chatMessages =
+    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
 
   const isAdmin = Boolean(userRoles?.includes("admin"));
 
