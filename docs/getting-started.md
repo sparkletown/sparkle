@@ -4,11 +4,11 @@
 
 If you don't have a working Firebase environment please follow the guide below:
 
-[Firebase setup](docs/create-new-environment.md)
+[Firebase setup](create-new-environment.md)
 
 In case you didn't connect your application to the Firebase environment, then this guide should help:
 
-[Bootstrap application](docs/bootstrap-application.md)
+[Bootstrap application](bootstrap-application.md)
 
 Otherwise, if you've got through these steps, please follow the guide below to successfully tart your application.
 
