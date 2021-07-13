@@ -632,17 +632,17 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   //   I expect this may be legacy functionality related to the Playa template?
-  if (
-    !data.placement.state ||
-    data.placement.state === PlacementState.SelfPlaced
-  ) {
-    updated.placement = {
-      ...data.placement,
-      state: PlacementState.SelfPlaced,
-    };
-  } else if (data.placementRequests) {
-    updated.placementRequests = data.placementRequests;
-  }
+  // if (
+  //   !data.placement.state ||
+  //   data.placement.state === PlacementState.SelfPlaced
+  // ) {
+  //   updated.placement = {
+  //     ...data.placement,
+  //     state: PlacementState.SelfPlaced,
+  //   };
+  // } else if (data.placementRequests) {
+  //   updated.placementRequests = data.placementRequests;
+  // }
 
   // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showGrid is a boolean
   if (data.columns) {

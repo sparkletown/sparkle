@@ -37,10 +37,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
   const { recentWorldUsers } = useRecentWorldUsers();
-  const { userStatus, isStatusEnabledForVenue } = useVenueUserStatuses(
-    venueId,
-    user
-  );
+  const {
+    userStatus,
+    venueUserStatuses,
+    isStatusEnabledForVenue,
+  } = useVenueUserStatuses(venueId, user);
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -82,7 +83,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
   //'showStatus' is used to render this conditionally only in some of the screens.
-  const hasUserStatus = isStatusEnabledForVenue && showStatus && isOnline;
+  const hasUserStatus =
+    isStatusEnabledForVenue &&
+    showStatus &&
+    isOnline &&
+    !!venueUserStatuses.length;
 
   return (
     <div className={containerClasses}>

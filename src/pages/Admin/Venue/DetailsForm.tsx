@@ -35,9 +35,8 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  USER_STATUSES,
   DEFAULT_SHOW_SCHEDULE,
-  ONLINE_USER_STATUS,
+  DEFAULT_USER_STATUS,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
@@ -183,14 +182,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          if (sovereignVenueId)
+          //@debt Create separate function that updates the userStatuses separately by venue id.
+          if (
+            sovereignVenueId &&
+            sovereignVenue &&
+            sovereignVenueId !== venueId
+          )
             await updateVenue(
               {
-                ...(vals as VenueInput),
                 id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
+                name: sovereignVenue.name,
+                subtitle:
+                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                description:
+                  sovereignVenue.config?.landingPageConfig.description ?? "",
+                adultContent: sovereignVenue.adultContent ?? false,
+                profile_questions: sovereignVenue.profile_questions,
+                code_of_conduct_questions:
+                  sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
+                template: sovereignVenue.template,
               },
               user
             ).then(() => {
@@ -918,7 +930,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const addUserStatus = () =>
     setUserStatuses([
       ...userStatuses,
-      { status: "", color: ONLINE_USER_STATUS.color },
+      { status: "", color: DEFAULT_USER_STATUS.color },
     ]);
 
   const updateStatusColor = (color: string, index: number) => {
@@ -931,10 +943,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     event: React.FormEvent<HTMLInputElement>,
     index: number
   ) => {
-    const allUserStatuses = [...USER_STATUSES, ...userStatuses];
     const statuses = [...userStatuses];
 
-    const userStatusExists = allUserStatuses.find(
+    const userStatusExists = statuses.find(
       (userStatus) => userStatus.status === event.currentTarget.value
     );
 
