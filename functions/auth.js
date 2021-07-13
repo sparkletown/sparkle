@@ -250,6 +250,8 @@ exports.autoAdminOnRegister = functions.auth.user().onCreate(async (user) => {
       flag.autoadmin,
       "adding user.uid",
       user.uid,
+      "with email",
+      user.email,
       "to the admin role"
     );
 
