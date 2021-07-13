@@ -71,6 +71,8 @@ $description--margin-top: 2px;
 
       & .ScheduleEvent__expand--arrows--out {
         display: inline-block;
+        margin-top: $spacing--xs;
+        margin-left: $spacing--xs;
       }
     }
   }
@@ -148,8 +150,7 @@ $description--margin-top: 2px;
 
     &--arrows {
       height: $spacing--lg;
-      margin-top: $spacing--sm;
-      margin-left: $spacing--xs;
+      margin-top: $spacing--xs;
 
       &--out {
         display: none;
