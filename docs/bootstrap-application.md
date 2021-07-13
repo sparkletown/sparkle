@@ -103,4 +103,4 @@ REACT_APP_MEASUREMENT_ID can be found at https://analytics.google.com/analytics/
 
 Once you've populated ENV file with correct data, please proceed to the next part where you will be able to launch your project.
 
-Proceed to [Getting Started](docs/getting-started.md) to launch your application.
+Proceed to [Getting Started](getting-started.md) to launch your application.
