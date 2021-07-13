@@ -2,17 +2,12 @@
 
 .UserAvatar {
   position: relative;
-  z-index: z(global-profile-icon);
   width: 25px;
   height: 25px;
 
   &:hover {
-    z-index: z(global-profile-icon--hover);
-
     .UserAvatar__nametag--hover {
       opacity: 1;
-
-      z-index: z(global-profile-icon--hover);
 
       background-color: $primary;
       padding: $spacing--xs;
