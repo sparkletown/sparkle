@@ -10,6 +10,7 @@ export interface GenerateTablesProps {
   titlePrefix?: string;
   appendTableNumber?: boolean;
   startFrom?: number;
+  subtitle?: string;
 }
 
 /**
@@ -22,6 +23,7 @@ export interface GenerateTablesProps {
  * @param titlePrefix what should the tables be called (will have the table number appended to it)
  * @param appendTableNumber whether to append the table number to the title or not
  * @param startFrom what number should we start from when generating table numbers in the title
+ * @param subtitle what should the tables subtitle be
  */
 export const generateTables = ({
   num,
@@ -31,6 +33,7 @@ export const generateTables = ({
   titlePrefix = "Table",
   appendTableNumber = true,
   startFrom = 1,
+  subtitle,
 }: GenerateTablesProps): Table[] =>
   Array.from(Array(num)).map((_, idx) => {
     const tableNumber = startFrom + idx;
@@ -41,6 +44,7 @@ export const generateTables = ({
 
     return {
       title,
+      subtitle,
       reference: title,
       capacity,
       rows,
