@@ -434,6 +434,13 @@ const removeAdmin = async (adminId) => {
     });
 };
 
+exports.createUser = functions.auth.user().onCreate(async (user) => {
+  const flag = functions.config().flag;
+  if (flag && flag.autoadmin) {
+    await addAdmin(user.uid);
+  }
+});
+
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
 
