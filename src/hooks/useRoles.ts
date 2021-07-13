@@ -1,15 +1,21 @@
-import { useFirestoreConnect } from "./useFirestoreConnect";
+import { isEqual } from "lodash";
+
+import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useUser } from "./useUser";
 import { useSelector } from "./useSelector";
 
 export const useRoles = () => {
   const { user } = useUser();
 
-  useFirestoreConnect({
-    collection: "roles",
-    where: [["users", "array-contains", user?.uid || ""]],
-    storeAs: "userRoles",
-  });
+  useFirestoreConnect(
+    user
+      ? {
+          collection: "roles",
+          where: [["users", "array-contains", user.uid]],
+          storeAs: "userRoles",
+        }
+      : undefined
+  );
 
   useFirestoreConnect({
     collection: "roles",
@@ -17,36 +23,38 @@ export const useRoles = () => {
     storeAs: "allowAllRoles",
   });
 
-  const userRoles = useSelector((state) => state.firestore.data.userRoles);
+  const {
+    isUserRolesLoaded,
+    isAllowAllRolesLoaded,
+    isRolesLoaded,
+    userRoles,
+    allowAllRoles,
+    roles,
+  } = useSelector((state) => {
+    const { userRoles, allowAllRoles } = state.firestore.data;
 
-  const allowAllRoles = useSelector(
-    (state) => state.firestore.data.allowAllRoles
-  );
+    const rolesForUser = userRoles ? Object.keys(userRoles) : [];
+    const rolesForAll = allowAllRoles ? Object.keys(allowAllRoles) : [];
+    const combinedRoles = [...rolesForUser, ...rolesForAll];
 
-  // Note: null here means data is loaded, but there was none.
-  // A value of undefined indicates data is not loaded yet.
-  // undefined should be returned so callers can show loading indications
+    return {
+      isUserRolesLoaded: isLoaded(userRoles),
+      userRoles: rolesForUser,
+
+      isAllowAllRolesLoaded: isLoaded(allowAllRoles),
+      allowAllRoles: rolesForAll,
+
+      isRolesLoaded: isLoaded(userRoles) && isLoaded(allowAllRoles),
+      roles: combinedRoles,
+    };
+  }, isEqual);
+
   return {
-    userRoles:
-      userRoles === undefined
-        ? undefined
-        : userRoles === null
-        ? []
-        : Object.keys(userRoles),
-    allowAllRoles:
-      allowAllRoles === undefined
-        ? undefined
-        : allowAllRoles === null
-        ? []
-        : Object.keys(allowAllRoles),
-    roles:
-      userRoles === undefined || allowAllRoles === undefined
-        ? undefined
-        : [
-            ...Object.keys(userRoles ?? []),
-            ...Object.keys(allowAllRoles ?? []),
-          ],
+    isUserRolesLoaded,
+    isAllowAllRolesLoaded,
+    isRolesLoaded,
+    userRoles,
+    allowAllRoles,
+    roles,
   };
 };
-
-export default useRoles;
