@@ -455,7 +455,7 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar>
+    <WithNavigationBar hasBackButton={false}>
       <div className="admin-dashboard">
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">

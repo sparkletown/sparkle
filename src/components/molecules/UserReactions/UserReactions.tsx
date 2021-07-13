@@ -17,6 +17,8 @@ import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
 import { useAudio } from "hooks/audio/useAudio";
 
+import { Reaction } from "components/atoms/Reaction";
+
 import "./UserReactions.scss";
 
 const REACTION_TIMEOUT_CSS = `${getSeconds(REACTION_TIMEOUT)}s`;
@@ -94,12 +96,8 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   emojiReaction,
   isMuted = false,
 }) => {
-  const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  const { audioPath } = emojiReaction;
   useAudio({ audioPath, isMuted });
 
-  return (
-    <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
-      {emojiText}
-    </div>
-  );
+  return <Reaction reaction={emojiReaction} />;
 };

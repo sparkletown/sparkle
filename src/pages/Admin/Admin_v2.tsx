@@ -7,7 +7,7 @@ import { orderedVenuesSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import useRoles from "hooks/useRoles";
+import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
 
