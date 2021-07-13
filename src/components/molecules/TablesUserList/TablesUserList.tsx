@@ -218,6 +218,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     return tablesToShow.map((table: Table, index: number) => (
       <TableComponent
         key={table.reference}
+        // @debt provide usersAtTables instead of (experienceName + users) for better perfomance
         experienceName={venueName}
         users={recentVenueUsers}
         table={table}
