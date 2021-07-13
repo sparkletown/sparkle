@@ -14,6 +14,7 @@ import LogRocket from "logrocket";
 import { Firestore } from "types/Firestore";
 import { User } from "types/User";
 
+import { worldUsersApi } from "./api/worldUsers";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ export const rootReducer = combineReducers({
   firestore: firestoreReducer as Reducer<Firestore>,
   ...VenueTemplateReducers,
   ...MiscReducers,
+  [worldUsersApi.reducerPath]: worldUsersApi.reducer,
 });
 
 export const initialState: Readonly<{}> = {};
@@ -83,15 +85,18 @@ export const store = configureStore({
           getFirebase,
         },
       },
-    }).concat(
-      /**
-       * Note: LogRocket middleware needs to be last to be able to capture everything correctly
-       * (though if we want to add middleware profiling checks, they should probably be after LogRocket)
-       *
-       * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
-       */
-      LogRocket.reduxMiddleware() as ReturnType<typeof getDefaultMiddleware>
-    ),
+    })
+      .concat(worldUsersApi.middleware)
+      .concat(
+        /**
+         * Note: LogRocket middleware needs to be last to be able to capture everything correctly
+         * (though if we want to add middleware profiling checks, they should probably be after LogRocket)
+         *
+         * @see https://docs.logrocket.com/reference#customizing-reduxmiddleware
+         */
+        LogRocket.reduxMiddleware() as ReturnType<typeof getDefaultMiddleware>
+        // reduxMiddlewareTiming
+      ),
 
   /**
    * @see https://redux-toolkit.js.org/api/configureStore#devtools

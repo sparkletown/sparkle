@@ -1,13 +1,16 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useContext, useEffect, useMemo } from "react";
+import { skipToken } from "@reduxjs/toolkit/query/react";
 import { isEqual } from "lodash";
 
 import { User } from "types/User";
+
+import { useWorldUsersQuery } from "store/api/worldUsers";
 
 import { WithId } from "utils/id";
 import { worldUsersWithoutLocationSelector } from "utils/selectors";
 import { isDefined } from "utils/types";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 
@@ -46,24 +49,37 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
     isDefined(sovereignVenueId) &&
     isDefined(venueId);
 
-  // TODO: refactor this to not use useFirestoreConnect
-  useFirestoreConnect(() => {
-    if (!shouldConnect) return [];
+  // // TODO: refactor this to not use useFirestoreConnect
+  // useFirestoreConnect(() => {
+  //   if (!shouldConnect) return [];
+  //
+  //   const relatedLocationIds = [venueId];
+  //
+  //   if (sovereignVenueId) {
+  //     relatedLocationIds.push(sovereignVenueId);
+  //   }
+  //
+  //   return [
+  //     {
+  //       collection: "users",
+  //       where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
+  //       storeAs: "worldUsers",
+  //     },
+  //   ];
+  // });
 
-    const relatedLocationIds = [venueId];
+  const worldUsersQueryResult = useWorldUsersQuery(
+    shouldConnect && venueId ? { relatedLocationIds: [venueId] } : skipToken
+    // { selectFromResult: (result) => result?.data?.userIds }
+  );
 
-    if (sovereignVenueId) {
-      relatedLocationIds.push(sovereignVenueId);
-    }
+  // worldUsersQueryResult?.data()
 
-    return [
-      {
-        collection: "users",
-        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
-        storeAs: "worldUsers",
-      },
-    ];
-  });
+  // TODO: do something more than log the data here
+  // TODO: note that this won't emit data till we actually 'reduce' it in our worldUsersApi and save it..
+  useEffect(() => {
+    console.log(worldUsersQueryResult.data?.userIds);
+  }, [worldUsersQueryResult.data]);
 
   const worldUsersState: WorldUsersContextState = useMemo(
     () => ({
