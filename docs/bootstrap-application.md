@@ -98,7 +98,7 @@ REACT_APP_MEASUREMENT_ID=
 REACT_APP_BUCKET_URL=
 ```
 
-You can find all of these values in the Firebase - Project Settings - General tab.
+You can find all of these values in the Firebase - _Project Settings_ - _General_ tab.
 
 Once you've populated the ENV file with correct data, please proceed to the next part where you will be able to launch your project.
 
