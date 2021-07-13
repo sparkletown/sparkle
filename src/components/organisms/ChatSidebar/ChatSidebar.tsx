@@ -53,8 +53,15 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     "chat-sidebar__tab--selected": isPrivateChat,
   });
 
+  const venueTabId = "chat-sidebar-tab-venue";
+  const privateTabId = "chat-sidebar-tab-private";
+
   return (
-    <div role="dialog" className={containerStyles}>
+    <div
+      role="dialog"
+      aria-labelledby={isVenueChat ? venueTabId : privateTabId}
+      className={containerStyles}
+    >
       <div className="chat-sidebar__header">
         <button
           aria-label={isExpanded ? "Hide chat" : "Show chat"}
@@ -75,9 +82,10 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           )}
         </button>
 
-        <div className="chat-sidebar__tabs">
+        <div className="chat-sidebar__tabs" role="tablist">
           <button
             role="tab"
+            id={venueTabId}
             aria-label={venueChatTabTitle}
             aria-selected={isVenueChat}
             className={venueChatTabStyles}
@@ -87,6 +95,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           </button>
           <button
             role="tab"
+            id={privateTabId}
             aria-label={privateChatTabTitle}
             aria-selected={isPrivateChat}
             className={privateChatTabStyles}

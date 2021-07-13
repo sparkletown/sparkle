@@ -236,7 +236,6 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       </div>
 
       <InputField
-        role="search"
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}
