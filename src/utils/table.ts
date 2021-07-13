@@ -11,6 +11,7 @@ export interface GenerateTablesProps {
   appendTableNumber?: boolean;
   startFrom?: number;
   subtitle?: string;
+  makeReference?: (props: Omit<GenerateTablesProps, "makeReference">) => string;
 }
 
 /**
@@ -25,29 +26,34 @@ export interface GenerateTablesProps {
  * @param startFrom what number should we start from when generating table numbers in the title
  * @param subtitle what should the tables subtitle be
  */
-export const generateTables = ({
-  num,
-  capacity,
-  rows = DEFAULT_TABLE_ROWS,
-  columns = DEFAULT_TABLE_COLUMNS,
-  titlePrefix = "Table",
-  appendTableNumber = true,
-  startFrom = 1,
-  subtitle,
-}: GenerateTablesProps): Table[] =>
-  Array.from(Array(num)).map((_, idx) => {
+export const generateTables = (props: GenerateTablesProps): Table[] => {
+  const {
+    num,
+    capacity,
+    rows = DEFAULT_TABLE_ROWS,
+    columns = DEFAULT_TABLE_COLUMNS,
+    titlePrefix = "Table",
+    appendTableNumber = true,
+    startFrom = 1,
+    subtitle,
+  } = props;
+
+  return Array.from(Array(num)).map((_, idx) => {
     const tableNumber = startFrom + idx;
 
     const title = appendTableNumber
       ? `${titlePrefix} ${tableNumber}`
       : titlePrefix;
 
+    const reference = props.makeReference?.(props) ?? title;
+
     return {
       title,
       subtitle,
-      reference: title,
+      reference,
       capacity,
       rows,
       columns,
     };
   });
+};
