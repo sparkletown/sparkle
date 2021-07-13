@@ -119,5 +119,5 @@ export const getLastUrlParam = (url: string) => {
 };
 
 export const getUrlParamFromString = (data: string) => {
-  return data.replace(" ", "").toLowerCase();
+  return data.replaceAll(" ", "").toLowerCase();
 };

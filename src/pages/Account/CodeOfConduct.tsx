@@ -104,7 +104,7 @@ export const CodeOfConduct: React.FC = () => {
     if (!venue) return;
 
     // Skip this screen if there are no code of conduct questions for the venue
-    if (!venue?.code_of_conduct_questions.length) {
+    if (!venue?.code_of_conduct_questions?.length) {
       proceed();
     }
   }, [proceed, venue]);
@@ -141,7 +141,7 @@ export const CodeOfConduct: React.FC = () => {
 
   const codeOfConductQuestions = IS_BURN
     ? BURN_CODE_OF_CONDUCT_QUESTIONS
-    : venue.code_of_conduct_questions;
+    : venue?.code_of_conduct_questions ?? [];
 
   return (
     <div className="CodeOfConduct page-container">

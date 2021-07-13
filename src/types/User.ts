@@ -74,11 +74,6 @@ export interface User {
   // doYouDance?: string;
 }
 
-export enum DefaultUserStatus {
-  online = "Online",
-  busy = "Busy",
-}
-
 export interface UserStatus {
   status: string;
   color: string;
