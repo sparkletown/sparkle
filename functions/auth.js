@@ -4,11 +4,11 @@ const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { fetchAuthConfig } = require("./src/api/auth");
+const { addAdmin } = require("./src/api/roles");
 
 const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
-const { addAdmin } = require("./src/utils/role");
 
 // @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
 // Case-insensitive first character for iDevices
