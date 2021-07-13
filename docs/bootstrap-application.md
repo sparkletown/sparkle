@@ -2,7 +2,7 @@
 
 ## 'Bootstrap' the platform
 
-Make sure that you're located in ./scripts folder.
+Make sure that you're located in `./scripts` folder.
 
 In order to complete following steps you'd need to log in your Firebase account via CLI.
 
