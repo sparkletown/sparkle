@@ -59,13 +59,17 @@ export const useVenueChat = (venueId?: string) => {
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
-  const filteredMessages = chatMessages
-    .filter(
-      (message) =>
-        message.deleted !== true &&
-        message.ts_utc.seconds > venueChatAgeThresholdSec
-    )
-    .sort(chatSort);
+  const filteredMessages = useMemo(
+    () =>
+      chatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.ts_utc.seconds > venueChatAgeThresholdSec
+        )
+        .sort(chatSort),
+    [chatMessages, venueChatAgeThresholdSec]
+  );
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
