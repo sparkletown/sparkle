@@ -249,4 +249,8 @@ $border-radius: 28px;
       margin-right: $spacing--sm;
     }
   }
+
+  &__profile-popover {
+    height: 100%;
+  }
 }
