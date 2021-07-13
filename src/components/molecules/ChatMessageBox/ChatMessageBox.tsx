@@ -7,7 +7,7 @@ import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 
-import { MessageToDisplay, SendChatReply, SendMessage } from "types/chat";
+import { MessageToDisplay, SendChatReplyProps, SendMessage } from "types/chat";
 
 import { WithId } from "utils/id";
 
@@ -22,18 +22,16 @@ import "./ChatMessageBox.scss";
 export interface ChatMessageBoxProps {
   selectedThread?: WithId<MessageToDisplay>;
   sendMessage: SendMessage;
-  sendThreadReply: SendChatReply;
   unselectOption: () => void;
   isQuestion?: boolean;
-  closeThread: () => void;
+  onReplyToThread: (data: SendChatReplyProps) => void;
 }
 
 export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
   selectedThread,
   sendMessage,
-  sendThreadReply,
   unselectOption,
-  closeThread,
+  onReplyToThread,
   isQuestion = false,
 }) => {
   const hasChosenThread = selectedThread !== undefined;
@@ -76,10 +74,9 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
     if (!selectedThread) return;
 
     setMessageSending(true);
-    sendThreadReply({ replyText: message, threadId: selectedThread.id });
     reset();
-    unselectOption();
-    closeThread();
+    onReplyToThread({ replyText: message, threadId: selectedThread.id });
+    reset();
   });
 
   const {
