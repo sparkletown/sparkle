@@ -3,7 +3,7 @@ const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { checkAuth } = require("./src/utils/assert");
-const { addAdmin } = require("./src/utils/user");
+const { addAdmin, removeAdmin } = require("./src/utils/role");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 
 const PLAYA_VENUE_ID = "jamonline";
@@ -406,20 +406,6 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
-
-/** Remove a user from the list of admins
- *
- * @param {string} adminId
- */
-const removeAdmin = async (adminId) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .update({
-      users: admin.firestore.FieldValue.arrayRemove(adminId),
-    });
-};
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);

@@ -8,7 +8,7 @@ const { fetchAuthConfig } = require("./src/api/auth");
 const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
-const { addAdmin } = require("./src/utils/user");
+const { addAdmin } = require("./src/utils/role");
 
 // @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
 // Case-insensitive first character for iDevices
@@ -245,6 +245,14 @@ exports.autoAdminOnRegister = functions.auth.user().onCreate(async (user) => {
   const flag = functions.config().flag || {};
 
   if (flag.autoadmin) {
+    functions.logger.log(
+      "flag.autoadmin is",
+      flag.autoadmin,
+      "adding user.uid",
+      user.uid,
+      "to the admin role"
+    );
+
     await addAdmin(user.uid);
   }
 });
