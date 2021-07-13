@@ -21,7 +21,7 @@ You're going to need 2 terminal tabs to launch Sparkle application locally. Make
 
 Once the launch is complete you may proceed to http://localhost:3000/v/bootstrap
 
-You can register a new user by pressing 'Log In' in the top right corner:
+You can register a new user by pressing _Log In_ in the top right corner:
 
 Once redirected to authorization form select 'Create account':
 
