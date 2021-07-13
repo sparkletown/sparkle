@@ -34,4 +34,4 @@ Login to Twilio
 
 This part of the setup is done!
 
-Please go back to the Step 7 at [Firebase Project Setup](docs/create-new-environment.md)
+Please go back to the Step 7 at [Firebase Project Setup](create-new-environment.md)
