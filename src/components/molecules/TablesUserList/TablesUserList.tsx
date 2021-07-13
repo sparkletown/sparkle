@@ -133,7 +133,7 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
     [recentVenueUsers, user, venueName, videoRoom]
   );
 
-  const itemsToObjectByRefReducer = useCallback(
+  const usersAtTableReducer = useCallback(
     (obj: Record<string, WithId<User>[]>, table: Table) => ({
       ...obj,
       [table.reference]: recentVenueUsers.filter(
@@ -145,8 +145,8 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const usersSeatedAtTables = useMemo(
-    () => tables.reduce(itemsToObjectByRefReducer, {}),
-    [tables, itemsToObjectByRefReducer]
+    () => tables.reduce(usersAtTableReducer, {}),
+    [tables, usersAtTableReducer]
   );
 
   const isFullTable = useCallback(
@@ -160,12 +160,12 @@ export const TablesUserList: React.FC<TablesUserListProps> = ({
   );
 
   const tableLocked = useCallback(
-    (table: string) => {
+    (tableReference: string) => {
       // Empty tables are never locked
-      if (!usersSeatedAtTables[table].length) return false;
+      if (!usersSeatedAtTables[tableReference].length) return false;
 
       // Locked state is in the experience record
-      return isTruthy(experience?.tables?.[table]?.locked);
+      return isTruthy(experience?.tables?.[tableReference]?.locked);
     },
     [experience?.tables, usersSeatedAtTables]
   );
