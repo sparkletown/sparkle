@@ -151,14 +151,11 @@ export const useVenueChat = (venueId?: string) => {
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );
 
-  return useMemo(
-    () => ({
-      messagesToDisplay,
+  return {
+    messagesToDisplay,
 
-      sendMessage,
-      deleteMessage,
-      sendThreadReply,
-    }),
-    [messagesToDisplay, sendMessage, sendThreadReply, deleteMessage]
-  );
+    sendMessage,
+    deleteMessage,
+    sendThreadReply,
+  };
 };
