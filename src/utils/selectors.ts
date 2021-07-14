@@ -1,5 +1,4 @@
 import { FirebaseReducer } from "react-redux-firebase";
-import { mapValues } from "lodash";
 
 import { RootState } from "store";
 
@@ -9,13 +8,13 @@ import { Experience } from "types/Firestore";
 import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
-import { User, UserWithLocation, userWithLocationToUser } from "types/User";
+import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 import { ScreeningRoomVideo } from "types/screeningRoom";
 
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
-import { withId, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
 import {
   makeIsRequestedSelector,
@@ -54,38 +53,6 @@ export const currentVenueSelector: SparkleSelector<
 export const currentVenueSelectorData: SparkleSelector<AnyVenue | undefined> = (
   state
 ) => state.firestore.data.currentVenue;
-
-/**
- * Selector to retrieve array of world-related users from the Redux Firestore.
- *
- * @param state the Redux store
- */
-export const worldUsersSelector: SparkleSelector<
-  WithId<UserWithLocation>[] | undefined
-> = (state) => state.firestore.ordered.worldUsers;
-
-export const worldUsersWithoutLocationSelector: SparkleSelector<
-  WithId<User>[] | undefined
-> = (state) => worldUsersSelector(state)?.map(userWithLocationToUser);
-
-/**
- * Selector to retrieve an object with world-related users from the Redux Firestore.
- *
- * @param state the Redux store
- */
-export const worldUsersByIdSelector: SparkleSelector<
-  Record<string, UserWithLocation> | undefined
-> = (state) => state.firestore.data.worldUsers;
-
-export const worldUsersByIdWithoutLocationSelector: SparkleSelector<
-  Record<string, WithId<User>> | undefined
-> = (state) => {
-  const worldUsersById = worldUsersByIdSelector(state);
-
-  return mapValues(worldUsersById, (user, userId) =>
-    userWithLocationToUser(withId(user, userId))
-  );
-};
 
 /**
  * Selector to retrieve venues from the Redux Firestore.

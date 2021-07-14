@@ -26,7 +26,7 @@ export interface WorldUsersData {
   worldUserLocationsById: Record<string, WithId<UserLocation>>;
 }
 
-const initialState: Readonly<WorldUsersData> = {
+export const initialState: Readonly<WorldUsersData> = {
   worldUsers: [],
   worldUsersById: {},
   worldUserLocationsById: {},
@@ -187,7 +187,7 @@ export const worldUsersApi = createApi({
 // TODO: https://redux-toolkit.js.org/rtk-query/api/created-api/hooks
 // TODO: https://redux-toolkit.js.org/rtk-query/api/created-api/hooks#skiptoken
 export const {
-  useWorldUsersQuery,
-  useLazyWorldUsersQuery,
-  usePrefetch,
-} = worldUsersApi;
+  useQuery: useWorldUsersQuery,
+  useQueryState: useWorldUsersQueryState,
+  useQuerySubscription: useWorldUsersQuerySubscription,
+} = worldUsersApi.endpoints.worldUsers;
