@@ -18,7 +18,8 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "/in/explore/";
+export const SPARKLE_HOMEPAGE_URL = "/in/explore";
+export const SPARKLE_FOOTER_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
 export const SPARKLE_PRIVACY_POLICY =
@@ -90,6 +91,9 @@ export const GITHUB_MAIN_STAGE_NAME = "Main Stage";
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
+export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
+export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
@@ -633,8 +637,6 @@ export const DEFAULT_SHOW_REACTIONS = true;
 export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
-
-export const ZENDESK_URL_PREFIXES = ["/admin"];
 
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 

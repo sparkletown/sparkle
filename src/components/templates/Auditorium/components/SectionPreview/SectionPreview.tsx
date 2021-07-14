@@ -82,7 +82,6 @@ export const SectionPreview: React.FC<SectionPreviewProps> = ({
         showTitle={false}
         limit={SECTION_PREVIEW_USER_DISPLAY_COUNT}
         showMoreUsersToggler={false}
-        hasClickableAvatars={false}
         cellClassName="SectionPreview__avatar"
       />
     </div>
