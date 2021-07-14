@@ -1,12 +1,10 @@
 import "./wdyr";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { render } from "react-dom";
 
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-// eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
@@ -39,7 +37,6 @@ import {
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-  MIXPANEL_PROJECT_TOKEN,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
@@ -219,24 +216,10 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const auth = useSelector(authSelector);
-
-  useEffect(() => {
-    if (!auth || !auth.uid) return;
-
-    const email = auth.email || "N/A";
-
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
-    }
-  }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
