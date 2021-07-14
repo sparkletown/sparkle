@@ -17,7 +17,8 @@ import {
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
   SCHEDULE_LONG_EVENT_LENGTH_MIN,
-  SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN
+  SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN,
+  SCHEDULE_SHORT_EVENT_LENGTH_MIN,
 } from "settings";
 
 import {
@@ -71,7 +72,10 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "--event--expanded-width": `${expandedEventPx}px`,
   });
 
-  const isEventLong = event.duration_minutes >= SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN;
+  const isEventLong =
+    event.duration_minutes > SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN;
+  const isEventShort =
+    event.duration_minutes <= SCHEDULE_SHORT_EVENT_LENGTH_MIN;
 
   const containerClasses = classNames(
     "ScheduleEvent",
@@ -84,6 +88,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   const expandClasses = classNames("ScheduleEvent__expand", {
+    "ScheduleEvent__expand--hidden": isEventShort,
     "ScheduleEvent__expand--marged": !isEventLong,
     "ScheduleEvent__expand--padded": isEventLong,
     "ScheduleEvent__expand--live": isEventLive(event),
@@ -105,10 +110,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
 
   const onEventBoxClick = useCallback(
     (e) => {
-      if (
-        e.target.closest(`.${ScheduleEventBookmarkClass}`)
-      )
-        return;
+      if (e.target.closest(`.${ScheduleEventBookmarkClass}`)) return;
 
       showEventModal();
     },

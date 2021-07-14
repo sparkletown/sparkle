@@ -65,6 +65,13 @@ $description--margin-top: 2px;
         display: flex;
       }
 
+      & .ScheduleEvent__expand {
+        margin: 0;
+        display: flex;
+        width: 40px;
+        padding: 15px;
+      }
+
       & .ScheduleEvent__expand--arrows {
         display: none;
       }
@@ -129,6 +136,14 @@ $description--margin-top: 2px;
     color: $concrete--dark;
     border: none;
     background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &--hidden {
+      display: none;
+    }
 
     &--square {
       position: absolute;
