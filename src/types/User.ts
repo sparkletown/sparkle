@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { WithId } from "utils/id";
+import { withId, WithId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
@@ -158,4 +158,14 @@ export const userWithLocationToUser = (
   const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
+};
+
+export const extractLocationFromUser = (
+  user: WithId<UserWithLocation>
+): WithId<UserLocation> => {
+  const { lastSeenIn, lastSeenAt } = user;
+
+  const userLocation = { lastSeenIn, lastSeenAt };
+
+  return withId(userLocation, user.id);
 };
