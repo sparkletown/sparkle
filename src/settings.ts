@@ -625,8 +625,6 @@ export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
-export const ZENDESK_URL_PREFIXES = ["/admin"];
-
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 // Audience
