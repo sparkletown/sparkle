@@ -9,6 +9,7 @@ import { WithId } from "utils/id";
 
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
+import { useShowHide } from "hooks/useShowHide";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
@@ -20,6 +21,7 @@ import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
 
 import { BackButton } from "components/atoms/BackButton";
 
@@ -39,6 +41,11 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
   });
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+
+  const {
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
+  } = useShowHide();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
@@ -113,6 +120,13 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
                   />
                 </div>
               )}
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
+                />
+              )}
             </div>
           </div>
           <div className="seated-area">
@@ -123,6 +137,7 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              showOnlyAvailableTables={showOnlyAvailableTables}
             />
           </div>
           <UserList

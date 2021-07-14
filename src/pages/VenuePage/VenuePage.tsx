@@ -23,7 +23,7 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
-import { showZendeskWidget } from "utils/zendesk";
+
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
@@ -166,12 +166,6 @@ export const VenuePage: React.FC = () => {
   // NOTE: User's timespent updates
 
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

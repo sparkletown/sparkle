@@ -55,7 +55,6 @@ import {
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
-import { initializeZendesk } from "utils/zendesk";
 
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -69,7 +68,6 @@ import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
 
 activatePolyFills();
-initializeZendesk();
 
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();

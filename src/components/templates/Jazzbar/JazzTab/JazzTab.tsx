@@ -27,6 +27,7 @@ import { ReactionsBar } from "components/molecules/ReactionsBar";
 // NOTE: This functionality will probably be returned in the nearest future.
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
 
@@ -52,6 +53,11 @@ interface JazzProps {
 
 const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
+
+  const {
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
+  } = useShowHide();
 
   const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
 
@@ -200,6 +206,13 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
                   )} */}
                 </div>
               )}
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
+                />
+              )}
             </>
           )}
         </div>
@@ -219,6 +232,7 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
           TableComponent={JazzBarTableComponent}
           joinMessage={!venue.hideVideo ?? true}
           customTables={jazzbarTables}
+          showOnlyAvailableTables={showOnlyAvailableTables}
         />
       </div>
     </div>
