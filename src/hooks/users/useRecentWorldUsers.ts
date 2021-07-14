@@ -1,10 +1,10 @@
-import { isLoaded } from "react-redux-firebase";
+// import { isLoaded } from "react-redux-firebase";
 import { isEqual } from "lodash";
 
 import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
-import { worldUsersSelector } from "utils/selectors";
+// import { worldUsersSelector } from "utils/selectors";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { useSelector } from "hooks/useSelector";
@@ -24,8 +24,8 @@ export const useRecentWorldUsers = (): {
   useWorldUsersContext();
 
   const { recentWorldUsers, isWorldUsersLoaded } = useSelector((state) => {
-    const worldUsers = worldUsersSelector(state);
-    const isWorldUsersLoaded = isLoaded(worldUsers);
+    const worldUsers = state.cache.usersArray;
+    const isWorldUsersLoaded = true;
 
     if (!worldUsers) return { recentWorldUsers: noUsers, isWorldUsersLoaded };
 

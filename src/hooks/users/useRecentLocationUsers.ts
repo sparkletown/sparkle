@@ -9,6 +9,7 @@ import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
+import { useWorldUsers } from "./useWorldUsers";
 
 // import { useWorldUsersContext } from "./useWorldUsers";
 
@@ -32,6 +33,8 @@ export const useRecentLocationUsers = (
 
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
   // useWorldUsersContext();
+
+  useWorldUsers();
 
   const { recentLocationUsers, isWorldUsersLoaded } = useSelector((state) => {
     const worldUsers = state.cache.usersArray;
