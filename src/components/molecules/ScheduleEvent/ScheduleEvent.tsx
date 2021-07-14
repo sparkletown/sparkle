@@ -17,6 +17,7 @@ import {
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
   SCHEDULE_LONG_EVENT_LENGTH_MIN,
+  SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN
 } from "settings";
 
 import {
@@ -37,7 +38,6 @@ import { calcStartPosition } from "components/molecules/Schedule/utils";
 import "./ScheduleEvent.scss";
 
 const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
-const ScheduleEventExpandClass = "ScheduleEvent__expand";
 
 export interface ScheduleEventProps {
   event: PersonalizedVenueEvent;
@@ -71,7 +71,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "--event--expanded-width": `${expandedEventPx}px`,
   });
 
-  const isEventLong = event.duration_minutes >= SCHEDULE_LONG_EVENT_LENGTH_MIN;
+  const isEventLong = event.duration_minutes >= SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN;
 
   const containerClasses = classNames(
     "ScheduleEvent",
@@ -84,7 +84,6 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   );
 
   const expandClasses = classNames("ScheduleEvent__expand", {
-    "ScheduleEvent__expand--hidden": isEventLong,
     "ScheduleEvent__expand--marged": !isEventLong,
     "ScheduleEvent__expand--padded": isEventLong,
     "ScheduleEvent__expand--live": isEventLive(event),
@@ -107,8 +106,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   const onEventBoxClick = useCallback(
     (e) => {
       if (
-        e.target.closest(`.${ScheduleEventBookmarkClass}`) ||
-        e.target.closest(`.${ScheduleEventExpandClass}`)
+        e.target.closest(`.${ScheduleEventBookmarkClass}`)
       )
         return;
 

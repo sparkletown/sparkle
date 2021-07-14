@@ -95,10 +95,6 @@ $description--margin-top: 2px;
     overflow: hidden;
     padding-left: $ScheduleEvent--padding--left;
     padding-right: $ScheduleEvent--padding--right;
-
-    &--hidden {
-      display: none;
-    }
   }
 
   &__title {
@@ -127,21 +123,12 @@ $description--margin-top: 2px;
     &:hover {
       padding-top: $bookmark-hover--padding-top;
     }
-
-    &--hidden {
-      display: none;
-    }
   }
 
   &__expand {
     color: $concrete--dark;
-    outline: none;
     border: none;
     background-color: transparent;
-
-    &:focus {
-      outline: none;
-    }
 
     &--square {
       position: absolute;
@@ -155,10 +142,6 @@ $description--margin-top: 2px;
       &--out {
         display: none;
       }
-    }
-
-    &--hidden {
-      display: none;
     }
 
     &--marged {
