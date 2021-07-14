@@ -19,7 +19,7 @@ export const createCalendar = ({
     calendar.createEvent({
       start: eventStartTime(event),
       end: eventEndTime(event),
-      organizer: `${event.host || 'Unknown'} <undefined>`, // string format: "name <email>". email cannot be blank
+      organizer: `${event.host || "Unknown"} <undefined>`, // string format: "name <email>". email cannot be blank
       description: event.description,
       summary: event.name,
       url: getFullVenueInsideUrl(event.venueId),
