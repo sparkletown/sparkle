@@ -1,14 +1,14 @@
-import { isEqual } from "lodash";
+import { isEqual, mapValues } from "lodash";
 
-import { User } from "types/User";
+import { User, userWithLocationToUser } from "types/User";
 
-import { WithId } from "utils/id";
-import { worldUsersByIdWithoutLocationSelector } from "utils/selectors";
+import { withId, WithId } from "utils/id";
+// import { worldUsersByIdWithoutLocationSelector } from "utils/selectors";
 
-import { isLoaded } from "hooks/useFirestoreConnect";
+// import { isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 
-import { useWorldUsersContext } from "./useWorldUsers";
+// import { useWorldUsersContext } from "./useWorldUsers";
 
 const noUsersById: Record<string, WithId<User>> = {};
 
@@ -18,16 +18,29 @@ const noUsersById: Record<string, WithId<User>> = {};
  */
 export const useWorldUsersById = () => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  useWorldUsersContext();
+  // useWorldUsersContext();
 
-  const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
-    worldUsersByIdWithoutLocationSelector,
-    isEqual
-  );
+  // const worldUsersById = useSelector(
+  //   (state) => state.cache.usersRecord,
+  //   isEqual
+  // );
+
+  const selectedWorldUsers = useSelector((state) => {
+    const worldUsersById = state.cache.usersRecord;
+
+    return mapValues(worldUsersById, (user, userId) =>
+      userWithLocationToUser(withId(user, userId))
+    );
+  }, isEqual);
+
+  // const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
+  //   worldUsersByIdWithoutLocationSelector,
+  //   isEqual
+  // );
 
   return {
-    worldUsersById: worldUsersById ?? noUsersById,
-    isWorldUsersLoaded: isLoaded(worldUsersById),
+    worldUsersById: selectedWorldUsers ?? noUsersById,
+    isWorldUsersLoaded: true,
   };
 };
 

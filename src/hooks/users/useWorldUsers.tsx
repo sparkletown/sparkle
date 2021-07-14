@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { isEqual } from "lodash";
 
-import { User } from "types/User";
+import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
-import { worldUsersWithoutLocationSelector } from "utils/selectors";
+// import { worldUsersWithoutLocationSelector } from "utils/selectors";
 import { isDefined } from "utils/types";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 
@@ -108,16 +108,23 @@ export interface WorldUsersData {
 
 export const useWorldUsers = (): WorldUsersData => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  useWorldUsersContext();
+  // useWorldUsersContext();
 
   // @debt we use lodash's isEqual here to do a deep compare to prevent re-renders, but ideally we wouldn't need to
+  // const selectedWorldUsers = useSelector(
+  //   worldUsersWithoutLocationSelector,
+  //   isEqual
+  // );
+
+  // > = (state) => worldUsersSelector(state)?.map(userWithLocationToUser);
+
   const selectedWorldUsers = useSelector(
-    worldUsersWithoutLocationSelector,
+    (state) => state.cache.usersArray?.map(userWithLocationToUser),
     isEqual
   );
 
   return {
     worldUsers: selectedWorldUsers ?? noUsers,
-    isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+    isWorldUsersLoaded: true,
   };
 };
