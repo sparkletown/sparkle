@@ -10,7 +10,6 @@ import {
   IFRAME_ALLOW,
 } from "settings";
 
-import { VenueEvent } from "types/venues";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
