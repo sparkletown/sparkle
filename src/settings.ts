@@ -1,6 +1,5 @@
 import { CSSProperties } from "react";
-import hoursToMilliseconds from "date-fns/hoursToMilliseconds";
-import minutesToMilliseconds from "date-fns/minutesToMilliseconds";
+import { minutesToMilliseconds, hoursToMilliseconds } from "date-fns";
 
 import {
   API_KEY,
