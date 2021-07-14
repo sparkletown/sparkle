@@ -2,6 +2,8 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
+const { addAdmin, removeAdmin } = require("./src/api/roles");
+
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 
@@ -401,34 +403,6 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
-
-/** Add a user to the list of admins
- *
- * @param {string} newAdminId
- */
-const addAdmin = async (newAdminId) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .update({
-      users: admin.firestore.FieldValue.arrayUnion(newAdminId),
-    });
-};
-
-/** Remove a user from the list of admins
- *
- * @param {string} adminId
- */
-const removeAdmin = async (adminId) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .update({
-      users: admin.firestore.FieldValue.arrayRemove(adminId),
-    });
-};
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
