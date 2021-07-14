@@ -26,7 +26,7 @@ import {
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
-import { formatDateRelativeToNow, getWeekday } from "utils/time";
+import { formatDateRelativeToNow } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -114,6 +114,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
+      const formattedDay = formatDayLabel(day);
+
       return (
         <li
           key={day.toISOString()}
@@ -123,10 +125,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           }}
         >
           <button
-            aria-label={getWeekday(day)}
+            aria-label={formattedDay}
             className="NavBarSchedule__weekday-button"
           >
-            {formatDayLabel(day)}
+            {formattedDay}
           </button>
         </li>
       );
