@@ -32,7 +32,7 @@ export interface ProfileLink {
   url: string;
 }
 
-export interface User {
+export interface BaseUser {
   partyName?: string;
   pictureUrl?: string;
   anonMode?: boolean;
@@ -57,6 +57,11 @@ export interface User {
   // doYouDance?: string;
 }
 
+export interface User extends BaseUser {
+  lastSeenIn?: never;
+  lastSeenAt?: never;
+}
+
 export interface UserStatus {
   status: string;
   color: string;
@@ -67,7 +72,7 @@ export interface UserLocation {
   lastSeenAt: number;
 }
 
-export type UserWithLocation = User & UserLocation;
+export type UserWithLocation = BaseUser & UserLocation;
 
 export enum UsernameVisibility {
   none = "none",
