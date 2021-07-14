@@ -17,7 +17,7 @@ import {
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
   SCHEDULE_LONG_EVENT_LENGTH_MIN,
-  SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN,
+  SCHEDULE_MEDIUM_EVENT_LENGTH_MIN,
   SCHEDULE_SHORT_EVENT_LENGTH_MIN,
 } from "settings";
 
@@ -72,8 +72,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "--event--expanded-width": `${expandedEventPx}px`,
   });
 
-  const isEventLong =
-    event.duration_minutes > SCHEDULE_MIN_LONG_EVENT_LENGTH_MIN;
+  const isEventLong = event.duration_minutes > SCHEDULE_MEDIUM_EVENT_LENGTH_MIN;
   const isEventShort =
     event.duration_minutes <= SCHEDULE_SHORT_EVENT_LENGTH_MIN;
 
