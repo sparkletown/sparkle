@@ -72,6 +72,8 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     "--event--expanded-width": `${expandedEventPx}px`,
   });
 
+  const isEventFullLength =
+    event.duration_minutes < SCHEDULE_LONG_EVENT_LENGTH_MIN;
   const isEventLong = event.duration_minutes > SCHEDULE_MEDIUM_EVENT_LENGTH_MIN;
   const isEventShort =
     event.duration_minutes <= SCHEDULE_SHORT_EVENT_LENGTH_MIN;
@@ -82,6 +84,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
       "ScheduleEvent--live": isEventLive(event),
       "ScheduleEvent--users": isPersonalizedEvent,
       "ScheduleEvent--short": !isEventLong,
+      "ScheduleEvent--expandable": isEventFullLength,
     },
     containerCssVars
   );

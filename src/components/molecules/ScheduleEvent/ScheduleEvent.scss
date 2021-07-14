@@ -46,6 +46,12 @@ $expand--width: 40px;
     }
   }
 
+  &--expandable {
+    &:hover {
+      width: var(--event--expanded-width);
+    }
+  }
+
   &--short {
     & .ScheduleEvent__info {
       display: none;
@@ -56,8 +62,6 @@ $expand--width: 40px;
     }
 
     &:hover {
-      width: var(--event--expanded-width);
-
       & .ScheduleEvent__info {
         display: block;
       }
