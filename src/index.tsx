@@ -63,11 +63,10 @@ import { initializeZendesk } from "utils/zendesk";
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
-import AppRouter from "components/organisms/AppRouter";
+import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
@@ -153,6 +152,7 @@ if (BUGSNAG_API_KEY) {
     "env/burn",
     "env/burn-staging",
     "env/github",
+    "env/summit-hack",
   ];
 
   const releaseStage = () => {

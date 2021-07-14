@@ -13,6 +13,7 @@ import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -37,11 +38,11 @@ export const Login: React.FC<LoginProps> = ({
   venue,
 }) => {
   const venueId = venue.id;
-
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId, isSigningIn } = useSAMLSignIn({
-    samlAuthProviderId: venue.samlAuthProviderId,
+    samlAuthProviderId: sovereignVenue?.samlAuthProviderId,
   });
 
   const {
