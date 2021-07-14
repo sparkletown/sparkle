@@ -1,7 +1,13 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import firebase from "firebase/app";
 
-import { UserWithLocation } from "types/User";
+import {
+  extractLocationFromUser,
+  User,
+  UserLocation,
+  UserWithLocation,
+  userWithLocationToUser,
+} from "types/User";
 
 import { withId, WithId } from "utils/id";
 
@@ -13,16 +19,17 @@ export interface WorldUsersData {
   // TODO: this is basically the naive 'copy/paste' data structure that matches the legacy
   //   react-redux-firebase useFirestoreConnect implementation currently. Once we have this in
   //   place/working, we want to refactor it to split the data in a 'smarter'/more efficient way.
-  //
-  // TODO: we should also ensure we fix the worldUsersById 'implies data always exists even for invalid userIds'
-  //   legacy bug here if we can, or at least continue to call it out as debt
-  worldUsers: WithId<UserWithLocation>[];
-  worldUsersById: Record<string, WithId<UserWithLocation>>;
+  worldUsers: WithId<User>[];
+  // @debt worldUsersById should be Partial<Record<string, WithId<User>>>, current kept as is for legacy reasons, but it's technically a typing bug
+  worldUsersById: Record<string, WithId<User>>;
+  // @debt worldUserLocationsById should be Partial<Record<string, WithId<UserLocation>>>, current kept as is for legacy reasons, but it's technically a typing bug
+  worldUserLocationsById: Record<string, WithId<UserLocation>>;
 }
 
 const initialState: Readonly<WorldUsersData> = {
   worldUsers: [],
   worldUsersById: {},
+  worldUserLocationsById: {},
 };
 
 // TODO: https://redux-toolkit.js.org/rtk-query/api/createApi
@@ -96,9 +103,15 @@ export const worldUsersApi = createApi({
             snapshot.docChanges().forEach((change) => {
               // @debt validate/typecast this properly so we don't have to use 'as' to hack the types here
               const user: UserWithLocation = change.doc.data() as UserWithLocation;
-              const userWithId: WithId<UserWithLocation> = withId(
-                user,
-                change.doc.id
+              const userId: string = change.doc.id;
+              const userWithId: WithId<UserWithLocation> = withId(user, userId);
+
+              const userWithoutLocation: WithId<User> = userWithLocationToUser(
+                userWithId
+              );
+
+              const userLocation: WithId<UserLocation> = extractLocationFromUser(
+                userWithId
               );
 
               switch (change.type) {
@@ -107,8 +120,9 @@ export const worldUsersApi = createApi({
                   //   this, but I wonder if we should err on the side of caution and combine the added/modified cases to
                   //   always try and find the existing user first? A little extra overhead for potentially a little
                   //   more safety.
-                  draft.worldUsers.push(userWithId);
-                  draft.worldUsersById[userWithId.id] = userWithId;
+                  draft.worldUsers.push(userWithoutLocation);
+                  draft.worldUsersById[userId] = userWithoutLocation;
+                  draft.worldUserLocationsById[userId] = userLocation;
 
                   return;
                 }
@@ -119,7 +133,7 @@ export const worldUsersApi = createApi({
                   );
 
                   if (existingUserIndex !== -1) {
-                    draft.worldUsers[existingUserIndex] = userWithId;
+                    draft.worldUsers[existingUserIndex] = userWithoutLocation;
                   } else {
                     // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe just combine the logic
                     //   for added/modified to handle it gracefully if it occurs. It's an edgecase and implies redux store
@@ -129,7 +143,8 @@ export const worldUsersApi = createApi({
                     );
                   }
 
-                  draft.worldUsersById[userWithId.id] = userWithId;
+                  draft.worldUsersById[userId] = userWithoutLocation;
+                  draft.worldUserLocationsById[userId] = userLocation;
 
                   return;
                 }
@@ -151,7 +166,8 @@ export const worldUsersApi = createApi({
                     );
                   }
 
-                  delete draft.worldUsersById[userWithId.id];
+                  delete draft.worldUsersById[userId];
+                  delete draft.worldUserLocationsById[userId];
 
                   return;
                 }
