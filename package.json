@@ -39,8 +39,6 @@
     "jsonschema": "^1.2.6",
     "lint-staged": "^10.2.7",
     "lodash": "^4.17.15",
-    "logrocket": "^1.0.14",
-    "logrocket-react": "^4.0.1",
     "mousetrap": "^1.6.5",
     "npm-force-resolutions": "0.0.3",
     "popper.js": "^1.16.1",
