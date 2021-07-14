@@ -42,6 +42,7 @@ import {
 import { FIREBASE_CONFIG } from "settings";
 
 import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+// import { CacheActionTypes } from "store/actions/Cache";
 
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
@@ -102,7 +103,7 @@ const rootReducer = combineReducers({
 export type RootState = ReturnType<typeof rootReducer>;
 
 const initialState = {};
-const store = createStore(
+export const store = createStore(
   rootReducer,
   initialState,
   composeWithDevTools(applyMiddleware(thunkMiddleware))
@@ -149,6 +150,14 @@ if (BUGSNAG_API_KEY) {
     "env/github",
     "env/summit-hack",
   ];
+
+  // //load users every 60 seconda
+  // setInterval(() => {
+  //   store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+  // }, 1000 * 60);
+  // //initial loading of users
+  // store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+  // console.log("Dispatching", CacheActionTypes.RELOAD_USER_CACHE);
 
   const releaseStage = () => {
     if (

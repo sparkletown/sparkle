@@ -8,7 +8,18 @@ import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";
 
+import { store } from "index";
+import { CacheActionTypes } from "store/actions/Cache";
+
 import "./WithNavigationBar.scss";
+
+//load users every 60 seconda
+setInterval(() => {
+  store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+}, 1000 * 60);
+//initial loading of users
+store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+console.log("Dispatching", CacheActionTypes.RELOAD_USER_CACHE);
 
 const NavBar = lazy(() =>
   tracePromise("WithNavigationBar::lazy-import::NavBar", () =>
