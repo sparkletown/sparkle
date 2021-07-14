@@ -68,6 +68,7 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
   //   ];
   // });
 
+  // TODO: https://redux-toolkit.js.org/rtk-query/usage/queries#selecting-data-from-a-query-result
   const worldUsersQueryResult = useWorldUsersQuery(
     shouldConnect && venueId ? { relatedLocationIds: [venueId] } : skipToken
     // { selectFromResult: (result) => result?.data?.userIds }
@@ -78,7 +79,7 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
   // TODO: do something more than log the data here
   // TODO: note that this won't emit data till we actually 'reduce' it in our worldUsersApi and save it..
   useEffect(() => {
-    console.log(worldUsersQueryResult.data?.userIds);
+    console.log(worldUsersQueryResult.data);
   }, [worldUsersQueryResult.data]);
 
   const worldUsersState: WorldUsersContextState = useMemo(
