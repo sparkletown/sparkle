@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+// import { useAsync } from "react-use";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { AnyVenue } from "types/venues";
-
+// import { fetchCustomAuthConfig } from "api/auth";
 import { WithId } from "utils/id";
+// import { tracePromise } from "utils/performance";
+// import { isDefined } from "utils/types";
+// import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
@@ -15,6 +19,8 @@ import PasswordResetForm from "components/organisms/AuthenticationModal/Password
 // import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+
+// import SAMLLoginIcon from "assets/icons/saml-login-icon.png";
 
 // @debt move all styles into `Login.scss`;
 import "./Account.scss";
@@ -29,7 +35,6 @@ export const Login: React.FC<LoginProps> = ({
   formType = "initial",
   venue,
 }) => {
-
   const venueId = venue.id;
   const { sovereignVenue } = useSovereignVenue({ venueId });
   const [formToDisplay, setFormToDisplay] = useState(formType);
@@ -38,6 +43,32 @@ export const Login: React.FC<LoginProps> = ({
     samlAuthProviderId: sovereignVenue?.samlAuthProviderId,
   });
 
+  // @debt Removed for improve first load for env/git
+  // const {
+  //   loading: isCustomAuthConfigLoading,
+  //   value: customAuthConfig,
+  // } = useAsync(async () => {
+  //   return tracePromise(
+  //     "Login::fetchCustomAuthConfig",
+  //     () => fetchCustomAuthConfig(venueId),
+  //     {
+  //       attributes: {
+  //         venueId,
+  //       },
+  //       withDebugLog: true,
+  //     }
+  //   );
+  // }, [venueId]);
+
+  // const { customAuthName, customAuthConnectPath } = customAuthConfig ?? {};
+
+  // const hasCustomAuthConnect = isDefined(customAuthConnectPath);
+  // const signInWithCustomAuth = useCallback(() => {
+  //   openUrl(
+  //     `${customAuthConnectPath}?venueId=${venueId}&returnOrigin=${window.location.origin}`
+  //   );
+  // }, [customAuthConnectPath, venueId]);
+  // const hasAlternativeLogins = hasSamlAuthProviderId || hasCustomAuthConnect;
   const hasAlternativeLogins = hasSamlAuthProviderId;
 
   const displayLoginForm = () => {
@@ -54,8 +85,8 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
+  // if (isCustomAuthConfigLoading || isSigningIn) return <LoadingPage />;
   if (isSigningIn) return <LoadingPage />;
-
   return (
     <div className="auth-container">
       <div className="hero-logo github-plain" />
@@ -65,6 +96,16 @@ export const Login: React.FC<LoginProps> = ({
             <span>Quick log in with Okta</span>
 
             <div className="Login__alternative-logins">
+              {/* @debt Removed for improve first load for env/git */}
+              {/* {hasCustomAuthConnect && (
+                <img
+                  className="Login__quick-login-icon"
+                  src={SAMLLoginIcon}
+                  onClick={signInWithCustomAuth}
+                  title={customAuthName}
+                  alt={customAuthName}
+                />
+              )} */}
               {hasSamlAuthProviderId && (
                 <FontAwesomeIcon
                   className="Login__quick-login-icon"
