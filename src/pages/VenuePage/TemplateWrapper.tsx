@@ -31,17 +31,6 @@ import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { TalkShowStudio } from "../../components/templates/TalkShowStudio";
 
-import { store } from "index";
-import { CacheActionTypes } from "store/actions/Cache";
-
-//load users every 60 seconda
-setInterval(() => {
-  store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
-}, 1000 * 60);
-//initial loading of users
-store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
-console.log("Dispatching", CacheActionTypes.RELOAD_USER_CACHE);
-
 const PlayaRouter = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
     import("components/templates/Playa/Router").then(({ PlayaRouter }) => ({
