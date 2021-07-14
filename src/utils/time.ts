@@ -247,6 +247,10 @@ export const normalizeTimestampToMilliseconds = (timestamp: number) => {
     : timestamp * ONE_SECOND_IN_MILLISECONDS;
 };
 
+export const getWeekday = (date: Date | number) => {
+  return format(date, "EEEE");
+};
+
 export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),

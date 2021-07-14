@@ -10,11 +10,7 @@ import {
 import classNames from "classnames";
 import { groupBy } from "lodash";
 
-import {
-  PLATFORM_BRAND_NAME,
-  SCHEDULE_SHOW_DAYS_AHEAD,
-  WEEKDAYS,
-} from "settings";
+import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
 import {
   LocationEvents,
@@ -30,7 +26,7 @@ import {
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
-import { formatDateRelativeToNow } from "utils/time";
+import { formatDateRelativeToNow, getWeekday } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -127,7 +123,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           }}
         >
           <button
-            aria-label={WEEKDAYS[day.getDay()]}
+            aria-label={getWeekday(day)}
             className="NavBarSchedule__weekday-button"
           >
             {formatDayLabel(day)}

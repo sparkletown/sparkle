@@ -94,16 +94,6 @@ export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
-export const WEEKDAYS = [
-  "Sunday",
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-];
-
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
