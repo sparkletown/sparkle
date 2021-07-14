@@ -11,7 +11,7 @@ Specify the name, time, duration in minutes, description.
 
 Usage: node ${process.argv[1]} API_KEY PROJECT_ID VENUE UTC_TIME DURATION_MINUTES NAME DESCRIPTION
 
-Example: node ${process.argv[1]} aaazzz111222333 co-reality-map examplevenue 2020-08-01T19:00:00Z 180 500 2500 "The Virtual Jazz Bar" "Join us in Virtual jazz bar on Saturday for three sets of fabulous jazz from the House band."
+Example: node ${process.argv[1]} aaazzz111222333 co-reality-map examplevenue 2020-08-01T19:00:00Z 180 "The Virtual Jazz Bar" "Join us in Virtual jazz bar on Saturday for three sets of fabulous jazz from the House band."
 `);
   process.exit(1);
 }
