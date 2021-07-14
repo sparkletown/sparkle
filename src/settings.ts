@@ -1,4 +1,6 @@
 import { CSSProperties } from "react";
+import hoursToMilliseconds from "date-fns/hoursToMilliseconds";
+import minutesToMilliseconds from "date-fns/minutesToMilliseconds";
 
 import {
   API_KEY,
@@ -11,8 +13,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-
-import { FIVE_MINUTES_MS } from "utils/time";
 
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
@@ -95,13 +95,12 @@ export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 
-// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
-export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
+export const LOC_UPDATE_FREQ_MS = minutesToMilliseconds(5);
 
 // How often to increment user's timespent
 export const LOCATION_INCREMENT_SECONDS = 10;
-export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
+export const LOCATION_INCREMENT_MS = hoursToMilliseconds(2);
 
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
