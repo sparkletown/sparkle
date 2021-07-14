@@ -26,12 +26,25 @@ export const cacheReducer = (
         .collection("users")
         .get()
         .then((snapshot) => {
+          const usersRecord = {} as Record<string, WithId<UserWithLocation>>;
+
           snapshot.forEach((doc: firebase.firestore.QueryDocumentSnapshot) => {
             const user: WithId<UserWithLocation> = doc.data() as WithId<UserWithLocation>;
             user.id = doc.id;
-            state.usersRecord[doc.id] = user;
-            state.usersArray = Object.values(state.usersRecord);
+            usersRecord[doc.id] = user;
           });
+
+          const usersArray = Object.values(usersRecord);
+
+          state.usersArray = usersArray;
+          state.usersRecord = usersRecord;
+
+          console.log(snapshot.docs);
+          // const data = snapshot.map((doc: firebase.firestore.QueryDocumentSnapshot) => doc.data())
+          // state.usersArray = snapshot.docs as unknown as WithId<UserWithLocation>[]
+          // state.usersRecord = snapshot.docs.reduce((acc, user) => {
+          //   acc[user.id as string]: user as unknown as WithId<UserWithLocation>
+          // }) as unknown as Record<string, WithId<UserWithLocation>>
         });
 
       //not the state that will be update... do async operation above outside and call in with the list of user instead

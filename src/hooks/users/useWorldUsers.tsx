@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { isEqual } from "lodash";
 
 import { User, userWithLocationToUser } from "types/User";
 
@@ -118,10 +117,11 @@ export const useWorldUsers = (): WorldUsersData => {
 
   // > = (state) => worldUsersSelector(state)?.map(userWithLocationToUser);
 
-  const selectedWorldUsers = useSelector(
-    (state) => state.cache.usersArray?.map(userWithLocationToUser),
-    isEqual
+  const selectedWorldUsers = useSelector((state) =>
+    state.cache.usersArray?.map(userWithLocationToUser)
   );
+
+  // console.log(selectedWorldUsers);
 
   return {
     worldUsers: selectedWorldUsers ?? noUsers,

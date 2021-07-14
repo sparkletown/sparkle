@@ -23,13 +23,24 @@ import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
 
-import { ChatSidebar } from "components/organisms/ChatSidebar";
+// import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { TalkShowStudio } from "../../components/templates/TalkShowStudio";
+
+import { store } from "index";
+import { CacheActionTypes } from "store/actions/Cache";
+
+//load users every 60 seconda
+setInterval(() => {
+  store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+}, 1000 * 60);
+//initial loading of users
+store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+console.log("Dispatching", CacheActionTypes.RELOAD_USER_CACHE);
 
 const PlayaRouter = lazy(() =>
   tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
@@ -173,7 +184,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
-        <ChatSidebar venue={venue} />
+        {/* <ChatSidebar venue={venue} /> */}
         <UserProfileModal venue={venue} />
       </WithNavigationBar>
     </ReactionsProvider>

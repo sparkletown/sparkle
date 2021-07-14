@@ -1,4 +1,4 @@
-import { isEqual, mapValues } from "lodash";
+import { mapValues } from "lodash";
 
 import { User, userWithLocationToUser } from "types/User";
 
@@ -31,7 +31,7 @@ export const useWorldUsersById = () => {
     return mapValues(worldUsersById, (user, userId) =>
       userWithLocationToUser(withId(user, userId))
     );
-  }, isEqual);
+  });
 
   // const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
   //   worldUsersByIdWithoutLocationSelector,
