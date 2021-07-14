@@ -70,7 +70,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
 
   const [{ loading: isVoting }, handleVote] = useAsyncFn(
     async (question) =>
-      await voteInPoll({
+      voteInPoll({
         questionId: question.id,
         pollId: id,
       }),
