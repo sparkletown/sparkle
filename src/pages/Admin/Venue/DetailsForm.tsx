@@ -184,6 +184,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 
           //@debt Create separate function that updates the userStatuses separately by venue id.
           if (
+            vals.parentId &&
             sovereignVenueId &&
             sovereignVenue &&
             sovereignVenueId !== venueId
