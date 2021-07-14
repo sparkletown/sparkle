@@ -78,12 +78,9 @@ export const ChatMessage: React.FC<ChatProps> = ({
           <button
             aria-label={replyButtonText}
             className="ChatMessage__reply-icon"
+            onClick={selectThisThread}
           >
-            <FontAwesomeIcon
-              icon={faReply}
-              size="sm"
-              onClick={selectThisThread}
-            />
+            <FontAwesomeIcon icon={faReply} size="sm" />
           </button>
           {hasReplies && (
             <TextButton
