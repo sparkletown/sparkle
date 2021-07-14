@@ -167,6 +167,9 @@ jobs:
             if [ $CIRCLE_BRANCH = "env/github" ]; then
               ENV=sparkle-github
             fi
+            if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
+              ENV=sparkle-summit-hack
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
@@ -341,6 +344,12 @@ jobs:
               TARGET=sparkle-github
               RELEASE_STAGE=env/github
             fi
+            if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
+              PREFIX=SUMMIT_HACK_
+              ENV=sparkle-summit-hack
+              TARGET=sparkle-summit-hack
+              RELEASE_STAGE=env/summit-hack
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -405,6 +414,7 @@ workflows:
                 - env/burn
                 - env/burn-staging
                 - env/github
+                - env/summit-hack
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -437,6 +447,7 @@ workflows:
                 - env/burn
                 - env/burn-staging
                 - env/github
+                - env/summit-hack
 #      - smoke-test:
 #          requires:
 #            - deploy-functions
