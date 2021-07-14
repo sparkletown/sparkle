@@ -212,7 +212,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   return (
-    <div role="dialog" className={containerClasses}>
+    <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
       {!isLoadingSchedule && (
         <div className="NavBarSchedule__download-buttons">

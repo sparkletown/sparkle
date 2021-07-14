@@ -323,7 +323,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
       </header>
 
       {shouldShowSchedule && (
-        <button
+        <div
           aria-hidden={isEventScheduleVisible ? "false" : "true"}
           className={`schedule-dropdown-backdrop ${
             isEventScheduleVisible ? "show" : ""
@@ -336,7 +336,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               venueId={venueId}
             />
           </div>
-        </button>
+        </div>
       )}
 
       {/* @debt Remove back button from Navbar */}
