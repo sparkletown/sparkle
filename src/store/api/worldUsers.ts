@@ -17,7 +17,7 @@ export interface WorldUsersData {
   // TODO: we should also ensure we fix the worldUsersById 'implies data always exists even for invalid userIds'
   //   legacy bug here if we can, or at least continue to call it out as debt
   worldUsers: WithId<UserWithLocation>[];
-  worldUsersById: Record<string, UserWithLocation>;
+  worldUsersById: Record<string, WithId<UserWithLocation>>;
 }
 
 const initialState: Readonly<WorldUsersData> = {
