@@ -685,14 +685,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <Toggler name="showZendesk" forwardedRef={register} />
-    </div>
-  );
-
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -1051,7 +1043,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
-        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}

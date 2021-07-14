@@ -231,11 +231,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
           </div>
         </div>
         <div className="user-list-container">
-          <UserList
-            users={recentVenueUsers}
-            isAudioEffectDisabled
-            activity="in this location"
-          />
+          <UserList users={recentVenueUsers} activity="in this location" />
         </div>
         <div className="description">
           <RenderMarkdown text={venue.config?.landingPageConfig?.description} />
