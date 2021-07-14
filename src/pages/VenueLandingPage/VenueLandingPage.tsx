@@ -24,7 +24,6 @@ import {
   venueEventsSelector,
 } from "utils/selectors";
 import { hasEventFinished } from "utils/event";
-import { showZendeskWidget } from "utils/zendesk";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -101,12 +100,6 @@ export const VenueLandingPage: React.FC = () => {
       setShouldOpenPaymentModal(false);
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
