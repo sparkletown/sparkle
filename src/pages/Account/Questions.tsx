@@ -64,7 +64,7 @@ export const Questions: React.FC = () => {
     if (!sovereignVenue) return;
 
     // Skip this screen if there are no profile questions for the venue
-    if (!sovereignVenue.profile_questions.length) {
+    if (!sovereignVenue.profile_questions?.length) {
       proceed();
     }
   }, [proceed, sovereignVenue]);
@@ -110,7 +110,7 @@ export const Questions: React.FC = () => {
         <h2 className="header-message">{headerMessage}</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions.map(
+          {sovereignVenue?.profile_questions?.map(
             (question: QuestionType, index) => (
               <div
                 key={question.name}
