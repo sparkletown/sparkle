@@ -6,8 +6,6 @@ export enum EmojiReactionType {
   clap = "clap",
   hundred = "hundred",
   laugh = "laugh",
-  thatsjazz = "thatsjazz",
-  boo = "boo",
   confetti = "confetti",
   sparkle = "sparkle",
   request = "request",
@@ -49,7 +47,7 @@ export type ReactionData<T extends ReactionType = ReactionType> = {
   audioPath: string;
 };
 
-export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
+export const EMOJI_REACTIONS: Readonly<ReactionData<EmojiReactionType>[]> = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
@@ -79,20 +77,6 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
     audioPath: "/sounds/laugh.mp3",
   },
   {
-    type: EmojiReactionType.thatsjazz,
-    name: "thatsjazz",
-    text: "🎹",
-    ariaLabel: "piano-emoji",
-    audioPath: "/sounds/thatsjazz.mp3",
-  },
-  {
-    type: EmojiReactionType.boo,
-    name: "boo",
-    text: "👻",
-    ariaLabel: "boo-emoji",
-    audioPath: "/sounds/boo.mp3",
-  },
-  {
     type: EmojiReactionType.confetti,
     name: "confetti",
     text: "🎉",
@@ -109,7 +93,7 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
 ];
 
 export const AllEmojiReactions: ReactionData<EmojiReactionType>[] = [
-  ...EmojiReactions,
+  ...EMOJI_REACTIONS,
   {
     type: EmojiReactionType.request,
     name: "request",
@@ -127,7 +111,7 @@ export const reactionsDataMapReducer = <T extends ReactionType = ReactionType>(
 export const EmojiReactionsMap: Map<
   EmojiReactionType,
   ReactionData<EmojiReactionType>
-> = EmojiReactions.reduce(reactionsDataMapReducer, new Map());
+> = EMOJI_REACTIONS.reduce(reactionsDataMapReducer, new Map());
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;

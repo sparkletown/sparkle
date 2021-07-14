@@ -66,49 +66,6 @@ $spacing: calc(1 * min(var(--seat-size), var(--seat-size-min)));
         box-shadow: 2px 2px 20px $light;
         background-color: #1a1d24;
 
-        .emoji-container {
-          display: flex;
-          flex: 1;
-          justify-content: space-around;
-          margin: $spacing--xs 0;
-
-          .reaction {
-            background-color: transparent;
-            border-color: transparent;
-            font-size: $font-size--xl;
-            width: 50px;
-            animation: sway 2200ms 1200ms ease-in-out;
-          }
-
-          .mute-button {
-            display: flex;
-            align-items: center;
-            font-size: $font-size--xl;
-            cursor: pointer;
-          }
-
-          .leave-seat-button {
-            display: inline-block;
-            font-weight: $font-weight--700;
-            text-decoration: none;
-            border-radius: $border-radius--sm;
-            text-align: center;
-            font-size: 0.7em;
-            transition: all 400ms $transition-function;
-            line-height: 1.5;
-            border: 1px solid transparent;
-            transform: translateY(0);
-            cursor: pointer;
-            padding: $spacing--xs $spacing--md;
-            background: rgb(0, 0, 0);
-            color: $white;
-
-            &:hover {
-              background-color: rgba(255, 255, 255, 0.5);
-            }
-          }
-        }
-
         .shout-container {
           margin: 0 $spacing--sm $spacing--xs $spacing--sm;
           padding-bottom: $spacing--xs;

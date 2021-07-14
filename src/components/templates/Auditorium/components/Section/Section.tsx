@@ -1,6 +1,8 @@
-import React, { useEffect, useMemo, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { useParams } from "react-router";
+import classNames from "classnames";
+import { useCss } from "react-use";
 
 import { AuditoriumVenue } from "types/venues";
 
@@ -8,22 +10,24 @@ import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
+import { useShowHide } from "hooks/useShowHide";
+
+import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
 
 import "./Section.scss";
 
-// If you change this, make sure to also change it in Section.scss
-export const SECTION_SEAT_SIZE = "var(--section-seat-size)";
-export const SECTION_SEAT_SIZE_MIN = "var(--section-seat-size-min)";
-export const SECTION_SEAT_SPACING = "var(--section-seat-spacing)";
-
 export interface SectionProps {
   venue: WithId<AuditoriumVenue>;
 }
 
 export const Section: React.FC<SectionProps> = ({ venue }) => {
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
+
   const { iframeUrl, id: venueId } = venue;
 
   const { sectionId } = useParams<{ sectionId?: string }>();
@@ -35,8 +39,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     baseRowsCount,
     baseColumnsCount,
 
-    videoWidthInSeats,
-    videoHeightInSeats,
+    screenHeightInSeats,
+    screenWidthInSeats,
+
+    isUserSeated,
 
     getUserBySeat,
     takeSeat,
@@ -55,17 +61,18 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     };
   }, [leaveSeat]);
 
-  const iframeInlineStyles: React.CSSProperties = useMemo(
-    () => ({
-      width: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      height: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE} + ${SECTION_SEAT_SPACING}))`,
-      minWidth: `calc(${videoWidthInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-      minHeight: `calc(${videoHeightInSeats} * (${SECTION_SEAT_SIZE_MIN} + ${SECTION_SEAT_SPACING}))`,
-    }),
-    [videoWidthInSeats, videoHeightInSeats]
+  const centralScreenVars = useCss({
+    "--central-screen-width-in-seats": screenWidthInSeats,
+    "--central-screen-height-in-seats": screenHeightInSeats,
+  });
+
+  const centralScreenClasses = classNames(
+    "Section__central-screen",
+    centralScreenVars
   );
 
   const seatsGrid = useAuditoriumGrid({
+    isUserAudioMuted,
     rows: baseRowsCount,
     columns: baseColumnsCount,
     checkIfSeat,
@@ -85,12 +92,23 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     <div className="Section">
       <BackButton onClick={backToMain} />
       <div className="Section__seats">
-        <IFrame
-          containerClassname="Section__iframe-overlay"
-          iframeClassname="Section__iframe"
-          iframeInlineStyles={iframeInlineStyles}
-          src={iframeUrl}
-        />
+        <div className="Section__central-screen-overlay">
+          <div className={centralScreenClasses}>
+            <IFrame containerClassname="Section__iframe" src={iframeUrl} />
+            <div className="Section__reactions">
+              {isUserSeated ? (
+                <ReactionsBar
+                  venueId={venueId}
+                  leaveSeat={leaveSeat}
+                  isReactionsMuted={isUserAudioMuted}
+                  toggleMute={toggleUserAudio}
+                />
+              ) : (
+                "Welcome! Click on an empty seat to claim it!"
+              )}
+            </div>
+          </div>
+        </div>
         {seatsGrid}
       </div>
     </div>

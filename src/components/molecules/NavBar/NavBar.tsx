@@ -54,7 +54,7 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
 
 const ProfilePopover = (
   <Popover id="profile-popover">
-    <Popover.Content>
+    <Popover.Content className="NavBar__profile-popover">
       <ProfilePopoverContent />
     </Popover.Content>
   </Popover>
