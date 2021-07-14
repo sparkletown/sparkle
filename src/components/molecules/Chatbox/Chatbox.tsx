@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import {
   DeleteMessage,
@@ -33,7 +34,7 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-export const Chatbox: React.FC<ChatboxProps> = ({
+export const _Chatbox: React.FC<ChatboxProps> = ({
   messages,
   venue,
   sendMessage,
@@ -137,3 +138,5 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     </div>
   );
 };
+
+export const Chatbox = React.memo(_Chatbox, isEqual);
