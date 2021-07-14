@@ -5,7 +5,6 @@ import { render } from "react-dom";
 
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
 
@@ -40,7 +39,6 @@ import {
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-  LOGROCKET_APP_ID,
   MIXPANEL_PROJECT_TOKEN,
   STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
@@ -75,16 +73,6 @@ import { theme } from "theme/theme";
 
 activatePolyFills();
 initializeZendesk();
-
-if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID, {
-    release: BUILD_SHA1,
-  });
-
-  Bugsnag.addOnError((event) => {
-    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
-  });
-}
 
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
@@ -122,12 +110,7 @@ const initialState = {};
 const store = createStore(
   rootReducer,
   initialState,
-  composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      LogRocket.reduxMiddleware() // logrocket needs to be last
-    )
-  )
+  composeWithDevTools(applyMiddleware(thunkMiddleware))
 );
 
 export type AppDispatch = typeof store.dispatch;
@@ -248,15 +231,7 @@ const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   useEffect(() => {
     if (!auth || !auth.uid) return;
 
-    const displayName = auth.displayName || "N/A";
     const email = auth.email || "N/A";
-
-    if (LOGROCKET_APP_ID) {
-      LogRocket.identify(auth.uid, {
-        displayName,
-        email,
-      });
-    }
 
     if (MIXPANEL_PROJECT_TOKEN) {
       mixpanel.identify(email);
