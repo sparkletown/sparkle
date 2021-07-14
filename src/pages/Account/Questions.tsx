@@ -99,35 +99,38 @@ export const Questions: React.FC = () => {
     return <LoadingPage />;
   }
 
-  const numberOfQuestions = sovereignVenue?.profile_questions?.length ?? 0;
-  const headerMessage = `Now complete your profile by answering ${
-    numberOfQuestions === 1 ? "this question" : "some short questions"
-  }`;
+  const headerMessage =
+    "To help other Hubbers find and get to know you, tell us a little about yourself.";
+  const REQUIRED_QUESTIONS_NUMBER = 1;
 
   return (
-    <div className="Questions page-container">
-      <div className="hero-logo sparkle" />
+    <div className="Questions page-container questions-container">
+      <div className="hero-logo github" />
       <div className="login-container">
         <h2 className="header-message">{headerMessage}</h2>
 
-        <p className="subheader-message">
-          This will help your fellow partygoers break the ice
-        </p>
-
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          {sovereignVenue?.profile_questions?.map((question: QuestionType) => (
-            <div key={question.name} className="Questions__question form-group">
-              <label className="input-block input-centered">
-                <strong>{question.name}</strong>
-                <textarea
-                  className="input-block input-centered"
-                  name={question.name}
-                  placeholder={question.text}
-                  ref={register()}
-                />
-              </label>
-            </div>
-          ))}
+          {sovereignVenue?.profile_questions?.map(
+            (question: QuestionType, index) => (
+              <div
+                key={question.name}
+                className="Questions__question form-group"
+              >
+                <label className="input-block input-centered">
+                  <p>
+                    {question.name}
+                    {index < REQUIRED_QUESTIONS_NUMBER && "*"}
+                  </p>
+                  <textarea
+                    className="input-block input-centered"
+                    name={question.name}
+                    placeholder={question.text}
+                    ref={register()}
+                  />
+                </label>
+              </div>
+            )
+          )}
 
           <div className="input-group">
             <button
