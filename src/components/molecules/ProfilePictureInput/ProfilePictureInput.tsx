@@ -3,6 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import "firebase/storage";
 
 import {
   ACCEPTED_IMAGE_TYPES,

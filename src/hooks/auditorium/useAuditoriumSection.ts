@@ -1,10 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { setGridData } from "api/profile";
 
 import {
   SECTION_DEFAULT_COLUMNS_COUNT,
   SECTION_DEFAULT_ROWS_COUNT,
+  REACTIONS_CONTAINER_HEIGHT_IN_SEATS,
 } from "settings";
 
 import { GridPosition } from "types/grid";
@@ -61,11 +62,20 @@ export const useAuditoriumSection = ({
     baseColumnsCount
   );
 
+  const screenHeightInSeats =
+    videoHeightInSeats + REACTIONS_CONTAINER_HEIGHT_IN_SEATS;
+  const screenWidthInSeats = videoWidthInSeats;
+
   const seatedUsers = getAuditoriumSeatedUsers({
     auditoriumUsers: recentVenueUsers,
     venueId,
     sectionId,
   });
+
+  const isUserSeated = useMemo(
+    () => seatedUsers.some((seatedUser) => seatedUser.id === userId),
+    [seatedUsers, userId]
+  );
 
   const getUserBySeat = useGetUserByPosition({
     venueId,
@@ -105,13 +115,13 @@ export const useAuditoriumSection = ({
       });
 
       const isInVideoRow =
-        Math.abs(covertedRowCoordinate) <= videoHeightInSeats / 2;
+        Math.abs(covertedRowCoordinate) <= screenHeightInSeats / 2;
       const isInVideoColumn =
-        Math.abs(convertedColumnCoordinate) <= videoWidthInSeats / 2;
+        Math.abs(convertedColumnCoordinate) <= screenWidthInSeats / 2;
 
       return !(isInVideoRow && isInVideoColumn);
     },
-    [baseRowsCount, baseColumnsCount, videoHeightInSeats, videoWidthInSeats]
+    [baseRowsCount, baseColumnsCount, screenHeightInSeats, screenWidthInSeats]
   );
 
   return {
@@ -121,8 +131,10 @@ export const useAuditoriumSection = ({
     baseRowsCount,
     baseColumnsCount,
 
-    videoWidthInSeats,
-    videoHeightInSeats,
+    screenWidthInSeats,
+    screenHeightInSeats,
+
+    isUserSeated,
 
     getUserBySeat,
     takeSeat,
