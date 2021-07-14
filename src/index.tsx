@@ -1,6 +1,6 @@
 import "./wdyr";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { render } from "react-dom";
 
 import Bugsnag from "@bugsnag/js";
