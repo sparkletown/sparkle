@@ -35,9 +35,8 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  USER_STATUSES,
   DEFAULT_SHOW_SCHEDULE,
-  ONLINE_USER_STATUS,
+  DEFAULT_USER_STATUS,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
@@ -686,14 +685,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <Toggler name="showZendesk" forwardedRef={register} />
-    </div>
-  );
-
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -939,7 +930,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const addUserStatus = () =>
     setUserStatuses([
       ...userStatuses,
-      { status: "", color: ONLINE_USER_STATUS.color },
+      { status: "", color: DEFAULT_USER_STATUS.color },
     ]);
 
   const updateStatusColor = (color: string, index: number) => {
@@ -952,10 +943,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     event: React.FormEvent<HTMLInputElement>,
     index: number
   ) => {
-    const allUserStatuses = [...USER_STATUSES, ...userStatuses];
     const statuses = [...userStatuses];
 
-    const userStatusExists = allUserStatuses.find(
+    const userStatusExists = statuses.find(
       (userStatus) => userStatus.status === event.currentTarget.value
     );
 
@@ -1053,7 +1043,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
-        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}

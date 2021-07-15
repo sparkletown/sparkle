@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { useUser } from "hooks/useUser";
-import useRoles from "hooks/useRoles";
+import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
 import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";

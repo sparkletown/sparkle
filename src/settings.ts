@@ -11,7 +11,6 @@ import {
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
-import { DefaultUserStatus } from "types/User";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -90,6 +89,9 @@ export const DUST_STORM_TEXT_2 =
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
+export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
+export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 
 // @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
@@ -626,8 +628,6 @@ export const DEFAULT_SHOW_SHOUTOUTS = true;
 
 export const DEFAULT_SHOW_USER_STATUSES = true;
 
-export const ZENDESK_URL_PREFIXES = ["/admin"];
-
 export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
 
 // Audience
@@ -656,17 +656,10 @@ export const SEARCH_DEBOUNCE_TIME = 200; // ms
 export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
 export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
 
-export const ONLINE_USER_STATUS = {
-  status: DefaultUserStatus.online,
+export const DEFAULT_USER_STATUS = {
+  status: "Online",
   color: "#53E52A",
 };
-
-export const BUSY_USER_STATUS = {
-  status: DefaultUserStatus.busy,
-  color: "#F44336",
-};
-
-export const USER_STATUSES = [ONLINE_USER_STATUS, BUSY_USER_STATUS];
 
 // SCHEDULE
 export const DEFAULT_SHOW_SCHEDULE = true;
