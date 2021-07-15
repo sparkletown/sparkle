@@ -3,11 +3,10 @@ import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
+import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 import { useUser } from "hooks/useUser";
 import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-import { useAdminVenues } from "hooks/useAdminVenues";
-import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import {
@@ -23,7 +22,6 @@ dayjs.extend(advancedFormat);
 
 const Admin_v2: React.FC = () => {
   const { user } = useUser();
-  useAdminVenues(user?.uid);
 
   const { administeredVenues, isLoading } = useAdministeredVenues({});
 

@@ -43,13 +43,13 @@ import {
   canHaveSubvenues,
 } from "utils/venue";
 
+import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
