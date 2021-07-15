@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useMemo, useCallback } from "react";
 
+import { SparkleSelector } from "types/SparkleSelector";
+import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId, withId } from "utils/id";
 
 import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-import { SparkleSelector } from "types/SparkleSelector";
-import { ReactHook } from "types/utility";
 
 export const administeredVenuesSelector: SparkleSelector<
   Record<string, AnyVenue> | undefined
