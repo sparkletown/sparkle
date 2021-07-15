@@ -7,7 +7,7 @@ import { useUser } from "hooks/useUser";
 import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
 import { useAdminVenues } from "hooks/useAdminVenues";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import {
@@ -25,7 +25,7 @@ const Admin_v2: React.FC = () => {
   const { user } = useUser();
   useAdminVenues(user?.uid);
 
-  const { relatedVenues, isLoading } = useRelatedVenues({});
+  const { administeredVenues, isLoading } = useAdministeredVenues({});
 
   const { roles } = useRoles();
 
@@ -47,7 +47,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          <AdminVenues venues={relatedVenues} />
+          <AdminVenues venues={administeredVenues} />
         </S.ViewWrapper>
       </S.Wrapper>
 

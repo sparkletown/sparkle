@@ -19,31 +19,31 @@ export const AdminSubrouter: React.FC = () => {
       {/* Admin V1 */}
 
       <Route path="/admin/venue/rooms/:venueId">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <RoomsForm />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/creation">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/edit/:venueId">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/:venueId">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <Admin />
         </Provided>
       </Route>
 
       <Route path="/admin">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <Admin />
         </Provided>
       </Route>
@@ -57,25 +57,25 @@ export const AdminSubrouter: React.FC = () => {
       </Route>
 
       <Route path="/admin-ng/advanced-settings/:venueId?">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <AdminAdvancedSettings />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/venue/creation">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/edit/:venueId">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers withAdministeredVenues>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng">
-        <Provided withWorldUsers>
+        <Provided withWorldUsers withAdministeredVenues>
           <AdminV2 />
         </Provided>
       </Route>

@@ -52,6 +52,7 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
+  administeredVenues?: Record<string, AnyVenue>;
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   // @debt this doesn't appear to be used by anything anymore

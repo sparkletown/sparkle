@@ -49,7 +49,7 @@ import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -76,8 +76,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const { isLoading, relatedVenues } = useRelatedVenues({
+  const { isLoading, administeredVenues } = useAdministeredVenues({
     currentVenueId: selectedVenueId,
   });
 
@@ -92,7 +91,7 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {relatedVenues.map((venue, index) => (
+        {administeredVenues.map((venue) => (
           <li
             key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
@@ -130,9 +129,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const { currentVenue } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
+  const { currentVenue } = useAdministeredVenues({ currentVenueId: venueId });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
