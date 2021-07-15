@@ -16,7 +16,7 @@ import { LinkButton } from "components/atoms/LinkButton";
 import "./AnnouncementMessage.scss";
 
 export interface AnnouncementMessageProps {
-  banner: Banner;
+  banner: Banner | undefined;
   announcementForUser?: boolean;
 }
 
@@ -39,7 +39,6 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   const isActiveButton =
     banner?.buttonDisplayText && banner?.buttonUrl && banner?.isActionButton;
 
-  const isButtonShown = isActiveButton && banner.buttonUrl;
   const isAnnouncementCloseable =
     isAnnouncementForUser && !banner?.isForceFunnel;
 
@@ -84,9 +83,9 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
           <RenderMarkdown text={banner?.content} />
         </div>
 
-        {isButtonShown && (
+        {isActiveButton && banner?.buttonUrl && (
           <LinkButton
-            href={banner.buttonUrl || ""}
+            href={banner.buttonUrl}
             className="AnnouncementMessage__action-button"
           >
             {banner?.buttonDisplayText}

@@ -61,7 +61,7 @@ export const VenueAdminPage: React.FC = () => {
     <WithNavigationBar>
       <div className="VenueAdminPage">
         <h4 className="VenueAdminPage__title">
-          Current Announcement in Space Title
+          Current Announcement in {venue?.name}
         </h4>
 
         {isBannerAdminVisibile && (
@@ -72,9 +72,9 @@ export const VenueAdminPage: React.FC = () => {
           />
         )}
 
-        {!isBannerAdminVisibile && venue?.banner && (
+        {!isBannerAdminVisibile && (
           <>
-            <AnnouncementMessage banner={venue.banner} />
+            <AnnouncementMessage banner={venue?.banner} />
 
             <AnnouncementOptions
               banner={venue.banner}
