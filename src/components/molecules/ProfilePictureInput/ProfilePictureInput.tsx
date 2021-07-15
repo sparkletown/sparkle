@@ -74,8 +74,10 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
-  const githubImageSrc =
-    githubHandle && `https://github.com/${githubHandle}.png?size=120`;
+  // NOTE: if githubHandle is invalid, the resulting avatar will be invalid as well e.g. https://github.com/invalid-github-handle.png?size=120
+  const githubImageSrc = githubHandle
+    ? `https://github.com/${githubHandle}.png?size=120`
+    : "/avatars/default-octocat-3.png";
 
   // Set GitHub image as a default picture
   useEffect(() => {
@@ -91,7 +93,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/avatars/default-octocat-3.png"}
+          src={pictureUrl}
           className="profile-icon profile-picture-preview"
           alt="your profile"
         />
