@@ -1,4 +1,5 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
+import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import firebase from "firebase/app";
 
 import {
@@ -59,14 +60,28 @@ export const worldUsersApi = createApi({
         { relatedLocationIds },
         { updateCachedData, cacheEntryRemoved }
       ) {
-        // TODO: use api/* layer for this?
-        const usersCollectionRef = firebase.firestore().collection("users");
+        // Used to hold the changes queued from the snapshot listener so that we can proces them in batches
+        const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
-        const worldUsersQuery = usersCollectionRef.where(
-          "enteredVenueIds",
-          "array-contains-any",
-          relatedLocationIds
+        const processQueuedChanges = () => {
+          if (queuedChanges.length === 0) return;
+
+          updateCachedData((draft) => {
+            // We use splice here to remove all elements from the array and return them for processing
+            queuedChanges.splice(0).forEach(processUserDocChange(draft));
+          });
+        };
+
+        // TODO: move this interval into a proper const/config value somewhere
+        const processQueuedChangesIntervalId = setInterval(
+          processQueuedChanges,
+          5000
         );
+
+        const worldUsersQuery = firebase
+          .firestore()
+          .collection("users")
+          .where("enteredVenueIds", "array-contains-any", relatedLocationIds);
 
         const unsubscribeListener = worldUsersQuery.onSnapshot((snapshot) => {
           // TODO: implement this properly + cleanup this placeholder stuff
@@ -95,90 +110,39 @@ export const worldUsersApi = createApi({
             "\n  snapshot.docChanges() removed:",
             removed,
             "\n  snapshot.docChanges() modified:",
-            modified
+            modified,
+            "\n  queuedChanges.length",
+            queuedChanges.length
           );
 
-          // TODO: we could likely implement a debounce/throttle here to 'slow down' our writes to redux if we need to
-          updateCachedData((draft) => {
-            snapshot.docChanges().forEach((change) => {
-              // @debt validate/typecast this properly so we don't have to use 'as' to hack the types here
-              const user: UserWithLocation = change.doc.data() as UserWithLocation;
-              const userId: string = change.doc.id;
-              const userWithId: WithId<UserWithLocation> = withId(user, userId);
-
-              const userWithoutLocation: WithId<User> = userWithLocationToUser(
-                userWithId
-              );
-
-              const userLocation: WithId<UserLocation> = extractLocationFromUser(
-                userWithId
-              );
-
-              switch (change.type) {
-                case "added": {
-                  // TODO: theoretically I believe it should never be possible for a duplicate user to end up here from
-                  //   this, but I wonder if we should err on the side of caution and combine the added/modified cases to
-                  //   always try and find the existing user first? A little extra overhead for potentially a little
-                  //   more safety.
-                  draft.worldUsers.push(userWithoutLocation);
-                  draft.worldUsersById[userId] = userWithoutLocation;
-                  draft.worldUserLocationsById[userId] = userLocation;
-
-                  return;
-                }
-
-                case "modified": {
-                  const existingUserIndex = draft.worldUsers.findIndex(
-                    (existingUser) => existingUser.id === userWithId.id
-                  );
-
-                  if (existingUserIndex !== -1) {
-                    draft.worldUsers[existingUserIndex] = userWithoutLocation;
-                  } else {
-                    // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe just combine the logic
-                    //   for added/modified to handle it gracefully if it occurs. It's an edgecase and implies redux store
-                    //   corruption IMO. Shouldn't be possible if our update logic here is correct I don't believe.
-                    console.warn(
-                      `[worldUsersApi::snapshot::modified] Snapshot was 'modified' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
-                    );
-                  }
-
-                  draft.worldUsersById[userId] = userWithoutLocation;
-                  draft.worldUserLocationsById[userId] = userLocation;
-
-                  return;
-                }
-
-                case "removed": {
-                  const existingUserIndex = draft.worldUsers.findIndex(
-                    (existingUser) => existingUser.id === userWithId.id
-                  );
-
-                  if (existingUserIndex !== -1) {
-                    draft.worldUsers.splice(existingUserIndex, 1);
-                  } else {
-                    // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe it's fine that the
-                    //  user didn't exist in our redux store, since we were just going to remove them anyway. It's an
-                    //  edgecase and implies redux store corruption IMO. Shouldn't be possible if our update logic here
-                    //  is correct I don't believe.
-                    console.warn(
-                      `[worldUsersApi::snapshot::removed] Snapshot was 'removed' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
-                    );
-                  }
-
-                  delete draft.worldUsersById[userId];
-                  delete draft.worldUserLocationsById[userId];
-
-                  return;
-                }
-              }
-            });
+          snapshot.docChanges().forEach((change) => {
+            // TODO: check if this document relates to the current user, if so, update it immediately
+            //   Note that we will need to pass their userId in and/or read it from somehwere to make this work..
+            //   probably just the queryArgs for this whole api listener
+            //
+            // const currentUserId = "TODO";
+            //
+            // if (change.doc.id === currentUserId) {
+            //   updateCachedData((draft) => {
+            //     processUserDocChange(draft)(change);
+            //   });
+            // } else {
+            queuedChanges.push(change);
+            // }
           });
         });
 
+        // Wait until the data no longer needs to be kept in our redux cache
         await cacheEntryRemoved;
 
+        // Unsubscribe the firestore query snapshot listener
         unsubscribeListener();
+
+        // Clear the interval for processing the queued changes
+        clearInterval(processQueuedChangesIntervalId);
+
+        // Make sure we process any last remaining queued changes
+        processQueuedChanges();
       },
     }),
   }),
@@ -191,3 +155,77 @@ export const {
   useQueryState: useWorldUsersQueryState,
   useQuerySubscription: useWorldUsersQuerySubscription,
 } = worldUsersApi.endpoints.worldUsers;
+
+const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
+  change: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>
+) => {
+  // @debt validate/typecast this properly so we don't have to use 'as' to hack the types here
+  const user: UserWithLocation = change.doc.data() as UserWithLocation;
+  const userId: string = change.doc.id;
+  const userWithId: WithId<UserWithLocation> = withId(user, userId);
+
+  const userWithoutLocation: WithId<User> = userWithLocationToUser(userWithId);
+
+  const userLocation: WithId<UserLocation> = extractLocationFromUser(
+    userWithId
+  );
+
+  switch (change.type) {
+    case "added": {
+      // TODO: theoretically I believe it should never be possible for a duplicate user to end up here from
+      //   this, but I wonder if we should err on the side of caution and combine the added/modified cases to
+      //   always try and find the existing user first? A little extra overhead for potentially a little
+      //   more safety.
+      draft.worldUsers.push(userWithoutLocation);
+      draft.worldUsersById[userId] = userWithoutLocation;
+      draft.worldUserLocationsById[userId] = userLocation;
+
+      return;
+    }
+
+    case "modified": {
+      const existingUserIndex = draft.worldUsers.findIndex(
+        (existingUser) => existingUser.id === userWithId.id
+      );
+
+      if (existingUserIndex !== -1) {
+        draft.worldUsers[existingUserIndex] = userWithoutLocation;
+      } else {
+        // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe just combine the logic
+        //   for added/modified to handle it gracefully if it occurs. It's an edgecase and implies redux store
+        //   corruption IMO. Shouldn't be possible if our update logic here is correct I don't believe.
+        console.warn(
+          `[worldUsersApi::snapshot::modified] Snapshot was 'modified' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
+        );
+      }
+
+      draft.worldUsersById[userId] = userWithoutLocation;
+      draft.worldUserLocationsById[userId] = userLocation;
+
+      return;
+    }
+
+    case "removed": {
+      const existingUserIndex = draft.worldUsers.findIndex(
+        (existingUser) => existingUser.id === userWithId.id
+      );
+
+      if (existingUserIndex !== -1) {
+        draft.worldUsers.splice(existingUserIndex, 1);
+      } else {
+        // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe it's fine that the
+        //  user didn't exist in our redux store, since we were just going to remove them anyway. It's an
+        //  edgecase and implies redux store corruption IMO. Shouldn't be possible if our update logic here
+        //  is correct I don't believe.
+        console.warn(
+          `[worldUsersApi::snapshot::removed] Snapshot was 'removed' yet couldn't find index for userId=${userWithId.id}. This shouldn't happen.`
+        );
+      }
+
+      delete draft.worldUsersById[userId];
+      delete draft.worldUserLocationsById[userId];
+
+      return;
+    }
+  }
+};
