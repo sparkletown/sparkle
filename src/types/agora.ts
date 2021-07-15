@@ -12,15 +12,10 @@ export enum AgoraClientConnectionState {
   DISCONNECTING = "DISCONNECTING",
 }
 
-export interface UseAgoraRemotesProps {
-  client?: IAgoraRTCClient;
-}
 export type UseAgoraRemotesReturn = IAgoraRTCRemoteUser[];
 
-export interface UseAgoraScreenShareProps {
-  client?: IAgoraRTCClient;
-}
 export interface UseAgoraScreenShareReturn {
+  client?: IAgoraRTCClient;
   localScreenTrack?: ILocalVideoTrack;
   stopShare(): void;
   shareScreen(): Promise<void>;
@@ -28,10 +23,8 @@ export interface UseAgoraScreenShareReturn {
   leaveChannel(): Promise<void>;
 }
 
-export interface UseAgoraCameraProps {
-  client?: IAgoraRTCClient;
-}
 export interface UseAgoraCameraReturn {
+  client?: IAgoraRTCClient;
   isCameraOn: boolean;
   isMicrophoneOn: boolean;
   localCameraTrack?: ILocalVideoTrack;

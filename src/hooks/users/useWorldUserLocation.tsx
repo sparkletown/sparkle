@@ -3,7 +3,7 @@ import { shallowEqual } from "react-redux";
 import { UserLocation } from "types/User";
 
 import { withId, WithId } from "utils/id";
-import { worldUsersByIdSelector } from "utils/selectors";
+// import { worldUsersByIdSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 import { useWorldUsersContext } from "./useWorldUsers";
@@ -17,7 +17,7 @@ export const useWorldUserLocation = (
   const userLocation = useSelector((state) => {
     if (!userId) return;
 
-    const user = worldUsersByIdSelector(state)?.[userId];
+    const user = state.cache.usersRecord?.[userId];
 
     if (!user) return;
 

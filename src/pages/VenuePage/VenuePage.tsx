@@ -2,7 +2,7 @@ import React, { Suspense, lazy, useEffect } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
-import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
+import { /*LOC_UPDATE_FREQ_MS,*/ PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -19,11 +19,11 @@ import {
 import {
   clearLocationData,
   setLocationData,
-  updateCurrentLocationData,
+  // updateCurrentLocationData,
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
-import { showZendeskWidget } from "utils/zendesk";
+
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
@@ -31,9 +31,9 @@ import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
-import { useInterval } from "hooks/useInterval";
+// import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
-import { useWorldUserLocation } from "hooks/users";
+// import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
@@ -76,8 +76,13 @@ export const VenuePage: React.FC = () => {
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
   const { user, profile } = useUser();
-  const { userLocation } = useWorldUserLocation(user?.uid);
-  const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
+
+  // @debt user location updates when there are tons of users cause a constant stream of updates that hurt platform performance
+  //   hacking this out will lead to 'counting issues' if users stay in a single location for a long time without going anywhere,
+  //   and may lead to them being 'filtered out' of recent location users if they have been sitting around too long without another
+  //   form of update
+  // const { userLocation } = useWorldUserLocation(user?.uid);
+  // const { lastSeenIn: userLastSeenIn } = userLocation ?? {};
 
   // @debt Remove this once we replace currentVenue with currentVenueNG or similar across all descendant components
   useConnectCurrentVenue();
@@ -121,14 +126,18 @@ export const VenuePage: React.FC = () => {
 
   // NOTE: User location updates
 
-  useInterval(() => {
-    if (!userId || !userLastSeenIn) return;
-
-    updateCurrentLocationData({
-      userId,
-      profileLocationData: userLastSeenIn,
-    });
-  }, LOC_UPDATE_FREQ_MS);
+  // @debt user location updates when there are tons of users cause a constant stream of updates that hurt platform performance
+  //   hacking this out will lead to 'counting issues' if users stay in a single location for a long time without going anywhere,
+  //   and may lead to them being 'filtered out' of recent location users if they have been sitting around too long without another
+  //   form of update
+  // useInterval(() => {
+  //   if (!userId || !userLastSeenIn) return;
+  //
+  //   updateCurrentLocationData({
+  //     userId,
+  //     profileLocationData: userLastSeenIn,
+  //   });
+  // }, LOC_UPDATE_FREQ_MS);
 
   useEffect(() => {
     if (!userId || !venueName) return;
@@ -166,12 +175,6 @@ export const VenuePage: React.FC = () => {
   // NOTE: User's timespent updates
 
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

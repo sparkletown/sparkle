@@ -84,20 +84,24 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.artcar:
       if (venue.zoomUrl) {
         window.location.replace(venue.zoomUrl);
+
+        // Note that we are explicitly returning here so that none of the rest of this component has a chance to render
+        return <LoadingPage />;
+      } else {
+        template = (
+          <p>
+            Venue {venue.name} should redirect to a URL, but none was set.
+            <br />
+            <button
+              role="link"
+              className="btn btn-primary"
+              onClick={() => history.goBack()}
+            >
+              Back
+            </button>
+          </p>
+        );
       }
-      template = (
-        <p>
-          Venue {venue.name} should redirect to a URL, but none was set.
-          <br />
-          <button
-            role="link"
-            className="btn btn-primary"
-            onClick={() => history.goBack()}
-          >
-            Back
-          </button>
-        </p>
-      );
       break;
 
     // Note: This is the template that is used for Auditorium (v1)
