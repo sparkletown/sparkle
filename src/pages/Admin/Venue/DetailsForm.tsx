@@ -19,7 +19,7 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { setSovereignVenue } from "store/actions/SovereignVenue";
+import { resetSovereignVenue } from "store/actions/SovereignVenue";
 
 import {
   ZOOM_URL_TEMPLATES,
@@ -180,15 +180,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               showUserStatus: showUserStatuses,
             },
             user
-          );
+          ).then(() => {
+            if (!vals.parentId) {
+              dispatch(resetSovereignVenue());
+            }
+          });
 
           //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            vals.parentId &&
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          )
+          if (vals.parentId && sovereignVenueId && sovereignVenue) {
             await updateVenue(
               {
                 id: sovereignVenueId,
@@ -207,16 +206,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               },
               user
             ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                    userStatuses,
-                    showUserStatus: showUserStatuses,
-                  })
-                );
-              }
+              dispatch(resetSovereignVenue());
             });
+          }
         } else
           await createVenue(
             {
