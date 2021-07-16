@@ -13,6 +13,10 @@
 
   &__input {
     width: 100%;
+
+    .InputField__input {
+      padding-left: $spacing--lg;
+    }
   }
 
   &__submit-button {
