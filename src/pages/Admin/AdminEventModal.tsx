@@ -11,7 +11,11 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { WithId } from "utils/id";
 
-import { HAS_ROOMS_TEMPLATES } from "settings";
+import {
+  HAS_ROOMS_TEMPLATES,
+  MIN_EVENT_DURATION,
+  MAX_EVENT_DURATION,
+} from "settings";
 
 dayjs.extend(isSameOrAfter);
 
@@ -45,7 +49,12 @@ const validationSchema = Yup.object().shape<EventInput>({
   start_time: Yup.string().required("Start time required"),
   duration_hours: Yup.number()
     .typeError("Duration must be a number")
-    .required("Duration required"),
+    .required("Duration required")
+    .min(MIN_EVENT_DURATION, `Duration must be more than 0`)
+    .max(
+      MAX_EVENT_DURATION,
+      `Duration must be less than or equal to ${MAX_EVENT_DURATION} hours`
+    ),
   price: Yup.number()
     .typeError("Price must be a number")
     .required("Price is required")
@@ -182,6 +191,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
               name="duration_hours"
               className="input-block input-centered"
               placeholder="1"
+              type="number"
               ref={register}
             />
             {errors.duration_hours && (

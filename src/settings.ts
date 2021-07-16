@@ -87,6 +87,9 @@ export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VEN
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
+export const MIN_EVENT_DURATION = 1; // hours
+export const MAX_EVENT_DURATION = 1000; // hours
+
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
