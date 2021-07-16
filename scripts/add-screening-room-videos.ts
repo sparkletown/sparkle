@@ -52,7 +52,7 @@ const appBatch = app.firestore().batch();
   const screeningRoomVideosData = fs
     .readFileSync(screeningVideosDataPath, "utf-8")
     .split(/\r?\n/)
-    .map((line) => line.split(","));
+    .map((line) => line.split(",").map((dataString) => dataString.trim()));
 
   // Remove the namings row
   screeningRoomVideosData.shift();
@@ -62,7 +62,7 @@ const appBatch = app.firestore().batch();
       .firestore()
       .collection("venues")
       .doc(venueId)
-      .collection("screeningVideos")
+      .collection("screeningRoomVideos")
       .doc();
 
     const [
@@ -81,9 +81,11 @@ const appBatch = app.firestore().batch();
       videoSrc,
       thumbnailSrc,
       category: category.toLowerCase(),
-      subCategory: subCategory.toLowerCase(),
-      introduction,
+      ...(subCategory ? { subCategory: subCategory.toLowerCase() } : {}),
+      ...(introduction ? { introduction } : {}),
     };
+
+    console.log(screeningRoomVideo);
 
     appBatch.set(screeningVideoRef, screeningRoomVideo);
   });
