@@ -7,15 +7,12 @@ $section-seat-size: $avatarSize;
 $section-seat-size-min: $avatarSizeMin;
 $section-seat-spacing: 3px;
 
-$iframe-box-shadow: 2px 2px $spacing--lg $white;
+$section-screen-width-in-seats: var(--central-screen-width-in-seats);
+$section-screen-height-in-seats: var(--central-screen-height-in-seats);
 
 $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
 
 .Section {
-  --section-seat-size: #{$section-seat-size};
-  --section-seat-size-min: #{$section-seat-size-min};
-  --section-seat-spacing: #{$section-seat-spacing};
-
   background-attachment: fixed;
   background-position: center;
 
@@ -25,31 +22,62 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
   padding: $spacing;
   min-width: fit-content;
 
-  &__iframe-overlay {
+  &__reactions {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    text-align: center;
+
+    pointer-events: all;
+
+    width: 80%;
+    height: 15%;
+
+    background-color: $secondary--dark;
+
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  &__central-screen-overlay {
     position: absolute;
 
     width: 100%;
     height: 100%;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 
     pointer-events: none;
   }
 
-  &__iframe {
+  &__central-screen {
     display: flex;
-    flex-direction: column;
+    flex-flow: column;
+    justify-content: center;
     align-items: center;
 
+    width: calc(
+      #{$section-screen-width-in-seats} * (#{$section-seat-size} + #{$section-seat-spacing})
+    );
+    height: calc(
+      #{$section-screen-height-in-seats} * (#{$section-seat-size} + #{$section-seat-spacing})
+    );
+    min-width: calc(
+      #{$section-screen-width-in-seats} * (#{$section-seat-size-min} + #{$section-seat-spacing})
+    );
+    min-height: calc(
+      #{$section-screen-height-in-seats} * (#{$section-seat-size-min} + #{$section-seat-spacing})
+    );
+  }
+
+  &__iframe {
     pointer-events: all;
 
-    width: 100%;
-    height: 100%;
     border: thin $black;
     border-radius: $border-radius--lg;
-    box-shadow: $iframe-box-shadow;
   }
 
   &__seats {
@@ -78,17 +106,17 @@ $spacing: calc(1 * min(var(--section-seat-size), var(--section-seat-size-min)));
     justify-content: center;
     align-items: center;
 
-    width: var(--section-seat-size);
-    height: var(--section-seat-size);
-    min-width: var(--section-seat-size-min);
-    min-height: var(--section-seat-size-min);
+    width: $section-seat-size;
+    height: $section-seat-size;
+    min-width: $section-seat-size-min;
+    min-height: $section-seat-size-min;
 
     font-size: calc(
-      0.6 * max(var(--section-seat-size), var(--section-seat-size-min))
+      0.6 * max(#{$section-seat-size}, #{$section-seat-size-min})
     );
 
     border-radius: 100%;
-    margin: var(--section-seat-spacing);
+    margin: $section-seat-spacing;
 
     color: $black;
     user-select: none;

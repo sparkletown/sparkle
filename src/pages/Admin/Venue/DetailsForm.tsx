@@ -35,9 +35,8 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
-  USER_STATUSES,
   DEFAULT_SHOW_SCHEDULE,
-  ONLINE_USER_STATUS,
+  DEFAULT_USER_STATUS,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
@@ -63,6 +62,8 @@ import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
 import { UserStatusManager } from "components/molecules/UserStatusManager";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import {
@@ -72,6 +73,9 @@ import {
 import { WizardPage } from "./VenueWizard";
 import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
+
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
 
 import "./Venue.scss";
 
@@ -178,14 +182,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
-          if (sovereignVenueId)
+          //@debt Create separate function that updates the userStatuses separately by venue id.
+          if (
+            sovereignVenueId &&
+            sovereignVenue &&
+            sovereignVenueId !== venueId
+          )
             await updateVenue(
               {
-                ...(vals as VenueInput),
                 id: sovereignVenueId,
-                parentId: sovereignVenue?.parentId,
+                name: sovereignVenue.name,
+                subtitle:
+                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                description:
+                  sovereignVenue.config?.landingPageConfig.description ?? "",
+                adultContent: sovereignVenue.adultContent ?? false,
+                profile_questions: sovereignVenue.profile_questions,
+                code_of_conduct_questions:
+                  sovereignVenue.code_of_conduct_questions,
                 userStatuses,
                 showUserStatus: showUserStatuses,
+                template: sovereignVenue.template,
               },
               user
             ).then(() => {
@@ -285,8 +302,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
+  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
-    <div className="page page--admin">
+    <div className="page page--admin admin-dashboard">
       <div className="page-side page-side--admin">
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
@@ -639,64 +657,31 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Schedule</h4>
-      <label id={"showSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showSchedule"}
-          name={"showSchedule"}
-          ref={register}
-          defaultChecked={DEFAULT_SHOW_SCHEDULE}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler
+        name="showSchedule"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+      />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showGrid" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
@@ -739,63 +724,35 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showReactions" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowShoutouts = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show shoutouts</h4>
-      <label id="showShoutouts" className="switch">
-        <input
-          type="checkbox"
-          id="showShoutouts"
-          name="showShoutouts"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showShoutouts" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showRangers" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -913,13 +870,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
+      <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 
@@ -975,7 +930,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const addUserStatus = () =>
     setUserStatuses([
       ...userStatuses,
-      { status: "", color: ONLINE_USER_STATUS.color },
+      { status: "", color: DEFAULT_USER_STATUS.color },
     ]);
 
   const updateStatusColor = (color: string, index: number) => {
@@ -988,10 +943,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     event: React.FormEvent<HTMLInputElement>,
     index: number
   ) => {
-    const allUserStatuses = [...USER_STATUSES, ...userStatuses];
     const statuses = [...userStatuses];
 
-    const userStatusExists = allUserStatuses.find(
+    const userStatusExists = statuses.find(
       (userStatus) => userStatus.status === event.currentTarget.value
     );
 
@@ -1089,7 +1043,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
-        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}

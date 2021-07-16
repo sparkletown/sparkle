@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
+import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -25,7 +26,7 @@ export interface UserAvatarProps {
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
-export const UserAvatar: React.FC<UserAvatarProps> = ({
+export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
@@ -36,11 +37,14 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   medium,
 }) => {
   const venueId = useVenueId();
+
   const { recentWorldUsers } = useRecentWorldUsers();
-  const { userStatus, isStatusEnabledForVenue } = useVenueUserStatuses(
-    venueId,
-    user
-  );
+
+  const {
+    userStatus,
+    venueUserStatuses,
+    isStatusEnabledForVenue,
+  } = useVenueUserStatuses(venueId, user);
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -82,7 +86,11 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
   //'showStatus' is used to render this conditionally only in some of the screens.
-  const hasUserStatus = isStatusEnabledForVenue && showStatus && isOnline;
+  const hasUserStatus =
+    isStatusEnabledForVenue &&
+    showStatus &&
+    isOnline &&
+    !!venueUserStatuses.length;
 
   return (
     <div className={containerClasses}>
@@ -103,3 +111,5 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
     </div>
   );
 };
+
+export const UserAvatar = React.memo(_UserAvatar, isEqual);

@@ -2,6 +2,8 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
+const { addAdmin, removeAdmin } = require("./src/api/roles");
+
 const { checkAuth } = require("./src/utils/assert");
 const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
 
@@ -358,10 +360,6 @@ const createBaseUpdateVenueData = (data, updated) => {
     updated.showBadges = data.showBadges;
   }
 
-  if (typeof data.showZendesk === "boolean") {
-    updated.showZendesk = data.showZendesk;
-  }
-
   if (typeof data.showRangers === "boolean") {
     updated.showRangers = data.showRangers;
   }
@@ -405,34 +403,6 @@ const dataOrUpdateKey = (data, updated, key) =>
     updated[key] &&
     typeof updated[key] !== "undefined" &&
     updated[key]);
-
-/** Add a user to the list of admins
- *
- * @param {string} newAdminId
- */
-const addAdmin = async (newAdminId) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .update({
-      users: admin.firestore.FieldValue.arrayUnion(newAdminId),
-    });
-};
-
-/** Remove a user from the list of admins
- *
- * @param {string} adminId
- */
-const removeAdmin = async (adminId) => {
-  await admin
-    .firestore()
-    .collection("roles")
-    .doc("admin")
-    .update({
-      users: admin.firestore.FieldValue.arrayRemove(adminId),
-    });
-};
 
 exports.addVenueOwner = functions.https.onCall(async (data, context) => {
   checkAuth(context);
@@ -636,17 +606,17 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   //   I expect this may be legacy functionality related to the Playa template?
-  if (
-    !data.placement.state ||
-    data.placement.state === PlacementState.SelfPlaced
-  ) {
-    updated.placement = {
-      ...data.placement,
-      state: PlacementState.SelfPlaced,
-    };
-  } else if (data.placementRequests) {
-    updated.placementRequests = data.placementRequests;
-  }
+  // if (
+  //   !data.placement.state ||
+  //   data.placement.state === PlacementState.SelfPlaced
+  // ) {
+  //   updated.placement = {
+  //     ...data.placement,
+  //     state: PlacementState.SelfPlaced,
+  //   };
+  // } else if (data.placementRequests) {
+  //   updated.placementRequests = data.placementRequests;
+  // }
 
   // @debt the logic here differs from updateVenue_v2, which only sets this field when data.showGrid is a boolean
   if (data.columns) {

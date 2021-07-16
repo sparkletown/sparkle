@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import {
   DeleteMessage,
@@ -33,7 +34,7 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-export const Chatbox: React.FC<ChatboxProps> = ({
+export const _Chatbox: React.FC<ChatboxProps> = ({
   messages,
   venue,
   sendMessage,
@@ -89,6 +90,15 @@ export const Chatbox: React.FC<ChatboxProps> = ({
     [messages, deleteMessage, voteInPoll, venue]
   );
 
+  const onReplyToThread = useCallback(
+    ({ replyText, threadId }) => {
+      sendThreadReply({ replyText, threadId });
+      unselectOption();
+      closeThread();
+    },
+    [unselectOption, closeThread, sendThreadReply]
+  );
+
   return (
     <div className="Chatbox">
       <div className="Chatbox__messages">{renderedMessages}</div>
@@ -119,12 +129,14 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           <ChatMessageBox
             selectedThread={selectedThread}
             sendMessage={sendMessage}
-            sendThreadReply={sendThreadReply}
             unselectOption={unselectOption}
             isQuestion={isQuestionOptions}
+            onReplyToThread={onReplyToThread}
           />
         )}
       </div>
     </div>
   );
 };
+
+export const Chatbox = React.memo(_Chatbox, isEqual);
