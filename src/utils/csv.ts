@@ -1,35 +1,32 @@
 import { writeToString } from "@fast-csv/format";
+import { User } from "types/User";
+import { WithId } from "./id";
 
-type RowInterface = {
-  [key: string]: string;
-};
-
-const getCSVRows = (rows: readonly RowInterface[]) => {
-  let results: RowInterface[] = [];
-  rows.map((row: RowInterface) => {
-    results.push(row);
-    return "";
-  });
-  return results;
-};
-
-export const downloadGeneratedCSVFile = async (
-  // Rows needed to be normal objects but as input type is WithId<User> I can not pass it to @fast-csv/format lib so I need to use any
-  // eslint-disable-next-line
-  rows: readonly any[],
-  headers: string[]
-) => {
-  const csvContent = await writeToString(getCSVRows(rows), {
-    headers: headers,
-    quote: true,
-  });
-  const encodedUri = encodeURI("data:text/csv;charset=utf-8," + csvContent);
+const downloadCSVFile = (csvContent: string) => {
+  const url = URL.createObjectURL(new Blob([csvContent], { type: "text/csv" }));
   const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
+  link.setAttribute("href", url);
   link.setAttribute(
     "download",
     "users_report_" + new Date().getTime() + ".csv"
   );
-  document.body.appendChild(link);
   link.click();
+  URL.revokeObjectURL(url);
+};
+
+const generateUserCSV = async (
+  rows: readonly WithId<User>[],
+  headers: string[]
+) => {
+  return await writeToString([...rows], {
+    headers: headers,
+    quote: true,
+  });
+};
+
+export const downloadGeneratedCSVFileUsers = async (
+  rows: readonly WithId<User>[],
+  headers: string[]
+) => {
+  downloadCSVFile(await generateUserCSV(rows, headers));
 };

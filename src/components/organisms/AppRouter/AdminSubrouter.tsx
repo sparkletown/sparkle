@@ -4,7 +4,7 @@ import { Route, Switch } from "react-router-dom";
 import Admin from "pages/Admin/Admin";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-import VenueUsersReport from "pages/Admin/Venue/Users/VenueUsersReport";
+import { VenueUsersReport } from "pages/Admin/Venue/Users/VenueUsersReport";
 import AdminV2 from "pages/Admin/Admin_v2";
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
@@ -37,7 +37,7 @@ export const AdminSubrouter: React.FC = () => {
       </Route>
 
       <Route path="/admin/venue/usersreport/:venueId">
-        <Provided withWorldUsers withRelatedVenues>
+        <Provided withWorldUsers>
           <VenueUsersReport />
         </Provided>
       </Route>

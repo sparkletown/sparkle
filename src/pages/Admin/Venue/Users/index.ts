@@ -1,1 +1,1 @@
-export { default } from "./VenueUsersReport";
+export { VenueUsersReport } from "./VenueUsersReport";

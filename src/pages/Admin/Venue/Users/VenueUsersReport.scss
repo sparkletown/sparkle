@@ -1,42 +1,45 @@
 @import "scss/constants";
 
-.venue-users-detail {
-  width: 100vw;
-  height: 100vh;
+.VenueUserReport {
   padding: $spacing--xl;
-  &-filter-box {
+
+  &__filter-box {
     width: 100%;
-    height: 300px;
     border: 1px solid white;
     margin: $spacing--xl auto;
     padding: $spacing--xl;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    &-custom-field {
+
+    &__download-btn {
+      width: 25%;
+      margin: auto;
+    }
+
+    &__custom-field {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
       align-items: center;
-      & input {
+      margin: $spacing--xl 0;
+
+      &__input {
         width: 70%;
       }
     }
-    &-headers {
+
+    &__headers {
       width: 100%;
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       flex-wrap: wrap;
-      &-item {
+
+      &__item {
         width: 25%;
         height: 35px;
       }
     }
   }
-}
-
-.download-btn {
-  width: 25%;
-  margin: auto;
 }
