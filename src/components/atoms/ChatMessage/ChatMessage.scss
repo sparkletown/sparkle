@@ -17,6 +17,8 @@ $reply-icon-radius: 20px;
   flex-direction: column;
   margin-bottom: $spacing--lg;
 
+  content-visibility: auto;
+
   &:hover {
     .ChatMessage__reply-icon {
       display: flex;

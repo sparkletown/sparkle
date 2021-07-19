@@ -15,6 +15,7 @@ import { UsernameVisibility } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { UserStatus } from "types/User";
 
 export interface EventInput {
   name: string;
@@ -103,11 +104,13 @@ export type VenueInput = AdvancedVenueInput &
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
+    userStatuses?: UserStatus[];
     showReactions?: boolean;
+    showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
-    showZendesk?: boolean;
+    showUserStatus?: boolean;
   };
 
 export interface VenueInput_v2
@@ -231,11 +234,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
-
-  // Default to showing Zendesk
-  if (input.showZendesk === undefined) {
-    input.showZendesk = true;
-  }
 
   return firestoreVenueInput;
 };
