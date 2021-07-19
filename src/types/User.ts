@@ -152,6 +152,7 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
 // @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
 //  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
 //  validation rules leading to infinite recursion or similar?
+// @debt refactor userWithLocationToUser to optionally not require WithId, then use that in profileSelector
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {

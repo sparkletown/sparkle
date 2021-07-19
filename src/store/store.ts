@@ -12,13 +12,15 @@ import {
 import LogRocket from "logrocket";
 
 import { Firestore } from "types/Firestore";
-import { User } from "types/User";
+import { UserWithLocation } from "types/User";
 
 import { worldUsersApi } from "./api/worldUsers";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
-  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
+  firebase: firebaseReducer as Reducer<
+    FirebaseReducer.Reducer<UserWithLocation>
+  >,
   firestore: firestoreReducer as Reducer<Firestore>,
   ...VenueTemplateReducers,
   ...MiscReducers,

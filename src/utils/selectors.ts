@@ -38,7 +38,16 @@ export const authSelector: SparkleSelector<FirebaseReducer.AuthState> = (
  */
 export const profileSelector: SparkleSelector<FirebaseReducer.Profile<User>> = (
   state
-) => state.firebase.profile;
+) => {
+  // @debt refactor userWithLocationToUser to optionally not require WithId, then use that here
+  const {
+    lastSeenIn,
+    lastSeenAt,
+    ...userProfileWithoutLocation
+  } = state.firebase.profile;
+
+  return userProfileWithoutLocation;
+};
 
 /**
  * Selector to retrieve currentVenue?.[0] from the Redux Firestore.
