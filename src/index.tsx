@@ -8,6 +8,7 @@ import BugsnagPluginReact from "@bugsnag/plugin-react";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
+import ReactGA from "react-ga";
 
 import { Provider } from "react-redux";
 import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
@@ -36,6 +37,7 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 
 import {
   BUGSNAG_API_KEY,
+  GA_MEASUREMENT_ID,
   BUILD_BRANCH,
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
@@ -237,6 +239,16 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
 if (MIXPANEL_PROJECT_TOKEN) {
   mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
 }
+console.log(GA_MEASUREMENT_ID);
+
+// if (GA_MEASUREMENT_ID) {
+console.log(GA_MEASUREMENT_ID);
+
+ReactGA.initialize("G-T139PRCLP5", {
+  debug: true,
+});
+ReactGA.pageview(window.location.pathname + window.location.search);
+// }
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
