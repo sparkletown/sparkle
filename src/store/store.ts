@@ -14,7 +14,7 @@ import LogRocket from "logrocket";
 import { Firestore } from "types/Firestore";
 import { UserWithLocation } from "types/User";
 
-import { worldUsersApi } from "./api/worldUsers";
+import { worldUsersApi } from "./api";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
 
 export const rootReducer = combineReducers({
