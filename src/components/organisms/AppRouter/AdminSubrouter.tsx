@@ -62,7 +62,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      <Route path="/admin-ng/venue/creation">
+      <Route path="/admin-ng/create/venue">
         <Provided withWorldUsers withRelatedVenues>
           <VenueWizardV2 />
         </Provided>
