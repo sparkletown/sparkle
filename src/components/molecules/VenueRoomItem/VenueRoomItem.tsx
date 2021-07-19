@@ -46,8 +46,10 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
   const venueId = useVenueId();
 
+  const isVenuePortal = template !== RoomTemplate.external;
+
   const { register, getValues, handleSubmit, errors } = useForm({
-    validationSchema: template ? venueRoomSchema : roomSchema,
+    validationSchema: isVenuePortal ? venueRoomSchema : roomSchema,
     defaultValues: {
       roomTitle: "",
       roomUrl: "",
@@ -58,8 +60,6 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
 
   const [{ loading }, addRoom] = useAsyncFn(async () => {
     if (!user || !venueId || !template) return;
-
-    const isVenuePortal = template !== RoomTemplate.external;
 
     const roomValues = getValues();
 
@@ -75,6 +75,8 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       template,
     };
 
+    // TS doesn't work properly with const statements and won't 'know' that this is already checked.
+    // That's why this is inline instead of isVenuePortal
     if (template !== RoomTemplate.external) {
       const venueData = buildEmptyVenue(roomValues.venueName, template);
 
@@ -82,7 +84,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     }
 
     await createRoom(roomData, venueId, user).then(() => hideModal());
-  }, [getValues, hideModal, template, user, venueId]);
+  }, [getValues, hideModal, isVenuePortal, template, user, venueId]);
 
   const roomIconStyles = useMemo(() => ({ backgroundImage: `url(${icon})` }), [
     icon,
@@ -104,7 +106,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               disabled={loading}
             />
 
-            {template && (
+            {isVenuePortal && (
               <>
                 <Form.Label>Venue name</Form.Label>
                 <InputField
@@ -119,7 +121,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               </>
             )}
 
-            {!template && (
+            {!isVenuePortal && (
               <>
                 <Form.Label>Room url</Form.Label>
                 <InputField
