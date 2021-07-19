@@ -25,7 +25,7 @@ or if that doesn't help - reload the page.
 In case the problem persists, please contact \u2728 Sparkle and provide the error details.
 `;
 
-interface ChunkLoadError extends Error {
+export interface ChunkLoadError extends Error {
   type?: string;
   request?: string;
 }
