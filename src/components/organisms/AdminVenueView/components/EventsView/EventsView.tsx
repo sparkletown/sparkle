@@ -6,6 +6,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 
 import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
@@ -24,14 +25,22 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   useConnectVenueEvents(venueId);
   const events = useSelector(venueEventsNGSelector);
 
-  const [showCreateEventModal, setShowCreateEventModal] = useState(false);
-  const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
+  const {
+    isShown: showCreateEventModal,
+    show: setShowCreateEventModal,
+    hide: setHideCreateEventModal,
+  } = useShowHide();
+  const {
+    isShown: showDeleteEventModal,
+    toggle: setShowDeleteEventModal,
+  } = useShowHide();
+
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   const adminEventModalOnHide = useCallback(() => {
-    setShowCreateEventModal(false);
+    setHideCreateEventModal();
     setEditedEvent(undefined);
-  }, []);
+  }, [setHideCreateEventModal]);
 
   const hasVenueEvents = events?.length !== 0;
 
@@ -56,7 +65,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
               <button
                 className="btn btn-primary"
                 onClick={() => {
-                  setShowCreateEventModal(true);
+                  setShowCreateEventModal();
                 }}
               >
                 Create an Event
@@ -71,7 +80,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           <button
             className="btn btn-primary"
             onClick={() => {
-              setShowCreateEventModal(true);
+              setShowCreateEventModal();
             }}
           >
             Create an Event
@@ -83,7 +92,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         <TimingEventModal
           show={showCreateEventModal}
           onHide={() => {
-            setShowCreateEventModal(false);
+            setHideCreateEventModal();
             adminEventModalOnHide();
           }}
           template={venue.template}
@@ -99,7 +108,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         <TimingDeleteModal
           show={showDeleteEventModal}
           onHide={() => {
-            setShowDeleteEventModal(false);
+            setShowDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
           }}
           venueId={venue.id}

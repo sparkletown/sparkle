@@ -42,7 +42,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
   }, [event, reset]);
 
-  const onSubmit = useCallback(async () => {
+  const deleteVenueEvent = useCallback(async () => {
     if (event) {
       await deleteEvent(venueId, event.id);
     }
@@ -53,7 +53,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     <Modal show={show} onHide={onHide}>
       <div className="form-container">
         <h2>Delete event</h2>
-        <form onSubmit={handleSubmit(onSubmit)} className="form">
+        <form onSubmit={handleSubmit(deleteVenueEvent)} className="form">
           <div className="input-group">
             <p>Name: {event?.name}</p>
             <RenderMarkdown text={`Description: ${event?.description}`} />

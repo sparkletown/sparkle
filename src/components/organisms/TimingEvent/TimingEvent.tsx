@@ -35,8 +35,8 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
     <div
       key={event.id}
       className="TimingEvent"
-      onMouseEnter={(e) => showButton(e)}
-      onMouseLeave={(e) => hideButton(e)}
+      onMouseEnter={showButton}
+      onMouseLeave={hideButton}
     >
       <div className="TimingEvent__time">
         <p>{format(eventStartTime(event), "do MMM")}</p>
@@ -60,7 +60,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
         <button
           className="event__edit-button"
           onClick={() => {
-            setShowCreateEventModal(true);
+            setShowCreateEventModal();
             setEditedEvent(event);
           }}
         >

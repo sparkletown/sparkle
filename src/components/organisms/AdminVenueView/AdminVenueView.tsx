@@ -34,7 +34,9 @@ export const AdminVenueView: React.FC = () => {
   const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
-  const { isCurrentVenueLoaded } = useConnectCurrentVenueNG(venueId);
+  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
+    venueId
+  );
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
@@ -76,7 +78,7 @@ export const AdminVenueView: React.FC = () => {
       {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
       {selectedTab === AdminVenueTab.timing && (
         <Timing
-          venueId={venueId}
+          venue={currentVenue}
           onClickNext={() => setSelectedTab(AdminVenueTab.run)}
           onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
         />

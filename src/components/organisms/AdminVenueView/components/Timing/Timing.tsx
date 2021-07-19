@@ -1,33 +1,31 @@
-import React, { useCallback } from "react";
-import { shallowEqual } from "react-redux";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 
-import { makeVenueSelector } from "utils/selectors";
+import { WithId } from "utils/id";
 
-import { useSelector } from "hooks/useSelector";
+import { AnyVenue } from "types/venues";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { EventsView } from "../EventsView";
 
 import "./Timing.scss";
 
 export type TimingProps = {
-  venueId?: string;
+  venue?: WithId<AnyVenue>;
   onClickNext: () => void;
   onClickBack: () => void;
 };
 
 export const Timing: React.FC<TimingProps> = ({
-  venueId,
+  venue,
   onClickNext,
   onClickBack,
 }) => {
-  const venueSelector = useCallback(
-    (state) => makeVenueSelector(venueId!)(state),
-    [venueId]
-  );
-
-  const venue = useSelector(venueSelector, shallowEqual);
+  if (!venue) {
+    return <LoadingPage />;
+  }
 
   return (
     <div className="Timing">
@@ -100,7 +98,7 @@ export const Timing: React.FC<TimingProps> = ({
       </div>
       <div className="Timing__right">
         <div className="Timing__right-content">
-          <EventsView venueId={venueId!} venue={venue!} />
+          <EventsView venueId={venue.id} venue={venue} />
         </div>
       </div>
     </div>
