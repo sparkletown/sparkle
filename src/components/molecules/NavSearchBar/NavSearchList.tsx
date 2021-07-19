@@ -15,7 +15,7 @@ const propsFor = (length: number) => ({
   itemCount: length,
   itemSize: 48, // 2 * $search-result-padding--vertical + $search-result-image--size; @see navSearchBarConstants.scss
   height:
-    0 === length
+    length === 0
       ? 40 // $search-dropdown-height--empty; @see navSearchBarConstants.scss
       : Math.min(
           480, // $search-dropdown-height--max; @see NavSearchBar.scss
