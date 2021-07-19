@@ -22,6 +22,8 @@ export interface MapGridProps {
   ) => void;
 }
 
+// @debt getUserBySeat breaks memo because it comes from partygoers, which comes from recentVenueUsers which comes from useRecentVenueUsers
+//   We need to refactor this so that user location updates don't flow through here and cause unneeded re-renders.
 export const _MapGrid: React.FC<MapGridProps> = ({
   userUid,
   columnsArray,
