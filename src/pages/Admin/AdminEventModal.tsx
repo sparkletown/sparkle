@@ -11,10 +11,7 @@ import { createEvent, EventInput, updateEvent } from "api/admin";
 
 import { WithId } from "utils/id";
 
-import {
-  HAS_ROOMS_TEMPLATES,
-  // MAX_EVENT_DURATION,
-} from "settings";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 dayjs.extend(isSameOrAfter);
 
@@ -185,7 +182,6 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
               name="duration_hours"
               className="input-block input-centered"
               placeholder="1"
-              type="number"
               ref={register}
             />
             {errors.duration_hours && (
