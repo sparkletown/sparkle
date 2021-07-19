@@ -6,7 +6,7 @@ import "./NavSearchList.scss";
 import {
   NavSearchResultProps,
   NavSearchResult,
-} from "components/molecules/NavSearchBar/NavSearchResult";
+} from "./NavSearchResult";
 
 // @debt refactor this into .scss or find more ergonomic component with same desired functionality as FixedSizeList
 // values are used here due to quirks of the FixedSizeList component
