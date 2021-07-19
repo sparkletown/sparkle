@@ -1,0 +1,37 @@
+@import "scss/constants";
+
+.ReactionsBar {
+  display: flex;
+  flex: 1;
+  justify-content: space-around;
+  align-items: center;
+  margin: $spacing--xs 0;
+  width: 100%;
+
+  &__mute-button {
+    display: flex;
+    align-items: center;
+    font-size: $font-size--xl;
+    cursor: pointer;
+  }
+
+  &__leave-seat-button {
+    display: inline-block;
+    font-weight: $font-weight--700;
+    text-decoration: none;
+    border-radius: $border-radius--sm;
+    text-align: center;
+    font-size: $font-size--sm;
+    transition: all 400ms $transition-function;
+    border: 1px solid transparent;
+    transform: translateY(0);
+    cursor: pointer;
+    padding: $spacing--xs $spacing--sm;
+    background: $black;
+    color: $white;
+
+    &:hover {
+      background-color: opaque-white(0.5);
+    }
+  }
+}

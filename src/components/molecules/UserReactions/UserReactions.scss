@@ -15,7 +15,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
   height: 100%;
 
   &--reaction-left {
-    .UserReactions__reaction {
+    .Reaction {
       left: $reactionOffset;
     }
 
@@ -27,7 +27,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
   }
 
   &--reaction-right {
-    .UserReactions__reaction {
+    .Reaction {
       right: $reactionOffset;
     }
 
@@ -38,7 +38,7 @@ $reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
     }
   }
 
-  &__reaction {
+  .Reaction {
     position: absolute;
     top: $reactionOffset;
 

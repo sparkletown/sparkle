@@ -6,8 +6,6 @@ import React, {
   useState,
 } from "react";
 import { useForm } from "react-hook-form";
-import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import {
@@ -21,22 +19,22 @@ import { addReaction } from "store/actions/Reactions";
 
 import { makeUpdateUserGridLocation } from "api/profile";
 
-import { EmojiReactions, EmojiReactionType } from "types/reactions";
-
 import { GenericVenue } from "types/venues";
 
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
-import { createEmojiReaction, createTextReaction } from "utils/reactions";
+import { createTextReaction } from "utils/reactions";
 import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
+import { useShowHide } from "hooks/useShowHide";
 
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+import { ReactionsBar } from "components/molecules/ReactionsBar";
 
 import "./Audience.scss";
 
@@ -129,13 +127,6 @@ const requiredAuditoriumSize = (
   return size;
 };
 
-// @debt Why are we filtering the reactions here? Presumably these should all be the same wherever they are used?
-const burningReactions = EmojiReactions.filter(
-  (reaction) =>
-    reaction.type !== EmojiReactionType.boo &&
-    reaction.type !== EmojiReactionType.thatsjazz
-);
-
 export interface AudienceProps {
   venue: WithId<GenericVenue>;
 }
@@ -151,7 +142,9 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     venue?.auditoriumColumns ?? DEFAULT_AUDIENCE_COLUMNS_NUMBER;
   const baseRows = venue?.auditoriumRows ?? DEFAULT_AUDIENCE_ROWS_NUMBER;
 
-  const [isAudioEffectDisabled, setIsAudioEffectDisabled] = useState(false);
+  const { isShown: isUserAudioOn, toggle: toggleUserAudio } = useShowHide(true);
+
+  const isUserAudioMuted = !isUserAudioOn;
 
   const [iframeUrl, setIframeUrl] = useState("");
   useLayoutEffect(() => {
@@ -177,24 +170,6 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
   );
 
   const dispatch = useDispatch();
-
-  // @debt de-duplicate this with version in src/components/templates/Jazzbar/JazzTab/JazzTab.tsx
-  const reactionClicked = useCallback(
-    (emojiReaction: EmojiReactionType) => {
-      if (!venueId || !userWithId) return;
-
-      dispatch(
-        addReaction({
-          venueId,
-          reaction: createEmojiReaction(emojiReaction, userWithId),
-        })
-      );
-
-      // @debt Why do we have this here..? We probably shouldn't have it/need it? It's not a very Reacty thing to do..
-      setTimeout(() => (document.activeElement as HTMLElement).blur(), 1000);
-    },
-    [venueId, userWithId, dispatch]
-  );
 
   // @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
   const [isShoutSent, setIsShoutSent] = useState(false);
@@ -340,32 +315,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     // @debt This should probably be all rolled up into a single canonical component for emoji reactions/etc
     const renderReactionsContainer = () => (
       <>
-        <div className="emoji-container">
-          {burningReactions.map((reaction) => (
-            <button
-              key={reaction.name}
-              className="reaction"
-              onClick={() => reactionClicked(reaction.type)}
-              id={`send-reaction-${reaction.type}`}
-            >
-              <span role="img" aria-label={reaction.ariaLabel}>
-                {reaction.text}
-              </span>
-            </button>
-          ))}
-          <div
-            className="mute-button"
-            onClick={() => setIsAudioEffectDisabled((state) => !state)}
-          >
-            <FontAwesomeIcon
-              className="reaction"
-              icon={isAudioEffectDisabled ? faVolumeMute : faVolumeUp}
-            />
-          </div>
-          <button className="leave-seat-button" onClick={leaveSeat}>
-            Leave Seat
-          </button>
-        </div>
+        <ReactionsBar
+          venueId={venueId}
+          leaveSeat={leaveSeat}
+          isReactionsMuted={isUserAudioMuted}
+          toggleMute={toggleUserAudio}
+        />
 
         {venue.showShoutouts && (
           //  @debt This should probably be all rolled up into a single canonical component. Possibly CallOutMessageForm by the looks of things?
@@ -469,7 +424,7 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
                                 user={seatedPartygoer}
                                 reactionPosition={isOnRight ? "left" : "right"}
                                 miniAvatars={venue.miniAvatars}
-                                isAudioEffectDisabled={isAudioEffectDisabled}
+                                isAudioEffectDisabled={isUserAudioMuted}
                                 showNametags={venue.showNametags}
                               />
                             )}
@@ -497,12 +452,12 @@ export const Audience: React.FC<AudienceProps> = ({ venue }) => {
     dispatch,
     reset,
     columnsForSizedAuditorium,
-    isAudioEffectDisabled,
+    isUserAudioMuted,
+    toggleUserAudio,
     leaveSeat,
     handleSubmit,
     register,
     isShoutSent,
-    reactionClicked,
     isSeat,
     partygoersBySeat,
     takeSeat,
