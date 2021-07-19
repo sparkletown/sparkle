@@ -25,6 +25,7 @@ const VenueEventDetails = ({
   className,
 }: VenueEventDetailsProps) => {
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
+  // eventEndTime(venueEvent) is "Invalid date" when sum of start_utc_seconds and duration_minutes is more then new Date(8640000000000000)
   const endTime = formatTimeLocalised(eventEndTime(venueEvent));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 

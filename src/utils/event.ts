@@ -48,6 +48,14 @@ export const hasEventFinished = (event: VenueEvent) =>
 export const eventStartTime = (event: VenueEvent) =>
   fromUnixTime(event.start_utc_seconds);
 
+// Javascript Date MAX_VALUE = new Date(8640000000000000)
+
+// TODO: make sure sum of start_utc_seconds and duration_minutes is less then new Date(8640000000000000)
+
+// addMinutes recieves params { date: Date, amount: number }
+// with max values as { date: new Date(8640000000000000), amount: 0 } where
+// date: Date = start_utc_seconds and
+// amount: number = duration_minutes
 export const eventEndTime = (event: VenueEvent) =>
   addMinutes(eventStartTime(event), event.duration_minutes);
 
