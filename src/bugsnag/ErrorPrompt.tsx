@@ -6,24 +6,21 @@ import "./ErrorPrompt.scss";
 
 const CHUNK_NOT_IN_CACHE = /Loading chunk [\d]+ failed/;
 
-const LOAD_ERROR_TITLE = "Loading Error";
+const LOAD_ERROR_TITLE = `Refresh that page! \u{02728}\u{1F942}\u{1F4A5}\u{1F37E}\u{1F389} (Loading Error)`;
 const LOAD_ERROR_MESSAGE = `
-Apologies for the interruption.
-There seems to be a problem loading necessary file for the proper functioning of this app.
-
-This can happen if there has been an update.
-Please try reloading the page to get the newer version.
-
-In case the problem persists, please contact \u2728 Sparkle and provide the error details.
+Seems we are out of sync.
+Pop open that cork, please refresh your page to get the latest, most Sparkly version of this space.
+If the problem persists after refresh, take a screenshot and get in touch
 `;
 
-const UNEXPECTED_ERROR_TITLE = "Unexpected Error";
+const UNEXPECTED_ERROR_TITLE = `We got bugs! \u{1F997}\u{1F41B}\u{1F577}\u{0FE0F}\u{1F41E}\u{1F351} (Unexpected Error)`;
 const UNEXPECTED_ERROR_MESSAGE = `
-You can try clearing the error in hope the app will keep working as expected
-or if that doesn't help - reload the page.
-
-In case the problem persists, please contact \u2728 Sparkle and provide the error details.
+Try clearing the error and if that fails, reload the page.
+If that fails, get a glass and a sheet of paper and catch the bug, and take it outside.
+If the problem persists after refresh, take a screenshot and get in touch
 `;
+
+const MAILTO_LINK = `support@sparkle.space`;
 
 export interface ChunkLoadError extends Error {
   type?: string;
@@ -55,19 +52,20 @@ export const ErrorPrompt: React.FC<FallbackComponentProps> = ({
       ? LOAD_ERROR_TITLE
       : UNEXPECTED_ERROR_TITLE;
 
-  const messageLines = (isMissingInCache
+  const message = isMissingInCache
     ? LOAD_ERROR_MESSAGE
-    : UNEXPECTED_ERROR_MESSAGE
-  )
-    .split("\n\n")
-    .map((line, key) => <p key={key}>{line}</p>);
+    : UNEXPECTED_ERROR_MESSAGE;
 
   return (
     <div className="ErrorPrompt">
       <div className="ErrorPrompt__modal">
         <h4 className="ErrorPrompt__title">{title}</h4>
         <div className="ErrorPrompt__row--vertical ErrorPrompt__message">
-          {messageLines}
+          {message} [
+          <a className="ErrorPrompt__mailto" href={"mailto:" + MAILTO_LINK}>
+            {MAILTO_LINK}
+          </a>
+          ]
         </div>
         <div className="ErrorPrompt__row ErrorPrompt__buttons">
           {!isMissingInCache && (
@@ -113,9 +111,11 @@ export const ErrorPrompt: React.FC<FallbackComponentProps> = ({
         )}
         <div className="ErrorPrompt__row ErrorPrompt__row--vertical">
           <div className="ErrorPrompt__name">Component Stack:</div>
-          <textarea className="ErrorPrompt__value--preformatted" readOnly>
-            {info.componentStack}
-          </textarea>
+          <textarea
+            className="ErrorPrompt__value--preformatted"
+            readOnly
+            value={info.componentStack}
+          />
         </div>
       </div>
     </div>

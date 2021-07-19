@@ -64,11 +64,19 @@
     width: 100%;
   }
 
+  &__mailto,
+  &__mailto:hover {
+    color: #f6e652;
+    text-decoration: none;
+  }
+
   &__name {
     font-weight: bold;
   }
 
-  &__value--preformatted {
+  &__value--preformatted,
+  &__value--preformatted:focus,
+  &__value--preformatted:hover {
     min-height: 15em;
     max-height: 30em;
     min-width: 10em;
@@ -76,6 +84,10 @@
     overflow: auto;
     text-align: start;
     font-family: monospace;
+    cursor: text;
+    border: none;
+    box-shadow: none;
+    background: rgba(255, 255, 255, 0.12);
   }
 
   &__buttons {
