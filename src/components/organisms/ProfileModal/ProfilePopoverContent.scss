@@ -1,32 +1,29 @@
 @import "scss/constants.scss";
 
+$profile-popover--margin-top: 12px;
+
 #profile-popover {
+  margin-top: $profile-popover--margin-top;
+
   &.popover {
     @include scrollbar;
+    border-radius: 0 0 $border-radius--xl $border-radius--xl;
   }
 }
 
-.profile-modal-container {
+.ProfilePopoverContent {
   position: relative;
   overflow: auto;
-  padding: 30px;
+  padding: $spacing--md;
   background: $black;
+  height: 100%;
   background-image: linear-gradient(
     0deg,
     rgba($white, 0.05) 0%,
     rgba($white, 0.05) 100%
   );
   border-radius: 22px;
-
-  .user-information {
-    display: flex;
-    align-items: center;
-    margin-bottom: 30px;
-  }
-
-  .profile-modal-container {
-    padding: 30px;
-  }
+  font-family: "Rubik", sans-serif;
 
   .ellipsis-text {
     white-space: nowrap;
@@ -36,29 +33,18 @@
 
   .question-section {
     margin-bottom: 30px;
+    font-size: 14px;
+    color: white;
   }
 
   .question {
-    color: $concrete;
-  }
-
-  .answer {
-    font-size: 20px;
+    opacity: 0.6;
   }
 
   .modal-title {
     font-style: normal;
     font-size: 25px;
     margin-bottom: 10px;
-  }
-
-  input {
-    margin-bottom: 10px;
-  }
-
-  .text-container {
-    font-size: 12px;
-    margin-left: $spacing--md;
   }
 
   .checkbox {

@@ -2,17 +2,12 @@
 
 .UserAvatar {
   position: relative;
-  z-index: z(global-profile-icon);
   width: 25px;
   height: 25px;
 
   &:hover {
-    z-index: z(global-profile-icon--hover);
-
     .UserAvatar__nametag--hover {
       opacity: 1;
-
-      z-index: z(global-profile-icon--hover);
 
       background-color: $primary;
       padding: $spacing--xs;
@@ -27,6 +22,7 @@
     height: 100%;
     width: 100%;
     border-radius: 50%;
+    vertical-align: unset;
   }
 
   &__status-indicator {
@@ -34,21 +30,10 @@
     bottom: -1px;
     right: -1px;
     border-radius: 50%;
-    background-color: $green;
     height: 8px;
     width: 8px;
     z-index: z(user-avatar-status-indicator);
-
-    display: none;
-
-    &--online {
-      display: block;
-      background-color: $green;
-    }
-    &--busy {
-      display: block;
-      background-color: $ripple-color;
-    }
+    display: block;
 
     &--large {
       height: 12px;
@@ -64,9 +49,19 @@
     }
   }
 
-  &--large {
+  &--small {
+    width: 25px;
+    height: 25px;
+  }
+
+  &--medium {
     height: 40px;
     width: 40px;
+  }
+
+  &--large {
+    height: 54px;
+    width: 54px;
   }
 
   &__nametag {

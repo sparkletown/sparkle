@@ -215,8 +215,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
                 ref={register}
                 value={roomName}
               />
-              {errors.host && (
-                <span className="input-error">{errors.host.message}</span>
+              {errors.room && (
+                <span className="input-error">{errors.room.message}</span>
               )}
             </div>
           )}

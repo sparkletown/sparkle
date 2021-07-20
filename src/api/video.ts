@@ -1,24 +1,20 @@
 import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
-export interface GetVideoTokenProps {
+export interface GetTwilioVideoTokenProps {
   userId: string;
   roomName: string;
-  onError?: (msg: string) => void;
-  onFinish?: () => void;
 }
 
 export type VideoToken = string;
 
-export const getVideoToken = async ({
+export const getTwilioVideoToken = async ({
   userId,
   roomName,
-  onError,
-  onFinish,
-}: GetVideoTokenProps): Promise<void | VideoToken> => {
+}: GetTwilioVideoTokenProps): Promise<VideoToken> => {
   return firebase
     .functions()
-    .httpsCallable("video-getToken")({
+    .httpsCallable("video-getTwilioToken")({
       identity: userId,
       room: roomName,
     })
@@ -26,13 +22,39 @@ export const getVideoToken = async ({
     .catch((err) => {
       Bugsnag.notify(err, (event) => {
         event.addMetadata("context", {
-          location: "api/video::getVideoToken",
+          location: "api/video::getTwilioVideoToken",
           userId,
           roomName,
         });
       });
 
-      if (onError) onError(err);
+      throw err;
+    });
+};
+
+export interface GetAgoraTokenProps {
+  channelName: string;
+}
+
+export type AgoraToken = string;
+
+export const getAgoraToken = async ({
+  channelName,
+}: GetAgoraTokenProps): Promise<AgoraToken> => {
+  return firebase
+    .functions()
+    .httpsCallable("video-getAgoraToken")({
+      channelName,
     })
-    .finally(onFinish);
+    .then<AgoraToken>((result) => result.data.token)
+    .catch((err) => {
+      Bugsnag.notify(err, (event) => {
+        event.addMetadata("context", {
+          location: "api/video::getAgoraToken",
+          channelName,
+        });
+      });
+
+      throw err;
+    });
 };

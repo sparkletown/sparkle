@@ -18,6 +18,8 @@ $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
+$input--invalid: #dc3545;
+
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
@@ -26,11 +28,13 @@ $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
+$concrete--dark: #9f9fa0;
 $black: #000000;
 $white: #fff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
+$bright-pink: #ba3ff4;
 $green: #4bcc4b;
 $yellow: #ffe600;
 $bright-yellow: #f0df73;
@@ -154,7 +158,6 @@ $z-layers: (
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // UserAvatar
-  global-profile-icon--hover: 2,
   global-profile-icon: 1,
   user-avatar-status-indicator: 1,
   // UserReactions
