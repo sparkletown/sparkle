@@ -2,9 +2,9 @@ import React from "react";
 
 import { useVenueId } from "hooks/useVenueId";
 import {
-  AdministeredVenuesProvider,
-  AdministeredVenuesProviderProps,
-} from "hooks/useConnectAdministeredVenues";
+  OwnedVenuesProvider,
+  OwnedVenuesProviderProps,
+} from "hooks/useConnectOwnedVenues";
 import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
 import {
   RelatedVenuesProvider,
@@ -13,7 +13,7 @@ import {
 import { useUser } from "hooks/useUser";
 
 export type EmptyProviderProps = Partial<
-  AdministeredVenuesProviderProps &
+  OwnedVenuesProviderProps &
     RelatedVenuesProviderProps &
     WorldUsersProviderProps
 >;
@@ -23,22 +23,22 @@ const EmptyProvider: React.FC<EmptyProviderProps> = ({ children }) => {
 };
 
 export interface ProvidedProps {
-  withAdministeredVenues?: boolean;
+  withOwnedVenues?: boolean;
   withRelatedVenues?: boolean;
   withWorldUsers?: boolean;
 }
 
 export const Provided: React.FC<ProvidedProps> = ({
   children,
-  withAdministeredVenues = false,
+  withOwnedVenues = false,
   withRelatedVenues = false,
   withWorldUsers = false,
 }) => {
   const { userId } = useUser();
   const venueId = useVenueId();
 
-  const MaybeAdministeredVenuesProvider: React.FC<AdministeredVenuesProviderProps> = withAdministeredVenues
-    ? AdministeredVenuesProvider
+  const MaybeOwnedVenuesProvider: React.FC<OwnedVenuesProviderProps> = withOwnedVenues
+    ? OwnedVenuesProvider
     : EmptyProvider;
 
   const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
@@ -52,9 +52,9 @@ export const Provided: React.FC<ProvidedProps> = ({
   return (
     <MaybeWorldUsersProvider venueId={venueId}>
       <MaybeRelatedVenuesProvider venueId={venueId}>
-        <MaybeAdministeredVenuesProvider userId={userId}>
+        <MaybeOwnedVenuesProvider userId={userId}>
           {children}
-        </MaybeAdministeredVenuesProvider>
+        </MaybeOwnedVenuesProvider>
       </MaybeRelatedVenuesProvider>
     </MaybeWorldUsersProvider>
   );

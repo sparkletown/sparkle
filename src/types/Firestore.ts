@@ -52,7 +52,6 @@ export interface FirestoreStatus {
 
 // note: these entries should be sorted alphabetically
 export interface FirestoreData {
-  administeredVenues?: Record<string, AnyVenue>;
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
   // @debt this doesn't appear to be used by anything anymore
@@ -66,6 +65,7 @@ export interface FirestoreData {
   eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
+  ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;

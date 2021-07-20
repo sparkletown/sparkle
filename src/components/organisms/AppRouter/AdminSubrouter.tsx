@@ -19,31 +19,31 @@ export const AdminSubrouter: React.FC = () => {
       {/* Admin V1 */}
 
       <Route path="/admin/venue/rooms/:venueId">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <RoomsForm />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/creation">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/edit/:venueId">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/:venueId">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <Admin />
         </Provided>
       </Route>
 
       <Route path="/admin">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <Admin />
         </Provided>
       </Route>
@@ -57,25 +57,25 @@ export const AdminSubrouter: React.FC = () => {
       </Route>
 
       <Route path="/admin-ng/advanced-settings/:venueId?">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <AdminAdvancedSettings />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/venue/creation">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/edit/:venueId">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng">
-        <Provided withWorldUsers withAdministeredVenues>
+        <Provided withWorldUsers withOwnedVenues>
           <AdminV2 />
         </Provided>
       </Route>

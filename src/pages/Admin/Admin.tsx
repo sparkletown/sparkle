@@ -43,7 +43,7 @@ import {
   canHaveSubvenues,
 } from "utils/venue";
 
-import { useAdministeredVenues } from "hooks/useConnectAdministeredVenues";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
 import { useQuery } from "hooks/useQuery";
@@ -76,7 +76,7 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const { isLoading, administeredVenues } = useAdministeredVenues({
+  const { isLoading, ownedVenues } = useOwnedVenues({
     currentVenueId: selectedVenueId,
   });
 
@@ -91,7 +91,7 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {administeredVenues.map((venue) => (
+        {ownedVenues.map((venue) => (
           <li
             key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
@@ -129,7 +129,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const { currentVenue } = useAdministeredVenues({ currentVenueId: venueId });
+  const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
