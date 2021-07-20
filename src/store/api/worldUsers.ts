@@ -1,6 +1,7 @@
 import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import firebase from "firebase/app";
+// import { isEqual } from "lodash";
 
 import {
   extractLocationFromUser,
@@ -16,7 +17,12 @@ export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
 }
 
-// TODO: If we add recentUserIds here, then we should be able to 'pre-process' that data rather than breaking memo's/etc?
+// TODO: If we add recentUserIds to the store here, then we should be able to 'pre-process' that data as it comes in, rather than breaking memo's/etc in the hooks
+//   and having to handle processing it all later on.
+// TODO: We could follow a similar pattern as used here to separate userLocation out of the user object entirely. Most of the 'groundwork'
+//   should already be done in the changes made for this that the 'final step' of doing it would presumably be quite small. This would remove
+//   the need for the deep compare's to avoid Immer's draft making patches for data that technically hasn't changed, and would likely simplify
+//   the overall logic a bit.
 export interface WorldUsersData {
   // TODO: this is basically the naive 'copy/paste' data structure that matches the legacy
   //   react-redux-firebase useFirestoreConnect implementation currently. Once we have this in
@@ -65,6 +71,11 @@ export const worldUsersApi = createApi({
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
         const processQueuedChanges = () => {
+          console.log(
+            "[worldUsersApi::processQueuedChanges] queuedChanges.length = ",
+            queuedChanges.length
+          );
+
           if (queuedChanges.length === 0) return;
 
           updateCachedData((draft) => {
@@ -192,7 +203,16 @@ const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
       );
 
       if (existingUserIndex !== -1) {
+        // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
+        //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed
         draft.worldUsers[existingUserIndex] = userWithoutLocation;
+        // if (isEqual(draft.worldUsers[existingUserIndex], userWithoutLocation)) {
+        //   // console.warn(
+        //   //   `[worldUsersApi::snapshot::modified] userId=${userWithId.id} userWithoutLocation matches data within worldUsers. We shouldn't need to update the draft here`
+        //   // );
+        // } else {
+        //   draft.worldUsers[existingUserIndex] = userWithoutLocation;
+        // }
       } else {
         // TODO: handle this case in a better way. Maybe Bugsnag or similar? Or maybe just combine the logic
         //   for added/modified to handle it gracefully if it occurs. It's an edgecase and implies redux store
@@ -202,8 +222,31 @@ const processUserDocChange = (draft: MaybeDrafted<WorldUsersData>) => (
         );
       }
 
+      // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
+      //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed
       draft.worldUsersById[userId] = userWithoutLocation;
+      // if (isEqual(draft.worldUsersById[userId], userWithoutLocation)) {
+      //   // console.warn(
+      //   //   `[worldUsersApi::snapshot::modified] userId=${userWithId.id} userWithoutLocation matches data within worldUsersById. We shouldn't need to update the draft here`
+      //   // );
+      // } else {
+      //   draft.worldUsersById[userId] = userWithoutLocation;
+      // }
+
+      // TODO: It seems like Immer's draft will produce 'patches' for this chunk of data even if it hasn't actually changed,
+      //   so it might be beneficial to check it with a deep compare here first, and only modify the draft if the data has actually changed.
+      //   Though in this particular case, the userLocation is almost always the thing that will be changing, so the extra comparisons here
+      //   might be more 'costly' than just always updating this.
       draft.worldUserLocationsById[userId] = userLocation;
+      // if (
+      //   isEqual(draft.worldUserLocationsById[userId], userLocation)
+      // ) {
+      //   console.warn(
+      //     `[worldUsersApi::snapshot::modified] userId=${userWithId.id} userLocation matches data within worldUserLocationsById. We shouldn't need to update the draft here`
+      //   );
+      // } else {
+      //
+      // }
 
       return;
     }
