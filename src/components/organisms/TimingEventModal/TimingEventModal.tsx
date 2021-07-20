@@ -66,7 +66,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     }
   }, [event, reset]);
 
-  const onSubmit = useCallback(
+  const onUpdateEvent = useCallback(
     async (data: EventInput) => {
       const start = dayjs(`${data.start_date} ${data.start_time}`);
       const formEvent: VenueEvent = {
@@ -99,7 +99,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         <Modal.Body>
           <div className="form-container">
             <h2>Create an event</h2>
-            <form className="form" onSubmit={handleSubmit(onSubmit)}>
+            <form className="form" onSubmit={handleSubmit(onUpdateEvent)}>
               <div className="input-group dropdown-container">
                 <select
                   name="room"
