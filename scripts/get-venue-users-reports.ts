@@ -10,9 +10,9 @@ import { writeFileSync } from "fs";
 // import ObjectToCsv from "objects-to-csv";
 
 const usage = makeScriptUsage({
-  description: "Bulk upload events from a spreadsheet ",
+  description: "Get custom profile fields to CSV ",
   usageParams: "PROJECT_ID CREDENTIAL_PATH",
-  exampleParams: "co-reality-staging add-event-by-csv.example.csv key.json",
+  exampleParams: "co-reality-staging reports.csv key.json",
 });
 
 const [projectId, credentialPath] = process.argv.slice(2);
