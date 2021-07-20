@@ -16,6 +16,7 @@ export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
 }
 
+// TODO: If we add recentUserIds here, then we should be able to 'pre-process' that data rather than breaking memo's/etc?
 export interface WorldUsersData {
   // TODO: this is basically the naive 'copy/paste' data structure that matches the legacy
   //   react-redux-firebase useFirestoreConnect implementation currently. Once we have this in
@@ -115,6 +116,7 @@ export const worldUsersApi = createApi({
             queuedChanges.length
           );
 
+          // TODO: check if this is the 'first load', and if so, then process all of the updates without any delay
           snapshot.docChanges().forEach((change) => {
             // TODO: check if this document relates to the current user, if so, update it immediately
             //   Note that we will need to pass their userId in and/or read it from somehwere to make this work..
@@ -142,6 +144,7 @@ export const worldUsersApi = createApi({
         clearInterval(processQueuedChangesIntervalId);
 
         // Make sure we process any last remaining queued changes
+        // TODO: do we need to do this? I think we'll only get to this code if we're already planning on clearing the cached data?
         processQueuedChanges();
       },
     }),
