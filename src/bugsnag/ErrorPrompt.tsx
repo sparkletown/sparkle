@@ -16,7 +16,7 @@ If the problem persists after refresh, take a screenshot and get in touch
 const UNEXPECTED_ERROR_TITLE = `We got bugs! \u{1F997}\u{1F41B}\u{1F577}\u{0FE0F}\u{1F41E}\u{1F351} (Unexpected Error)`;
 const UNEXPECTED_ERROR_MESSAGE = `
 Try clearing the error and if that fails, reload the page.
-If that fails, get a glass and a sheet of paper and catch the bug, and take it outside.
+If that fails, get a glass and a sheet of paper, catch the bug, and take it outside.
 If the problem persists after refresh, take a screenshot and get in touch
 `;
 
