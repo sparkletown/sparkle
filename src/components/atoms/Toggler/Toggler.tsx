@@ -1,22 +1,22 @@
-import React, { ChangeEventHandler } from "react";
+import React from "react";
 
-import { Checkbox } from "components/atoms/Checkbox";
+import { Checkbox, CheckboxProps } from "components/atoms/Checkbox";
 
-export interface TogglerProps {
-  defaultToggled: boolean;
-  onToggle: ChangeEventHandler<HTMLInputElement>;
-  containerClassName?: string;
+export interface TogglerProps
+  extends Omit<CheckboxProps, "toggler" | "checked" | "defaultChecked"> {
+  toggled?: boolean;
+  defaultToggled?: boolean;
 }
 
 export const Toggler: React.FC<TogglerProps> = ({
+  toggled,
   defaultToggled,
-  onToggle,
-  containerClassName,
+  ...extraProps
 }) => (
   <Checkbox
-    containerClassName={containerClassName}
-    defaultChecked={defaultToggled}
-    onChange={onToggle}
+    {...extraProps}
     toggler
+    defaultChecked={defaultToggled}
+    checked={toggled}
   />
 );
