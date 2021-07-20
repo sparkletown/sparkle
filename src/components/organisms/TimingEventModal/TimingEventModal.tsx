@@ -50,9 +50,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   });
 
   useEffect(() => {
-    if (!event) {
-      reset({});
-    } else {
+    if (event) {
       reset({
         name: event.name,
         description: event.description,
