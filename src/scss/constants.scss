@@ -29,6 +29,7 @@ $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
+$concrete--dark: #9f9fa0;
 $black: #000000;
 $white: #fff;
 $dark: #1a1d24;
@@ -158,7 +159,6 @@ $z-layers: (
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
   // UserAvatar
-  global-profile-icon--hover: 2,
   global-profile-icon: 1,
   user-avatar-status-indicator: 1,
   // UserReactions

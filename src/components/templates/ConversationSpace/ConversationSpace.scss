@@ -2,10 +2,8 @@
 
 // @debt Are all of the jazzbar / emoji related styles actually needed/used here?
 .conversation-space-container {
-  margin: 40px 40px 0 40px;
-
   .userlist-container {
-    margin-left: 40px;
+    margin-left: 80px;
   }
 
   .container-in-grid {
@@ -252,6 +250,13 @@
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-gap: 1rem;
+    margin: 10px 70px;
+  }
+
+  .ControlBar__container {
+    margin: $spacing--md 40px 0 auto;
+    padding-right: 40px;
+    width: max-content;
   }
 
   .seated-area {
@@ -261,7 +266,7 @@
     justify-content: space-around;
     flex: 0 0 auto;
     user-select: none;
-    margin: 0 40px;
+    margin: $announcement-banner-height 40px 0px;
     -webkit-user-select: none;
     -khtml-user-select: none;
     -moz-user-select: none;
