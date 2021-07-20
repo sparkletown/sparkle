@@ -82,35 +82,39 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           )}
         </button>
 
-        <div className="chat-sidebar__tabs" role="tablist">
-          <button
-            role="tab"
-            id={venueTabId}
-            aria-label={venueChatTabTitle}
-            aria-selected={isVenueChat}
-            className={venueChatTabStyles}
-            onClick={selectVenueChat}
-          >
-            {venueChatTabTitle}
-          </button>
-          <button
-            role="tab"
-            id={privateTabId}
-            aria-label={privateChatTabTitle}
-            aria-selected={isPrivateChat}
-            className={privateChatTabStyles}
-            onClick={selectPrivateChat}
-          >
-            {privateChatTabTitle}
-          </button>
-        </div>
-      </div>
-      <div role="tabpanel" className="chat-sidebar__tab-content">
-        {isVenueChat && <VenueChat venue={venue} />}
-        {isPrivateChat && (
-          <PrivateChats recipientId={recipientId} venue={venue} />
+        {isExpanded && (
+          <div className="chat-sidebar__tabs" role="tablist">
+            <button
+              role="tab"
+              id={venueTabId}
+              aria-label={venueChatTabTitle}
+              aria-selected={isVenueChat}
+              className={venueChatTabStyles}
+              onClick={selectVenueChat}
+            >
+              {venueChatTabTitle}
+            </button>
+            <button
+              role="tab"
+              id={privateTabId}
+              aria-label={privateChatTabTitle}
+              aria-selected={isPrivateChat}
+              className={privateChatTabStyles}
+              onClick={selectPrivateChat}
+            >
+              {privateChatTabTitle}
+            </button>
+          </div>
         )}
       </div>
+      {isExpanded && (
+        <div role="tabpanel" className="chat-sidebar__tab-content">
+          {isVenueChat && <VenueChat venue={venue} />}
+          {isPrivateChat && (
+            <PrivateChats recipientId={recipientId} venue={venue} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
