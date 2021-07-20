@@ -9,6 +9,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { WithId, WithVenueId } from "utils/id";
+import { logEventGA } from "utils/ga";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
@@ -22,7 +23,6 @@ import { UserList } from "components/molecules/UserList";
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
-import { logEventGA } from "utils/ga";
 
 const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 
