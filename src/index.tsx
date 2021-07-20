@@ -60,6 +60,7 @@ import {
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
+import { initGoogleAnalytics } from "utils/googleAnalytics";
 
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -71,7 +72,6 @@ import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
-import { initGoogleAnalytics } from "utils/ga";
 
 activatePolyFills();
 

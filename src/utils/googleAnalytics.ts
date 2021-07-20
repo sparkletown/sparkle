@@ -10,7 +10,7 @@ export const initGoogleAnalytics = () => {
   }
 };
 
-export const logEventGA = ({
+export const logEventGoogleAnalytics = ({
   eventCategory,
   eventAction,
   eventLabel,

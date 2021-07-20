@@ -9,7 +9,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { WithId, WithVenueId } from "utils/id";
-import { logEventGA } from "utils/ga";
+import { logEventGoogleAnalytics } from "utils/googleAnalytics";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
@@ -105,7 +105,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    logEventGA({
+    logEventGoogleAnalytics({
       eventCategory: venueName,
       eventAction: "ENTER_ROOM",
       eventLabel: room.title,
