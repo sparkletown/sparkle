@@ -22,6 +22,7 @@ import { UserList } from "components/molecules/UserList";
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
 
 import "./RoomModal.scss";
+import { logEventGA } from "utils/ga";
 
 const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 
@@ -104,8 +105,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    console.log("line 107");
-  }, [_enterRoomWithSound]);
+    logEventGA({
+      eventCategory: venueName,
+      eventAction: "ENTER_ROOM",
+      eventLabel: room.title,
+    });
+  }, [_enterRoomWithSound, venueName, room]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
