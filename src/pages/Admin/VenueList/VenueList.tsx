@@ -23,7 +23,7 @@ const VenueList: React.FC<VenueListProps> = ({
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin-ng/venue/creation" className="btn btn-primary">
+        <Link to="/admin-ng/create/venue" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
