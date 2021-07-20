@@ -29,6 +29,15 @@
   }
 
   &__alternative-logins {
+    outline: none !important;
+    border: none;
+    border-width: 0;
+    background: none;
+    color: $white;
+    &:focus {
+      opacity: 0.8;
+    }
+
     margin-top: $spacing--md;
     display: flex;
     justify-content: center;

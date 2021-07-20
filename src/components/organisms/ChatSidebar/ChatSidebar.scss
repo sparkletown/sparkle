@@ -60,6 +60,9 @@ $header-height: 45px;
   }
 
   &__controller {
+    outline: none !important;
+    border-width: 0;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -77,6 +80,10 @@ $header-height: 45px;
     transform: translateX(-100%);
 
     &:hover {
+      background-color: $lighter-intermediate-grey;
+    }
+
+    &:focus {
       background-color: $lighter-intermediate-grey;
     }
 
