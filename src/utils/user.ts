@@ -8,6 +8,6 @@ export const getUserExperience = (venueName?: string) => (
   return user?.data?.[venueName];
 };
 
-export const isCompleteUser = (user: User) => {
+export const isUserComplete = (user: User) => {
   return user.partyName && user.pictureUrl;
 };

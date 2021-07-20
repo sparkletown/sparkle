@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState, useMemo } from "react";
+import Form from "react-bootstrap/Form";
 
 import { getUsersEmails } from "api/auth";
 
@@ -8,13 +9,12 @@ import { useWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 import { downloadGeneratedCSVFileUsers } from "utils/csv";
-
-import Form from "react-bootstrap/Form";
+import { isUserComplete } from "utils/user";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import { AdminUsersTableChart } from "components/molecules/AdminUserTableChart";
 
 import "./VenueUsersReport.scss";
-import { AdminUsersTableChart } from "components/molecules/AdminUserTableChart";
 
 interface EmailInterface {
   email: string;
@@ -29,16 +29,12 @@ export const VenueUsersReport: React.FC = () => {
   const [customFieldValue, setCustomFieldValue] = useState("");
   const [emails, setEmails] = useState<EmailInterface[]>([]);
 
-  const userIsComplete = useCallback((user: WithId<User>) => {
-    return user.partyName && user.pictureUrl;
-  }, []);
-
   const getUsersHeaders = useCallback(() => {
     const completeUser: WithId<User> = worldUsers.find((user) =>
-      userIsComplete(user)
+      isUserComplete(user)
     ) ?? { id: "" };
     setHeaders(Object.keys(completeUser));
-  }, [worldUsers, userIsComplete]);
+  }, [worldUsers]);
 
   const getVenueUsersEmails = useCallback(async () => {
     setEmails(

@@ -351,7 +351,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               Edit space
             </Link>
             <Link
-              to={`/admin/venue/usersreport/${venue.id}`}
+              to={`/admin/venue/users-report/${venue.id}`}
               className="btn btn-block"
             >
               Users report

@@ -36,7 +36,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      <Route path="/admin/venue/usersreport/:venueId">
+      <Route path="/admin/venue/users-report/:venueId">
         <Provided withWorldUsers>
           <VenueUsersReport />
         </Provided>
