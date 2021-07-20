@@ -1,51 +1,36 @@
 @import "scss/constants.scss";
-
-.dropdown {
-  appearance: none;
-  border-radius: 22px;
-  color: #fff;
-  transform: translateY(0);
-  border: none;
-  background-color: rgba(255, 255, 255, 0.12);
-  padding: 12px 26px 12px 12px;
-  width: 100%;
-
-  &:after {
-    content: "";
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    height: 20px;
-    width: 20px;
-    background-image: url(/assets/icons/nav-party-logo-icon.png);
-    background-size: 20px;
-    opacity: 0.4;
-    transform: rotate(0deg);
-    transition: transform 400ms $transition-function;
+.TimingEventModal {
+  .modal-content {
+    background-color: $light-grey;
   }
-}
 
-.create-modal {
-  background-color: $light-grey;
-  border: none;
-}
+  .input-group {
+    position: relative;
 
-.input-group {
-  position: relative;
-}
+    &__modal-input {
+      width: 100%;
+      border: 0.1px solid rgba(255, 255, 255, 0.2);
+      text-align: left;
+    }
 
-.modal-input {
-  width: 100%;
-  border: 0.1px solid rgba(255, 255, 255, 0.2);
-  text-align: left;
-}
+    &__dropdown {
+      appearance: none;
+      border-radius: 22px;
+      color: #fff;
+      transform: translateY(0);
+      background-color: rgba(255, 255, 255, 0.12);
+      padding: 12px 26px 12px 12px;
+      width: 100%;
+    }
 
-.flex {
-  display: flex;
-  justify-content: space-between;
+    &__flex {
+      display: flex;
+      justify-content: space-between;
 
-  .modal-input {
-    width: 49%;
-    display: inline-block;
+      input {
+        width: 49%;
+        display: inline-block;
+      }
+    }
   }
 }

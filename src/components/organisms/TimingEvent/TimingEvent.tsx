@@ -11,8 +11,8 @@ import { VenueEvent } from "types/venues";
 
 export type TimingEventProps = {
   event: WithId<VenueEvent>;
-  setShowCreateEventModal: Function;
-  setEditedEvent: Function;
+  setShowCreateEventModal: () => void;
+  setEditedEvent: (event: WithId<VenueEvent>) => void;
 };
 
 export const TimingEvent: React.FC<TimingEventProps> = ({

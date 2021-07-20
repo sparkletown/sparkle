@@ -3,14 +3,10 @@ import dayjs from "dayjs";
 
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 
-import {
-  VenueEvent,
-  VenueTemplate,
-  AnyVenue,
-  isVenueWithRooms,
-} from "types/venues";
+import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+
+import { VenueEvent, VenueTemplate, AnyVenue } from "types/venues";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
@@ -31,37 +27,6 @@ export type TimingEventModalProps = {
   setShowDeleteEventModal: Function;
 };
 
-const validationSchema = Yup.object().shape<EventInput>({
-  name: Yup.string().required("Name required"),
-  description: Yup.string().required("Description required"),
-  start_date: Yup.string()
-    .required("Start date required")
-    .matches(
-      /\d{4}-\d{2}-\d{2}/,
-      'Start date must have the format "yyyy-mm-dd"'
-    )
-    .test(
-      "start_date_future",
-      "Start date must be in the futur",
-      (start_date) => {
-        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
-      }
-    ),
-  start_time: Yup.string().required("Start time required"),
-  duration_hours: Yup.number()
-    .typeError("Hours must be a number")
-    .required("Hours required"),
-  duration_minutes: Yup.number()
-    .typeError("Minutes must be a number")
-    .required("Minutes equired"),
-  price: Yup.number()
-    .typeError("Price must be a number")
-    .required("Price is required")
-    .default(0),
-  host: Yup.string().required("Host required"),
-  room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
-});
-
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -81,7 +46,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   } = useForm<EventInput>({
     mode: "onSubmit",
     reValidateMode: "onChange",
-    validationSchema,
+    validationSchema: eventEditSchema,
   });
 
   useEffect(() => {
@@ -126,12 +91,12 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
     [onHide, venueId, template, event]
   );
 
-  const rooms = isVenueWithRooms(venue) ? venue.rooms : [];
+  const rooms = venue.rooms ?? [];
 
   return (
     <>
-      <Modal show={show} onHide={onHide}>
-        <Modal.Body className="create-modal">
+      <Modal show={show} onHide={onHide} className="TimingEventModal">
+        <Modal.Body>
           <div className="form-container">
             <h2>Create an event</h2>
             <form className="form" onSubmit={handleSubmit(onSubmit)}>
@@ -139,7 +104,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <select
                   name="room"
                   id="room"
-                  className="modal-input dropdown"
+                  className="input-group__modal-input input-group__dropdown"
                   ref={register}
                 >
                   <option selected={true} style={{ display: "none" }}>
@@ -163,7 +128,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <input
                   id="name"
                   name="name"
-                  className="modal-input"
+                  className="input-group__modal-input"
                   placeholder="Name"
                   ref={register}
                 />
@@ -176,7 +141,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <label htmlFor="description">Description</label>
                 <textarea
                   name="description"
-                  className="modal-input"
+                  className="input-group__modal-input"
                   placeholder="Description"
                   ref={register}
                 />
@@ -192,7 +157,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 <input
                   id="host"
                   name="host"
-                  className="modal-input"
+                  className="input-group__modal-input"
                   placeholder="Dottie Longstockings"
                   ref={register}
                 />
@@ -202,29 +167,29 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
               </div>
 
               <div className="input-group">
-                <h4 className="party-heading">Starting time</h4>
-                <h4 className="party-subheading">
+                <label htmlFor="date">Starting time</label>
+                <label>
                   When does this event start? Use your local time zone, it will
                   be automatically converted for anyone visiting from around the
                   world.
-                </h4>
-                <div className="flex">
+                </label>
+                <div className="input-group__flex">
                   <input
                     type="date"
                     min={dayjs().format("YYYY-MM-DD")}
                     name="start_date"
-                    className="modal-input"
+                    className="input-group__modal-input"
                     ref={register}
                   />
                   <input
                     type="time"
                     name="start_time"
-                    className="modal-input"
+                    className="input-group__modal-input"
                     ref={register}
                   />
                 </div>
 
-                <div className="flex">
+                <div className="input-group__flex">
                   {errors.start_date && (
                     <span className="input-error">
                       {errors.start_date.message}
@@ -240,18 +205,18 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
 
               <div className="input-group">
                 <label htmlFor="duration_hours">Duration</label>
-                <div className="flex">
+                <div className="input-group__flex">
                   <input
                     id="duration_hours"
                     name="duration_hours"
-                    className="modal-input"
+                    className="input-group__modal-input"
                     placeholder="hours"
                     ref={register}
                   />
                   <input
                     id="duration_minutes"
                     name="duration_minutes"
-                    className="modal-input"
+                    className="input-group__modal-input"
                     placeholder="minutes"
                     ref={register}
                   />

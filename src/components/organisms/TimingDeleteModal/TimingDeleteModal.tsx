@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
+import { useAsyncFn } from "react-use";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
@@ -42,12 +43,24 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
   }, [event, reset]);
 
-  const deleteVenueEvent = useCallback(async () => {
+  // const deleteVenueEvent = useCallback(async () => {
+  //   if (event) {
+  //     await deleteEvent(venueId, event.id);
+  //   }
+  //   onHide();
+  // }, [event, onHide, venueId]);
+
+  const [
+    { loading: isDeletingEvent },
+    deleteVenueEvent,
+  ] = useAsyncFn(async () => {
     if (event) {
       await deleteEvent(venueId, event.id);
     }
     onHide();
   }, [event, onHide, venueId]);
+
+  console.log(isDeletingEvent);
 
   const eventStartTime = event
     ? dayjs(event.start_utc_seconds * 1000).format("ha")
@@ -80,7 +93,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
           <button
             className="btn btn-block btn-centered btn-danger"
             type="submit"
-            disabled={formState.isSubmitting}
+            disabled={formState.isSubmitting || isDeletingEvent}
           >
             Delete
           </button>
