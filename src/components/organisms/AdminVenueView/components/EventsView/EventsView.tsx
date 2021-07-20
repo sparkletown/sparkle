@@ -30,9 +30,11 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     show: setShowCreateEventModal,
     hide: setHideCreateEventModal,
   } = useShowHide();
+
   const {
     isShown: showDeleteEventModal,
-    toggle: setShowDeleteEventModal,
+    show: setShowDeleteEventModal,
+    hide: setHideDeleteEventModal,
   } = useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
@@ -108,7 +110,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         <TimingDeleteModal
           show={showDeleteEventModal}
           onHide={() => {
-            setShowDeleteEventModal();
+            setHideDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
           }}
           venueId={venue.id}

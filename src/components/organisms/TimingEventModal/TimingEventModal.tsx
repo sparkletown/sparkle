@@ -288,7 +288,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                       e.preventDefault();
                       onHide();
                       setEditedEvent && setEditedEvent(event);
-                      setShowDeleteEventModal(true);
+                      setShowDeleteEventModal();
                     }}
                     disabled={formState.isSubmitting}
                   />

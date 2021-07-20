@@ -49,6 +49,20 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     onHide();
   }, [event, onHide, venueId]);
 
+  const eventStartTime = event
+    ? dayjs(event.start_utc_seconds * 1000).format("ha")
+    : "Unknown";
+  const eventEndTime = event
+    ? dayjs(
+        (event.start_utc_seconds + 60 * event.duration_minutes) * 1000
+      ).format("ha")
+    : "Unknown";
+  const eventDuration = event
+    ? `${event.duration_minutes / 60} hours ${
+        event.duration_minutes % 60
+      } minutes`
+    : "Unknown";
+
   return (
     <Modal show={show} onHide={onHide}>
       <div className="form-container">
@@ -58,30 +72,18 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
             <p>Name: {event?.name}</p>
             <RenderMarkdown text={`Description: ${event?.description}`} />
             <p>
-              Time:{" "}
-              {event
-                ? `${dayjs(event.start_utc_seconds * 1000).format(
-                    "ha"
-                  )}-${dayjs(
-                    (event.start_utc_seconds + 60 * event.duration_minutes) *
-                      1000
-                  ).format("ha")} ${dayjs(
-                    event.start_utc_seconds * 1000
-                  ).format("dddd MMMM Do")}`
-                : "Unknown"}
+              Time: {eventStartTime}-{eventEndTime}
             </p>
-            <p>
-              Duration:{" "}
-              {event ? `${event?.duration_minutes / 60} hours` : "Unknown"}
-            </p>
+            <p>Duration: {eventDuration}</p>
             <p>Are you sure you wish to delete this event?</p>
           </div>
-          <input
-            className="btn btn-primary btn-block btn-centered btn-danger"
+          <button
+            className="btn btn-block btn-centered btn-danger"
             type="submit"
-            value="Delete"
             disabled={formState.isSubmitting}
-          />
+          >
+            Delete
+          </button>
         </form>
       </div>
     </Modal>
