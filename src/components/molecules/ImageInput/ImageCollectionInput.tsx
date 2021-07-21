@@ -131,9 +131,11 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         value={imageUrlForPreview}
       />
       {error?.message && <span className="input-error">{error.message}</span>}
-      <div style={{ marginTop: 10, fontSize: "16px" }}>
-        {`Or choose one of our popular ${imageType}`}
-      </div>
+      {imageCollection.length ? (
+        <div style={{ marginTop: 10, fontSize: "16px" }}>
+          {`Or choose one of our popular ${imageType}`}
+        </div>
+      ) : null}
       <div
         style={{
           display: "flex",
