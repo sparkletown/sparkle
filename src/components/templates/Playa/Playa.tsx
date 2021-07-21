@@ -14,7 +14,6 @@ import { throttle } from "lodash";
 
 import { IS_BURN } from "secrets";
 import {
-  DEFAULT_MAP_ICON_URL,
   PLAYA_TEMPLATES,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
@@ -631,12 +630,13 @@ const Playa = () => {
                 }}
                 onMouseLeave={() => setShowVenueTooltip(false)}
               >
-                <span className="img-vcenter-helper" />
+                {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
+                {/* <span className="img-vcenter-helper" />
                 <img
                   className="venue-icon"
                   src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
                   alt={`${v.name} Icon`}
-                />
+                /> */}
 
                 {selectedVenueId === v.id && <div className="selected" />}
               </div>
