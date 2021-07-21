@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { isEqual } from "lodash";
 
-import { User } from "types/User";
+import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
-import { worldUsersWithoutLocationSelector } from "utils/selectors";
+// import { worldUsersWithoutLocationSelector } from "utils/selectors";
 import { isDefined } from "utils/types";
 
-import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
+// import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 
@@ -47,23 +46,23 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
     isDefined(venueId);
 
   // TODO: refactor this to not use useFirestoreConnect
-  useFirestoreConnect(() => {
-    if (!shouldConnect) return [];
+  // useFirestoreConnect(() => {
+  //   if (!shouldConnect) return [];
 
-    const relatedLocationIds = [venueId];
+  //   const relatedLocationIds = [venueId];
 
-    if (sovereignVenueId) {
-      relatedLocationIds.push(sovereignVenueId);
-    }
+  //   if (sovereignVenueId) {
+  //     relatedLocationIds.push(sovereignVenueId);
+  //   }
 
-    return [
-      {
-        collection: "users",
-        where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
-        storeAs: "worldUsers",
-      },
-    ];
-  });
+  //   return [
+  //     {
+  //       collection: "users",
+  //       where: ["enteredVenueIds", "array-contains-any", relatedLocationIds],
+  //       storeAs: "worldUsers",
+  //     },
+  //   ];
+  // });
 
   const worldUsersState: WorldUsersContextState = useMemo(
     () => ({
@@ -108,16 +107,24 @@ export interface WorldUsersData {
 
 export const useWorldUsers = (): WorldUsersData => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  useWorldUsersContext();
+  // useWorldUsersContext();
 
   // @debt we use lodash's isEqual here to do a deep compare to prevent re-renders, but ideally we wouldn't need to
-  const selectedWorldUsers = useSelector(
-    worldUsersWithoutLocationSelector,
-    isEqual
+  // const selectedWorldUsers = useSelector(
+  //   worldUsersWithoutLocationSelector,
+  //   isEqual
+  // );
+
+  // > = (state) => worldUsersSelector(state)?.map(userWithLocationToUser);
+
+  const selectedWorldUsers = useSelector((state) =>
+    state.cache.usersArray?.map(userWithLocationToUser)
   );
+
+  // console.log(selectedWorldUsers);
 
   return {
     worldUsers: selectedWorldUsers ?? noUsers,
-    isWorldUsersLoaded: isLoaded(selectedWorldUsers),
+    isWorldUsersLoaded: true,
   };
 };
