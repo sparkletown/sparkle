@@ -51,25 +51,29 @@
     cursor: default;
   }
 
-  &--icon-only {
-    padding: $spacing--xs;
-  }
-
-  @mixin squareSize($size: 1) {
+  @mixin square-size($size: 1) {
     height: calc(#{$size} * 1em + 2 * #{$spacing--xs});
     width: calc(#{$size} * 1em + 2 * #{$spacing--xs});
   }
 
+  &--icon-only {
+    padding: $spacing--xs;
+  }
+
+  &__icon--icon-text {
+    margin-right: 1em;
+  }
+
   &--1x {
-    @include squareSize(2.5);
+    @include square-size(2.5);
   }
 
   &--2x {
-    @include squareSize(3);
+    @include square-size(3);
   }
 
   &--3x {
-    @include squareSize(4);
+    @include square-size(4);
   }
 
   @mixin variant($color, $normal-bg, $hover-bg: $normal-bg) {

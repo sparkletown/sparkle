@@ -51,20 +51,27 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconName,
   iconSize = "1x",
 }) => {
-  const cn = classNames({
+  const parentClasses = classNames({
     "ButtonNG ButtonNG__link": isLink,
     "ButtonNG ButtonNG__button": !isLink,
     "ButtonNG--disabled": disabled,
     "ButtonNG--enabled": !disabled,
     "ButtonNG--loading": loading,
     [`ButtonNG--icon-only ButtonNG--${iconSize}`]: iconOnly,
+    [`ButtonNG--icon-text`]: !iconOnly,
     [`ButtonNG--${gradient}`]: gradient && !disabled,
     [`ButtonNG--${variant}`]: variant && !disabled,
+    [className]: className,
+  });
+
+  const iconClasses = classNames({
+    "ButtonNG__icon ButtonNG__icon--icon-only": iconOnly,
+    "ButtonNG__icon ButtonNG__icon--icon-text": !iconOnly,
   });
 
   if (loading) {
     return (
-      <button className={cn} style={style} type={type}>
+      <button className={parentClasses} style={style} type={type}>
         <FontAwesomeIcon
           icon={faCircleNotch}
           spin
@@ -78,12 +85,19 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   if (isLink) {
     return (
       <Link
-        className={cn}
+        className={parentClasses}
         style={style}
         to={disabled ? "#" : linkTo}
         target={newTab && !disabled ? "_blank" : undefined}
         rel={newTab && !disabled ? "noopener noreferer" : undefined}
       >
+        {iconName && (
+          <FontAwesomeIcon
+            icon={iconName}
+            size={iconSize}
+            className={iconClasses}
+          />
+        )}
         {children}
       </Link>
     );
@@ -91,7 +105,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   return (
     <button
-      className={cn}
+      className={parentClasses}
       style={style}
       type={type}
       onClick={onClick}
@@ -101,7 +115,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         <FontAwesomeIcon
           icon={iconName}
           size={iconSize}
-          className="ButtonNG__icon"
+          className={iconClasses}
         />
       )}
       {children}
