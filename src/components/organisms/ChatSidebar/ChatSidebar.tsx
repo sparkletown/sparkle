@@ -54,7 +54,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
         <button
           className="chat-sidebar__controller"
           onClick={toggleSidebar}
-          type={"button"}
+          type="button"
         >
           {isExpanded ? (
             <FontAwesomeIcon icon={faChevronRight} size="sm" />
