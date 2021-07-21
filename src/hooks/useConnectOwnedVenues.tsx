@@ -21,7 +21,7 @@ export const useConnectOwnedVenues = (userId?: string) => {
   );
 };
 
-export interface useOwnedVenuesProps {
+export interface UseOwnedVenuesProps {
   currentVenueId?: string;
 }
 
