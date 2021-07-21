@@ -25,7 +25,7 @@ export interface useOwnedVenuesProps {
   currentVenueId?: string;
 }
 
-export interface useOwnedVenuesData {
+export interface UseOwnedVenuesData {
   isLoaded: boolean;
   isLoading: boolean;
 
