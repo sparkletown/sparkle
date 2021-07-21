@@ -1,14 +1,27 @@
 @import "scss/constants";
 
 .UserAvatar {
-  $sizes-map: (
+  $avatar-sizes-map: (
+    // NOTE: legacy not added because it is the default
     small: 25px,
     medium: 40px,
     large: 54px,
+    full: 100%
   );
-  $default-size: 25px;
+  $indicator-sizes-map: (
+    // NOTE: legacy not added because it is the default
+    small: 8px,
+    medium: 10px,
+    large: 12px,
+    full: 25%
+  );
 
-  @include square-size($default-size);
+  // NOTE: parent and img mismatch due to legacy reasons
+  $default-avatar-size: 25px;
+  $default-image-size: 100%;
+  $default-indicator-size: 8px;
+
+  @include square-size($default-avatar-size);
   position: relative;
 
   &:hover {
@@ -25,22 +38,24 @@
   }
 
   &__image {
-    @include square-size($default-size);
+    @include square-size($default-image-size);
     border-radius: 50%;
     vertical-align: unset;
   }
 
   &__status-indicator {
     position: absolute;
-    bottom: -1px;
-    right: -1px;
+    bottom: 0;
+    right: 0;
     border-radius: 50%;
     z-index: z(user-avatar-status-indicator);
     display: block;
-    @include square-size(8px);
+    @include square-size($default-indicator-size);
 
-    &--large {
-      @include square-size(12px);
+    @each $modifier, $size in $indicator-sizes-map {
+      &--#{$modifier} {
+        @include square-size($size);
+      }
     }
   }
 
@@ -52,7 +67,7 @@
     }
   }
 
-  @each $modifier, $size in $sizes-map {
+  @each $modifier, $size in $avatar-sizes-map {
     &--#{$modifier},
     &--#{$modifier} img {
       @include square-size($size);
