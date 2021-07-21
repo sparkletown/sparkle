@@ -46,19 +46,15 @@ export const useOwnedVenues: ReactHook<
   const { userId } = useUser();
   useConnectOwnedVenues(userId);
 
-  const venues = useSelector(ownedVenuesDataSelector);
-
+  const ownedVenuesData = useSelector(ownedVenuesDataSelector);
+  const ownedVenues = useSelector(ownedVenuesSelector);
+  
   const ownedVenuesIds = useMemo(() => Object.keys(venues ?? {}), [venues]);
 
-  const ownedVenues = useMemo(
-    () => Object.entries(venues ?? {}).map(([id, venue]) => withId(venue, id)),
-    [venues]
-  );
-
-  const findVenueInOwnedVenues = useCallback(
+  const getVenueInOwnedVenues = useCallback(
     (searchedForVenueId: string) => {
-      const found = venues?.[searchedForVenueId];
-      return found ? withId(found, searchedForVenueId) : undefined;
+      const foundVenue = venues?.[searchedForVenueId];
+      return foundVenue ? withId(found, searchedForVenueId) : undefined;
     },
     [venues]
   );
