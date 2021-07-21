@@ -220,11 +220,8 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
   .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("auditoriumColumns", "auditoriumColumns")
   .from("auditoriumRows", "auditoriumRows")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("code_of_conduct_questions", "code_of_conduct_questions")
   .from("profile_questions", "profile_questions");
 
@@ -232,16 +229,11 @@ export const editVenueCastSchema = Yup.object()
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("placement.addressText", "addressText")
   .from("placement.notes", "notes")
   .required();
 
 export const editPlacementSchema = Yup.object().shape<PlacementInput>({
-  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
   addressText: Yup.string(),
   notes: Yup.string(),
   width: Yup.number().required("Required"),
