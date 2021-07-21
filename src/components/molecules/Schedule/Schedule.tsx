@@ -16,7 +16,7 @@ import {
   SCHEDULE_MAX_START_HOUR,
 } from "settings";
 
-import { PersonalizedVenueEvent, LocatedEvents } from "types/venues";
+import { PersonalizedVenueEvent, LocationEvents } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
@@ -26,12 +26,13 @@ import { useInterval } from "hooks/useInterval";
 import { Loading } from "components/molecules/Loading";
 import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 
-import { calcStartPosition } from "./Schedule.utils";
+import { calcStartPosition } from "./utils";
 
 import "./Schedule.scss";
+import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 export interface ScheduleProps {
-  locatedEvents: LocatedEvents[];
+  locatedEvents: LocationEvents[];
   personalEvents: PersonalizedVenueEvent[];
   scheduleDate: Date;
   isToday: boolean;
@@ -66,23 +67,28 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  const sortedEvents = useMemo(
+    () => sortScheduleRoomsAlphabetically(locatedEvents),
+    [locatedEvents]
+  );
+
   // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
-      locatedEvents?.map(({ location, events }) => (
+      sortedEvents.map(({ location, events }) => (
         <div
           key={`RoomCell-${location.venueId}-${location.roomTitle}`}
           className="Schedule__room"
         >
           <p className="Schedule__room-title">
-            {location.roomTitle || location.venueTitle || location.venueId}
+            {location.roomTitle ?? location.venueName ?? location.venueId}
           </p>
           <span className="Schedule__events-count">
             {formatMeasurement(events.length, "event")}
           </span>
         </div>
       )),
-    [locatedEvents]
+    [sortedEvents]
   );
 
   const hoursRow = useMemo(
@@ -91,7 +97,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
         start: scheduleStartDateTime,
         end: endOfDay(scheduleStartDateTime),
       }).map((scheduleHour) => (
-        <span className="Schedule__hour" key={scheduleHour.toISOString()}>
+        <span key={scheduleHour.toISOString()} className="Schedule__hour">
           {format(scheduleHour, "h a")}
         </span>
       )),
@@ -136,19 +142,22 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [locatedEvents, scheduleStartHour]
   );
 
-  if (isLoading)
+  if (isLoading) {
     return (
-      <div className={containerClasses}>
-        <Loading message={"Events are loading"} />
-      </div>
+      <Loading
+        containerClassName="Schedule__loading"
+        label={"Events are loading"}
+      />
     );
+  }
 
-  if (!hasEvents)
+  if (!hasEvents) {
     return (
       <div className={containerClasses}>
         <div className="Schedule__no-events">No events scheduled</div>
       </div>
     );
+  }
 
   return (
     <div className={containerClasses}>

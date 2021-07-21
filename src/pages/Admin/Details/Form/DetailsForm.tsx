@@ -55,7 +55,11 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
-        history.push(`/admin_v2/${createUrlSafeName(vals.name!)}`);
+        if (vals.name) {
+          history.push(`/admin-ng/venue/${createUrlSafeName(vals.name)}`);
+        } else {
+          history.push("/admin-ng");
+        }
       } catch (e) {
         console.error(e);
       }

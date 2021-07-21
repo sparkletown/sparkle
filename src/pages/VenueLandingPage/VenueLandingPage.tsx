@@ -3,7 +3,6 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { isAfter } from "date-fns";
 
 import {
   DEFAULT_VENUE_BANNER,
@@ -12,7 +11,6 @@ import {
 } from "settings";
 
 import { VenueEvent } from "types/venues";
-import { Firestore } from "types/Firestore";
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
@@ -25,37 +23,32 @@ import {
   userPurchaseHistorySelector,
   venueEventsSelector,
 } from "utils/selectors";
-import { eventEndTime } from "utils/event";
-import { showZendeskWidget } from "utils/zendesk";
+import { hasEventFinished } from "utils/event";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 import PaymentModal from "components/organisms/PaymentModal";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
-import CountDown from "components/molecules/CountDown";
+
+import { CountDown } from "components/molecules/CountDown";
 import EventPaymentButton from "components/molecules/EventPaymentButton";
 import InformationCard from "components/molecules/InformationCard";
+import { LoadingPage } from "components/molecules/LoadingPage";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
 import "./VenueLandingPage.scss";
 
-export interface VenueLandingPageProps {
-  venue: Firestore["data"]["currentVenue"];
-  venueEvents?: Firestore["ordered"]["venueEvents"];
-  venueRequestStatus: Firestore["status"]["requested"]["currentVenue"];
-  purchaseHistory?: Firestore["ordered"]["userPurchaseHistory"];
-  venueId?: string;
-}
-
-export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = () => {
+export const VenueLandingPage: React.FC = () => {
   const venueId = useVenueId();
   useConnectCurrentVenue();
 
@@ -69,21 +62,11 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const redirectUrl = venue?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
-  if (redirectUrl && redirectUrl !== hostname) {
-    window.location.hostname = redirectUrl;
-  }
-
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "events" }],
-          orderBy: ["start_utc_seconds", "asc"],
-          storeAs: "venueEvents",
-        }
-      : undefined
-  );
+  useEffect(() => {
+    if (redirectUrl && redirectUrl !== hostname) {
+      window.location.hostname = redirectUrl;
+    }
+  }, [hostname, redirectUrl]);
 
   dayjs.extend(advancedFormat);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -101,7 +84,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
   const { user } = useUser();
 
   const futureOrOngoingVenueEvents = venueEvents?.filter(
-    (event) => isAfter(eventEndTime(event), Date.now()) && event.price > 0
+    (event) => !hasEventFinished(event) && event.price > 0
   );
 
   useEffect(() => {
@@ -118,18 +101,12 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
     }
   }, [shouldOpenPaymentModal, isAuthenticationModalOpen]);
 
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
-
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;
   }
 
   if (!venue) {
-    return <>Loading...</>;
+    return <LoadingPage />;
   }
 
   const isUserVenueOwner = user && venue.owners?.includes(user.uid);
@@ -185,11 +162,14 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 alt="host"
               />
             </div>
+
             <div className="title">{venue.name}</div>
+
             <div className="subtitle">
               {venue.config?.landingPageConfig.subtitle}
             </div>
           </div>
+
           {isPasswordRequired && (
             <div className="secret-password-form-wrapper">
               <SecretPasswordForm
@@ -197,6 +177,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               />
             </div>
           )}
+
           {!isPasswordRequired &&
             (!futureOrOngoingVenueEvents ||
               futureOrOngoingVenueEvents.length === 0) && (
@@ -214,6 +195,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               </button>
             )}
         </div>
+
         <div className="row">
           <div className="col-lg-6 col-12 venue-presentation">
             <div>
@@ -222,6 +204,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
               >
                 {venue.config?.landingPageConfig.description}
               </div>
+
               <div>
                 {venue.config?.landingPageConfig.checkList &&
                   venue.config?.landingPageConfig.checkList.map(
@@ -239,6 +222,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   )}
               </div>
             </div>
+
             {venue.config?.landingPageConfig.iframeUrl && (
               <iframe
                 title="entrance video"
@@ -250,6 +234,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 allow={IFRAME_ALLOW}
               />
             )}
+
             {venue.config?.landingPageConfig.quotations &&
               venue.config?.landingPageConfig.quotations.map(
                 (quotation, index) => (
@@ -259,6 +244,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                   </div>
                 )
               )}
+
             {venue.config?.landingPageConfig.presentation &&
               venue.config?.landingPageConfig.presentation.map(
                 (paragraph: string, index: number) => (
@@ -271,6 +257,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                 )
               )}
           </div>
+
           <div className="col-lg-6 col-12 oncoming-events">
             {venueId &&
               futureOrOngoingVenueEvents &&
@@ -281,12 +268,15 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                     const startingDate = new Date(
                       venueEvent.start_utc_seconds * 1000
                     );
+
                     const endingDate = new Date(
                       (venueEvent.start_utc_seconds +
                         60 * venueEvent.duration_minutes) *
                         1000
                     );
+
                     const isNextVenueEvent = venueEvent.id === nextVenueEventId;
+
                     const hasUserBoughtTicket =
                       user &&
                       (hasUserBoughtTicketForEvent(
@@ -294,6 +284,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                         venueEvent.id
                       ) ||
                         isUserAMember(user.email, venue.config?.memberEmails));
+
                     return (
                       <InformationCard
                         title={venueEvent.name}
@@ -307,14 +298,20 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
                             "dddd MMMM Do"
                           )}`}
                         </div>
+
                         <div className="event-description">
-                          {venueEvent.description}
+                          <RenderMarkdown text={venueEvent.description} />
+
                           {venueEvent.descriptions?.map(
                             (description, index) => (
-                              <p key={index}>{description}</p>
+                              <RenderMarkdown
+                                text={description}
+                                key={`${description}#${index}`}
+                              />
                             )
                           )}
                         </div>
+
                         <div className="button-container">
                           {hasUserBoughtTicket ? (
                             <div>
@@ -374,6 +371,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           </div>
         </div>
       </div>
+
       {user && selectedEvent && (
         <PaymentModal
           selectedEvent={selectedEvent}
@@ -383,6 +381,7 @@ export const VenueLandingPage: React.FunctionComponent<VenueLandingPageProps> = 
           eventPaidSuccessfully={eventPaidSuccessfully}
         />
       )}
+
       <AuthenticationModal
         show={isAuthenticationModalOpen}
         onHide={closeAuthenticationModal}

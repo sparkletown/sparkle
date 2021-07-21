@@ -43,7 +43,7 @@ export type ReactionData<T extends ReactionType = ReactionType> = {
   audioPath: string;
 };
 
-export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
+export const EMOJI_REACTIONS: Readonly<ReactionData<EmojiReactionType>[]> = [
   {
     type: EmojiReactionType.heart,
     name: "heart",
@@ -98,7 +98,7 @@ export const EmojiReactions: ReactionData<EmojiReactionType>[] = [
     name: "sparkle",
     text: "✨",
     ariaLabel: "sparkle-emoji",
-    audioPath: "/sounds/sparkle.mpeg",
+    audioPath: "/sounds/sparkle.mp3",
   },
 ];
 
@@ -110,7 +110,7 @@ export const reactionsDataMapReducer = <T extends ReactionType = ReactionType>(
 export const EmojiReactionsMap: Map<
   EmojiReactionType,
   ReactionData<EmojiReactionType>
-> = EmojiReactions.reduce(reactionsDataMapReducer, new Map());
+> = EMOJI_REACTIONS.reduce(reactionsDataMapReducer, new Map());
 
 export const isReactionCreatedBy = (userId: string) => (reaction: Reaction) =>
   reaction.created_by === userId;
@@ -133,9 +133,11 @@ export const isTextReaction = (r: unknown): r is TextReaction => {
 export const isReaction = (r: unknown): r is Reaction =>
   isEmojiReaction(r) || isTextReaction(r);
 
-export const chatMessageAsTextReaction = (chat: ChatMessage): TextReaction => ({
-  created_at: chat.ts_utc.toMillis() / 1000,
-  created_by: chat.from,
+export const chatMessageAsTextReaction = (
+  message: ChatMessage
+): TextReaction => ({
+  created_at: message.ts_utc.toMillis() / 1000,
+  created_by: message.from,
   reaction: TextReactionType,
-  text: chat.text,
+  text: message.text,
 });

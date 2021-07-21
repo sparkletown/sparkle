@@ -1,0 +1,21 @@
+{
+  "project": {
+    "id": ""
+  },
+  "stripe": {
+    "secret_key": "",
+    "endpoint_secret": ""
+  },
+  "twilio": {
+    "account_sid": "",
+    "api_key": "",
+    "api_secret": ""
+  },
+  "agora": {
+    "app_id": "",
+    "app_certificate": ""
+  },
+  "flag": {
+    "autoadmin": ""
+  }
+}

@@ -3,6 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import "firebase/storage";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -12,13 +13,15 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
+import { Loading } from "components/molecules/Loading";
 
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
-interface ProfilePictureInputProps {
+export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
@@ -29,7 +32,7 @@ interface ProfilePictureInputProps {
   register: any;
 }
 
-const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
+export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
   venueId,
   setValue,
   user,
@@ -42,7 +45,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
@@ -100,7 +103,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   );
 
   const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
+    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
@@ -154,7 +157,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
+        {isLoading ? <Loading /> : avatarImages}
       </div>
       <input
         name="pictureUrl"
@@ -166,5 +169,3 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     </div>
   );
 };
-
-export default ProfilePictureInput;

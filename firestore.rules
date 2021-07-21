@@ -10,6 +10,9 @@ function role(name) {
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /authConfigs/{authConfigId} {
+      allow read, write: if false;
+    }
     match /config/{configFile} {
       allow read: if true;
       allow write: if request.auth.uid != null;
@@ -66,6 +69,14 @@ service cloud.firestore {
       }
       match /accessgranted/{userId} {
         allow read, write: if false;
+      }
+      match /sections/{sectionId} {
+        allow read: if request.auth.uid != null;
+        allow write: if request.auth.uid in venueData().owners;
+      }
+      match /screeningRoomVideos/{screeningRoomVideoId} {
+        allow read: if request.auth.uid != null;
+        allow write: if false;
       }
     }
     match /customers/{userId} {

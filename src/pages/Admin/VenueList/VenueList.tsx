@@ -23,7 +23,7 @@ const VenueList: React.FC<VenueListProps> = ({
     <>
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
-        <Link to="/admin_v2/venue/creation" className="btn btn-primary">
+        <Link to="/admin-ng/create/venue" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
@@ -35,7 +35,7 @@ const VenueList: React.FC<VenueListProps> = ({
               canHaveSubvenues(venue) ? "camp" : ""
             }`}
           >
-            <Link to={`/admin_v2/venue/${venue.id}`}>{venue.name}</Link>
+            <Link to={`/admin-ng/venue/${venue.id}`}>{venue.name}</Link>
             {isVenueWithRooms(venue) && venue.rooms && (
               <ul className="page-container-adminsidebar-subvenueslist">
                 {venue.rooms.map((room, idx) => (
@@ -43,7 +43,7 @@ const VenueList: React.FC<VenueListProps> = ({
                     key={idx}
                     className={`${idx === roomIndex ? "selected" : ""}`}
                   >
-                    <Link to={`/admin_v2/venue/${venue.id}?roomIndex=${idx}`}>
+                    <Link to={`/admin-ng/venue/${venue.id}?roomIndex=${idx}`}>
                       {room.title}
                     </Link>
                   </li>

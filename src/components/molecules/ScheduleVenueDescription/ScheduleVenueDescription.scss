@@ -1,5 +1,5 @@
 @import "scss/constants.scss";
-@import "../Schedule/Schedule.constants.scss";
+@import "components/molecules/Schedule/Schedule.constants.scss";
 
 $image-size: 92px;
 
@@ -13,6 +13,7 @@ $name--margin-bottom: 5px;
   padding-left: $Schedule--padding;
 
   &__main {
+    color: $white;
     display: flex;
     align-items: center;
     margin-top: $main--margin-top;
@@ -28,7 +29,7 @@ $name--margin-bottom: 5px;
     margin-right: $Schedule--padding;
     cursor: pointer;
     transition: all 400ms $transition-function;
-    box-shadow: 0 8px 16px rgba($black, 0.3);
+    box-shadow: 0 $spacing--sm $spacing--lg opaque-black(0.3);
     background-image: var(--venue-picture--background-image);
 
     &:hover {
@@ -37,7 +38,7 @@ $name--margin-bottom: 5px;
   }
 
   &__desc {
-    font-size: 0.8rem;
+    font-size: $font-size--sm;
     opacity: 0.8;
   }
 
@@ -47,6 +48,6 @@ $name--margin-bottom: 5px;
   }
 
   &__subtitle {
-    font-weight: 400;
+    font-weight: $font-weight--400;
   }
 }

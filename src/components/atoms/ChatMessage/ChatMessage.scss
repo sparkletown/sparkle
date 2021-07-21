@@ -17,93 +17,12 @@ $reply-icon-radius: 20px;
   flex-direction: column;
   margin-bottom: $spacing--lg;
 
+  content-visibility: auto;
+
   &:hover {
     .ChatMessage__reply-icon {
-      display: flex;
+      opacity: 1;
     }
-  }
-
-  &__bulb {
-    margin-bottom: $spacing--sm;
-    width: auto;
-    border-radius: $counterparty-text-border-radius;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
-    background-color: $secondary;
-
-    font-size: $font-size--md;
-  }
-
-  &__text-content {
-    position: relative;
-    display: flex;
-    flex-flow: column;
-    padding: $spacing--md $spacing--lg;
-  }
-
-  &__text {
-    font-size: $font-size--md;
-  }
-
-  &__show-replies-button {
-    margin-top: $spacing--sm;
-    align-self: flex-start;
-  }
-
-  &__reply-icon {
-    display: none;
-    justify-content: center;
-    align-items: center;
-    // Overflow the userAvatar in the replies list
-    z-index: z(chatmessage-reply-button);
-
-    position: absolute;
-
-    cursor: pointer;
-
-    width: $reply-icon-radius;
-    height: $reply-icon-radius;
-
-    right: $spacing--sm;
-
-    bottom: calc(-#{$reply-icon-radius / 2});
-
-    border-radius: $border-radius--max;
-    background-color: $secondary--light;
-
-    &:hover {
-      background-color: $secondary--lightest;
-    }
-  }
-
-  &__replies-content {
-    border-radius: $counterparty-bottom-border-radius;
-    overflow: hidden;
-    max-height: $replies-max-height;
-  }
-
-  &__replies {
-    @include scrollbar;
-    background-color: opaque-black(0.14);
-    padding: 0 $spacing--lg $spacing--lg $spacing--lg;
-    font-size: $font-size--md;
-    display: flex;
-    flex-flow: column-reverse;
-
-    max-height: $replies-max-height;
-
-    overflow: auto;
-
-    align-items: flex-start;
-    text-align: left;
-  }
-
-  &__reply {
-    // We add padding to single reply instead of margin so that the container has spacing at the top
-    // https://stackoverflow.com/questions/13471910/no-padding-when-using-overflow-auto
-    padding-top: $spacing--md;
   }
 
   &--me {
@@ -133,5 +52,110 @@ $reply-icon-radius: 20px;
         background-color: $primary--lightest;
       }
     }
+  }
+
+  &--question &__bulb {
+    background-color: $dark-green;
+  }
+
+  &__bulb {
+    margin-bottom: $spacing--sm;
+    width: auto;
+    border-radius: $counterparty-text-border-radius;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    background-color: $secondary;
+
+    font-size: $font-size--md;
+  }
+
+  &__text-content {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    padding: $spacing--md $spacing--lg;
+  }
+
+  &__text {
+    font-size: $font-size--md;
+
+    // This direct element style is used with RenderMarkdown
+    img {
+      max-width: 100%;
+    }
+
+    // This direct element style is used with RenderMarkdown
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  &__show-replies-button {
+    margin-top: $spacing--sm;
+    align-self: flex-start;
+  }
+
+  &__reply-icon {
+    color: $white;
+    display: flex;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    // Overflow the userAvatar in the replies list
+    z-index: z(chatmessage-reply-button);
+
+    position: absolute;
+
+    cursor: pointer;
+
+    width: $reply-icon-radius;
+    height: $reply-icon-radius;
+
+    right: $spacing--sm;
+
+    bottom: calc(-#{$reply-icon-radius / 2});
+
+    border-radius: $border-radius--max;
+    background-color: $secondary--light;
+    transition: opacity 100ms $transition-function;
+    border: none;
+
+    &:hover {
+      background-color: $secondary--lightest;
+    }
+
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  &__replies-content {
+    border-radius: $counterparty-bottom-border-radius;
+    overflow: hidden;
+    max-height: $replies-max-height;
+  }
+
+  &__replies {
+    @include scrollbar;
+    background-color: opaque-black(0.14);
+    padding: 0 $spacing--lg $spacing--lg $spacing--lg;
+    font-size: $font-size--md;
+    display: flex;
+    flex-flow: column-reverse;
+
+    max-height: $replies-max-height;
+
+    overflow: auto;
+
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  &__reply {
+    // We add padding to single reply instead of margin so that the container has spacing at the top
+    // https://stackoverflow.com/questions/13471910/no-padding-when-using-overflow-auto
+    padding-top: $spacing--md;
   }
 }

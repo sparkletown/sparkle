@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
+import { useFirestore } from "react-redux-firebase";
+import { useHistory } from "react-router-dom";
+import { ErrorMessage, useForm } from "react-hook-form";
+
 import Bugsnag from "@bugsnag/js";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import * as Yup from "yup";
+
 import {
   ALL_VENUE_TEMPLATES,
   PLAYA_IMAGE,
@@ -8,24 +13,34 @@ import {
   PLAYA_VENUE_STYLES,
   HAS_ROOMS_TEMPLATES,
 } from "settings";
-import { useFirestore } from "react-redux-firebase";
-import "../Venue.scss";
-import { PartyMapVenue, AnyVenue } from "types/venues";
-import { useHistory } from "react-router-dom";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
-import * as Yup from "yup";
-import { Room } from "types/rooms";
-import { validationSchema } from "./RoomsValidationSchema";
-import { ErrorMessage, useForm } from "react-hook-form";
-import { ImageInput } from "components/molecules/ImageInput";
-import { useUser } from "hooks/useUser";
+
 import { upsertRoom, RoomInput } from "api/admin";
+
+import { Room } from "types/rooms";
+import { ExtractProps } from "types/utility";
+import { PartyMapVenue, AnyVenue } from "types/venues";
+
+import { withId } from "utils/id";
+
+import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
 import { useVenueId } from "hooks/useVenueId";
-import { ExtractProps } from "types/utility";
-import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
-import RoomDeleteModal from "./RoomDeleteModal";
+
 import Login from "pages/Account/Login";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { ImageInput } from "components/molecules/ImageInput";
+
+import { Toggler } from "components/atoms/Toggler";
+
+import { validationSchema } from "./RoomsValidationSchema";
+
+import "../Venue.scss";
+
+import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
   const venueId = useVenueId();
@@ -79,11 +94,11 @@ export const RoomsForm: React.FC = () => {
   if (!venue || !venueId) return null;
 
   if (!user) {
-    return <Login formType="login" />;
+    return <Login formType="login" venue={withId(venue, venueId)} />;
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar hasBackButton={false}>
       <RoomInnerForm
         venueId={venueId}
         venue={venue}
@@ -306,17 +321,22 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Enabled ?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isEnabled"
-                        name={"isEnabled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isEnabled"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
+                  </div>
+                  <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
+                    <div className="input-title">Is label hidden?</div>
+                    <Toggler
+                      name="isLabelHidden"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">

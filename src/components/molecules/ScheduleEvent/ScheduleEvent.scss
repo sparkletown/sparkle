@@ -1,47 +1,41 @@
 @import "scss/constants.scss";
 
-$grey--regular: #3f3d42;
-$grey--hover: #4c494f;
-$grey--users: #4c494f;
-$grey--light: #ebebeb;
-
-$purple--regular: #7c46fb;
-$purple--hover: #7c46fb;
-
 $ScheduleEvent--margin-top: 0.25rem;
 $ScheduleEvent--height: 3.75rem;
-$ScheduleEvent--padding: 0 0.25rem 0 0.75rem;
+$ScheduleEvent--padding--right: 0.25rem;
+$ScheduleEvent--padding--left: 0.75rem;
 $ScheduleEvent--border-radius: 18px;
 $ScheduleEvent--box-shadow: 0 5px 10px rgba(0, 0, 0, 0.65);
 
 $bookmark--padding: 0.5rem;
+$expand--margin: 0.3rem;
 $bookmark-hover--padding-top: 0.375rem;
+$expand-hover--margin-top: 0.375rem;
 
 $description--margin-top: 2px;
+$expand--width: 40px;
 
 .ScheduleEvent {
   display: flex;
   position: absolute;
   border-radius: $ScheduleEvent--border-radius;
-  padding: $ScheduleEvent--padding;
   cursor: pointer;
   height: $ScheduleEvent--height;
-  justify-content: space-between;
   align-items: center;
-  background-color: $grey--regular;
+  background-color: $secondary--schedule-event;
   box-shadow: $ScheduleEvent--box-shadow;
   margin-top: $ScheduleEvent--margin-top;
   margin-left: var(--event--margin-left);
   width: var(--event--width);
 
   &:hover {
-    background-color: $grey--hover;
+    background-color: $secondary--schedule-event-hover;
     z-index: z(navbar__schedule-event--hover);
   }
 
   &--users {
-    color: $grey--hover;
-    background-color: $grey--light;
+    color: $secondary--schedule-event-hover;
+    background-color: $secondary--schedule-event-users;
 
     &:hover {
       background-color: $white;
@@ -52,12 +46,55 @@ $description--margin-top: 2px;
     }
   }
 
+  &--expandable {
+    &:hover {
+      width: var(--event--expanded-width);
+    }
+  }
+
+  &--short {
+    & .ScheduleEvent__info {
+      display: none;
+    }
+
+    & .ScheduleEvent__bookmark {
+      display: none;
+    }
+
+    &:hover {
+      & .ScheduleEvent__info {
+        display: block;
+      }
+
+      & .ScheduleEvent__bookmark {
+        display: flex;
+      }
+
+      & .ScheduleEvent__expand {
+        margin: 0;
+        display: flex;
+        width: $expand--width;
+        padding: $spacing--lg;
+      }
+
+      & .ScheduleEvent__expand--arrows {
+        display: none;
+      }
+
+      & .ScheduleEvent__expand--arrows--out {
+        display: inline-block;
+        margin-top: $spacing--xs;
+        margin-left: $spacing--xs;
+      }
+    }
+  }
+
   &--live {
-    background-color: $purple--regular;
+    background-color: $primary--live;
     color: $white;
 
     &:hover {
-      background-color: $purple--hover;
+      background-color: $primary--live-hover;
     }
 
     .ScheduleEvent__bookmark {
@@ -66,8 +103,10 @@ $description--margin-top: 2px;
   }
 
   &__info {
-    font-size: 0.8rem;
+    font-size: $font-size--sm;
     overflow: hidden;
+    padding-left: $ScheduleEvent--padding--left;
+    padding-right: $ScheduleEvent--padding--right;
   }
 
   &__title {
@@ -91,9 +130,59 @@ $description--margin-top: 2px;
     justify-content: center;
     align-items: center;
     padding: $bookmark--padding;
+    margin-left: auto;
 
     &:hover {
       padding-top: $bookmark-hover--padding-top;
     }
+  }
+
+  &__expand {
+    color: $concrete--dark;
+    border: none;
+    background-color: transparent;
+
+    &:focus {
+      outline: none;
+    }
+
+    &--hidden {
+      display: none;
+    }
+
+    &--square {
+      position: absolute;
+      height: $spacing--xl;
+    }
+
+    &--arrows {
+      height: $spacing--lg;
+      margin-top: $spacing--xs;
+
+      &--out {
+        display: none;
+      }
+    }
+
+    &--marged {
+      margin: auto;
+    }
+
+    &--padded {
+      padding-left: $ScheduleEvent--padding--left;
+      padding-right: $ScheduleEvent--padding--right;
+    }
+
+    &--live {
+      color: $white;
+    }
+  }
+
+  & .ScheduleEvent__expand--square {
+    width: $spacing--xl;
+  }
+
+  & .ScheduleEvent__expand--arrows {
+    width: $spacing--xl;
   }
 }

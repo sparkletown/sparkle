@@ -60,22 +60,19 @@ import {
   traceReactScheduler,
 } from "utils/performance";
 import { authSelector } from "utils/selectors";
-import { initializeZendesk } from "utils/zendesk";
 
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
 
-import AppRouter from "components/organisms/AppRouter";
+import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import "bootstrap";
 import "scss/global.scss";
 import { ThemeProvider } from "styled-components";
 import { theme } from "theme/theme";
 
 activatePolyFills();
-initializeZendesk();
 
 if (LOGROCKET_APP_ID) {
   LogRocket.init(LOGROCKET_APP_ID, {
@@ -164,6 +161,13 @@ if (BUGSNAG_API_KEY) {
     "env/unesco",
     "env/ohbm",
     "env/pa",
+    "env/demo",
+    "env/unity",
+    "env/clever",
+    "env/burn",
+    "env/burn-staging",
+    "env/github",
+    "env/summit-hack",
   ];
 
   const releaseStage = () => {
