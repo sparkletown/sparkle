@@ -534,6 +534,7 @@ const Playa = () => {
     
     let closestVenue: WithId<AnyVenue> | undefined;
     let distanceToClosestVenue: number;
+    
     venues.forEach((venue) => {
       const distance = distanceToVenue(x, y, venue.placement);
       if (
