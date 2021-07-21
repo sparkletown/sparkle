@@ -2,9 +2,9 @@ import React, { useState, useMemo } from "react";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useWorldUsers, useRecentWorldUsers } from "hooks/users";
 
-import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
-import { Avatar } from "components/organisms/AdminVenueView/components/Avatar/Avatar";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RunTabUsers.scss";
 
@@ -53,7 +53,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
       </div>
       {users.map((user) => (
         <div key={user.id} className="RunTabUsers__row RunTabUsers__user">
-          <Avatar user={user} size={32} />
+          <UserAvatar user={user} showStatus medium />
           <div className="RunTabUsers__wrapper">
             <div className="RunTabUsers__name">{user.partyName}</div>
             <div className="RunTabUsers__place">

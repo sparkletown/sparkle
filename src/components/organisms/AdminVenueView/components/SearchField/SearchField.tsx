@@ -25,7 +25,7 @@ export const SearchField: React.FC<SearchUsersProps> = ({
   ...props
 }) => {
   const [text, setText] = useState(value);
-  const internalOnChange: onChange = useMemo(
+  const debouncedHandleChange: onChange = useMemo(
     () => debounce((value) => onChange?.(value), debounceTime),
     [debounceTime, onChange]
   );
@@ -47,7 +47,7 @@ export const SearchField: React.FC<SearchUsersProps> = ({
         onChange={(event) => {
           const text = event.target.value;
           setText(text);
-          internalOnChange(text);
+          debouncedHandleChange(text);
         }}
         ref={ref}
         {...props}
