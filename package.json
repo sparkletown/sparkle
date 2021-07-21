@@ -78,8 +78,6 @@
     "sass": "^1.32.5",
     "scheduler": "^0.19.1",
     "styled-components": "^5.2.1",
-    "three": "^0.119.1",
-    "three-obj-mtl-loader": "^1.0.3",
     "twilio-video": "^2.9.0",
     "use-sound": "^2.0.1",
     "ws": "^7.4.2",
