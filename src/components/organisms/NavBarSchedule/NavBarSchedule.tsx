@@ -114,6 +114,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
+      const formattedDay = formatDayLabel(day);
+
       return (
         <li
           key={day.toISOString()}
@@ -122,7 +124,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             setSelectedDayIndex(dayIndex);
           }}
         >
-          {formatDayLabel(day)}
+          <button
+            aria-label={formattedDay}
+            className="NavBarSchedule__weekday-button"
+          >
+            {formattedDay}
+          </button>
         </li>
       );
     });
