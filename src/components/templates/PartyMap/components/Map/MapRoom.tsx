@@ -89,7 +89,7 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   }, [play, selectRoom]);
 
   return (
-    <div
+    <button
       className={containerClasses}
       style={roomInlineStyles}
       onClick={isCovertRoom ? noop : selectRoomWithSound}
@@ -114,6 +114,6 @@ export const MapRoom: React.FC<MapRoomProps> = ({
           <RoomAttendance venue={venue} room={room} />
         </div>
       )}
-    </div>
+    </button>
   );
 };
