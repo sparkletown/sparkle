@@ -1,17 +1,13 @@
-import React, { createContext, useContext, useMemo, useCallback } from "react";
-
-import { SparkleSelector } from "types/SparkleSelector";
+import { useMemo, useCallback } from "react";
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId, withId } from "utils/id";
+import { ownedVenuesSelector } from "utils/selectors";
 
 import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
-
-export const ownedVenuesSelector: SparkleSelector<
-  Record<string, AnyVenue> | undefined
-> = (state) => state.firestore.data.ownedVenues;
+import { useUser } from "hooks/useUser";
 
 export const useConnectOwnedVenues = (userId?: string) => {
   useFirestoreConnect(
@@ -25,9 +21,15 @@ export const useConnectOwnedVenues = (userId?: string) => {
   );
 };
 
-export interface OwnedVenuesContextState {
+export interface useOwnedVenuesProps {
+  currentVenueId?: string;
+}
+
+export interface useOwnedVenuesData {
   isLoaded: boolean;
   isLoading: boolean;
+
+  currentVenue?: WithId<AnyVenue>;
 
   ownedVenues: WithId<AnyVenue>[];
   ownedVenuesIds: string[];
@@ -37,18 +39,11 @@ export interface OwnedVenuesContextState {
   ) => WithId<AnyVenue> | undefined;
 }
 
-const OwnedVenuesContext = createContext<OwnedVenuesContextState | undefined>(
-  undefined
-);
-
-export interface OwnedVenuesProviderProps {
-  userId?: string;
-}
-
-export const OwnedVenuesProvider: React.FC<OwnedVenuesProviderProps> = ({
-  children,
-  userId,
-}) => {
+export const useOwnedVenues: ReactHook<
+  useOwnedVenuesProps,
+  useOwnedVenuesData
+> = ({ currentVenueId }): useOwnedVenuesData => {
+  const { userId } = useUser();
   useConnectOwnedVenues(userId);
 
   const venues = useSelector(ownedVenuesSelector);
@@ -58,68 +53,26 @@ export const OwnedVenuesProvider: React.FC<OwnedVenuesProviderProps> = ({
     [venues]
   );
 
-  const ownedVenuesIds = useMemo(() => Object.keys(venues ?? {}), [venues]);
-
   const findVenueInOwnedVenues = useCallback(
     (searchedForVenueId: string): WithId<AnyVenue> | undefined =>
       ownedVenues.find((venue) => venue.id === searchedForVenueId),
     [ownedVenues]
   );
 
-  const ownedVenuesState: OwnedVenuesContextState = useMemo(
+  return useMemo(
     () => ({
       isLoaded: isLoaded(venues),
       isLoading: !isLoaded(venues),
 
       ownedVenues,
-      ownedVenuesIds,
+      ownedVenuesIds: Object.keys(venues ?? {}),
+
+      currentVenue: currentVenueId
+        ? findVenueInOwnedVenues(currentVenueId)
+        : undefined,
 
       findVenueInOwnedVenues,
     }),
-    [venues, ownedVenues, ownedVenuesIds, findVenueInOwnedVenues]
+    [venues, ownedVenues, findVenueInOwnedVenues, currentVenueId]
   );
-
-  return (
-    <OwnedVenuesContext.Provider value={ownedVenuesState}>
-      {children}
-    </OwnedVenuesContext.Provider>
-  );
-};
-
-export const useOwnedVenuesContext = (): OwnedVenuesContextState => {
-  const ownedVenuesState = useContext(OwnedVenuesContext);
-
-  if (!ownedVenuesState) {
-    throw new Error(
-      "<OwnedVenuesProvider/> not found. Did you forget to include it in your component hierarchy?"
-    );
-  }
-
-  return ownedVenuesState;
-};
-
-export interface AdministeredProps extends OwnedVenuesProviderProps {
-  currentVenueId?: string;
-}
-
-export interface AdministeredData extends OwnedVenuesContextState {
-  currentVenue?: WithId<AnyVenue>;
-}
-
-export const useOwnedVenues: ReactHook<AdministeredProps, AdministeredData> = ({
-  currentVenueId,
-}): AdministeredData => {
-  const ownedVenuesState = useOwnedVenuesContext();
-
-  const { findVenueInOwnedVenues } = ownedVenuesState;
-
-  const currentVenue: WithId<AnyVenue> | undefined = useMemo(
-    () => (currentVenueId ? findVenueInOwnedVenues(currentVenueId) : undefined),
-    [currentVenueId, findVenueInOwnedVenues]
-  );
-
-  return {
-    ...ownedVenuesState,
-    currentVenue,
-  };
 };

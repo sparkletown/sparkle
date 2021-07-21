@@ -19,31 +19,31 @@ export const AdminSubrouter: React.FC = () => {
       {/* Admin V1 */}
 
       <Route path="/admin/venue/rooms/:venueId">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <RoomsForm />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/creation">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/venue/edit/:venueId">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <VenueWizard />
         </Provided>
       </Route>
 
       <Route path="/admin/:venueId">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <Admin />
         </Provided>
       </Route>
 
       <Route path="/admin">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <Admin />
         </Provided>
       </Route>
@@ -57,25 +57,25 @@ export const AdminSubrouter: React.FC = () => {
       </Route>
 
       <Route path="/admin-ng/advanced-settings/:venueId?">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <AdminAdvancedSettings />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/create/venue">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng/edit/:venueId">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <VenueWizardV2 />
         </Provided>
       </Route>
 
       <Route path="/admin-ng">
-        <Provided withWorldUsers withOwnedVenues>
+        <Provided withWorldUsers>
           <AdminV2 />
         </Provided>
       </Route>
