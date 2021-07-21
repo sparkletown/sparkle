@@ -75,7 +75,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>
-              This is a preview of your camp
+              This is a preview of your Space
             </span>
             <PartyMapContainer
               interactive={false}
@@ -167,7 +167,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
           </div>
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
-              Camp logo
+              Square logo
             </div>
             <div className="content">
               <img className="icon" src={venue.host?.icon} alt="icon" />
