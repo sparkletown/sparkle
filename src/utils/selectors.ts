@@ -6,7 +6,6 @@ import { RootState } from "index";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
-import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User, UserWithLocation, userWithLocationToUser } from "types/User";
@@ -91,10 +90,6 @@ export const currentEventSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");
 
-export const userPurchaseHistorySelector: SparkleSelector<
-  WithId<Purchase>[] | undefined
-> = makeOrderedSelector("userPurchaseHistory");
-
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
 ) => state.attendance.retainAttendance;
@@ -117,10 +112,6 @@ export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIs
 
 export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "currentEvent"
-);
-
-export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
-  "userPurchaseHistory"
 );
 
 export const venueChatMessagesSelector: SparkleSelector<

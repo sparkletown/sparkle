@@ -1,7 +1,6 @@
 import { AuditoriumSection } from "types/auditorium";
 import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
-import { Purchase } from "types/Purchase";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";
@@ -25,7 +24,6 @@ export interface UserVisit {
 export type ValidFirestoreRootCollections =
   | "customers"
   | "experiences"
-  | "purchases"
   | "roles"
   | "userprivate"
   | "users"
@@ -62,7 +60,6 @@ export interface FirestoreData {
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
-  eventPurchase?: Record<string, Purchase>;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
   ownedVenues?: Record<string, AnyVenue>;
@@ -71,7 +68,6 @@ export interface FirestoreData {
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
   // @debt this doesn't appear to be used by anything anymore
   // userModalVisits?: Record<string, UserVisit>;
-  userPurchaseHistory?: Record<string, Purchase>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
@@ -93,7 +89,6 @@ export interface FirestoreOrdered {
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
-  eventPurchase?: WithId<Purchase>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
   parentVenueEvents?: WithId<VenueEvent>[];
@@ -108,7 +103,6 @@ export interface FirestoreOrdered {
   // subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: WithId<UserVisit>[];
-  userPurchaseHistory?: WithId<Purchase>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
