@@ -62,6 +62,7 @@ export interface FirestoreData {
   currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   events?: Record<string, VenueEvent>;
   experience?: Experience;
+  ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
@@ -90,6 +91,7 @@ export interface FirestoreOrdered {
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
+  ownedVenues?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];
