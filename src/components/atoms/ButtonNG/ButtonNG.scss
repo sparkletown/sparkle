@@ -35,6 +35,11 @@
     text-decoration: none;
   }
 
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px opaque-white(0.25);
+  }
+
   &:enabled:hover,
   &--enabled:hover {
     transform: translateY(-1px);
