@@ -111,13 +111,14 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
       >
         <InputField
-          containerClassName="Chatbox__input"
+          inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
           placeholder={`Write your ${placeholderValue}...`}
           autoComplete="off"
         />
         <button
+          aria-label="Send message"
           className="Chatbox__submit-button"
           type="button"
           onClick={toggleEmojiPicker}
@@ -129,6 +130,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           />
         </button>
         <button
+          aria-label="Send message"
           className={buttonClasses}
           type="submit"
           disabled={!chatValue || isSendingMessage}
