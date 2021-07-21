@@ -531,6 +531,7 @@ const Playa = () => {
 
   const getNearbyVenue = useCallback((x: number, y: number) => {
     if (!venues) return;
+    
     let closestVenue: WithId<AnyVenue> | undefined;
     let distanceToClosestVenue: number;
     venues.forEach((venue) => {
