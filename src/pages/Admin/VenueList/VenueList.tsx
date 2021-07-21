@@ -32,7 +32,7 @@ const VenueList: React.FC<VenueListProps> = ({
           <li
             key={index}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
-              canHaveSubvenues(venue) ? "camp" : ""
+              canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
             <Link to={`/admin-ng/venue/${venue.id}`}>{venue.name}</Link>
