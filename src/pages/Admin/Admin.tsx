@@ -95,7 +95,7 @@ const VenueList: React.FC<VenueListProps> = ({
           <li
             key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
-              canHaveSubvenues(venue) ? "camp" : ""
+              canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
             <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
@@ -296,14 +296,13 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                       interactive={false}
                       resizable={false}
                       iconsMap={
-                        venue.placement && venue.mapIconImageUrl
+                        venue.placement
                           ? {
                               icon: {
                                 width: PLAYA_VENUE_SIZE,
                                 height: PLAYA_VENUE_SIZE,
                                 top: venue.placement.y,
                                 left: venue.placement.x,
-                                url: venue.mapIconImageUrl,
                               },
                             }
                           : {}
