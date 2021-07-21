@@ -5,6 +5,8 @@ import Video from "twilio-video";
 
 import { User } from "types/User";
 
+import { getTwilioVideoToken } from "api/video";
+
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
 import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
@@ -65,18 +67,14 @@ const Room: React.FC<RoomProps> = ({
     return originalMessage;
   };
 
+  // @debt refactor this to use useAsync or similar?
   useEffect(() => {
-    (async () => {
-      if (!user) return;
+    if (!user) return;
 
-      // @ts-ignore
-      const getToken = firebase.functions().httpsCallable("video-getToken");
-      const response = await getToken({
-        identity: user.uid,
-        room: roomName,
-      });
-      setToken(response.data.token);
-    })();
+    getTwilioVideoToken({
+      userId: user.uid,
+      roomName,
+    }).then(setToken);
   }, [firebase, roomName, user]);
 
   const connectToVideoRoom = () => {

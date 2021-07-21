@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { isEqual } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -22,7 +23,7 @@ export interface ChatSidebarProps {
   venue: WithId<AnyVenue>;
 }
 
-export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
+export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
     toggleSidebar,
@@ -31,7 +32,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     selectPrivateChat,
   } = useChatSidebarControls();
 
-  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
+  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
@@ -85,3 +86,5 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     </div>
   );
 };
+
+export const ChatSidebar = React.memo(_ChatSidebar, isEqual);

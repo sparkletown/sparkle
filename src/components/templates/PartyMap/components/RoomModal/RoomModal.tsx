@@ -1,12 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
+
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { isEventLive } from "utils/event";
+import { retainAttendance } from "store/actions/Attendance";
+
 import { WithId, WithVenueId } from "utils/id";
 
+import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
 
@@ -58,6 +62,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           room={room}
           venueName={venue.name}
           venueEvents={venueEvents}
+          showSchedule={venue.showSchedule}
         />
       </div>
     </Modal>
@@ -68,21 +73,40 @@ export interface RoomModalContentProps {
   room: Room;
   venueName: string;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
+  showSchedule?: boolean;
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
   venueEvents,
+  showSchedule = DEFAULT_SHOW_SCHEDULE,
 }) => {
+  const dispatch = useDispatch();
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const triggerAttendance = useCallback(() => {
+    dispatch(retainAttendance(true));
+  }, [dispatch]);
+
+  // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
+  const clearAttendance = useCallback(() => {
+    dispatch(retainAttendance(false));
+  }, [dispatch]);
+
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
-  const [enterRoomWithSound] = useCustomSound(room.enterSound, {
+  const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
     onend: enterRoom,
   });
 
+  // note: this is here just to change the type on it in an easy way
+  const enterRoomWithSound: () => void = _enterRoomWithSound;
+
   const renderedRoomEvents = useMemo(() => {
+    if (!showSchedule) return [];
+
     return venueEvents.map((event, index: number) => (
       <ScheduleItem
         // @debt Ideally event.id would always be a unique identifier, but our types suggest it
@@ -91,14 +115,13 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         //   is far less likely to clash
         key={event.id ?? `${event.room}-${event.name}-${index}`}
         event={event}
-        isCurrentEvent={isEventLive(event)}
-        onRoomEnter={enterRoomWithSound}
+        enterEventLocation={enterRoomWithSound}
         roomUrl={room.url}
       />
     ));
-  }, [enterRoomWithSound, room.url, venueEvents]);
+  }, [enterRoomWithSound, room.url, showSchedule, venueEvents]);
 
-  const hasRoomEvents = renderedRoomEvents?.length > 0;
+  const showRoomEvents = showSchedule && renderedRoomEvents.length > 0;
 
   const iconStyles = {
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
@@ -114,17 +137,29 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
-        <RoomModalOngoingEvent
-          roomEvents={venueEvents}
-          onRoomEnter={enterRoomWithSound}
-        />
+
+        <div className="room-modal__content">
+          {showSchedule && <RoomModalOngoingEvent roomEvents={venueEvents} />}
+
+          {/* @debt extract this 'enter room' button/link concept into a reusable component */}
+          {/* @debt convert this to an <a> tag once blockers RE: counting/user presence are solved, see https://github.com/sparkletown/sparkle/issues/1670 */}
+          <button
+            className="btn btn-primary room-modal__btn-enter"
+            onMouseOver={triggerAttendance}
+            onMouseOut={clearAttendance}
+            onClick={enterRoomWithSound}
+          >
+            Enter
+          </button>
+        </div>
       </div>
 
       <UserList
+        containerClassName="room-modal__userlist"
         users={recentRoomUsers}
         limit={11}
         activity="in this room"
-        attendanceBoost={room.attendanceBoost}
+        hasClickableAvatars
       />
 
       {room.about && (
@@ -133,7 +168,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         </div>
       )}
 
-      {hasRoomEvents && (
+      {showRoomEvents && (
         <div className="room-modal__events">
           <div className="room-modal__title">Room Schedule</div>
 
