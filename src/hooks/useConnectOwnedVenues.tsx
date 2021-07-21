@@ -40,9 +40,9 @@ export interface UseOwnedVenuesData {
 }
 
 export const useOwnedVenues: ReactHook<
-  useOwnedVenuesProps,
-  useOwnedVenuesData
-> = ({ currentVenueId }): useOwnedVenuesData => {
+  UseOwnedVenuesProps,
+  UseOwnedVenuesData
+> = ({ currentVenueId }): UseOwnedVenuesData => {
   const { userId } = useUser();
   useConnectOwnedVenues(userId);
 
