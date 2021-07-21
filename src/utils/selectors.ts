@@ -210,6 +210,10 @@ export const noopSelector: SparkleSelector<undefined> = () => undefined;
 export const emptyArray = [];
 export const emptyArraySelector = <T>(): T[] => emptyArray;
 
-export const ownedVenuesSelector: SparkleSelector<
+export const ownedVenuesDataSelector: SparkleSelector<
   Record<string, AnyVenue> | undefined
 > = (state) => state.firestore.data.ownedVenues;
+
+export const ownedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.ownedVenues;

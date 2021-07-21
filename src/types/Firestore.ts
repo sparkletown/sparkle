@@ -91,6 +91,7 @@ export interface FirestoreOrdered {
   currentAuditoriumSections?: WithId<AuditoriumSection>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
+  ownedVenues?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];

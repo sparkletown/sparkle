@@ -3,7 +3,7 @@ import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId, withId } from "utils/id";
-import { ownedVenuesSelector } from "utils/selectors";
+import { ownedVenuesDataSelector } from "utils/selectors";
 
 import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
@@ -46,7 +46,9 @@ export const useOwnedVenues: ReactHook<
   const { userId } = useUser();
   useConnectOwnedVenues(userId);
 
-  const venues = useSelector(ownedVenuesSelector);
+  const venues = useSelector(ownedVenuesDataSelector);
+
+  const ownedVenuesIds = useMemo(() => Object.keys(venues ?? {}), [venues]);
 
   const ownedVenues = useMemo(
     () => Object.entries(venues ?? {}).map(([id, venue]) => withId(venue, id)),
@@ -54,9 +56,11 @@ export const useOwnedVenues: ReactHook<
   );
 
   const findVenueInOwnedVenues = useCallback(
-    (searchedForVenueId: string): WithId<AnyVenue> | undefined =>
-      ownedVenues.find((venue) => venue.id === searchedForVenueId),
-    [ownedVenues]
+    (searchedForVenueId: string) => {
+      const found = venues?.[searchedForVenueId];
+      return found ? withId(found, searchedForVenueId) : undefined;
+    },
+    [venues]
   );
 
   return useMemo(
@@ -65,7 +69,7 @@ export const useOwnedVenues: ReactHook<
       isLoading: !isLoaded(venues),
 
       ownedVenues,
-      ownedVenuesIds: Object.keys(venues ?? {}),
+      ownedVenuesIds,
 
       currentVenue: currentVenueId
         ? findVenueInOwnedVenues(currentVenueId)
@@ -73,6 +77,12 @@ export const useOwnedVenues: ReactHook<
 
       findVenueInOwnedVenues,
     }),
-    [venues, ownedVenues, findVenueInOwnedVenues, currentVenueId]
+    [
+      venues,
+      ownedVenues,
+      ownedVenuesIds,
+      findVenueInOwnedVenues,
+      currentVenueId,
+    ]
   );
 };
