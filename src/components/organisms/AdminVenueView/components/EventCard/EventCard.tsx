@@ -8,6 +8,11 @@ import { VenueEvent } from "types/venues";
 import { WithVenueId, WithId } from "utils/id";
 import { isEventLive } from "utils/event";
 import { formatTimeLocalised } from "utils/time";
+import { adminNGVenueUrl } from "utils/url";
+
+import { useVenueId } from "hooks/useVenueId";
+
+import { AdminVenueTab } from "components/organisms/AdminVenueView/AdminVenueView";
 
 import "./EventCard.scss";
 
@@ -16,6 +21,7 @@ interface EventCardProps {
 }
 
 export const EventCard: React.FC<EventCardProps> = ({ events }) => {
+  const venueId = useVenueId();
   const [nextEvent, followingEvent] = sortBy(events ?? [], "start_utc_seconds");
   const live = nextEvent && isEventLive(nextEvent);
 
@@ -42,7 +48,10 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
         </span>
       )}
 
-      <Link className={linkClasses} to="#">
+      <Link
+        className={linkClasses}
+        to={adminNGVenueUrl(venueId, AdminVenueTab.timing)}
+      >
         Add event
       </Link>
 

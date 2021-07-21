@@ -3,7 +3,7 @@ import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
-import { adminNGSettigsUrl } from "utils/url";
+import { adminNGSettingsUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 
@@ -33,7 +33,7 @@ export const RunTabView: React.FC = () => {
         <ButtonNG
           className="RunTabView__advanced"
           isLink={true}
-          linkTo={adminNGSettigsUrl(venueId)}
+          linkTo={adminNGSettingsUrl(venueId)}
           iconName={faCog}
         >
           Advanced Settings
