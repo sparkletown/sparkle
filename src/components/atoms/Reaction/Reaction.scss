@@ -16,10 +16,6 @@ $reaction-size: 30px;
     opacity: 0.9;
   }
 
-  &:focus {
-    outline: none;
-  }
-
   & > span {
     cursor: pointer;
     height: $reaction-size;

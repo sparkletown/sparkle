@@ -54,9 +54,5 @@ $append-button-width: 24px;
     margin-left: $spacing--md;
     background-color: transparent;
     color: $white;
-
-    &:focus {
-      outline: none;
-    }
   }
 }
