@@ -30,6 +30,7 @@
     cursor: pointer;
     color: rgba($white, 0.6);
     text-decoration: none;
+    padding: 0.5em 2em;
 
     @media (max-width: $media-breakpoint--lg) {
       width: 50%;

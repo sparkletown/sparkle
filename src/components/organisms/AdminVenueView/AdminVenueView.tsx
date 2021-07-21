@@ -1,14 +1,13 @@
-import React, { useMemo } from "react";
-import { useParams } from "react-router";
-import { Nav } from "react-bootstrap";
-import { LinkContainer } from "react-router-bootstrap";
+import React, { useMemo, useEffect } from "react";
+import { useParams, useHistory } from "react-router";
+import { Link } from "react-router-dom";
 import classNames from "classnames";
+
+import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
-
-import { adminNGVenueUrl } from "utils/url";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -32,6 +31,7 @@ const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
 };
 
 export const AdminVenueView: React.FC = () => {
+  const history = useHistory();
   const {
     venueId,
     selectedTab = AdminVenueTab.spaces,
@@ -45,20 +45,24 @@ export const AdminVenueView: React.FC = () => {
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
-      <LinkContainer key={key} to={adminNGVenueUrl(venueId, key)}>
-        <Nav.Link
-          key={key}
-          className={classNames("AdminVenueView__tab", {
-            "AdminVenueView__tab--selected": selectedTab === key,
-          })}
-          eventKey={key}
-          href={adminNGVenueUrl(venueId, key)}
-        >
-          {label}
-        </Nav.Link>
-      </LinkContainer>
+      <Link
+        key={key}
+        to={adminNGVenueUrl(venueId, key)}
+        className={classNames({
+          AdminVenueView__tab: true,
+          "AdminVenueView__tab--selected": selectedTab === key,
+        })}
+      >
+        {label}
+      </Link>
     ));
   }, [selectedTab, venueId]);
+
+  useEffect(() => {
+    if (venueId) return;
+    // when URL is invalid, land on the root one for the admin
+    history.push(adminNGRootUrl());
+  }, [venueId, history]);
 
   if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
@@ -71,9 +75,7 @@ export const AdminVenueView: React.FC = () => {
   return (
     <>
       <div className="AdminVenueView">
-        <Nav className="AdminVenueView__options" activeKey={selectedTab}>
-          {renderAdminVenueTabs}
-        </Nav>
+        <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
       {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
       {selectedTab === AdminVenueTab.timing && <div>Timing</div>}

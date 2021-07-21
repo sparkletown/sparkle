@@ -74,7 +74,7 @@ export const AdminSubrouter: React.FC = () => {
         </Provided>
       </Route>
 
-      <Route path="/admin-ng">
+      <Route path={["/admin-ng", "/admin-ng/*"]}>
         <Provided withWorldUsers>
           <AdminV2 />
         </Provided>

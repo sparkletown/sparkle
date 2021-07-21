@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { orderedVenuesSelector } from "utils/selectors";
+import { adminNGRootUrl } from "utils/url";
 
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -33,6 +34,11 @@ const Admin_v2: React.FC = () => {
   const { roles } = useRoles();
 
   const { isAdminUser } = useIsAdminUser(user?.uid);
+
+  useEffect(() => {
+    // when URL is a catch all, replace it with the canonical form
+    window.history.replaceState(null, "", adminNGRootUrl());
+  });
 
   if (!venues || !roles) {
     return <LoadingPage />;
