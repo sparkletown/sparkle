@@ -13,19 +13,19 @@ export const InitialForm: FC<InitialFormProps> = ({
 }) => {
   return (
     <div className="initial-form">
-      <div
+      <button
         className="btn btn-primary btn-block btn-centered create-account-button"
         onClick={displayRegisterForm}
       >
         Create your account
-      </div>
+      </button>
       <div className="buttons-separator">or</div>
-      <div
-        className="btn btn-block btn-centered login-button"
+      <button
+        className="btn btn-block btn-centered btn-primary login-button"
         onClick={displayLoginForm}
       >
         Log In
-      </div>
+      </button>
     </div>
   );
 };

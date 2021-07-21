@@ -118,6 +118,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           autoComplete="off"
         />
         <button
+          aria-label="Send message"
           className="Chatbox__submit-button"
           type="button"
           onClick={toggleEmojiPicker}
@@ -129,6 +130,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           />
         </button>
         <button
+          aria-label="Send message"
           className={buttonClasses}
           type="submit"
           disabled={!chatValue || isSendingMessage}
