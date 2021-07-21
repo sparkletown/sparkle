@@ -13,6 +13,7 @@ $name--margin-bottom: 5px;
   padding-left: $Schedule--padding;
 
   &__main {
+    color: $white;
     display: flex;
     align-items: center;
     margin-top: $main--margin-top;
