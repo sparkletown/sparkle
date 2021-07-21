@@ -537,8 +537,9 @@ const Playa = () => {
     
     venues.forEach((venue) => {
       const distance = distanceToVenue(x, y, venue.placement);
+      
       if (
-        distance &&
+        isTruthy(distance) &&
         distance <= VENUE_NEARBY_DISTANCE &&
         (!distanceToClosestVenue || distance < distanceToClosestVenue)
       ) {
@@ -546,6 +547,7 @@ const Playa = () => {
         distanceToClosestVenue = distance;
       }
     });
+    
     return closestVenue;
   }, []);
 
