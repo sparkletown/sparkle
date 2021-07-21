@@ -50,7 +50,7 @@ $playa-profile-name-size: 60px;
         height: $playa-avatar-size * 1.5;
       }
       &.they {
-        border: 2px solid white;
+        border: 2px solid $white;
         background: $sand;
         .avatar-name-container {
           top: -9px;
@@ -90,7 +90,7 @@ $playa-profile-name-size: 60px;
         }
       }
       &.they {
-        border: 2px solid white;
+        border: 2px solid $white;
         background: $sand;
       }
     }
@@ -184,7 +184,7 @@ $playa-profile-name-size: 60px;
       align-items: center;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: white;
+      color: $white;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px 8px;
@@ -203,7 +203,7 @@ $playa-profile-name-size: 60px;
       height: $playa-mode-badge-size / 2;
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1;
-      color: white;
+      color: $white;
       overflow: hidden;
       white-space: nowrap;
       padding: 3px;
@@ -217,7 +217,7 @@ $playa-profile-name-size: 60px;
       border-radius: 50%;
       width: $playa-mode-badge-size;
       height: $playa-mode-badge-size;
-      background-color: white;
+      background-color: $white;
       z-index: 1;
       overflow: hidden;
 
@@ -625,9 +625,9 @@ $playa-profile-name-size: 60px;
 }
 .link-button {
   display: inline-block;
-  color: white !important;
+  color: $white !important;
   padding: 10px;
-  border: solid 1px white;
+  border: solid 1px $white;
   font-size: 13px;
   text-decoration: none !important;
 }

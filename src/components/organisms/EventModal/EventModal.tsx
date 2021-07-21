@@ -94,6 +94,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide} className="EventModal">
+      <Modal.Header className="EventModal__close" closeButton />
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
