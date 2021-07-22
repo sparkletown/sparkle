@@ -135,6 +135,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useMemo(() => {
     if (!imageDims) return;
+
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,

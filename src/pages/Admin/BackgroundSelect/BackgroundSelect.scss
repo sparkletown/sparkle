@@ -14,7 +14,7 @@
   &__map-grid {
     display: grid;
     width: 50%;
-    grid-gap: 1rem;
+    grid-gap: $spacing--md;
     grid-template-columns: repeat(3, 1fr);
   }
 

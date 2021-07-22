@@ -1,17 +1,19 @@
+@import "scss/constants.scss";
+
 .MapPreview {
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: $spacing--xxl;
   position: relative;
   overflow: hidden;
-  border-radius: 40px;
+  border-radius: $border-radius--xl;
 
   &__header {
-    padding: 1.1em;
+    padding: $spacing--xl;
     position: absolute;
     top: 0;
-    z-index: 5;
-    background: rgba(0, 0, 0, 0.4);
-    font-size: 0.9rem;
-    border-radius: 0 0 2em 0;
+    z-index: z(map-preview-header);
+    background: opaque-black(0.4);
+    font-size: $font-size--md;
+    border-radius: 0 0 $border-radius--xl 0;
   }
 }

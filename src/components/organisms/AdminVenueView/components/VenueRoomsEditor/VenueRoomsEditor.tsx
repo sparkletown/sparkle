@@ -99,6 +99,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       coordinateBoundary: number
     ) => {
       if (!imageDims) return 0;
+
       return (coordinateBoundary * val) / imageDims[dimension];
     },
     [imageDims]
@@ -106,6 +107,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   useEffect(() => {
     if (!imageDims) return;
+
     const iconsMap = Object.keys(roomIconsArray).reduce(
       (acc, stringIndex: string) => {
         const index = parseInt(stringIndex);
@@ -224,28 +226,73 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
     },
   });
 
-  const renderSelectedRoom = (index: number) => {
-    return (
-      <>
-        <DraggableSubvenue
-          isResizable={resizable}
-          id={index.toString()}
-          imageStyle={iconImageStyle}
-          rounded={!!rounded}
-          {...boxes[index]}
-          onChangeSize={resizeBox(index.toString())}
-          lockAspectRatio={lockAspectRatio}
-        />
-        {imageDims && interactive && (
-          <CustomDragLayer
-            snapToGrid={!!snapToGrid}
+  const renderSelectedRoom = useCallback(
+    (index: number) => {
+      return (
+        <>
+          <DraggableSubvenue
+            isResizable={resizable}
+            id={index.toString()}
+            imageStyle={iconImageStyle}
             rounded={!!rounded}
-            iconSize={boxes[Object.keys(boxes)[index]]}
+            {...boxes[index]}
+            onChangeSize={resizeBox(index.toString())}
+            lockAspectRatio={lockAspectRatio}
           />
-        )}
-      </>
-    );
-  };
+          {imageDims && interactive && (
+            <CustomDragLayer
+              snapToGrid={!!snapToGrid}
+              rounded={!!rounded}
+              iconSize={boxes[Object.keys(boxes)[index]]}
+            />
+          )}
+        </>
+      );
+    },
+    [
+      boxes,
+      iconImageStyle,
+      imageDims,
+      interactive,
+      lockAspectRatio,
+      resizable,
+      resizeBox,
+      rounded,
+      snapToGrid,
+    ]
+  );
+
+  const renderRoomsPreview = useMemo(
+    () =>
+      rooms.map((room, index) =>
+        room === selectedRoom ? (
+          <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
+        ) : (
+          <div
+            className="Container__room-preview"
+            style={{
+              top: `${room.y_percent}%`,
+              left: `${room.x_percent}%`,
+              width: `${room.width_percent}%`,
+              height: `${room.height_percent}%`,
+            }}
+            key={`${room.title}-${index}`}
+            onClick={() => !selectedRoom && setSelectedRoom(room)}
+          >
+            <img
+              className={classNames("Container__room-image", {
+                "Container__room-image--disabled": !room.isEnabled,
+              })}
+              src={room.image_url}
+              alt="room-logo"
+              title={room.title}
+            />
+            <div className="Container__room-title">{room.title}</div>
+          </div>
+        )
+      ),
+    [renderSelectedRoom, rooms, selectedRoom, setSelectedRoom]
+  );
 
   return (
     <div ref={drop} style={{ ...styles, ...containerStyle }}>
@@ -263,36 +310,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
         src={backgroundImage}
       />
 
-      {backgroundImage &&
-        rooms.map((room, index) =>
-          room === selectedRoom ? (
-            <div key={`${room.title}-${index}`}>
-              {renderSelectedRoom(index)}
-            </div>
-          ) : (
-            <div
-              className={"Container__room-preview"}
-              style={{
-                top: `${room.y_percent}%`,
-                left: `${room.x_percent}%`,
-                width: `${room.width_percent}%`,
-                height: `${room.height_percent}%`,
-              }}
-              key={`${room.title}-${index}`}
-              onClick={() => !selectedRoom && setSelectedRoom(room)}
-            >
-              <img
-                className={classNames("Container__room-image", {
-                  "Container__room-image--disabled": !room.isEnabled,
-                })}
-                src={room.image_url}
-                alt="room-logo"
-                title={room.title}
-              />
-              <div className="Container__room-title">{room.title}</div>
-            </div>
-          )
-        )}
+      {backgroundImage && renderRoomsPreview}
     </div>
   );
 };

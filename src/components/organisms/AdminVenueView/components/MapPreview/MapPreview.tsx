@@ -14,7 +14,7 @@ export interface MapPreviewProps {
   mapBackground?: string;
   rooms: RoomData_v2[];
   isEditing: boolean;
-  selectedRoom: RoomData_v2 | undefined;
+  selectedRoom?: RoomData_v2;
   setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
   onResizeRoom?: (size: Dimensions) => void;
   onMoveRoom?: (position: Position) => void;

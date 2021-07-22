@@ -107,7 +107,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             autoComplete="off"
             placeholder="Room name"
             error={errors.title}
-            defaultValue={room.title}
             ref={register()}
           />
 
@@ -118,7 +117,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             autoComplete="off"
             placeholder="Description"
             error={errors.description}
-            defaultValue={room.description}
             ref={register()}
           />
 
@@ -129,7 +127,6 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             autoComplete="off"
             placeholder="Room url"
             error={errors.url}
-            defaultValue={room.url}
             ref={register()}
           />
 
