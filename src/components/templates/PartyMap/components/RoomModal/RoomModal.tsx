@@ -108,6 +108,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
+    
     if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
       logEventGoogleAnalytics({
         eventCategory: "PARTMAP_WITH_EXTERNAL_LINK",
