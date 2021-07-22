@@ -13,10 +13,11 @@ import {
   PLAYA_HEIGHT,
   MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
-  MINIMUM_COLUMNS,
-  MAXIMUM_COLUMNS,
-  MINIMUM_ROWS,
-  MAXIMUM_ROWS,
+  MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+  MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
+  MINIMUM_AUDITORIUM_ROWS_COUNT,
+  MAXIMUM_AUDITORIUM_ROWS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -87,10 +88,10 @@ export const validationSchema = Yup.object()
       is: true,
       then: Yup.number()
         .required(
-          `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+          `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
         )
-        .min(MINIMUM_COLUMNS)
-        .max(MAXIMUM_COLUMNS),
+        .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+        .max(MAXIMUM_AUDITORIUM_COLUMNS_COUNT),
     }),
 
     mapBackgroundImageUrl: Yup.string().when(
@@ -176,22 +177,22 @@ export const validationSchema = Yup.object()
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(
-        MINIMUM_COLUMNS,
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+        `The columns need to be between ${MINIMUM_AUDITORIUM_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
       )
       .max(
-        MAXIMUM_COLUMNS,
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
+        `The columns need to be between ${MINIMUM_AUDITORIUM_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
       ),
     auditoriumRows: Yup.number()
       .notRequired()
       .min(
-        MINIMUM_ROWS,
-        `The rows need to be between ${MINIMUM_ROWS} and ${MAXIMUM_ROWS}.`
+        MINIMUM_AUDITORIUM_ROWS_COUNT,
+        `The rows need to be between ${MINIMUM_AUDITORIUM_ROWS_COUNT} and ${MAXIMUM_AUDITORIUM_ROWS_COUNT}.`
       )
       .max(
-        MAXIMUM_ROWS,
-        `The rows need to be between ${MINIMUM_ROWS} and ${MAXIMUM_ROWS}.`
+        MAXIMUM_AUDITORIUM_ROWS_COUNT,
+        `The rows need to be between ${MINIMUM_AUDITORIUM_ROWS_COUNT} and ${MAXIMUM_AUDITORIUM_ROWS_COUNT}.`
       ),
   })
   .required();
