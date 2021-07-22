@@ -62,7 +62,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({
       <div className="room-modal">
         <RoomModalContent
           room={room}
-          venueName={venue.name}
           venueEvents={venueEvents}
           venue={venue}
           showSchedule={venue.showSchedule}
@@ -74,7 +73,6 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venueName: string;
   venue: AnyVenue;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
   showSchedule?: boolean;
@@ -82,11 +80,12 @@ export interface RoomModalContentProps {
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  venueName,
   venue,
   venueEvents,
   showSchedule = DEFAULT_SHOW_SCHEDULE,
 }) => {
+  const venueName = venue.name ?? "";
+
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
