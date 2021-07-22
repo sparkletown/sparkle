@@ -26,6 +26,7 @@ import {
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
+import { formatDateRelativeToNow } from "utils/time";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
@@ -101,7 +102,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       if (isScheduleTimeshifted) {
         return format(day, "E, LLL d");
       } else {
-        return isToday(day) ? "Today" : format(day, "E");
+        return formatDateRelativeToNow(day, {
+          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "E"),
+        });
       }
     };
 
@@ -111,6 +114,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
       });
 
+      const formattedDay = formatDayLabel(day);
+
       return (
         <li
           key={day.toISOString()}
@@ -119,7 +124,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             setSelectedDayIndex(dayIndex);
           }}
         >
-          {formatDayLabel(day)}
+          <button
+            aria-label={formattedDay}
+            className="NavBarSchedule__weekday-button"
+          >
+            {formattedDay}
+          </button>
         </li>
       );
     });

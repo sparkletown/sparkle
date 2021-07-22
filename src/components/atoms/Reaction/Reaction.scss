@@ -1,0 +1,24 @@
+@import "scss/constants";
+
+$reaction-size: 30px;
+
+.Reaction {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: $font-size--xl;
+  animation: sway 2200ms 1200ms ease-in-out;
+
+  &:hover {
+    cursor: pointer;
+    opacity: 0.9;
+  }
+
+  & > span {
+    cursor: pointer;
+    height: $reaction-size;
+    width: $reaction-size;
+  }
+}

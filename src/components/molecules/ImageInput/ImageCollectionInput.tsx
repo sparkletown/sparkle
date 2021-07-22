@@ -75,6 +75,8 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     []
   );
 
+  const hasImageCollections = !!imageCollection.length;
+
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
     if (selectedCollectionImageUrl) {
@@ -131,9 +133,11 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         value={imageUrlForPreview}
       />
       {error?.message && <span className="input-error">{error.message}</span>}
-      <div style={{ marginTop: 10, fontSize: "16px" }}>
-        {`Or choose one of our popular ${imageType}`}
-      </div>
+      {hasImageCollections && (
+        <div style={{ marginTop: 10, fontSize: "16px" }}>
+          {`Or choose one of our popular ${imageType}`}
+        </div>
+      )}
       <div
         style={{
           display: "flex",
