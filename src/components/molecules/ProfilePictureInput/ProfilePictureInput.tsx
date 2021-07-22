@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import { externalUrlAdditionalProps } from "utils/url";
+import "firebase/storage";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -10,6 +10,7 @@ import {
 } from "settings";
 
 import { resizeFile } from "utils/image";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import "./ProfilePictureInput.scss";
 

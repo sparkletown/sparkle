@@ -23,7 +23,7 @@ import {
   useUpdateTimespentPeriodically,
 } from "utils/userLocation";
 import { venueEntranceUrl } from "utils/url";
-import { showZendeskWidget } from "utils/zendesk";
+
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
 import { isTruthy } from "utils/types";
@@ -32,7 +32,6 @@ import { hasEventFinished, isEventStartingSoon } from "utils/event";
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
 import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
-import { useMixpanel } from "hooks/useMixpanel";
 import { useSelector } from "hooks/useSelector";
 import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
@@ -73,7 +72,6 @@ const hasPaidEvents = (template: VenueTemplate) => {
 
 export const VenuePage: React.FC = () => {
   const venueId = useVenueId();
-  const mixpanel = useMixpanel();
 
   // const [isAccessDenied, setIsAccessDenied] = useState(false);
 
@@ -102,7 +100,6 @@ export const VenuePage: React.FC = () => {
   const userId = user?.uid;
 
   const venueName = venue?.name ?? "";
-  const venueTemplate = venue?.template;
 
   const event = currentEvent?.[0];
 
@@ -169,21 +166,6 @@ export const VenuePage: React.FC = () => {
   // NOTE: User's timespent updates
 
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
-
-  useEffect(() => {
-    if (user && profile && venueId && venueTemplate) {
-      mixpanel.track("VenuePage loaded", {
-        venueId,
-        template: venueTemplate,
-      });
-    }
-  }, [user, profile, venueId, venueTemplate, mixpanel]);
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   // const handleAccessDenied = useCallback(() => setIsAccessDenied(true), []);
 

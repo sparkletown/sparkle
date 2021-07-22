@@ -57,11 +57,7 @@ export const ReactionPage: React.FC = () => {
         </div>
 
         <div className="col-4">
-          <UserList
-            users={recentVenueUsers}
-            isAudioEffectDisabled
-            showEvenWhenNoUsers
-          />
+          <UserList users={recentVenueUsers} showEvenWhenNoUsers />
         </div>
       </div>
     </div>

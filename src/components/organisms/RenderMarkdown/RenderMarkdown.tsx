@@ -12,6 +12,7 @@ const RenderMarkdownInner = lazy(() =>
 
 export interface RenderMarkdownProps {
   text?: string;
+  components?: object;
   allowBasicFormatting?: boolean;
   allowPreAndCode?: boolean;
   allowHeadings?: boolean;
@@ -22,6 +23,7 @@ export interface RenderMarkdownProps {
 
 const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
   text,
+  components,
   allowBasicFormatting = true,
   allowPreAndCode = true,
   allowHeadings = true,
@@ -31,6 +33,7 @@ const _RenderMarkdown: React.FC<RenderMarkdownProps> = ({
 }) => (
   <Suspense fallback={<div>{text}</div>}>
     <RenderMarkdownInner
+      components={components}
       text={text}
       {...{
         allowBasicFormatting,
