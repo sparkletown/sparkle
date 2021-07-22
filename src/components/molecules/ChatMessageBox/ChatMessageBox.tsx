@@ -111,7 +111,7 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
       >
         <InputField
-          containerClassName="Chatbox__input"
+          inputClassName="Chatbox__input"
           ref={register({ required: true })}
           name="message"
           placeholder={`Write your ${placeholderValue}...`}
