@@ -96,12 +96,7 @@ export const EventModal: React.FC<EventModalProps> = ({
       <Modal.Header className="EventModal__close" closeButton />
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
-        <span className="EventModal__subtitle">
-          by {event.host} in{" "}
-          <button className="button--a" onClick={goToEventLocation}>
-            {eventLocationToDisplay}
-          </button>
-        </span>
+        <span className="EventModal__subtitle">by {event.host}</span>
 
         <div className="EventModal__description">
           <RenderMarkdown text={event.description} />
@@ -112,7 +107,7 @@ export const EventModal: React.FC<EventModalProps> = ({
           onClick={goToEventLocation}
           disabled={!isLive}
         >
-          {eventStatus} in the {eventLocationToDisplay}
+          {eventStatus} in {eventLocationToDisplay}
         </Button>
       </div>
     </Modal>

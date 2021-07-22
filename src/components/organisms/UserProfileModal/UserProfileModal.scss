@@ -26,10 +26,9 @@ $profile-link--padding: 6px 18px;
       background: $secondary--light;
     }
   }
-}
-
-.question {
-  margin-bottom: 0;
+  .no-margin {
+    margin-bottom: 0;
+  }
 }
 
 .light {

@@ -5,12 +5,17 @@ export const AUTH_DOMAIN = process.env.REACT_APP_AUTH_DOMAIN;
 export const MEASUREMENT_ID = process.env.REACT_APP_MEASUREMENT_ID;
 export const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 export const BUGSNAG_API_KEY = process.env.REACT_APP_BUGSNAG_API_KEY;
-export const LOGROCKET_APP_ID = process.env.REACT_APP_LOGROCKET_APP_ID;
 export const MIXPANEL_PROJECT_TOKEN =
   process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;
 
 export const WS_RELAY_URL = process.env.REACT_APP_WS_RELAY_URL;
 export const IS_BURN = process.env.REACT_APP_IS_BURN;
+
+// @debt doing this for GitHub demo
+export const AGORA_APP_ID = "6f46c1a52afc445c94901fa64877cd05";
+export const AGORA_CHANNEL = "talkshowstudio";
+export const AGORA_TOKEN =
+  "006326d39518f21448dba28fb95a2cb421fIADeMEq7nQ/uK6aVGfsTcZGWkFbYk7IiUJ7oHZeTCsejOTeRmI4AAAAAEACqPfBqwlvXYAEAAQDBW9dg";
 
 // Build environment data from CI
 export const BUILD_SHA1 = process.env.REACT_APP_BUILD_SHA1 || undefined;

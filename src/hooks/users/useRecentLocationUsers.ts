@@ -1,16 +1,17 @@
-import { isLoaded } from "react-redux-firebase";
+// import { isLoaded } from "react-redux-firebase";
 import { isEqual } from "lodash";
 
 import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
-import { worldUsersSelector } from "utils/selectors";
+// import { worldUsersSelector } from "utils/selectors";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
+import { useWorldUsers } from "./useWorldUsers";
 
-import { useWorldUsersContext } from "./useWorldUsers";
+// import { useWorldUsersContext } from "./useWorldUsers";
 
 const noUsers: WithId<User>[] = [];
 
@@ -31,11 +32,13 @@ export const useRecentLocationUsers = (
   const lastSeenThreshold = useUserLastSeenThreshold();
 
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  useWorldUsersContext();
+  // useWorldUsersContext();
+
+  useWorldUsers();
 
   const { recentLocationUsers, isWorldUsersLoaded } = useSelector((state) => {
-    const worldUsers = worldUsersSelector(state);
-    const isWorldUsersLoaded = isLoaded(worldUsers);
+    const worldUsers = state.cache.usersArray;
+    const isWorldUsersLoaded = true;
 
     if (!worldUsers || !locationName)
       return { recentLocationUsers: noUsers, isWorldUsersLoaded };
