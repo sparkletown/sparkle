@@ -124,7 +124,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   return (
     <>
       <div className={containerClasses} onClick={onEventBoxClick}>
-        <button className={expandClasses}>
+        <button aria-label={event.name} className={expandClasses}>
           <FontAwesomeIcon
             icon={regularSquare}
             className="ScheduleEvent__expand--square"
