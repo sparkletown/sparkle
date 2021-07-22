@@ -3,6 +3,7 @@ import { SoundConfigReference } from "./sounds";
 export enum RoomType {
   unclickable = "UNCLICKABLE",
   mapFrame = "MAPFRAME",
+  modalFrame = "MODALFRAME",
 }
 
 // @debt We should end up with 1 canonical room type
@@ -18,10 +19,9 @@ export interface Room {
   width_percent: number;
   height_percent: number;
   isEnabled: boolean;
+  isLabelHidden?: boolean;
   image_url: string;
   enterSound?: SoundConfigReference;
-  // Legacy?
-  attendanceBoost?: number;
 }
 
 // @debt We should end up with 1 canonical room type

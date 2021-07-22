@@ -5,6 +5,8 @@ $avatarUrl: var(--user-profile-picture-avatar-url, none);
 .UserProfilePicture {
   width: $avatarSize;
   height: $avatarSize;
+  min-width: $avatarSize;
+  min-height: $avatarSize;
 
   background-color: $black;
   background-image: $avatarUrl;

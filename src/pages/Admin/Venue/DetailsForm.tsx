@@ -1,13 +1,3 @@
-import Bugsnag from "@bugsnag/js";
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
-import { ImageInput } from "components/molecules/ImageInput";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import React, {
   useCallback,
   useMemo,
@@ -17,16 +7,20 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { VenuePlacementState, VenueTemplate } from "types/venues";
-import { createJazzbar } from "utils/venue";
+import { Form } from "react-bootstrap";
+import Bugsnag from "@bugsnag/js";
+import "firebase/functions";
 import * as Yup from "yup";
+
 import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
-import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
-import { venueLandingUrl } from "utils/url";
+  createUrlSafeName,
+  createVenue,
+  updateVenue,
+  VenueInput,
+} from "api/admin";
+
+import { setSovereignVenue } from "store/actions/SovereignVenue";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -41,16 +35,49 @@ import {
   HAS_GRID_TEMPLATES,
   HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  DEFAULT_SHOW_SCHEDULE,
+  DEFAULT_USER_STATUS,
+  DEFAULT_SHOW_USER_STATUSES,
+  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  DEFAULT_AUDIENCE_ROWS_NUMBER,
 } from "settings";
-import "./Venue.scss";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ExtractProps } from "types/utility";
+
 import { IS_BURN } from "secrets";
+
+import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
+import { ExtractProps } from "types/utility";
+import { UserStatus } from "types/User";
+
+import { isTruthy } from "utils/types";
+import { venueLandingUrl } from "utils/url";
+import { createJazzbar } from "utils/venue";
+
+import { useUser } from "hooks/useUser";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useShowHide } from "hooks/useShowHide";
 import { useQuery } from "hooks/useQuery";
-import { Form } from "react-bootstrap";
+import { useDispatch } from "hooks/useDispatch";
+
+import { ImageInput } from "components/molecules/ImageInput";
+import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { UserStatusManager } from "components/molecules/UserStatusManager";
+
+import { Toggler } from "components/atoms/Toggler";
+
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+
+import {
+  editVenueCastSchema,
+  validationSchema,
+} from "./DetailsValidationSchema";
+import { WizardPage } from "./VenueWizard";
 import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
-import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
+
+import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -61,6 +88,8 @@ interface DetailsFormProps extends WizardPage {
 const iconPositionFieldName = "iconPosition";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
   [VenueTemplate.partymap]: "Party Map",
@@ -82,6 +111,9 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const queryParams = useQuery();
   const parentIdQuery = queryParams.get("parentId");
 
+  const dispatch = useDispatch();
+  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
+
   const {
     watch,
     formState,
@@ -90,6 +122,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     control,
     handleSubmit,
     errors,
+    setError,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -127,14 +160,71 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     );
   }, [state]);
 
+  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
+  // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
-    async (vals: Partial<FormValues>) => {
-      if (!user) return;
+    async (
+      vals: Partial<FormValues>,
+      userStatuses: UserStatus[],
+      showUserStatuses: boolean
+    ) => {
+      if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId)
-          await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
-        else await createVenue(vals as VenueInput, user);
+        if (venueId) {
+          await updateVenue(
+            {
+              ...(vals as VenueInput),
+              id: venueId,
+              userStatuses,
+              showUserStatus: showUserStatuses,
+            },
+            user
+          );
+
+          //@debt Create separate function that updates the userStatuses separately by venue id.
+          if (
+            sovereignVenueId &&
+            sovereignVenue &&
+            sovereignVenueId !== venueId
+          )
+            await updateVenue(
+              {
+                id: sovereignVenueId,
+                name: sovereignVenue.name,
+                subtitle:
+                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                description:
+                  sovereignVenue.config?.landingPageConfig.description ?? "",
+                adultContent: sovereignVenue.adultContent ?? false,
+                profile_questions: sovereignVenue.profile_questions,
+                code_of_conduct_questions:
+                  sovereignVenue.code_of_conduct_questions,
+                userStatuses,
+                showUserStatus: showUserStatuses,
+                template: sovereignVenue.template,
+              },
+              user
+            ).then(() => {
+              if (sovereignVenue) {
+                dispatch(
+                  setSovereignVenue({
+                    ...sovereignVenue,
+                    userStatuses,
+                    showUserStatus: showUserStatuses,
+                  })
+                );
+              }
+            });
+        } else
+          await createVenue(
+            {
+              ...vals,
+              userStatuses,
+              showUserStatus: showUserStatuses,
+            } as VenueInput,
+            user
+          );
 
         vals.name
           ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
@@ -149,29 +239,27 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, venueId, history]
+    [
+      user,
+      formError,
+      venueId,
+      history,
+      sovereignVenueId,
+      sovereignVenue,
+      dispatch,
+    ]
   );
 
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
   const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
+    () => ({
+      [iconPositionFieldName]: {
+        width: PLAYA_VENUE_SIZE,
+        height: PLAYA_VENUE_SIZE,
+        top: defaultValues?.placement?.y ?? 0,
+        left: defaultValues?.placement?.x ?? 0,
+      },
+    }),
+    [defaultValues]
   );
 
   const onBoxMove: ExtractProps<
@@ -188,9 +276,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [setValue]
   );
 
+  useEffect(() => {
+    if (!previous || isTruthy(state.templatePage)) return;
+
+    previous();
+  }, [previous, state.templatePage]);
+
   if (!state.templatePage) {
-    previous && previous();
-    return null;
+    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
+    return <>Error: state.templatePage not defined.</>;
   }
 
   const isAdminPlaced =
@@ -198,25 +292,30 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
+  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
-    <div className="page page--admin">
+    <div className="page page--admin admin-dashboard">
       <div className="page-side page-side--admin">
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
             <DetailsFormLeft
+              venueId={venueId}
               setValue={setValue}
               state={state}
               previous={previous}
               values={values}
+              sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
               watch={watch}
               onSubmit={onSubmit}
               editing={!!venueId}
               formError={formError}
+              setFormError={setFormError}
               control={control}
               handleSubmit={handleSubmit}
               errors={errors}
+              setError={setError}
             />
           </div>
         </div>
@@ -281,6 +380,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 };
 
 interface DetailsFormLeftProps {
+  venueId?: string;
+  sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   values: FormValues;
@@ -288,15 +389,23 @@ interface DetailsFormLeftProps {
   register: ReturnType<typeof useForm>["register"];
   watch: ReturnType<typeof useForm>["watch"];
   control: ReturnType<typeof useForm>["control"];
-  onSubmit: (vals: Partial<FormValues>) => Promise<void>;
+  onSubmit: (
+    vals: Partial<FormValues>,
+    userStatuses: UserStatus[],
+    showUserStatuses: boolean
+  ) => Promise<void>;
   handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
+  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
+  setFormError: (value: boolean) => void;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  venueId,
+  sovereignVenue,
   editing,
   state,
   values,
@@ -304,11 +413,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   register,
   watch,
   errors,
+  setError,
   previous,
   onSubmit,
   handleSubmit,
   setValue,
   formError,
+  setFormError,
 }) => {
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -536,63 +647,31 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderLiveScheduleToggle = () => (
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowScheduleToggle = () => (
     <div className="toggle-room">
-      <h4 className="italic input-header">Show live schedule</h4>
-      <label id={"showLiveSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showLiveSchedule"}
-          name={"showLiveSchedule"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <h4 className="italic input-header">Show Schedule</h4>
+      <Toggler
+        name="showSchedule"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+      />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowGridToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showGrid" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showBadges" forwardedRef={register} />
     </div>
   );
 
@@ -602,7 +681,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <h4 className="italic input-header">Number of seats columns</h4>
         <input
           disabled={disable}
-          defaultValue={25}
+          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
           min={5}
           name="auditoriumColumns"
           type="number"
@@ -620,7 +699,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <h4 className="italic input-header">Number of seats rows</h4>
         <input
           disabled={disable}
-          defaultValue={19}
+          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
           name="auditoriumRows"
           type="number"
           ref={register}
@@ -635,48 +714,35 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowReactions = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showReactions" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowShoutouts = () => (
+    <div className="toggle-room">
+      <h4 className="italic input-header">Show shoutouts</h4>
+      <Toggler name="showShoutouts" forwardedRef={register} />
+    </div>
+  );
+
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="showRangers" forwardedRef={register} />
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRestrictDOBToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
+      <Toggler name="requiresDateOfBirth" forwardedRef={register} />
     </div>
   );
 
@@ -778,13 +844,27 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const renderShowNametagsToggle = () => (
+    <>
+      <h4 className="italic input-header">
+        Display user names on their avatars
+      </h4>
+      <label className="input-container">
+        <Form.Control as="select" name="showNametags" ref={register} custom>
+          <option value="none">None</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
+      </label>
+    </>
+  );
+
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
     <div className="toggle-room">
       <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
+      <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 
@@ -805,8 +885,86 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+
+  const {
+    isShown: hasUserStatuses,
+    show: showUserStatuses,
+    hide: hideUserStatuses,
+    toggle: toggleUserStatus,
+  } = useShowHide(DEFAULT_SHOW_USER_STATUSES);
+
+  // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
+  useEffect(() => {
+    if (!sovereignVenue) return;
+
+    const venueUserStatuses = sovereignVenue?.userStatuses ?? [];
+    const venueShowUserStatus =
+      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES;
+
+    setUserStatuses(venueUserStatuses);
+
+    if (venueShowUserStatus) {
+      showUserStatuses();
+    } else {
+      hideUserStatuses();
+    }
+  }, [hideUserStatuses, showUserStatuses, sovereignVenue]);
+
+  const removeUserStatus = (index: number) => {
+    const statuses = [...userStatuses];
+    statuses.splice(index, 1);
+    setUserStatuses(statuses);
+  };
+
+  const addUserStatus = () =>
+    setUserStatuses([
+      ...userStatuses,
+      { status: "", color: DEFAULT_USER_STATUS.color },
+    ]);
+
+  const updateStatusColor = (color: string, index: number) => {
+    const statuses = [...userStatuses];
+    statuses[index] = { color, status: statuses[index].status };
+    setUserStatuses(statuses);
+  };
+
+  const updateStatusText = (
+    event: React.FormEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const statuses = [...userStatuses];
+
+    const userStatusExists = statuses.find(
+      (userStatus) => userStatus.status === event.currentTarget.value
+    );
+
+    // @debt Move user statuses to useForm with useDynamicInput, add schema for this validation instead
+    if (userStatusExists) {
+      setError("User statuses", {
+        type: "manual",
+        message: "User status already exists.",
+      });
+      setFormError(true);
+    } else {
+      setError("", "");
+      setFormError(false);
+    }
+
+    statuses[index] = {
+      color: statuses[index].color,
+      status: event.currentTarget.value,
+    };
+    setUserStatuses(statuses);
+  };
+
   return (
-    <form className="full-height-container" onSubmit={handleSubmit(onSubmit)}>
+    <form
+      className="full-height-container"
+      onSubmit={handleSubmit((vals) =>
+        onSubmit(vals, userStatuses, hasUserStatuses)
+      )}
+    >
       <input type="hidden" name="template" value={templateID} ref={register} />
       <div className="scrollable-content">
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${
@@ -860,27 +1018,48 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
+          editing={state.detailsPage?.venue.profile_questions}
         />
 
-        <EntranceInput register={register} fieldName="entrance" />
+        <EntranceInput
+          fieldName="entrance"
+          register={register}
+          editing={state.detailsPage?.venue.entrance}
+        />
 
-        {renderLiveScheduleToggle()}
+        {renderShowScheduleToggle()}
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
-        {renderShowZendeskToggle()}
+        {renderShowNametagsToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
+        {templateID &&
+          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          renderShowShoutouts()}
         {renderShowRangersToggle()}
         {renderRestrictDOBToggle()}
 
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          HAS_GRID_TEMPLATES.includes(templateID) &&
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}
+
+        <UserStatusManager
+          venueId={venueId}
+          checked={hasUserStatuses}
+          userStatuses={userStatuses}
+          onCheck={toggleUserStatus}
+          onDelete={removeUserStatus}
+          onAdd={addUserStatus}
+          onPickColor={updateStatusColor}
+          onChangeInput={updateStatusText}
+        />
+
         {values.showRadio && renderRadioStationInput()}
 
         {templateID &&

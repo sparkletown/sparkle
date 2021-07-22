@@ -8,14 +8,21 @@ import { VenueEvent } from "types/venues";
 
 import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
-import { enterVenue } from "utils/url";
+import {
+  enterVenue,
+  openUrl,
+  getUrlWithoutTrailingSlash,
+  getLastUrlParam,
+  getUrlParamFromString,
+} from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { Button } from "components/atoms/Button";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./EventModal.scss";
 
@@ -35,7 +42,17 @@ export const EventModal: React.FC<EventModalProps> = ({
   });
 
   const eventRoom = useMemo<Room | undefined>(
-    () => eventVenue?.rooms?.find((room) => room.title === event.room),
+    () =>
+      eventVenue?.rooms?.find((room) => {
+        const { room: eventRoom = "" } = event;
+
+        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
+
+        const [roomName] = getLastUrlParam(noTrailSlashUrl);
+        const roomUrlParam = getUrlParamFromString(eventRoom);
+
+        return roomUrlParam.endsWith(`${roomName}`);
+      }),
     [eventVenue, event]
   );
 
@@ -49,6 +66,15 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const goToEventLocation = () => {
     onHide();
+
+    const { room = "" } = event;
+    const roomUrlParam = getUrlParamFromString(room);
+
+    if (!eventRoom) {
+      openUrl(roomUrlParam);
+
+      return;
+    }
 
     if (event.room) {
       enterRoom();
@@ -67,6 +93,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide} className="EventModal">
+      <Modal.Header className="EventModal__close" closeButton />
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
@@ -76,7 +103,9 @@ export const EventModal: React.FC<EventModalProps> = ({
           </button>
         </span>
 
-        <p className="EventModal__description">{event.description}</p>
+        <div className="EventModal__description">
+          <RenderMarkdown text={event.description} />
+        </div>
 
         <Button
           customClass="EventModal__button"
