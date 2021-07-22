@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -22,10 +22,11 @@ import { venueEntranceUrl } from "utils/url";
 
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
+import { usePreloadAssets } from "hooks/usePreloadAssets";
 // import { useInterval } from "hooks/useInterval";
 import { useSelector } from "hooks/useSelector";
 // import { useWorldUserLocation } from "hooks/users";
@@ -83,6 +84,19 @@ export const VenuePage: React.FC = () => {
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
+
+  const assetsToPreload = useMemo(
+    () =>
+      [
+        venue?.mapBackgroundImageUrl,
+        ...(venue?.rooms ?? []).map((room) => room?.image_url),
+      ]
+        .filter(isDefined)
+        .map((url) => ({ url })),
+    [venue]
+  );
+
+  usePreloadAssets(assetsToPreload);
 
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
@@ -170,6 +184,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!venue || !venueId) {
+    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 

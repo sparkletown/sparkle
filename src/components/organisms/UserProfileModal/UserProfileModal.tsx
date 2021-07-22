@@ -193,7 +193,6 @@ const SuspectedLocation: React.FC<{
   const { relatedVenues } = useRelatedVenues({
     currentVenueId: currentVenue.id,
   });
-
   const { userLocation } = useWorldUserLocation(user.id);
   const { lastSeenIn } = userLocation ?? {};
 

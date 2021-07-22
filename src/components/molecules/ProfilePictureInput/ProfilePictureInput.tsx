@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
@@ -74,6 +74,11 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const uploadProfilePic = useCallback((event) => {
+    event.preventDefault();
+    uploadRef.current?.click();
+  }, []);
+
   // NOTE: if githubHandle is invalid, the resulting avatar will be invalid as well e.g. https://github.com/invalid-github-handle.png?size=120
   const githubImageSrc = githubHandle
     ? `https://github.com/${githubHandle}.png?size=120`
@@ -82,7 +87,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   // Set GitHub image as a default picture
   useEffect(() => {
     if (!githubImageSrc || pictureUrl) return;
-
     setValue("pictureUrl", githubImageSrc, true);
   }, [githubImageSrc, setValue, pictureUrl]);
 
@@ -117,9 +121,12 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
           className="profile-picture-input"
           ref={uploadRef}
         />
-        <label htmlFor="profile-picture-input" className="button--a">
-          upload a photo.
-        </label>
+        <button
+          className="profile-picture-button"
+          onClick={(event) => uploadProfilePic(event)}
+        >
+          Upload your photo
+        </button>
       </p>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>

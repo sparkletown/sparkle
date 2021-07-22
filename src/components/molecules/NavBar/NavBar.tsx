@@ -314,7 +314,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar user={userWithId} showStatus medium />
+                  <UserAvatar user={userWithId} showStatus size="medium" />
                 </OverlayTrigger>
               </div>
             )}

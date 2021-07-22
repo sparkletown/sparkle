@@ -197,6 +197,8 @@ $page-max-width: 1240px;
   display: flex;
   justify-content: center;
   z-index: z(account-profile-picture-preview);
+  background-color: transparent;
+  border: none;
 }
 
 .profile-picture-input {
@@ -212,6 +214,8 @@ $page-max-width: 1240px;
   padding: 15px 50px;
   color: $white;
   font-weight: 700;
+  margin-bottom: $spacing--lg;
+  margin-top: $spacing--lg;
   background-color: $black;
 
   &:hover {
