@@ -3,9 +3,7 @@ import { REACT_APP_GA_MEASUREMENT_ID } from "secrets";
 
 export const initGoogleAnalytics = () => {
   if (REACT_APP_GA_MEASUREMENT_ID) {
-    initialize(REACT_APP_GA_MEASUREMENT_ID, {
-      debug: true,
-    });
+    initialize(REACT_APP_GA_MEASUREMENT_ID);
     pageview(window.location.pathname + window.location.search);
   }
 };
