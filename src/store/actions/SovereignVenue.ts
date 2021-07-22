@@ -1,48 +1,51 @@
+import { AnyVenue } from "types/venues";
 import { ReduxAction } from "types/redux";
 
+import { WithId } from "utils/id";
+
 export enum SovereignVenueActionTypes {
-  SET_SOVEREIGN_VENUE_ID = "SET_SOVEREIGN_VENUE_ID",
+  SET_SOVEREIGN_VENUE = "SET_SOVEREIGN_VENUE",
   SET_SOVEREIGN_VENUE_IS_LOADING = "SET_SOVEREIGN_VENUE_IS_LOADING",
   SET_SOVEREIGN_VENUE_ERROR = "SET_SOVEREIGN_VENUE_ERROR",
 }
 
-type SetSovereignVenueIdIsLoadingAction = ReduxAction<
+type SetSovereignVenueIsLoadingAction = ReduxAction<
   SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_IS_LOADING,
   { isLoading: boolean }
 >;
 
-type SetSovereignVenueIdErrorAction = ReduxAction<
+type SetSovereignVenueErrorAction = ReduxAction<
   SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ERROR,
   { errorMsg: string }
 >;
 
-type SetSovereignVenueIdAction = ReduxAction<
-  SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ID,
-  { sovereignVenueId: string }
+type SetSovereignVenueAction = ReduxAction<
+  SovereignVenueActionTypes.SET_SOVEREIGN_VENUE,
+  { sovereignVenue: WithId<AnyVenue> }
 >;
 
-export const setSovereignVenueIdIsLoading = (
+export const setSovereignVenueIsLoading = (
   isLoading: boolean
-): SetSovereignVenueIdIsLoadingAction => ({
+): SetSovereignVenueIsLoadingAction => ({
   type: SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_IS_LOADING,
   payload: { isLoading },
 });
 
-export const setSovereignVenueIdError = (
+export const setSovereignVenueError = (
   errorMsg: string
-): SetSovereignVenueIdErrorAction => ({
+): SetSovereignVenueErrorAction => ({
   type: SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ERROR,
   payload: { errorMsg },
 });
 
-export const setSovereignVenueId = (
-  sovereignVenueId: string
-): SetSovereignVenueIdAction => ({
-  type: SovereignVenueActionTypes.SET_SOVEREIGN_VENUE_ID,
-  payload: { sovereignVenueId },
+export const setSovereignVenue = (
+  sovereignVenue: WithId<AnyVenue>
+): SetSovereignVenueAction => ({
+  type: SovereignVenueActionTypes.SET_SOVEREIGN_VENUE,
+  payload: { sovereignVenue },
 });
 
 export type SovereignVenueActions =
-  | SetSovereignVenueIdIsLoadingAction
-  | SetSovereignVenueIdErrorAction
-  | SetSovereignVenueIdAction;
+  | SetSovereignVenueIsLoadingAction
+  | SetSovereignVenueErrorAction
+  | SetSovereignVenueAction;

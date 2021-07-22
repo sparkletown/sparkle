@@ -34,6 +34,8 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { validationSchema } from "./RoomsValidationSchema";
 
 import "../Venue.scss";
@@ -96,7 +98,7 @@ export const RoomsForm: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar hasBackButton={false}>
       <RoomInnerForm
         venueId={venueId}
         venue={venue}
@@ -262,7 +264,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                   <div className="input-container">
                     <div className="input-title">
                       Upload an image for how your room should appear on the
-                      camp map
+                      Space map
                     </div>
                     <ImageInput
                       disabled={disable}
@@ -319,17 +321,22 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Enabled ?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isEnabled"
-                        name={"isEnabled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isEnabled"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
+                  </div>
+                  <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
+                    <div className="input-title">Is label hidden?</div>
+                    <Toggler
+                      name="isLabelHidden"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
@@ -377,7 +384,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your room in the camp
+            Position your room in the Space
           </h4>
           <p>
             First upload or select the icon you would like to appear in your

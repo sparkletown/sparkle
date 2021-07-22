@@ -26,7 +26,8 @@
     "sparkle-unity": "sparkle-unity",
     "sparkle-burn": "sparkle-burn",
     "sparkle-burn-staging": "sparkle-burn-staging",
-    "sparkle-github": "sparkle-github"
+    "sparkle-github": "sparkle-github",
+    "sparkle-summit-hack": "sparkle-summit-hack"
   },
   "targets": {
     "co-reality-map": {
@@ -221,6 +222,13 @@
       "hosting": {
         "sparkle-github": [
           "sparkle-github"
+        ]
+      }
+    },
+    "sparkle-summit-hack": {
+      "hosting": {
+        "sparkle-summit-hack": [
+          "sparkle-summit-hack"
         ]
       }
     }
