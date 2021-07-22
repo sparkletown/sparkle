@@ -90,7 +90,7 @@ $seat-margin: 6px;
     transition: all 400ms $transition-function;
     font-size: 2rem;
     &:hover {
-      background-color: white;
+      background-color: $white;
       transform: scale(1.05) rotate(90deg);
       color: rgba(black, 0.7);
       box-shadow: 2px 0px 10px rgba($white, 0.6);

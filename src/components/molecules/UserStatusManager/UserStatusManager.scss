@@ -1,0 +1,13 @@
+@import "scss/constants";
+
+.UserStatusManager {
+  &__checkbox {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__description {
+    font-size: $font-size--sm;
+    opacity: 0.7;
+  }
+}

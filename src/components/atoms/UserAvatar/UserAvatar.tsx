@@ -1,14 +1,20 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
+import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
-import { useRecentWorldUsers } from "hooks/users";
 
 import { WithId } from "utils/id";
 
+import { useRecentWorldUsers } from "hooks/users";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useVenueId } from "hooks/useVenueId";
+
 import "./UserAvatar.scss";
+
+export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
 export interface UserAvatarProps {
   user?: WithId<User>;
@@ -17,22 +23,28 @@ export interface UserAvatarProps {
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
-  large?: boolean;
-  medium?: boolean;
+  size?: UserAvatarSize;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
-export const UserAvatar: React.FC<UserAvatarProps> = ({
+export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
   containerClassName,
   imageClassName,
   showNametag,
   onClick,
   showStatus,
-  large,
-  medium,
+  size,
 }) => {
+  const venueId = useVenueId();
+
   const { recentWorldUsers } = useRecentWorldUsers();
+
+  const {
+    userStatus,
+    venueUserStatuses,
+    isStatusEnabledForVenue,
+  } = useVenueUserStatuses(venueId, user);
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
@@ -44,8 +56,7 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
-    "UserAvatar--large": large,
-    "UserAvatar--medium": medium,
+    [`UserAvatar--${size}`]: size,
   });
 
   const isOnline = useMemo(
@@ -64,8 +75,21 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
   const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
     "UserAvatar__status-indicator--online": isOnline,
     [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    "UserAvatar__status-indicator--large": large,
+    [`UserAvatar__status-indicator--${size}`]: size,
   });
+
+  const statusIndicatorStyles = useMemo(
+    () => ({ backgroundColor: userStatus.color }),
+    [userStatus.color]
+  );
+
+  //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
+  //'showStatus' is used to render this conditionally only in some of the screens.
+  const hasUserStatus =
+    isStatusEnabledForVenue &&
+    showStatus &&
+    isOnline &&
+    !!venueUserStatuses.length;
 
   return (
     <div className={containerClasses}>
@@ -76,7 +100,15 @@ export const UserAvatar: React.FC<UserAvatarProps> = ({
         alt={`${userDisplayName}'s avatar`}
         onClick={onClick}
       />
-      {showStatus && <span className={statusIndicatorClasses} />}
+
+      {hasUserStatus && (
+        <span
+          className={statusIndicatorClasses}
+          style={statusIndicatorStyles}
+        />
+      )}
     </div>
   );
 };
+
+export const UserAvatar = React.memo(_UserAvatar, isEqual);

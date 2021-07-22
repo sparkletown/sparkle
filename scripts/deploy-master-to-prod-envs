@@ -54,7 +54,7 @@ read -p "  Press enter to continue"
 (set -x; git push origin master:env/unity)
 (set -x; git push origin master:env/demo)
 
-echo "Note: ohbm, github environments were not updated as they have custom code. To update the environments you should create a PR. (example: https://github.com/sparkletown/sparkle/pull/1519)"
+echo "Note: ohbm, github, summit-hack environments were not updated as they have custom code. To update the environments you should create a PR. (example: https://github.com/sparkletown/sparkle/pull/1519)"
 
 echo
 echo "All done!"

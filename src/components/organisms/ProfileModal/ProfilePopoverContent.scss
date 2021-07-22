@@ -16,6 +16,7 @@ $profile-popover--margin-top: 12px;
   overflow: auto;
   padding: $spacing--md;
   background: $black;
+  height: 100%;
   background-image: linear-gradient(
     0deg,
     rgba($white, 0.05) 0%,
@@ -33,7 +34,7 @@ $profile-popover--margin-top: 12px;
   .question-section {
     margin-bottom: 30px;
     font-size: 14px;
-    color: white;
+    color: $white;
   }
 
   .question {
