@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
 export interface UseFetchAssetsReturn {
@@ -14,23 +15,21 @@ export interface UseFetchAssetsReturn {
  */
 export const useFetchAssets = (path: string): UseFetchAssetsReturn => {
   const [assets, setAssets] = useState<string[]>([]);
-  const [isLoading, setLoading] = useState<boolean>(false);
+
+  const [{ loading: isLoading }, fetchAssets] = useAsyncFn(async () => {
+    const storageRef = firebase.storage().ref();
+
+    const list = await storageRef.child(`assets/${path}`).listAll();
+    const promises = list.items.map((item) => item.getDownloadURL());
+
+    const urls: string[] = await Promise.all(promises);
+
+    setAssets(urls);
+  }, [path]);
 
   useEffect(() => {
-    const fetchAssets = async () => {
-      setLoading(true);
-      const storageRef = firebase.storage().ref();
-
-      const list = await storageRef.child(`assets/${path}`).listAll();
-      const promises = list.items.map((item) => item.getDownloadURL());
-
-      const urls: string[] = await Promise.all(promises);
-
-      setAssets(urls);
-    };
-
-    fetchAssets().finally(() => setLoading(false));
-  }, [path]);
+    fetchAssets();
+  }, [fetchAssets, path]);
 
   return { assets, isLoading };
 };

@@ -5,7 +5,7 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  padding: 5rem 0 4rem;
+  padding: $spacing--xl 0;
   position: relative;
   background-size: cover;
   background-color: $dark;
@@ -21,7 +21,7 @@
   &__map {
     width: 100%;
     padding-bottom: 50px;
-    border-radius: 1.8em;
+    border-radius: $border-radius--lg;
     background: $black;
     background-size: cover;
     background-position: center;
@@ -29,7 +29,7 @@
     border: solid 2px;
 
     &:hover {
-      border: solid 2px $primary;
+      border: solid $border-radius--xs $primary;
     }
   }
 }

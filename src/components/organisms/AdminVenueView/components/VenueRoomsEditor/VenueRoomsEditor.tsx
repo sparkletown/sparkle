@@ -10,6 +10,7 @@ import React, {
 import { useDrop } from "react-dnd";
 import update from "immutability-helper";
 import ReactResizeDetector from "react-resize-detector";
+import classNames from "classnames";
 
 import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
@@ -19,6 +20,8 @@ import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
 import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
+
+import "./VenueRoomsEditor.scss";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -38,12 +41,12 @@ export interface RoomIconsMap {
   [key: string]: RoomIcon;
 }
 
-interface CoordinatesBoundary {
+interface PortalSize {
   width: number;
   height: number;
 }
 
-interface PropsType {
+export interface VenueRoomsEditorProps {
   snapToGrid?: boolean;
   roomIcons?: RoomIcon[];
   backgroundImage: string;
@@ -51,7 +54,7 @@ interface PropsType {
   draggableIconImageStyle?: CSSProperties; // This is not being used ATM
   roomIconsMap?: RoomIconsMap;
   onOtherIconClick?: (key: string) => void;
-  coordinatesBoundary: CoordinatesBoundary;
+  coordinatesBoundary: PortalSize;
   interactive: boolean;
   resizable: boolean;
   onResize?: (size: Dimensions) => void;
@@ -66,7 +69,7 @@ interface PropsType {
   setSelectedRoom: Dispatch<SetStateAction<RoomData_v2 | undefined>>;
 }
 
-export const Container: React.FC<PropsType> = ({
+export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
   snapToGrid,
   roomIcons,
   backgroundImage,
@@ -268,47 +271,25 @@ export const Container: React.FC<PropsType> = ({
             </div>
           ) : (
             <div
-              className="map-preview__room"
-              key={`${room.title}-${index}`}
-              onClick={() => !selectedRoom && setSelectedRoom(room)}
+              className={"Container__room-preview"}
               style={{
-                position: "absolute",
                 top: `${room.y_percent}%`,
                 left: `${room.x_percent}%`,
                 width: `${room.width_percent}%`,
                 height: `${room.height_percent}%`,
               }}
+              key={`${room.title}-${index}`}
+              onClick={() => !selectedRoom && setSelectedRoom(room)}
             >
               <img
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  filter: room.isEnabled ? "none" : "grayscale(100%)",
-                  opacity: room.isEnabled ? 1 : 0.5,
-                  transition: "filter .3s ease",
-                }}
+                className={classNames("Container__room-image", {
+                  "Container__room-image--disabled": !room.isEnabled,
+                })}
                 src={room.image_url}
-                alt="room banner"
+                alt="room-logo"
                 title={room.title}
               />
-              <div
-                style={{
-                  position: "absolute",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  display: "flex",
-                  alignContent: "center",
-                  justifyContent: "center",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                  borderRadius: "22px",
-                  padding: "6px 8px",
-                  fontSize: "0.8rem",
-                  transition: "all 400ms cubic-bezier(0.23, 1, 0.32, 1)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {room.title}
-              </div>
+              <div className="Container__room-title">{room.title}</div>
             </div>
           )
         )}

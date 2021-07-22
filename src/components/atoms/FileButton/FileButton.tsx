@@ -13,29 +13,29 @@ export interface FileButtonProps {
 export const FileButton: React.FC<FileButtonProps> = ({
   title,
   description,
-  disabled,
+  disabled: isDisabled,
   onChange,
 }) => {
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const files = event.target.files;
 
-      if (!files || disabled) return;
+      if (!files || isDisabled) return;
 
       const url = URL.createObjectURL(files[0]);
 
       onChange(url, files);
     },
-    [disabled, onChange]
+    [isDisabled, onChange]
   );
 
   const buttonClasses = classNames("btn btn-primary", {
-    "btn-disabled": disabled,
+    "btn-disabled": isDisabled,
   });
 
   return (
     <div className="FileButton">
-      <button className={buttonClasses} disabled={disabled}>
+      <button className={buttonClasses} disabled={isDisabled}>
         <label className="FileButton__label" htmlFor="fileButton">
           {title}
         </label>
@@ -45,7 +45,7 @@ export const FileButton: React.FC<FileButtonProps> = ({
         hidden
         type="file"
         id="fileButton"
-        disabled={disabled}
+        disabled={isDisabled}
         onChange={handleChange}
       />
 

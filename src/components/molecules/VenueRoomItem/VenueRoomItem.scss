@@ -1,5 +1,7 @@
 @import "scss/constants.scss";
 
+$room-icon-size: 34px;
+
 .VenueRoomItem {
   padding: $spacing--md;
   display: flex;
@@ -11,12 +13,12 @@
   }
 
   &__room-icon {
-    height: 34px;
-    width: 34px;
-    margin-right: 10px;
+    height: $room-icon-size;
+    width: $room-icon-size;
+    margin-right: $spacing--sm;
     background-size: contain;
     background-position: center;
-    border-radius: 4px;
+    border-radius: $border-radius--xs;
     box-shadow: 0 0 0 3px $primary;
   }
 }

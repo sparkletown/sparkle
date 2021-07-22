@@ -1,11 +1,11 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { createRoom, createVenue_v2 } from "api/admin";
+import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
 
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
@@ -58,7 +58,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     },
   });
 
-  const [{ loading }, addRoom] = useAsyncFn(async () => {
+  const [{ loading: isLoading }, addRoom] = useAsyncFn(async () => {
     if (!user || !venueId || !template) return;
 
     const roomValues = getValues();
@@ -67,7 +67,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       ? window.origin + venueInsideUrl(roomValues.venueName)
       : roomValues.roomUrl;
 
-    const roomData = {
+    const roomData: RoomInput_v2 = {
       title: roomValues.roomTitle,
       isEnabled: true,
       image_url: DEFAULT_VENUE_LOGO,
@@ -86,10 +86,6 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     await createRoom(roomData, venueId, user).then(() => hideModal());
   }, [getValues, hideModal, isVenuePortal, template, user, venueId]);
 
-  const roomIconStyles = useMemo(() => ({ backgroundImage: `url(${icon})` }), [
-    icon,
-  ]);
-
   return (
     <>
       <Modal show={isModalVisible} onHide={hideModal}>
@@ -103,7 +99,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
               placeholder="Room title"
               error={errors.roomTitle}
               ref={register()}
-              disabled={loading}
+              disabled={isLoading}
             />
 
             {isVenuePortal && (
@@ -116,7 +112,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
                   placeholder="Venue name"
                   error={errors.venueName}
                   ref={register()}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </>
             )}
@@ -131,19 +127,23 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
                   placeholder="Room url"
                   error={errors.roomUrl}
                   ref={register()}
-                  disabled={loading}
+                  disabled={isLoading}
                 />
               </>
             )}
 
-            <Button disabled={loading} title="Add room" type="submit">
+            <Button disabled={isLoading} title="Add room" type="submit">
               Add room
             </Button>
           </Form>
         </Modal.Body>
       </Modal>
       <div className="VenueRoomItem" onClick={showModal}>
-        <div className="VenueRoomItem__room-icon" style={roomIconStyles} />
+        <img
+          alt={`room-icon-${icon}`}
+          src={icon}
+          className="VenueRoomItem__room-icon"
+        />
         <div>{text}</div>
       </div>
     </>

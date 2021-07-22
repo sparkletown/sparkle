@@ -59,6 +59,11 @@ export const AdminVenueView: React.FC = () => {
     setSelectedTab(tab as AdminVenueTab);
   }, []);
 
+  const selectTiming = useCallback(
+    () => setSelectedTab(AdminVenueTab.timing),
+    []
+  );
+
   if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
   }
@@ -79,10 +84,7 @@ export const AdminVenueView: React.FC = () => {
         </Nav>
       </div>
       {selectedTab === AdminVenueTab.spaces && (
-        <Spaces
-          venue={venue as Venue_v2}
-          onClickNext={() => setSelectedTab(AdminVenueTab.timing)}
-        />
+        <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
       )}
       {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}

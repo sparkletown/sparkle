@@ -4,7 +4,7 @@ $label-margin: $spacing--sm 0 $spacing--sm 0;
 
 .FileButton {
   display: flex;
-  margin-bottom: 3rem;
+  margin-bottom: $spacing--sm;
   flex-direction: column;
 
   .btn {

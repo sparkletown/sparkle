@@ -4,11 +4,12 @@ import { useAsyncFn } from "react-use";
 import { updateVenue_v2 } from "api/admin";
 
 import { useUser } from "hooks/useUser";
-import { useFetchAssets } from "hooks/useFetchAssetImages";
+import { useFetchAssets } from "hooks/useFetchAssets";
 
 import { FileButton } from "components/atoms/FileButton";
 
 import "./BackgroundSelect.scss";
+import { useMemo } from "react";
 
 export interface BackgroundSelectProps {
   venueName: string;
@@ -45,6 +46,20 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
 
   const hasBackgrounds = !!mapBackgrounds.length && !isLoadingBackgrounds;
 
+  const renderMapBackgrounds = useMemo(
+    () =>
+      mapBackgrounds.map((mapBackground, index) => (
+        <button
+          className="BackgroundSelect__map"
+          disabled={isUploading}
+          style={{ backgroundImage: `url(${mapBackground})` }}
+          key={index}
+          onClick={() => uploadMapBackground(mapBackground)}
+        />
+      )),
+    [isUploading, mapBackgrounds, uploadMapBackground]
+  );
+
   return (
     <div className="BackgroundSelect">
       {!mapBackground && (
@@ -60,16 +75,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
           {isLoadingBackgrounds && <div>Loading maps...</div>}
 
           <div className="BackgroundSelect__map-grid">
-            {hasBackgrounds &&
-              mapBackgrounds.map((mapBackground, index) => (
-                <button
-                  className="BackgroundSelect__map"
-                  disabled={isUploading}
-                  style={{ backgroundImage: `url(${mapBackground})` }}
-                  key={index}
-                  onClick={() => uploadMapBackground(mapBackground)}
-                />
-              ))}
+            {hasBackgrounds && renderMapBackgrounds}
           </div>
         </>
       )}

@@ -1,5 +1,9 @@
 @import "scss/constants.scss";
 
+$venue-room-logo-size: 34px;
+$button-size: 50px;
+$icon-size: 20px;
+
 .Spaces {
   display: flex;
   flex: 1;
@@ -10,7 +14,7 @@
 
   &__map {
     width: 80%;
-    background-color: #19181a;
+    background-color: $secondary--dark;
     justify-content: center;
     align-items: center;
     padding: 40px;
@@ -21,15 +25,15 @@
   }
 
   &__upload-background-wrapper {
-    background-color: #19181a;
-    border-radius: 16px;
+    background-color: $secondary--dark;
+    border-radius: $border-radius--lg;
     padding: 40px;
   }
 
   &__upload-background-button {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 26px;
-    padding: 10px;
+    background-color: opaque-white(0.2);
+    border-radius: $border-radius--xl;
+    padding: $spacing--md;
     text-align: center;
   }
 
@@ -40,12 +44,12 @@
   }
 
   &__title {
-    font-size: 2rem;
+    font-size: $font-size--sm;
     font-weight: bolder;
   }
 
   &__venue-rooms {
-    padding: 10px;
+    padding: $spacing--md;
     background-color: $saturated-black;
     display: flex;
     flex-direction: row;
@@ -69,12 +73,12 @@
   }
 
   &__venue-room-logo {
-    height: 34px;
-    width: 34px;
-    margin-right: 10px;
+    height: $venue-room-logo-size;
+    width: $venue-room-logo-size;
+    margin-right: $spacing--md;
     background-size: contain;
     background-position: center;
-    border-radius: 4px;
+    border-radius: $border-radius--xs;
     box-shadow: 0 0 0 3px $primary;
   }
 
@@ -85,16 +89,16 @@
     flex-direction: row;
     justify-content: space-between;
     width: 20%;
-    padding: 12px;
-    background-color: #000;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding: $spacing--md;
+    background-color: $black;
+    border-top: 1px solid opaque-white(0.2);
   }
 
   &__home-button {
     cursor: pointer;
     display: flex;
-    width: 50px;
-    height: 50px;
+    width: $button-size;
+    height: $button-size;
     border-radius: 100%;
     justify-content: center;
     align-items: center;
@@ -114,13 +118,13 @@
   &__back-button {
     cursor: pointer;
     display: flex;
-    height: 50px;
-    font-weight: 400;
-    font-size: 1rem;
-    border-radius: 22px;
+    height: $button-size;
+    font-weight: $font-weight--400;
+    font-size: $font-size--xs;
+    border-radius: $border-radius--xl;
     justify-content: center;
     align-items: center;
-    padding: 12px 16px;
+    padding: $spacing--md $spacing--lg;
     margin: 0 5px;
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
     background-color: lighten($color: $saturated-black, $amount: 10);
@@ -133,13 +137,13 @@
   &__next-button {
     cursor: pointer;
     display: flex;
-    height: 50px;
-    font-weight: 400;
-    font-size: 1rem;
-    border-radius: 22px;
+    height: $button-size;
+    font-weight: $font-weight--400;
+    font-size: $font-size--xs;
+    border-radius: $border-radius--xl;
     justify-content: center;
     align-items: center;
-    padding: 12px 16px;
+    padding: $spacing--md $spacing--lg;
     margin: 0 5px;
     transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
     background-color: $primary;
@@ -150,9 +154,9 @@
   }
 
   &__home-icon {
-    width: 20px;
-    height: 20px;
-    background-size: 20px 20px;
+    width: $icon-size;
+    height: $icon-size;
+    background-size: $icon-size $icon-size;
   }
 
   &__appearance {

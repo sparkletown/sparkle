@@ -5,8 +5,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
 
-import { Container } from "../Container";
-import { RoomIcon } from "../Container/Container";
+import { VenueRoomsEditor } from "../VenueRoomsEditor";
+import { RoomIcon } from "../VenueRoomsEditor/VenueRoomsEditor";
 
 import "./MapPreview.scss";
 
@@ -43,7 +43,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
         <div className="MapPreview__header">{`Preview of your space’s map`}</div>
-        <Container
+        <VenueRoomsEditor
           interactive
           resizable
           lockAspectRatio

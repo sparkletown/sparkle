@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { useHistory } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -6,6 +6,8 @@ import {
   faCaretDown,
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
+
+import { useShowHide } from "hooks/useShowHide";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
 import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
@@ -81,15 +83,20 @@ export interface SpacesProps {
   onClickNext: () => void;
 }
 
+const emptyRoomsArray: RoomData_v2[] = [];
+
 export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
-  const [showRooms, setShowRooms] = useState<boolean>(false);
   const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
 
-  const [showAddRoom, setShowAddRoom] = useState<boolean>(false);
-  const [showAdvancedSettings, setShowAdvancedSettings] = useState<boolean>(
+  const { isShown: showRooms, toggle: toggleShowRooms } = useShowHide(false);
+  const { isShown: showAddRoom, toggle: toggleShowAddRoom } = useShowHide(
     false
   );
+  const {
+    isShown: showAdvancedSettings,
+    toggle: toggleShowAdvancedSettings,
+  } = useShowHide(false);
 
   const history = useHistory();
 
@@ -121,15 +128,50 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     }));
   }, []);
 
+  const renderVenueRooms = useMemo(
+    () =>
+      venue.rooms?.map((room, index) => (
+        <div
+          key={`${index}-${room.title}`}
+          className="Spaces__venue-room"
+          onClick={() => setSelectedRoom(room)}
+        >
+          <div
+            className="Spaces__venue-room-logo"
+            style={{ backgroundImage: `url(${room.image_url})` }}
+          />
+          <div className="Spaces__venue-room-title">{room.title}</div>
+        </div>
+      )),
+    [venue.rooms]
+  );
+
+  const renderAddRooms = useMemo(
+    () =>
+      venueRooms.map((venueRoom, index) => (
+        <VenueRoomItem
+          key={`${venueRoom.text}-${index}`}
+          text={venueRoom.text}
+          template={venueRoom.template}
+          icon={venueRoom.icon}
+        />
+      )),
+    []
+  );
+
+  const navigateToAdmin = useCallback(() => {
+    history.push("/admin-ng/");
+  }, [history]);
+
   const selectedRoomIndex =
     venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
   return (
     <div className="Spaces">
       <div className="Spaces__rooms">
-        {hasSelectedRoom ? (
+        {selectedRoom ? (
           <EditRoomForm
-            room={selectedRoom!}
+            room={selectedRoom}
             updatedRoom={updatedRoom}
             roomIndex={selectedRoomIndex}
             onBackClick={clearSelectedRoom}
@@ -144,82 +186,42 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
             <div>
               <div
                 className="Spaces__venue-rooms"
-                onClick={() => setShowAdvancedSettings(!showAdvancedSettings)}
+                onClick={toggleShowAdvancedSettings}
               >
                 <div>Map background</div>
                 <FontAwesomeIcon
-                  icon={!showAdvancedSettings ? faCaretRight : faCaretDown}
+                  icon={showAdvancedSettings ? faCaretDown : faCaretRight}
                 />{" "}
               </div>
               {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue.name} mapBackground={""} />
+                <BackgroundSelect venueName={venue.name} />
               )}
             </div>
 
             <div>
-              <div
-                className="Spaces__venue-rooms"
-                onClick={() => setShowRooms(!showRooms)}
-              >
+              <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
                 <div>{numberOfRooms} Rooms</div>
                 <FontAwesomeIcon
-                  icon={!showRooms ? faCaretRight : faCaretDown}
+                  icon={showRooms ? faCaretDown : faCaretRight}
                 />
               </div>
 
-              {showRooms && (
-                <div>
-                  {venue.rooms?.map((room, index) => {
-                    return (
-                      <div
-                        key={`${index}-${room.title}`}
-                        className="Spaces__venue-room"
-                        onClick={() => setSelectedRoom(room)}
-                      >
-                        <div
-                          className="Spaces__venue-room-logo"
-                          style={{ backgroundImage: `url(${room.image_url})` }}
-                        />
-                        <div className="Spaces__venue-room-title">
-                          {room.title}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+              {showRooms && renderVenueRooms}
             </div>
 
-            <div
-              className="Spaces__venue-rooms"
-              onClick={() => setShowAddRoom(!showAddRoom)}
-            >
+            <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
               <div>Add rooms</div>
               <FontAwesomeIcon
-                icon={!showAddRoom ? faCaretRight : faCaretDown}
+                icon={showAddRoom ? faCaretDown : faCaretRight}
               />
             </div>
-            {showAddRoom &&
-              venueRooms.map((venueRoom, index) => (
-                <VenueRoomItem
-                  key={`${venueRoom.text}-${index}`}
-                  text={venueRoom.text}
-                  template={venueRoom.template}
-                  icon={venueRoom.icon}
-                />
-              ))}
+            {showAddRoom && renderAddRooms}
             <div className="Spaces__footer">
-              <div
-                className="Spaces__home-button"
-                onClick={() => history.push("/admin-ng/")}
-              >
+              <div className="Spaces__home-button" onClick={navigateToAdmin}>
                 <FontAwesomeIcon icon={faHome} />
               </div>
               <div className="Spaces__nav-buttons">
-                <div
-                  className="Spaces__back-button"
-                  onClick={() => history.push("/admin-ng/")}
-                >
+                <div className="Spaces__back-button" onClick={navigateToAdmin}>
                   Back
                 </div>
                 <div className="Spaces__next-button" onClick={onClickNext}>
@@ -235,7 +237,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           isEditing={hasSelectedRoom}
           mapBackground={venue.mapBackgroundImageUrl}
           setSelectedRoom={setSelectedRoom}
-          rooms={venue.rooms ?? []}
+          rooms={venue.rooms ?? emptyRoomsArray}
           onMoveRoom={updateRoomPosition}
           onResizeRoom={updateRoomSize}
           selectedRoom={selectedRoom}
