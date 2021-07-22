@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import "firebase/functions";
 import firebase from "firebase/app";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 interface ImageInputProps {
   collectionPath: string;
@@ -110,7 +111,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           disabled={disabled}
           type="file"
           onChange={handleFileChange}
-          accept="image/png,image/x-png,image/gif,image/jpeg"
+          accept={ACCEPTED_IMAGE_TYPES}
           className="default-input"
           ref={register}
         />
