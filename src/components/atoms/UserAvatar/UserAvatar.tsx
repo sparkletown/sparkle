@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
@@ -11,11 +11,9 @@ import { WithId } from "utils/id";
 import { useRecentWorldUsers } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
+import { useImage } from "hooks/useImage";
 
 import "./UserAvatar.scss";
-import { useImage } from "hooks/useImage";
-import { useState } from "react";
-import { useEffect } from "react";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
