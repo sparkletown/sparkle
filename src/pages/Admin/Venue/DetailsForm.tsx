@@ -250,26 +250,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     ]
   );
 
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
   const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
+    () => ({
+      [iconPositionFieldName]: {
+        width: PLAYA_VENUE_SIZE,
+        height: PLAYA_VENUE_SIZE,
+        top: defaultValues?.placement?.y ?? 0,
+        left: defaultValues?.placement?.x ?? 0,
+      },
+    }),
+    [defaultValues]
   );
 
   const onBoxMove: ExtractProps<
