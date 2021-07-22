@@ -84,7 +84,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venueEvents,
   showSchedule,
 }) => {
-  const venueName = venue.name ?? "";
+  const venueName = venue.name;
 
   const dispatch = useDispatch();
 
