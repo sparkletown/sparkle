@@ -4,13 +4,12 @@ import { format } from "date-fns";
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import {
-  formatHourAndMinute,
-  ONE_MINUTE_IN_SECONDS,
-  ONE_SECOND_IN_MILLISECONDS,
-} from "utils/time";
+import { formatTimeLocalised } from "utils/time";
+import { eventEndTime, eventStartTime } from "utils/event";
 
-interface Props {
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+export interface VenueEventDetailsProps {
   venueEvent: WithId<VenueEvent>;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
@@ -24,16 +23,10 @@ const VenueEventDetails = ({
   setShowCreateEventModal,
   setShowDeleteEventModal,
   className,
-}: Props) => {
-  const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
-  const endTime = formatHourAndMinute(
-    venueEvent.start_utc_seconds +
-      ONE_MINUTE_IN_SECONDS * venueEvent.duration_minutes
-  );
-  const startDay = format(
-    venueEvent.start_utc_seconds * ONE_SECOND_IN_MILLISECONDS,
-    "EEEE LLLL do"
-  );
+}: VenueEventDetailsProps) => {
+  const startTime = formatTimeLocalised(eventStartTime(venueEvent));
+  const endTime = formatTimeLocalised(eventEndTime(venueEvent));
+  const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (
     <div className={className}>
@@ -50,43 +43,11 @@ const VenueEventDetails = ({
             {venueEvent.name}
           </span>
         </div>
-        {venueEvent.description}
+        <RenderMarkdown text={venueEvent.description} />
+
         {venueEvent.descriptions?.map((description, index) => (
-          <p key={index}>{description}</p>
+          <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
-      </div>
-      <div className="button-container">
-        <div className="price-container">
-          {venueEvent.price > 0 && (
-            <>Individual tickets £{venueEvent.price / 100}</>
-          )}
-        </div>
-        {!className && (
-          <div className="event-payment-button-container">
-            <div>
-              <button
-                role="link"
-                className="btn btn-primary buy-tickets-button"
-                onClick={() => {
-                  setEditedEvent && setEditedEvent(venueEvent);
-                  setShowCreateEventModal(true);
-                }}
-              >
-                Edit
-              </button>
-              <button
-                role="link"
-                className="btn btn-primary buy-tickets-button"
-                onClick={() => {
-                  setEditedEvent && setEditedEvent(venueEvent);
-                  setShowDeleteEventModal(true);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

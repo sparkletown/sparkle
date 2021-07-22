@@ -1,0 +1,77 @@
+@import "scss/constants";
+
+$avatar-size: 20px;
+
+.SectionPreview {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-self: center;
+  position: relative;
+
+  padding: $spacing--md;
+  height: 100%;
+  width: 100%;
+
+  background-color: $dark;
+  border-radius: $border-radius--lg;
+
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &--full {
+    cursor: not-allowed;
+
+    .SectionPreview__people-count {
+      color: $red;
+    }
+  }
+
+  &--empty {
+    .SectionPreview__title {
+      opacity: 0.7;
+    }
+  }
+
+  &--vip {
+    background-color: $primary;
+  }
+
+  &__vip-label {
+    position: absolute;
+    top: $spacing--sm;
+    right: $spacing--sm;
+    border-radius: $border-radius--lg;
+    background-color: opaque-white(0.1);
+    font-size: $font-size--xs;
+    padding: 2px $spacing--sm;
+    font-weight: $font-weight--500;
+  }
+
+  &__lock-icon {
+    margin-right: $spacing--xs;
+  }
+
+  &__people-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: $spacing--xs;
+  }
+
+  &__people-count-number {
+    font-size: $font-size--xs;
+    margin-left: $spacing--xs;
+  }
+
+  &__avatar {
+    min-height: $avatar-size;
+    min-width: $avatar-size;
+    height: $avatar-size;
+    width: $avatar-size;
+  }
+}

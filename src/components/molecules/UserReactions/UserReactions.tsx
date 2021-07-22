@@ -1,6 +1,7 @@
 import React, { useMemo } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
+import { getSeconds } from "date-fns";
 
 import { REACTION_TIMEOUT } from "settings";
 
@@ -11,16 +12,16 @@ import {
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
-import { ONE_SECOND_IN_MILLISECONDS } from "utils/time";
 
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
+import { useAudio } from "hooks/audio/useAudio";
+
+import { Reaction } from "components/atoms/Reaction";
 
 import "./UserReactions.scss";
 
-const REACTION_TIMEOUT_CSS = `${
-  REACTION_TIMEOUT / ONE_SECOND_IN_MILLISECONDS
-}s`;
+const REACTION_TIMEOUT_CSS = `${getSeconds(REACTION_TIMEOUT)}s`;
 
 export interface UserReactionsProps {
   userId: string;
@@ -95,18 +96,8 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   emojiReaction,
   isMuted = false,
 }) => {
-  const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  const { audioPath } = emojiReaction;
+  useAudio({ audioPath, isMuted });
 
-  return (
-    <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
-      {emojiText}
-
-      {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
-      {!isMuted && (
-        <audio autoPlay loop>
-          <source src={audioPath} />
-        </audio>
-      )}
-    </div>
-  );
+  return <Reaction reaction={emojiReaction} />;
 };

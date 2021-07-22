@@ -1,57 +1,107 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
-import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faReply } from "@fortawesome/free-solid-svg-icons";
 
 import { MessageToDisplay } from "types/chat";
 
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { WithId } from "utils/id";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { useShowHide } from "hooks/useShowHide";
+
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
+import { TextButton } from "components/atoms/TextButton";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatMessage.scss";
 
 export interface ChatProps {
-  message: MessageToDisplay;
-  deleteMessage: () => void;
+  message: WithId<MessageToDisplay>;
+  deleteMessage: (messageId: string) => void;
+  selectThisThread: () => void;
 }
 
 export const ChatMessage: React.FC<ChatProps> = ({
   message,
   deleteMessage,
+  selectThisThread,
 }) => {
-  const { text, ts_utc, isMine, author, canBeDeleted } = message;
-  const { openUserProfileModal } = useProfileModalControls();
+  const { text, replies, id, isMine, isQuestion } = message;
 
-  const timestamp = ts_utc.toMillis();
+  const deleteThisMessage = useCallback(() => deleteMessage(id), [
+    deleteMessage,
+    id,
+  ]);
 
-  const containerStyles = classNames("chat-message", {
-    "chat-message--me": isMine,
+  const { isShown: isRepliesShown, toggle: toggleReplies } = useShowHide();
+
+  const containerStyles = classNames("ChatMessage", {
+    "ChatMessage--me": isMine,
+    "ChatMessage--question": isQuestion,
   });
 
-  const openAuthorProfile = useCallback(() => {
-    openUserProfileModal(author);
-  }, [openUserProfileModal, author]);
+  const renderedReplies = useMemo(
+    () =>
+      replies?.map((reply) => (
+        <div key={reply.id} className="ChatMessage__reply">
+          <RenderMarkdown text={reply.text} allowHeadings={false} />
+          <ChatMessageInfo
+            message={reply}
+            deleteMessage={() => deleteMessage(reply.id)}
+          />
+        </div>
+      )),
+    [replies, deleteMessage]
+  );
+
+  const repliesCount = renderedReplies.length;
+
+  const hasReplies = repliesCount !== 0;
+
+  const hasMultipleReplies = repliesCount > 1;
+
+  const replyText = hasMultipleReplies ? "replies" : "reply";
+
+  const replyButtonText = !isRepliesShown
+    ? `${repliesCount} ${replyText}`
+    : `hide ${replyText}`;
 
   return (
     <div className={containerStyles}>
-      <div className="chat-message__text">{text}</div>
-      <div className="chat-message__info" onClick={openAuthorProfile}>
-        <UserAvatar user={author} />
-        <span className="chat-message__author">{author.partyName}</span>
-        <span className="chat-message__time">
-          {dayjs(timestamp).format("h:mm A")}
-        </span>
-        {canBeDeleted && (
-          <FontAwesomeIcon
-            onClick={deleteMessage}
-            icon={faTrash}
-            className="chat-message__delete-icon"
-            size="sm"
-          />
-        )}
+      <div className="ChatMessage__bulb">
+        <div className="ChatMessage__text-content">
+          <div className="ChatMessage__text">
+            <RenderMarkdown text={text} allowHeadings={false} />
+          </div>
+
+          <button
+            aria-label={replyButtonText}
+            className="ChatMessage__reply-icon"
+            onClick={selectThisThread}
+          >
+            <FontAwesomeIcon icon={faReply} size="sm" />
+          </button>
+          {hasReplies && (
+            <TextButton
+              containerClassName="ChatMessage__show-replies-button"
+              onClick={toggleReplies}
+              label={replyButtonText}
+            />
+          )}
+        </div>
+
+        <div className="ChatMessage__replies-content">
+          {isRepliesShown && (
+            <div className="ChatMessage__replies">{renderedReplies}</div>
+          )}
+        </div>
       </div>
+      <ChatMessageInfo
+        message={message}
+        reversed={isMine}
+        deleteMessage={deleteThisMessage}
+      />
     </div>
   );
 };

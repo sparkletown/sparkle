@@ -45,6 +45,7 @@ export const InformationLeftColumn = forwardRef<
   const [isExpanded, setExpanded] = useState(false);
 
   const toggleExpanded = useCallback((e?: React.MouseEvent<HTMLElement>) => {
+    // @debt we should try to avoid using event.stopPropagation()
     e && e.stopPropagation();
 
     setExpanded((prev) => !prev);

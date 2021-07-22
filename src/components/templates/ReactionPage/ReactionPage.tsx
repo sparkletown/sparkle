@@ -11,7 +11,7 @@ import { useRecentVenueUsers } from "hooks/users";
 import { useVenueChat } from "hooks/useVenueChat";
 import { useVenueId } from "hooks/useVenueId";
 
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import { ReactionList } from "./ReactionList";
 
@@ -21,11 +21,14 @@ const wantedReactionsSelector = SHOW_EMOJI_IN_REACTION_PAGE
   ? reactionsSelector
   : messagesToTheBandSelector;
 
+// @debt pass venue through the props
 export const ReactionPage: React.FC = () => {
   const venueId = useVenueId();
   const { currentVenue } = useConnectCurrentVenueNG(venueId);
-  const { recentVenueUsers } = useRecentVenueUsers();
-  const { messagesToDisplay: venueChatMessages } = useVenueChat();
+  const { recentVenueUsers } = useRecentVenueUsers({
+    venueName: currentVenue?.name,
+  });
+  const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
@@ -54,12 +57,7 @@ export const ReactionPage: React.FC = () => {
         </div>
 
         <div className="col-4">
-          <UserList
-            users={recentVenueUsers}
-            isAudioEffectDisabled
-            imageSize={50}
-            showEvenWhenNoUsers
-          />
+          <UserList users={recentVenueUsers} showEvenWhenNoUsers />
         </div>
       </div>
     </div>

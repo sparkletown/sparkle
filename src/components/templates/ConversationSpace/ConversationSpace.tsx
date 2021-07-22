@@ -1,33 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { DEFAULT_USER_LIST_LIMIT } from "settings";
 
-import { useSelector } from "hooks/useSelector";
+import { GenericVenue } from "types/venues";
+
+import { openUrl, venueInsideUrl } from "utils/url";
+import { WithId } from "utils/id";
+
 import { useRecentVenueUsers } from "hooks/users";
 import { useExperiences } from "hooks/useExperiences";
+import { useShowHide } from "hooks/useShowHide";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
 import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import TablesUserList from "components/molecules/TablesUserList";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
+import { TablesControlBar } from "components/molecules/TablesControlBar";
+
+import { BackButton } from "components/atoms/BackButton";
 
 import { TABLES } from "./constants";
 
 import "./ConversationSpace.scss";
 
-export const ConversationSpace: React.FunctionComponent = () => {
-  const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+export interface ConversationSpaceProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
+  venue,
+}) => {
+  const { parentVenue, parentVenueId } = useRelatedVenues({
+    currentVenueId: venue?.id,
+  });
+
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
+
+  const {
+    isShown: showOnlyAvailableTables,
+    toggle: toggleTablesVisibility,
+  } = useShowHide();
 
   const [seatedAtTable, setSeatedAtTable] = useState("");
 
   useExperiences(venue?.name);
 
-  if (!venue) return <>Loading...</>;
+  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    openUrl(venueInsideUrl(parentVenueId));
+  }, [parentVenueId]);
 
   const tables = venue?.config?.tables ?? TABLES;
 
@@ -39,12 +68,20 @@ export const ConversationSpace: React.FunctionComponent = () => {
           <p className="short-description-sidebar" style={{ fontSize: 18 }}>
             {venue.config?.landingPageConfig.subtitle}
           </p>
-          <p style={{ fontSize: 13 }}>
-            {venue.config?.landingPageConfig.description}
-          </p>
+          <div style={{ fontSize: 13 }}>
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
+          </div>
         </InformationCard>
       </InformationLeftColumn>
       <div className="conversation-space-container">
+        {!seatedAtTable && parentVenueId && parentVenue && (
+          <BackButton
+            onClick={backToParentVenue}
+            locationName={parentVenue.name}
+          />
+        )}
         <div
           style={{
             display: "flex",
@@ -58,7 +95,9 @@ export const ConversationSpace: React.FunctionComponent = () => {
           {venue.description?.text && (
             <div className="row">
               <div className="col">
-                <div className="description">{venue.description?.text}</div>
+                <div className="description">
+                  <RenderMarkdown text={venue.description?.text} />
+                </div>
               </div>
             </div>
           )}
@@ -81,6 +120,13 @@ export const ConversationSpace: React.FunctionComponent = () => {
                   />
                 </div>
               )}
+              {!seatedAtTable && (
+                <TablesControlBar
+                  containerClassName="ControlBar__container"
+                  onToggleAvailableTables={toggleTablesVisibility}
+                  showOnlyAvailableTables={showOnlyAvailableTables}
+                />
+              )}
             </div>
           </div>
           <div className="seated-area">
@@ -91,20 +137,17 @@ export const ConversationSpace: React.FunctionComponent = () => {
               TableComponent={TableComponent}
               joinMessage={venue.hideVideo === false}
               customTables={tables}
+              showOnlyAvailableTables={showOnlyAvailableTables}
             />
           </div>
           <UserList
             users={recentVenueUsers}
             activity={venue?.activity ?? "here"}
-            disableSeeAll={false}
+            limit={DEFAULT_USER_LIST_LIMIT}
+            showMoreUsersToggler
           />
         </div>
       </div>
     </>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ConversationSpace;

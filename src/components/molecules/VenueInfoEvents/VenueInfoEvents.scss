@@ -59,12 +59,73 @@
   font-weight: 500;
 }
 .whatson-description-container-description {
+  @include line-clamp-with-overflow(2);
   font-size: 0.8rem;
   opacity: 0.8;
   margin-bottom: 4px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
+}
+
+.modal-content {
+  .events-list {
+    overflow-y: auto;
+    .event {
+      margin-bottom: 5px;
+      padding: 16px;
+      display: flex;
+      &:nth-child(even) {
+        background-color: rgba($dark, 0.5);
+      }
+      &.event_live {
+        background-color: rgba($primary, 0.2);
+        .event-time,
+        .event-text h5 {
+          color: $white;
+        }
+      }
+
+      .event-time {
+        margin-right: 10px;
+        .event-time-start,
+        .event-time-end {
+          font-size: 0.9em;
+          display: inline-block;
+          width: 165px;
+          &.event-time-end {
+            opacity: 0.5;
+          }
+        }
+        .event-badge-live {
+          display: block;
+          margin-top: 6px;
+          border-radius: 16px;
+          background-color: rgba($primary, 0.2);
+          text-align: center;
+          color: $white;
+          padding: 2px 0;
+          font-weight: 500;
+        }
+      }
+      .event-text {
+        margin-left: 5px;
+        .button-join-now {
+          color: $white;
+          text-decoration: none;
+        }
+        .h5 {
+          margin-top: 0;
+          margin: 0;
+        }
+        a {
+          font-weight: normal;
+          margin-top: 0.5rem;
+          display: inline-block;
+          color: $white;
+          text-decoration: underline;
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
 }
