@@ -209,14 +209,15 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               )}
 
               {shouldShowSchedule ? (
-                <div
+                <button
+                  aria-label="Schedule"
                   className={`nav-party-logo ${
                     isEventScheduleVisible && "clicked"
                   }`}
                   onClick={toggleEventSchedule}
                 >
                   {navbarTitle} <span className="schedule-text">Schedule</span>
-                </div>
+                </button>
               ) : (
                 <div>{navbarTitle}</div>
               )}
@@ -278,7 +279,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -288,7 +289,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -323,6 +324,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
       {shouldShowSchedule && (
         <div
+          aria-hidden={isEventScheduleVisible ? "false" : "true"}
           className={`schedule-dropdown-backdrop ${
             isEventScheduleVisible ? "show" : ""
           }`}
