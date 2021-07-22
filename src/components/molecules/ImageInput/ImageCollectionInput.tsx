@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import "firebase/functions";
 import firebase from "firebase/app";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 interface ImageInputProps {
   collectionPath: string;
