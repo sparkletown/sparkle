@@ -2,18 +2,16 @@
 
 .UserAvatar {
   $avatar-sizes-map: (
-    // NOTE: legacy not added because it is the default
     small: 25px,
     medium: 40px,
     large: 54px,
-    full: 100%
+    full: 100%,
   );
   $indicator-sizes-map: (
-    // NOTE: legacy not added because it is the default
     small: 8px,
     medium: 10px,
     large: 12px,
-    full: 25%
+    full: 25%,
   );
 
   // NOTE: parent and img mismatch due to legacy reasons

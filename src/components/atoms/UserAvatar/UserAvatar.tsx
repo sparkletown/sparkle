@@ -14,7 +14,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import "./UserAvatar.scss";
 
-export type UserAvatarSize = "legacy" | "small" | "medium" | "large" | "full";
+export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
 export interface UserAvatarProps {
   user?: WithId<User>;
@@ -34,7 +34,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showNametag,
   onClick,
   showStatus,
-  size = "legacy",
+  size,
 }) => {
   const venueId = useVenueId();
 
