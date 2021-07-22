@@ -130,7 +130,7 @@ export const Badges: React.FC<{
   const badgeList = useMemo(
     () =>
       badges.filter(notEmpty).map((badge) => (
-        <li className="badge-list-item" key={badge.label}>
+        <li className="Badges__list-item" key={badge.label}>
           <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>
       )),
@@ -146,28 +146,26 @@ export const Badges: React.FC<{
   }
 
   return (
-    <div className="badges-component">
-      <div className="visits">
-        <div className="visit-item">
-          <span className="visit-item__value">
-            {visitHours > 1 ? `${visitHours}` : "< 1"} hrs
+    <div className="Badges">
+      <div className="Badges__visits">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
+            {visitHours > 1 ? visitHours : "< 1"} hrs
           </span>
-          <span className="visit-item__label">Time spent in Sparkle</span>
+          <span className="Badges__visit-label">Time spent in Sparkle</span>
         </div>
 
-        <div className="visit-separator" />
-
-        <div className="visit-item">
-          <span className="visit-item__value">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
             {relevantVisits?.length ?? 0}
           </span>
-          <span className="visit-item__label">Venues visited</span>
+          <span className="Badges__visit-label">Venues visited</span>
         </div>
       </div>
 
-      <div className="badges-container">
-        <div className="badges-title">{badges.length} Badges</div>
-        <ul className="badge-list">{badgeList}</ul>
+      <div className="Badges__container">
+        <div className="Badges__title">{badges.length} Badges</div>
+        <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
   );

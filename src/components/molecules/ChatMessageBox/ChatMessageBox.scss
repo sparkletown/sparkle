@@ -12,7 +12,8 @@
   }
 
   &__input {
-    width: 100%;
+    text-align: left;
+    padding-left: $spacing--lg;
   }
 
   &__submit-button {

@@ -1,3 +1,5 @@
+import { DEFAULT_TABLE_COLUMNS } from "settings";
+
 import { Table } from "types/Table";
 
 /**
@@ -22,8 +24,8 @@ export const generateTables: (props: {
 }) => Table[] = ({
   num,
   capacity,
-  rows = 2,
-  columns = 3,
+  rows,
+  columns,
   titlePrefix = "Table",
   appendTableNumber = true,
   startFrom = 1,
@@ -35,11 +37,16 @@ export const generateTables: (props: {
       ? `${titlePrefix} ${tableNumber}`
       : titlePrefix;
 
+    const columnsCount = columns ?? DEFAULT_TABLE_COLUMNS;
+
+    const rowsCount =
+      rows ?? Math.floor((capacity + columnsCount - 1) / columnsCount);
+
     return {
       title,
-      reference: title,
       capacity,
-      rows,
-      columns,
+      reference: title,
+      rows: rowsCount,
+      columns: columnsCount,
     };
   });

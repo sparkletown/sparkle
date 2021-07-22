@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
-import LocalParticipant from "./LocalParticipant";
-import RemoteParticipant from "./RemoteParticipant";
+
+import { getTwilioVideoToken } from "api/video";
+
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
+
+import LocalParticipant from "./LocalParticipant";
+import RemoteParticipant from "./RemoteParticipant";
 
 interface RoomProps {
   roomName: string;
@@ -30,18 +34,14 @@ const Room: React.FC<RoomProps> = ({
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
+  // @debt refactor this to use useAsync or similar?
   useEffect(() => {
-    (async () => {
-      if (!user) return;
+    if (!user) return;
 
-      // @ts-ignore
-      const getToken = firebase.functions().httpsCallable("video-getToken");
-      const response = await getToken({
-        identity: user.uid,
-        room: roomName,
-      });
-      setToken(response.data.token);
-    })();
+    getTwilioVideoToken({
+      userId: user.uid,
+      roomName,
+    }).then(setToken);
   }, [firebase, roomName, user]);
 
   useEffect(() => {
