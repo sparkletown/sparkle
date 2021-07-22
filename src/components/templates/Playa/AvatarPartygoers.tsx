@@ -15,7 +15,8 @@ const AvatarPartygoers: React.FC<PropsType> = ({
   state,
   useProfilePicture,
 }) => {
-  const { recentVenueUsers } = useRecentVenueUsers();
+  // @debt we don't have access to venueName here (but is legacy Playa template code to be removed so we don't mind), this is basically a noop
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: undefined });
   const roomParticipants = user.video?.inRoomOwnedBy
     ? recentVenueUsers.filter(
         (partygoer) =>

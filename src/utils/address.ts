@@ -87,7 +87,7 @@ const MAN: Point = {
   name: "The Man",
   evaluator: cityEvaluator,
 };
-const CENTER_CAMP: Point = {
+const CENTER_SPACE: Point = {
   x: 1915,
   y: 2179,
   name: "Center Camp",
@@ -115,7 +115,7 @@ const DEEP_PLAYA: Point = {
 
 const POINTS: Point[] = [
   MAN,
-  CENTER_CAMP,
+  CENTER_SPACE,
   NORTHWEST_SATELLITE,
   SOUTHEAST_SATELLITE,
   DEEP_PLAYA,

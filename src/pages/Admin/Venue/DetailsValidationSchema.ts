@@ -24,6 +24,7 @@ import {
   roomTitleSchema,
   urlIfNoFileValidation,
 } from "pages/Admin/Details/ValidationSchema";
+import { UsernameVisibility } from "types/User";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -168,6 +169,10 @@ export const validationSchema = Yup.object()
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),
+    showShoutouts: Yup.bool().notRequired(),
+    showNametags: Yup.mixed()
+      .oneOf(Object.values(UsernameVisibility))
+      .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
       .min(
@@ -192,6 +197,7 @@ export const validationSchema = Yup.object()
   .required();
 
 // this is used to transform the api data to conform to the yup schema
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editVenueCastSchema = Yup.object()
   .shape<Partial<VenueInput>>({})
   // possible locations for the subtitle
@@ -199,11 +205,12 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.subtitle", "subtitle")
 
   .from("config.landingPageConfig.description", "description")
-  .from("profile_questions", "profileQuestions")
+  .from("profile_questions", "profile_questions")
   .from("host.icon", "logoImageUrl")
   .from("adultContent", "adultContent")
   .from("showGrid", "showGrid")
   .from("showReactions", "showReactions")
+  .from("showShoutouts", "showShoutouts")
   .from("columns", "columns")
   .from("attendeesTitle", "attendeesTitle")
   .from("chatTitle", "chatTitle")
@@ -212,27 +219,20 @@ export const editVenueCastSchema = Yup.object()
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
   .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
   .from("auditoriumColumns", "auditoriumColumns")
   .from("auditoriumRows", "auditoriumRows")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("code_of_conduct_questions", "code_of_conduct_questions")
   .from("profile_questions", "profile_questions");
 
+// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("placement.addressText", "addressText")
   .from("placement.notes", "notes")
   .required();
 
 export const editPlacementSchema = Yup.object().shape<PlacementInput>({
-  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
   addressText: Yup.string(),
   notes: Yup.string(),
   width: Yup.number().required("Required"),
