@@ -1,0 +1,50 @@
+@import "scss/constants";
+
+.ChatMessageInfo {
+  display: flex;
+  align-items: center;
+  font-size: $font-size--sm;
+
+  &--reverse {
+    flex-direction: row-reverse;
+    align-self: flex-end;
+
+    .ChatMessageInfo__author {
+      margin: 0 $spacing--xs 0 $spacing--sm;
+    }
+
+    .ChatMessageInfo__delete-icon {
+      margin-left: 0;
+      margin-right: $spacing--xs;
+    }
+  }
+
+  &__author {
+    margin: 0 $spacing--sm 0 $spacing--xs;
+
+    cursor: pointer;
+
+    opacity: 0.8;
+    color: $white;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  &__time {
+    opacity: 0.6;
+    font-weight: $font-weight--300;
+  }
+
+  &__delete-icon {
+    margin-left: $spacing--xs;
+
+    opacity: 0.6;
+    cursor: pointer;
+
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+}
