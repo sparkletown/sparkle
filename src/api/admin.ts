@@ -41,13 +41,11 @@ export interface AdvancedVenueInput {
 type VenueImageFileKeys =
   | "bannerImageFile"
   | "logoImageFile"
-  | "mapIconImageFile"
   | "mapBackgroundImageFile";
 
 type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
-  | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
 
 type ImageFileKeys =
@@ -80,7 +78,6 @@ export type VenueInput = AdvancedVenueInput &
     name: string;
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
-    mapIconImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
     subtitle: string;
     description: string;
@@ -145,8 +142,6 @@ type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
   };
 
 export type PlacementInput = {
-  mapIconImageFile?: FileList;
-  mapIconImageUrl?: string;
   addressText?: string;
   notes?: string;
   placement?: Omit<VenuePlacement, "state">;
@@ -184,10 +179,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     {
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapIconImageFile",
-      urlKey: "mapIconImageUrl",
     },
     {
       fileKey: "mapBackgroundImageFile",
