@@ -7,32 +7,32 @@ import {
   RelatedVenuesProviderProps,
 } from "hooks/useRelatedVenues";
 
-export interface EmptyProviderProps {
-  venueId?: string;
-}
+export type EmptyProviderProps = Partial<
+  RelatedVenuesProviderProps & WorldUsersProviderProps
+>;
 
 const EmptyProvider: React.FC<EmptyProviderProps> = ({ children }) => {
   return <>{children}</>;
 };
 
 export interface ProvidedProps {
-  withWorldUsers?: boolean;
   withRelatedVenues?: boolean;
+  withWorldUsers?: boolean;
 }
 
 export const Provided: React.FC<ProvidedProps> = ({
-  withWorldUsers = false,
-  withRelatedVenues = false,
   children,
+  withRelatedVenues = false,
+  withWorldUsers = false,
 }) => {
   const venueId = useVenueId();
 
-  const MaybeWorldUsersProvider: React.FC<WorldUsersProviderProps> = withWorldUsers
-    ? WorldUsersProvider
-    : EmptyProvider;
-
   const MaybeRelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = withRelatedVenues
     ? RelatedVenuesProvider
+    : EmptyProvider;
+
+  const MaybeWorldUsersProvider: React.FC<WorldUsersProviderProps> = withWorldUsers
+    ? WorldUsersProvider
     : EmptyProvider;
 
   return (

@@ -3,14 +3,12 @@ import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { orderedVenuesSelector } from "utils/selectors";
 import { adminNGRootUrl } from "utils/url";
 
-import { useSelector } from "hooks/useSelector";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
 import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-import { useAdminVenues } from "hooks/useAdminVenues";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import {
@@ -26,10 +24,8 @@ dayjs.extend(advancedFormat);
 
 const Admin_v2: React.FC = () => {
   const { user } = useUser();
-  useAdminVenues(user?.uid);
 
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const venues = useSelector(orderedVenuesSelector);
+  const { ownedVenues, isLoading } = useOwnedVenues({});
 
   const { roles } = useRoles();
 
@@ -40,7 +36,7 @@ const Admin_v2: React.FC = () => {
     window.history.replaceState(null, "", adminNGRootUrl());
   });
 
-  if (!venues || !roles) {
+  if (isLoading || !roles) {
     return <LoadingPage />;
   }
 
@@ -56,7 +52,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          <AdminVenues venues={venues} />
+          <AdminVenues venues={ownedVenues} />
         </S.ViewWrapper>
       </S.Wrapper>
 

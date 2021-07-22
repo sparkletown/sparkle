@@ -61,15 +61,6 @@ const createFileSchema = (
       }
     );
 
-const urlIfNoFileValidation = (fieldName: string) =>
-  Yup.string().when(
-    fieldName,
-    (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
-      file && file.length > 0
-        ? schema.notRequired()
-        : schema.required("Required")
-  );
-
 const mustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
 
@@ -221,26 +212,17 @@ export const editVenueCastSchema = Yup.object()
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
-  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
-
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl");
 
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("placement.addressText", "addressText")
   .from("placement.notes", "notes")
   .required();
 
 export const editPlacementSchema = Yup.object().shape<PlacementInput>({
-  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
   addressText: Yup.string(),
   notes: Yup.string(),
   width: Yup.number().required("Required"),
