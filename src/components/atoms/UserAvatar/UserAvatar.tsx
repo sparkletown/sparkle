@@ -14,6 +14,8 @@ import { useVenueId } from "hooks/useVenueId";
 
 import "./UserAvatar.scss";
 
+export type UserAvatarSize = "small" | "medium" | "large" | "full";
+
 export interface UserAvatarProps {
   user?: WithId<User>;
   containerClassName?: string;
@@ -21,8 +23,7 @@ export interface UserAvatarProps {
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
-  large?: boolean;
-  medium?: boolean;
+  size?: UserAvatarSize;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -33,8 +34,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showNametag,
   onClick,
   showStatus,
-  large,
-  medium,
+  size,
 }) => {
   const venueId = useVenueId();
 
@@ -56,8 +56,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
-    "UserAvatar--large": large,
-    "UserAvatar--medium": medium,
+    [`UserAvatar--${size}`]: size,
   });
 
   const isOnline = useMemo(
@@ -76,7 +75,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
     "UserAvatar__status-indicator--online": isOnline,
     [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    "UserAvatar__status-indicator--large": large,
+    [`UserAvatar__status-indicator--${size}`]: size,
   });
 
   const statusIndicatorStyles = useMemo(

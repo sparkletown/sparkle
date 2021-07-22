@@ -95,8 +95,14 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const uploadProfilePic = useCallback((event) => {
+    event.preventDefault();
+    uploadRef.current?.click();
+  }, []);
+
   const uploadDefaultAvatar = useCallback(
-    async (avatar: string) => {
+    async (event, avatar: string) => {
+      event.preventDefault();
       setValue("pictureUrl", avatar, true);
     },
     [setValue]
@@ -112,17 +118,17 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
-      <div
+      <button
         key={`${avatar}-${index}`}
         className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
+        onClick={(event) => uploadDefaultAvatar(event, avatar)}
       >
         <img
           src={avatar}
           className="profile-icon profile-picture-preview"
           alt={`default avatar ${index}`}
         />
-      </div>
+      </button>
     ));
   }, [defaultAvatars, uploadDefaultAvatar]);
 
@@ -147,9 +153,12 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         className="profile-picture-input"
         ref={uploadRef}
       />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
+      <button
+        className="profile-picture-button"
+        onClick={(event) => uploadProfilePic(event)}
+      >
         Upload your profile pic
-      </label>
+      </button>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
