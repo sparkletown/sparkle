@@ -82,7 +82,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venue,
   venueEvents,
-  showSchedule = DEFAULT_SHOW_SCHEDULE,
+  showSchedule,
 }) => {
   const venueName = venue.name ?? "";
 
