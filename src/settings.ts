@@ -103,6 +103,9 @@ export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
 export const MINIMUM_COLUMNS = 5;
 export const MAXIMUM_COLUMNS = 100;
+export const MINIMUM_ROWS = 5;
+export const MAXIMUM_ROWS = 100;
+
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;

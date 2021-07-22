@@ -15,6 +15,8 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   MINIMUM_COLUMNS,
   MAXIMUM_COLUMNS,
+  MINIMUM_ROWS,
+  MAXIMUM_ROWS,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -179,12 +181,12 @@ export const validationSchema = Yup.object()
     auditoriumRows: Yup.number()
       .notRequired()
       .min(
-        MINIMUM_COLUMNS,
-        `The rows need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        MINIMUM_ROWS,
+        `The rows need to be between ${MINIMUM_ROWS} and ${MAXIMUM_ROWS}.`
       )
       .max(
-        MAXIMUM_COLUMNS,
-        `The rows need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        MAXIMUM_ROWS,
+        `The rows need to be between ${MINIMUM_ROWS} and ${MAXIMUM_ROWS}.`
       ),
   })
   .required();
