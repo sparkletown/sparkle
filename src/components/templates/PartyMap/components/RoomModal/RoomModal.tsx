@@ -64,7 +64,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
           room={room}
           venueName={venue.name}
           venueEvents={venueEvents}
-          venueTemplate={venue.template ?? ""}
+          venue={venue}
           showSchedule={venue.showSchedule}
         />
       </div>
@@ -75,7 +75,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 export interface RoomModalContentProps {
   room: Room;
   venueName: string;
-  venueTemplate: string;
+  venue: AnyVenue;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
   showSchedule?: boolean;
 }
@@ -83,7 +83,7 @@ export interface RoomModalContentProps {
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venueName,
-  venueTemplate,
+  venue,
   venueEvents,
   showSchedule = DEFAULT_SHOW_SCHEDULE,
 }) => {
@@ -109,14 +109,14 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    if (venueTemplate === VenueTemplate.partymap && isExternalUrl(room.url)) {
+    if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
       logEventGoogleAnalytics({
         eventCategory: "PARTMAP_WITH_EXTERNAL_LINK",
         eventAction: "ENTER_PARTMAP_" + venueName.toUpperCase(),
         eventLabel: room.title,
       });
     }
-  }, [_enterRoomWithSound, venueName, room, venueTemplate]);
+  }, [_enterRoomWithSound, venueName, room, venue]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
