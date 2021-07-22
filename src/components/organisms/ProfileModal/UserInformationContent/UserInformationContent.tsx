@@ -133,7 +133,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
       <h1 className="UserInformationContent__title">My Profile</h1>
       <div className="UserInformationContent__information">
         <div>
-          <UserAvatar user={user} showStatus large />
+          <UserAvatar user={user} showStatus size="large" />
         </div>
         <div className="UserInformationContent__text-container">
           <h3 className="UserInformationContent__user-name">
