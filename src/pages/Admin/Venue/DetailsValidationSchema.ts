@@ -168,10 +168,24 @@ export const validationSchema = Yup.object()
     showReactions: Yup.bool().notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
-      .min(5, "There must be at least 5 columns"),
+      .min(
+        MINIMUM_COLUMNS,
+        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+      )
+      .max(
+        MAXIMUM_COLUMNS,
+        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+      ),
     auditoriumRows: Yup.number()
       .notRequired()
-      .min(5, "There must be at least 5 rows"),
+      .min(
+        MINIMUM_COLUMNS,
+        `The rows need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+      )
+      .max(
+        MAXIMUM_COLUMNS,
+        `The rows need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+      ),
   })
   .required();
 
