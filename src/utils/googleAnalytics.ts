@@ -10,11 +10,17 @@ export const initGoogleAnalytics = () => {
   }
 };
 
+type GAEvent = {
+  eventCategory: string;
+  eventAction: string;
+  eventLabel: string;
+};
+
 export const logEventGoogleAnalytics = ({
   eventCategory,
   eventAction,
   eventLabel,
-}: Record<string, string>) => {
+}: GAEvent) => {
   if (REACT_APP_GA_MEASUREMENT_ID) {
     event({
       category: eventCategory,

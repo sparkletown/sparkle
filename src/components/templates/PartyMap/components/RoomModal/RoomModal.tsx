@@ -1,8 +1,6 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
-
 import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
@@ -108,7 +106,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   // note: this is here just to change the type on it in an easy way
   const enterRoomWithSound: () => void = useCallback(() => {
     _enterRoomWithSound();
-    
+
+    // note: We want to fire event when we have just external link in PartyMap
     if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
       logEventGoogleAnalytics({
         eventCategory: "PARTMAP_WITH_EXTERNAL_LINK",
