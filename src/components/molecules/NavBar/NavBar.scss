@@ -164,10 +164,16 @@ $border-radius: 28px;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: transform 400ms $transition-function;
+  border: none;
+  appearance: none;
+  color: $white;
+
   img {
     height: 40px;
   }
-  &:hover {
+  &:hover,
+  &:focus {
+    border: none;
     background-color: rgba($white, 0.14);
     &:after {
       opacity: 0.7;
