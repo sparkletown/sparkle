@@ -78,7 +78,6 @@ if (LOGROCKET_APP_ID) {
 
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
-
 firebaseApp.auth();
 firebaseApp.firestore();
 const firebaseFunctions = firebase.functions();
