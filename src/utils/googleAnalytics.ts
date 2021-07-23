@@ -1,9 +1,9 @@
 import { event, initialize, pageview } from "react-ga";
-import { REACT_APP_GA_MEASUREMENT_ID } from "secrets";
+import { MEASUREMENT_ID } from "secrets";
 
 export const initGoogleAnalytics = () => {
-  if (REACT_APP_GA_MEASUREMENT_ID) {
-    initialize(REACT_APP_GA_MEASUREMENT_ID);
+  if (MEASUREMENT_ID) {
+    initialize(MEASUREMENT_ID);
     pageview(window.location.pathname + window.location.search);
   }
 };
@@ -19,7 +19,7 @@ export const logEventGoogleAnalytics = ({
   eventAction,
   eventLabel,
 }: GAEvent) => {
-  if (REACT_APP_GA_MEASUREMENT_ID) {
+  if (MEASUREMENT_ID) {
     event({
       category: eventCategory,
       action: eventAction,
