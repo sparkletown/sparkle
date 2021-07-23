@@ -5,8 +5,6 @@ export const AUTH_DOMAIN = process.env.REACT_APP_AUTH_DOMAIN;
 export const MEASUREMENT_ID = process.env.REACT_APP_MEASUREMENT_ID;
 export const BUCKET_URL = process.env.REACT_APP_BUCKET_URL;
 export const BUGSNAG_API_KEY = process.env.REACT_APP_BUGSNAG_API_KEY;
-export const REACT_APP_GA_MEASUREMENT_ID =
-  process.env.REACT_APP_GA_MEASUREMENT_ID;
 export const LOGROCKET_APP_ID = process.env.REACT_APP_LOGROCKET_APP_ID;
 export const MIXPANEL_PROJECT_TOKEN =
   process.env.REACT_APP_MIXPANEL_PROJECT_TOKEN;

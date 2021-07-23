@@ -52,7 +52,6 @@ import { User } from "types/User";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
-import { initGoogleAnalytics } from "utils/googleAnalytics";
 
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -79,6 +78,7 @@ if (LOGROCKET_APP_ID) {
 
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
+
 firebaseApp.auth();
 firebaseApp.firestore();
 const firebaseFunctions = firebase.functions();
@@ -225,8 +225,6 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
 if (MIXPANEL_PROJECT_TOKEN) {
   mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
 }
-
-initGoogleAnalytics();
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,

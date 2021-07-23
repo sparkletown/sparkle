@@ -105,9 +105,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     // note: We want to fire event when we have just external link in PartyMap
     if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
       logEventGoogleAnalytics({
-        eventCategory: "PARTMAP_WITH_EXTERNAL_LINK",
-        eventAction: "ENTER_PARTMAP_" + venueName.toUpperCase(),
-        eventLabel: room.title,
+        eventName: "PARTMAP_WITH_EXTERNAL_LINK",
+        eventAction: {
+          VenueId: venueName,
+          Link: room.url,
+        },
       });
     }
   }, [_enterRoomWithSound, venueName, room, venue]);
