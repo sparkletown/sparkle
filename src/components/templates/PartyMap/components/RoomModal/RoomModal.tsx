@@ -116,7 +116,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         },
       });
     }
-  }, [_enterRoomWithSound, venueName, room, venue, user]);
+  }, [_enterRoomWithSound, venueName, room, venue, userId]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
