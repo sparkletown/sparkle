@@ -75,7 +75,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venue,
   venueEvents,
 }) => {
-  const { name: venueName, showSchedule } = venue;
+  const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
   const dispatch = useDispatch();
 
