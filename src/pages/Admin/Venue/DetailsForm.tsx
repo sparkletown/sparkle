@@ -78,6 +78,7 @@ import EntranceInput from "./EntranceInput";
 import "../Admin.scss";
 
 import "./Venue.scss";
+import { RoomMapDropdown } from "./Rooms/RoomMapDropdown";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -140,6 +141,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+  const [zoomLevel, handleZoomChange] = useState(1);
 
   const [formError, setFormError] = useState(false);
 
@@ -346,6 +348,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               which you will need to reach out if you want it moved.
             </p>
           )}
+          <RoomMapDropdown onZoomChange={handleZoomChange} />
           <div
             className="playa"
             ref={placementDivRef}
@@ -371,6 +374,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 width: PLAYA_WIDTH,
                 height: PLAYA_HEIGHT,
               }}
+              zoomLevel={zoomLevel}
             />
           </div>
         </div>

@@ -6,3 +6,10 @@
     text-align: center;
   }
 }
+
+.map-zoom-container {
+  display: flex;
+  align-items: flex-end;
+  width: 150px;
+  justify-content: space-between;
+}

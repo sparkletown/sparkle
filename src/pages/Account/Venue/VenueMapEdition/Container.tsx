@@ -55,6 +55,7 @@ interface PropsType {
   containerStyle?: CSSProperties;
   lockAspectRatio?: boolean;
   isSaving?: boolean;
+  zoomLevel?: number;
 }
 
 export const Container: React.FC<PropsType> = (props) => {
@@ -75,14 +76,23 @@ export const Container: React.FC<PropsType> = (props) => {
     containerStyle,
     lockAspectRatio,
     isSaving,
+    zoomLevel = 1,
   } = props;
   const [boxes, setBoxes] = useState<SubVenueIconMap>(iconsMap);
   const [imageDims, setImageDims] = useState<Dimensions>();
-  const [dragBoxId, setDragBoxId] = useState<number>(0);
-
-  const setDragItemId = useCallback((id: number) => {
+  const [dragBoxId, setDragBoxId] = useState<string>("");
+  const mapWidth =
+    zoomLevel && zoomLevel === 1 ? `100%` : `${zoomLevel * 500}px`;
+  const setDragItemId = useCallback((id: string) => {
     setDragBoxId(id);
   }, []);
+
+  const draggableImageSize = useMemo(() => {
+    const iconPosition = boxes[dragBoxId];
+    const { width, height } = iconPosition || {};
+
+    return { width, height };
+  }, [boxes, dragBoxId]);
 
   // trigger the parent callback on boxes change (as a result of movement)
   useEffect(() => {
@@ -214,7 +224,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   return (
     <>
-      <div ref={drop} style={{ ...styles, ...containerStyle }}>
+      <div ref={drop} style={{ ...styles, ...containerStyle, width: mapWidth }}>
         <ReactResizeDetector
           handleWidth
           handleHeight
@@ -288,7 +298,7 @@ export const Container: React.FC<PropsType> = (props) => {
         <CustomDragLayer
           snapToGrid={!!snapToGrid}
           rounded={!!rounded}
-          iconSize={boxes[Object.keys(boxes)[dragBoxId]]}
+          iconSize={draggableImageSize}
         />
       )}
     </>

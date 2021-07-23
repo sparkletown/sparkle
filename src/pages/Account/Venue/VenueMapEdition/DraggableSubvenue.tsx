@@ -29,7 +29,7 @@ export type PropsType = SubVenueIconMap[string] & {
   rounded: boolean;
   lockAspectRatio?: boolean;
   isSaving?: boolean;
-  onDragStart?: (id: number) => void;
+  onDragStart?: (id: string) => void;
 };
 
 export const DraggableSubvenue: React.FC<PropsType> = (props) => {
@@ -60,7 +60,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
 
   useEffect(() => {
     if (isDragging) {
-      onDragStart && onDragStart(parseInt(id));
+      onDragStart && onDragStart(id);
     }
   }, [id, isDragging, onDragStart]);
 

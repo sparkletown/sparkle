@@ -41,6 +41,7 @@ import { validationSchema } from "./RoomsValidationSchema";
 import "../Venue.scss";
 
 import RoomDeleteModal from "./RoomDeleteModal";
+import { RoomMapDropdown } from "./RoomMapDropdown";
 
 export const RoomsForm: React.FC = () => {
   const venueId = useVenueId();
@@ -120,6 +121,7 @@ export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
+  const [zoomLevel, handleZoomChange] = useState(1);
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -390,6 +392,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             First upload or select the icon you would like to appear in your
             camp, then drag it around to position it
           </p>
+          <RoomMapDropdown onZoomChange={handleZoomChange} />
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
               <PartyMapContainer
@@ -408,6 +411,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                 venue={venue}
                 currentRoomIndex={editingRoomIndex}
                 otherIconsStyle={{ opacity: 0.4 }}
+                zoomLevel={zoomLevel}
               />
             )}
           </div>
