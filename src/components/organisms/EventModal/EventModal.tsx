@@ -66,11 +66,12 @@ export const EventModal: React.FC<EventModalProps> = ({
 
     const { room = "" } = event;
     const roomUrlParam = getUrlParamFromString(room);
+    // @debt fix this hack on 24.07.2021
     const [selectedRoom] =
       eventVenue?.rooms?.filter(
         (venueRoom) => getUrlParamFromString(venueRoom.title) === room
       ) || [];
-
+// @debt fix this hack on 24.07.2021
     if (selectedRoom) {
       openUrl(selectedRoom?.url);
 
