@@ -13,6 +13,7 @@ import { isExternalUrl } from "utils/url";
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
+import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -79,6 +80,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 }) => {
   const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
+  const { userId } = useUser();
+
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -105,12 +108,15 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     // note: We want to fire event when we have just external link in PartyMap
     if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
       logEventGoogleAnalytics({
-        eventCategory: "PARTMAP_WITH_EXTERNAL_LINK",
-        eventAction: "ENTER_PARTMAP_" + venueName.toUpperCase(),
-        eventLabel: room.title,
+        eventName: "PARTMAP_WITH_EXTERNAL_LINK",
+        eventAction: {
+          venueName,
+          userId,
+          roomUrl: room.url,
+        },
       });
     }
-  }, [_enterRoomWithSound, venueName, room, venue]);
+  }, [_enterRoomWithSound, venueName, room, venue, userId]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];

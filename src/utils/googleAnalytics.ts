@@ -1,29 +1,18 @@
-import { event, initialize, pageview } from "react-ga";
-import { REACT_APP_GA_MEASUREMENT_ID } from "secrets";
+import firebase from "firebase/app";
 
-export const initGoogleAnalytics = () => {
-  if (REACT_APP_GA_MEASUREMENT_ID) {
-    initialize(REACT_APP_GA_MEASUREMENT_ID);
-    pageview(window.location.pathname + window.location.search);
-  }
-};
+import { MEASUREMENT_ID } from "secrets";
+
 // @debt properly type the props, not just string
 type GAEvent = {
-  eventCategory: string;
-  eventAction: string;
-  eventLabel: string;
+  eventName: string;
+  eventAction: Object;
 };
 
 export const logEventGoogleAnalytics = ({
-  eventCategory,
+  eventName,
   eventAction,
-  eventLabel,
 }: GAEvent) => {
-  if (REACT_APP_GA_MEASUREMENT_ID) {
-    event({
-      category: eventCategory,
-      action: eventAction,
-      label: eventLabel,
-    });
+  if (MEASUREMENT_ID) {
+    firebase.analytics().logEvent(eventName, eventAction);
   }
 };
