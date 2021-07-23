@@ -1,23 +1,28 @@
 @import "scss/constants";
 
 .UserAvatar {
-  $avatar-sizes-map: (
-    small: 25px,
-    medium: 40px,
-    large: 54px,
-    full: 100%,
-  );
-  $indicator-sizes-map: (
-    small: 8px,
-    medium: 10px,
-    large: 12px,
-    full: 25%,
-  );
+  // @see https://math.stackexchange.com/questions/377234/circle-in-square-calculate-distance-from-squares-corner-to-circles-perimeter
+  $square-root-of-2: 1.41421356237;
+  $indicator-offset-factor: ($square-root-of-2 - 1) / 2;
+  $indicator-radius-factor: $square-root-of-2 / 2;
 
-  // NOTE: parent and img mismatch due to legacy reasons
+  // indicator border should be 12% of the indicator size, but borders don't accept % so using px for default
+  $default-indicator-border-width: 2px;
+  $default-indicator-size: 28%;
   $default-avatar-size: 25px;
   $default-image-size: 100%;
-  $default-indicator-size: 8px;
+
+  // order of elements:
+  // $modifier - one of UserAvatarSize
+  // $avatar-size - set in pixels or percent for larger than 54px
+  // $indicator-size - set in percent of parent
+  // $indicator-border-width - calculated as a percent of indicator size (fraction of a fraction of avatar size)
+  $avatar-sizes-enum: (
+    (small, 25px, 28%, 0.12 * 0.28 * 25px),
+    (medium, 40px, 28%, 0.12 * 0.28 * 40px),
+    (large, 54px, 28%, 0.12 * 0.28 * 54px),
+    (full, max(55px, 100%), 16%, 0.12 * 0.16 * 55px)
+  );
 
   @include square-size($default-avatar-size);
   position: relative;
@@ -48,13 +53,13 @@
     border-radius: 50%;
     z-index: z(user-avatar-status-indicator);
     display: block;
+
     @include square-size($default-indicator-size);
 
-    @each $modifier, $size in $indicator-sizes-map {
-      &--#{$modifier} {
-        @include square-size($size);
-      }
-    }
+    // NOTE: for the illusion of transparency, the border's style and color should be set by @include background-color() mixin in the appropriate ancestor
+    border-style: var(--UserAvatar__status-indicator--border-style);
+    border-color: var(--UserAvatar__status-indicator--border-color);
+    border-width: $default-indicator-border-width;
   }
 
   &--clickable {
@@ -65,10 +70,28 @@
     }
   }
 
-  @each $modifier, $size in $avatar-sizes-map {
+  @each $modifier, $avatar-size, $indicator-size,
+    $indicator-border-width in $avatar-sizes-enum
+  {
     &--#{$modifier},
     &--#{$modifier} img {
-      @include square-size($size);
+      @include square-size($avatar-size);
+    }
+
+    &--#{$modifier} &__status-indicator {
+      @include square-size($indicator-size);
+      border-width: $indicator-border-width;
+
+      // NOTE: variable is just template for DRY, the actual calc() is performed in the browser
+      // calculated out of both circles sizes and offset for the bottom/right side of the indicator
+      $indicator-position-offset: calc(
+        #{$avatar-size} *
+          #{$indicator-offset-factor} -
+          #{$indicator-size} *
+          #{$indicator-radius-factor}
+      );
+      right: $indicator-position-offset;
+      bottom: $indicator-position-offset;
     }
   }
 

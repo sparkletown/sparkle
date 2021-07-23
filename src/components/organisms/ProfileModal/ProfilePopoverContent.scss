@@ -15,7 +15,7 @@ $profile-popover--margin-top: 12px;
   position: relative;
   overflow: auto;
   padding: $spacing--md;
-  background: $black;
+  @include background-color($black);
   height: 100%;
   background-image: linear-gradient(
     0deg,

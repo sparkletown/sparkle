@@ -75,7 +75,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
     "UserAvatar__status-indicator--online": isOnline,
     [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    [`UserAvatar__status-indicator--${size}`]: size,
   });
 
   const statusIndicatorStyles = useMemo(

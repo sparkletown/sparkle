@@ -3,7 +3,7 @@
 $border-radius: 28px;
 
 .navbar-container {
-  background: $black;
+  @include background-color($black);
   display: flex;
   justify-content: space-between;
   align-items: center;
