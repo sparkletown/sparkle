@@ -10,7 +10,7 @@ import {
 } from "settings";
 
 import { resizeFile } from "utils/image";
-import { externalUrlAdditionalProps } from "utils/url";
+// import { externalUrlAdditionalProps } from "utils/url";
 
 import "./ProfilePictureInput.scss";
 
@@ -103,15 +103,6 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         />
       </div>
       <p className="profile-picture-options">
-        Want to change your profile photo? Take a{" "}
-        <a
-          className="button--a"
-          href="https://virtual.githubphotobooth.com/virtual/capture/gr99n"
-          {...externalUrlAdditionalProps}
-        >
-          Summit snap
-        </a>{" "}
-        or{" "}
         <input
           type="file"
           id="profile-picture-input"
