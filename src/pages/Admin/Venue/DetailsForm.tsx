@@ -40,6 +40,7 @@ import {
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
+  DEFAULT_ZOOM_LEVEL,
 } from "settings";
 
 import { IS_BURN } from "secrets";
@@ -141,7 +142,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
-  const [zoomLevel, handleZoomChange] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(DEFAULT_ZOOM_LEVEL);
 
   const [formError, setFormError] = useState(false);
 
@@ -348,7 +349,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               which you will need to reach out if you want it moved.
             </p>
           )}
-          <RoomMapDropdown onZoomChange={handleZoomChange} />
+          <RoomMapDropdown onZoomChange={setZoomLevel} />
           <div
             className="playa"
             ref={placementDivRef}

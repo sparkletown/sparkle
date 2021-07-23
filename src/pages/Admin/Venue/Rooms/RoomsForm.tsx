@@ -12,6 +12,7 @@ import {
   PLAYA_ICON_SIDE_PERCENTAGE,
   PLAYA_VENUE_STYLES,
   HAS_ROOMS_TEMPLATES,
+  DEFAULT_ZOOM_LEVEL,
 } from "settings";
 
 import { upsertRoom, RoomInput } from "api/admin";
@@ -121,7 +122,7 @@ export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
-  const [zoomLevel, handleZoomChange] = useState(1);
+  const [zoomLevel, setZoomLevel] = useState(DEFAULT_ZOOM_LEVEL);
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -392,7 +393,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             First upload or select the icon you would like to appear in your
             camp, then drag it around to position it
           </p>
-          <RoomMapDropdown onZoomChange={handleZoomChange} />
+          <RoomMapDropdown onZoomChange={setZoomLevel} />
           <div className="playa">
             {venue.mapBackgroundImageUrl && (
               <PartyMapContainer

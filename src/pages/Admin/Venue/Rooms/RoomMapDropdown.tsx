@@ -1,34 +1,28 @@
 import React, { useMemo, useState, Dispatch, SetStateAction } from "react";
 import { useCallback } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
+import { AVAILABLE_ZOOM_LEVELS } from "settings";
 
-const roomMapZoomLevels = [
-  { level: 1 },
-  { level: 2 },
-  { level: 3 },
-  { level: 4 },
-];
-
-interface RoomMapDropdownType {
+interface RoomMapDropdownProps {
   onZoomChange: Dispatch<SetStateAction<number>>;
 }
 
-export const RoomMapDropdown: React.FC<RoomMapDropdownType> = ({
+export const RoomMapDropdown: React.FC<RoomMapDropdownProps> = ({
   onZoomChange,
 }) => {
-  const [roomMapZoomLevel, changeRoomMapZoomLevel] = useState(1);
+  const [roomMapZoomLevel, setRoomMapZoomLevel] = useState(1);
 
   const handleZoomLevelChange = useCallback(
     (zoomLevel: number) => {
       onZoomChange(zoomLevel);
-      changeRoomMapZoomLevel(zoomLevel);
+      setRoomMapZoomLevel(zoomLevel);
     },
-    [onZoomChange, changeRoomMapZoomLevel]
+    [onZoomChange, setRoomMapZoomLevel]
   );
 
-  const RoomMapDropdownOptions = useMemo(
+  const renderedRoomMapDropdownOptions = useMemo(
     () =>
-      roomMapZoomLevels.map(({ level }) => (
+      AVAILABLE_ZOOM_LEVELS.map((level) => (
         <Dropdown.Item key={level} onClick={() => handleZoomLevelChange(level)}>
           {level}
         </Dropdown.Item>
@@ -37,15 +31,15 @@ export const RoomMapDropdown: React.FC<RoomMapDropdownType> = ({
   );
 
   return (
-    <div className="map-zoom-container">
+    <div className="RoomMapDropdown">
       <p>Zoom Level</p>
       {/* @debt replace with our own dropdown component */}
       <DropdownButton
         id="map-zoom-dropdown"
         title={roomMapZoomLevel ?? "change status"}
-        className="RoomMapDropdown"
+        className="RoomMapDropdown_button"
       >
-        {RoomMapDropdownOptions}
+        {renderedRoomMapDropdownOptions}
       </DropdownButton>
     </div>
   );

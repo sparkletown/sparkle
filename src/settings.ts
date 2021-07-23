@@ -57,6 +57,8 @@ export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const MAP_ZOOM_MULTIPLIER = 500;
+export const DEFAULT_ZOOM_LEVEL = 1;
+export const AVAILABLE_ZOOM_LEVELS = [DEFAULT_ZOOM_LEVEL, 2, 3, 4];
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
