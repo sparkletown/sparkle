@@ -61,6 +61,7 @@ export const Map: React.FC<MapProps> = ({
     Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
   );
   const [totalRows, setTotalRows] = useState<number>(0);
+  const hasRows = totalRows > 0;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
   const columnsArray = useMemo(
@@ -208,9 +209,9 @@ export const Map: React.FC<MapProps> = ({
     () =>
       venue?.rooms
         ?.filter(filterEnabledRooms)
-        .map((room, index) => (
+        .map((room) => (
           <MapRoom
-            key={index}
+            key={room.title}
             venue={venue}
             room={room}
             selectRoom={() => selectRoom(room)}
@@ -240,7 +241,7 @@ export const Map: React.FC<MapProps> = ({
           src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
           alt=""
         />
-        {totalRows && (
+        {hasRows && (
           <div className="party-map-grid-container" style={gridContainerStyles}>
             {mapGrid}
             {partygoersOverlay}
