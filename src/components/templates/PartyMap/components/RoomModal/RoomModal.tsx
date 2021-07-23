@@ -82,7 +82,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   venueEvents,
   showSchedule,
 }) => {
-  const venueName = venue.name;
+  const { name:venueName, showShedule } = venue;
 
   const dispatch = useDispatch();
 
