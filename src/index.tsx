@@ -52,6 +52,7 @@ import { User } from "types/User";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
+import { initGoogleAnalytics } from "utils/googleAnalytics";
 
 import { CustomSoundsProvider } from "hooks/sounds";
 import { useSelector } from "hooks/useSelector";
@@ -224,6 +225,8 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
 if (MIXPANEL_PROJECT_TOKEN) {
   mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
 }
+
+initGoogleAnalytics();
 
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
