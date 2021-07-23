@@ -13,6 +13,7 @@ import { isExternalUrl } from "utils/url";
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
+import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -79,6 +80,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 }) => {
   const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
+  const { user } = useUser();
+
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -109,10 +112,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         eventAction: {
           VenueId: venueName,
           RoomUrl: room.url,
+          UserId: user?.uid,
         },
       });
     }
-  }, [_enterRoomWithSound, venueName, room, venue]);
+  }, [_enterRoomWithSound, venueName, room, venue, user]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
