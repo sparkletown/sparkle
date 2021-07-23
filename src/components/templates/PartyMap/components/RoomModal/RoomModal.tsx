@@ -58,12 +58,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="room-modal">
-        <RoomModalContent
-          room={room}
-          venueEvents={venueEvents}
-          venue={venue}
-          showSchedule={venue.showSchedule}
-        />
+        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
     </Modal>
   );
@@ -80,9 +75,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
   venue,
   venueEvents,
-  showSchedule,
 }) => {
-  const { name:venueName, showShedule } = venue;
+  const { name: venueName, showSchedule } = venue;
 
   const dispatch = useDispatch();
 
