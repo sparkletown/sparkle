@@ -68,7 +68,6 @@ export interface RoomModalContentProps {
   room: Room;
   venue: AnyVenue;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
-  showSchedule?: boolean;
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
