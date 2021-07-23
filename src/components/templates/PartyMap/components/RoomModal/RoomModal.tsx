@@ -17,6 +17,8 @@ import { useRoom } from "hooks/useRoom";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
 
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
+
 import { UserList } from "components/molecules/UserList";
 
 import { RoomModalOngoingEvent, ScheduleItem } from "..";
