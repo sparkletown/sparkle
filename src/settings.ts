@@ -17,7 +17,7 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
-export const SPARKLE_HOMEPAGE_URL = "/in/explore";
+export const SPARKLE_HOMEPAGE_URL = "/in/rkofy22";
 export const SPARKLE_FOOTER_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
