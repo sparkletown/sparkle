@@ -110,9 +110,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
       logEventGoogleAnalytics({
         eventName: "PARTMAP_WITH_EXTERNAL_LINK",
         eventAction: {
-          VenueId: venueName,
-          RoomUrl: room.url,
-          UserId: user?.uid,
+          venueName,
+          userId,
+          roomUrl: room.url,
         },
       });
     }
