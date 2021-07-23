@@ -45,12 +45,10 @@ export const EventModal: React.FC<EventModalProps> = ({
     () =>
       eventVenue?.rooms?.find((room) => {
         const { room: eventRoom = "" } = event;
-
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
-
         return roomUrlParam.endsWith(`${roomName}`);
       }),
     [eventVenue, event]
@@ -63,12 +61,21 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const eventLocationToDisplay =
     (event.room || eventVenue?.name) ?? event.venueId;
-
   const goToEventLocation = () => {
     onHide();
 
     const { room = "" } = event;
     const roomUrlParam = getUrlParamFromString(room);
+    const [selectedRoom] =
+      eventVenue?.rooms?.filter(
+        (venueRoom) => getUrlParamFromString(venueRoom.title) === room
+      ) || [];
+
+    if (selectedRoom) {
+      openUrl(selectedRoom?.url);
+
+      return;
+    }
 
     if (!eventRoom) {
       openUrl(roomUrlParam);
