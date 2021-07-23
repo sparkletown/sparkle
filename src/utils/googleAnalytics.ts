@@ -7,7 +7,7 @@ export const initGoogleAnalytics = () => {
     pageview(window.location.pathname + window.location.search);
   }
 };
-
+// @debt properly type the props, not just string
 type GAEvent = {
   eventCategory: string;
   eventAction: string;
