@@ -80,7 +80,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 }) => {
   const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
-  const { user } = useUser();
+  const { userId } = useUser();
 
   const dispatch = useDispatch();
 
