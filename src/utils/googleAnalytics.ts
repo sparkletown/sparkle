@@ -5,7 +5,6 @@ import { MEASUREMENT_ID } from "secrets";
 // @debt properly type the props, not just string
 type GAEvent = {
   eventName: string;
-  // eventCategory: string;
   eventAction: Object;
 };
 
