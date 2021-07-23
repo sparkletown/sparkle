@@ -108,7 +108,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         eventName: "PARTMAP_WITH_EXTERNAL_LINK",
         eventAction: {
           VenueId: venueName,
-          Link: room.url,
+          RoomUrl: room.url,
         },
       });
     }
