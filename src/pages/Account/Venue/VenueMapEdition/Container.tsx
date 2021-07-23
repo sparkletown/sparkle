@@ -11,7 +11,7 @@ import { DraggableSubvenue } from "./DraggableSubvenue";
 import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 import update from "immutability-helper";
 import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL } from "settings";
+import { DEFAULT_MAP_ICON_URL, MAP_ZOOM_MULTIPLIER } from "settings";
 import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
 import { Dimensions } from "types/utility";
@@ -82,7 +82,9 @@ export const Container: React.FC<PropsType> = (props) => {
   const [imageDims, setImageDims] = useState<Dimensions>();
   const [dragBoxId, setDragBoxId] = useState<string>("");
   const mapWidth =
-    zoomLevel && zoomLevel === 1 ? `100%` : `${zoomLevel * 500}px`;
+    zoomLevel && zoomLevel === 1
+      ? `100%`
+      : `${zoomLevel * MAP_ZOOM_MULTIPLIER}px`;
   const setDragItemId = useCallback((id: string) => {
     setDragBoxId(id);
   }, []);
