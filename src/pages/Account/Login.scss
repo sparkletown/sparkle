@@ -21,6 +21,11 @@
     // }
   }
 
+  &__quick-login {
+    border: none;
+    background-color: transparent;
+  }
+
   &__quick-login-icon {
     &:hover {
       cursor: pointer;

@@ -107,13 +107,15 @@ export const Login: React.FC<LoginProps> = ({
                 />
               )}
               {hasSamlAuthProviderId && (
-                <FontAwesomeIcon
-                  className="Login__quick-login-icon"
-                  icon={faGithub}
-                  size="4x"
-                  onClick={signInWithSAML}
-                  title="SAML SSO login"
-                />
+                <button className="Login__quick-login">
+                  <FontAwesomeIcon
+                    className="Login__quick-login-icon"
+                    icon={faGithub}
+                    size="4x"
+                    onClick={signInWithSAML}
+                    title="SAML SSO login"
+                  />
+                </button>
               )}
             </button>
           </div>
