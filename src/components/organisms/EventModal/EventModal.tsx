@@ -49,7 +49,9 @@ export const EventModal: React.FC<EventModalProps> = ({
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
-        return roomUrlParam.endsWith(`${roomName}`);
+        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+
+        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
     [eventVenue, event]
   );
@@ -66,18 +68,6 @@ export const EventModal: React.FC<EventModalProps> = ({
 
     const { room = "" } = event;
     const roomUrlParam = getUrlParamFromString(room);
-    // @debt fix this hack on 24.07.2021
-    const [selectedRoom] =
-      eventVenue?.rooms?.filter(
-        (venueRoom) => getUrlParamFromString(venueRoom.title) === room
-      ) || [];
-
-    // @debt fix this hack on 24.07.2021
-    if (selectedRoom) {
-      openUrl(selectedRoom?.url);
-
-      return;
-    }
 
     if (!eventRoom) {
       openUrl(roomUrlParam);
