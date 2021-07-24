@@ -21,7 +21,14 @@
     // }
   }
 
+  &__quick-login {
+    border: none;
+    background-color: transparent;
+  }
+
   &__quick-login-icon {
+    color: $white;
+
     &:hover {
       cursor: pointer;
       opacity: 0.8;
