@@ -63,6 +63,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   const eventLocationToDisplay =
     (event.room || eventVenue?.name) ?? event.venueId;
+
   const goToEventLocation = () => {
     onHide();
 
