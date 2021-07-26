@@ -4,6 +4,8 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
+import { Logo } from "components/atoms/Logo";
+
 import "./ExternalRoom.scss";
 
 export interface ExternalRoomProps {
@@ -21,14 +23,14 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
 
   if (venue.zoomUrl) {
     return (
-      <div className="ExternalRoom__message">
-        <h4>
-          Please keep this tab open while you are directed to external content.
-        </h4>
-        <h4>Return to this tab when you are ready to explore some more!</h4>
-        <a rel="noreferrer" href={venue.zoomUrl} target="_blank">
-          Open room manually
-        </a>
+      <div className="ExternalRoom">
+        <div className="ExternalRoom__MessageBox">
+          <Logo height={"110px"} width={"130px"} />
+          <h4 className="ExternalRoom__Header">Thank your for visting</h4>
+          <a rel="noreferrer" href={venue.zoomUrl} target="_blank">
+            {venue.zoomUrl}
+          </a>
+        </div>
       </div>
     );
   } else {

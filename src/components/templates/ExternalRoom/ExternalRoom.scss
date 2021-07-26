@@ -1,10 +1,29 @@
 @import "scss/constants";
 
 .ExternalRoom {
-  &__message {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__MessageBox {
+    height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: $spacing--xxl;
+    justify-content: space-between;
+    background: $light-grey;
+    padding: 70px;
+    padding-top: $spacing--xxl;
+    box-shadow: box-shadow--large(0.5);
+    border-radius: $border-radius--xl;
+  }
+
+  &__Header {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: $font-weight--300;
+    font-size: 44px;
+    line-height: 48px;
   }
 }
