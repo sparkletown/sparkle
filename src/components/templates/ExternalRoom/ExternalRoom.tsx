@@ -13,10 +13,13 @@ export interface ExternalRoomProps {
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   const history = useHistory();
+const redirectUrl = venue.zoomUrl;
 
   useEffect(() => {
-    openUrl(venue.zoomUrl ?? "");
-  }, [venue]);
+    if (!redirectUrl) return;
+    
+    openUrl(redirectUrl);
+  }, [redirectUrl]);
 
   if (venue.zoomUrl) {
     return (
