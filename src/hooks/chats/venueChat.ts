@@ -50,16 +50,22 @@ export const useConnectVenueChatMessages = (
   );
 };
 
+function useMaxMessagesLimit(limit?: number): number {
+  const maxLimitRef = useRef(0);
+
+  if (limit && limit > maxLimitRef.current) maxLimitRef.current = limit;
+
+  return maxLimitRef.current;
+}
+
 export const useVenueChat = (venueId?: string, limit?: number) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
   const { userId } = useUser();
 
-  const maxLimitRef = useRef(0);
+  const maxLimit = useMaxMessagesLimit(limit);
 
-  if (limit && limit > maxLimitRef.current) maxLimitRef.current = limit;
-
-  useConnectVenueChatMessages(venueId, maxLimitRef.current);
+  useConnectVenueChatMessages(venueId, maxLimit);
 
   const chatMessages =
     useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
@@ -80,7 +86,7 @@ export const useVenueChat = (venueId?: string, limit?: number) => {
     [chatMessages, venueChatAgeThresholdSec]
   );
 
-  const hasMoreMessages = maxLimitRef.current <= filteredMessages.length;
+  const hasMoreMessages = maxLimit <= filteredMessages.length;
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
@@ -163,7 +169,7 @@ export const useVenueChat = (venueId?: string, limit?: number) => {
   );
 
   return {
-    messages: messagesToDisplay,
+    messagesToDisplay,
     hasMoreMessages,
 
     sendMessage,

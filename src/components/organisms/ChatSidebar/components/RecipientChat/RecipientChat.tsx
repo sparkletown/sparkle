@@ -58,15 +58,17 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       {messagesToDisplay.length > 0 && (
-        <Chatbox
-          loadMoreMessages={() => {}}
-          hasMoreMessages={true}
-          messages={messagesToDisplay}
-          sendMessage={sendMessageToSelectedRecipient}
-          deleteMessage={deleteMessage}
-          sendThreadReply={sendThreadReply}
-          venue={venue}
-        />
+        <div className="recipient-chat__chatbox">
+          <Chatbox
+            loadMoreMessages={() => {}}
+            hasMoreMessages={false}
+            messages={messagesToDisplay}
+            sendMessage={sendMessageToSelectedRecipient}
+            deleteMessage={deleteMessage}
+            sendThreadReply={sendThreadReply}
+            venue={venue}
+          />
+        </div>
       )}
     </div>
   );

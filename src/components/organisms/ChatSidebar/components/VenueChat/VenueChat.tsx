@@ -23,7 +23,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
-    messages,
+    messagesToDisplay,
     hasMoreMessages,
     sendThreadReply,
   } = useVenueChat(venue.id, messagesLimit);
@@ -33,11 +33,11 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
 
   return (
     <div className="venue-chat">
-      {messages.length > 0 && (
+      {messagesToDisplay.length > 0 && (
         <Chatbox
           // poll is available for Venue Chat only (displayPoll = true)
           displayPoll
-          messages={messages}
+          messages={messagesToDisplay}
           loadMoreMessages={loadMoreMessages}
           hasMoreMessages={hasMoreMessages}
           sendMessage={sendMessage}

@@ -28,7 +28,7 @@ export const ReactionPage: React.FC = () => {
   const { recentVenueUsers } = useRecentVenueUsers({
     venueName: currentVenue?.name,
   });
-  const { messages: venueChatMessages } = useVenueChat(venueId);
+  const { messagesToDisplay: venueChatMessages } = useVenueChat(venueId);
 
   // @debt this is very similar to the query in src/hooks/reactions.tsx, but that filters by createdAt > now
   useFirestoreConnect(
