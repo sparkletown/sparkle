@@ -14,11 +14,13 @@ import {
 
 import {
   buildMessage,
+  chatSort,
   partitionMessagesFromReplies,
   getMessageReplies,
   getBaseMessageToDisplay,
 } from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
+import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 import { WithId } from "utils/id";
 
@@ -27,32 +29,13 @@ import { useFirestoreConnect } from "../useFirestoreConnect";
 import { useUser } from "../useUser";
 import { useWorldUsersByIdWorkaround } from "../users";
 import { useRoles } from "../useRoles";
-import { getDaysAgoInSeconds } from "../../utils/time";
-
-export const useVenueChat = (venueId?: string, limit?: number) => {
-  const { sendMessage, deleteMessage, sendThreadReply } = useChatMessageActions(
-    venueId
-  );
-  const { hasMoreMessages, ...messages } = useChatMessages(venueId, limit);
-
-  const transformedMessages = useTransformMessagesForDisplay(messages);
-
-  return {
-    messages: transformedMessages,
-    hasMoreMessages,
-    sendMessage,
-    deleteMessage,
-    sendThreadReply,
-  };
-};
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 
-function useChatMessages(venueId?: string, limit?: number) {
-  const maxLimitRef = useRef(0);
-
-  if (limit && limit > maxLimitRef.current) maxLimitRef.current = limit;
-
+export const useConnectVenueChatMessages = (
+  venueId?: string,
+  limit?: number
+) => {
   useFirestoreConnect(
     venueId
       ? {
@@ -61,89 +44,43 @@ function useChatMessages(venueId?: string, limit?: number) {
           subcollections: [{ collection: "chats" }],
           orderBy: ["ts_utc", "desc"],
           storeAs: "venueChatMessages",
-          limit: maxLimitRef.current,
+          limit,
         }
       : undefined
   );
+};
 
-  const messages =
+export const useVenueChat = (venueId?: string, limit?: number) => {
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
+  const { userRoles } = useRoles();
+  const { userId } = useUser();
+
+  const maxLimitRef = useRef(0);
+
+  if (limit && limit > maxLimitRef.current) maxLimitRef.current = limit;
+
+  useConnectVenueChatMessages(venueId, maxLimitRef.current);
+
+  const chatMessages =
     useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
+
+  const isAdmin = Boolean(userRoles?.includes("admin"));
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
   const filteredMessages = useMemo(
     () =>
-      messages.filter(
-        (message) =>
-          message.deleted !== true &&
-          message.ts_utc.seconds > venueChatAgeThresholdSec
-      ),
-    [messages, venueChatAgeThresholdSec]
+      chatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.ts_utc.seconds > venueChatAgeThresholdSec
+        )
+        .sort(chatSort),
+    [chatMessages, venueChatAgeThresholdSec]
   );
 
   const hasMoreMessages = maxLimitRef.current <= filteredMessages.length;
-
-  return useMemo(
-    () => ({
-      ...partitionMessagesFromReplies(filteredMessages),
-      hasMoreMessages,
-    }),
-    [filteredMessages, hasMoreMessages]
-  );
-}
-
-function useTransformMessagesForDisplay({
-  messages,
-  allMessagesReplies,
-}: Pick<
-  ReturnType<typeof useChatMessages>,
-  "messages" | "allMessagesReplies"
->) {
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userRoles } = useRoles();
-  const { userId } = useUser();
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-
-  return useMemo(
-    () =>
-      messages
-        .map((message) => {
-          const displayMessage = getBaseMessageToDisplay<
-            WithId<VenueChatMessage>
-          >({
-            message,
-            usersById: worldUsersById,
-            myUserId: userId,
-
-            isAdmin,
-          });
-
-          if (!displayMessage) return undefined;
-
-          const messageReplies = getMessageReplies<VenueChatMessage>({
-            messageId: message.id,
-            allReplies: allMessagesReplies,
-          })
-            .map((reply) =>
-              getBaseMessageToDisplay<WithId<VenueChatMessage>>({
-                message: reply,
-                usersById: worldUsersById,
-                myUserId: userId,
-                isAdmin,
-              })
-            )
-            .filter(isTruthy);
-
-          return { ...displayMessage, replies: messageReplies };
-        })
-        .filter(isTruthy),
-    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
-  );
-}
-
-function useChatMessageActions(venueId?: string) {
-  const { userId } = useUser();
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
@@ -184,9 +121,53 @@ function useChatMessageActions(venueId?: string) {
     [venueId, userId]
   );
 
+  const { messages, allMessagesReplies } = useMemo(
+    () => partitionMessagesFromReplies(filteredMessages),
+    [filteredMessages]
+  );
+
+  const messagesToDisplay = useMemo(
+    () =>
+      messages
+        .map((message) => {
+          const displayMessage = getBaseMessageToDisplay<
+            WithId<VenueChatMessage>
+          >({
+            message,
+            usersById: worldUsersById,
+            myUserId: userId,
+
+            isAdmin,
+          });
+
+          if (!displayMessage) return undefined;
+
+          const messageReplies = getMessageReplies<VenueChatMessage>({
+            messageId: message.id,
+            allReplies: allMessagesReplies,
+          })
+            .map((reply) =>
+              getBaseMessageToDisplay<WithId<VenueChatMessage>>({
+                message: reply,
+                usersById: worldUsersById,
+                myUserId: userId,
+                isAdmin,
+              })
+            )
+            .filter(isTruthy);
+
+          return { ...displayMessage, replies: messageReplies };
+        })
+        .filter(isTruthy),
+    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
+  );
+
   return {
+    messages: messagesToDisplay,
+    hasMoreMessages,
+
     sendMessage,
     deleteMessage,
     sendThreadReply,
   };
-}
+};
