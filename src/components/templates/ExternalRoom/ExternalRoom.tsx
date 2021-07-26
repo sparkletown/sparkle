@@ -38,13 +38,6 @@ const redirectUrl = venue.zoomUrl;
       <p>
         Venue {venue.name} should redirect to a URL, but none was set.
         <br />
-        <button
-          role="link"
-          className="btn btn-primary"
-          onClick={() => history.goBack()}
-        >
-          Go Back
-        </button>
       </p>
     );
   }
