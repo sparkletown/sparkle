@@ -27,6 +27,7 @@ import { useFirestoreConnect } from "../useFirestoreConnect";
 import { useUser } from "../useUser";
 import { useWorldUsersByIdWorkaround } from "../users";
 import { useRoles } from "../useRoles";
+import { getDaysAgoInSeconds } from "../../utils/time";
 
 export const useVenueChat = (venueId?: string) => {
   const { sendMessage, deleteMessage, sendThreadReply } = useChatMessageActions(
@@ -47,19 +48,12 @@ export const useVenueChat = (venueId?: string) => {
 const noMessages: WithId<VenueChatMessage>[] = [];
 
 function useChatMessages(venueId?: string) {
-  const startAt = (() => {
-    const now = new Date();
-    now.setDate(now.getDate() - VENUE_CHAT_AGE_DAYS);
-    return now;
-  })();
-
   useFirestoreConnect(
     venueId
       ? {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
-          where: ["ts_utc", ">", startAt],
           orderBy: ["ts_utc", "desc"],
           storeAs: "venueChatMessages",
         }
@@ -69,9 +63,16 @@ function useChatMessages(venueId?: string) {
   const messages =
     useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
 
+  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+
   const filteredMessages = useMemo(
-    () => messages.filter((message) => message.deleted !== true),
-    [messages]
+    () =>
+      messages.filter(
+        (message) =>
+          message.deleted !== true &&
+          message.ts_utc.seconds > venueChatAgeThresholdSec
+      ),
+    [messages, venueChatAgeThresholdSec]
   );
 
   return useMemo(() => partitionMessagesFromReplies(filteredMessages), [
