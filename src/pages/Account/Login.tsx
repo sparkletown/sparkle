@@ -152,8 +152,8 @@ export const Login: React.FC<LoginProps> = ({
         )}
       </div>
       <p className="Login__issues-text">
-        Trouble registering? Find help at:{" "}
-        <strong>#summit-21-registration</strong> or email events@github.com
+        Trouble registering? Find help at: <strong>#rko-fy22-help</strong> or
+        email events@github.com
       </p>
     </div>
   );
