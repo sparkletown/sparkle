@@ -27,6 +27,7 @@ const VenueEventDetails = ({
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
   const endTime = formatTimeLocalised(eventEndTime(venueEvent));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
+  const isEditable = !className;
 
   return (
     <div className={className}>
@@ -50,7 +51,7 @@ const VenueEventDetails = ({
         ))}
       </div>
       <div className="button-container">
-        {!className && (
+        {isEditable && (
           <div>
             <div>
               <button
