@@ -26,7 +26,6 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
-  [VenueTemplate.externalroom]: undefined,
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
 };
