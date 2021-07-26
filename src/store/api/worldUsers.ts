@@ -96,46 +96,22 @@ export const worldUsersApi = createApi({
           .collection("users")
           .where("enteredVenueIds", "array-contains-any", relatedLocationIds);
 
+        let hasLoadedDataInitially = false;
+
         const unsubscribeListener = worldUsersQuery.onSnapshot((snapshot) => {
-          // TODO: implement this properly + cleanup this placeholder stuff
-          const added = snapshot
-            .docChanges()
-            .filter((docChange) => docChange.type === "added").length;
+          const snapshotSize = snapshot.size;
 
-          const removed = snapshot
-            .docChanges()
-            .filter((docChange) => docChange.type === "removed").length;
+          // NOTE: Don't delay the update of the first load.
+          if (snapshotSize > 1 && !hasLoadedDataInitially) {
+            updateCachedData((draft) => {
+              snapshot.docChanges().forEach(processUserDocChange(draft));
+            });
 
-          const modified = snapshot
-            .docChanges()
-            .filter((docChange) => docChange.type === "modified").length;
+            hasLoadedDataInitially = true;
+            return;
+          }
 
-          console.log(
-            "worldUsersApi::worldUsers::snapshot",
-            "\n  snapshot.size=",
-            snapshot.size,
-            "\n  snapshot.docs.length = ",
-            snapshot.docs.length,
-            "\n  snapshot.docChanges().length",
-            snapshot.docChanges().length,
-            "\n  snapshot.docChanges() added:",
-            added,
-            "\n  snapshot.docChanges() removed:",
-            removed,
-            "\n  snapshot.docChanges() modified:",
-            modified,
-            "\n  queuedChanges.length",
-            queuedChanges.length
-          );
-
-          // TODO: check if this is the 'first load', and if so, then process all of the updates without any delay
           snapshot.docChanges().forEach((change) => {
-            // TODO: check if this document relates to the current user, if so, update it immediately
-            //   Note that we will need to pass their userId in and/or read it from somehwere to make this work..
-            //   probably just the queryArgs for this whole api listener
-            //
-            // const currentUserId = "TODO";
-            //
             if (change.doc.id === currentUserId) {
               updateCachedData((draft) => {
                 processUserDocChange(draft)(change);
