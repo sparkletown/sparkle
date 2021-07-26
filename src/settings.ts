@@ -300,6 +300,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
+  },
+  {
     template: VenueTemplate.talkshowstudio,
     name: "Talk Show Studio",
     description: ["test"],
@@ -360,6 +365,11 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     description: [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
+  },
+  {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
   },
 ];
 

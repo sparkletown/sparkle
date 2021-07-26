@@ -1,11 +1,13 @@
 import firebase from "firebase/app";
 
-import { updateUserProfile } from "pages/Account/helpers";
-import { useInterval } from "hooks/useInterval";
-
 import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
+import { useInterval } from "hooks/useInterval";
+
+import { updateUserProfile } from "pages/Account/helpers";
+
 import { getCurrentTimeInMilliseconds } from "./time";
+import { logEventGoogleAnalytics } from "./googleAnalytics";
 import { openRoomUrl } from "./url";
 
 export type LocationData = Record<string, number>;
@@ -83,6 +85,15 @@ export const enterExternalRoom = ({
   setLocationData({
     userId,
     locationName,
+  });
+
+  logEventGoogleAnalytics({
+    eventName: "ENTER_THIRD_PARTY_ROOM",
+    eventAction: {
+      locationName,
+      userId,
+      roomUrl,
+    },
   });
 
   openRoomUrl(roomUrl);

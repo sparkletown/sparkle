@@ -54,6 +54,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.talkshowstudio,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
+  VenueTemplate.screeningroom,
 ];
 
 // These templates use iframeUrl (they should remain alphabetically sorted)
