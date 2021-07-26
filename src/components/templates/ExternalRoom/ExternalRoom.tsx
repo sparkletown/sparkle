@@ -20,30 +20,26 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
     openUrl(redirectUrl);
   }, [redirectUrl]);
 
-  if (venue.zoomUrl) {
-    return (
-      <div className="ExternalRoom">
-        <div className="ExternalRoom__message">
-          <SparkleLogo />
-          <div className="ExternalRoom__content">
-            <h4 className="ExternalRoom__header">Thank you for visiting</h4>
-            <a
-              rel="noreferrer"
-              href={venue.zoomUrl}
-              target="_blank"
-              className="ExternalRoom__link"
-            >
-              {venue.zoomUrl}
-            </a>
-          </div>
+  return redirectUrl ? (
+    <div className="ExternalRoom">
+      <div className="ExternalRoom__message">
+        <SparkleLogo />
+        <div className="ExternalRoom__content">
+          <h4 className="ExternalRoom__header">Thank you for visiting</h4>
+          <a
+            rel="noreferrer"
+            href={venue.zoomUrl}
+            target="_blank"
+            className="ExternalRoom__link"
+          >
+            {venue.zoomUrl}
+          </a>
         </div>
       </div>
-    );
-  } else {
-    return (
-      <div className="ExternalRoom__message">
-        <p>Venue {venue.name} should redirect to a URL, but none was set.</p>
-      </div>
-    );
-  }
+    </div>
+  ) : (
+    <div className="ExternalRoom__message">
+      <p>Venue {venue.name} should redirect to a URL, but none was set.</p>
+    </div>
+  );
 };

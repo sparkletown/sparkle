@@ -7,14 +7,12 @@
   justify-content: center;
 
   &__message {
-    height: 400px;
+    padding: 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     background: $light-grey;
-    padding: 70px;
-    padding-top: $spacing--xxl;
     box-shadow: box-shadow--large(0.5);
     border-radius: $border-radius--xl;
   }
@@ -24,13 +22,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    margin-top: $spacing--xxl;
   }
 
   &__header {
     font-family: Rubik;
-    font-style: normal;
+    font-weight: $font-weight--300;
     font-size: 38px;
-    line-height: 48px;
   }
 
   &__link {
@@ -38,6 +36,5 @@
     font-style: normal;
     font-weight: $font-weight--500;
     font-size: 44px;
-    line-height: 48px;
   }
 }
