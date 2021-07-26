@@ -223,8 +223,8 @@ export const Profile: React.FC = () => {
       </form>
 
       <p className="Profile__issues-text">
-        Trouble registering? Find help at:{" "}
-        <strong>#summit-21-registration</strong> or email events@github.com
+        Trouble registering? Find help at: <strong>#rko-fy22-help</strong> or
+        email events@github.com
       </p>
     </div>
   );
