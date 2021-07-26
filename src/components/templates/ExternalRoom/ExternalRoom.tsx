@@ -1,11 +1,13 @@
 import React, { useEffect } from "react";
 
 import { AnyVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
-import "./ExternalRoom.scss";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
+
+import "./ExternalRoom.scss";
 
 export interface ExternalRoomProps {
   venue: WithId<AnyVenue>;

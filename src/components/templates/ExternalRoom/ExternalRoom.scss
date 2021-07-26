@@ -28,13 +28,13 @@
   &__header {
     font-family: Rubik;
     font-weight: $font-weight--300;
-    font-size: 38px;
+    font-size: $font-size--xl;
   }
 
   &__link {
     font-family: Rubik;
     font-style: normal;
     font-weight: $font-weight--500;
-    font-size: 44px;
+    font-size: $font-size--xxl;
   }
 }
