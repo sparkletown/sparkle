@@ -35,6 +35,7 @@ export enum VenueTemplate {
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
+
   /**
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
