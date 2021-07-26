@@ -12,6 +12,7 @@ import {
 import { WithId } from "utils/id";
 
 import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
 
 export interface WorldUsersContextState {
   isSovereignVenueIdLoading: boolean;
@@ -41,6 +42,8 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
     venueId,
   });
 
+  const { userId } = useUser();
+
   const relatedLocationIds: string[] | undefined = useMemo(() => {
     if (isSovereignVenueLoading || !venueId || !sovereignVenueId) return;
 
@@ -53,7 +56,9 @@ export const WorldUsersProvider: React.FC<WorldUsersProviderProps> = ({
   //   down for the descendant code to use.. which would work around that 'limitation'
   // TODO: https://redux-toolkit.js.org/rtk-query/usage/queries#selecting-data-from-a-query-result
   const { originalArgs: worldUsersApiArgs } = useWorldUsersQuery(
-    relatedLocationIds ? { relatedLocationIds } : skipToken,
+    relatedLocationIds && userId
+      ? { relatedLocationIds, currentUserId: userId }
+      : skipToken,
     {
       selectFromResult: ({ originalArgs }) => ({ originalArgs }),
     }

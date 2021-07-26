@@ -15,6 +15,7 @@ import { withId, WithId } from "utils/id";
 
 export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
+  currentUserId: string;
 }
 
 // TODO: If we add recentUserIds to the store here, then we should be able to 'pre-process' that data as it comes in, rather than breaking memo's/etc in the hooks
@@ -64,7 +65,7 @@ export const worldUsersApi = createApi({
         // meta: undefined,
       }),
       async onCacheEntryAdded(
-        { relatedLocationIds },
+        { relatedLocationIds, currentUserId },
         { updateCachedData, cacheEntryRemoved }
       ) {
         // Used to hold the changes queued from the snapshot listener so that we can proces them in batches
@@ -135,13 +136,13 @@ export const worldUsersApi = createApi({
             //
             // const currentUserId = "TODO";
             //
-            // if (change.doc.id === currentUserId) {
-            //   updateCachedData((draft) => {
-            //     processUserDocChange(draft)(change);
-            //   });
-            // } else {
-            queuedChanges.push(change);
-            // }
+            if (change.doc.id === currentUserId) {
+              updateCachedData((draft) => {
+                processUserDocChange(draft)(change);
+              });
+            } else {
+              queuedChanges.push(change);
+            }
           });
         });
 
