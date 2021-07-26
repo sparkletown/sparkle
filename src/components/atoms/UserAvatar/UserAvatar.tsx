@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual, isEmpty } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -8,7 +8,7 @@ import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRecentWorldUsers } from "hooks/users";
+import { useWorldUserLocation } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -38,7 +38,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { userLocation } = useWorldUserLocation(user?.id);
+  const userLastSeenIn = userLocation?.lastSeenIn;
 
   const {
     userStatus,
@@ -59,13 +60,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     [`UserAvatar--${size}`]: size,
   });
 
-  // @debt this seems to cause performance issues. It should be possible to use worldUserLocationsById
-  //   from useWorldUserLocation / similar, plus some 'is recent user?' logic to directly look up the individual
-  //   user in an efficient manner.
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
+  const isOnline = useMemo(() => !isEmpty(userLastSeenIn), [userLastSeenIn]);
 
   const status = user?.status;
 
