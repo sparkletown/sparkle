@@ -1,8 +1,8 @@
 import React from "react";
 
 import {
-  HOMEPAGE_URL,
   PRIVACY_POLICY,
+  SPARKLE_FOOTER_URL,
   TERMS_AND_CONDITIONS_URL,
 } from "settings";
 import { getExtraLinkProps } from "utils/url";
@@ -24,7 +24,7 @@ export const Footer = () => (
     <div>|</div>
 
     <div>
-      <a href={HOMEPAGE_URL} {...getExtraLinkProps(true)}>
+      <a href={SPARKLE_FOOTER_URL} {...getExtraLinkProps(true)}>
         Made with{" "}
         <span role="img" aria-label="heart">
           ❤️

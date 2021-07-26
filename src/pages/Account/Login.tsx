@@ -1,5 +1,7 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import { AnyVenue } from "types/venues";
 
@@ -16,7 +18,7 @@ import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
 import PasswordResetForm from "components/organisms/AuthenticationModal/PasswordResetForm";
-import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
+// import RegisterForm from "components/organisms/AuthenticationModal/RegisterForm";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -39,9 +41,9 @@ export const Login: React.FC<LoginProps> = ({
   const { sovereignVenue } = useSovereignVenue({ venueId });
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
-  const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    sovereignVenue?.samlAuthProviderId
-  );
+  const { signInWithSAML, hasSamlAuthProviderId, isSigningIn } = useSAMLSignIn({
+    samlAuthProviderId: sovereignVenue?.samlAuthProviderId,
+  });
 
   const {
     loading: isCustomAuthConfigLoading,
@@ -84,17 +86,15 @@ export const Login: React.FC<LoginProps> = ({
 
   const redirectAfterLogin = () => {};
 
-  if (isCustomAuthConfigLoading) return <LoadingPage />;
+  if (isCustomAuthConfigLoading || isSigningIn) return <LoadingPage />;
 
   return (
     <div className="auth-container">
-      <div className="logo-container">
-        <img src="/sparkle-header.png" alt="" width="100%" />
-      </div>
+      <div className="hero-logo github-plain" />
       <div className="auth-form-container">
         {hasAlternativeLogins && (
           <div className="Login__login-box">
-            <span>Quick log in with</span>
+            <span>Quick log in with Okta</span>
 
             <button className="Login__alternative-logins">
               {hasCustomAuthConnect && (
@@ -107,31 +107,35 @@ export const Login: React.FC<LoginProps> = ({
                 />
               )}
               {hasSamlAuthProviderId && (
-                <img
-                  className="Login__quick-login-icon"
-                  src={SAMLLoginIcon}
-                  onClick={signInWithSAML}
-                  title="SAML SSO login"
-                  alt="SAML SSO login"
-                />
+                <button className="Login__quick-login">
+                  <FontAwesomeIcon
+                    className="Login__quick-login-icon"
+                    icon={faGithub}
+                    size="4x"
+                    onClick={signInWithSAML}
+                    title="SAML SSO login"
+                  />
+                </button>
               )}
             </button>
           </div>
         )}
-        {formToDisplay === "initial" && (
+        {/* @debt Changed for Okta SSO */}
+        {["initial", "register"].includes(formToDisplay) && (
           <InitialForm
             displayLoginForm={displayLoginForm}
             displayRegisterForm={displayRegisterForm}
           />
         )}
-        {formToDisplay === "register" && (
-          <RegisterForm
-            displayLoginForm={displayLoginForm}
-            displayPasswordResetForm={displayPasswordResetForm}
-            afterUserIsLoggedIn={redirectAfterLogin}
-            closeAuthenticationModal={() => null}
-          />
-        )}
+        {/* @debt Removed for Okta SSO */}
+        {/*{formToDisplay === "register" && (*/}
+        {/*  <RegisterForm*/}
+        {/*    displayLoginForm={displayLoginForm}*/}
+        {/*    displayPasswordResetForm={displayPasswordResetForm}*/}
+        {/*    afterUserIsLoggedIn={redirectAfterLogin}*/}
+        {/*    closeAuthenticationModal={() => null}*/}
+        {/*  />*/}
+        {/*)}*/}
         {formToDisplay === "login" && (
           <LoginForm
             displayRegisterForm={displayRegisterForm}
@@ -147,6 +151,10 @@ export const Login: React.FC<LoginProps> = ({
           />
         )}
       </div>
+      <p className="Login__issues-text">
+        Trouble registering? Find help at: <strong>#rko-fy22-help</strong> or
+        email events@github.com
+      </p>
     </div>
   );
 };

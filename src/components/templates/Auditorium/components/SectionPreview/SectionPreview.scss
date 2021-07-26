@@ -68,7 +68,8 @@ $avatar-size: 20px;
     margin-left: $spacing--xs;
   }
 
-  &__avatar {
+  // @debt Increase specificity
+  div.SectionPreview__avatar {
     min-height: $avatar-size;
     min-width: $avatar-size;
     height: $avatar-size;
