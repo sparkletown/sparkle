@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
@@ -12,12 +11,11 @@ export interface ExternalRoomProps {
 }
 
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
-  const history = useHistory();
-const redirectUrl = venue.zoomUrl;
+  const redirectUrl = venue.zoomUrl;
 
   useEffect(() => {
     if (!redirectUrl) return;
-    
+
     openUrl(redirectUrl);
   }, [redirectUrl]);
 
@@ -35,10 +33,9 @@ const redirectUrl = venue.zoomUrl;
     );
   } else {
     return (
-      <p>
-        Venue {venue.name} should redirect to a URL, but none was set.
-        <br />
-      </p>
+      <div className="ExternalRoom__message">
+        <p>Venue {venue.name} should redirect to a URL, but none was set.</p>
+      </div>
     );
   }
 };
