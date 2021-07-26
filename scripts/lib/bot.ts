@@ -6,7 +6,7 @@ import admin from "firebase-admin";
 import { User } from "types/User";
 
 import { FieldValue } from "./helpers";
-import { LogFunction } from "./log";
+import { LogFunction, withErrorReporter } from "./log";
 import { SimStats } from "./simulator";
 
 // imported type definitions to decrease declaration verbosity
@@ -119,15 +119,15 @@ export const findUser: (options: FindUserOptions) => FindUserResult = async ({
 const checkValidUser: (u?: User) => boolean = (u) =>
   !!(u?.partyName && u?.pictureUrl);
 
-export type EnsureUsersOptions = {
+export type EnsureBotUsersOptions = {
   stats: SimStats;
   scriptTag?: string;
   count?: number;
   log: LogFunction;
 };
 
-export const ensureUsers: (
-  options: EnsureUsersOptions
+export const ensureBotUsers: (
+  options: EnsureBotUsersOptions
 ) => Promise<DocumentReference<DocumentData>[]> = async ({
   log,
   scriptTag,
@@ -143,7 +143,7 @@ export const ensureUsers: (
   const usersRef = admin.firestore().collection("users");
 
   log(
-    chalk`Ensuring there are {yellow ${count}} users with scriptTag: {green ${scriptTag}}`
+    chalk`Ensuring there are {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
   );
 
   const candidates = Array.from({ length: count }, (_, i) => ({
@@ -162,7 +162,7 @@ export const ensureUsers: (
     const userSnap = await userRef.get();
     if (!userSnap.exists) {
       log(
-        chalk`{yellow.inverse WARN} User {green ${id}} doesn't exit, creating...`
+        chalk`{yellow.inverse WARN} User {green ${id}} doesn't exist, creating...`
       );
 
       await userRef.set(candidate);
@@ -190,9 +190,48 @@ export const ensureUsers: (
   }
 
   log(
-    chalk`{greenBright.inverse DONE} Ensured {yellow ${count}} users with scriptTag: {green ${scriptTag}} exist.`
+    chalk`{greenBright.inverse DONE} Ensured {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}} exist.`
   );
   return resultUserRefs;
+};
+
+export type RemoveBotUsersOptions = {
+  userRefs: DocumentReference<DocumentData>[];
+  stats: SimStats;
+  log: LogFunction;
+};
+
+export const removeBotUsers: (
+  options: RemoveBotUsersOptions
+) => Promise<void> = async ({ userRefs, log, stats }) => {
+  const remove = withErrorReporter(
+    { critical: false, verbose: true },
+    (ref: DocumentReference) => {
+      const promise = ref.delete();
+      promise.then(() => (stats.usersRemoved = (stats.usersRemoved ?? 0) + 1));
+      return promise;
+    }
+  );
+
+  for (const userRef of userRefs) {
+    const snap = await userRef.get();
+    if (!snap.exists) {
+      log(
+        chalk`{yellow.inverse WARN} No user with id {green ${userRef.id}} exists that can be removed.`
+      );
+      continue;
+    }
+
+    const user = await snap.data();
+    if (user?.bot !== true) {
+      log(
+        chalk`{yellow.inverse WARN} User with id {green ${userRef.id}} isn't marked as bot. Not removing.`
+      );
+      continue;
+    }
+
+    await remove(userRef);
+  }
 };
 
 export type FindVenueOptions = {

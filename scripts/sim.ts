@@ -6,33 +6,19 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import * as faker from "faker";
 import * as admin from "firebase-admin";
-import {
-  run,
-  SimStats,
-  readConfig,
-  SimConfig,
-  sleep,
-  init,
-} from "./lib/simulator";
+import { run, SimStats, SimConfig, sleep } from "./lib/simulator";
 
 import {
-  ensureUsers as actualEnsureUsers,
+  ensureBotUsers as actualEnsureUsers,
   findVenue,
   takeSeat as actualTakeSeat,
 } from "./lib/bot";
-import {
-  displayHelp,
-  log as actualLog,
-  LogFunction,
-  withErrorReporter,
-} from "./lib/log";
+import { LogFunction, withErrorReporter } from "./lib/log";
 
 // imported type definitions to decrease declaration verbosity
 import DocumentData = admin.firestore.DocumentData;
 import DocumentReference = admin.firestore.DocumentReference;
 
-export const SIM_DIR = "./simulator/";
-export const SIM_EXT = ".config.json";
 export const DEFAULT_SEAT_AFFINITY = 0.5;
 export const DEFAULT_CHUNK_SIZE = 100;
 export const DEFAULT_TICK_MS = 100;
@@ -41,7 +27,6 @@ export const SEATING_DEFAULTS = { minRow: 0, maxRow: 9, minCol: 0, maxCol: 9 };
 export type SimulateMoveOptions = {
   userRefs: DocumentReference<DocumentData>[];
   venueRef: DocumentReference<DocumentData>;
-  chunkSize?: number;
   log: LogFunction;
   conf: SimConfig;
   stats: SimStats;
@@ -110,59 +95,72 @@ const simulateMove: (options: SimulateMoveOptions) => Promise<void> = async ({
 export type SimulateChatOptions = {
   userRefs: DocumentReference<DocumentData>[];
   venueRef: DocumentReference<DocumentData>;
+  log: LogFunction;
+  conf: SimConfig;
+  stats: SimStats;
 };
 
-const simulateChat: (
-  options: SimulateChatOptions
-) => Promise<void> = async () => {
-  console.log("CHAT CHAT CHAT");
+// const simulateChat: (
+//   options: SimulateChatOptions
+// ) => Promise<void> = async ({ conf }) => {
+//   const chunkSize = conf.chunkSize ?? DEFAULT_CHUNK_SIZE;
+//   assert.ok(
+//     Number.isSafeInteger(chunkSize) && chunkSize > 0,
+//     chalk`simulateMove(): {magenta chunkCount} must be integer {yellow > 0}`
+//   );
+//
+//   // const writeInChat = withErrorReporter(
+//   //   { verbose: true, critical: false },
+//   //   () => {
+//   //   }
+//   // );
+//
+//   const loop = async () => {
+//     const tick = conf.seat?.tick ?? conf.tick ?? DEFAULT_TICK_MS;
+//     // implicit sleep between the loops
+//     setTimeout(loop, tick);
+//   };
+//
+//   // start looping the chat updates
+//   await loop();
+// };
+
+export type MainOptions = {
+  stats: SimStats;
+  conf: SimConfig;
+  log: LogFunction;
 };
 
-const main: () => Promise<SimStats> = async () => {
-  const startTime = new Date();
-  const configurationName = process.argv[2];
+export type MainResult = {
+  userRefs: DocumentReference<DocumentData>[];
+  venueRef: DocumentReference<DocumentData>;
+};
 
-  if (!configurationName) {
-    displayHelp({ dir: SIM_DIR, ext: SIM_EXT });
-    process.exit(0);
-    // Rather return empty object than add undefined to the return type
-    return {};
+// noinspection JSIgnoredPromiseFromCall
+run(
+  async ({ conf, stats, log }: MainOptions): Promise<MainResult> => {
+    const { venue, verbose } = conf;
+
+    assert.ok(venue?.id, chalk`main(): {magenta venue.id} is required`);
+    const venueRef = await findVenue({ log, venueId: venue?.id });
+    assert.ok(
+      venueRef,
+      chalk`main(): venue was not found for {magenta venue.id}: {green ${venue?.id}}`
+    );
+
+    const ensureUsers = withErrorReporter({ verbose }, actualEnsureUsers);
+    const userRefs = await ensureUsers({ log, stats, ...conf.user });
+
+    stats.usersCount = userRefs.length;
+
+    // Wait a bit before the spam of updates, give chance for stopSignal() to print first
+    await sleep(5000);
+
+    // await Promise.all([
+    await simulateMove({ userRefs, venueRef, ...venue, stats, conf, log });
+    // simulateChat({ userRefs, venueRef, ...venue }),
+    // ]);
+
+    return { venueRef, userRefs };
   }
-
-  const { conf, configurationFilename } = readConfig({
-    name: configurationName,
-    dir: SIM_DIR,
-    ext: SIM_EXT,
-  });
-  const { verbose = false, venue } = conf;
-  const stats: SimStats = { configurationFilename };
-
-  const log = verbose ? actualLog : () => undefined;
-
-  init({ log, conf, stats });
-
-  assert.ok(venue?.id, chalk`main(): {magenta venue.id} is required`);
-  const venueRef = await findVenue({ log, venueId: venue?.id });
-  assert.ok(
-    venueRef,
-    chalk`main(): venue was not found for {magenta venue.id}: {green ${venue?.id}}`
-  );
-
-  const ensureUsers = withErrorReporter({ verbose }, actualEnsureUsers);
-  const userRefs = await ensureUsers({ log, stats, ...conf.user });
-
-  stats.usersCount = userRefs.length;
-
-  // Nice to print this before the spam of updates starts
-  log(chalk`Press {redBright CTRL-C} to exit...`);
-
-  await Promise.all([
-    simulateMove({ userRefs, venueRef, ...venue, stats, conf, log }),
-    simulateChat({ userRefs, venueRef, ...venue }),
-  ]);
-
-  stats.startTime = startTime.toISOString();
-  return stats;
-};
-
-run(main).then(() => "All done.");
+);

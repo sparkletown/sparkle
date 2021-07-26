@@ -6,7 +6,12 @@ import chalk from "chalk";
 import { formatDistanceStrict } from "date-fns";
 
 import { initFirebaseAdminApp } from "./helpers";
-import { log, SCRIPT, LogFunction } from "./log";
+import { log, SCRIPT, LogFunction, displayHelp, log as actualLog } from "./log";
+import { removeBotUsers } from "./bot";
+import { MainOptions, MainResult } from "../sim";
+
+export const SIM_DIR = "./simulator/";
+export const SIM_EXT = ".config.json";
 
 export type SimStats = Partial<{
   startTime: string;
@@ -17,6 +22,7 @@ export type SimStats = Partial<{
   usersCount: number;
   usersCreated: number;
   usersUpdated: number;
+  usersRemoved: number;
   relocations: number;
 }>;
 
@@ -27,6 +33,7 @@ export type SimConfig = Partial<{
   user: Partial<{
     scriptTag: string;
     count: number;
+    cleanup: boolean;
   }>;
   venue: Partial<{
     id: string;
@@ -55,6 +62,8 @@ export const stopSignal = () => {
 
   // Waits until user tries to exit with CTRL-C
   return new Promise<void>((resolve) => {
+    log(chalk`Press {redBright CTRL-C} to exit...`);
+
     process.on("SIGINT", () => {
       log(chalk`{redBright CTRL-C} detected, stopping simulation...`);
       clearInterval(intervalId);
@@ -63,35 +72,97 @@ export const stopSignal = () => {
   });
 };
 
-export const run = async (main: () => Promise<Record<string, unknown>>) => {
-  try {
-    const stats = await main();
+const displayStats: (stats: Record<string, unknown>) => void = (stats) => {
+  chalk.reset();
+  log(chalk`{white Some useful stats:}`);
 
+  for (const [key, val] of Object.entries(stats ?? {})) {
+    if (val === null || val === undefined) {
+      log(chalk`{magenta ${key}}: {redBright ${val}}`);
+    } else if (val === true || val === false) {
+      log(chalk`{magenta ${key}}: {blueBright ${val}}`);
+    } else if (typeof val === "string") {
+      log(chalk`{magenta ${key}}: {green ${val}}`);
+    } else if (typeof val === "number") {
+      log(chalk`{magenta ${key}}: {yellow ${val}}`);
+    } else {
+      log(chalk`{magenta ${key}}: {dim ${val}}`);
+    }
+  }
+};
+
+type InitOptions = {
+  log: LogFunction;
+  conf: SimConfig;
+  stats: SimStats;
+};
+
+export const initFirebase = ({
+  log,
+  conf: { credentials, projectId },
+  stats,
+}: InitOptions) => {
+  log(
+    chalk`initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
+  );
+
+  assert.ok(projectId, chalk`initFirebase(): {magenta projectId} is required`);
+
+  stats.credentialsFilename = credentials
+    ? resolve(process.cwd(), credentials)
+    : undefined;
+
+  initFirebaseAdminApp(projectId, {
+    credentialPath: stats.credentialsFilename,
+  });
+
+  log(
+    chalk`{green.inverse DONE} initialized Firebase for {green ${projectId}}.`
+  );
+};
+
+export const run: (
+  main: (options: MainOptions) => Promise<MainResult>
+) => Promise<void> = async (main) => {
+  try {
+    const startTime = new Date();
+    const confName = process.argv[2];
+
+    if (!confName) {
+      displayHelp({ dir: SIM_DIR, ext: SIM_EXT });
+      process.exit(0);
+      return;
+    }
+
+    // setup before running main
+    const { conf, configurationFilename } = readConfig({
+      name: confName,
+      dir: SIM_DIR,
+      ext: SIM_EXT,
+    });
+    const { verbose = false } = conf;
+    const stats: SimStats = { configurationFilename };
+    const log = verbose ? actualLog : () => undefined;
+
+    initFirebase({ log, conf, stats });
+
+    // run main, then wait for the stop signal
+    const { userRefs } = await main({ stats, conf, log });
     await stopSignal();
 
-    const finishTime = new Date();
-    stats.finishTime = finishTime.toISOString();
-    stats.runTime = formatDistanceStrict(
-      finishTime,
-      Date.parse("" + stats.startTime)
-    );
-
-    chalk.reset();
-    log(chalk`{white Some useful stats:}`);
-
-    for (const [key, val] of Object.entries(stats ?? {})) {
-      if (val === null || val === undefined) {
-        log(chalk`{magenta ${key}}: {redBright ${val}}`);
-      } else if (val === true || val === false) {
-        log(chalk`{magenta ${key}}: {blueBright ${val}}`);
-      } else if (typeof val === "string") {
-        log(chalk`{magenta ${key}}: {green ${val}}`);
-      } else if (typeof val === "number") {
-        log(chalk`{magenta ${key}}: {yellow ${val}}`);
-      } else {
-        log(chalk`{magenta ${key}}: {dim ${val}}`);
-      }
+    // do some cleanup before terminating
+    if (conf.user?.cleanup ?? true) {
+      log(chalk`Doing little user cleanup...`);
+      await removeBotUsers({ log, stats, userRefs });
+      log(chalk`{green.inverse DONE} Removed bot users.`);
     }
+
+    const finishTime = new Date();
+    stats.startTime = startTime.toISOString();
+    stats.finishTime = finishTime.toISOString();
+    stats.runTime = formatDistanceStrict(finishTime, startTime);
+
+    displayStats(stats);
 
     log(chalk`{green.inverse DONE} Running {green ${SCRIPT}}.`);
     process.exit(0);
@@ -135,34 +206,4 @@ export const sleep: (ms: number) => Promise<void> = (ms) => {
   return new Promise((resolve) => {
     setTimeout(() => resolve(), ms);
   });
-};
-
-type InitOptions = {
-  log: LogFunction;
-  conf: SimConfig;
-  stats: SimStats;
-};
-
-export const init = ({
-  log,
-  conf: { credentials, projectId },
-  stats,
-}: InitOptions) => {
-  log(
-    chalk`initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
-  );
-
-  assert.ok(projectId, chalk`init(): {magenta projectId} is required`);
-
-  stats.credentialsFilename = credentials
-    ? resolve(process.cwd(), credentials)
-    : undefined;
-
-  initFirebaseAdminApp(projectId, {
-    credentialPath: stats.credentialsFilename,
-  });
-
-  log(
-    chalk`{green.inverse DONE} initialized Firebase for {green ${projectId}}.`
-  );
 };
