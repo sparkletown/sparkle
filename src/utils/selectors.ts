@@ -6,7 +6,6 @@ import { RootState } from "index";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
-import { Purchase } from "types/Purchase";
 import { TextReaction, Reaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User, UserWithLocation, userWithLocationToUser } from "types/User";
@@ -89,58 +88,9 @@ export const worldUsersByIdWithoutLocationSelector: SparkleSelector<
   );
 };
 
-/**
- * Selector to retrieve venues from the Redux Firestore.
- *
- * @param state the Redux store
- *
- * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
- * @debt Refactor all places that rely on this, then remove it from the codebase
- */
-export const venuesSelector: SparkleSelector<Record<string, AnyVenue>> = (
-  state
-) => state.firestore.data.venues || {};
-
-/**
- * @deprecated This selector requires all of the venues data in firebase to be loaded into memory. Find a different way.
- * @debt Refactor all places that rely on this, then remove it from the codebase
- */
-export const orderedVenuesSelector: SparkleSelector<
-  WithId<AnyVenue>[] | undefined
-> = (state) => state.firestore.ordered.venues;
-
-/**
- * Makes a venueSelector selector for a given venueId, which when called
- * will retrieve the specified venue from the Redux Firestore.
- *
- * @param venueId the venueId to be retrieved
- * @return (state: RootState) => WithId<AnyVenue> | undefined
- *
- * @example
- *   const venueId = 'abc123'
- *   const venueSelector = useCallback(makeVenueSelector(venueId), [venueId])
- *   const venue = useSelector(venueSelector, shallowEqual)
- *
- * @deprecated This function relies on a selector that requires all of the venues data in firebase to be loaded into memory. Find a different way.
- * @debt Refactor all places that rely on this, then remove it from the codebase
- */
-export const makeVenueSelector = (venueId: string) => (
-  state: RootState
-): WithId<AnyVenue> | undefined => {
-  const venues = venuesSelector(state);
-
-  if (!venues.hasOwnProperty(venueId)) return undefined;
-
-  return { ...venues[venueId], id: venueId };
-};
-
 export const currentEventSelector: SparkleSelector<
   WithId<VenueEvent>[] | undefined
 > = makeOrderedSelector("currentEvent");
-
-export const userPurchaseHistorySelector: SparkleSelector<
-  WithId<Purchase>[] | undefined
-> = makeOrderedSelector("userPurchaseHistory");
 
 export const shouldRetainAttendanceSelector: SparkleSelector<boolean> = (
   state
@@ -164,10 +114,6 @@ export const isCurrentVenueRequestingSelector: SparkleSelector<boolean> = makeIs
 
 export const isCurrentEventRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
   "currentEvent"
-);
-
-export const isUserPurchaseHistoryRequestedSelector: SparkleSelector<boolean> = makeIsRequestedSelector(
-  "userPurchaseHistory"
 );
 
 export const venueChatMessagesSelector: SparkleSelector<
@@ -265,3 +211,11 @@ export const noopSelector: SparkleSelector<undefined> = () => undefined;
 
 export const emptyArray = [];
 export const emptyArraySelector = <T>(): T[] => emptyArray;
+
+export const ownedVenuesDataSelector: SparkleSelector<
+  Record<string, AnyVenue> | undefined
+> = (state) => state.firestore.data.ownedVenues;
+
+export const ownedVenuesSelector: SparkleSelector<
+  WithId<AnyVenue>[] | undefined
+> = (state) => state.firestore.ordered.ownedVenues;

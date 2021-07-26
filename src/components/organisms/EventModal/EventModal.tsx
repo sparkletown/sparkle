@@ -17,7 +17,6 @@ import {
 } from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
-
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
@@ -46,13 +45,13 @@ export const EventModal: React.FC<EventModalProps> = ({
     () =>
       eventVenue?.rooms?.find((room) => {
         const { room: eventRoom = "" } = event;
-
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
+        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
 
-        return roomUrlParam.endsWith(`${roomName}`);
+        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
     [eventVenue, event]
   );
@@ -94,6 +93,7 @@ export const EventModal: React.FC<EventModalProps> = ({
 
   return (
     <Modal show={show} onHide={onHide} className="EventModal">
+      <Modal.Header className="EventModal__close" closeButton />
       <div className="EventModal__content">
         <h4 className="EventModal__title">{event.name}</h4>
         <span className="EventModal__subtitle">
