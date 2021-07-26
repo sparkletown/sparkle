@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 
 export interface ExternalRoomProps {
-  zoomUrl: string;
+  venue: WithId<AnyVenue>;
 }
+
 export const ExternalRoom: React.FC<ExternalRoomProps> = ({ zoomUrl }) => {
   useEffect(() => {
     window.open(zoomUrl);
