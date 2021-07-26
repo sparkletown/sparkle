@@ -2,18 +2,15 @@ import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
 import { Room, RoomType } from "types/rooms";
-import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { WithId, WithVenueId } from "utils/id";
-import { logEventGoogleAnalytics } from "utils/googleAnalytics";
-import { isExternalUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
-import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
@@ -80,8 +77,6 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 }) => {
   const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
 
-  const { userId } = useUser();
-
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -102,21 +97,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = useCallback(() => {
-    _enterRoomWithSound();
-
-    // note: We want to fire event when we have just external link in PartyMap
-    if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
-      logEventGoogleAnalytics({
-        eventName: "PARTMAP_WITH_EXTERNAL_LINK",
-        eventAction: {
-          venueName,
-          userId,
-          roomUrl: room.url,
-        },
-      });
-    }
-  }, [_enterRoomWithSound, venueName, room, venue, userId]);
+  const enterRoomWithSound: () => void = useCallback(_enterRoomWithSound, [
+    _enterRoomWithSound,
+  ]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
