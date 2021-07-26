@@ -250,26 +250,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     ]
   );
 
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
   const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
+    () => ({
+      [iconPositionFieldName]: {
+        width: PLAYA_VENUE_SIZE,
+        height: PLAYA_VENUE_SIZE,
+        top: defaultValues?.placement?.y ?? 0,
+        left: defaultValues?.placement?.x ?? 0,
+      },
+    }),
+    [defaultValues]
   );
 
   const onBoxMove: ExtractProps<
@@ -685,14 +675,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <Toggler name="showZendesk" forwardedRef={register} />
-    </div>
-  );
-
   const renderSeatingNumberInput = () => (
     <>
       <div className="input-container">
@@ -1051,7 +1033,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderShowGridToggle()}
         {renderShowBadgesToggle()}
         {renderShowNametagsToggle()}
-        {renderShowZendeskToggle()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
@@ -1063,6 +1044,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          HAS_GRID_TEMPLATES.includes(templateID) &&
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}

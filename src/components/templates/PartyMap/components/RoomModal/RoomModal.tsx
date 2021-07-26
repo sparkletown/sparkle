@@ -1,21 +1,24 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
-
 import { Room, RoomType } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 
 import { retainAttendance } from "store/actions/Attendance";
 
 import { WithId, WithVenueId } from "utils/id";
+import { logEventGoogleAnalytics } from "utils/googleAnalytics";
+import { isExternalUrl } from "utils/url";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
 import { useRoom } from "hooks/useRoom";
+import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
+
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { UserList } from "components/molecules/UserList";
 
@@ -58,12 +61,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   return (
     <Modal show={show} onHide={onHide}>
       <div className="room-modal">
-        <RoomModalContent
-          room={room}
-          venueName={venue.name}
-          venueEvents={venueEvents}
-          showSchedule={venue.showSchedule}
-        />
+        <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
     </Modal>
   );
@@ -71,17 +69,19 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venueName: string;
+  venue: AnyVenue;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
-  showSchedule?: boolean;
 }
 
 export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   room,
-  venueName,
+  venue,
   venueEvents,
-  showSchedule = DEFAULT_SHOW_SCHEDULE,
 }) => {
+  const { name: venueName, showSchedule = DEFAULT_SHOW_SCHEDULE } = venue;
+
+  const { userId } = useUser();
+
   const dispatch = useDispatch();
 
   // @debt do we need to keep this retainAttendance stuff (for counting feature), or is it legacy tech debt?
@@ -102,7 +102,21 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   });
 
   // note: this is here just to change the type on it in an easy way
-  const enterRoomWithSound: () => void = _enterRoomWithSound;
+  const enterRoomWithSound: () => void = useCallback(() => {
+    _enterRoomWithSound();
+
+    // note: We want to fire event when we have just external link in PartyMap
+    if (venue.template === VenueTemplate.partymap && isExternalUrl(room.url)) {
+      logEventGoogleAnalytics({
+        eventName: "PARTMAP_WITH_EXTERNAL_LINK",
+        eventAction: {
+          venueName,
+          userId,
+          roomUrl: room.url,
+        },
+      });
+    }
+  }, [_enterRoomWithSound, venueName, room, venue, userId]);
 
   const renderedRoomEvents = useMemo(() => {
     if (!showSchedule) return [];
@@ -159,6 +173,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         users={recentRoomUsers}
         limit={11}
         activity="in this room"
+        hasClickableAvatars
       />
 
       {room.about && (

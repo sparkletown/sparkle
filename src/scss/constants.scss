@@ -28,6 +28,7 @@ $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
+$concrete--dark: #9f9fa0;
 $black: #000000;
 $white: #fff;
 $dark: #1a1d24;
@@ -39,7 +40,6 @@ $yellow: #ffe600;
 $bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
-$stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
 $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
@@ -238,4 +238,13 @@ $z-layers: (
   @include line-clamp($line-count);
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+@mixin square-size($size: 1, $min: null, $max: null) {
+  height: $size;
+  width: $size;
+  min-height: $min;
+  min-width: $min;
+  max-height: $max;
+  max-width: $max;
 }

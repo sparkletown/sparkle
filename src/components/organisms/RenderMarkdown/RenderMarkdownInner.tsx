@@ -22,6 +22,7 @@ const REHYPE_PLUGINS = [sanitize];
 
 export interface RenderMarkdownProps {
   text?: string;
+  components?: object;
   allowBasicFormatting?: boolean;
   allowPreAndCode?: boolean;
   allowHeadings?: boolean;
@@ -32,6 +33,7 @@ export interface RenderMarkdownProps {
 
 const _RenderMarkdownInner: React.FC<RenderMarkdownProps> = ({
   text,
+  components,
   allowBasicFormatting = true,
   allowPreAndCode = true,
   allowHeadings = true,
@@ -56,6 +58,7 @@ const _RenderMarkdownInner: React.FC<RenderMarkdownProps> = ({
       rehypePlugins={REHYPE_PLUGINS}
       linkTarget="_blank"
       allowedElements={allowedElements}
+      components={components}
     >
       {text}
     </ReactMarkdown>

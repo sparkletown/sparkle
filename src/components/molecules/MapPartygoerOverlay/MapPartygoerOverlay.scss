@@ -26,6 +26,6 @@ $avatarLeft: calc((#{$column} - 1) * #{$gridCellHeight});
     // @debt avatarpulse appears to be defined in src/components/templates/PartyMap/components/Map/Map.scss, yet only used here
     //   We should move it here.
     // @debt This animation line seems to do something that causes constant re-calculations and pins the GPU at high usage
-    //animation: avatarpulse 2s infinite;
+    // animation: avatarpulse 2s infinite;
   }
 }

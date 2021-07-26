@@ -103,7 +103,6 @@ export interface Venue_v2_AdvancedConfig {
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
-  showZendesk?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -130,7 +129,6 @@ export interface BaseVenue {
   owners: string[];
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
-  mapIconImageUrl?: string;
   placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
@@ -179,7 +177,6 @@ export interface BaseVenue {
   showRadio?: boolean;
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
-  showZendesk?: boolean;
   showUserStatus?: boolean;
 }
 
@@ -322,8 +319,6 @@ export interface VenueEvent {
   description: string;
   descriptions?: string[];
   duration_minutes: number;
-  price: number;
-  collective_price: number;
   host: string;
   room?: string;
   id?: string;

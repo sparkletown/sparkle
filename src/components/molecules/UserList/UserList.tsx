@@ -23,7 +23,6 @@ interface UserListProps {
   activity?: string;
   containerClassName?: string;
   cellClassName?: string;
-  isAudioEffectDisabled?: boolean;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
   showMoreUsersToggler?: boolean;
@@ -36,7 +35,6 @@ export const UserList: React.FC<UserListProps> = ({
   activity = "partying",
   containerClassName,
   cellClassName,
-  isAudioEffectDisabled,
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
   showMoreUsersToggler = true,
