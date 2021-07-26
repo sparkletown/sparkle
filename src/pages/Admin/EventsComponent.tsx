@@ -99,7 +99,7 @@ const EventsComponent: React.FC<EventsComponentProps> = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
-                      className=""
+                      isEditable
                     />
                   </InformationCard>
                 );
