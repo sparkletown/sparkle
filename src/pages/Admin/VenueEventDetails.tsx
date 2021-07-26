@@ -14,7 +14,8 @@ export interface VenueEventDetailsProps {
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
-  className: string;
+  className?: string;
+  isEditable?: boolean;
 }
 
 const VenueEventDetails = ({
@@ -22,12 +23,12 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-  className,
+  className = "",
+  isEditable = false,
 }: VenueEventDetailsProps) => {
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
   const endTime = formatTimeLocalised(eventEndTime(venueEvent));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
-  const isEditable = !className;
 
   return (
     <div className={className}>
