@@ -1,0 +1,8 @@
+@import "scss/constants";
+
+.ExternalRoom__message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: $spacing--xxl;
+}

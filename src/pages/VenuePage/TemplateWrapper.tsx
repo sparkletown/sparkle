@@ -105,23 +105,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       }
       break;
     case VenueTemplate.externalroom:
-      if (venue.zoomUrl) {
-        template = <ExternalRoom zoomUrl={venue.zoomUrl} />;
-      } else {
-        template = (
-          <p>
-            Venue {venue.name} should redirect to a URL, but none was set.
-            <br />
-            <button
-              role="link"
-              className="btn btn-primary"
-              onClick={() => history.goBack()}
-            >
-              Go Back
-            </button>
-          </p>
-        );
-      }
+      template = <ExternalRoom venue={venue} />;
       break;
     // Note: This is the template that is used for Auditorium (v1)
     case VenueTemplate.audience:
