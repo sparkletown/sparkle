@@ -21,7 +21,7 @@ export type ReactionType = EmojiReactionType | TextReactionType;
 interface BaseReaction {
   created_at: number;
   created_by: string;
-  reaction: unknown;
+  reaction: ReactionType;
 }
 
 export interface EmojiReaction extends BaseReaction {

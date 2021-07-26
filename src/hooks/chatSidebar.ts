@@ -13,7 +13,7 @@ import {
 
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
-import { useNumberOfUnreadChats } from "./privateChats";
+import { useNumberOfUnreadChats } from "./chats/privateChats";
 import { AnyVenue } from "types/venues";
 
 export const useChatSidebarControls = () => {

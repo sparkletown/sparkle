@@ -27,41 +27,10 @@ import {
   SendMessage,
 } from "types/chat";
 
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
-import { useUser } from "./useUser";
-import { useRecentWorldUsers, useWorldUsersById } from "./users";
-
-export const useConnectPrivateChatMessages = () => {
-  const { user } = useUser();
-
-  useFirestoreConnect(() => {
-    if (!user?.uid) return [];
-
-    return [
-      {
-        collection: "privatechats",
-        doc: user.uid,
-        subcollections: [{ collection: "chats" }],
-        storeAs: "privateChatMessages",
-      },
-    ];
-  });
-};
-
-export const usePrivateChatMessages = () => {
-  useConnectPrivateChatMessages();
-
-  const privateChatMessages = useSelector(privateChatMessagesSelector);
-
-  return useMemo(
-    () => ({
-      privateChatMessages: privateChatMessages ?? [],
-      isUserPrivateChatsLoaded: isLoaded(privateChatMessages),
-    }),
-    [privateChatMessages]
-  );
-};
+import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
+import { useSelector } from "../useSelector";
+import { useUser } from "../useUser";
+import { useRecentWorldUsers, useWorldUsersById } from "../users";
 
 export const usePrivateChatPreviews = () => {
   const { user } = useUser();
@@ -273,4 +242,35 @@ export const useRecipientChat = (recipientId: string) => {
     messagesToDisplay,
     recipient,
   };
+};
+
+const useConnectPrivateChatMessages = () => {
+  const { user } = useUser();
+
+  useFirestoreConnect(() => {
+    if (!user?.uid) return [];
+
+    return [
+      {
+        collection: "privatechats",
+        doc: user.uid,
+        subcollections: [{ collection: "chats" }],
+        storeAs: "privateChatMessages",
+      },
+    ];
+  });
+};
+
+const usePrivateChatMessages = () => {
+  useConnectPrivateChatMessages();
+
+  const privateChatMessages = useSelector(privateChatMessagesSelector);
+
+  return useMemo(
+    () => ({
+      privateChatMessages: privateChatMessages ?? [],
+      isUserPrivateChatsLoaded: isLoaded(privateChatMessages),
+    }),
+    [privateChatMessages]
+  );
 };

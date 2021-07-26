@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 import {
   usePrivateChatPreviews,
   useOnlineUsersToDisplay,
-} from "hooks/privateChats";
+} from "hooks/chats/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
