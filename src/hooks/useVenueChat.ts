@@ -14,13 +14,11 @@ import {
 
 import {
   buildMessage,
-  chatSort,
   partitionMessagesFromReplies,
   getMessageReplies,
   getBaseMessageToDisplay,
 } from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
-import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 import { WithId } from "utils/id";
 
@@ -32,13 +30,21 @@ import { useRoles } from "./useRoles";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 
-export const useConnectVenueChatMessages = (venueId?: string) => {
+const useConnectVenueChatMessages = (venueId?: string) => {
+  const startAt = (() => {
+    const now = new Date();
+    now.setDate(now.getDate() - VENUE_CHAT_AGE_DAYS);
+    return now;
+  })();
+
   useFirestoreConnect(
     venueId
       ? {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
+          where: ["ts_utc", ">", startAt],
+          orderBy: ["ts_utc", "desc"],
           storeAs: "venueChatMessages",
         }
       : undefined
@@ -57,18 +63,9 @@ export const useVenueChat = (venueId?: string) => {
 
   const isAdmin = Boolean(userRoles?.includes("admin"));
 
-  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-
   const filteredMessages = useMemo(
-    () =>
-      chatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            message.ts_utc.seconds > venueChatAgeThresholdSec
-        )
-        .sort(chatSort),
-    [chatMessages, venueChatAgeThresholdSec]
+    () => chatMessages.filter((message) => message.deleted !== true),
+    [chatMessages]
   );
 
   const sendMessage: SendMessage = useCallback(
