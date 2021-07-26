@@ -3,8 +3,8 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import {
   DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_COLUMNS,
-  MINIMUM_COLUMNS,
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
 import { User, UserExperienceData } from "types/User";
@@ -57,10 +57,11 @@ export const Map: React.FC<MapProps> = ({
   const showGrid = venue.showGrid;
 
   const totalColumns = Math.max(
-    MINIMUM_COLUMNS,
-    Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
+    MINIMUM_PARTYMAP_COLUMNS_COUNT,
+    Math.min(MAXIMUM_PARTYMAP_COLUMNS_COUNT, venue.columns ?? DEFAULT_COLUMNS)
   );
   const [totalRows, setTotalRows] = useState<number>(0);
+  const hasRows = totalRows > 0;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
   const columnsArray = useMemo(
@@ -240,12 +241,13 @@ export const Map: React.FC<MapProps> = ({
           src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
           alt=""
         />
-
-        <div className="party-map-grid-container" style={gridContainerStyles}>
-          {mapGrid}
-          {partygoersOverlay}
-          {roomOverlay}
-        </div>
+        {hasRows && (
+          <div className="party-map-grid-container" style={gridContainerStyles}>
+            {mapGrid}
+            {partygoersOverlay}
+            {roomOverlay}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -83,10 +83,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   );
 
   const [play] = useCustomSound(room.enterSound, { interrupt: true });
-  const selectRoomWithSound = useCallback(() => {
-    play();
-    selectRoom();
-  }, [play, selectRoom]);
+  const selectRoomWithSound = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      play();
+      selectRoom();
+      e.currentTarget.blur();
+    },
+    [play, selectRoom]
+  );
 
   return (
     <button
