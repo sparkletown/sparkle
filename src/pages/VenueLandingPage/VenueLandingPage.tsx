@@ -129,6 +129,9 @@ export const VenueLandingPage: React.FC = () => {
           )}
 
           {!isPasswordRequired && (
+            // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
+            // (!futureOrOngoingVenueEvents ||
+            //   futureOrOngoingVenueEvents.length === 0) &&
             <button
               className="btn btn-primary btn-block btn-centered"
               onClick={onJoinClick}
