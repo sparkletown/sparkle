@@ -33,6 +33,7 @@ export const useVenueChat = (venueId?: string) => {
     venueId
   );
   const chatMessages = useChatMessages(venueId);
+
   const messages = useTransformMessagesForDisplay(chatMessages);
 
   return {
@@ -42,6 +43,8 @@ export const useVenueChat = (venueId?: string) => {
     sendThreadReply,
   };
 };
+
+const noMessages: WithId<VenueChatMessage>[] = [];
 
 function useChatMessages(venueId?: string) {
   const startAt = (() => {
@@ -62,8 +65,6 @@ function useChatMessages(venueId?: string) {
         }
       : undefined
   );
-
-  const noMessages: WithId<VenueChatMessage>[] = [];
 
   const messages =
     useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;

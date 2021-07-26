@@ -57,13 +57,15 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         <UserAvatar user={recipient} showStatus />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <Chatbox
-        messages={messagesToDisplay}
-        sendMessage={sendMessageToSelectedRecipient}
-        deleteMessage={deleteMessage}
-        sendThreadReply={sendThreadReply}
-        venue={venue}
-      />
+      {messagesToDisplay.length > 0 && (
+        <Chatbox
+          messages={messagesToDisplay}
+          sendMessage={sendMessageToSelectedRecipient}
+          deleteMessage={deleteMessage}
+          sendThreadReply={sendThreadReply}
+          venue={venue}
+        />
+      )}
     </div>
   );
 };

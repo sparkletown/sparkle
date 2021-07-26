@@ -25,15 +25,17 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
 
   return (
     <div className="venue-chat">
-      <Chatbox
-        // poll is available for Venue Chat only (displayPoll = true)
-        displayPoll
-        messages={messages}
-        sendMessage={sendMessage}
-        sendThreadReply={sendThreadReply}
-        deleteMessage={deleteMessage}
-        venue={venue}
-      />
+      {messages.length > 0 && (
+        <Chatbox
+          // poll is available for Venue Chat only (displayPoll = true)
+          displayPoll
+          messages={messages}
+          sendMessage={sendMessage}
+          sendThreadReply={sendThreadReply}
+          deleteMessage={deleteMessage}
+          venue={venue}
+        />
+      )}
     </div>
   );
 };
