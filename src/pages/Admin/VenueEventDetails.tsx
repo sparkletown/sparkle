@@ -49,6 +49,34 @@ const VenueEventDetails = ({
           <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
       </div>
+      <div className="button-container">
+        {!className && (
+          <div>
+            <div>
+              <button
+                role="link"
+                className="btn btn-primary"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowCreateEventModal(true);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                role="link"
+                className="btn btn-primary"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowDeleteEventModal(true);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
