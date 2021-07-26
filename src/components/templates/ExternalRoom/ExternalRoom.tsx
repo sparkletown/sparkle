@@ -26,7 +26,7 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
       <div className="ExternalRoom">
         <div className="ExternalRoom__MessageBox">
           <Logo height={"110px"} width={"130px"} />
-          <h4 className="ExternalRoom__Header">Thank your for visting</h4>
+          <h4 className="ExternalRoom__Header">Thank you for visiting</h4>
           <a rel="noreferrer" href={venue.zoomUrl} target="_blank">
             {venue.zoomUrl}
           </a>
