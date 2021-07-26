@@ -1,6 +1,12 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
+import {
+  COVERT_ROOM_TYPES,
+  DEFAULT_ROOM_ATTENDANCE_LIMIT,
+  IFRAME_ALLOW,
+} from "settings";
+
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
@@ -10,9 +16,7 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
-import RoomAttendance from "../RoomAttendance";
-
-import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+import { UserList } from "components/molecules/UserList";
 
 import "./MapRoom.scss";
 
@@ -115,7 +119,16 @@ export const MapRoom: React.FC<MapRoomProps> = ({
       {shouldShowLabel && (
         <div className="maproom__label">
           <span className={titleClasses}>{room.title}</span>
-          <RoomAttendance venue={venue} room={room} />
+          <UserList
+            users={recentRoomUsers}
+            limit={DEFAULT_ROOM_ATTENDANCE_LIMIT}
+            isExcessiveUserCount
+            isBackgroundAvatar
+            showTitle={false}
+            showMoreUsersToggler={false}
+            cellClassName={"maproom__avatar"}
+            excessiveClassName={"maproom__avatar-excessive"}
+          />
         </div>
       )}
     </button>

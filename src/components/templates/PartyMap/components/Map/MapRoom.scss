@@ -2,6 +2,8 @@
 
 $label-hidden: none;
 $label-visible: flex;
+$avatar-width: 20px;
+$avatar-height: 20px;
 
 .maproom {
   position: absolute;
@@ -39,6 +41,26 @@ $label-visible: flex;
     .maproom__image {
       filter: drop-shadow(0px 0px 9px rgba(0, 0, 0, 0.4)) contrast(110%)
         saturate(110%);
+    }
+  }
+
+  &__avatar,
+  &__avatar-excessive {
+    width: $avatar-width;
+    height: $avatar-height;
+    margin: 0;
+    border-radius: 100%;
+  }
+
+  &__avatar {
+    background-size: cover;
+    background-position: center;
+
+    &-excessive {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.4);
     }
   }
 

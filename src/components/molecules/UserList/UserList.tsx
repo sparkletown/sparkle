@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,6 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
-import { useMemo } from "react";
 
 const noop = () => {};
 
@@ -23,10 +22,13 @@ interface UserListProps {
   activity?: string;
   containerClassName?: string;
   cellClassName?: string;
+  excessiveClassName?: string;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
   showMoreUsersToggler?: boolean;
   showTitle?: boolean;
+  isExcessiveUserCount?: boolean;
+  isBackgroundAvatar?: boolean;
 }
 
 export const UserList: React.FC<UserListProps> = ({
@@ -35,10 +37,13 @@ export const UserList: React.FC<UserListProps> = ({
   activity = "partying",
   containerClassName,
   cellClassName,
+  excessiveClassName,
   hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
   showMoreUsersToggler = true,
   showTitle = true,
+  isExcessiveUserCount = false,
+  isBackgroundAvatar = false,
 }) => {
   const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
 
@@ -60,23 +65,40 @@ export const UserList: React.FC<UserListProps> = ({
 
   const containerClasses = classNames("UserList", containerClassName);
   const cellClasses = classNames("UserList__cell", cellClassName);
+  const excessiveClasses = classNames("UserList__cell", excessiveClassName);
 
   const { openUserProfileModal } = useProfileModalControls();
 
   const renderedUserAvatars = useMemo(
     () =>
       usersToDisplay.map((user) => (
-        <div key={user.id} className={cellClasses}>
-          <UserAvatar
-            user={user}
-            containerClassName="UserList__avatar"
-            onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user) : noop
-            }
-          />
-        </div>
+        <>
+          {!isBackgroundAvatar ? (
+            <div key={user.id} className={cellClasses}>
+              <UserAvatar
+                user={user}
+                containerClassName="UserList__avatar"
+                onClick={
+                  hasClickableAvatars ? () => openUserProfileModal(user) : noop
+                }
+              />
+            </div>
+          ) : (
+            <div
+              key={user.id}
+              className={cellClasses}
+              style={{ backgroundImage: `url(${user.pictureUrl})` }}
+            />
+          )}
+        </>
       )),
-    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
+    [
+      usersToDisplay,
+      isBackgroundAvatar,
+      cellClasses,
+      hasClickableAvatars,
+      openUserProfileModal,
+    ]
   );
 
   if (!showEvenWhenNoUsers && userCount < 1) return null;
@@ -96,12 +118,16 @@ export const UserList: React.FC<UserListProps> = ({
       <div className="UserList__avatars">
         {renderedUserAvatars}
         {hasExcessiveUserCount && (
-          <div className={cellClasses}>
-            <FontAwesomeIcon
-              icon={faEllipsisH}
-              size="xs"
-              className="UserList__dots-icon"
-            />
+          <div className={excessiveClasses}>
+            {isExcessiveUserCount ? (
+              <>{`+${userCount - (limit || 0)}`}</>
+            ) : (
+              <FontAwesomeIcon
+                icon={faEllipsisH}
+                size="xs"
+                className="UserList__dots-icon"
+              />
+            )}
           </div>
         )}
       </div>
