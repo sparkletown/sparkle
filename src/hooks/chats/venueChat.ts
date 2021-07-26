@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useRef } from "react";
 import { isEqual } from "lodash";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
@@ -29,16 +29,17 @@ import { useWorldUsersByIdWorkaround } from "../users";
 import { useRoles } from "../useRoles";
 import { getDaysAgoInSeconds } from "../../utils/time";
 
-export const useVenueChat = (venueId?: string) => {
+export const useVenueChat = (venueId?: string, limit?: number) => {
   const { sendMessage, deleteMessage, sendThreadReply } = useChatMessageActions(
     venueId
   );
-  const chatMessages = useChatMessages(venueId);
+  const { hasMoreMessages, ...messages } = useChatMessages(venueId, limit);
 
-  const messages = useTransformMessagesForDisplay(chatMessages);
+  const transformedMessages = useTransformMessagesForDisplay(messages);
 
   return {
-    messages,
+    messages: transformedMessages,
+    hasMoreMessages,
     sendMessage,
     deleteMessage,
     sendThreadReply,
@@ -47,7 +48,11 @@ export const useVenueChat = (venueId?: string) => {
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 
-function useChatMessages(venueId?: string) {
+function useChatMessages(venueId?: string, limit?: number) {
+  const maxLimitRef = useRef(0);
+
+  if (limit && limit > maxLimitRef.current) maxLimitRef.current = limit;
+
   useFirestoreConnect(
     venueId
       ? {
@@ -56,6 +61,7 @@ function useChatMessages(venueId?: string) {
           subcollections: [{ collection: "chats" }],
           orderBy: ["ts_utc", "desc"],
           storeAs: "venueChatMessages",
+          limit: maxLimitRef.current,
         }
       : undefined
   );
@@ -75,15 +81,24 @@ function useChatMessages(venueId?: string) {
     [messages, venueChatAgeThresholdSec]
   );
 
-  return useMemo(() => partitionMessagesFromReplies(filteredMessages), [
-    filteredMessages,
-  ]);
+  const hasMoreMessages = maxLimitRef.current <= filteredMessages.length;
+
+  return useMemo(
+    () => ({
+      ...partitionMessagesFromReplies(filteredMessages),
+      hasMoreMessages,
+    }),
+    [filteredMessages, hasMoreMessages]
+  );
 }
 
 function useTransformMessagesForDisplay({
   messages,
   allMessagesReplies,
-}: ReturnType<typeof useChatMessages>) {
+}: Pick<
+  ReturnType<typeof useChatMessages>,
+  "messages" | "allMessagesReplies"
+>) {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
   const { userId } = useUser();

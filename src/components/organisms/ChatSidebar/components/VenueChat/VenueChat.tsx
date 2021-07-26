@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { isEqual } from "lodash";
 
 import { AnyVenue } from "types/venues";
@@ -15,13 +15,21 @@ export interface VenueChatProps {
   venue: WithId<AnyVenue>;
 }
 
+const MESSAGES_BATCH_LOAD_SIZE = 50;
+
 export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
+  const [messagesLimit, setMessagesLimit] = useState(MESSAGES_BATCH_LOAD_SIZE);
+
   const {
     sendMessage,
     deleteMessage,
     messages,
+    hasMoreMessages,
     sendThreadReply,
-  } = useVenueChat(venue.id);
+  } = useVenueChat(venue.id, messagesLimit);
+
+  const loadMoreMessages = () =>
+    setMessagesLimit(messagesLimit + MESSAGES_BATCH_LOAD_SIZE);
 
   return (
     <div className="venue-chat">
@@ -30,6 +38,8 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
           // poll is available for Venue Chat only (displayPoll = true)
           displayPoll
           messages={messages}
+          loadMoreMessages={loadMoreMessages}
+          hasMoreMessages={hasMoreMessages}
           sendMessage={sendMessage}
           sendThreadReply={sendThreadReply}
           deleteMessage={deleteMessage}

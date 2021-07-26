@@ -34,6 +34,8 @@ import InfiniteScroll from "react-infinite-scroll-component";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
+  loadMoreMessages: () => void;
+  hasMoreMessages: boolean;
   venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
@@ -41,10 +43,10 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-const NEXT_RENDER_SIZE = 25;
-
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
+  loadMoreMessages,
+  hasMoreMessages,
   venue,
   sendMessage,
   sendThreadReply,
@@ -80,40 +82,28 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
-  const getNextOldestMessageIndex = (currentIndex: number) =>
-    Math.min(currentIndex + NEXT_RENDER_SIZE, messages.length);
-
-  const [messagesRenderCount, setMessagesRenderCount] = useState(
-    getNextOldestMessageIndex(0)
-  );
-
-  const renderMore = () => {
-    setMessagesRenderCount(getNextOldestMessageIndex(messagesRenderCount));
-  };
-
-  const renderedMessages = useMemo(
+  let renderedMessages: JSX.Element[];
+  renderedMessages = useMemo(
     () =>
-      messages
-        .slice(0, messagesRenderCount)
-        .map((message) =>
-          checkIfPollMessage(message) ? (
-            <ChatPoll
-              key={message.id}
-              pollMessage={message}
-              deletePollMessage={deleteMessage}
-              voteInPoll={voteInPoll}
-              venue={venue}
-            />
-          ) : (
-            <ChatMessage
-              key={message.id}
-              message={message}
-              deleteMessage={deleteMessage}
-              selectThisThread={() => setSelectedThread(message)}
-            />
-          )
-        ),
-    [messages, messagesRenderCount, deleteMessage, voteInPoll, venue]
+      messages.map((message) =>
+        checkIfPollMessage(message) ? (
+          <ChatPoll
+            key={message.id}
+            pollMessage={message}
+            deletePollMessage={deleteMessage}
+            voteInPoll={voteInPoll}
+            venue={venue}
+          />
+        ) : (
+          <ChatMessage
+            key={message.id}
+            message={message}
+            deleteMessage={deleteMessage}
+            selectThisThread={() => setSelectedThread(message)}
+          />
+        )
+      ),
+    [messages, deleteMessage, voteInPoll, venue]
   );
 
   const onReplyToThread = useCallback(
@@ -133,11 +123,11 @@ const _ChatBox: React.FC<ChatboxProps> = ({
         id={"Chatbox_scrollable_div"}
       >
         <InfiniteScroll
-          dataLength={messagesRenderCount}
+          dataLength={messages.length}
           className={"Chatbox__messages-infinite-scroll"}
-          next={renderMore}
+          next={loadMoreMessages}
           inverse={true}
-          hasMore={messagesRenderCount < messages.length}
+          hasMore={hasMoreMessages}
           scrollableTarget="Chatbox_scrollable_div"
           loader={<h4>Loading...</h4>}
         >
@@ -182,9 +172,12 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 };
 
 /**
- * Resolves a bug in 'react-infinite-scroll-component' when
+ * Workaround for a bug in 'react-infinite-scroll-component' when
  * 'next' function is not beight called when height of initially loaded items is less than container's height.
  * https://github.com/ankeetmaini/react-infinite-scroll-component/issues/217
+ *
+ * This one triggers additional 'scroll' event for the scrollable div which contains InfiniteScroll component.
+ * This triggers internal InfiniteScroll logic to recalculate it's height on initial render too.
  */
 export function useTriggerScrollFix(messages: WithId<MessageToDisplay>[]) {
   const ref = useRef<HTMLDivElement>(null);

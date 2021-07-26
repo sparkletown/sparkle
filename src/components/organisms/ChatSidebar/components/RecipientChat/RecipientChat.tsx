@@ -59,6 +59,8 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
       </div>
       {messagesToDisplay.length > 0 && (
         <Chatbox
+          loadMoreMessages={() => {}}
+          hasMoreMessages={true}
           messages={messagesToDisplay}
           sendMessage={sendMessageToSelectedRecipient}
           deleteMessage={deleteMessage}
