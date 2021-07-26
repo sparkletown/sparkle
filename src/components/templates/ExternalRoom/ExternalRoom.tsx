@@ -4,9 +4,8 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { openUrl } from "utils/url";
 
-import { Logo } from "components/atoms/Logo";
-
 import "./ExternalRoom.scss";
+import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 export interface ExternalRoomProps {
   venue: WithId<AnyVenue>;
@@ -24,12 +23,19 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
   if (venue.zoomUrl) {
     return (
       <div className="ExternalRoom">
-        <div className="ExternalRoom__MessageBox">
-          <Logo height={"110px"} width={"130px"} />
-          <h4 className="ExternalRoom__Header">Thank you for visiting</h4>
-          <a rel="noreferrer" href={venue.zoomUrl} target="_blank">
-            {venue.zoomUrl}
-          </a>
+        <div className="ExternalRoom__message">
+          <SparkleLogo />
+          <div className="ExternalRoom__content">
+            <h4 className="ExternalRoom__header">Thank you for visiting</h4>
+            <a
+              rel="noreferrer"
+              href={venue.zoomUrl}
+              target="_blank"
+              className="ExternalRoom__link"
+            >
+              {venue.zoomUrl}
+            </a>
+          </div>
         </div>
       </div>
     );
