@@ -122,7 +122,7 @@ export const VenuePage: React.FC = () => {
   const isMember = user && venue;
 
   // NOTE: User location updates
-
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
@@ -132,6 +132,7 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!userId || !venueName) return;
 
@@ -140,6 +141,7 @@ export const VenuePage: React.FC = () => {
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!userId) return;
 
@@ -152,6 +154,7 @@ export const VenuePage: React.FC = () => {
       window.removeEventListener("beforeunload", onBeforeUnloadHandler);
   }, [userId]);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (
       !venueId ||
@@ -167,8 +170,10 @@ export const VenuePage: React.FC = () => {
 
   // NOTE: User's timespent updates
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
       mixpanel.track("VenuePage loaded", {
