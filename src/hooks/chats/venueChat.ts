@@ -24,11 +24,11 @@ import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 import { WithId } from "utils/id";
 
-import { useSelector } from "./useSelector";
-import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useUser } from "./useUser";
-import { useWorldUsersByIdWorkaround } from "./users";
-import { useRoles } from "./useRoles";
+import { useSelector } from "../useSelector";
+import { useFirestoreConnect } from "../useFirestoreConnect";
+import { useUser } from "../useUser";
+import { useWorldUsersByIdWorkaround } from "../users";
+import { useRoles } from "../useRoles";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 

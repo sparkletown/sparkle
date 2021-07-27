@@ -27,10 +27,10 @@ import {
   SendMessage,
 } from "types/chat";
 
-import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useSelector } from "./useSelector";
-import { useUser } from "./useUser";
-import { useRecentWorldUsers, useWorldUsersById } from "./users";
+import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
+import { useSelector } from "../useSelector";
+import { useUser } from "../useUser";
+import { useRecentWorldUsers, useWorldUsersById } from "../users";
 
 export const useConnectPrivateChatMessages = () => {
   const { user } = useUser();

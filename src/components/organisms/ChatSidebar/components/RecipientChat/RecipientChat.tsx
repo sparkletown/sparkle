@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useRecipientChat } from "hooks/privateChats";
+import { useRecipientChat } from "hooks/chats/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import "./RecipientChat.scss";
