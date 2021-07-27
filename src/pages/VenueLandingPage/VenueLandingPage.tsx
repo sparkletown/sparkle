@@ -128,22 +128,23 @@ export const VenueLandingPage: React.FC = () => {
             </div>
           )}
 
-          {!isPasswordRequired &&
-            (!futureOrOngoingVenueEvents ||
-              futureOrOngoingVenueEvents.length === 0) && (
-              <button
-                className="btn btn-primary btn-block btn-centered"
-                onClick={onJoinClick}
-              >
-                Join the event
-                {(venue?.start_utc_seconds ?? 0) >
-                  new Date().getTime() / 1000 && (
-                  <span className="countdown">
-                    Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
-                  </span>
-                )}
-              </button>
-            )}
+          {!isPasswordRequired && (
+            // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
+            // (!futureOrOngoingVenueEvents ||
+            //   futureOrOngoingVenueEvents.length === 0) &&
+            <button
+              className="btn btn-primary btn-block btn-centered"
+              onClick={onJoinClick}
+            >
+              Join the event
+              {(venue?.start_utc_seconds ?? 0) >
+                new Date().getTime() / 1000 && (
+                <span className="countdown">
+                  Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                </span>
+              )}
+            </button>
+          )}
         </div>
 
         <div className="row">
@@ -213,7 +214,7 @@ export const VenueLandingPage: React.FC = () => {
               futureOrOngoingVenueEvents &&
               futureOrOngoingVenueEvents.length > 0 && (
                 <>
-                  <div className="upcoming-gigs-title">Upcoming gigs</div>
+                  <div className="upcoming-gigs-title">Upcoming events</div>
                   {futureOrOngoingVenueEvents.map((venueEvent) => {
                     const startingDate = new Date(
                       venueEvent.start_utc_seconds * 1000
