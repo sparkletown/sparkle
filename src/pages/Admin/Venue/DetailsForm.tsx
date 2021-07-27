@@ -350,7 +350,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       ? "Camp"
       : state.templatePage?.template.name;
   const templateID = state.templatePage?.template.template;
-  console.log("state.templatePage?.template", state.templatePage?.template);
 
   const defaultVenue = createJazzbar({});
 
