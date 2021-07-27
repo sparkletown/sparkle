@@ -19,6 +19,12 @@
     cursor: pointer;
   }
 
+  &__chatbox {
+    position: absolute;
+    top: 45px;
+    height: calc(100% - 45px);
+  }
+
   &__back-icon {
     cursor: pointer;
     margin-right: 8px;

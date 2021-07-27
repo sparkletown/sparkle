@@ -5,13 +5,18 @@
   display: flex;
   flex-flow: column;
 
-  &__messages {
+  &__messages-container {
     flex: 1;
     display: flex;
     flex-flow: column-reverse;
     justify-self: flex-end;
     padding: $spacing--xl $spacing--lg 0;
-    overflow-x: auto;
+    overflow-y: auto;
+  }
+
+  &__messages-infinite-scroll {
+    display: flex;
+    flex-flow: column-reverse;
   }
 
   &__form-box {
