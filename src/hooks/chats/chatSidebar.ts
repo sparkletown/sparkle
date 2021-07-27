@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import {
   chatVisibilitySelector,
@@ -11,10 +11,11 @@ import {
   setChatSidebarVisibility,
 } from "store/actions/Chat";
 
-import { useSelector } from "./useSelector";
-import { useDispatch } from "./useDispatch";
-import { useNumberOfUnreadChats } from "./chats/privateChats";
+import { useSelector } from "../useSelector";
+import { useDispatch } from "../useDispatch";
 import { AnyVenue } from "types/venues";
+import { useUser } from "../useUser";
+import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -78,4 +79,19 @@ export const useChatSidebarInfo = (venue: AnyVenue) => {
     }`,
     venueChatTabTitle: `${chatTitle} Chat`,
   };
+};
+
+const useNumberOfUnreadChats = () => {
+  const { user } = useUser();
+  const { privateChatPreviews } = usePrivateChatPreviews();
+
+  const userId = user?.uid;
+
+  return useMemo(
+    () =>
+      privateChatPreviews.filter(
+        (chatPreview) => !chatPreview.isRead && chatPreview.from !== userId
+      ).length,
+    [privateChatPreviews, userId]
+  );
 };

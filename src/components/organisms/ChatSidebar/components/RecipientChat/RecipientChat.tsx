@@ -9,10 +9,10 @@ import { WithId } from "utils/id";
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useRecipientChat } from "hooks/chats/privateChats";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import "./RecipientChat.scss";
+import { useRecipientChat } from "../../../../../hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
   venue: WithId<AnyVenue>;

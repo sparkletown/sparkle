@@ -183,7 +183,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
 /**
  * Resolves a bug in 'react-infinite-scroll-component' when
- * 'next' function is not beight called when height of initially loaded items is less than container's height.
+ * 'next' function is not being called when height of initially loaded items is less than container's height.
  * https://github.com/ankeetmaini/react-infinite-scroll-component/issues/217
  */
 export function useTriggerScrollFix(messages: WithId<MessageToDisplay>[]) {
