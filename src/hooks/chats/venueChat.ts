@@ -14,7 +14,6 @@ import {
 
 import {
   buildMessage,
-  chatSort,
   partitionMessagesFromReplies,
   getMessageReplies,
   getBaseMessageToDisplay,
@@ -39,6 +38,7 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
           collection: "venues",
           doc: venueId,
           subcollections: [{ collection: "chats" }],
+          orderBy: ["ts_utc", "desc"],
           storeAs: "venueChatMessages",
         }
       : undefined
@@ -61,13 +61,11 @@ export const useVenueChat = (venueId?: string) => {
 
   const filteredMessages = useMemo(
     () =>
-      chatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            message.ts_utc.seconds > venueChatAgeThresholdSec
-        )
-        .sort(chatSort),
+      chatMessages.filter(
+        (message) =>
+          message.deleted !== true &&
+          message.ts_utc.seconds > venueChatAgeThresholdSec
+      ),
     [chatMessages, venueChatAgeThresholdSec]
   );
 
