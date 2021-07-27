@@ -33,13 +33,13 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
-  HAS_REACTIONS_TEMPLATES,
+  // HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
   // DEFAULT_SHOW_SCHEDULE,
   // DEFAULT_USER_STATUS,
   // DEFAULT_SHOW_USER_STATUSES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
+  // DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  // DEFAULT_AUDIENCE_ROWS_NUMBER,
 } from "settings";
 
 import { IS_BURN } from "secrets";
@@ -55,14 +55,12 @@ import { createJazzbar } from "utils/venue";
 import { useUser } from "hooks/useUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 // import { useShowHide } from "hooks/useShowHide";
-import { useQuery } from "hooks/useQuery";
 import { useDispatch } from "hooks/useDispatch";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
-// import { UserStatusManager } from "components/molecules/UserStatusManager";
 
-import { Toggler } from "components/atoms/Toggler";
+// import { Toggler } from "components/atoms/Toggler";
 
 import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -71,8 +69,6 @@ import {
   validationSchema,
 } from "./DetailsValidationSchema";
 import { WizardPage } from "./VenueWizard";
-// import QuestionInput from "./QuestionInput";
-// import EntranceInput from "./EntranceInput";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
@@ -108,9 +104,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
-  const queryParams = useQuery();
-  const parentIdQuery = queryParams.get("parentId");
-
   const dispatch = useDispatch();
   const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
 
@@ -133,13 +126,14 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     },
     defaultValues: {
       ...defaultValues,
-      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
+      parentId: "/playa",
     },
   });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
   const values = watch();
+  console.log(values, defaultValues);
 
   const [formError, setFormError] = useState(false);
 
@@ -178,7 +172,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               id: venueId,
               userStatuses,
               parentId: "/playa",
-              // showUserStatus: showUserStatuses,
             },
             user
           );
@@ -202,7 +195,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 code_of_conduct_questions:
                   sovereignVenue.code_of_conduct_questions,
                 userStatuses,
-                // showUserStatus: showUserStatuses,
                 template: sovereignVenue.template,
               },
               user
@@ -212,7 +204,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                   setSovereignVenue({
                     ...sovereignVenue,
                     userStatuses,
-                    // showUserStatus: showUserStatuses,
                   })
                 );
               }
@@ -222,7 +213,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             {
               ...vals,
               userStatuses,
-              // showUserStatus: showUserStatuses,
+              parentId: "/playa",
             } as VenueInput,
             user
           );
@@ -676,60 +667,60 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   //   </div>
   // );
 
-  const renderSeatingNumberInput = () => (
-    <>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats columns</h4>
-        <input
-          disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
-          min={5}
-          name="auditoriumColumns"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats columns"
-        />
-        {errors.auditoriumColumns ? (
-          <span className="input-error">
-            {errors.auditoriumColumns.message}
-          </span>
-        ) : null}
-      </div>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats rows</h4>
-        <input
-          disabled={disable}
-          defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
-          name="auditoriumRows"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats rows"
-          min={5}
-        />
-        {errors.auditoriumRows ? (
-          <span className="input-error">{errors.auditoriumRows.message}</span>
-        ) : null}
-      </div>
-    </>
-  );
+  // const renderSeatingNumberInput = () => (
+  //   <>
+  //     <div className="input-container">
+  //       <h4 className="italic input-header">Number of seats columns</h4>
+  //       <input
+  //         disabled={disable}
+  //         defaultValue={DEFAULT_AUDIENCE_COLUMNS_NUMBER}
+  //         min={5}
+  //         name="auditoriumColumns"
+  //         type="number"
+  //         ref={register}
+  //         className="align-left"
+  //         placeholder="Number of seats columns"
+  //       />
+  //       {errors.auditoriumColumns ? (
+  //         <span className="input-error">
+  //           {errors.auditoriumColumns.message}
+  //         </span>
+  //       ) : null}
+  //     </div>
+  //     <div className="input-container">
+  //       <h4 className="italic input-header">Number of seats rows</h4>
+  //       <input
+  //         disabled={disable}
+  //         defaultValue={DEFAULT_AUDIENCE_ROWS_NUMBER}
+  //         name="auditoriumRows"
+  //         type="number"
+  //         ref={register}
+  //         className="align-left"
+  //         placeholder="Number of seats rows"
+  //         min={5}
+  //       />
+  //       {errors.auditoriumRows ? (
+  //         <span className="input-error">{errors.auditoriumRows.message}</span>
+  //       ) : null}
+  //     </div>
+  //   </>
+  // );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowReactions = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show reactions</h4>
-      <Toggler name="showReactions" forwardedRef={register} />
-    </div>
-  );
+  // const renderShowReactions = () => (
+  //   <div className="toggle-room">
+  //     <h4 className="italic input-header">Show reactions</h4>
+  //     <Toggler name="showReactions" forwardedRef={register} />
+  //   </div>
+  // );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
-  const renderShowShoutouts = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show shoutouts</h4>
-      <Toggler name="showShoutouts" forwardedRef={register} />
-    </div>
-  );
+  // const renderShowShoutouts = () => (
+  //   <div className="toggle-room">
+  //     <h4 className="italic input-header">Show shoutouts</h4>
+  //     <Toggler name="showShoutouts" forwardedRef={register} />
+  //   </div>
+  // );
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   // const renderShowRangersToggle = () => (
@@ -878,22 +869,22 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   //   </div>
   // );
 
-  const renderRadioStationInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Radio station stream URL:</h4>
-      <input
-        type="text"
-        disabled={disable}
-        name={`radioStations`}
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Radio station URL..."
-      />
-      {errors.radioStations && (
-        <span className="input-error">{errors.radioStations.message}</span>
-      )}
-    </div>
-  );
+  // const renderRadioStationInput = () => (
+  //   <div className="input-container">
+  //     <h4 className="italic input-header">Radio station stream URL:</h4>
+  //     <input
+  //       type="text"
+  //       disabled={disable}
+  //       name={`radioStations`}
+  //       ref={register}
+  //       className="wide-input-block input-centered align-left"
+  //       placeholder="Radio station URL..."
+  //     />
+  //     {errors.radioStations && (
+  //       <span className="input-error">{errors.radioStations.message}</span>
+  //     )}
+  //   </div>
+  // );
 
   const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
 
@@ -1039,19 +1030,19 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderShowGridToggle()} */}
         {/* {renderShowBadgesToggle()} */}
         {/* {renderShowNametagsToggle()} */}
-        {templateID &&
+        {/* {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           renderShowReactions()}
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          renderShowShoutouts()}
+          renderShowShoutouts()} */}
         {/* {renderShowRangersToggle()} */}
         {/* {renderRestrictDOBToggle()} */}
 
-        {templateID &&
+        {/* {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
-          renderSeatingNumberInput()}
+          renderSeatingNumberInput()} */}
 
         {/* {renderRadioToggle()} */}
 
@@ -1066,7 +1057,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           onChangeInput={updateStatusText}
         /> */}
 
-        {values.showRadio && renderRadioStationInput()}
+        {/* {values.showRadio && renderRadioStationInput()} */}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
