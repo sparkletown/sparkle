@@ -241,11 +241,6 @@ export interface Template_v2 {
 
 // @debt Refactor this constant into types/templates or similar?
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
-  // {
-  //   template: VenueTemplate.conversationspace,
-  //   name: "Conversation Space",
-  //   description: ["A room of tables in which to talk and make merry."],
-  // },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
@@ -260,30 +255,6 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Create an Art Piece where people can view your embeddable art, and chat with microphone and video",
     ],
   },
-  // {
-  //   template: VenueTemplate.jazzbar,
-  //   name: "Music Venue",
-  //   description: [
-  //     "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
-  //   ],
-  // },
-  // {
-  //   template: VenueTemplate.audience,
-  //   name: "Auditorium",
-  //   description: [
-  //     "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-  //   ],
-  // },
-  // {
-  //   template: VenueTemplate.auditorium,
-  //   name: "New Auditorium",
-  //   description: ["Add an NEW auditorium with an embedded video and sections"],
-  // },
-  // {
-  //   template: VenueTemplate.firebarrel,
-  //   name: "Fire Barrel",
-  //   description: ["Huddle around a fire barrel with your close friends"],
-  // },
   {
     template: VenueTemplate.embeddable,
     name: "Art Piece Viewer",
@@ -291,11 +262,6 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Our viewer is same as the Art Piece, without the interactivity!",
     ],
   },
-  // {
-  //   template: VenueTemplate.screeningroom,
-  //   name: "Screening room",
-  //   description: ["Add an screening room with the videos listed inside."],
-  // },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Pop Up Experience",
