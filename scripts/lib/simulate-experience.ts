@@ -30,13 +30,26 @@ export const simulateExperience: (
   options: SimulateExperienceOptions
 ) => Promise<void> = async (options) => {
   const { userRefs, conf, stop } = options;
+
+  const affinity =
+    conf.experience?.affinity ?? conf.affinity ?? DEFAULT_EXPERIENCE_AFFINITY;
+  const tick = conf.experience?.tick ?? conf.tick ?? DEFAULT_EXPERIENCE_TICK_MS;
   const chunkSize =
     conf.experience?.chunkSize ??
     conf.chunkSize ??
     DEFAULT_EXPERIENCE_CHUNK_SIZE;
+
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`simulateMove(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`simulateExperience(): {magenta chunkCount} must be integer {yellow > 0}`
+  );
+  assert.ok(
+    Number.isFinite(tick) && tick >= 10,
+    chalk`simulateExperience(): {magenta tick} must be integer {yellow >= 10}`
+  );
+  assert.ok(
+    0 <= affinity && affinity <= 1,
+    chalk`simulateExperience(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
   const reactToExperience = withErrorReporter(
@@ -49,25 +62,15 @@ export const simulateExperience: (
   stop.then(() => (isStopped = true));
 
   const loop = async () => {
-    // Determine how likely is for the user to want to react
-    const affinity =
-      conf.experience?.affinity ?? conf.affinity ?? DEFAULT_EXPERIENCE_AFFINITY;
-    const tick =
-      conf.experience?.tick ?? conf.tick ?? DEFAULT_EXPERIENCE_TICK_MS;
-
     for (let i = 0, j = userRefs.length; !isStopped && i < j; i += chunkSize) {
       await Promise.all(
-        userRefs.slice(i, i + chunkSize).map(async (userRef) => {
-          assert.ok(
-            0 <= affinity && affinity <= 1,
-            chalk`Chatting affinity must be a number {yellow from 0 to 1}`
-          );
-
-          return (
-            Math.random() < affinity &&
-            reactToExperience({ ...options, userRef })
-          );
-        })
+        userRefs
+          .slice(i, i + chunkSize)
+          .map(
+            async (userRef) =>
+              Math.random() < affinity &&
+              reactToExperience({ ...options, userRef })
+          )
       );
       // explicit sleep between the chunks
       !isStopped && (await sleep(tick));

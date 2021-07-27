@@ -3,7 +3,6 @@ import { strict as assert } from "assert";
 import * as faker from "faker";
 import chalk from "chalk";
 import admin from "firebase-admin";
-import { User } from "types/User";
 
 import { FieldValue } from "./helpers";
 import { LogFunction, withErrorReporter } from "./log";
@@ -94,37 +93,6 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async ({
   );
 };
 
-export type FindUserOptions = {
-  partyName: string;
-  scriptTag?: string;
-};
-
-export type FindUserResult = Promise<User | undefined>;
-
-export const findUser: (options: FindUserOptions) => FindUserResult = async ({
-  partyName,
-  scriptTag,
-}) => {
-  let query = admin
-    .firestore()
-    .collection("users")
-    .where("partyName", "==", partyName);
-
-  if (scriptTag) {
-    query = query.where("scriptTag", "==", scriptTag);
-  }
-
-  const snap = await query.get();
-  assert.ok(
-    snap.docs.length <= 1,
-    chalk(
-      `Multiple users found for {magenta partyName}: {green ${partyName}} and {magenta scriptTag}: {green ${scriptTag}}`
-    )
-  );
-
-  return snap.docs[0]?.data();
-};
-
 export type EnsureBotUsersOptions = {
   stats: SimStats;
   scriptTag?: string;
@@ -149,7 +117,7 @@ export const ensureBotUsers: (
   const usersRef = admin.firestore().collection("users");
 
   log(
-    chalk`Ensuring there are {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
+    chalk`{inverse NOTE} Ensuring there are {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
   );
 
   const candidates = Array.from({ length: count }, (_, i) => ({
@@ -157,6 +125,7 @@ export const ensureBotUsers: (
     partyName: faker.name.findName(),
     pictureUrl: faker.internet.avatar(),
     bot: true,
+    botUserScriptTag: scriptTag,
   }));
 
   const resultUserRefs: DocumentReference<DocumentData>[] = [];
@@ -248,58 +217,22 @@ export const removeBotUsers: (
   }
 };
 
-export type FindVenueOptions = {
-  venueId: string;
-  log: LogFunction;
-};
-
-export const findVenue: (
-  options: FindVenueOptions
-) => Promise<DocumentReference<DocumentData> | undefined> = async ({
-  venueId,
-  log,
-}) => {
-  const venueRef = admin.firestore().collection("venues").doc(venueId);
-  const venueSnap = await venueRef.get();
-
-  if (venueSnap.exists) {
-    return venueRef;
-  }
-
-  log(
-    chalk`{yellow.inverse WARN} venue with id {green ${venueId}} was not found.`
-  );
-
-  return;
-};
-
-export type findExperienceReactionsOptions = {
-  venueId: string;
-};
-
-export const findExperienceReactions: (
-  options: findExperienceReactionsOptions
-) => Promise<CollectionReference<DocumentData>> = async ({ venueId }) =>
-  admin
-    .firestore()
-    .collection("experiences")
-    .doc(venueId)
-    .collection("reactions");
-
-export type reactToExperienceOptions = {
+export type ReactToExperienceOptions = {
   reactionsRef: CollectionReference<DocumentData>;
   userRef: DocumentReference<DocumentData>;
   venueRef: DocumentReference<DocumentData>;
+  conf: SimConfig;
   stats: SimStats;
   log: LogFunction;
 };
 
 export const reactToExperience: (
-  options: reactToExperienceOptions
+  options: ReactToExperienceOptions
 ) => Promise<void> = async ({
   reactionsRef,
   userRef,
   venueRef,
+  conf,
   log,
   stats,
 }) => {
@@ -325,6 +258,7 @@ export const reactToExperience: (
 
   const data: Record<string, unknown> = {
     bot: true,
+    botUserScriptTag: conf.user?.scriptTag ?? "",
 
     created_at: new Date().getTime(),
     created_by: userId,
@@ -393,6 +327,104 @@ export const removeBotReactions: (
     log(
       chalk`{inverse NOTE} Removing reaction with id {green ${reactionId}}...`
     );
+    await remove(snap.ref);
+  }
+};
+
+export type SendBotVenueMessageOptions = {
+  chatsRef: CollectionReference<DocumentData>;
+  userRef: DocumentReference<DocumentData>;
+  venueRef: DocumentReference<DocumentData>;
+  conf: SimConfig;
+  log: LogFunction;
+  stats: SimStats;
+};
+
+export const sendBotVenueMessage: (
+  options: SendBotVenueMessageOptions
+) => Promise<void> = async ({
+  chatsRef,
+  userRef,
+  venueRef,
+  conf,
+  log,
+  stats,
+}) => {
+  const snap = await userRef.get();
+  assert.ok(
+    snap.exists,
+    chalk`sendBotVenueMessage(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
+  );
+
+  const user = await snap.data();
+  assert.ok(
+    user?.bot === true,
+    chalk`sendBotVenueMessage(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
+  );
+
+  await enterVenue({ userRef, venueId: venueRef.id, log });
+
+  // for consistency with bot id's and to distinguish from the natural reactions
+  const userId = userRef.id;
+  const chatId = `${userId}-chat-${new Date().getTime()}`;
+  const text = generateRandomText();
+
+  await chatsRef.doc(chatId).set({
+    bot: true,
+    botUserScriptTag: conf.user?.scriptTag ?? "",
+
+    from: userId,
+    text,
+    ts_utc: admin.firestore.Timestamp.now(),
+  });
+
+  log(chalk`{inverse NOTE} User {green ${userId}} sent text {green ${text}}.`);
+  stats.chatlines = (stats.chatlines ?? 0) + 1;
+};
+
+export type RemoveBotChatMessagesOptions = {
+  chatsRef: CollectionReference<DocumentData>;
+  conf: SimConfig;
+  log: LogFunction;
+  stats: SimStats;
+};
+
+export const removeBotChatMessages: (
+  options: RemoveBotChatMessagesOptions
+) => Promise<void> = async ({ chatsRef, conf, log, stats }) => {
+  const remove = withErrorReporter(conf.log, (chatRef: DocumentReference) => {
+    const promise = chatRef.delete();
+    promise.then(() => {
+      log(
+        chalk`{green.inverse DONE} Removed  chat with id {green ${chatRef.id}}.`
+      );
+      stats.chatlinesRemoved = (stats.chatlinesRemoved ?? 0) + 1;
+    });
+    return promise;
+  });
+
+  const snaps: QueryDocumentSnapshot<DocumentData>[] = (
+    await chatsRef.where("bot", "==", true).get()
+  ).docs;
+  for (const snap of snaps) {
+    const chatId = snap.id;
+
+    if (!snap.exists) {
+      log(
+        chalk`{yellow.inverse WARN} No chat with id {green ${chatId}} exists that can be removed.`
+      );
+      continue;
+    }
+
+    const chat = await snap.data();
+    if (chat?.bot !== true) {
+      log(
+        chalk`{yellow.inverse WARN} Chat with id {green ${chatId}} isn't marked as bot. Not removing.`
+      );
+      continue;
+    }
+
+    log(chalk`{inverse NOTE} Removing chat with id {green ${chatId}}...`);
     await remove(snap.ref);
   }
 };

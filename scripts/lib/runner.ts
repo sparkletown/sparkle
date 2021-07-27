@@ -1,5 +1,5 @@
 import { strict as assert } from "assert";
-import { resolve } from "path";
+import { resolve, parse, sep } from "path";
 
 import chalk from "chalk";
 import { formatDistanceStrict } from "date-fns";
@@ -13,27 +13,24 @@ import {
   log as actualLog,
   displayProps,
 } from "./log";
-import { removeBotUsers, removeBotReactions } from "./bot";
-import { MainOptions, MainResult } from "../sim";
 import { SimConfig, SimStats } from "./types";
 import { loopUntilKilled, readConfig } from "./utils";
 
-export const SIM_DIR = "./simulator/";
 export const SIM_EXT = [".config.json5", ".config.json"];
 
-type initFirebaseOptions = {
+export type InitFirebaseOptions = {
   log: LogFunction;
   conf: SimConfig;
   stats: SimStats;
 };
 
-export const initFirebase: (options: initFirebaseOptions) => void = ({
+export const initFirebase: (options: InitFirebaseOptions) => void = ({
   log,
   conf: { credentials, projectId },
   stats,
 }) => {
   log(
-    chalk`initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
+    chalk`{inverse NOTE} Initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
   );
 
   assert.ok(projectId, chalk`initFirebase(): {magenta projectId} is required`);
@@ -47,19 +44,28 @@ export const initFirebase: (options: initFirebaseOptions) => void = ({
   });
 
   log(
-    chalk`{green.inverse DONE} initialized Firebase for {green ${projectId}}.`
+    chalk`{green.inverse DONE} Initialized  Firebase for {green ${projectId}}.`
   );
 };
 
-export const run: (
-  main: (options: MainOptions) => Promise<MainResult>
-) => Promise<void> = async (main) => {
+export type RunCallbackOptions = {
+  conf: SimConfig;
+  log: LogFunction;
+  stats: SimStats;
+  stop: Promise<void>;
+};
+
+export const run: <T>(
+  main: (options: RunCallbackOptions) => Promise<T>,
+  cleanup: (options: RunCallbackOptions & { result: T }) => Promise<void>
+) => Promise<void> = async (main, cleanup) => {
   try {
     const startTime = new Date();
+    const dir = `.${sep}${parse(process.argv[1]).name}${sep}`;
     const confName = process.argv[2];
 
     if (!confName) {
-      displayHelp({ dir: SIM_DIR, ext: "(" + SIM_EXT.join("|") + ")" });
+      displayHelp({ dir, ext: "(" + SIM_EXT.join("|") + ")" });
       process.exit(0);
       return;
     }
@@ -69,7 +75,7 @@ export const run: (
 
     const { conf, filename } = readConfig({
       name: confName,
-      dir: SIM_DIR,
+      dir,
       ext: SIM_EXT,
     });
     const stats: SimStats = { configurationFilename: filename };
@@ -77,24 +83,12 @@ export const run: (
 
     initFirebase({ log, conf, stats });
 
-    // run main, then wait for the stop signal
-    const { userRefs, reactionsRef } = await main({ stats, conf, log, stop });
+    // run main, then wait for the stop signal, then pass the result for cleanup
+    const result = await main({ stats, conf, log, stop });
     await stop;
+    await cleanup({ stats, conf, log, stop, result });
 
-    // do some cleanup before terminating
-    if (conf.user?.cleanup ?? true) {
-      log(chalk`{inverse NOTE} Doing little user cleanup...`);
-      await removeBotUsers({ conf, log, stats, userRefs });
-      log(chalk`{green.inverse DONE} Removed bot users.`);
-    }
-
-    // do some cleanup before terminating
-    if (conf.experience?.cleanup ?? true) {
-      log(chalk`{inverse NOTE} Doing little reactions cleanup...`);
-      await removeBotReactions({ conf, log, stats, reactionsRef });
-      log(chalk`{green.inverse DONE} Removed bot reactions.`);
-    }
-
+    // wrap up console logging
     const finishTime = new Date();
     stats.startTime = startTime.toISOString();
     stats.finishTime = finishTime.toISOString();

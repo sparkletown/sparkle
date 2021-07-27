@@ -54,7 +54,7 @@ export const generateRandomText = () =>
 export const sleep: (ms: number) => Promise<void> = (ms) => {
   assert.ok(
     Number.isFinite(ms) && ms >= 10,
-    chalk`sleep(): ms must be integer {yellow >= 10}`
+    chalk`sleep(): {magenta ms} must be integer {yellow >= 10}`
   );
   return new Promise((resolve) => {
     setTimeout(() => resolve(), ms);

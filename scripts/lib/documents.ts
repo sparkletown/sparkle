@@ -1,0 +1,64 @@
+import { strict as assert } from "assert";
+
+import admin from "firebase-admin";
+import chalk from "chalk";
+
+import { User } from "types/User";
+
+import { LogFunction } from "./log";
+import { DocumentReference, DocumentData } from "./types";
+
+export type FindVenueOptions = {
+  venueId: string;
+  log: LogFunction;
+};
+export const findVenue: (
+  options: FindVenueOptions
+) => Promise<DocumentReference<DocumentData> | undefined> = async ({
+  venueId,
+  log,
+}) => {
+  const venueRef = admin.firestore().collection("venues").doc(venueId);
+  const venueSnap = await venueRef.get();
+
+  if (venueSnap.exists) {
+    return venueRef;
+  }
+
+  log(
+    chalk`{yellow.inverse WARN} venue with id {green ${venueId}} was not found.`
+  );
+
+  return;
+};
+
+export type FindUserOptions = {
+  partyName: string;
+  scriptTag?: string;
+};
+
+export type FindUserResult = Promise<User | undefined>;
+
+export const findUser: (options: FindUserOptions) => FindUserResult = async ({
+  partyName,
+  scriptTag,
+}) => {
+  let query = admin
+    .firestore()
+    .collection("users")
+    .where("partyName", "==", partyName);
+
+  if (scriptTag) {
+    query = query.where("scriptTag", "==", scriptTag);
+  }
+
+  const snap = await query.get();
+  assert.ok(
+    snap.docs.length <= 1,
+    chalk(
+      `Multiple users found for {magenta partyName}: {green ${partyName}} and {magenta scriptTag}: {green ${scriptTag}}`
+    )
+  );
+
+  return snap.docs[0]?.data();
+};

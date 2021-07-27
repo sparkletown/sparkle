@@ -1,6 +1,7 @@
 import * as admin from "firebase-admin";
 
 // re-export type definitions to decrease declaration verbosity in other files
+// and for some reason, ESLint thinks they're unused, thus the disable comments
 //
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import CollectionReference = admin.firestore.CollectionReference;
@@ -12,28 +13,41 @@ export import DocumentReference = admin.firestore.DocumentReference;
 export import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export import Timestamp = admin.firestore.Timestamp;
 
-export type SimulationName = "seat" | "experience";
+export type SimulationName = "chat" | "experience" | "seat";
 
 export type SimStats = Partial<{
   startTime: string;
   finishTime: string;
   runTime: string;
+
   configurationFilename: string;
   credentialsFilename: string;
+
   usersCount: number;
   usersCreated: number;
   usersUpdated: number;
   usersRemoved: number;
-  reactionsRemoved: number;
+
   relocations: number;
+
   reactions: number;
+  reactionsRemoved: number;
+
+  chatlines: number;
+  chatlinesRemoved: number;
 }>;
 
 export type SimLoopConfig = {
   chunkSize: number;
   tick: number;
   affinity: number;
+};
+
+export type HasCleanupFlag = {
+  cleanup: boolean;
 };
 
 export type SimConfig = Partial<
@@ -43,11 +57,17 @@ export type SimConfig = Partial<
 
     simulate: SimulationName[];
 
-    user: Partial<{
-      scriptTag: string;
-      count: number;
-      cleanup: boolean;
+    log: Partial<{
+      verbose: boolean;
+      stack: boolean;
     }>;
+
+    user: Partial<
+      HasCleanupFlag & {
+        scriptTag: string;
+        count: number;
+      }
+    >;
 
     venue: Partial<{
       id: string;
@@ -59,16 +79,7 @@ export type SimConfig = Partial<
     }>;
 
     seat: Partial<SimLoopConfig>;
-    chat: Partial<SimLoopConfig>;
-    experience: Partial<
-      SimLoopConfig & {
-        cleanup: boolean;
-      }
-    >;
-
-    log: Partial<{
-      verbose: boolean;
-      stack: boolean;
-    }>;
+    chat: Partial<SimLoopConfig & HasCleanupFlag>;
+    experience: Partial<SimLoopConfig & HasCleanupFlag>;
   }
 >;
