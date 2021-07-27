@@ -8,11 +8,12 @@ export import CollectionReference = admin.firestore.CollectionReference;
 export import DocumentData = admin.firestore.DocumentData;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import DocumentReference = admin.firestore.DocumentReference;
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import DocumentSnapshot = admin.firestore.DocumentSnapshot;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
+
+export type SimulationName = "seat" | "experience";
 
 export type SimStats = Partial<{
   startTime: string;
@@ -39,6 +40,8 @@ export type SimConfig = Partial<
   SimLoopConfig & {
     projectId: string;
     credentials: string;
+
+    simulate: SimulationName[];
 
     user: Partial<{
       scriptTag: string;

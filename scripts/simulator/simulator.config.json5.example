@@ -1,0 +1,52 @@
+// NOTE: JSON5 is superset of JSON with some added functionalities @see https://json5.org/
+{
+  "credentials": "./simulator/simple.credentials.json",
+  "projectId": "co-reality-staging",
+
+  // by commenting out, all simulations will run
+  //  "simulate": [
+  //    'seat',
+  //    'experience'
+  //  ],
+
+  "log": {
+    "verbose": true,
+    "stack": false
+  },
+
+  "user": {
+    "scriptTag": "user-simulator",
+    "count": 100
+  },
+
+  "venue": {
+    "id": "venue id",
+    "minRow": -9,
+    "maxRow": +9,
+    "minCol": -9,
+    "maxCol": +9
+  },
+
+  // The following settings will override these ones for their respective cases
+  "tick": 1000,
+  "chunkSize": 100,
+  "affinity": 0.01,
+
+//  "seat": {
+//    "tick": 1000,
+//    "chunkSize": 100,
+//    "affinity": 0.01
+//  },
+//
+//  "chat": {
+//    "tick": 9999,
+//    "chunkSize": 100,
+//    "affinity": 0.005
+//  },
+//
+//  "experience": {
+//    "tick": 9999,
+//    "chunkSize": 100,
+//    "affinity": 0.005
+//  }
+}

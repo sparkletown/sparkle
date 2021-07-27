@@ -1,5 +1,4 @@
 import { strict as assert } from "assert";
-import { readFileSync } from "fs";
 import { resolve } from "path";
 
 import chalk from "chalk";
@@ -17,22 +16,22 @@ import {
 import { removeBotUsers, removeBotReactions } from "./bot";
 import { MainOptions, MainResult } from "../sim";
 import { SimConfig, SimStats } from "./types";
-import { loopUntilKilled } from "./utils";
+import { loopUntilKilled, readConfig } from "./utils";
 
 export const SIM_DIR = "./simulator/";
-export const SIM_EXT = ".config.json";
+export const SIM_EXT = [".config.json5", ".config.json"];
 
-type InitOptions = {
+type initFirebaseOptions = {
   log: LogFunction;
   conf: SimConfig;
   stats: SimStats;
 };
 
-export const initFirebase = ({
+export const initFirebase: (options: initFirebaseOptions) => void = ({
   log,
   conf: { credentials, projectId },
   stats,
-}: InitOptions) => {
+}) => {
   log(
     chalk`initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
   );
@@ -52,28 +51,6 @@ export const initFirebase = ({
   );
 };
 
-type ReadConfigOptions = {
-  name: string;
-  dir: string;
-  ext: string;
-};
-
-type ReadConfigResult = {
-  conf: SimConfig;
-  configurationFilename: string;
-};
-
-export const readConfig: (options: ReadConfigOptions) => ReadConfigResult = ({
-  name,
-  dir,
-  ext,
-}) => {
-  const configurationFilename = resolve(process.cwd(), dir + name + ext);
-  const conf = JSON.parse(readFileSync(configurationFilename).toString());
-
-  return { conf, configurationFilename };
-};
-
 export const run: (
   main: (options: MainOptions) => Promise<MainResult>
 ) => Promise<void> = async (main) => {
@@ -82,7 +59,7 @@ export const run: (
     const confName = process.argv[2];
 
     if (!confName) {
-      displayHelp({ dir: SIM_DIR, ext: SIM_EXT });
+      displayHelp({ dir: SIM_DIR, ext: "(" + SIM_EXT.join("|") + ")" });
       process.exit(0);
       return;
     }
@@ -90,12 +67,12 @@ export const run: (
     // setup before running main
     const stop: Promise<void> = loopUntilKilled();
 
-    const { conf, configurationFilename } = readConfig({
+    const { conf, filename } = readConfig({
       name: confName,
       dir: SIM_DIR,
       ext: SIM_EXT,
     });
-    const stats: SimStats = { configurationFilename };
+    const stats: SimStats = { configurationFilename: filename };
     const log = conf?.log?.verbose ? actualLog : () => undefined;
 
     initFirebase({ log, conf, stats });
@@ -131,7 +108,7 @@ export const run: (
   } catch (e) {
     chalk.reset();
 
-    log(chalk`{red.inverse ERROR} {red ${e.message}}`);
+    log(chalk`{red.inverse ERRR} {red ${e.message}}`);
     log(chalk`{dim ${e.stack}}`);
 
     process.exit(-1);

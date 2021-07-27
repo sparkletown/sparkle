@@ -195,9 +195,11 @@ export const ensureBotUsers: (
     log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
   }
 
+  stats.usersCount = count;
   log(
     chalk`{greenBright.inverse DONE} Ensured {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}} exist.`
   );
+
   return resultUserRefs;
 };
 

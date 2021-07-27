@@ -14,7 +14,7 @@ export const DEFAULT_SEAT_AFFINITY = 0.01;
 
 export const GRID_DEFAULTS = { minRow: 0, maxRow: 9, minCol: 0, maxCol: 9 };
 
-export type SimulateMoveOptions = {
+export type simulateSeatOptions = {
   userRefs: DocumentReference<DocumentData>[];
   venueRef: DocumentReference<DocumentData>;
   conf: SimConfig;
@@ -22,8 +22,8 @@ export type SimulateMoveOptions = {
   stats: SimStats;
   stop: Promise<void>;
 };
-export const simulateMove: (
-  options: SimulateMoveOptions
+export const simulateSeat: (
+  options: simulateSeatOptions
 ) => Promise<void> = async (options) => {
   const { userRefs, conf, stop } = options;
 

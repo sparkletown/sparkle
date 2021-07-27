@@ -1,8 +1,13 @@
 import { strict as assert } from "assert";
+import { readFileSync, existsSync } from "fs";
+import { resolve } from "path";
 
 import chalk from "chalk";
 import faker from "faker";
+import JSON5 from "json5";
+
 import { log } from "./log";
+import { SimConfig } from "./types";
 
 const INDEX_PADDING = 4;
 const INDEX_BASE = 10 ** INDEX_PADDING + 1;
@@ -81,4 +86,47 @@ export const loopUntilKilled = () => {
       resolve();
     });
   });
+};
+
+type ReadConfigOptions = {
+  name: string;
+  dir: string;
+  ext: string | string[];
+};
+
+type ReadConfigResult = {
+  conf: SimConfig;
+  filename: string;
+  text: string;
+};
+
+export const readConfig: (options: ReadConfigOptions) => ReadConfigResult = ({
+  name,
+  dir,
+  ext,
+}) => {
+  const extensions: string[] = Array.isArray(ext) ? ext : [ext];
+
+  for (const extension of extensions) {
+    const filename = resolve(process.cwd(), dir + name + extension);
+    if (!existsSync(filename)) {
+      continue;
+    }
+
+    const text = readFileSync(filename).toString();
+
+    try {
+      const conf = JSON5.parse(text);
+      return { conf, filename, text };
+    } catch (e) {
+      throw new Error(chalk`Couldn't parse {green ${filename}}. ` + e.message);
+    }
+  }
+
+  throw new Error(
+    chalk`Configuration file was not found for {green ${resolve(
+      process.cwd(),
+      dir + name
+    )}.(${extensions.join("|")})}`
+  );
 };

@@ -4,7 +4,6 @@
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
-import { run } from "./lib/simulator";
 
 import {
   ensureBotUsers as actualEnsureUsers,
@@ -12,8 +11,9 @@ import {
   findExperienceReactions,
 } from "./lib/bot";
 import { LogFunction, withErrorReporter } from "./lib/log";
-import { simulateMove } from "./lib/simulate-move";
+import { simulateSeat } from "./lib/simulate-seat";
 import { simulateExperience } from "./lib/simulate-experience";
+import { run } from "./lib/simulator";
 import {
   CollectionReference,
   DocumentData,
@@ -39,17 +39,18 @@ export type MainResult = {
 run(
   async (options: MainOptions): Promise<MainResult> => {
     const { conf, log, stats } = options;
-    const { venue } = conf;
+    const { venue, simulate = [] } = conf;
     const venueId = venue?.id;
 
     assert.ok(venueId, chalk`main(): {magenta venue.id} is required`);
+
     const venueRef = await findVenue({ log, venueId });
+    const reactionsRef = await findExperienceReactions({ venueId });
+
     assert.ok(
       venueRef,
       chalk`main(): venue was not found for {magenta venue.id}: {green ${venueId}}`
     );
-
-    const reactionsRef = await findExperienceReactions({ venueId });
 
     const ensureUsers = withErrorReporter(
       { ...conf.log, critical: true },
@@ -57,10 +58,22 @@ run(
     );
     const userRefs = await ensureUsers({ log, stats, ...conf.user });
 
-    stats.usersCount = userRefs.length;
+    if (simulate.length === 0 || simulate.includes("seat")) {
+      await simulateSeat({ ...options, userRefs, venueRef, ...venue });
+    }
 
-    await simulateMove({ ...options, userRefs, venueRef, ...venue });
-    await simulateExperience({ ...options, userRefs, venueRef, reactionsRef });
+    if (simulate.length === 0 || simulate.includes("experience")) {
+      assert.ok(
+        reactionsRef,
+        chalk`main(): venue reactions were not found for {magenta venue.id}: {green ${venueId}}`
+      );
+      await simulateExperience({
+        ...options,
+        userRefs,
+        venueRef,
+        reactionsRef,
+      });
+    }
 
     return { venueRef, userRefs, reactionsRef };
   }

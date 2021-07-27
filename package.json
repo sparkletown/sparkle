@@ -37,6 +37,7 @@
     "ical-generator": "^2.2.0",
     "immutability-helper": "^3.1.1",
     "jimp": "^0.16.0",
+    "json5": "^2.2.0",
     "jsonschema": "^1.2.6",
     "lint-staged": "^10.2.7",
     "lodash": "^4.17.15",
