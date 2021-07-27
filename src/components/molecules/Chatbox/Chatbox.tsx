@@ -41,7 +41,7 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-const NEXT_RENDER_SIZE = 25;
+const NEXT_RENDER_SIZE = 50;
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
