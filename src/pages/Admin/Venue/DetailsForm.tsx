@@ -19,8 +19,6 @@ import {
   VenueInput,
 } from "api/admin";
 
-import { setSovereignVenue } from "store/actions/SovereignVenue";
-
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -47,7 +45,6 @@ import { createJazzbar } from "utils/venue";
 
 import { useUser } from "hooks/useUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useDispatch } from "hooks/useDispatch";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -94,8 +91,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
-  const dispatch = useDispatch();
-  const { sovereignVenueId, sovereignVenue } = useSovereignVenue({ venueId });
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const {
     watch,
@@ -114,10 +110,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       template: state.templatePage?.template,
       editing: !!venueId,
     },
-    defaultValues: {
-      ...defaultValues,
-      parentId: "/playa",
-    },
+    defaultValues,
   });
   const { user } = useUser();
   const history = useHistory();
@@ -159,37 +152,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             },
             user
           );
-
-          //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          )
-            await updateVenue(
-              {
-                id: sovereignVenueId,
-                name: sovereignVenue.name,
-                subtitle:
-                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
-                description:
-                  sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
-                code_of_conduct_questions:
-                  sovereignVenue.code_of_conduct_questions,
-                template: sovereignVenue.template,
-              },
-              user
-            ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                  })
-                );
-              }
-            });
         } else
           await createVenue(
             {
@@ -212,15 +174,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [
-      user,
-      formError,
-      venueId,
-      history,
-      sovereignVenueId,
-      sovereignVenue,
-      dispatch,
-    ]
+    [user, formError, venueId, history]
   );
 
   const iconsMap = useMemo(
