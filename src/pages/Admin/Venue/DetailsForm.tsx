@@ -110,10 +110,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       template: state.templatePage?.template,
       editing: !!venueId,
     },
-    defaultValues: {
-      ...defaultValues,
-      parentId: "/playa",
-    },
+    defaultValues,
   });
   const { user } = useUser();
   const history = useHistory();
