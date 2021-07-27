@@ -44,24 +44,28 @@ export const setLocationData = ({
   });
 };
 
-export interface UpdateCurrentLocationDataProps {
-  userId: string;
-  profileLocationData: LocationData;
-}
-
+// @debt user location updates when there are tons of users cause a constant stream of updates that hurt platform performance
+//   hacking this out will lead to 'counting issues' if users stay in a single location for a long time without going anywhere,
+//   and may lead to them being 'filtered out' of recent location users if they have been sitting around too long without another
+//   form of update
+// export interface UpdateCurrentLocationDataProps {
+//   userId: string;
+//   profileLocationData: LocationData;
+// }
+//
 // NOTE: The intended effect is to update the current location, without rewriting it.
 // profileLocationData can only have 1 key at any point of time
-export const updateCurrentLocationData = ({
-  userId,
-  profileLocationData,
-}: UpdateCurrentLocationDataProps) => {
-  const [locationName] = Object.keys(profileLocationData);
-
-  updateLocationData({
-    userId,
-    newLocationData: { [locationName]: getCurrentTimeInMilliseconds() },
-  });
-};
+// export const updateCurrentLocationData = ({
+//   userId,
+//   profileLocationData,
+// }: UpdateCurrentLocationDataProps) => {
+//   const [locationName] = Object.keys(profileLocationData);
+//
+//   updateLocationData({
+//     userId,
+//     newLocationData: { [locationName]: getCurrentTimeInMilliseconds() },
+//   });
+// };
 
 export const clearLocationData = (userId: string) => {
   updateLocationData({ userId, newLocationData: {} });

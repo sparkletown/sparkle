@@ -8,7 +8,7 @@ import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRecentWorldUsers } from "hooks/users";
+// import { useRecentWorldUsers } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -38,7 +38,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  // const { recentWorldUsers } = useRecentWorldUsers();
 
   const {
     userStatus,
@@ -59,10 +59,11 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     [`UserAvatar--${size}`]: size,
   });
 
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
+  // const isOnline = useMemo(
+  //   () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
+  //   [user, recentWorldUsers]
+  // );
+  const isOnline = true;
 
   const status = user?.status;
 
