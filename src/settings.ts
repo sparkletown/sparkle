@@ -241,18 +241,11 @@ export interface Template_v2 {
 
 // @debt Refactor this constant into types/templates or similar?
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
-  {
-    template: VenueTemplate.conversationspace,
-    name: "Conversation Space",
-    description: ["A room of tables in which to talk and make merry."],
-  },
-  {
-    template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
-    name: "Experience",
-    description: [
-      "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
-    ],
-  },
+  // {
+  //   template: VenueTemplate.conversationspace,
+  //   name: "Conversation Space",
+  //   description: ["A room of tables in which to talk and make merry."],
+  // },
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
@@ -264,44 +257,51 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     template: VenueTemplate.artpiece,
     name: "Art Piece",
     description: [
-      "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
+      "Create an Art Piece where people can view your embeddable art, and chat with microphone and video",
     ],
   },
-  {
-    template: VenueTemplate.jazzbar,
-    name: "Music Venue",
-    description: [
-      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
-    ],
-  },
-  {
-    template: VenueTemplate.audience,
-    name: "Auditorium",
-    description: [
-      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
-    ],
-  },
-  {
-    template: VenueTemplate.auditorium,
-    name: "New Auditorium",
-    description: ["Add an NEW auditorium with an embedded video and sections"],
-  },
-  {
-    template: VenueTemplate.firebarrel,
-    name: "Fire Barrel",
-    description: ["Huddle around a fire barrel with your close friends"],
-  },
+  // {
+  //   template: VenueTemplate.jazzbar,
+  //   name: "Music Venue",
+  //   description: [
+  //     "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+  //   ],
+  // },
+  // {
+  //   template: VenueTemplate.audience,
+  //   name: "Auditorium",
+  //   description: [
+  //     "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+  //   ],
+  // },
+  // {
+  //   template: VenueTemplate.auditorium,
+  //   name: "New Auditorium",
+  //   description: ["Add an NEW auditorium with an embedded video and sections"],
+  // },
+  // {
+  //   template: VenueTemplate.firebarrel,
+  //   name: "Fire Barrel",
+  //   description: ["Huddle around a fire barrel with your close friends"],
+  // },
   {
     template: VenueTemplate.embeddable,
-    name: "Embeddable",
+    name: "Art Piece Viewer",
     description: [
-      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+      "Our viewer is same as the Art Piece, without the interactivity!",
     ],
   },
+  // {
+  //   template: VenueTemplate.screeningroom,
+  //   name: "Screening room",
+  //   description: ["Add an screening room with the videos listed inside."],
+  // },
   {
-    template: VenueTemplate.screeningroom,
-    name: "Screening room",
-    description: ["Add an screening room with the videos listed inside."],
+    template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
+    name: "Pop Up Experience",
+    description: [
+      "Whoa! Pop up a live experience on the map! Whether it's a Zoom, Google Meets or a live stream",
+    ],
   },
 ];
 
