@@ -65,7 +65,6 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
         <span className="AnnouncementMessage__default-text">
           No announcement
         </span>
-        g
       </div>
     );
 
