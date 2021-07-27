@@ -1,38 +1,35 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query/react";
-
-import { useWorldUsersQueryState } from "store/api/worldUsers";
+import { shallowEqual } from "react-redux";
 
 import { UserLocation } from "types/User";
 
-import { WithId } from "utils/id";
+import { withId, WithId } from "utils/id";
+import { worldUsersByIdSelector } from "utils/selectors";
 
+import { useSelector } from "hooks/useSelector";
 import { useWorldUsersContext } from "./useWorldUsers";
-
-export interface WorldUserLocationData {
-  isUserLocationLoaded: boolean;
-  userLocation?: WithId<UserLocation>;
-}
 
 export const useWorldUserLocation = (
   userId?: string
-): WorldUserLocationData => {
+): { userLocation?: WithId<UserLocation> } => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
+  useWorldUsersContext();
 
-  const {
-    isSuccess: isUserLocationLoaded,
-    userLocation,
-  } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
-    selectFromResult: (result) => ({
-      isSuccess: result.isSuccess,
-      userLocation: userId
-        ? result.data?.worldUserLocationsById?.[userId]
-        : undefined,
-    }),
-  });
+  const userLocation = useSelector((state) => {
+    if (!userId) return;
+
+    const user = worldUsersByIdSelector(state)?.[userId];
+
+    if (!user) return;
+
+    const userLocation: UserLocation = {
+      lastSeenAt: user.lastSeenAt,
+      lastSeenIn: user.lastSeenIn,
+    };
+
+    return withId(userLocation, userId);
+  }, shallowEqual);
 
   return {
-    isUserLocationLoaded,
     userLocation,
   };
 };

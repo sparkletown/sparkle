@@ -1,20 +1,18 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query/react";
+import { isLoaded } from "react-redux-firebase";
+import { isEqual } from "lodash";
 
-import { useWorldUsersQueryState } from "store/api";
-
-import { User, UserLocation } from "types/User";
+import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
+import { worldUsersSelector } from "utils/selectors";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
+import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 
 import { useWorldUsersContext } from "./useWorldUsers";
 
-export interface RecentLocationUsersData {
-  isRecentLocationUsersLoaded: boolean;
-  recentLocationUsers: readonly WithId<User>[];
-}
+const noUsers: WithId<User>[] = [];
 
 /**
  * @description this hook's filtering world users based on their @lastSeenIn location
@@ -23,51 +21,39 @@ export interface RecentLocationUsersData {
  *
  * @example useRecentLocationUsers(venue.name)
  * @example useRecentLocationUsers(`${venue.name}/${roomTitle}`)
- *
- * @debt the only difference between this and useRecentWorldUsers is that useRecentWorldUsers checks
- *   userLocation.lastSeenAt, whereas useRecentLocationUsers checks userLocation.lastSeenIn[locationName]
- *   Can we cleanly refactor them into a single hook somehow to de-duplicate the logic?
  */
 export const useRecentLocationUsers = (
   locationName?: string
-): RecentLocationUsersData => {
+): {
+  recentLocationUsers: readonly WithId<User>[];
+  isRecentLocationUsersLoaded: boolean;
+} => {
   const lastSeenThreshold = useUserLastSeenThreshold();
 
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
+  useWorldUsersContext();
 
-  const {
-    isSuccess: isRecentLocationUsersLoaded,
-    recentLocationUsers,
-  } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
-    selectFromResult: ({
-      isSuccess,
-      data: { worldUsers, worldUserLocationsById } = {},
-    }) => {
-      if (!worldUsers || !worldUserLocationsById || !locationName)
-        return { isSuccess, recentLocationUsers: [] };
+  const { recentLocationUsers, isWorldUsersLoaded } = useSelector((state) => {
+    const worldUsers = worldUsersSelector(state);
+    const isWorldUsersLoaded = isLoaded(worldUsers);
 
-      const recentLocationUsers = worldUsers.filter((user) => {
-        const userLocation: WithId<UserLocation> | undefined =
-          worldUserLocationsById[user.id];
+    if (!worldUsers || !locationName)
+      return { recentLocationUsers: noUsers, isWorldUsersLoaded };
 
-        return (
-          userLocation.lastSeenIn?.[locationName] &&
-          normalizeTimestampToMilliseconds(
-            userLocation.lastSeenIn[locationName]
-          ) > lastSeenThreshold
-        );
-      });
+    const recentLocationUsers = worldUsers
+      .filter(
+        (user) =>
+          user.lastSeenIn?.[locationName] &&
+          normalizeTimestampToMilliseconds(user.lastSeenIn[locationName]) >
+            lastSeenThreshold
+      )
+      .map(userWithLocationToUser);
 
-      return {
-        isSuccess,
-        recentLocationUsers,
-      };
-    },
-  });
+    return { recentLocationUsers, isWorldUsersLoaded };
+  }, isEqual);
 
   return {
-    isRecentLocationUsersLoaded,
-    recentLocationUsers,
+    recentLocationUsers: recentLocationUsers ?? noUsers,
+    isRecentLocationUsersLoaded: isWorldUsersLoaded,
   };
 };

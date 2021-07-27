@@ -1,63 +1,46 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query/react";
+import { isLoaded } from "react-redux-firebase";
+import { isEqual } from "lodash";
 
-import { useWorldUsersQueryState } from "store/api/worldUsers";
-
-import { User } from "types/User";
+import { User, userWithLocationToUser } from "types/User";
 
 import { WithId } from "utils/id";
+import { worldUsersSelector } from "utils/selectors";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
+import { useSelector } from "hooks/useSelector";
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 
 import { useWorldUsersContext } from "./useWorldUsers";
 
-export interface RecentWorldUsersData {
-  isRecentWorldUsersLoaded: boolean;
-  recentWorldUsers: readonly WithId<User>[];
-}
+const noUsers: WithId<User>[] = [];
 
-// @debt the only difference between this and useRecentLocationUsers is that useRecentWorldUsers checks
-//   userLocation.lastSeenAt, whereas useRecentLocationUsers checks userLocation.lastSeenIn[locationName]
-//   Can we cleanly refactor them into a single hook somehow to de-duplicate the logic?
-//
-// @debt I believe that generally our concept of 'world' includes only those within the relatedVenues that
-//   share the same sovereignVenue, yet the implementation here actually checks for any user within the entire
-//    environment that has been active within the lastSeenThreshold. I think we need to filter that down more?
-export const useRecentWorldUsers = (): RecentWorldUsersData => {
+export const useRecentWorldUsers = (): {
+  recentWorldUsers: readonly WithId<User>[];
+  isRecentWorldUsersLoaded: boolean;
+} => {
   const lastSeenThreshold = useUserLastSeenThreshold();
 
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
+  useWorldUsersContext();
 
-  const {
-    isSuccess: isRecentWorldUsersLoaded,
-    recentWorldUsers,
-  } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
-    selectFromResult: ({
-      isSuccess,
-      data: { worldUsers, worldUserLocationsById } = {},
-    }) => {
-      if (!worldUsers || !worldUserLocationsById)
-        return { isSuccess, recentWorldUsers: [] };
+  const { recentWorldUsers, isWorldUsersLoaded } = useSelector((state) => {
+    const worldUsers = worldUsersSelector(state);
+    const isWorldUsersLoaded = isLoaded(worldUsers);
 
-      const recentWorldUsers = worldUsers.filter((user) => {
-        const userLocation = worldUserLocationsById[user.id];
-        const userLastSeenAt = normalizeTimestampToMilliseconds(
-          userLocation.lastSeenAt
-        );
+    if (!worldUsers) return { recentWorldUsers: noUsers, isWorldUsersLoaded };
 
-        return userLastSeenAt > lastSeenThreshold;
-      });
+    const recentWorldUsers = worldUsers
+      .filter(
+        (user) =>
+          normalizeTimestampToMilliseconds(user.lastSeenAt) > lastSeenThreshold
+      )
+      .map(userWithLocationToUser);
 
-      return {
-        isSuccess,
-        recentWorldUsers,
-      };
-    },
-  });
+    return { recentWorldUsers, isWorldUsersLoaded };
+  }, isEqual);
 
   return {
-    isRecentWorldUsersLoaded,
-    recentWorldUsers,
+    recentWorldUsers: recentWorldUsers ?? noUsers,
+    isRecentWorldUsersLoaded: isWorldUsersLoaded,
   };
 };

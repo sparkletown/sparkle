@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { withId, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
@@ -32,7 +32,7 @@ export interface ProfileLink {
   url: string;
 }
 
-export interface BaseUser {
+export interface User {
   partyName?: string;
   pictureUrl?: string;
   anonMode?: boolean;
@@ -57,11 +57,6 @@ export interface BaseUser {
   // doYouDance?: string;
 }
 
-export interface User extends BaseUser {
-  lastSeenIn?: never;
-  lastSeenAt?: never;
-}
-
 export interface UserStatus {
   status: string;
   color: string;
@@ -72,7 +67,7 @@ export interface UserLocation {
   lastSeenAt: number;
 }
 
-export type UserWithLocation = BaseUser & UserLocation;
+export type UserWithLocation = User & UserLocation;
 
 export enum UsernameVisibility {
   none = "none",
@@ -152,21 +147,10 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
 // @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
 //  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
 //  validation rules leading to infinite recursion or similar?
-// @debt refactor userWithLocationToUser to optionally not require WithId, then use that in profileSelector
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {
   const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
-};
-
-export const extractLocationFromUser = (
-  user: WithId<UserWithLocation>
-): WithId<UserLocation> => {
-  const { lastSeenIn, lastSeenAt } = user;
-
-  const userLocation = { lastSeenIn, lastSeenAt };
-
-  return withId(userLocation, user.id);
 };

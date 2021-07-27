@@ -9,9 +9,17 @@ import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
 
-import { Provider as ReduxStoreProvider } from "react-redux";
-import { createFirestoreInstance } from "redux-firestore";
-import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
+import { Provider } from "react-redux";
+import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
+import {
+  ReactReduxFirebaseProvider,
+  firebaseReducer,
+  isLoaded,
+  FirebaseReducer,
+} from "react-redux-firebase";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import firebase from "firebase/app";
 import "firebase/analytics";
@@ -34,9 +42,13 @@ import {
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
+import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
-import { store } from "./store";
+
+import { Firestore } from "types/Firestore";
+import { User } from "types/User";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -80,6 +92,30 @@ const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
+
+// Add firebase to reducers
+const rootReducer = combineReducers({
+  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
+  firestore: firestoreReducer as Reducer<Firestore>,
+  ...VenueTemplateReducers,
+  ...MiscReducers,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+const initialState = {};
+const store = createStore(
+  rootReducer,
+  initialState,
+  composeWithDevTools(
+    applyMiddleware(
+      thunkMiddleware,
+      LogRocket.reduxMiddleware() // logrocket needs to be last
+    )
+  )
+);
+
+export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {
   firebase,
@@ -222,7 +258,7 @@ traceReactScheduler("initial render", performance.now(), () => {
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
+          <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <AuthIsLoaded>
                 <CustomSoundsProvider
@@ -233,7 +269,7 @@ traceReactScheduler("initial render", performance.now(), () => {
                 </CustomSoundsProvider>
               </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
-          </ReduxStoreProvider>
+          </Provider>
         </DndProvider>
       </ThemeProvider>
     </BugsnagErrorBoundary>,
