@@ -7,45 +7,21 @@ import { User } from "types/User";
 
 import { FieldValue } from "./helpers";
 import { LogFunction, withErrorReporter } from "./log";
-import { SimStats, SimConfig } from "./simulator";
-
-// import type definitions to decrease declaration verbosity
-import CollectionReference = admin.firestore.CollectionReference;
-import DocumentData = admin.firestore.DocumentData;
-import DocumentReference = admin.firestore.DocumentReference;
-import DocumentSnapshot = admin.firestore.DocumentSnapshot;
-import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
-
-const INDEX_PADDING = 4;
-const INDEX_BASE = 10 ** INDEX_PADDING + 1;
-
-// @see EmojiReactionType in types/reactions
-// noinspection SpellCheckingInspection
-const REACTIONS = Object.freeze([
-  "heart",
-  "clap",
-  "wolf",
-  "laugh",
-  "thatsjazz",
-  "boo",
-  "burn",
-  "sparkle",
-  "messageToTheBand",
-]);
-
-const TEXTERS = Object.freeze([
-  faker.hacker.phrase,
-  faker.company.catchPhrase,
-  faker.company.bs,
-  faker.lorem.sentence,
-  faker.random.words,
-]);
-
-const generateRandomReaction = () =>
-  REACTIONS[Math.floor(Math.random() * REACTIONS.length)];
-
-const generateRandomText = () =>
-  TEXTERS[Math.floor(Math.random() * TEXTERS.length)]();
+import { checkTypeUser } from "./guards";
+import {
+  CollectionReference,
+  DocumentData,
+  DocumentReference,
+  DocumentSnapshot,
+  QueryDocumentSnapshot,
+  SimConfig,
+  SimStats,
+} from "./types";
+import {
+  generateRandomText,
+  generateRandomReaction,
+  generateUserId,
+} from "./utils";
 
 export type EnterVenueOptions = {
   userRef: DocumentReference<DocumentData>;
@@ -71,12 +47,14 @@ export const enterVenue = async ({
     return; // already in venue
   }
 
-  log(chalk`User {green ${userId}} entering venue {green ${venueId}}...`);
+  log(
+    chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${venueId}}...`
+  );
 
   await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(venueId) });
 
   log(
-    chalk`{green.inverse DONE} User {green ${userId}} entered {green ${venueId}}.`
+    chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${venueId}}.`
   );
 };
 
@@ -112,7 +90,7 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async ({
   stats.relocations = (stats.relocations ?? 0) + 1;
 
   log(
-    chalk`User {green ${userRef.id}} took seat at {dim (row,col)}: ({yellow ${row}},{yellow ${col}})`
+    chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col)}: ({yellow ${row}},{yellow ${col}})`
   );
 };
 
@@ -147,9 +125,6 @@ export const findUser: (options: FindUserOptions) => FindUserResult = async ({
   return snap.docs[0]?.data();
 };
 
-const checkValidUser: (u?: User) => boolean = (u) =>
-  !!(u?.partyName && u?.pictureUrl);
-
 export type EnsureBotUsersOptions = {
   stats: SimStats;
   scriptTag?: string;
@@ -178,7 +153,7 @@ export const ensureBotUsers: (
   );
 
   const candidates = Array.from({ length: count }, (_, i) => ({
-    id: `${scriptTag}-` + `${i + INDEX_BASE}`.padStart(INDEX_PADDING, "0"),
+    id: generateUserId({ scriptTag, index: i }),
     partyName: faker.name.findName(),
     pictureUrl: faker.internet.avatar(),
     bot: true,
@@ -200,12 +175,12 @@ export const ensureBotUsers: (
       resultUserRefs.push(userRef);
 
       stats.usersCreated = (stats.usersCreated ?? 0) + 1;
-      log(chalk`{greenBright.inverse DONE} Created user {green ${id}}.`);
+      log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
       continue;
     }
 
     const user = userSnap.data();
-    if (checkValidUser(user)) {
+    if (checkTypeUser(user)) {
       log(chalk`Found valid user {green ${id}}.`);
       resultUserRefs.push(userRef);
       continue;
@@ -217,7 +192,7 @@ export const ensureBotUsers: (
     resultUserRefs.push(userRef);
 
     stats.usersUpdated = (stats.usersUpdated ?? 0) + 1;
-    log(chalk`{greenBright.inverse DONE} Updated user {green ${id}}.`);
+    log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
   }
 
   log(
@@ -240,7 +215,7 @@ export const removeBotUsers: (
     const promise = userRef.delete();
     promise.then(() => {
       log(
-        chalk`{green.inverse DONE} Removed user with id {green ${userRef.id}}.`
+        chalk`{green.inverse DONE} Removed  user with id {green ${userRef.id}}.`
       );
       stats.usersRemoved = (stats.usersRemoved ?? 0) + 1;
     });
@@ -266,7 +241,7 @@ export const removeBotUsers: (
       continue;
     }
 
-    log(chalk`Removing user with id {green ${userId}}...`);
+    log(chalk`{inverse NOTE} Removing user with id {green ${userId}}...`);
     await remove(userRef);
   }
 };
@@ -361,7 +336,7 @@ export const reactToExperience: (
 
   await reactionsRef.doc(reactionId).set(data);
   log(
-    chalk`User {green ${userId}} reacted with {green ${
+    chalk`{inverse NOTE} User {green ${userId}} reacted with {green ${
       isText ? data.text : data.reaction
     }}.`
   );
@@ -384,7 +359,7 @@ export const removeBotReactions: (
       const promise = reactionRef.delete();
       promise.then(() => {
         log(
-          chalk`{green.inverse DONE} Removed reaction with id {green ${reactionRef.id}}.`
+          chalk`{green.inverse DONE} Removed  reaction with id {green ${reactionRef.id}}.`
         );
         stats.reactionsRemoved = (stats.reactionsRemoved ?? 0) + 1;
       });
@@ -413,7 +388,9 @@ export const removeBotReactions: (
       continue;
     }
 
-    log(chalk`Removing reaction with id {green ${reactionId}}...`);
+    log(
+      chalk`{inverse NOTE} Removing reaction with id {green ${reactionId}}...`
+    );
     await remove(snap.ref);
   }
 };

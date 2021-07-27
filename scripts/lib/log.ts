@@ -19,7 +19,10 @@ export type DisplayHelpOptions = {
   ext: string;
 };
 
-export const displayHelp = ({ dir, ext }: DisplayHelpOptions) => {
+export const displayHelp: ({ dir, ext }: DisplayHelpOptions) => void = ({
+  dir,
+  ext,
+}) => {
   chalk.reset();
   log(chalk`
 
@@ -72,4 +75,22 @@ export const withErrorReporter = <T extends Function>(
   };
 
   return (temporaryObject[wrapperName] as unknown) as T;
+};
+
+export const displayProps: (stats: Record<string, unknown>) => void = (
+  stats
+) => {
+  for (const [key, val] of Object.entries(stats ?? {})) {
+    if (val === null || val === undefined) {
+      log(chalk`{magenta ${key}}: {redBright ${val}}`);
+    } else if (val === true || val === false) {
+      log(chalk`{magenta ${key}}: {blueBright ${val}}`);
+    } else if (typeof val === "string") {
+      log(chalk`{magenta ${key}}: {green ${val}}`);
+    } else if (typeof val === "number") {
+      log(chalk`{magenta ${key}}: {yellow ${val}}`);
+    } else {
+      log(chalk`{magenta ${key}}: {dim ${val}}`);
+    }
+  }
 };
