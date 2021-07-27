@@ -7,7 +7,7 @@ import { formatDistanceStrict } from "date-fns";
 
 import { initFirebaseAdminApp } from "./helpers";
 import { log, SCRIPT, LogFunction, displayHelp, log as actualLog } from "./log";
-import { removeBotUsers } from "./bot";
+import { removeBotUsers, removeBotReactions } from "./bot";
 import { MainOptions, MainResult } from "../sim";
 
 export const SIM_DIR = "./simulator/";
@@ -23,40 +23,53 @@ export type SimStats = Partial<{
   usersCreated: number;
   usersUpdated: number;
   usersRemoved: number;
+  reactionsRemoved: number;
   relocations: number;
+  reactions: number;
 }>;
 
-export type SimConfig = Partial<{
-  projectId: string;
-  verbose: boolean;
-  credentials: string;
-  user: Partial<{
-    scriptTag: string;
-    count: number;
-    cleanup: boolean;
-  }>;
-  venue: Partial<{
-    id: string;
-    minRow: number;
-    minCol: number;
-    maxRow: number;
-    maxCol: number;
-    chunkSize: number;
-  }>;
+export type SimLoopConfig = {
   chunkSize: number;
   tick: number;
-  seat: Partial<{
-    chunkSize: number;
-    tick: number;
-    affinity: number;
-  }>;
-  chat: Partial<{
-    chunkSize: number;
-    tick: number;
-  }>;
-}>;
+  affinity: number;
+};
 
-export const stopSignal = () => {
+export type SimConfig = Partial<
+  SimLoopConfig & {
+    projectId: string;
+    credentials: string;
+
+    user: Partial<{
+      scriptTag: string;
+      count: number;
+      cleanup: boolean;
+    }>;
+
+    venue: Partial<{
+      id: string;
+      minRow: number;
+      minCol: number;
+      maxRow: number;
+      maxCol: number;
+      chunkSize: number;
+    }>;
+
+    seat: Partial<SimLoopConfig>;
+    chat: Partial<SimLoopConfig>;
+    experience: Partial<
+      SimLoopConfig & {
+        cleanup: boolean;
+      }
+    >;
+
+    log: Partial<{
+      verbose: boolean;
+      stack: boolean;
+    }>;
+  }
+>;
+
+export const loopUntilKilled = () => {
   // The keep alive interval, prevents Node from simply finishing its run
   const intervalId = setInterval(() => undefined, 1000);
 
@@ -135,26 +148,34 @@ export const run: (
     }
 
     // setup before running main
+    const stopSignal = loopUntilKilled();
+
     const { conf, configurationFilename } = readConfig({
       name: confName,
       dir: SIM_DIR,
       ext: SIM_EXT,
     });
-    const { verbose = false } = conf;
     const stats: SimStats = { configurationFilename };
-    const log = verbose ? actualLog : () => undefined;
+    const log = conf?.log?.verbose ? actualLog : () => undefined;
 
     initFirebase({ log, conf, stats });
 
     // run main, then wait for the stop signal
-    const { userRefs } = await main({ stats, conf, log });
-    await stopSignal();
+    const { userRefs, reactionsRef } = await main({ stats, conf, log });
+    await stopSignal;
 
     // do some cleanup before terminating
     if (conf.user?.cleanup ?? true) {
       log(chalk`Doing little user cleanup...`);
-      await removeBotUsers({ log, stats, userRefs });
+      await removeBotUsers({ conf, log, stats, userRefs });
       log(chalk`{green.inverse DONE} Removed bot users.`);
+    }
+
+    // do some cleanup before terminating
+    if (conf.experience?.cleanup ?? true) {
+      log(chalk`Doing little reactions cleanup...`);
+      await removeBotReactions({ conf, log, stats, reactionsRef });
+      log(chalk`{green.inverse DONE} Removed bot reactions.`);
     }
 
     const finishTime = new Date();
@@ -207,3 +228,17 @@ export const sleep: (ms: number) => Promise<void> = (ms) => {
     setTimeout(() => resolve(), ms);
   });
 };
+
+// export const STOP = Symbol("stop");
+// export const withLoop: (tick: number, fn: Function) => Function = (
+//   tick,
+//   fn
+// ) => {
+//   const loop = async () => {
+//     const signal = fn();
+//     if (signal !== STOP) {
+//       setTimeout(loop, tick);
+//     }
+//   };
+//   return loop;
+// };

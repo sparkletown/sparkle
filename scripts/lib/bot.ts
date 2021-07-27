@@ -7,14 +7,45 @@ import { User } from "types/User";
 
 import { FieldValue } from "./helpers";
 import { LogFunction, withErrorReporter } from "./log";
-import { SimStats } from "./simulator";
+import { SimStats, SimConfig } from "./simulator";
 
-// imported type definitions to decrease declaration verbosity
-import DocumentReference = admin.firestore.DocumentReference;
+// import type definitions to decrease declaration verbosity
+import CollectionReference = admin.firestore.CollectionReference;
 import DocumentData = admin.firestore.DocumentData;
+import DocumentReference = admin.firestore.DocumentReference;
+import DocumentSnapshot = admin.firestore.DocumentSnapshot;
+import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
 
 const INDEX_PADDING = 4;
 const INDEX_BASE = 10 ** INDEX_PADDING + 1;
+
+// @see EmojiReactionType in types/reactions
+// noinspection SpellCheckingInspection
+const REACTIONS = Object.freeze([
+  "heart",
+  "clap",
+  "wolf",
+  "laugh",
+  "thatsjazz",
+  "boo",
+  "burn",
+  "sparkle",
+  "messageToTheBand",
+]);
+
+const TEXTERS = Object.freeze([
+  faker.hacker.phrase,
+  faker.company.catchPhrase,
+  faker.company.bs,
+  faker.lorem.sentence,
+  faker.random.words,
+]);
+
+const generateRandomReaction = () =>
+  REACTIONS[Math.floor(Math.random() * REACTIONS.length)];
+
+const generateRandomText = () =>
+  TEXTERS[Math.floor(Math.random() * TEXTERS.length)]();
 
 export type EnterVenueOptions = {
   userRef: DocumentReference<DocumentData>;
@@ -58,14 +89,14 @@ export type TakeSeatOptions = {
   log: LogFunction;
 };
 
-export const takeSeat = async ({
+export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async ({
   userRef,
   venueRef,
   stats,
   log,
   row,
   col,
-}: TakeSeatOptions) => {
+}) => {
   const venueId = venueRef.id;
   const venueName = (await (await venueRef.get()).data())?.name;
 
@@ -197,27 +228,32 @@ export const ensureBotUsers: (
 
 export type RemoveBotUsersOptions = {
   userRefs: DocumentReference<DocumentData>[];
-  stats: SimStats;
+  conf: SimConfig;
   log: LogFunction;
+  stats: SimStats;
 };
 
 export const removeBotUsers: (
   options: RemoveBotUsersOptions
-) => Promise<void> = async ({ userRefs, log, stats }) => {
-  const remove = withErrorReporter(
-    { critical: false, verbose: true },
-    (ref: DocumentReference) => {
-      const promise = ref.delete();
-      promise.then(() => (stats.usersRemoved = (stats.usersRemoved ?? 0) + 1));
-      return promise;
-    }
-  );
+) => Promise<void> = async ({ userRefs, conf, log, stats }) => {
+  const remove = withErrorReporter(conf.log, (userRef: DocumentReference) => {
+    const promise = userRef.delete();
+    promise.then(() => {
+      log(
+        chalk`{green.inverse DONE} Removed user with id {green ${userRef.id}}.`
+      );
+      stats.usersRemoved = (stats.usersRemoved ?? 0) + 1;
+    });
+    return promise;
+  });
 
   for (const userRef of userRefs) {
-    const snap = await userRef.get();
+    const userId = userRef.id;
+
+    const snap: DocumentSnapshot<DocumentData> = await userRef.get();
     if (!snap.exists) {
       log(
-        chalk`{yellow.inverse WARN} No user with id {green ${userRef.id}} exists that can be removed.`
+        chalk`{yellow.inverse WARN} No user with id {green ${userId}} exists that can be removed.`
       );
       continue;
     }
@@ -225,11 +261,12 @@ export const removeBotUsers: (
     const user = await snap.data();
     if (user?.bot !== true) {
       log(
-        chalk`{yellow.inverse WARN} User with id {green ${userRef.id}} isn't marked as bot. Not removing.`
+        chalk`{yellow.inverse WARN} User with id {green ${userId}} isn't marked as bot. Not removing.`
       );
       continue;
     }
 
+    log(chalk`Removing user with id {green ${userId}}...`);
     await remove(userRef);
   }
 };
@@ -257,4 +294,126 @@ export const findVenue: (
   );
 
   return;
+};
+
+export type findExperienceReactionsOptions = {
+  venueId: string;
+};
+
+export const findExperienceReactions: (
+  options: findExperienceReactionsOptions
+) => Promise<CollectionReference<DocumentData>> = async ({ venueId }) =>
+  admin
+    .firestore()
+    .collection("experiences")
+    .doc(venueId)
+    .collection("reactions");
+
+export type reactToExperienceOptions = {
+  reactionsRef: CollectionReference<DocumentData>;
+  userRef: DocumentReference<DocumentData>;
+  venueRef: DocumentReference<DocumentData>;
+  stats: SimStats;
+  log: LogFunction;
+};
+
+export const reactToExperience: (
+  options: reactToExperienceOptions
+) => Promise<void> = async ({
+  reactionsRef,
+  userRef,
+  venueRef,
+  log,
+  stats,
+}) => {
+  const snap = await userRef.get();
+  assert.ok(
+    snap.exists,
+    chalk`addBotReaction(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
+  );
+
+  const user = await snap.data();
+  assert.ok(
+    user?.bot === true,
+    chalk`addBotReaction(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
+  );
+
+  await enterVenue({ userRef, venueId: venueRef.id, log });
+
+  // for consistency with bot id's and to distinguish from the natural reactions
+  const userId = userRef.id;
+  const reactionId = `${userId}-reaction-${new Date().getTime()}`;
+  const reaction = generateRandomReaction();
+  const isText = reaction === "messageToTheBand";
+
+  const data: Record<string, unknown> = {
+    bot: true,
+
+    created_at: new Date().getTime(),
+    created_by: userId,
+
+    reaction,
+  };
+
+  if (isText) {
+    data.text = generateRandomText();
+  }
+
+  await reactionsRef.doc(reactionId).set(data);
+  log(
+    chalk`User {green ${userId}} reacted with {green ${
+      isText ? data.text : data.reaction
+    }}.`
+  );
+  stats.reactions = (stats.reactions ?? 0) + 1;
+};
+
+export type RemoveBotReactionsOptions = {
+  reactionsRef: CollectionReference<DocumentData>;
+  conf: SimConfig;
+  log: LogFunction;
+  stats: SimStats;
+};
+
+export const removeBotReactions: (
+  options: RemoveBotReactionsOptions
+) => Promise<void> = async ({ reactionsRef, conf, log, stats }) => {
+  const remove = withErrorReporter(
+    conf.log,
+    (reactionRef: DocumentReference) => {
+      const promise = reactionRef.delete();
+      promise.then(() => {
+        log(
+          chalk`{green.inverse DONE} Removed reaction with id {green ${reactionRef.id}}.`
+        );
+        stats.reactionsRemoved = (stats.reactionsRemoved ?? 0) + 1;
+      });
+      return promise;
+    }
+  );
+
+  const snaps: QueryDocumentSnapshot<DocumentData>[] = (
+    await reactionsRef.where("bot", "==", true).get()
+  ).docs;
+  for (const snap of snaps) {
+    const reactionId = snap.id;
+
+    if (!snap.exists) {
+      log(
+        chalk`{yellow.inverse WARN} No reaction with id {green ${reactionId}} exists that can be removed.`
+      );
+      continue;
+    }
+
+    const reaction = await snap.data();
+    if (reaction?.bot !== true) {
+      log(
+        chalk`{yellow.inverse WARN} Reaction with id {green ${reactionId}} isn't marked as bot. Not removing.`
+      );
+      continue;
+    }
+
+    log(chalk`Removing reaction with id {green ${reactionId}}...`);
+    await remove(snap.ref);
+  }
 };

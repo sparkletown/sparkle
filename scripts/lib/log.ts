@@ -33,13 +33,16 @@ Usage: {white ${SCRIPT}} {dim ${dir}}{white name}{dim ${ext}}
 export type WithErrorReporterOptions = {
   verbose?: boolean;
   critical?: boolean;
+  stack?: boolean;
 };
 
 export const withErrorReporter = <T extends Function>(
-  options: WithErrorReporterOptions,
+  options: WithErrorReporterOptions | undefined,
   asyncFunction: T
 ): T => {
-  if (!options.verbose) {
+  const { critical = false, stack = true, verbose = true } = options ?? {};
+
+  if (!verbose) {
     return asyncFunction;
   }
 
@@ -57,11 +60,14 @@ export const withErrorReporter = <T extends Function>(
         log(
           chalk`{dim withErrorReporter(}{white ${functionName}}{dim )}{white :} {red.inverse ERROR} {red ${e.message}}`
         );
-        log(chalk`{dim ${e.stack}}`);
+
+        if (stack) {
+          log(chalk`{dim ${e.stack}}`);
+        }
       });
 
       // NOTE: the handled one will not re-throw the error
-      return options.critical ?? true ? promise : handled;
+      return critical ? promise : handled;
     },
   };
 

@@ -1,7 +1,11 @@
 {
-  "verbose": true,
   "credentials": "./simulator/simulator.credentials.json",
   "projectId": "same project id as in the credentials file",
+
+  "log": {
+    "verbose": true,
+    "stack": false
+  },
 
   "user": {
     "scriptTag": "user-simulator",
@@ -15,14 +19,22 @@
     "minCol": -12,
     "maxCol": 12
   },
+
   "seat": {
     "tick": 1000,
     "chunkSize": 100,
     "affinity": 0.01
   },
+
   "chat": {
-    "chunkSize": 100,
     "tick": 9999,
-    "affinity": 0.01
+    "chunkSize": 100,
+    "affinity": 0.005
+  },
+
+  "experience": {
+    "tick": 9999,
+    "chunkSize": 100,
+    "affinity": 0.005
   }
 }
