@@ -32,6 +32,7 @@ import {
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  BM_PARENT_ID,
 } from "settings";
 
 import { IS_BURN } from "secrets";
@@ -155,7 +156,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           await createVenue(
             {
               ...vals,
-              parentId: "/playa",
+              parentId: BM_PARENT_ID,
             } as VenueInput,
             user
           );
