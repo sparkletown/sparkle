@@ -1,28 +1,24 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
+import { BadgeImage } from "./BadgeImage";
+import "./Badges.scss";
 import { User } from "@bugsnag/js";
-
+import classNames from "classnames";
+import { chunk } from "lodash";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
-
 import {
   DEFAULT_AVATAR_IMAGE,
   FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
 } from "settings";
-
 import { UserVisit } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
-
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
-
-import { BadgeImage } from "./BadgeImage";
-
-import "./Badges.scss";
 
 export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<AnyVenue>;
-}> = ({ user, currentVenue }) => {
+  className?: string;
+}> = ({ user, currentVenue, className }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -145,8 +141,10 @@ export const Badges: React.FC<{
     return <>Visit venues to collect badges!</>;
   }
 
+  const containerClassName = classNames("Badges", className);
+
   return (
-    <div className="Badges">
+    <div className={containerClassName}>
       <div className="Badges__visits">
         <div className="Badges__visit">
           <span className="Badges__visit-value">

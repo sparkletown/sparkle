@@ -1,23 +1,28 @@
 @import "scss/constants";
 
+$profile-modal-img-size: 7rem;
+$profile-modal-status-indicator-size: $profile-modal-img-size / 10;
+
 .UserAvatar {
   $avatar-sizes-map: (
     small: 25px,
     medium: 40px,
     large: 54px,
-    full: 100%,
+    profileModal: $profile-modal-img-size,
   );
   $indicator-sizes-map: (
     small: 8px,
     medium: 10px,
     large: 12px,
-    full: 25%,
+    profileModal: $profile-modal-status-indicator-size,
   );
 
   // NOTE: parent and img mismatch due to legacy reasons
   $default-avatar-size: 25px;
   $default-image-size: 100%;
   $default-indicator-size: 8px;
+
+  $status-indicator-angle: 45;
 
   @include square-size($default-avatar-size);
   position: relative;
@@ -42,17 +47,17 @@
   }
 
   &__status-indicator {
+    display: block;
     position: absolute;
-    bottom: 0;
-    right: 0;
+    top: 50%;
+    left: 50%;
     border-radius: 50%;
     z-index: z(user-avatar-status-indicator);
-    display: block;
-    @include square-size($default-indicator-size);
 
     @each $modifier, $size in $indicator-sizes-map {
       &--#{$modifier} {
         @include square-size($size);
+        margin: -($size / 2);
       }
     }
   }
@@ -69,6 +74,10 @@
     &--#{$modifier},
     &--#{$modifier} img {
       @include square-size($size);
+    }
+    &__status-indicator--#{$modifier} {
+      $rot: $status-indicator-angle;
+      transform: rotate($rot * 1deg) translate($size / 2) rotate($rot * -1deg);
     }
   }
 

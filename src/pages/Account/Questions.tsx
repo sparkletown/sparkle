@@ -1,30 +1,22 @@
-import React, { useCallback, useEffect } from "react";
-import { isLoaded } from "react-redux-firebase";
-import { useHistory, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
-
-import { QuestionType } from "types/Question";
-
-import { currentVenueSelectorData } from "utils/selectors";
-
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
-import { useSelector } from "hooks/useSelector";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
-
-import { updateTheme } from "pages/VenuePage/helpers";
-
-import { Loading } from "components/molecules/Loading";
-import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { updateUserProfile } from "./helpers";
-
+import { useConnectCurrentVenueNG } from "../../hooks/useConnectCurrentVenueNG";
 // @debt refactor the questions related styles from Account.scss into Questions.scss
 import "./Account.scss";
-
 import "./Questions.scss";
+import { updateUserProfile } from "./helpers";
+import { Loading } from "components/molecules/Loading";
+import { LoadingPage } from "components/molecules/LoadingPage";
+import { useSelector } from "hooks/useSelector";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { updateTheme } from "pages/VenuePage/helpers";
+import React, { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { isLoaded } from "react-redux-firebase";
+import { useHistory, useLocation } from "react-router-dom";
+import { useAsyncFn } from "react-use";
+import { QuestionType } from "types/Question";
+import { currentVenueSelectorData } from "utils/selectors";
 
 export interface QuestionsFormData {
   islandCompanion: string;
@@ -45,7 +37,7 @@ export const Questions: React.FC = () => {
 
   // @debt this should probably be retrieving the sovereign venue
   // @debt replace this with useConnectCurrentVenueNG or similar?
-  useConnectCurrentVenue();
+  useConnectCurrentVenueNG();
   const venue = useSelector(currentVenueSelectorData);
 
   const { register, handleSubmit, formState } = useForm<QuestionsFormData>({

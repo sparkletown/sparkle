@@ -1,0 +1,12 @@
+@import "scss/constants.scss";
+
+.ProfileModalQuestions {
+  &__question {
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 4px;
+  }
+  &__answer {
+    color: $white;
+    margin-bottom: 1rem;
+  }
+}

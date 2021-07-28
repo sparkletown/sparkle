@@ -1,31 +1,26 @@
+import { ProfileModalContent } from "../NewProfileModal";
+import "./UserProfileModal.scss";
+import Button from "components/atoms/Button";
+import { Badges } from "components/organisms/Badges";
+import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
+import { useWorldUserLocation } from "hooks/users";
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
 import {
   ENABLE_SUSPECTED_LOCATION,
   RANDOM_AVATARS,
   DEFAULT_PROFILE_PIC,
   DEFAULT_PARTY_NAME,
 } from "settings";
-
-import { WithId } from "utils/id";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-
 import { User } from "types/User";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
-
-import { useUser } from "hooks/useUser";
-import { useWorldUserLocation } from "hooks/users";
-import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-
-import { Badges } from "components/organisms/Badges";
-import Button from "components/atoms/Button";
-
-import "./UserProfileModal.scss";
+import { WithId } from "utils/id";
+import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
@@ -103,55 +98,60 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
       show={hasSelectedProfile}
       onHide={closeUserProfileModal}
     >
-      <Modal.Body>
-        <div className="modal-container modal-container_profile">
-          <div className="profile-information-container">
-            <div className="profile-basics">
-              <div className="profile-pic">
-                {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
-                <img
-                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
-                  alt="profile"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).onerror = null;
-                    (e.target as HTMLImageElement).src =
-                      "/avatars/" +
-                      RANDOM_AVATARS[
-                        Math.floor(
-                          chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
-                        )
-                      ];
-                  }}
-                />
-              </div>
-              <div className="profile-text">
-                <h2 className="italic">
-                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
-                </h2>
-              </div>
-            </div>
-            <div className="profile-extras">
-              {renderedProfileQuestionAnswers}
-            </div>
-            <div>{renderedProfileLinks}</div>
-            {ENABLE_SUSPECTED_LOCATION && (
-              <div className="profile-location">
-                <p className="question">Suspected Location:</p>
-                <h6 className="location">
-                  <SuspectedLocation
-                    user={selectedUserProfile}
-                    currentVenue={venue}
+      <Modal.Body className="UserProfileModal__temp-outer-container">
+        <div className="UserProfileModal__temp-container">
+          <div className="modal-container modal-container_profile">
+            <div className="profile-information-container">
+              <div className="profile-basics">
+                <div className="profile-pic">
+                  {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
+                  <img
+                    src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
+                    alt="profile"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).onerror = null;
+                      (e.target as HTMLImageElement).src =
+                        "/avatars/" +
+                        RANDOM_AVATARS[
+                          Math.floor(
+                            chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
+                          )
+                        ];
+                    }}
                   />
-                </h6>
+                </div>
+                <div className="profile-text">
+                  <h2 className="italic">
+                    {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
+                  </h2>
+                </div>
               </div>
+              <div className="profile-extras">
+                {renderedProfileQuestionAnswers}
+              </div>
+              <div>{renderedProfileLinks}</div>
+              {ENABLE_SUSPECTED_LOCATION && (
+                <div className="profile-location">
+                  <p className="question">Suspected Location:</p>
+                  <h6 className="location">
+                    <SuspectedLocation
+                      user={selectedUserProfile}
+                      currentVenue={venue}
+                    />
+                  </h6>
+                </div>
+              )}
+            </div>
+            {venue?.showBadges && (
+              <Badges user={selectedUserProfile} currentVenue={venue} />
+            )}
+            {chosenUserId !== user.uid && (
+              <Button onClick={openChosenUserChat}>Send message</Button>
             )}
           </div>
-          {venue?.showBadges && (
-            <Badges user={selectedUserProfile} currentVenue={venue} />
-          )}
-          {chosenUserId !== user.uid && (
-            <Button onClick={openChosenUserChat}>Send message</Button>
-          )}
+          <div>
+            <ProfileModalContent venue={venue} />
+          </div>
         </div>
       </Modal.Body>
     </Modal>

@@ -1,0 +1,14 @@
+.ProfileModalBasicTextInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  &__name {
+    padding: 0;
+    margin-bottom: 4px;
+  }
+
+  &__status-bold {
+    font-weight: 200;
+  }
+}

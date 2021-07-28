@@ -1,0 +1,8 @@
+.ProfileModalBasicInfo {
+  display: flex;
+  flex-direction: row;
+
+  &__text-info {
+    margin-left: 1.5rem;
+  }
+}
