@@ -1,10 +1,16 @@
-import { skipToken } from "@reduxjs/toolkit/dist/query/react";
+import { mapValues } from "lodash";
 
-import { useWorldUsersQueryState } from "store/api/worldUsers";
+import { User, userWithLocationToUser } from "types/User";
 
-import { User } from "types/User";
+import { withId, WithId } from "utils/id";
+// import { worldUsersByIdWithoutLocationSelector } from "utils/selectors";
 
-import { useWorldUsersContext } from "./useWorldUsers";
+// import { isLoaded } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+
+// import { useWorldUsersContext } from "./useWorldUsers";
+
+const noUsersById: Record<string, WithId<User>> = {};
 
 /**
  * @debt typing, Record implies that a User will exist for literally any given string, which is untrue
@@ -12,21 +18,29 @@ import { useWorldUsersContext } from "./useWorldUsers";
  */
 export const useWorldUsersById = () => {
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
-  const { worldUsersApiArgs } = useWorldUsersContext();
+  // useWorldUsersContext();
 
-  const {
-    isSuccess: isWorldUsersByIdLoaded,
-    worldUsersById,
-  } = useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
-    selectFromResult: (result) => ({
-      isSuccess: result.isSuccess,
-      worldUsersById: result.data?.worldUsersById ?? {},
-    }),
+  // const worldUsersById = useSelector(
+  //   (state) => state.cache.usersRecord,
+  //   isEqual
+  // );
+
+  const selectedWorldUsers = useSelector((state) => {
+    const worldUsersById = state.cache.usersRecord;
+
+    return mapValues(worldUsersById, (user, userId) =>
+      userWithLocationToUser(withId(user, userId))
+    );
   });
 
+  // const worldUsersById: Record<string, WithId<User>> | undefined = useSelector(
+  //   worldUsersByIdWithoutLocationSelector,
+  //   isEqual
+  // );
+
   return {
-    isWorldUsersLoaded: isWorldUsersByIdLoaded,
-    worldUsersById,
+    worldUsersById: selectedWorldUsers ?? noUsersById,
+    isWorldUsersLoaded: true,
   };
 };
 

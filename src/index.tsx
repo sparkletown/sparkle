@@ -1,17 +1,22 @@
 import "./wdyr";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { render } from "react-dom";
 
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
-import LogRocket from "logrocket";
-// eslint-disable-next-line no-restricted-imports
-import mixpanel from "mixpanel-browser";
 
-import { Provider as ReduxStoreProvider } from "react-redux";
-import { createFirestoreInstance } from "redux-firestore";
-import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
+import { Provider } from "react-redux";
+import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
+import thunkMiddleware from "redux-thunk";
+import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
+import {
+  ReactReduxFirebaseProvider,
+  firebaseReducer,
+  isLoaded,
+  FirebaseReducer,
+} from "react-redux-firebase";
+import { composeWithDevTools } from "redux-devtools-extension";
 
 import firebase from "firebase/app";
 import "firebase/analytics";
@@ -29,14 +34,17 @@ import {
   BUILD_PULL_REQUESTS,
   BUILD_SHA1,
   BUILD_TAG,
-  LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
+import { VenueTemplateReducers, MiscReducers } from "store/reducers";
+// import { CacheActionTypes } from "store/actions/Cache";
+
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
-import { store } from "./store";
+
+import { Firestore } from "types/Firestore";
+import { User } from "types/User";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -54,16 +62,6 @@ import { theme } from "theme/theme";
 
 activatePolyFills();
 
-if (LOGROCKET_APP_ID) {
-  LogRocket.init(LOGROCKET_APP_ID, {
-    release: BUILD_SHA1,
-  });
-
-  Bugsnag.addOnError((event) => {
-    event.addMetadata("logrocket", "sessionUrl", LogRocket.sessionURL);
-  });
-}
-
 const firebaseApp = firebase.initializeApp(FIREBASE_CONFIG);
 firebaseApp.analytics();
 firebaseApp.auth();
@@ -80,6 +78,25 @@ const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
+
+// Add firebase to reducers
+const rootReducer = combineReducers({
+  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
+  firestore: firestoreReducer as Reducer<Firestore>,
+  ...VenueTemplateReducers,
+  ...MiscReducers,
+});
+
+export type RootState = ReturnType<typeof rootReducer>;
+
+const initialState = {};
+export const store = createStore(
+  rootReducer,
+  initialState,
+  composeWithDevTools(applyMiddleware(thunkMiddleware))
+);
+
+export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {
   firebase,
@@ -120,6 +137,14 @@ if (BUGSNAG_API_KEY) {
     "env/github",
     "env/summit-hack",
   ];
+
+  // //load users every 60 seconda
+  // setInterval(() => {
+  //   store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+  // }, 1000 * 60);
+  // //initial loading of users
+  // store.dispatch({ type: CacheActionTypes.RELOAD_USER_CACHE });
+  // console.log("Dispatching", CacheActionTypes.RELOAD_USER_CACHE);
 
   const releaseStage = () => {
     if (
@@ -185,32 +210,10 @@ const BugsnagErrorBoundary = BUGSNAG_API_KEY
   ? Bugsnag.getPlugin("react")?.createErrorBoundary(React) ?? React.Fragment
   : React.Fragment;
 
-if (MIXPANEL_PROJECT_TOKEN) {
-  mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
-}
-
 const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
   children,
 }) => {
   const auth = useSelector(authSelector);
-
-  useEffect(() => {
-    if (!auth || !auth.uid) return;
-
-    const displayName = auth.displayName || "N/A";
-    const email = auth.email || "N/A";
-
-    if (LOGROCKET_APP_ID) {
-      LogRocket.identify(auth.uid, {
-        displayName,
-        email,
-      });
-    }
-
-    if (MIXPANEL_PROJECT_TOKEN) {
-      mixpanel.identify(email);
-    }
-  }, [auth]);
 
   if (!isLoaded(auth)) return <LoadingPage />;
 
@@ -222,7 +225,7 @@ traceReactScheduler("initial render", performance.now(), () => {
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
-          <ReduxStoreProvider store={store}>
+          <Provider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <AuthIsLoaded>
                 <CustomSoundsProvider
@@ -233,7 +236,7 @@ traceReactScheduler("initial render", performance.now(), () => {
                 </CustomSoundsProvider>
               </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
-          </ReduxStoreProvider>
+          </Provider>
         </DndProvider>
       </ThemeProvider>
     </BugsnagErrorBoundary>,

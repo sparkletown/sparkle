@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import { User } from "types/User";
+import { ReactHook } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -8,9 +9,8 @@ import { GetUserByPostion } from "hooks/useGetUserByPosition";
 
 import { MapCell } from "components/molecules/MapCell";
 
-import "./MapRoom.scss";
-
-export interface MapGridProps {
+interface UseMapGrid {
+  showGrid?: boolean;
   userUid?: string;
   columnsArray: JSX.Element[];
   rowsArray: JSX.Element[];
@@ -22,19 +22,20 @@ export interface MapGridProps {
   ) => void;
 }
 
-// @debt getUserBySeat breaks memo because it comes from partygoers, which comes from recentVenueUsers which comes from useRecentVenueUsers
-//   We need to refactor this so that user location updates don't flow through here and cause unneeded re-renders.
-export const _MapGrid: React.FC<MapGridProps> = ({
+export type UseMapGridReturn = false | JSX.Element[] | undefined;
+
+export const useMapGrid: ReactHook<UseMapGrid, UseMapGridReturn> = ({
+  showGrid,
   userUid,
   columnsArray,
   rowsArray,
   getUserBySeat,
   onSeatClick,
 }) => {
-  // @debt can we refactor this to position MapCell directly, and do away with the nested loops altogether?
-  return (
-    <>
-      {columnsArray.map((_, colIndex) => (
+  return useMemo(
+    () =>
+      showGrid &&
+      columnsArray.map((_, colIndex) => (
         <div className="seat-column" key={`column${colIndex}`}>
           {rowsArray.map((_, rowIndex) => {
             const column = colIndex + 1; // TODO: do these need to be here, can we zero index?
@@ -51,6 +52,7 @@ export const _MapGrid: React.FC<MapGridProps> = ({
                 key={`row${rowIndex}`}
                 row={row}
                 column={column}
+                showGrid={showGrid}
                 // @debt do we need these *partygoer* props here anymore? See debt notes in MapCell for more details
                 seatedPartygoer={seatedPartygoer}
                 hasSeatedPartygoer={hasSeatedPartygoer}
@@ -60,9 +62,7 @@ export const _MapGrid: React.FC<MapGridProps> = ({
             );
           })}
         </div>
-      ))}
-    </>
+      )),
+    [columnsArray, onSeatClick, getUserBySeat, rowsArray, showGrid, userUid]
   );
 };
-
-export const MapGrid = React.memo(_MapGrid);

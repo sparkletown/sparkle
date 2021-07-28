@@ -1,3 +1,3 @@
-import { RootState } from "store";
+import { RootState } from "index";
 
 export type SparkleSelector<T> = (state: RootState) => T;

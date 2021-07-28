@@ -2,10 +2,24 @@
 
 import * as Yup from "yup";
 
-import { withId, WithId } from "utils/id";
+import { WithId } from "utils/id";
 
-export interface Experience {
-  // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
+export enum PlaceInTalkShowStudioVenue {
+  stage = "stage",
+  audience = "audience",
+  requesting = "requesting",
+}
+
+export interface TalkShowStudioExperience {
+  place?: PlaceInTalkShowStudioVenue;
+  isSharingScreen?: boolean;
+  isMuted?: boolean;
+  isUserCameraOff?: boolean;
+  cameraClientUid?: string;
+  screenClientUid?: string;
+}
+
+export interface Experience extends TalkShowStudioExperience {
   bartender: User;
   table?: string | null;
   row?: number | null;
@@ -32,7 +46,7 @@ export interface ProfileLink {
   url: string;
 }
 
-export interface BaseUser {
+export interface User {
   partyName?: string;
   pictureUrl?: string;
   anonMode?: boolean;
@@ -51,15 +65,13 @@ export interface BaseUser {
   room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
+  realName?: string;
+  companyTitle?: string;
+  companyDepartment?: string;
   // @debt these don't appear to be used by anything anymore
   // drinkOfChoice?: string;
   // favouriteRecord?: string;
   // doYouDance?: string;
-}
-
-export interface User extends BaseUser {
-  lastSeenIn?: never;
-  lastSeenAt?: never;
 }
 
 export interface UserStatus {
@@ -72,7 +84,7 @@ export interface UserLocation {
   lastSeenAt: number;
 }
 
-export type UserWithLocation = BaseUser & UserLocation;
+export type UserWithLocation = User & UserLocation;
 
 export enum UsernameVisibility {
   none = "none",
@@ -152,21 +164,10 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
 // @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
 //  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
 //  validation rules leading to infinite recursion or similar?
-// @debt refactor userWithLocationToUser to optionally not require WithId, then use that in profileSelector
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {
   const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
-};
-
-export const extractLocationFromUser = (
-  user: WithId<UserWithLocation>
-): WithId<UserLocation> => {
-  const { lastSeenIn, lastSeenAt } = user;
-
-  const userLocation = { lastSeenIn, lastSeenAt };
-
-  return withId(userLocation, user.id);
 };
