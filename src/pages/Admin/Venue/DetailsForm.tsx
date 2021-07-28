@@ -27,7 +27,6 @@ import {
   PLAYA_VENUE_STYLES,
   PLAYA_VENUE_NAME,
   HAS_ROOMS_TEMPLATES,
-  BANNER_MESSAGE_TEMPLATES,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
@@ -447,25 +446,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderAnnouncementInput = () => (
-    <>
-      <h4 className="italic input-header">
-        Show an announcement in the venue (or leave blank for none)
-      </h4>
-      <input
-        type="text"
-        disabled={disable}
-        name="bannerMessage"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Enter your announcement"
-      />
-      {errors.bannerMessage && (
-        <span className="input-error">{errors.bannerMessage.message}</span>
-      )}
-    </>
-  );
-
   const renderUrlInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
@@ -602,10 +582,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderBannerPhotoInput()}
         {renderHelper("1:1 ratio recommended")}
         {renderLogoInput()}
-
-        {templateID &&
-          BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
-          renderAnnouncementInput()}
 
         {templateID && (
           <>
