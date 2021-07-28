@@ -103,15 +103,18 @@ run(
     }
 
     const calcPer = (unit: number) => ({
-      writes: unit && stats.writes ? stats.writes / unit : "N/A",
-      relocations: unit && stats.relocations ? stats.relocations / unit : "N/A",
+      writes: unit && stats.writes ? (stats.writes / unit).toFixed(2) : "N/A",
+      relocations:
+        unit && stats.relocations
+          ? (stats.relocations / unit).toFixed(2)
+          : "N/A",
       reactions:
         unit && stats.reactions?.created
-          ? stats.reactions.created / unit
+          ? (stats.reactions.created / unit).toFixed(2)
           : "N/A",
       chatlines:
         unit && stats.chatlines?.created
-          ? stats.chatlines.created / unit
+          ? (stats.chatlines.created / unit).toFixed(2)
           : "N/A",
     });
 

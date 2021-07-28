@@ -4,6 +4,7 @@ import * as faker from "faker";
 import chalk from "chalk";
 import admin from "firebase-admin";
 
+import { getUsersRef } from "./collections";
 import { FieldValue } from "./helpers";
 import { withErrorReporter } from "./log";
 import { checkTypeUser } from "./guards";
@@ -115,13 +116,16 @@ export const ensureBotUsers: (
   stats,
   stop,
 }) => {
-  assert.ok(scriptTag, "ensureUsers(): {magenta scriptTag} is required");
+  assert.ok(
+    scriptTag,
+    `${ensureBotUsers.name}(): {magenta scriptTag} is required`
+  );
   assert.ok(
     count && count > 0,
-    "ensureUsers(): {magenta count} is required and must be {yellow > 0}"
+    `${ensureBotUsers.name}(): {magenta count} is required and must be {yellow > 0}`
   );
 
-  const usersRef = admin.firestore().collection("users");
+  const usersRef = await getUsersRef();
 
   log(
     chalk`{inverse NOTE} Ensuring there are {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
@@ -157,6 +161,7 @@ export const ensureBotUsers: (
       await userRef.set(candidate);
       resultUserRefs.push(userRef);
 
+      stats.writes = (stats.writes ?? 0) + 1;
       (stats.users ??= {}).created = (stats.users.created ?? 0) + 1;
       log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
       continue;
@@ -176,6 +181,7 @@ export const ensureBotUsers: (
     await userRef.update(candidate);
     resultUserRefs.push(userRef);
 
+    stats.writes = (stats.writes ?? 0) + 1;
     (stats.users ??= {}).updated = (stats.users.updated ?? 0) + 1;
     log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
 

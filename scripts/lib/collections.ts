@@ -21,3 +21,7 @@ export const getReactionsRef: (
     .collection("experiences")
     .doc(venueId)
     .collection("reactions");
+
+export const getUsersRef: () => Promise<
+  CollectionReference<DocumentData>
+> = async () => admin.firestore().collection("users");
