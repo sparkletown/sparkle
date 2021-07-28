@@ -5,12 +5,12 @@ import chalk from "chalk";
 import admin from "firebase-admin";
 
 import { getUsersRef } from "./collections";
+import { getVenueName } from "./documents";
 import { FieldValue } from "./helpers";
 import { withErrorReporter } from "./log";
 import { checkTypeUser } from "./guards";
 import {
   CollectionReference,
-  DocumentData,
   DocumentReference,
   DocumentSnapshot,
   QueryDocumentSnapshot,
@@ -26,14 +26,16 @@ import {
 } from "./utils";
 
 export type EnterVenueOptions = {
-  userRef: DocumentReference<DocumentData>;
-  venueId: string;
+  userRef: DocumentReference;
+  venueRef?: DocumentReference;
+  venueId?: string;
   log: LogFunction;
   stats: SimStats;
 };
 
 export const enterVenue = async ({
   userRef,
+  venueRef,
   venueId,
   log,
   stats,
@@ -47,27 +49,34 @@ export const enterVenue = async ({
     );
   }
 
-  if (user.enteredVenueIds?.includes(venueId)) {
+  const candidateId = venueId ?? venueRef?.id;
+  assert.ok(
+    candidateId,
+    `${enterVenue.name}(): One of {magenta venueId} and {magenta venueRef} is required.`
+  );
+
+  if (user.enteredVenueIds?.includes(candidateId)) {
     return; // already in venue
   }
 
   log(
-    chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${venueId}}...`
+    chalk`{inverse NOTE} User {green ${userId}} entering venue {green ${candidateId}}...`
   );
 
-  await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(venueId) });
+  await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(candidateId) });
   stats.writes = (stats.writes ?? 0) + 1;
 
   log(
-    chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${venueId}}.`
+    chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${candidateId}}.`
   );
 };
 
 export type TakeSeatOptions = {
-  userRef: DocumentReference<DocumentData>;
-  venueRef: DocumentReference<DocumentData>;
+  userRef: DocumentReference;
+  venueRef: DocumentReference;
   row: number;
   col: number;
+  sec?: string;
   stats: SimStats;
   log: LogFunction;
 };
@@ -75,11 +84,17 @@ export type TakeSeatOptions = {
 export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
   options
 ) => {
-  const { userRef, venueRef, stats, log, row, col } = options;
+  const { userRef, venueRef, stats, log, row, col, sec } = options;
   const venueId = venueRef.id;
-  const venueName = (await (await venueRef.get()).data())?.name;
+  const venueName = await getVenueName(options);
 
-  await enterVenue({ ...options, userRef, venueId });
+  if (!venueName) {
+    throw new Error(
+      `Venue name was not found for {magenta venueId}: {green ${venueId}}.`
+    );
+  }
+
+  await enterVenue({ ...options, venueId });
 
   const now = Date.now();
 
@@ -88,15 +103,25 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
       .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
       .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
     userRef
-      .update({ [`data.${venueId}`]: { row, column: col } })
+      .update({
+        [`data.${venueId}`]: sec
+          ? { row, column: col, sectionId: sec }
+          : { row, column: col },
+      })
       .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
   ]);
 
   stats.relocations = (stats.relocations ?? 0) + 1;
 
-  log(
-    chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col)}: ({yellow ${row}},{yellow ${col}})`
-  );
+  if (sec) {
+    log(
+      chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,sec)}: ({yellow ${row}},{yellow ${col}},{green ${sec}})`
+    );
+  } else {
+    log(
+      chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col)}: ({yellow ${row}},{yellow ${col}})`
+    );
+  }
 };
 
 export type EnsureBotUsersOptions = {
@@ -109,7 +134,7 @@ export type EnsureBotUsersOptions = {
 
 export const ensureBotUsers: (
   options: EnsureBotUsersOptions
-) => Promise<DocumentReference<DocumentData>[]> = async ({
+) => Promise<DocumentReference[]> = async ({
   log,
   scriptTag,
   count,
@@ -143,7 +168,7 @@ export const ensureBotUsers: (
   let isStopped = false;
   stop.then(() => (isStopped = true));
 
-  const resultUserRefs: DocumentReference<DocumentData>[] = [];
+  const resultUserRefs: DocumentReference[] = [];
 
   for (const candidate of candidates) {
     if (isStopped) {
@@ -198,7 +223,7 @@ export const ensureBotUsers: (
 };
 
 export type RemoveBotUsersOptions = {
-  userRefs: DocumentReference<DocumentData>[];
+  userRefs: DocumentReference[];
   conf: SimConfig;
   log: LogFunction;
   stats: SimStats;
@@ -221,7 +246,7 @@ export const removeBotUsers: (
   for (const userRef of userRefs) {
     const userId = userRef.id;
 
-    const snap: DocumentSnapshot<DocumentData> = await userRef.get();
+    const snap: DocumentSnapshot = await userRef.get();
     if (!snap.exists) {
       log(
         chalk`{yellow.inverse WARN} No user with id {green ${userId}} exists that can be removed.`
@@ -243,9 +268,9 @@ export const removeBotUsers: (
 };
 
 export type AddBotReactionOptions = {
-  reactionsRef: CollectionReference<DocumentData>;
-  userRef: DocumentReference<DocumentData>;
-  venueRef: DocumentReference<DocumentData>;
+  reactionsRef: CollectionReference;
+  userRef: DocumentReference;
+  venueId: string;
   conf: SimConfig;
   stats: SimStats;
   log: LogFunction;
@@ -254,20 +279,20 @@ export type AddBotReactionOptions = {
 export const addBotReaction: (
   options: AddBotReactionOptions
 ) => Promise<void> = async (options) => {
-  const { reactionsRef, userRef, venueRef, conf, log, stats } = options;
+  const { reactionsRef, userRef, conf, log, stats } = options;
   const snap = await userRef.get();
   assert.ok(
     snap.exists,
-    chalk`addBotReaction(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
+    chalk`${addBotReaction.name}(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
   );
 
   const user = await snap.data();
   assert.ok(
     user?.bot === true,
-    chalk`addBotReaction(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
+    chalk`${addBotReaction.name}(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
   );
 
-  await enterVenue({ ...options, venueId: venueRef.id });
+  await enterVenue(options);
 
   // for consistency with bot id's and to distinguish from the natural reactions
   const userId = userRef.id;
@@ -300,7 +325,7 @@ export const addBotReaction: (
 };
 
 export type RemoveBotReactionsOptions = {
-  reactionsRef: CollectionReference<DocumentData>;
+  reactionsRef: CollectionReference;
   conf: SimConfig;
   log: LogFunction;
   stats: SimStats;
@@ -323,9 +348,12 @@ export const removeBotReactions: (
     }
   );
 
-  const snaps: QueryDocumentSnapshot<DocumentData>[] = (
-    await reactionsRef.where("bot", "==", true).get()
-  ).docs;
+  let query = reactionsRef.where("bot", "==", true);
+  if (conf.user?.scriptTag) {
+    query = query.where("botUserScriptTag", "==", conf.user.scriptTag);
+  }
+
+  const snaps: QueryDocumentSnapshot[] = (await query.get()).docs;
   for (const snap of snaps) {
     const reactionId = snap.id;
 
@@ -352,9 +380,9 @@ export const removeBotReactions: (
 };
 
 export type SendBotVenueMessageOptions = {
-  chatsRef: CollectionReference<DocumentData>;
-  userRef: DocumentReference<DocumentData>;
-  venueRef: DocumentReference<DocumentData>;
+  chatsRef: CollectionReference;
+  userRef: DocumentReference;
+  venueRef: DocumentReference;
   conf: SimConfig;
   log: LogFunction;
   stats: SimStats;
@@ -367,13 +395,13 @@ export const sendBotVenueMessage: (
   const snap = await userRef.get();
   assert.ok(
     snap.exists,
-    chalk`sendBotVenueMessage(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
+    chalk`${sendBotVenueMessage.name}(): user is required and has to be a bot ({magenta snap.exists}: {blueBright ${snap.exists})}`
   );
 
   const user = await snap.data();
   assert.ok(
     user?.bot === true,
-    chalk`sendBotVenueMessage(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
+    chalk`${sendBotVenueMessage.name}(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
   );
 
   await enterVenue({ ...options, userRef, venueId: venueRef.id });
@@ -394,11 +422,13 @@ export const sendBotVenueMessage: (
 
   stats.writes = (stats.writes ?? 0) + 1;
   (stats.chatlines ??= {}).created = (stats.chatlines.created ?? 0) + 1;
-  log(chalk`{inverse NOTE} User {green ${userId}} sent text {green ${text}}.`);
+  log(
+    chalk`{inverse NOTE} User {green ${userId}} sent chat ln {green ${text}}.`
+  );
 };
 
 export type RemoveBotChatMessagesOptions = {
-  chatsRef: CollectionReference<DocumentData>;
+  chatsRef: CollectionReference;
   conf: SimConfig;
   log: LogFunction;
   stats: SimStats;
@@ -418,9 +448,12 @@ export const removeBotChatMessages: (
     return promise;
   });
 
-  const snaps: QueryDocumentSnapshot<DocumentData>[] = (
-    await chatsRef.where("bot", "==", true).get()
-  ).docs;
+  let query = chatsRef.where("bot", "==", true);
+  if (conf.user?.scriptTag) {
+    query = query.where("botUserScriptTag", "==", conf.user.scriptTag);
+  }
+
+  const snaps: QueryDocumentSnapshot[] = (await query.get()).docs;
   for (const snap of snaps) {
     const chatId = snap.id;
 

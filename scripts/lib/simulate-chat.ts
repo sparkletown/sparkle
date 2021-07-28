@@ -1,33 +1,18 @@
 import { strict as assert } from "assert";
 import chalk from "chalk";
 
+import { SimulatorContext } from "../simulator";
+
 import { sendBotVenueMessage as actualSendBotVenueMessage } from "./bot";
 import { withErrorReporter } from "./log";
-import {
-  CollectionReference,
-  DocumentData,
-  DocumentReference,
-  SimConfig,
-  SimStats,
-  LogFunction,
-} from "./types";
 import { sleep } from "./utils";
 
 export const DEFAULT_CHAT_CHUNK_SIZE = 100;
 export const DEFAULT_CHAT_TICK_MS = 1000;
 export const DEFAULT_CHAT_AFFINITY = 0.005;
 
-export type SimulateChatOptions = {
-  chatsRef: CollectionReference<DocumentData>;
-  userRefs: DocumentReference<DocumentData>[];
-  venueRef: DocumentReference<DocumentData>;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-  stop: Promise<void>;
-};
 export const simulateChat: (
-  options: SimulateChatOptions
+  options: SimulatorContext
 ) => Promise<void> = async (options) => {
   const { userRefs, venueRef, conf, stop } = options;
 
@@ -39,17 +24,17 @@ export const simulateChat: (
 
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`simulateChat(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`${simulateChat.name}(): {magenta chunkCount} must be integer {yellow > 0}`
   );
 
   assert.ok(
     Number.isFinite(tick) && tick >= 10,
-    chalk`simulateChat(): {magenta tick} must be integer {yellow >= 10}`
+    chalk`${simulateChat.name}(): {magenta tick} must be integer {yellow >= 10}`
   );
 
   assert.ok(
     0 <= affinity && affinity <= 1,
-    chalk`simulateChat(): {magenta affinity} must be a number {yellow from 0 to 1}`
+    chalk`${simulateChat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
   const sendMessage = withErrorReporter(conf.log, actualSendBotVenueMessage);

@@ -32,7 +32,10 @@ export const initFirebase: (options: InitFirebaseOptions) => void = ({
     chalk`{inverse NOTE} Initializing Firebase with {green ${credentials}} for project {green ${projectId}}...`
   );
 
-  assert.ok(projectId, chalk`initFirebase(): {magenta projectId} is required`);
+  assert.ok(
+    projectId,
+    chalk`${initFirebase.name}(): {magenta projectId} is required`
+  );
 
   (stats.file ??= {}).credentials = credentials
     ? resolve(process.cwd(), credentials)
@@ -64,7 +67,6 @@ export const run: (
     }
 
     // setup before running main
-    const stop: Promise<void> = loopUntilKilled();
 
     const { conf, filename } = readConfig({
       name: confName,
@@ -73,6 +75,9 @@ export const run: (
     });
     const stats: SimStats = { file: { configuration: filename } };
     const log = conf?.log?.verbose ? actualLog : () => undefined;
+
+    // timeout is set in minutes
+    const stop: Promise<void> = loopUntilKilled(conf.timeout);
 
     initFirebase({ log, conf, stats });
 

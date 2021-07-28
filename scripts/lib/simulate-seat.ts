@@ -3,36 +3,33 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import faker from "faker";
 
+import { SimulatorContext } from "../simulator";
+
 import { takeSeat as actualTakeSeat } from "./bot";
+import { getSectionsRef } from "./collections";
+import { getVenueGridSize } from "./documents";
 import { withErrorReporter } from "./log";
-import {
-  DocumentData,
-  DocumentReference,
-  SimConfig,
-  SimStats,
-  LogFunction,
-} from "./types";
-import { sleep } from "./utils";
+import { DocumentReference, GridSize } from "./types";
+import { sleep, pickFrom } from "./utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;
 export const DEFAULT_SEAT_AFFINITY = 0.01;
+export const DEFAULT_SEAT_IMPATIENCE = 0.01;
 
-export const GRID_DEFAULTS = { minRow: 0, maxRow: 9, minCol: 0, maxCol: 9 };
-
-export type SimulateSeatOptions = {
-  userRefs: DocumentReference<DocumentData>[];
-  venueRef: DocumentReference<DocumentData>;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-  stop: Promise<void>;
+export const DEFAULT_GRID_SIZE: GridSize = {
+  minRow: 0,
+  maxRow: 9,
+  minCol: 0,
+  maxCol: 9,
 };
+
 export const simulateSeat: (
-  options: SimulateSeatOptions
+  options: SimulatorContext
 ) => Promise<void> = async (options) => {
   const { userRefs, conf, stop } = options;
 
+  const impatience = conf.seat?.impatience ?? DEFAULT_SEAT_IMPATIENCE;
   const affinity =
     conf.seat?.affinity ?? conf.affinity ?? DEFAULT_SEAT_AFFINITY;
   const tick = conf.seat?.tick ?? conf.tick ?? DEFAULT_SEAT_TICK_MS;
@@ -41,16 +38,29 @@ export const simulateSeat: (
 
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`simulateSeat(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`${simulateSeat.name}(): {magenta chunkCount} must be integer {yellow > 0}`
   );
   assert.ok(
     Number.isFinite(tick) && tick >= 10,
-    chalk`simulateSeat(): {magenta tick} must be integer {yellow >= 10}`
+    chalk`${simulateSeat.name}(): {magenta tick} must be integer {yellow >= 10}`
   );
   assert.ok(
     0 <= affinity && affinity <= 1,
-    chalk`simulateSeat(): {magenta affinity} must be a number {yellow from 0 to 1}`
+    chalk`${simulateSeat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
+
+  // if venue in DB has auditorium settings, those take precedence over the configuration ones
+  const grid: GridSize = {
+    ...DEFAULT_GRID_SIZE,
+    ...conf.venue,
+    ...(await getVenueGridSize(options)),
+  };
+  const sectionRefs: DocumentReference[] = await (
+    await getSectionsRef(options)
+  ).listDocuments();
+
+  // keep track of who's already seated
+  const seated: Record<string, boolean> = {};
 
   const takeSeat = withErrorReporter(conf.log, actualTakeSeat);
 
@@ -62,23 +72,33 @@ export const simulateSeat: (
     for (let i = 0, j = userRefs.length; !isStopped && i < j; i += chunkSize) {
       await Promise.all(
         userRefs.slice(i, i + chunkSize).map(async (userRef) => {
-          if (Math.random() >= affinity) {
+          const userId = userRef.id;
+
+          // affinity works only for those already seated
+          if (seated[userId] && Math.random() >= affinity) {
             return;
           }
 
-          const venue = { ...GRID_DEFAULTS, ...conf.venue };
+          // more impatient users will sit down fast, then affinity to move will kick in
+          if (!seated[userId] && Math.random() >= impatience) {
+            return;
+          }
+
+          const sec = pickFrom(sectionRefs)?.id;
+
           const row = faker.datatype.number({
-            min: venue?.minRow,
-            max: venue?.maxRow,
+            min: grid.minRow,
+            max: grid.maxRow,
           });
           const col = faker.datatype.number({
-            min: venue?.minCol,
-            max: venue?.maxCol,
+            min: grid.minCol,
+            max: grid.maxCol,
           });
 
           // TODO: add logic checking for already taken seats
 
-          return takeSeat({ ...options, userRef, row, col });
+          await takeSeat({ ...options, userRef, row, col, sec });
+          seated[userId] = true;
         })
       );
       // explicit sleep between the chunks
@@ -89,5 +109,5 @@ export const simulateSeat: (
   };
 
   // start looping the move updates
-  await loop();
+  return loop();
 };

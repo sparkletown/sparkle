@@ -89,6 +89,8 @@ export const displayProps: (
       log(chalk`{magenta ${prefix + key}}: {redBright ${val}}`);
     } else if (val === true || val === false) {
       log(chalk`{magenta ${prefix + key}}: {blueBright ${val}}`);
+    } else if (val === "N/A") {
+      log(chalk`{magenta ${prefix + key}}: {green.dim ${val}}`);
     } else if (typeof val === "string") {
       log(chalk`{magenta ${prefix + key}}: {green ${val}}`);
     } else if (typeof val === "number") {

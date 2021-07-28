@@ -1,33 +1,18 @@
 import { strict as assert } from "assert";
-
-import * as admin from "firebase-admin";
 import chalk from "chalk";
+
+import { SimulatorContext } from "../simulator";
 
 import { withErrorReporter } from "./log";
 import { addBotReaction as actualReactToExperience } from "./bot";
-import { SimConfig, SimStats, LogFunction } from "./types";
 import { sleep } from "./utils";
-
-// import type definitions to decrease declaration verbosity
-import CollectionReference = admin.firestore.CollectionReference;
-import DocumentData = admin.firestore.DocumentData;
-import DocumentReference = admin.firestore.DocumentReference;
 
 export const DEFAULT_EXPERIENCE_CHUNK_SIZE = 100;
 export const DEFAULT_EXPERIENCE_TICK_MS = 1000;
 export const DEFAULT_EXPERIENCE_AFFINITY = 0.005;
 
-export type SimulateExperienceOptions = {
-  userRefs: DocumentReference<DocumentData>[];
-  venueRef: DocumentReference<DocumentData>;
-  reactionsRef: CollectionReference<DocumentData>;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-  stop: Promise<void>;
-};
 export const simulateExperience: (
-  options: SimulateExperienceOptions
+  options: SimulatorContext
 ) => Promise<void> = async (options) => {
   const { userRefs, conf, stop } = options;
 
@@ -41,15 +26,15 @@ export const simulateExperience: (
 
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`simulateExperience(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`${simulateExperience.name}(): {magenta chunkCount} must be integer {yellow > 0}`
   );
   assert.ok(
     Number.isFinite(tick) && tick >= 10,
-    chalk`simulateExperience(): {magenta tick} must be integer {yellow >= 10}`
+    chalk`${simulateExperience.name}(): {magenta tick} must be integer {yellow >= 10}`
   );
   assert.ok(
     0 <= affinity && affinity <= 1,
-    chalk`simulateExperience(): {magenta affinity} must be a number {yellow from 0 to 1}`
+    chalk`${simulateExperience.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
   const reactToExperience = withErrorReporter(

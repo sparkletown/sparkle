@@ -75,6 +75,7 @@ export type SimConfig = Incomplete<
     projectId: string;
     credentials: string;
 
+    timeout: number;
     simulate: SimulationName[];
 
     log: {
@@ -96,7 +97,7 @@ export type SimConfig = Incomplete<
       chunkSize: number;
     };
 
-    seat: SimLoopConfig;
+    seat: SimLoopConfig & { impatience: boolean };
     chat: SimLoopConfig & HasCleanupFlag;
     experience: SimLoopConfig & HasCleanupFlag;
   }
@@ -107,4 +108,11 @@ export type RunContext<T> = {
   log: LogFunction;
   stats: SimStats;
   stop: Promise<void>;
+};
+
+export type GridSize = {
+  maxCol: number;
+  maxRow: number;
+  minCol: number;
+  minRow: number;
 };

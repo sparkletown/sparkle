@@ -3,6 +3,7 @@ import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
 
 import chalk from "chalk";
+import { addMinutes, formatISO } from "date-fns";
 import faker from "faker";
 import JSON5 from "json5";
 
@@ -14,7 +15,7 @@ const INDEX_BASE = 10 ** INDEX_PADDING + 1;
 
 // @see EmojiReactionType in types/reactions
 // noinspection SpellCheckingInspection
-const REACTIONS = Object.freeze([
+const REACTIONS = [
   "heart",
   "clap",
   "wolf",
@@ -24,18 +25,21 @@ const REACTIONS = Object.freeze([
   "burn",
   "sparkle",
   "messageToTheBand",
-]);
-const TEXTERS = Object.freeze([
+];
+
+const TEXTERS = [
   faker.hacker.phrase,
   faker.company.catchPhrase,
   faker.company.bs,
   faker.lorem.sentence,
   faker.random.words,
-]);
-export const generateRandomReaction = () =>
-  REACTIONS[Math.floor(Math.random() * REACTIONS.length)];
-export const generateRandomText = () =>
-  TEXTERS[Math.floor(Math.random() * TEXTERS.length)]();
+];
+
+export const pickFrom: <T>(array: T[]) => T | undefined = (array) =>
+  array[Math.floor(Math.random() * array.length)];
+
+export const generateRandomReaction = () => pickFrom(REACTIONS);
+export const generateRandomText = () => pickFrom(TEXTERS)?.();
 
 // export const STOP = Symbol("stop");
 // export const withLoop: (tick: number, fn: Function) => Function = (
@@ -54,7 +58,7 @@ export const generateRandomText = () =>
 export const sleep: (ms: number) => Promise<void> = (ms) => {
   assert.ok(
     Number.isFinite(ms) && ms >= 10,
-    chalk`sleep(): {magenta ms} must be integer {yellow >= 10}`
+    chalk`${sleep.name}(): {magenta ms} must be integer {yellow >= 10}`
   );
   return new Promise((resolve) => {
     setTimeout(() => resolve(), ms);
@@ -72,16 +76,39 @@ export const generateUserId: ({
 }: GenerateUserIdOptions) => string = ({ scriptTag, index }) =>
   `${scriptTag}-` + `${index + INDEX_BASE}`.padStart(INDEX_PADDING, "0");
 
-export const loopUntilKilled = () => {
+export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
+  timeout
+) => {
+  const endpoint = timeout
+    ? addMinutes(new Date(), timeout).getTime()
+    : undefined;
+
+  // handle for the resolve function to be used inside the interval-ed function
+  let stop: (value: PromiseLike<void> | void) => void;
+
   // The keep alive interval, prevents Node from simply finishing its run
-  const intervalId = setInterval(() => undefined, 1000);
+  const intervalId = setInterval(() => {
+    if (!endpoint) return;
+    if (endpoint > new Date().getTime()) return;
+    log(chalk`{redBright Timeout} reached, stopping...`);
+    clearInterval(intervalId);
+    stop?.();
+  }, 1000);
 
   // Waits until user tries to exit with CTRL-C
   return new Promise<void>((resolve) => {
-    log(chalk`Press {redBright CTRL-C} to exit...`);
+    stop = resolve;
+    if (endpoint) {
+      log(
+        chalk`{blue.inverse INFO} Timeout set at {redBright ${formatISO(
+          endpoint
+        )}}.`
+      );
+    }
+    log(chalk`{blue.inverse INFO} Press {redBright CTRL-C} to exit...`);
 
     process.on("SIGINT", () => {
-      log(chalk`{redBright CTRL-C} detected, stopping simulation...`);
+      log(chalk`{redBright CTRL-C} detected, stopping...`);
       clearInterval(intervalId);
       resolve();
     });
