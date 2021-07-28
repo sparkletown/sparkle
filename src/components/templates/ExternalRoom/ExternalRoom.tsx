@@ -38,9 +38,15 @@ export const ExternalRoom: React.FC<ExternalRoomProps> = ({ venue }) => {
               allow popups in your browser
             </a>{" "}
             and keep this tab open while you explore, so you can find your way
-            back easily. If you do not see a new tab open, please feel free to{" "}
-            <a rel="noreferrer" href={venue.zoomUrl} target="_blank">
-              click here
+            back easily. If you do not see a new tab open, please feel free to
+            click through to:{" "}
+            <a
+              rel="noreferrer"
+              href={venue.zoomUrl}
+              target="_blank"
+              className="ExternalRoom__link"
+            >
+              {venue.zoomUrl}
             </a>
             .
           </h4>
