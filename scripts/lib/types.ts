@@ -16,28 +16,48 @@ export import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export import Timestamp = admin.firestore.Timestamp;
 
+export type LogFunction = typeof console.log;
+
+export type Incomplete<T> = {
+  [K in keyof T]?: T[K] extends object ? Incomplete<T[K]> : T[K];
+};
+
 export type SimulationName = "chat" | "experience" | "seat";
 
-export type SimStats = Partial<{
-  startTime: string;
-  finishTime: string;
-  runTime: string;
+export type SimStats = Incomplete<{
+  time: {
+    start: string;
+    finish: string;
+    run: string;
+  };
 
-  configurationFilename: string;
-  credentialsFilename: string;
+  file: {
+    configuration: string;
+    credentials: string;
+  };
 
-  usersCount: number;
-  usersCreated: number;
-  usersUpdated: number;
-  usersRemoved: number;
+  users: {
+    count: number;
+    updated: number;
+    created: number;
+    removed: number;
+  };
 
   relocations: number;
 
-  reactions: number;
-  reactionsRemoved: number;
+  reactions: {
+    created: number;
+    removed: number;
+  };
 
-  chatlines: number;
-  chatlinesRemoved: number;
+  chatlines: {
+    created: number;
+    removed: number;
+  };
+
+  writes: number;
+
+  average: Record<string, unknown>;
 }>;
 
 export type SimLoopConfig = {
@@ -50,36 +70,41 @@ export type HasCleanupFlag = {
   cleanup: boolean;
 };
 
-export type SimConfig = Partial<
+export type SimConfig = Incomplete<
   SimLoopConfig & {
     projectId: string;
     credentials: string;
 
     simulate: SimulationName[];
 
-    log: Partial<{
+    log: {
       verbose: boolean;
       stack: boolean;
-    }>;
+    };
 
-    user: Partial<
-      HasCleanupFlag & {
-        scriptTag: string;
-        count: number;
-      }
-    >;
+    user: HasCleanupFlag & {
+      scriptTag: string;
+      count: number;
+    };
 
-    venue: Partial<{
+    venue: {
       id: string;
       minRow: number;
       minCol: number;
       maxRow: number;
       maxCol: number;
       chunkSize: number;
-    }>;
+    };
 
-    seat: Partial<SimLoopConfig>;
-    chat: Partial<SimLoopConfig & HasCleanupFlag>;
-    experience: Partial<SimLoopConfig & HasCleanupFlag>;
+    seat: SimLoopConfig;
+    chat: SimLoopConfig & HasCleanupFlag;
+    experience: SimLoopConfig & HasCleanupFlag;
   }
 >;
+
+export type RunContext<T> = {
+  conf: T;
+  log: LogFunction;
+  stats: SimStats;
+  stop: Promise<void>;
+};

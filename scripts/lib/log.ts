@@ -1,12 +1,13 @@
 import { relative } from "path";
 import chalk from "chalk";
 
+import { checkTypeObject } from "./guards";
+import { LogFunction } from "./types";
+
 export const determineScript = () => relative(process.cwd(), process.argv[1]);
 
 // NOTE: just caching the result since it shouldn't change while the script is running
 export const SCRIPT = determineScript();
-
-export type LogFunction = typeof console.log;
 
 export const log: LogFunction = (...args: Parameters<LogFunction>) => {
   chalk.reset();
@@ -77,20 +78,25 @@ export const withErrorReporter = <T extends Function>(
   return (temporaryObject[wrapperName] as unknown) as T;
 };
 
-export const displayProps: (stats: Record<string, unknown>) => void = (
-  stats
-) => {
+export const displayProps: (
+  stats: Record<string, unknown>,
+  prefix?: string
+) => void = (stats, prefix = "") => {
+  prefix = prefix ? prefix + "." : "";
+
   for (const [key, val] of Object.entries(stats ?? {})) {
-    if (val === null || val === undefined) {
-      log(chalk`{magenta ${key}}: {redBright ${val}}`);
+    if (val === null || val === undefined || Number.isNaN(val)) {
+      log(chalk`{magenta ${prefix + key}}: {redBright ${val}}`);
     } else if (val === true || val === false) {
-      log(chalk`{magenta ${key}}: {blueBright ${val}}`);
+      log(chalk`{magenta ${prefix + key}}: {blueBright ${val}}`);
     } else if (typeof val === "string") {
-      log(chalk`{magenta ${key}}: {green ${val}}`);
+      log(chalk`{magenta ${prefix + key}}: {green ${val}}`);
     } else if (typeof val === "number") {
-      log(chalk`{magenta ${key}}: {yellow ${val}}`);
+      log(chalk`{magenta ${prefix + key}}: {yellow ${val}}`);
+    } else if (checkTypeObject(val)) {
+      displayProps(val as Record<string, unknown>, prefix + key);
     } else {
-      log(chalk`{magenta ${key}}: {dim ${val}}`);
+      log(chalk`{magenta ${prefix + key}}: {dim ${val}}`);
     }
   }
 };

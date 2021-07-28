@@ -5,8 +5,7 @@ import chalk from "chalk";
 
 import { User } from "types/User";
 
-import { LogFunction } from "./log";
-import { DocumentReference, DocumentData } from "./types";
+import { DocumentReference, DocumentData, LogFunction } from "./types";
 
 export type FindVenueOptions = {
   venueId: string;

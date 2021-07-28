@@ -5,7 +5,7 @@ import chalk from "chalk";
 import admin from "firebase-admin";
 
 import { FieldValue } from "./helpers";
-import { LogFunction, withErrorReporter } from "./log";
+import { withErrorReporter } from "./log";
 import { checkTypeUser } from "./guards";
 import {
   CollectionReference,
@@ -15,23 +15,27 @@ import {
   QueryDocumentSnapshot,
   SimConfig,
   SimStats,
+  LogFunction,
 } from "./types";
 import {
   generateRandomText,
   generateRandomReaction,
   generateUserId,
+  sleep,
 } from "./utils";
 
 export type EnterVenueOptions = {
   userRef: DocumentReference<DocumentData>;
   venueId: string;
   log: LogFunction;
+  stats: SimStats;
 };
 
 export const enterVenue = async ({
   userRef,
   venueId,
   log,
+  stats,
 }: EnterVenueOptions) => {
   const userId = userRef.id;
   const user = (await userRef.get()).data();
@@ -51,6 +55,7 @@ export const enterVenue = async ({
   );
 
   await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(venueId) });
+  stats.writes = (stats.writes ?? 0) + 1;
 
   log(
     chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${venueId}}.`
@@ -66,24 +71,24 @@ export type TakeSeatOptions = {
   log: LogFunction;
 };
 
-export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async ({
-  userRef,
-  venueRef,
-  stats,
-  log,
-  row,
-  col,
-}) => {
+export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
+  options
+) => {
+  const { userRef, venueRef, stats, log, row, col } = options;
   const venueId = venueRef.id;
   const venueName = (await (await venueRef.get()).data())?.name;
 
-  await enterVenue({ userRef, venueId, log });
+  await enterVenue({ ...options, userRef, venueId });
 
   const now = Date.now();
 
   await Promise.all([
-    userRef.update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } }),
-    userRef.update({ [`data.${venueId}`]: { row, column: col } }),
+    userRef
+      .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
+      .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
+    userRef
+      .update({ [`data.${venueId}`]: { row, column: col } })
+      .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
   ]);
 
   stats.relocations = (stats.relocations ?? 0) + 1;
@@ -98,6 +103,7 @@ export type EnsureBotUsersOptions = {
   scriptTag?: string;
   count?: number;
   log: LogFunction;
+  stop: Promise<void>;
 };
 
 export const ensureBotUsers: (
@@ -107,6 +113,7 @@ export const ensureBotUsers: (
   scriptTag,
   count,
   stats,
+  stop,
 }) => {
   assert.ok(scriptTag, "ensureUsers(): {magenta scriptTag} is required");
   assert.ok(
@@ -128,9 +135,16 @@ export const ensureBotUsers: (
     botUserScriptTag: scriptTag,
   }));
 
+  // flag that will not let loop going on when user pressed CTRL+C
+  let isStopped = false;
+  stop.then(() => (isStopped = true));
+
   const resultUserRefs: DocumentReference<DocumentData>[] = [];
 
   for (const candidate of candidates) {
+    if (isStopped) {
+      break;
+    }
     const id = candidate.id;
     const userRef = await usersRef.doc(id);
 
@@ -143,28 +157,33 @@ export const ensureBotUsers: (
       await userRef.set(candidate);
       resultUserRefs.push(userRef);
 
-      stats.usersCreated = (stats.usersCreated ?? 0) + 1;
+      (stats.users ??= {}).created = (stats.users.created ?? 0) + 1;
       log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
       continue;
     }
 
     const user = userSnap.data();
     if (checkTypeUser(user)) {
-      log(chalk`Found valid user {green ${id}}.`);
+      log(chalk`{inverse NOTE} Found valid user {green ${id}}.`);
       resultUserRefs.push(userRef);
       continue;
     }
 
-    log(chalk`Found invalid user {green ${id}}, updating...`);
+    log(
+      chalk`{yellow.inverse WARN} Found invalid user {green ${id}}, updating...`
+    );
 
     await userRef.update(candidate);
     resultUserRefs.push(userRef);
 
-    stats.usersUpdated = (stats.usersUpdated ?? 0) + 1;
+    (stats.users ??= {}).updated = (stats.users.updated ?? 0) + 1;
     log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
+
+    // just so that busy loop doesn't mess with other async stuff, like the stop signal
+    await sleep(10);
   }
 
-  stats.usersCount = count;
+  (stats.users ??= {}).count = resultUserRefs.length;
   log(
     chalk`{greenBright.inverse DONE} Ensured {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}} exist.`
   );
@@ -188,7 +207,7 @@ export const removeBotUsers: (
       log(
         chalk`{green.inverse DONE} Removed  user with id {green ${userRef.id}}.`
       );
-      stats.usersRemoved = (stats.usersRemoved ?? 0) + 1;
+      (stats.users ??= {}).removed = (stats.users.removed ?? 0) + 1;
     });
     return promise;
   });
@@ -217,7 +236,7 @@ export const removeBotUsers: (
   }
 };
 
-export type ReactToExperienceOptions = {
+export type AddBotReactionOptions = {
   reactionsRef: CollectionReference<DocumentData>;
   userRef: DocumentReference<DocumentData>;
   venueRef: DocumentReference<DocumentData>;
@@ -226,16 +245,10 @@ export type ReactToExperienceOptions = {
   log: LogFunction;
 };
 
-export const reactToExperience: (
-  options: ReactToExperienceOptions
-) => Promise<void> = async ({
-  reactionsRef,
-  userRef,
-  venueRef,
-  conf,
-  log,
-  stats,
-}) => {
+export const addBotReaction: (
+  options: AddBotReactionOptions
+) => Promise<void> = async (options) => {
+  const { reactionsRef, userRef, venueRef, conf, log, stats } = options;
   const snap = await userRef.get();
   assert.ok(
     snap.exists,
@@ -248,7 +261,7 @@ export const reactToExperience: (
     chalk`addBotReaction(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
   );
 
-  await enterVenue({ userRef, venueId: venueRef.id, log });
+  await enterVenue({ ...options, venueId: venueRef.id });
 
   // for consistency with bot id's and to distinguish from the natural reactions
   const userId = userRef.id;
@@ -276,7 +289,8 @@ export const reactToExperience: (
       isText ? data.text : data.reaction
     }}.`
   );
-  stats.reactions = (stats.reactions ?? 0) + 1;
+  stats.writes = (stats.writes ?? 0) + 1;
+  (stats.reactions ??= {}).created = (stats.reactions.created ?? 0) + 1;
 };
 
 export type RemoveBotReactionsOptions = {
@@ -297,7 +311,7 @@ export const removeBotReactions: (
         log(
           chalk`{green.inverse DONE} Removed  reaction with id {green ${reactionRef.id}}.`
         );
-        stats.reactionsRemoved = (stats.reactionsRemoved ?? 0) + 1;
+        (stats.reactions ??= {}).removed = (stats.reactions.removed ?? 0) + 1;
       });
       return promise;
     }
@@ -342,14 +356,8 @@ export type SendBotVenueMessageOptions = {
 
 export const sendBotVenueMessage: (
   options: SendBotVenueMessageOptions
-) => Promise<void> = async ({
-  chatsRef,
-  userRef,
-  venueRef,
-  conf,
-  log,
-  stats,
-}) => {
+) => Promise<void> = async (options) => {
+  const { chatsRef, userRef, venueRef, conf, log, stats } = options;
   const snap = await userRef.get();
   assert.ok(
     snap.exists,
@@ -362,7 +370,7 @@ export const sendBotVenueMessage: (
     chalk`sendBotVenueMessage(): user is required and has to be a bot ({magenta user.bot}: {blueBright ${user?.bot})}`
   );
 
-  await enterVenue({ userRef, venueId: venueRef.id, log });
+  await enterVenue({ ...options, userRef, venueId: venueRef.id });
 
   // for consistency with bot id's and to distinguish from the natural reactions
   const userId = userRef.id;
@@ -378,8 +386,9 @@ export const sendBotVenueMessage: (
     ts_utc: admin.firestore.Timestamp.now(),
   });
 
+  stats.writes = (stats.writes ?? 0) + 1;
+  (stats.chatlines ??= {}).created = (stats.chatlines.created ?? 0) + 1;
   log(chalk`{inverse NOTE} User {green ${userId}} sent text {green ${text}}.`);
-  stats.chatlines = (stats.chatlines ?? 0) + 1;
 };
 
 export type RemoveBotChatMessagesOptions = {
@@ -398,7 +407,7 @@ export const removeBotChatMessages: (
       log(
         chalk`{green.inverse DONE} Removed  chat with id {green ${chatRef.id}}.`
       );
-      stats.chatlinesRemoved = (stats.chatlinesRemoved ?? 0) + 1;
+      (stats.chatlines ??= {}).removed = (stats.chatlines.removed ?? 0) + 1;
     });
     return promise;
   });

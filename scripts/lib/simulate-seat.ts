@@ -4,8 +4,14 @@ import chalk from "chalk";
 import faker from "faker";
 
 import { takeSeat as actualTakeSeat } from "./bot";
-import { withErrorReporter, LogFunction } from "./log";
-import { DocumentData, DocumentReference, SimConfig, SimStats } from "./types";
+import { withErrorReporter } from "./log";
+import {
+  DocumentData,
+  DocumentReference,
+  SimConfig,
+  SimStats,
+  LogFunction,
+} from "./types";
 import { sleep } from "./utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;

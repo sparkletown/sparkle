@@ -4,9 +4,10 @@
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
+import { differenceInSeconds, parseISO, differenceInMinutes } from "date-fns";
 
 import {
-  ensureBotUsers as actualEnsureUsers,
+  ensureBotUsers as actualEnsureBotUsers,
   removeBotUsers,
   removeBotReactions,
   removeBotChatMessages,
@@ -22,16 +23,22 @@ import {
   CollectionReference,
   DocumentData,
   DocumentReference,
+  RunContext,
+  SimConfig,
 } from "./lib/types";
 
-// noinspection JSIgnoredPromiseFromCall
-run<{
+type MainResult = {
   chatsRef: CollectionReference<DocumentData>;
   reactionsRef: CollectionReference<DocumentData>;
   userRefs: DocumentReference<DocumentData>[];
-}>(
-  async (options) => {
-    const { conf, log, stats } = options;
+};
+
+type CleanupOptions = RunContext<SimConfig> & { result: MainResult };
+
+// noinspection JSIgnoredPromiseFromCall
+run(
+  async (options: RunContext<SimConfig>) => {
+    const { conf, log } = options;
     const { venue, simulate = [] } = conf;
     const venueId = venue?.id;
 
@@ -46,11 +53,11 @@ run<{
       chalk`main(): venue was not found for {magenta venue.id}: {green ${venueId}}`
     );
 
-    const ensureUsers = withErrorReporter(
+    const ensureBotUsers = withErrorReporter(
       { ...conf.log, critical: true },
-      actualEnsureUsers
+      actualEnsureBotUsers
     );
-    const userRefs = await ensureUsers({ log, stats, ...conf.user });
+    const userRefs = await ensureBotUsers({ ...options, ...conf.user });
 
     if (simulate.length === 0 || simulate.includes("seat")) {
       await simulateSeat({ ...options, userRefs, venueRef });
@@ -71,7 +78,7 @@ run<{
 
     return { chatsRef, reactionsRef, userRefs };
   },
-  async ({ conf, log, result, stats }) => {
+  async ({ conf, log, result, stats }: CleanupOptions) => {
     // and now, clean up the mess
 
     if (conf.user?.cleanup ?? true) {
@@ -94,5 +101,26 @@ run<{
       await removeBotChatMessages({ conf, log, stats, chatsRef });
       log(chalk`{green.inverse DONE} Removed bot reactions.`);
     }
+
+    const calcPer = (unit: number) => ({
+      writes: unit && stats.writes ? stats.writes / unit : "N/A",
+      relocations: unit && stats.relocations ? stats.relocations / unit : "N/A",
+      reactions:
+        unit && stats.reactions?.created
+          ? stats.reactions.created / unit
+          : "N/A",
+      chatlines:
+        unit && stats.chatlines?.created
+          ? stats.chatlines.created / unit
+          : "N/A",
+    });
+
+    const start = parseISO(stats.time?.start ?? "");
+    const finish = parseISO(stats.time?.finish ?? "");
+
+    stats.average = {
+      "per.minute": calcPer(Math.abs(differenceInMinutes(start, finish))),
+      "per.second": calcPer(Math.abs(differenceInSeconds(start, finish))),
+    };
   }
 );

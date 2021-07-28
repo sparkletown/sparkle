@@ -3,9 +3,9 @@ import { strict as assert } from "assert";
 import * as admin from "firebase-admin";
 import chalk from "chalk";
 
-import { LogFunction, withErrorReporter } from "./log";
-import { reactToExperience as actualReactToExperience } from "./bot";
-import { SimConfig, SimStats } from "./types";
+import { withErrorReporter } from "./log";
+import { addBotReaction as actualReactToExperience } from "./bot";
+import { SimConfig, SimStats, LogFunction } from "./types";
 import { sleep } from "./utils";
 
 // import type definitions to decrease declaration verbosity

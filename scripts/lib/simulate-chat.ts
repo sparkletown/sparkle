@@ -1,14 +1,15 @@
 import { strict as assert } from "assert";
 import chalk from "chalk";
 
-import { sendBotVenueMessage as actualSendVenueBotMessage } from "./bot";
-import { LogFunction, withErrorReporter } from "./log";
+import { sendBotVenueMessage as actualSendBotVenueMessage } from "./bot";
+import { withErrorReporter } from "./log";
 import {
   CollectionReference,
   DocumentData,
   DocumentReference,
   SimConfig,
   SimStats,
+  LogFunction,
 } from "./types";
 import { sleep } from "./utils";
 
@@ -51,10 +52,7 @@ export const simulateChat: (
     chalk`simulateChat(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
-  const sendVenueBotMessage = withErrorReporter(
-    conf.log,
-    actualSendVenueBotMessage
-  );
+  const sendMessage = withErrorReporter(conf.log, actualSendBotVenueMessage);
 
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
@@ -68,7 +66,7 @@ export const simulateChat: (
           .map(
             async (userRef) =>
               Math.random() < affinity &&
-              sendVenueBotMessage({ ...options, userRef, venueRef })
+              sendMessage({ ...options, userRef, venueRef })
           )
       );
       // explicit sleep between the chunks
