@@ -17,6 +17,7 @@ import {
   SimConfig,
   SimStats,
   LogFunction,
+  StopSignal,
 } from "./types";
 import {
   generateRandomText,
@@ -131,7 +132,7 @@ export type EnsureBotUsersOptions = {
   log: LogFunction;
   scriptTag?: string;
   stats: SimStats;
-  stop: Promise<void>;
+  stop: Promise<StopSignal>;
 };
 
 export const ensureBotUsers: (
@@ -170,7 +171,9 @@ export const ensureBotUsers: (
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
   // in case script isn't being kept alive, don't stop creating users
-  if (conf.keepAlive) stop.then(() => (isStopped = true));
+  stop.then(
+    (signal) => (isStopped = signal === "sigint" || conf.keepAlive !== false)
+  );
 
   const resultUserRefs: DocumentReference[] = [];
 
@@ -218,7 +221,7 @@ export const ensureBotUsers: (
 
     // just so that busy loop doesn't mess with other async stuff, like the stop signal
     // unless the stop signal isn't being maintained i.e. keepAlive is false
-    if (conf.keepAlive) await sleep(10);
+    await sleep(10);
   }
 
   (stats.users ??= {}).count = resultUserRefs.length;

@@ -22,6 +22,7 @@ export type Incomplete<T> = {
   [K in keyof T]?: T[K] extends object ? Incomplete<T[K]> : T[K];
 };
 
+export type StopSignal = "sigint" | "timeout";
 export type SimulationName = "chat" | "experience" | "seat";
 
 export type SimStats = Incomplete<{

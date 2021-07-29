@@ -12,7 +12,7 @@ import {
   log as actualLog,
   displayProps,
 } from "./log";
-import { SimConfig, SimStats, LogFunction } from "./types";
+import { SimConfig, SimStats, LogFunction, StopSignal } from "./types";
 import { loopUntilKilled, readConfig } from "./utils";
 
 export const SIM_EXT = [".config.json5", ".config.json"];
@@ -80,10 +80,10 @@ export const run: (
     isErrorStackToBeDisplayed = conf?.log?.stack;
     const log = conf?.log?.verbose ? actualLog : () => undefined;
     const stats: SimStats = { file: { configuration: filename } };
-    const stop: Promise<void> =
+    const stop: Promise<StopSignal> =
       conf.keepAlive ?? true
         ? loopUntilKilled(conf.timeout)
-        : Promise.resolve();
+        : Promise.resolve("timeout");
 
     initFirebase({ log, conf, stats });
 

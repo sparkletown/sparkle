@@ -8,7 +8,7 @@ import faker from "faker";
 import JSON5 from "json5";
 
 import { log } from "./log";
-import { SimConfig } from "./types";
+import { SimConfig, StopSignal } from "./types";
 
 const INDEX_PADDING = 4;
 const INDEX_BASE = 10 ** INDEX_PADDING + 1;
@@ -79,16 +79,16 @@ export const generateUserId: ({
 }: GenerateUserIdOptions) => string = ({ scriptTag, index }) =>
   `${scriptTag}-` + `${index + INDEX_BASE}`.padStart(INDEX_PADDING, "0");
 
-export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
-  timeout
-) => {
+export const loopUntilKilled: (
+  timeoutInMinutes?: number
+) => Promise<StopSignal> = (timeout) => {
   // timeout is set in minutes
   const endpoint = timeout
     ? addMinutes(new Date(), timeout).getTime()
     : undefined;
 
   // handle for the resolve function to be used inside the interval-ed function
-  let stop: (value: PromiseLike<void> | void) => void;
+  let stop: (value: PromiseLike<StopSignal> | StopSignal) => void;
 
   // The keep alive interval, prevents Node from simply finishing its run
   const intervalId = setInterval(() => {
@@ -96,11 +96,11 @@ export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
     if (endpoint > new Date().getTime()) return;
     log(chalk`{blue.inverse INFO} {redBright Timeout} reached, stopping...`);
     clearInterval(intervalId);
-    stop?.();
+    stop?.("timeout");
   }, 1000);
 
   // Waits until user tries to exit with CTRL-C
-  return new Promise<void>((resolve) => {
+  return new Promise<StopSignal>((resolve) => {
     stop = resolve;
     if (endpoint) {
       log(
@@ -114,7 +114,7 @@ export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
     process.on("SIGINT", () => {
       log(chalk`{blue.inverse INFO} {redBright CTRL-C} detected, stopping...`);
       clearInterval(intervalId);
-      resolve();
+      resolve("sigint");
     });
   });
 };
