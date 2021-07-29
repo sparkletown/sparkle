@@ -112,7 +112,7 @@ export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
     log(chalk`{blue.inverse INFO} Press {redBright CTRL-C} to exit...`);
 
     process.on("SIGINT", () => {
-      log(chalk`{redBright CTRL-C} detected, stopping...`);
+      log(chalk`{blue.inverse INFO} {redBright CTRL-C} detected, stopping...`);
       clearInterval(intervalId);
       resolve();
     });

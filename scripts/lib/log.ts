@@ -60,7 +60,7 @@ export const withErrorReporter = <T extends Function>(
         chalk.reset();
 
         log(
-          chalk`{dim withErrorReporter(}{white ${functionName}}{dim )}{white :} {red.inverse ERRR} {red ${e.message}}`
+          chalk`{red.inverse ERRR} {dim withErrorReporter(}{white ${functionName}}{dim )}{white :} {red ${e.message}}`
         );
 
         if (stack) {

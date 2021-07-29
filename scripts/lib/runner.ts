@@ -96,7 +96,7 @@ export const run: (
     await cleanup({ stats, conf, log, stop, result });
 
     // wrap up console logging
-    log(chalk`{white Some useful stats:}`);
+    log(chalk`{blue.inverse INFO} {white Some useful stats:}`);
     displayProps(stats);
     log(chalk`{green.inverse DONE} Running {green ${SCRIPT}}.`);
 

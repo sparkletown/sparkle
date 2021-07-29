@@ -145,11 +145,11 @@ export const ensureBotUsers: (
 }) => {
   assert.ok(
     scriptTag,
-    `${ensureBotUsers.name}(): {magenta scriptTag} is required`
+    chalk`${ensureBotUsers.name}(): {magenta scriptTag} is required`
   );
   assert.ok(
     count && count > 0,
-    `${ensureBotUsers.name}(): {magenta count} is required and must be {yellow > 0}`
+    chalk`${ensureBotUsers.name}(): {magenta count} is required and must be {yellow > 0}`
   );
 
   const usersRef = await getUsersRef();
