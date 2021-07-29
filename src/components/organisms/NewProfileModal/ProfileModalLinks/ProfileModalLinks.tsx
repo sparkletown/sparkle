@@ -2,7 +2,11 @@ import { useUser } from "../../../../hooks/useUser";
 import { ProfileModalLink } from "./ProfileModalLink";
 import React, { useMemo } from "react";
 
-export const ProfileModalLinks: React.FC = () => {
+interface Props {
+  className?: string;
+}
+
+export const ProfileModalLinks: React.FC<Props> = ({ className }) => {
   const { profile } = useUser();
 
   const renderedProfileLinks = useMemo(
@@ -13,5 +17,5 @@ export const ProfileModalLinks: React.FC = () => {
     [profile?.profileLinks]
   );
 
-  return <>{renderedProfileLinks}</>;
+  return <div className={className}>{renderedProfileLinks}</div>;
 };

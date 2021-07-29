@@ -156,7 +156,11 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
             )}
           </div>
           <div>
-            <ProfileModalContent venue={venue} />
+            <ProfileModalContent
+              chosenUser={selectedUserProfile}
+              openChat={openChosenUserChat}
+              venue={venue}
+            />
           </div>
         </div>
       </Modal.Body>

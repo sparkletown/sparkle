@@ -23,8 +23,8 @@ import "./Badges.scss";
 export const Badges: React.FC<{
   user: WithId<User>;
   currentVenue: WithId<AnyVenue>;
-  className?: string;
-}> = ({ user, currentVenue, className }) => {
+  containerClassName?: string;
+}> = ({ user, currentVenue, containerClassName }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -147,10 +147,8 @@ export const Badges: React.FC<{
     return <>Visit venues to collect badges!</>;
   }
 
-  const containerClassName = classNames("Badges", className);
-
   return (
-    <div className={containerClassName}>
+    <div className={classNames("Badges", containerClassName)}>
       <div className="Badges__visits">
         <div className="Badges__visit">
           <span className="Badges__visit-value">
