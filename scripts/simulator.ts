@@ -74,7 +74,8 @@ const main = async (options: RunContext<SimConfig>) => {
     venueId: venueRef.id,
   };
 
-  const shouldRunAll = simulate.length === 0;
+  // if conf.simulate (different from simulate) is undefined, run all, otherwise if set to an empty array, run none
+  const shouldRunAll = !Array.isArray(conf.simulate);
   const simulations = [];
 
   if (shouldRunAll || simulate.includes("chat")) {

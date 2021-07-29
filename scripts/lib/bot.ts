@@ -168,7 +168,8 @@ export const ensureBotUsers: (
 
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
-  stop.then(() => (isStopped = true));
+  // in case script isn't being kept alive, don't stop creating users
+  if (conf.keepAlive) stop.then(() => (isStopped = true));
 
   const resultUserRefs: DocumentReference[] = [];
 
@@ -215,12 +216,13 @@ export const ensureBotUsers: (
     log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
 
     // just so that busy loop doesn't mess with other async stuff, like the stop signal
-    await sleep(10);
+    // unless the stop signal isn't being maintained i.e. keepAlive is false
+    if (conf.keepAlive) await sleep(10);
   }
 
   (stats.users ??= {}).count = resultUserRefs.length;
   log(
-    chalk`{greenBright.inverse DONE} Ensured  references to {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}.`
+    chalk`{greenBright.inverse DONE} Ensured  references to {yellow ${resultUserRefs.length}} users with {magenta scriptTag} {green ${scriptTag}}.`
   );
 
   return resultUserRefs;

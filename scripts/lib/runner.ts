@@ -73,11 +73,13 @@ export const run: (
       dir,
       ext: SIM_EXT,
     });
+
     const stats: SimStats = { file: { configuration: filename } };
     const log = conf?.log?.verbose ? actualLog : () => undefined;
-
-    // timeout is set in minutes
-    const stop: Promise<void> = loopUntilKilled(conf.timeout);
+    const stop: Promise<void> =
+      conf.keepAlive ?? true
+        ? loopUntilKilled(conf.timeout)
+        : Promise.resolve();
 
     initFirebase({ log, conf, stats });
 

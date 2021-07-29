@@ -82,6 +82,7 @@ export const generateUserId: ({
 export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
   timeout
 ) => {
+  // timeout is set in minutes
   const endpoint = timeout
     ? addMinutes(new Date(), timeout).getTime()
     : undefined;

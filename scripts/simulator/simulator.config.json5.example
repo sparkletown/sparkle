@@ -2,19 +2,26 @@
 // NOTE: JSON5 makes it easier for people to write config files while JSON is more geared for data transfer
 
 // For the full definition of this file's expected values, you can check SimConfig in ./scripts/lib/types.ts
+// For extensive changes, you can create multiple *.config.json or *.config.json5 files in this directory
 
 
 {
   // this points to your credentials file, @see ./scripts/simulator/simulator.credentials.json5.example
-  credentials: "./simulator/simple.credentials.json",
+  credentials: "./simulator/simulator.credentials.json",
 
   // this is the project a.k.a. environment to run the test to
   // must be the same as the one specified in the credentials file
-  projectId: "co-reality-staging",
+  projectId: "simulator-project",
 
-  // you can pick which simulations to run only or comment all out for all simulations to run
-  // for more extensive changes, you can create multiple *.config.json or *.config.json5 files in this directory
+  // default: undefined - if set, number of minutes after which the simulator should end all simulations
+  timeout: 1,
+
+  // default: true - if set to false, the script will not wait for CTRL+C but exit immediately, useful for just cleanup
+  keepAlive: false,
+
   // values are same as SimulationName from ./scripts/lib/types.ts
+  // you can pick which simulations to run or comment it out for all simulations to run
+  // an empty array means no simulations will run
   //  simulate: [
   //    'chat',
   //    'seat',
@@ -24,10 +31,10 @@
 
   log: {
 
-    // default: false, if set to true, there will be a lot more chatter in the console from the simulations run
+    // default: false - if set to true, there will be a lot more chatter in the console from the simulations run
     verbose: true,
 
-    // default: true, useful for debugging, when set to false, there will be no stack trace printed when Error is thrown
+    // default: true - useful for debugging, when set to false, there will be no stack trace printed when Error is thrown
     stack: false,
   },
 
@@ -41,10 +48,10 @@
     // and it makes it easier to identify data for removal, especially if multiple scripts are run
     scriptTag: "user-simulator",
 
-    // default: true, when set to false, simulator doesn't try to create missing users, useful when they're pre-created
+    // default: true - when set to false, simulator doesn't try to create missing users, useful when they're pre-created
     createMissing: true,
 
-    // default: true, when set to false, the simulator will not delete the created user DB records
+    // default: true - when set to false, the simulator will not delete the created user DB records
     // for the case of users, it is the very same ones found/created by the simulator
     // cleanup flag in the other simulations will delete only those with appropriate fields bot:true and botUserScriptTag:scriptTag
     cleanup: true,
@@ -83,7 +90,7 @@
 
     // determines how eager a simulated user is to sit for the first time
     // it works the same as affinity, only for the unseated users
-    // defaults: DEFAULT_SEAT_IMPATIENCE
+    // default: DEFAULT_SEAT_IMPATIENCE - should be same value as DEFAULT_SEAT_AFFINITY
     impatience: 0.5,
 
     affinity: 0.01,

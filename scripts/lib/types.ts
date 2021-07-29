@@ -76,6 +76,7 @@ export type SimConfig = Incomplete<
     credentials: string;
 
     timeout: number;
+    keepAlive: boolean;
     simulate: SimulationName[];
 
     log: {
