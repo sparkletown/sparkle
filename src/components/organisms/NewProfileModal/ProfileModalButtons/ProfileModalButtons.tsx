@@ -3,8 +3,9 @@ import { User } from "../../../../types/User";
 import { WithId } from "../../../../utils/id";
 import { Button } from "../../../atoms/Button";
 import "./ProfileModalButtons.scss";
-import React from "react";
+import React, { useMemo } from "react";
 import { ContainerClassName } from "../../../../types/utility";
+import { useIsOnline } from "../../../../hooks/useIsOnline";
 
 interface Props extends ContainerClassName {
   openChat: () => void;
@@ -18,11 +19,22 @@ export const ProfileModalButtons: React.FC<Props> = ({
 }: Props) => {
   const { userWithId: currentUser } = useUser();
 
+  const isOnline = useIsOnline(chosenUser.id);
+
+  const sendMessageButtonStyle = useMemo(
+    () => (isOnline ? { backgroundColor: "#78B553" } : {}),
+    [isOnline]
+  );
+
   return (
     <>
-      {currentUser?.id === chosenUser?.id && (
+      {currentUser?.id !== chosenUser?.id && (
         <div className={containerClassName}>
-          <Button customClass="ProfileModalButtons__button" onClick={openChat}>
+          <Button
+            customClass={"ProfileModalButtons__button"}
+            customStyle={sendMessageButtonStyle}
+            onClick={openChat}
+          >
             Send message
           </Button>
         </div>

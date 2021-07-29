@@ -25,7 +25,7 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { ProfileModal } from "components/organisms/NewProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
@@ -150,7 +150,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
 
         <ChatSidebar venue={venue} />
-        <UserProfileModal venue={venue} />
+        <ProfileModal venue={venue} />
       </WithNavigationBar>
     </ReactionsProvider>
   );

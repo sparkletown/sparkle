@@ -1,1 +1,1 @@
-export { ProfileModalContent } from "./ProfileModalContent";
+export { ProfileModal } from "./ProfileModal";
