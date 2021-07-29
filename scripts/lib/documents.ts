@@ -7,12 +7,12 @@ import { User } from "types/User";
 
 import { DocumentReference, LogFunction, GridSize } from "./types";
 
-export type FindVenueOptions = {
+export type GetVenueRefOptions = {
   venueId: string;
   log: LogFunction;
 };
-export const findVenue: (
-  options: FindVenueOptions
+export const getVenueRef: (
+  options: GetVenueRefOptions
 ) => Promise<DocumentReference | undefined> = async ({ venueId, log }) => {
   const venueRef = admin.firestore().collection("venues").doc(venueId);
   const venueSnap = await venueRef.get();

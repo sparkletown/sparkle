@@ -13,7 +13,7 @@ import {
   removeBotChatMessages,
 } from "./lib/bot";
 import { getReactionsRef, getChatlinesRef } from "./lib/collections";
-import { findVenue } from "./lib/documents";
+import { getVenueRef } from "./lib/documents";
 import { withErrorReporter } from "./lib/log";
 import { run } from "./lib/runner";
 import {
@@ -28,8 +28,8 @@ import { simExperience } from "./simulation/experience";
 import { simSeat } from "./simulation/seat";
 
 export type MainResult = {
-  chatsRef: CollectionReference;
-  reactionsRef: CollectionReference;
+  chatsRef?: CollectionReference;
+  reactionsRef?: CollectionReference;
   userRefs: DocumentReference[];
 };
 
@@ -46,24 +46,32 @@ export type SimulatorContext = RunContext<SimConfig> & {
 const main = async (options: RunContext<SimConfig>) => {
   const { conf, log } = options;
   const { venue, simulate = [] } = conf;
-  const venueId = venue?.id;
 
-  assert.ok(venueId, chalk`${main.name}(): {magenta venue.id} is required`);
-
-  const venueRef = await findVenue({ log, venueId });
-  const reactionsRef = await getReactionsRef({ venueId });
-  const chatsRef = await getChatlinesRef({ venueId });
-
-  assert.ok(
-    venueRef,
-    chalk`${main.name}(): venue was not found for {magenta venue.id}: {green ${venueId}}`
-  );
+  // if conf.simulate (different from simulate) is undefined, run all, otherwise if set to an empty array, run none
+  const shouldRunAll = typeof conf.simulate === "undefined";
+  const shouldRunNone =
+    Array.isArray(conf.simulate) && conf.simulate.length === 0;
 
   const ensureBotUsers = withErrorReporter(
     { ...conf.log, critical: true },
     actualEnsureBotUsers
   );
   const userRefs = await ensureBotUsers({ ...options, ...conf.user });
+
+  if (shouldRunNone) {
+    return { userRefs };
+  }
+
+  assert.ok(venue?.id, chalk`${main.name}(): {magenta venue.id} is required`);
+
+  const venueRef = await getVenueRef({ log, venueId: venue.id });
+  const reactionsRef = await getReactionsRef({ venueId: venue.id });
+  const chatsRef = await getChatlinesRef({ venueId: venue.id });
+
+  assert.ok(
+    venueRef,
+    chalk`${main.name}(): venue was not found for {magenta venue.id}: {green ${venue.id}}`
+  );
 
   const simulatorContext: SimulatorContext = {
     ...options,
@@ -74,8 +82,6 @@ const main = async (options: RunContext<SimConfig>) => {
     venueId: venueRef.id,
   };
 
-  // if conf.simulate (different from simulate) is undefined, run all, otherwise if set to an empty array, run none
-  const shouldRunAll = !Array.isArray(conf.simulate);
   const simulations = [];
 
   if (shouldRunAll || simulate.includes("chat")) {
@@ -98,28 +104,25 @@ const main = async (options: RunContext<SimConfig>) => {
 const cleanup: (options: CleanupOptions) => Promise<void> = async ({
   conf,
   log,
-  result,
+  result: { chatsRef, reactionsRef, userRefs },
   stats,
 }) => {
   // and now, clean up the mess
 
   if (conf.user?.cleanup ?? true) {
     log(chalk`{inverse NOTE} Doing little user cleanup...`);
-    const userRefs = result.userRefs;
     await removeBotUsers({ conf, log, stats, userRefs });
     log(chalk`{green.inverse DONE} Removed bot users.`);
   }
 
-  if (conf.experience?.cleanup ?? true) {
+  if (reactionsRef && (conf.experience?.cleanup ?? true)) {
     log(chalk`{inverse NOTE} Doing little reactions cleanup...`);
-    const reactionsRef = result.reactionsRef;
     await removeBotReactions({ conf, log, stats, reactionsRef });
     log(chalk`{green.inverse DONE} Removed bot reactions.`);
   }
 
-  if (conf.chat?.cleanup ?? true) {
+  if (chatsRef && (conf.chat?.cleanup ?? true)) {
     log(chalk`{inverse NOTE} Doing little reactions cleanup...`);
-    const chatsRef = result.chatsRef;
     await removeBotChatMessages({ conf, log, stats, chatsRef });
     log(chalk`{green.inverse DONE} Removed bot reactions.`);
   }
