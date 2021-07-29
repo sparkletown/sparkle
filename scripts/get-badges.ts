@@ -16,12 +16,17 @@ import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 const usage = makeScriptUsage({
   description:
     "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
-  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]",
+  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH] EXCLUDED_VENUE_IDS",
   exampleParams:
-    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
+    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json] venueName",
 });
 
-const [projectId, venueIds, credentialPath] = process.argv.slice(2);
+const [
+  projectId,
+  venueIds,
+  credentialPath,
+  excludedVenues = "",
+] = process.argv.slice(2);
 
 // Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !venueIds) {
@@ -29,6 +34,7 @@ if (!projectId || !venueIds) {
 }
 
 const venueIdsArray = venueIds.split(",");
+const excludedVenueIds = excludedVenues.split(",");
 
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
@@ -103,6 +109,16 @@ interface UsersWithVisitsResult {
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
+    .map((item) => {
+      const newVisits = item.visits.filter((el) => {
+        if (excludedVenueIds.includes(el.id)) {
+          return null;
+        }
+        return el;
+      });
+
+      return { ...item, visits: newVisits };
+    })
     .reduce((arr: UsersWithVisitsResult[], el) => {
       if (arr.map((item) => item.user.partyName).includes(el.user.partyName)) {
         const newArr = arr.map((item) => ({
