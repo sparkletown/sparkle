@@ -1,10 +1,10 @@
 import React, { useCallback, useMemo } from "react";
-
-import { User } from "types/User";
-import { WithId } from "utils/id";
 import Table from "react-bootstrap/Table";
 
 import { DEFAULT_PARTY_NAME } from "settings";
+
+import { User } from "types/User";
+import { WithId } from "utils/id";
 
 interface EmailInterface {
   email: string;
