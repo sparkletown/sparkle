@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 
 import { User } from "types/User";
+import { ContainerClassName } from "../../../types/utility";
 
 import { WithId } from "utils/id";
 
@@ -17,11 +18,10 @@ import { useMemo } from "react";
 
 const noop = () => {};
 
-interface UserListProps {
+interface UserListProps extends ContainerClassName {
   users: readonly WithId<User>[];
   limit?: number;
   activity?: string;
-  containerClassName?: string;
   cellClassName?: string;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;

@@ -4,11 +4,11 @@ import { WithId } from "../../../../utils/id";
 import { Button } from "../../../atoms/Button";
 import "./ProfileModalButtons.scss";
 import React from "react";
+import { ContainerClassName } from "../../../../types/utility";
 
-interface Props {
+interface Props extends ContainerClassName {
   openChat: () => void;
   chosenUser: WithId<User>;
-  containerClassName?: string;
 }
 
 export const ProfileModalButtons: React.FC<Props> = ({

@@ -94,7 +94,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>
-            <IFrame containerClassname="Section__iframe" src={iframeUrl} />
+            <IFrame containerClassName="Section__iframe" src={iframeUrl} />
             <div className="Section__reactions">
               {isUserSeated ? (
                 <ReactionsBar

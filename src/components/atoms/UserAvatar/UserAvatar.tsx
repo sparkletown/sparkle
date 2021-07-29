@@ -7,6 +7,7 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
+import { ContainerClassName } from "../../../types/utility";
 
 import { useWorldUserLocation } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
@@ -16,9 +17,8 @@ import "./UserAvatar.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
 
-export interface UserAvatarProps {
+export interface UserAvatarProps extends ContainerClassName {
   user?: WithId<User>;
-  containerClassName?: string;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;

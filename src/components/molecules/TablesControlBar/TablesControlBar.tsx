@@ -1,14 +1,15 @@
 import React from "react";
 import classNames from "classnames";
 
+import { ContainerClassName } from "../../../types/utility";
+
 import { Checkbox } from "components/atoms/Checkbox";
 
 import "./TablesControlBar.scss";
 
-export interface TablesControlBarProps {
+export interface TablesControlBarProps extends ContainerClassName {
   showOnlyAvailableTables: boolean;
   onToggleAvailableTables: () => void;
-  containerClassName?: string;
 }
 
 export const TablesControlBar: React.FC<TablesControlBarProps> = ({

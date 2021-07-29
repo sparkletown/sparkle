@@ -1,15 +1,17 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
 
+import { ContainerClassName } from "../../../types/utility";
+
 import "./TextButton.scss";
 
 export interface TextButtonProps
   extends DetailedHTMLProps<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    HTMLButtonElement
-  > {
+      ButtonHTMLAttributes<HTMLButtonElement>,
+      HTMLButtonElement
+    >,
+    ContainerClassName {
   label: string;
-  containerClassName?: string;
 }
 
 export const TextButton: React.FC<TextButtonProps> = ({

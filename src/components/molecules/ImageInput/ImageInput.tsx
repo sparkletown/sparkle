@@ -2,14 +2,14 @@ import React, { useMemo } from "react";
 import { FieldError } from "react-hook-form";
 import "firebase/functions";
 import { ACCEPTED_IMAGE_TYPES } from "settings";
+import { ContainerClassName } from "../../../types/utility";
 
-interface ImageInputProps {
+interface ImageInputProps extends ContainerClassName {
   disabled: boolean;
   name: string;
   remoteUrlInputName?: string;
   remoteImageUrl?: string;
   image?: FileList;
-  containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
 }

@@ -1,12 +1,13 @@
 import React from "react";
 import classNames from "classnames";
 
+import { ContainerClassName } from "../../../types/utility";
+
 import LoadingIcon from "assets/icons/icon-loading.svg";
 
 import "./Loading.scss";
 
-export interface LoadingProps {
-  containerClassName?: string;
+export interface LoadingProps extends ContainerClassName {
   label?: string;
 }
 

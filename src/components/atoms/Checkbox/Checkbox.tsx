@@ -3,16 +3,18 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
+import { ContainerClassName } from "../../../types/utility";
+
 import "./Checkbox.scss";
 
 export interface CheckboxProps
   extends DetailedHTMLProps<
-    InputHTMLAttributes<HTMLInputElement>,
-    HTMLInputElement
-  > {
+      InputHTMLAttributes<HTMLInputElement>,
+      HTMLInputElement
+    >,
+    ContainerClassName {
   label?: string;
   toggler?: boolean;
-  containerClassName?: string;
   labelClassName?: string;
   forwardedRef?: (
     value: React.RefObject<HTMLInputElement> | HTMLInputElement | null

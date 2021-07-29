@@ -1,22 +1,23 @@
 import React from "react";
 import classNames from "classnames";
 
+import { ContainerClassName } from "../../../types/utility";
+
 import "./PosterCategory.scss";
 
-export interface PosterCategoryProps {
+export interface PosterCategoryProps extends ContainerClassName {
   category: string;
   onClick?: () => void;
-  containerClassname?: string;
   active?: boolean;
 }
 
 export const PosterCategory: React.FC<PosterCategoryProps> = ({
   category,
   onClick,
-  containerClassname,
+  containerClassName,
   active: isActive,
 }) => {
-  const containerClasses = classNames("PosterCategory", containerClassname, {
+  const containerClasses = classNames("PosterCategory", containerClassName, {
     "PosterCategory--active": isActive,
   });
 

@@ -82,7 +82,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
           key="All videos"
           category="All videos"
           onClick={unsetCategoryFilter}
-          containerClassname="ScreeningRoom__category"
+          containerClassName="ScreeningRoom__category"
           active={categoryFilter === undefined}
         />
         {categoryList.map((category) => (
@@ -90,7 +90,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
             key={category}
             category={category}
             onClick={() => setCategoryFilter(category)}
-            containerClassname="ScreeningRoom__category"
+            containerClassName="ScreeningRoom__category"
             active={category === categoryFilter}
           />
         ))}
@@ -107,7 +107,7 @@ export const ScreeningRoom: React.FC<ScreeningRoomProps> = ({ venue }) => {
             key={subCategory}
             category={subCategory}
             onClick={() => setSubCategoryFilter(subCategory)}
-            containerClassname="ScreeningRoom__subcategory"
+            containerClassName="ScreeningRoom__subcategory"
             active={subCategory === subCategoryFilter}
           />
         ))}

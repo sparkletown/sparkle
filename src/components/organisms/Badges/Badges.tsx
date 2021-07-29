@@ -12,6 +12,7 @@ import {
 
 import { UserVisit } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
@@ -20,11 +21,12 @@ import { BadgeImage } from "./BadgeImage";
 
 import "./Badges.scss";
 
-export const Badges: React.FC<{
-  user: WithId<User>;
-  currentVenue: WithId<AnyVenue>;
-  containerClassName?: string;
-}> = ({ user, currentVenue, containerClassName }) => {
+export const Badges: React.FC<
+  {
+    user: WithId<User>;
+    currentVenue: WithId<AnyVenue>;
+  } & ContainerClassName
+> = ({ user, currentVenue, containerClassName }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);

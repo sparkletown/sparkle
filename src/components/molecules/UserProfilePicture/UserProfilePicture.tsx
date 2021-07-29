@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
+import { ContainerClassName } from "../../../types/utility";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
@@ -44,10 +45,9 @@ import "./UserProfilePicture.scss";
 //   return DEFAULT_PROFILE_IMAGE;
 // };
 
-export interface UserProfilePictureProp {
+export interface UserProfilePictureProp extends ContainerClassName {
   user?: WithId<User>;
   isAudioEffectDisabled?: boolean;
-  containerClassName?: string;
   reactionPosition?: "left" | "right";
   showNametags?: UsernameVisibility;
   showStatus?: boolean;

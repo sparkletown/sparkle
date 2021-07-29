@@ -4,6 +4,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 
+import { ContainerClassName } from "../../../types/utility";
 import { isDefined, isTruthy } from "utils/types";
 
 import "./InputField.scss";
@@ -31,8 +32,9 @@ const renderIcon = (
   );
 };
 
-export interface InputFieldProps extends React.HTMLProps<HTMLInputElement> {
-  containerClassName?: string;
+export interface InputFieldProps
+  extends React.HTMLProps<HTMLInputElement>,
+    ContainerClassName {
   inputClassName?: string;
   iconStart?: IconProp | JSX.Element;
   iconEnd?: IconProp | JSX.Element;
