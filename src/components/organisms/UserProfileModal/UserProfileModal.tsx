@@ -1,26 +1,32 @@
-import { ProfileModalContent } from "../NewProfileModal";
-import "./UserProfileModal.scss";
-import Button from "components/atoms/Button";
-import { Badges } from "components/organisms/Badges";
-import { useChatSidebarControls } from "hooks/chatSidebar";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useUser } from "hooks/useUser";
-import { useWorldUserLocation } from "hooks/users";
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
+
 import {
   ENABLE_SUSPECTED_LOCATION,
   RANDOM_AVATARS,
   DEFAULT_PROFILE_PIC,
   DEFAULT_PARTY_NAME,
 } from "settings";
-import { User } from "types/User";
-import { AnyVenue, isVenueWithRooms } from "types/venues";
+
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
+
+import { User } from "types/User";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
+
+import { useUser } from "hooks/useUser";
+import { useWorldUserLocation } from "hooks/users";
+import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { Badges } from "components/organisms/Badges";
+import Button from "components/atoms/Button";
+import { ProfileModalContent } from "../NewProfileModal";
+
+import "./UserProfileModal.scss";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;

@@ -1,13 +1,18 @@
-import "./UserAvatar.scss";
-import classNames from "classnames";
-import { useVenueId } from "hooks/useVenueId";
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
-import { useWorldUserLocation } from "hooks/users";
-import { isEqual, isEmpty } from "lodash";
 import React, { useMemo } from "react";
+import classNames from "classnames";
+import { isEqual, isEmpty } from "lodash";
+
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
 import { User, UsernameVisibility } from "types/User";
+
 import { WithId } from "utils/id";
+
+import { useWorldUserLocation } from "hooks/users";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useVenueId } from "hooks/useVenueId";
+
+import "./UserAvatar.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
 
