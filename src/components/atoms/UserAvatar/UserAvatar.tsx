@@ -38,7 +38,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const isOnline = useIsOnline(user?.id);
+  const { isOnline } = useIsOnline(user?.id);
 
   const {
     userStatus,

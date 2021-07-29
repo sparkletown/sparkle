@@ -1,20 +1,28 @@
-import { useSovereignVenue } from "../../../../hooks/useSovereignVenue";
-import { useUser } from "../../../../hooks/useUser";
-import { useVenueId } from "../../../../hooks/useVenueId";
-import { DEFAULT_PARTY_NAME } from "../../../../settings";
+import { useSovereignVenue } from "../../../../../hooks/useSovereignVenue";
+import { useVenueId } from "../../../../../hooks/useVenueId";
+import { DEFAULT_PARTY_NAME } from "../../../../../settings";
 import "./ProfilModalBasicTextInfo.scss";
 import classNames from "classnames";
 import React from "react";
-import { ContainerClassName } from "../../../../types/utility";
+import { ContainerClassName } from "../../../../../types/utility";
+import { WithId } from "../../../../../utils/id";
+import { User } from "../../../../../types/User";
+import { useIsOnline } from "../../../../../hooks/useIsOnline";
 
-interface Props extends ContainerClassName {}
+interface Props extends ContainerClassName {
+  user: WithId<User>;
+}
 
 export const ProfileModalBasicTextInfo: React.FC<Props> = ({
+  user,
   containerClassName,
 }: Props) => {
-  const { userWithId } = useUser();
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
+
+  const { lastSeenIn } = useIsOnline(user.id);
+
+  const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
 
   const userStatus =
     sovereignVenue?.showUserStatus &&
@@ -26,7 +34,7 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
       className={classNames("ProfileModalBasicTextInfo", containerClassName)}
     >
       <h3 className="ProfileModalBasicTextInfo__name italic">
-        {userWithId?.partyName || DEFAULT_PARTY_NAME}
+        {user.partyName || DEFAULT_PARTY_NAME}
       </h3>
       {userStatus && (
         <div>
@@ -36,6 +44,7 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
           </span>
         </div>
       )}
+      {lastVenue && <div>last seen in {lastVenue}</div>}
     </div>
   );
 };

@@ -1,19 +1,23 @@
-import { useUser } from "../../../../hooks/useUser";
 import { ProfileModalLink } from "./ProfileModalLink";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../types/utility";
+import { ContainerClassName } from "../../../../../types/utility";
+import { User } from "../../../../../types/User";
+import { WithId } from "../../../../../utils/id";
 
-interface Props extends ContainerClassName {}
+interface Props extends ContainerClassName {
+  user: WithId<User>;
+}
 
-export const ProfileModalLinks: React.FC<Props> = ({ containerClassName }) => {
-  const { profile } = useUser();
-
+export const ProfileModalLinks: React.FC<Props> = ({
+  containerClassName,
+  user,
+}) => {
   const renderedProfileLinks = useMemo(
     () =>
-      profile?.profileLinks?.map((link) => (
+      user?.profileLinks?.map((link) => (
         <ProfileModalLink link={link} key={link.title} />
       )),
-    [profile?.profileLinks]
+    [user?.profileLinks]
   );
 
   return <div className={containerClassName}>{renderedProfileLinks}</div>;

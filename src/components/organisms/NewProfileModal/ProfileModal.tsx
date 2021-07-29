@@ -4,11 +4,11 @@ import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { ProfileModalContentBasicInfo } from "./ProfileModalBasicInfo/ProfileModalContentBasicInfo";
-import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
-import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
-import { ProfileModalForeignUserButtons } from "./ProfileModalButtons/ProfileModalForeignUserButtons";
+import { ProfileModalBasicInfo } from "./display/ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalQuestions } from "./display/ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalLinks } from "./display/ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalBadges } from "./display/ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalForeignUserButtons } from "./display/ProfileModalButtons/ProfileModalForeignUserButtons";
 
 import "./ProfileModal.scss";
 
@@ -43,10 +43,17 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
       onHide={closeUserProfileModal}
     >
       <Modal.Body className="ProfileModal__body">
-        <ProfileModalContentBasicInfo />
-        <ProfileModalQuestions containerClassName="ProfileModal__section" />
-        <ProfileModalLinks containerClassName="ProfileModal__section" />
+        <ProfileModalBasicInfo user={selectedUserProfile} />
+        <ProfileModalQuestions
+          profile={selectedUserProfile}
+          containerClassName="ProfileModal__section"
+        />
+        <ProfileModalLinks
+          user={selectedUserProfile}
+          containerClassName="ProfileModal__section"
+        />
         <ProfileModalBadges
+          user={selectedUserProfile}
           containerClassName={"ProfileModal__section"}
           venue={venue}
         />

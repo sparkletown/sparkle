@@ -1,20 +1,22 @@
-import { useSovereignVenue } from "../../../../hooks/useSovereignVenue";
-import { useUser } from "../../../../hooks/useUser";
-import { useVenueId } from "../../../../hooks/useVenueId";
+import { useSovereignVenue } from "../../../../../hooks/useSovereignVenue";
+import { useVenueId } from "../../../../../hooks/useVenueId";
 import "./ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../types/utility";
+import { ContainerClassName } from "../../../../../types/utility";
 
-interface Props extends ContainerClassName {}
+interface Props extends ContainerClassName {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  profile: any;
+}
 
 export const ProfileModalQuestions: React.FC<Props> = ({
+  profile,
   containerClassName,
 }: Props) => {
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
   const profileQuestions = sovereignVenue?.profile_questions;
-  const { profile } = useUser();
 
   const renderedProfileQuestionAnswers = useMemo(
     () =>

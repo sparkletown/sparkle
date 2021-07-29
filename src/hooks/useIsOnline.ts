@@ -4,7 +4,13 @@ import { useWorldUserLocation } from "./users";
 
 export const useIsOnline = (userId?: string) => {
   const { userLocation } = useWorldUserLocation(userId);
-  const userLastSeenIn = userLocation?.lastSeenIn;
+  const lastSeenIn = userLocation?.lastSeenIn;
 
-  return useMemo(() => !isEmpty(userLastSeenIn), [userLastSeenIn]);
+  return useMemo(
+    () => ({
+      isOnline: !isEmpty(lastSeenIn),
+      lastSeenIn,
+    }),
+    [lastSeenIn]
+  );
 };

@@ -1,11 +1,11 @@
-import { useUser } from "../../../../hooks/useUser";
-import { User } from "../../../../types/User";
-import { WithId } from "../../../../utils/id";
-import { Button } from "../../../atoms/Button";
+import { useUser } from "../../../../../hooks/useUser";
+import { User } from "../../../../../types/User";
+import { WithId } from "../../../../../utils/id";
+import { Button } from "../../../../atoms/Button";
 import "./ProfileModalForeignUserButtons.scss";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../types/utility";
-import { useIsOnline } from "../../../../hooks/useIsOnline";
+import { ContainerClassName } from "../../../../../types/utility";
+import { useIsOnline } from "../../../../../hooks/useIsOnline";
 
 interface Props extends ContainerClassName {
   openChat: () => void;
@@ -19,7 +19,7 @@ export const ProfileModalForeignUserButtons: React.FC<Props> = ({
 }: Props) => {
   const { userWithId: currentUser } = useUser();
 
-  const isOnline = useIsOnline(chosenUser.id);
+  const { isOnline } = useIsOnline(chosenUser.id);
 
   const sendMessageButtonStyle = useMemo(
     () => (isOnline ? { backgroundColor: "#78B553" } : {}),
