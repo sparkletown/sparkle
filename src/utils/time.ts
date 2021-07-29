@@ -109,9 +109,14 @@ export const formatSecondsAsDuration = (seconds: number): string =>
  * @param secondsValue total seconds to be formatted as a duration
  */
 export const formatSecondsAsHHMMSS = (secondsValue: number): string => {
-  const { hours, minutes, seconds } = secondsToDuration(secondsValue);
+  const { hours = 0, minutes = 0, seconds = 0 } = secondsToDuration(
+    secondsValue
+  );
+  const hourFormatted = hours < 10 ? `0${hours}` : hours;
+  const minuteFormatted = minutes < 10 ? `0${minutes}` : minutes;
+  const secondsFormatted = seconds < 10 ? `0${seconds}` : seconds;
 
-  return `${hours}:${minutes}:${seconds}`;
+  return `${hourFormatted}:${minuteFormatted}:${secondsFormatted}`;
 };
 
 /**

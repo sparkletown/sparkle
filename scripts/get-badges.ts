@@ -30,20 +30,43 @@ if (!projectId || !venueIds) {
 
 const venueIdsArray = venueIds.split(",");
 
-// Note: if we ever need to handle this, we can split our firestore query into 'chunks', each with 10 items per array-contains-any
-if (venueIdsArray.length > 10) {
-  console.error(
-    "Error: This script can only handle up to 10 venueIds at once at the moment."
-  );
-  console.error("  venueIdsArray.length :", venueIdsArray.length);
-  process.exit(1);
-}
-
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
     ? resolve(__dirname, credentialPath)
     : undefined,
 });
+
+const getUsersWithWisits = async () => {
+  const dto = await chunk(venueIdsArray, 10)
+    .map(async (idsArray) => {
+      return await admin
+        .firestore()
+        .collection("users")
+        .where("enteredVenueIds", "array-contains-any", idsArray)
+        .get()
+        .then((usersSnapshot) =>
+          usersSnapshot.docs.map(async (userDoc) => {
+            const user = withId(userDoc.data() as User, userDoc.id);
+
+            const visits = await userDoc.ref
+              .collection("visits")
+              .get()
+              .then((visitsSnapshot) =>
+                visitsSnapshot.docs.map((visitDoc) =>
+                  withId(visitDoc.data() as UserVisit, visitDoc.id)
+                )
+              );
+
+            return { user, visits };
+          })
+        );
+    })
+    .map((el) => el.then((res) => res.flat()))
+    .flat();
+  return Promise.all(await dto);
+};
+
+getUsersWithWisits();
 
 interface UsersWithVisitsResult {
   user: WithId<User>;
@@ -53,27 +76,7 @@ interface UsersWithVisitsResult {
 (async () => {
   // TODO: extract this as a generic helper function?
   const usersWithVisits: UsersWithVisitsResult[] = await Promise.all(
-    await admin
-      .firestore()
-      .collection("users")
-      .where("enteredVenueIds", "array-contains-any", venueIdsArray)
-      .get()
-      .then((usersSnapshot) =>
-        usersSnapshot.docs.map(async (userDoc) => {
-          const user = withId(userDoc.data() as User, userDoc.id);
-
-          const visits = await userDoc.ref
-            .collection("visits")
-            .get()
-            .then((visitsSnapshot) =>
-              visitsSnapshot.docs.map((visitDoc) =>
-                withId(visitDoc.data() as UserVisit, visitDoc.id)
-              )
-            );
-
-          return { user, visits };
-        })
-      )
+    await getUsersWithWisits().then((res) => res.flat())
   );
 
   // TODO: extract this as a generic helper function?
@@ -100,17 +103,26 @@ interface UsersWithVisitsResult {
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
+    .reduce((arr: UsersWithVisitsResult[], el) => {
+      if (arr.map((item) => item.user.partyName).includes(el.user.partyName)) {
+        const newArr = arr.map((item) => ({
+          ...item,
+          visits: [...item.visits, ...el.visits],
+        }));
+
+        return newArr;
+      }
+
+      arr.push(el);
+
+      return arr;
+    }, [])
     .map((userWithVisits) => {
       const { user, visits } = userWithVisits;
       const { id, partyName } = user;
       const { email } = authUsersById[id] ?? {};
 
-      const visitsTimeSpent = visits.map(
-        (visit) => `${visit.id} (${formatSecondsAsHHMMSS(visit.timeSpent)})`
-      );
-
       const visitIds = visits.map((el) => el.id);
-
       // write all visit IDs for badge counts
       visitIds.map((visit) =>
         fs.writeFileSync("./allVisits.csv", `${visit} \n`, { flag: "a" })
@@ -120,7 +132,6 @@ interface UsersWithVisitsResult {
         id,
         email,
         partyName,
-        visitsTimeSpent: visitsTimeSpent.sort().join(", "),
         visits,
       };
     })
@@ -133,33 +144,109 @@ interface UsersWithVisitsResult {
     return arr;
   }, []);
 
-  const uniqueVisits = [...new Set(allResultVisits)];
+  const globalUniqueVisits = [...new Set(allResultVisits)];
 
   // write all unique venues
-  uniqueVisits.map((el) =>
+  globalUniqueVisits.map((el) =>
     fs.writeFileSync("./uniqueVenues.csv", `${el} \n`, { flag: "a" })
   );
 
-  // Display CSV headings
-  console.log(
-    ["Email", "Party Name", "Rooms Entered", "Entered Venues (Time Spent)"]
+  // Write user venue headings
+  (() => {
+    const headingLine = [
+      "Email",
+      "Party Name",
+      "Rooms Entered",
+      ...globalUniqueVisits,
+    ]
       .map((heading) => `"${heading}"`)
-      .join(",")
-  );
+      .join(",");
+
+    fs.writeFileSync("./allData.csv", `${headingLine} \n`, { flag: "a" });
+  })();
+
+  let globalVisitsValue = 0;
 
   // Write all user data for analytics
-  result.forEach((user) => {
-    const csvLine = [
+  const allDataResult = result.map((user) => {
+    const onlyVisitIds = user.visits.map((el) => el.id);
+    const getVisitData = (visitName: string) =>
+      user.visits.find((visit) => (visit.id === visitName ? visit : 0)) || {
+        timeSpent: 0,
+        id: 0,
+      };
+
+    const formattedVisitColumns = globalUniqueVisits.map((visit) => {
+      if (onlyVisitIds.includes(visit) && getVisitData(visit)) {
+        return `${formatSecondsAsHHMMSS(getVisitData(visit).timeSpent)}`;
+      }
+      return "";
+    });
+
+    const visitData = globalUniqueVisits.map((visit) => {
+      if (onlyVisitIds.includes(visit) && getVisitData(visit)) {
+        return getVisitData(visit).timeSpent;
+      }
+      return 0;
+    });
+
+    const dto = [
       user.email,
       user.partyName,
       user.visits.length,
-      user.visitsTimeSpent,
-    ]
-      .map((s) => `"${s}"`)
-      .join(",");
+      ...formattedVisitColumns,
+    ];
 
-    fs.writeFileSync("./allData.csv", `${csvLine} \n`, { flag: "a" });
+    globalVisitsValue += user.visits.length;
+
+    const csvFormattedLine = dto.map((s) => `"${s}"`).join(",");
+
+    fs.writeFileSync("./allData.csv", `${csvFormattedLine} \n`, { flag: "a" });
+
+    return visitData;
   });
+
+  [0, 1, 2].map(() => fs.writeFileSync("./allData.csv", `\n`, { flag: "a" }));
+
+  let arrayOfResults: {
+    totalAmount: number;
+    totalValue: number;
+    totalUnique: number;
+  }[] = [];
+
+  allDataResult.forEach((item) => {
+    item.forEach((res, i) => {
+      arrayOfResults[i] = !!arrayOfResults[i]
+        ? {
+            totalAmount: arrayOfResults[i].totalAmount + 1,
+            totalValue: arrayOfResults[i].totalValue + res,
+            totalUnique: res
+              ? arrayOfResults[i].totalUnique + 1
+              : arrayOfResults[i].totalUnique,
+          }
+        : { totalValue: res, totalAmount: 1, totalUnique: res ? 1 : 0 };
+    });
+  });
+
+  const uniqueLine = [
+    "Total Unique",
+    "",
+    allDataResult.length,
+    ...arrayOfResults.map((el) => el.totalUnique),
+  ];
+
+  const averageLine = [
+    "Average Time",
+    "",
+    (globalVisitsValue / allDataResult.length).toFixed(2),
+    ...arrayOfResults.map(
+      (el) =>
+        `${formatSecondsAsHHMMSS(Math.round(el.totalValue / el.totalAmount))}`
+    ),
+  ];
+
+  fs.writeFileSync("./allData.csv", `${uniqueLine} \n`, { flag: "a" });
+  fs.writeFileSync("./allData.csv", `${averageLine} \n`, { flag: "a" });
 })()
   .catch((error) => {
     console.error(error);
