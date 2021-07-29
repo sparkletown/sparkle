@@ -94,7 +94,7 @@ export const loopUntilKilled: (timeoutInMinutes?: number) => Promise<void> = (
   const intervalId = setInterval(() => {
     if (!endpoint) return;
     if (endpoint > new Date().getTime()) return;
-    log(chalk`{redBright Timeout} reached, stopping...`);
+    log(chalk`{blue.inverse INFO} {redBright Timeout} reached, stopping...`);
     clearInterval(intervalId);
     stop?.();
   }, 1000);
