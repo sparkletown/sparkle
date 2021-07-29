@@ -252,5 +252,5 @@ $z-layers: (
 @mixin background-color($color) {
   background-color: $color;
   --UserAvatar__status-indicator--border-style: solid;
-  --UserAvatar__status-indicator--border-color: #{$saturated-black};
+  --UserAvatar__status-indicator--border-color: #{$color};
 }
