@@ -155,7 +155,7 @@ export const ensureBotUsers: (
   const usersRef = await getUsersRef();
 
   log(
-    chalk`{inverse NOTE} Ensuring there are {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
+    chalk`{inverse NOTE} Ensuring references to {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}`
   );
 
   const candidates = Array.from({ length: count }, (_, i) => ({
@@ -220,7 +220,7 @@ export const ensureBotUsers: (
 
   (stats.users ??= {}).count = resultUserRefs.length;
   log(
-    chalk`{greenBright.inverse DONE} Ensured {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}} exist.`
+    chalk`{greenBright.inverse DONE} Ensured  references to {yellow ${count}} users with {magenta scriptTag} {green ${scriptTag}}.`
   );
 
   return resultUserRefs;
