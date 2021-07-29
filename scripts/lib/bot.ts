@@ -64,6 +64,7 @@ export const enterVenue = async ({
   );
 
   await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(candidateId) });
+  stats.entered = (stats.entered ?? 0) + 1;
   stats.writes = (stats.writes ?? 0) + 1;
 
   log(

@@ -55,6 +55,7 @@ export type SimStats = Incomplete<{
     removed: number;
   };
 
+  entered: number;
   writes: number;
 
   average: Record<string, unknown>;
