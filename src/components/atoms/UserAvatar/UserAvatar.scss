@@ -12,16 +12,22 @@
   $default-avatar-size: 25px;
   $default-image-size: 100%;
 
+  // indicator border is 12% of indicator size which itself is some % of avatar size
+  // limited to min: 0.8px and max: 2px
+  @function indicator-border-width($indicator-size, $avatar-size) {
+    @return clamp(0.8px, 0.12 * #{$indicator-size} * #{$avatar-size}, 2px);
+  }
+
   // order of elements:
   // $modifier - one of UserAvatarSize
   // $avatar-size - set in pixels or percent for larger than 54px
   // $indicator-size - set in percent of parent
-  // $indicator-border-width - calculated as a percent of indicator size (fraction of a fraction of avatar size)
+  // $indicator-border-width - calculated as a percent of indicator size
   $avatar-sizes-enum: (
-    (small, 25px, 28%, 0.12 * 0.28 * 25px),
-    (medium, 40px, 28%, 0.12 * 0.28 * 40px),
-    (large, 54px, 28%, 0.12 * 0.28 * 54px),
-    (full, max(55px, 100%), 16%, 0.12 * 0.16 * 55px)
+    (small, 25px, 28%, indicator-border-width(0.28, 25px)),
+    (medium, 40px, 28%, indicator-border-width(0.28, 40px)),
+    (large, 54px, 28%, indicator-border-width(0.28, 54px)),
+    (full, max(55px, 100%), 16%, indicator-border-width(0.16, 108px))
   );
 
   @include square-size($default-avatar-size);
