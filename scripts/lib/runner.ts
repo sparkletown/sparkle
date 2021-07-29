@@ -56,6 +56,9 @@ export const run: (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cleanup: (options: { result: any } & any) => Promise<void>
 ) => Promise<void> = async (main, cleanup) => {
+  // just to pass one single configuration setting (if available)
+  // to the catch clause, thus avoid having try-catch inside try-catch
+  let isErrorStackToBeDisplayed;
   try {
     const dir = `.${sep}${parse(process.argv[1]).name}${sep}`;
     const confName = process.argv[2];
@@ -74,8 +77,9 @@ export const run: (
       ext: SIM_EXT,
     });
 
-    const stats: SimStats = { file: { configuration: filename } };
+    isErrorStackToBeDisplayed = conf?.log?.stack;
     const log = conf?.log?.verbose ? actualLog : () => undefined;
+    const stats: SimStats = { file: { configuration: filename } };
     const stop: Promise<void> =
       conf.keepAlive ?? true
         ? loopUntilKilled(conf.timeout)
@@ -104,8 +108,10 @@ export const run: (
   } catch (e) {
     chalk.reset();
 
-    log(chalk`{red.inverse ERRR} {red ${e.message}}`);
-    log(chalk`{dim ${e.stack}}`);
+    log(chalk`{red.inverse HALT} {red ${e.message}}`);
+    if (isErrorStackToBeDisplayed ?? true) {
+      log(chalk`{dim ${e.stack}}`);
+    }
 
     process.exit(-1);
   }
