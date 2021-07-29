@@ -12,7 +12,7 @@ export const ProfileModalContentBasicInfo: React.FC<Props> = (props: Props) => {
   return (
     <div className="ProfileModalBasicInfo">
       <UserAvatar user={userWithId} size="profileModal" showStatus={true} />
-      <ProfileModalBasicTextInfo className="ProfileModalBasicInfo__text-info" />
+      <ProfileModalBasicTextInfo containerClassName="ProfileModalBasicInfo__text-info" />
     </div>
   );
 };

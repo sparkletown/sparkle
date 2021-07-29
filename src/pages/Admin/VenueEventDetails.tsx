@@ -8,13 +8,13 @@ import { formatTimeLocalised } from "utils/time";
 import { eventEndTime, eventStartTime } from "utils/event";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import { ContainerClassName } from "../../types/utility";
 
-export interface VenueEventDetailsProps {
+export interface VenueEventDetailsProps extends ContainerClassName {
   venueEvent: WithId<VenueEvent>;
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
-  className?: string;
   isEditable?: boolean;
 }
 
@@ -23,7 +23,7 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-  className = "",
+  containerClassName = "",
   isEditable = false,
 }: VenueEventDetailsProps) => {
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
@@ -31,10 +31,10 @@ const VenueEventDetails = ({
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (
-    <div className={className}>
+    <div className={containerClassName}>
       <div className="date">{`${startTime}-${endTime} ${startDay}`}</div>
       <div className="event-description">
-        <div style={!className ? { display: "none" } : {}}>
+        <div style={!containerClassName ? { display: "none" } : {}}>
           <span
             style={{ textDecoration: "underline", cursor: "pointer" }}
             onClick={() => {

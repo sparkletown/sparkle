@@ -2,15 +2,6 @@
 
 $profile-popover--margin-top: 12px;
 
-#profile-popover {
-  margin-top: $profile-popover--margin-top;
-
-  &.popover {
-    @include scrollbar;
-    border-radius: 0 0 $border-radius--xl $border-radius--xl;
-  }
-}
-
 .ProfilePopoverContent {
   position: relative;
   overflow: auto;

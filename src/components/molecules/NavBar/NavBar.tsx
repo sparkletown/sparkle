@@ -24,9 +24,9 @@ import { useVenueId } from "hooks/useVenueId";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
+import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -48,14 +48,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
-
-const ProfilePopover = (
-  <Popover id="profile-popover">
-    <Popover.Content className="NavBar__profile-popover">
-      <ProfilePopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -95,6 +87,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const hasSovereignVenue = sovereignVenueId !== undefined;
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
+
+  const [showUserProfile, setShowUserProfile] = useState(false);
 
   const shouldShowSchedule =
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
@@ -307,15 +301,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ProfilePopover}
-                  rootClose={true}
+                <div
+                  className="navbar-links-user-avatar"
+                  onClick={() => setShowUserProfile(true)}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
-                </OverlayTrigger>
+                </div>
+                <UserProfileModal
+                  show={showUserProfile}
+                  onClose={() => setShowUserProfile(false)}
+                  venue={currentVenue}
+                />
               </div>
             )}
           </div>

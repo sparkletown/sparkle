@@ -5,13 +5,12 @@ import { DEFAULT_PARTY_NAME } from "../../../../settings";
 import "./ProfilModalBasicTextInfo.scss";
 import classNames from "classnames";
 import React from "react";
+import { ContainerClassName } from "../../../../types/utility";
 
-interface Props {
-  className?: string;
-}
+interface Props extends ContainerClassName {}
 
 export const ProfileModalBasicTextInfo: React.FC<Props> = ({
-  className,
+  containerClassName,
 }: Props) => {
   const { userWithId } = useUser();
   const venueId = useVenueId();
@@ -22,10 +21,10 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
     sovereignVenue?.userStatuses?.length &&
     sovereignVenue?.userStatuses?.[0];
 
-  const containerClassName = classNames("ProfileModalBasicTextInfo", className);
-
   return (
-    <div className={containerClassName}>
+    <div
+      className={classNames("ProfileModalBasicTextInfo", containerClassName)}
+    >
       <h3 className="ProfileModalBasicTextInfo__name italic">
         {userWithId?.partyName || DEFAULT_PARTY_NAME}
       </h3>

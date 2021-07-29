@@ -1,14 +1,18 @@
 @import "scss/constants.scss";
 
-.UserProfileModal {
+.ProfileModal {
+  &__body {
+    background-color: $dark-grey;
+    padding: 1.7rem;
+  }
+  font-size: 14px;
+  &__section {
+    margin-top: 1rem;
+  }
   & > .modal-dialog {
     max-width: 420px;
     & > .modal-content {
       padding: 0;
     }
-  }
-  &__body {
-    background-color: $dark-grey;
-    padding: 1.7rem;
   }
 }

@@ -231,7 +231,9 @@ export const VenueLandingPage: React.FC = () => {
                       <InformationCard
                         title={venueEvent.name}
                         key={venueEvent.id}
-                        className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                        containerClassName={`${
+                          !isNextVenueEvent ? "disabled" : ""
+                        }`}
                       >
                         <div className="date">
                           {`${dayjs(startingDate).format("ha")}-${dayjs(

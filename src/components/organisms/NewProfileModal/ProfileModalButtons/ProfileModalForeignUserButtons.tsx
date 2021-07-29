@@ -2,7 +2,7 @@ import { useUser } from "../../../../hooks/useUser";
 import { User } from "../../../../types/User";
 import { WithId } from "../../../../utils/id";
 import { Button } from "../../../atoms/Button";
-import "./ProfileModalButtons.scss";
+import "./ProfileModalForeignUserButtons.scss";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "../../../../types/utility";
 import { useIsOnline } from "../../../../hooks/useIsOnline";
@@ -12,7 +12,7 @@ interface Props extends ContainerClassName {
   chosenUser: WithId<User>;
 }
 
-export const ProfileModalButtons: React.FC<Props> = ({
+export const ProfileModalForeignUserButtons: React.FC<Props> = ({
   containerClassName,
   openChat,
   chosenUser,

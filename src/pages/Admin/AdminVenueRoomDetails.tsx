@@ -155,7 +155,7 @@ export const AdminVenueRoomDetails = ({
                       setEditedEvent={setEditedEvent}
                       setShowCreateEventModal={setShowCreateEventModal}
                       setShowDeleteEventModal={setShowDeleteEventModal}
-                      className="admin-room-list-events"
+                      containerClassName="admin-room-list-events"
                     />
                   </div>
                 );

@@ -45,7 +45,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         setEditedEvent={() => {}}
         setShowCreateEventModal={() => {}}
         setShowDeleteEventModal={() => {}}
-        className="admin-room-list-events"
+        containerClassName="admin-room-list-events"
       />
     ));
   };

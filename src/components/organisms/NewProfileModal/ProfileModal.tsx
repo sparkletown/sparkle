@@ -1,14 +1,14 @@
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
-
 import { WithId } from "utils/id";
-
 import { AnyVenue } from "types/venues";
-
-import { ProfileModalContent } from "./ProfileModalContent";
-
 import { useChatSidebarControls } from "hooks/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { ProfileModalContentBasicInfo } from "./ProfileModalBasicInfo/ProfileModalContentBasicInfo";
+import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalForeignUserButtons } from "./ProfileModalButtons/ProfileModalForeignUserButtons";
 
 import "./ProfileModal.scss";
 
@@ -25,30 +25,35 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
     closeUserProfileModal,
   } = useProfileModalControls();
 
-  const chosenUserId = selectedUserProfile?.id;
-
   const openChosenUserChat = useCallback(() => {
-    if (!chosenUserId) return;
+    if (!selectedUserProfile?.id) return;
 
-    selectRecipientChat(chosenUserId);
+    selectRecipientChat(selectedUserProfile?.id);
     closeUserProfileModal();
-  }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
+  }, [selectRecipientChat, closeUserProfileModal, selectedUserProfile?.id]);
 
-  if (!selectedUserProfile || !chosenUserId) {
+  if (!selectedUserProfile || !selectedUserProfile?.id) {
     return null;
   }
 
   return (
     <Modal
-      className="UserProfileModal"
+      className="ProfileModal"
       show={hasSelectedProfile}
       onHide={closeUserProfileModal}
     >
-      <Modal.Body className="UserProfileModal__body">
-        <ProfileModalContent
-          chosenUser={selectedUserProfile}
-          openChat={openChosenUserChat}
+      <Modal.Body className="ProfileModal__body">
+        <ProfileModalContentBasicInfo />
+        <ProfileModalQuestions containerClassName="ProfileModal__section" />
+        <ProfileModalLinks containerClassName="ProfileModal__section" />
+        <ProfileModalBadges
+          containerClassName={"ProfileModal__section"}
           venue={venue}
+        />
+        <ProfileModalForeignUserButtons
+          containerClassName="ProfileModal__section"
+          openChat={openChosenUserChat}
+          chosenUser={selectedUserProfile}
         />
       </Modal.Body>
     </Modal>

@@ -4,13 +4,12 @@ import { useVenueId } from "../../../../hooks/useVenueId";
 import "./ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
+import { ContainerClassName } from "../../../../types/utility";
 
-interface Props {
-  className?: string;
-}
+interface Props extends ContainerClassName {}
 
 export const ProfileModalQuestions: React.FC<Props> = ({
-  className,
+  containerClassName,
 }: Props) => {
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
@@ -35,10 +34,8 @@ export const ProfileModalQuestions: React.FC<Props> = ({
       }),
     [profileQuestions, profile]
   );
-  const containerClassName = classNames("ProfileModalQuestions", className);
-
   return (
-    <div className={containerClassName}>
+    <div className={classNames("ProfileModalQuestions", containerClassName)}>
       {profile && renderedProfileQuestionAnswers}
     </div>
   );
