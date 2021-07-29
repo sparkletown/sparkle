@@ -5,12 +5,12 @@ import faker from "faker";
 
 import { SimulatorContext } from "../simulator";
 
-import { takeSeat as actualTakeSeat } from "./bot";
-import { getSectionsRef } from "./collections";
-import { getVenueGridSize } from "./documents";
-import { withErrorReporter } from "./log";
-import { DocumentReference, GridSize } from "./types";
-import { sleep, pickFrom } from "./utils";
+import { takeSeat as actualTakeSeat } from "../lib/bot";
+import { getSectionsRef } from "../lib/collections";
+import { getVenueGridSize } from "../lib/documents";
+import { withErrorReporter } from "../lib/log";
+import { DocumentReference, GridSize } from "../lib/types";
+import { sleep, pickFrom } from "../lib/utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;
@@ -24,9 +24,9 @@ export const DEFAULT_GRID_SIZE: GridSize = {
   maxCol: 9,
 };
 
-export const simulateSeat: (
-  options: SimulatorContext
-) => Promise<void> = async (options) => {
+export const simSeat: (options: SimulatorContext) => Promise<void> = async (
+  options
+) => {
   const { userRefs, conf, stop } = options;
 
   const impatience = conf.seat?.impatience ?? DEFAULT_SEAT_IMPATIENCE;
@@ -38,15 +38,15 @@ export const simulateSeat: (
 
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`${simulateSeat.name}(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`${simSeat.name}(): {magenta chunkCount} must be integer {yellow > 0}`
   );
   assert.ok(
     Number.isFinite(tick) && tick >= 10,
-    chalk`${simulateSeat.name}(): {magenta tick} must be integer {yellow >= 10}`
+    chalk`${simSeat.name}(): {magenta tick} must be integer {yellow >= 10}`
   );
   assert.ok(
     0 <= affinity && affinity <= 1,
-    chalk`${simulateSeat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
+    chalk`${simSeat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
   // if venue in DB has auditorium settings, those take precedence over the configuration ones

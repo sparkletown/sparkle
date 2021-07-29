@@ -84,8 +84,9 @@ export type SimConfig = Incomplete<
     };
 
     user: HasCleanupFlag & {
-      scriptTag: string;
       count: number;
+      createMissing: boolean;
+      scriptTag: string;
     };
 
     venue: {

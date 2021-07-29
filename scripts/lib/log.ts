@@ -1,13 +1,11 @@
-import { relative } from "path";
 import chalk from "chalk";
 
 import { checkTypeObject } from "./guards";
 import { LogFunction } from "./types";
-
-export const determineScript = () => relative(process.cwd(), process.argv[1]);
+import { determineScriptRelativeFilename } from "./utils";
 
 // NOTE: just caching the result since it shouldn't change while the script is running
-export const SCRIPT = determineScript();
+export const SCRIPT = determineScriptRelativeFilename();
 
 export const log: LogFunction = (...args: Parameters<LogFunction>) => {
   chalk.reset();
@@ -29,7 +27,7 @@ export const displayHelp: ({ dir, ext }: DisplayHelpOptions) => void = ({
 
 Usage: {white ${SCRIPT}} {dim ${dir}}{white name}{dim ${ext}}
 
-{yellowBright Note:} provide only the name, the directory and extension will be added automatically
+{inverse NOTE}: Provide only the {magenta name} part, the {magenta directory} and {magenta extension} will be added automatically
 
 `);
 };

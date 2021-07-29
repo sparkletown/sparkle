@@ -125,19 +125,21 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
 };
 
 export type EnsureBotUsersOptions = {
-  stats: SimStats;
-  scriptTag?: string;
+  conf: SimConfig;
   count?: number;
   log: LogFunction;
+  scriptTag?: string;
+  stats: SimStats;
   stop: Promise<void>;
 };
 
 export const ensureBotUsers: (
   options: EnsureBotUsersOptions
 ) => Promise<DocumentReference[]> = async ({
+  conf,
+  count,
   log,
   scriptTag,
-  count,
   stats,
   stop,
 }) => {
@@ -179,16 +181,18 @@ export const ensureBotUsers: (
 
     const userSnap = await userRef.get();
     if (!userSnap.exists) {
-      log(
-        chalk`{yellow.inverse WARN} User {green ${id}} doesn't exist, creating...`
-      );
+      if (conf.user?.createMissing ?? true) {
+        log(
+          chalk`{yellow.inverse WARN} User {green ${id}} doesn't exist, creating...`
+        );
 
-      await userRef.set(candidate);
-      resultUserRefs.push(userRef);
+        await userRef.set(candidate);
+        resultUserRefs.push(userRef);
 
-      stats.writes = (stats.writes ?? 0) + 1;
-      (stats.users ??= {}).created = (stats.users.created ?? 0) + 1;
-      log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
+        stats.writes = (stats.writes ?? 0) + 1;
+        (stats.users ??= {}).created = (stats.users.created ?? 0) + 1;
+        log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
+      }
       continue;
     }
 

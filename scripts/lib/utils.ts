@@ -1,6 +1,6 @@
 import { strict as assert } from "assert";
 import { readFileSync, existsSync } from "fs";
-import { resolve } from "path";
+import { resolve, relative } from "path";
 
 import chalk from "chalk";
 import { addMinutes, formatISO } from "date-fns";
@@ -64,6 +64,9 @@ export const sleep: (ms: number) => Promise<void> = (ms) => {
     setTimeout(() => resolve(), ms);
   });
 };
+
+export const determineScriptRelativeFilename = () =>
+  relative(process.cwd(), process.argv[1]);
 
 type GenerateUserIdOptions = {
   scriptTag: string;

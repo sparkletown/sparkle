@@ -3,41 +3,44 @@ import chalk from "chalk";
 
 import { SimulatorContext } from "../simulator";
 
-import { sendBotVenueMessage as actualSendBotVenueMessage } from "./bot";
-import { withErrorReporter } from "./log";
-import { sleep } from "./utils";
+import { withErrorReporter } from "../lib/log";
+import { addBotReaction as actualReactToExperience } from "../lib/bot";
+import { sleep } from "../lib/utils";
 
-export const DEFAULT_CHAT_CHUNK_SIZE = 100;
-export const DEFAULT_CHAT_TICK_MS = 1000;
-export const DEFAULT_CHAT_AFFINITY = 0.005;
+export const DEFAULT_EXPERIENCE_CHUNK_SIZE = 100;
+export const DEFAULT_EXPERIENCE_TICK_MS = 1000;
+export const DEFAULT_EXPERIENCE_AFFINITY = 0.005;
 
-export const simulateChat: (
+export const simExperience: (
   options: SimulatorContext
 ) => Promise<void> = async (options) => {
-  const { userRefs, venueRef, conf, stop } = options;
+  const { userRefs, conf, stop } = options;
 
   const affinity =
-    conf.chat?.affinity ?? conf.affinity ?? DEFAULT_CHAT_AFFINITY;
-  const tick = conf.chat?.tick ?? conf.tick ?? DEFAULT_CHAT_TICK_MS;
+    conf.experience?.affinity ?? conf.affinity ?? DEFAULT_EXPERIENCE_AFFINITY;
+  const tick = conf.experience?.tick ?? conf.tick ?? DEFAULT_EXPERIENCE_TICK_MS;
   const chunkSize =
-    conf.chat?.chunkSize ?? conf.chunkSize ?? DEFAULT_CHAT_CHUNK_SIZE;
+    conf.experience?.chunkSize ??
+    conf.chunkSize ??
+    DEFAULT_EXPERIENCE_CHUNK_SIZE;
 
   assert.ok(
     Number.isSafeInteger(chunkSize) && chunkSize > 0,
-    chalk`${simulateChat.name}(): {magenta chunkCount} must be integer {yellow > 0}`
+    chalk`${simExperience.name}(): {magenta chunkCount} must be integer {yellow > 0}`
   );
-
   assert.ok(
     Number.isFinite(tick) && tick >= 10,
-    chalk`${simulateChat.name}(): {magenta tick} must be integer {yellow >= 10}`
+    chalk`${simExperience.name}(): {magenta tick} must be integer {yellow >= 10}`
   );
-
   assert.ok(
     0 <= affinity && affinity <= 1,
-    chalk`${simulateChat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
+    chalk`${simExperience.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
-  const sendMessage = withErrorReporter(conf.log, actualSendBotVenueMessage);
+  const reactToExperience = withErrorReporter(
+    conf.log,
+    actualReactToExperience
+  );
 
   // flag that will not let loop going on when user pressed CTRL+C
   let isStopped = false;
@@ -51,7 +54,7 @@ export const simulateChat: (
           .map(
             async (userRef) =>
               Math.random() < affinity &&
-              sendMessage({ ...options, userRef, venueRef })
+              reactToExperience({ ...options, userRef })
           )
       );
       // explicit sleep between the chunks

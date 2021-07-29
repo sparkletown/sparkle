@@ -16,15 +16,16 @@ import { getReactionsRef, getChatlinesRef } from "./lib/collections";
 import { findVenue } from "./lib/documents";
 import { withErrorReporter } from "./lib/log";
 import { run } from "./lib/runner";
-import { simulateChat } from "./lib/simulate-chat";
-import { simulateExperience } from "./lib/simulate-experience";
-import { simulateSeat } from "./lib/simulate-seat";
 import {
   CollectionReference,
   DocumentReference,
   RunContext,
   SimConfig,
 } from "./lib/types";
+
+import { simChat } from "./simulation/chat";
+import { simExperience } from "./simulation/experience";
+import { simSeat } from "./simulation/seat";
 
 export type MainResult = {
   chatsRef: CollectionReference;
@@ -73,18 +74,19 @@ const main = async (options: RunContext<SimConfig>) => {
     venueId: venueRef.id,
   };
 
+  const shouldRunAll = simulate.length === 0;
   const simulations = [];
 
-  if (simulate.length === 0 || simulate.includes("seat")) {
-    simulations.push(simulateSeat(simulatorContext));
+  if (shouldRunAll || simulate.includes("chat")) {
+    simulations.push(simChat(simulatorContext));
   }
 
-  if (simulate.length === 0 || simulate.includes("experience")) {
-    simulations.push(simulateExperience(simulatorContext));
+  if (shouldRunAll || simulate.includes("experience")) {
+    simulations.push(simExperience(simulatorContext));
   }
 
-  if (simulate.length === 0 || simulate.includes("chat")) {
-    simulations.push(simulateChat(simulatorContext));
+  if (shouldRunAll || simulate.includes("seat")) {
+    simulations.push(simSeat(simulatorContext));
   }
 
   await Promise.all(simulations);
@@ -92,7 +94,12 @@ const main = async (options: RunContext<SimConfig>) => {
   return { chatsRef, reactionsRef, userRefs };
 };
 
-const cleanup = async ({ conf, log, result, stats }: CleanupOptions) => {
+const cleanup: (options: CleanupOptions) => Promise<void> = async ({
+  conf,
+  log,
+  result,
+  stats,
+}) => {
   // and now, clean up the mess
 
   if (conf.user?.cleanup ?? true) {
