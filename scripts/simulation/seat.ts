@@ -49,11 +49,11 @@ export const simSeat: (options: SimulatorContext) => Promise<void> = async (
     chalk`${simSeat.name}(): {magenta affinity} must be a number {yellow from 0 to 1}`
   );
 
-  // if venue in DB has auditorium settings, those take precedence over the configuration ones
+  // Manual config should take precedence if the col/row values are provided
   const grid: GridSize = {
     ...DEFAULT_GRID_SIZE,
-    ...conf.venue,
     ...(await getVenueGridSize(options)),
+    ...conf.venue,
   };
   const sectionRefs: DocumentReference[] = await (
     await getSectionsRef(options)

@@ -87,12 +87,13 @@ export const getVenueGridSize: (
 ) => Promise<GetVenueGridSizeResult> = async ({ venueRef }) => {
   const snap = await venueRef.get();
   const data = await snap.data();
-  const { auditoriumColumns, auditoriumRows } = data ?? {};
+  const { auditoriumColumns, auditoriumRows, template } = data ?? {};
+  const isAudience = template === "audience";
 
   return auditoriumRows && auditoriumColumns
     ? {
-        minCol: 0,
-        minRow: 0,
+        minCol: isAudience ? -auditoriumColumns : 0,
+        minRow: isAudience ? -auditoriumRows : 0,
         maxCol: auditoriumColumns,
         maxRow: auditoriumRows,
       }
