@@ -1,52 +1,106 @@
 // NOTE: JSON5 is superset of JSON with some added functionalities @see https://json5.org/
-{
-  "credentials": "./simulator/simple.credentials.json",
-  "projectId": "co-reality-staging",
+// NOTE: JSON5 makes it easier for people to write config files while JSON is more geared for data transfer
 
-  // by commenting out, all simulations will run
-  //  "simulate": [
+// For the full definition of this file's expected values, you can check SimConfig in ./scripts/lib/types.ts
+
+
+{
+  // this points to your credentials file, @see ./scripts/simulator/simulator.credentials.json5.example
+  credentials: "./simulator/simple.credentials.json",
+
+  // this is the project a.k.a. environment to run the test to
+  // must be the same as the one specified in the credentials file
+  projectId: "co-reality-staging",
+
+  // you can pick which simulations to run only or comment all out for all simulations to run
+  // for more extensive changes, you can create multiple *.config.json or *.config.json5 files in this directory
+  // values are same as SimulationName from ./scripts/lib/types.ts
+  //  simulate: [
+  //    'chat',
   //    'seat',
   //    'experience'
   //  ],
 
-  "log": {
-    "verbose": true,
-    "stack": false
+
+  log: {
+
+    // default: false, if set to true, there will be a lot more chatter in the console from the simulations run
+    verbose: true,
+
+    // default: true, useful for debugging, when set to false, there will be no stack trace printed when Error is thrown
+    stack: false,
   },
 
-  "user": {
-    "scriptTag": "user-simulator",
-    "count": 100
+  // some useful settings for the creation/retention of simulated users
+  user: {
+
+    // this tag is set to simulated data as botUserScriptTag:scriptTag along with bot:true
+    // and it makes it easier to identify data for removal, especially if multiple scripts are run
+    scriptTag: "user-simulator",
+
+    // how many simulated users to find/create for the simulation
+    count: 100,
+
+    // default: true, when set to false, the simulator will not delete the created user DB records
+    // for the case of users, it is the very same ones found/created by the simulator
+    // cleanup flag in the other simulations will delete only those with appropriate fields bot:true and botUserScriptTag:scriptTag
+    cleanup: true,
   },
 
-  "venue": {
-    "id": "venue id",
-    "minRow": -9,
-    "maxRow": +9,
-    "minCol": -9,
-    "maxCol": +9
+  // configuration relevant to the venue being tested
+  venue: {
+
+    // required venue name/id
+    id: "venue id",
+
+    // defaults are ±9 in case the venue doesn't have auditoriumColumns and auditoriumRows fields
+    minRow: -9,
+    maxRow: +9,
+    minCol: -9,
+    maxCol: +9,
   },
 
-  // The following settings will override these ones for their respective cases
-  "tick": 1000,
-  "chunkSize": 100,
-  "affinity": 0.01,
+  // The following settings will be overridden by the ones for the respective simulations
 
-//  "seat": {
-//    "tick": 1000,
-//    "chunkSize": 100,
-//    "affinity": 0.01
-//  },
-//
-//  "chat": {
-//    "tick": 9999,
-//    "chunkSize": 100,
-//    "affinity": 0.005
-//  },
-//
-//  "experience": {
-//    "tick": 9999,
-//    "chunkSize": 100,
-//    "affinity": 0.005
-//  }
+  // chunkSize determines how many users to do simulations with at once time, per each cycle
+  // defaults: DEFAULT_CHAT_CHUNK_SIZE, DEFAULT_CHAT_EXPERIENCE_SIZE, DEFAULT_SEAT_CHUNK_SIZE
+  chunkSize: 100,
+
+  // tick determines the time in milliseconds to wait between each operation with a chunk of the users
+  // defaults: DEFAULT_CHAT_TICK_MS, DEFAULT_EXPERIENCE_TICK_MS,DEFAULT_SEAT_TICK_MS
+  tick: 1000,
+
+  // affinity determines how likely it is for a single user to perform the simulated action
+  // value is from 0 (meaning 0%) to 1 (meaning 100%)
+  // defaults: DEFAULT_CHAT_AFFINITY, DEFAULT_EXPERIENCE_AFFINITY, DEFAULT_SEAT_AFFINITY
+  affinity: 0.01,
+
+  // settings for the seats simulation
+  seat: {
+
+    // determines how eager a simulated user is to sit for the first time
+    // it works the same as affinity, only for the unseated users
+    // defaults: DEFAULT_SEAT_IMPATIENCE
+    impatience: 0.5,
+
+    affinity: 0.01,
+    chunkSize: 100,
+    tick: 1000,
+  },
+
+  // settings for the chat simulation
+  chat: {
+    affinity: 0.005,
+    chunkSize: 100,
+    cleanup: true,
+    tick: 9999,
+  },
+
+  // settings for the experience/reactions simulation
+  experience: {
+    affinity: 0.005,
+    chunkSize: 100,
+    cleanup: true,
+    tick: 9999,
+  }
 }
