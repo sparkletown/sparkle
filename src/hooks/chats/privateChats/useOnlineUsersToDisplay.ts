@@ -1,6 +1,7 @@
+import { useMemo } from "react";
+
 import { useRecentWorldUsers } from "../../users";
 import { useUser } from "../../useUser";
-import { useMemo } from "react";
 
 export const useOnlineUsersToDisplay = () => {
   const { recentWorldUsers } = useRecentWorldUsers();

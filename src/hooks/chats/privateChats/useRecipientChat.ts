@@ -1,26 +1,30 @@
-import { useWorldUsersById } from "../../users";
-import { useUser } from "../../useUser";
-import { WithId, withId } from "../../../utils/id";
+import { useCallback, useMemo } from "react";
+
+import {
+  sendPrivateMessage,
+  setChatMessageRead,
+  deletePrivateMessage,
+} from "api/chat";
+
+import {
+  chatSort,
+  buildMessage,
+  partitionMessagesFromReplies,
+  getMessageReplies,
+  getBaseMessageToDisplay,
+} from "utils/chat";
+import { WithId, withId } from "utils/id";
+import { isTruthy } from "utils/types";
+
 import {
   DeleteMessage,
   PrivateChatMessage,
   SendChatReply,
   SendMessage,
-} from "../../../types/chat";
-import { useCallback, useMemo } from "react";
-import {
-  buildMessage,
-  chatSort,
-  getBaseMessageToDisplay,
-  getMessageReplies,
-  partitionMessagesFromReplies,
-} from "../../../utils/chat";
-import {
-  deletePrivateMessage,
-  sendPrivateMessage,
-  setChatMessageRead,
-} from "../../../api/chat";
-import { isTruthy } from "../../../utils/types";
+} from "types/chat";
+
+import { useUser } from "../../useUser";
+import { useWorldUsersById } from "../../users";
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const useRecipientChat = (recipientId: string) => {

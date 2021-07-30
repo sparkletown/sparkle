@@ -8,6 +8,8 @@ import React, {
 import { isEqual } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 
+import { NEXT_RENDER_SIZE } from "../../../settings";
+
 import {
   ChatOptionType,
   DeleteMessage,
@@ -41,8 +43,6 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-const NEXT_RENDER_SIZE = 50;
-
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
   venue,
@@ -51,8 +51,6 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   deleteMessage,
   displayPoll: isDisplayedPoll,
 }) => {
-  console.assert(messages.length > 0);
-
   const scrollableComponentRef = useTriggerScrollFix(messages);
 
   const { createPoll, voteInPoll } = useVenuePoll();
@@ -80,21 +78,24 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
-  const getNextOldestMessageIndex = (currentIndex: number) =>
-    Math.min(currentIndex + NEXT_RENDER_SIZE, messages.length);
-
-  const [messagesRenderCount, setMessagesRenderCount] = useState(
-    getNextOldestMessageIndex(0)
+  const getNextMessagesRenderCount = useCallback(
+    (currentIndex: number) =>
+      Math.min(currentIndex + NEXT_RENDER_SIZE, messages.length),
+    [messages.length]
   );
 
-  const renderMore = () => {
-    setMessagesRenderCount(getNextOldestMessageIndex(messagesRenderCount));
-  };
+  const [renderedMessagesCount, setRenderedMessagesCount] = useState(
+    getNextMessagesRenderCount(0)
+  );
+
+  const increaseRenderedMessagesCount = useCallback(() => {
+    setRenderedMessagesCount(getNextMessagesRenderCount(renderedMessagesCount));
+  }, [getNextMessagesRenderCount, renderedMessagesCount]);
 
   const renderedMessages = useMemo(
     () =>
       messages
-        .slice(0, messagesRenderCount)
+        .slice(0, renderedMessagesCount)
         .map((message) =>
           checkIfPollMessage(message) ? (
             <ChatPoll
@@ -113,7 +114,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             />
           )
         ),
-    [messages, messagesRenderCount, deleteMessage, voteInPoll, venue]
+    [messages, renderedMessagesCount, deleteMessage, voteInPoll, venue]
   );
 
   const onReplyToThread = useCallback(
@@ -128,16 +129,16 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   return (
     <div className="Chatbox">
       <div
-        className="Chatbox__messages-container"
+        className="Chatbox__messages"
         ref={scrollableComponentRef}
         id={"Chatbox_scrollable_div"}
       >
         <InfiniteScroll
-          dataLength={messagesRenderCount}
+          dataLength={renderedMessagesCount}
           className={"Chatbox__messages-infinite-scroll"}
-          next={renderMore}
+          next={increaseRenderedMessagesCount}
           inverse={true}
-          hasMore={messagesRenderCount < messages.length}
+          hasMore={renderedMessagesCount < messages.length}
           scrollableTarget="Chatbox_scrollable_div"
           loader={<h4>Loading...</h4>}
         >

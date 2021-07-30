@@ -1,14 +1,17 @@
-import { useUser } from "../../useUser";
-import { useWorldUsersById } from "../../users";
 import { useMemo } from "react";
+
 import { PreviewChatMessageMap } from "../../../types/chat";
+
+import { useWorldUsersById } from "../../users";
+import { useUser } from "../../useUser";
+import { usePrivateChatMessages } from "./usePrivateChatMessages";
+
 import {
   chatSort,
   getPreviewChatMessage,
   getPreviewChatMessageToDisplay,
 } from "../../../utils/chat";
 import { withId } from "../../../utils/id";
-import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const usePrivateChatPreviews = () => {
   const { user } = useUser();

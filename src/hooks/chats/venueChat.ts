@@ -102,17 +102,7 @@ const useChatMessages = (venueId?: string) => {
   const isAdmin = Boolean(userRoles?.includes("admin"));
   const { userId } = useUser();
 
-  useFirestoreConnect(
-    venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "chats" }],
-          orderBy: ["ts_utc", "desc"],
-          storeAs: "venueChatMessages",
-        }
-      : undefined
-  );
+  useConnectVenueChatMessages(venueId);
 
   const chatMessages =
     useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
@@ -168,5 +158,19 @@ const useChatMessages = (venueId?: string) => {
         })
         .filter(isTruthy),
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
+  );
+};
+
+const useConnectVenueChatMessages = (venueId?: string) => {
+  useFirestoreConnect(
+    venueId
+      ? {
+          collection: "venues",
+          doc: venueId,
+          subcollections: [{ collection: "chats" }],
+          orderBy: ["ts_utc", "desc"],
+          storeAs: "venueChatMessages",
+        }
+      : undefined
   );
 };
