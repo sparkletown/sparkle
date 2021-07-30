@@ -137,7 +137,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           dataLength={renderedMessagesCount}
           className={"Chatbox__messages-infinite-scroll"}
           next={increaseRenderedMessagesCount}
-          inverse={true}
+          inverse
           hasMore={renderedMessagesCount < messages.length}
           scrollableTarget="Chatbox_scrollable_div"
           loader={<h4>Loading...</h4>}
