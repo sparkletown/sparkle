@@ -25,6 +25,7 @@ import { checkIfPollMessage } from "utils/chat";
 import { ChatMessageBox } from "components/molecules/ChatMessageBox";
 import { ChatPoll } from "components/molecules/ChatPoll";
 import { PollBox } from "components/molecules/PollBox";
+import { Loading } from "components/molecules/Loading";
 import { ChatMessage } from "components/atoms/ChatMessage";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
@@ -140,7 +141,9 @@ const _ChatBox: React.FC<ChatboxProps> = ({
           inverse
           hasMore={renderedMessagesCount < messages.length}
           scrollableTarget="Chatbox_scrollable_div"
-          loader={<h4>Loading...</h4>}
+          loader={
+            <Loading containerClassName="Chatbox__messages-infinite-scroll-loading" />
+          }
         >
           {renderedMessages}
         </InfiniteScroll>
