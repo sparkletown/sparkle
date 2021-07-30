@@ -18,11 +18,14 @@ export const updateVenueTable = async ({
   subtitle,
   capacity,
 }: UpdateVenueTableProps) => {
+  const updatedCapacity = parseInt(capacity.toString(), 10);
+  const tableColumns = tableOfUser?.columns ?? 1;
   const updatedTable = {
     ...tableOfUser,
     title,
     subtitle,
-    capacity,
+    capacity: updatedCapacity,
+    rows: Math.ceil(updatedCapacity / tableColumns),
   };
 
   return await firebase.functions().httpsCallable("venue-updateTables")({
