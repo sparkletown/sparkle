@@ -6,7 +6,11 @@ on:
     types:
       - opened
       - reopened
-      - edited
+      - synchronize
+      # Note: `edited` is required to have deploys made when the base branch is changed.. but it
+      # also occurs whenever the description/title/etc are changed. Keeping commented here for
+      # now, but I think we are probably fine without it.
+      #- edited
     branches:
       - staging
     paths:
@@ -28,6 +32,7 @@ jobs:
       REACT_APP_PROJECT_ID: '${{ secrets.FIREBASE_PROJECT_ID }}'
       REACT_APP_API_KEY: '${{ secrets.FIREBASE_API_KEY }}'
       REACT_APP_APP_ID: '${{ secrets.FIREBASE_APP_ID }}'
+      REACT_APP_AUTH_DOMAIN: '${{ secrets.FIREBASE_AUTH_DOMAIN }}'
       REACT_APP_MEASUREMENT_ID: '${{ secrets.FIREBASE_MEASUREMENT_ID }}'
       REACT_APP_BUCKET_URL: '${{ secrets.FIREBASE_BUCKET_URL }}'
       REACT_APP_STRIPE_PUBLISHABLE_KEY: '${{ secrets.STRIPE_PUBLISHABLE_KEY }}'
@@ -55,6 +60,6 @@ jobs:
           channelId: 'preview-pr-${{ github.event.pull_request.number }}'
           projectId: '${{ secrets.FIREBASE_PROJECT_ID }}'
           target: staging
-          expires: 14d
+          expires: 7d
         env:
           FIREBASE_CLI_PREVIEWS: hostingchannels

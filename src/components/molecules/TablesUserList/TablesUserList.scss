@@ -130,7 +130,7 @@
 }
 
 input:checked + .slider {
-  background-color: $secondary;
+  background-color: $primary;
   border-color: $white;
   &::before {
     background-color: $white;

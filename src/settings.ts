@@ -3,13 +3,20 @@ import { CSSProperties } from "react";
 import {
   API_KEY,
   APP_ID,
+  AUTH_DOMAIN,
   MEASUREMENT_ID,
   BUCKET_URL,
   PROJECT_ID,
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
+import { RoomType } from "types/rooms";
+
 import { FIVE_MINUTES_MS } from "utils/time";
+
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
@@ -17,11 +24,15 @@ export const SPARKLE_TERMS_AND_CONDITIONS_URL =
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
 
+// Sparkle facebook app id. More settings can be found at https://developers.facebook.com/apps/2633721400264126/dashboard/
+export const FACEBOOK_SPARKLE_APP_ID = "2633721400264126";
+
 export const SPARKLEVERSE_HOMEPAGE_URL = "https://sparklever.se/";
 export const SPARKLEVERSE_TERMS_AND_CONDITIONS_URL =
   "https://sparklever.se/terms-and-conditions";
 export const SPARKLEVERSE_PRIVACY_POLICY =
   "https://sparklever.se/privacy-policy/";
+export const PLATFORM_BRAND_NAME = "Sparkle";
 
 export const HOMEPAGE_URL = IS_BURN
   ? SPARKLEVERSE_HOMEPAGE_URL
@@ -39,14 +50,22 @@ export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+// @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
-export const DEFAULT_AVATAR_IMAGE = "/icons/sparkle-nav-logo.png";
+export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
+export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
+export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
+export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+
 export const DEFAULT_PARTY_NAME = "Anon";
-export const SPARKLEVERSE_LOGO_URL = "/sparkleverse-logo.png";
+export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
-export const DEFAULT_MAP_ICON_URL = "/icons/default-map-icon.png";
+export const VENUE_NAME_MIN_CHAR_COUNT = 3;
+export const VENUE_NAME_MAX_CHAR_COUNT = 50;
 export const PLAYA_VENUE_NAME = "Jam";
 export const PLAYA_VENUE_ID = "jamonline";
+export const GIFT_TICKET_MODAL_URL =
+  "https://here.burningman.org/event/virtualburn";
 export const BURNING_MAN_DONATION_TITLE = `Donate to WWF Australia.`;
 export const BURNING_MAN_DONATION_TEXT = `To assist in the rebuilding of the Australian ecology after the devastating fires over last summer.`;
 export const BURNING_MAN_DONATION_SITE = `https://donate.wwf.org.au/donate/one-off-donation/one-off-donation`;
@@ -57,7 +76,7 @@ export const REALITY_RANGERS_URL = "https://multiverserangers.org/rangers911/";
 export const REALITY_RANGERS_NAME = "Multiverse Rangers Chat";
 export const DEFAULT_USER_LIST_LIMIT = 22;
 export const DEFAULT_ROOM_ATTENDANCE_LIMIT = 2;
-export const GIF_RESIZER_URL = "http://gifgifs.com/resizer/";
+export const GIF_RESIZER_URL = "https://gifgifs.com/resizer/";
 export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
@@ -70,7 +89,11 @@ export const DUST_STORM_TEXT_2 =
 
 // How often to refresh events schedule
 export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
+export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
+export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
 
+// @debt FIVE_MINUTES_MS is deprecated; use utils/time or date-fns functions instead
 // How often to update location for counting
 export const LOC_UPDATE_FREQ_MS = FIVE_MINUTES_MS;
 
@@ -81,17 +104,31 @@ export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 // How often to refresh daypart logic
 export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
 
+// How often to refresh current time line in the schedule
+export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+
+// How often to refresh event status (passed / happening now / haven't started)
+export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
 export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
+export const MIN_TABLE_CAPACITY = 2;
+export const MAX_TABLE_CAPACITY = 10;
+
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
-export const MINIMUM_COLUMNS = 5;
-export const MAXIMUM_COLUMNS = 100;
+export const MINIMUM_PARTYMAP_COLUMNS_COUNT = 5;
+export const MAXIMUM_PARTYMAP_COLUMNS_COUNT = 100;
+
+export const MINIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
+export const MAXIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
+export const MINIMUM_AUDITORIUM_ROWS_COUNT = 5;
+export const MAXIMUM_AUDITORIUM_ROWS_COUNT = 5;
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
@@ -122,30 +159,37 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 };
 
 export const ACCEPTED_IMAGE_TYPES =
-  "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif";
+  "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
 
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
   "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
 
+// @debt I believe this relates to Playa features, which are legacy code that will be removed soon
 export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
+// These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with ZOOM_URL_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const ZOOM_URL_TEMPLATES = [
-  VenueTemplate.zoomroom,
   VenueTemplate.artcar,
+  VenueTemplate.zoomroom,
 ];
 
+// These templates use iframeUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
+// @debt unify this with IFRAME_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const IFRAME_TEMPLATES = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.embeddable,
   VenueTemplate.firebarrel,
   VenueTemplate.jazzbar,
   VenueTemplate.performancevenue,
+  VenueTemplate.posterpage,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -171,6 +215,12 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
 ];
+
+export const COVERT_ROOM_TYPES: RoomType[] = [
+  RoomType.unclickable,
+  RoomType.mapFrame,
+];
+
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const PLAYA_TEMPLATES = [VenueTemplate.playa, VenueTemplate.preplaya];
 
@@ -232,9 +282,26 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
+  {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
   },
 ];
 
@@ -277,9 +344,26 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.firebarrel,
     name: "Fire Barrel",
     description: ["Huddle around a fire barrel with your close friends"],
+  },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description: [
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    ],
+  },
+  {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
   },
 ];
 
@@ -401,6 +485,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: "Add an NEW auditorium with an embedded video and sections",
+    icon: "/venues/pickspace-thumbnail_auditorium.png",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
+  {
     template: VenueTemplate.zoomroom,
     name: "Experience",
     description:
@@ -441,6 +538,20 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
       },
     ],
   },
+  {
+    template: VenueTemplate.embeddable,
+    name: "Embeddable",
+    description:
+      "Insert almost anything into a styled iFrame. This space does not have video chatting.",
+    icon: "",
+    customInputs: [
+      {
+        name: "iframeUrl",
+        title: "Livestream URL",
+        type: "text",
+      },
+    ],
+  },
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -457,8 +568,11 @@ export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
+// @debt unify this with HAS_REACTIONS_TEMPLATES in functions/venue.js + share the same code between frontend/backend
 export const HAS_REACTIONS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
+  VenueTemplate.jazzbar,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -477,6 +591,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artcar,
   VenueTemplate.artpiece,
   VenueTemplate.audience,
+  VenueTemplate.auditorium,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
 ];
@@ -484,6 +599,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
 export const FIREBASE_CONFIG = {
   apiKey: API_KEY,
   appId: APP_ID,
+  authDomain: AUTH_DOMAIN,
   measurementId: MEASUREMENT_ID,
   projectId: PROJECT_ID,
   storageBucket: BUCKET_URL,
@@ -512,7 +628,90 @@ export const RANDOM_AVATARS = [
   "avatar-12.png",
 ];
 
-export const REACTION_TIMEOUT = 5000; // time im ms
-export const SHOW_EMOJI_IN_REACTION_PAGE = true;
+export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
-export const ZENDESK_URL_PREFIXES = ["/admin"];
+export const DEFAULT_AVATARS = [
+  "/avatars/default-profile-pic-1.png",
+  "/avatars/default-profile-pic-2.png",
+  "/avatars/default-profile-pic-3.png",
+  "/avatars/default-profile-pic-4.png",
+];
+
+export const REACTION_TIMEOUT = 5000; // time in ms
+export const SHOW_EMOJI_IN_REACTION_PAGE = true;
+export const DEFAULT_SHOW_REACTIONS = true;
+export const DEFAULT_SHOW_SHOUTOUTS = true;
+
+export const DEFAULT_SHOW_USER_STATUSES = true;
+
+export const REACTIONS_CONTAINER_HEIGHT_IN_SEATS = 2;
+
+// Audience
+// Always have an odd number of rows and columns (because of the firelane delimiter).
+export const DEFAULT_AUDIENCE_COLUMNS_NUMBER = 25;
+export const DEFAULT_AUDIENCE_ROWS_NUMBER = 19;
+
+// These must both be odd, otherwise the video won't be centered properly
+export const SECTION_DEFAULT_ROWS_COUNT = 17;
+export const SECTION_DEFAULT_COLUMNS_COUNT = 23;
+
+export const SECTION_VIDEO_MIN_WIDTH_IN_SEATS = 17;
+
+export const SECTION_PREVIEW_USER_DISPLAY_COUNT = 14;
+// Max questions number for Poll inside Chat
+export const MAX_POLL_QUESTIONS = 8;
+
+export const POSTERPAGE_MAX_VIDEO_PARTICIPANTS = 10;
+
+export const POSTERPAGE_MORE_INFO_URL_TITLE = "Full abstract";
+
+export const POSTERHALL_POSTER_IS_LIVE_TEXT = "Presenter is online";
+
+export const SEARCH_DEBOUNCE_TIME = 200; // ms
+
+export const DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT = 48;
+export const DEFAULT_DISPLAYED_VIDEO_PREVIEW_COUNT = 12;
+
+export const DEFAULT_USER_STATUS = {
+  status: "Online",
+  color: "#53E52A",
+};
+
+// SCHEDULE
+export const DEFAULT_SHOW_SCHEDULE = true;
+// @debt probably would be better to adjust max hour based on user's display size
+export const SCHEDULE_MAX_START_HOUR = 16;
+export const SCHEDULE_HOUR_COLUMN_WIDTH_PX = 200;
+export const SCHEDULE_SHOW_DAYS_AHEAD = 7;
+
+/**
+ * @see https://firebase.google.com/docs/firestore/query-data/queries#in_not-in_and_array-contains-any
+ */
+export const FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS = 10;
+
+export const FACEBOOK_SHARE_URL = "https://www.facebook.com/sharer/sharer.php?";
+export const TWITTER_SHARE_URL = "https://twitter.com/intent/tweet?";
+
+// Markdown
+
+export const MARKDOWN_BASIC_FORMATTING_TAGS = [
+  "p",
+  "strong",
+  "em",
+  "blockquote",
+  "hr",
+  "del",
+];
+export const MARKDOWN_HEADING_TAGS = ["h1", "h2", "h3", "h4", "h5", "h6"];
+export const MARKDOWN_IMAGE_TAGS = ["img"];
+export const MARKDOWN_LINK_TAGS = ["a"];
+export const MARKDOWN_LIST_TAGS = ["ol", "ul", "li"];
+export const MARKDOWN_PRE_CODE_TAGS = ["pre", "code"];
+
+export const DEFAULT_TABLE_ROWS = 2;
+export const DEFAULT_TABLE_COLUMNS = 3;
+export const DEFAULT_TABLE_CAPACITY =
+  DEFAULT_TABLE_ROWS * DEFAULT_TABLE_COLUMNS;
+export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
+export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
+export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;

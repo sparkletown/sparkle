@@ -1,35 +1,37 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { updateUserProfile } from "./helpers";
 import "firebase/storage";
-import "./Account.scss";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { RouterLocation } from "types/RouterLocation";
-import { useUser } from "hooks/useUser";
+import { useAsyncFn, useSearchParam } from "react-use";
+
 import { IS_BURN } from "secrets";
-import getQueryParameters from "utils/getQueryParameters";
-import { DEFAULT_VENUE } from "settings";
+
+import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
 import { useVenueId } from "hooks/useVenueId";
+import { useUser } from "hooks/useUser";
+
+import { Loading } from "components/molecules/Loading";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+
+import { updateUserProfile } from "./helpers";
+
+// @debt refactor the Profile related styles from Account.scss into Profile.scss
+import "./Account.scss";
 
 export interface ProfileFormData {
   partyName: string;
   pictureUrl: string;
 }
 
-interface PropsType {
-  location?: RouterLocation;
-}
-
-const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
+export const Profile: React.FC = () => {
   const history = useHistory();
-  const { user } = useUser();
-  const venueName = useVenueId();
-  const venueId =
-    venueName ??
-    getQueryParameters(window.location.search)?.venueId?.toString() ??
-    DEFAULT_VENUE;
-  const { returnUrl } = getQueryParameters(window.location.search);
+  const { user, userWithId } = useUser();
+
+  const venueId = useVenueId() ?? DEFAULT_VENUE;
+
+  const returnUrl: string | undefined =
+    useSearchParam("returnUrl") ?? undefined;
 
   const {
     register,
@@ -40,17 +42,31 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
     watch,
   } = useForm<ProfileFormData>({
     mode: "onChange",
+    defaultValues: {
+      partyName: userWithId?.partyName,
+      pictureUrl: userWithId?.pictureUrl,
+    },
   });
 
-  const onSubmit = async (data: ProfileFormData) => {
-    if (!user) return;
-    await updateUserProfile(user.uid, data);
-    const accountQuestionsUrl = `/account/questions?venueId=${venueId}${
-      returnUrl ? "&returnUrl=" + returnUrl : ""
-    }`;
-    const nextUrl = venueId ? accountQuestionsUrl : returnUrl?.toString() ?? "";
-    history.push(IS_BURN ? `/enter/step3` : nextUrl);
-  };
+  const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
+    async (data: ProfileFormData) => {
+      if (!user) return;
+
+      await updateUserProfile(user.uid, data);
+
+      const accountQuestionsUrlParams = new URLSearchParams();
+      accountQuestionsUrlParams.set("venueId", venueId);
+      returnUrl && accountQuestionsUrlParams.set("returnUrl", returnUrl);
+
+      // @debt Should we throw an error here rather than defaulting to empty string?
+      const nextUrl = venueId
+        ? `/account/questions?${accountQuestionsUrlParams.toString()}`
+        : returnUrl ?? "";
+
+      history.push(IS_BURN ? `/enter/step3` : nextUrl);
+    },
+    [history, returnUrl, user, venueId]
+  );
 
   const pictureUrl = watch("pictureUrl");
 
@@ -60,51 +76,60 @@ const Profile: React.FunctionComponent<PropsType> = ({ location }) => {
         <h2 className="login-welcome-title">
           Well done! Now create your profile
         </h2>
+
         <div className="login-welcome-subtitle">
           {`Don't fret, you'll be able to edit it at any time later`}
         </div>
+
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group profile-form">
+            {/* @debt refactor this to use InputField */}
             <input
               name="partyName"
               className="input-block input-centered"
               placeholder="Your display name"
               ref={register({
                 required: true,
-                maxLength: 16,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
               })}
+              autoComplete="off"
             />
             <span className="input-info">
-              This is your public name (max 16 characters)
+              This is your display name (max {DISPLAY_NAME_MAX_CHAR_COUNT}{" "}
+              characters)
             </span>
             {errors.partyName && errors.partyName.type === "required" && (
               <span className="input-error">Display name is required</span>
             )}
             {errors.partyName && errors.partyName.type === "maxLength" && (
               <span className="input-error">
-                Display name must be 16 characters or less
+                Display name must be {DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+                less
               </span>
             )}
+
             {user && (
               <ProfilePictureInput
-                setValue={setValue}
-                user={user}
-                errors={errors}
-                pictureUrl={pictureUrl}
-                register={register}
+                {...{ venueId, setValue, user, errors, pictureUrl, register }}
               />
             )}
           </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Create my profile"
-            disabled={!formState.isValid}
-          />
+
+          <div className="input-group">
+            <button
+              type="submit"
+              className="btn btn-primary btn-block btn-centered"
+              disabled={!formState.isValid || isUpdating}
+            >
+              Create my profile
+            </button>
+            {isUpdating && <Loading />}
+            {httpError && (
+              <span className="input-error">{httpError.message}</span>
+            )}
+          </div>
         </form>
       </div>
     </div>
   );
 };
-
-export default Profile;

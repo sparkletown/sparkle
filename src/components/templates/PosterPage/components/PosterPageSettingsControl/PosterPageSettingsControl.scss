@@ -1,0 +1,14 @@
+.PosterPageSettingsControl {
+  &__popover-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    height: 100%;
+    width: 100%;
+  }
+}
+// Increase specificity to override third-party lib styles
+div.PosterPageSettingsControl__popover {
+  height: 100px;
+}

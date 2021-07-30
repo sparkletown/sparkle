@@ -1,0 +1,41 @@
+@import "scss/constants";
+
+.ExternalRoom {
+  height: 100%;
+  width: 80%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+
+  &__message {
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background: $light-grey;
+    box-shadow: box-shadow--large(0.5);
+    border-radius: $border-radius--xl;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: $spacing--xxl;
+  }
+
+  &__header {
+    font-family: Rubik;
+    font-weight: $font-weight--300;
+    font-size: $font-size--xl;
+  }
+
+  &__link {
+    font-family: Rubik;
+    font-style: normal;
+    font-weight: $font-weight--500;
+  }
+}

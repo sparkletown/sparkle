@@ -7,40 +7,19 @@
   width: 100%;
 
   &__search {
-    margin: 15px;
-    height: 32px;
-    position: relative;
-  }
+    margin: 0.9375rem;
+    height: 2rem;
 
-  &__search-input {
-    text-align: left;
-    font-size: 14px;
-    background-color: $black;
-    padding-left: 40px;
-    height: 100%;
-    width: 100%;
+    & input {
+      background-color: $black;
+      text-align: left;
+      font-size: 0.875rem;
 
-    &::placeholder {
-      color: $white;
-      opacity: 0.2;
+      &::placeholder {
+        color: $white;
+        opacity: 0.2;
+      }
     }
-
-    &:focus ~ .private-chats__search-icon {
-      opacity: 0.6;
-    }
-  }
-
-  &__search-icon {
-    display: flex;
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
-    width: 40px;
-    justify-content: center;
-    align-items: center;
-    z-index: z(private-chat-input-search-icon);
-    opacity: 0.2;
   }
 
   &__previews {

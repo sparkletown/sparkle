@@ -1,0 +1,31 @@
+@import "scss/constants";
+
+$gridTotalRows: var(--map-partygoer-overlay-total-rows, 1);
+$gridTotalColumns: var(--map-partygoer-overlay-total-columns, 1);
+$row: var(--map-partygoer-overlay-row, 0);
+$column: var(--map-partygoer-overlay-column, 0);
+
+$gridCellWidth: calc(100% / #{$gridTotalRows});
+$gridCellHeight: calc(100% / #{$gridTotalColumns});
+$avatarTop: calc((#{$row} - 1) * #{$gridCellWidth});
+$avatarLeft: calc((#{$column} - 1) * #{$gridCellHeight});
+
+.MapPartygoerOverlay {
+  &__avatar-container {
+    position: absolute;
+    top: $avatarTop;
+    left: $avatarLeft;
+
+    z-index: z(map-avatar);
+
+    transition: all 1400ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  &__avatar--me {
+    box-shadow: 0 0 0 5px $primary;
+    // @debt avatarpulse appears to be defined in src/components/templates/PartyMap/components/Map/Map.scss, yet only used here
+    //   We should move it here.
+    // @debt This animation line seems to do something that causes constant re-calculations and pins the GPU at high usage
+    // animation: avatarpulse 2s infinite;
+  }
+}

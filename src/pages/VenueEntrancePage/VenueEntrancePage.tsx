@@ -1,37 +1,38 @@
-import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+import React from "react";
+import { Redirect, useHistory, useParams } from "react-router-dom";
+
+import { EntranceStepTemplate } from "types/EntranceStep";
+
+import { withId } from "utils/id";
+import { isCompleteProfile } from "utils/profile";
+import { currentVenueSelectorData } from "utils/selectors";
+import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
-import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
-import React, { useEffect } from "react";
-import { Redirect, useHistory, useParams } from "react-router-dom";
-import { EntranceStepTemplate } from "types/EntranceStep";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import { currentVenueSelectorData } from "utils/selectors";
 import { useVenueId } from "hooks/useVenueId";
+
 import Login from "pages/Account/Login";
-import { isCompleteProfile } from "utils/profile";
-import { showZendeskWidget } from "utils/zendesk";
+import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
+
+import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
 export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const { user, profile } = useUser();
   const history = useHistory();
-  const { step } = useParams();
+  const { step } = useParams<{ step?: string }>();
   const venueId = useVenueId();
+
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   if (!venue || !venueId) {
     return <LoadingPage />;
   }
 
   if (
+    step === undefined ||
     !(parseInt(step) > 0) ||
     !venue.entrance ||
     !venue.entrance.length ||
@@ -41,11 +42,11 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (!user || !profile) {
-    return <Login />;
+    return <Login venue={withId(venue, venueId)} />;
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 
   const proceed = () => {

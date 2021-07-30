@@ -6,7 +6,7 @@ $spacing: 20px;
 .room-modal {
   padding: $spacing;
 
-  background-color: #19181a;
+  background-color: $saturated-black;
   background-repeat: no-repeat;
   background-size: cover;
 
@@ -27,13 +27,6 @@ $spacing: 20px;
     justify-content: space-around;
     align-items: center;
 
-    > img {
-      width: 60%;
-      height: auto;
-
-      border-radius: $border-radius;
-    }
-
     > * {
       flex: 1;
       height: fit-content;
@@ -45,22 +38,48 @@ $spacing: 20px;
     }
   }
 
-  .userlist-container {
+  &__icon {
+    flex-shrink: 0;
+    height: 180px;
+    width: 180px;
+    border-radius: $border-radius;
+    background-color: $black;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &__content {
+    background: $dark;
+    padding: 10px $spacing;
+    border-radius: $border-radius;
+    height: fit-content;
+  }
+
+  &__btn-enter {
+    width: 100%;
+  }
+
+  &__userlist {
     margin-top: $spacing;
   }
 
   &__description {
+    @include scrollbar;
     margin-top: $spacing;
+    margin-bottom: $spacing;
     padding: 10px $spacing;
 
     background: $dark;
     border-radius: $border-radius;
 
     max-height: 25vh;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   &__events {
+    max-height: 35vh;
+    overflow-y: auto;
     // @debt these overrides are here because ScheduleItem sets incompatible margins/etc.
     //   We should just clean it up there instead.
     .schedule-item-container {

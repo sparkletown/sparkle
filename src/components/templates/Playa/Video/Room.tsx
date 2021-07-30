@@ -1,17 +1,18 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
-import LocalParticipant from "./LocalParticipant";
-import RemoteParticipant from "./RemoteParticipant";
+
+import { getTwilioVideoToken } from "api/video";
+
 import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
-import { User } from "types/User";
-import { WithId } from "utils/id";
+
+import LocalParticipant from "./LocalParticipant";
+import RemoteParticipant from "./RemoteParticipant";
 
 interface RoomProps {
   roomName: string;
   hostUid: string;
-  setSelectedUserProfile: (user: WithId<User>) => void;
   leave: () => void;
   removeParticipant: (uid: string) => void;
 }
@@ -19,7 +20,6 @@ interface RoomProps {
 const Room: React.FC<RoomProps> = ({
   roomName,
   hostUid,
-  setSelectedUserProfile,
   leave,
   removeParticipant,
 }) => {
@@ -29,22 +29,19 @@ const Room: React.FC<RoomProps> = ({
   );
 
   const { user } = useUser();
+
   const { worldUsersById } = useWorldUsersById();
   const [token, setToken] = useState<string>();
   const firebase = useFirebase();
 
+  // @debt refactor this to use useAsync or similar?
   useEffect(() => {
-    (async () => {
-      if (!user) return;
+    if (!user) return;
 
-      // @ts-ignore
-      const getToken = firebase.functions().httpsCallable("video-getToken");
-      const response = await getToken({
-        identity: user.uid,
-        room: roomName,
-      });
-      setToken(response.data.token);
-    })();
+    getTwilioVideoToken({
+      userId: user.uid,
+      roomName,
+    }).then(setToken);
   }, [firebase, roomName, user]);
 
   useEffect(() => {
@@ -102,12 +99,11 @@ const Room: React.FC<RoomProps> = ({
             id: user.uid,
           }
         }
-        setSelectedUserProfile={setSelectedUserProfile}
         isHost={hostUid === user.uid}
         leave={leave}
       />
     ) : null;
-  }, [room, user, worldUsersById, setSelectedUserProfile, hostUid, leave]);
+  }, [room, user, worldUsersById, hostUid, leave]);
 
   const others = useMemo(
     () =>
@@ -123,7 +119,6 @@ const Room: React.FC<RoomProps> = ({
                     id: participant.identity,
                   }
                 }
-                setSelectedUserProfile={setSelectedUserProfile}
                 isHost={hostUid === participant.identity}
                 showHostControls={hostUid === user.uid}
                 remove={() => removeParticipant(participant.identity)}
@@ -131,14 +126,7 @@ const Room: React.FC<RoomProps> = ({
               />
             ))
         : null,
-    [
-      participants,
-      user,
-      worldUsersById,
-      hostUid,
-      setSelectedUserProfile,
-      removeParticipant,
-    ]
+    [participants, user, worldUsersById, hostUid, removeParticipant]
   );
 
   if (!token) {

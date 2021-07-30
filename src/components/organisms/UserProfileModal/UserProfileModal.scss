@@ -3,8 +3,30 @@
 $side-padding: 10px 30px;
 
 $border-radius: 28px;
-$large-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+$large-shadow: box-shadow--large(0.34);
 $modal-max-width: 540px;
+
+$profile-link--spacing: 10px;
+$profile-link--padding: 6px 18px;
+
+.UserProfileModal {
+  &__profile-link {
+    margin-right: $profile-link--spacing;
+    margin-bottom: $profile-link--spacing;
+    display: inline-block;
+    background: pink;
+    border-radius: $border-radius;
+    padding: $profile-link--padding;
+    text-decoration: none;
+    background: $secondary;
+
+    &:hover {
+      text-decoration: none;
+      color: $white;
+      background: $secondary--light;
+    }
+  }
+}
 
 .question {
   margin-bottom: 0;

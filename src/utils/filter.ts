@@ -22,7 +22,9 @@ import { isWithinBounds } from "./isWithinBounds";
  *   myArray.filter(isTruthyFilter)  // ['A', 'C', 'D', 'etc']
  *
  */
-export const isTruthyFilter = <T>(item?: T | false): item is T => !!item;
+export const isTruthyFilter = <T>(
+  item?: T | false
+): item is Exclude<T, null | undefined | false> => !!item;
 
 /**
  * @see makeRoomHitFilter
