@@ -2,9 +2,11 @@
 
 .ExternalRoom {
   height: 100%;
+  width: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 auto;
 
   &__message {
     padding: 60px;
@@ -35,6 +37,5 @@
     font-family: Rubik;
     font-style: normal;
     font-weight: $font-weight--500;
-    font-size: $font-size--xxl;
   }
 }
