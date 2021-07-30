@@ -8,7 +8,7 @@ import React, {
 import { isEqual } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { NEXT_RENDER_SIZE } from "../../../settings";
+import { CHATBOX_NEXT_RENDER_SIZE } from "../../../settings";
 
 import {
   ChatOptionType,
@@ -80,7 +80,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
 
   const getNextMessagesRenderCount = useCallback(
     (currentIndex: number) =>
-      Math.min(currentIndex + NEXT_RENDER_SIZE, messages.length),
+      Math.min(currentIndex + CHATBOX_NEXT_RENDER_SIZE, messages.length),
     [messages.length]
   );
 
