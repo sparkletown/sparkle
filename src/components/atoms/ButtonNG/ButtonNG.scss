@@ -1,12 +1,14 @@
 @import "scss/constants.scss";
 
+$max-allowed-button-width: 275px;
+
 .ButtonNG {
   display: inline-block;
 
   padding: 0.75em;
   margin: $spacing--xs;
   width: 100%;
-  max-width: 275px;
+  max-width: $max-allowed-button-width;
 
   border-radius: $border-radius--xl;
   border: none;
