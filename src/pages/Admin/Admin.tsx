@@ -184,9 +184,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
           <Route path={`${matchUrl}/events`}>
             <EventsComponent
               venue={currentVenue}
-              showCreateEventModal={showCreateEventModal}
               setShowCreateEventModal={setShowCreateEventModal}
-              editedEvent={editedEvent}
+              setShowDeleteEventModal={setShowDeleteEventModal}
               setEditedEvent={setEditedEvent}
             />
           </Route>
@@ -194,13 +193,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             <>Appearance Component</>
           </Route>
           <Route path={matchUrl}>
-            <VenueInfoComponent
-              venue={currentVenue}
-              roomIndex={roomIndex}
-              showCreateEventModal={showCreateEventModal}
-              setShowCreateEventModal={setShowCreateEventModal}
-              setShowDeleteEventModal={setShowDeleteEventModal}
-            />
+            <VenueInfoComponent venue={currentVenue} roomIndex={roomIndex} />
           </Route>
         </Switch>
       </div>
@@ -226,9 +219,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 export type VenueInfoComponentProps = {
   venue: WithId<AnyVenue>;
   roomIndex?: number;
-  showCreateEventModal: boolean;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
   editedEvent?: WithId<VenueEvent>;
   setEditedEvent?: Function;
 };
@@ -236,9 +226,6 @@ export type VenueInfoComponentProps = {
 const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   venue,
   roomIndex,
-  showCreateEventModal,
-  setShowCreateEventModal,
-  setShowDeleteEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -246,8 +233,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
     push,
   ]);
-  const history = useHistory();
-  const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -265,7 +250,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     show: showDeleteModal,
     hide: hideDeleteModal,
   } = useShowHide();
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   return (
     <>
@@ -364,16 +348,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 Edit Room
               </Link>
             )}
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                history.push(`${match.url}/events`);
-                setShowCreateEventModal(true);
-              }}
-              style={{ marginBottom: 10, width: "100%" }}
-            >
-              Create an Event
-            </button>
+
             <Link
               to={{ search: "manageUsers=true" }}
               className="btn btn-block btn-primary"
@@ -407,18 +382,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
         visible={manageUsers}
         onHide={onManageUsersModalHide}
         venue={venue}
-      />
-      <AdminEventModal
-        show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-        template={venue.template}
-        setEditedEvent={setEditedEvent}
-        setShowDeleteEventModal={setShowDeleteEventModal}
       />
     </>
   );
