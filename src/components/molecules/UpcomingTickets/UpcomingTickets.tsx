@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useMemo } from "react";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
-import { formatDate, formatUtcSeconds } from "utils/time";
+
+import { formatDate, formatTimeLocalised } from "utils/time";
+import { externalUrlAdditionalProps } from "utils/url";
 
 import "./UpcomingTickets.scss";
 
@@ -9,35 +12,38 @@ interface PropsType {
 }
 
 const UpcomingTickets: React.FunctionComponent<PropsType> = ({ events }) => {
-  events = events.sort(
-    (a: UpcomingEvent, b: UpcomingEvent) =>
-      a.ts_utc.toMillis() - b.ts_utc.toMillis()
+  const sortedEvents = useMemo(
+    () =>
+      [...events].sort(
+        (a: UpcomingEvent, b: UpcomingEvent) =>
+          a.ts_utc.toMillis() - b.ts_utc.toMillis()
+      ),
+    [events]
   );
 
   return (
     <div className="upcoming-tickets-overlay">
       <h2>Get Tickets for Future Events</h2>
-      {events.map((event) => (
-        <a
-          key={event.name}
-          className="link"
-          href={event.url}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div className="event">
-            <div className="time-section">
-              <div className="date">
-                {formatDate(event.ts_utc.toMillis() / 1000)}
+      {sortedEvents.map((event) => {
+        const eventDate = event.ts_utc.toDate();
+
+        return (
+          <a
+            key={event.name}
+            className="link"
+            href={event.url}
+            {...externalUrlAdditionalProps}
+          >
+            <div className="event">
+              <div className="time-section">
+                <div className="date">{formatDate(eventDate)}</div>
+                <div className="time">{formatTimeLocalised(eventDate)}</div>
               </div>
-              <div className="time">
-                {formatUtcSeconds(event.ts_utc.toMillis() / 1000)}
-              </div>
+              <div className="event-section">{event.name}</div>
             </div>
-            <div className="event-section">{event.name}</div>
-          </div>
-        </a>
-      ))}
+          </a>
+        );
+      })}
     </div>
   );
 };

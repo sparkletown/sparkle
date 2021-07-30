@@ -1,23 +1,18 @@
-import React, { useMemo } from "react";
+import React from "react";
 import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { Venue_v2 } from "types/venues";
-
-import { orderedVenuesSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useUser } from "hooks/useUser";
-import useRoles from "hooks/useRoles";
+import { useRoles } from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-import { useAdminVenues } from "hooks/useAdminVenues";
-import { useVenueId } from "hooks/useVenueId";
 
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
-import { AdminVenueView } from "components/organisms/AdminVenueView";
-import AuthenticationModal from "components/organisms/AuthenticationModal";
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./Admin.scss";
@@ -27,23 +22,14 @@ dayjs.extend(advancedFormat);
 
 const Admin_v2: React.FC = () => {
   const { user } = useUser();
-  useAdminVenues(user?.uid);
 
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const venues = useSelector(orderedVenuesSelector);
-
-  const venueId = useVenueId();
-
-  const selectedVenue = useMemo(() => venues?.find((v) => v.id === venueId), [
-    venueId,
-    venues,
-  ]);
+  const { ownedVenues, isLoading } = useOwnedVenues({});
 
   const { roles } = useRoles();
 
   const { isAdminUser } = useIsAdminUser(user?.uid);
 
-  if (!venues || !roles) {
+  if (isLoading || !roles) {
     return <LoadingPage />;
   }
 
@@ -59,12 +45,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          {selectedVenue ? (
-            // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
-            <AdminVenueView venue={selectedVenue as Venue_v2} />
-          ) : (
-            <AdminVenues venues={venues} />
-          )}
+          <AdminVenues venues={ownedVenues} />
         </S.ViewWrapper>
       </S.Wrapper>
 

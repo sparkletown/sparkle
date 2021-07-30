@@ -1,11 +1,22 @@
-import React from "react";
-
-// Typings
-import { ButtonProps } from "./Button.types";
-
-// Styles
-import * as S from "./Button.styles";
+import React, { CSSProperties } from "react";
 import { Link } from "react-router-dom";
+
+import * as S from "./Button.styles";
+
+interface LinkProps {
+  isLink?: boolean;
+  linkTo?: string;
+}
+
+export interface ButtonProps extends LinkProps {
+  customClass?: string;
+  customStyle?: CSSProperties;
+  gradient?: boolean;
+  loading?: boolean;
+  onClick?: () => void;
+  type?: "button" | "reset" | "submit";
+  disabled?: boolean;
+}
 
 export const AppButton: React.FC<ButtonProps> = ({
   customClass,
@@ -17,11 +28,12 @@ export const AppButton: React.FC<ButtonProps> = ({
   gradient,
   isLink = false,
   linkTo,
+  disabled = false,
 }) => {
   if (loading)
     return (
       <div className="spinner-border">
-        <span className="sr-only">Loading...</span>
+        <span className="sr-only">Loading&hellip;</span>
       </div>
     );
 
@@ -45,6 +57,7 @@ export const AppButton: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       hasGradient={gradient}
+      disabled={disabled}
     >
       {children}
     </S.Button>

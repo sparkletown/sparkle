@@ -10,7 +10,7 @@ $header-height: 45px;
   flex-flow: column;
   top: 66px;
   right: 0;
-  width: 360px;
+  width: $chat-sidebar-width;
   height: calc(100vh - 96px);
   background-color: $saturated-black;
   z-index: z(sidebar);
@@ -35,6 +35,8 @@ $header-height: 45px;
   }
 
   &__tab {
+    background: transparent;
+    border: none;
     display: flex;
     flex: 1;
     font-size: 0.9rem;
@@ -44,6 +46,7 @@ $header-height: 45px;
     border-bottom: rgba(0, 0, 0, 0) thin solid;
     color: rgba(255, 255, 255, 0.6);
 
+    &:focus,
     &:hover {
       color: rgba(255, 255, 255, 0.7);
     }
@@ -52,6 +55,7 @@ $header-height: 45px;
       border-bottom: $white 2px solid;
       color: $white;
 
+      &:focus,
       &:hover {
         color: $white;
         border-bottom: $white 2px solid;
@@ -60,6 +64,8 @@ $header-height: 45px;
   }
 
   &__controller {
+    color: $white;
+    border: none;
     display: flex;
     justify-content: center;
     align-items: center;

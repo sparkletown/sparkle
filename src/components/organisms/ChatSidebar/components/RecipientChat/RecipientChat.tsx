@@ -2,6 +2,10 @@ import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
@@ -9,13 +13,14 @@ import { useRecipientChat } from "hooks/privateChats";
 import { useChatSidebarControls } from "hooks/chatSidebar";
 
 import "./RecipientChat.scss";
-
 export interface RecipientChatProps {
   recipientId: string;
+  venue: WithId<AnyVenue>;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
+  venue,
 }) => {
   const {
     messagesToDisplay,
@@ -49,7 +54,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           className="recipient-chat__back-icon"
           size="sm"
         />
-        <UserAvatar user={recipient} />
+        <UserAvatar user={recipient} showStatus />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
       <Chatbox
@@ -57,6 +62,7 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         sendMessage={sendMessageToSelectedRecipient}
         deleteMessage={deleteMessage}
         sendThreadReply={sendThreadReply}
+        venue={venue}
       />
     </div>
   );

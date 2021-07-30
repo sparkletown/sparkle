@@ -2,37 +2,31 @@ import {
   addMinutes,
   areIntervalsOverlapping,
   differenceInMinutes,
-  endOfDay,
   fromUnixTime,
+  isAfter,
+  isFuture,
   isWithinInterval,
-  startOfDay,
 } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
-import { getCurrentTimeInUTCSeconds } from "./time";
+import {
+  formatUtcSecondsRelativeToNow,
+  getCurrentTimeInUTCSeconds,
+  getDayInterval,
+} from "./time";
 
-export const getCurrentEvent = (roomEvents: VenueEvent[]) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
+export const getCurrentEvent = (roomEvents: VenueEvent[]) =>
+  roomEvents.find(isEventLive);
 
-  return roomEvents.find(
-    (event) =>
-      event.start_utc_seconds < currentTimeInUTCSeconds &&
-      event.start_utc_seconds + event.duration_minutes > currentTimeInUTCSeconds
-  );
-};
+export const isEventLive = (event: VenueEvent) =>
+  isWithinInterval(Date.now(), getEventInterval(event));
 
-export const isEventLive = (event: VenueEvent) => {
-  return isWithinInterval(Date.now(), getEventInterval(event));
-};
+export const isEventFuture = (event: VenueEvent) =>
+  isFuture(fromUnixTime(event.start_utc_seconds));
 
-export const isEventLiveOrFuture = (event: VenueEvent) => {
-  const currentTimeInUTCSeconds = getCurrentTimeInUTCSeconds();
-
-  return (
-    isEventLive(event) || event.start_utc_seconds > currentTimeInUTCSeconds
-  );
-};
+export const isEventLiveOrFuture = (event: VenueEvent) =>
+  isEventLive(event) || isEventFuture(event);
 
 export const eventHappeningNow = (
   roomName: string,
@@ -48,6 +42,9 @@ export const eventHappeningNow = (
   );
 };
 
+export const hasEventFinished = (event: VenueEvent) =>
+  isAfter(Date.now(), eventEndTime(event));
+
 export const eventStartTime = (event: VenueEvent) =>
   fromUnixTime(event.start_utc_seconds);
 
@@ -62,15 +59,24 @@ export const getEventInterval = (event: VenueEvent) => ({
   end: eventEndTime(event),
 });
 
-export const isEventWithinDate = (checkDate: number | Date) => (
+export const isEventWithinDate = (checkDate: Date | number) => (
   event: VenueEvent
-) => {
-  const checkDateInterval = {
-    start: startOfDay(checkDate),
-    end: endOfDay(checkDate),
-  };
+) =>
+  areIntervalsOverlapping(getDayInterval(checkDate), getEventInterval(event));
 
-  const eventInterval = getEventInterval(event);
+export const isEventWithinDateAndNotFinished = (checkDate: Date | number) => (
+  event: VenueEvent
+) => isEventWithinDate(checkDate)(event) && !hasEventFinished(event);
 
-  return areIntervalsOverlapping(checkDateInterval, eventInterval);
+export const getEventStatus = (event: VenueEvent) => {
+  if (isEventLive(event)) return `Happening now`;
+
+  if (hasEventFinished(event)) {
+    return `Ended`;
+  } else {
+    return `Starts ${formatUtcSecondsRelativeToNow(event.start_utc_seconds)}`;
+  }
 };
+
+export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
+  a.start_utc_seconds - b.start_utc_seconds;

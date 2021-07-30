@@ -1,13 +1,21 @@
 import {
   differenceInSeconds,
+  endOfDay,
   format,
   formatDuration,
   formatRelative,
   fromUnixTime,
+  getTime,
   getUnixTime,
   intervalToDuration,
-  isBefore,
+  isAfter,
+  isThisYear,
+  isToday,
+  isTomorrow,
+  isYesterday,
   startOfDay,
+  subDays,
+  subHours,
 } from "date-fns";
 
 /**
@@ -91,100 +99,120 @@ export const secondsToDuration = (totalSeconds: number): Duration => {
 export const formatSecondsAsDuration = (seconds: number): string =>
   formatDuration(secondsToDuration(seconds));
 
-export const getTimeBeforeParty = (startUtcSeconds?: number) => {
+/**
+ * Format time left from now as a string representing the Duration ignoring seconds.
+ *
+ * @example
+ *   getTimeBeforeParty(1626432204)
+ *   // 1 month 26 days 20 hours 53 minutes
+ *
+ * @param startUtcSeconds
+ *
+ * @see https://date-fns.org/docs/formatDuration
+ */
+export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
   if (startUtcSeconds === undefined) return "???";
 
-  const eventStartDate = fromUnixTime(startUtcSeconds);
+  const startDate = fromUnixTime(startUtcSeconds);
   const now = Date.now();
 
-  if (isBefore(eventStartDate, now)) return 0;
+  if (isAfter(now, startDate)) return "0";
 
-  return formatDuration(
-    intervalToDuration({
+  return formatDuration({
+    ...intervalToDuration({
       start: now,
-      end: eventStartDate,
+      end: startDate,
     }),
-    { format: ["days", "hours", "minutes"] }
-  );
+    seconds: 0,
+  });
 };
 
 /**
- * Format UTC seconds as a string representing date.
+ * Format dateOrTimestamp as a string representing date.
  *
  * @example
- *   formatDate(1618509600)
- *   // 'Apr 15th'
+ *   formatDate(1623899620647)
+ *   // 'Jun 17th'
  *
- * @param utcSeconds
+ * @param dateOrTimestamp
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatDate(utcSeconds: number) {
-  return format(fromUnixTime(utcSeconds), "MMM do");
+export const formatDate = (dateOrTimestamp: Date | number): string =>
+  isThisYear(dateOrTimestamp)
+    ? format(dateOrTimestamp, "MMM do")
+    : format(dateOrTimestamp, "MMM do, yyyy");
+
+export interface FormatDateRelativeToNowOptions {
+  formatYesterday?: (dateOrTimestamp: Date | number) => string;
+  formatToday?: (dateOrTimestamp: Date | number) => string;
+  formatTomorrow?: (dateOrTimestamp: Date | number) => string;
+  formatOtherDate?: (dateOrTimestamp: Date | number) => string;
 }
 
 /**
- * Format UTC seconds as a string representing exact hour(using 12 hour AM/PM format) and minutes.
+ * Format dateOrTimestamp as a string representing the date relative to now.
  *
- * @example
- *   formatTimestampToDisplayHoursMinutes(1618509600)
- *   // '9:35 AM'
+ * These formats can be customised via the options prop if desired.
  *
- * @param timestamp
+ * @example Basic Usage
+ *   formatDateRelativeToNow(yesterdayDate) // "Yesterday"
+ *   formatDateRelativeToNow(todayDate)     // "Today"
+ *   formatDateRelativeToNow(tomorrowDate)  // "Tomorrow"
+ *   formatDateRelativeToNow(someOtherDate) // "Jun 17th"
+ *
+ * @example Customised Formats Usage
+ *   formatDateRelativeToNow(todayDate, { formatToday: () => "All we have is now!" })
+ *   // "All we have is now!"
+ *
+ * @param dateOrTimestamp
+ * @param options
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatTimestampToDisplayHoursMinutes(timestamp: number) {
-  return format(timestamp, "h:mm aa");
-}
+export const formatDateRelativeToNow = (
+  dateOrTimestamp: Date | number,
+  options?: FormatDateRelativeToNowOptions
+): string => {
+  const {
+    formatYesterday = () => "Yesterday",
+    formatToday = () => "Today",
+    formatTomorrow = () => "Tomorrow",
+    formatOtherDate = formatDate,
+  } = options ?? {};
+
+  if (isYesterday(dateOrTimestamp)) return formatYesterday(dateOrTimestamp);
+  if (isToday(dateOrTimestamp)) return formatToday(dateOrTimestamp);
+  if (isTomorrow(dateOrTimestamp)) return formatTomorrow(dateOrTimestamp);
+
+  return formatOtherDate(dateOrTimestamp);
+};
+
+/**
+ * Format dateOrTimestamp as a string representing the time in long localized time format (eg. 12:00 AM).
+ *
+ * @example
+ *   formatTimestampToDisplayHoursMinutes(1623899620647)
+ *   // '1:13 PM'
+ *
+ * @param dateOrTimestamp
+ *
+ * @see https://date-fns.org/docs/format
+ */
+export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
+  format(dateOrTimestamp, "p");
 
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
 }
 
-/**
- * Format UTC seconds as a string representing time.
- *
- * @example
- *   formatUtcSeconds(1618509600)
- *   // '9:00 PM'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export function formatUtcSeconds(utcSeconds?: number | null) {
-  return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
-}
-
-export function getHoursAgoInSeconds(hours: number) {
-  const nowInSec = getUnixTime(Date.now());
-  return nowInSec - hours * ONE_HOUR_IN_SECONDS;
-}
-
 export const getHoursAgoInMilliseconds = (hours: number) =>
-  Date.now() - hours * ONE_HOUR_IN_MILLISECONDS;
+  getTime(subHours(Date.now(), hours));
 
 export const getCurrentTimeInMilliseconds = () => Date.now();
 
-export function getDaysAgoInSeconds(days: number) {
-  return getHoursAgoInSeconds(days * 24);
-}
-
-/**
- * Format UTC seconds as a string representing time in the format hh:mm.
- *
- * @example
- *   formatHourAndMinute(1618509600)
- *   // '21:00'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export const formatHourAndMinute = (utcSeconds: number) => {
-  return format(fromUnixTime(utcSeconds), "HH:mm");
-};
+export const getDaysAgoInSeconds = (days: number) =>
+  getUnixTime(subDays(Date.now(), days));
 
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const time = fromUnixTime(utcSeconds);
@@ -218,3 +246,8 @@ export const normalizeTimestampToMilliseconds = (timestamp: number) => {
     ? timestamp
     : timestamp * ONE_SECOND_IN_MILLISECONDS;
 };
+
+export const getDayInterval = (date: Date | number) => ({
+  start: startOfDay(date),
+  end: endOfDay(date),
+});

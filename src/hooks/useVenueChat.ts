@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -7,7 +8,7 @@ import { sendVenueMessage, deleteVenueMessage } from "api/chat";
 import {
   DeleteMessage,
   SendChatReply,
-  SendMesssage,
+  SendMessage,
   VenueChatMessage,
 } from "types/chat";
 
@@ -25,10 +26,11 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "./useSelector";
 import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
 import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
+
+const noMessages: WithId<VenueChatMessage>[] = [];
 
 export const useConnectVenueChatMessages = (venueId?: string) => {
   useFirestoreConnect(
@@ -43,37 +45,43 @@ export const useConnectVenueChatMessages = (venueId?: string) => {
   );
 };
 
-export const useVenueChat = () => {
-  const venueId = useVenueId();
+export const useVenueChat = (venueId?: string) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
   const { userRoles } = useRoles();
-  const { user } = useUser();
-
-  const userId = user?.uid;
+  const { userId } = useUser();
 
   useConnectVenueChatMessages(venueId);
 
-  const chatMessages = useSelector(venueChatMessagesSelector) ?? [];
+  const chatMessages =
+    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
 
   const isAdmin = Boolean(userRoles?.includes("admin"));
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
-  const filteredMessages = chatMessages
-    .filter(
-      (message) =>
-        message.deleted !== true &&
-        message.ts_utc.seconds > venueChatAgeThresholdSec
-    )
-    .sort(chatSort);
+  const filteredMessages = useMemo(
+    () =>
+      chatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.ts_utc.seconds > venueChatAgeThresholdSec
+        )
+        .sort(chatSort),
+    [chatMessages, venueChatAgeThresholdSec]
+  );
 
-  const sendMessage: SendMesssage = useCallback(
-    async (text: string) => {
+  const sendMessage: SendMessage = useCallback(
+    async ({ message, isQuestion }) => {
       if (!venueId || !userId) return;
 
-      const message = buildMessage<VenueChatMessage>({ from: userId, text });
+      const processedMessage = buildMessage<VenueChatMessage>({
+        from: userId,
+        text: message,
+        ...(isQuestion && { isQuestion }),
+      });
 
-      return sendVenueMessage({ venueId, message });
+      return sendVenueMessage({ venueId, message: processedMessage });
     },
     [venueId, userId]
   );
@@ -143,14 +151,11 @@ export const useVenueChat = () => {
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );
 
-  return useMemo(
-    () => ({
-      messagesToDisplay,
+  return {
+    messagesToDisplay,
 
-      sendMessage,
-      deleteMessage,
-      sendThreadReply,
-    }),
-    [messagesToDisplay, sendMessage, sendThreadReply, deleteMessage]
-  );
+    sendMessage,
+    deleteMessage,
+    sendThreadReply,
+  };
 };
