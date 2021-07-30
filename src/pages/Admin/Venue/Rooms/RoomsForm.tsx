@@ -264,7 +264,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                   <div className="input-container">
                     <div className="input-title">
                       Upload an image for how your room should appear on the
-                      camp map
+                      Space map
                     </div>
                     <ImageInput
                       disabled={disable}
@@ -333,7 +333,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Is label hidden?</div>
                     <Toggler
-                      name="isLabeled"
+                      name="isLabelHidden"
                       forwardedRef={register}
                       disabled={disable}
                     />
@@ -384,7 +384,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your room in the camp
+            Position your room in the Space
           </h4>
           <p>
             First upload or select the icon you would like to appear in your

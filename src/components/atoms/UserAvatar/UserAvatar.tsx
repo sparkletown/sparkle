@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual, isEmpty } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -8,11 +8,13 @@ import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRecentWorldUsers } from "hooks/users";
+import { useWorldUserLocation } from "hooks/users";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./UserAvatar.scss";
+
+export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
 export interface UserAvatarProps {
   user?: WithId<User>;
@@ -21,8 +23,7 @@ export interface UserAvatarProps {
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
   onClick?: () => void;
-  large?: boolean;
-  medium?: boolean;
+  size?: UserAvatarSize;
 }
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
@@ -33,12 +34,12 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   showNametag,
   onClick,
   showStatus,
-  large,
-  medium,
+  size,
 }) => {
   const venueId = useVenueId();
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { userLocation } = useWorldUserLocation(user?.id);
+  const userLastSeenIn = userLocation?.lastSeenIn;
 
   const {
     userStatus,
@@ -56,14 +57,10 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
-    "UserAvatar--large": large,
-    "UserAvatar--medium": medium,
+    [`UserAvatar--${size}`]: size,
   });
 
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
+  const isOnline = useMemo(() => !isEmpty(userLastSeenIn), [userLastSeenIn]);
 
   const status = user?.status;
 
@@ -76,7 +73,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   const statusIndicatorClasses = classNames("UserAvatar__status-indicator", {
     "UserAvatar__status-indicator--online": isOnline,
     [`UserAvatar__status-indicator--${status}`]: isOnline && status,
-    "UserAvatar__status-indicator--large": large,
+    [`UserAvatar__status-indicator--${size}`]: size,
   });
 
   const statusIndicatorStyles = useMemo(
