@@ -1,35 +1,46 @@
 @import "scss/constants";
 
-.UserAvatar {
-  // @see https://math.stackexchange.com/questions/377234/circle-in-square-calculate-distance-from-squares-corner-to-circles-perimeter
-  $square-root-of-2: 1.41421356237;
-  $indicator-offset-factor: ($square-root-of-2 - 1) / 2;
-  $indicator-radius-factor: $square-root-of-2 / 2;
+// @see https://math.stackexchange.com/questions/377234/circle-in-square-calculate-distance-from-squares-corner-to-circles-perimeter
+$square-root-of-2: 1.41421356237;
+$indicator-offset-factor: ($square-root-of-2 - 1) / 2;
+$indicator-radius-factor: $square-root-of-2 / 2;
 
-  // indicator border should be 12% of the indicator size, but borders don't accept % so using px for default
-  $default-indicator-border-width: 2px;
-  $default-indicator-size: 28%;
-  $default-avatar-size: 25px;
-  $default-image-size: 100%;
+// indicator border should be 12% of the indicator size, but borders don't accept % so using px for default
+$default-indicator-border-width: 2px;
+$default-indicator-size: 28%;
+$default-avatar-size: 25px;
+$default-image-size: 100%;
 
-  // indicator border is 12% of indicator size which itself is some % of avatar size
-  // limited to min: 0.8px and max: 2px
-  @function indicator-border-width($indicator-size, $avatar-size) {
-    @return clamp(0.8px, 0.12 * #{$indicator-size} * #{$avatar-size}, 2px);
-  }
+$indicator-border-size-relative-to-indicator-size: 0.12;
+$min-allowed-indicator-border-width: 0.8px;
+$max-allowed-indicator-border-width: 2px;
 
-  // order of elements:
-  // $modifier - one of UserAvatarSize
-  // $avatar-size - set in pixels or percent for larger than 54px
-  // $indicator-size - set in percent of parent
-  // $indicator-border-width - calculated as a percent of indicator size
-  $avatar-sizes-enum: (
-    (small, 25px, 28%, indicator-border-width(0.28, 25px)),
-    (medium, 40px, 28%, indicator-border-width(0.28, 40px)),
-    (large, 54px, 28%, indicator-border-width(0.28, 54px)),
-    (full, max(55px, 100%), 16%, indicator-border-width(0.16, 108px))
+// indicator border is % of indicator size which itself is some % of avatar size
+@function indicator-border-width(
+  $indicator-size-relative-to-avatar-size,
+  $avatar-size
+) {
+  @return clamp(
+    #{$min-allowed-indicator-border-width},
+    #{$indicator-border-size-relative-to-indicator-size} * #{$indicator-size-relative-to-avatar-size} *
+      #{$avatar-size},
+    #{$max-allowed-indicator-border-width}
   );
+}
 
+// order of elements:
+// $modifier - one of UserAvatarSize
+// $avatar-size - set in pixels or percent for larger than 54px
+// $indicator-size - set in percent of parent
+// $indicator-border-width - calculated as a percent of indicator size
+$avatar-sizes-enum: (
+  (small, 25px, 28%, indicator-border-width(0.28, 25px)),
+  (medium, 40px, 28%, indicator-border-width(0.28, 40px)),
+  (large, 54px, 28%, indicator-border-width(0.28, 54px)),
+  (full, max(55px, 100%), 16%, indicator-border-width(0.16, 108px))
+);
+
+.UserAvatar {
   @include square-size($default-avatar-size);
   position: relative;
 
