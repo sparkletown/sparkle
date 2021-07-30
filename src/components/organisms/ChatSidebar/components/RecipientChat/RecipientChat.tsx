@@ -12,7 +12,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import "./RecipientChat.scss";
-import { useRecipientChat } from "../../../../../hooks/chats/privateChats/useRecipientChat";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
   venue: WithId<AnyVenue>;
