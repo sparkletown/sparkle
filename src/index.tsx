@@ -21,11 +21,7 @@ import "firebase/performance";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import {
-  BUILD_SHA1,
-  LOGROCKET_APP_ID,
-  MIXPANEL_PROJECT_TOKEN,
-} from "secrets";
+import { BUILD_SHA1, LOGROCKET_APP_ID, MIXPANEL_PROJECT_TOKEN } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
 import * as serviceWorker from "./serviceWorker";
