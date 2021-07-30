@@ -10,6 +10,7 @@ import { AnyVenue } from "../../../types/venues";
 import "./ProfileModal.scss";
 import "./UserProfileModal.scss";
 import { useUser } from "../../../hooks/useUser";
+import { ProfileModalEditLinks } from "./ProfileModalEditLinks/ProfileModalEditLinks";
 
 interface Props {
   venue: WithId<AnyVenue>;
@@ -42,10 +43,14 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
               editMode={editMode}
               containerClassName="ProfileModal__section"
             />
-            <ProfileModalLinks
-              viewingUser={user}
-              containerClassName="ProfileModal__section"
-            />
+            {editMode ? (
+              <ProfileModalEditLinks containerClassName="ProfileModal__section" />
+            ) : (
+              <ProfileModalLinks
+                viewingUser={user}
+                containerClassName="ProfileModal__section"
+              />
+            )}
             <ProfileModalBadges
               viewingUser={user}
               venue={venue}
