@@ -80,8 +80,8 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
   const getNextMessagesRenderCount = useCallback(
-    (currentIndex: number) =>
-      Math.min(currentIndex + CHATBOX_NEXT_RENDER_SIZE, messages.length),
+    (currentCount: number) =>
+      Math.min(currentCount + CHATBOX_NEXT_RENDER_SIZE, messages.length),
     [messages.length]
   );
 
