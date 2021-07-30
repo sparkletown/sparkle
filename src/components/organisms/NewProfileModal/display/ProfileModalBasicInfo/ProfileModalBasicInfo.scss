@@ -38,10 +38,6 @@
     flex: 1;
   }
 
-  &--input {
-    display: block;
-  }
-
   &--section {
     margin-left: 1.5rem;
   }
@@ -52,7 +48,6 @@
   }
 
   &__edit {
-    margin-left: 1.5rem;
     @include square-size(2rem);
     padding: 0;
     cursor: pointer;

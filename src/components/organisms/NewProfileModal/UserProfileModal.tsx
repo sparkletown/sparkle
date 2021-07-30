@@ -18,7 +18,7 @@ interface Props {
 }
 
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
-  const { userWithId, profile } = useUser();
+  const { userWithId: user } = useUser();
   const [editMode, setEditMode] = useState(false);
 
   return (
@@ -29,23 +29,25 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
       onHide={onClose}
     >
       <Modal.Body className="ProfileModal__body">
-        {userWithId && profile && (
+        {user && (
           <>
             <ProfileModalBasicInfo
               editMode={editMode}
               onEdit={() => setEditMode(true)}
-              viewingUser={userWithId}
+              viewingUser={user}
+              containerClassName="ProfileModal__section"
             />
             <ProfileModalQuestions
-              profile={profile}
+              viewingUser={user}
+              editMode={editMode}
               containerClassName="ProfileModal__section"
             />
             <ProfileModalLinks
-              viewingUser={userWithId}
+              viewingUser={user}
               containerClassName="ProfileModal__section"
             />
             <ProfileModalBadges
-              viewingUser={userWithId}
+              viewingUser={user}
               venue={venue}
               containerClassName={"ProfileModal__section"}
             />

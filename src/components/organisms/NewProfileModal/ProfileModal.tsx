@@ -45,7 +45,7 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
       <Modal.Body className="ProfileModal__body">
         <ProfileModalBasicInfo viewingUser={selectedUserProfile} />
         <ProfileModalQuestions
-          profile={selectedUserProfile}
+          viewingUser={selectedUserProfile}
           containerClassName="ProfileModal__section"
         />
         <ProfileModalLinks

@@ -19,7 +19,11 @@
   font-size: 14px;
   &__section {
     margin-top: 0.7rem;
+    &:first-child {
+      margin-top: 0;
+    }
   }
+
   & > .modal-dialog {
     max-width: 29.5rem;
     margin: 1.75rem auto;

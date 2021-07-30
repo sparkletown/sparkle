@@ -4,14 +4,17 @@ import "./ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "../../../../../types/utility";
+import { WithId } from "utils/id";
+import { User } from "../../../../../types/User";
 
 interface Props extends ContainerClassName {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  profile: any;
+  editMode?: boolean;
+  viewingUser: WithId<User>;
 }
 
 export const ProfileModalQuestions: React.FC<Props> = ({
-  profile,
+  viewingUser,
+  editMode,
   containerClassName,
 }: Props) => {
   const venueId = useVenueId();
@@ -23,22 +26,33 @@ export const ProfileModalQuestions: React.FC<Props> = ({
       profileQuestions?.map((question) => {
         // @ts-ignore User type doesn't accept string indexing.
         // We need to rework the way we store answers to profile questions
-        const questionAnswer = profile[question.name];
+        const questionAnswer = viewingUser[question.name];
 
         if (!questionAnswer) return undefined;
 
         return (
-          <React.Fragment key={question.text}>
+          <div
+            className="ProfileModalQuestions__question-container"
+            key={question.text}
+          >
             <p className="ProfileModalQuestions__question">{question.text}</p>
-            <p className="ProfileModalQuestions__answer">{questionAnswer}</p>
-          </React.Fragment>
+            {editMode ? (
+              <input
+                className="ProfileModalQuestions__answer-input"
+                name={question.text}
+                value={questionAnswer}
+              />
+            ) : (
+              <p className="ProfileModalQuestions__answer">{questionAnswer}</p>
+            )}
+          </div>
         );
       }),
-    [profileQuestions, profile]
+    [editMode, profileQuestions, viewingUser]
   );
   return (
     <div className={classNames("ProfileModalQuestions", containerClassName)}>
-      {profile && renderedProfileQuestionAnswers}
+      {viewingUser && renderedProfileQuestionAnswers}
     </div>
   );
 };
