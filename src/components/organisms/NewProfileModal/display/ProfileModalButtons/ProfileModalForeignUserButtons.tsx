@@ -1,4 +1,3 @@
-import { useUser } from "../../../../../hooks/useUser";
 import { User } from "../../../../../types/User";
 import { WithId } from "../../../../../utils/id";
 import { Button } from "../../../../atoms/Button";
@@ -6,20 +5,20 @@ import "./ProfileModalForeignUserButtons.scss";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "../../../../../types/utility";
 import { useIsOnline } from "../../../../../hooks/useIsOnline";
+import { useSameUser } from "../../../../../hooks/useIsSameUser";
 
 interface Props extends ContainerClassName {
   openChat: () => void;
-  chosenUser: WithId<User>;
+  viewingUser: WithId<User>;
 }
 
 export const ProfileModalForeignUserButtons: React.FC<Props> = ({
   containerClassName,
   openChat,
-  chosenUser,
+  viewingUser,
 }: Props) => {
-  const { userWithId: currentUser } = useUser();
-
-  const { isOnline } = useIsOnline(chosenUser.id);
+  const { isOnline } = useIsOnline(viewingUser.id);
+  const sameUser = useSameUser(viewingUser);
 
   const sendMessageButtonStyle = useMemo(
     () => (isOnline ? { backgroundColor: "#78B553" } : {}),
@@ -28,7 +27,7 @@ export const ProfileModalForeignUserButtons: React.FC<Props> = ({
 
   return (
     <>
-      {currentUser?.id !== chosenUser?.id && (
+      {!sameUser && (
         <div className={containerClassName}>
           <Button
             customClass={"ProfileModalButtons__button"}

@@ -8,19 +8,24 @@ import { ContainerClassName } from "../../../../../types/utility";
 import { WithId } from "../../../../../utils/id";
 import { User } from "../../../../../types/User";
 import { useIsOnline } from "../../../../../hooks/useIsOnline";
+import { useSameUser } from "../../../../../hooks/useIsSameUser";
+import { UserStatusDropdown } from "../../../../atoms/UserStatusDropdown";
+import { useUser } from "hooks/useUser";
 
 interface Props extends ContainerClassName {
-  user: WithId<User>;
+  viewingUser: WithId<User>;
 }
 
 export const ProfileModalBasicTextInfo: React.FC<Props> = ({
-  user,
+  viewingUser,
   containerClassName,
 }: Props) => {
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
 
-  const { lastSeenIn } = useIsOnline(user.id);
+  const { lastSeenIn } = useIsOnline(viewingUser.id);
+  const sameUser = useSameUser(viewingUser);
+  const { user: firebaseUser } = useUser();
 
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
 
@@ -34,17 +39,23 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
       className={classNames("ProfileModalBasicTextInfo", containerClassName)}
     >
       <h3 className="ProfileModalBasicTextInfo__name italic">
-        {user.partyName || DEFAULT_PARTY_NAME}
+        {viewingUser.partyName || DEFAULT_PARTY_NAME}
       </h3>
-      {userStatus && (
+      {sameUser && firebaseUser?.email && <div>{firebaseUser?.email}</div>}
+      {userStatus && sovereignVenue?.userStatuses && (
+        <div className="ProfileModalBasicTextInfo__status">
+          is&nbsp;
+          <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
+        </div>
+      )}
+      {lastVenue && !sameUser && (
         <div>
-          is{" "}
-          <span className="ProfileModalBasicTextInfo__status-bold">
-            {userStatus.status}
+          <span>last seen in</span>{" "}
+          <span className="ProfileModalBasicTextInfo--underlined">
+            {lastVenue}
           </span>
         </div>
       )}
-      {lastVenue && <div>last seen in {lastVenue}</div>}
     </div>
   );
 };

@@ -6,13 +6,16 @@ import { UserStatus } from "types/User";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserStatusDropdown.scss";
+import { ContainerClassName } from "../../../types/utility";
+import classNames from "classnames";
 
-export interface UserStatusDropdownProps {
+export interface UserStatusDropdownProps extends ContainerClassName {
   userStatuses: UserStatus[];
 }
 
 export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
   userStatuses,
+  containerClassName,
 }) => {
   const { userStatus, changeUserStatus } = useVenueUserStatuses();
 
@@ -45,7 +48,7 @@ export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
     <DropdownButton
       id="user-status-dropdown"
       title={userStatus.status ?? "change status"}
-      className="UserStatusDropdown"
+      className={classNames("UserStatusDropdown", containerClassName)}
     >
       {userStatusDropdownOptions}
     </DropdownButton>

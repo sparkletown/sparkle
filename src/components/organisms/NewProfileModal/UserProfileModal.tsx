@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import { ProfileModalBasicInfo } from "./display/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "./display/ProfileModalQuestions/ProfileModalQuestions";
@@ -19,9 +19,11 @@ interface Props {
 
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
   const { userWithId, profile } = useUser();
+  const [editMode, setEditMode] = useState(false);
 
   return (
     <Modal
+      style={{ display: "flex" }}
       className="ProfileModal UserProfileModal"
       show={show}
       onHide={onClose}
@@ -29,17 +31,21 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
       <Modal.Body className="ProfileModal__body">
         {userWithId && profile && (
           <>
-            <ProfileModalBasicInfo user={userWithId} />
+            <ProfileModalBasicInfo
+              editMode={editMode}
+              onEdit={() => setEditMode(true)}
+              viewingUser={userWithId}
+            />
             <ProfileModalQuestions
               profile={profile}
               containerClassName="ProfileModal__section"
             />
             <ProfileModalLinks
-              user={userWithId}
+              viewingUser={userWithId}
               containerClassName="ProfileModal__section"
             />
             <ProfileModalBadges
-              user={userWithId}
+              viewingUser={userWithId}
               venue={venue}
               containerClassName={"ProfileModal__section"}
             />

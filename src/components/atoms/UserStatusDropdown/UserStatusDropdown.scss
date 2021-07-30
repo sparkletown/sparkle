@@ -7,14 +7,11 @@ $dropdown-width: 100px;
   .dropdown-toggle.btn {
     background: none;
     padding: 0;
-    border-radius: 0;
-    text-decoration: none;
+    margin: 0;
+    line-height: unset;
+    text-decoration: underline;
     border: none;
-
-    font-size: $font-size--sm;
     font-weight: $font-weight--400;
-    color: opaque-white(0.7);
-    border-bottom: thin solid opaque-white(0.8);
 
     &:focus {
       box-shadow: none;
@@ -23,8 +20,6 @@ $dropdown-width: 100px;
     &:hover {
       background-color: initial;
       transform: none;
-      color: opaque-white(0.9);
-      border-bottom: thin solid opaque-white(0.9);
     }
 
     &::after {

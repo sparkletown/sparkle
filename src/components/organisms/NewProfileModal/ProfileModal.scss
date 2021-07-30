@@ -1,16 +1,29 @@
 @import "scss/constants.scss";
 
 .ProfileModal {
+  display: flex;
+  align-items: flex-start;
+
+  & input {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    border-radius: 22px;
+    text-align: start;
+  }
+
   &__body {
     background-color: $dark-grey;
     padding: 1.7rem;
   }
   font-size: 14px;
   &__section {
-    margin-top: 1rem;
+    margin-top: 0.7rem;
   }
   & > .modal-dialog {
-    max-width: 420px;
+    max-width: 29.5rem;
+    margin: 1.75rem auto;
+    width: auto;
     & > .modal-content {
       padding: 0;
     }

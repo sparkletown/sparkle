@@ -43,24 +43,24 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
       onHide={closeUserProfileModal}
     >
       <Modal.Body className="ProfileModal__body">
-        <ProfileModalBasicInfo user={selectedUserProfile} />
+        <ProfileModalBasicInfo viewingUser={selectedUserProfile} />
         <ProfileModalQuestions
           profile={selectedUserProfile}
           containerClassName="ProfileModal__section"
         />
         <ProfileModalLinks
-          user={selectedUserProfile}
+          viewingUser={selectedUserProfile}
           containerClassName="ProfileModal__section"
         />
         <ProfileModalBadges
-          user={selectedUserProfile}
+          viewingUser={selectedUserProfile}
           containerClassName={"ProfileModal__section"}
           venue={venue}
         />
         <ProfileModalForeignUserButtons
           containerClassName="ProfileModal__section"
           openChat={openChosenUserChat}
-          chosenUser={selectedUserProfile}
+          viewingUser={selectedUserProfile}
         />
       </Modal.Body>
     </Modal>

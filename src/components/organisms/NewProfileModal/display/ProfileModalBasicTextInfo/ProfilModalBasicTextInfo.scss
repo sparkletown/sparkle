@@ -9,7 +9,16 @@
     margin-bottom: 4px;
   }
 
-  &__status-bold {
-    font-weight: 200;
+  &__status {
+    display: flex;
+    font-size: 16px;
+  }
+
+  &--underlined {
+    text-decoration: underline;
+  }
+
+  &--cursor-pointer {
+    cursor: pointer;
   }
 }

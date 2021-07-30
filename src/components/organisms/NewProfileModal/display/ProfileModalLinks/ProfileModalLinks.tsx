@@ -5,19 +5,19 @@ import { User } from "../../../../../types/User";
 import { WithId } from "../../../../../utils/id";
 
 interface Props extends ContainerClassName {
-  user: WithId<User>;
+  viewingUser: WithId<User>;
 }
 
 export const ProfileModalLinks: React.FC<Props> = ({
   containerClassName,
-  user,
+  viewingUser,
 }) => {
   const renderedProfileLinks = useMemo(
     () =>
-      user?.profileLinks?.map((link) => (
+      viewingUser?.profileLinks?.map((link) => (
         <ProfileModalLink link={link} key={link.title} />
       )),
-    [user?.profileLinks]
+    [viewingUser?.profileLinks]
   );
 
   return <div className={containerClassName}>{renderedProfileLinks}</div>;

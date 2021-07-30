@@ -18,7 +18,7 @@ import { useIsOnline } from "../../../hooks/useIsOnline";
 export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
 
 export interface UserAvatarProps extends ContainerClassName {
-  user?: WithId<User>;
+  viewingUser?: WithId<User>;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
@@ -28,7 +28,7 @@ export interface UserAvatarProps extends ContainerClassName {
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
-  user,
+  viewingUser,
   containerClassName,
   imageClassName,
   showNametag,
@@ -38,28 +38,28 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { isOnline } = useIsOnline(user?.id);
+  const { isOnline } = useIsOnline(viewingUser?.id);
 
   const {
     userStatus,
     venueUserStatuses,
     isStatusEnabledForVenue,
-  } = useVenueUserStatuses(venueId, user);
+  } = useVenueUserStatuses(venueId, viewingUser);
 
-  const avatarSrc: string = user?.anonMode
+  const avatarSrc: string = viewingUser?.anonMode
     ? DEFAULT_PROFILE_IMAGE
-    : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+    : viewingUser?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
 
-  const userDisplayName: string = user?.anonMode
+  const userDisplayName: string = viewingUser?.anonMode
     ? DEFAULT_PARTY_NAME
-    : user?.partyName ?? DEFAULT_PARTY_NAME;
+    : viewingUser?.partyName ?? DEFAULT_PARTY_NAME;
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
     [`UserAvatar--${size}`]: size,
   });
 
-  const status = user?.status;
+  const status = viewingUser?.status;
 
   const nametagClasses = classNames("UserAvatar__nametag", {
     "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
@@ -88,7 +88,9 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerClasses}>
-      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
+      {showNametag && (
+        <div className={nametagClasses}>{viewingUser?.partyName}</div>
+      )}
       <img
         className={imageClasses}
         src={avatarSrc}

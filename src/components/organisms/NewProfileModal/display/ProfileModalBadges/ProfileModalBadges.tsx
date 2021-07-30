@@ -6,21 +6,21 @@ import { ContainerClassName } from "../../../../../types/utility";
 import { User } from "../../../../../types/User";
 
 interface Props extends ContainerClassName {
-  user: WithId<User>;
+  viewingUser: WithId<User>;
   venue: WithId<AnyVenue>;
 }
 
 export const ProfileModalBadges: React.FC<Props> = ({
   venue,
-  user,
+  viewingUser,
   containerClassName,
 }) => {
   return (
     <>
-      {venue?.showBadges && user && (
+      {venue?.showBadges && viewingUser && (
         <Badges
           containerClassName={containerClassName}
-          user={user}
+          user={viewingUser}
           currentVenue={venue}
         />
       )}

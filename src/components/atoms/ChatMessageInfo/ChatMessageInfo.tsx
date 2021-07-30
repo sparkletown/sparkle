@@ -46,7 +46,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
 
   return (
     <div className={containerClasses} onClick={openAuthorProfile}>
-      <UserAvatar user={author} showStatus />
+      <UserAvatar viewingUser={author} showStatus />
       <span className="ChatMessageInfo__author">{author.partyName}</span>
       <span className="ChatMessageInfo__time">
         {formatTimeLocalised(timestamp)}
