@@ -14,7 +14,6 @@ import { throttle } from "lodash";
 
 import { IS_BURN } from "secrets";
 import {
-  DEFAULT_MAP_ICON_URL,
   PLAYA_TEMPLATES,
   PLAYA_VENUE_SIZE,
   PLAYA_VENUE_NAME,
@@ -22,7 +21,6 @@ import {
   DEFAULT_PARTY_NAME,
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
-  LOC_UPDATE_FREQ_MS,
 } from "settings";
 
 import firebase from "firebase/app";
@@ -38,12 +36,8 @@ import {
 } from "types/venues";
 
 import { WithId } from "utils/id";
-// import { updateLocationData } from "utils/userLocation";
-import {
-  currentVenueSelectorData,
-  orderedVenuesSelector,
-} from "utils/selectors";
-// import { getCurrentTimeInUnixEpochSeconds } from "utils/time";
+import { currentVenueSelectorData } from "utils/selectors";
+import { isTruthy } from "utils/types";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
@@ -51,20 +45,17 @@ import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 
 import { DustStorm } from "components/organisms/DustStorm/DustStorm";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
 
 import CreateEditPopUp from "components/molecules/CreateEditPopUp/CreateEditPopUp";
 import { DonatePopUp } from "components/molecules/DonatePopUp/DonatePopUp";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import UserList from "components/molecules/UserList";
+import { UserList } from "components/molecules/UserList";
 
 import AvatarLayer from "./AvatarLayer";
 import { PlayaBackground } from "./PlayaBackground";
 import { PlayaIconComponent } from "./PlayaIcon";
-import VenuePreview from "./VenuePreview";
 import VideoChatLayer from "./VideoChatLayer";
 
 import "./Playa.scss";
@@ -127,10 +118,12 @@ const isPlaced = (venue: AnyVenue) => {
 
 const minZoom = () => (window.innerWidth - 2 * PLAYA_MARGIN_X) / PLAYA_WIDTH;
 
+const venues = [] as WithId<AnyVenue>[];
+
 const Playa = () => {
-  useFirestoreConnect("venues");
+  const venue = useSelector(currentVenueSelectorData);
+
   const [showModal, setShowModal] = useState(false);
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
   const [selectedVenue, setSelectedVenue] = useState<WithId<AnyVenue>>();
   const [zoom, setZoom] = useState(minZoom());
   const [centerX, setCenterX] = useState(GATE_X);
@@ -307,6 +300,7 @@ const Playa = () => {
       );
     }, 1);
 
+    // @debt we should try to avoid using event.stopPropagation()
     const zoomListener = (event: WheelEvent) => {
       event.preventDefault();
       event.stopPropagation();
@@ -341,9 +335,6 @@ const Playa = () => {
     };
   }, []);
 
-  const venue = useSelector(currentVenueSelectorData);
-  const venues = useSelector(orderedVenuesSelector);
-
   const showVenue = useCallback(
     (venue: WithId<AnyVenue>) => {
       setSelectedVenue(venue);
@@ -354,12 +345,6 @@ const Playa = () => {
 
   const hideVenue = useCallback(() => {
     setShowModal(false);
-    // user &&
-    //   updateLocationData(
-    //     user,
-    //     { [PLAYA_VENUE_NAME]: getCurrentTimeInUnixEpochSeconds() },
-    //     profile?.lastSeenIn
-    //   );
   }, [setShowModal]);
 
   const distanceToVenue = (
@@ -388,7 +373,7 @@ const Playa = () => {
         showVenue(campVenue);
       }
     }
-  }, [camp, venues, showVenue]);
+  }, [camp, showVenue]);
 
   const [openVenues, setOpenVenues] = useState<OnlineStatsData["openVenues"]>();
 
@@ -403,7 +388,6 @@ const Playa = () => {
             ? openVenues.filter((v) => !v.venue.adultContent)
             : openVenues
         );
-        //setOpenVenues(openVenues);
       })
       .catch(Bugsnag.notify);
   }, REFETCH_SCHEDULE_MS);
@@ -419,11 +403,6 @@ const Playa = () => {
   const menuRef = useRef<HTMLDivElement | null>(null);
   const [, setRerender] = useState(0);
   const [shoutText, setShoutText] = useState("");
-  const [nowMs, setNowMs] = useState(Date.now());
-
-  useInterval(() => {
-    setNowMs(Date.now());
-  }, LOC_UPDATE_FREQ_MS);
 
   const shout = useCallback(() => {
     if (!user || !shoutText || !shoutText.length) return;
@@ -445,7 +424,7 @@ const Playa = () => {
   }, [hoveredVenue]);
 
   const venueName = venue?.name ?? "";
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
 
   // Removed for now as attendance counting is inaccurate and is confusing people
   const users = useMemo(
@@ -456,12 +435,6 @@ const Playa = () => {
         hoveredVenue
       ),
     [recentVenueUsers, hoveredVenue, venueName]
-  );
-
-  const usersInCurrentVenue = recentVenueUsers.filter(
-    (partygoer) =>
-      partygoer.lastSeenIn?.[venueName] >
-      (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
   );
 
   useEffect(() => {
@@ -538,26 +511,27 @@ const Playa = () => {
     });
   }, [myXRef, myYRef]);
 
-  const getNearbyVenue = useCallback(
-    (x: number, y: number) => {
-      if (!venues) return;
-      let closestVenue: WithId<AnyVenue> | undefined;
-      let distanceToClosestVenue: number;
-      venues.forEach((venue) => {
-        const distance = distanceToVenue(x, y, venue.placement);
-        if (
-          distance &&
-          distance <= VENUE_NEARBY_DISTANCE &&
-          (!distanceToClosestVenue || distance < distanceToClosestVenue)
-        ) {
-          closestVenue = venue;
-          distanceToClosestVenue = distance;
-        }
-      });
-      return closestVenue;
-    },
-    [venues]
-  );
+  const getNearbyVenue = useCallback((x: number, y: number) => {
+    if (!venues) return;
+
+    let closestVenue: WithId<AnyVenue> | undefined;
+    let distanceToClosestVenue: number;
+
+    venues.forEach((venue) => {
+      const distance = distanceToVenue(x, y, venue.placement);
+
+      if (
+        isTruthy(distance) &&
+        distance <= VENUE_NEARBY_DISTANCE &&
+        (!distanceToClosestVenue || distance < distanceToClosestVenue)
+      ) {
+        closestVenue = venue;
+        distanceToClosestVenue = distance;
+      }
+    });
+
+    return closestVenue;
+  }, []);
 
   const setMyLocation = useMemo(
     () => (x: number, y: number) => {
@@ -599,11 +573,8 @@ const Playa = () => {
           backgroundImage={venue?.mapBackgroundImageUrl}
         />
         {venues?.filter(isPlaced).map((v, idx) => {
-          const usersInVenue = recentVenueUsers.filter(
-            (partygoer) =>
-              partygoer.lastSeenIn?.[v.name] >
-              (nowMs - LOC_UPDATE_FREQ_MS * 2) / 1000
-          );
+          // @debt This isn't strictly correct here.. but this is an unused legacy template soon to be deleted, so we don't mind
+          const usersInVenue = recentVenueUsers;
           return (
             <>
               <div
@@ -640,12 +611,13 @@ const Playa = () => {
                 }}
                 onMouseLeave={() => setShowVenueTooltip(false)}
               >
-                <span className="img-vcenter-helper" />
+                {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
+                {/* <span className="img-vcenter-helper" />
                 <img
                   className="venue-icon"
                   src={v.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
                   alt={`${v.name} Icon`}
-                />
+                /> */}
 
                 {selectedVenueId === v.id && <div className="selected" />}
               </div>
@@ -768,7 +740,6 @@ const Playa = () => {
       </>
     );
   }, [
-    nowMs,
     hoveredUser,
     hoveredVenue,
     menu,
@@ -778,7 +749,6 @@ const Playa = () => {
     showUserTooltip,
     showVenueTooltip,
     venue,
-    venues,
     openVenues,
     showVenue,
     recentVenueUsers,
@@ -874,13 +844,10 @@ const Playa = () => {
 
         {IS_BURN && dustStorm && <DustStorm />}
 
-        {usersInCurrentVenue && (
+        {recentVenueUsers && (
           <div className="playa-userlist">
             <UserList
-              users={usersInCurrentVenue}
-              imageSize={50}
-              disableSeeAll={false}
-              isCamp={true}
+              users={recentVenueUsers}
               activity={venue?.activity ?? "partying"}
             />
           </div>
@@ -1041,31 +1008,12 @@ const Playa = () => {
         >
           <VideoChatLayer />
         </div>
-        <Modal show={showModal} onHide={hideVenue}>
-          {selectedVenue && user && (
-            <VenuePreview
-              user={user}
-              venue={selectedVenue}
-              allowHideVenue={isUserVenueOwner === true}
-            />
-          )}
-        </Modal>
-        <Modal
-          show={showEventSchedule}
-          onHide={() => setShowEventSchedule(false)}
-          dialogClassName="custom-dialog"
-        >
-          <Modal.Body>
-            <SchedulePageModal />
-          </Modal.Body>
-        </Modal>
+        <Modal show={showModal} onHide={hideVenue}></Modal>
       </>
     );
   }, [
     hideVenue,
-    selectedVenue,
     showModal,
-    user,
     bikeMode,
     toggleBikeMode,
     centeredOnMe,
@@ -1079,12 +1027,11 @@ const Playa = () => {
     isUserVenueOwner,
     dustStorm,
     changeDustStorm,
-    showEventSchedule,
     inVideoChat,
     videoChatHeight,
     mapContainer,
     venue,
-    usersInCurrentVenue,
+    recentVenueUsers,
   ]);
 };
 

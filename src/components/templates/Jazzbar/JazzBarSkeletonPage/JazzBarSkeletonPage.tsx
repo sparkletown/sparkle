@@ -7,6 +7,8 @@ import { useSelector } from "hooks/useSelector";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import "./JazzBarSkeletonPage.scss";
 
 interface PropsType {
@@ -40,7 +42,9 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               : "Choose your table, invite your friends to join you and listen to the sounds of our House band."}
           </p>
           {venue?.config?.landingPageConfig.description ? (
-            venue.config?.landingPageConfig.description
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
           ) : (
             <>
               <p>

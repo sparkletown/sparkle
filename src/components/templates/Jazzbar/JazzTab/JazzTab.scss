@@ -20,7 +20,7 @@
   .music-bar-content {
     display: grid;
 
-    padding: 10px 70px;
+    padding: 10px 70px 40px;
     justify-content: center;
     grid-gap: 0.5rem;
 
@@ -29,7 +29,7 @@
       ".  video video ."
       ".  video video  .";
 
-    @media (max-width: $small-laptop-width) {
+    @media (max-width: $media-breakpoint--lg) {
       display: flex;
       flex-flow: wrap;
     }
@@ -79,18 +79,6 @@
           overflow-x: auto;
           overflow-y: hidden;
           width: 100%;
-
-          .reaction {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-          }
-
-          .reaction > span {
-            cursor: pointer;
-            height: 30px;
-            width: 30px;
-          }
         }
         .form-message {
           display: flex;
@@ -109,13 +97,17 @@
         }
       }
     }
+
+    .ControlBar__container {
+      width: 100%;
+    }
   }
 
   &--tableview {
     margin-top: 0;
 
     .music-bar-content {
-      @media (min-width: $small-laptop-width) {
+      @media (min-width: $media-breakpoint--lg) {
         grid-template-columns: $video-participant-optimal-width 1fr 1fr $video-participant-optimal-width;
         grid-template-rows: repeat(
           auto-fill,
@@ -131,7 +123,7 @@
   }
 
   .seated-area {
-    border: 0px solid white;
+    border: 0px solid $white;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;

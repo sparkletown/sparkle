@@ -23,6 +23,8 @@ export type Matrix<T> = T[][];
 
 export type ReactHook<T, U> = (props: T) => U;
 
+export type TFuncOrT<T> = (() => T) | T;
+
 /**
  * @deprecated use Partial<Record<K, T>> directly
  */

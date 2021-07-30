@@ -1,6 +1,6 @@
 export interface GetExternalRoomSlugProps {
   venueName: string;
-  roomTitle: string;
+  roomTitle?: string;
 }
 
 export const getExternalRoomSlug = ({

@@ -87,7 +87,8 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
   const myAvatarRef = useRef<HTMLDivElement>(null);
 
   const { openUserProfileModal } = useProfileModalControls();
-  const { recentVenueUsers } = useRecentVenueUsers();
+  // @debt we don't have access to venueName here (but is legacy Playa template code to be removed so we don't mind), this is basically a noop
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: undefined });
 
   const dispatch = useDispatch();
   const sendUpdatedState = useMemo(
@@ -190,36 +191,40 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
     ? recentVenueUsers.find((pg) => pg.id === user.uid)
     : undefined;
 
-  const menu: MenuConfig = {
-    prompt: "This is your avatar",
-    choices: [
-      {
-        text: "My Profile",
-        onClick: () => {
-          if (selfUserProfile) openUserProfileModal(selfUserProfile);
+  const menu: MenuConfig = useMemo(
+    () => ({
+      prompt: "This is your avatar",
+      choices: [
+        {
+          text: "My Profile",
+          onClick: () => {
+            if (selfUserProfile) openUserProfileModal(selfUserProfile);
+          },
         },
-      },
-      {
-        text: (
-          <div className="video-chat-text-row">
-            <Switch
-              height={20}
-              width={40}
-              checkedIcon={false}
-              uncheckedIcon={false}
-              onChange={() => {}}
-              checked={videoState !== UserVideoState.Locked}
-            />
-            <div className="video-chat-text">
-              {videoState === UserVideoState.Locked ? "closed" : "open"} to
-              video chat
+        {
+          text: (
+            <div className="video-chat-text-row">
+              <Switch
+                height={20}
+                width={40}
+                checkedIcon={false}
+                uncheckedIcon={false}
+                onChange={() => {}}
+                checked={videoState !== UserVideoState.Locked}
+              />
+              <div className="video-chat-text">
+                {videoState === UserVideoState.Locked ? "closed" : "open"} to
+                video chat
+              </div>
             </div>
-          </div>
-        ),
-        onClick: () => toggleVideoState(),
-      },
-    ],
-  };
+          ),
+          onClick: () => toggleVideoState(),
+        },
+      ],
+    }),
+    [openUserProfileModal, selfUserProfile, toggleVideoState, videoState]
+  );
+
   if (
     !selfUserProfile?.video?.inRoomOwnedBy ||
     selfUserProfile?.video?.inRoomOwnedBy !== selfUserProfile.id

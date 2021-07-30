@@ -6,6 +6,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./constants.scss";
+@import "./customOverrides";
 
 html,
 body,
@@ -15,36 +16,17 @@ body,
 }
 
 body {
+  @include scrollbar;
   font: 1rem/1.3 "Rubik", "HelveticaNeue", "Helvetica Neue", Helvetica,
     sans-serif;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   background-color: $black;
-  color: white;
+  color: $white;
   display: flex;
   justify-content: center;
   font-family: "Rubik", sans-serif;
   overflow: auto;
-
-  &::-webkit-scrollbar-track {
-    border-radius: 3px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-    background-color: rgba($black, 0);
-  }
-
-  &::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba($white, 0.3);
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background-color: rgba($white, 0.5);
-  }
 }
 
 * {
@@ -103,7 +85,7 @@ input.btn {
   font-size: 1em;
 
   background-color: rgba($primary, 0.24);
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 400ms $transition-function;
   color: $white;
   transform: translateY(0);
 
@@ -178,7 +160,7 @@ button.btn {
   font-size: 1em;
 
   background-color: $primaryColor;
-  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 400ms $transition-function;
   color: $black;
   transform: translateY(0);
 
@@ -190,15 +172,39 @@ button.btn {
       rgba(0, 0, 0, 0.4) 100%
     );
   }
+
   &.btn-block {
     display: block;
     max-width: 275px;
     margin-bottom: 0.8rem;
   }
+
   &.btn-centered {
     margin-left: auto;
     margin-right: auto;
   }
+
+  &.btn-primary {
+    // Background image has to be set to 'none' because by default the Button has gradient image
+    background-image: none;
+    background-color: $primary;
+
+    &:hover {
+      background-image: none;
+      background-color: $primary--darker;
+    }
+  }
+
+  &.btn-secondary {
+    // Background image has to be set to 'none' because by default the Button has gradient image
+    background-color: $secondary--light;
+
+    &:hover {
+      background-image: none;
+      background-color: $secondary;
+    }
+  }
+
   &.disabled {
     color: rgba($white, 0.2);
     background-image: linear-gradient(
@@ -212,6 +218,7 @@ button.btn {
 // Inputs
 input,
 textarea {
+  // @debt remove style auto-setting for inputs
   -webkit-appearance: none;
   border: none;
   outline: none;
@@ -334,13 +341,19 @@ textarea {
   }
 }
 
-a {
+a,
+.button--a {
   color: $white;
   text-decoration: underline;
 
   &:hover {
     color: $primaryColor;
   }
+}
+
+.button--a {
+  background: transparent;
+  border: none;
 }
 
 h4 {
@@ -383,7 +396,7 @@ h4 {
   border: none;
   border-radius: 22px;
   background: $black;
-  box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.34);
+  box-shadow: box-shadow--large(0.34);
 }
 
 .centered-flex {
@@ -458,7 +471,7 @@ h4 {
   .youtube-video {
     transition: all 0.1s linear;
     background-color: $dark;
-    color: white;
+    color: $white;
   }
 }
 
@@ -758,4 +771,19 @@ span.link {
 
 .flex-one {
   flex: 1;
+}
+
+.host-icon-container {
+  background: $black;
+  padding: 10px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+
+  .host-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 }

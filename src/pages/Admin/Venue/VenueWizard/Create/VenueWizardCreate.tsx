@@ -1,19 +1,17 @@
 import React, { useCallback } from "react";
-
-// Components
-import AuthenticationModal from "components/organisms/AuthenticationModal";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-
-// Pages
-import Details from "pages/Admin/Details";
-
-// Hooks
 import { useHistory } from "react-router-dom";
+
 import { useUser } from "hooks/useUser";
 
-// Typings
+import Details from "pages/Admin/Details";
+
+import {
+  AuthenticationModal,
+  AuthOptions,
+} from "components/organisms/AuthenticationModal";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import { VenueWizardCreateProps } from "./VenueWizardCreate.types";
-import { AuthOptions } from "components/organisms/AuthenticationModal/AuthenticationModal";
 
 const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
   state,
@@ -29,7 +27,7 @@ const VenueWizardCreate: React.FC<VenueWizardCreateProps> = ({
 
   if (!user) {
     return (
-      <WithNavigationBar fullscreen>
+      <WithNavigationBar>
         <AuthenticationModal
           show={true}
           onHide={() => {}}

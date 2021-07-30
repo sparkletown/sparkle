@@ -1,0 +1,60 @@
+@import "scss/constants";
+
+.Chatbox {
+  &--question {
+    background-color: $dark-green;
+  }
+
+  &__form {
+    padding: $spacing--md;
+    display: flex;
+    align-items: center;
+  }
+
+  &__input {
+    text-align: left;
+    padding-left: $spacing--lg;
+  }
+
+  &__submit-button {
+    outline: none;
+    border: none;
+    min-width: $submit-button-diameter;
+    min-height: $submit-button-diameter;
+    border-radius: $border-radius--max;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: $spacing--md;
+
+    background-color: $primary;
+
+    &:disabled {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__submit-button-icon {
+    color: $white;
+  }
+
+  &__emoji-picker {
+    position: absolute;
+    bottom: 65px;
+    right: 60px;
+    z-index: z(chatbox-emoji-picker);
+
+    // Override default lib styles
+    .emoji-mart-search {
+      margin: 9px 3px 3px 3px;
+    }
+
+    .emoji-mart-search-icon {
+      top: 0;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+}

@@ -1,44 +1,48 @@
-import React, { useState } from "react";
-
-import UserProfilePicture from "components/molecules/UserProfilePicture";
-
-import { useSelector } from "hooks/useSelector";
-
-import { WithId } from "utils/id";
-import { currentVenueSelectorData } from "utils/selectors";
-import { DEFAULT_USER_LIST_LIMIT } from "settings";
-import { IS_BURN } from "secrets";
+import React from "react";
+import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 
 import { User } from "types/User";
 
-import "./UserList.scss";
+import { WithId } from "utils/id";
 
-interface PropsType {
+import { useShowHide } from "hooks/useShowHide";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
+
+import "./UserList.scss";
+import { useMemo } from "react";
+
+const noop = () => {};
+
+interface UserListProps {
   users: readonly WithId<User>[];
   limit?: number;
-  imageSize?: number;
   activity?: string;
-  disableSeeAll?: boolean;
-  isAudioEffectDisabled?: boolean;
-  isCamp?: boolean;
-  attendanceBoost?: number;
+  containerClassName?: string;
+  cellClassName?: string;
+  hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
+  showMoreUsersToggler?: boolean;
+  showTitle?: boolean;
 }
 
-const UserList: React.FunctionComponent<PropsType> = ({
-  users: _users,
-  limit = DEFAULT_USER_LIST_LIMIT,
-  imageSize = 40,
+export const UserList: React.FC<UserListProps> = ({
+  users,
+  limit,
   activity = "partying",
-  disableSeeAll = true,
-  isAudioEffectDisabled,
-  isCamp,
-  attendanceBoost,
+  containerClassName,
+  cellClassName,
+  hasClickableAvatars = false,
   showEvenWhenNoUsers = false,
+  showMoreUsersToggler = true,
+  showTitle = true,
 }) => {
-  const [isExpanded, setIsExpanded] = useState(disableSeeAll);
+  const { isShown: isExpanded, toggle: toggleExpanded } = useShowHide(false);
 
-  const usersSanitized = _users.filter(
+  const usersSanitized = users.filter(
     (user) => !user.anonMode && user.partyName && user.id
   );
 
@@ -46,45 +50,61 @@ const UserList: React.FunctionComponent<PropsType> = ({
     ? usersSanitized
     : usersSanitized?.slice(0, limit);
 
-  const attendance = usersSanitized.length + (attendanceBoost ?? 0);
-  const venue = useSelector(currentVenueSelectorData);
+  const userCount = usersSanitized.length;
 
-  if (!showEvenWhenNoUsers && attendance < 1) return null;
+  const hasExcessiveUserCount = limit !== undefined && userCount > limit;
+
+  const label = `${userCount} ${
+    userCount === 1 ? "person" : "people"
+  } ${activity}`;
+
+  const containerClasses = classNames("UserList", containerClassName);
+  const cellClasses = classNames("UserList__cell", cellClassName);
+
+  const { openUserProfileModal } = useProfileModalControls();
+
+  const renderedUserAvatars = useMemo(
+    () =>
+      usersToDisplay.map((user) => (
+        <div key={user.id} className={cellClasses}>
+          <UserAvatar
+            user={user}
+            containerClassName="UserList__avatar"
+            onClick={
+              hasClickableAvatars ? () => openUserProfileModal(user) : noop
+            }
+          />
+        </div>
+      )),
+    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
+  );
+
+  if (!showEvenWhenNoUsers && userCount < 1) return null;
 
   return (
-    <div className="container userlist-container">
-      <div className="row header no-margin">
-        <p>
-          <span className="bold">{attendance}</span>{" "}
-          {attendance === 1 ? "person" : "people"}{" "}
-          {isCamp && IS_BURN ? "in the camp" : activity}
-        </p>
+    <div className={containerClasses}>
+      <div className="UserList__label">
+        {showTitle && <p>{label}</p>}
 
-        {!disableSeeAll && usersSanitized.length > limit && (
-          <p
-            className="clickable-text"
-            onClick={() => setIsExpanded(!isExpanded)}
-            id={`see-venue-information-${venue?.name}`}
-          >
+        {showMoreUsersToggler && hasExcessiveUserCount && (
+          <p className="UserList__toggler-text" onClick={toggleExpanded}>
             See {isExpanded ? "less" : "all"}
           </p>
         )}
       </div>
 
-      <div className="row no-margin">
-        {usersToDisplay.map(
-          (user) =>
-            user && (
-              <UserProfilePicture
-                user={user}
-                isAudioEffectDisabled={isAudioEffectDisabled}
-                key={`${user.id}-${activity}-${imageSize}`}
-              />
-            )
+      <div className="UserList__avatars">
+        {renderedUserAvatars}
+        {hasExcessiveUserCount && (
+          <div className={cellClasses}>
+            <FontAwesomeIcon
+              icon={faEllipsisH}
+              size="xs"
+              className="UserList__dots-icon"
+            />
+          </div>
         )}
       </div>
     </div>
   );
 };
-
-export default UserList;

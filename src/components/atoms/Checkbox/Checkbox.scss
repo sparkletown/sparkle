@@ -1,0 +1,113 @@
+@import "scss/constants";
+
+$checkbox-diameter: 32px;
+
+$checkbox-transition: all 200ms $transition-function;
+$checkbox-shadow-preset: inset 0 0 0 1px;
+
+$toggler-width: 56px;
+$toggler-height: 30px;
+
+$toggler-circle-diameter: 26px;
+$toggler-circle-spacing: 2px;
+
+$toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
+  $toggler-circle-spacing;
+
+.Checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  position: relative;
+
+  cursor: pointer;
+
+  // unsetting global label styles
+  margin: 0;
+
+  &__native-input {
+    &:checked ~ .Checkbox__custom-input {
+      background-color: $primary;
+
+      .Checkbox__tick-icon {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      &--toggler {
+        background-color: $primary--darker;
+
+        &::after {
+          left: $toggler-circle-moving-delta;
+
+          background-color: $primary;
+        }
+      }
+    }
+  }
+
+  &__custom-input {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+
+    width: $checkbox-diameter;
+    min-width: $checkbox-diameter;
+    height: $checkbox-diameter;
+    min-height: $checkbox-diameter;
+
+    box-shadow: $checkbox-shadow-preset opaque-white(0.1);
+    background-color: opaque-white(0.12);
+
+    border-radius: $border-radius--max;
+
+    &:hover {
+      background-color: opaque-white(0.16);
+      box-shadow: $checkbox-shadow-preset opaque-white(0.4);
+    }
+
+    &--toggler {
+      width: $toggler-width;
+      min-width: $toggler-width;
+      height: $toggler-height;
+      min-height: $toggler-height;
+
+      border-radius: $border-radius--xl;
+
+      &::after {
+        content: "";
+        position: absolute;
+
+        height: $toggler-circle-diameter;
+        width: $toggler-circle-diameter;
+
+        border-radius: $border-radius--max;
+
+        background-color: opaque-white(0.3);
+
+        left: $toggler-circle-spacing;
+        top: $toggler-circle-spacing;
+
+        transform: scale(1);
+        transition: $checkbox-transition;
+      }
+
+      .Checkbox__tick-icon {
+        display: none;
+      }
+    }
+  }
+
+  &__tick-icon {
+    opacity: 0;
+    transform: scale(0.2);
+    transition: $checkbox-transition;
+  }
+
+  &__label {
+    margin-left: $spacing--md;
+    font-size: $font-size--md;
+  }
+}

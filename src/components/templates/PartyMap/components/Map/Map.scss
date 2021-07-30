@@ -110,21 +110,13 @@ $border-radius: 28px;
       opacity: 0.025;
       background-color: $white;
     }
-
-    .profile-avatar {
-      background-size: cover;
-      background-position: center;
-      width: 100%;
-      height: 100%;
-      border-radius: 100%;
-    }
   }
 
   .not-seat {
     width: 80%;
     height: 80%;
     position: relative;
-    background-color: white;
+    background-color: $white;
     opacity: 0.025;
     border-radius: 100%;
 
@@ -148,6 +140,8 @@ $border-radius: 28px;
     opacity: 0.2;
   }
 
+  // @debt The only place this seems to be referenced is within src/components/molecules/MapPartygoerOverlay/MapPartygoerOverlay.scss
+  //  so it should probably be moved to that file
   @keyframes avatarpulse {
     0% {
       background-color: $primary;
@@ -161,11 +155,6 @@ $border-radius: 28px;
       background-color: $primary;
       box-shadow: 0 0 0 3px $primary, 0 0 20px rgba($primary, 0.65);
     }
-  }
-
-  .me {
-    box-shadow: 0 0 0 5px $primary;
-    animation: avatarpulse 2s infinite;
   }
 
   .chat-drawer-container {

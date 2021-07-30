@@ -1,37 +1,56 @@
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import "./EditProfileForm.scss";
+import * as Yup from "yup";
+
+import { DEFAULT_PROFILE_IMAGE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
+import { QuestionType } from "types/Question";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import { QuestionType } from "types/Question";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
-import { useUser } from "hooks/useUser";
-import { DEFAULT_PROFILE_IMAGE } from "settings";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
 
-interface EditProfileFormValuesType {
-  partyName: string;
-  pictureUrl: string;
-  [questionId: string]: string;
+import { InputField } from "components/atoms/InputField";
+import { Button } from "components/atoms/Button";
+
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+
+import { UserProfileMode } from "../ProfilePopoverContent";
+
+import "./EditProfileForm.scss";
+
+const validationSchema = Yup.object().shape<Pick<ProfileFormData, "partyName">>(
+  {
+    partyName: Yup.string().required("Display name is required").max(
+      DISPLAY_NAME_MAX_CHAR_COUNT,
+      `Display name must be ${DISPLAY_NAME_MAX_CHAR_COUNT} characters or
+  less`
+    ),
+  }
+);
+
+export interface EditProfileFormProps {
+  setUserProfileMode: (value: UserProfileMode) => void;
 }
 
-interface PropsType {
-  setIsEditMode: (value: boolean) => void;
-}
-
-const EditProfileForm: React.FunctionComponent<PropsType> = ({
-  setIsEditMode,
+export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
+  setUserProfileMode,
 }) => {
+  const venueId = useVenueId();
   const { user, profile } = useUser();
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
+  const { sovereignVenue } = useSovereignVenue({ venueId });
+
+  const profileQuestions = sovereignVenue?.profile_questions;
+
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
+
     await updateUserProfile(user.uid, data);
-    setIsEditMode(false);
+    setUserProfileMode(UserProfileMode.DEFAULT);
   };
   const defaultValues = {
     partyName: profile?.partyName,
@@ -54,6 +73,7 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
     triggerValidation,
     watch,
   } = useForm<ProfileFormData & QuestionsFormData>({
+    validationSchema,
     mode: "onChange",
     defaultValues,
   });
@@ -66,64 +86,58 @@ const EditProfileForm: React.FunctionComponent<PropsType> = ({
   const pictureUrl = watch("pictureUrl");
 
   return (
-    <div className="edit-profile-modal">
-      <h1 className="title">Edit profile</h1>
+    <div className="EditProfileForm">
+      <h1 className="EditProfileForm__title">Edit profile</h1>
       <form onSubmit={handleSubmit(onSubmit)} className="form">
-        <div className="input-group profile-form">
-          <input
-            name="partyName"
-            className="input-block input-centered"
-            placeholder="Your display name"
-            ref={register({
-              required: true,
-              maxLength: 16,
-            })}
+        <InputField
+          containerClassName="EditProfileForm__input-container-name"
+          inputClassName="EditProfileForm__input-name"
+          name="partyName"
+          placeholder="Your display name"
+          error={errors.partyName}
+          ref={register()}
+        />
+
+        {user && venueId && (
+          <ProfilePictureInput
+            venueId={venueId}
+            setValue={setValue}
+            user={user}
+            errors={errors}
+            pictureUrl={pictureUrl}
+            register={register}
           />
-          {errors.partyName && errors.partyName.type === "required" && (
-            <span className="input-error">Display name is required</span>
-          )}
-          {errors.partyName && errors.partyName.type === "maxLength" && (
-            <span className="input-error">
-              Display name must be 16 characters or less
-            </span>
-          )}
-          {user && (
-            <ProfilePictureInput
-              setValue={setValue}
-              user={user}
-              errors={errors}
-              pictureUrl={pictureUrl}
-              register={register}
-            />
-          )}
-        </div>
+        )}
         {profileQuestions &&
           profileQuestions.map((question: QuestionType) => (
-            <>
-              <div className="question">{question.text}</div>
+            <div key={question.name}>
+              <div className="EditProfileForm__question">{question.text}</div>
               <div className="input-group">
                 <textarea
                   className="input-block input-centered"
                   name={question.name}
-                  ref={register({
-                    required: true,
-                  })}
+                  ref={register()}
                 />
               </div>
-            </>
+            </div>
           ))}
-        <input
-          className="btn btn-primary btn-block btn-centered"
+
+        <Button
           type="submit"
-          value="Save changes"
           disabled={!formState.isValid}
-        />
+          customClass="EditProfileForm__submit-button"
+        >
+          Save Changes
+        </Button>
       </form>
-      <div className="cancel-button" onClick={() => setIsEditMode(false)}>
-        Cancel
+      <div className="EditProfileForm__cancel-container">
+        <button
+          className="button--a"
+          onClick={() => setUserProfileMode(UserProfileMode.DEFAULT)}
+        >
+          Cancel
+        </button>
       </div>
     </div>
   );
 };
-
-export default EditProfileForm;

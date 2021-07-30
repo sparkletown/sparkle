@@ -1,33 +1,54 @@
 $primaryColor: var(--primary-color);
 $backgroundColor: var(--background-color);
+
+$primary--lightest: #a179ff;
+$primary--light: #9669ff;
+$primary--live-hover: #8755fb;
+$primary--live: #7c46fb;
+$primary: #6f43ff;
+$primary--darker: #3f247d;
+
+$secondary--lightest: #868686;
+$secondary--light: #6a6a6a;
+$secondary: #333035;
+$secondary--dark: #19181a;
+$secondary--darkest: #090909;
+
+$secondary--schedule-event: #3f3d42;
+$secondary--schedule-event-hover: #4c494f;
+$secondary--schedule-event-users: #ebebeb;
+
+$input--invalid: #dc3545;
+
+// @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
-$intermediate-grey: #333035;
-$saturated-black: #19181a;
+$almost-black: $secondary--darkest;
+$saturated-black: $secondary--dark;
 $saturated-black-alt: #262427;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $concrete: #a3a6ab;
+$concrete--dark: #9f9fa0;
 $black: #000000;
-$almost-black: #090909;
 $white: #fff;
 $dark: #1a1d24;
 $red: #bc271a;
 $pink: #df9e9b;
+$bright-pink: #ba3ff4;
 $green: #4bcc4b;
 $yellow: #ffe600;
 $bright-yellow: #f0df73;
 $light-green: #3ce348;
 $dark-green: #208a28;
-$stripe-auto-fill-background-color: #fefde5;
 $clickable-area-color: #ffffff11;
-
-$primary: #6f43ff;
-$secondary: #6f43ff;
+$ripple-color: chocolate;
+$profile-image-bg-color: #999999;
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
-$chat-busy: rgba($secondary, 0.35);
+$chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$gradient: linear-gradient(124deg, #00f6d5 0%, $secondary 50%, #e15ada 100%);
+
+$gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
   124deg,
   #e15a5a 0%,
@@ -37,27 +58,72 @@ $danger-gradient: linear-gradient(
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 
 $map-sidebar-width: 20%;
+$chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
 $chat-input-height: 114px;
-$ripple-color: chocolate;
+$announcement-banner-height: 50px;
+
+$avatarSize: max(4vh, 3vw);
+$avatarSizeMin: 25px;
+$reactionSize: max(2.5vh, 2vw);
+
 $playa-width-and-height: 2000px;
 $playa-venue-size: 40px;
 $playa-avatar-size: 48px;
 $playa-venue-live: rgb(125, 223, 194);
 
-$profile-image-bg-color: #999999;
-$room-info-bg: #6f43ff;
+$margin-right--navbar-links: 8px;
 
-$small-laptop-width: 980px;
+$border-radius--sm: 8px;
+$border-radius--md: 12px;
+$border-radius--lg: 16px;
+$border-radius--xl: 24px;
+$border-radius--max: 50%;
+
+$spacing--xs: 4px;
+$spacing--sm: 8px;
+$spacing--md: 12px;
+$spacing--lg: 16px;
+$spacing--xl: 24px;
+$spacing--xxl: 30px;
+
+$submit-button-diameter: 44px;
+
+$font-size--xxs: 10px;
+$font-size--xs: 11px;
+$font-size--sm: 12px;
+$font-size--md: 14px;
+$font-size--lg: 16px;
+$font-size--xl: 20px;
+// Not sure this is the best naming for these
+$font-size--xxl: 30px;
+$font-size--xxxl: 50px;
+
+// Placeholders, until we can find meaningful names for them
+$font-weight--300: 300;
+$font-weight--400: 400;
+$font-weight--500: 500;
+$font-weight--600: 600;
+$font-weight--700: 700;
+
+$media-breakpoint--sm: 576px;
+$media-breakpoint--md: 768px;
+$media-breakpoint--lg: 992px;
+$media-breakpoint--xl: 1200px;
+
+$transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
-//   components/molecules/UserProfilePicture/UserProfilePicture.styles.ts (z-index: 10)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-sidebar: 15;
+
+// @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
+//       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
+$z-layer-navbar-drawer: -1;
 $z-layers: (
   // Admin
   admin-venue-card-bg: -1,
@@ -70,24 +136,37 @@ $z-layers: (
   // Chat
   chatbox-chat-container: $z-layer-sidebar,
   chat-drawer-container: $z-layer-sidebar,
+  chatbox-emoji-picker: 2,
   chatbox-submit-button: 1,
   chatslist-private-container-back-button: 1,
+  chatmessage-reply-button: 1,
   user-search-close-icon: 1,
   user-search-input-close-btn: 1,
   user-search-results: 380,
+  chat-poll-text: 0,
+  chat-poll-text-background: -1,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
-  navbar-nav-search-results: 380,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
   navbar: $z-layer-navbar,
+  navbar__schedule-event--hover: 1,
+  navbar__drawer: $z-layer-navbar-drawer,
   // Sidebars + similar
   sidebar-slide-btn: -1,
   sidebar: $z-layer-sidebar,
   left-column: $z-layer-sidebar,
+  // UserAvatar
+  global-profile-icon: 1,
+  user-avatar-status-indicator: 1,
+  // UserReactions
+  user-reactions-shout: 2,
+  user-reactions-emoji: 1,
   // Map
-  map-room--hovered: 5,
-  map-room: 4,
+  map-room--hovered: 7,
+  map-avatar: 6,
+  map-room: 5,
+  map-room--iframe: 4,
   map-grid: 3,
   map-room--unclickable: 2,
   map-background: 1,
@@ -98,14 +177,10 @@ $z-layers: (
   // Unsorted
   announcement: $z-layer-sidebar,
   footer: $z-layer-sidebar,
-  global-profile-icon: 1,
-  user-avatar-status-dot: 1,
   input-icon: 1,
   recipient-chat-breadcrumbs: 1,
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
-  user-profile-picture-heart: 99999,
-  user-profile-picture-reaction: 1000,
   venuepage-preview-indication: 1
 );
 
@@ -115,4 +190,61 @@ $z-layers: (
   }
 
   @return map-get($z-layers, $layer);
+}
+
+@function opaque-white($opacity: 0.1) {
+  @return rgba($white, $opacity);
+}
+
+@function opaque-black($opacity: 0.1) {
+  @return rgba($black, $opacity);
+}
+
+@function box-shadow--large($transparency: 0.5) {
+  @return 0 10px 30px 0 rgba($black, $transparency);
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar-track {
+    border-radius: 3px;
+    background-color: rgba(0, 0, 0, 0);
+  }
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba($black, 0);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba($white, 0.3);
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: rgba($white, 0.5);
+  }
+}
+
+// @debt replace this with `line-clamp` property once it's supported in autoprefixer; see https://github.com/postcss/autoprefixer/issues/1322
+@mixin line-clamp($line-count: 1) {
+  display: -webkit-box;
+  -webkit-line-clamp: $line-count;
+  -webkit-box-orient: vertical;
+  line-clamp: $line-count;
+}
+
+@mixin line-clamp-with-overflow($line-count: 1) {
+  @include line-clamp($line-count);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin square-size($size: 1, $min: null, $max: null) {
+  height: $size;
+  width: $size;
+  min-height: $min;
+  min-width: $min;
+  max-height: $max;
+  max-width: $max;
 }

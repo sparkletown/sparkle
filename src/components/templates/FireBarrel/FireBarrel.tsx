@@ -9,31 +9,33 @@ import { currentVenueSelector } from "utils/selectors";
 import { useUser } from "hooks/useUser";
 import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
+import { useVideoRoomState } from "hooks/twilio";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 
-import { useVideoState } from "./useVideo";
-
 import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
+// @debt refactor this to pass in venue as a prop
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
+    venueName: venue?.name,
+  });
 
   const chairs =
     recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS
       ? recentVenueUsers.length
       : DEFAULT_BURN_BARREL_SEATS;
 
-  const { user, profile, userWithId } = useUser();
+  const { userId, profile, userWithId } = useUser();
 
-  const { room, participants } = useVideoState({
-    userUid: user?.uid,
+  const { room, participants } = useVideoRoomState({
+    userId,
     roomName: venue?.name,
   });
 
@@ -44,10 +46,11 @@ export const FireBarrel: React.FC = () => {
 
   const updateVideoState = useCallback(
     (update: VideoState) => {
-      if (!user) return;
-      firebase.firestore().doc(`users/${user.uid}`).update({ video: update });
+      if (!userId) return;
+
+      firebase.firestore().doc(`users/${userId}`).update({ video: update });
     },
-    [user]
+    [userId]
   );
 
   const leave = useCallback(() => {
@@ -82,7 +85,7 @@ export const FireBarrel: React.FC = () => {
         {chairsArray.map((_, index) => {
           const partyPerson = recentVenueUsers[index] ?? null;
 
-          const isMe = partyPerson?.id === user?.uid;
+          const isMe = partyPerson?.id === userId;
 
           if (!recentVenueUsers[index]) {
             return <S.Chair key={index} isEmpty />;
@@ -90,7 +93,7 @@ export const FireBarrel: React.FC = () => {
 
           if (!!room && isMe) {
             return (
-              <S.Chair key={user!.uid}>
+              <S.Chair key={userId}>
                 <LocalParticipant
                   showLeave={false}
                   participant={room.localParticipant}
@@ -146,7 +149,7 @@ export const FireBarrel: React.FC = () => {
     participants,
     removeParticipant,
     room,
-    user,
+    userId,
     worldUsersById,
     videoError,
     venue,

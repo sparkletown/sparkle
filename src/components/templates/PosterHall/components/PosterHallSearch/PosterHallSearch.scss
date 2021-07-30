@@ -1,0 +1,22 @@
+@import "scss/constants";
+
+.PosterHallSearch {
+  display: flex;
+  width: 100%;
+
+  justify-content: center;
+  margin: $spacing--xxl 0;
+
+  &__input-container {
+    width: 40%;
+    min-width: 300px;
+  }
+
+  &__input {
+    width: 100%;
+  }
+
+  &__checkbox {
+    margin-left: $spacing--md;
+  }
+}
