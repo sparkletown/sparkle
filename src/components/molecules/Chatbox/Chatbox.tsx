@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { isEqual } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 
@@ -34,6 +28,7 @@ import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
 import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
 
 import "./Chatbox.scss";
+import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
@@ -184,20 +179,5 @@ const _ChatBox: React.FC<ChatboxProps> = ({
     </div>
   );
 };
-
-/**
- * Resolves a bug in 'react-infinite-scroll-component' when
- * 'next' function is not being called when height of initially loaded items is less than container's height.
- * https://github.com/ankeetmaini/react-infinite-scroll-component/issues/217
- */
-export function useTriggerScrollFix(messages: WithId<MessageToDisplay>[]) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (ref.current) ref.current.dispatchEvent(new CustomEvent("scroll"));
-  }, [messages.length, ref]);
-
-  return ref;
-}
 
 export const Chatbox = React.memo(_ChatBox, isEqual);

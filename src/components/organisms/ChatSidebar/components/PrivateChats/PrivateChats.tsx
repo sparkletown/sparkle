@@ -7,12 +7,12 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
+import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
 
 import "./PrivateChats.scss";
-import { usePrivateChatPreviews } from "../../../../../hooks/chats/privateChats/usePrivateChatPreviews";
-import { useOnlineUsersToDisplay } from "../../../../../hooks/chats/privateChats/useOnlineUsersToDisplay";
 
 export interface PrivateChatsProps {
   venue: WithId<AnyVenue>;
