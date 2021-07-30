@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import Modal from "react-bootstrap/Modal";
-import { ProfileModalBasicInfo } from "./display/ProfileModalBasicInfo/ProfileModalBasicInfo";
-import { ProfileModalQuestions } from "./display/ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./display/ProfileModalLinks/ProfileModalLinks";
-import { ProfileModalBadges } from "./display/ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalBasicInfo } from "./ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
 import { WithId } from "../../../utils/id";
 import { AnyVenue } from "../../../types/venues";
 

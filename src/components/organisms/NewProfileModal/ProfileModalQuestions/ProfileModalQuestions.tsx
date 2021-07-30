@@ -1,11 +1,11 @@
-import { useSovereignVenue } from "../../../../../hooks/useSovereignVenue";
-import { useVenueId } from "../../../../../hooks/useVenueId";
+import { useSovereignVenue } from "../../../../hooks/useSovereignVenue";
+import { useVenueId } from "../../../../hooks/useVenueId";
 import "./ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../../types/utility";
+import { ContainerClassName } from "../../../../types/utility";
 import { WithId } from "utils/id";
-import { User } from "../../../../../types/User";
+import { User } from "../../../../types/User";
 
 interface Props extends ContainerClassName {
   editMode?: boolean;
