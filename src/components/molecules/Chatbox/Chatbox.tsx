@@ -8,7 +8,7 @@ import React, {
 import { isEqual } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-import { CHATBOX_NEXT_RENDER_SIZE } from "../../../settings";
+import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
 import {
   ChatOptionType,
