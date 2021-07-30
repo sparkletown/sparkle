@@ -109,44 +109,27 @@ interface UsersWithVisitsResult {
 
   // TODO: filter enteredVenueIds and visitsTimeSpent so that they only contain related venues?
   const result = usersWithVisits
-    // .map((item) => {
-    //   const newVisits = item.visits.filter((el) => {
-    //     if (el.id.toLowerCase().toLowerCase().includes('rko') ||
-    //     el.id.toLowerCase().includes('fuel') ||
-    //     el.id.toLowerCase().includes('gazing') ||
-    //     el.id.toLowerCase().includes('biosph') ||
-    //     el.id.toLowerCase().includes('schedule') ||
-    //     el.id.toLowerCase().includes('maintenance') ||
-    //     el.id.toLowerCase().includes('competetive') ||
-    //     el.id.toLowerCase().includes('space bar') ||
-    //     el.id.toLowerCase().includes('spaceship') ||
-    //     el.id.toLowerCase().includes('nasa space station')) {
-    //       return el;
-    //     }
-    //     return null;
-    //   });
-
-    //   return { ...item, visits: newVisits };
-    // })
     .reduce((arr: UsersWithVisitsResult[], el) => {
-      if (arr.map((item) => item.user.partyName).includes(el.user.partyName)) {
-        const newArr = arr.map((item) => ({
-          ...item,
-          visits: [...item.visits, ...el.visits].reduce(
-            (arr: WithId<UserVisit>[], visit) => {
-              if (arr.map((arrVisit) => arrVisit.id).includes(visit.id)) {
-                return arr;
-              }
+      const matchingUserIndex = arr.findIndex(
+        (item) => item.user.partyName === el.user.partyName
+      );
+      if (matchingUserIndex > 0) {
+        const newArr = [...arr[matchingUserIndex].visits, ...el.visits].reduce(
+          (visitsArr: WithId<UserVisit>[], visit) => {
+            if (visitsArr.map((arrVisit) => arrVisit.id).includes(visit.id)) {
+              return visitsArr;
+            }
 
-              arr.push(visit);
+            visitsArr.push(visit);
 
-              return arr;
-            },
-            []
-          ),
-        }));
+            return visitsArr;
+          },
+          []
+        );
 
-        return newArr;
+        arr[matchingUserIndex] = { ...el, visits: newArr };
+
+        return arr;
       }
 
       arr.push(el);
@@ -157,7 +140,6 @@ interface UsersWithVisitsResult {
       const { user, visits } = userWithVisits;
       const { id, partyName } = user;
       const { email } = authUsersById[id] ?? {};
-
       const visitIds = visits.map((el) => el.id);
       // write all visit IDs for badge counts
       visitIds.map((visit) =>
