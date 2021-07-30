@@ -11,9 +11,10 @@ import {
   setChatSidebarVisibility,
 } from "store/actions/Chat";
 
+import { AnyVenue } from "types/venues";
+
 import { useSelector } from "hooks/useSelector";
 import { useDispatch } from "hooks/useDispatch";
-import { AnyVenue } from "types/venues";
 import { useUser } from "hooks/useUser";
 import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
