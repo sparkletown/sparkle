@@ -38,8 +38,6 @@
   &__image {
     @include square-size($default-image-size);
     border-radius: 50%;
-    object-fit: cover;
-    object-position: top;
     vertical-align: unset;
   }
 
