@@ -8,7 +8,7 @@ import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
-import { useVenueChat } from "hooks/useVenueChat";
+import { useVenueChat } from "hooks/chats/venueChat";
 import { useVenueId } from "hooks/useVenueId";
 
 import { UserList } from "components/molecules/UserList";

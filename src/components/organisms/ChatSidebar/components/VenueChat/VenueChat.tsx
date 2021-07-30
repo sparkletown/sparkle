@@ -5,7 +5,7 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useVenueChat } from "hooks/useVenueChat";
+import { useVenueChat } from "hooks/chats/venueChat";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
