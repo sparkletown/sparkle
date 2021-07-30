@@ -1,9 +1,9 @@
 import { useMemo } from "react";
 
-import { PreviewChatMessageMap } from "../../../types/chat";
+import { PreviewChatMessageMap } from "types/chat";
 
-import { useWorldUsersById } from "../../users";
-import { useUser } from "../../useUser";
+import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 import {

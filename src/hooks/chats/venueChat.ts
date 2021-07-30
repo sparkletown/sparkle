@@ -25,9 +25,9 @@ import { WithId } from "utils/id";
 
 import { useSelector } from "../useSelector";
 import { useFirestoreConnect } from "../useFirestoreConnect";
-import { useUser } from "../useUser";
+import { useUser } from "hooks/useUser";
 import { useWorldUsersByIdWorkaround } from "../users";
-import { useRoles } from "../useRoles";
+import { useRoles } from "hooks/useRoles";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 

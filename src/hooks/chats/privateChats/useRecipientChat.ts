@@ -23,8 +23,8 @@ import {
   SendMessage,
 } from "types/chat";
 
-import { useUser } from "../../useUser";
-import { useWorldUsersById } from "../../users";
+import { useUser } from "hooks/useUser";
+import { useWorldUsersById } from "hooks/users";
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const useRecipientChat = (recipientId: string) => {

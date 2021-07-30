@@ -2,9 +2,9 @@ import { useMemo } from "react";
 
 import { privateChatMessagesSelector } from "utils/selectors";
 
-import { isLoaded, useFirestoreConnect } from "../../useFirestoreConnect";
-import { useSelector } from "../../useSelector";
-import { useUser } from "../../useUser";
+import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 export const usePrivateChatMessages = () => {
   useConnectPrivateChatMessages();

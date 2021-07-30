@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 
-import { useRecentWorldUsers } from "../../users";
-import { useUser } from "../../useUser";
+import { useRecentWorldUsers } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 export const useOnlineUsersToDisplay = () => {
   const { recentWorldUsers } = useRecentWorldUsers();
