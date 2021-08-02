@@ -250,26 +250,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     ]
   );
 
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
   const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
+    () => ({
+      [iconPositionFieldName]: {
+        width: PLAYA_VENUE_SIZE,
+        height: PLAYA_VENUE_SIZE,
+        top: defaultValues?.placement?.y ?? 0,
+        left: defaultValues?.placement?.x ?? 0,
+      },
+    }),
+    [defaultValues]
   );
 
   const onBoxMove: ExtractProps<
@@ -543,7 +533,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderLogoInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a square logo</h4>
+      <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
         ref={register}
@@ -551,8 +541,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
         name={"logoImageFile"}
-        containerClassName="input-square-container"
-        imageClassName="input-square-image"
+        containerClassName="host-icon-container"
+        imageClassName="host-icon"
         error={errors.logoImageFile || errors.logoImageUrl}
       />
     </div>
@@ -1054,6 +1044,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         {templateID &&
           HAS_REACTIONS_TEMPLATES.includes(templateID) &&
+          HAS_GRID_TEMPLATES.includes(templateID) &&
           renderSeatingNumberInput()}
 
         {renderRadioToggle()}

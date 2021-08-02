@@ -89,8 +89,10 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
     containerCssVars
   );
 
+  const isExpandHidden = isEventShort || !isEventFullLength;
+
   const expandClasses = classNames("ScheduleEvent__expand", {
-    "ScheduleEvent__expand--hidden": isEventShort,
+    "ScheduleEvent__expand--hidden": isExpandHidden,
     "ScheduleEvent__expand--marged": !isEventLong,
     "ScheduleEvent__expand--padded": isEventLong,
     "ScheduleEvent__expand--live": isEventLive(event),
@@ -122,7 +124,7 @@ export const ScheduleEvent: React.FC<ScheduleEventProps> = ({
   return (
     <>
       <div className={containerClasses} onClick={onEventBoxClick}>
-        <button className={expandClasses}>
+        <button aria-label={event.name} className={expandClasses}>
           <FontAwesomeIcon
             icon={regularSquare}
             className="ScheduleEvent__expand--square"

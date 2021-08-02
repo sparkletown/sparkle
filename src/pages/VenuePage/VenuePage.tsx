@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
@@ -6,15 +6,11 @@ import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
-import { hasUserBoughtTicketForEvent } from "utils/hasUserBoughtTicket";
-import { isUserAMember } from "utils/isUserAMember";
 import {
   currentEventSelector,
   currentVenueSelector,
   isCurrentEventRequestedSelector,
   isCurrentVenueRequestedSelector,
-  isUserPurchaseHistoryRequestedSelector,
-  userPurchaseHistorySelector,
 } from "utils/selectors";
 import {
   clearLocationData,
@@ -26,13 +22,13 @@ import { venueEntranceUrl } from "utils/url";
 
 import { tracePromise } from "utils/performance";
 import { isCompleteProfile, updateProfileEnteredVenueIds } from "utils/profile";
-import { isTruthy } from "utils/types";
+import { isTruthy, isDefined } from "utils/types";
 import { hasEventFinished, isEventStartingSoon } from "utils/event";
 
 import { useConnectCurrentEvent } from "hooks/useConnectCurrentEvent";
-import { useConnectUserPurchaseHistory } from "hooks/useConnectUserPurchaseHistory";
 import { useInterval } from "hooks/useInterval";
 import { useMixpanel } from "hooks/useMixpanel";
+import { usePreloadAssets } from "hooks/usePreloadAssets";
 import { useSelector } from "hooks/useSelector";
 import { useWorldUserLocation } from "hooks/users";
 import { useUser } from "hooks/useUser";
@@ -86,15 +82,22 @@ export const VenuePage: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
   const venueRequestStatus = useSelector(isCurrentVenueRequestedSelector);
 
+  const assetsToPreload = useMemo(
+    () =>
+      [
+        venue?.mapBackgroundImageUrl,
+        ...(venue?.rooms ?? []).map((room) => room?.image_url),
+      ]
+        .filter(isDefined)
+        .map((url) => ({ url })),
+    [venue]
+  );
+
+  usePreloadAssets(assetsToPreload);
+
   useConnectCurrentEvent();
   const currentEvent = useSelector(currentEventSelector);
   const eventRequestStatus = useSelector(isCurrentEventRequestedSelector);
-
-  useConnectUserPurchaseHistory();
-  const userPurchaseHistory = useSelector(userPurchaseHistorySelector);
-  const userPurchaseHistoryRequestStatus = useSelector(
-    isUserPurchaseHistoryRequestedSelector
-  );
 
   // @debt we REALLY shouldn't be loading all of the venues collection data like this, can we remove it?
   useFirestoreConnect("venues");
@@ -113,17 +116,13 @@ export const VenuePage: React.FC = () => {
     updateTheme(venue);
   }, [venue]);
 
-  const hasUserBoughtTicket =
-    event && hasUserBoughtTicketForEvent(userPurchaseHistory, event.id);
-
   const isEventFinished = event && hasEventFinished(event);
 
   const isUserVenueOwner = userId && venue?.owners?.includes(userId);
-  const isMember =
-    user && venue && isUserAMember(user.email, venue.config?.memberEmails);
+  const isMember = user && venue;
 
   // NOTE: User location updates
-
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useInterval(() => {
     if (!userId || !userLastSeenIn) return;
 
@@ -133,6 +132,7 @@ export const VenuePage: React.FC = () => {
     });
   }, LOC_UPDATE_FREQ_MS);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!userId || !venueName) return;
 
@@ -141,6 +141,7 @@ export const VenuePage: React.FC = () => {
 
   useTitle(`${PLATFORM_BRAND_NAME} - ${venueName}`);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (!userId) return;
 
@@ -153,6 +154,7 @@ export const VenuePage: React.FC = () => {
       window.removeEventListener("beforeunload", onBeforeUnloadHandler);
   }, [userId]);
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (
       !venueId ||
@@ -168,8 +170,10 @@ export const VenuePage: React.FC = () => {
 
   // NOTE: User's timespent updates
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useUpdateTimespentPeriodically({ locationName: venueName, userId });
 
+  // @debt refactor how user location updates works here to encapsulate in a hook or similar?
   useEffect(() => {
     if (user && profile && venueId && venueTemplate) {
       mixpanel.track("VenuePage loaded", {
@@ -188,6 +192,7 @@ export const VenuePage: React.FC = () => {
   }
 
   if (!venue || !venueId) {
+    // @debt if !venueId is true loading page might display indefinitely, another message or action may be appropriate
     return <LoadingPage />;
   }
 
@@ -222,17 +227,11 @@ export const VenuePage: React.FC = () => {
       return <>This event does not exist</>;
     }
 
-    if (!event || !venue || !userPurchaseHistoryRequestStatus) {
+    if (!event || !venue) {
       return <LoadingPage />;
     }
 
-    if (
-      (!isMember &&
-        event.price > 0 &&
-        userPurchaseHistoryRequestStatus &&
-        !hasUserBoughtTicket) ||
-      isEventFinished
-    ) {
+    if (!isMember || isEventFinished) {
       return <>Forbidden</>;
     }
 

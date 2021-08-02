@@ -6,11 +6,9 @@ import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import {
-  usePrivateChatPreviews,
-  useOnlineUsersToDisplay,
-} from "hooks/privateChats";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
+import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
 
 import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
 
