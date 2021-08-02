@@ -1,0 +1,9 @@
+@import "scss/constants.scss";
+
+.ProfileModalEditLinks {
+  &__header-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}

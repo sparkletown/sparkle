@@ -1,4 +1,5 @@
 @import "scss/constants.scss";
+@import "../../ProfileModal.scss";
 
 .ProfileModalBasicInfo {
   display: flex;
@@ -45,17 +46,5 @@
   &__edit-container {
     margin-left: auto;
     margin-right: 0;
-  }
-
-  &__edit {
-    @include square-size(2rem);
-    padding: 0;
-    cursor: pointer;
-    border-radius: 50%;
-    background-color: $light-grey;
-    display: flex;
-    & > svg {
-      margin: auto;
-    }
   }
 }

@@ -1,10 +1,10 @@
-import { UserAvatar } from "../../../atoms/UserAvatar";
-import { ProfileModalBasicTextInfo } from "../ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
-import "./ProfileModalBasicInfo.scss";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/ProfileModalRoundIcon/ProfileModalRoundIcon";
+import { UserAvatar } from "components/atoms/UserAvatar";
+import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
+import "components/organisms/NewProfileModal/header/ProfileModalBasicInfo/ProfileModalBasicInfo.scss";
 import React from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
 import { useSameUser } from "hooks/useIsSameUser";
 import classNames from "classnames";
@@ -43,7 +43,11 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
           })}
         >
           {editMode ? (
-            <input name={"party-name"} value={viewingUser?.partyName} />
+            <input
+              className="ProfileModal__input ProfileModal__input--padding-normal"
+              name={"party-name"}
+              value={viewingUser?.partyName}
+            />
           ) : (
             <ProfileModalBasicTextInfo viewingUser={viewingUser} />
           )}
@@ -51,12 +55,12 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
       </div>
       {onEdit && !editMode && (
         <div className="ProfileModalBasicInfo__edit-container">
-          <div
-            className="ProfileModalBasicInfo__edit ProfileModalBasicInfo--section"
+          <ProfileModalRoundIcon
+            containerClassName="ProfileModalBasicInfo--section"
             onClick={onEdit}
-          >
-            <FontAwesomeIcon icon={faPen} size="sm" />
-          </div>
+            icon={faPen}
+            size="sm"
+          />
         </div>
       )}
     </div>

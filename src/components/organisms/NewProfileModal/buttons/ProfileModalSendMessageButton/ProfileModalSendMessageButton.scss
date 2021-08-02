@@ -1,8 +1,7 @@
 $send-msg-online-color: #78b553;
 
-.ProfileModalButtons {
+.ProfileModalSendMessageButton {
   &__button {
-    width: 100%;
     &--online {
       background-color: $send-msg-online-color;
     }

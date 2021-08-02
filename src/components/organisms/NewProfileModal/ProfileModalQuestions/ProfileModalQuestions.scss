@@ -1,8 +1,9 @@
 @import "scss/constants.scss";
+@import "../ProfileModal.scss";
 
 .ProfileModalQuestions {
   &__question-container {
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.7em;
     &:last-child {
       margin-bottom: 0;
     }

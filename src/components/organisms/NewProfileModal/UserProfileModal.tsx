@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
+import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/ProfileModalChangePassword/ProfileModalChangePassword";
+import { useBooleanState } from "hooks/useBooleanState";
+import React from "react";
 import Modal from "react-bootstrap/Modal";
-import { ProfileModalBasicInfo } from "./ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalLinks } from "./links/ProfileModalLinks/ProfileModalLinks";
 import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
-import "./ProfileModal.scss";
 import "./UserProfileModal.scss";
+import "./ProfileModal.scss";
 import { useUser } from "hooks/useUser";
-import { ProfileModalEditLinks } from "./ProfileModalEditLinks/ProfileModalEditLinks";
+import { ProfileModalEditLinks } from "./links/ProfileModalEditLinks/ProfileModalEditLinks";
 
 interface Props {
   venue: WithId<AnyVenue>;
@@ -19,7 +22,7 @@ interface Props {
 
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
   const { userWithId: user } = useUser();
-  const [editMode, setEditMode] = useState(false);
+  const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(true);
 
   return (
     <Modal
@@ -33,7 +36,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
           <>
             <ProfileModalBasicInfo
               editMode={editMode}
-              onEdit={() => setEditMode(true)}
+              onEdit={turnOnEditMode}
               viewingUser={user}
               containerClassName="ProfileModal__section"
             />
@@ -42,19 +45,35 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
               editMode={editMode}
               containerClassName="ProfileModal__section"
             />
-            {editMode ? (
-              <ProfileModalEditLinks containerClassName="ProfileModal__section" />
+            {editMode && user?.profileLinks ? (
+              <ProfileModalEditLinks
+                containerClassName="ProfileModal__section"
+                links={user.profileLinks}
+              />
             ) : (
               <ProfileModalLinks
                 viewingUser={user}
                 containerClassName="ProfileModal__section"
               />
             )}
-            <ProfileModalBadges
-              viewingUser={user}
-              venue={venue}
-              containerClassName={"ProfileModal__section"}
-            />
+            {!editMode && (
+              <ProfileModalBadges
+                viewingUser={user}
+                venue={venue}
+                containerClassName={"ProfileModal__section"}
+              />
+            )}
+            {editMode && (
+              <ProfileModalChangePassword containerClassName="ProfileModal__section" />
+            )}
+            {editMode && (
+              <ProfileModalEditButtons
+                onSaveClick={() => {}}
+                onCancelClick={turnOffEditMode}
+                saveChangesDisabled={false}
+                containerClassName="UserProfileModal__edit-buttons"
+              />
+            )}
           </>
         )}
       </Modal.Body>

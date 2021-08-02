@@ -1,0 +1,13 @@
+@import "scss/constants.scss";
+
+.ProfileModalRoundIcon {
+  @include square-size(1.7rem);
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: $light-grey;
+  display: flex;
+  & > svg {
+    margin: auto;
+  }
+}

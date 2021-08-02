@@ -1,5 +1,3 @@
-import { ProfileLink } from "types/User";
-import "./ProfileModalLink.scss";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import {
   faFacebook,
@@ -17,40 +15,16 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useMemo } from "react";
 
-export const ProfileModalLink: React.FC<{ link: ProfileLink }> = ({ link }) => {
-  const linkIcon = useMemo(() => {
-    const type = tryMatchLinkType(link.url);
-    return type
-      ? profileModalLinkTypesIcons[type] ?? profileModalGenericLinkIcon
-      : profileModalGenericLinkIcon;
-  }, [link.url]);
-
-  return (
-    <a
-      className="ProfileModalLink"
-      href={link.url}
-      target="_blank"
-      rel="noreferrer"
-    >
-      <FontAwesomeIcon icon={linkIcon} size="sm" />
-      <span>&nbsp;&nbsp;</span>
-      {link.title}
-    </a>
-  );
-};
-
-const tryMatchLinkType: (link: string) => ProfileModalLinkType | undefined = (
-  link
-) => {
+export const tryMatchLinkType: (
+  link: string
+) => ProfileModalLinkType | undefined = (link) => {
   return Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>
     link.match(regex)
   )?.[0] as ProfileModalLinkType | undefined;
 };
 
-enum ProfileModalLinkType {
+export enum ProfileModalLinkType {
   Instagram = "Instagram",
   Facebook = "Facebook",
   Medium = "Medium",
@@ -86,7 +60,7 @@ export const profileModalLinkTypesIcons: Record<
   [ProfileModalLinkType.Mail]: faEnvelope,
 };
 
-function buildMatchingRegex(...hosts: string[]) {
+export function buildMatchingRegex(...hosts: string[]) {
   const escaped = hosts.map((h) => h.replace(".", "\\."));
 
   return new RegExp(`^(https?:\\/\\/)?(www\\.)?(${escaped.join("|")}).*$`);

@@ -1,13 +1,13 @@
+import { ProfileModalSendMessageButton } from "components/organisms/NewProfileModal/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton";
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { ProfileModalBasicInfo } from "./ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalLinks } from "./links/ProfileModalLinks/ProfileModalLinks";
 import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
-import { ProfileModalForeignUserButtons } from "./ProfileModalButtons/ProfileModalForeignUserButtons";
 
 import "./ProfileModal.scss";
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
@@ -15,6 +15,11 @@ import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
 }
+
+export const profileModalWideButtonCustomStyle = {
+  fontSize: 14,
+  width: "100%",
+};
 
 export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
   const { selectRecipientChat } = useChatSidebarControls();
@@ -57,7 +62,7 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
           containerClassName={"ProfileModal__section"}
           venue={venue}
         />
-        <ProfileModalForeignUserButtons
+        <ProfileModalSendMessageButton
           containerClassName="ProfileModal__section"
           openChat={openChosenUserChat}
           viewingUser={selectedUserProfile}
