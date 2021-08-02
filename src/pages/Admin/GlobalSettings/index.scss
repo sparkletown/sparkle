@@ -1,0 +1,16 @@
+.global-venue-settings {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  &-btn {
+    width: 30%;
+  }
+
+  &-controls {
+    display: flex;
+    justify-content: space-around;
+    width: 90%;
+  }
+}

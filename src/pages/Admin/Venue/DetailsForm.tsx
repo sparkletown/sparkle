@@ -138,6 +138,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   });
   const { user } = useUser();
   const history = useHistory();
+
   const { isSubmitting } = formState;
   const values = watch();
 
@@ -168,6 +169,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       userStatuses: UserStatus[],
       showUserStatuses: boolean
     ) => {
+      console.log(vals);
       if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
@@ -182,6 +184,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
 
+          // console.log(sovereignVenue?.rooms?.map(room => room.url))
           //@debt Create separate function that updates the userStatuses separately by venue id.
           if (
             sovereignVenueId &&
@@ -291,7 +294,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     state.detailsPage?.venue?.placement?.state ===
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
-
   // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
     <div className="page page--admin admin-dashboard">

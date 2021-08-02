@@ -252,15 +252,31 @@ $page-max-width: 1240px;
             }
             .content-group {
               margin-top: 20px;
-              .title {
-                margin-right: 20px;
-                width: 100px;
+              display: flex;
+
+              &-map {
+                display: block;
+                padding: 5px;
+                margin-top: $spacing--lg;
+
+                .title {
+                  font-size: $font-size--xl;
+                }
               }
-              .banner {
-                width: 100%;
-              }
-              .icon {
-                width: 100px;
+
+              .body-container {
+                width: 150px;
+
+                .title {
+                  margin-right: 20px;
+                  width: 150px;
+                }
+                .icon {
+                  width: 100px;
+                }
+                .content {
+                  text-align: center;
+                }
               }
             }
           }

@@ -68,10 +68,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
       case VenueTemplate.themecamp:
         const partyMapVenue = venue as WithId<PartyMapVenue>;
         return (
-          <div className="content-group" style={{ padding: "5px" }}>
-            <span className="title" style={{ fontSize: "20px" }}>
-              This is a preview of your Space
-            </span>
+          <div className="content-group-map">
+            <span className="title">This is a preview of your Space</span>
             <PartyMapContainer
               interactive={false}
               resizable
@@ -136,11 +134,9 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             />
           </div>
         </div>
-        <div className="content-group" style={{ display: "flex" }}>
-          <div style={{ width: "150px" }}>
-            <div className="title" style={{ width: "150px" }}>
-              Banner photo
-            </div>
+        <div className="content-group">
+          <div className="body-container">
+            <div className="title">Banner photo</div>
             <div className="content">
               <img
                 className="icon"
@@ -161,7 +157,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
             </div>
           </div> */}
-          <div style={{ width: "150px" }}>
+          <div className="body-container" style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
               Square logo
             </div>

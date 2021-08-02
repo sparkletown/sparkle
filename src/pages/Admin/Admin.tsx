@@ -62,6 +62,7 @@ import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
 import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
+import GlobalSettings from "./GlobalSettings";
 
 import "./Admin.scss";
 
@@ -80,10 +81,19 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
+  const isShowBadgesGlobal =
+    ownedVenues.filter((venue) => venue.showBadges).length ===
+    ownedVenues.length;
   if (isLoading) return <Loading />;
 
   return (
     <>
+      {ownedVenues && (
+        <GlobalSettings
+          isShowBadgesGlobal={isShowBadgesGlobal}
+          ownedVenues={ownedVenues}
+        />
+      )}
       <div className="page-container-adminsidebar-title title">My Venues</div>
       <div className="page-container-adminsidebar-top">
         <Link to="/admin/venue/creation" className="btn btn-primary">
