@@ -68,8 +68,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
               <button
                 className="btn btn-primary"
                 onClick={setShowCreateEventModal}
-                  setShowCreateEventModal();
-                }}
               >
                 Create an Event
               </button>
@@ -80,12 +78,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
       {hasVenueEvents && (
         <div className="create-button">
-          <button
-            className="btn btn-primary"
-            onClick={setShowCreateEventModal}
-              setShowCreateEventModal();
-            }}
-          >
+          <button className="btn btn-primary" onClick={setShowCreateEventModal}>
             Create an Event
           </button>
         </div>
