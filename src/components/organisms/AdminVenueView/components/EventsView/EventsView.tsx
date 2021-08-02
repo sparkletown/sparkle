@@ -23,6 +23,7 @@ export type EventsViewProps = {
 
 export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   useConnectVenueEvents(venueId);
+
   const events = useSelector(venueEventsNGSelector);
 
   const {
@@ -66,7 +67,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
               <p>No events yet, lets start planning!</p>
               <button
                 className="btn btn-primary"
-                onClick={() => {
+                onClick={setShowCreateEventModal}
                   setShowCreateEventModal();
                 }}
               >
@@ -81,7 +82,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         <div className="create-button">
           <button
             className="btn btn-primary"
-            onClick={() => {
+            onClick={setShowCreateEventModal}
               setShowCreateEventModal();
             }}
           >
