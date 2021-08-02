@@ -575,12 +575,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderHelper = (text: string) => (
-    <p
-      className="small light"
-      style={{ marginBottom: "2rem", fontSize: "16px" }}
-    >
-      {text}
-    </p>
+    <p className="small light helper">{text}</p>
   );
 
   return (
@@ -599,8 +594,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderDescriptionInput()}
 
         {renderBannerPhotoInput()}
-        {renderHelper("1:1 ratio recommended")}
         {renderLogoInput()}
+        {renderHelper("1:1 ratio recommended")}
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
