@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+import { MIN_TABLE_CAPACITY } from "settings";
 import { Table } from "types/Table";
 
 export interface UpdateVenueTableProps {
@@ -19,13 +20,13 @@ export const updateVenueTable = async ({
   capacity,
 }: UpdateVenueTableProps) => {
   const updatedCapacity = parseInt(capacity.toString(), 10);
-  const tableColumns = tableOfUser?.columns ?? 1;
+  const tableColumns = tableOfUser?.columns ?? MIN_TABLE_CAPACITY;
   const updatedTable = {
     ...tableOfUser,
     title,
     subtitle,
     capacity: updatedCapacity,
-    rows: Math.ceil(updatedCapacity / tableColumns),
+    rows: Math.round(updatedCapacity / tableColumns),
   };
 
   return await firebase.functions().httpsCallable("venue-updateTables")({
