@@ -237,7 +237,7 @@ export interface Template_v2 {
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.partymap,
-    name: "Party Map",
+    name: "Camp",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
@@ -670,3 +670,5 @@ export const DEFAULT_TABLE_CAPACITY =
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+
+export const BM_PARENT_ID = "/playa";
