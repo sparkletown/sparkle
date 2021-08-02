@@ -22,9 +22,11 @@ $upload-button-max-width: 300px;
     align-items: center;
     border-radius: $border-radius--xl;
     border: solid $primary;
-    padding: $spacing--md $spacing--xxl;
-    margin: $spacing--md 0;
+    padding: $spacing--lg 50px;
+    margin: $spacing--lg 0;
     font-weight: $font-weight--700;
+    color: $white;
+    background-color: transparent;
 
     &:hover {
       transform: translateY(-1px);
@@ -47,6 +49,8 @@ $upload-button-max-width: 300px;
   display: flex;
   justify-content: center;
   z-index: z(account-profile-picture-preview);
+  background-color: transparent;
+  border: none;
 
   &__image {
     width: $profile-picture-size--lg;
