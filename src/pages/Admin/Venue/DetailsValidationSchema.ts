@@ -106,9 +106,7 @@ export const validationSchema = Yup.object()
     ),
 
     attendeesTitle: Yup.string().notRequired().default("Guests"),
-    chatTitle: Yup.string().notRequired().default("Party"),
 
-    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     description: Yup.string().required("Description required"),
     subtitle: Yup.string().required("Subtitle required"),
@@ -169,7 +167,7 @@ export const validationSchema = Yup.object()
 
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
-    adultContent: Yup.bool().required(),
+    adultContent: Yup.bool().required().default(false),
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),

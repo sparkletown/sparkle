@@ -247,7 +247,7 @@ export interface Template_v2 {
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.partymap,
-    name: "Party Map",
+    name: "Camp",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
@@ -731,3 +731,4 @@ export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
 export const EVENTS_PREVIEW_LIST_LENGTH = 5;
+export const BM_PARENT_ID = "/playa";
