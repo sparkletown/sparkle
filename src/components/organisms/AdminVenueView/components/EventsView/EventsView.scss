@@ -1,19 +1,21 @@
 @import "scss/constants.scss";
 
+$events-view-margin: 75px 75px 10px;
+
 .EventsView {
-  background-color: #000;
+  background-color: $black;
   position: relative;
   height: 75%;
   width: 85%;
-  margin: 75px 75px 10px;
+  margin: $events-view-margin;
   border-radius: $border-radius--xl;
-  box-shadow: 0px 0px 15px -4px #000000;
+  box-shadow: box-shadow--large();
   overflow: scroll;
 
   &__title {
-    margin: 20px;
-    font-weight: 500;
-    font-size: 20px;
+    margin: $spacing--lg;
+    font-weight: $font-weight--500;
+    font-size: $font-size--xl;
   }
 
   &__content > .TimingEvent:nth-of-type(odd) {
@@ -24,7 +26,7 @@
     display: flex;
     width: 100%;
     color: $concrete;
-    padding: 20px;
+    padding: $spacing--lg;
 
     &__time {
       position: relative;
@@ -37,29 +39,29 @@
       }
 
       &-start {
-        font-weight: bold;
-        color: white;
-        margin-top: 20px;
+        font-weight: $font-weight--700;
+        color: $white;
+        margin-top: $spacing--xl;
       }
     }
 
     &__details {
       &-name {
-        font-weight: bold;
-        color: white;
-        font-size: 18px;
+        font-weight: $font-weight--700;
+        color: $white;
+        font-size: $spacing--lg;
       }
 
       &-host {
-        font-weight: 600;
+        font-weight: $font-weight--600;
       }
 
       &-room {
         span {
-          font-weight: bold;
+          font-weight: $font-weight--700;
         }
 
-        font-size: 13px;
+        font-size: $font-size--sm;
       }
 
       p {
