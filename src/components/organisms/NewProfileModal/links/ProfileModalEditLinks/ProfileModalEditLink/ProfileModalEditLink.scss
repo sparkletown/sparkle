@@ -19,5 +19,13 @@
   &__text {
     grid-row: 2;
     grid-column: 1;
+    display: inline-block;
+    position: relative;
+  }
+  &__text-icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.5rem;
   }
 }

@@ -41,7 +41,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
               <input
                 className="ProfileModal__input ProfileModal__input--condensed ProfileModalQuestions__answer-input"
                 name={question.text}
-                value={questionAnswer}
+                defaultValue={questionAnswer}
               />
             ) : (
               <p className="ProfileModalQuestions__answer">{questionAnswer}</p>

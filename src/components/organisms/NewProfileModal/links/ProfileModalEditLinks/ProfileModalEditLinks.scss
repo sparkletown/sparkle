@@ -6,4 +6,10 @@
     flex-direction: row;
     justify-content: space-between;
   }
+  &__link {
+    margin-bottom: 1rem;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

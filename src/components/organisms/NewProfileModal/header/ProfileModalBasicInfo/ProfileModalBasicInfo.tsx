@@ -46,7 +46,7 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
             <input
               className="ProfileModal__input ProfileModal__input--padding-normal"
               name={"party-name"}
-              value={viewingUser?.partyName}
+              defaultValue={viewingUser?.partyName}
             />
           ) : (
             <ProfileModalBasicTextInfo viewingUser={viewingUser} />

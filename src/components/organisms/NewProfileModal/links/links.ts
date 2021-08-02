@@ -10,19 +10,36 @@ import {
   faTelegram,
   faTiktok,
   faTwitter,
-  faVimeoV,
   faYoutube,
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { useMemo } from "react";
 
-export const tryMatchLinkType: (
-  link: string
-) => ProfileModalLinkType | undefined = (link) => {
-  return Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>
-    link.match(regex)
-  )?.[0] as ProfileModalLinkType | undefined;
-};
+export const useLinkIcon = (url: string) =>
+  useMemo(() => {
+    const type = Object.entries(
+      profileModalLinkTypesRegexes
+    ).find(([, regex]) => url.match(regex))?.[0] as
+      | ProfileModalLinkType
+      | undefined;
+
+    return type
+      ? profileModalLinkTypesIcons[type] ?? profileModalGenericLinkIcon
+      : profileModalGenericLinkIcon;
+  }, [url]);
+
+export const useLinkUsername = (url: string) =>
+  useMemo(() => {
+    const res = Object.entries(profileModalProfileNameRegex).map(
+      ([, regex]) => {
+        const match = url.match(regex);
+        return match?.[1] as string;
+      }
+    );
+
+    return res.find((x) => x);
+  }, [url]);
 
 export enum ProfileModalLinkType {
   Instagram = "Instagram",
@@ -34,7 +51,6 @@ export enum ProfileModalLinkType {
   Telegram = "Telegram",
   Twitter = "Twitter",
   Github = "Github",
-  Vimeo = "Vimeo",
   Youtube = "Youtube",
   Tiktok = "Tiktok",
   Mail = "Mail",
@@ -54,7 +70,6 @@ export const profileModalLinkTypesIcons: Record<
   [ProfileModalLinkType.Telegram]: faTelegram,
   [ProfileModalLinkType.Twitter]: faTwitter,
   [ProfileModalLinkType.Github]: faGithub,
-  [ProfileModalLinkType.Vimeo]: faVimeoV,
   [ProfileModalLinkType.Youtube]: faYoutube,
   [ProfileModalLinkType.Tiktok]: faTiktok,
   [ProfileModalLinkType.Mail]: faEnvelope,
@@ -70,7 +85,7 @@ export const profileModalLinkTypesRegexes: Record<
   ProfileModalLinkType,
   RegExp
 > = {
-  [ProfileModalLinkType.Mail]: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+  [ProfileModalLinkType.Mail]: /^((([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
   [ProfileModalLinkType.Instagram]: buildMatchingRegex(
     "instagram.com",
     "instagr.am"
@@ -87,7 +102,25 @@ export const profileModalLinkTypesRegexes: Record<
   ),
   [ProfileModalLinkType.Twitter]: buildMatchingRegex("twitter.com"),
   [ProfileModalLinkType.Github]: buildMatchingRegex("github.com"),
-  [ProfileModalLinkType.Vimeo]: buildMatchingRegex("vimeo.com"),
   [ProfileModalLinkType.Youtube]: buildMatchingRegex("youtube.com"),
   [ProfileModalLinkType.Tiktok]: buildMatchingRegex("tiktok.com"),
+};
+
+export const profileModalProfileNameRegex: Record<
+  ProfileModalLinkType,
+  RegExp
+> = {
+  [ProfileModalLinkType.Mail]:
+    profileModalLinkTypesRegexes[ProfileModalLinkType.Mail],
+  [ProfileModalLinkType.Instagram]: /(?:https?:)?\/\/(?:www\.)?(?:instagram\.com|instagr\.am)\/([A-Za-z0-9_](?:(?:[A-Za-z0-9_]|\.(?!\.)){0,28}[A-Za-z0-9_])?)/,
+  [ProfileModalLinkType.Facebook]: /(?:https?:)?\/\/(?:www\.)?(?:facebook|fb)\.com\/((?![A-z]+\.php)(?!marketplace|gaming|watch|me|messages|help|search|groups)[A-z0-9_\-.]+)\/?/,
+  [ProfileModalLinkType.Medium]: /(?:https?:)?\/\/medium\.com\/@([A-z0-9]+)(?:\?.*)?/,
+  [ProfileModalLinkType.Snapchat]: / (?:https?:)?\/\/(?:www\.)?snapchat\.com\/add\/([A-z0-9._-]+)\/?/,
+  [ProfileModalLinkType.Stackexchange]: /(?:https?:)?\/\/(?:www\.)?stackexchange\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Stackoverflow]: / (?:https?:)?\/\/(?:www\.)?stackoverflow\.com\/users\/[0-9]+\/([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Telegram]: /(?:https?:)?\/\/(?:t(?:elegram)?\.me|telegram\.org)\/([a-z0-9_]{5,32})\/?/,
+  [ProfileModalLinkType.Twitter]: /(?:https?:)?\/\/(?:[A-z]+\.)?twitter\.com\/@?(?!home|share|privacy|tos)([A-z0-9_]+)\/?/,
+  [ProfileModalLinkType.Github]: /(?:https?:)?\/\/(?:www\.)?github\.com\/([A-z0-9_-]+)\/?/,
+  [ProfileModalLinkType.Youtube]: / (?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/([A-z0-9]+)\/?/,
+  [ProfileModalLinkType.Tiktok]: /(?:https?:)?\/\/(?:www\.)?tiktok\.com\/@([A-z0-9-_.]+)\/?/,
 };

@@ -23,7 +23,11 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
         <ProfileModalRoundIcon icon={faPlus} size="sm" />
       </div>
       {links.map((link) => (
-        <ProfileModalEditLink key={link.url} link={link} />
+        <ProfileModalEditLink
+          containerClassName="ProfileModalEditLinks__link"
+          key={link.url}
+          link={link}
+        />
       ))}
     </div>
   );
