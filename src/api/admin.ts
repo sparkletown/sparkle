@@ -319,17 +319,6 @@ export const updateVenue = async (
   );
 };
 
-// export const updateVenueGlobal = async (
-//   input: WithId<AnyVenue>,
-//   user: UserInfo
-// ) => {
-//   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
-
-//   return await firebase.functions().httpsCallable("venue-updateVenue")(
-//     firestoreVenueInput
-//   );
-// };
-
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 

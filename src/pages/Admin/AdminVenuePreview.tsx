@@ -157,10 +157,8 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
             </div>
           </div> */}
-          <div className="body-container" style={{ width: "150px" }}>
-            <div className="title" style={{ width: "150px" }}>
-              Square logo
-            </div>
+          <div className="body-container">
+            <div className="title">Square logo</div>
             <div className="content">
               <img className="icon" src={venue.host?.icon} alt="icon" />
             </div>
