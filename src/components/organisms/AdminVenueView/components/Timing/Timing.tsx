@@ -32,25 +32,28 @@ export const Timing: React.FC<TimingProps> = ({
       <div className="Timing__left">
         <div className="Timing__left-bottombar">
           <div className="Timing__left-bottombar-btnleft">
-            <a
-              href="/admin-ng"
-              className="Timing__left-bottombar-btngrey btn-grey__home"
+            <button
+              // href="/admin-ng"
+              className="Timing__left-bottombar-btngrey Timing__btn"
             >
               <FontAwesomeIcon
                 icon={faHome}
                 className="edit-button__icon"
                 size="lg"
               />
-            </a>
+            </button>
           </div>
           <div className="Timing__left-bottombar-btnright">
             <button
-              className="Timing__left-bottombar-btngrey"
+              className="Timing__left-bottombar-btngrey Timing__btn"
               onClick={onClickBack}
             >
               Back
             </button>
-            <button className="btn btn-primary" onClick={onClickNext}>
+            <button
+              className="Timing__left-bottombar-btnprimary Timing__btn"
+              onClick={onClickNext}
+            >
               Next
             </button>
           </div>
