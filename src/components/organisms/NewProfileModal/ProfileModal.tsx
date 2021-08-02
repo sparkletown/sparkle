@@ -2,7 +2,6 @@ import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
-import { useChatSidebarControls } from "hooks/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { ProfileModalBasicInfo } from "./ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
@@ -11,6 +10,7 @@ import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
 import { ProfileModalForeignUserButtons } from "./ProfileModalButtons/ProfileModalForeignUserButtons";
 
 import "./ProfileModal.scss";
+import { useChatSidebarControls } from "../../../hooks/chats/chatSidebar";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
