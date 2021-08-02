@@ -51,7 +51,6 @@ $preview-margin: 30px;
         overflow-y: auto;
         padding-left: 10px;
         padding-right: 20px;
-        height: 100%;
       }
     }
     .page-container-left-bottombar {
@@ -107,7 +106,6 @@ $preview-margin: 30px;
 
         .scrollable-content {
           overflow-y: unset;
-          height: unset;
           padding-bottom: 2rem;
         }
       }
