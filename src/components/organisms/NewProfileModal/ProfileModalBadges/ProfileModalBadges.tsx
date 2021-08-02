@@ -1,9 +1,9 @@
 import React from "react";
-import { WithId } from "../../../../utils/id";
-import { AnyVenue } from "../../../../types/venues";
+import { WithId } from "utils/id";
+import { AnyVenue } from "types/venues";
 import { Badges } from "../../Badges";
-import { ContainerClassName } from "../../../../types/utility";
-import { User } from "../../../../types/User";
+import { ContainerClassName } from "types/utility";
+import { User } from "types/User";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

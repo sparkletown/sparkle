@@ -2,13 +2,13 @@ import { UserAvatar } from "../../../atoms/UserAvatar";
 import { ProfileModalBasicTextInfo } from "../ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
 import React from "react";
-import { WithId } from "../../../../utils/id";
-import { User } from "../../../../types/User";
+import { WithId } from "utils/id";
+import { User } from "types/User";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { useSameUser } from "../../../../hooks/useIsSameUser";
+import { useSameUser } from "hooks/useIsSameUser";
 import classNames from "classnames";
-import { ContainerClassName } from "../../../../types/utility";
+import { ContainerClassName } from "types/utility";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

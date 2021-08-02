@@ -4,12 +4,11 @@ import { ProfileModalBasicInfo } from "./ProfileModalBasicInfo/ProfileModalBasic
 import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
 import { ProfileModalLinks } from "./ProfileModalLinks/ProfileModalLinks";
 import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
-import { WithId } from "../../../utils/id";
-import { AnyVenue } from "../../../types/venues";
-
+import { WithId } from "utils/id";
+import { AnyVenue } from "types/venues";
 import "./ProfileModal.scss";
 import "./UserProfileModal.scss";
-import { useUser } from "../../../hooks/useUser";
+import { useUser } from "hooks/useUser";
 import { ProfileModalEditLinks } from "./ProfileModalEditLinks/ProfileModalEditLinks";
 
 interface Props {

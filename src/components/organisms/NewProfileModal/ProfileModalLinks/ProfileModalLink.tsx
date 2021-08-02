@@ -1,4 +1,4 @@
-import { ProfileLink } from "../../../../types/User";
+import { ProfileLink } from "types/User";
 import "./ProfileModalLink.scss";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import {

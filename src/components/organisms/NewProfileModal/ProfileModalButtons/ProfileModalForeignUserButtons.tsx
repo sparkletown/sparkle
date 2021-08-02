@@ -1,11 +1,11 @@
-import { User } from "../../../../types/User";
-import { WithId } from "../../../../utils/id";
+import { User } from "types/User";
+import { WithId } from "utils/id";
 import { Button } from "../../../atoms/Button";
 import "./ProfileModalForeignUserButtons.scss";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../types/utility";
-import { useIsOnline } from "../../../../hooks/useIsOnline";
-import { useSameUser } from "../../../../hooks/useIsSameUser";
+import { ContainerClassName } from "types/utility";
+import { useIsOnline } from "hooks/useIsOnline";
+import { useSameUser } from "hooks/useIsSameUser";
 
 interface Props extends ContainerClassName {
   openChat: () => void;

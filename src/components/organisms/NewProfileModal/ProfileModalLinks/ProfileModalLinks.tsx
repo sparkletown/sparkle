@@ -1,8 +1,8 @@
 import { ProfileModalLink } from "./ProfileModalLink";
 import React, { useMemo } from "react";
-import { ContainerClassName } from "../../../../types/utility";
-import { User } from "../../../../types/User";
-import { WithId } from "../../../../utils/id";
+import { ContainerClassName } from "types/utility";
+import { User } from "types/User";
+import { WithId } from "utils/id";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

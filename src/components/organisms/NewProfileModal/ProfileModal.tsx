@@ -10,7 +10,7 @@ import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
 import { ProfileModalForeignUserButtons } from "./ProfileModalButtons/ProfileModalForeignUserButtons";
 
 import "./ProfileModal.scss";
-import { useChatSidebarControls } from "../../../hooks/chats/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
