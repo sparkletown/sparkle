@@ -80,14 +80,14 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
   };
 
   return (
-    <div className="profile-picture-upload-form">
+    <div className="ProfilePictureUploadForm">
       <div
-        className="profile-picture-preview-container"
+        className="ProfilePicturePreviewContainer"
         onClick={() => uploadRef.current?.click()}
       >
         <img
           src={pictureUrl || "/default-profile-pic.png"}
-          className="profile-icon profile-picture-preview"
+          className="profile-icon ProfilePicturePreviewContainer__image"
           alt="your profile"
         />
       </div>
@@ -97,10 +97,13 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
         name="profilePicture"
         onChange={handleFileChange}
         accept={ACCEPTED_IMAGE_TYPES}
-        className="profile-picture-input"
+        className="ProfilePictureUploadForm__input"
         ref={uploadRef}
       />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
+      <label
+        htmlFor="profile-picture-input"
+        className="ProfilePictureUploadForm__uploadButton"
+      >
         Upload your profile pic
       </label>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
@@ -109,17 +112,17 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       {isPictureUploading && <small>Picture uploading...</small>}
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
-      <div className="default-avatars-container">
+      <div className="ProfilePictureUploadForm__defaultAvatarsContainer">
         {sparkleAvatars.map((avatar, index) => {
           return (
             <div
               key={`${avatar}-${index}`}
-              className="profile-picture-preview-container"
+              className="ProfilePicturePreviewContainer"
               onClick={() => uploadDefaultAvatar(avatar)}
             >
               <img
                 src={`/avatars/${avatar}`}
-                className="profile-icon profile-picture-preview"
+                className="profile-icon ProfilePicturePreviewContainer__image--small"
                 alt="your profile"
               />
             </div>
@@ -128,7 +131,7 @@ const ProfilePictureInput: React.FunctionComponent<PropsType> = ({
       </div>
       <input
         name="pictureUrl"
-        className="profile-picture-input"
+        className="ProfilePictureUploadForm__input"
         ref={register({
           required: true,
         })}
