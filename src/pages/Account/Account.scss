@@ -145,7 +145,7 @@ $page-max-width: 1240px;
       font-weight: 900;
       font-style: italic;
       font-size: 2em;
-      color: white;
+      color: $white;
     }
   }
 }
@@ -170,6 +170,8 @@ $page-max-width: 1240px;
   display: flex;
   justify-content: center;
   z-index: z(account-profile-picture-preview);
+  background-color: transparent;
+  border: none;
 }
 
 .profile-picture-input {
@@ -185,7 +187,9 @@ $page-max-width: 1240px;
   padding: 15px 50px;
   color: $white;
   font-weight: 700;
-
+  background-color: transparent;
+  margin-bottom: $spacing--lg;
+  margin-top: $spacing--lg;
   &:hover {
     transform: translateY(-1px);
     background-image: linear-gradient(
@@ -252,7 +256,7 @@ $page-max-width: 1240px;
     //border: solid 1px black;
     font-weight: bolder;
     color: black;
-    text-shadow: 1px 1px white;
+    text-shadow: 1px 1px $white;
   }
   .enter-the-burn {
     position: absolute;
@@ -447,7 +451,7 @@ $page-max-width: 1240px;
       border: none;
       display: block;
       position: relative;
-      color: white;
+      color: $white;
       text-align: center;
       padding: 4px 10px;
       opacity: 0.7;
@@ -466,7 +470,7 @@ $page-max-width: 1240px;
           height: 2px;
           border-radius: 4px;
           width: 100%;
-          background-color: white;
+          background-color: $white;
           left: 0;
           bottom: -1px;
         }

@@ -24,7 +24,7 @@ export interface SubVenueIconMap {
   [key: string]: {
     top: number;
     left: number;
-    url: string;
+    url?: string;
     width: number;
     height: number;
     roomIndex?: number;

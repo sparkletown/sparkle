@@ -3,7 +3,10 @@ import * as Yup from "yup";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
+import {
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+} from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -60,10 +63,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     is: true,
     then: Yup.number()
       .required(
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_PARTYMAP_COLUMNS_COUNT}.`
       )
-      .min(MINIMUM_COLUMNS)
-      .max(MAXIMUM_COLUMNS),
+      .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+      .max(MAXIMUM_PARTYMAP_COLUMNS_COUNT),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,

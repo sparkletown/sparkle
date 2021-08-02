@@ -1,9 +1,9 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { isEqual } from "lodash";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
-import { sendVenueMessage, deleteVenueMessage } from "api/chat";
+import { deleteVenueMessage, sendVenueMessage } from "api/chat";
 
 import {
   DeleteMessage,
@@ -14,62 +14,41 @@ import {
 
 import {
   buildMessage,
-  chatSort,
-  partitionMessagesFromReplies,
-  getMessageReplies,
   getBaseMessageToDisplay,
+  getMessageReplies,
+  partitionMessagesFromReplies,
 } from "utils/chat";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 import { WithId } from "utils/id";
 
-import { useSelector } from "./useSelector";
-import { useFirestoreConnect } from "./useFirestoreConnect";
-import { useUser } from "./useUser";
-import { useWorldUsersByIdWorkaround } from "./users";
-import { useRoles } from "./useRoles";
+import { useSelector } from "../useSelector";
+import { useFirestoreConnect } from "../useFirestoreConnect";
+import { useUser } from "hooks/useUser";
+import { useWorldUsersByIdWorkaround } from "../users";
+import { useRoles } from "hooks/useRoles";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 
-export const useConnectVenueChatMessages = (venueId?: string) => {
-  useFirestoreConnect(
+export const useVenueChat = (venueId?: string) => {
+  const messagesToDisplay = useChatMessages(venueId);
+
+  const { sendMessage, deleteMessage, sendThreadReply } = useChatActions(
     venueId
-      ? {
-          collection: "venues",
-          doc: venueId,
-          subcollections: [{ collection: "chats" }],
-          storeAs: "venueChatMessages",
-        }
-      : undefined
   );
+
+  return {
+    messagesToDisplay,
+
+    sendMessage,
+    deleteMessage,
+    sendThreadReply,
+  };
 };
 
-export const useVenueChat = (venueId?: string) => {
-  const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userRoles } = useRoles();
+const useChatActions = (venueId?: string) => {
   const { userId } = useUser();
-
-  useConnectVenueChatMessages(venueId);
-
-  const chatMessages =
-    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-
-  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
-
-  const filteredMessages = useMemo(
-    () =>
-      chatMessages
-        .filter(
-          (message) =>
-            message.deleted !== true &&
-            message.ts_utc.seconds > venueChatAgeThresholdSec
-        )
-        .sort(chatSort),
-    [chatMessages, venueChatAgeThresholdSec]
-  );
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
@@ -110,12 +89,42 @@ export const useVenueChat = (venueId?: string) => {
     [venueId, userId]
   );
 
+  return {
+    sendMessage,
+    deleteMessage,
+    sendThreadReply,
+  };
+};
+
+const useChatMessages = (venueId?: string) => {
+  const { worldUsersById } = useWorldUsersByIdWorkaround();
+  const { userRoles } = useRoles();
+  const isAdmin = Boolean(userRoles?.includes("admin"));
+  const { userId } = useUser();
+
+  useConnectVenueChatMessages(venueId);
+
+  const chatMessages =
+    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
+
+  const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
+
+  const filteredMessages = useMemo(
+    () =>
+      chatMessages.filter(
+        (message) =>
+          message.deleted !== true &&
+          message.ts_utc.seconds > venueChatAgeThresholdSec
+      ),
+    [chatMessages, venueChatAgeThresholdSec]
+  );
+
   const { messages, allMessagesReplies } = useMemo(
     () => partitionMessagesFromReplies(filteredMessages),
     [filteredMessages]
   );
 
-  const messagesToDisplay = useMemo(
+  return useMemo(
     () =>
       messages
         .map((message) => {
@@ -150,12 +159,18 @@ export const useVenueChat = (venueId?: string) => {
         .filter(isTruthy),
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );
+};
 
-  return {
-    messagesToDisplay,
-
-    sendMessage,
-    deleteMessage,
-    sendThreadReply,
-  };
+const useConnectVenueChatMessages = (venueId?: string) => {
+  useFirestoreConnect(
+    venueId
+      ? {
+          collection: "venues",
+          doc: venueId,
+          subcollections: [{ collection: "chats" }],
+          orderBy: ["ts_utc", "desc"],
+          storeAs: "venueChatMessages",
+        }
+      : undefined
+  );
 };
