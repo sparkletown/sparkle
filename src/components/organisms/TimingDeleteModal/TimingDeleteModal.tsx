@@ -14,7 +14,7 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 export type TimingDeleteModalProps = {
   show: boolean;
-  onHide: Function;
+  onHide: () => void;
   venueId: string;
   event?: WithId<VenueEvent>;
 };
@@ -31,9 +31,7 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
   });
 
   useEffect(() => {
-    if (!event) {
-      reset({});
-    } else {
+    if (event) {
       reset({
         name: event.name,
         description: event.description,
@@ -44,13 +42,6 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
   }, [event, reset]);
 
-  // const deleteVenueEvent = useCallback(async () => {
-  //   if (event) {
-  //     await deleteEvent(venueId, event.id);
-  //   }
-  //   onHide();
-  // }, [event, onHide, venueId]);
-
   const [
     { loading: isDeletingEvent },
     deleteVenueEvent,
@@ -60,8 +51,6 @@ export const TimingDeleteModal: React.FC<TimingDeleteModalProps> = ({
     }
     onHide();
   }, [event, onHide, venueId]);
-
-  console.log(isDeletingEvent);
 
   const eventStartTime = event
     ? dayjs(event.start_utc_seconds * 1000).format("ha")
