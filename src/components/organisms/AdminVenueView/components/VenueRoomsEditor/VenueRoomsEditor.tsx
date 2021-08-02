@@ -142,6 +142,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
     imageDims,
     resizable,
     roomIconsArray,
+    selectedRoom,
   ]);
 
   const moveBox = useCallback(
