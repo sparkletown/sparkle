@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import dayjs from "dayjs";
 
 import { Modal } from "react-bootstrap";
@@ -24,9 +24,10 @@ export type TimingEventModalProps = {
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
   setEditedEvent: Function | undefined;
-  setShowDeleteEventModal: Function;
+  setShowDeleteEventModal: () => void;
 };
 
+// Dispatch<SetStateAction<WithId<VenueEvent> | undefined>>
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -79,17 +80,31 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;
-      if (event) {
-        await updateEvent(venueId!, event.id, formEvent);
-      } else {
-        await createEvent(venueId!, formEvent);
+      if (venueId) {
+        if (event) {
+          await updateEvent(venueId, event.id, formEvent);
+        } else {
+          await createEvent(venueId, formEvent);
+        }
       }
       onHide();
     },
     [onHide, venueId, template, event]
   );
 
-  const rooms = venue.rooms ?? [];
+  const rooms = useMemo(() => venue.rooms ?? [], [venue]);
+
+  const roomOptions = useMemo(
+    () =>
+      rooms.map((room) => {
+        return (
+          <option key={room.title} value={room.title}>
+            {room.title}
+          </option>
+        );
+      }),
+    [rooms]
+  );
 
   return (
     <>
@@ -105,16 +120,13 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   className="input-group__modal-input input-group__dropdown"
                   ref={register}
                 >
-                  <option selected={true} style={{ display: "none" }}>
+                  <option
+                    selected={true}
+                    className="input-group__dropdown__hidden"
+                  >
                     Select a room...
                   </option>
-                  {rooms?.map((room) => {
-                    return (
-                      <option key={room.title} value={room.title}>
-                        {room.title}
-                      </option>
-                    );
-                  })}
+                  {roomOptions}
                 </select>
                 {errors.room && (
                   <span className="input-error">{errors.room.message}</span>
@@ -220,7 +232,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                   />
                 </div>
 
-                <div className="flex">
+                <div className="input-group__flex">
                   {errors.duration_hours && (
                     <span className="input-error">
                       {errors.duration_hours.message}
@@ -234,7 +246,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                 </div>
               </div>
 
-              <div style={event && { display: "flex" }}>
+              <div className={event && "input-group__flex"}>
                 <input
                   className="btn btn-primary btn-small {event && 'update-button'}"
                   type="submit"

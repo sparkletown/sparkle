@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 
 import { WithId } from "utils/id";
 
@@ -47,21 +47,27 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
 
   const hasVenueEvents = events?.length !== 0;
 
+  const renderedEvents = useMemo(
+    () =>
+      events?.map((event) => {
+        return (
+          <TimingEvent
+            event={event}
+            setShowCreateEventModal={setShowCreateEventModal}
+            setEditedEvent={setEditedEvent}
+            key={event.id}
+          />
+        );
+      }),
+    [events, setShowCreateEventModal, setEditedEvent]
+  );
+
   return (
     <>
       <div className="EventsView">
         <h4 className="EventsView__title">Events Schedule</h4>
         <div className="EventsView__content">
-          {events?.map((event) => {
-            return (
-              <TimingEvent
-                event={event}
-                setShowCreateEventModal={setShowCreateEventModal}
-                setEditedEvent={setEditedEvent}
-                key={event.id}
-              />
-            );
-          })}
+          {renderedEvents}
           {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
