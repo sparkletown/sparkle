@@ -345,10 +345,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
       )}`
     : undefined;
   const disable = isSubmitting;
-  const templateType =
-    state.templatePage?.template.template === VenueTemplate.partymap
-      ? "Camp"
-      : state.templatePage?.template.name;
+  const templateType = state.templatePage?.template.name;
   const templateID = state.templatePage?.template.template;
 
   const defaultVenue = createJazzbar({});

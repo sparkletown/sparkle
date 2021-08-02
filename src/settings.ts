@@ -237,7 +237,7 @@ export interface Template_v2 {
 export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.partymap,
-    name: "Party Map",
+    name: "Camp",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
