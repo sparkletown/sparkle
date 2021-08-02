@@ -1,10 +1,10 @@
+import { AuditoriumSection } from "types/auditorium";
 import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
-import { Purchase } from "types/Purchase";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { Table } from "types/Table";
-import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -23,7 +23,6 @@ export interface UserVisit {
 export type ValidFirestoreRootCollections =
   | "customers"
   | "experiences"
-  | "purchases"
   | "roles"
   | "userprivate"
   | "users"
@@ -52,24 +51,31 @@ export interface FirestoreStatus {
 export interface FirestoreData {
   adminRole?: AdminRole;
   allowAllRoles?: Record<string, Role>;
-  chatUsers?: Record<string, User>;
+  // @debt this doesn't appear to be used by anything anymore
+  // chatUsers?: Record<string, User>;
   currentEvent?: Record<string, VenueEvent>;
   currentVenue?: AnyVenue;
+  sovereignVenue?: AnyVenue;
   currentVenueEventsNG?: Record<string, VenueEvent>;
   currentVenueNG?: AnyVenue;
-  eventPurchase?: Record<string, Purchase>;
+  currentAuditoriumSections?: Partial<Record<string, AuditoriumSection>>;
   events?: Record<string, VenueEvent>;
-  experience: Experience;
-  parentVenue?: AnyVenue;
+  experience?: Experience;
+  ownedVenues?: Record<string, AnyVenue>;
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
-  userModalVisits?: Record<string, UserVisit>;
-  userPurchaseHistory?: Record<string, Purchase>;
+  screeningRoomVideos: Record<string, ScreeningRoomVideo>;
+  // @debt this doesn't appear to be used by anything anymore
+  // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
   venueChatMessages?: Record<string, VenueChatMessage>;
   venueEvents?: Record<string, VenueEvent>;
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: Record<string, AnyVenue>;
-  worldUsers?: Record<string, User>;
 }
 
 // note: these entries should be sorted alphabetically
@@ -77,27 +83,33 @@ export interface FirestoreOrdered {
   chatRequests?: WithId<ChatRequest>[];
   currentEvent?: WithId<VenueEvent>[];
   currentVenue?: WithId<AnyVenue>[];
+  sovereignVenue?: WithId<AnyVenue>[];
   currentVenueEventsNG?: WithId<VenueEvent>[];
   currentVenueNG?: WithId<AnyVenue>[];
-  eventPurchase?: WithId<Purchase>[];
+  currentAuditoriumSections?: WithId<AuditoriumSection>[];
   events?: WithId<VenueEvent>[];
   experience: WithId<Experience>;
-  parentVenue?: WithId<AnyVenue>[];
+  ownedVenues?: WithId<AnyVenue>[];
   parentVenueEvents?: WithId<VenueEvent>[];
   playaVenues?: WithId<AnyVenue>[];
   reactions?: WithId<Reaction>[];
+  screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
-  statsOnlineUsers?: WithId<User>[];
-  statsOpenVenues?: WithId<AnyVenue>[];
-  subvenues?: WithId<AnyVenue>[];
+  // @debt this doesn't appear to be used by anything anymore
+  // statsOnlineUsers?: WithId<User>[];
+  // statsOpenVenues?: WithId<AnyVenue>[];
+  // subvenues?: WithId<AnyVenue>[];
   subvenueEvents?: WithId<VenueEvent>[];
   userModalVisits?: WithId<UserVisit>[];
-  userPurchaseHistory?: WithId<Purchase>[];
   privateChatMessages?: WithId<PrivateChatMessage>[];
   posterVenues?: WithId<PosterPageVenue>[];
   venueChatMessages?: WithId<VenueChatMessage>[];
   venueEvents?: WithId<VenueEvent>[];
+
+  /**
+   * @deprecated This state requires all of the venues data in firebase to be loaded into memory. Find a different way.
+   * @debt Refactor all places that rely on this, then remove it from the codebase
+   */
   venues?: WithId<AnyVenue>[];
-  worldUsers?: WithId<User>[];
 }

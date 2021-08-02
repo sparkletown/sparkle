@@ -11,8 +11,14 @@ import {
 import { Button } from "react-bootstrap";
 import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 import { CustomInputsType } from "settings";
-import { RoomModalItemProps } from "./Item.types";
+
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Toggler } from "components/atoms/Toggler";
+
+import { RoomModalItemProps } from "./Item.types";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
@@ -111,17 +117,13 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <h4 className="italic input-header">Create venue</h4>
       </S.Flex>
       <S.Flex>
-        <label id={"useUrl"} className="switch">
-          <input
-            type="checkbox"
-            id={"useUrl"}
-            name={"useUrl"}
-            checked={useUrl}
-            onChange={handleUrlToggle}
-            ref={register}
-          />
-          <span className="slider round"></span>
-        </label>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
+        <Toggler
+          name="useUrl"
+          forwardedRef={register}
+          toggled={useUrl}
+          onChange={handleUrlToggle}
+        />
       </S.Flex>
       <S.Flex>
         <h4 className="italic input-header">Use url</h4>
@@ -220,7 +222,9 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
-          <S.Description>{description}</S.Description>
+          <S.Description>
+            <RenderMarkdown text={description} />
+          </S.Description>
         </S.TitleWrapper>
 
         <FontAwesomeIcon

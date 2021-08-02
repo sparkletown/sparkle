@@ -1,3 +1,5 @@
+@import "scss/constants";
+
 .video-participant {
   position: relative;
 
@@ -17,14 +19,14 @@
       height: inherit;
       width: inherit;
 
-      border-radius: 1.5em;
+      border-radius: $border-radius--xl;
     }
   }
 
   &__profile {
     position: absolute;
-    bottom: -1em;
-    left: -1em;
+    bottom: $spacing--sm;
+    left: $spacing--sm;
   }
 
   &__controls {
@@ -41,10 +43,10 @@
     justify-content: flex-end;
     align-items: flex-start;
 
-    padding: 0.5em;
+    padding: $spacing--sm;
 
     & > * {
-      margin: 0 0.25em;
+      margin: 0 $spacing--xs;
 
       pointer-events: auto;
     }

@@ -73,11 +73,12 @@ const OnlineStats: React.FC = () => {
   const [filterUsersText, setFilterUsersText] = useState("");
 
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const venueName = venue?.name;
   const { openUserProfileModal } = useProfileModalControls();
 
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()

@@ -36,7 +36,7 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
       }
 
       &--toggler {
-        background-color: $dimmer-primary;
+        background-color: $primary--darker;
 
         &::after {
           left: $toggler-circle-moving-delta;
@@ -51,9 +51,12 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
     display: flex;
     justify-content: center;
     align-items: center;
+    position: relative;
 
     width: $checkbox-diameter;
+    min-width: $checkbox-diameter;
     height: $checkbox-diameter;
+    min-height: $checkbox-diameter;
 
     box-shadow: $checkbox-shadow-preset opaque-white(0.1);
     background-color: opaque-white(0.12);
@@ -67,7 +70,9 @@ $toggler-circle-moving-delta: $toggler-width - $toggler-circle-diameter -
 
     &--toggler {
       width: $toggler-width;
+      min-width: $toggler-width;
       height: $toggler-height;
+      min-height: $toggler-height;
 
       border-radius: $border-radius--xl;
 

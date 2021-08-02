@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+# Push the origin master branch to all of our 'main' production environments
+#
+# List of environments: https://github.com/sparkletown/internal-sparkle-issues/issues/295
+
+# Ref: https://wiki.bash-hackers.org/scripting/debuggingtips#use_shell_debug_output
+#set -o xtrace
+
+# Ref: https://stackoverflow.com/questions/3216360/merge-update-and-pull-git-branches-without-using-checkouts/17722977#17722977
+echo "About to fetch and sync origin/master branch with local master branch:"
+read -p "  Press enter to continue"
+
+(set -x; git fetch origin master:master)
+
+# Legacy branch names
+
+echo
+echo "About to deploy to sparkle1 - sparkle5:"
+read -p "  Press enter to continue"
+
+(set -x; git push origin master:sparkle1)
+(set -x; git push origin master:sparkle2)
+(set -x; git push origin master:sparkle3)
+(set -x; git push origin master:sparkle4)
+(set -x; git push origin master:sparkle5)
+
+echo
+echo "About to deploy to sparkle6 - sparkle10, bigtop, deloitte:"
+read -p "  Press enter to continue"
+
+(set -x; git push origin master:sparkle6)
+(set -x; git push origin master:sparkle7)
+(set -x; git push origin master:sparkle8)
+(set -x; git push origin master:sparkle9)
+(set -x; git push origin master:sparkle10)
+
+(set -x; git push origin master:bigtop)
+(set -x; git push origin master:deloitte)
+
+# Modern branch names
+
+echo
+echo "About to deploy to memrise, unesco, pa, clever, unity, demo:"
+read -p "  Press enter to continue"
+
+#(set -x; git push origin master:env/kotr) # Note: This runs custom code/is no longer used/required. Don't deploy to it.
+(set -x; git push origin master:env/memrise)
+(set -x; git push origin master:env/unesco)
+# (set -x; git push origin master:env/ohbm) # Note: This runs custom code.
+(set -x; git push origin master:env/pa)
+# (set -x; git push origin master:env/github) # Note: This runs custom code.
+(set -x; git push origin master:env/clever)
+(set -x; git push origin master:env/unity)
+(set -x; git push origin master:env/demo)
+
+echo "Note: ohbm, github, summit-hack environments were not updated as they have custom code. To update the environments you should create a PR. (example: https://github.com/sparkletown/sparkle/pull/1519)"
+
+echo
+echo "All done!"

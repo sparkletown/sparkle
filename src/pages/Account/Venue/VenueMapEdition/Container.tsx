@@ -24,7 +24,7 @@ export interface SubVenueIconMap {
   [key: string]: {
     top: number;
     left: number;
-    url: string;
+    url?: string;
     width: number;
     height: number;
     roomIndex?: number;
@@ -135,6 +135,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useMemo(() => {
     if (!imageDims) return;
+
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,

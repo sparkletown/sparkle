@@ -1,0 +1,103 @@
+@import "scss/constants.scss";
+@import "./Schedule.constants.scss";
+
+$room-count: var(--room-count, 1);
+$current-time--position: var(--current-time--position, -2);
+$hours-count: var(--hours-count, 8);
+
+$hour-width: var(--hour-width, 200px);
+$half-hour-width: calc(#{$hour-width} / 2);
+
+$rooms-column--width: 215px;
+
+$timeline-label--height: 36px;
+
+$timeline-delimeter--margin-top: 18px;
+$timeline-delimeter--width: 1px;
+$current-timeline-delimeter--width: 2px;
+
+$timeline-delimeter--height: calc(
+  (#{$room--height} + #{$room--margin-bottom}) * #{$room-count}
+);
+
+$schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
+
+.Schedule {
+  padding-top: $Schedule--padding;
+  display: flex;
+  position: relative;
+
+  &__loading {
+    margin-top: $Schedule--padding;
+  }
+
+  &__rooms {
+    flex-basis: $rooms-column--width;
+    flex-shrink: 0;
+    margin-top: $timeline-label--height;
+    padding-right: $Schedule--padding;
+    box-shadow: box-shadow--large();
+    font-size: 0.8rem;
+  }
+
+  &__room {
+    margin-bottom: $room--margin-bottom;
+    height: $room--height;
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+  }
+
+  &__schedule {
+    @include scrollbar;
+    flex-grow: 1;
+    overflow-x: auto;
+    position: relative;
+  }
+
+  &__room-title {
+    margin-bottom: 0;
+    font-weight: 600;
+  }
+
+  &__timeline {
+    height: $timeline-label--height;
+    font-size: $font-size--md;
+    opacity: 0.6;
+    white-space: nowrap;
+  }
+
+  &__hour {
+    width: $hour-width;
+    text-align: center;
+    display: inline-block;
+
+    &::after {
+      content: "";
+      display: block;
+      height: $timeline-delimeter--height;
+      border-left: $timeline-delimeter--width solid $white;
+      margin-left: $half-hour-width;
+      margin-top: $timeline-delimeter--margin-top;
+    }
+  }
+
+  &__user-schedule {
+    height: $room--height;
+    margin-bottom: $room--margin-bottom;
+    background-color: rgba(255, 255, 255, 0.2);
+    width: $schedule--width;
+  }
+
+  &__current-time-line {
+    position: absolute;
+    width: $current-timeline-delimeter--width;
+    height: $timeline-delimeter--height;
+    left: calc(#{$current-time--position} * 1px);
+    background-color: $primary;
+  }
+
+  &__no-events {
+    padding: $Schedule--padding;
+  }
+}

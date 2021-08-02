@@ -1,85 +1,93 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { Button, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
-import AdvancedSettings from "pages/Admin/AdvancedSettings";
-import BasicInfo from "pages/Admin/BasicInfo";
-import EntranceExperience from "pages/Admin/EntranceExperience";
-import VenueDetails from "pages/Admin/Venue/Details";
-
 import { Venue_v2 } from "types/venues";
+
+import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useUser } from "hooks/useUser";
+import { useIsAdminUser } from "hooks/roles";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
+import { Spaces } from "./components/Spaces";
 
 import "./AdminVenueView.scss";
 
 export enum AdminVenueTab {
-  dashboard = "dashboard",
-  basicInfo = "basic_info",
-  entranceExperience = "entrance_experience",
-  advancedMapSettings = "advanced_map_settings",
+  spaces = "spaces",
+  timing = "timing",
+  run = "run",
 }
 
-const adminVenueTabs: Record<AdminVenueTab, String> = {
-  [AdminVenueTab.basicInfo]: "Start",
-  [AdminVenueTab.entranceExperience]: "Entrance",
-  [AdminVenueTab.advancedMapSettings]: "Advanced",
-  [AdminVenueTab.dashboard]: "Dashboard",
+const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
+  [AdminVenueTab.spaces]: "Spaces",
+  [AdminVenueTab.timing]: "Timing",
+  [AdminVenueTab.run]: "Run",
 };
 
-const DEFAULT_TAB = AdminVenueTab.dashboard;
+const DEFAULT_TAB = AdminVenueTab.spaces;
 
-export interface AdminVenueViewProps {
-  venue: Venue_v2;
-}
+export const AdminVenueView: React.FC = () => {
+  const venueId = useVenueId();
+  const [selectedTab, setSelectedTab] = useState<AdminVenueTab>(DEFAULT_TAB);
 
-export const AdminVenueView: React.FC<AdminVenueViewProps> = ({ venue }) => {
-  const [selectedTab, setSelectedTab] = useState<string>(DEFAULT_TAB);
+  const { userId } = useUser();
+  const { isAdminUser } = useIsAdminUser(userId);
 
-  const selectDefaultTab = useCallback(() => {
-    setSelectedTab(DEFAULT_TAB);
-  }, []);
+  // Get and pass venue to child components when working on tabs
+  const {
+    isCurrentVenueLoaded,
+    currentVenue: venue,
+  } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabs).map(([id, text]) => (
+    return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
       <Nav.Link
-        key={id}
+        key={key}
         className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedTab === id,
+          "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        eventKey={id}
+        eventKey={key}
       >
         {text}
       </Nav.Link>
     ));
   }, [selectedTab]);
 
+  const selectTab = useCallback((tab: string) => {
+    setSelectedTab(tab as AdminVenueTab);
+  }, []);
+
+  const selectTiming = useCallback(
+    () => setSelectedTab(AdminVenueTab.timing),
+    []
+  );
+
+  if (!isCurrentVenueLoaded) {
+    return <LoadingPage />;
+  }
+
+  if (!isAdminUser) {
+    return <>Forbidden</>;
+  }
+
   return (
     <>
       <div className="AdminVenueView">
-        <Button as={Link} to="/admin_v2/venue">
-          Back
-        </Button>
-
         <Nav
           className="AdminVenueView__options"
           activeKey={selectedTab}
-          onSelect={setSelectedTab}
+          onSelect={selectTab}
         >
           {renderAdminVenueTabs}
         </Nav>
       </div>
-      {selectedTab === AdminVenueTab.basicInfo && (
-        <BasicInfo venue={venue} onSave={selectDefaultTab} />
+      {selectedTab === AdminVenueTab.spaces && (
+        <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
       )}
-      {selectedTab === AdminVenueTab.entranceExperience && (
-        <EntranceExperience venue={venue} onSave={selectDefaultTab} />
-      )}
-      {selectedTab === AdminVenueTab.advancedMapSettings && (
-        <AdvancedSettings venue={venue} onSave={selectDefaultTab} />
-      )}
-      {selectedTab === AdminVenueTab.dashboard && (
-        <VenueDetails venue={venue} />
-      )}
+      {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
+      {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
   );
 };

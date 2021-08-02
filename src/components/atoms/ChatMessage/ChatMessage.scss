@@ -1,57 +1,28 @@
 @import "scss/constants";
 
-$counterparty-text-border-radius: 28px 28px 28px 4px;
-$my-text-border-radius: 28px 28px 4px 28px;
+$counterparty-bottom-border-radius: 0 0 $spacing--xxl $spacing--xs;
+$counterparty-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xxl
+  $spacing--xs;
+$my-text-bottom-border-radius: 0 0 $spacing--xs $spacing--xxl;
+$my-text-border-radius: $spacing--xxl $spacing--xxl $spacing--xs $spacing--xxl;
 
-.chat-message {
+$replies-max-height: 200px;
+
+$reply-icon-radius: 20px;
+
+.ChatMessage {
   align-self: flex-start;
   display: flex;
   align-items: flex-start;
   flex-direction: column;
-  margin-bottom: 16px;
+  margin-bottom: $spacing--lg;
 
-  &__text {
-    margin-bottom: 6px;
-    width: auto;
-    border-radius: $counterparty-text-border-radius;
-    overflow-wrap: break-word;
-    word-wrap: break-word;
-    word-break: break-word;
-    hyphens: auto;
-    background-color: $intermediate-grey;
-    padding: 12px 16px;
-    font-size: 0.9rem;
-  }
+  // @debt This content-visibility: auto line seems to do something that causes constant re-calculations and pins the GPU at high usage
+  // content-visibility: auto;
 
-  &__info {
-    display: flex;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-
-  &__author {
-    opacity: 0.8;
-    color: $white;
-    margin: 0 8px 0 4px;
-    cursor: pointer;
-
-    &:hover {
+  &:hover {
+    .ChatMessage__reply-icon {
       opacity: 1;
-    }
-  }
-
-  &__time {
-    opacity: 0.6;
-    font-weight: 300;
-  }
-
-  &__delete-icon {
-    margin-left: 5px;
-    opacity: 0.6;
-    cursor: pointer;
-
-    &:hover {
-      opacity: 0.8;
     }
   }
 
@@ -59,24 +30,133 @@ $my-text-border-radius: 28px 28px 4px 28px;
     align-self: flex-end;
     align-items: flex-end;
 
-    .chat-message__text {
+    .ChatMessage__bulb {
       text-align: right;
       background-color: $primary;
       border-radius: $my-text-border-radius;
     }
 
-    .chat-message__info {
-      flex-direction: row-reverse;
+    .ChatMessage__show-replies-button {
       align-self: flex-end;
     }
 
-    .chat-message__author {
-      margin: 0 4px 0 8px;
+    .ChatMessage__replies-content {
+      border-radius: $my-text-bottom-border-radius;
     }
 
-    .chat-message__delete-icon {
-      margin-left: 0;
-      margin-right: 5px;
+    .ChatMessage__reply-icon {
+      background-color: $primary--light;
+      right: unset;
+      left: $spacing--sm;
+
+      &:hover {
+        background-color: $primary--lightest;
+      }
     }
+  }
+
+  &--question &__bulb {
+    background-color: $dark-green;
+  }
+
+  &__bulb {
+    margin-bottom: $spacing--sm;
+    width: auto;
+    border-radius: $counterparty-text-border-radius;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
+    background-color: $secondary;
+
+    font-size: $font-size--md;
+  }
+
+  &__text-content {
+    position: relative;
+    display: flex;
+    flex-flow: column;
+    padding: $spacing--md $spacing--lg;
+  }
+
+  &__text {
+    font-size: $font-size--md;
+
+    // This direct element style is used with RenderMarkdown
+    img {
+      max-width: 100%;
+    }
+
+    // This direct element style is used with RenderMarkdown
+    p {
+      margin-bottom: 0;
+    }
+  }
+
+  &__show-replies-button {
+    margin-top: $spacing--sm;
+    align-self: flex-start;
+  }
+
+  &__reply-icon {
+    color: $white;
+    display: flex;
+    opacity: 0;
+    justify-content: center;
+    align-items: center;
+    // Overflow the userAvatar in the replies list
+    z-index: z(chatmessage-reply-button);
+
+    position: absolute;
+
+    cursor: pointer;
+
+    width: $reply-icon-radius;
+    height: $reply-icon-radius;
+
+    right: $spacing--sm;
+
+    bottom: calc(-#{$reply-icon-radius / 2});
+
+    border-radius: $border-radius--max;
+    background-color: $secondary--light;
+    transition: opacity 100ms $transition-function;
+    border: none;
+
+    &:hover {
+      background-color: $secondary--lightest;
+    }
+
+    &:focus {
+      opacity: 1;
+    }
+  }
+
+  &__replies-content {
+    border-radius: $counterparty-bottom-border-radius;
+    overflow: hidden;
+    max-height: $replies-max-height;
+  }
+
+  &__replies {
+    @include scrollbar;
+    background-color: opaque-black(0.14);
+    padding: 0 $spacing--lg $spacing--lg $spacing--lg;
+    font-size: $font-size--md;
+    display: flex;
+    flex-flow: column-reverse;
+
+    max-height: $replies-max-height;
+
+    overflow: auto;
+
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  &__reply {
+    // We add padding to single reply instead of margin so that the container has spacing at the top
+    // https://stackoverflow.com/questions/13471910/no-padding-when-using-overflow-auto
+    padding-top: $spacing--md;
   }
 }

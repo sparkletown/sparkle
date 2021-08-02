@@ -3,9 +3,9 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { getLinkFromText } from "utils/getLinkFromText";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./AnnouncementMessage.scss";
 
@@ -33,14 +33,22 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
 
   return (
     <div
+      aria-labelledby="announcement-container-message"
+      role="dialog"
       className={classNames("announcement-container", {
         centered: !isExpanded,
       })}
     >
-      <div className="announcement-message">{getLinkFromText(message)}</div>
-      <span className="close-button" onClick={hideAnnouncement}>
+      <div className="announcement-message" id="announcement-container-message">
+        <RenderMarkdown text={message} />
+      </div>
+      <button
+        aria-label="Close announcement message"
+        className="close-button"
+        onClick={hideAnnouncement}
+      >
         <FontAwesomeIcon icon={faTimesCircle} />
-      </span>
+      </button>
     </div>
   );
 };
