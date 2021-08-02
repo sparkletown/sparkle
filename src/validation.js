@@ -1,3 +1,5 @@
+// @debt Is this file needed anymore? It doesn't appear to be used by anything. For future cleanup.
+
 function validDate(date) {
   return typeof date === "object" && date.seconds > 0;
 }

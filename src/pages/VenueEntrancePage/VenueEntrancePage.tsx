@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Redirect, useHistory, useParams } from "react-router-dom";
 
 import { EntranceStepTemplate } from "types/EntranceStep";
@@ -7,7 +7,6 @@ import { withId } from "utils/id";
 import { isCompleteProfile } from "utils/profile";
 import { currentVenueSelectorData } from "utils/selectors";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import { showZendeskWidget } from "utils/zendesk";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -24,14 +23,9 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   const history = useHistory();
   const { step } = useParams<{ step?: string }>();
   const venueId = useVenueId();
+
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
-
-  useEffect(() => {
-    if (venue?.showZendesk) {
-      showZendeskWidget();
-    }
-  }, [venue]);
 
   if (!venue || !venueId) {
     return <LoadingPage />;
@@ -52,7 +46,7 @@ export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
   }
 
   if (profile && !isCompleteProfile(profile)) {
-    history.push(`/account/profile?venueId=${venueId}`);
+    return <Redirect to={`/account/profile?venueId=${venueId}`} />;
   }
 
   const proceed = () => {

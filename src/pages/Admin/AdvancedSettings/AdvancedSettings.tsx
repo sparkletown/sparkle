@@ -3,7 +3,10 @@ import * as Yup from "yup";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 
-import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
+import {
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+} from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
@@ -60,10 +63,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     is: true,
     then: Yup.number()
       .required(
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_PARTYMAP_COLUMNS_COUNT}.`
       )
-      .min(MINIMUM_COLUMNS)
-      .max(MAXIMUM_COLUMNS),
+      .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+      .max(MAXIMUM_PARTYMAP_COLUMNS_COUNT),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,
@@ -76,7 +79,6 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
-  showZendesk: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -104,7 +106,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      showZendesk: venue.showZendesk,
       showRangers: venue.showRangers,
       bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
@@ -315,13 +316,6 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         />
 
         {renderShowNametags()}
-
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.showZendesk}
-          name="showZendesk"
-          title="Show Zendesk support popup"
-        />
 
         <ToggleElement
           forwardRef={register}

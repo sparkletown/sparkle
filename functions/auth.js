@@ -4,28 +4,18 @@ const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 
 const { fetchAuthConfig } = require("./src/api/auth");
+const { addAdmin } = require("./src/api/roles");
 
 const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
 
-const PROJECT_ID = functions.config().project.id;
-
-const checkAuth = (context) => {
-  if (!context.auth || !context.auth.token) {
-    throw new functions.https.HttpsError("unauthenticated", "Please log in");
-  }
-
-  if (context.auth.token.aud !== PROJECT_ID) {
-    throw new functions.https.HttpsError("permission-denied", "Token invalid");
-  }
-};
-exports.checkAuth = checkAuth;
-
+// @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
 // Case-insensitive first character for iDevices
 const lowercaseFirstChar = (password) =>
   password.charAt(0).toLowerCase() + password.substring(1);
 
+// @debt refactor passwordsMatch into utils/*
 exports.passwordsMatch = (submittedPassword, actualPassword) =>
   submittedPassword.trim() === actualPassword.trim() ||
   lowercaseFirstChar(submittedPassword.trim()) ===
@@ -235,4 +225,36 @@ exports.connectI4AOAuthHandler = functions.https.onRequest(async (req, res) => {
   );
 
   res.redirect(customTokenReturnUrl.toString());
+});
+
+/** Automatically make user admin upon register.
+ *
+ *  A function that triggers when a Firebase user is created, not on https request
+ *
+ *  Firebase accounts will trigger user creation events for Cloud Functions when:
+ *    - A user creates an email account and password.
+ *    - A user signs in for the first time using a federated identity provider.
+ *    - The developer creates an account using the Firebase Admin SDK.
+ *    - A user signs in to a new anonymous auth session for the first time.
+ *
+ *  NOTE: A Cloud Functions event is not triggered when a user signs in for the first time using a custom token.
+ *
+ *  @see https://firebase.google.com/docs/functions/auth-events
+ */
+exports.autoAdminOnRegister = functions.auth.user().onCreate(async (user) => {
+  const flag = functions.config().flag || {};
+
+  if (flag.autoadmin) {
+    functions.logger.log(
+      "flag.autoadmin is",
+      flag.autoadmin,
+      "adding user.uid",
+      user.uid,
+      "with email",
+      user.email,
+      "to the admin role"
+    );
+
+    await addAdmin(user.uid);
+  }
 });

@@ -1,1 +1,1 @@
-export * from "./VenueLandingPage";
+export { VenueLandingPage } from "./VenueLandingPage";
