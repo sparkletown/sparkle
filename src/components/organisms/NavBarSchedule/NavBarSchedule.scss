@@ -1,6 +1,5 @@
 @import "scss/constants.scss";
 
-$NavBarSchedule--height: 620px;
 $NavBarSchedule--padding: 20px;
 
 $weekday--padding: 8px 10px;
@@ -12,18 +11,17 @@ $weekday--margin-right: 10px;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
-  width: 100%;
-  height: $NavBarSchedule--height;
+  height: 100%;
+  width: 40%;
 
   padding-top: $navbar-height;
   padding-left: $NavBarSchedule--padding;
 
-  background-color: opaque-black(0.9);
+  background-color: opaque-black(0.8);
   overflow: auto;
 
   pointer-events: none;
   opacity: 0;
-  transform: translateY(-$NavBarSchedule--height);
   backdrop-filter: blur(5px);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
