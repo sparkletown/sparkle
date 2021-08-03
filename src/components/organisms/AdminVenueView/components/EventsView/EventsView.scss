@@ -1,13 +1,10 @@
 @import "scss/constants.scss";
 
-$events-view-margin: 75px 75px 10px;
-
 .EventsView {
   background-color: $black;
   position: relative;
   height: 75%;
   width: 85%;
-  margin: $events-view-margin;
   border-radius: $border-radius--xl;
   box-shadow: box-shadow--large();
   overflow: scroll;
