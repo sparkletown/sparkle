@@ -1,0 +1,35 @@
+@import "scss/constants";
+
+.BackgroundSelect {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: $spacing--xl 0;
+  position: relative;
+  background-size: cover;
+  background-color: $dark;
+  background-position: center;
+
+  &__map-grid {
+    display: grid;
+    width: 50%;
+    grid-gap: $spacing--md;
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  &__map {
+    width: 100%;
+    padding-bottom: 50px;
+    border-radius: $border-radius--lg;
+    background: $black;
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    border: solid 2px;
+
+    &:hover {
+      border: solid $border-radius--xs $primary;
+    }
+  }
+}
