@@ -21,12 +21,12 @@ $ScheduleNG--padding: 20px;
   &__item--time,
   &__item--name {
     display: block;
-    font-weight: 700;
+    font-weight: $font-weight--700;
   }
 
   &__item--date {
     display: block;
-    font-weight: 700;
+    font-weight: $font-weight--700;
     color: $concrete;
   }
 
