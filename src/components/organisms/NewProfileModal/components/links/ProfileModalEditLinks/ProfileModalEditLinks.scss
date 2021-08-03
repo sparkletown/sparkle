@@ -1,4 +1,6 @@
-@import "scss/constants.scss";
+@import "../../../constants.scss";
+
+$link-group-gap: 1rem;
 
 .ProfileModalEditLinks {
   &__header-container {
@@ -6,8 +8,8 @@
     flex-direction: row;
     justify-content: space-between;
   }
-  &__link {
-    margin-bottom: 1rem;
+  &__link-group {
+    margin-bottom: $link-group-gap;
     &:last-child {
       margin-bottom: 0;
     }

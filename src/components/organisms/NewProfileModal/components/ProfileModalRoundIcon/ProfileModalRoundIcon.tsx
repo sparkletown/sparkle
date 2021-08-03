@@ -5,7 +5,7 @@ import {
 import classNames from "classnames";
 import React from "react";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalRoundIcon.scss";
+import "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon.scss";
 
 interface Props extends FontAwesomeIconProps, ContainerClassName {
   onClick?: () => void;

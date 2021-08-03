@@ -1,7 +1,7 @@
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
 import { DEFAULT_PARTY_NAME } from "settings";
-import "components/organisms/NewProfileModal/header/ProfileModalBasicTextInfo/ProfilModalBasicTextInfo.scss";
+import "./ProfilModalBasicTextInfo.scss";
 import classNames from "classnames";
 import React from "react";
 import { ContainerClassName } from "types/utility";

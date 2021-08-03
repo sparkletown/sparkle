@@ -1,7 +1,7 @@
-import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/ProfileModalSectionHeader/ProfileModalSectionHeader";
+import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
 import React from "react";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalChangePassword.scss";
+import "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword.scss";
 
 interface Props extends ContainerClassName {}
 
@@ -12,15 +12,15 @@ export const ProfileModalChangePassword: React.FC<Props> = ({
     <div className={containerClassName}>
       <ProfileModalSectionHeader text="Change password" />
       <input
-        className="ProfileModalChangePassword__input ProfileModal__input ProfileModal__input--condensed"
+        className="ProfileModalChangePassword__input"
         placeholder="Old Password"
       />
       <input
-        className="ProfileModalChangePassword__input ProfileModal__input ProfileModal__input--condensed"
+        className="ProfileModalChangePassword__input"
         placeholder="New Password"
       />
       <input
-        className="ProfileModalChangePassword__input ProfileModal__input ProfileModal__input--condensed"
+        className="ProfileModalChangePassword__input"
         placeholder="Confirm New Password"
       />
     </div>

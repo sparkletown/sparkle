@@ -1,7 +1,7 @@
-import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/ProfileModalSectionHeader/ProfileModalSectionHeader";
+import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
-import "./ProfileModalQuestions.scss";
+import "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
@@ -39,7 +39,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
             <p className="ProfileModalQuestions__question">{question.text}</p>
             {editMode ? (
               <input
-                className="ProfileModal__input ProfileModal__input--condensed ProfileModalQuestions__answer-input"
+                className="ProfileModalQuestions__answer-input"
                 name={question.text}
                 defaultValue={questionAnswer}
               />

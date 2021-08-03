@@ -1,18 +1,18 @@
-import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
-import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/ProfileModalChangePassword/ProfileModalChangePassword";
+import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
+import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { useBooleanState } from "hooks/useBooleanState";
 import React from "react";
 import Modal from "react-bootstrap/Modal";
-import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo/ProfileModalBasicInfo";
-import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./links/ProfileModalLinks/ProfileModalLinks";
-import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalBasicInfo } from "./components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalQuestions } from "./components/ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalLinks } from "./components/links/ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalBadges } from "./components/ProfileModalBadges/ProfileModalBadges";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
 import "./UserProfileModal.scss";
 import "./ProfileModal.scss";
 import { useUser } from "hooks/useUser";
-import { ProfileModalEditLinks } from "./links/ProfileModalEditLinks/ProfileModalEditLinks";
+import { ProfileModalEditLinks } from "./components/links/ProfileModalEditLinks/ProfileModalEditLinks";
 
 interface Props {
   venue: WithId<AnyVenue>;

@@ -1,17 +1,21 @@
+@import "../../../constants.scss";
+
+$name-bottom-margin: 4px;
+
 .ProfileModalBasicTextInfo {
-  font-size: 16px;
+  font-size: $content-increased-font-size;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
   &__name {
     padding: 0;
-    margin-bottom: 4px;
+    margin-bottom: $name-bottom-margin;
   }
 
   &__status {
+    font-size: $content-increased-font-size;
     display: flex;
-    font-size: 16px;
   }
 
   &--underlined {

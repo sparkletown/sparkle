@@ -1,11 +1,14 @@
-@import "scss/constants.scss";
+@import "../../../constants.scss";
+
+$background: rgba(255, 255, 255, 0.2);
+$background-hover: rgba(255, 255, 255, 0.3);
 
 .ProfileModalLink {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 22px;
-  backdrop-filter: blur(10px);
+  background-color: $background;
+  border-radius: $input-border-radius;
+  backdrop-filter: $input-backdrop-filter;
   padding: 6px 18px 6px 12px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+  text-shadow: $input-text-shadow;
   color: $white;
 
   display: inline-block;
@@ -14,6 +17,6 @@
   &:hover {
     text-decoration: none;
     color: $white;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: $background-hover;
   }
 }

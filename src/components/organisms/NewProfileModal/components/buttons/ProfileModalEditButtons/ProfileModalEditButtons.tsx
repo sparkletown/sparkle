@@ -2,7 +2,7 @@ import { Button } from "components/atoms/Button";
 import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/ProfileModal";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalEditButtons.scss";
+import "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons.scss";
 
 interface Props extends ContainerClassName {
   onCancelClick: () => void;

@@ -1,13 +1,13 @@
-import { ProfileModalSendMessageButton } from "components/organisms/NewProfileModal/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton";
+import { ProfileModalSendMessageButton } from "components/organisms/NewProfileModal/components/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton";
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
 import { AnyVenue } from "types/venues";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { ProfileModalBasicInfo } from "./header/ProfileModalBasicInfo/ProfileModalBasicInfo";
-import { ProfileModalQuestions } from "./ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "./links/ProfileModalLinks/ProfileModalLinks";
-import { ProfileModalBadges } from "./ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalBasicInfo } from "./components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalQuestions } from "./components/ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalLinks } from "./components/links/ProfileModalLinks/ProfileModalLinks";
+import { ProfileModalBadges } from "./components/ProfileModalBadges/ProfileModalBadges";
 
 import "./ProfileModal.scss";
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";

@@ -1,21 +1,26 @@
-@import "scss/constants.scss";
-@import "../ProfileModal.scss";
+@import "../../constants";
+
+$question-container-gap: 0.7rem;
+$question-answer-gap: 4px;
+$question-answer-gap-editable: 0.7rem;
+$question-color: rgba(255, 255, 255, 0.6);
 
 .ProfileModalQuestions {
   &__question-container {
-    margin-bottom: 0.7em;
+    margin-bottom: $question-container-gap;
     &:last-child {
       margin-bottom: 0;
     }
   }
   &__answer {
-    margin-top: 4px;
+    margin-top: $question-answer-gap;
   }
   &__answer-input {
-    margin-top: 0.7rem;
+    @include ProfileModalInput;
+    margin-top: $question-answer-gap-editable;
   }
   &__question {
-    color: rgba(255, 255, 255, 0.6);
+    color: $question-color;
     margin-bottom: 0;
   }
 }

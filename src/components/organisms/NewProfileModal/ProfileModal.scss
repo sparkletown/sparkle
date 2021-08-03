@@ -1,36 +1,25 @@
-@import "scss/constants.scss";
+@import "./constants.scss";
 
 .ProfileModal {
   display: flex;
   align-items: flex-start;
-
-  &__input {
-    background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-sizing: border-box;
-    border-radius: 22px;
-    text-align: start;
-    cursor: initial;
-    &--condensed {
-      padding: 6px 14px 6px 14px;
-    }
-  }
+  font-size: $content-font-size;
 
   &__body {
     background-color: $dark-grey;
-    padding: 1.7rem;
+    padding: $modal-content-margin;
   }
-  font-size: 14px;
+
   &__section {
-    margin-top: 1rem;
+    margin-top: $section-gap;
     &:first-child {
       margin-top: 0;
     }
   }
 
   & > .modal-dialog {
-    max-width: 29.5rem;
-    margin: 1.75rem auto;
+    max-width: $modal-content-max-width;
+    margin: $modal-dialog-viewport-margin;
     width: auto;
     & > .modal-content {
       padding: 0;

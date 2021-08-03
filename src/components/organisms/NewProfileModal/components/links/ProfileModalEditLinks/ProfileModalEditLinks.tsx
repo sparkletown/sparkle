@@ -1,11 +1,11 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-import { ProfileModalEditLink } from "components/organisms/NewProfileModal/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/ProfileModalRoundIcon/ProfileModalRoundIcon";
-import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/ProfileModalSectionHeader/ProfileModalSectionHeader";
+import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
+import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
 import React from "react";
 import { ContainerClassName } from "types/utility";
-import "components/organisms/NewProfileModal/links/ProfileModalEditLinks/ProfileModalEditLinks.scss";
+import "./ProfileModalEditLinks.scss";
 import { ProfileLink } from "types/User";
 
 interface Props extends ContainerClassName {
@@ -24,7 +24,7 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
       </div>
       {links.map((link) => (
         <ProfileModalEditLink
-          containerClassName="ProfileModalEditLinks__link"
+          containerClassName="ProfileModalEditLinks__link-group"
           key={link.url}
           link={link}
         />

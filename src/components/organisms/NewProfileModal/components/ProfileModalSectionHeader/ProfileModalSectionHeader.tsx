@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import React from "react";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalSectionHeader.scss";
+import "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader.scss";
 
 interface Props extends ContainerClassName {
   text: string;

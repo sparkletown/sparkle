@@ -2,7 +2,7 @@ import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfi
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { Button } from "components/atoms/Button";
-import "./ProfileModalSendMessageButton.scss";
+import "components/organisms/NewProfileModal/components/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton.scss";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
 import { useIsOnline } from "hooks/useIsOnline";

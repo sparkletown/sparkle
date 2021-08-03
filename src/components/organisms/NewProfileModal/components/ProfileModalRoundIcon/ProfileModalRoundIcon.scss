@@ -1,7 +1,7 @@
-@import "scss/constants.scss";
+@import "../../constants.scss";
 
 .ProfileModalRoundIcon {
-  @include square-size(1.7rem);
+  @include square-size($round-icon-size);
   padding: 0;
   cursor: pointer;
   border-radius: 50%;

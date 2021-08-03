@@ -1,11 +1,16 @@
-@import "../../../ProfileModal.scss";
+@import "../../../../constants";
+
+$url-text-icon-right-margin: 0.5rem;
 
 .ProfileModalEditLink {
   width: 100%;
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr 1fr;
-  gap: 0.5rem 0.5rem;
+  gap: $input-gap $input-gap;
+  &__input {
+    @include ProfileModalInput;
+  }
   &__url {
     grid-column: 1;
     grid-row: 1;
@@ -26,6 +31,6 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    right: 0.5rem;
+    right: $url-text-icon-right-margin;
   }
 }

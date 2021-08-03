@@ -1,4 +1,4 @@
-import { ProfileModalLink } from "components/organisms/NewProfileModal/links/ProfileModalLinks/ProfileModalLink";
+import { ProfileModalLink } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLink";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
 import { User } from "types/User";

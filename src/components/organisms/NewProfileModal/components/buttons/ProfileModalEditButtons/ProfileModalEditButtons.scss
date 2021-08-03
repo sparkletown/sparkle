@@ -1,7 +1,12 @@
+@import "../../../constants.scss";
+
+$edit-buttons-gap: $input-gap;
+$edit-button-background-color: rgba(255, 255, 255, 0.2);
+
 .ProfileModalEditButtons {
   &__button {
-    margin-bottom: 0.7rem;
-    background-color: rgba(255, 255, 255, 0.2);
+    margin-bottom: $edit-buttons-gap;
+    background-color: $edit-button-background-color;
     &:last-child {
       margin-bottom: 0;
     }

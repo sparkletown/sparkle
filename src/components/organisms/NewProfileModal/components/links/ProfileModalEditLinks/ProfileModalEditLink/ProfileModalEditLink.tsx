@@ -2,8 +2,8 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import {
   useLinkIcon,
   useLinkUsername,
-} from "components/organisms/NewProfileModal/links/links";
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/ProfileModalRoundIcon/ProfileModalRoundIcon";
+} from "components/organisms/NewProfileModal/components/links/links";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { useBooleanState } from "hooks/useBooleanState";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import "./ProfileModalEditLink.scss";
@@ -55,7 +55,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
           placeholder="URL"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
-          className="ProfileModal__input ProfileModal__input--condensed"
+          className="ProfileModalEditLink__input"
         />
       </div>
       <div className="ProfileModalEditLink__text">
@@ -63,7 +63,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
           value={displayText}
           onChange={(e) => setDisplayText(e.target.value)}
           placeholder="Display Text"
-          className="ProfileModal__input ProfileModal__input--condensed"
+          className="ProfileModalEditLink__input"
           onFocus={touchDisplayText}
         />
         <FontAwesomeIcon

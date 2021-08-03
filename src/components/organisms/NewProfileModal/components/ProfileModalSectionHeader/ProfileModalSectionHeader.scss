@@ -1,8 +1,8 @@
-@import "scss/constants.scss";
+@import "../../constants.scss";
 
 .ProfileModalSectionHeader {
-  font-size: 16px;
+  font-size: $content-increased-font-size;
   font-weight: $font-weight--500;
   color: $white;
-  margin-bottom: 0.5rem;
+  margin-bottom: $section-header-bottom-margin;
 }

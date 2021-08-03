@@ -1,7 +1,7 @@
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/ProfileModalRoundIcon/ProfileModalRoundIcon";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
-import "components/organisms/NewProfileModal/header/ProfileModalBasicInfo/ProfileModalBasicInfo.scss";
+import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
+import "./ProfileModalBasicInfo.scss";
 import React from "react";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -44,7 +44,7 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
         >
           {editMode ? (
             <input
-              className="ProfileModal__input ProfileModal__input--padding-normal"
+              className="ProfileModalBasicInfo__input"
               name={"party-name"}
               defaultValue={viewingUser?.partyName}
             />
