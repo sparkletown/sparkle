@@ -1,6 +1,6 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useForm } from "react-hook-form";
 import { FormFieldProps } from "types/forms";
 import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";

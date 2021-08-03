@@ -1,4 +1,4 @@
-import { useLinkIcon } from "components/organisms/NewProfileModal/components/links/links";
+import { useLinkIcon } from "components/organisms/NewProfileModal/components/links/linkUtilities";
 import { ProfileLink } from "types/User";
 import "./ProfileModalLink.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

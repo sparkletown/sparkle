@@ -1,5 +1,5 @@
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
 import "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions.scss";

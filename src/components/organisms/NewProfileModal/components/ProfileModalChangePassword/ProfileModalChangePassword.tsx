@@ -1,5 +1,5 @@
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import React from "react";
 import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";

@@ -16,11 +16,6 @@ export interface UserProfileModalProps {
   venue: WithId<AnyVenue>;
 }
 
-export const profileModalWideButtonCustomStyle = {
-  fontSize: 14,
-  width: "100%",
-};
-
 export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
   const { selectRecipientChat } = useChatSidebarControls();
 

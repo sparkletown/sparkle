@@ -4,9 +4,9 @@ import classNames from "classnames";
 import {
   getLinkUsername,
   useLinkIcon,
-} from "components/organisms/NewProfileModal/components/links/links";
+} from "components/organisms/NewProfileModal/components/links/linkUtilities";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
-import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
 import React, { useCallback, useEffect } from "react";
 import { FormFieldProps } from "types/forms";

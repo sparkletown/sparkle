@@ -2,7 +2,7 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
-import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import React from "react";
 import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";

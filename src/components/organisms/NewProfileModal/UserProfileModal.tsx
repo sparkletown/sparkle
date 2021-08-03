@@ -1,21 +1,22 @@
 import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
+import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
+import { useUser } from "hooks/useUser";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
 import { OnSubmit, useForm } from "react-hook-form";
 import { ProfileLink } from "types/User";
+import { AnyVenue } from "types/venues";
+import { WithId } from "utils/id";
 import { propName } from "utils/types";
 import { ProfileModalBasicInfo } from "./components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
-import { ProfileModalQuestions } from "./components/ProfileModalQuestions/ProfileModalQuestions";
+import { ProfileModalEditLinks } from "./components/links/ProfileModalEditLinks/ProfileModalEditLinks";
 import { ProfileModalLinks } from "./components/links/ProfileModalLinks/ProfileModalLinks";
 import { ProfileModalBadges } from "./components/ProfileModalBadges/ProfileModalBadges";
-import { WithId } from "utils/id";
-import { AnyVenue } from "types/venues";
-import "./UserProfileModal.scss";
+import { ProfileModalQuestions } from "./components/ProfileModalQuestions/ProfileModalQuestions";
 import "./ProfileModal.scss";
-import { useUser } from "hooks/useUser";
-import { ProfileModalEditLinks } from "./components/links/ProfileModalEditLinks/ProfileModalEditLinks";
+import "./UserProfileModal.scss";
 
 interface Props {
   venue: WithId<AnyVenue>;
@@ -31,9 +32,6 @@ export interface UserProfileModalFormData {
   newPassword: string;
   confirmNewPassword: string;
 }
-
-export const formProp = (prop: keyof UserProfileModalFormData): string =>
-  propName<UserProfileModalFormData>(prop);
 
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
   const { userWithId: user } = useUser();

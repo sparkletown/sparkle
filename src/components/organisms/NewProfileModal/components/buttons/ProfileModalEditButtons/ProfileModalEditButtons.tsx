@@ -1,5 +1,5 @@
 import { Button } from "components/atoms/Button";
-import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/ProfileModal";
+import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utility";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
 import "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons.scss";
