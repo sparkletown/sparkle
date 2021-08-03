@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from "react";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useWorldUsers, useRecentWorldUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
 import "./RunTabUsers.scss";
 
@@ -14,21 +14,20 @@ interface RunTabSidebarProps {
 
 export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
-  const { worldUsers } = useWorldUsers();
   const { recentWorldUsers } = useRecentWorldUsers();
   const [searchText, setSearchText] = useState("");
 
   const admins = useMemo(() => {
     const owners = venue?.owners ?? [];
-    return worldUsers.filter(({ id }) => owners.includes(id));
-  }, [worldUsers, venue?.owners]);
+    return recentWorldUsers.filter(({ id }) => owners.includes(id));
+  }, [recentWorldUsers, venue?.owners]);
 
   const users = useMemo(() => {
     const needle = searchText.toLowerCase();
-    return worldUsers.filter(({ partyName }) =>
+    return recentWorldUsers.filter(({ partyName }) =>
       partyName?.toLowerCase().includes(needle)
     );
-  }, [worldUsers, searchText]);
+  }, [recentWorldUsers, searchText]);
 
   return (
     <div className="RunTabUsers">
@@ -52,15 +51,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
         <ButtonNG>Manage admins</ButtonNG>
       </div>
       {users.map((user) => (
-        <div key={user.id} className="RunTabUsers__row RunTabUsers__user">
-          <UserAvatar user={user} showStatus medium />
-          <div className="RunTabUsers__wrapper">
-            <div className="RunTabUsers__name">{user.partyName}</div>
-            <div className="RunTabUsers__place">
-              in {user.enteredVenueIds?.[0]}
-            </div>
-          </div>
-        </div>
+        <RunTabUserInfo key={user.id} user={user} />
       ))}
     </div>
   );

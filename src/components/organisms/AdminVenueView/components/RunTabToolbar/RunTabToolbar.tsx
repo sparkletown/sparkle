@@ -58,11 +58,10 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({ venueId }) => {
       </form>
       <div className="RunTabToolbar__toolbar RunTabToolbar__toolbar--right">
         <ButtonNG
-          isLink={false}
+          isLink
+          newTab
           linkTo={venueId ? venueInsideUrl(venueId) : undefined}
-          newTab={true}
           variant="primary"
-          disabled={false}
         >
           Visit Space
         </ButtonNG>
