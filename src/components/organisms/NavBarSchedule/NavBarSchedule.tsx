@@ -189,19 +189,29 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+    const prioritiseEvents = (
+      a: WithVenueId<VenueEvent>,
+      b: WithVenueId<VenueEvent>
+    ) => {
+      if (a.start_utc_seconds !== b.start_utc_seconds) {
+        return a.start_utc_seconds - b.start_utc_seconds;
+      }
+
+      return a.duration_minutes - b.duration_minutes;
+    };
+
     const daysEvents = relatedVenueEvents
       .filter(
         isScheduleTimeshifted
           ? isEventWithinDate(startOfSelectedDay)
           : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
+      .sort(prioritiseEvents)
       .map(
         prepareForSchedule({
           day: startOfSelectedDay,
           usersEvents: userEventIds,
         })
-        // sort by start time
-        // short duration event time is prior if start time is equal
       );
 
     return {
