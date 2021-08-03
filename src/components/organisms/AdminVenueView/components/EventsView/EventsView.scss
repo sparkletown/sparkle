@@ -79,8 +79,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-left: $spacing--md;
+      margin: auto;
       background-color: $primary;
+
+      &__icon {
+        color: $white;
+      }
     }
   }
 
@@ -95,7 +99,8 @@
 }
 
 .create-button {
-  margin: 0px 75px;
+  width: 85%;
+  margin-top: $spacing--sm;
 
   .btn {
     width: 200px;

@@ -58,7 +58,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
 
       {display && (
         <button
-          className="event__edit-button"
+          className="TimingEvent__edit-button"
           onClick={() => {
             setShowCreateEventModal();
             setEditedEvent(event);
@@ -66,7 +66,7 @@ export const TimingEvent: React.FC<TimingEventProps> = ({
         >
           <FontAwesomeIcon
             icon={faPen}
-            className="edit-button__icon"
+            className="TimingEvent__edit-button__icon"
             size="lg"
           />
         </button>
