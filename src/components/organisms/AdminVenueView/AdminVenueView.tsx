@@ -2,6 +2,8 @@ import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
 
+import { Venue_v2 } from "types/venues";
+
 import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
@@ -9,6 +11,7 @@ import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Timing } from "./components/Timing";
+import { Spaces } from "./components/Spaces";
 
 import "./AdminVenueView.scss";
 
@@ -34,9 +37,10 @@ export const AdminVenueView: React.FC = () => {
   const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
-  const { currentVenue, isCurrentVenueLoaded } = useConnectCurrentVenueNG(
-    venueId
-  );
+  const {
+    isCurrentVenueLoaded,
+    currentVenue: venue,
+  } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
@@ -55,6 +59,11 @@ export const AdminVenueView: React.FC = () => {
   const selectTab = useCallback((tab: string) => {
     setSelectedTab(tab as AdminVenueTab);
   }, []);
+
+  const selectTiming = useCallback(
+    () => setSelectedTab(AdminVenueTab.timing),
+    []
+  );
 
   if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
@@ -75,13 +84,16 @@ export const AdminVenueView: React.FC = () => {
           {renderAdminVenueTabs}
         </Nav>
       </div>
-      {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
+
+      {selectedTab === AdminVenueTab.spaces && (
+        <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
+      )}
       {selectedTab === AdminVenueTab.timing && (
-        <Timing
-          venue={currentVenue}
-          onClickNext={() => setSelectedTab(AdminVenueTab.run)}
-          onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
-        />
+         <Timing
+           venue={currentVenue}
+           onClickNext={() => setSelectedTab(AdminVenueTab.run)}
+           onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
+         />
       )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>

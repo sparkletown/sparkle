@@ -1,5 +1,5 @@
 import React, { Suspense, lazy } from "react";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
@@ -22,6 +22,7 @@ import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
 import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
+import { ExternalRoom } from "components/templates/ExternalRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
@@ -43,7 +44,6 @@ export interface TemplateWrapperProps {
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const history = useHistory();
   const match = useRouteMatch();
 
   let template;
@@ -82,28 +82,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
-      if (venue.zoomUrl) {
-        window.location.replace(venue.zoomUrl);
-
-        // Note that we are explicitly returning here so that none of the rest of this component has a chance to render
-        return <LoadingPage />;
-      } else {
-        template = (
-          <p>
-            Venue {venue.name} should redirect to a URL, but none was set.
-            <br />
-            <button
-              role="link"
-              className="btn btn-primary"
-              onClick={() => history.goBack()}
-            >
-              Go Back
-            </button>
-          </p>
-        );
-      }
+      template = <ExternalRoom venue={venue} />;
       break;
-
     // Note: This is the template that is used for Auditorium (v1)
     case VenueTemplate.audience:
       template = (

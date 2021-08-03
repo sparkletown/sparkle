@@ -9,17 +9,9 @@ import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
 
-import { Provider } from "react-redux";
-import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
-import thunkMiddleware from "redux-thunk";
-import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
-import {
-  ReactReduxFirebaseProvider,
-  firebaseReducer,
-  isLoaded,
-  FirebaseReducer,
-} from "react-redux-firebase";
-import { composeWithDevTools } from "redux-devtools-extension";
+import { Provider as ReduxStoreProvider } from "react-redux";
+import { createFirestoreInstance } from "redux-firestore";
+import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
 
 import firebase from "firebase/app";
 import "firebase/analytics";
@@ -27,9 +19,6 @@ import "firebase/auth";
 import "firebase/firestore";
 import "firebase/functions";
 import "firebase/performance";
-
-import { Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
@@ -42,23 +31,14 @@ import {
   BUILD_TAG,
   LOGROCKET_APP_ID,
   MIXPANEL_PROJECT_TOKEN,
-  STRIPE_PUBLISHABLE_KEY,
 } from "secrets";
 import { FIREBASE_CONFIG } from "settings";
 
-import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-
 import * as serviceWorker from "./serviceWorker";
 import { activatePolyFills } from "./polyfills";
+import { store } from "./store";
 
-import { Firestore } from "types/Firestore";
-import { User } from "types/User";
-
-import {
-  PerformanceTrace,
-  tracePromise,
-  traceReactScheduler,
-} from "utils/performance";
+import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
 
 import { CustomSoundsProvider } from "hooks/sounds";
@@ -96,39 +76,10 @@ if (process.env.NODE_ENV === "development") {
   firebaseFunctions.useFunctionsEmulator("http://localhost:5001");
 }
 
-// Load Stripe
-const stripePromise = tracePromise(PerformanceTrace.initStripeLoad, () =>
-  loadStripe(STRIPE_PUBLISHABLE_KEY ?? "")
-);
-
 const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
-
-// Add firebase to reducers
-const rootReducer = combineReducers({
-  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
-  firestore: firestoreReducer as Reducer<Firestore>,
-  ...VenueTemplateReducers,
-  ...MiscReducers,
-});
-
-export type RootState = ReturnType<typeof rootReducer>;
-
-const initialState = {};
-const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      LogRocket.reduxMiddleware() // logrocket needs to be last
-    )
-  )
-);
-
-export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {
   firebase,
@@ -270,22 +221,20 @@ traceReactScheduler("initial render", performance.now(), () => {
   render(
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
-        <Elements stripe={stripePromise}>
-          <DndProvider backend={HTML5Backend}>
-            <Provider store={store}>
-              <ReactReduxFirebaseProvider {...rrfProps}>
-                <AuthIsLoaded>
-                  <CustomSoundsProvider
-                    loadingComponent={<LoadingPage />}
-                    waitTillConfigLoaded
-                  >
-                    <AppRouter />
-                  </CustomSoundsProvider>
-                </AuthIsLoaded>
-              </ReactReduxFirebaseProvider>
-            </Provider>
-          </DndProvider>
-        </Elements>
+        <DndProvider backend={HTML5Backend}>
+          <ReduxStoreProvider store={store}>
+            <ReactReduxFirebaseProvider {...rrfProps}>
+              <AuthIsLoaded>
+                <CustomSoundsProvider
+                  loadingComponent={<LoadingPage />}
+                  waitTillConfigLoaded
+                >
+                  <AppRouter />
+                </CustomSoundsProvider>
+              </AuthIsLoaded>
+            </ReactReduxFirebaseProvider>
+          </ReduxStoreProvider>
+        </DndProvider>
       </ThemeProvider>
     </BugsnagErrorBoundary>,
     document.getElementById("root")

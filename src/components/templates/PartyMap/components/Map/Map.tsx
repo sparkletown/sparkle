@@ -3,8 +3,8 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import {
   DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_COLUMNS,
-  MINIMUM_COLUMNS,
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
 import { User, UserExperienceData } from "types/User";
@@ -23,10 +23,10 @@ import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
-import { useMapGrid } from "./hooks/useMapGrid";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 
+import { MapGrid } from "./MapGrid";
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -57,10 +57,11 @@ export const Map: React.FC<MapProps> = ({
   const showGrid = venue.showGrid;
 
   const totalColumns = Math.max(
-    MINIMUM_COLUMNS,
-    Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
+    MINIMUM_PARTYMAP_COLUMNS_COUNT,
+    Math.min(MAXIMUM_PARTYMAP_COLUMNS_COUNT, venue.columns ?? DEFAULT_COLUMNS)
   );
   const [totalRows, setTotalRows] = useState<number>(0);
+  const hasRows = totalRows > 0;
 
   const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
   const columnsArray = useMemo(
@@ -184,15 +185,6 @@ export const Map: React.FC<MapProps> = ({
     takeSeat,
   });
 
-  const mapGrid = useMapGrid({
-    showGrid,
-    userUid,
-    columnsArray,
-    rowsArray,
-    getUserBySeat,
-    onSeatClick,
-  });
-
   // TODO: this probably doesn't even need to be a hook.. it's more of a component if anything. We can clean this up later
   const partygoersOverlay = usePartygoersOverlay({
     showGrid,
@@ -240,12 +232,23 @@ export const Map: React.FC<MapProps> = ({
           src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
           alt=""
         />
-
-        <div className="party-map-grid-container" style={gridContainerStyles}>
-          {mapGrid}
-          {partygoersOverlay}
-          {roomOverlay}
-        </div>
+        {hasRows && (
+          <div className="party-map-grid-container" style={gridContainerStyles}>
+            {showGrid && (
+              <MapGrid
+                {...{
+                  userUid,
+                  columnsArray,
+                  rowsArray,
+                  getUserBySeat,
+                  onSeatClick,
+                }}
+              />
+            )}
+            {partygoersOverlay}
+            {roomOverlay}
+          </div>
+        )}
       </div>
     </div>
   );
