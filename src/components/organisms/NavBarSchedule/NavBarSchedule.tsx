@@ -33,7 +33,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 
 import { Button } from "components/atoms/Button";
-import { Schedule } from "components/molecules/Schedule";
+// import { Schedule } from "components/molecules/Schedule";
+import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
 import {
@@ -51,6 +52,11 @@ export interface ScheduleDay {
   scheduleDate: Date;
   locatedEvents: LocationEvents[];
   personalEvents: PersonalizedVenueEvent[];
+}
+
+export interface ScheduleNGDay {
+  scheduleDate: Date;
+  daysEvents: PersonalizedVenueEvent[];
 }
 
 export const emptyPersonalizedSchedule = {};
@@ -182,6 +188,35 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
   ]);
 
+  const scheduleNG: ScheduleNGDay = useMemo(() => {
+    const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+    const daysEvents = relatedVenueEvents
+      .filter(
+        isScheduleTimeshifted
+          ? isEventWithinDate(startOfSelectedDay)
+          : isEventWithinDateAndNotFinished(startOfSelectedDay)
+      )
+      .map(
+        prepareForSchedule({
+          day: startOfSelectedDay,
+          usersEvents: userEventIds,
+        })
+        // sort by start time
+        // short duration event time is prior if start time is equal
+      );
+
+    return {
+      daysEvents,
+      scheduleDate: startOfSelectedDay,
+    };
+  }, [
+    relatedVenueEvents,
+    userEventIds,
+    selectedDayIndex,
+    firstDayOfSchedule,
+    isScheduleTimeshifted,
+  ]);
+
   const hasSavedEvents = schedule.personalEvents.length > 0;
 
   const downloadPersonalEventsCalendar = useCallback(() => {
@@ -237,7 +272,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       )}
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <Schedule isLoading={isLoadingSchedule} {...schedule} />
+      {/* <Schedule isLoading={isLoadingSchedule} {...schedule} /> */}
+      <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
     </div>
   );
 };
