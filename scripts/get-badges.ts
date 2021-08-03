@@ -16,17 +16,12 @@ import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 const usage = makeScriptUsage({
   description:
     "Retrieve 'badge' details (in CSV format) of users who entered the specified venue(s), and how long they spent in each.",
-  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH] EXCLUDED_VENUE_IDS",
+  usageParams: "PROJECT_ID VENUE_IDS [CREDENTIAL_PATH]",
   exampleParams:
-    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json] venueName",
+    "co-reality-map venueId,venueId2,venueIdN [theMatchingAccountServiceKey.json]",
 });
 
-const [
-  projectId,
-  venueIds,
-  credentialPath,
-  // excludedVenues = "",
-] = process.argv.slice(2);
+const [projectId, venueIds, credentialPath] = process.argv.slice(2);
 
 // Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
 if (!projectId || !venueIds) {
@@ -34,7 +29,6 @@ if (!projectId || !venueIds) {
 }
 
 const venueIdsArray = venueIds.split(",");
-// const excludedVenueIds = excludedVenues.split(",");
 
 initFirebaseAdminApp(projectId, {
   credentialPath: credentialPath
@@ -71,8 +65,6 @@ const getUsersWithWisits = async () => {
     .flat();
   return Promise.all(await dto);
 };
-
-getUsersWithWisits();
 
 interface UsersWithVisitsResult {
   user: WithId<User>;
@@ -113,6 +105,7 @@ interface UsersWithVisitsResult {
       const matchingUserIndex = arr.findIndex(
         (item) => item.user.partyName === el.user.partyName
       );
+
       if (matchingUserIndex > 0) {
         const newArr = [...arr[matchingUserIndex].visits, ...el.visits].reduce(
           (visitsArr: WithId<UserVisit>[], visit) => {
@@ -141,6 +134,7 @@ interface UsersWithVisitsResult {
       const { id, partyName } = user;
       const { email } = authUsersById[id] ?? {};
       const visitIds = visits.map((el) => el.id);
+
       // write all visit IDs for badge counts
       visitIds.map((visit) =>
         fs.writeFileSync("./allVisits.csv", `${visit} \n`, { flag: "a" })
@@ -157,7 +151,8 @@ interface UsersWithVisitsResult {
 
   const allResultVisits: string[] = result.reduce((arr: string[], el) => {
     const result: string[] = el.visits.map((e) => e.id);
-    result.map((e) => arr.push(e));
+
+    result.forEach((e) => arr.push(e));
 
     return arr;
   }, []);
@@ -188,6 +183,7 @@ interface UsersWithVisitsResult {
   // Write all user data for analytics
   const allDataResult = result.map((user) => {
     const onlyVisitIds = user.visits.map((el) => el.id);
+
     const getVisitData = (visitName: string) =>
       user.visits.find((visit) => (visit.id === visitName ? visit : 0)) || {
         timeSpent: 0,
@@ -196,23 +192,25 @@ interface UsersWithVisitsResult {
 
     const formattedVisitColumns = globalUniqueVisits.map((visit) => {
       if (onlyVisitIds.includes(visit) && getVisitData(visit)) {
-        return `${formatSecondsAsHHMMSS(getVisitData(visit).timeSpent)}`;
+        return {
+          timeValue: getVisitData(visit).timeSpent,
+          formattedTime: `${formatSecondsAsHHMMSS(
+            getVisitData(visit).timeSpent
+          )}`,
+        };
       }
-      return "";
+      return {};
     });
 
-    const visitData = globalUniqueVisits.map((visit) => {
-      if (onlyVisitIds.includes(visit) && getVisitData(visit)) {
-        return getVisitData(visit).timeSpent;
-      }
-      return 0;
-    });
+    const bodyVisitColumns = formattedVisitColumns.map(
+      (column) => column?.formattedTime ?? ""
+    );
 
     const dto = [
       user.email,
       user.partyName,
       user.visits.length,
-      ...formattedVisitColumns,
+      ...bodyVisitColumns,
     ];
 
     globalVisitsValue += user.visits.length;
@@ -221,9 +219,12 @@ interface UsersWithVisitsResult {
 
     fs.writeFileSync("./allData.csv", `${csvFormattedLine} \n`, { flag: "a" });
 
-    return visitData;
+    const result = formattedVisitColumns.map((visit) => visit.timeValue ?? 0);
+
+    return result;
   });
 
+  // space between visit data & total data
   [0, 1, 2].map(() => fs.writeFileSync("./allData.csv", `\n`, { flag: "a" }));
 
   let arrayOfResults: {
@@ -246,14 +247,14 @@ interface UsersWithVisitsResult {
     });
   });
 
-  const uniqueLine = [
+  const uniqueVisitDataLine = [
     "Total Unique",
     "",
     allDataResult.length,
     ...arrayOfResults.map((el) => el.totalUnique),
   ];
 
-  const averageLine = [
+  const averageVisitDataLine = [
     "Average Time",
     "",
     (globalVisitsValue / allDataResult.length).toFixed(2),
@@ -263,8 +264,10 @@ interface UsersWithVisitsResult {
     ),
   ];
 
-  fs.writeFileSync("./allData.csv", `${uniqueLine} \n`, { flag: "a" });
-  fs.writeFileSync("./allData.csv", `${averageLine} \n`, { flag: "a" });
+  fs.writeFileSync("./allData.csv", `${uniqueVisitDataLine} \n`, { flag: "a" });
+  fs.writeFileSync("./allData.csv", `${averageVisitDataLine} \n`, {
+    flag: "a",
+  });
 })()
   .catch((error) => {
     console.error(error);
