@@ -129,10 +129,38 @@ export const validationSchema_v2 = Yup.object()
   })
   .required();
 
+const venueNameSchema = Yup.string()
+  .required("Venue name is required")
+  .min(
+    VENUE_NAME_MIN_CHAR_COUNT,
+    ({ min }) => `Name must be at least ${min} characters`
+  )
+  .max(
+    VENUE_NAME_MAX_CHAR_COUNT,
+    ({ max }) => `Name must be less than ${max} characters`
+  );
+
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
   .min(3, ({ min }) => mustBeMinimum("Url", min))
   .test("url validation", "Please enter a valid URL", isValidUrl);
+
+export interface VenueRoomSchema {
+  template?: string;
+  roomTitle: string;
+  venueName?: string;
+  roomUrl?: string;
+}
+
+export const venueRoomSchema = Yup.object().shape<VenueRoomSchema>({
+  roomTitle: roomTitleSchema,
+  venueName: venueNameSchema,
+});
+
+export const roomSchema = Yup.object().shape<VenueRoomSchema>({
+  roomTitle: roomTitleSchema,
+  roomUrl: roomUrlSchema,
+});
 
 const roomImageUrlSchema = Yup.string().required("Room image is required");
 
