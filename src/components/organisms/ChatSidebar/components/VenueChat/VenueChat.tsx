@@ -6,6 +6,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useVenueChat } from "hooks/chats/venueChat";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -22,9 +23,10 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     messagesToDisplay,
     sendThreadReply,
   } = useVenueChat(venue.id);
+  const { selectVenueChat } = useChatSidebarControls();
 
   return (
-    <div className="venue-chat">
+    <div className="venue-chat" onClick={selectVenueChat}>
       <Chatbox
         // poll is available for Venue Chat only (displayPoll = true)
         displayPoll
