@@ -14,6 +14,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { memoize } from "lodash";
 import { useMemo } from "react";
 
 export const useLinkIcon = (url: string) =>
@@ -29,8 +30,8 @@ export const useLinkIcon = (url: string) =>
       : profileModalGenericLinkIcon;
   }, [url]);
 
-export const useLinkUsername = (url: string) =>
-  useMemo(() => {
+export const getLinkUsername = (url: string) => {
+  const execute = (url: string) => {
     const res = Object.entries(profileModalProfileNameRegex).map(
       ([, regex]) => {
         const match = url.match(regex);
@@ -39,7 +40,10 @@ export const useLinkUsername = (url: string) =>
     );
 
     return res.find((x) => x);
-  }, [url]);
+  };
+
+  return memoize(execute)(url);
+};
 
 export enum ProfileModalLinkType {
   Instagram = "Instagram",

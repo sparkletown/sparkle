@@ -1,9 +1,11 @@
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
+import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
 import "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
+import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -11,11 +13,13 @@ import { User } from "types/User";
 interface Props extends ContainerClassName {
   editMode?: boolean;
   viewingUser: WithId<User>;
+  register?: FormFieldProps["register"];
 }
 
 export const ProfileModalQuestions: React.FC<Props> = ({
   viewingUser,
   editMode,
+  register,
   containerClassName,
 }: Props) => {
   const venueId = useVenueId();
@@ -37,11 +41,12 @@ export const ProfileModalQuestions: React.FC<Props> = ({
             key={question.text}
           >
             <p className="ProfileModalQuestions__question">{question.text}</p>
-            {editMode ? (
+            {editMode && register ? (
               <input
+                name={`${formProp("questions")}.${question.text}`}
                 className="ProfileModalQuestions__answer-input"
-                name={question.text}
                 defaultValue={questionAnswer}
+                ref={register()}
               />
             ) : (
               <p className="ProfileModalQuestions__answer">{questionAnswer}</p>
@@ -49,7 +54,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
           </div>
         );
       }),
-    [editMode, profileQuestions, viewingUser]
+    [editMode, profileQuestions, register, viewingUser]
   );
   return (
     <div className={classNames("ProfileModalQuestions", containerClassName)}>

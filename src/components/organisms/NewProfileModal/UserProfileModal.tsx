@@ -1,8 +1,11 @@
 import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { useBooleanState } from "hooks/useBooleanState";
-import React from "react";
+import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
+import { OnSubmit, useForm } from "react-hook-form";
+import { ProfileLink } from "types/User";
+import { propName } from "utils/types";
 import { ProfileModalBasicInfo } from "./components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "./components/ProfileModalQuestions/ProfileModalQuestions";
 import { ProfileModalLinks } from "./components/links/ProfileModalLinks/ProfileModalLinks";
@@ -20,9 +23,45 @@ interface Props {
   onClose: () => void;
 }
 
+export interface UserProfileModalFormData {
+  questions: Record<string, string>;
+  links: ProfileLink[];
+  partyName: string;
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export const formProp = (prop: keyof UserProfileModalFormData): string =>
+  propName<UserProfileModalFormData>(prop);
+
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
   const { userWithId: user } = useUser();
   const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(true);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+  } = useForm<UserProfileModalFormData>({
+    mode: "onChange",
+    reValidateMode: "onChange",
+    validateCriteriaMode: "all",
+  });
+  const onSubmit: OnSubmit<UserProfileModalFormData> = (data) => {
+    console.log(data);
+  };
+
+  const setLinkTitle = useCallback(
+    (index: number, title: string) => {
+      setValue(
+        `${formProp("links")}[${index}].${propName<ProfileLink>("title")}`,
+        title
+      );
+    },
+    [setValue]
+  );
 
   return (
     <Modal
@@ -33,22 +72,27 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
     >
       <Modal.Body className="ProfileModal__body">
         {user && (
-          <>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <ProfileModalBasicInfo
               editMode={editMode}
               onEdit={turnOnEditMode}
               viewingUser={user}
               containerClassName="ProfileModal__section"
+              register={register}
             />
             <ProfileModalQuestions
               viewingUser={user}
               editMode={editMode}
               containerClassName="ProfileModal__section"
+              register={register}
             />
             {editMode && user?.profileLinks ? (
               <ProfileModalEditLinks
                 containerClassName="ProfileModal__section"
-                links={user.profileLinks}
+                initialLinks={user.profileLinks}
+                register={register}
+                watch={watch}
+                setLinkTitle={setLinkTitle}
               />
             ) : (
               <ProfileModalLinks
@@ -64,7 +108,10 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
               />
             )}
             {editMode && (
-              <ProfileModalChangePassword containerClassName="ProfileModal__section" />
+              <ProfileModalChangePassword
+                containerClassName="ProfileModal__section"
+                register={register}
+              />
             )}
             {editMode && (
               <ProfileModalEditButtons
@@ -74,7 +121,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
                 containerClassName="UserProfileModal__edit-buttons"
               />
             )}
-          </>
+          </form>
         )}
       </Modal.Body>
     </Modal>

@@ -1,5 +1,7 @@
+$edit-buttons-margin-top: 2rem;
+
 .UserProfileModal {
   &__edit-buttons {
-    margin-top: 2rem;
+    margin-top: $edit-buttons-margin-top;
   }
 }

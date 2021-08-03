@@ -43,6 +43,7 @@ export const ProfileModalEditButtons: React.FC<Props> = ({
         Cancel
       </Button>
       <Button
+        type="submit"
         customClass={"ProfileModalEditButtons__button"}
         customStyle={saveChangesCustomStyle}
         onClick={onSaveClick}

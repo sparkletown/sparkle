@@ -2,7 +2,9 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
+import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
 import React from "react";
+import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -14,9 +16,11 @@ interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
   editMode?: boolean;
   onEdit?: () => void;
+  register?: FormFieldProps["register"];
 }
 
 export const ProfileModalBasicInfo: React.FC<Props> = ({
+  register,
   viewingUser,
   editMode,
   onEdit,
@@ -42,11 +46,12 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
             "ProfileModalBasicInfo--grow": editMode,
           })}
         >
-          {editMode ? (
+          {editMode && register ? (
             <input
+              name={formProp("partyName")}
               className="ProfileModalBasicInfo__input"
-              name={"party-name"}
               defaultValue={viewingUser?.partyName}
+              ref={register()}
             />
           ) : (
             <ProfileModalBasicTextInfo viewingUser={viewingUser} />

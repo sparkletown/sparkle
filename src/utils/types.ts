@@ -29,3 +29,5 @@ export const arrayIncludes = <T>(arr?: T[], element?: T | null): boolean => {
 
   return arr.includes(element);
 };
+
+export const propName = <TObj>(name: keyof TObj) => name;

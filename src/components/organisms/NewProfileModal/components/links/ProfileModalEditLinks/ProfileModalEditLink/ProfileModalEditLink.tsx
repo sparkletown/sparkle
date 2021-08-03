@@ -1,70 +1,72 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import {
+  getLinkUsername,
   useLinkIcon,
-  useLinkUsername,
 } from "components/organisms/NewProfileModal/components/links/links";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
+import { formProp } from "components/organisms/NewProfileModal/UserProfileModal";
 import { useBooleanState } from "hooks/useBooleanState";
-import React, { Dispatch, SetStateAction, useState } from "react";
-import "./ProfileModalEditLink.scss";
+import React, { useCallback, useEffect } from "react";
+import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./ProfileModalEditLink.scss";
 
 interface Props extends ContainerClassName {
+  index: number;
+  initialLink: ProfileLink;
   link: ProfileLink;
+  setTitle: (title: string) => void;
+  register: FormFieldProps["register"];
 }
 
-export const useDisplayText = (
-  initial: string,
-  url: string,
-  fieldTouched: boolean
-): [string, Dispatch<SetStateAction<string>>] => {
-  const [display, setDisplay] = useState(initial);
-
-  const username = useLinkUsername(url);
-  if (!fieldTouched && username) {
-    if (username !== display) setDisplay(username);
-    return [username, setDisplay];
-  } else {
-    return [display, setDisplay];
-  }
-};
-
 export const ProfileModalEditLink: React.FC<Props> = ({
+  index,
+  initialLink,
   link,
+  setTitle,
+  register,
   containerClassName,
 }: Props) => {
-  const [url, setUrl] = useState(link.url);
-  const linkIcon = useLinkIcon(url);
-  const [displayTextTouched, touchDisplayText] = useBooleanState(
-    link.title !== ""
+  const linkIcon = useLinkIcon(link.url);
+
+  const getInputNameForForm = useCallback(
+    (index: number, prop: keyof ProfileLink) =>
+      `${formProp("links")}[${index}].${prop}`,
+    []
   );
 
-  const [displayText, setDisplayText] = useDisplayText(
-    link.title,
-    url,
-    displayTextTouched
+  const [titleTouched, setTitleTouched] = useBooleanState(
+    initialLink.title !== ""
   );
+
+  useEffect(() => {
+    const username = getLinkUsername(link.url);
+    if (!titleTouched && username)
+      if (username !== link.title) setTitle(username);
+  }, [link.title, link.url, setTitle, titleTouched]);
 
   return (
     <div className={classNames("ProfileModalEditLink", containerClassName)}>
       <div className="ProfileModalEditLink__url">
         <input
+          name={getInputNameForForm(index, "url")}
           placeholder="URL"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
+          defaultValue={initialLink.url}
           className="ProfileModalEditLink__input"
+          ref={register()}
         />
       </div>
       <div className="ProfileModalEditLink__text">
         <input
-          value={displayText}
-          onChange={(e) => setDisplayText(e.target.value)}
+          name={getInputNameForForm(index, "title")}
+          onFocus={setTitleTouched}
+          defaultValue={initialLink.title}
           placeholder="Display Text"
           className="ProfileModalEditLink__input"
-          onFocus={touchDisplayText}
+          ref={register()}
         />
         <FontAwesomeIcon
           icon={linkIcon}
