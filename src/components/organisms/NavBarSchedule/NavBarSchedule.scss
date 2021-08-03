@@ -1,5 +1,6 @@
 @import "scss/constants.scss";
 
+$NavBarSchedule--width: 40%;
 $NavBarSchedule--padding: 20px;
 
 $weekday--padding: 8px 10px;
@@ -12,7 +13,7 @@ $weekday--margin-right: 10px;
   top: 0;
   left: 0;
   height: 100%;
-  width: 40%;
+  width: $NavBarSchedule--width;
 
   padding-top: $navbar-height;
   padding-left: $NavBarSchedule--padding;
@@ -23,6 +24,7 @@ $weekday--margin-right: 10px;
   pointer-events: none;
   opacity: 0;
   backdrop-filter: blur(5px);
+  transform: translateX(-$NavBarSchedule--width);
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
 
