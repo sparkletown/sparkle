@@ -283,10 +283,6 @@ export const eventEditSchema = Yup.object().shape<EventInput>({
   duration_minutes: Yup.number()
     .typeError("Minutes must be a number")
     .required("Minutes equired"),
-  price: Yup.number()
-    .typeError("Price must be a number")
-    .required("Price is required")
-    .default(0),
   host: Yup.string().required("Host required"),
   room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
 });

@@ -89,11 +89,11 @@ export const AdminVenueView: React.FC = () => {
         <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
       )}
       {selectedTab === AdminVenueTab.timing && (
-         <Timing
-           venue={currentVenue}
-           onClickNext={() => setSelectedTab(AdminVenueTab.run)}
-           onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
-         />
+        <Timing
+          venue={venue}
+          onClickNext={() => setSelectedTab(AdminVenueTab.run)}
+          onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
+        />
       )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
