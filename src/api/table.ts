@@ -19,6 +19,7 @@ export const updateVenueTable = async ({
   subtitle,
   capacity,
 }: UpdateVenueTableProps) => {
+  // @debt: capacity type equals number, but incoming value is string. Needs to be fixed in table types
   const updatedCapacity = parseInt(capacity.toString(), 10);
   const tableColumns = tableOfUser?.columns ?? MIN_TABLE_CAPACITY;
   const updatedTable = {
@@ -26,7 +27,7 @@ export const updateVenueTable = async ({
     title,
     subtitle,
     capacity: updatedCapacity,
-    rows: Math.round(updatedCapacity / tableColumns),
+    rows: Math.ceil(updatedCapacity / tableColumns),
   };
 
   return await firebase.functions().httpsCallable("venue-updateTables")({
