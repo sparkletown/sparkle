@@ -1,21 +1,21 @@
 @import "scss/constants.scss";
 
-$Schedule--padding: 20px;
+$ScheduleNG--padding: 20px;
 
 .ScheduleNG {
-  padding-top: $Schedule--padding;
+  padding-top: $ScheduleNG--padding;
   display: flex;
   flex-direction: column;
   position: relative;
 
   &__item {
     display: flex;
-    padding-bottom: $Schedule--padding;
+    padding-bottom: $ScheduleNG--padding;
   }
 
   &__item--info {
     flex-basis: 10%;
-    margin-right: $Schedule--padding;
+    margin-right: $ScheduleNG--padding;
   }
 
   &__item--time,
@@ -31,10 +31,10 @@ $Schedule--padding: 20px;
   }
 
   &__loading {
-    margin-top: $Schedule--padding;
+    margin-top: $ScheduleNG--padding;
   }
 
   &__no-events {
-    padding: $Schedule--padding;
+    padding: $ScheduleNG--padding;
   }
 }
