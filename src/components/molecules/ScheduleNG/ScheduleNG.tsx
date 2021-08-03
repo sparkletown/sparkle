@@ -21,43 +21,39 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
 }) => {
   const hasEvents = daysEvents.length > 0;
 
-  const containerClasses = classNames("Schedule");
+  const containerClasses = classNames("ScheduleNG");
 
-  const rowsWithTheEvents = useMemo(
-    () =>
-      daysEvents.map((event) => (
-        <div key={event.id} className="Schedule__item">
-          <div className="Schedule__item--info">
-            <span className="Schedule__item--date">
-              {formatDateRelativeToNow(eventStartTime(event), {
-                formatToday: () => "",
-              })}
-            </span>
+  const rowsWithTheEvents = useMemo(() => {
+    const formatDateOptions = { formatToday: () => "" };
 
-            <span className="Schedule__item--time">
-              {formatTimeLocalised(eventStartTime(event))}
-            </span>
+    return daysEvents.map((event) => (
+      <div key={event.id} className="ScheduleNG__item">
+        <div className="ScheduleNG__item--info">
+          <span className="ScheduleNG__item--date">
+            {formatDateRelativeToNow(eventStartTime(event), formatDateOptions)}
+          </span>
 
-            <span className="Schedule__item--date">
-              {formatDateRelativeToNow(eventEndTime(event), {
-                formatToday: () => "",
-              })}
-            </span>
+          <span className="ScheduleNG__item--time">
+            {formatTimeLocalised(eventStartTime(event))}
+          </span>
 
-            <span className="Schedule__item--time">
-              {formatTimeLocalised(eventEndTime(event))}
-            </span>
-          </div>
-          <div className="Schedule__item--name">{event.name}</div>
+          <span className="ScheduleNG__item--date">
+            {formatDateRelativeToNow(eventEndTime(event), formatDateOptions)}
+          </span>
+
+          <span className="ScheduleNG__item--time">
+            {formatTimeLocalised(eventEndTime(event))}
+          </span>
         </div>
-      )),
-    [daysEvents]
-  );
+        <div className="ScheduleNG__item--name">{event.name}</div>
+      </div>
+    ));
+  }, [daysEvents]);
 
   if (isLoading) {
     return (
       <Loading
-        containerClassName="Schedule__loading"
+        containerClassName="ScheduleNG__loading"
         label={"Events are loading"}
       />
     );
@@ -66,7 +62,7 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   if (!hasEvents) {
     return (
       <div className={containerClasses}>
-        <div className="Schedule__no-events">No events scheduled</div>
+        <div className="ScheduleNG__no-events">No events scheduled</div>
       </div>
     );
   }
