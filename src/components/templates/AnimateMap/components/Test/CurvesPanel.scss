@@ -1,0 +1,31 @@
+.CurvesPanel {
+  display: flex;
+  position: relative;
+
+  .column {
+    margin: 5px 20px;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .space {
+    margin: auto;
+  }
+
+  .row {
+    display: flex;
+  }
+
+  label {
+    max-height: 13px;
+  }
+
+  input {
+    margin: 2px;
+    padding: 3px;
+    //background: white;
+    width: auto;
+    max-height: 15px;
+    max-width: 43px;
+  }
+}

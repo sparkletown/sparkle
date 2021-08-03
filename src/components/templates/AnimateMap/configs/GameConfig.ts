@@ -38,6 +38,17 @@ export class GameConfig {
     { x: 1, y: 1 },
   ];
 
+  public minSpeed = 1;
+  public maxSpeed = 10;
+  public minZoom = 0.1;
+  public maxZoom = 6;
+  public pointForBezieSpeedCurve = [
+    { x: 0, y: 0 },
+    { x: 0.1, y: 0.1 },
+    { x: 1, y: -0.2 },
+    { x: 1, y: 1 },
+  ];
+
   private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
   private _zoomLevelViewportCorresponding: Array<number> = [
     1.6137,
