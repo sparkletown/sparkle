@@ -12,16 +12,13 @@ import "./ScheduleNG.scss";
 
 export interface ScheduleNGProps {
   daysEvents: PersonalizedVenueEvent[];
-  scheduleDate: Date;
   isLoading: boolean;
 }
 
 export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   daysEvents,
-  scheduleDate,
   isLoading,
 }) => {
-  console.log("scheduleDate", scheduleDate);
   const hasEvents = daysEvents.length > 0;
 
   const containerClasses = classNames("Schedule");
@@ -29,27 +26,29 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   const rowsWithTheEvents = useMemo(
     () =>
       daysEvents.map((event) => (
-        <div key={event.id}>
-          <span className="ScheduleItem__event-date">
-            {formatDateRelativeToNow(eventStartTime(event), {
-              formatToday: () => "",
-            })}
-          </span>
+        <div key={event.id} className="Schedule__item">
+          <div className="Schedule__item--info">
+            <span className="Schedule__item--date">
+              {formatDateRelativeToNow(eventStartTime(event), {
+                formatToday: () => "",
+              })}
+            </span>
 
-          <span className="ScheduleItem__event-time">
-            {formatTimeLocalised(eventStartTime(event))}
-          </span>
+            <span className="Schedule__item--time">
+              {formatTimeLocalised(eventStartTime(event))}
+            </span>
 
-          <span className="ScheduleItem__event-date">
-            {formatDateRelativeToNow(eventEndTime(event), {
-              formatToday: () => "",
-            })}
-          </span>
+            <span className="Schedule__item--date">
+              {formatDateRelativeToNow(eventEndTime(event), {
+                formatToday: () => "",
+              })}
+            </span>
 
-          <span className="ScheduleItem__event-time">
-            {formatTimeLocalised(eventEndTime(event))}
-          </span>
-          <div>{event.name}</div>
+            <span className="Schedule__item--time">
+              {formatTimeLocalised(eventEndTime(event))}
+            </span>
+          </div>
+          <div className="Schedule__item--name">{event.name}</div>
         </div>
       )),
     [daysEvents]

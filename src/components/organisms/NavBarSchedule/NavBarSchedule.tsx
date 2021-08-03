@@ -55,7 +55,6 @@ export interface ScheduleDay {
 }
 
 export interface ScheduleNGDay {
-  scheduleDate: Date;
   daysEvents: PersonalizedVenueEvent[];
 }
 
@@ -207,7 +206,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
     return {
       daysEvents,
-      scheduleDate: startOfSelectedDay,
     };
   }, [
     relatedVenueEvents,
