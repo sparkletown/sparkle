@@ -17,7 +17,7 @@ import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 import { useWorldUserLocation } from "hooks/users";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
