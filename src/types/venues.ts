@@ -10,6 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
+import { UserStatus, UsernameVisibility } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -19,6 +20,7 @@ export enum VenueTemplate {
   artcar = "artcar",
   artpiece = "artpiece",
   audience = "audience",
+  auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
@@ -48,11 +50,13 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
+  | VenueTemplate.auditorium
 >;
 
-// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
 export type AnyVenue =
   | GenericVenue
+  | AuditoriumVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -96,9 +100,9 @@ export interface Venue_v2_AdvancedConfig {
   roomVisibility?: RoomVisibility;
   showBadges?: boolean;
   showGrid?: boolean;
+  showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
-  showZendesk?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -125,7 +129,6 @@ export interface BaseVenue {
   owners: string[];
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
-  mapIconImageUrl?: string;
   placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
@@ -139,6 +142,7 @@ export interface BaseVenue {
   playaIcon2?: PlayaIcon;
   miniAvatars?: boolean;
   adultContent?: boolean;
+  samlAuthProviderId?: string;
   showAddress?: boolean;
   showGiftATicket?: boolean;
   columns?: number;
@@ -147,7 +151,7 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showLiveSchedule?: boolean;
+  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -157,7 +161,6 @@ export interface BaseVenue {
     text: string;
   };
   showLearnMoreLink?: boolean;
-  liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
@@ -165,13 +168,16 @@ export interface BaseVenue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
+  showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
+  userStatuses?: UserStatus[];
   showRadio?: boolean;
   showBadges?: boolean;
-  showZendesk?: boolean;
+  showNametags?: UsernameVisibility;
+  showUserStatus?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -231,6 +237,11 @@ export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
+}
+
+export interface AuditoriumVenue extends BaseVenue {
+  template: VenueTemplate.auditorium;
+  title?: string;
 }
 
 export interface Question {
@@ -308,8 +319,6 @@ export interface VenueEvent {
   description: string;
   descriptions?: string[];
   duration_minutes: number;
-  price: number;
-  collective_price: number;
   host: string;
   room?: string;
   id?: string;

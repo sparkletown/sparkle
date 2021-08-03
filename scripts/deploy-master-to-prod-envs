@@ -41,14 +41,20 @@ read -p "  Press enter to continue"
 # Modern branch names
 
 echo
-echo "About to deploy to memrise, unesco, ohbm, pa:"
+echo "About to deploy to memrise, unesco, pa, clever, unity, demo:"
 read -p "  Press enter to continue"
 
 #(set -x; git push origin master:env/kotr) # Note: This runs custom code/is no longer used/required. Don't deploy to it.
 (set -x; git push origin master:env/memrise)
 (set -x; git push origin master:env/unesco)
-(set -x; git push origin master:env/ohbm)
+# (set -x; git push origin master:env/ohbm) # Note: This runs custom code.
 (set -x; git push origin master:env/pa)
+# (set -x; git push origin master:env/github) # Note: This runs custom code.
+(set -x; git push origin master:env/clever)
+(set -x; git push origin master:env/unity)
+(set -x; git push origin master:env/demo)
+
+echo "Note: ohbm, github, summit-hack environments were not updated as they have custom code. To update the environments you should create a PR. (example: https://github.com/sparkletown/sparkle/pull/1519)"
 
 echo
 echo "All done!"

@@ -3,20 +3,16 @@ import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTicketAlt, faHome } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
-import { KeyboardShortcutKeys, PLAYA_VENUE_ID } from "settings";
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import {
-  currentVenueSelectorData,
-  parentVenueSelector,
-  radioStationsSelector,
-} from "utils/selectors";
+import { radioStationsSelector } from "utils/selectors";
 
 import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
@@ -25,8 +21,7 @@ import { useRadio } from "hooks/useRadio";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useMousetrap } from "hooks/useMousetrap";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
@@ -37,11 +32,13 @@ import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
-import { NavBarLogin } from "./NavBarLogin";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { BackButton } from "components/atoms/BackButton";
 
-import "./NavBar.scss";
+import { NavBarLogin } from "./NavBarLogin";
+
 import * as S from "./Navbar.styles";
+import "./NavBar.scss";
 import "./playa.scss";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
@@ -57,7 +54,7 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
 
 const ProfilePopover = (
   <Popover id="profile-popover">
-    <Popover.Content>
+    <Popover.Content className="NavBar__profile-popover">
       <ProfilePopoverContent />
     </Popover.Content>
   </Popover>
@@ -74,41 +71,40 @@ const GiftPopover = (
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
 export interface NavBarPropsType {
-  redirectionUrl?: string;
   hasBackButton?: boolean;
 }
 
-export const NavBar: React.FC<NavBarPropsType> = ({
-  redirectionUrl,
-  hasBackButton = true,
-}) => {
+export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
-  const venue = useSelector(currentVenueSelectorData);
-  const venueParentId = venue?.parentId;
-  const radioStations = useSelector(radioStationsSelector);
-  const parentVenue = useSelector(parentVenueSelector);
 
-  // @debt Move connect from Navbar to a hook
-  useFirestoreConnect(
-    venueParentId
-      ? {
-          collection: "venues",
-          doc: venueParentId,
-          storeAs: "parentVenue",
-        }
-      : undefined
-  );
+  const radioStations = useSelector(radioStationsSelector);
+
+  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
     push: openUrlUsingRouter,
   } = useHistory();
+
+  const isSovereignVenue = venueId === sovereignVenueId;
+
+  const hasSovereignVenue = sovereignVenueId !== undefined;
+
+  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
+
+  const shouldShowSchedule =
+    currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
   const futureUpcoming =
-    venue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ?? []; //@debt typing does this exist?
+    currentVenue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ??
+    []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
@@ -157,24 +153,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     setEventScheduleVisible(false);
   }, []);
 
-  useMousetrap({
-    keys: KeyboardShortcutKeys.schedule,
-    callback: toggleEventSchedule,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
-
-  const parentVenueId = venue?.parentId ?? "";
   const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
     enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
   }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
-    const venueLink =
-      redirectionUrl ?? venueId ? venueInsideUrl(venueId ?? "") : "/";
+    if (!sovereignVenueId) return;
 
-    window.location.href = venueLink;
-  }, [redirectionUrl, venueId]);
+    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [sovereignVenueId, openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -185,15 +174,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     []
   );
 
-  if (!venueId || !venue) return null;
+  if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? venue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
   const radioStation = !!hasRadioStations && radioStations![0];
 
-  const showNormalRadio = (venue?.showRadio && !isSoundCloud) ?? false;
-  const showSoundCloudRadio = (venue?.showRadio && isSoundCloud) ?? false;
+  const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
+  const showSoundCloudRadio =
+    (currentVenue?.showRadio && isSoundCloud) ?? false;
 
   return (
     <>
@@ -210,14 +200,28 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               >
                 <div />
               </div>
-              <div
-                className={`nav-party-logo ${
-                  isEventScheduleVisible && "clicked"
-                }`}
-                onClick={toggleEventSchedule}
-              >
-                {navbarTitle} <span className="schedule-text">Schedule</span>
-              </div>
+              {shouldShowHomeButton && (
+                <FontAwesomeIcon
+                  icon={faHome}
+                  className="NavBar__home-icon"
+                  onClick={navigateToHomepage}
+                />
+              )}
+
+              {shouldShowSchedule ? (
+                <button
+                  aria-label="Schedule"
+                  className={`nav-party-logo ${
+                    isEventScheduleVisible && "clicked"
+                  }`}
+                  onClick={toggleEventSchedule}
+                >
+                  {navbarTitle} <span className="schedule-text">Schedule</span>
+                </button>
+              ) : (
+                <div>{navbarTitle}</div>
+              )}
+
               <VenuePartygoers venueId={venueId} />
             </div>
 
@@ -240,7 +244,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   </OverlayTrigger>
                 )}
 
-                {IS_BURN && venue?.showGiftATicket && (
+                {IS_BURN && currentVenue?.showGiftATicket && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
@@ -264,7 +268,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                             {...{
                               volume,
                               setVolume,
-                              title: venue?.radioTitle,
+                              title: currentVenue?.radioTitle,
                             }}
                             onEnableHandler={handleRadioEnable}
                             isRadioPlaying={isRadioPlaying}
@@ -275,7 +279,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -285,7 +289,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
                 {showSoundCloudRadio && (
                   <S.RadioTrigger>
-                    <div
+                    <button
                       className={`profile-icon navbar-link-radio ${
                         volume === 0 && "off"
                       }`}
@@ -310,7 +314,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar user={userWithId} showStatus large />
+                  <UserAvatar user={userWithId} showStatus size="medium" />
                 </OverlayTrigger>
               </div>
             )}
@@ -318,28 +322,29 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         </div>
       </header>
 
-      <div
-        className={`schedule-dropdown-backdrop ${
-          isEventScheduleVisible ? "show" : ""
-        }`}
-        onClick={hideEventSchedule}
-      >
-        <div className={navBarScheduleClassName}>
-          <NavBarSchedule
-            isVisible={isEventScheduleVisible}
-            venueId={venueId}
-          />
+      {shouldShowSchedule && (
+        <div
+          aria-hidden={isEventScheduleVisible ? "false" : "true"}
+          className={`schedule-dropdown-backdrop ${
+            isEventScheduleVisible ? "show" : ""
+          }`}
+          onClick={hideEventSchedule}
+        >
+          <div className={navBarScheduleClassName}>
+            <NavBarSchedule
+              isVisible={isEventScheduleVisible}
+              venueId={venueId}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* @debt Remove back button from Navbar */}
-      {hasBackButton && venue?.parentId && parentVenue?.name && (
-        <div className="back-map-btn" onClick={backToParentVenue}>
-          <div className="back-icon" />
-          <span className="back-link">
-            Back{parentVenue ? ` to ${parentVenue.name}` : ""}
-          </span>
-        </div>
+      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
       )}
     </>
   );

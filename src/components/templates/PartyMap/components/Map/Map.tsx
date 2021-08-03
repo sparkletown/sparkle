@@ -3,29 +3,30 @@ import { FirebaseReducer } from "react-redux-firebase";
 
 import {
   DEFAULT_MAP_BACKGROUND,
-  MAXIMUM_COLUMNS,
-  MINIMUM_COLUMNS,
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
 import { User, UserExperienceData } from "types/User";
 import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
+import { GridPosition } from "types/grid";
 
-import { makeUpdateUserGridLocation } from "api/profile";
+import { setGridData } from "api/profile";
 
 import { hasElements } from "utils/types";
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
 import { setLocationData } from "utils/userLocation";
 
-import { useMapKeyboardControls } from "hooks/useMapKeyboardControls";
+import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
-import { useMapGrid } from "./hooks/useMapGrid";
-import { usePartygoersbySeat } from "./hooks/usePartygoersBySeat";
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
+import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 
+import { MapGrid } from "./MapGrid";
 import { MapRoom } from "./MapRoom";
 
 import "./Map.scss";
@@ -56,12 +57,13 @@ export const Map: React.FC<MapProps> = ({
   const showGrid = venue.showGrid;
 
   const totalColumns = Math.max(
-    MINIMUM_COLUMNS,
-    Math.min(MAXIMUM_COLUMNS, venue.columns ?? DEFAULT_COLUMNS)
+    MINIMUM_PARTYMAP_COLUMNS_COUNT,
+    Math.min(MAXIMUM_PARTYMAP_COLUMNS_COUNT, venue.columns ?? DEFAULT_COLUMNS)
   );
   const [totalRows, setTotalRows] = useState<number>(0);
+  const hasRows = totalRows > 0;
 
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue.name });
   const columnsArray = useMemo(
     () => Array.from(Array<JSX.Element>(totalColumns)),
     [totalColumns]
@@ -85,15 +87,16 @@ export const Map: React.FC<MapProps> = ({
   }, [venue.columns, venue.mapBackgroundImageUrl]);
 
   const takeSeat = useCallback(
-    (row: number | null, column: number | null) => {
+    (gridPosition: GridPosition) => {
       if (!userUid) return;
 
-      makeUpdateUserGridLocation({
-        venueId,
-        userUid,
-      })(row, column);
-
       setLocationData({ userId: userUid, locationName: venueName });
+
+      return setGridData({
+        venueId,
+        userId: userUid,
+        gridData: gridPosition,
+      });
     },
     [userUid, venueId, venueName]
   );
@@ -158,7 +161,7 @@ export const Map: React.FC<MapProps> = ({
   const onSeatClick = useCallback(
     (row: number, column: number, seatedPartygoer?: WithId<User>) => {
       if (!seatedPartygoer) {
-        takeSeat(row, column);
+        takeSeat({ row, column });
       } else {
         checkForRoomHit(row, column);
       }
@@ -166,26 +169,20 @@ export const Map: React.FC<MapProps> = ({
     [checkForRoomHit, takeSeat]
   );
 
-  const { partygoersBySeat, isSeatTaken } = usePartygoersbySeat({
+  const getUserBySeat = useGetUserByPosition({
     venueId,
-    partygoers,
+    positionedUsers: partygoers,
   });
 
-  useMapKeyboardControls({
+  const isSeatTaken = (gridPosition: GridPosition) =>
+    getUserBySeat(gridPosition) !== undefined;
+
+  useKeyboardControls({
     venueId,
     totalRows,
     totalColumns,
     isSeatTaken,
     takeSeat,
-  });
-
-  const mapGrid = useMapGrid({
-    showGrid,
-    userUid,
-    columnsArray,
-    rowsArray,
-    partygoersBySeat,
-    onSeatClick,
   });
 
   // TODO: this probably doesn't even need to be a hook.. it's more of a component if anything. We can clean this up later
@@ -235,12 +232,23 @@ export const Map: React.FC<MapProps> = ({
           src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
           alt=""
         />
-
-        <div className="party-map-grid-container" style={gridContainerStyles}>
-          {mapGrid}
-          {partygoersOverlay}
-          {roomOverlay}
-        </div>
+        {hasRows && (
+          <div className="party-map-grid-container" style={gridContainerStyles}>
+            {showGrid && (
+              <MapGrid
+                {...{
+                  userUid,
+                  columnsArray,
+                  rowsArray,
+                  getUserBySeat,
+                  onSeatClick,
+                }}
+              />
+            )}
+            {partygoersOverlay}
+            {roomOverlay}
+          </div>
+        )}
       </div>
     </div>
   );

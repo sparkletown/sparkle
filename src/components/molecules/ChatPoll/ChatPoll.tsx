@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo } from "react";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
@@ -16,6 +17,10 @@ import { WithId } from "utils/id";
 
 import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Loading } from "components/molecules/Loading";
 
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import Button from "components/atoms/Button";
@@ -63,8 +68,8 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     "ChatPoll--me": isMine,
   });
 
-  const handleVote = useCallback(
-    (question) =>
+  const [{ loading: isVoting }, handleVote] = useAsyncFn(
+    async (question) =>
       voteInPoll({
         questionId: question.id,
         pollId: id,
@@ -80,7 +85,12 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           customClass="ChatPoll__question"
           onClick={() => handleVote(question)}
         >
-          {question.name}
+          <RenderMarkdown
+            text={question.name}
+            components={{
+              p: "span",
+            }}
+          />
         </Button>
       )),
     [questions, handleVote]
@@ -113,10 +123,27 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           style={{ width: `${question.share}%` }}
         />
         <span className="ChatPoll__text-count">{question.share}%</span>
-        {question.name}
+        <RenderMarkdown
+          text={question.name}
+          components={{
+            p: "span",
+          }}
+        />
       </div>
     ));
   }, [questions, calculateVotePercentage]);
+
+  const renderPollContent = () => {
+    if (isVoting) {
+      return <Loading />;
+    }
+
+    if (hasVoted || isMine) {
+      return renderResults;
+    }
+
+    return renderQuestions;
+  };
 
   const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
     id,
@@ -127,8 +154,11 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     <div className={containerStyles}>
       <div className="ChatPoll__bulb">
         <FontAwesomeIcon className="ChatPoll__icon" icon={faPoll} size="lg" />
-        <div className="ChatPoll__topic">{topic}</div>
-        <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
+        <div className="ChatPoll__topic">
+          <RenderMarkdown text={topic} />
+        </div>
+        {renderPollContent()}
+
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
         </div>

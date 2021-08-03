@@ -17,9 +17,12 @@ $reply-icon-radius: 20px;
   flex-direction: column;
   margin-bottom: $spacing--lg;
 
+  // @debt This content-visibility: auto line seems to do something that causes constant re-calculations and pins the GPU at high usage
+  // content-visibility: auto;
+
   &:hover {
     .ChatMessage__reply-icon {
-      display: flex;
+      opacity: 1;
     }
   }
 
@@ -78,6 +81,16 @@ $reply-icon-radius: 20px;
 
   &__text {
     font-size: $font-size--md;
+
+    // This direct element style is used with RenderMarkdown
+    img {
+      max-width: 100%;
+    }
+
+    // This direct element style is used with RenderMarkdown
+    p {
+      margin-bottom: 0;
+    }
   }
 
   &__show-replies-button {
@@ -86,7 +99,9 @@ $reply-icon-radius: 20px;
   }
 
   &__reply-icon {
-    display: none;
+    color: $white;
+    display: flex;
+    opacity: 0;
     justify-content: center;
     align-items: center;
     // Overflow the userAvatar in the replies list
@@ -105,9 +120,15 @@ $reply-icon-radius: 20px;
 
     border-radius: $border-radius--max;
     background-color: $secondary--light;
+    transition: opacity 100ms $transition-function;
+    border: none;
 
     &:hover {
       background-color: $secondary--lightest;
+    }
+
+    &:focus {
+      opacity: 1;
     }
   }
 

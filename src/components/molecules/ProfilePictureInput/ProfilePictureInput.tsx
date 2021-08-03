@@ -3,6 +3,7 @@ import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import "firebase/storage";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -12,13 +13,15 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
+import { Loading } from "components/molecules/Loading";
 
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
 
-interface ProfilePictureInputProps {
+export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
@@ -29,7 +32,7 @@ interface ProfilePictureInputProps {
   register: any;
 }
 
-const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
+export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
   venueId,
   setValue,
   user,
@@ -42,7 +45,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
@@ -92,15 +95,21 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const uploadProfilePic = useCallback((event) => {
+    event.preventDefault();
+    uploadRef.current?.click();
+  }, []);
+
   const uploadDefaultAvatar = useCallback(
-    async (avatar: string) => {
+    async (event, avatar: string) => {
+      event.preventDefault();
       setValue("pictureUrl", avatar, true);
     },
     [setValue]
   );
 
   const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
+    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
@@ -109,17 +118,17 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
 
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
-      <div
+      <button
         key={`${avatar}-${index}`}
         className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
+        onClick={(event) => uploadDefaultAvatar(event, avatar)}
       >
         <img
           src={avatar}
           className="profile-icon profile-picture-preview"
           alt={`default avatar ${index}`}
         />
-      </div>
+      </button>
     ));
   }, [defaultAvatars, uploadDefaultAvatar]);
 
@@ -144,9 +153,12 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
         className="profile-picture-input"
         ref={uploadRef}
       />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
+      <button
+        className="profile-picture-button"
+        onClick={(event) => uploadProfilePic(event)}
+      >
         Upload your profile pic
-      </label>
+      </button>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
@@ -154,7 +166,7 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
+        {isLoading ? <Loading /> : avatarImages}
       </div>
       <input
         name="pictureUrl"
@@ -166,5 +178,3 @@ const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = (
     </div>
   );
 };
-
-export default ProfilePictureInput;

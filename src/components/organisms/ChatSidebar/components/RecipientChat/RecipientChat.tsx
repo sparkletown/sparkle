@@ -9,10 +9,10 @@ import { WithId } from "utils/id";
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useRecipientChat } from "hooks/privateChats";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import "./RecipientChat.scss";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
   venue: WithId<AnyVenue>;
@@ -57,13 +57,15 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         <UserAvatar user={recipient} showStatus />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <Chatbox
-        messages={messagesToDisplay}
-        sendMessage={sendMessageToSelectedRecipient}
-        deleteMessage={deleteMessage}
-        sendThreadReply={sendThreadReply}
-        venue={venue}
-      />
+      <div className="recipient-chat__chatbox">
+        <Chatbox
+          messages={messagesToDisplay}
+          sendMessage={sendMessageToSelectedRecipient}
+          deleteMessage={deleteMessage}
+          sendThreadReply={sendThreadReply}
+          venue={venue}
+        />
+      </div>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { KeyboardShortcutKeys } from "settings";
 
 import { ReactHook } from "types/utility";
+import { GridPosition } from "types/grid";
 
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";
@@ -11,8 +12,8 @@ export interface UseMapKeyboardControlsProps {
   venueId: string;
   totalRows: number;
   totalColumns: number;
-  isSeatTaken: (row: number, column: number) => boolean;
-  takeSeat: (row: number | null, column: number | null) => void;
+  isSeatTaken: (gridPosition: GridPosition) => boolean;
+  takeSeat: (gridPosition: GridPosition) => Promise<void> | undefined;
 }
 
 // TODO: use e.preventDefault() or return false or similar in the keyboard handlers (check mousetrap docs) so we don't scroll on arrow key presses
@@ -30,9 +31,9 @@ export const useMapKeyboardControls: ReactHook<
    */
   const moveUp = useCallback(() => {
     if (!row || !column) return;
-    if (row - 1 < 1 || isSeatTaken(row - 1, column)) return;
+    if (row - 1 < 1 || isSeatTaken({ row: row - 1, column })) return;
 
-    takeSeat(row - 1, column);
+    takeSeat({ row: row - 1, column });
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
@@ -47,9 +48,9 @@ export const useMapKeyboardControls: ReactHook<
    */
   const moveDown = useCallback(() => {
     if (!row || !column) return;
-    if (row + 1 > totalRows || isSeatTaken(row + 1, column)) return;
+    if (row + 1 > totalRows || isSeatTaken({ row: row + 1, column })) return;
 
-    takeSeat(row + 1, column);
+    takeSeat({ row: row + 1, column });
   }, [row, column, totalRows, isSeatTaken, takeSeat]);
 
   useMousetrap({
@@ -64,9 +65,9 @@ export const useMapKeyboardControls: ReactHook<
    */
   const moveLeft = useCallback(() => {
     if (!row || !column) return;
-    if (column - 1 < 1 || isSeatTaken(row, column - 1)) return;
+    if (column - 1 < 1 || isSeatTaken({ row, column: column - 1 })) return;
 
-    takeSeat(row, column - 1);
+    takeSeat({ row, column: column - 1 });
   }, [row, column, isSeatTaken, takeSeat]);
 
   useMousetrap({
@@ -81,9 +82,10 @@ export const useMapKeyboardControls: ReactHook<
    */
   const moveRight = useCallback(() => {
     if (!row || !column) return;
-    if (column + 1 > totalColumns || isSeatTaken(row, column + 1)) return;
+    if (column + 1 > totalColumns || isSeatTaken({ row, column: column + 1 }))
+      return;
 
-    takeSeat(row, column + 1);
+    takeSeat({ row, column: column + 1 });
   }, [row, column, totalColumns, isSeatTaken, takeSeat]);
 
   useMousetrap({

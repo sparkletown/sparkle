@@ -1,4 +1,6 @@
 import Bugsnag from "@bugsnag/js";
+import { generatePath } from "react-router";
+
 import { VALID_URL_PROTOCOLS } from "settings";
 
 export const venueLandingUrl = (venueId: string) => {
@@ -8,6 +10,16 @@ export const venueLandingUrl = (venueId: string) => {
 export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
+
+export const adminNGVenueUrl = (venueId?: string) =>
+  generatePath("/admin-ng/venue/:venueId?", {
+    venueId: venueId,
+  });
+
+export const adminNGSettigsUrl = (venueId?: string) =>
+  generatePath("/admin-ng/advanced-settings/:venueId?", {
+    venueId: venueId,
+  });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;
@@ -97,3 +109,15 @@ export const getExtraLinkProps = (isExternal: boolean) =>
 
 export const getFullVenueInsideUrl = (venueId: string) =>
   new URL(venueInsideUrl(venueId), window.location.origin).href;
+
+export const getUrlWithoutTrailingSlash = (url: string) => {
+  return url.endsWith("/") ? url.slice(0, -1) : url;
+};
+
+export const getLastUrlParam = (url: string) => {
+  return url.split("/").slice(-1);
+};
+
+export const getUrlParamFromString = (data: string) => {
+  return data.replaceAll(" ", "").toLowerCase();
+};

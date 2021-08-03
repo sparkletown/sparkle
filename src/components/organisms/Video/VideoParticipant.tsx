@@ -53,7 +53,8 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
     audioTracks,
 
     isMuted,
-    setMuted,
+    muteAudio,
+    unmuteAudio,
     toggleMuted,
 
     isVideoHidden,
@@ -100,10 +101,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       audioTrack.detach();
     }
 
-    // TODO: can we move this into useParticipantState()?
-    const muteAudio = () => setMuted(true);
-    const unmuteAudio = () => setMuted(false);
-
     audioTrack.on("enabled", unmuteAudio);
     audioTrack.on("disabled", muteAudio);
 
@@ -113,7 +110,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       audioTrack.detach();
     };
-  }, [audioTrack, isMuted, setMuted]);
+  }, [audioTrack, isMuted, muteAudio, unmuteAudio]);
 
   const micIconMe = isMuted ? faMicrophoneSlash : faMicrophone;
   const micIconOther = isMuted ? faVolumeMute : faVolumeUp;

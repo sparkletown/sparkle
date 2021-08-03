@@ -1,22 +1,16 @@
-import React, {
-  useCallback,
-  useState,
-  ChangeEvent,
-  useMemo,
-  useRef,
-} from "react";
+import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEqual, reduce } from "lodash";
 
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 import {
   DEFAULT_PARTY_NAME,
   DEFAULT_VENUE_LOGO,
-  KeyboardShortcutKeys,
+  COVERT_ROOM_TYPES,
 } from "settings";
 
-import { Room, RoomTypes } from "types/rooms";
+import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
@@ -27,7 +21,6 @@ import { isTruthy, isDefined } from "utils/types";
 import { useVenueEvents } from "hooks/events";
 import { useWorldUsers } from "hooks/users";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
-import { useMousetrap } from "hooks/useMousetrap";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
@@ -73,12 +66,31 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     currentVenueId: venueId,
   });
 
-  const relatedRooms = useMemo<Room[]>(
+  const enabledRelatedRooms = useMemo<Room[]>(
     () =>
       relatedVenues
         .flatMap((venue) => venue.rooms ?? [])
-        .filter((room) => room),
+        .filter((room) => {
+          if (isDefined(room.type) && COVERT_ROOM_TYPES.includes(room.type)) {
+            return false;
+          }
+
+          return room.isEnabled;
+        }),
     [relatedVenues]
+  );
+
+  const enabledRelatedRoomsByTitle = useMemo<Partial<Record<string, Room>>>(
+    () =>
+      reduce(
+        enabledRelatedRooms,
+        (enabledRelatedRoomsByTitle, room) => ({
+          ...enabledRelatedRoomsByTitle,
+          [room.title]: room,
+        }),
+        {}
+      ),
+    [enabledRelatedRooms]
   );
 
   const { isEventsLoading, events: relatedEvents } = useVenueEvents({
@@ -90,12 +102,8 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
 
     /* @debt we really shouldn't be using the index as part of the key here, it's unstable.. but rooms don't have a unique identifier */
     return (
-      relatedRooms
-        ?.filter(
-          (room) =>
-            room.type !== RoomTypes.unclickable &&
-            room.title.toLowerCase().includes(searchQuery)
-        )
+      enabledRelatedRooms
+        .filter((room) => room.title.toLowerCase().includes(searchQuery))
         .map((room, index) => (
           <NavSearchResult
             key={`room-${room.title}-${index}`}
@@ -117,7 +125,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           />
         )) ?? []
     );
-  }, [searchQuery, relatedRooms, clearSearch, relatedVenues]);
+  }, [searchQuery, enabledRelatedRooms, clearSearch, relatedVenues]);
 
   const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
@@ -144,10 +152,20 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
     if (!searchQuery) return [];
 
     return relatedEvents
-      .filter((event) => event.name.toLowerCase().includes(searchQuery))
+      .filter((event) => {
+        const isEventRoomEnabled =
+          isDefined(event.room) && event.room !== ""
+            ? isDefined(enabledRelatedRoomsByTitle[event.room])
+            : true;
+
+        return (
+          isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
+        );
+      })
       .map((event) => {
         const imageUrl =
-          relatedRooms.find((room) => room.title === event.room)?.image_url ??
+          enabledRelatedRooms.find((room) => room.title === event.room)
+            ?.image_url ??
           relatedVenues.find((venue) => venue.id === event.venueId)?.host
             ?.icon ??
           DEFAULT_VENUE_LOGO;
@@ -167,7 +185,14 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           />
         );
       });
-  }, [searchQuery, relatedEvents, relatedRooms, relatedVenues, clearSearch]);
+  }, [
+    searchQuery,
+    relatedEvents,
+    enabledRelatedRoomsByTitle,
+    enabledRelatedRooms,
+    relatedVenues,
+    clearSearch,
+  ]);
 
   const numberOfSearchResults =
     foundRooms.length + foundEvents.length + foundUsers.length;
@@ -188,19 +213,6 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       }),
     [searchQuery]
   );
-
-  const inputRef = useRef<HTMLInputElement>(null);
-  const focusSearchBar = useCallback((e) => {
-    e.preventDefault();
-    inputRef.current?.focus();
-  }, []);
-
-  useMousetrap({
-    keys: KeyboardShortcutKeys.search,
-    callback: focusSearchBar,
-    // TODO: bindRef: (null as never) as MutableRefObject<HTMLElement>,
-    withGlobalBind: true, // TODO: remove this once we have a ref to bind to
-  });
 
   return (
     <div className="NavSearchBar">
@@ -224,7 +236,6 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
       </div>
 
       <InputField
-        ref={inputRef}
         value={searchInputValue}
         inputClassName="NavSearchBar__search-input"
         onChange={onSearchInputChange}

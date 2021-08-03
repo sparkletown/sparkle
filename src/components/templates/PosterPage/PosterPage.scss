@@ -4,7 +4,7 @@ $poster-cell-optimal-width: 260px;
 $poster-cell-optimal-height: 195px;
 
 .PosterPage {
-  padding: 0 $spacing--xl 0;
+  padding: $announcement-banner-height $spacing--xl 0;
 
   &__header {
     display: grid;
@@ -29,8 +29,49 @@ $poster-cell-optimal-height: 195px;
     }
   }
 
+  &__headerInfo {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__posterId {
+    display: inline;
+    text-align: left;
+    font-size: $font-size--sm;
+    margin-right: $spacing--md;
+  }
+
+  &__moreInfoUrl {
+    display: inline;
+    text-align: right;
+    font-size: $font-size--sm;
+    margin-bottom: $spacing--sm;
+  }
+
   &__title {
     margin: 0 0 $spacing--xs;
+    text-align: center;
+  }
+
+  &__authorBox {
+    display: flex;
+    align-items: center;
+    margin: $spacing--sm 0;
+  }
+
+  &__avatar {
+    margin-right: auto;
+  }
+
+  &__author {
+    margin-left: $spacing--sm;
+    font-size: $font-size--sm;
+    font-weight: $font-weight--500;
+    @include line-clamp-with-overflow(7);
+  }
+
+  &__contactEmail {
+    font-size: $font-size--sm;
   }
 
   &__categories {
@@ -62,6 +103,7 @@ $poster-cell-optimal-height: 195px;
     width: 100%;
     // Take exactly the same amount of space as 3 participants would take
     height: calc(3 * #{$poster-cell-optimal-height} + 2 * #{$spacing--xs});
+    border: none;
   }
 
   &__video-participant {

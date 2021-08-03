@@ -3,12 +3,10 @@ import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import {
-  IFRAME_ALLOW,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_NAME,
-  PLAYA_VENUE_STYLES,
-} from "settings";
+import { IFRAME_ALLOW, PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import { AdminVenueRoomsList } from "./AdminVenueRoomsList";
 
 export interface AdminVenuePreviewProps {
@@ -72,7 +70,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
         return (
           <div className="content-group" style={{ padding: "5px" }}>
             <span className="title" style={{ fontSize: "20px" }}>
-              This is a preview of your camp
+              This is a preview of your Space
             </span>
             <PartyMapContainer
               interactive={false}
@@ -120,13 +118,22 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               {venue.config?.landingPageConfig.subtitle}
             </span>
           </div>
-          <div style={{ padding: "5px" }}>
-            <span className="title" style={{ fontSize: "18px" }}>
+          <div
+            style={{ padding: "5px", display: "flex", alignItems: "center" }}
+          >
+            <span
+              className="title"
+              style={{
+                fontSize: "18px",
+                marginBottom: "1rem",
+                marginTop: 0,
+              }}
+            >
               Long description:
             </span>
-            <span className="content">
-              {venue.config?.landingPageConfig.description}
-            </span>
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
           </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>
@@ -145,17 +152,18 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               />
             </div>
           </div>
-          <div style={{ width: "150px" }}>
+          {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
+          {/* <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
               {PLAYA_VENUE_NAME} icon
             </div>
             <div className="content">
               <img className="icon" src={venue.mapIconImageUrl} alt="icon" />
             </div>
-          </div>
+          </div> */}
           <div style={{ width: "150px" }}>
             <div className="title" style={{ width: "150px" }}>
-              Camp logo
+              Square logo
             </div>
             <div className="content">
               <img className="icon" src={venue.host?.icon} alt="icon" />

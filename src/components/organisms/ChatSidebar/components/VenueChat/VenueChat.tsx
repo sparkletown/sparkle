@@ -1,11 +1,11 @@
 import React from "react";
+import { isEqual } from "lodash";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useVenueChat } from "hooks/useVenueChat";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useVenueChat } from "hooks/chats/venueChat";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -15,17 +15,16 @@ export interface VenueChatProps {
   venue: WithId<AnyVenue>;
 }
 
-export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
+export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
     messagesToDisplay,
     sendThreadReply,
   } = useVenueChat(venue.id);
-  const { selectVenueChat } = useChatSidebarControls();
 
   return (
-    <div className="venue-chat" onClick={selectVenueChat}>
+    <div className="venue-chat">
       <Chatbox
         // poll is available for Venue Chat only (displayPoll = true)
         displayPoll
@@ -38,3 +37,5 @@ export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     </div>
   );
 };
+
+export const VenueChat = React.memo(_VenueChat, isEqual);
