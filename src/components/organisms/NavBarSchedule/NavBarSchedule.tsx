@@ -33,6 +33,8 @@ import { useVenueEvents } from "hooks/events";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
+import { Toggler } from "components/atoms/Toggler";
+
 import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
@@ -89,6 +91,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
+  const [showPersonalisedSchedule, setShowPersonalisedSchedule] = useState(
+    false
+  );
+
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -144,7 +150,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     return {
-      daysEvents,
+      daysEvents: showPersonalisedSchedule
+        ? daysEvents.filter((event) => event.isSaved)
+        : daysEvents,
     };
   }, [
     relatedVenueEvents,
@@ -152,6 +160,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     firstDayOfSchedule,
     isScheduleTimeshifted,
+    showPersonalisedSchedule,
   ]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
@@ -205,6 +214,18 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           </Button>
         </div>
       )} */}
+
+      <Toggler
+        name="bookmarked-toggle"
+        toggled={showPersonalisedSchedule}
+        onChange={() =>
+          showPersonalisedSchedule
+            ? setShowPersonalisedSchedule(false)
+            : setShowPersonalisedSchedule(true)
+        }
+        label="Bookmarked events"
+      />
+
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
