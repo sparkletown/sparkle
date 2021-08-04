@@ -55,13 +55,13 @@ export const AdminVenueView: React.FC = () => {
     return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
       <Nav.Link
         key={key}
-        className={classNames("ViewTab", {
-          "ViewTab--selected": selectedTab === key,
+        className={classNames("AdminVenueView__tab", {
+          "AdminVenueView__tab--selected": selectedTab === key,
         })}
         eventKey={key}
       >
         <FontAwesomeIcon
-          className="ViewTab__icon"
+          className="AdminVenueView__tabIcon"
           icon={tabIcons[key as AdminVenueTab]}
         />
         {text}

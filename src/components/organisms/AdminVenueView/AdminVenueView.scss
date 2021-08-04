@@ -19,35 +19,34 @@
     width: 100%;
     flex-direction: row;
   }
-}
 
-.ViewTab {
-  position: relative;
-  flex-grow: 1;
-  text-align: center;
-  align-items: center;
-  cursor: pointer;
-  color: rgba($white, 0.6);
-  text-decoration: none;
+  &__tab {
+    position: relative;
+    flex-grow: 1;
+    text-align: center;
+    cursor: pointer;
+    color: rgba($white, 0.6);
+    text-decoration: none;
 
-  &:hover {
-    color: $white;
+    &:hover {
+      color: $white;
+    }
+
+    &--selected {
+      color: $white;
+      background-color: $primary;
+    }
+
+    @media (max-width: $media-breakpoint--lg) {
+      width: 50%;
+    }
+
+    @media (max-width: $media-breakpoint--md) {
+      width: 100%;
+    }
   }
 
-  &--selected {
-    color: $white;
-    background-color: $primary;
-  }
-
-  @media (max-width: $media-breakpoint--lg) {
-    width: 50%;
-  }
-
-  @media (max-width: $media-breakpoint--md) {
-    width: 100%;
-  }
-
-  &__icon {
+  &__tabIcon {
     margin-right: $spacing--sm;
   }
 }
