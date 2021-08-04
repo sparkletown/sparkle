@@ -11,9 +11,8 @@ $icon-size: 20px;
   &__rooms {
     @include scrollbar;
     width: 20%;
-    height: 88vh;
+    height: 85vh;
     overflow-y: auto;
-    padding-bottom: 10vh;
   }
 
   &__map {
@@ -177,5 +176,21 @@ $icon-size: 20px;
     margin-top: 0.2rem;
     font-size: 0.8em;
     opacity: 0.6;
+  }
+}
+
+@media (max-height: $media-breakpoint--sm) {
+  .Spaces {
+    &__rooms {
+      padding-bottom: 15vh;
+    }
+  }
+}
+
+@media (max-height: $media-breakpoint--md) {
+  .Spaces {
+    &__rooms {
+      padding-bottom: 10vh;
+    }
   }
 }
