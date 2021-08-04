@@ -1,13 +1,30 @@
 @import "scss/constants.scss";
 
 $max-allowed-button-width: 275px;
+$normal-button-width: 100%;
+
+// order of elements:
+// $modifier  - will be used as ButtonNG--modifier
+// $color     - the same foreground color with :hover and without
+// $normal-bg - the normal background color
+// $hover-bg  - the background color when button is :hover-ed
+$variants-enum: (
+  (primary, $white, $primary--live, $primary--live-hover),
+  (secondary, $white, opaque-white(0.2), opaque-white(0.25)),
+  (white, $primary--live, $white, $white),
+  (dark, $white, opaque-black(0.4), opaque-black(0.6))
+);
+
+@function calc-size-by-factor($factor) {
+  @return calc(#{$factor} * 1em + 2 * #{$spacing--xs});
+}
 
 .ButtonNG {
   display: inline-block;
 
-  padding: 0.75em;
+  padding: $spacing--md;
   margin: $spacing--xs;
-  width: 100%;
+  width: $normal-button-width;
   max-width: $max-allowed-button-width;
 
   border-radius: $border-radius--xl;
@@ -15,7 +32,6 @@ $max-allowed-button-width: 275px;
   background-image: none;
 
   font-style: normal;
-  font-size: 1rem;
   font-weight: $font-weight--500;
   text-align: center;
   text-decoration: none;
@@ -58,11 +74,6 @@ $max-allowed-button-width: 275px;
     cursor: default;
   }
 
-  @mixin square-size($size: 1) {
-    height: calc(#{$size} * 1em + 2 * #{$spacing--xs});
-    width: calc(#{$size} * 1em + 2 * #{$spacing--xs});
-  }
-
   &--icon-only {
     padding: $spacing--xs;
   }
@@ -72,41 +83,27 @@ $max-allowed-button-width: 275px;
   }
 
   &--1x {
-    @include square-size(2.5);
+    @include square-size(calc-size-by-factor(2.5));
   }
 
   &--2x {
-    @include square-size(3);
+    @include square-size(calc-size-by-factor(3));
   }
 
   &--3x {
-    @include square-size(4);
+    @include square-size(calc-size-by-factor(4));
   }
 
-  @mixin variant($color, $normal-bg, $hover-bg: $normal-bg) {
-    color: $color;
-    background-color: $normal-bg;
-
-    &:hover {
+  @each $modifier, $color, $normal-bg, $hover-bg in $variants-enum {
+    &--#{$modifier} {
       color: $color;
-      background-color: $hover-bg;
+      background-color: $normal-bg;
+
+      &:hover {
+        color: $color;
+        background-color: $hover-bg;
+      }
     }
-  }
-
-  &--primary {
-    @include variant($white, $primary--live, $primary--live-hover);
-  }
-
-  &--secondary {
-    @include variant($white, opaque-white(0.2), opaque-white(0.25));
-  }
-
-  &--white {
-    @include variant($primary--live, $white);
-  }
-
-  &--dark {
-    @include variant($white, opaque-black(0.4), opaque-black(0.6));
   }
 
   &--gradient:enabled {
