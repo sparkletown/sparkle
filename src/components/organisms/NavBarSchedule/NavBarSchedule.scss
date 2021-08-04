@@ -8,6 +8,8 @@ $weekday--margin-right: 10px;
 
 $schedule-btn--padding: 0.35em 1em;
 
+$schedule-btn--height: 40px;
+
 .NavBarSchedule {
   @include scrollbar;
   position: fixed;
@@ -52,7 +54,7 @@ $schedule-btn--padding: 0.35em 1em;
     justify-content: flex-end;
     align-items: center;
     background-color: opaque-black(0.9);
-    height: 40px;
+    height: $schedule-btn--height;
     padding-left: $NavBarSchedule--padding;
 
     margin: $spacing--md 0;
@@ -104,9 +106,9 @@ $schedule-btn--padding: 0.35em 1em;
       pointer-events: none;
       cursor: default;
 
-      button {
+      & .NavBarSchedule__weekday-button {
         cursor: default;
-        color: rgba(255, 255, 255, 0.383);
+        color: opaque-white(0.383);
       }
     }
 

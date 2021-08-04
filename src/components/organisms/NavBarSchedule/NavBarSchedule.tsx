@@ -2,10 +2,10 @@ import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   addDays,
+  differenceInDays,
   format,
   fromUnixTime,
   isToday,
-  millisecondsToHours,
   minutesToSeconds,
   secondsToMilliseconds,
   startOfDay,
@@ -38,7 +38,6 @@ import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
 // import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
-
 import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -59,6 +58,9 @@ export interface NavBarScheduleProps {
   venueId: string;
 }
 
+const minRangeValue = 0;
+const maxRangeValue = 1;
+
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
@@ -73,6 +75,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
+  // @debt: probably will need to be re-calculated based on minDate instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
     return scheduledStartDate
       ? startOfDay(fromUnixTime(scheduledStartDate))
@@ -87,7 +90,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
-
   const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
@@ -97,42 +99,37 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
-  const { minDate, maxDate } = relatedVenueEvents.reduce(
-    (resultObj, event) => {
-      if (resultObj.minDate === 0 || resultObj.maxDate === 0) {
-        resultObj.minDate =
-          resultObj.minDate === 0 ? event.start_utc_seconds : resultObj.minDate;
+  const minDate = useMemo(() => {
+    if (relatedVenueEvents.length) {
+      return Math.min(
+        ...relatedVenueEvents.map((event) =>
+          secondsToMilliseconds(
+            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+          ) > startOfToday().getTime()
+            ? event.start_utc_seconds
+            : Number.MAX_SAFE_INTEGER
+        )
+      );
+    }
+    return minRangeValue;
+  }, [relatedVenueEvents]);
 
-        const secondsLength = minutesToSeconds(event.duration_minutes);
-        resultObj.maxDate =
-          resultObj.maxDate === 0
-            ? event.start_utc_seconds + secondsLength
-            : resultObj.maxDate;
-      }
+  const maxDate = useMemo(() => {
+    if (relatedVenueEvents.length) {
+      return Math.max(
+        ...relatedVenueEvents.map(
+          (event) =>
+            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+        )
+      );
+    }
+    return maxRangeValue;
+  }, [relatedVenueEvents]);
 
-      if (event.start_utc_seconds < resultObj.minDate) {
-        resultObj.minDate = event.start_utc_seconds;
-      }
-
-      if (
-        event.start_utc_seconds + minutesToSeconds(event.duration_minutes) >
-        resultObj.maxDate
-      ) {
-        const secondsLength = minutesToSeconds(event.duration_minutes);
-
-        resultObj.maxDate = event.start_utc_seconds + secondsLength;
-      }
-
-      return resultObj;
-    },
-    { minDate: 0, maxDate: 0 }
+  const dayDifference = differenceInDays(
+    fromUnixTime(maxDate),
+    fromUnixTime(minDate)
   );
-  const milisecondStart = new Date(secondsToMilliseconds(minDate)).getTime();
-  const milisecondFinish = new Date(secondsToMilliseconds(maxDate)).getTime();
-  const dayDifference = Math.round(
-    millisecondsToHours(milisecondFinish - milisecondStart) / 24
-  );
-
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -146,17 +143,15 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const day = addDays(firstDayOfSchedule, dayIndex);
+      const day = addDays(minDate, dayIndex);
 
-      const daysWithEvents = relatedVenueEvents.filter(
-        isScheduleTimeshifted
-          ? isEventWithinDate(day)
-          : isEventWithinDateAndNotFinished(day)
+      const daysWithEvents = relatedVenueEvents.some(
+        isEventWithinDateAndNotFinished(day)
       );
 
       const classes = classNames("NavBarSchedule__weekday", {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
-        "NavBarSchedule__weekday--disabled": !daysWithEvents.length,
+        "NavBarSchedule__weekday--disabled": !daysWithEvents,
       });
 
       const formattedDay = formatDayLabel(day);
@@ -180,10 +175,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     });
   }, [
     selectedDayIndex,
-    firstDayOfSchedule,
     isScheduleTimeshifted,
     dayDifference,
     relatedVenueEvents,
+    minDate,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {

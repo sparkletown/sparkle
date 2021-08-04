@@ -137,7 +137,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
-  const [isEventScheduleVisible, setEventScheduleVisible] = useState(true);
+  const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
