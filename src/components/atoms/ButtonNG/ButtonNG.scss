@@ -9,10 +9,10 @@ $normal-button-width: 100%;
 // $normal-bg - the normal background color
 // $hover-bg  - the background color when button is :hover-ed
 $variants-enum: (
-  (primary, $white, $primary--live, $primary--live-hover),
-  (secondary, $white, opaque-white(0.2), opaque-white(0.25)),
-  (white, $primary--live, $white, $white),
-  (dark, $white, opaque-black(0.4), opaque-black(0.6))
+  ("primary", $white, $primary--live, $primary--live-hover),
+  ("secondary", $white, opaque-white(0.2), opaque-white(0.25)),
+  ("white", $primary--live, $white, $white),
+  ("dark", $white, opaque-black(0.4), opaque-black(0.6))
 );
 
 @function calc-size-by-factor($factor) {
