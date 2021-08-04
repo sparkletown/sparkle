@@ -1,6 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 
 import { Venue_v2 } from "types/venues";
 
@@ -42,15 +45,29 @@ export const AdminVenueView: React.FC = () => {
     currentVenue: venue,
   } = useConnectCurrentVenueNG(venueId);
 
+  const getTabIcon = (tab: string) => {
+    switch (tab) {
+      case AdminVenueTab.spaces:
+        return <FontAwesomeIcon icon={faBorderNone} />;
+      case AdminVenueTab.timing:
+        return <FontAwesomeIcon icon={faClock} />;
+      case AdminVenueTab.run:
+        return <FontAwesomeIcon icon={faPlayCircle} />;
+      default:
+        return null;
+    }
+  };
+
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
       <Nav.Link
         key={key}
-        className={classNames("AdminVenueView__tab", {
-          "AdminVenueView__tab--selected": selectedTab === key,
+        className={classNames("ViewTab", {
+          "ViewTab--selected": selectedTab === key,
         })}
         eventKey={key}
       >
+        <span className="ViewTab__icon">{getTabIcon(key)}</span>
         {text}
       </Nav.Link>
     ));

@@ -18,34 +18,36 @@
     display: flex;
     width: 100%;
     flex-direction: row;
-    justify-content: space-between;
+  }
+}
+
+.ViewTab {
+  position: relative;
+  flex-grow: 1;
+  text-align: center;
+  align-items: center;
+  cursor: pointer;
+  color: rgba($white, 0.6);
+  text-decoration: none;
+
+  &:hover {
+    color: $white;
   }
 
-  &__tab {
-    position: relative;
-    display: flex;
-    flex-grow: 1;
-    text-align: center;
-    align-self: center;
-    cursor: pointer;
-    color: rgba($white, 0.6);
-    text-decoration: none;
+  &--selected {
+    color: $white;
+    background-color: $primary;
+  }
 
-    @media (max-width: $media-breakpoint--lg) {
-      width: 50%;
-    }
+  @media (max-width: $media-breakpoint--lg) {
+    width: 50%;
+  }
 
-    @media (max-width: $media-breakpoint--md) {
-      width: 100%;
-    }
+  @media (max-width: $media-breakpoint--md) {
+    width: 100%;
+  }
 
-    &:hover {
-      color: $white;
-    }
-
-    &--selected {
-      color: $white;
-      background-color: $primary;
-    }
+  &__icon {
+    margin-right: $spacing--sm;
   }
 }
