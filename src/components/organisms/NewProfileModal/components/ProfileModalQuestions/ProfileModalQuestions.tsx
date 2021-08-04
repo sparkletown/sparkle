@@ -1,3 +1,4 @@
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
@@ -42,9 +43,9 @@ export const ProfileModalQuestions: React.FC<Props> = ({
           >
             <p className="ProfileModalQuestions__question">{question.text}</p>
             {editMode && register ? (
-              <input
+              <ProfileModalInput
                 name={`${formProp("questions")}.${question.text}`}
-                className="ProfileModalQuestions__answer-input"
+                containerClassName="ProfileModalQuestions__answer-input"
                 defaultValue={questionAnswer}
                 ref={register()}
               />

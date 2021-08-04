@@ -10,10 +10,6 @@ $section-margin: 1.5rem;
   justify-content: flex-start;
   align-items: center;
 
-  &__input {
-    @include ProfileModalInputDefaultPadding;
-  }
-
   &__avatar-container {
     position: relative;
   }

@@ -39,6 +39,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
 
   const {
     register,
+    errors,
     handleSubmit,
     watch,
     setValue,
@@ -77,6 +78,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
               viewingUser={user}
               containerClassName="ProfileModal__section"
               register={register}
+              partyNameError={errors?.partyName}
             />
             <ProfileModalQuestions
               viewingUser={user}
@@ -91,6 +93,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
                 register={register}
                 watch={watch}
                 setLinkTitle={setLinkTitle}
+                errors={errors?.links}
               />
             ) : (
               <ProfileModalLinks

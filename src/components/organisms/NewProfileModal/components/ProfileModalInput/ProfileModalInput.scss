@@ -1,0 +1,33 @@
+@import "../../constants";
+
+.ProfileModalInput {
+  position: relative;
+  &__input {
+    background: rgba(255, 255, 255, 0.12);
+    border: $input-border;
+    box-sizing: border-box;
+    border-radius: $input-border-radius;
+    text-align: start;
+    cursor: initial;
+    &--invalid {
+      border: $input-error-border;
+      &:focus {
+        border: $input-border;
+        box-shadow: $input-error-box-shadow-focus;
+      }
+      &::placeholder {
+        color: $input-error-color;
+      }
+    }
+    &--condensed {
+      padding: 6px 14px 6px 14px;
+    }
+  }
+
+  &__error-message {
+    color: $input-error-color;
+    position: absolute;
+    bottom: -1.3rem;
+    left: 8px;
+  }
+}

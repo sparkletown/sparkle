@@ -6,7 +6,7 @@ $modal-content-margin: 1.7rem;
 
 $round-icon-size: 1.7rem;
 
-$section-gap: 1rem;
+$section-gap: 1.5rem;
 $section-header-bottom-margin: 0.5rem;
 
 $send-msg-online-color: #78b553;
@@ -16,22 +16,12 @@ $content-increased-font-size: 16px;
 
 $input-gap: 0.7rem;
 
+$input-error-color: #dc3545;
+$input-error-color-focus: #ff7384;
+
+$input-border: 1px solid rgba(255, 255, 255, 0.1);
+$input-error-border: 1px solid $input-error-color;
+$input-error-box-shadow-focus: 0 0 0 2px rgba($input-error-color-focus, 1);
 $input-border-radius: 22px;
 $input-backdrop-filter: blur(10px);
 $input-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-
-@mixin ProfileModalInputDefaultPadding {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-sizing: border-box;
-  border-radius: $input-border-radius;
-  text-align: start;
-  cursor: initial;
-  @content;
-}
-
-@mixin ProfileModalInput {
-  @include ProfileModalInputDefaultPadding {
-    padding: 6px 14px 6px 14px;
-  }
-}

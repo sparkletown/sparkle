@@ -8,12 +8,9 @@ $url-text-icon-right-margin: 0.5rem;
   grid-template-columns: 1fr auto;
   grid-template-rows: 1fr 1fr;
   gap: $input-gap $input-gap;
-  &__input {
-    @include ProfileModalInput;
-  }
   &__url {
     grid-column: 1;
-    grid-row: 1;
+    grid-row: 2;
   }
   &__delete-icon {
     grid-column: 2;
@@ -22,7 +19,7 @@ $url-text-icon-right-margin: 0.5rem;
     align-self: center;
   }
   &__text {
-    grid-row: 2;
+    grid-row: 1;
     grid-column: 1;
     display: inline-block;
     position: relative;

@@ -4,6 +4,7 @@ import React from "react";
 import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
 import "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword.scss";
+import { ProfileModalInput } from "../ProfileModalInput/ProfileModalInput";
 
 interface Props extends ContainerClassName {
   register: FormFieldProps["register"];
@@ -16,21 +17,21 @@ export const ProfileModalChangePassword: React.FC<Props> = ({
   return (
     <div className={containerClassName}>
       <ProfileModalSectionHeader text="Change password" />
-      <input
+      <ProfileModalInput
         name={formProp("oldPassword")}
-        className="ProfileModalChangePassword__input"
+        containerClassName="ProfileModalChangePassword__input"
         placeholder="Old Password"
         ref={register()}
       />
-      <input
+      <ProfileModalInput
         name={formProp("newPassword")}
-        className="ProfileModalChangePassword__input"
+        containerClassName="ProfileModalChangePassword__input"
         placeholder="New Password"
         ref={register()}
       />
-      <input
+      <ProfileModalInput
         name={formProp("confirmNewPassword")}
-        className="ProfileModalChangePassword__input"
+        containerClassName="ProfileModalChangePassword__input"
         placeholder="Confirm New Password"
         ref={register()}
       />

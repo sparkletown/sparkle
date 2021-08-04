@@ -1,9 +1,11 @@
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import React from "react";
+import { FieldError } from "react-hook-form";
 import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -17,10 +19,12 @@ interface Props extends ContainerClassName {
   editMode?: boolean;
   onEdit?: () => void;
   register?: FormFieldProps["register"];
+  partyNameError?: FieldError;
 }
 
 export const ProfileModalBasicInfo: React.FC<Props> = ({
   register,
+  partyNameError,
   viewingUser,
   editMode,
   onEdit,
@@ -47,11 +51,13 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
           })}
         >
           {editMode && register ? (
-            <input
+            <ProfileModalInput
               name={formProp("partyName")}
-              className="ProfileModalBasicInfo__input"
               defaultValue={viewingUser?.partyName}
-              ref={register()}
+              placeholder="Party Name"
+              error={partyNameError}
+              ref={register({ required: true })}
+              notCondensed
             />
           ) : (
             <ProfileModalBasicTextInfo viewingUser={viewingUser} />
