@@ -62,8 +62,6 @@ export const ProfileModalEditLink: React.FC<Props> = ({
     [otherUrls]
   );
 
-  console.log(error);
-
   return (
     <div className={classNames("ProfileModalEditLink", containerClassName)}>
       <div className="ProfileModalEditLink__text">

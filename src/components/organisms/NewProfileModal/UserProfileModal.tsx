@@ -3,9 +3,11 @@ import { ProfileModalChangePassword } from "components/organisms/NewProfileModal
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
 import { useUser } from "hooks/useUser";
+import { pick } from "lodash";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
-import { OnSubmit, useForm } from "react-hook-form";
+import { FieldErrors, OnSubmit, useForm } from "react-hook-form";
+import { useFirebase } from "react-redux-firebase";
 import { ProfileLink } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
@@ -35,22 +37,60 @@ export interface UserProfileModalFormData {
 
 export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
   const { userWithId: user } = useUser();
+  const firebase = useFirebase();
+  const currentUserEmail = firebase.auth().currentUser?.email;
+
   const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(true);
 
   const {
     register,
     errors,
+    setError,
+    clearError,
     handleSubmit,
     watch,
+    getValues,
     setValue,
   } = useForm<UserProfileModalFormData>({
-    mode: "onChange",
+    mode: "onBlur",
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
   });
-  const onSubmit: OnSubmit<UserProfileModalFormData> = (data) => {
-    console.log(data);
-  };
+
+  const checkPassword = useCallback(
+    async (password: string) => {
+      if (!currentUserEmail) return;
+      try {
+        console.log("try login");
+        await firebase
+          .auth()
+          .signInWithEmailAndPassword(currentUserEmail, password);
+        return true;
+      } catch {
+        console.log("try login: fail");
+        return false;
+      }
+    },
+    [currentUserEmail, firebase]
+  );
+
+  const onSubmit: OnSubmit<UserProfileModalFormData> = useCallback(
+    async (data) => {
+      if (
+        data.oldPassword !== "" ||
+        data.newPassword !== "" ||
+        data.confirmNewPassword !== ""
+      ) {
+        if (!(await checkPassword(data.oldPassword))) {
+          setError(formProp("oldPassword"), "validate", "Incorrect password");
+        } else {
+          clearError(formProp("oldPassword"));
+        }
+      }
+      console.log(data);
+    },
+    [checkPassword, clearError, setError]
+  );
 
   const setLinkTitle = useCallback(
     (index: number, title: string) => {
@@ -62,6 +102,7 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
     [setValue]
   );
 
+  // @ts-ignore
   return (
     <Modal
       style={{ display: "flex" }}
@@ -112,6 +153,11 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
               <ProfileModalChangePassword
                 containerClassName="ProfileModal__section"
                 register={register}
+                getValues={getValues}
+                errors={pick<
+                  FieldErrors<UserProfileModalFormData>,
+                  "oldPassword" | "newPassword" | "confirmNewPassword"
+                >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
               />
             )}
             {editMode && (
