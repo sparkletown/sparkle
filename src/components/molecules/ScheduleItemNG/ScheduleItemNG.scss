@@ -1,23 +1,58 @@
 @import "scss/constants.scss";
 
+$schedule--grey: rgba(255, 255, 255, 0.7);
+
 .ScheduleItemNG {
   display: flex;
-  padding-bottom: $ScheduleNG--padding;
+  padding: $spacing__lg;
 
-  &--info {
-    flex-basis: 25%;
-    margin-right: $ScheduleNG--padding;
+  &:hover {
+    background: linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.05)
+    );
+    border-radius: 12px;
   }
 
-  &--time,
-  &--name {
-    display: block;
-    font-weight: $font-weight--700;
+  &__info {
+    margin-top: $spacing--xs;
+    flex-basis: 15%;
   }
 
-  &--date {
+  &__details {
+    margin-left: $spacing--sm;
+  }
+
+  &__time,
+  &__date {
     display: block;
-    font-weight: $font-weight--700;
-    color: $concrete;
+    font-weight: $font-weight--500;
+    font-size: $font-size--sm;
+    line-height: 15px;
+  }
+
+  &__time--end {
+    color: $schedule--grey;
+  }
+
+  &__name {
+    font-weight: $font-weight__700;
+    font-size: $font-size__lg;
+    line-height: 18px;
+  }
+
+  &__description {
+    font-size: $font-size--sm;
+    line-height: $font-size--md;
+  }
+
+  &__place {
+    font-size: $font-size--md;
+    line-height: 17px;
+
+    &--location {
+      color: $schedule--grey;
+    }
   }
 }
