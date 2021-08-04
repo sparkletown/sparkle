@@ -3,10 +3,8 @@ import classNames from "classnames";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { eventEndTime, eventStartTime } from "utils/event";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-
 import { Loading } from "components/molecules/Loading";
+import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
 
 import "./ScheduleNG.scss";
 
@@ -23,38 +21,19 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
 
   const containerClasses = classNames("ScheduleNG");
 
-  const eventsRows = useMemo(() => {
-    const formatDateOptions = { formatToday: () => "" };
-
-    return daysEvents.map((event) => (
-      <div key={event.id} className="ScheduleNG__item">
-        <div className="ScheduleNG__item--info">
-          <span className="ScheduleNG__item--date">
-            {formatDateRelativeToNow(eventStartTime(event), formatDateOptions)}
-          </span>
-
-          <span className="ScheduleNG__item--time">
-            {formatTimeLocalised(eventStartTime(event))}
-          </span>
-
-          <span className="ScheduleNG__item--date">
-            {formatDateRelativeToNow(eventEndTime(event), formatDateOptions)}
-          </span>
-
-          <span className="ScheduleNG__item--time">
-            {formatTimeLocalised(eventEndTime(event))}
-          </span>
-        </div>
-        <div className="ScheduleNG__item--name">{event.name}</div>
-      </div>
-    ));
-  }, [daysEvents]);
+  const eventsRows = useMemo(
+    () =>
+      daysEvents.map((event) => (
+        <ScheduleItemNG key={event.id} event={event} />
+      )),
+    [daysEvents]
+  );
 
   if (isLoading) {
     return (
       <Loading
         containerClassName="ScheduleNG__loading"
-        label={"Events are loading"}
+        label="Events are loading"
       />
     );
   }

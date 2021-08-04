@@ -1,34 +1,10 @@
 @import "scss/constants.scss";
 
-$ScheduleNG--padding: 20px;
-
 .ScheduleNG {
   padding-top: $ScheduleNG--padding;
   display: flex;
   flex-direction: column;
   position: relative;
-
-  &__item {
-    display: flex;
-    padding-bottom: $ScheduleNG--padding;
-  }
-
-  &__item--info {
-    flex-basis: 10%;
-    margin-right: $ScheduleNG--padding;
-  }
-
-  &__item--time,
-  &__item--name {
-    display: block;
-    font-weight: $font-weight--700;
-  }
-
-  &__item--date {
-    display: block;
-    font-weight: $font-weight--700;
-    color: $concrete;
-  }
 
   &__loading {
     margin-top: $ScheduleNG--padding;

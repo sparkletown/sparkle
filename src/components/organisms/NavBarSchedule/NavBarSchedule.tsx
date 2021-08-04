@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   addDays,
   format,
@@ -9,7 +9,7 @@ import {
 } from "date-fns";
 import classNames from "classnames";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
 import {
   LocationEvents,
@@ -17,7 +17,6 @@ import {
   VenueEvent,
 } from "types/venues";
 
-import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
@@ -30,7 +29,6 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 
-import { Button } from "components/atoms/Button";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
@@ -166,33 +164,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
   ]);
 
-  const hasSavedEvents = scheduleNG.daysEvents.length > 0;
-
-  const downloadPersonalEventsCalendar = useCallback(() => {
-    const dayStart = addDays(startOfToday(), selectedDayIndex);
-    const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(
-        prepareForSchedule({
-          day: dayStart,
-          usersEvents: userEventIds,
-          isForCalendarFile: true,
-        })
-      )
-      .filter((event) => event.isSaved);
-
-    downloadCalendar({
-      calendar: createCalendar({ events: allPersonalEvents }),
-      calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
-    });
-  }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
-
-  const downloadAllEventsCalendar = useCallback(() => {
-    downloadCalendar({
-      calendar: createCalendar({ events: relatedVenueEvents }),
-      calendarName: `${PLATFORM_BRAND_NAME}_Full`,
-    });
-  }, [relatedVenueEvents]);
-
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
   });
@@ -200,25 +171,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      {!isLoadingSchedule && (
-        <div className="NavBarSchedule__download-buttons">
-          {hasSavedEvents && (
-            <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarSchedule__download-schedule-btn"
-            >
-              Download your schedule
-            </Button>
-          )}
-
-          <Button
-            onClick={downloadAllEventsCalendar}
-            customClass="NavBarSchedule__download-schedule-btn"
-          >
-            Download full schedule
-          </Button>
-        </div>
-      )}
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
