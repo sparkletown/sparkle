@@ -25,7 +25,6 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
   const { events } = useVenueEvents({ venueIds: venueIds });
   // rooms have no id so events use room.title as their room property
   const groupedEvents = groupBy(events, "room");
-  delete groupedEvents.testroom;
 
   return (
     <div className="RunTabRooms__container">
@@ -44,8 +43,15 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
         </div>
       </div>
       <div className="RunTabRooms__grid RunTabRooms--spacing">
-        {rooms.map((room: Room, key) => (
-          <RoomCard key={key} room={room} events={groupedEvents[room.title]} />
+        {rooms.map((room: Room, index) => (
+          <RoomCard
+            key={index}
+            index={index}
+            venueId={venue.id}
+            venueName={venue.name}
+            room={room}
+            events={groupedEvents[room.title]}
+          />
         ))}
       </div>
     </div>

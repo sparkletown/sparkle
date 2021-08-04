@@ -48,7 +48,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
         <span className="RunTabUsers__info">
           {admins.length} admin{admins.length !== 1 && "s"} online
         </span>
-        <ButtonNG>Manage admins</ButtonNG>
+        <ButtonNG>Invite admin</ButtonNG>
       </div>
       {users.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />

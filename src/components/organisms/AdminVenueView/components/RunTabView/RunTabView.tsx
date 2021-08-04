@@ -31,8 +31,8 @@ export const RunTabView: React.FC = () => {
       <div className="RunTabView__sidebar">
         <div className="RunTabView__title">Run your space</div>
         <ButtonNG
+          isLink
           className="RunTabView__advanced"
-          isLink={true}
           linkTo={adminNGSettingsUrl(venueId)}
           iconName={faCog}
         >

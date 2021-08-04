@@ -74,7 +74,11 @@ export const AppRouter: React.FC = () => {
           <Route path="/enter" component={EnterSubrouter} />
           <Route path="/account" component={AccountSubrouter} />
           <Route path="/admin" component={AdminSubrouter} />
-          <Route path="/admin-ng" component={AdminSubrouter} />
+          <Route path="/admin-ng">
+            <Provided withRelatedVenues>
+              <AdminSubrouter />
+            </Provided>
+          </Route>
 
           <Route
             path="/login/:venueId/:customToken"
