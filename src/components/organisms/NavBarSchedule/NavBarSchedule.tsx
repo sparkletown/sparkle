@@ -139,7 +139,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       .sort(eventTimeComparator)
       .map(
         prepareForSchedule({
-          day: startOfSelectedDay,
           usersEvents: userEventIds,
         })
       );
@@ -155,6 +154,31 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
   ]);
 
+  // const downloadPersonalEventsCalendar = useCallback(() => {
+  //   const dayStart = addDays(startOfToday(), selectedDayIndex);
+  //   const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
+  //     .map(
+  //       prepareForSchedule({
+  //         day: dayStart,
+  //         usersEvents: userEventIds,
+  //         isForCalendarFile: true,
+  //       })
+  //     )
+  //     .filter((event) => event.isSaved);
+
+  //   downloadCalendar({
+  //     calendar: createCalendar({ events: allPersonalEvents }),
+  //     calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
+  //   });
+  // }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
+
+  // const downloadAllEventsCalendar = useCallback(() => {
+  //   downloadCalendar({
+  //     calendar: createCalendar({ events: relatedVenueEvents }),
+  //     calendarName: `${PLATFORM_BRAND_NAME}_Full`,
+  //   });
+  // }, [relatedVenueEvents]);
+
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
   });
@@ -162,6 +186,25 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
+      {/* {!isLoadingSchedule && (
+        <div className="NavBarSchedule__download-buttons">
+          {hasSavedEvents && (
+            <Button
+              onClick={downloadPersonalEventsCalendar}
+              customClass="NavBarSchedule__download-schedule-btn"
+            >
+              Download your schedule
+            </Button>
+          )}
+
+          <Button
+            onClick={downloadAllEventsCalendar}
+            customClass="NavBarSchedule__download-schedule-btn"
+          >
+            Download full schedule
+          </Button>
+        </div>
+      )} */}
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
       <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
