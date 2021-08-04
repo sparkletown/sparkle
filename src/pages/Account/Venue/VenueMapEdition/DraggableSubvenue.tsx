@@ -145,13 +145,14 @@ const styles: Record<string, CSSProperties> = {
     height: "100%",
     display: "flex",
     position: "relative",
+    border: "1px solid white",
   },
   resizeTab: {
     position: "absolute",
     width: 10,
     height: 10,
     backgroundColor: "white",
-    border: "1px solid gray",
+    border: "1px solid white",
   },
   resizeableImageContainer: {
     overflow: "hidden",
