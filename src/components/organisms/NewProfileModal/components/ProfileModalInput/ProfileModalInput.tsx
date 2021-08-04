@@ -1,4 +1,6 @@
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import classNames from "classnames";
+import { InputField } from "components/atoms/InputField";
 import React from "react";
 import { FieldError } from "react-hook-form";
 import { ContainerClassName } from "types/utility";
@@ -7,36 +9,29 @@ import "./ProfileModalInput.scss";
 interface Props extends ContainerClassName, React.HTMLProps<HTMLInputElement> {
   error?: FieldError;
   notCondensed?: boolean;
+  iconEnd?: IconProp | JSX.Element;
 }
 
 export const ProfileModalInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ error, className, containerClassName, notCondensed, ...rest }, ref) => (
-    <div className={classNames("ProfileModalInput", containerClassName)}>
-      <input
-        className={classNames(
-          "ProfileModalInput__input",
-          {
-            "ProfileModalInput__input--invalid": !!error,
-            "ProfileModalInput__input--condensed": !notCondensed,
-          },
-          className
-        )}
-        ref={ref}
+  ({ error, containerClassName, notCondensed, iconEnd, ...rest }, ref) => {
+    return (
+      <InputField
+        error={error}
+        containerClassName={containerClassName}
+        iconEnd={iconEnd}
+        inputClassName={classNames("ProfileModalInput__input", {
+          "ProfileModalInput__input--condensed": !notCondensed,
+        })}
+        errorTextClassName={classNames({
+          "ProfileModalInput__error-message--condensed": !notCondensed,
+        })}
+        iconEndClassName="ProfileModalInput__icon-end"
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={ref as any}
         {...rest}
       />
-      {error && (
-        <div
-          className={classNames("ProfileModalInput__error-message", {
-            "ProfileModalInput__error-message--condensed": !notCondensed,
-          })}
-        >
-          {error.type === "required" && rest.placeholder
-            ? `${rest.placeholder} cannot be empty`
-            : error.message}
-        </div>
-      )}
-    </div>
-  )
+    );
+  }
 );
 
 ProfileModalInput.displayName = "ProfileModalInput";

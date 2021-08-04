@@ -1,5 +1,4 @@
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import {
   getLinkUsername,
@@ -70,12 +69,9 @@ export const ProfileModalEditLink: React.FC<Props> = ({
           onFocus={setTitleTouched}
           defaultValue={initialLink.title}
           placeholder="Link Title"
-          ref={register({ required: true })}
+          ref={register({ required: "Title cannot empty" })}
           error={error?.title}
-        />
-        <FontAwesomeIcon
-          icon={linkIcon}
-          className="ProfileModalEditLink__text-icon"
+          iconEnd={linkIcon}
         />
       </div>
       <div className="ProfileModalEditLink__url">
@@ -84,7 +80,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
           placeholder="Link URL"
           defaultValue={initialLink.url}
           ref={register({
-            required: true,
+            required: "URL cannot be empty",
             pattern: {
               value: urlRegex,
               message: "URL must be valid",

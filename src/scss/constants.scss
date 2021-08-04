@@ -19,6 +19,8 @@ $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
 $input--invalid: #dc3545;
+$input--invalid-focus: #ff7384;
+$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;

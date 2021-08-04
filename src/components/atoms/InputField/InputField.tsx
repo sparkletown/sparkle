@@ -32,10 +32,13 @@ const renderIcon = (
   );
 };
 
-export interface InputFieldProps
+interface InputFieldProps
   extends React.HTMLProps<HTMLInputElement>,
     ContainerClassName {
   inputClassName?: string;
+  errorTextClassName?: string;
+  iconStartClassName?: string;
+  iconEndClassName?: string;
   iconStart?: IconProp | JSX.Element;
   iconEnd?: IconProp | JSX.Element;
   error?: FieldError;
@@ -48,6 +51,9 @@ export const _InputField: React.ForwardRefRenderFunction<
   {
     containerClassName,
     inputClassName,
+    iconStartClassName,
+    iconEndClassName,
+    errorTextClassName,
     iconStart,
     iconEnd,
     error,
@@ -72,10 +78,22 @@ export const _InputField: React.ForwardRefRenderFunction<
       <div>
         <input ref={ref} className={inputClassNames} {...extraInputProps} />
 
-        {iconStart && renderIcon(iconStart, "InputField__icon--start")}
-        {iconEnd && renderIcon(iconEnd, "InputField__icon--end")}
+        {iconStart &&
+          renderIcon(
+            iconStart,
+            classNames("InputField__icon--start", iconStartClassName)
+          )}
+        {iconEnd &&
+          renderIcon(
+            iconEnd,
+            classNames("InputField__icon--end", iconEndClassName)
+          )}
       </div>
-      {error && <span className="InputField__error">{error.message}</span>}
+      {error && (
+        <span className={classNames("InputField__error", errorTextClassName)}>
+          {error.message}
+        </span>
+      )}
     </div>
   );
 };

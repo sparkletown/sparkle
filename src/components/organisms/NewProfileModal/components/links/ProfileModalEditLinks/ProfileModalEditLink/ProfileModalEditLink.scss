@@ -1,7 +1,5 @@
 @import "../../../../constants";
 
-$url-text-icon-right-margin: 0.5rem;
-
 .ProfileModalEditLink {
   width: 100%;
   display: grid;
@@ -23,11 +21,5 @@ $url-text-icon-right-margin: 0.5rem;
     grid-column: 1;
     display: inline-block;
     position: relative;
-  }
-  &__text-icon {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    right: $url-text-icon-right-margin;
   }
 }

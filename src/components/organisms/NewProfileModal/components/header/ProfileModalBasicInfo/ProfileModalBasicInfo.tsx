@@ -56,7 +56,7 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
               defaultValue={viewingUser?.partyName}
               placeholder="Party Name"
               error={partyNameError}
-              ref={register({ required: true })}
+              ref={register({ required: "Party Name cannot be empty" })}
               notCondensed
             />
           ) : (

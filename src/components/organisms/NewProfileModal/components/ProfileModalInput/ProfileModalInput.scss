@@ -1,34 +1,29 @@
 @import "../../constants";
 
+$url-text-icon-right-margin: 0.5rem;
+
 .ProfileModalInput {
-  position: relative;
   &__input {
-    background: rgba(255, 255, 255, 0.12);
-    border: $input-border;
-    box-sizing: border-box;
-    border-radius: $input-border-radius;
     text-align: start;
     cursor: initial;
-    &--invalid {
-      border: $input-error-border;
-      &:focus {
-        border: $input-border;
-        box-shadow: $input-error-box-shadow-focus;
-      }
-    }
     &--condensed {
       padding: 6px 14px 6px 14px;
     }
   }
 
+  &__icon-end {
+    padding-right: $url-text-icon-right-margin;
+    & > * {
+      opacity: 1;
+    }
+    &:focus {
+      opacity: 1;
+    }
+  }
+
   &__error-message {
-    color: $input-error-color;
-    position: absolute;
-    bottom: -1.3rem;
-    left: 8px;
-    font-size: 14px;
     &--condensed {
-      font-size: 12px;
+      font-size: 0.7rem;
       bottom: -1rem;
     }
   }
