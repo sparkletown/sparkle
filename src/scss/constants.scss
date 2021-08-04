@@ -119,6 +119,8 @@ $media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
+$ScheduleNG--padding: 20px;
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
