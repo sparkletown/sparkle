@@ -113,10 +113,9 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
             style={{
               ...styles.resizeableImageContainer,
               borderRadius: rounded ? "50%" : "none",
+              backgroundImage: "url(" + url + ")",
             }}
-          >
-            <img src={url} alt="subvenue-icon" style={styles.resizeableImage} />
-          </div>
+          ></div>
         </div>
       </Resizable>
     );
@@ -158,6 +157,8 @@ const styles: Record<string, CSSProperties> = {
     overflow: "hidden",
     width: "100%",
     flex: 1,
+    backgroundPosition: "center",
+    backgroundSize: "cover",
   },
   resizeableImage: {
     width: "100%",
