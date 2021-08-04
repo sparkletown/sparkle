@@ -1,0 +1,39 @@
+.SingleButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  flex-flow: column nowrap;
+
+  &:hover &__icon {
+    opacity: 1;
+  }
+
+  &:active &__icon {
+    transition: 0.1s;
+  }
+
+  &:hover &__label {
+    opacity: 1;
+  }
+
+  &__icon {
+    max-width: 25px;
+    max-height: 25px;
+    margin: auto;
+
+    transition: 0.3s;
+    opacity: 0.85;
+  }
+
+  img {
+    pointer-events: none;
+  }
+
+  &__label {
+    transition: 0.1s;
+    opacity: 0.6;
+  }
+}

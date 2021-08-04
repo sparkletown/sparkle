@@ -5,7 +5,7 @@ import { RootState } from "store";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
-import { TextReaction, Reaction, TextReactionType } from "types/reactions";
+import { Reaction, TextReaction, TextReactionType } from "types/reactions";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
@@ -196,3 +196,11 @@ export const ownedVenuesDataSelector: SparkleSelector<
 export const ownedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.ownedVenues;
+
+export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
+  state
+) => state.animatemap.environmentSound;
+
+export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
+  state
+) => state.animatemap.firstEntrance;

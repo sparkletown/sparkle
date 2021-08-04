@@ -11,7 +11,7 @@ import mixpanel from "mixpanel-browser";
 
 import { Provider as ReduxStoreProvider } from "react-redux";
 import { createFirestoreInstance } from "redux-firestore";
-import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
+import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
 
 import firebase from "firebase/app";
 import "firebase/analytics";

@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -29,6 +29,7 @@ import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { AnimateMap } from "components/templates/AnimateMap";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 const PlayaRouter = lazy(() =>
@@ -68,6 +69,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = <PartyMap venue={venue} />;
+      break;
+
+    case VenueTemplate.animatemap:
+      template = <AnimateMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:

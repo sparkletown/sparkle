@@ -4,10 +4,10 @@ import {
   API_KEY,
   APP_ID,
   AUTH_DOMAIN,
-  MEASUREMENT_ID,
   BUCKET_URL,
-  PROJECT_ID,
   IS_BURN,
+  MEASUREMENT_ID,
+  PROJECT_ID,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
 import { RoomType } from "types/rooms";
@@ -196,12 +196,14 @@ export const IFRAME_TEMPLATES = [
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -211,6 +213,7 @@ export const PLACEABLE_VENUE_TEMPLATES = [
   VenueTemplate.friendship,
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
@@ -256,6 +259,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
+    description: [
+      "An explorable party map into which you can place all your party rooms.",
+    ],
+  },
+  {
+    template: VenueTemplate.animatemap,
+    name: "Animate Map",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
@@ -398,6 +408,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Theme Camp (legacy)",
     description: ["To be removed asap"],
   },
+  {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
+    description: [""],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -425,6 +440,11 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
+    description: [""],
+  },
+  {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
     description: [""],
   },
 ];
@@ -539,6 +559,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
+    description: "Add your Animate Map",
+    icon: "/venues/pickspace-thumbnail_camp.png",
+    customInputs: [
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
     template: VenueTemplate.embeddable,
     name: "Embeddable",
     description:
@@ -558,6 +591,7 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
   VenueTemplate.playa,
 ];
 
@@ -565,6 +599,7 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it

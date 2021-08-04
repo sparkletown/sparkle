@@ -65,6 +65,7 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
           </div>
         );
       case VenueTemplate.partymap:
+      case VenueTemplate.animatemap:
       case VenueTemplate.themecamp:
         const partyMapVenue = venue as WithId<PartyMapVenue>;
         return (

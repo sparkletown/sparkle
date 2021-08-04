@@ -16,6 +16,8 @@ import { UserWithLocation } from "types/User";
 
 import { worldUsersApi } from "./api";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
+import { AnimateMapActionTypes } from "./actions/AnimateMap";
+import subscribeActionMiddleware from "redux-subscribe-action";
 
 export const rootReducer = combineReducers({
   firebase: firebaseReducer as Reducer<
@@ -73,10 +75,13 @@ export const store = configureStore({
           ...Object.keys(reduxFirestoreConstants.actionTypes).map(
             (type) => `${reduxFirestoreConstants.actionsPrefix}/${type}`
           ),
+
+          // Ignore all redux-animatemap action types
+          ...Object.values(AnimateMapActionTypes),
         ],
 
         // Ignore all react-redux-firebase and redux-firestore data stored in Redux
-        ignoredPaths: ["firebase", "firestore"],
+        ignoredPaths: ["firebase", "firestore", "animatemap"],
       },
 
       thunk: {
@@ -98,7 +103,8 @@ export const store = configureStore({
          */
         LogRocket.reduxMiddleware() as ReturnType<typeof getDefaultMiddleware>
         // reduxMiddlewareTiming
-      ),
+      )
+      .concat(subscribeActionMiddleware),
 
   /**
    * @see https://redux-toolkit.js.org/api/configureStore#devtools

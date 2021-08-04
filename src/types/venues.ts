@@ -10,9 +10,10 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UserStatus, UsernameVisibility } from "./User";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
@@ -27,6 +28,7 @@ export enum VenueTemplate {
   friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
+  animatemap = "animatemap",
   performancevenue = "performancevenue",
   playa = "playa",
   posterhall = "posterhall",
@@ -48,6 +50,7 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
   | VenueTemplate.partymap
+  | VenueTemplate.animatemap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
@@ -60,6 +63,7 @@ export type AnyVenue =
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
+  | AnimateMapVenue
   | PosterPageVenue;
 
 // --- VENUE V2
@@ -182,6 +186,12 @@ export interface BaseVenue {
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  id: string;
+  gameOptions: GameOptions;
+  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
