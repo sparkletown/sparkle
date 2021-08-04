@@ -9,7 +9,10 @@ $icon-size: 20px;
   flex: 1;
 
   &__rooms {
+    @include scrollbar;
     width: 20%;
+    height: 88vh;
+    overflow-y: auto;
   }
 
   &__map {
