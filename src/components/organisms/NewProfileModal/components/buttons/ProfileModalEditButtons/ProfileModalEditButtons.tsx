@@ -6,7 +6,6 @@ import "components/organisms/NewProfileModal/components/buttons/ProfileModalEdit
 
 interface Props extends ContainerClassName {
   onCancelClick: () => void;
-  onSaveClick: () => void;
   saveChangesDisabled?: boolean;
 }
 
@@ -17,7 +16,6 @@ const cancelCustomStyle = {
 
 export const ProfileModalEditButtons: React.FC<Props> = ({
   onCancelClick,
-  onSaveClick,
   saveChangesDisabled,
   containerClassName,
 }: Props) => {
@@ -46,7 +44,6 @@ export const ProfileModalEditButtons: React.FC<Props> = ({
         type="submit"
         customClass={"ProfileModalEditButtons__button"}
         customStyle={saveChangesCustomStyle}
-        onClick={onSaveClick}
         disabled={saveChangesDisabled}
       >
         Save changes

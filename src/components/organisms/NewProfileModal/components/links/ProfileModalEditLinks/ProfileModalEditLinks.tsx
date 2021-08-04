@@ -1,7 +1,6 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-import { formProp } from "components/organisms/NewProfileModal/utility";
-import { FieldError, NestDataObject, useForm } from "react-hook-form";
+import { FieldError, NestDataObject } from "react-hook-form";
 import { FormFieldProps } from "types/forms";
 import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
@@ -10,58 +9,60 @@ import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
 import "./ProfileModalEditLinks.scss";
 import { ProfileLink } from "types/User";
+import { WithId } from "utils/id";
 
 interface Props extends ContainerClassName {
-  initialLinks: ProfileLink[];
+  links: WithId<ProfileLink>[];
   setLinkTitle: (index: number, title: string) => void;
-  watch: ReturnType<typeof useForm>["watch"];
   register: FormFieldProps["register"];
   errors?: NestDataObject<ProfileLink, FieldError>[];
+  onDeleteLink: (index: number) => void;
+  onAddLink: () => void;
 }
 
 export const ProfileModalEditLinks: React.FC<Props> = ({
-  initialLinks,
+  links,
   setLinkTitle,
-  watch,
   register,
   errors,
+  onDeleteLink,
+  onAddLink,
   containerClassName,
 }: Props) => {
-  const links = watch(formProp("links"), initialLinks) as ProfileLink[];
-
   const setTitles = useMemo(
-    () => initialLinks.map((_, i) => (title: string) => setLinkTitle(i, title)),
-    [initialLinks, setLinkTitle]
+    () => links.map((_, i) => (title: string) => setLinkTitle(i, title)),
+    [links, setLinkTitle]
   );
 
   const renderedLinks = useMemo(
     () =>
       register &&
-      initialLinks.map((initialLink, i) => {
+      links.map(({ id, ...link }, i) => {
         const otherUrls = links.filter((l) => l !== links[i]).map((l) => l.url);
 
         return (
           <ProfileModalEditLink
             containerClassName="ProfileModalEditLinks__link-group"
-            key={initialLink.url}
+            key={id}
             index={i}
             register={register}
-            initialLink={initialLink}
+            initialLink={link}
             link={links[i]}
             otherUrls={otherUrls}
             setTitle={setTitles[i]}
             error={errors?.[i]}
+            onDelete={() => onDeleteLink(i)}
           />
         );
       }),
-    [register, initialLinks, links, setTitles, errors]
+    [register, links, setTitles, errors, onDeleteLink]
   );
 
   return (
     <div className={classNames("ProfileModalEditLinks", containerClassName)}>
       <div className="ProfileModalEditLinks__header-container">
         <ProfileModalSectionHeader text="Profile links" />
-        <ProfileModalRoundIcon icon={faPlus} size="sm" />
+        <ProfileModalRoundIcon onClick={onAddLink} icon={faPlus} size="sm" />
       </div>
       {renderedLinks}
     </div>

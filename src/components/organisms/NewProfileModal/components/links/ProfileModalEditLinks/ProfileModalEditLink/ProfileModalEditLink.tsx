@@ -24,6 +24,7 @@ interface Props extends ContainerClassName {
   setTitle: (title: string) => void;
   register: FormFieldProps["register"];
   error?: NestDataObject<ProfileLink, FieldError>;
+  onDelete: () => void;
 }
 
 export const ProfileModalEditLink: React.FC<Props> = ({
@@ -34,6 +35,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
   setTitle,
   register,
   error,
+  onDelete,
   containerClassName,
 }: Props) => {
   const linkIcon = useLinkIcon(link.url);
@@ -91,6 +93,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
         />
       </div>
       <ProfileModalRoundIcon
+        onClick={onDelete}
         containerClassName="ProfileModalEditLink__delete-icon"
         icon={faTrash}
       />

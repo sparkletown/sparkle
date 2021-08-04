@@ -311,11 +311,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     size="medium"
                   />
                 </div>
-                <UserProfileModal
-                  show={showUserProfile}
-                  onClose={() => setShowUserProfile(false)}
-                  venue={currentVenue}
-                />
+                {userWithId && (
+                  <UserProfileModal
+                    user={userWithId}
+                    show={showUserProfile}
+                    onClose={() => setShowUserProfile(false)}
+                    venue={currentVenue}
+                  />
+                )}
               </div>
             )}
           </div>

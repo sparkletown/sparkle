@@ -2,13 +2,12 @@ import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/co
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
-import { useUser } from "hooks/useUser";
 import { pick } from "lodash";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
-import { FieldErrors, OnSubmit, useForm } from "react-hook-form";
+import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import { ProfileLink } from "types/User";
+import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { propName } from "utils/types";
@@ -21,6 +20,7 @@ import "./ProfileModal.scss";
 import "./UserProfileModal.scss";
 
 interface Props {
+  user: WithId<User>;
   venue: WithId<AnyVenue>;
   show: boolean;
   onClose: () => void;
@@ -35,8 +35,12 @@ export interface UserProfileModalFormData {
   confirmNewPassword: string;
 }
 
-export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
-  const { userWithId: user } = useUser();
+export const UserProfileModal: React.FC<Props> = ({
+  venue,
+  show,
+  user,
+  onClose,
+}) => {
   const firebase = useFirebase();
   const currentUserEmail = firebase.auth().currentUser?.email;
 
@@ -48,26 +52,38 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
     setError,
     clearError,
     handleSubmit,
-    watch,
     getValues,
     setValue,
+    control,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
+    defaultValues: {
+      links: user.profileLinks,
+    },
   });
 
-  const checkPassword = useCallback(
+  const {
+    fields,
+    append: addLink,
+    remove: removeLink,
+  } = useFieldArray<ProfileLink>({
+    control,
+    name: formProp("links"),
+  });
+
+  const links = fields as WithId<ProfileLink>[];
+
+  const checkOldPassword = useCallback(
     async (password: string) => {
       if (!currentUserEmail) return;
       try {
-        console.log("try login");
         await firebase
           .auth()
           .signInWithEmailAndPassword(currentUserEmail, password);
         return true;
       } catch {
-        console.log("try login: fail");
         return false;
       }
     },
@@ -81,15 +97,20 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
         data.newPassword !== "" ||
         data.confirmNewPassword !== ""
       ) {
-        if (!(await checkPassword(data.oldPassword))) {
+        console.log(data);
+        if (!(await checkOldPassword(data.oldPassword))) {
           setError(formProp("oldPassword"), "validate", "Incorrect password");
+          return;
         } else {
           clearError(formProp("oldPassword"));
         }
+        // await updateProfileLinks({
+        //   profileLinks: [];
+        //   userId: user?.id,
+        // });
       }
-      console.log(data);
     },
-    [checkPassword, clearError, setError]
+    [checkOldPassword, clearError, setError]
   );
 
   const setLinkTitle = useCallback(
@@ -102,7 +123,6 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
     [setValue]
   );
 
-  // @ts-ignore
   return (
     <Modal
       style={{ display: "flex" }}
@@ -111,65 +131,65 @@ export const UserProfileModal: React.FC<Props> = ({ venue, show, onClose }) => {
       onHide={onClose}
     >
       <Modal.Body className="ProfileModal__body">
-        {user && (
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ProfileModalBasicInfo
-              editMode={editMode}
-              onEdit={turnOnEditMode}
-              viewingUser={user}
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ProfileModalBasicInfo
+            editMode={editMode}
+            onEdit={turnOnEditMode}
+            viewingUser={user}
+            containerClassName="ProfileModal__section"
+            register={register}
+            partyNameError={errors?.partyName}
+          />
+          <ProfileModalQuestions
+            viewingUser={user}
+            editMode={editMode}
+            containerClassName="ProfileModal__section"
+            register={register}
+          />
+          {editMode && user?.profileLinks ? (
+            <ProfileModalEditLinks
               containerClassName="ProfileModal__section"
               register={register}
-              partyNameError={errors?.partyName}
+              links={links}
+              setLinkTitle={setLinkTitle}
+              errors={errors?.links}
+              onDeleteLink={(index) => removeLink(index)}
+              onAddLink={() => {
+                addLink({ url: "", title: "" });
+              }}
             />
-            <ProfileModalQuestions
+          ) : (
+            <ProfileModalLinks
               viewingUser={user}
-              editMode={editMode}
+              containerClassName="ProfileModal__section"
+            />
+          )}
+          {!editMode && (
+            <ProfileModalBadges
+              viewingUser={user}
+              venue={venue}
+              containerClassName={"ProfileModal__section"}
+            />
+          )}
+          {editMode && (
+            <ProfileModalChangePassword
               containerClassName="ProfileModal__section"
               register={register}
+              getValues={getValues}
+              errors={pick<
+                FieldErrors<UserProfileModalFormData>,
+                "oldPassword" | "newPassword" | "confirmNewPassword"
+              >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
             />
-            {editMode && user?.profileLinks ? (
-              <ProfileModalEditLinks
-                containerClassName="ProfileModal__section"
-                initialLinks={user.profileLinks}
-                register={register}
-                watch={watch}
-                setLinkTitle={setLinkTitle}
-                errors={errors?.links}
-              />
-            ) : (
-              <ProfileModalLinks
-                viewingUser={user}
-                containerClassName="ProfileModal__section"
-              />
-            )}
-            {!editMode && (
-              <ProfileModalBadges
-                viewingUser={user}
-                venue={venue}
-                containerClassName={"ProfileModal__section"}
-              />
-            )}
-            {editMode && (
-              <ProfileModalChangePassword
-                containerClassName="ProfileModal__section"
-                register={register}
-                getValues={getValues}
-                errors={pick<
-                  FieldErrors<UserProfileModalFormData>,
-                  "oldPassword" | "newPassword" | "confirmNewPassword"
-                >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
-              />
-            )}
-            {editMode && (
-              <ProfileModalEditButtons
-                onSaveClick={() => {}}
-                onCancelClick={turnOffEditMode}
-                saveChangesDisabled={false}
-                containerClassName="UserProfileModal__edit-buttons"
-              />
-            )}
-          </form>
-        )}
+          )}
+          {editMode && (
+            <ProfileModalEditButtons
+              onCancelClick={turnOffEditMode}
+              saveChangesDisabled={false}
+              containerClassName="UserProfileModal__edit-buttons"
+            />
+          )}
+        </form>
       </Modal.Body>
     </Modal>
   );
