@@ -30,6 +30,12 @@ const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.run]: "Run",
 };
 
+const tabIcons = {
+  [AdminVenueTab.spaces]: faBorderNone,
+  [AdminVenueTab.timing]: faClock,
+  [AdminVenueTab.run]: faPlayCircle,
+};
+
 const DEFAULT_TAB = AdminVenueTab.spaces;
 
 export const AdminVenueView: React.FC = () => {
@@ -45,19 +51,6 @@ export const AdminVenueView: React.FC = () => {
     currentVenue: venue,
   } = useConnectCurrentVenueNG(venueId);
 
-  const getTabIcon = (tab: string) => {
-    switch (tab) {
-      case AdminVenueTab.spaces:
-        return <FontAwesomeIcon icon={faBorderNone} />;
-      case AdminVenueTab.timing:
-        return <FontAwesomeIcon icon={faClock} />;
-      case AdminVenueTab.run:
-        return <FontAwesomeIcon icon={faPlayCircle} />;
-      default:
-        return null;
-    }
-  };
-
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
       <Nav.Link
@@ -67,7 +60,10 @@ export const AdminVenueView: React.FC = () => {
         })}
         eventKey={key}
       >
-        <span className="ViewTab__icon">{getTabIcon(key)}</span>
+        <FontAwesomeIcon
+          className="ViewTab__icon"
+          icon={tabIcons[key as AdminVenueTab]}
+        />
         {text}
       </Nav.Link>
     ));
