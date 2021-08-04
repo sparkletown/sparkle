@@ -38,6 +38,7 @@ import { NavBarLogin } from "./NavBarLogin";
 
 import "./NavBar.scss";
 import "./playa.scss";
+import { NavBarScheduleV2 } from "components/organisms/NavBarScheduleV2/NavBarScheduleV2";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -137,7 +138,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
-  const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
+  const [isEventScheduleVisible, setEventScheduleVisible] = useState(true);
   const toggleEventSchedule = useCallback(() => {
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible]);
@@ -329,7 +330,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
           onClick={hideEventSchedule}
         >
           <div className={navBarScheduleClassName}>
-            <NavBarSchedule
+            <NavBarScheduleV2
               isVisible={isEventScheduleVisible}
               venueId={venueId}
             />
