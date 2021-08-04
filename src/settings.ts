@@ -717,3 +717,5 @@ export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
+
+export const EVENT_LIVE_RANGE = 60; // in minutes

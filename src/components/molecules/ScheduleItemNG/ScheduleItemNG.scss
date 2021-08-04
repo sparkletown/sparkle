@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
 $schedule--grey: rgba(255, 255, 255, 0.7);
+$action-button-width: 136px;
 
 .ScheduleItemNG {
   display: flex;
@@ -17,19 +18,57 @@ $schedule--grey: rgba(255, 255, 255, 0.7);
 
   &__info {
     margin-top: $spacing--xs;
-    flex-basis: 15%;
+    min-width: 60px;
+
+    &--active {
+      margin-top: 0;
+      text-align: center;
+    }
   }
 
   &__details {
     margin-left: $spacing--sm;
   }
 
+  &__buttons {
+    margin-top: $spacing--sm;
+  }
+
+  // @debt had to increase specificity because Button styles go later
+  & .ScheduleItemNG__button {
+    width: $action-button-width;
+    font-weight: $font-weight--500;
+    font-size: $font-size--md;
+    line-height: 17px;
+
+    &.ScheduleItemNG__button--copy {
+      background-color: $secondary;
+      margin-right: $spacing--sm;
+    }
+  }
+
   &__time,
   &__date {
     display: block;
+
     font-weight: $font-weight--500;
     font-size: $font-size--sm;
     line-height: 15px;
+  }
+
+  &__time--live {
+    height: 30px;
+    margin-bottom: $spacing--xs;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: $primary;
+    border-radius: 22px;
+
+    font-size: $font-size--md;
+    line-height: 17px;
   }
 
   &__time--end {
