@@ -80,3 +80,11 @@ export const getEventStatus = (event: VenueEvent) => {
 
 export const eventsByStartUtcSecondsSorter = (a: VenueEvent, b: VenueEvent) =>
   a.start_utc_seconds - b.start_utc_seconds;
+
+export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
+  if (a.start_utc_seconds !== b.start_utc_seconds) {
+    return eventsByStartUtcSecondsSorter(a, b);
+  }
+
+  return a.duration_minutes - b.duration_minutes;
+};

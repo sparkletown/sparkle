@@ -20,6 +20,7 @@ import {
 import {
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
+  eventTimeComparator,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
@@ -128,16 +129,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
-    const prioritiseEvents = (
-      a: WithVenueId<VenueEvent>,
-      b: WithVenueId<VenueEvent>
-    ) => {
-      if (a.start_utc_seconds !== b.start_utc_seconds) {
-        return a.start_utc_seconds - b.start_utc_seconds;
-      }
-
-      return a.duration_minutes - b.duration_minutes;
-    };
 
     const daysEvents = relatedVenueEvents
       .filter(
@@ -145,7 +136,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           ? isEventWithinDate(startOfSelectedDay)
           : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
-      .sort(prioritiseEvents)
+      .sort(eventTimeComparator)
       .map(
         prepareForSchedule({
           day: startOfSelectedDay,
