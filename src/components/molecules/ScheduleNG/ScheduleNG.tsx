@@ -23,7 +23,7 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
 
   const containerClasses = classNames("ScheduleNG");
 
-  const rowsWithTheEvents = useMemo(() => {
+  const eventsRows = useMemo(() => {
     const formatDateOptions = { formatToday: () => "" };
 
     return daysEvents.map((event) => (
@@ -59,12 +59,13 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
     );
   }
 
-  if (!hasEvents) {
-    return (
-      <div className={containerClasses}>
+  return (
+    <div className={containerClasses}>
+      {!hasEvents ? (
         <div className="ScheduleNG__no-events">No events scheduled</div>
-      </div>
-    );
-  }
-  return <div className={containerClasses}>{rowsWithTheEvents}</div>;
+      ) : (
+        eventsRows
+      )}
+    </div>
+  );
 };
