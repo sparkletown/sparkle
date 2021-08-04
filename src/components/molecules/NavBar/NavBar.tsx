@@ -38,7 +38,6 @@ import { NavBarLogin } from "./NavBarLogin";
 
 import "./NavBar.scss";
 import "./playa.scss";
-import { NavBarScheduleV2 } from "components/organisms/NavBarScheduleV2/NavBarScheduleV2";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -330,7 +329,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
           onClick={hideEventSchedule}
         >
           <div className={navBarScheduleClassName}>
-            <NavBarScheduleV2
+            <NavBarSchedule
               isVisible={isEventScheduleVisible}
               venueId={venueId}
             />

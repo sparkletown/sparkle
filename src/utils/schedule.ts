@@ -10,19 +10,3 @@ export const sortScheduleRoomsAlphabetically = (rooms: LocationEvents[]) => {
     return nameA.localeCompare(nameB);
   });
 };
-
-export const getScheduleTimelineNames = (d: string) => {
-  const day = parseInt(d, 10);
-
-  if (day > 3 && day < 21) return `${day}th`;
-  switch (day % 10) {
-    case 1:
-      return `${day}st`;
-    case 2:
-      return `${day}nd`;
-    case 3:
-      return `${day}rd`;
-    default:
-      return `${day}th`;
-  }
-};
