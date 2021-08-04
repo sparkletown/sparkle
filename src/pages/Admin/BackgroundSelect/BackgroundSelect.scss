@@ -10,25 +10,24 @@
   background-size: cover;
   background-color: $dark;
   background-position: center;
+  text-align: center;
 
   &__maps-header {
     font-size: $font-size--md;
     font-weight: normal;
-    color: rgba(255, 255, 255, 0.5);
+    color: opaque-white(0.5);
     margin: $spacing--xxl auto $spacing--md auto;
   }
 
   &__map-grid {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
     width: 100%;
+    display: grid;
+    grid-gap: $spacing--md;
+    grid-template-columns: repeat(4, 1fr);
   }
 
   &__map {
-    width: 23%;
-    padding-bottom: 60px;
+    padding-bottom: 50px;
     border-radius: $border-radius--lg;
     background: $black;
     background-size: cover;
