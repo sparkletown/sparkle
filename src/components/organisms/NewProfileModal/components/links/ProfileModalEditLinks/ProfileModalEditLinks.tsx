@@ -43,7 +43,7 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
         return (
           <ProfileModalEditLink
             containerClassName="ProfileModalEditLinks__link-group"
-            key={`link-${i}`}
+            key={initialLink.url}
             index={i}
             register={register}
             initialLink={initialLink}

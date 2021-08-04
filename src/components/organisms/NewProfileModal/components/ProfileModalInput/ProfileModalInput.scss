@@ -27,7 +27,8 @@
   &__error-message {
     color: $input-error-color;
     position: absolute;
-    bottom: -1.3rem;
+    bottom: -1rem;
     left: 8px;
+    font-size: 12px;
   }
 }

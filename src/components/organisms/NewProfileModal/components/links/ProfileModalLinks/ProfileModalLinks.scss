@@ -1,0 +1,10 @@
+$link-gap: 0.6rem;
+
+.ProfileModalLinks {
+  &__link {
+    margin-left: $link-gap;
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
