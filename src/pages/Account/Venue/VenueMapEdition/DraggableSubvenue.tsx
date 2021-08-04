@@ -158,7 +158,8 @@ const styles: Record<string, CSSProperties> = {
     width: "100%",
     flex: 1,
     backgroundPosition: "center",
-    backgroundSize: "cover",
+    backgroundSize: "contain,cover",
+    backgroundRepeat: "no-repeat",
   },
   resizeableImage: {
     width: "100%",
