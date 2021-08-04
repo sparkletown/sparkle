@@ -1,4 +1,5 @@
 import React from "react";
+import { differenceInCalendarDays } from "date-fns";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
@@ -13,12 +14,16 @@ export interface ScheduleItemNGProps {
 
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   const formatDateOptions = { formatToday: () => "" };
+  const showDate = Boolean(
+    differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
+  );
 
   return (
     <div className="ScheduleItemNG">
       <div className="ScheduleItemNG--info">
         <span className="ScheduleItemNG--date">
-          {formatDateRelativeToNow(eventStartTime(event), formatDateOptions)}
+          {showDate &&
+            formatDateRelativeToNow(eventStartTime(event), formatDateOptions)}
         </span>
 
         <span className="ScheduleItemNG--time">
@@ -26,7 +31,8 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
         </span>
 
         <span className="ScheduleItemNG--date">
-          {formatDateRelativeToNow(eventEndTime(event), formatDateOptions)}
+          {showDate &&
+            formatDateRelativeToNow(eventEndTime(event), formatDateOptions)}
         </span>
 
         <span className="ScheduleItemNG--time">
