@@ -12,8 +12,9 @@ export interface ScheduleItemNGProps {
   event: PersonalizedVenueEvent;
 }
 
+const formatDateOptions = { formatToday: () => "" };
+
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
-  const formatDateOptions = { formatToday: () => "" };
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );

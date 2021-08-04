@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
@@ -19,8 +18,6 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
 }) => {
   const hasEvents = daysEvents.length > 0;
 
-  const containerClasses = classNames("ScheduleNG");
-
   const eventsRows = useMemo(
     () =>
       daysEvents.map((event) => (
@@ -39,7 +36,7 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   }
 
   return (
-    <div className={containerClasses}>
+    <div className="ScheduleNG">
       {!hasEvents ? (
         <div className="ScheduleNG__no-events">No events scheduled</div>
       ) : (
