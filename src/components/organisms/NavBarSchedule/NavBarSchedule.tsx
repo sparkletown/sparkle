@@ -35,7 +35,9 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
-import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
+
+// Disabled as per designs. Up for deletion if confirmied not necessary
+// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
 import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
@@ -137,10 +139,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         return format(day, "do");
       } else {
         return formatDateRelativeToNow(day, {
-          formatOtherDate: (dateOrTimestamp) =>
-            format(dateOrTimestamp, "do"),
-          formatTomorrow: (dateOrTimestamp) =>
-            format(dateOrTimestamp, "do"),
+          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
+          formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
         });
       }
     };
@@ -248,8 +248,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   return (
     <div className={containerClasses}>
-      {venueId && <ScheduleVenueDescription venueId={venueId} />}
-       {!isLoadingSchedule && (
+      {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
+      {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+      {!isLoadingSchedule && (
         <div className="NavBarSchedule__download-buttons">
           {/* Enable when Schedule V3 bookmarked events are ready */}
           {/* {hasSavedEvents && (
