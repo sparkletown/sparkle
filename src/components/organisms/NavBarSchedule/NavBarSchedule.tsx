@@ -6,11 +6,10 @@ import {
   format,
   fromUnixTime,
   isToday,
-  minutesToSeconds,
+ millisecondsToSeconds,  minutesToSeconds,
   secondsToMilliseconds,
   startOfDay,
-  startOfToday,
-} from "date-fns";
+  startOfToday } from "date-fns";
 
 import { PLATFORM_BRAND_NAME } from "settings";
 
@@ -22,9 +21,9 @@ import {
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeComparator,
+  isEventLiveOrFuture,
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
-g  isEventLiveOrFuture,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
@@ -45,7 +44,6 @@ import { Toggler } from "components/atoms/Toggler";
 import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
-import { millisecondsToSeconds } from "date-fns/esm";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
