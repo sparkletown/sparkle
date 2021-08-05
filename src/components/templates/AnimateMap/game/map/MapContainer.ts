@@ -34,6 +34,8 @@ import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
 import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import KeyPoll from "../utils/KeyPollSingleton";
+import { AnimationSystem } from "./systems/AnimationSysem";
+import { AnimationNode } from "./nodes/AnimationNode";
 
 export class MapContainer extends Container {
   private _app?: Application | null = null;
@@ -166,6 +168,11 @@ export class MapContainer extends Container {
     this._engine.addSystem(
       new MotionCollisionSystem(),
       SystemPriorities.resolveCollisions
+    );
+
+    this._engine.addSystem(
+      new AnimationSystem(AnimationNode),
+      SystemPriorities.animate
     );
 
     this._engine.addSystem(
