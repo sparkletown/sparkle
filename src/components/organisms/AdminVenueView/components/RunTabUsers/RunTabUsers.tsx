@@ -7,6 +7,8 @@ import { SearchField } from "components/organisms/AdminVenueView/components/Sear
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 
 import "./RunTabUsers.scss";
+import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
+import { useShowHide } from "hooks/useShowHide";
 
 interface RunTabSidebarProps {
   venueId?: string;
@@ -16,6 +18,11 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
   const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
   const { recentWorldUsers } = useRecentWorldUsers();
   const [searchText, setSearchText] = useState("");
+  const {
+    isShown: isShownInviteAdminModal,
+    show: showInviteAdminModal,
+    hide: hideInviteAdminModal,
+  } = useShowHide();
 
   const admins = useMemo(() => {
     const owners = venue?.owners ?? [];
@@ -28,6 +35,10 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
       partyName?.toLowerCase().includes(needle)
     );
   }, [recentWorldUsers, searchText]);
+
+  if (!venue) {
+    return null;
+  }
 
   return (
     <div className="RunTabUsers">
@@ -53,8 +64,13 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
         <span className="RunTabUsers__info">
           {admins.length} admin{admins.length !== 1 && "s"} online
         </span>
-        <ButtonNG>Invite admin</ButtonNG>
+        <ButtonNG onClick={showInviteAdminModal}>Invite admin</ButtonNG>
       </div>
+      <VenueOwnersModal
+        visible={isShownInviteAdminModal}
+        onHide={hideInviteAdminModal}
+        venue={venue}
+      />
       {admins.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />
       ))}

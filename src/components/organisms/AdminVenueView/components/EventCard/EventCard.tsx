@@ -39,7 +39,7 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
   return (
     <div className={parentClasses}>
       {!nextEvent && (
-        <span className="EventCard__empty">No planned events for today</span>
+        <span className="EventCard__empty">No upcoming events</span>
       )}
 
       {nextEvent && (
