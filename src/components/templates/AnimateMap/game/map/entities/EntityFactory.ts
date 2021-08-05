@@ -1,15 +1,14 @@
 import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
-
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
   PlayerModel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
-
 import { Point } from "types/utility";
-
+import { ImageToCanvas } from "../../commands/ImageToCanvas";
+import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
@@ -37,7 +36,6 @@ import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
-import { ZoomedSpriteComponent } from "../components/ZoomedSpriteComponent";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
@@ -500,17 +498,11 @@ export default class EntityFactory {
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
-    let imageUrlString = venue.data.imageUrlString;
-
-    // HACK for venue images
-    const scale = 0.1;
+    const config = GameInstance.instance.getConfig();
 
     const entity: Entity = new Entity();
     entity
       .add(new VenueComponent(venue))
-      .add(new SpriteComponent())
-      .add(new ZoomedSpriteComponent([imageUrlString]))
-      .add(new PositionComponent(venue.x, venue.y, 0, scale, scale))
       .add(
         new HoverableSpriteComponent(
           () => {
@@ -545,8 +537,34 @@ export default class EntityFactory {
           );
         })
       )
-      .add(new CollisionComponent(50));
+      .add(new CollisionComponent(config.venueDefaultCollisionRadius));
+
     this.engine?.addEntity(entity);
+
+    new LoadImage(venue.data.imageUrlString)
+      .execute()
+      .then(
+        (comm: LoadImage): Promise<ImageToCanvas> => {
+          // the picture can be very large
+          const scale =
+            ((config.venueDefaultCollisionRadius * 2) / comm.image!.width) * 2;
+          return new ImageToCanvas(comm.image!).scaleTo(scale).execute();
+        }
+      )
+      .then((comm: ImageToCanvas) => {
+        const scale =
+          (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
+        entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
+
+        const sprite: Sprite = Sprite.from(comm.canvas);
+        const spriteComponent: SpriteComponent = new SpriteComponent();
+        spriteComponent.view = sprite;
+        entity.add(spriteComponent);
+      })
+      .catch((err) => {
+        // TODO default venue image
+        console.log("err", err);
+      });
 
     return entity;
   }
