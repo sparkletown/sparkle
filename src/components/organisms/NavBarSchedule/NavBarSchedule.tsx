@@ -29,6 +29,7 @@ import { formatDateRelativeToNow } from "utils/time";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
@@ -91,9 +92,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
-  const [showPersonalisedSchedule, setShowPersonalisedSchedule] = useState(
-    false
-  );
+  const {
+    isShown: showPersonalisedSchedule,
+    toggle: setShowPersonalisedSchedule,
+  } = useShowHide(false);
 
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
@@ -218,11 +220,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       <Toggler
         name="bookmarked-toggle"
         toggled={showPersonalisedSchedule}
-        onChange={() =>
-          showPersonalisedSchedule
-            ? setShowPersonalisedSchedule(false)
-            : setShowPersonalisedSchedule(true)
-        }
+        onChange={() => setShowPersonalisedSchedule()}
         label="Bookmarked events"
       />
 
