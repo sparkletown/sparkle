@@ -36,6 +36,7 @@ import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
+import { Avatar } from "../graphics/Avatar";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
@@ -196,15 +197,14 @@ export default class EntityFactory {
 
     const padding = 20;
     const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
-    const sprite: Sprite = new Sprite();
+    const sprite: Avatar = new Avatar();
     new RoundAvatar(url)
       .execute()
       .then((comm: RoundAvatar) => {
         // avatar
-        const avatar: Sprite = Sprite.from(comm.canvas!);
-        avatar.name = SpriteComponent.AVATAR;
-        avatar.anchor.set(0.5);
-        sprite.addChild(avatar);
+        sprite.avatar = Sprite.from(comm.canvas!);
+        sprite.avatar.anchor.set(0.5);
+        sprite.addChild(sprite.avatar);
 
         // halo
         const canvas = document.createElement("canvas");
@@ -217,10 +217,9 @@ export default class EntityFactory {
         ctx.closePath();
         ctx.fillStyle = "#7c46fb";
         ctx.fill();
-        const halo: Sprite = Sprite.from(canvas);
-        halo.name = SpriteComponent.HALO;
-        halo.anchor.set(0.5);
-        sprite.addChildAt(halo, 0);
+        sprite.halo = Sprite.from(canvas);
+        sprite.halo.anchor.set(0.5);
+        sprite.addChildAt(sprite.halo, 0);
 
         return Promise.resolve(comm);
       })
@@ -404,15 +403,15 @@ export default class EntityFactory {
     this.engine?.addEntity(entity);
 
     const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
-    const sprite: Sprite = new Sprite();
+    const sprite: Avatar = new Avatar();
+
     new RoundAvatar(url)
       .execute()
       .then((comm: RoundAvatar) => {
         // avatar
-        const avatar: Sprite = Sprite.from(comm.canvas!);
-        avatar.name = SpriteComponent.AVATAR;
-        avatar.anchor.set(0.5);
-        sprite.addChild(avatar);
+        sprite.avatar = Sprite.from(comm.canvas!);
+        sprite.avatar.anchor.set(0.5);
+        sprite.addChild(sprite.avatar);
         return Promise.resolve(comm);
       })
       .then((comm: RoundAvatar) => {
