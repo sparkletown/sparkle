@@ -5,12 +5,14 @@ import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
 import { useSameUser } from "hooks/useIsSameUser";
 import { useUser } from "hooks/useUser";
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
+import { FormFieldProps } from "types/forms";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 import "./ProfileModalAvatar.scss";
@@ -19,11 +21,10 @@ import { resizeFile } from "utils/image";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
-  editMode?: {
-    pictureUrl: string;
-    setUrl: (url: string) => void;
-    setError: (error: string) => void;
-  };
+  editMode?: boolean;
+  register?: FormFieldProps["register"];
+  setValue?: ReturnType<typeof useForm>["setValue"];
+  watch?: ReturnType<typeof useForm>["watch"];
 }
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
@@ -31,16 +32,18 @@ type Reference = ReturnType<FirebaseStorage["ref"]>;
 export const ProfileModalAvatar: React.FC<Props> = ({
   editMode,
   viewingUser,
+  register,
+  setValue,
+  watch,
   containerClassName,
 }: Props) => {
-  const pictureUrl = editMode?.pictureUrl;
-  const setUrl = editMode?.setUrl;
-  const setError = editMode?.setError;
-
   const { user } = useUser();
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
   const sameUser = useSameUser(viewingUser);
+  const [error, setError] = useState("");
+
+  const pictureUrl = watch?.(formProp("pictureUrl"));
 
   const [, setUploading, setNotUploading] = useBooleanState(false);
 
@@ -52,6 +55,7 @@ export const ProfileModalAvatar: React.FC<Props> = ({
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("change");
     if (!e.target.files) return;
 
     let file = e.target.files[0];
@@ -78,11 +82,12 @@ export const ProfileModalAvatar: React.FC<Props> = ({
         file
       );
       const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
-      if (setUrl) setUrl(pictureUrlRef);
+      if (setValue) setValue(formProp("pictureUrl"), pictureUrlRef, true);
     }
   };
 
   const uploadProfilePic = useCallback((event) => {
+    console.log("clicked");
     event.preventDefault();
     uploadRef.current?.click();
   }, []);
@@ -95,6 +100,20 @@ export const ProfileModalAvatar: React.FC<Props> = ({
         size="profileModal"
         showStatus={!sameUser}
       />
+      <input
+        type="file"
+        onChange={handleFileChange}
+        accept={ACCEPTED_IMAGE_TYPES}
+        ref={uploadRef}
+        className="ProfileModalAvatar__input"
+      />
+      {register && (
+        <input
+          name={formProp("pictureUrl")}
+          className="profile-picture-input"
+          ref={register()}
+        />
+      )}
       {editMode && (
         <div
           className={classNames(
@@ -103,15 +122,7 @@ export const ProfileModalAvatar: React.FC<Props> = ({
           )}
           onClick={uploadProfilePic}
         >
-          <input
-            type="file"
-            name={formProp("pictureUrl")}
-            onChange={handleFileChange}
-            accept={ACCEPTED_IMAGE_TYPES}
-            ref={uploadRef}
-            className="ProfileModalAvatar__input"
-          />
-          Upload new
+          Upload new {error}
         </div>
       )}
     </div>

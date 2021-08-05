@@ -5,7 +5,7 @@ import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/
 import "./ProfileModalBasicInfo.scss";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import React from "react";
-import { FieldError } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -18,11 +18,15 @@ interface Props extends ContainerClassName {
   editMode?: boolean;
   onEdit?: () => void;
   register?: FormFieldProps["register"];
+  setValue?: ReturnType<typeof useForm>["setValue"];
+  watch?: ReturnType<typeof useForm>["watch"];
   partyNameError?: FieldError;
 }
 
 export const ProfileModalBasicInfo: React.FC<Props> = ({
   register,
+  watch,
+  setValue,
   partyNameError,
   viewingUser,
   editMode,
@@ -32,7 +36,13 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
   return (
     <div className={classNames("ProfileModalBasicInfo", containerClassName)}>
       <div className="ProfileModalBasicInfo__left-container">
-        <ProfileModalAvatar viewingUser={viewingUser} />
+        <ProfileModalAvatar
+          editMode={editMode}
+          setValue={setValue}
+          watch={watch}
+          register={register}
+          viewingUser={viewingUser}
+        />
         <div
           className={classNames("ProfileModalBasicInfo--section", {
             "ProfileModalBasicInfo--grow": editMode,

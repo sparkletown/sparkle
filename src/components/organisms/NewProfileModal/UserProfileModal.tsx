@@ -52,6 +52,7 @@ export const UserProfileModal: React.FC<Props> = ({
     errors,
     setError,
     clearError,
+    watch,
     handleSubmit,
     getValues,
     setValue,
@@ -140,6 +141,8 @@ export const UserProfileModal: React.FC<Props> = ({
             viewingUser={user}
             containerClassName="ProfileModal__section"
             register={register}
+            watch={watch}
+            setValue={setValue}
             partyNameError={errors?.partyName}
           />
           <ProfileModalQuestions
