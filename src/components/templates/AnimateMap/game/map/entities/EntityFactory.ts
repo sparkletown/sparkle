@@ -37,6 +37,7 @@ import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
 import { Avatar } from "../graphics/Avatar";
+import { Venue } from "../graphics/Venue";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
@@ -555,9 +556,13 @@ export default class EntityFactory {
           (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
         entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
 
-        const sprite: Sprite = Sprite.from(comm.canvas);
+        const sprite: Venue = new Venue();
+        sprite.venue = Sprite.from(comm.canvas);
+        sprite.venue.anchor.set(0.5);
+        sprite.addChild(sprite.venue);
         const spriteComponent: SpriteComponent = new SpriteComponent();
         spriteComponent.view = sprite;
+
         entity.add(spriteComponent);
       })
       .catch((err) => {
