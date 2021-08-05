@@ -37,6 +37,11 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
         </span>
         <ButtonNG>Manage users</ButtonNG>
       </div>
+      <div>
+        {users.map((user) => (
+          <RunTabUserInfo key={user.id} user={user} />
+        ))}
+      </div>
       <div className="RunTabUsers__row RunTabUsers__search">
         <SearchField
           autoFocus
@@ -50,7 +55,7 @@ export const RunTabUsers: React.FC<RunTabSidebarProps> = ({ venueId }) => {
         </span>
         <ButtonNG>Invite admin</ButtonNG>
       </div>
-      {users.map((user) => (
+      {admins.map((user) => (
         <RunTabUserInfo key={user.id} user={user} />
       ))}
     </div>

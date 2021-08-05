@@ -10,6 +10,7 @@ import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { Timing } from "./components/Timing";
 import { Spaces } from "./components/Spaces";
 
 import { RunTabView } from "./components/RunTabView/RunTabView";
@@ -85,10 +86,17 @@ export const AdminVenueView: React.FC = () => {
           {renderAdminVenueTabs}
         </Nav>
       </div>
+
       {selectedTab === AdminVenueTab.spaces && (
         <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
       )}
-      {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
+      {selectedTab === AdminVenueTab.timing && (
+        <Timing
+          venue={venue}
+          onClickNext={() => setSelectedTab(AdminVenueTab.run)}
+          onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
+        />
+      )}
       {selectedTab === AdminVenueTab.run && <RunTabView />}
     </>
   );

@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
 
+import { getExtraLinkProps } from "utils/url";
+
 import "./ButtonNG.scss";
 
 export type ButtonGradientType =
@@ -88,8 +90,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         className={parentClasses}
         style={style}
         to={disabled ? "#" : linkTo}
-        target={newTab && !disabled ? "_blank" : undefined}
-        rel={newTab && !disabled ? "noopener noreferer" : undefined}
+        {...getExtraLinkProps(newTab && !disabled)}
       >
         {iconName && (
           <FontAwesomeIcon
