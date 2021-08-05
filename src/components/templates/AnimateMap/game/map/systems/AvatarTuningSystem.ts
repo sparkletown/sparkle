@@ -1,12 +1,12 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-import { DisplayObject, Sprite } from "pixi.js";
-import { SpriteComponent } from "../components/SpriteComponent";
-import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { ViewportNode } from "../nodes/ViewportNode";
+import { Sprite } from "pixi.js";
 import { avatarCycles } from "../../constants/AssetConstants";
-import { PlayerNode } from "../nodes/PlayerNode";
 import EntityFactory from "../entities/EntityFactory";
+import { Avatar } from "../graphics/Avatar";
+import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { PlayerNode } from "../nodes/PlayerNode";
+import { ViewportNode } from "../nodes/ViewportNode";
 
 export class AvatarTuningSystem extends System {
   private creator: EntityFactory;
@@ -91,90 +91,89 @@ export class AvatarTuningSystem extends System {
   };
 
   private handleAvatarAdded = (node: AvatarTuningNode): void => {
-    const view: Sprite = node.sprite.view;
-    const avatar: Sprite = view.getChildByName(
-      SpriteComponent.AVATAR
-    ) as Sprite;
-    if (!avatar) {
+    const view: Avatar = node.sprite.view as Avatar;
+    if (!view.avatar) {
       return;
     }
 
     // CYCLE
     if (
-      // node.tuning.user.data.cycle &&
       this.player &&
       this.player.head &&
       this.player.head.player.data.id === node.tuning.user.id &&
       this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
-      !view.getChildByName(SpriteComponent.CYCLE)
+      !view.cycle
     ) {
-      const cycle: Sprite = Sprite.from(avatarCycles[0]);
-      cycle.name = SpriteComponent.CYCLE;
-      cycle.y = avatar.height / 2;
-      cycle.anchor.set(0.5);
+      view.cycle = Sprite.from(avatarCycles[0]);
+      view.cycle.y = view.avatar.height / 2;
+      view.cycle.anchor.set(0.5);
       // TODO HARDCODE
-      cycle.scale.set(1.3);
+      view.cycle.scale.set(1.3);
 
-      view.addChildAt(cycle, view.getChildIndex(avatar));
+      view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
     } else if (
       (!node.tuning.user.data.cycle ||
         this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
-      view.getChildByName(SpriteComponent.CYCLE)
+      view.cycle
     ) {
-      view.removeChild(view.getChildByName(SpriteComponent.CYCLE));
+      view.removeChild(view.cycle);
+      view.cycle = null;
     }
 
     // HAT
     if (
       node.tuning.user.data.hat &&
       this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
-      !view.getChildByName(SpriteComponent.HAT)
+      !view.hat
     ) {
-      const sprite: Sprite = Sprite.from(node.tuning.user.data.hat);
-      sprite.name = SpriteComponent.HAT;
-      sprite.y = -avatar.height / 2;
-      sprite.anchor.set(0.5);
-      view.addChild(sprite);
+      view.hat = Sprite.from(node.tuning.user.data.hat);
+      view.hat.y = -view.avatar.height / 2;
+      view.hat.anchor.set(0.5);
+      view.addChild(view.hat);
     } else if (
       (!node.tuning.user.data.cycle ||
         this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_FLYING) &&
-      view.getChildByName(SpriteComponent.HAT)
+      view.hat
     ) {
-      view.removeChild(view.getChildByName(SpriteComponent.HAT));
+      view.removeChild(view.hat);
+      view.hat = null;
     }
 
     // ACCESSORIES
     if (
       node.tuning.user.data.accessories &&
       this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
-      !view.getChildByName(SpriteComponent.ACCESSORIES)
+      !view.accessories
     ) {
-      const sprite: Sprite = Sprite.from(node.tuning.user.data.accessories);
-      sprite.name = SpriteComponent.ACCESSORIES;
-      sprite.anchor.set(0.5);
-      view.addChild(sprite);
+      view.accessories = Sprite.from(node.tuning.user.data.accessories);
+      view.accessories.anchor.set(0.5);
+      view.addChild(view.accessories);
     } else if (
       (!node.tuning.user.data.accessories ||
         this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_FLYING) &&
-      view.getChildByName(SpriteComponent.ACCESSORIES)
+      view.accessories
     ) {
-      view.removeChild(view.getChildByName(SpriteComponent.ACCESSORIES));
+      view.removeChild(view.accessories);
+      view.accessories = null;
     }
   };
 
   private handleAvatarRemoved = (node: AvatarTuningNode): void => {
-    const names: Array<string> = [
-      SpriteComponent.CYCLE,
-      SpriteComponent.HAT,
-      SpriteComponent.ACCESSORIES,
-    ];
-    for (let i = 0; i < names.length; i++) {
-      const sprite: DisplayObject | null = node.sprite.view.getChildByName(
-        names[i]
-      );
-      if (sprite) {
-        node.sprite.view.removeChild(sprite);
-      }
+    const avatar: Avatar = node.sprite.view as Avatar;
+    if (!avatar) {
+      return;
+    }
+    if (avatar.cycle) {
+      avatar.removeChild(avatar.cycle);
+      avatar.cycle = null;
+    }
+    if (avatar.hat) {
+      avatar.removeChild(avatar.hat);
+      avatar.hat = null;
+    }
+    if (avatar.accessories) {
+      avatar.removeChild(avatar.accessories);
+      avatar.accessories = null;
     }
   };
 
