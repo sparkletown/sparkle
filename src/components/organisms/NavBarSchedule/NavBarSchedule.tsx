@@ -60,6 +60,7 @@ export interface NavBarScheduleProps {
 
 const minRangeValue = 0;
 const maxRangeValue = 1;
+const todaysDate = new Date();
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
@@ -110,8 +111,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       ),
     [relatedVenueEvents]
   );
+
   const minDate = useMemo(
-    () => Math.min(...liveAndFutureEvents, minRangeValue),
+    () =>
+      liveAndFutureEvents.length
+        ? Math.min(...liveAndFutureEvents)
+        : minRangeValue,
     [liveAndFutureEvents]
   );
 
@@ -131,6 +136,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     fromUnixTime(maxDate),
     fromUnixTime(minDate)
   );
+
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -144,7 +150,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const day = addDays(minDate, dayIndex);
+      const day = addDays(todaysDate, dayIndex);
 
       const daysWithEvents = relatedVenueEvents.some(
         isEventWithinDateAndNotFinished(day)
@@ -179,7 +185,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
     dayDifference,
     relatedVenueEvents,
-    minDate,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
