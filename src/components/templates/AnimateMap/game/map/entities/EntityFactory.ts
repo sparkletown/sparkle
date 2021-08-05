@@ -1,47 +1,48 @@
 import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
-import { RoundAvatar } from "../../commands/RoundAvatar";
-import { BotComponent } from "../components/BotComponent";
-import { CollisionComponent } from "../components/CollisionComponent";
-import { MotionBotClickControlComponent } from "../components/MotionBotClickControlComponent";
-import { MotionBotIdleComponent } from "../components/MotionBotIdleComponent";
-import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
-import { MovementComponent } from "../components/MovementComponent";
-import { PlayerComponent } from "../components/PlayerComponent";
-import { PositionComponent } from "../components/PositionComponent";
-import { SpriteComponent } from "../components/SpriteComponent";
-import { VenueComponent } from "../components/VenueComponent";
-import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
-import { ZoomedSpriteComponent } from "../components/ZoomedSpriteComponent";
-import { PlayerNode } from "../nodes/PlayerNode";
+import { Sprite } from "pixi.js";
+import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
   PlayerModel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
-import { ViewportNode } from "../nodes/ViewportNode";
-import { ViewportComponent } from "../components/ViewportComponent";
-import { JoystickComponent } from "../components/JoystickComponent";
-import { JoystickNode } from "../nodes/JoystickNode";
-import { KeyboardComponent } from "../components/KeyboardComponent";
-import { KeyboardNode } from "../nodes/KeyboardNode";
-import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
-import { BotNode } from "../nodes/BotNode";
-import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
-import { SoundEmitterComponent } from "../components/SoundEmitterComponent";
-import { ArtcarComponent } from "../components/ArtcarComponent";
-import { GameInstance } from "../../GameInstance";
 import { Point } from "types/utility";
-import { EllipseComponent } from "../components/EllipseComponent";
-import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
-import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
-import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { TooltipComponent } from "../components/TooltipComponent";
-import { FixScaleByViewportZoomComponent } from "../components/FixScaleByViewportZoomComponent";
-import { BubbleComponent } from "../components/BubbleComponent";
-import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
-import { Sprite } from "pixi.js";
+import { ImageToCanvas } from "../../commands/ImageToCanvas";
+import { LoadImage } from "../../commands/LoadImage";
+import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
+import { GameInstance } from "../../GameInstance";
+import { ArtcarComponent } from "../components/ArtcarComponent";
+import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
+import { BotComponent } from "../components/BotComponent";
+import { BubbleComponent } from "../components/BubbleComponent";
+import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
+import { CollisionComponent } from "../components/CollisionComponent";
+import { EllipseComponent } from "../components/EllipseComponent";
+import { FixScaleByViewportZoomComponent } from "../components/FixScaleByViewportZoomComponent";
+import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
+import { JoystickComponent } from "../components/JoystickComponent";
+import { KeyboardComponent } from "../components/KeyboardComponent";
+import { MotionBotClickControlComponent } from "../components/MotionBotClickControlComponent";
+import { MotionBotIdleComponent } from "../components/MotionBotIdleComponent";
+import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
+import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
+import { MovementComponent } from "../components/MovementComponent";
+import { PlayerComponent } from "../components/PlayerComponent";
+import { PositionComponent } from "../components/PositionComponent";
+import { SoundEmitterComponent } from "../components/SoundEmitterComponent";
+import { SpriteComponent } from "../components/SpriteComponent";
+import { TooltipComponent } from "../components/TooltipComponent";
+import { VenueComponent } from "../components/VenueComponent";
+import { ViewportComponent } from "../components/ViewportComponent";
+import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
+import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { BotNode } from "../nodes/BotNode";
+import { JoystickNode } from "../nodes/JoystickNode";
+import { KeyboardNode } from "../nodes/KeyboardNode";
+import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
+import { PlayerNode } from "../nodes/PlayerNode";
+import { ViewportNode } from "../nodes/ViewportNode";
 
 export default class EntityFactory {
   private engine?: Engine | null = null;
@@ -497,17 +498,11 @@ export default class EntityFactory {
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
-    let imageUrlString = venue.data.imageUrlString;
-
-    // HACK for venue images
-    const scale = 0.1;
+    const config = GameInstance.instance.getConfig();
 
     const entity: Entity = new Entity();
     entity
       .add(new VenueComponent(venue))
-      .add(new SpriteComponent())
-      .add(new ZoomedSpriteComponent([imageUrlString]))
-      .add(new PositionComponent(venue.x, venue.y, 0, scale, scale))
       .add(
         new HoverableSpriteComponent(
           () => {
@@ -542,8 +537,34 @@ export default class EntityFactory {
           );
         })
       )
-      .add(new CollisionComponent(50));
+      .add(new CollisionComponent(config.venueDefaultCollisionRadius));
+
     this.engine?.addEntity(entity);
+
+    new LoadImage(venue.data.imageUrlString)
+      .execute()
+      .then(
+        (comm: LoadImage): Promise<ImageToCanvas> => {
+          // the picture can be very large
+          const scale =
+            ((config.venueDefaultCollisionRadius * 2) / comm.image!.width) * 2;
+          return new ImageToCanvas(comm.image!).scaleTo(scale).execute();
+        }
+      )
+      .then((comm: ImageToCanvas) => {
+        const scale =
+          (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
+        entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
+
+        const sprite: Sprite = Sprite.from(comm.canvas);
+        const spriteComponent: SpriteComponent = new SpriteComponent();
+        spriteComponent.view = sprite;
+        entity.add(spriteComponent);
+      })
+      .catch((err) => {
+        // TODO default venue image
+        console.log("err", err);
+      });
 
     return entity;
   }
