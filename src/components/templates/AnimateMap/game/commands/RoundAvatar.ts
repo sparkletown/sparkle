@@ -1,4 +1,5 @@
 import Command from "./Command";
+import { LoadImage } from "./LoadImage";
 
 export class RoundAvatar implements Command {
   private resolve: Function | null = null;
@@ -21,29 +22,11 @@ export class RoundAvatar implements Command {
   }
 
   private doIt(): void {
-    const img: HTMLImageElement = new Image();
-
-    new Promise((resolve, reject) => {
-      img.crossOrigin = "Anonymous";
-      img.addEventListener(
-        "load",
-        () => {
-          resolve(img);
-        },
-        false
-      );
-      img.addEventListener(
-        "error",
-        () => {
-          reject(img);
-        },
-        false
-      );
-      img.src = this.url;
-    })
-      .then(() => {
+    new LoadImage(this.url)
+      .execute()
+      .then((comm: LoadImage) => {
         const canvas = document.createElement("canvas");
-        const size = Math.min(img.width, img.height);
+        const size = Math.min(comm.image!.width, comm.image!.height);
         canvas.width = size;
         canvas.height = size;
 
@@ -53,7 +36,7 @@ export class RoundAvatar implements Command {
         ctx.closePath();
         ctx.fill();
         ctx.globalCompositeOperation = "source-in";
-        ctx.drawImage(img, 0, 0);
+        ctx.drawImage(comm.image!, 0, 0);
 
         this.canvas = canvas;
         return Promise.resolve();
