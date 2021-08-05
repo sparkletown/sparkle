@@ -23,7 +23,7 @@ export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {
       <UserAvatar user={user} showStatus size="small" />
       <div className="RunTabUsers__wrapper">
         <div className="RunTabUsers__name">{user.partyName}</div>
-        <div className="RunTabUsers__place">in {location}</div>
+        {location && <div className="RunTabUsers__place">in {location}</div>}
       </div>
     </div>
   );
