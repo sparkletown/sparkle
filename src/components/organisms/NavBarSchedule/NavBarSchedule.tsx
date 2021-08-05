@@ -24,6 +24,7 @@ import {
   eventTimeComparator,
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
+g  isEventLiveOrFuture,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
@@ -44,6 +45,7 @@ import { Toggler } from "components/atoms/Toggler";
 import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
+import { millisecondsToSeconds } from "date-fns/esm";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
@@ -61,6 +63,7 @@ export interface NavBarScheduleProps {
 const minRangeValue = 0;
 const maxRangeValue = 1;
 const todaysDate = new Date();
+const todaysDateTime = new Date().getTime();
 
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
@@ -102,34 +105,43 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const liveAndFutureEvents = useMemo(
     () =>
-      relatedVenueEvents.map((event) =>
-        secondsToMilliseconds(
-          event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
-        ) > startOfToday().getTime()
-          ? event.start_utc_seconds
-          : Number.MAX_SAFE_INTEGER
+      relatedVenueEvents.filter(
+        (event) =>
+          secondsToMilliseconds(
+            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+          ) > startOfToday().getTime()
       ),
     [relatedVenueEvents]
   );
 
+  const liveEventsMinimalStartValue = Math.min(
+    ...liveAndFutureEvents.map((event) => event.start_utc_seconds)
+  );
+
+  const firstLiveEvent = liveAndFutureEvents.find(
+    (event) => event.start_utc_seconds === liveEventsMinimalStartValue
+  );
+
   const minDate = useMemo(
     () =>
-      liveAndFutureEvents.length
-        ? Math.min(...liveAndFutureEvents)
+      firstLiveEvent
+        ? isEventLiveOrFuture(firstLiveEvent)
+          ? new Date(liveEventsMinimalStartValue).getTime()
+          : millisecondsToSeconds(todaysDateTime)
         : minRangeValue,
-    [liveAndFutureEvents]
+    [firstLiveEvent, liveEventsMinimalStartValue]
   );
 
   const maxDate = useMemo(
     () =>
       Math.max(
-        ...relatedVenueEvents.map(
+        ...liveAndFutureEvents.map(
           (event) =>
             event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
         ),
         maxRangeValue
       ),
-    [relatedVenueEvents]
+    [liveAndFutureEvents]
   );
 
   const dayDifference = differenceInDays(
@@ -150,9 +162,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const day = addDays(todaysDate, dayIndex);
+      const findFirstDayDate =
+        secondsToMilliseconds(minDate) > todaysDateTime
+          ? new Date(secondsToMilliseconds(minDate))
+          : todaysDate;
+      const day = addDays(findFirstDayDate, dayIndex);
 
-      const daysWithEvents = relatedVenueEvents.some(
+      const daysWithEvents = liveAndFutureEvents.some(
         isEventWithinDateAndNotFinished(day)
       );
 
@@ -184,7 +200,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     isScheduleTimeshifted,
     dayDifference,
-    relatedVenueEvents,
+    liveAndFutureEvents,
+    minDate,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {

@@ -43,6 +43,7 @@ $schedule-btn--height: 40px;
     display: flex;
     overflow: auto;
     cursor: default;
+    background-color: opaque-black(1);
   }
 
   &__download-buttons {
