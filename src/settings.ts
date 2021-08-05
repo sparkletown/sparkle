@@ -671,4 +671,4 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
-export const BM_PARENT_ID = "/playa";
+export const BM_PARENT_ID = "playa";
