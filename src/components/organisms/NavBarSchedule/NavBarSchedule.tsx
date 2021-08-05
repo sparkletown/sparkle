@@ -22,12 +22,11 @@ import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeComparator,
   isEventLiveOrFuture,
-  isEventWithinDate,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
-import { formatDateRelativeToNow } from "utils/time";
+import { formatDateRelativeToNow, isDateLessOrEqualsToday } from "utils/time";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -160,11 +159,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const findFirstDayDate =
-        secondsToMilliseconds(minDate) > todaysDateTime
-          ? new Date(secondsToMilliseconds(minDate))
-          : todaysDate;
-      const day = addDays(findFirstDayDate, dayIndex);
+      const firstScheduleDate = isDateLessOrEqualsToday({
+        valueSource: secondsToMilliseconds(minDate),
+        valueTarget: millisecondsToSeconds(startOfToday().getTime()),
+      })
+        ? todaysDate
+        : new Date(secondsToMilliseconds(minDate));
+      const day = addDays(firstScheduleDate, dayIndex);
 
       const daysWithEvents = liveAndFutureEvents.some(
         isEventWithinDateAndNotFinished(day)
@@ -203,14 +204,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
-    const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+    const firstScheduleDate = isDateLessOrEqualsToday({
+      valueSource: secondsToMilliseconds(minDate),
+      valueTarget: millisecondsToSeconds(startOfToday().getTime()),
+    })
+      ? todaysDate
+      : new Date(secondsToMilliseconds(minDate));
+    const day = addDays(firstScheduleDate, selectedDayIndex);
 
-    const daysEvents = relatedVenueEvents
-      .filter(
-        isScheduleTimeshifted
-          ? isEventWithinDate(startOfSelectedDay)
-          : isEventWithinDateAndNotFinished(startOfSelectedDay)
-      )
+    const daysEvents = liveAndFutureEvents
+      .filter(isEventWithinDateAndNotFinished(day))
       .sort(eventTimeComparator)
       .map(
         prepareForSchedule({
@@ -219,19 +222,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     return {
-      scheduleDate: startOfSelectedDay,
+      scheduleDate: day,
       daysEvents: showPersonalisedSchedule
         ? daysEvents.filter((event) => event.isSaved)
         : daysEvents,
     };
-  }, [
-    relatedVenueEvents,
-    userEventIds,
-    selectedDayIndex,
-    firstDayOfSchedule,
-    isScheduleTimeshifted,
-    showPersonalisedSchedule,
-  ]);
+  }, [liveAndFutureEvents, userEventIds, selectedDayIndex, minDate, showPersonalisedSchedule]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
   //   const dayStart = addDays(startOfToday(), selectedDayIndex);
@@ -253,10 +249,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({
-      calendar: createCalendar({ events: relatedVenueEvents }),
+      calendar: createCalendar({ events: liveAndFutureEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Full`,
     });
-  }, [relatedVenueEvents]);
+  }, [liveAndFutureEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
