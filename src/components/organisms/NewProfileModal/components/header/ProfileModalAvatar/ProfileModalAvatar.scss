@@ -1,0 +1,31 @@
+@import "../../../constants.scss";
+
+$upload-new-background: rgba(255, 255, 255, 0.2);
+$upload-new-padding: 0.3rem;
+
+.ProfileModalAvatar {
+  position: relative;
+
+  &__upload-new {
+    backdrop-filter: $input-backdrop-filter;
+    background: $upload-new-background;
+    border-radius: $input-border-radius;
+    padding: $upload-new-padding;
+    cursor: pointer;
+    position: absolute;
+    white-space: nowrap;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-shadow: $input-text-shadow;
+    color: $white;
+    font-weight: $font-weight--500;
+    &--disabled {
+      cursor: unset;
+    }
+  }
+
+  &__input {
+    display: none;
+  }
+}

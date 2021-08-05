@@ -1,6 +1,6 @@
+import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar/ProfileModalAvatar";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
-import { UserAvatar } from "components/atoms/UserAvatar";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
 import { formProp } from "components/organisms/NewProfileModal/utility";
@@ -10,7 +10,6 @@ import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
-import { useSameUser } from "hooks/useIsSameUser";
 import classNames from "classnames";
 import { ContainerClassName } from "types/utility";
 
@@ -30,21 +29,10 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
   onEdit,
   containerClassName,
 }) => {
-  const sameUser = useSameUser(viewingUser);
-
   return (
     <div className={classNames("ProfileModalBasicInfo", containerClassName)}>
       <div className="ProfileModalBasicInfo__left-container">
-        <div className="ProfileModalBasicInfo__avatar-container">
-          <UserAvatar
-            viewingUser={viewingUser}
-            size="profileModal"
-            showStatus={!sameUser}
-          />
-          {editMode && (
-            <div className="ProfileModalBasicInfo__upload-new">Upload new</div>
-          )}
-        </div>
+        <ProfileModalAvatar viewingUser={viewingUser} />
         <div
           className={classNames("ProfileModalBasicInfo--section", {
             "ProfileModalBasicInfo--grow": editMode,

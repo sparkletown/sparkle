@@ -7,18 +7,19 @@ import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
-import { ContainerClassName } from "../../../types/utility";
+import { ContainerClassName } from "types/utility";
 
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
 
 import "./UserAvatar.scss";
-import { useIsOnline } from "../../../hooks/useIsOnline";
+import { useIsOnline } from "hooks/useIsOnline";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
 
 export interface UserAvatarProps extends ContainerClassName {
   viewingUser?: WithId<User>;
+  overridePictureUrl?: string;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
@@ -29,6 +30,7 @@ export interface UserAvatarProps extends ContainerClassName {
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
   viewingUser,
+  overridePictureUrl,
   containerClassName,
   imageClassName,
   showNametag,
@@ -48,7 +50,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const avatarSrc: string = viewingUser?.anonMode
     ? DEFAULT_PROFILE_IMAGE
-    : viewingUser?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+    : overridePictureUrl ?? viewingUser?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
 
   const userDisplayName: string = viewingUser?.anonMode
     ? DEFAULT_PARTY_NAME

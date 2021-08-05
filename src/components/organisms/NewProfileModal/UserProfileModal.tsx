@@ -27,6 +27,7 @@ interface Props {
 }
 
 export interface UserProfileModalFormData {
+  pictureUrl: string;
   questions: Record<string, string>;
   links: ProfileLink[];
   partyName: string;
@@ -61,6 +62,7 @@ export const UserProfileModal: React.FC<Props> = ({
     validateCriteriaMode: "all",
     defaultValues: {
       links: user.profileLinks,
+      pictureUrl: user.pictureUrl,
     },
   });
 

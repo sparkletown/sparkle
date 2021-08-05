@@ -1,5 +1,5 @@
 import { WithId } from "utils/id";
-import { User } from "../types/User";
+import { User } from "types/User";
 import { useUser } from "./useUser";
 
 export function useSameUser(otherUser?: WithId<User>) {

@@ -1,7 +1,5 @@
 @import "../../../constants";
 
-$upload-new-background: rgba(255, 255, 255, 0.2);
-$upload-new-padding: 0.3rem;
 $section-margin: 1.5rem;
 
 .ProfileModalBasicInfo {
@@ -9,26 +7,6 @@ $section-margin: 1.5rem;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-
-  &__avatar-container {
-    position: relative;
-  }
-
-  &__upload-new {
-    backdrop-filter: $input-backdrop-filter;
-    background: $upload-new-background;
-    border-radius: $input-border-radius;
-    padding: $upload-new-padding;
-    cursor: pointer;
-    position: absolute;
-    white-space: nowrap;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-shadow: $input-text-shadow;
-    color: $white;
-    font-weight: $font-weight--500;
-  }
 
   &__left-container {
     display: flex;
