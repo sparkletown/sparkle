@@ -6,6 +6,7 @@ import "./ProfileModalBasicInfo.scss";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import React from "react";
 import { FieldError, useForm } from "react-hook-form";
+import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
@@ -52,9 +53,15 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
             <ProfileModalInput
               name={formProp("partyName")}
               defaultValue={viewingUser?.partyName}
-              placeholder="Party Name"
+              placeholder="Display Name"
               error={partyNameError}
-              ref={register({ required: "Party Name cannot be empty" })}
+              ref={register({
+                required: "Display Name cannot be empty",
+                maxLength: {
+                  value: DISPLAY_NAME_MAX_CHAR_COUNT,
+                  message: `Display name must be ${DISPLAY_NAME_MAX_CHAR_COUNT} characters or less`,
+                },
+              })}
               notCondensed
             />
           ) : (

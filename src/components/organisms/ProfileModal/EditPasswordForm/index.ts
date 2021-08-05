@@ -1,1 +1,0 @@
-export { EditPasswordForm } from "./EditPasswordForm";

@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 
-import { ProfileLink } from "types/User";
-import { isDefined } from "utils/types";
-
 import { useUser } from "hooks/useUser";
 
-import { EditPasswordForm } from "./EditPasswordForm";
 import { EditProfileForm } from "./EditProfileForm";
-import { EditProfileLinkForm } from "./EditProfileLinkForm";
 import { UserInformationContent } from "./UserInformationContent";
 
 import "./ProfilePopoverContent.scss";
@@ -21,9 +16,6 @@ export enum UserProfileMode {
 
 export const ProfilePopoverContent: React.FC = () => {
   const [mode, setMode] = useState<UserProfileMode>(UserProfileMode.DEFAULT);
-  const [profileLink, setProfileLink] = useState<ProfileLink | undefined>(
-    undefined
-  );
 
   const { userWithId, user } = useUser();
 
@@ -32,24 +24,13 @@ export const ProfilePopoverContent: React.FC = () => {
       {mode === UserProfileMode.DEFAULT && (
         <UserInformationContent
           setUserProfileMode={setMode}
-          setProfileLinkToEdit={setProfileLink}
+          setProfileLinkToEdit={() => {}}
           user={userWithId}
           email={user?.email}
         />
       )}
       {mode === UserProfileMode.EDIT_PROFILE && (
         <EditProfileForm setUserProfileMode={setMode} />
-      )}
-      {mode === UserProfileMode.EDIT_PASSWORD && (
-        <EditPasswordForm setUserProfileMode={setMode} />
-      )}
-      {mode === UserProfileMode.EDIT_PROFILE_LINK && (
-        <EditProfileLinkForm
-          user={userWithId}
-          edit={isDefined(profileLink)}
-          profileLink={profileLink}
-          setUserProfileMode={setMode}
-        />
       )}
     </div>
   );

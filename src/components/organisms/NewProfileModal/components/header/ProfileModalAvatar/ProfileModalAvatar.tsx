@@ -1,7 +1,7 @@
-import { FirebaseStorage } from "@firebase/storage-types";
 import classNames from "classnames";
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { formProp } from "components/organisms/NewProfileModal/utility";
+import "firebase/storage";
 import { useBooleanState } from "hooks/useBooleanState";
 import { useSameUser } from "hooks/useIsSameUser";
 import { useUser } from "hooks/useUser";
@@ -15,9 +15,9 @@ import {
 import { FormFieldProps } from "types/forms";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalAvatar.scss";
 import { WithId } from "utils/id";
 import { resizeFile } from "utils/image";
+import "./ProfileModalAvatar.scss";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
@@ -26,8 +26,6 @@ interface Props extends ContainerClassName {
   setValue?: ReturnType<typeof useForm>["setValue"];
   watch?: ReturnType<typeof useForm>["watch"];
 }
-
-type Reference = ReturnType<FirebaseStorage["ref"]>;
 
 export const ProfileModalAvatar: React.FC<Props> = ({
   editMode,
@@ -45,61 +43,65 @@ export const ProfileModalAvatar: React.FC<Props> = ({
 
   const pictureUrl = watch?.(formProp("pictureUrl"));
 
-  const [, setUploading, setNotUploading] = useBooleanState(false);
-
-  const uploadPicture = async (profilePictureRef: Reference, file: File) => {
-    setUploading();
-    const uploadedProfilePicture = await profilePictureRef.put(file);
-    setNotUploading();
-    return uploadedProfilePicture;
-  };
+  const [uploading, uploadStarted, uploadFinished] = useBooleanState(false);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("change");
     if (!e.target.files) return;
 
     let file = e.target.files[0];
-    // When file selection is cancelled, undefined is returned.
-    // Suggestion: create a guard function to avoid if / return.
     if (!file) return;
+
     if (!ACCEPTED_IMAGE_TYPES.includes(file.type) && setError) {
       setError("Unsupported file, please try with another one.");
       return;
     }
+
+    uploadStarted();
     if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
       const resizedImage = await resizeFile(e.target.files[0]);
       const fileName = file.name;
       file = new File([resizedImage], fileName);
     }
+
     const storageRef = firebase.storage().ref();
     // TODO: add rule to forbid other users to edit a user's image
     if (user) {
       const profilePictureRef = storageRef.child(
         `/users/${user.uid}/${file.name}`
       );
-      const uploadedProfilePicture = await uploadPicture(
-        profilePictureRef,
-        file
-      );
+      const uploadedProfilePicture = await profilePictureRef.put(file);
       const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
       if (setValue) setValue(formProp("pictureUrl"), pictureUrlRef, true);
+
+      uploadFinished();
     }
   };
 
   const uploadProfilePic = useCallback((event) => {
-    console.log("clicked");
     event.preventDefault();
     uploadRef.current?.click();
   }, []);
 
   return (
-    <div className="ProfileModalAvatar">
-      <UserAvatar
-        viewingUser={viewingUser}
-        overridePictureUrl={pictureUrl}
-        size="profileModal"
-        showStatus={!sameUser}
-      />
+    <div className={classNames("ProfileModalAvatar", containerClassName)}>
+      <div className="ProfileModalAvatar__upload-new-container">
+        <UserAvatar
+          viewingUser={viewingUser}
+          overridePictureUrl={pictureUrl}
+          size="profileModal"
+          showStatus={!sameUser}
+        />
+        {editMode && (
+          <div
+            className={classNames("ProfileModalAvatar__upload-new", {
+              "ProfileModalAvatar__upload-new--uploading": uploading,
+            })}
+            onClick={uploadProfilePic}
+          >
+            {uploading ? "Uploading..." : "Upload new"}
+          </div>
+        )}
+      </div>
       <input
         type="file"
         onChange={handleFileChange}
@@ -110,21 +112,11 @@ export const ProfileModalAvatar: React.FC<Props> = ({
       {register && (
         <input
           name={formProp("pictureUrl")}
-          className="profile-picture-input"
+          className="ProfileModalAvatar__input"
           ref={register()}
         />
       )}
-      {editMode && (
-        <div
-          className={classNames(
-            "ProfileModalAvatar__upload-new",
-            containerClassName
-          )}
-          onClick={uploadProfilePic}
-        >
-          Upload new {error}
-        </div>
-      )}
+      {error && <div className="ProfileModalAvatar__error">{error}</div>}
     </div>
   );
 };

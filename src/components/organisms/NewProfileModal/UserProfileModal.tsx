@@ -1,8 +1,11 @@
+import { updateProfileLinks } from "api/profile";
 import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
-import { pick } from "lodash";
+import { isEqual, pick } from "lodash";
+import { updateUserProfile } from "pages/Account/helpers";
+import { ProfileFormData } from "pages/Account/Profile";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
@@ -26,11 +29,9 @@ interface Props {
   onClose: () => void;
 }
 
-export interface UserProfileModalFormData {
-  pictureUrl: string;
+export interface UserProfileModalFormData extends ProfileFormData {
   questions: Record<string, string>;
   links: ProfileLink[];
-  partyName: string;
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
@@ -49,6 +50,7 @@ export const UserProfileModal: React.FC<Props> = ({
 
   const {
     register,
+    reset,
     errors,
     setError,
     clearError,
@@ -67,6 +69,11 @@ export const UserProfileModal: React.FC<Props> = ({
     },
   });
 
+  const cancelEditing = useCallback(() => {
+    turnOffEditMode();
+    reset();
+  }, [reset, turnOffEditMode]);
+
   const {
     fields,
     append: addLink,
@@ -77,6 +84,10 @@ export const UserProfileModal: React.FC<Props> = ({
   });
 
   const links = fields as WithId<ProfileLink>[];
+
+  const addLinkHandler = useCallback(() => {
+    addLink({ url: "", title: "" });
+  }, [addLink]);
 
   const checkOldPassword = useCallback(
     async (password: string) => {
@@ -95,25 +106,46 @@ export const UserProfileModal: React.FC<Props> = ({
 
   const onSubmit: OnSubmit<UserProfileModalFormData> = useCallback(
     async (data) => {
+      const firebaseUser = firebase.auth()?.currentUser;
+      if (!firebaseUser) return;
+
       if (
         data.oldPassword !== "" ||
         data.newPassword !== "" ||
         data.confirmNewPassword !== ""
       ) {
-        console.log(data);
         if (!(await checkOldPassword(data.oldPassword))) {
           setError(formProp("oldPassword"), "validate", "Incorrect password");
           return;
         } else {
           clearError(formProp("oldPassword"));
+          await firebaseUser.updatePassword(data.confirmNewPassword);
         }
-        // await updateProfileLinks({
-        //   profileLinks: [];
-        //   userId: user?.id,
-        // });
       }
+
+      const changedFields = [
+        user.partyName !== data.partyName && formProp("partyName"),
+        user.pictureUrl !== data.pictureUrl && formProp("pictureUrl"),
+      ].filter((x) => x) as (keyof UserProfileModalFormData)[];
+      if (changedFields.length > 0)
+        await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
+
+      if (!isEqual(user.profileLinks, data.links))
+        await updateProfileLinks({
+          profileLinks: data.links,
+          userId: user.id,
+        });
     },
-    [checkOldPassword, clearError, setError]
+    [
+      checkOldPassword,
+      clearError,
+      firebase,
+      setError,
+      user.id,
+      user.partyName,
+      user.pictureUrl,
+      user.profileLinks,
+    ]
   );
 
   const setLinkTitle = useCallback(
@@ -158,10 +190,8 @@ export const UserProfileModal: React.FC<Props> = ({
               links={links}
               setLinkTitle={setLinkTitle}
               errors={errors?.links}
-              onDeleteLink={(index) => removeLink(index)}
-              onAddLink={() => {
-                addLink({ url: "", title: "" });
-              }}
+              onDeleteLink={removeLink}
+              onAddLink={addLinkHandler}
             />
           ) : (
             <ProfileModalLinks
@@ -169,6 +199,25 @@ export const UserProfileModal: React.FC<Props> = ({
               containerClassName="ProfileModal__section"
             />
           )}
+          {/*{!editMode && (*/}
+          {/*  <div className="ProfileModal__section">*/}
+          {/*    <label*/}
+          {/*      htmlFor="chk-mirrorVideo"*/}
+          {/*      className={`checkbox ${*/}
+          {/*        user?.mirrorVideo && "checkbox-checked"*/}
+          {/*      }`}*/}
+          {/*    >*/}
+          {/*      Mirror my video*/}
+          {/*    </label>*/}
+          {/*    <input*/}
+          {/*      type="checkbox"*/}
+          {/*      name="mirrorVideo"*/}
+          {/*      id="chk-mirrorVideo"*/}
+          {/*      defaultChecked={user?.mirrorVideo || false}*/}
+          {/*      onClick={() =>{}}*/}
+          {/*    />*/}
+          {/*  </div>*/}
+          {/*)}*/}
           {!editMode && (
             <ProfileModalBadges
               viewingUser={user}
@@ -189,7 +238,7 @@ export const UserProfileModal: React.FC<Props> = ({
           )}
           {editMode && (
             <ProfileModalEditButtons
-              onCancelClick={turnOffEditMode}
+              onCancelClick={cancelEditing}
               saveChangesDisabled={false}
               containerClassName="UserProfileModal__edit-buttons"
             />

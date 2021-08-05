@@ -4,7 +4,12 @@ $upload-new-background: rgba(255, 255, 255, 0.2);
 $upload-new-padding: 0.3rem;
 
 .ProfileModalAvatar {
-  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  &__upload-new-container {
+    position: relative;
+  }
 
   &__upload-new {
     backdrop-filter: $input-backdrop-filter;
@@ -20,12 +25,18 @@ $upload-new-padding: 0.3rem;
     text-shadow: $input-text-shadow;
     color: $white;
     font-weight: $font-weight--500;
-    &--disabled {
+    &--uploading {
+      color: $light-grey--lightest;
       cursor: unset;
     }
   }
 
   &__input {
     display: none;
+  }
+
+  &__error {
+    margin-top: 0.5rem;
+    color: $input--invalid;
   }
 }

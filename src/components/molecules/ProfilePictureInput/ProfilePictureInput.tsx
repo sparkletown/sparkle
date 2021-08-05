@@ -8,6 +8,7 @@ import "firebase/storage";
 import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_AVATARS,
+  DEFAULT_PROFILE_PIC,
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
 
@@ -139,7 +140,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || "/default-profile-pic.png"}
+          src={pictureUrl || DEFAULT_PROFILE_PIC}
           className="profile-icon profile-picture-preview"
           alt="your profile"
         />
