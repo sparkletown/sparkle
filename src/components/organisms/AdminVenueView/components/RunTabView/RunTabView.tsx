@@ -7,7 +7,6 @@ import { adminNGSettingsUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 
-import { Container } from "pages/Account/Venue/VenueMapEdition/Container";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
@@ -15,6 +14,8 @@ import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunT
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
 import "./RunTabView.scss";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import { PartyMapVenue } from "types/venues";
 
 const noop = () => undefined;
 
@@ -45,9 +46,10 @@ export const RunTabView: React.FC = () => {
           <RunTabToolbar venueId={venueId} />
         </div>
         <div className="RunTabView__map RunTabView--spacing">
-          <Container
+          <PartyMapContainer
             interactive
             resizable
+            venue={venue as PartyMapVenue}
             coordinatesBoundary={{
               width: 100,
               height: 100,
@@ -61,7 +63,6 @@ export const RunTabView: React.FC = () => {
             iconImageStyle={{}}
             draggableIconImageStyle={{}}
             otherIconsStyle={{ opacity: 0.4 }}
-            otherIcons={{}}
           />
         </div>
         <div className="RunTabView__cards RunTabView--spacing">

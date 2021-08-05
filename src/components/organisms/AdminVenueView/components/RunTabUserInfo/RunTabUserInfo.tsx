@@ -20,7 +20,7 @@ export const RunTabUserInfo: React.FC<RunTabUserInfoProps> = ({ user }) => {
 
   return (
     <div key={user.id} className="RunTabUsers__row RunTabUsers__user">
-      <UserAvatar user={user} showStatus />
+      <UserAvatar user={user} showStatus size="small" />
       <div className="RunTabUsers__wrapper">
         <div className="RunTabUsers__name">{user.partyName}</div>
         <div className="RunTabUsers__place">in {location}</div>
