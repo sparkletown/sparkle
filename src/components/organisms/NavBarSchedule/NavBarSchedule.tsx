@@ -99,32 +99,33 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
-  const minDate = useMemo(() => {
-    if (relatedVenueEvents.length) {
-      return Math.min(
-        ...relatedVenueEvents.map((event) =>
-          secondsToMilliseconds(
-            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
-          ) > startOfToday().getTime()
-            ? event.start_utc_seconds
-            : Number.MAX_SAFE_INTEGER
-        )
-      );
-    }
-    return minRangeValue;
-  }, [relatedVenueEvents]);
+  const liveAndFutureEvents = useMemo(
+    () =>
+      relatedVenueEvents.map((event) =>
+        secondsToMilliseconds(
+          event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+        ) > startOfToday().getTime()
+          ? event.start_utc_seconds
+          : Number.MAX_SAFE_INTEGER
+      ),
+    [relatedVenueEvents]
+  );
+  const minDate = useMemo(
+    () => Math.min(...liveAndFutureEvents, minRangeValue),
+    [liveAndFutureEvents]
+  );
 
-  const maxDate = useMemo(() => {
-    if (relatedVenueEvents.length) {
-      return Math.max(
+  const maxDate = useMemo(
+    () =>
+      Math.max(
         ...relatedVenueEvents.map(
           (event) =>
             event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
-        )
-      );
-    }
-    return maxRangeValue;
-  }, [relatedVenueEvents]);
+        ),
+        maxRangeValue
+      ),
+    [relatedVenueEvents]
+  );
 
   const dayDifference = differenceInDays(
     fromUnixTime(maxDate),
