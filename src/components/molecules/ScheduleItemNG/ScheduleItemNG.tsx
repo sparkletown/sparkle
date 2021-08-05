@@ -15,6 +15,7 @@ import {
   getUrlParamFromString,
   getUrlWithoutTrailingSlash,
   getLastUrlParam,
+  getFullVenueInsideUrl,
 } from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -55,20 +56,20 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
-  const isCurrentEventLive = isEventStartingSoon(event, 10 * EVENT_LIVE_RANGE);
+  const isCurrentEventLive = isEventStartingSoon(event, 2 * EVENT_LIVE_RANGE);
+  const roomUrlParam = getUrlParamFromString(event.room ?? "");
 
   const handleCopyEventLink = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
-      navigator.clipboard.writeText(event.venueId);
+
+      const eventLink = getFullVenueInsideUrl(roomUrlParam);
+      navigator.clipboard.writeText(eventLink);
     },
-    [event.venueId]
+    [roomUrlParam]
   );
 
   const goToEventLocation = useCallback(() => {
-    const { room = "" } = event;
-    const roomUrlParam = getUrlParamFromString(room);
-
     if (!eventRoom) {
       openUrl(roomUrlParam);
 
@@ -80,7 +81,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     } else {
       enterVenue(event.venueId);
     }
-  }, [enterRoom, event, eventRoom]);
+  }, [enterRoom, event, eventRoom, roomUrlParam]);
 
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,

@@ -42,7 +42,7 @@ $action-button-width: 136px;
     line-height: 17px;
 
     &.ScheduleItemNG__button--copy {
-      background-color: $secondary;
+      background-color: rgba(255, 255, 255, 0.2);
       margin-right: $spacing--sm;
     }
   }
