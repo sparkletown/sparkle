@@ -226,7 +226,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
+      <ScheduleNG
+        showPersonalisedSchedule={showPersonalisedSchedule}
+        isLoading={isLoadingSchedule}
+        {...scheduleNG}
+      />
     </div>
   );
 };
