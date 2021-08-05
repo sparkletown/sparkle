@@ -42,7 +42,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
 
   const getInputNameForForm = useCallback(
     (index: number, prop: keyof ProfileLink) =>
-      `${formProp("links")}[${index}].${prop}`,
+      `${formProp("profileLinks")}[${index}].${prop}`,
     []
   );
 

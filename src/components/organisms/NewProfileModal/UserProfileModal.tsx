@@ -1,15 +1,18 @@
 import { updateProfileLinks } from "api/profile";
 import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
+import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
 import { formProp } from "components/organisms/NewProfileModal/utility";
 import { useBooleanState } from "hooks/useBooleanState";
 import { isEqual, pick } from "lodash";
 import { updateUserProfile } from "pages/Account/helpers";
 import { ProfileFormData } from "pages/Account/Profile";
-import React, { useCallback } from "react";
+import { QuestionsFormData } from "pages/Account/Questions";
+import React, { useCallback, useMemo } from "react";
 import Modal from "react-bootstrap/Modal";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
 import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
@@ -29,12 +32,26 @@ interface Props {
   onClose: () => void;
 }
 
-export interface UserProfileModalFormData extends ProfileFormData {
-  questions: Record<string, string>;
-  links: ProfileLink[];
+export interface UserProfileModalFormDataPasswords {
   oldPassword: string;
   newPassword: string;
   confirmNewPassword: string;
+}
+
+const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
+  "oldPassword",
+  "newPassword",
+  "confirmNewPassword",
+];
+
+const arePasswordsNotEmpty = (passwords: UserProfileModalFormDataPasswords) =>
+  Object.values(pick(passwords, passwordsFields)).some((x) => x);
+
+export interface UserProfileModalFormData
+  extends ProfileFormData,
+    UserProfileModalFormDataPasswords,
+    QuestionsFormData {
+  profileLinks: ProfileLink[];
 }
 
 export const UserProfileModal: React.FC<Props> = ({
@@ -44,9 +61,32 @@ export const UserProfileModal: React.FC<Props> = ({
   onClose,
 }) => {
   const firebase = useFirebase();
-  const currentUserEmail = firebase.auth().currentUser?.email;
+  const firebaseUser = firebase.auth()?.currentUser;
+  const firebaseUserEmail = firebaseUser?.email;
 
   const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(true);
+
+  const { questions, answers } = useProfileQuestions(user, venue.id);
+
+  const defaultValues: Omit<
+    UserProfileModalFormData,
+    keyof UserProfileModalFormDataPasswords
+  > = useMemo(
+    () => ({
+      profileLinks: user.profileLinks ?? [],
+      pictureUrl: user.pictureUrl ?? DEFAULT_PROFILE_PIC,
+      partyName: user.partyName ?? DEFAULT_PARTY_NAME,
+      ...(questions
+        ? Object.assign(
+            {},
+            ...questions.map((q, i) => ({
+              [q.name]: answers?.[i],
+            }))
+          )
+        : {}),
+    }),
+    [answers, questions, user.partyName, user.pictureUrl, user.profileLinks]
+  );
 
   const {
     register,
@@ -63,10 +103,7 @@ export const UserProfileModal: React.FC<Props> = ({
     mode: "onBlur",
     reValidateMode: "onChange",
     validateCriteriaMode: "all",
-    defaultValues: {
-      links: user.profileLinks,
-      pictureUrl: user.pictureUrl,
-    },
+    defaultValues,
   });
 
   const cancelEditing = useCallback(() => {
@@ -80,7 +117,7 @@ export const UserProfileModal: React.FC<Props> = ({
     remove: removeLink,
   } = useFieldArray<ProfileLink>({
     control,
-    name: formProp("links"),
+    name: formProp("profileLinks"),
   });
 
   const links = fields as WithId<ProfileLink>[];
@@ -91,29 +128,25 @@ export const UserProfileModal: React.FC<Props> = ({
 
   const checkOldPassword = useCallback(
     async (password: string) => {
-      if (!currentUserEmail) return;
+      if (!firebaseUserEmail) return;
       try {
         await firebase
           .auth()
-          .signInWithEmailAndPassword(currentUserEmail, password);
+          .signInWithEmailAndPassword(firebaseUserEmail, password);
         return true;
       } catch {
         return false;
       }
     },
-    [currentUserEmail, firebase]
+    [firebaseUserEmail, firebase]
   );
 
   const onSubmit: OnSubmit<UserProfileModalFormData> = useCallback(
     async (data) => {
-      const firebaseUser = firebase.auth()?.currentUser;
       if (!firebaseUser) return;
 
-      if (
-        data.oldPassword !== "" ||
-        data.newPassword !== "" ||
-        data.confirmNewPassword !== ""
-      ) {
+      const passwordsNotEmpty = arePasswordsNotEmpty(data);
+      if (passwordsNotEmpty) {
         if (!(await checkOldPassword(data.oldPassword))) {
           setError(formProp("oldPassword"), "validate", "Incorrect password");
           return;
@@ -123,27 +156,40 @@ export const UserProfileModal: React.FC<Props> = ({
         }
       }
 
-      const changedFields = [
-        user.partyName !== data.partyName && formProp("partyName"),
-        user.pictureUrl !== data.pictureUrl && formProp("pictureUrl"),
-      ].filter((x) => x) as (keyof UserProfileModalFormData)[];
+      const fieldsToCheck = [
+        formProp("partyName"),
+        formProp("pictureUrl"),
+        ...questions.map((x) => x.name),
+      ];
+
+      const changedFields = fieldsToCheck.filter(
+        (field) =>
+          !isEqual(
+            defaultValues[field as keyof typeof defaultValues],
+            data[field as keyof typeof data]
+          )
+      ) as (keyof typeof data)[];
+
       if (changedFields.length > 0)
         await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
 
-      if (!isEqual(user.profileLinks, data.links))
+      if (!isEqual(user.profileLinks, data.profileLinks))
         await updateProfileLinks({
-          profileLinks: data.links,
+          profileLinks: data.profileLinks,
           userId: user.id,
         });
+
+      turnOffEditMode();
     },
     [
       checkOldPassword,
       clearError,
-      firebase,
+      defaultValues,
+      firebaseUser,
+      questions,
       setError,
+      turnOffEditMode,
       user.id,
-      user.partyName,
-      user.pictureUrl,
       user.profileLinks,
     ]
   );
@@ -151,7 +197,9 @@ export const UserProfileModal: React.FC<Props> = ({
   const setLinkTitle = useCallback(
     (index: number, title: string) => {
       setValue(
-        `${formProp("links")}[${index}].${propName<ProfileLink>("title")}`,
+        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>(
+          "title"
+        )}`,
         title
       );
     },
@@ -177,19 +225,22 @@ export const UserProfileModal: React.FC<Props> = ({
             setValue={setValue}
             partyNameError={errors?.partyName}
           />
-          <ProfileModalQuestions
-            viewingUser={user}
-            editMode={editMode}
-            containerClassName="ProfileModal__section"
-            register={register}
-          />
+          {
+            <ProfileModalQuestions
+              editMode={editMode}
+              containerClassName="ProfileModal__section"
+              questions={questions}
+              answers={answers}
+              register={register}
+            />
+          }
           {editMode && user?.profileLinks ? (
             <ProfileModalEditLinks
               containerClassName="ProfileModal__section"
               register={register}
               links={links}
               setLinkTitle={setLinkTitle}
-              errors={errors?.links}
+              errors={errors?.profileLinks}
               onDeleteLink={removeLink}
               onAddLink={addLinkHandler}
             />
@@ -199,25 +250,6 @@ export const UserProfileModal: React.FC<Props> = ({
               containerClassName="ProfileModal__section"
             />
           )}
-          {/*{!editMode && (*/}
-          {/*  <div className="ProfileModal__section">*/}
-          {/*    <label*/}
-          {/*      htmlFor="chk-mirrorVideo"*/}
-          {/*      className={`checkbox ${*/}
-          {/*        user?.mirrorVideo && "checkbox-checked"*/}
-          {/*      }`}*/}
-          {/*    >*/}
-          {/*      Mirror my video*/}
-          {/*    </label>*/}
-          {/*    <input*/}
-          {/*      type="checkbox"*/}
-          {/*      name="mirrorVideo"*/}
-          {/*      id="chk-mirrorVideo"*/}
-          {/*      defaultChecked={user?.mirrorVideo || false}*/}
-          {/*      onClick={() =>{}}*/}
-          {/*    />*/}
-          {/*  </div>*/}
-          {/*)}*/}
           {!editMode && (
             <ProfileModalBadges
               viewingUser={user}
@@ -239,7 +271,6 @@ export const UserProfileModal: React.FC<Props> = ({
           {editMode && (
             <ProfileModalEditButtons
               onCancelClick={cancelEditing}
-              saveChangesDisabled={false}
               containerClassName="UserProfileModal__edit-buttons"
             />
           )}

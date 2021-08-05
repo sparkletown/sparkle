@@ -1,4 +1,5 @@
 import { ProfileModalSendMessageButton } from "components/organisms/NewProfileModal/components/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton";
+import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 import { WithId } from "utils/id";
@@ -25,6 +26,11 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
     closeUserProfileModal,
   } = useProfileModalControls();
 
+  const { questions, answers } = useProfileQuestions(
+    selectedUserProfile,
+    venue?.id
+  );
+
   const openChosenUserChat = useCallback(() => {
     if (!selectedUserProfile?.id) return;
 
@@ -45,8 +51,9 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
       <Modal.Body className="ProfileModal__body">
         <ProfileModalBasicInfo viewingUser={selectedUserProfile} />
         <ProfileModalQuestions
-          viewingUser={selectedUserProfile}
           containerClassName="ProfileModal__section"
+          questions={questions}
+          answers={answers}
         />
         <ProfileModalLinks
           viewingUser={selectedUserProfile}

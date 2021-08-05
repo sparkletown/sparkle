@@ -52,7 +52,6 @@ export const ProfileModalBasicInfo: React.FC<Props> = ({
           {editMode && register ? (
             <ProfileModalInput
               name={formProp("partyName")}
-              defaultValue={viewingUser?.partyName}
               placeholder="Display Name"
               error={partyNameError}
               ref={register({

@@ -1,66 +1,52 @@
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import { formProp } from "components/organisms/NewProfileModal/utility";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useVenueId } from "hooks/useVenueId";
 import "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions.scss";
 import classNames from "classnames";
 import React, { useMemo } from "react";
 import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
-import { WithId } from "utils/id";
-import { User } from "types/User";
+import { Question } from "types/venues";
 
 interface Props extends ContainerClassName {
   editMode?: boolean;
-  viewingUser: WithId<User>;
   register?: FormFieldProps["register"];
+  questions: Question[];
+  answers: string[];
 }
 
 export const ProfileModalQuestions: React.FC<Props> = ({
-  viewingUser,
   editMode,
   register,
+  questions,
+  answers,
   containerClassName,
 }: Props) => {
-  const venueId = useVenueId();
-  const { sovereignVenue } = useSovereignVenue({ venueId });
-  const profileQuestions = sovereignVenue?.profile_questions;
-
   const renderedProfileQuestionAnswers = useMemo(
     () =>
-      profileQuestions?.map((question) => {
-        // @ts-ignore User type doesn't accept string indexing.
-        // We need to rework the way we store answers to profile questions
-        const questionAnswer = viewingUser[question.name];
-
-        if (!questionAnswer) return undefined;
-
-        return (
-          <div
-            className="ProfileModalQuestions__question-container"
-            key={question.text}
-          >
-            <p className="ProfileModalQuestions__question">{question.text}</p>
-            {editMode && register ? (
-              <ProfileModalInput
-                name={`${formProp("questions")}.${question.text}`}
-                containerClassName="ProfileModalQuestions__answer-input"
-                defaultValue={questionAnswer}
-                ref={register()}
-              />
-            ) : (
-              <p className="ProfileModalQuestions__answer">{questionAnswer}</p>
-            )}
-          </div>
-        );
-      }),
-    [editMode, profileQuestions, register, viewingUser]
+      questions?.map((question, i) => (
+        <div
+          className="ProfileModalQuestions__question-container"
+          key={question.text}
+        >
+          <p className="ProfileModalQuestions__question">{question.text}</p>
+          {editMode && register ? (
+            <ProfileModalInput
+              name={`${question.name}`}
+              containerClassName="ProfileModalQuestions__answer-input"
+              defaultValue={answers[i]}
+              ref={register()}
+            />
+          ) : (
+            <p className="ProfileModalQuestions__answer">{answers[i]}</p>
+          )}
+        </div>
+      )),
+    [answers, editMode, questions, register]
   );
   return (
     <div className={classNames("ProfileModalQuestions", containerClassName)}>
       <ProfileModalSectionHeader text="Questions" />
-      {viewingUser && renderedProfileQuestionAnswers}
+      {renderedProfileQuestionAnswers}
     </div>
   );
 };
