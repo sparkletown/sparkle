@@ -12,6 +12,7 @@ import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
+import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BotComponent } from "../components/BotComponent";
@@ -38,6 +39,8 @@ import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
 import { Avatar } from "../graphics/Avatar";
 import { Venue } from "../graphics/Venue";
+import { VenueHoverIn } from "../graphics/VenueHoverIn";
+import { VenueHoverOut } from "../graphics/VenueHoverOut";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
@@ -512,10 +515,32 @@ export default class EntityFactory {
                 ("venue id: " + venue.id).slice(0, 15) + "..."
               )
             );
+            // add increase
+            const comm: SpriteComponent | null = entity.get(SpriteComponent);
+            const duration = 100;
+            if (comm) {
+              entity.add(
+                new AnimationComponent(
+                  new VenueHoverIn(comm.view as Venue, duration),
+                  duration
+                )
+              );
+            }
           },
           () => {
             // remove tooltip
             entity.remove(TooltipComponent);
+            // add decrease
+            const comm: SpriteComponent | null = entity.get(SpriteComponent);
+            const duration = 100;
+            if (comm) {
+              entity.add(
+                new AnimationComponent(
+                  new VenueHoverOut(comm.view as Venue, duration),
+                  duration
+                )
+              );
+            }
           }
         )
       )

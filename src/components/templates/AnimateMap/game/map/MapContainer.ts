@@ -1,18 +1,13 @@
 import { Engine } from "@ash.ts/ash";
-import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
-
+import { Application, Container } from "pixi.js";
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
 import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
-
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
-import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
 import { Point } from "../utils/Point";
-
 import EntityFactory from "./entities/EntityFactory";
 import { AvatarTuningSystem } from "./systems/AvatarTuningSystem";
 import { BubbleSystem } from "./systems/BubbleSystem";
@@ -37,6 +32,10 @@ import { TooltipSystem } from "./systems/TooltipSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
+import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
+import KeyPoll from "../utils/KeyPollSingleton";
+import { AnimationSystem } from "./systems/AnimationSysem";
+import { AnimationNode } from "./nodes/AnimationNode";
 
 export class MapContainer extends Container {
   private _app?: Application | null = null;
@@ -169,6 +168,11 @@ export class MapContainer extends Container {
     this._engine.addSystem(
       new MotionCollisionSystem(),
       SystemPriorities.resolveCollisions
+    );
+
+    this._engine.addSystem(
+      new AnimationSystem(AnimationNode),
+      SystemPriorities.animate
     );
 
     this._engine.addSystem(
