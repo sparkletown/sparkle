@@ -3,7 +3,7 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 

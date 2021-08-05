@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$breadcrumbs-height: 45px;
+
 .recipient-chat {
   height: 100%;
   width: 100%;
@@ -9,7 +11,7 @@
     position: absolute;
     top: 0;
     width: 100%;
-    height: 45px;
+    height: $breadcrumbs-height;
     background-color: $almost-black;
     display: flex;
     align-items: center;
@@ -17,6 +19,12 @@
     z-index: z(recipient-chat-breadcrumbs);
     padding: 0 8px;
     cursor: pointer;
+  }
+
+  &__chatbox {
+    position: absolute;
+    top: $breadcrumbs-height;
+    height: calc(100% - #{$breadcrumbs-height});
   }
 
   &__back-icon {
