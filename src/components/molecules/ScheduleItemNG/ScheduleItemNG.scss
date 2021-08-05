@@ -1,0 +1,23 @@
+@import "scss/constants.scss";
+
+.ScheduleItemNG {
+  display: flex;
+  padding-bottom: $ScheduleNG--padding;
+
+  &--info {
+    flex-basis: 25%;
+    margin-right: $ScheduleNG--padding;
+  }
+
+  &--time,
+  &--name {
+    display: block;
+    font-weight: $font-weight--700;
+  }
+
+  &--date {
+    display: block;
+    font-weight: $font-weight--700;
+    color: $concrete;
+  }
+}
