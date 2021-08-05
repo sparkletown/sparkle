@@ -63,10 +63,10 @@ export class ViewportSystem extends System {
         bottom: true,
       })
       .clampZoom({
-        maxWidth: worldWidth * 0.48,
-        maxHeight: worldHeight * 0.48,
-        minWidth: worldWidth / 64,
-        minHeight: worldHeight / 64,
+        maxWidth: worldWidth * 0.68,
+        maxHeight: worldHeight * 0.68,
+        minWidth: worldWidth * 0.024,
+        minHeight: worldHeight * 0.024,
       });
 
     // TODO move to player coords
@@ -109,8 +109,6 @@ export class ViewportSystem extends System {
           })
         )
     );
-
-    this._viewport.on("wheel", (e) => console.log(e));
 
     GameInstance.instance.eventProvider.on(
       EventType.UI_CONTROL_PANEL_ZOOM_IN,
