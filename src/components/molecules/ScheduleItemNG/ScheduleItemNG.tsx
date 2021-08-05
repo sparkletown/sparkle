@@ -1,15 +1,25 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
 import { EVENT_LIVE_RANGE } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
+import { Room } from "types/rooms";
 
 import { eventEndTime, eventStartTime, isEventStartingSoon } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  enterVenue,
+  openUrl,
+  getUrlParamFromString,
+  getUrlWithoutTrailingSlash,
+  getLastUrlParam,
+} from "utils/url";
 
 import { useShowHide } from "hooks/useShowHide";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRoom } from "hooks/useRoom";
 
 import Button from "components/atoms/Button";
 
@@ -19,18 +29,58 @@ export interface ScheduleItemNGProps {
   event: PersonalizedVenueEvent;
 }
 
-const formatDateOptions = { formatToday: () => "" };
-
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
+  const { currentVenue: eventVenue } = useRelatedVenues({
+    currentVenueId: event.venueId,
+  });
+  const eventRoom = useMemo<Room | undefined>(
+    () =>
+      eventVenue?.rooms?.find((room) => {
+        const { room: eventRoom = "" } = event;
+        const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
+
+        const [roomName] = getLastUrlParam(noTrailSlashUrl);
+        const roomUrlParam = getUrlParamFromString(eventRoom);
+        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+
+        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
+      }),
+    [eventVenue, event]
+  );
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
+  const { enterRoom } = useRoom({
+    room: eventRoom,
+    venueName: eventVenue?.name ?? "",
+  });
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
-  const isCurrentEventLive = isEventStartingSoon(event, 2 * EVENT_LIVE_RANGE);
+  const isCurrentEventLive = isEventStartingSoon(event, 10 * EVENT_LIVE_RANGE);
+
   const handleCopyEventLink = useCallback(
-    () => navigator.clipboard.writeText(event.venueId),
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      navigator.clipboard.writeText(event.venueId);
+    },
     [event.venueId]
   );
+
+  const goToEventLocation = useCallback(() => {
+    const { room = "" } = event;
+    const roomUrlParam = getUrlParamFromString(room);
+
+    if (!eventRoom) {
+      openUrl(roomUrlParam);
+
+      return;
+    }
+
+    if (event.room) {
+      enterRoom();
+    } else {
+      enterVenue(event.venueId);
+    }
+  }, [enterRoom, event, eventRoom]);
 
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,
@@ -42,12 +92,11 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
 
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
-      {/* TODO: onClick conflict */}
       <div className={infoContaier}>
         <span className="ScheduleItemNG__date">
           {!isCurrentEventLive &&
             showDate &&
-            formatDateRelativeToNow(eventStartTime(event), formatDateOptions)}
+            formatDateRelativeToNow(eventStartTime(event))}
         </span>
 
         <span className={timeContainer}>
@@ -57,8 +106,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
         </span>
 
         <span className="ScheduleItemNG__date ScheduleItemNG__time--end">
-          {showDate &&
-            formatDateRelativeToNow(eventEndTime(event), formatDateOptions)}
+          {showDate && formatDateRelativeToNow(eventEndTime(event))}
         </span>
 
         <span className="ScheduleItemNG__time ScheduleItemNG__time--end">
@@ -85,7 +133,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
               </Button>
               <Button
                 customClass="ScheduleItemNG__button"
-                onClick={() => console.log(event.venueId)}
+                onClick={goToEventLocation}
               >
                 See on playa
               </Button>
