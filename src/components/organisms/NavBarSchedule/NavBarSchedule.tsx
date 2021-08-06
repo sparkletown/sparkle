@@ -21,6 +21,7 @@ import {
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeComparator,
+  getEventDayRange,
   isEventLiveOrFuture,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
@@ -58,7 +59,6 @@ export interface NavBarScheduleProps {
 }
 
 const minRangeValue = 0;
-const maxRangeValue = 1;
 const todaysDate = new Date();
 const todaysDateTime = new Date().getTime();
 
@@ -129,6 +129,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     [firstLiveEvent, liveEventsMinimalStartValue]
   );
 
+  const firstRangeDayTimeValue = isDateLessOrEqualsToday({
+    valueSource: secondsToMilliseconds(minDate),
+    valueTarget: millisecondsToSeconds(startOfToday().getTime()),
+  })
+    ? millisecondsToSeconds(todaysDate.getTime())
+    : millisecondsToSeconds(new Date(secondsToMilliseconds(minDate)).getTime());
+
   const maxDate = useMemo(
     () =>
       Math.max(
@@ -136,15 +143,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           (event) =>
             event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
         ),
-        maxRangeValue
+        firstRangeDayTimeValue + 1
       ),
-    [liveAndFutureEvents]
+    [liveAndFutureEvents, firstRangeDayTimeValue]
   );
 
-  const dayDifference = differenceInDays(
+  const daysInBetween = differenceInDays(
     fromUnixTime(maxDate),
-    fromUnixTime(minDate)
+    fromUnixTime(firstRangeDayTimeValue)
   );
+  const dayDifference = getEventDayRange(daysInBetween);
 
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {

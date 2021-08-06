@@ -100,3 +100,11 @@ export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
 
   return a.duration_minutes - b.duration_minutes;
 };
+
+export const getEventDayRange = (daysInBetween: number) => {
+  if (daysInBetween === 2) {
+    return daysInBetween + 1;
+  }
+
+  return daysInBetween + 2;
+};
