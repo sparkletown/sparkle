@@ -1,7 +1,6 @@
 @import "scss/constants";
 
 $grey--disabled: #fff3;
-$dark-grey: #232225;
 
 $EventModal--padding-top: 40px;
 
@@ -12,7 +11,7 @@ $EventModal--padding-top: 40px;
     padding: $EventModal--padding-top $spacing--xl $spacing--xl;
     display: flex;
     flex-direction: column;
-    background-color: $dark-grey;
+    background-color: $background--modal;
   }
 
   &__close {

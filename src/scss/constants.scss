@@ -18,6 +18,8 @@ $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
+$background--modal: #232225;
+
 $input--invalid: #dc3545;
 
 // @debt replace all greyish colors with $secondary alternatives
@@ -93,15 +95,24 @@ $spacing--xxl: 30px;
 
 $submit-button-diameter: 44px;
 
-$font-size--xxs: 10px;
+// Relative font sizes
+$font-size--document: 1rem;
+$font-size--parent: 1em;
+
+// Absolute font sizes
+$font-size--2s: 10px;
 $font-size--xs: 11px;
 $font-size--sm: 12px;
 $font-size--md: 14px;
 $font-size--lg: 16px;
 $font-size--xl: 20px;
-// Not sure this is the best naming for these
-$font-size--xxl: 30px;
-$font-size--xxxl: 50px;
+$font-size--2l: 30px;
+$font-size--3l: 50px;
+
+// @debt replace uses of these with the above
+$font-size--xxs: $font-size--2s;
+$font-size--xxl: $font-size--2l;
+$font-size--xxxl: $font-size--3l;
 
 // Placeholders, until we can find meaningful names for them
 $font-weight--300: 300;

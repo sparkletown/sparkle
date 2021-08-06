@@ -1,7 +1,8 @@
 import React, { useCallback } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import { deleteRoom, RoomInput, upsertRoom } from "api/admin";
 
@@ -12,6 +13,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { roomEditSchema } from "pages/Admin/Details/ValidationSchema";
 
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 import { InputField } from "components/atoms/InputField";
 
@@ -25,6 +27,7 @@ interface EditRoomFormProps {
   onDelete?: () => void;
   onEdit?: () => void;
 }
+
 export const EditRoomForm: React.FC<EditRoomFormProps> = ({
   room,
   updatedRoom,
@@ -130,7 +133,7 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             ref={register()}
           />
 
-          <Form.Label>Room image:</Form.Label>
+          <Form.Label>Room image</Form.Label>
           <ImageInput
             onChange={handleImageChange}
             name="image"
@@ -143,24 +146,27 @@ export const EditRoomForm: React.FC<EditRoomFormProps> = ({
             <span className="input-error">{errors.image_url.message}</span>
           )}
 
-          <Button
+          <ButtonNG
+            className="EditRoomForm__delete-button"
             disabled={isUpdating || isDeleting}
             onClick={deleteSelectedRoom}
+            iconName={faTrash}
           >
             Delete room
-          </Button>
+          </ButtonNG>
           {error && <div>Error: {error}</div>}
         </div>
 
         <div className="EditRoomForm__footer">
-          <Button onClick={handleBackClick}>Back</Button>
-          <Button
+          <ButtonNG onClick={handleBackClick}>Back</ButtonNG>
+          <ButtonNG
             className="confirm-button"
             type="submit"
             disabled={isUpdating || isDeleting}
+            variant="primary"
           >
             Save changes
-          </Button>
+          </ButtonNG>
         </div>
       </div>
     </Form>

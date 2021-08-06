@@ -1,0 +1,31 @@
+@import "scss/constants.scss";
+
+.RoomAddModal {
+  .modal-content {
+    padding: $spacing--xl;
+    background: $background--modal;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+    border-radius: $border-radius--xl;
+  }
+
+  &__body {
+    width: 100%;
+    height: 100%;
+    padding: $spacing--xs;
+  }
+
+  &__input {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: $spacing--xxl;
+  }
+
+  &__footer {
+    border: none;
+    padding: 0;
+  }
+
+  &__button-add {
+    max-width: 100%;
+  }
+}

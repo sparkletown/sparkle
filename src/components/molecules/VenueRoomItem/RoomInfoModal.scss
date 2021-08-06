@@ -1,0 +1,42 @@
+@import "scss/constants.scss";
+
+.RoomInfoModal {
+  .modal-content {
+    padding: $spacing--xl;
+    background: $background--modal;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+    border-radius: $border-radius--xl;
+  }
+
+  &__body {
+    padding: 0;
+  }
+
+  &__poster {
+    width: 100%;
+    height: 100%;
+    border: 2px solid opaque-white(0.2);
+    border-radius: $border-radius--md;
+  }
+
+  &__title {
+    text-transform: capitalize;
+  }
+
+  &__title,
+  &__description {
+    margin-top: $spacing--xl;
+    margin-bottom: $spacing--xl;
+    text-align: center;
+  }
+
+  &__footer {
+    border: none;
+    border-radius: unset;
+    padding: 0;
+  }
+
+  &__button-add {
+    width: 100%;
+  }
+}

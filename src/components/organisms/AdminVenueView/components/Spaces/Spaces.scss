@@ -1,8 +1,8 @@
 @import "scss/constants.scss";
 
-$venue-room-logo-size: 34px;
-$button-size: 50px;
 $icon-size: 20px;
+$venue-room-logo-size: 36px;
+$tab-bar-height: 36px;
 
 .Spaces {
   display: flex;
@@ -18,10 +18,7 @@ $icon-size: 20px;
     justify-content: center;
     align-items: center;
     padding: 40px;
-  }
-
-  &__background {
-    padding: 20px;
+    height: calc(100vh - #{$tab-bar-height});
   }
 
   &__upload-background-wrapper {
@@ -43,21 +40,25 @@ $icon-size: 20px;
     overflow-x: scroll;
   }
 
-  &__title {
-    font-size: $font-size--sm;
-    font-weight: bolder;
-  }
+  &__accordion {
+    &-title {
+      padding: 20px;
+      font-size: $font-size--xl;
+      font-weight: bolder;
+    }
 
-  &__venue-rooms {
-    padding: $spacing--md;
-    background-color: $saturated-black;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    border-bottom: 1px solid opaque-white(0.1);
+    &-item-title {
+      padding: $spacing--md;
+      background-color: $saturated-black;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      border-bottom: 1px solid opaque-white(0.1);
 
-    &:hover {
-      background-color: lighten($saturated-black, 5%);
+      &:hover {
+        background-color: lighten($saturated-black, 5%);
+        cursor: pointer;
+      }
     }
   }
 
@@ -66,6 +67,7 @@ $icon-size: 20px;
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
 
     &:hover {
       background-color: $saturated-black;
@@ -73,8 +75,7 @@ $icon-size: 20px;
   }
 
   &__venue-room-logo {
-    height: $venue-room-logo-size;
-    width: $venue-room-logo-size;
+    @include square-size($venue-room-logo-size);
     margin-right: $spacing--md;
     background-size: contain;
     background-position: center;
@@ -94,69 +95,13 @@ $icon-size: 20px;
     border-top: 1px solid opaque-white(0.2);
   }
 
-  &__home-button {
-    cursor: pointer;
-    display: flex;
-    width: $button-size;
-    height: $button-size;
-    border-radius: 100%;
-    justify-content: center;
-    align-items: center;
-    transition: all 400ms $transition-function;
-    background-color: lighten($color: $saturated-black, $amount: 10);
-
-    &:hover {
-      background-color: lighten($color: $saturated-black, $amount: 20);
-    }
-  }
-
   &__nav-buttons {
     display: flex;
-    flex-direction: row;
+    width: 40%;
   }
 
-  &__back-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
-    background-color: lighten($color: $saturated-black, $amount: 10);
-
-    &:hover {
-      background-color: lighten($color: $saturated-black, $amount: 20);
-    }
-  }
-
-  &__next-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
-    background-color: $primary;
-
-    &:hover {
-      background-color: lighten($color: $primary, $amount: 10);
-    }
-  }
-
-  &__home-icon {
-    width: $icon-size;
-    height: $icon-size;
-    background-size: $icon-size $icon-size;
+  &__nav-button {
+    flex-shrink: 0;
   }
 
   &__appearance {

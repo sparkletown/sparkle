@@ -476,6 +476,11 @@ exports.createVenue_v2 = functions.https.onCall(async (data, context) => {
 
 exports.upsertRoom = functions.https.onCall(async (data, context) => {
   checkAuth(context);
+
+  const result = {
+    provided: data,
+  };
+
   const { venueId, roomIndex, room } = data;
   await checkUserIsOwner(venueId, context.auth.token.user_id);
   const doc = await admin.firestore().collection("venues").doc(venueId).get();
@@ -483,16 +488,24 @@ exports.upsertRoom = functions.https.onCall(async (data, context) => {
   if (!doc || !doc.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
-  const docData = doc.data();
-  let rooms = docData.rooms;
 
-  if (typeof roomIndex !== "number") {
-    rooms = [...rooms, room];
+  result.rooms = doc.data().rooms ?? [];
+
+  if (typeof roomIndex === "number") {
+    result.rooms[roomIndex] = room;
+    result.roomIndex = roomIndex;
   } else {
-    rooms[roomIndex] = room;
+    result.rooms = [...result.rooms, room];
+    result.roomIndex = result.rooms.length - 1;
   }
 
-  admin.firestore().collection("venues").doc(venueId).update({ rooms });
+  result.writeResult = await admin
+    .firestore()
+    .collection("venues")
+    .doc(venueId)
+    .update({ rooms: result.rooms });
+
+  return result;
 });
 
 exports.deleteRoom = functions.https.onCall(async (data, context) => {

@@ -18,6 +18,14 @@ import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
+import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
+import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
+import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
+import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
+import RoomIconExperience from "assets/icons/icon-room-experience.svg";
+import RoomIconMap from "assets/icons/icon-room-map.svg";
+
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
   "https://sparklespaces.com/terms-of-use/";
@@ -229,6 +237,8 @@ export interface Template {
   template: VenueTemplate;
   name: string;
   description: Array<string>;
+  icon?: string;
+  poster?: string;
 }
 
 // @debt Refactor this constant into types/templates or similar?
@@ -244,18 +254,24 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.conversationspace,
     name: "Conversation Space",
+    icon: RoomIconConversation,
+    poster: "/venues/add-venue-room-conversationspace.png",
     description: ["A room of tables in which to talk and make merry."],
   },
   {
     template: VenueTemplate.zoomroom, // keeping as zoom room for backward compatibility
     name: "Experience",
+    icon: RoomIconExperience,
+    poster: "/venues/add-venue-room-zoomroom.png",
     description: [
       "Ideal for performances, debates, interactive sessions of all kinds: a Zoom room with its own spot on the Jam",
     ],
   },
   {
     template: VenueTemplate.partymap,
-    name: "Party Map",
+    name: "Map",
+    icon: RoomIconMap,
+    poster: "/venues/add-venue-room-partymap.png",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
@@ -263,13 +279,17 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.artpiece,
     name: "Art Piece",
+    icon: RoomIconArtPiece,
+    poster: "/venues/add-venue-room-artpiece.png",
     description: [
       "Embed any 2-D or 3-D art experience on the Jam with this special template, which allows viewers to chat to each other as they experience your art.",
     ],
   },
   {
     template: VenueTemplate.jazzbar,
-    name: "Music Venue",
+    name: "Tables",
+    icon: RoomIconMusicBar,
+    poster: "/venues/add-venue-room-jazzbar.png",
     description: [
       "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
     ],
@@ -277,6 +297,8 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.audience,
     name: "Auditorium",
+    icon: RoomIconAuditorium,
+    poster: "/venues/add-venue-room-audience.png",
     description: [
       "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
     ],
@@ -288,7 +310,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.firebarrel,
-    name: "Fire Barrel",
+    name: "Burn Barrel",
+    icon: RoomIconBurnBarrel,
+    poster: "/venues/add-venue-room-firebarrel.png",
     description: ["Huddle around a fire barrel with your close friends"],
   },
   {
@@ -304,6 +328,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
+
+// @debt Refactor this constant into types/templates or similar?
+// NOTE: The Map object holds key-value pairs and remembers the original insertion order of the keys
+// Same can be accomplished by a regular object if created through Object.fromEntries()
+export const BURN_VENUE_TEMPLATES_MAP: Map<VenueTemplate, Template> = new Map(
+  BURN_VENUE_TEMPLATES.map((item) => [item.template, item])
+);
 
 // @debt Refactor this constant into types/templates or similar?
 // @debt this doesn't seem to even be used at the moment.. should it be?

@@ -8,17 +8,22 @@
 
   &__room {
     padding: $spacing--xl;
+    display: flex;
+    flex-direction: column;
+    gap: $spacing--xs;
   }
 
   &__footer {
     display: flex;
     position: fixed;
     bottom: 0;
-    flex-direction: row;
-    justify-content: space-between;
     width: $admin-spaces-sidebar-width;
     padding: $spacing--md;
     background-color: $black;
     border-top: 1px solid opaque-white(0.2);
+  }
+
+  &__delete-button {
+    place-self: center;
   }
 }

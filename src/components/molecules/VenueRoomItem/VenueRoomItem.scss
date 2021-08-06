@@ -1,24 +1,46 @@
 @import "scss/constants.scss";
 
-$room-icon-size: 34px;
+$room-icon-box-size: 36px;
+$room-icon-img-size: 24px;
 
 .VenueRoomItem {
   padding: $spacing--md;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 
   &:hover {
     background-color: $saturated-black;
   }
 
-  &__room-icon {
-    height: $room-icon-size;
-    width: $room-icon-size;
-    margin-right: $spacing--sm;
-    background-size: contain;
-    background-position: center;
+  &__icon {
+    margin-right: $font-size--parent;
+    padding: $spacing--md;
     border-radius: $border-radius--xs;
-    box-shadow: 0 0 0 3px $primary;
+    border: 3px solid $primary--live;
+    display: grid;
+    place-content: center;
+    @include square-size($room-icon-box-size);
+
+    img {
+      @include square-size($room-icon-img-size);
+    }
+  }
+
+  &__name {
+    flex-grow: 1;
+  }
+
+  &__buttons {
+    visibility: hidden;
+    display: none;
+    height: $room-icon-box-size;
+    align-items: center;
+  }
+
+  &:hover &__buttons {
+    visibility: visible;
+    display: flex;
   }
 }

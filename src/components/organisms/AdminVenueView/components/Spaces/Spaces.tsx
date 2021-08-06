@@ -7,82 +7,68 @@ import {
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useShowHide } from "hooks/useShowHide";
+import { BURN_VENUE_TEMPLATES_MAP, Template } from "settings";
 
 import { VenueTemplate, Venue_v2 } from "types/venues";
-import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
+import { RoomData_v2, VenueRoomTemplate, RoomTemplate } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
+import { useShowHide } from "hooks/useShowHide";
+
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
-import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
-import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
-import RoomIconMap from "assets/icons/icon-room-map.svg";
 
 import "./Spaces.scss";
 
-interface VenueRooms {
-  text: string;
-  template?: VenueRoomTemplate;
-  icon: string;
-}
+const VENUE_TEMPLATES_MAP: Map<
+  VenueRoomTemplate,
+  Template
+> = BURN_VENUE_TEMPLATES_MAP;
 
-const venueRooms: VenueRooms[] = [
+export type VenueRoom = {
+  template: VenueRoomTemplate;
+  text: string;
+  icon: string;
+  poster: string;
+  description: string;
+};
+
+const VENUE_ROOMS: VenueRoom[] = [
+  { template: VenueTemplate.conversationspace },
+  { template: VenueTemplate.audience },
+  { template: VenueTemplate.jazzbar },
+  { template: VenueTemplate.firebarrel },
+  { template: VenueTemplate.artpiece },
+  { template: VenueTemplate.zoomroom },
   {
-    text: "Conversation Space",
-    icon: RoomIconConversation,
-    template: VenueTemplate.conversationspace,
-  },
-  {
-    text: "Auditorium",
-    icon: RoomIconAuditorium,
-    template: VenueTemplate.audience,
-  },
-  {
-    text: "Music Bar",
-    icon: RoomIconMusicBar,
-    template: VenueTemplate.jazzbar,
-  },
-  {
-    text: "Burn Barrel",
-    icon: RoomIconBurnBarrel,
-    template: VenueTemplate.firebarrel,
-  },
-  {
-    text: "Art Piece",
-    icon: RoomIconArtPiece,
-    template: VenueTemplate.artpiece,
-  },
-  {
-    text: "Experience",
-    icon: RoomIconExperience,
-    template: VenueTemplate.zoomroom,
-  },
-  {
+    template: RoomTemplate.external,
     text: "External link",
     icon: RoomIconExternalLink,
-    template: RoomTemplate.external,
+    poster: "/venues/add-venue-room-external.png",
   },
-  {
-    text: "Map",
-    icon: RoomIconMap,
-    template: VenueTemplate.partymap,
-  },
-];
+  { template: VenueTemplate.partymap },
+].map(({ template, icon, text }) => {
+  const original = VENUE_TEMPLATES_MAP.get(template);
+  return {
+    template,
+    text: text ?? original?.name ?? "",
+    icon: icon ?? original?.icon ?? "",
+    description: original?.description?.join(". ") ?? "",
+    poster: original?.poster ?? `/venues/add-venue-room-${template}.png`,
+  };
+});
 
 export interface SpacesProps {
   venue: Venue_v2;
   onClickNext: () => void;
 }
 
+// @debt there is no guarantee the array pointed by the shared reference will remain empty
 const emptyRoomsArray: RoomData_v2[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
@@ -146,17 +132,31 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     [venue.rooms]
   );
 
+  const onAdd = useCallback(
+    ({ data }) => {
+      const created =
+        venue.rooms?.[data?.roomIndex] ??
+        (data?.rooms)[data?.roomIndex] ??
+        data?.provided?.room;
+      if (!created) return;
+
+      setSelectedRoom(created);
+    },
+    [setSelectedRoom, venue.rooms]
+  );
+
   const renderAddRooms = useMemo(
     () =>
-      venueRooms.map((venueRoom, index) => (
-        <VenueRoomItem
-          key={`${venueRoom.text}-${index}`}
-          text={venueRoom.text}
-          template={venueRoom.template}
-          icon={venueRoom.icon}
-        />
-      )),
-    []
+      VENUE_ROOMS.map((venueRoom, index) => {
+        return (
+          <VenueRoomItem
+            key={`${venueRoom.text}-${index}`}
+            venueRoom={venueRoom}
+            onAdd={onAdd}
+          />
+        );
+      }),
+    [onAdd]
   );
 
   const navigateToAdmin = useCallback(() => {
@@ -180,53 +180,74 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
           />
         ) : (
           <>
-            <div className="Spaces__background">
-              <div className="Spaces__title">Build your spaces</div>
+            <div className="Spaces__accordion-item">
+              <div className="Spaces__accordion-title">Build your spaces</div>
             </div>
-            <div>
+            <div className="Spaces__accordion-item">
               <div
-                className="Spaces__venue-rooms"
+                className="Spaces__accordion-item-title"
                 onClick={toggleShowAdvancedSettings}
+                title={showAdvancedSettings ? "Collapse" : "Expand"}
               >
                 <div>Map background</div>
                 <FontAwesomeIcon
                   icon={showAdvancedSettings ? faCaretDown : faCaretRight}
-                />{" "}
+                />
               </div>
               {showAdvancedSettings && (
                 <BackgroundSelect venueName={venue.name} />
               )}
             </div>
 
-            <div>
-              <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
+            <div className="Spaces__accordion-item">
+              <div
+                className="Spaces__accordion-item-title"
+                onClick={toggleShowRooms}
+                title={showRooms ? "Collapse" : "Expand"}
+              >
                 <div>{numberOfRooms} Rooms</div>
                 <FontAwesomeIcon
                   icon={showRooms ? faCaretDown : faCaretRight}
                 />
               </div>
-
               {showRooms && renderVenueRooms}
             </div>
 
-            <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add rooms</div>
-              <FontAwesomeIcon
-                icon={showAddRoom ? faCaretDown : faCaretRight}
-              />
-            </div>
-            {showAddRoom && renderAddRooms}
-            <div className="Spaces__footer">
-              <div className="Spaces__home-button" onClick={navigateToAdmin}>
-                <FontAwesomeIcon icon={faHome} />
+            <div className="Spaces__accordion-item">
+              <div
+                className="Spaces__accordion-item-title"
+                onClick={toggleShowAddRoom}
+                title={showAddRoom ? "Collapse" : "Expand"}
+              >
+                <div>Add rooms</div>
+                <FontAwesomeIcon
+                  icon={showAddRoom ? faCaretDown : faCaretRight}
+                />
               </div>
+              {showAddRoom && renderAddRooms}
+            </div>
+            <div className="Spaces__footer">
               <div className="Spaces__nav-buttons">
-                <div className="Spaces__back-button" onClick={navigateToAdmin}>
+                <ButtonNG
+                  className="Spaces__nav-button"
+                  onClick={navigateToAdmin}
+                  iconName={faHome}
+                  iconOnly={true}
+                  title="Home"
+                />
+                <ButtonNG
+                  className="Spaces__nav-button"
+                  onClick={navigateToAdmin}
+                >
                   Back
-                </div>
-                <div className="Spaces__next-button" onClick={onClickNext}>
+                </ButtonNG>
+                <ButtonNG
+                  className="Spaces__nav-button"
+                  onClick={onClickNext}
+                  variant="primary"
+                >
                   Next
-                </div>
+                </ButtonNG>
               </div>
             </div>
           </>
