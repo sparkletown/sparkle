@@ -45,7 +45,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
   );
   return (
     <div className={classNames("ProfileModalQuestions", containerClassName)}>
-      <ProfileModalSectionHeader text="Questions" />
+      {questions.length > 0 && <ProfileModalSectionHeader text="Questions" />}
       {renderedProfileQuestionAnswers}
     </div>
   );

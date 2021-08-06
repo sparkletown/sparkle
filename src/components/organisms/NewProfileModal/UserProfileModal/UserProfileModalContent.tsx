@@ -1,5 +1,5 @@
 import { updateProfileLinks } from "api/profile";
-import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
+import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons/UserProfileModalButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
 import {
@@ -201,7 +201,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
           "oldPassword" | "newPassword" | "confirmNewPassword"
         >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
       />
-      <ProfileModalEditButtons
+      <UserProfileModalButtons
         onCancelClick={cancelEditing}
         containerClassName="UserProfileModal__edit-buttons"
       />

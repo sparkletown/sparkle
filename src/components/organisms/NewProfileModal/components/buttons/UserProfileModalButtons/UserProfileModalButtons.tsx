@@ -1,20 +1,18 @@
 import { Button } from "components/atoms/Button";
-import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utilities";
+import {
+  profileModalWideButtonCustomStyle,
+  profileModalWideButtonCustomStyleGrey,
+} from "components/organisms/NewProfileModal/utilities";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
-import "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons.scss";
+import "./UserProfileModalButtons.scss";
 
 interface Props extends ContainerClassName {
   onCancelClick: () => void;
   saveChangesDisabled?: boolean;
 }
 
-const cancelCustomStyle = {
-  backgroundColor: "#ffffff33",
-  ...profileModalWideButtonCustomStyle,
-};
-
-export const ProfileModalEditButtons: React.FC<Props> = ({
+export const UserProfileModalButtons: React.FC<Props> = ({
   onCancelClick,
   saveChangesDisabled,
   containerClassName,
@@ -23,9 +21,9 @@ export const ProfileModalEditButtons: React.FC<Props> = ({
     () =>
       saveChangesDisabled
         ? {
-            backgroundColor: "#ffffff1a",
             color: "#ffffff66",
             ...profileModalWideButtonCustomStyle,
+            backgroundColor: "#ffffff1a",
           }
         : profileModalWideButtonCustomStyle,
     [saveChangesDisabled]
@@ -34,15 +32,15 @@ export const ProfileModalEditButtons: React.FC<Props> = ({
   return (
     <div className={containerClassName}>
       <Button
-        customClass={"ProfileModalEditButtons__button"}
-        customStyle={cancelCustomStyle}
+        customClass={"UserProfileModalButtons__button"}
+        customStyle={profileModalWideButtonCustomStyleGrey}
         onClick={onCancelClick}
       >
         Cancel
       </Button>
       <Button
         type="submit"
-        customClass={"ProfileModalEditButtons__button"}
+        customClass={"UserProfileModalButtons__button"}
         customStyle={saveChangesCustomStyle}
         disabled={saveChangesDisabled}
       >

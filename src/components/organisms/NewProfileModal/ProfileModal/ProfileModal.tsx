@@ -41,7 +41,7 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
         <ProfileModalContent
           venue={venue}
           viewingUser={selectedUserProfile}
-          onOpenViewingUserChat={openChosenUserChat}
+          onPrimaryButtonClick={openChosenUserChat}
         />
       </Modal.Body>
     </Modal>

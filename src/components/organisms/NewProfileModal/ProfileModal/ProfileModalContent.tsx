@@ -1,6 +1,5 @@
-import { useSameUser } from "hooks/useIsSameUser";
 import React from "react";
-import { ProfileModalSendMessageButton } from "components/organisms/NewProfileModal/components/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton";
+import { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons/ProfileModalButtons";
 import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
 import { ProfileModalLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLinks";
@@ -14,19 +13,17 @@ import { useProfileQuestions } from "../useProfileQuestions";
 interface Props {
   viewingUser: WithId<User>;
   venue: WithId<AnyVenue>;
-  onOpenViewingUserChat?: () => void;
+  onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
 
 export const ProfileModalContent: React.FC<Props> = ({
   viewingUser,
-  onOpenViewingUserChat,
+  onPrimaryButtonClick,
   onEditMode,
   venue,
 }: Props) => {
   const { questions, answers } = useProfileQuestions(viewingUser, venue?.id);
-
-  const sameUser = useSameUser(viewingUser);
 
   return (
     <>
@@ -45,13 +42,11 @@ export const ProfileModalContent: React.FC<Props> = ({
         containerClassName={"ProfileModal__section"}
         venue={venue}
       />
-      {onOpenViewingUserChat && !sameUser && (
-        <ProfileModalSendMessageButton
-          containerClassName="ProfileModal__section"
-          openChat={onOpenViewingUserChat}
-          viewingUser={viewingUser}
-        />
-      )}
+      <ProfileModalButtons
+        containerClassName="ProfileModal__section"
+        onClick={onPrimaryButtonClick}
+        viewingUser={viewingUser}
+      />
     </>
   );
 };

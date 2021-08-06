@@ -1,11 +1,17 @@
+import { omit } from "lodash";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { ProfileLink } from "types/User";
 import { propName } from "utils/types";
 
-export const profileModalWideButtonCustomStyle = {
+export const profileModalWideButtonCustomStyleGrey = {
+  backgroundColor: "#ffffff33",
   fontSize: 14,
   width: "100%",
+};
+
+export const profileModalWideButtonCustomStyle = {
+  ...omit(profileModalWideButtonCustomStyleGrey, "backgroundColor"),
 };
 
 export interface UserProfileModalFormDataPasswords {

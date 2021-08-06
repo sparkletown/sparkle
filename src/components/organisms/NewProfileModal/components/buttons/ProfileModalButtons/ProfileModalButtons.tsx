@@ -1,44 +1,51 @@
-import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utilities";
+import {
+  profileModalWideButtonCustomStyle,
+  profileModalWideButtonCustomStyleGrey,
+} from "components/organisms/NewProfileModal/utilities";
+import { useSameUser } from "hooks/useIsSameUser";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { Button } from "components/atoms/Button";
-import "components/organisms/NewProfileModal/components/buttons/ProfileModalSendMessageButton/ProfileModalSendMessageButton.scss";
+import "./ProfileModalButtons.scss";
 import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
 import { useIsOnline } from "hooks/useIsOnline";
 
 interface Props extends ContainerClassName {
-  openChat: () => void;
+  onClick: () => void;
   viewingUser: WithId<User>;
 }
 
-export const ProfileModalSendMessageButton: React.FC<Props> = ({
+export const ProfileModalButtons: React.FC<Props> = ({
   containerClassName,
-  openChat,
+  onClick,
   viewingUser,
 }: Props) => {
   const { isOnline } = useIsOnline(viewingUser.id);
+  const sameUser = useSameUser(viewingUser);
 
   const sendMessageButtonStyle = useMemo(
     () =>
-      isOnline
+      sameUser
+        ? profileModalWideButtonCustomStyleGrey
+        : isOnline
         ? {
-            backgroundColor: "#78B553",
             ...profileModalWideButtonCustomStyle,
+            backgroundColor: "#78B553",
           }
         : profileModalWideButtonCustomStyle,
-    [isOnline]
+    [isOnline, sameUser]
   );
 
   return (
     <>
       <div className={containerClassName}>
         <Button
-          customClass={"ProfileModalSendMessageButton__button"}
+          customClass={"ProfileModalButtons__button"}
           customStyle={sendMessageButtonStyle}
-          onClick={openChat}
+          onClick={onClick}
         >
-          Send message
+          {sameUser ? "Log out" : "Send message"}
         </Button>
       </div>
     </>
