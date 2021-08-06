@@ -61,6 +61,7 @@ $schedule-btn--height: 40px;
     margin: $spacing--md 0;
   }
 
+  // @debt: overwrites default btn btn-primary styles
   & .NavBarSchedule__download-schedule-btn {
     cursor: pointer;
     opacity: 0.8;
