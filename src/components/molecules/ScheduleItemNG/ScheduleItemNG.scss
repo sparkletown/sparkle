@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-$schedule--grey: rgba(255, 255, 255, 0.7);
+$schedule--grey: opaque-white(0.7);
 $action-button-width: 136px;
 
 .ScheduleItemNG {
@@ -8,16 +8,12 @@ $action-button-width: 136px;
   padding: $spacing__lg;
 
   &:hover {
-    background: linear-gradient(
-      0deg,
-      rgba(255, 255, 255, 0.05),
-      rgba(255, 255, 255, 0.05)
-    );
+    background: linear-gradient(0deg, opaque-white(0.05), opaque-white(0.05));
     border-radius: 12px;
   }
 
   &__info {
-    margin-top: 3px;
+    margin-top: $spacing--xs;
     min-width: 60px;
 
     &--active {
@@ -42,7 +38,7 @@ $action-button-width: 136px;
     line-height: 17px;
 
     &.ScheduleItemNG__button--copy {
-      background-color: rgba(255, 255, 255, 0.2);
+      background-color: opaque-white(0.2);
       margin-right: $spacing--sm;
     }
   }
@@ -65,7 +61,7 @@ $action-button-width: 136px;
     align-items: center;
 
     background: $primary;
-    border-radius: 22px;
+    border-radius: $border-radius--xl;
 
     font-size: $font-size--md;
     line-height: 17px;
