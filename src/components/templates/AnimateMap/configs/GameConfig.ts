@@ -77,16 +77,8 @@ export class GameConfig {
     return this.worldWidth * 0.371;
   }
 
-  public get zoomInOutStep(): number {
-    return 0.1;
-  }
-
-  public get viewportScaleMin(): number {
-    return 0.1;
-  }
-
-  public get viewportScaleMax(): number {
-    return 6;
+  public get venueDefaultCollisionRadius(): number {
+    return 50;
   }
 
   public get venueDefaultCollisionRadius(): number {

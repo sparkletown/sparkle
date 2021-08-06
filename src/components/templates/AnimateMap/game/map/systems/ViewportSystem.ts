@@ -52,7 +52,7 @@ export class ViewportSystem extends System {
 
     this._viewport.worldWidth = worldWidth;
     this._viewport.worldHeight = worldHeight;
-    this._viewport.interactive = this._app?.renderer.plugins.interaction;
+    this._viewport.interactive = true; //this._app?.renderer.plugins.interaction;
 
     this._viewport
       .drag({ factor: 0.9 })
@@ -100,32 +100,22 @@ export class ViewportSystem extends System {
 
     GameInstance.instance.eventProvider.on(
       EventType.UI_CONTROL_PANEL_ZOOM_OUT,
-      // this.handleZoomOut
-      () =>
-        GameInstance.instance._mapContainer?._entityContainer?.emit(
-          "wheel",
-          new WheelEvent("short", {
-            deltaX: 0.0,
-            deltaY: -100,
-            deltaZ: 0.0,
-            deltaMode: 0,
-          })
-        )
+      () => {
+        const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: 90 });
+        try {
+          this._viewport.plugins.get("wheel").wheel(wheel);
+        } catch (err) {}
+      }
     );
 
     GameInstance.instance.eventProvider.on(
       EventType.UI_CONTROL_PANEL_ZOOM_IN,
-      // this.handleZoomIn
-      () =>
-        GameInstance.instance._mapContainer?._entityContainer?.emit(
-          "wheel",
-          new WheelEvent("short", {
-            deltaX: 0.0,
-            deltaY: 100,
-            deltaZ: 0.0,
-            deltaMode: 0,
-          })
-        )
+      () => {
+        const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: -90 });
+        try {
+          this._viewport.plugins.get("wheel").wheel(wheel);
+        } catch (err) {}
+      }
     );
 
     this._setAnimateMapZoomThrottle = throttle((value: number) => {
