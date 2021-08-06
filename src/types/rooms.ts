@@ -44,8 +44,14 @@ export interface RoomData_v2 {
   roomIndex?: number;
 }
 
-export enum RoomTemplate {
+export enum RoomAsVenueTemplate {
   external = "external",
 }
 
-export type VenueRoomTemplate = VenueTemplate | RoomTemplate;
+export interface VenueRoom {
+  template: VenueTemplate | RoomAsVenueTemplate;
+  text: string;
+  icon: string;
+  poster: string;
+  description: string;
+}

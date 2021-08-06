@@ -1,11 +1,12 @@
 import React, { useCallback } from "react";
 import { faPlus, faInfo } from "@fortawesome/free-solid-svg-icons";
 
+import { VenueRoom } from "types/rooms";
+
 import { CreateRoomResult } from "api/admin";
 
 import { useShowHide } from "hooks/useShowHide";
 
-import { VenueRoom } from "components/organisms/AdminVenueView/components/Spaces/Spaces";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import { RoomAddModal } from "./RoomAddModal";

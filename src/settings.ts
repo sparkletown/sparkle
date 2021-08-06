@@ -10,7 +10,7 @@ import {
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
-import { RoomType } from "types/rooms";
+import { RoomType, VenueRoom, RoomAsVenueTemplate } from "types/rooms";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -24,6 +24,7 @@ import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
+import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -335,6 +336,34 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
 export const BURN_VENUE_TEMPLATES_MAP: Map<VenueTemplate, Template> = new Map(
   BURN_VENUE_TEMPLATES.map((item) => [item.template, item])
 );
+
+export const SPACES_VENUES_AND_ROOMS: VenueRoom[] = [
+  { template: VenueTemplate.conversationspace },
+  { template: VenueTemplate.audience },
+  { template: VenueTemplate.jazzbar },
+  { template: VenueTemplate.firebarrel },
+  { template: VenueTemplate.artpiece },
+  { template: VenueTemplate.zoomroom },
+  {
+    template: RoomAsVenueTemplate.external,
+    text: "External link",
+    icon: RoomIconExternalLink,
+    poster: "/venues/add-venue-room-external.png",
+  },
+  { template: VenueTemplate.partymap },
+].map(({ template, icon, text }) => {
+  const original = (BURN_VENUE_TEMPLATES_MAP as Map<
+    VenueTemplate | RoomAsVenueTemplate,
+    Template
+  >).get(template);
+  return {
+    template,
+    text: text ?? original?.name ?? "",
+    icon: icon ?? original?.icon ?? "",
+    description: original?.description?.join(". ") ?? "",
+    poster: original?.poster ?? `/venues/add-venue-room-${template}.png`,
+  };
+});
 
 // @debt Refactor this constant into types/templates or similar?
 // @debt this doesn't seem to even be used at the moment.. should it be?

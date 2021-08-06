@@ -7,10 +7,10 @@ import {
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { BURN_VENUE_TEMPLATES_MAP, Template } from "settings";
+import { SPACES_VENUES_AND_ROOMS } from "settings";
 
-import { VenueTemplate, Venue_v2 } from "types/venues";
-import { RoomData_v2, VenueRoomTemplate, RoomTemplate } from "types/rooms";
+import { Venue_v2 } from "types/venues";
+import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
 import { useShowHide } from "hooks/useShowHide";
@@ -21,54 +21,14 @@ import { VenueRoomItem } from "components/molecules/VenueRoomItem";
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
-
 import "./Spaces.scss";
-
-const VENUE_TEMPLATES_MAP: Map<
-  VenueRoomTemplate,
-  Template
-> = BURN_VENUE_TEMPLATES_MAP;
-
-export type VenueRoom = {
-  template: VenueRoomTemplate;
-  text: string;
-  icon: string;
-  poster: string;
-  description: string;
-};
-
-const VENUE_ROOMS: VenueRoom[] = [
-  { template: VenueTemplate.conversationspace },
-  { template: VenueTemplate.audience },
-  { template: VenueTemplate.jazzbar },
-  { template: VenueTemplate.firebarrel },
-  { template: VenueTemplate.artpiece },
-  { template: VenueTemplate.zoomroom },
-  {
-    template: RoomTemplate.external,
-    text: "External link",
-    icon: RoomIconExternalLink,
-    poster: "/venues/add-venue-room-external.png",
-  },
-  { template: VenueTemplate.partymap },
-].map(({ template, icon, text }) => {
-  const original = VENUE_TEMPLATES_MAP.get(template);
-  return {
-    template,
-    text: text ?? original?.name ?? "",
-    icon: icon ?? original?.icon ?? "",
-    description: original?.description?.join(". ") ?? "",
-    poster: original?.poster ?? `/venues/add-venue-room-${template}.png`,
-  };
-});
 
 export interface SpacesProps {
   venue: Venue_v2;
   onClickNext: () => void;
 }
 
-// @debt there is no guarantee the array pointed by the shared reference will remain empty
+// @debt there is no guarantee the mutable array pointed by the shared reference will remain empty
 const emptyRoomsArray: RoomData_v2[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
@@ -147,7 +107,7 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
 
   const renderAddRooms = useMemo(
     () =>
-      VENUE_ROOMS.map((venueRoom, index) => {
+      SPACES_VENUES_AND_ROOMS.map((venueRoom, index) => {
         return (
           <VenueRoomItem
             key={`${venueRoom.text}-${index}`}

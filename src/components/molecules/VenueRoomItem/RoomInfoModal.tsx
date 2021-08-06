@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-import { VenueRoom } from "components/organisms/AdminVenueView/components/Spaces/Spaces";
+import { VenueRoom } from "types/rooms";
 
 import "./RoomInfoModal.scss";
 
