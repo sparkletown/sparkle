@@ -3,6 +3,7 @@
 $schedule--grey: opaque-white(0.7);
 $action-button-width: 136px;
 $bookmark-icon-size: 30px;
+$schedule-info-block-width: 60px;
 
 .ScheduleItemNG {
   display: flex;
@@ -15,7 +16,7 @@ $bookmark-icon-size: 30px;
 
   &__info {
     margin-top: $spacing--xs;
-    min-width: 60px;
+    width: $schedule-info-block-width;
 
     &--active {
       margin-top: 0;

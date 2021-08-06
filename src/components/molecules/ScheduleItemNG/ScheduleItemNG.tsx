@@ -165,7 +165,8 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
                 onClick={goToEventLocation}
                 variant="primary"
               >
-                See on playa
+                {/* See on Playa is needed only for `env/burn` */}
+                See on map
               </ButtonNG>
             </div>
           </>
