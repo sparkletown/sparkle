@@ -42,6 +42,8 @@ $profile-modal-status-indicator-size: $profile-modal-img-size / 10;
 
   &__image {
     @include square-size($default-image-size);
+    object-fit: cover;
+    object-position: top;
     border-radius: 50%;
     vertical-align: unset;
   }
