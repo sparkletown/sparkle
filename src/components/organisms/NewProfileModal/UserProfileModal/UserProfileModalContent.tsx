@@ -166,7 +166,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       <ProfileModalBasicInfo
         editMode
         viewingUser={user}
-        containerClassName="UserProfileModal__section"
+        containerClassName="UserProfileModal__section-editable"
         register={register}
         watch={watch}
         setValue={setValue}
@@ -175,7 +175,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       {
         <ProfileModalQuestions
           editMode
-          containerClassName="UserProfileModal__section"
+          containerClassName="UserProfileModal__section-editable"
           questions={questions}
           answers={answers}
           register={register}
@@ -183,7 +183,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       }
       {user?.profileLinks && (
         <ProfileModalEditLinks
-          containerClassName="UserProfileModal__section"
+          containerClassName="UserProfileModal__section-editable"
           register={register}
           links={links}
           setLinkTitle={setLinkTitle}
@@ -193,7 +193,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
         />
       )}
       <ProfileModalChangePassword
-        containerClassName="UserProfileModal__section"
+        containerClassName="UserProfileModal__section-editable"
         register={register}
         getValues={getValues}
         errors={pick<

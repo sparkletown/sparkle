@@ -28,7 +28,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
           className="ProfileModalQuestions__question-container"
           key={question.text}
         >
-          <p className="ProfileModalQuestions__question">{question.text}</p>
+          <div className="ProfileModalQuestions__question">{question.text}</div>
           {editMode && register ? (
             <ProfileModalInput
               name={`${question.name}`}
@@ -37,7 +37,7 @@ export const ProfileModalQuestions: React.FC<Props> = ({
               ref={register()}
             />
           ) : (
-            <p className="ProfileModalQuestions__answer">{answers[i]}</p>
+            <div className="ProfileModalQuestions__answer">{answers[i]}</div>
           )}
         </div>
       )),

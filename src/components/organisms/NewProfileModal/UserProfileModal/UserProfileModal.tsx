@@ -1,7 +1,7 @@
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
 import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
 import { useBooleanState } from "hooks/useBooleanState";
-import React from "react";
+import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
@@ -23,12 +23,17 @@ export const UserProfileModal: React.FC<Props> = ({
 }: Props) => {
   const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(false);
 
+  const hideHandler = useCallback(() => {
+    onClose();
+    setTimeout(() => turnOffEditMode(), 130);
+  }, [onClose, turnOffEditMode]);
+
   return (
     <Modal
       style={{ display: "flex" }}
       className="UserProfileModal"
       show={show}
-      onHide={onClose}
+      onHide={hideHandler}
     >
       <Modal.Body className="UserProfileModal__body">
         {editMode ? (

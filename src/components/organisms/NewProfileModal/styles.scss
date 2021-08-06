@@ -6,7 +6,8 @@ $modal-content-margin: 1.7rem;
 
 $round-icon-size: 1.7rem;
 
-$section-gap: 1.5rem;
+$section-gap: 0.7rem;
+$section-gap-editable: 1.5rem;
 $section-header-bottom-margin: 0.5rem;
 
 $send-msg-online-color: #78b553;
@@ -33,6 +34,13 @@ $input-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
 
   &__section {
     margin-top: $section-gap;
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  &__section-editable {
+    margin-top: $section-gap-editable;
     &:first-child {
       margin-top: 0;
     }

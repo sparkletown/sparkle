@@ -41,11 +41,18 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
       <h3 className="ProfileModalBasicTextInfo__name italic">
         {viewingUser.partyName || DEFAULT_PARTY_NAME}
       </h3>
-      {sameUser && firebaseUser?.email && <div>{firebaseUser?.email}</div>}
+      {sameUser && firebaseUser?.email && (
+        <div className="ProfileModalBasicTextInfo--light">
+          {firebaseUser?.email}
+        </div>
+      )}
       {userStatus && sovereignVenue?.userStatuses && (
         <div className="ProfileModalBasicTextInfo__status">
           is&nbsp;
-          <UserStatusDropdown userStatuses={sovereignVenue?.userStatuses} />
+          <UserStatusDropdown
+            userStatuses={sovereignVenue?.userStatuses}
+            showDropdown={sameUser}
+          />
         </div>
       )}
       {lastVenue && !sameUser && (

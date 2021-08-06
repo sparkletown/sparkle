@@ -3,15 +3,22 @@
 $dropdown-width: 100px;
 
 .UserStatusDropdown {
-  // @debt override the default Dropdown classes
+  display: flex;
+  flex-direction: row;
+
+  &__status {
+    font-weight: $font-weight--500;
+  }
+
   .dropdown-toggle.btn {
     background: none;
     padding: 0;
     margin: 0;
-    line-height: unset;
     text-decoration: underline;
     border: none;
     font-weight: $font-weight--400;
+    line-height: 1.3rem;
+    vertical-align: baseline;
 
     &:focus {
       box-shadow: none;
