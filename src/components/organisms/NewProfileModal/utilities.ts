@@ -10,6 +10,11 @@ export const profileModalWideButtonCustomStyleGrey = {
   width: "100%",
 };
 
+export const profileModalWideButtonCustomStyleDisabled = {
+  ...omit(profileModalWideButtonCustomStyleGrey, "backgroundColor"),
+  backgroundColor: "#ffffff1a",
+};
+
 export const profileModalWideButtonCustomStyle = {
   ...omit(profileModalWideButtonCustomStyleGrey, "backgroundColor"),
 };

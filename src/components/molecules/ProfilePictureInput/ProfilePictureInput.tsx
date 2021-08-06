@@ -1,36 +1,30 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
 import { UserInfo } from "firebase/app";
-import { FirebaseStorage } from "@firebase/storage-types";
 import "firebase/storage";
 
 import {
   ACCEPTED_IMAGE_TYPES,
   DEFAULT_AVATARS,
   DEFAULT_PROFILE_PIC,
-  MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
 
-import { resizeFile } from "utils/image";
-
 import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 
 import { Loading } from "components/molecules/Loading";
 
 import "./ProfilePictureInput.scss";
 
-type Reference = ReturnType<FirebaseStorage["ref"]>;
-
 export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
   user: UserInfo;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  errors: Record<string, any>;
+  errors: ReturnType<typeof useForm>["errors"];
   pictureUrl: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  register: any;
+  register: ReturnType<typeof useForm>["register"];
 }
 
 export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputProps> = ({
@@ -64,37 +58,25 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     return Promise.all(list.items.map((item) => item.getDownloadURL()));
   }, [firebase, sovereignVenueId]);
 
-  const uploadPicture = async (profilePictureRef: Reference, file: File) => {
-    setIsPictureUploading(true);
-    const uploadedProfilePicture = await profilePictureRef.put(file);
-    setIsPictureUploading(false);
-    return uploadedProfilePicture;
-  };
+  const uploadProfilePictureHandler = useUploadProfilePictureHandler(
+    setError,
+    user
+  );
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
-    let file = e.target.files[0];
-    // When file selection is cancelled, undefined is returned.
-    // Suggestion: create a guard function to avoid if / return.
-    if (!file) return;
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setError("Unsupported file, please try with another one.");
-      return;
-    }
-    if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
-      const resizedImage = await resizeFile(e.target.files[0]);
-      const fileName = file.name;
-      file = new File([resizedImage], fileName);
-    }
-    const storageRef = firebase.storage().ref();
-    // TODO: add rule to forbid other users to edit a user's image
-    const profilePictureRef = storageRef.child(
-      `/users/${user.uid}/${file.name}`
-    );
-    const uploadedProfilePicture = await uploadPicture(profilePictureRef, file);
-    const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
-    setValue("pictureUrl", pictureUrlRef, true);
-  };
+  const handleFileChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsPictureUploading(true);
+      try {
+        const pictureUrlRef = await uploadProfilePictureHandler(e);
+        if (pictureUrlRef) {
+          setValue("pictureUrl", pictureUrlRef, true);
+        }
+      } finally {
+        setIsPictureUploading(false);
+      }
+    },
+    [setValue, uploadProfilePictureHandler]
+  );
 
   const uploadProfilePic = useCallback((event) => {
     event.preventDefault();

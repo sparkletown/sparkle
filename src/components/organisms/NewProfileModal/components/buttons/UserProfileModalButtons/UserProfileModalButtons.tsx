@@ -1,39 +1,33 @@
 import { Button } from "components/atoms/Button";
 import {
   profileModalWideButtonCustomStyle,
+  profileModalWideButtonCustomStyleDisabled,
   profileModalWideButtonCustomStyleGrey,
 } from "components/organisms/NewProfileModal/utilities";
-import React, { useMemo } from "react";
+import React from "react";
 import { ContainerClassName } from "types/utility";
 import "./UserProfileModalButtons.scss";
 
 interface Props extends ContainerClassName {
   onCancelClick: () => void;
-  saveChangesDisabled?: boolean;
+  isSubmitting: boolean;
 }
 
 export const UserProfileModalButtons: React.FC<Props> = ({
   onCancelClick,
-  saveChangesDisabled,
   containerClassName,
+  isSubmitting,
 }: Props) => {
-  const saveChangesCustomStyle = useMemo(
-    () =>
-      saveChangesDisabled
-        ? {
-            color: "#ffffff66",
-            ...profileModalWideButtonCustomStyle,
-            backgroundColor: "#ffffff1a",
-          }
-        : profileModalWideButtonCustomStyle,
-    [saveChangesDisabled]
-  );
-
   return (
     <div className={containerClassName}>
       <Button
         customClass={"UserProfileModalButtons__button"}
-        customStyle={profileModalWideButtonCustomStyleGrey}
+        customStyle={
+          isSubmitting
+            ? profileModalWideButtonCustomStyleDisabled
+            : profileModalWideButtonCustomStyleGrey
+        }
+        disabled={isSubmitting}
         onClick={onCancelClick}
       >
         Cancel
@@ -41,10 +35,14 @@ export const UserProfileModalButtons: React.FC<Props> = ({
       <Button
         type="submit"
         customClass={"UserProfileModalButtons__button"}
-        customStyle={saveChangesCustomStyle}
-        disabled={saveChangesDisabled}
+        customStyle={
+          isSubmitting
+            ? profileModalWideButtonCustomStyleDisabled
+            : profileModalWideButtonCustomStyle
+        }
+        disabled={isSubmitting}
       >
-        Save changes
+        {isSubmitting ? "Saving..." : "Save changes"}
       </Button>
     </div>
   );

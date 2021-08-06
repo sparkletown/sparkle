@@ -4,25 +4,20 @@ import { formProp } from "components/organisms/NewProfileModal/utilities";
 import "firebase/storage";
 import { useBooleanState } from "hooks/useBooleanState";
 import { useSameUser } from "hooks/useIsSameUser";
+import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
-import {
-  ACCEPTED_IMAGE_TYPES,
-  MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
-} from "settings";
-import { FormFieldProps } from "types/forms";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
-import { resizeFile } from "utils/image";
 import "./ProfileModalAvatar.scss";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
   editMode?: boolean;
-  register?: FormFieldProps["register"];
+  register?: ReturnType<typeof useForm>["register"];
   setValue?: ReturnType<typeof useForm>["setValue"];
   watch?: ReturnType<typeof useForm>["watch"];
 }
@@ -35,47 +30,35 @@ export const ProfileModalAvatar: React.FC<Props> = ({
   watch,
   containerClassName,
 }: Props) => {
-  const { user } = useUser();
-  const firebase = useFirebase();
-  const uploadRef = useRef<HTMLInputElement>(null);
   const sameUser = useSameUser(viewingUser);
+
+  const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
   const pictureUrl = watch?.(formProp("pictureUrl"));
 
   const [uploading, uploadStarted, uploadFinished] = useBooleanState(false);
 
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+  const { user } = useUser();
+  const uploadProfilePictureHandler = useUploadProfilePictureHandler(
+    setError,
+    user
+  );
 
-    let file = e.target.files[0];
-    if (!file) return;
-
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type) && setError) {
-      setError("Unsupported file, please try with another one.");
-      return;
-    }
-
-    uploadStarted();
-    if (file.size > MAX_AVATAR_IMAGE_FILE_SIZE_BYTES) {
-      const resizedImage = await resizeFile(e.target.files[0]);
-      const fileName = file.name;
-      file = new File([resizedImage], fileName);
-    }
-
-    const storageRef = firebase.storage().ref();
-    // TODO: add rule to forbid other users to edit a user's image
-    if (user) {
-      const profilePictureRef = storageRef.child(
-        `/users/${user.uid}/${file.name}`
-      );
-      const uploadedProfilePicture = await profilePictureRef.put(file);
-      const pictureUrlRef = await uploadedProfilePicture.ref.getDownloadURL();
-      if (setValue) setValue(formProp("pictureUrl"), pictureUrlRef, true);
-
-      uploadFinished();
-    }
-  };
+  const handleFileChange = useCallback(
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
+      uploadStarted();
+      try {
+        const pictureUrlRef = await uploadProfilePictureHandler(e);
+        if (pictureUrlRef && setValue) {
+          setValue(formProp("pictureUrl"), pictureUrlRef, true);
+        }
+      } finally {
+        uploadFinished();
+      }
+    },
+    [uploadProfilePictureHandler, setValue, uploadFinished, uploadStarted]
+  );
 
   const uploadProfilePic = useCallback((event) => {
     event.preventDefault();

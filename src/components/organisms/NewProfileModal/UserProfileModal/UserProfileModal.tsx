@@ -1,5 +1,5 @@
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
-import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
+import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent/UserProfileModalContent";
 import { useBooleanState } from "hooks/useBooleanState";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
@@ -30,6 +30,9 @@ export const UserProfileModal: React.FC<Props> = ({
   const firebase = useFirebase();
   const history = useHistory();
 
+  const isSubmittingState = useBooleanState(false);
+  const [isSubmitting] = isSubmittingState;
+
   const logout = useCallback(async () => {
     await firebase.auth().signOut();
 
@@ -39,9 +42,11 @@ export const UserProfileModal: React.FC<Props> = ({
   }, [firebase, history, venue.id]);
 
   const hideHandler = useCallback(() => {
-    onClose();
-    setTimeout(() => turnOffEditMode(), 130);
-  }, [onClose, turnOffEditMode]);
+    if (!isSubmitting) {
+      onClose();
+      setTimeout(() => turnOffEditMode(), 130);
+    }
+  }, [isSubmitting, onClose, turnOffEditMode]);
 
   return (
     <Modal
@@ -56,6 +61,7 @@ export const UserProfileModal: React.FC<Props> = ({
             user={user}
             venue={venue}
             onCancelEditing={turnOffEditMode}
+            isSubmittingState={isSubmittingState}
           />
         ) : (
           <ProfileModalContent

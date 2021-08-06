@@ -7,7 +7,6 @@ import { formProp } from "components/organisms/NewProfileModal/utilities";
 import React from "react";
 import { FieldError, useForm } from "react-hook-form";
 import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
-import { FormFieldProps } from "types/forms";
 import { WithId } from "utils/id";
 import { User } from "types/User";
 import { faPen } from "@fortawesome/free-solid-svg-icons";
@@ -18,7 +17,7 @@ interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
   editMode?: boolean;
   onEdit?: () => void;
-  register?: FormFieldProps["register"];
+  register?: ReturnType<typeof useForm>["register"];
   setValue?: ReturnType<typeof useForm>["setValue"];
   watch?: ReturnType<typeof useForm>["watch"];
   partyNameError?: FieldError;
