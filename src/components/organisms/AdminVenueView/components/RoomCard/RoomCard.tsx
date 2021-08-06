@@ -17,6 +17,7 @@ import { Room, RoomType } from "types/rooms";
 import { VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { openRoomUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 import { useRoom } from "hooks/useRoom";
@@ -24,7 +25,6 @@ import { useRoom } from "hooks/useRoom";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
 import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
-import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink/PrettyLink";
 
 import "./RoomCard.scss";
 
@@ -46,6 +46,7 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   const { user } = useUser();
 
   const { recentRoomUsers } = useRoom({ room, venueName });
+
   const isRoomUnclickable = room.type === RoomType.unclickable;
 
   const [{ loading: isTogglingRoom }, toggleRoom] = useAsyncFn(async () => {
@@ -105,8 +106,8 @@ export const RoomCard: React.FC<RoomCardProps> = ({
           {recentRoomUsers.length}
         </div>
         <div className="RoomCard__type">{room.template}</div>
-        <div className="RoomCard__link">
-          <PrettyLink to={room.url} />
+        <div className="RoomCard__link" onClick={() => openRoomUrl(room.url)}>
+          {room.url}
         </div>
       </div>
 

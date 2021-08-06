@@ -54,6 +54,9 @@
     grid-area: 3 / 1 / span 1 / span 3;
     padding: $spacing--xs;
     width: 100%;
+    text-decoration: underline;
+    cursor: pointer;
+    opacity: 0.5;
   }
 
   &__footer {
