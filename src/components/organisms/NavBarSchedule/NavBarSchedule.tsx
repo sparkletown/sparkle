@@ -29,9 +29,12 @@ import { formatDateRelativeToNow } from "utils/time";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
+
+import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
 
@@ -89,6 +92,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
+  const {
+    isShown: showPersonalisedSchedule,
+    toggle: togglePersonalisedSchedule,
+  } = useShowHide(false);
+
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -144,7 +152,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     return {
-      daysEvents,
+      daysEvents: showPersonalisedSchedule
+        ? daysEvents.filter((event) => event.isSaved)
+        : daysEvents,
     };
   }, [
     relatedVenueEvents,
@@ -152,6 +162,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     firstDayOfSchedule,
     isScheduleTimeshifted,
+    showPersonalisedSchedule,
   ]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
@@ -205,9 +216,22 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           </Button>
         </div>
       )} */}
+
+      <Toggler
+        containerClassName="NavBarSchedule__bookmarked-toggle"
+        name="bookmarked-toggle"
+        toggled={showPersonalisedSchedule}
+        onChange={togglePersonalisedSchedule}
+        label="Bookmarked events"
+      />
+
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <ScheduleNG isLoading={isLoadingSchedule} {...scheduleNG} />
+      <ScheduleNG
+        showPersonalisedSchedule={showPersonalisedSchedule}
+        isLoading={isLoadingSchedule}
+        {...scheduleNG}
+      />
     </div>
   );
 };
