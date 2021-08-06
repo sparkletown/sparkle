@@ -10,11 +10,13 @@ import "./ScheduleNG.scss";
 export interface ScheduleNGProps {
   daysEvents: PersonalizedVenueEvent[];
   isLoading: boolean;
+  showPersonalisedSchedule: boolean;
 }
 
 export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   daysEvents,
   isLoading,
+  showPersonalisedSchedule,
 }) => {
   const hasEvents = daysEvents.length > 0;
 
@@ -38,7 +40,9 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   return (
     <div className="ScheduleNG">
       {!hasEvents ? (
-        <div className="ScheduleNG__no-events">No events scheduled</div>
+        <div className="ScheduleNG__no-events">
+          {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
+        </div>
       ) : (
         eventsRows
       )}

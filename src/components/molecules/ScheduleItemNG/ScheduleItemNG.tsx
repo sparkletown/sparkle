@@ -1,6 +1,10 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, MouseEventHandler } from "react";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
+
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 
 import { EVENT_LIVE_RANGE } from "settings";
 
@@ -21,8 +25,14 @@ import {
 import { useShowHide } from "hooks/useShowHide";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
+import { useUser } from "hooks/useUser";
 
 import Button from "components/atoms/Button";
+
+import {
+  addEventToPersonalizedSchedule,
+  removeEventFromPersonalizedSchedule,
+} from "api/profile";
 
 import "./ScheduleItemNG.scss";
 
@@ -91,6 +101,16 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
     "ScheduleItemNG__time--live": isCurrentEventLive,
   });
 
+  const { userId } = useUser();
+
+  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {
+    if (!userId || !event.id) return;
+
+    event.isSaved
+      ? removeEventFromPersonalizedSchedule({ event, userId })
+      : addEventToPersonalizedSchedule({ event, userId });
+  }, [userId, event]);
+
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
       <div className={infoContaier}>
@@ -141,6 +161,12 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
             </div>
           </>
         )}
+        <div className="ScheduleItemNG--name">{event.name}</div>
+        <div className="ScheduleItemNG--bookmark" onClick={bookmarkEvent}>
+          <FontAwesomeIcon
+            icon={event.isSaved ? solidBookmark : regularBookmark}
+          />
+        </div>
       </div>
     </div>
   );

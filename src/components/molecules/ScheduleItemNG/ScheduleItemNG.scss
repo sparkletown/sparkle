@@ -94,4 +94,8 @@ $action-button-width: 136px;
       color: $schedule--grey;
     }
   }
+
+  &--bookmark {
+    margin: auto $spacing--xl auto auto;
+  }
 }
