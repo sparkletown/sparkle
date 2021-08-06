@@ -94,7 +94,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const {
     isShown: showPersonalisedSchedule,
-    toggle: setShowPersonalisedSchedule,
+    toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
   const weekdays = useMemo(() => {
@@ -218,9 +218,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       )} */}
 
       <Toggler
+        containerClassName="NavBarSchedule__bookmarked-toggle"
         name="bookmarked-toggle"
         toggled={showPersonalisedSchedule}
-        onChange={() => setShowPersonalisedSchedule()}
+        onChange={togglePersonalisedSchedule}
         label="Bookmarked events"
       />
 

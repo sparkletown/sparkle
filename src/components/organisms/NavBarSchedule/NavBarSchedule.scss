@@ -93,7 +93,7 @@ $weekday--margin-right: 10px;
     }
   }
 
-  .Checkbox {
+  &__bookmarked-toggle {
     justify-content: left;
     padding: $spacing--sm $NavBarSchedule--padding;
   }
