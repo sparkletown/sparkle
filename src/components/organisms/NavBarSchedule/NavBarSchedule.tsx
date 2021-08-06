@@ -227,7 +227,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         ? daysEvents.filter((event) => event.isSaved)
         : daysEvents,
     };
-  }, [liveAndFutureEvents, userEventIds, selectedDayIndex, minDate, showPersonalisedSchedule]);
+  }, [
+    liveAndFutureEvents,
+    userEventIds,
+    selectedDayIndex,
+    minDate,
+    showPersonalisedSchedule,
+  ]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
   //   const dayStart = addDays(startOfToday(), selectedDayIndex);
