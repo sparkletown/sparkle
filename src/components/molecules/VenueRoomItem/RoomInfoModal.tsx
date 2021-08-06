@@ -5,7 +5,7 @@ import { VenueRoom } from "types/rooms";
 
 import "./RoomInfoModal.scss";
 
-interface VenueRoomItemInfoModalProps {
+export interface VenueRoomItemInfoModalProps {
   onAdd: () => void;
   onHide: () => void;
   show: boolean;
