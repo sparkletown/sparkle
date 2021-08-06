@@ -114,3 +114,17 @@ export const getEventDayRange = (
   // add 1 day to daysInBetween to form a full timeline
   return daysInBetween + 1;
 };
+
+export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
+  var aSize = a.orderPriority ?? 0;
+  var bSize = b.orderPriority ?? 0;
+  var aLow = a.start_utc_seconds;
+  var bLow = b.start_utc_seconds;
+  console.log(aLow + " | " + bLow);
+
+  if (aSize === bSize) {
+    return aLow < bLow ? -1 : aLow > bLow ? 1 : 0;
+  } else {
+    return aSize < bSize ? -1 : 1;
+  }
+};
