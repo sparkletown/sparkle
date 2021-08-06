@@ -12,6 +12,7 @@ import { ProfileLink } from "types/User";
 import { WithId } from "utils/id";
 
 interface Props extends ContainerClassName {
+  initialLinks: ProfileLink[];
   links: WithId<ProfileLink>[];
   setLinkTitle: (index: number, title: string) => void;
   register: FormFieldProps["register"];
@@ -21,6 +22,7 @@ interface Props extends ContainerClassName {
 }
 
 export const ProfileModalEditLinks: React.FC<Props> = ({
+  initialLinks,
   links,
   setLinkTitle,
   register,
@@ -46,8 +48,8 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
             key={id}
             index={i}
             register={register}
-            initialLink={link}
-            link={links[i]}
+            initialTitle={initialLinks?.[i]?.title}
+            link={link}
             otherUrls={otherUrls}
             setTitle={setTitles[i]}
             error={errors?.[i]}
@@ -55,7 +57,7 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
           />
         );
       }),
-    [register, links, setTitles, errors, onDeleteLink]
+    [register, links, initialLinks, setTitles, errors, onDeleteLink]
   );
 
   return (

@@ -1,24 +1,25 @@
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import {
+  getLinkIcon,
   getLinkUsername,
-  useLinkIcon,
 } from "components/organisms/NewProfileModal/components/links/linkUtilities";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { formProp } from "components/organisms/NewProfileModal/utilities";
 import { useBooleanState } from "hooks/useBooleanState";
-import React, { useCallback, useEffect } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";
 import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalEditLink.scss";
 import { urlRegex } from "utils/types";
+import "./ProfileModalEditLink.scss";
 
 interface Props extends ContainerClassName {
   index: number;
-  initialLink: ProfileLink;
+  initialTitle?: string;
   link: ProfileLink;
   otherUrls: string[];
   setTitle: (title: string) => void;
@@ -29,7 +30,7 @@ interface Props extends ContainerClassName {
 
 export const ProfileModalEditLink: React.FC<Props> = ({
   index,
-  initialLink,
+  initialTitle,
   link,
   otherUrls,
   setTitle,
@@ -38,7 +39,9 @@ export const ProfileModalEditLink: React.FC<Props> = ({
   onDelete,
   containerClassName,
 }: Props) => {
-  const linkIcon = useLinkIcon(link.url);
+  const [linkIcon, setLinkIcon] = useState<IconDefinition>(
+    getLinkIcon(link.url)
+  );
 
   const getInputNameForForm = useCallback(
     (index: number, prop: keyof ProfileLink) =>
@@ -46,15 +49,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
     []
   );
 
-  const [titleTouched, setTitleTouched] = useBooleanState(
-    initialLink.title !== ""
-  );
-
-  useEffect(() => {
-    const username = getLinkUsername(link.url);
-    if (!titleTouched && username)
-      if (username !== link.title) setTitle(username);
-  }, [link.title, link.url, setTitle, titleTouched]);
+  const [titleTouched, setTitleTouched] = useBooleanState(!!initialTitle);
 
   const validateURLUnique: (url: string) => ValidateResult = useCallback(
     (url: string) => {
@@ -63,24 +58,27 @@ export const ProfileModalEditLink: React.FC<Props> = ({
     [otherUrls]
   );
 
+  const handleUrlChanged = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const url = e.target.value;
+      if (url) {
+        const username = getLinkUsername(url);
+        setLinkIcon(getLinkIcon(url));
+        if (!titleTouched && username && username !== initialTitle) {
+          setTitle(username);
+        }
+      }
+    },
+    [initialTitle, setTitle, titleTouched]
+  );
+
   return (
     <div className={classNames("ProfileModalEditLink", containerClassName)}>
-      <div className="ProfileModalEditLink__text">
-        <ProfileModalInput
-          name={getInputNameForForm(index, "title")}
-          onFocus={setTitleTouched}
-          defaultValue={initialLink.title}
-          placeholder="Link Title"
-          ref={register({ required: "Title cannot empty" })}
-          error={error?.title}
-          iconEnd={linkIcon}
-        />
-      </div>
       <div className="ProfileModalEditLink__url">
         <ProfileModalInput
           name={getInputNameForForm(index, "url")}
           placeholder="Link URL"
-          defaultValue={initialLink.url}
+          onChange={handleUrlChanged}
           ref={register({
             required: "URL cannot be empty",
             pattern: {
@@ -90,6 +88,16 @@ export const ProfileModalEditLink: React.FC<Props> = ({
             validate: validateURLUnique,
           })}
           error={error?.url}
+        />
+      </div>
+      <div className="ProfileModalEditLink__text">
+        <ProfileModalInput
+          name={getInputNameForForm(index, "title")}
+          onFocus={setTitleTouched}
+          placeholder="Link Title"
+          ref={register({ required: "Title cannot empty" })}
+          error={error?.title}
+          iconEnd={linkIcon}
         />
       </div>
       <ProfileModalRoundIcon

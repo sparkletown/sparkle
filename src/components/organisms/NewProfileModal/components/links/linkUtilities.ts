@@ -17,18 +17,18 @@ import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { memoize } from "lodash";
 import { useMemo } from "react";
 
-export const useLinkIcon = (url: string) =>
-  useMemo(() => {
-    const type = Object.entries(
-      profileModalLinkTypesRegexes
-    ).find(([, regex]) => url.match(regex))?.[0] as
-      | ProfileModalLinkType
-      | undefined;
+export const getLinkIcon = (url: string) => {
+  const type = Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>
+    url.match(regex)
+  )?.[0] as ProfileModalLinkType | undefined;
 
-    return type
-      ? profileModalLinkTypesIcons[type] ?? profileModalGenericLinkIcon
-      : profileModalGenericLinkIcon;
-  }, [url]);
+  return type
+    ? profileModalLinkTypesIcons[type] ?? profileModalGenericLinkIcon
+    : profileModalGenericLinkIcon;
+};
+
+export const useLinkIcon = (url: string) =>
+  useMemo(() => getLinkIcon(url), [url]);
 
 export const getLinkUsername = (url: string) => {
   const execute = (url: string) => {
@@ -82,7 +82,7 @@ export const profileModalLinkTypesIcons: Record<
 export function buildMatchingRegex(...hosts: string[]) {
   const escaped = hosts.map((h) => h.replace(".", "\\."));
 
-  return new RegExp(`^(https?:\\/\\/)?(www\\.)?(${escaped.join("|")}).*$`);
+  return new RegExp(`^(https?:\\/\\/)(www\\.)?(${escaped.join("|")}).*$`);
 }
 
 export const profileModalLinkTypesRegexes: Record<

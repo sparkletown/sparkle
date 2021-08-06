@@ -137,14 +137,16 @@ export const UserProfileModalContent: React.FC<Props> = ({
           )
       ) as (keyof typeof data)[];
 
-      if (changedFields.length > 0)
+      if (changedFields.length > 0) {
         await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
+      }
 
-      if (!isEqual(user.profileLinks, data.profileLinks))
+      if (!isEqual(user.profileLinks, data.profileLinks)) {
         await updateProfileLinks({
           profileLinks: data.profileLinks,
           userId: user.id,
         });
+      }
 
       turnOffEditMode();
     },
@@ -185,6 +187,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
         <ProfileModalEditLinks
           containerClassName="UserProfileModal__section-editable"
           register={register}
+          initialLinks={defaultValues.profileLinks}
           links={links}
           setLinkTitle={setLinkTitle}
           errors={errors?.profileLinks}
