@@ -6,7 +6,7 @@ import Modal from "react-bootstrap/Modal";
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
-import "../ProfileModal/ProfileModal.scss";
+import "./UserProfileModal.scss";
 
 interface Props {
   user: WithId<User>;
@@ -21,16 +21,16 @@ export const UserProfileModal: React.FC<Props> = ({
   user,
   onClose,
 }: Props) => {
-  const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(true);
+  const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(false);
 
   return (
     <Modal
       style={{ display: "flex" }}
-      className="ProfileModal UserProfileModal"
+      className="UserProfileModal"
       show={show}
       onHide={onClose}
     >
-      <Modal.Body className="ProfileModal__body">
+      <Modal.Body className="UserProfileModal__body">
         {editMode ? (
           <UserProfileModalContent
             user={user}

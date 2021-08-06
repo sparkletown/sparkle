@@ -1,6 +1,10 @@
+@import "../styles.scss";
+
 $edit-buttons-margin-top: 2rem;
 
-.UserProfileModalContent {
+.UserProfileModal {
+  @include ProfileModalCommon();
+
   &__edit-buttons {
     margin-top: $edit-buttons-margin-top;
   }

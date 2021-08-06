@@ -1,7 +1,9 @@
 import "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword.scss";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import { UserProfileModalFormData } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
-import { formProp } from "components/organisms/NewProfileModal/utilities";
+import {
+  formProp,
+  UserProfileModalFormData,
+} from "components/organisms/NewProfileModal/utilities";
 import React, { useCallback } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 import { ContainerClassName } from "types/utility";

@@ -1,28 +1,5 @@
-@import "../constants";
+@import "../styles.scss";
 
 .ProfileModal {
-  display: flex;
-  align-items: flex-start;
-  font-size: $content-font-size;
-
-  &__body {
-    background-color: $dark-grey;
-    padding: $modal-content-margin;
-  }
-
-  &__section {
-    margin-top: $section-gap;
-    &:first-child {
-      margin-top: 0;
-    }
-  }
-
-  & > .modal-dialog {
-    max-width: $modal-content-max-width;
-    margin: $modal-dialog-viewport-margin;
-    width: auto;
-    & > .modal-content {
-      padding: 0;
-    }
-  }
+  @include ProfileModalCommon();
 }

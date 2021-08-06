@@ -2,15 +2,19 @@ import { updateProfileLinks } from "api/profile";
 import { ProfileModalEditButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalEditButtons/ProfileModalEditButtons";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
-import { formProp } from "components/organisms/NewProfileModal/utilities";
+import {
+  arePasswordsNotEmpty,
+  useFormDefaultValues,
+} from "components/organisms/NewProfileModal/UserProfileModal/utilities";
+import {
+  formProp,
+  UserProfileModalFormData,
+} from "components/organisms/NewProfileModal/utilities";
 import { isEqual, pick } from "lodash";
 import { updateUserProfile } from "pages/Account/helpers";
-import { ProfileFormData } from "pages/Account/Profile";
-import { QuestionsFormData } from "pages/Account/Questions";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
 import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
@@ -18,34 +22,12 @@ import { propName } from "utils/types";
 import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLinks";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
-import "./UserProfileModalContent.scss";
+import "./UserProfileModal.scss";
 
 interface Props {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
-}
-
-export interface UserProfileModalFormDataPasswords {
-  oldPassword: string;
-  newPassword: string;
-  confirmNewPassword: string;
-}
-
-const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
-  "oldPassword",
-  "newPassword",
-  "confirmNewPassword",
-];
-
-const arePasswordsNotEmpty = (passwords: UserProfileModalFormDataPasswords) =>
-  Object.values(pick(passwords, passwordsFields)).some((x) => x);
-
-export interface UserProfileModalFormData
-  extends ProfileFormData,
-    UserProfileModalFormDataPasswords,
-    QuestionsFormData {
-  profileLinks: ProfileLink[];
 }
 
 export const UserProfileModalContent: React.FC<Props> = ({
@@ -59,25 +41,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
 
   const { questions, answers } = useProfileQuestions(user, venue.id);
 
-  const defaultValues: Omit<
-    UserProfileModalFormData,
-    keyof UserProfileModalFormDataPasswords
-  > = useMemo(
-    () => ({
-      profileLinks: user.profileLinks ?? [],
-      pictureUrl: user.pictureUrl ?? DEFAULT_PROFILE_PIC,
-      partyName: user.partyName ?? DEFAULT_PARTY_NAME,
-      ...(questions
-        ? Object.assign(
-            {},
-            ...questions.map((q, i) => ({
-              [q.name]: answers?.[i],
-            }))
-          )
-        : {}),
-    }),
-    [answers, questions, user.partyName, user.pictureUrl, user.profileLinks]
-  );
+  const defaultValues = useFormDefaultValues(user, questions, answers);
 
   const {
     register,
@@ -130,6 +94,18 @@ export const UserProfileModalContent: React.FC<Props> = ({
       }
     },
     [firebaseUserEmail, firebase]
+  );
+
+  const setLinkTitle = useCallback(
+    (index: number, title: string) => {
+      setValue(
+        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>(
+          "title"
+        )}`,
+        title
+      );
+    },
+    [setValue]
   );
 
   const onSubmit: OnSubmit<UserProfileModalFormData> = useCallback(
@@ -185,24 +161,12 @@ export const UserProfileModalContent: React.FC<Props> = ({
     ]
   );
 
-  const setLinkTitle = useCallback(
-    (index: number, title: string) => {
-      setValue(
-        `${formProp("profileLinks")}[${index}].${propName<ProfileLink>(
-          "title"
-        )}`,
-        title
-      );
-    },
-    [setValue]
-  );
-
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <ProfileModalBasicInfo
         editMode
         viewingUser={user}
-        containerClassName="ProfileModal__section"
+        containerClassName="UserProfileModal__section"
         register={register}
         watch={watch}
         setValue={setValue}
@@ -211,7 +175,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       {
         <ProfileModalQuestions
           editMode
-          containerClassName="ProfileModal__section"
+          containerClassName="UserProfileModal__section"
           questions={questions}
           answers={answers}
           register={register}
@@ -219,7 +183,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       }
       {user?.profileLinks && (
         <ProfileModalEditLinks
-          containerClassName="ProfileModal__section"
+          containerClassName="UserProfileModal__section"
           register={register}
           links={links}
           setLinkTitle={setLinkTitle}
@@ -229,7 +193,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
         />
       )}
       <ProfileModalChangePassword
-        containerClassName="ProfileModal__section"
+        containerClassName="UserProfileModal__section"
         register={register}
         getValues={getValues}
         errors={pick<
@@ -239,7 +203,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
       />
       <ProfileModalEditButtons
         onCancelClick={cancelEditing}
-        containerClassName="UserProfileModalContent__edit-buttons"
+        containerClassName="UserProfileModal__edit-buttons"
       />
     </form>
   );
