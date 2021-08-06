@@ -27,6 +27,8 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 import { useUser } from "hooks/useUser";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import Button from "components/atoms/Button";
 
 import {
@@ -143,7 +145,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
         {isEventExpanded && (
           <>
             <div className="ScheduleItemNG__description">
-              {event.description}
+              <RenderMarkdown text={event.description} />
             </div>
             <div className="ScheduleItemNG__buttons">
               <Button
@@ -161,7 +163,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
             </div>
           </>
         )}
-        <div className="ScheduleItemNG--name">{event.name}</div>
         <div className="ScheduleItemNG--bookmark" onClick={bookmarkEvent}>
           <FontAwesomeIcon
             icon={event.isSaved ? solidBookmark : regularBookmark}
