@@ -3,7 +3,7 @@ import { ProfileModalInput } from "components/organisms/NewProfileModal/componen
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
 import "./ProfileModalBasicInfo.scss";
-import { formProp } from "components/organisms/NewProfileModal/utility";
+import { formProp } from "components/organisms/NewProfileModal/utilities";
 import React from "react";
 import { FieldError, useForm } from "react-hook-form";
 import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";

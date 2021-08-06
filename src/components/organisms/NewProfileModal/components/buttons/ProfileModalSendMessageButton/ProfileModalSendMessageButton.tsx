@@ -1,4 +1,4 @@
-import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utility";
+import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utilities";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { Button } from "components/atoms/Button";

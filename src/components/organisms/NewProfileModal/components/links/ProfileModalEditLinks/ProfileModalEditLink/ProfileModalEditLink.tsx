@@ -6,7 +6,7 @@ import {
 } from "components/organisms/NewProfileModal/components/links/linkUtilities";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
-import { formProp } from "components/organisms/NewProfileModal/utility";
+import { formProp } from "components/organisms/NewProfileModal/utilities";
 import { useBooleanState } from "hooks/useBooleanState";
 import React, { useCallback, useEffect } from "react";
 import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";

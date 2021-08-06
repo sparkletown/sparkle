@@ -1,6 +1,6 @@
 import classNames from "classnames";
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { formProp } from "components/organisms/NewProfileModal/utility";
+import { formProp } from "components/organisms/NewProfileModal/utilities";
 import "firebase/storage";
 import { useBooleanState } from "hooks/useBooleanState";
 import { useSameUser } from "hooks/useIsSameUser";

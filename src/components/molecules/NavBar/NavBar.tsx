@@ -1,3 +1,4 @@
+import { useBooleanState } from "hooks/useBooleanState";
 import React, { useState, useMemo, useRef, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
@@ -26,7 +27,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
+import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
@@ -88,7 +89,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
-  const [showUserProfile, setShowUserProfile] = useState(false);
+  const [
+    isShowUserProfile,
+    showUserProfile,
+    closeUserProfile,
+  ] = useBooleanState(false);
 
   const shouldShowSchedule =
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
@@ -303,7 +308,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 )}
                 <div
                   className="navbar-links-user-avatar"
-                  onClick={() => setShowUserProfile(true)}
+                  onClick={showUserProfile}
                 >
                   <UserAvatar
                     viewingUser={userWithId}
@@ -314,8 +319,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 {userWithId && (
                   <UserProfileModal
                     user={userWithId}
-                    show={showUserProfile}
-                    onClose={() => setShowUserProfile(false)}
+                    show={isShowUserProfile}
+                    onClose={closeUserProfile}
                     venue={currentVenue}
                   />
                 )}

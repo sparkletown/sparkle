@@ -1,4 +1,4 @@
-import { UserProfileModalFormData } from "components/organisms/NewProfileModal/UserProfileModal";
+import { UserProfileModalFormData } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
 import { propName } from "utils/types";
 
 export const profileModalWideButtonCustomStyle = {
