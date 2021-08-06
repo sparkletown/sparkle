@@ -13,7 +13,7 @@ export interface ButtonProps extends LinkProps {
   customStyle?: CSSProperties;
   gradient?: boolean;
   loading?: boolean;
-  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onClick?: () => void;
   type?: "button" | "reset" | "submit";
   disabled?: boolean;
 }

@@ -29,7 +29,7 @@ import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-import Button from "components/atoms/Button";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import {
   addEventToPersonalizedSchedule,
@@ -105,13 +105,18 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
 
   const { userId } = useUser();
 
-  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(() => {
-    if (!userId || !event.id) return;
+  const bookmarkEvent: MouseEventHandler<HTMLDivElement> = useCallback(
+    (e) => {
+      if (!userId || !event.id) return;
 
-    event.isSaved
-      ? removeEventFromPersonalizedSchedule({ event, userId })
-      : addEventToPersonalizedSchedule({ event, userId });
-  }, [userId, event]);
+      e.stopPropagation();
+
+      event.isSaved
+        ? removeEventFromPersonalizedSchedule({ event, userId })
+        : addEventToPersonalizedSchedule({ event, userId });
+    },
+    [userId, event]
+  );
 
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
@@ -148,26 +153,28 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
               <RenderMarkdown text={event.description} />
             </div>
             <div className="ScheduleItemNG__buttons">
-              <Button
-                customClass="ScheduleItemNG__button ScheduleItemNG__button--copy"
+              <ButtonNG
+                className="ScheduleItemNG__button ScheduleItemNG__button--copy"
                 onClick={handleCopyEventLink}
+                variant="secondary"
               >
                 Copy event link
-              </Button>
-              <Button
-                customClass="ScheduleItemNG__button"
+              </ButtonNG>
+              <ButtonNG
+                className="ScheduleItemNG__button"
                 onClick={goToEventLocation}
+                variant="primary"
               >
                 See on playa
-              </Button>
+              </ButtonNG>
             </div>
           </>
         )}
-        <div className="ScheduleItemNG--bookmark" onClick={bookmarkEvent}>
-          <FontAwesomeIcon
-            icon={event.isSaved ? solidBookmark : regularBookmark}
-          />
-        </div>
+      </div>
+      <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
+        <FontAwesomeIcon
+          icon={event.isSaved ? solidBookmark : regularBookmark}
+        />
       </div>
     </div>
   );
