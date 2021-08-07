@@ -1,0 +1,23 @@
+Getting started
+===============
+
+To launch the development server do the following:
+
+	a) Launch the Visual Studio Solution "Serverside Code.sln".
+
+	b) Right-click Player.IO Test Server and choose "Set as Startup Project"
+
+	c) Press F5. This should start the development server.
+	   If a windows Firewall dialog pops up, press allow.
+	
+To launch the client do the following:
+	
+	a) Edit the Game.htm file where it says "[Enter your game id here]".
+	If you don't have a gameid, simply login into the PlayerIO admin dashboard
+	and click "create game".
+
+	b) Open Game.htm in a browser.
+
+If all goes well, you should see the client connect to the development
+server in both the client and the development server window.
+		

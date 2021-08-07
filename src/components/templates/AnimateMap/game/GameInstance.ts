@@ -69,7 +69,7 @@ export class GameInstance {
       transparent: true,
       antialias: true,
       resizeTo: this._containerElement,
-      backgroundColor: 0x10bb99,
+      backgroundColor: 0xe7d4c3,
       resolution: 1,
     });
 

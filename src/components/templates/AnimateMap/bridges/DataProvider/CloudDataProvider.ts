@@ -5,15 +5,16 @@ import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { UInt, ULong } from "../../vendors/playerio/PlayerIO";
 import { DataProvider } from "../DataProvider";
 
+import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
+import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
+import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
 import {
-  CommonInterface,
-  CommonLinker,
-  MessageType,
-} from "./Contructor/CommonInterface";
-import { FirebaseDataProvider } from "./Contructor/FirebaseDataProvider";
-import { PlayerIODataProvider } from "./Contructor/PlayerIODataProvider";
+  MessagesTypes,
+  PlayerIODataProvider,
+} from "./Contructor/PlayerIO/PlayerIODataProvider";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -47,6 +48,8 @@ export class CloudDataProvider
     this._maxUpdateCounter = 1 / value;
   }
 
+  private _testBots;
+
   constructor(
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
@@ -54,6 +57,10 @@ export class CloudDataProvider
     readonly playerioGameId?: string
   ) {
     super();
+
+    this._testBots = new PlayerIOBots();
+    //@ts-ignore
+    window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots);
 
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
     playerModel.id = playerId;
@@ -81,25 +88,24 @@ export class CloudDataProvider
           this.emit(DataProviderEvent.USER_LEFT, userId);
         });
 
-        connection.addMessageCallback(MessageType.move, (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          // @ts-ignore
-          const x = m.getInt(1) as number;
-          // @ts-ignore
-          const y = m.getInt(2) as number;
-          // @ts-ignore
-          const userId = m.getString(3) as string;
-          if (userId === this.playerId) return; //reject
+        connection.addMessageCallback<[ULong, UInt, UInt, string]>(
+          MessagesTypes.move,
+          (m) => {
+            const sessionId = m.getULong(1);
+            const x = m.getUInt(1);
+            const y = m.getUInt(2);
+            const userId = m.getString<3>(3);
+            if (userId === this.playerId) return; //reject
 
-          const isNewUser = this.users.update(sessionId, x, y, userId);
-          if (isNewUser) {
-            this.emit(DataProviderEvent.USER_JOINED, userId);
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-          } else {
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            const isNewUser = this.users.update(sessionId, x, y, userId);
+            if (isNewUser) {
+              this.emit(DataProviderEvent.USER_JOINED, userId);
+              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            } else {
+              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            }
           }
-        });
+        );
       }),
       new FirebaseDataProvider(firebase)
     );
@@ -112,6 +118,7 @@ export class CloudDataProvider
     if (this._updateCounter > this._maxUpdateCounter) {
       this._updateCounter -= this._maxUpdateCounter;
       this.player.updatePosition();
+      this._testBots.update();
       this.update(0);
     }
   }
@@ -128,7 +135,7 @@ export class CloudDataProvider
         //@ts-ignore
         q.forEach((doc) => {
           const data = doc.data();
-          console.log(data);
+          // console.log(data);
           const vn = {
             x: data.animatemap.x,
             y: data.animatemap.y,

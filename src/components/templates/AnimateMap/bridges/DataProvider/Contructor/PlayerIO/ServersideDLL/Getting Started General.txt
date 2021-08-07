@@ -1,0 +1,8 @@
+Welcome to PlayerIO
+
+This package contains tools and example projects
+that will help you get up and running quickly in
+your favorite development environment.
+
+Online documentation can be found at
+  http://playerio.com/documentation/
