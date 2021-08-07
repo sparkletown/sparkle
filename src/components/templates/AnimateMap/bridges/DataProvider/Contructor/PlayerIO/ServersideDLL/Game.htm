@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>PlayerIO Fridge Magnets</title>
+  <script src="PlayerIOClient.development.js"></script>
+  <script type="text/javascript">
+    var connection = null;
+    var userId = 0;
+    //The 30 symbols used for a row of letters
+    var symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ??!!";
+    //The colours of the 4 rows of letters
+    var colors = ["#ff0000", "#ffff00", "#00ff00", "#0000ff"];
+    //The 30 emojis for the row of emojis
+    var emojis = ["😀", "😃", "😄", "😁", "😇", "🙂", "😉", "😍", "😘", "😋", "😜", "😛", "🤑", "😎", "😟", "😕", "🙁", "☹️", "😐", "😲", "😨", "😭", "😈", "👍", "👎", "🙈", "🙊", "🙉", "🌈", "💩"];
+    var letters = [];
+    var letterBeingDragged = -1;
+    var letterDragPoint = {};
+    var canvas = null;
+    window.addEventListener("load", start, false);
+
+    function start() {
+      canvas = document.getElementById("canvas");
+      context = canvas.getContext("2d");
+      canvas.addEventListener("mousedown", onMouseDown, false);
+      canvas.addEventListener("touchstart", onMouseDown, false);
+
+      //Connect to PlayerIO
+      PlayerIO.authenticate("[Enter your game id here]", "public", { userId: "guest" }, {}, function (client) {
+        console.log("Authenticated to PlayerIO as: " + client.connectUserId);
+
+        //Use local development server
+        client.multiplayer.developmentServer = "localhost:8184";
+
+        //Join the room
+        client.multiplayer.createJoinRoom("fridgemagnets", "FridgeMagnets", true, null, null, function (connection) {
+          window.connection = connection;
+          connection.addMessageCallback("*", function (message) {
+            switch (message.type) {
+              case "init":
+                handleInit(message);
+                break;
+              case "move":
+                handleMove(message);
+                break;
+            }
+          });
+          connection.addDisconnectCallback(function () {
+            console.log("Disconnected");
+          });
+
+          console.log("Connected to Fridge Magnets room");
+        }, callbackError);
+      }, callbackError);
+    }
+
+    //Log all errors to console
+    function callbackError(error) {
+      console.log("Error: " + error.code + " - " + error.message);
+    }
+
+    function handleInit(message) {
+      console.log("Received 'init' message from server.");
+      userId = message.getInt(0);
+      var i = 0;
+      for (var j = 1; j < message.length; j++) {
+        var row = Math.floor(i / 30);
+        var col = i % 30;
+        var x = message.getInt(j);
+        var y = message.getInt(++j);
+        //If position of Letter is -1,-1, put at starting position for letter
+        if (x == -1) {
+          x = 5 + col * 30;
+          y = 5 + row * 20;
+        }
+        var color = colors[row];
+        if (i < 120) {
+          //First 120 Letters are letters
+          var symbol = symbols[col];
+        } else {
+          //Last 30 Letters are emojis
+          var symbol = emojis[col];
+        }
+        letters[i++] = { x: x, y: y, symbol: symbol, color: color };
+      }
+      draw();
+    }
+
+    function handleMove(message) {
+      //Get the letter that was moved
+      var letterIndex = message.getInt(0);
+      //Ignore if it's the letter we are currently moving
+      if (letterBeingDragged != letterIndex) {
+        //Update internal representation
+        var letter = letters[letterIndex];
+        letter.x = message.getInt(1);
+        letter.y = message.getInt(2);
+        //Redraw screen
+        draw();
+      }
+    }
+
+
+    var canDraw = true;
+    var shouldDraw = false;
+
+    function draw() {
+      if (canDraw) {
+        canDraw = false;
+        //Cap draw rate at 20fps
+        setTimeout(function () {
+          canDraw = true;
+          if (shouldDraw) {
+            shouldDraw = false;
+            draw();
+          }
+        }, 50);
+        //Draw white background
+        context.fillStyle = "#ffffff";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        //Draw letters and emojis
+        for (var i = letters.length - 1; i >= 0; i--) {
+          var letter = letters[i];
+          context.textAlign = "center";
+          if (letter.symbol.charCodeAt(0) < 255) {
+            //Draw letter
+            context.font = "bold 22px 'Comic Sans MS', Verdana";
+            context.fillStyle = letter.color;
+            context.fillText(letter.symbol, letter.x + 8, letter.y + 15);
+            //Draw black outline
+            context.fillStyle = "#000000";
+            context.strokeText(letter.symbol, letter.x + 8, letter.y + 15);
+          } else {
+            //Draw emoji
+            context.font = "20px Sans-Serif";
+            context.fillText(letter.symbol, letter.x + 8, letter.y + 15);
+          }
+        }
+      } else {
+        //Queue future redraw if we skipped this one
+        shouldDraw = true;
+      }
+    }
+
+    function onMouseDown(event) {
+      event.preventDefault();
+      var position = getPosition(event);
+      letterBeingDragged = getHitLetter(position.x, position.y);
+      if (letterBeingDragged > -1) {
+        //Save where on the letter we hit it
+        letterDragPoint = {
+          x: position.x - letters[letterBeingDragged].x,
+          y: position.y - letters[letterBeingDragged].y
+        };
+        //Start listening for move and release events
+        window.addEventListener("mousemove", onMouseMove, false);
+        window.addEventListener("touchmove", onMouseMove, false);
+        window.addEventListener("mouseup", onMouseUp, false);
+        window.addEventListener("touchend", onMouseUp, false);
+        //Stop listening to click events
+        canvas.removeEventListener("mousedown", onMouseDown, false);
+        canvas.removeEventListener("touchstart", onMouseDown, false);
+      }
+
+      return false;
+    }
+
+    function onMouseMove(event) {
+      if (event.touches && event.touches.length == 1) {
+        event.preventDefault();
+      }
+      var minx = 0;
+      var miny = 0;
+      var maxx = canvas.width - 15;
+      var maxy = canvas.height - 15;
+      var position = getPosition(event);
+      var newx = position.x - letterDragPoint.x;
+      var newy = position.y - letterDragPoint.y;
+      //Keep letter within canvas bounds
+      newx = (newx < minx) ? minx : ((newx > maxx) ? maxx : newx);
+      newy = (newy < miny) ? miny : ((newy > maxy) ? maxy : newy);
+      //Move letter to new position
+      letters[letterBeingDragged].x = newx;
+      letters[letterBeingDragged].y = newy;
+      //Send new position to server
+      connection.send("move", letterBeingDragged, newx, newy);
+      //Redraw canvas
+      draw();
+    }
+
+    function onMouseUp(event) {
+      //Release letter
+      letterBeingDragged = -1;
+      //Start listening for click events
+      canvas.addEventListener("mousedown", onMouseDown, false);
+      canvas.addEventListener("touchstart", onMouseDown, false);
+      //Stop listening to move or release events
+      window.removeEventListener("mousemove", onMouseMove, false);
+      window.removeEventListener("touchmove", onMouseMove, false);
+      window.removeEventListener("mouseup", onMouseUp, false);
+      window.removeEventListener("touchend", onMouseUp, false);
+      //Redraw canvas
+      draw();
+    }
+
+    //Given a mouse or touch event, get the position as canvas coordinates
+    function getPosition(event) {
+      var rect = canvas.getBoundingClientRect();
+      if (event.touches) {
+        return {
+          x: Math.floor((event.touches[0].clientX - rect.left) * (canvas.width / rect.width)),
+          y: Math.floor((event.touches[0].clientY - rect.top) * (canvas.height / rect.height))
+        };
+      } else {
+        return {
+          x: Math.floor((event.clientX - rect.left) * (canvas.width / rect.width)),
+          y: Math.floor((event.clientY - rect.top) * (canvas.height / rect.height))
+        };
+      }
+    }
+
+    //Simple rectangular hitbox detection
+    function getHitLetter(x, y) {
+      for (var i = 0; i < letters.length; i++) {
+        var letter = letters[i];
+        if (x >= letter.x && x <= (letter.x + 15) && y >= letter.y && y <= (letter.y + 15)) {
+          return i;
+        }
+      }
+      return -1;
+    }
+  </script>
+  <style type="text/css">
+      * {
+          margin: 0px;
+          padding: 0px;
+          box-sizing: border-box
+      }
+
+      html, body {
+          width: 100%;
+          height: 100%;
+          text-align: center;
+      }
+
+      canvas {
+          border: 5px solid black;
+          border-radius: 5px;
+      }
+  </style>
+</head>
+<body>
+<canvas id="canvas" width="1000" height="500"></canvas>
+</body>
+</html>

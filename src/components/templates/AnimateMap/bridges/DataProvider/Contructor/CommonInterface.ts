@@ -1,6 +1,9 @@
-import { PlayerIODataProvider } from "./PlayerIODataProvider";
+import {
+  MessagesTypes,
+  PlayerIODataProvider,
+} from "./PlayerIO/PlayerIODataProvider";
 import { dbPlayer, idObject } from "../Providers/PlayerDataProvider";
-import { FirebaseDataProvider } from "./FirebaseDataProvider";
+import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
 
 export interface User {
   id: string;
@@ -10,10 +13,6 @@ export interface User {
 export enum RemoteTable {
   usersPosition = "usersPosition",
   usersIdBySession = "sessionIds",
-}
-
-export enum MessageType {
-  move = "m",
 }
 
 /**
@@ -69,7 +68,7 @@ export class CommonLinker implements CommonInterface {
     id: string
   ): void {
     this._playerIOProvider.sendPlayerPosition(
-      MessageType.move,
+      MessagesTypes.move,
       sessionId,
       x,
       y,

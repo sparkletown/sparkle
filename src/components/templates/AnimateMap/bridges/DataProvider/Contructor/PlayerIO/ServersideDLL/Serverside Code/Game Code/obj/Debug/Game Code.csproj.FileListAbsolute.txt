@@ -1,0 +1,18 @@
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\bin\Debug\FridgeMagnets.dll
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\bin\Debug\FridgeMagnets.pdb
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\obj\Debug\Game Code.csproj.AssemblyReference.cache
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\obj\Debug\Game Code.csproj.CoreCompileInputs.cache
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\obj\Debug\Game Code.csproj.CopyComplete
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\obj\Debug\FridgeMagnets.dll
+G:\NordBeaver\PlayerIOSDK\Javascript\Example - Multiplayer - FridgeMagnets\Serverside Code\Game Code\obj\Debug\FridgeMagnets.pdb
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\bin\Debug\Player.IO GameLibrary.xml
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\obj\Debug\Game Code.csproj.AssemblyReference.cache
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\obj\Debug\Game Code.csproj.CoreCompileInputs.cache
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\obj\Debug\Game Code.csproj.CopyComplete
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\bin\Debug\BurningMan.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\bin\Debug\BurningMan.pdb
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\obj\Debug\BurningMan.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\Game Code\obj\Debug\BurningMan.pdb

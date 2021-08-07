@@ -66,7 +66,7 @@ export class MotionBotSystem extends MotionBaseSystem {
   };
 
   public updateMotionBotNode(node: MotionBotControlNode, time: number): void {
-    const speed = Math.sqrt(
+    let speed = Math.sqrt(
       node.movement.velocityX * node.movement.velocityX +
         node.movement.velocityY * node.movement.velocityY
     );
@@ -74,7 +74,17 @@ export class MotionBotSystem extends MotionBaseSystem {
     let dy = node.click.y - node.position.y;
 
     // const defaultSpeed = this.getSpeedByZoomLevel(node.click.zoom);
-    const defaultSpeed = this.getSpeedByZoomLevel(0) / 3;
+    let defaultSpeed,
+      ticks = 80; //
+    if (!node.bot.realUser) defaultSpeed = this.getSpeedByZoomLevel(0) / 3;
+    else {
+      const distance = Math.sqrt(
+        Math.pow(node.click.x - node.position.x, 2) +
+          Math.pow(node.click.y - node.position.y, 2)
+      );
+      speed = defaultSpeed = distance / ticks;
+      if (speed < 1) defaultSpeed = speed = 1;
+    }
 
     if (Math.abs(dx) - defaultSpeed <= 0 && Math.abs(dy) - defaultSpeed <= 0) {
       node.position.x = node.click.x;

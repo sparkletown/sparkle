@@ -58,7 +58,7 @@ export class PlayerDataProvider
     try {
       this._playerObj?.save();
     } catch (error) {
-      console.log("PlayerDataProvider.savePosition: ", error);
+      // console.log("PlayerDataProvider.savePosition: ", error);
     }
   }
 

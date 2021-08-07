@@ -1,9 +1,17 @@
 import PlayerIO, {
   client,
   connection,
-} from "../../../vendors/playerio/PlayerIO";
+} from "../../../../vendors/playerio/PlayerIO";
 
 import { utils } from "pixi.js";
+
+export enum RoomTypes {
+  Zone = "Z",
+}
+
+export enum MessagesTypes {
+  move = "z",
+}
 
 export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
   private _PlayerIO;
@@ -32,11 +40,14 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
         //TODO: join to 9 rooms
         client.multiplayer.createJoinRoom(
           "test",
-          "bounce",
+          RoomTypes.Zone,
           true,
           {
-            maxplayers: 750,
-            name: "Burning Man",
+            speaker: 1,
+            a: 150,
+            b: 150,
+            c: 250,
+            d: 250,
           },
           {},
           (connection) => {
@@ -49,6 +60,24 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
             //TODO: create room?
           }
         );
+
+        setTimeout(() => {
+          //@ts-ignore
+          client.multiplayer.listRooms(
+            RoomTypes.Zone,
+            null,
+            0,
+            0,
+            (roomInfo: object[]) => {
+              console.log("SUCCESS");
+              console.log(roomInfo);
+            }, //@ts-ignore
+            (error) => {
+              console.log("FAIL");
+              console.error(error);
+            }
+          );
+        }, 5000);
       }, //@ts-ignore
       (error) => {
         console.log("Connect failure");
@@ -112,7 +141,23 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
     y: number,
     id: string
   ) {
-    this.connection?.send(type, sessionId, Math.ceil(x), Math.ceil(y), id);
+    if (!this.connection) {
+      console.error("connection not exist");
+      return;
+    }
+    //@ts-ignore
+    const m = this.connection?.createMessage(type);
+    //@ts-ignore
+    m.addULong(sessionId);
+    //@ts-ignore
+    m.addUInt(x);
+    //@ts-ignore
+    m.addUInt(y);
+    //@ts-ignore
+    m.addString(id);
+    //@ts-ignore
+    this.connection?.sendMessage(m);
+    // this.connection?.send(type, sessionId, Math.ceil(x), Math.ceil(y), id);
   }
 
   public savePlayerPosition() {}
