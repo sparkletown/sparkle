@@ -3,7 +3,8 @@ import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { Box, Point, QuadTree } from "js-quadtree";
 import { Viewport } from "pixi-viewport";
 import { BaseTexture, Sprite } from "pixi.js";
-import { MAP_IMAGE, mapZoomedLevel0 } from "../../constants/AssetConstants";
+import { MAP_IMAGE } from "../../constants/AssetConstants";
+import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
 
 export class ViewportBackgroundSystem extends System {
@@ -65,7 +66,7 @@ export class ViewportBackgroundSystem extends System {
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
-    if (zoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
+    if (zoomLevel !== GameConfig.ZOOM_LEVEL_WALKING) {
       // remove zoomed
       if (this.zoomed.children.length) {
         this.zoomed.removeChildren();
@@ -135,7 +136,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   private addTile(point: Point): Sprite {
-    const sprite: Sprite = Sprite.from(mapZoomedLevel0[point.data]);
+    const sprite: Sprite = Sprite.from(tiles[point.data]);
     sprite.scale.set(this.tileScaleX, this.tileScaleY);
     sprite.anchor.set(0.5);
     sprite.x = point.x;
@@ -146,7 +147,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   private setup(): Promise<void> {
-    const baseTexture: BaseTexture = new BaseTexture(mapZoomedLevel0[0]);
+    const baseTexture: BaseTexture = new BaseTexture(tiles[0]);
     return new Promise((resolve) => {
       if (baseTexture.width) {
         resolve(baseTexture);
@@ -156,7 +157,7 @@ export class ViewportBackgroundSystem extends System {
         });
       }
     }).then(() => {
-      this.worldDivision = Math.sqrt(mapZoomedLevel0.length);
+      this.worldDivision = Math.sqrt(tiles.length);
 
       this.worldTileWidth =
         GameInstance.instance.getConfig().worldWidth / this.worldDivision;
@@ -173,7 +174,7 @@ export class ViewportBackgroundSystem extends System {
     this.tree = new QuadTree(
       new Box(0, 0, config.worldWidth, config.worldWidth)
     );
-    for (let i = 0; i < mapZoomedLevel0.length; i++) {
+    for (let i = 0; i < tiles.length; i++) {
       const x = i % this.worldDivision;
       const y = (i - x) / this.worldDivision;
       const point: Point = new Point(
