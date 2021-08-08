@@ -81,10 +81,6 @@ export class GameConfig {
     return 50;
   }
 
-  public get venueDefaultCollisionRadius(): number {
-    return 50;
-  }
-
   public get speedByZoomLevelArray(): Array<number> {
     return this._speedByZoomLevel.slice(0);
   }
