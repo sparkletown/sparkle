@@ -12,8 +12,9 @@ import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import { utils } from "pixi.js";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 import playerModel from "./Structures/PlayerModel";
-import { DEFAULT_AVATAR_IMAGE } from "../../../../../settings";
+import { DEFAULT_AVATAR_IMAGE } from "settings";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
+import { UInt, ULong } from "../../vendors/playerio/PlayerIO";
 
 const FREQUENCY_UPDATE = 0.02; //per second
 
@@ -83,25 +84,24 @@ export class CloudDataProvider
           this.emit(DataProviderEvent.USER_LEFT, userId);
         });
 
-        connection.addMessageCallback(MessagesTypes.move, (m) => {
-          // @ts-ignore
-          const sessionId = m.getULong(0) as number;
-          // @ts-ignore
-          const x = m.getUInt(1) as number;
-          // @ts-ignore
-          const y = m.getUInt(2) as number;
-          // @ts-ignore
-          const userId = m.getString(3) as string;
-          if (userId === this.playerId) return; //reject
+        connection.addMessageCallback<[ULong, UInt, UInt, string]>(
+          MessagesTypes.move,
+          (m) => {
+            const sessionId = m.getULong(1);
+            const x = m.getUInt(1);
+            const y = m.getUInt(2);
+            const userId = m.getString<3>(3);
+            if (userId === this.playerId) return; //reject
 
-          const isNewUser = this.users.update(sessionId, x, y, userId);
-          if (isNewUser) {
-            this.emit(DataProviderEvent.USER_JOINED, userId);
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-          } else {
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            const isNewUser = this.users.update(sessionId, x, y, userId);
+            if (isNewUser) {
+              this.emit(DataProviderEvent.USER_JOINED, userId);
+              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            } else {
+              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+            }
           }
-        });
+        );
       }),
       new FirebaseDataProvider(firebase)
     );
