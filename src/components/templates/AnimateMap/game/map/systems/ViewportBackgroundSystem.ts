@@ -66,7 +66,7 @@ export class ViewportBackgroundSystem extends System {
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
-    if (zoomLevel !== GameConfig.ZOOM_LEVEL_WALKING) {
+    if (zoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
       // remove zoomed
       if (this.zoomed.children.length) {
         this.zoomed.removeChildren();

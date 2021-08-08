@@ -72,9 +72,6 @@ export class ViewportSystem extends System {
         minHeight: worldHeight * 0.024,
       });
 
-    // TODO move to player coords
-    this._viewport.moveCenter(worldWidth / 2, worldHeight / 2);
-
     this._viewport.on("moved", this._viewportMovedHandler, this);
     this._viewport.on("zoomed", this._viewportZoomedHandler, this);
     this._viewport.on("zoomed-end", this._viewportZoomedEndHandler, this);
@@ -128,10 +125,6 @@ export class ViewportSystem extends System {
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
-    if (this.player.head) {
-      this.initViewportFollowing(this.player.head);
-    }
-
     const zoomLevel = GameInstance.instance.getState().zoom;
     const zoomViewport = GameInstance.instance
       .getConfig()
@@ -140,8 +133,15 @@ export class ViewportSystem extends System {
 
     this.viewportList.head!.viewport.zoomLevel = zoomLevel;
     this.viewportList.head!.viewport.zoomViewport = this._viewport.scale.y;
-
     this._entityCreator.updateViewport();
+
+    this._viewport.update(1);
+
+    if (this.player && this.player.head) {
+      this.initViewportFollowing(this.player.head);
+    } else {
+      this._viewport.moveCenter(worldWidth / 2, worldHeight / 2);
+    }
   }
 
   removeFromEngine(engine: Engine): void {
@@ -206,10 +206,17 @@ export class ViewportSystem extends System {
   };
 
   private initViewportFollowing = (player: ViewportFollowNode): void => {
-    if (player.sprite.view) {
-      this._viewport.plugins.remove("follow");
-      this._viewport.follow(player.sprite.view);
-    }
+    this._viewport.animate({
+      position: new Point(player.position.x, player.position.y),
+      time: 30,
+      ease: "easeInOutQuad",
+      callbackOnComplete: () => {
+        if (player.sprite.view) {
+          this._viewport.plugins.remove("follow");
+          this._viewport.follow(player.sprite.view);
+        }
+      },
+    });
   };
 
   private stopViewportFollowing = (): void => {

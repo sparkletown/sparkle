@@ -83,8 +83,8 @@ export class GameInstance {
     this._store.dispatch(setAnimateMapUsers(stubUsersData()));
 
     this._mapContainer = new MapContainer(this._app);
-    await this._mapContainer.init();
     this._stage?.addChild(this._mapContainer);
+    return await this._mapContainer.init();
   }
 
   private loadAssets(resources: string[]): Promise<void> {

@@ -70,8 +70,9 @@ export class MapContainer extends Container {
     this.addChild(this._tooltipContainer);
     this._bubbleContainer = new Container();
     this.addChild(this._bubbleContainer);
+    this._joystickContainer = new Container();
+    this.addChild(this._joystickContainer);
 
-    this.initJoystick();
     this.initSystems();
     this.initMap(MAP_JSON);
 
@@ -85,11 +86,6 @@ export class MapContainer extends Container {
         })
       )
     );
-  }
-
-  private initJoystick(): void {
-    this._joystickContainer = new Container();
-    this.addChild(this._joystickContainer);
   }
 
   private initViewport(): void {
