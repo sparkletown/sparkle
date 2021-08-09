@@ -3,12 +3,16 @@ import { Viewport } from "pixi-viewport";
 import { Application, Container } from "pixi.js";
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
 import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
+import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
+import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
 import { Point } from "../utils/Point";
 import EntityFactory from "./entities/EntityFactory";
+import { AnimationNode } from "./nodes/AnimationNode";
+import { AnimationSystem } from "./systems/AnimationSysem";
 import { AvatarTuningSystem } from "./systems/AvatarTuningSystem";
 import { BubbleSystem } from "./systems/BubbleSystem";
 import { ClickableSpriteSystem } from "./systems/ClickableSpriteSystem";
@@ -32,10 +36,6 @@ import { TooltipSystem } from "./systems/TooltipSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
-import KeyPoll from "../utils/KeyPollSingleton";
-import { AnimationSystem } from "./systems/AnimationSysem";
-import { AnimationNode } from "./nodes/AnimationNode";
 
 export class MapContainer extends Container {
   private _app?: Application | null = null;
@@ -260,6 +260,14 @@ export class MapContainer extends Container {
 
     new TimeoutCommand(1000)
       .execute()
+      .then(() => {
+        if (this.entityFactory) {
+          // debug burrel
+          for (let i = 0; i < 5; i++) {
+            this.entityFactory.createBarrel();
+          }
+        }
+      })
       .then(() => {
         if (this.entityFactory) {
           const map: PlaygroundMap = GameInstance.instance.getConfig()

@@ -190,7 +190,7 @@ export class DebugSystem extends System {
     g.drawCircle(0, 0, node.collision.radius);
     g.endFill();
     g.alpha = 0.1;
-    this.container?.addChild(g);
+    // this.container?.addChild(g);
   };
 
   private venueRemoved = (node: VenueNode): void => {

@@ -1,17 +1,27 @@
-import ARTCAR_0 from "assets/images/AnimateMap/artcars/6.1.png";
-import ARTCAR_1 from "assets/images/AnimateMap/artcars/7.1.png";
-import ARTCAR_2 from "assets/images/AnimateMap/artcars/8.1.png";
-import ARTCAR_3 from "assets/images/AnimateMap/artcars/8.1.png";
-import ARTCAR_4 from "assets/images/AnimateMap/artcars/11.1.png";
-import ARTCAR_5 from "assets/images/AnimateMap/artcars/12.1.png";
-import ARTCAR_6 from "assets/images/AnimateMap/artcars/13.1.png";
-import ACCESSORY_0 from "assets/images/AnimateMap/avatarAccessoryes/cap_2.png";
-import ACCESSORY_1 from "assets/images/AnimateMap/avatarAccessoryes/cap_3.png";
-import ACCESSORY_2 from "assets/images/AnimateMap/avatarAccessoryes/cap_5.png";
-import ACCESSORY_3 from "assets/images/AnimateMap/avatarAccessoryes/cap_6.png";
-import ACCESSORY_4 from "assets/images/AnimateMap/avatarAccessoryes/cap_9.png";
-import CYCLE_0 from "assets/images/AnimateMap/avatarCycles/icon_1.png";
-import CYCLE_1 from "assets/images/AnimateMap/avatarCycles/icon_2.png";
+import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
+
+import MAP_IMAGE_1 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_01.jpg";
+import MAP_IMAGE_2 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_02.jpg";
+import MAP_IMAGE_3 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_03.jpg";
+import MAP_IMAGE_4 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_04.jpg";
+import MAP_IMAGE_5 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_05.jpg";
+import MAP_IMAGE_6 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_06.jpg";
+import MAP_IMAGE_7 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_07.jpg";
+import MAP_IMAGE_8 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_08.jpg";
+import MAP_IMAGE_9 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_09.jpg";
+import MAP_IMAGE_10 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_10.jpg";
+import MAP_IMAGE_11 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_11.jpg";
+import MAP_IMAGE_12 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_12.jpg";
+import MAP_IMAGE_13 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_13.jpg";
+import MAP_IMAGE_14 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_14.jpg";
+import MAP_IMAGE_15 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_15.jpg";
+import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16.jpg";
+
+import MAP_JSON from "assets/images/AnimateMap/playa.json";
+
+import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
+import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";
+
 import HAT_0 from "assets/images/AnimateMap/avatarHats/24.png";
 import HAT_1 from "assets/images/AnimateMap/avatarHats/cap_1.png";
 import HAT_2 from "assets/images/AnimateMap/avatarHats/cap_4.png";
@@ -31,26 +41,27 @@ import HAT_15 from "assets/images/AnimateMap/avatarHats/cap_20.png";
 import HAT_16 from "assets/images/AnimateMap/avatarHats/cap_21.png";
 import HAT_17 from "assets/images/AnimateMap/avatarHats/cap_22.png";
 import HAT_18 from "assets/images/AnimateMap/avatarHats/cap_23.png";
-import MAP_IMAGE_1 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_01.jpg";
-import MAP_IMAGE_2 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_02.jpg";
-import MAP_IMAGE_3 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_03.jpg";
-import MAP_IMAGE_4 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_04.jpg";
-import MAP_IMAGE_5 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_05.jpg";
-import MAP_IMAGE_6 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_06.jpg";
-import MAP_IMAGE_7 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_07.jpg";
-import MAP_IMAGE_8 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_08.jpg";
-import MAP_IMAGE_9 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_09.jpg";
-import MAP_IMAGE_10 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_10.jpg";
-import MAP_IMAGE_11 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_11.jpg";
-import MAP_IMAGE_12 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_12.jpg";
-import MAP_IMAGE_13 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_13.jpg";
-import MAP_IMAGE_14 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_14.jpg";
-import MAP_IMAGE_15 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_15.jpg";
-import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16.jpg";
-import MAP_JSON from "assets/images/AnimateMap/playa.json";
-import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
-import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
-import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";
+
+import ACCESSORY_0 from "assets/images/AnimateMap/avatarAccessoryes/cap_2.png";
+import ACCESSORY_1 from "assets/images/AnimateMap/avatarAccessoryes/cap_3.png";
+import ACCESSORY_2 from "assets/images/AnimateMap/avatarAccessoryes/cap_5.png";
+import ACCESSORY_3 from "assets/images/AnimateMap/avatarAccessoryes/cap_6.png";
+import ACCESSORY_4 from "assets/images/AnimateMap/avatarAccessoryes/cap_9.png";
+
+import CYCLE_0 from "assets/images/AnimateMap/avatarCycles/icon_1.png";
+import CYCLE_1 from "assets/images/AnimateMap/avatarCycles/icon_2.png";
+
+import ARTCAR_0 from "assets/images/AnimateMap/artcars/6.1.png";
+import ARTCAR_1 from "assets/images/AnimateMap/artcars/7.1.png";
+import ARTCAR_2 from "assets/images/AnimateMap/artcars/8.1.png";
+import ARTCAR_3 from "assets/images/AnimateMap/artcars/8.1.png";
+import ARTCAR_4 from "assets/images/AnimateMap/artcars/11.1.png";
+import ARTCAR_5 from "assets/images/AnimateMap/artcars/12.1.png";
+import ARTCAR_6 from "assets/images/AnimateMap/artcars/13.1.png";
+
+import BARREL_0 from "assets/images/AnimateMap/barrels/barrel.png";
+import HALO from "assets/images/AnimateMap/barrels/halo.png";
+
 import PLAYA_01_SOUND from "assets/sounds/AnimateMap/playa_01.mp3";
 import PLAYA_02_SOUND from "assets/sounds/AnimateMap/playa_02.mp3";
 import PLAYA_03_SOUND from "assets/sounds/AnimateMap/playa_03.mp3";
@@ -97,6 +108,8 @@ const artcars = [
   ARTCAR_6,
 ];
 
+const barrels = [BARREL_0];
+
 const mapZoomedLevel0 = [
   MAP_IMAGE_1,
   MAP_IMAGE_2,
@@ -131,7 +144,9 @@ export {
   avatarAccessories,
   avatarCycles,
   artcars,
+  barrels,
   MAP_IMAGE,
+  HALO,
   MAP_JSON,
   mapZoomedLevel0,
   JOYSTICK_IMAGE,
