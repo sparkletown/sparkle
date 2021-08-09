@@ -92,4 +92,9 @@ $weekday--margin-right: 10px;
       opacity: 1;
     }
   }
+
+  &__bookmarked-toggle {
+    justify-content: left;
+    padding: $spacing--sm $NavBarSchedule--padding;
+  }
 }
