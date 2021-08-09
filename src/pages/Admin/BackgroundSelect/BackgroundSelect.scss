@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$map-default-size: 50px;
+
 .BackgroundSelect {
   display: flex;
   justify-content: center;
@@ -28,7 +30,7 @@
 
   &__map {
     width: 100%;
-    padding-bottom: 50px;
+    padding-bottom: $map-default-size;
     border-radius: $border-radius--lg;
     background: $black;
     background-size: cover;
@@ -39,7 +41,7 @@
 
     &:hover {
       border: $border-radius--xxs solid $white;
-      padding-bottom: 50px - $border-radius--xxs;
+      padding-bottom: $map-default-size - $border-radius--xxs;
     }
   }
 }
