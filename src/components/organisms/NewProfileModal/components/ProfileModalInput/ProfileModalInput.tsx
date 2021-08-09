@@ -1,9 +1,12 @@
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
-import classNames from "classnames";
-import { InputField } from "components/atoms/InputField";
 import React from "react";
+import classNames from "classnames";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FieldError } from "react-hook-form";
+
+import { InputField } from "components/atoms/InputField";
+
 import { ContainerClassName } from "types/utility";
+
 import "./ProfileModalInput.scss";
 
 interface Props extends ContainerClassName, React.HTMLProps<HTMLInputElement> {

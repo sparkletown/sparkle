@@ -1,15 +1,18 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import React, { useMemo } from "react";
 import classNames from "classnames";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FieldError, NestDataObject } from "react-hook-form";
-import { FormFieldProps } from "types/forms";
+
 import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import React, { useMemo } from "react";
+
+import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
-import "./ProfileModalEditLinks.scss";
 import { ProfileLink } from "types/User";
 import { WithId } from "utils/id";
+
+import "./ProfileModalEditLinks.scss";
 
 interface Props extends ContainerClassName {
   initialLinks: ProfileLink[];

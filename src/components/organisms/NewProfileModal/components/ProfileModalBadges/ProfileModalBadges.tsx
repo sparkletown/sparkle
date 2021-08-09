@@ -1,7 +1,10 @@
 import React from "react";
+
 import { WithId } from "utils/id";
-import { AnyVenue } from "types/venues";
+
 import { Badges } from "components/organisms/Badges";
+
+import { AnyVenue } from "types/venues";
 import { ContainerClassName } from "types/utility";
 import { User } from "types/User";
 

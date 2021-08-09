@@ -1,28 +1,29 @@
-import { updateProfileLinks } from "api/profile";
+import React, { useCallback } from "react";
+import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
+import { isEqual, pick } from "lodash";
+import { useFirebase } from "react-redux-firebase";
+
+import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
+import { useBooleanState } from "hooks/useBooleanState";
+
 import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons/UserProfileModalButtons";
 import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalEditBasicInfo/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
-import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
-import {
-  arePasswordsNotEmpty,
-  useFormDefaultValues,
-} from "components/organisms/NewProfileModal/UserProfileModal/utilities";
-import {
-  formProp,
-  UserProfileModalFormData,
-} from "components/organisms/NewProfileModal/utilities";
-import { useBooleanState } from "hooks/useBooleanState";
-import { isEqual, pick } from "lodash";
+
 import { updateUserProfile } from "pages/Account/helpers";
-import React, { useCallback } from "react";
-import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
-import { useFirebase } from "react-redux-firebase";
+import { updateProfileLinks } from "api/profile";
+import { arePasswordsNotEmpty } from "components/organisms/NewProfileModal/UserProfileModal/utilities";
+import { useFormDefaultValues } from "components/organisms/NewProfileModal/UserProfileModal/utilities";
+import { formProp } from "components/organisms/NewProfileModal/utilities";
+import { propName } from "utils/types";
+
+import { UserProfileModalFormData } from "components/organisms/NewProfileModal/utilities";
 import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
-import { propName } from "utils/types";
+
 import "./UserProfileModal.scss";
 
 interface Props {

@@ -1,16 +1,21 @@
+import React from "react";
+import classNames from "classnames";
+
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
-import { DEFAULT_PARTY_NAME } from "settings";
-import "./ProfilModalBasicTextInfo.scss";
-import classNames from "classnames";
-import React from "react";
+import { useIsOnline } from "hooks/useIsOnline";
+import { useSameUser } from "hooks/useIsSameUser";
+import { useUser } from "hooks/useUser";
+
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
+
 import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { useIsOnline } from "hooks/useIsOnline";
-import { useSameUser } from "hooks/useIsSameUser";
-import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
-import { useUser } from "hooks/useUser";
+
+import { DEFAULT_PARTY_NAME } from "settings";
+
+import "./ProfilModalBasicTextInfo.scss";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

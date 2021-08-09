@@ -1,13 +1,17 @@
+import React from "react";
+import classNames from "classnames";
+
 import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar/ProfileModalAvatar";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
 import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
-import "./ProfileModalBasicInfo.scss";
-import React from "react";
+
+import { faPen } from "@fortawesome/free-solid-svg-icons";
+
 import { WithId } from "utils/id";
 import { User } from "types/User";
-import { faPen } from "@fortawesome/free-solid-svg-icons";
-import classNames from "classnames";
 import { ContainerClassName } from "types/utility";
+
+import "./ProfileModalBasicInfo.scss";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

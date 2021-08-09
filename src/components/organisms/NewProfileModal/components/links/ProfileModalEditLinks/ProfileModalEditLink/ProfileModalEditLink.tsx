@@ -1,20 +1,26 @@
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";
 import classNames from "classnames";
+
+import { useBooleanState } from "hooks/useBooleanState";
+
 import {
   getLinkIcon,
   getLinkUsername,
 } from "components/organisms/NewProfileModal/components/links/linkUtilities";
+import { formProp } from "components/organisms/NewProfileModal/utilities";
+
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
-import { formProp } from "components/organisms/NewProfileModal/utilities";
-import { useBooleanState } from "hooks/useBooleanState";
-import React, { ChangeEvent, useCallback, useState } from "react";
-import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";
+
 import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
+
 import { urlRegex } from "utils/types";
+
 import "./ProfileModalEditLink.scss";
 
 interface Props extends ContainerClassName {

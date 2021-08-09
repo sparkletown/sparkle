@@ -1,15 +1,18 @@
-import {
-  profileModalWideButtonCustomStyle,
-  profileModalWideButtonCustomStyleGrey,
-} from "components/organisms/NewProfileModal/utilities";
+import React, { useMemo } from "react";
+
+import { useIsOnline } from "hooks/useIsOnline";
 import { useSameUser } from "hooks/useIsSameUser";
+
+import { Button } from "components/atoms/Button";
+
+import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utilities";
+import { profileModalWideButtonCustomStyleGrey } from "components/organisms/NewProfileModal/utilities";
+
 import { User } from "types/User";
 import { WithId } from "utils/id";
-import { Button } from "components/atoms/Button";
-import "./ProfileModalButtons.scss";
-import React, { useMemo } from "react";
 import { ContainerClassName } from "types/utility";
-import { useIsOnline } from "hooks/useIsOnline";
+
+import "./ProfileModalButtons.scss";
 
 interface Props extends ContainerClassName {
   onClick: () => void;

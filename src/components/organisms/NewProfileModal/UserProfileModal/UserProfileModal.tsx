@@ -1,16 +1,22 @@
-import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
-import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
-import { useBooleanState } from "hooks/useBooleanState";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";
+
+import { useBooleanState } from "hooks/useBooleanState";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { IS_BURN } from "secrets";
+
+import { venueLandingUrl } from "utils/url";
+
+import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
+import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
+
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
+
+import { IS_BURN } from "secrets";
+
 import "./UserProfileModal.scss";
-import { venueLandingUrl } from "utils/url";
 
 interface Props {
   user: WithId<User>;

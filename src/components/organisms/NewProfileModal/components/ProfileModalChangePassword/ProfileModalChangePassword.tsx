@@ -1,13 +1,15 @@
-import "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword.scss";
-import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import {
-  formProp,
-  UserProfileModalFormData,
-} from "components/organisms/NewProfileModal/utilities";
 import React, { useCallback } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
-import { ContainerClassName } from "types/utility";
+
+import { ProfileModalSectionHeader } from "../ProfileModalSectionHeader/ProfileModalSectionHeader";
 import { ProfileModalInput } from "../ProfileModalInput/ProfileModalInput";
+
+import { formProp } from "components/organisms/NewProfileModal/utilities";
+
+import { UserProfileModalFormData } from "components/organisms/NewProfileModal/utilities";
+import { ContainerClassName } from "types/utility";
+
+import "./ProfileModalChangePassword.scss";
 
 interface Props
   extends ContainerClassName,

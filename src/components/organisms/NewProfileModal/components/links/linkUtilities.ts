@@ -1,3 +1,5 @@
+import { useMemo } from "react";
+import { memoize } from "lodash";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import {
   faFacebook,
@@ -14,8 +16,6 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
-import { memoize } from "lodash";
-import { useMemo } from "react";
 
 export const getLinkIcon = (url: string) => {
   const type = Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>

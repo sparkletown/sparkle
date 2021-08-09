@@ -1,8 +1,11 @@
-import { ProfileModalLink } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLink/ProfileModalLink";
 import React, { useMemo } from "react";
+
+import { ProfileModalLink } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLink/ProfileModalLink";
+
 import { ContainerClassName } from "types/utility";
 import { User } from "types/User";
 import { WithId } from "utils/id";
+
 import "./ProfileModalLinks.scss";
 
 interface Props extends ContainerClassName {

@@ -1,10 +1,13 @@
-import classNames from "classnames";
-import { useLinkIcon } from "components/organisms/NewProfileModal/components/links/linkUtilities";
-import { ProfileLink } from "types/User";
-import "./ProfileModalLink.scss";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React from "react";
+import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+import { useLinkIcon } from "components/organisms/NewProfileModal/components/links/linkUtilities";
+
+import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
+
+import "./ProfileModalLink.scss";
 
 export const ProfileModalLink: React.FC<
   { link: ProfileLink } & ContainerClassName

@@ -1,5 +1,7 @@
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useMemo } from "react";
+
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
 import { User } from "types/User";
 
 export const useProfileQuestions = (user?: User, venueId?: string) => {

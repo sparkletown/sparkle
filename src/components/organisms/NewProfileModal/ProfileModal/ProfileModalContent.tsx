@@ -1,14 +1,18 @@
 import React from "react";
+
+import { useProfileQuestions } from "../useProfileQuestions";
+
 import { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons/ProfileModalButtons";
 import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
 import { ProfileModalLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLinks";
 import { ProfileModalBadges } from "components/organisms/NewProfileModal/components/ProfileModalBadges/ProfileModalBadges";
-import "./ProfileModal.scss";
+
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
-import { useProfileQuestions } from "../useProfileQuestions";
+
+import "./ProfileModal.scss";
 
 interface Props {
   viewingUser: WithId<User>;

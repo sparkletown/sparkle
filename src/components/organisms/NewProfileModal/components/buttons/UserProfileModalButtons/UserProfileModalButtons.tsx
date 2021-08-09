@@ -1,11 +1,14 @@
+import React from "react";
 import { Button } from "components/atoms/Button";
+
 import {
   profileModalWideButtonCustomStyle,
   profileModalWideButtonCustomStyleDisabled,
   profileModalWideButtonCustomStyleGrey,
 } from "components/organisms/NewProfileModal/utilities";
-import React from "react";
+
 import { ContainerClassName } from "types/utility";
+
 import "./UserProfileModalButtons.scss";
 
 interface Props extends ContainerClassName {

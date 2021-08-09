@@ -1,13 +1,15 @@
+import { useMemo } from "react";
+import { pick } from "lodash";
+
+import { User } from "types/User";
+import { Question } from "types/venues";
+import { WithId } from "utils/id";
 import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "components/organisms/NewProfileModal/utilities";
-import { pick } from "lodash";
-import { useMemo } from "react";
+
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
-import { User } from "types/User";
-import { Question } from "types/venues";
-import { WithId } from "utils/id";
 
 export const arePasswordsNotEmpty = (
   passwords: UserProfileModalFormDataPasswords

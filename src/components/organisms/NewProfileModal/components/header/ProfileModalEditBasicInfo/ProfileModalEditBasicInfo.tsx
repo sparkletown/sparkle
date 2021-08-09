@@ -1,15 +1,20 @@
+import React, { useCallback } from "react";
 import classNames from "classnames";
+import { FieldError, useForm } from "react-hook-form";
+import { useToggle } from "react-use";
+
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar/ProfileModalAvatar";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
+
 import { formProp } from "components/organisms/NewProfileModal/utilities";
-import React, { useCallback } from "react";
-import { FieldError, useForm } from "react-hook-form";
-import { useToggle } from "react-use";
-import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
+
+import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
+
 import "./ProfileModalEditBasicInfo.scss";
 
 interface Props extends ContainerClassName {

@@ -1,11 +1,14 @@
+import React, { useMemo } from "react";
+import classNames from "classnames";
+
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader/ProfileModalSectionHeader";
-import "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions.scss";
-import classNames from "classnames";
-import React, { useMemo } from "react";
+
 import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
 import { Question } from "types/venues";
+
+import "./ProfileModalQuestions.scss";
 
 interface Props extends ContainerClassName {
   editMode?: boolean;
