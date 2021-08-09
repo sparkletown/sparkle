@@ -91,7 +91,7 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
+        room.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -173,7 +173,7 @@ const Room: React.FC<RoomProps> = ({
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
+        localRoom.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
