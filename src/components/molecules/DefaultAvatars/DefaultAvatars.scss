@@ -1,8 +1,10 @@
-.default-avatars-container {
+@import "pages/Account/Account.scss";
+
+.DefaultAvatars {
   display: flex;
   flex-direction: row;
 
-  .profile-picture-preview {
+  &__picture-preview {
     width: 40px;
     height: 40px;
     border: 0px solid;

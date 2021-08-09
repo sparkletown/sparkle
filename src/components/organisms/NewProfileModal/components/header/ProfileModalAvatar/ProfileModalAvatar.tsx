@@ -17,25 +17,23 @@ import "./ProfileModalAvatar.scss";
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;
   editMode?: boolean;
+  setPictureUrl?: (url: string) => void;
+  pictureUrl?: string;
   register?: ReturnType<typeof useForm>["register"];
-  setValue?: ReturnType<typeof useForm>["setValue"];
-  watch?: ReturnType<typeof useForm>["watch"];
 }
 
 export const ProfileModalAvatar: React.FC<Props> = ({
   editMode,
   viewingUser,
   register,
-  setValue,
-  watch,
+  pictureUrl,
+  setPictureUrl,
   containerClassName,
 }: Props) => {
   const sameUser = useSameUser(viewingUser);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
-
-  const pictureUrl = watch?.(formProp("pictureUrl"));
 
   const [uploading, uploadStarted, uploadFinished] = useBooleanState(false);
 
@@ -50,14 +48,14 @@ export const ProfileModalAvatar: React.FC<Props> = ({
       uploadStarted();
       try {
         const pictureUrlRef = await uploadProfilePictureHandler(e);
-        if (pictureUrlRef && setValue) {
-          setValue(formProp("pictureUrl"), pictureUrlRef, true);
+        if (pictureUrlRef && setPictureUrl) {
+          setPictureUrl(pictureUrlRef);
         }
       } finally {
         uploadFinished();
       }
     },
-    [uploadProfilePictureHandler, setValue, uploadFinished, uploadStarted]
+    [uploadStarted, uploadProfilePictureHandler, setPictureUrl, uploadFinished]
   );
 
   const uploadProfilePic = useCallback((event) => {
