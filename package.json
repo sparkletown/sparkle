@@ -126,7 +126,8 @@
   },
   "lint-staged": {
     "{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ],
     "{src,scripts,functions,configs,reporting}/**/*.{js,jsx,ts,tsx}": [
       "eslint --max-warnings=0 --ext .js,.jsx,.ts,.tsx"
