@@ -1,0 +1,13 @@
+name: Deploy the changes to the env branches
+on:
+  push:
+    branches:
+      - staging
+jobs:
+  push-to-prod-envs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Push to test staging
+        run: |
+          git push origin staging:staging-test
