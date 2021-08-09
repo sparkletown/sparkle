@@ -103,8 +103,10 @@ export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
 
 export const getEventDayRange = (daysInBetween: number) => {
   if (daysInBetween === 2) {
+    // add 1 day to daysInBetween to form a full timeline, if we already have exactly 2 days difference
     return daysInBetween + 1;
   }
 
+  // add 2 days to daysInBetween to form a full timeline
   return daysInBetween + 2;
 };

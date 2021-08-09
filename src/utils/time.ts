@@ -255,11 +255,11 @@ export const getDayInterval = (date: Date | number) => ({
 });
 
 export const isDateLessOrEqualsToday = ({
-  valueSource,
-  valueTarget,
+  dateValue,
+  targetDateValue,
 }: {
-  valueSource: number;
-  valueTarget: number;
+  dateValue: number;
+  targetDateValue: number;
 }) => {
-  return max([valueSource, valueTarget]) <= startOfToday();
+  return max([dateValue, targetDateValue]) <= startOfToday();
 };

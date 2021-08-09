@@ -6,7 +6,8 @@ import {
   format,
   fromUnixTime,
   isToday,
- millisecondsToSeconds,  minutesToSeconds,
+  millisecondsToSeconds,
+  minutesToSeconds,
   secondsToMilliseconds,
   startOfDay,
   startOfToday } from "date-fns";
@@ -101,13 +102,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useShowHide(false);
 
   const liveAndFutureEvents = useMemo(
-    () =>
-      relatedVenueEvents.filter(
-        (event) =>
-          secondsToMilliseconds(
-            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
-          ) > startOfToday().getTime()
-      ),
+    () => relatedVenueEvents.filter(isEventLiveOrFuture),
     [relatedVenueEvents]
   );
 
@@ -130,12 +125,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   );
 
   const firstRangeDayTimeValue = isDateLessOrEqualsToday({
-    valueSource: secondsToMilliseconds(minDate),
-    valueTarget: millisecondsToSeconds(startOfToday().getTime()),
-  })
+    dateValue: secondsToMilliseconds(minDate),
+    targetDateValue: millisecondsToSeconds(startOfToday().getTime()),
+  });
+
+  const firstRangeDateInSeconds = firstRangeDayTimeValue
     ? millisecondsToSeconds(todaysDate.getTime())
     : millisecondsToSeconds(new Date(secondsToMilliseconds(minDate)).getTime());
-
   const maxDate = useMemo(
     () =>
       Math.max(
@@ -143,14 +139,15 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           (event) =>
             event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
         ),
-        firstRangeDayTimeValue + 1
+        // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
+        firstRangeDateInSeconds + 1
       ),
-    [liveAndFutureEvents, firstRangeDayTimeValue]
+    [liveAndFutureEvents, firstRangeDateInSeconds]
   );
 
   const daysInBetween = differenceInDays(
     fromUnixTime(maxDate),
-    fromUnixTime(firstRangeDayTimeValue)
+    fromUnixTime(firstRangeDateInSeconds)
   );
   const dayDifference = getEventDayRange(daysInBetween);
 
@@ -167,10 +164,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const firstScheduleDate = isDateLessOrEqualsToday({
-        valueSource: secondsToMilliseconds(minDate),
-        valueTarget: millisecondsToSeconds(startOfToday().getTime()),
-      })
+      const firstScheduleDate = firstRangeDayTimeValue
         ? todaysDate
         : new Date(secondsToMilliseconds(minDate));
       const day = addDays(firstScheduleDate, dayIndex);
@@ -209,13 +203,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     dayDifference,
     liveAndFutureEvents,
     minDate,
+    firstRangeDayTimeValue,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
-    const firstScheduleDate = isDateLessOrEqualsToday({
-      valueSource: secondsToMilliseconds(minDate),
-      valueTarget: millisecondsToSeconds(startOfToday().getTime()),
-    })
+    const firstScheduleDate = firstRangeDayTimeValue
       ? todaysDate
       : new Date(secondsToMilliseconds(minDate));
     const day = addDays(firstScheduleDate, selectedDayIndex);
@@ -241,6 +233,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     minDate,
     showPersonalisedSchedule,
+    firstRangeDayTimeValue,
   ]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
@@ -278,16 +271,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
       {!isLoadingSchedule && (
         <div className="NavBarSchedule__download-buttons">
-          {/* Enable when Schedule V3 bookmarked events are ready */}
-          {/* {hasSavedEvents && (
-            <Button
-              onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarSchedule__download-schedule-btn"
-            >
-              Download your schedule
-            </Button>
-          )} */}
-
           <Button
             onClick={downloadAllEventsCalendar}
             customClass="NavBarSchedule__download-schedule-btn"
