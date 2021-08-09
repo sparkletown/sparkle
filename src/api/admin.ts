@@ -23,7 +23,7 @@ export interface EventInput {
   start_date: string;
   start_time: string;
   duration_hours: number;
-  duration_minutes: number;
+  duration_minutes?: number;
   host: string;
   room?: string;
 }
