@@ -63,19 +63,21 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const gotoHome = useCallback(() => history.push(adminNGRootUrl()), [history]);
+  const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
+    history,
+  ]);
 
-  const gotoSpaces = useCallback(
+  const navigateToSpaces = useCallback(
     () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.spaces)),
     [history, venueId]
   );
 
-  const gotoTiming = useCallback(
+  const navigateToTiming = useCallback(
     () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.timing)),
     [history, venueId]
   );
 
-  const gotoRun = useCallback(
+  const navigateToRun = useCallback(
     () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.run)),
     [history, venueId]
   );
@@ -94,13 +96,17 @@ export const AdminVenueView: React.FC = () => {
         <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
       {selectedTab === AdminVenueTab.spaces && (
-        <Spaces onClickHome={gotoHome} onClickNext={gotoTiming} venue={venue} />
+        <Spaces
+          onClickHome={navigateToHome}
+          onClickNext={navigateToTiming}
+          venue={venue}
+        />
       )}
       {selectedTab === AdminVenueTab.timing && (
         <Timing
-          onClickBack={gotoSpaces}
-          onClickHome={gotoHome}
-          onClickNext={gotoRun}
+          onClickBack={navigateToSpaces}
+          onClickHome={navigateToHome}
+          onClickNext={navigateToRun}
           venue={venue}
         />
       )}
