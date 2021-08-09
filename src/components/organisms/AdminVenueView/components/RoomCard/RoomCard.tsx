@@ -25,6 +25,7 @@ import { useRoom } from "hooks/useRoom";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
 import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
+import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 
 import "./RoomCard.scss";
 
@@ -106,8 +107,8 @@ export const RoomCard: React.FC<RoomCardProps> = ({
           {recentRoomUsers.length}
         </div>
         <div className="RoomCard__type">{room.template}</div>
-        <div className="RoomCard__link" onClick={() => openRoomUrl(room.url)}>
-          {room.url}
+        <div className="RoomCard__link">
+          <PrettyLink title={room.url} onClick={() => openRoomUrl(room.url)} />
         </div>
       </div>
 

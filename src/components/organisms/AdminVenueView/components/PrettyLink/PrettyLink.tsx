@@ -1,20 +1,18 @@
 import React from "react";
-import { Link, LinkProps } from "react-router-dom";
 
 import "./PrettyLink.scss";
 
-interface PrettyLinkProps extends LinkProps {}
+interface PrettyLinkProps {
+  title: string;
+  onClick: () => void;
+}
 
-export const PrettyLink: React.FC<PrettyLinkProps> = (props) => {
-  const title = `${props.to}`;
-  const text = title.replace(/.*\/\//, "");
+export const PrettyLink: React.FC<PrettyLinkProps> = ({ title, onClick }) => {
   return (
-    <div className="PrettyLink PrettyLink__wrapper">
-      <Link {...props}>
-        <span className="PrettyLink PrettyLink__text" title={title}>
-          {text}
-        </span>
-      </Link>
+    <div className="PrettyLink">
+      <span title={title} onClick={onClick}>
+        {title}
+      </span>
     </div>
   );
 };
