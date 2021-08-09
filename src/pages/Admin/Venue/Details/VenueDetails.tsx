@@ -83,7 +83,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   useEffect(() => {
     const newOwners: Owner[] = [];
-    async function getOwnersData() {
+    const getOwnersData = async () => {
       if (owners && owners.length > 0) {
         for (const owner of owners) {
           const user = await firebase
@@ -104,7 +104,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           setOwnersData(newOwners);
         }
       }
-    }
+    };
     getOwnersData();
   }, [owners, ownersData]);
 
