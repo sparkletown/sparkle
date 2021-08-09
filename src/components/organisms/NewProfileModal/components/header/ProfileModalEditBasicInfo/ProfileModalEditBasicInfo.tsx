@@ -82,15 +82,15 @@ export const ProfileModalEditBasicInfo: React.FC<Props> = ({
           </>
         )}
       </div>
-
-      {isShowDefaults && (
-        <DefaultAvatars
-          containerClassName="ProfileModalEditBasicInfo__default-pictures"
-          avatarClassName="ProfileModalEditBasicInfo__avatar"
-          venueId={venueId}
-          onAvatarClick={setPictureUrl}
-        />
-      )}
+      <DefaultAvatars
+        containerClassName={classNames(
+          "ProfileModalEditBasicInfo__default-pictures",
+          { "ProfileModalEditBasicInfo--hidden": !isShowDefaults }
+        )}
+        avatarClassName="ProfileModalEditBasicInfo__avatar"
+        venueId={venueId}
+        onAvatarClick={setPictureUrl}
+      />
     </div>
   );
 };

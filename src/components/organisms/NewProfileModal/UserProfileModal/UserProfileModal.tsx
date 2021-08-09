@@ -55,12 +55,7 @@ export const UserProfileModal: React.FC<Props> = ({
   }, [isSubmitting, onClose, turnOffEditMode]);
 
   return (
-    <Modal
-      centered
-      className="UserProfileModal"
-      show={show}
-      onHide={hideHandler}
-    >
+    <Modal className="UserProfileModal" show={show} onHide={hideHandler}>
       <Modal.Body className="UserProfileModal__body">
         {editMode ? (
           <UserProfileModalContent

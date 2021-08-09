@@ -37,7 +37,6 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
 
   return (
     <Modal
-      centered
       className="ProfileModal"
       show={hasSelectedProfile}
       onHide={closeUserProfileModal}

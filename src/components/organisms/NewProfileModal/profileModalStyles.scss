@@ -5,6 +5,7 @@ $modal-dialog-viewport-margin: 10% auto 0 auto;
 $modal-content-margin: 1.7rem;
 
 $header-sections-gap: 1.5rem;
+$profile-pictures-margin: -2rem;
 
 $round-icon-size: 1.7rem;
 
@@ -49,7 +50,6 @@ $input-text-shadow: 0 1px 2px rgba($black, 0.25);
   & > .modal-dialog {
     max-width: $modal-content-max-width;
     margin: $modal-dialog-viewport-margin;
-    width: auto;
     & > .modal-content {
       padding: 0;
     }
