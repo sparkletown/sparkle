@@ -117,7 +117,7 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
       .collection(`experiences/playa/shouts`)
       .where("created_at", ">", new Date().getTime())
       .onSnapshot((snapshot) => {
-        snapshot.docChanges().forEach(function (change) {
+        snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             const newShout = change.doc.data() as Shout;
             setShouts((prevShouts) => [...prevShouts, newShout]);

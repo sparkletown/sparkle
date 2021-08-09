@@ -203,9 +203,8 @@ export const formatDateRelativeToNow = (
 export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
   format(dateOrTimestamp, "p");
 
-export function oneHourAfterTimestamp(timestamp: number) {
-  return timestamp + ONE_HOUR_IN_SECONDS;
-}
+export const oneHourAfterTimestamp = (timestamp: number) =>
+  timestamp + ONE_HOUR_IN_SECONDS;
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
   getTime(subHours(Date.now(), hours));
