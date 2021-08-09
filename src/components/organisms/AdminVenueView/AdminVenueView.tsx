@@ -1,11 +1,9 @@
-import React, { useMemo, useEffect } from "react";
-import { useParams, useHistory } from "react-router";
-import { Link } from "react-router-dom";
+import React, { useMemo, useCallback } from "react";
+import { useParams } from "react-router";
+import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 
-import { Venue_v2 } from "types/venues";
-
-import { adminNGVenueUrl, adminNGRootUrl, openUrl } from "utils/url";
+import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsAdminUser } from "hooks/roles";
@@ -65,11 +63,22 @@ export const AdminVenueView: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  useEffect(() => {
-    if (venueId) return;
-    // when URL is invalid, land on the root one for the admin
-    history.push(adminNGRootUrl());
-  }, [venueId, history]);
+  const gotoHome = useCallback(() => history.push(adminNGRootUrl()), [history]);
+
+  const gotoSpaces = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.spaces)),
+    [history, venueId]
+  );
+
+  const gotoTiming = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.timing)),
+    [history, venueId]
+  );
+
+  const gotoRun = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.run)),
+    [history, venueId]
+  );
 
   if (!isCurrentVenueLoaded) {
     return <LoadingPage />;
@@ -85,22 +94,14 @@ export const AdminVenueView: React.FC = () => {
         <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
       {selectedTab === AdminVenueTab.spaces && (
-        <Spaces
-          venue={venue as Venue_v2}
-          onClickNext={() =>
-            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.timing))
-          }
-        />
+        <Spaces onClickHome={gotoHome} onClickNext={gotoTiming} venue={venue} />
       )}
       {selectedTab === AdminVenueTab.timing && (
         <Timing
+          onClickBack={gotoSpaces}
+          onClickHome={gotoHome}
+          onClickNext={gotoRun}
           venue={venue}
-          onClickBack={() =>
-            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.spaces))
-          }
-          onClickNext={() =>
-            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.run))
-          }
         />
       )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}

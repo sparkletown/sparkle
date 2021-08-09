@@ -11,21 +11,17 @@ export const venueInsideUrl = (venueId: string) => {
   return `/in/${venueId}`;
 };
 
-const createAdminUrlHelperFor = (segment: string) => (
-  venueId?: string,
-  selectedTab?: string
-) =>
-  segment
-    ? generatePath(`/admin-ng/:segment?/:venueId?/:selectedTab?`, {
-        segment: segment,
-        venueId: venueId,
-        selectedTab: selectedTab,
-      })
-    : generatePath("/admin-ng");
-
-export const adminNGRootUrl = createAdminUrlHelperFor("");
-export const adminNGVenueUrl = createAdminUrlHelperFor("venue");
-export const adminNGSettingsUrl = createAdminUrlHelperFor("advanced-settings");
+export const adminNGRootUrl = () => generatePath("/admin-ng");
+export const adminNGVenueUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(`/admin-ng/venue/:venueId?/:selectedTab?`, {
+    venueId,
+    selectedTab,
+  });
+export const adminNGSettingsUrl = (venueId?: string, selectedTab?: string) =>
+  generatePath(`/admin-ng/advanced-settings/:venueId?/:selectedTab?`, {
+    venueId,
+    selectedTab,
+  });
 
 export const venuePreviewUrl = (venueId: string, roomTitle: string) => {
   return `${venueInsideUrl(venueId)}/${roomTitle}`;

@@ -69,8 +69,8 @@ export const AdminAdvancedSettings: React.FC = () => {
     ));
   }, [selectedTab, venueId]);
 
-  const selectDefaultTab = useCallback(
-    () => history.push(adminNGSettingsUrl(venueId)),
+  const gotoDefaultTab = useCallback(
+    () => history.push(adminNGSettingsUrl(venueId, AdminAdvancedTab.basicInfo)),
     [venueId, history]
   );
 
@@ -95,11 +95,11 @@ export const AdminAdvancedSettings: React.FC = () => {
           // @debt Venue_v2 has different structure than AnyVenue, 1 of them should be deprecated.
           venue={venue as Venue_v2}
           sovereignVenue={sovereignVenue}
-          onSave={selectDefaultTab}
+          onSave={gotoDefaultTab}
         />
       )}
       {selectedTab === AdminAdvancedTab.advancedMapSettings && (
-        <AdvancedSettings venue={venue as Venue_v2} onSave={selectDefaultTab} />
+        <AdvancedSettings venue={venue as Venue_v2} onSave={gotoDefaultTab} />
       )}
     </>
   );
