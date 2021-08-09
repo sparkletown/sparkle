@@ -2,19 +2,22 @@ import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
+  AnimateMapEntityType,
   PlayerModel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 import { Point } from "types/utility";
+import { uuid } from "uuidv4";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles } from "../../constants/AssetConstants";
+import { avatarCycles, barrels, HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
+import { BarrelComponent } from "../components/BarrelComponent";
 import { BotComponent } from "../components/BotComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -38,6 +41,7 @@ import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
 import { Avatar } from "../graphics/Avatar";
+import { Barrel } from "../graphics/Barrel";
 import { Venue } from "../graphics/Venue";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
@@ -497,6 +501,109 @@ export default class EntityFactory {
     );
 
     this.engine?.addEntity(entity);
+    return entity;
+  }
+
+  public createBarrel(venue: ReplicatedVenue | null = null): Entity {
+    const config = GameInstance.instance.getConfig();
+
+    if (!venue) {
+      const point: Point = config.playgroundMap.getRandomPointInTheCentralCircle();
+      venue = {
+        id: uuid(),
+        type: AnimateMapEntityType.venue,
+        x: point.x,
+        y: point.y,
+        data: {
+          videoUrlString: "",
+          url: "",
+          imageUrlString: barrels[0],
+        },
+      };
+    }
+
+    const collisionRadius = config.venueDefaultCollisionRadius / 2;
+
+    const entity: Entity = new Entity();
+    entity
+      .add(new VenueComponent(venue))
+      .add(new BarrelComponent())
+      .add(new CollisionComponent(collisionRadius))
+      .add(
+        new HoverableSpriteComponent(
+          () => {
+            const tooltip: TooltipComponent = new TooltipComponent("Join", 0);
+            tooltip.textColor = 0xffffff;
+            tooltip.textSize = 14;
+            tooltip.borderThikness = 0;
+            tooltip.borderColor = 0;
+            tooltip.backgroundColor = 0;
+            // add tooltip
+            entity.add(tooltip);
+            // add increase
+            const comm: SpriteComponent | null = entity.get(SpriteComponent);
+            const duration = 100;
+            if (comm) {
+              entity.add(
+                new AnimationComponent(
+                  new VenueHoverIn(comm.view as Venue, duration),
+                  duration
+                )
+              );
+            }
+          },
+          () => {
+            // remove tooltip
+            entity.remove(TooltipComponent);
+            // add decrease
+            const comm: SpriteComponent | null = entity.get(SpriteComponent);
+            const duration = 100;
+            if (comm) {
+              entity.add(
+                new AnimationComponent(
+                  new VenueHoverOut(comm.view as Venue, duration),
+                  duration
+                )
+              );
+            }
+          }
+        )
+      );
+
+    this.engine?.addEntity(entity);
+
+    new LoadImage(venue.data.imageUrlString)
+      .execute()
+      .then(
+        (comm: LoadImage): Promise<ImageToCanvas> => {
+          // the picture can be very large
+          const scale = ((collisionRadius * 2) / comm.image!.width) * 2;
+          return new ImageToCanvas(comm.image!).scaleTo(scale).execute();
+        }
+      )
+      .then((comm: ImageToCanvas) => {
+        const scale = (collisionRadius * 2) / comm.canvas.width / 2;
+        entity.add(new PositionComponent(venue!.x, venue!.y, 0, scale, scale));
+
+        const sprite: Barrel = new Barrel();
+        sprite.barrel = Sprite.from(comm.canvas);
+        sprite.barrel.anchor.set(0.5);
+        sprite.addChild(sprite.barrel);
+
+        sprite.halo = Sprite.from(HALO);
+        sprite.halo.anchor.set(0.5);
+        sprite.addChildAt(sprite.halo, 0);
+
+        const spriteComponent: SpriteComponent = new SpriteComponent();
+        spriteComponent.view = sprite;
+
+        entity.add(spriteComponent);
+      })
+      .catch((err) => {
+        // TODO default venue image
+        console.log("err", err);
+      });
+
     return entity;
   }
 

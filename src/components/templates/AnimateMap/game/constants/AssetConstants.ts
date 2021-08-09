@@ -59,6 +59,9 @@ import ARTCAR_4 from "assets/images/AnimateMap/artcars/11.1.png";
 import ARTCAR_5 from "assets/images/AnimateMap/artcars/12.1.png";
 import ARTCAR_6 from "assets/images/AnimateMap/artcars/13.1.png";
 
+import BARREL_0 from "assets/images/AnimateMap/barrels/barrel.png";
+import HALO from "assets/images/AnimateMap/barrels/halo.png";
+
 import PLAYA_01_SOUND from "assets/sounds/AnimateMap/playa_01.mp3";
 import PLAYA_02_SOUND from "assets/sounds/AnimateMap/playa_02.mp3";
 import PLAYA_03_SOUND from "assets/sounds/AnimateMap/playa_03.mp3";
@@ -105,6 +108,8 @@ const artcars = [
   ARTCAR_6,
 ];
 
+const barrels = [BARREL_0];
+
 const mapZoomedLevel0 = [
   MAP_IMAGE_1,
   MAP_IMAGE_2,
@@ -139,7 +144,9 @@ export {
   avatarAccessories,
   avatarCycles,
   artcars,
+  barrels,
   MAP_IMAGE,
+  HALO,
   MAP_JSON,
   mapZoomedLevel0,
   JOYSTICK_IMAGE,

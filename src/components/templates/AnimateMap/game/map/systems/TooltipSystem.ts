@@ -86,19 +86,14 @@ export class TooltipSystem extends System {
     );
   }
 
+  // TODO graphics component
   private drawTooltipElement(node: TooltipNode): Sprite {
-    const textColor = 0xede8fe;
-    const textSize = 14;
-    const borderThikness = 3;
-    const borderColor = 0x9178f6;
-    const backgroundColor = 0x6943f5;
-
     const view = new Sprite();
 
     const txt = node.tooltip.text;
     const style = new TextStyle({
-      fill: textColor,
-      fontSize: textSize,
+      fill: node.tooltip.textColor,
+      fontSize: node.tooltip.textSize,
     });
 
     const text: Text = new Text(txt, style);
@@ -108,17 +103,22 @@ export class TooltipSystem extends System {
     const r = h / 2;
 
     const g: Graphics = new Graphics();
-    g.beginFill(borderColor, 1);
+    g.beginFill(node.tooltip.borderColor, 1);
     g.drawRoundedRect(0, 0, w, h, r);
-    g.beginFill(backgroundColor, 1);
-    g.drawRoundedRect(
-      borderThikness,
-      borderThikness,
-      w - 2 * borderThikness,
-      h - 2 * borderThikness,
-      r - borderThikness
-    );
+
+    if (node.tooltip.borderThikness) {
+      g.beginFill(node.tooltip.backgroundColor, 1);
+      g.drawRoundedRect(
+        node.tooltip.borderThikness,
+        node.tooltip.borderThikness,
+        w - 2 * node.tooltip.borderThikness,
+        h - 2 * node.tooltip.borderThikness,
+        r - node.tooltip.borderThikness
+      );
+    }
+
     g.position.set(-w / 2, -h / 2);
+    g.alpha = 0.7;
     view.addChild(g);
 
     text.position.set(-text.width / 2, -text.height / 2);
