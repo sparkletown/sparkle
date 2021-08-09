@@ -18,7 +18,7 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
 }) => {
   const renderLogo = () => (
     <S.Logo
-      backgroundImage={!!logoImageUrl ? logoImageUrl : DEFAULT_VENUE_LOGO}
+      backgroundImage={logoImageUrl ? logoImageUrl : DEFAULT_VENUE_LOGO}
     />
   );
 
@@ -38,9 +38,7 @@ const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   return (
     <S.Wrapper>
       <S.PreviewCard
-        backgroundImage={
-          !!bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER
-        }
+        backgroundImage={bannerImageUrl ? bannerImageUrl : DEFAULT_VENUE_BANNER}
       >
         {renderLogo()}
         {renderName()}

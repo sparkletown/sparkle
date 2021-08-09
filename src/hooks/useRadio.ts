@@ -15,7 +15,9 @@ export const useRadio = (playRadio: boolean, audio?: HTMLAudioElement) => {
           setVolume(state.volume);
           loadedInitialState.current = true;
         }
-      } catch {}
+      } catch {
+        console.log("Got error in useRadio");
+      }
     }
     localStorage.setItem(storageKey, JSON.stringify({ volume }));
   }, [volume]);

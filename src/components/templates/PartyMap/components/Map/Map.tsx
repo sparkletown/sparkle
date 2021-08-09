@@ -72,7 +72,7 @@ export const Map: React.FC<MapProps> = ({
 
   useEffect(() => {
     const img = new Image();
-    img.src = !!venue.mapBackgroundImageUrl
+    img.src = venue.mapBackgroundImageUrl
       ? venue.mapBackgroundImageUrl
       : DEFAULT_MAP_BACKGROUND;
     img.onload = () => {

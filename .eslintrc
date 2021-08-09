@@ -11,7 +11,7 @@
   "plugins": ["@typescript-eslint"],
   "extends": [
     "react-app",
-    // "eslint:recommended", // @debt enable this + fix the issues in a standalone PR
+    "eslint:recommended",
     // "plugin:@typescript-eslint/recommended", // @debt enable this + fix the issues in a standalone PR
     // "plugin:@typescript-eslint/recommended-requiring-type-checking", // @debt enable this + fix the issues in a standalone PR
     "plugin:react/recommended",
@@ -22,6 +22,8 @@
     "@typescript-eslint/no-use-before-define": "warn",
     "@typescript-eslint/no-explicit-any": "warn",
     "@typescript-eslint/no-unused-vars": "error",
+    "no-case-declarations": "off",
+    "no-prototype-builtins": "off",
     // these base rules can report incorrect errors when using TypeScript, see the corresponding @typescript-eslint versions
     "no-redeclare": "off",
     "no-use-before-define": "off",
@@ -60,5 +62,9 @@
         "additionalHooks": "(useAsync)"
       }
     ]
+  },
+  "globals": {
+    "React": true,
+    "JSX": true
   }
 }

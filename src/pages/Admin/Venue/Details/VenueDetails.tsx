@@ -166,10 +166,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     <S.Container>
       <S.Header>
         <VenueCard
-          bannerImageUrl={
-            !!coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER
-          }
-          logoImageUrl={!!icon ? icon : DEFAULT_VENUE_LOGO}
+          bannerImageUrl={coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER}
+          logoImageUrl={icon ? icon : DEFAULT_VENUE_LOGO}
           name={name}
           subtitle={subtitle}
           description={description}

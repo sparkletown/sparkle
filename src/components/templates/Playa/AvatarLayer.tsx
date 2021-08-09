@@ -440,9 +440,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         return;
       }
 
+      let accepted = false;
+
       switch (chatRequest.state) {
         case ChatRequestState.Asked:
-          let accepted = false;
           setMenu({
             prompt: `${fromUser.partyName} ${
               chatRequest.type === ChatRequestType.JoinTheirChat

@@ -26,7 +26,7 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
   const [error, setError] = useState<string>();
 
   const closeDeleteModal = () => {
-    if (!!onDelete) onDelete();
+    if (onDelete) onDelete();
     onHide();
     setDeleted(false);
   };

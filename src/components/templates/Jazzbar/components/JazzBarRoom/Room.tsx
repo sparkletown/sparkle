@@ -236,7 +236,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
@@ -261,7 +261,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 

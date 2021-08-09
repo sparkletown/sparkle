@@ -204,7 +204,9 @@ const Playa = () => {
           setCenterY(state.y);
           loadedInitialState.current = true;
         }
-      } catch {}
+      } catch {
+        console.log("Caught error");
+      }
     }
     localStorage.setItem(
       PLAYA_VENUE_NAME,

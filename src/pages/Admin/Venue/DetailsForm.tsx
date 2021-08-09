@@ -102,7 +102,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 }) => {
   const defaultValues = useMemo(
     () =>
-      !!venueId
+      venueId
         ? editVenueCastSchema.cast(state.detailsPage?.venue)
         : validationSchema.cast(),
     [state.detailsPage, venueId]

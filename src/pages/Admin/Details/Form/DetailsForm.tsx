@@ -52,7 +52,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
+        if (venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
         if (vals.name) {
@@ -244,7 +244,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
       <S.FormFooter>
         <Button disabled={isSubmitting || !dirty} type="submit">
-          {!!venueId ? "Update Venue" : "Create Venue"}
+          {venueId ? "Update Venue" : "Create Venue"}
         </Button>
       </S.FormFooter>
     </Form>
