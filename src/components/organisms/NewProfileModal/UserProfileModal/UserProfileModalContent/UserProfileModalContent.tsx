@@ -1,9 +1,11 @@
+import { UserProfileModalFormDataPasswords } from "types/profileModal";
+import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { useCallback } from "react";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { isEqual, pick } from "lodash";
 import { useFirebase } from "react-redux-firebase";
 
-import { useProfileQuestions } from "components/organisms/NewProfileModal/useProfileQuestions";
+import { useProfileQuestions } from "hooks/useProfileQuestions";
 import { useBooleanState } from "hooks/useBooleanState";
 
 import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons/UserProfileModalButtons";
@@ -12,19 +14,17 @@ import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/comp
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
 
+import { propName } from "utils/propName";
 import { updateUserProfile } from "pages/Account/helpers";
 import { updateProfileLinks } from "api/profile";
-import { arePasswordsNotEmpty } from "components/organisms/NewProfileModal/UserProfileModal/utilities";
-import { useFormDefaultValues } from "components/organisms/NewProfileModal/UserProfileModal/utilities";
-import { formProp } from "components/organisms/NewProfileModal/utilities";
-import { propName } from "utils/types";
+import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 
-import { UserProfileModalFormData } from "components/organisms/NewProfileModal/utilities";
+import { UserProfileModalFormData } from "types/profileModal";
 import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
-import "./UserProfileModal.scss";
+import "../UserProfileModal.scss";
 
 interface Props {
   user: WithId<User>;
@@ -32,6 +32,16 @@ interface Props {
   onCancelEditing: () => void;
   isSubmittingState: ReturnType<typeof useBooleanState>;
 }
+
+export const arePasswordsNotEmpty = (
+  passwords: UserProfileModalFormDataPasswords
+) => Object.values(pick(passwords, passwordsFields)).some((x) => x);
+
+const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
+  "oldPassword",
+  "newPassword",
+  "confirmNewPassword",
+];
 
 export const UserProfileModalContent: React.FC<Props> = ({
   venue,
@@ -47,7 +57,11 @@ export const UserProfileModalContent: React.FC<Props> = ({
 
   const [isSubmitting, startSubmitting, finishSubmitting] = isSubmittingState;
 
-  const defaultValues = useFormDefaultValues(user, questions, answers);
+  const defaultValues = useProfileModalFormDefaultValues(
+    user,
+    questions,
+    answers
+  );
 
   const {
     register,

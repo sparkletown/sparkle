@@ -9,7 +9,7 @@ import { useForm } from "react-hook-form";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { formProp } from "components/organisms/NewProfileModal/utilities";
+import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";

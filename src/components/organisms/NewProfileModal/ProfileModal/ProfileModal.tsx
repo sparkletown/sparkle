@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
+import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent/ProfileModalContent";
 
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";

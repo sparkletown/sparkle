@@ -5,8 +5,7 @@ import {
   profileModalWideButtonCustomStyle,
   profileModalWideButtonCustomStyleDisabled,
   profileModalWideButtonCustomStyleGrey,
-} from "components/organisms/NewProfileModal/utilities";
-
+} from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
 import "./UserProfileModalButtons.scss";

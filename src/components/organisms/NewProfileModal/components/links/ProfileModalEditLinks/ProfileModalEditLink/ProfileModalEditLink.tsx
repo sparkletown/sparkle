@@ -1,3 +1,4 @@
+import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { ChangeEvent, useCallback, useState } from "react";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
@@ -7,10 +8,9 @@ import classNames from "classnames";
 import { useBooleanState } from "hooks/useBooleanState";
 
 import {
-  getLinkIcon,
-  getLinkUsername,
-} from "components/organisms/NewProfileModal/components/links/linkUtilities";
-import { formProp } from "components/organisms/NewProfileModal/utilities";
+  getProfileModalLinkIcon,
+  getProfileModalLinkUsername,
+} from "utils/profileModalLinkUtilities";
 
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
@@ -46,7 +46,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
   containerClassName,
 }: Props) => {
   const [linkIcon, setLinkIcon] = useState<IconDefinition>(
-    getLinkIcon(link.url)
+    getProfileModalLinkIcon(link.url)
   );
 
   const getInputNameForForm = useCallback(
@@ -68,8 +68,8 @@ export const ProfileModalEditLink: React.FC<Props> = ({
     (e: ChangeEvent<HTMLInputElement>) => {
       const url = e.target.value;
       if (url) {
-        const username = getLinkUsername(url);
-        setLinkIcon(getLinkIcon(url));
+        const username = getProfileModalLinkUsername(url);
+        setLinkIcon(getProfileModalLinkIcon(url));
         if (!titleTouched && username && username !== initialTitle) {
           setTitle(username);
         }

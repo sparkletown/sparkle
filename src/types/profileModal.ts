@@ -4,8 +4,6 @@ import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { ProfileLink } from "types/User";
 
-import { propName } from "utils/types";
-
 export const profileModalWideButtonCustomStyleGrey = {
   backgroundColor: "#ffffff33",
   fontSize: 14,
@@ -33,6 +31,3 @@ export interface UserProfileModalFormData
     QuestionsFormData {
   profileLinks: ProfileLink[];
 }
-
-export const formProp = (prop: keyof UserProfileModalFormData): string =>
-  propName<UserProfileModalFormData>(prop);

@@ -5,9 +5,8 @@ import { useIsSameUser } from "hooks/useIsSameUser";
 
 import { Button } from "components/atoms/Button";
 
-import { profileModalWideButtonCustomStyle } from "components/organisms/NewProfileModal/utilities";
-import { profileModalWideButtonCustomStyleGrey } from "components/organisms/NewProfileModal/utilities";
-
+import { profileModalWideButtonCustomStyle } from "types/profileModal";
+import { profileModalWideButtonCustomStyleGrey } from "types/profileModal";
 import { User } from "types/User";
 import { WithId } from "utils/id";
 import { ContainerClassName } from "types/utility";

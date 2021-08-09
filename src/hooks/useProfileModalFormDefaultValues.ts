@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { pick } from "lodash";
 
 import { User } from "types/User";
 import { Question } from "types/venues";
@@ -7,21 +6,11 @@ import { WithId } from "utils/id";
 import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
-} from "components/organisms/NewProfileModal/utilities";
+} from "types/profileModal";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
 
-export const arePasswordsNotEmpty = (
-  passwords: UserProfileModalFormDataPasswords
-) => Object.values(pick(passwords, passwordsFields)).some((x) => x);
-
-const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
-  "oldPassword",
-  "newPassword",
-  "confirmNewPassword",
-];
-
-export const useFormDefaultValues: (
+export const useProfileModalFormDefaultValues: (
   user: WithId<User>,
   questions: Question[],
   answers: string[]

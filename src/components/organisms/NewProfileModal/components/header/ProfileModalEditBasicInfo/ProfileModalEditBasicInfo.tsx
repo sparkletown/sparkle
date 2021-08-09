@@ -1,3 +1,4 @@
+import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { useCallback } from "react";
 import classNames from "classnames";
 import { FieldError, useForm } from "react-hook-form";
@@ -6,8 +7,6 @@ import { useToggle } from "react-use";
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar/ProfileModalAvatar";
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
-
-import { formProp } from "components/organisms/NewProfileModal/utilities";
 
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";

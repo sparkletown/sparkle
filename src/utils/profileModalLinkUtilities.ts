@@ -17,7 +17,7 @@ import {
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
 
-export const getLinkIcon = (url: string) => {
+export const getProfileModalLinkIcon = (url: string) => {
   const type = Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>
     url.match(regex)
   )?.[0] as ProfileModalLinkType | undefined;
@@ -27,10 +27,10 @@ export const getLinkIcon = (url: string) => {
     : profileModalGenericLinkIcon;
 };
 
-export const useLinkIcon = (url: string) =>
-  useMemo(() => getLinkIcon(url), [url]);
+export const useProfileModalLinkIcon = (url: string) =>
+  useMemo(() => getProfileModalLinkIcon(url), [url]);
 
-export const getLinkUsername = (url: string) => {
+export const getProfileModalLinkUsername = (url: string) => {
   const execute = (url: string) => {
     const res = Object.entries(profileModalProfileNameRegex).map(
       ([, regex]) => {
@@ -45,7 +45,7 @@ export const getLinkUsername = (url: string) => {
   return memoize(execute)(url);
 };
 
-export enum ProfileModalLinkType {
+enum ProfileModalLinkType {
   Instagram = "Instagram",
   Facebook = "Facebook",
   Medium = "Medium",
@@ -61,7 +61,7 @@ export enum ProfileModalLinkType {
 }
 
 export const profileModalGenericLinkIcon = faLink;
-export const profileModalLinkTypesIcons: Record<
+const profileModalLinkTypesIcons: Record<
   ProfileModalLinkType,
   IconDefinition
 > = {
@@ -79,16 +79,13 @@ export const profileModalLinkTypesIcons: Record<
   [ProfileModalLinkType.Mail]: faEnvelope,
 };
 
-export function buildMatchingRegex(...hosts: string[]) {
+function buildMatchingRegex(...hosts: string[]) {
   const escaped = hosts.map((h) => h.replace(".", "\\."));
 
   return new RegExp(`^(https?:\\/\\/)(www\\.)?(${escaped.join("|")}).*$`);
 }
 
-export const profileModalLinkTypesRegexes: Record<
-  ProfileModalLinkType,
-  RegExp
-> = {
+const profileModalLinkTypesRegexes: Record<ProfileModalLinkType, RegExp> = {
   [ProfileModalLinkType.Mail]: /^((([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,
   [ProfileModalLinkType.Instagram]: buildMatchingRegex(
     "instagram.com",

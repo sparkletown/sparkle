@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useProfileQuestions } from "../useProfileQuestions";
+import { useProfileQuestions } from "hooks/useProfileQuestions";
 
 import { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons/ProfileModalButtons";
 import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
@@ -12,7 +12,7 @@ import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
-import "./ProfileModal.scss";
+import "../ProfileModal.scss";
 
 interface Props {
   viewingUser: WithId<User>;
