@@ -5,7 +5,7 @@ import { useTitle } from "react-use";
 import {
   LOC_UPDATE_FREQ_MS,
   PLATFORM_BRAND_NAME,
-  EVENT_LIVE_RANGE,
+  EVENT_STARTING_SOON_TIMEFRAME,
 } from "settings";
 
 import { VenueTemplate } from "types/venues";
@@ -239,7 +239,7 @@ export const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (isEventStartingSoon(event, EVENT_LIVE_RANGE)) {
+    if (isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}

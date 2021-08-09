@@ -7,7 +7,7 @@ $schedule-info-block-width: 60px;
 
 .ScheduleItemNG {
   display: flex;
-  padding: $spacing__lg;
+  padding: $spacing--lg;
 
   &:hover {
     background: linear-gradient(0deg, opaque-white(0.05), opaque-white(0.05));
@@ -70,7 +70,7 @@ $schedule-info-block-width: 60px;
 
   &__name {
     font-weight: $font-weight__700;
-    font-size: $font-size__lg;
+    font-size: $font-size--lg;
     line-height: 18px;
   }
 

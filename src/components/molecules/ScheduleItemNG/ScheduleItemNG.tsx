@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
 
-import { EVENT_LIVE_RANGE } from "settings";
+import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
 import { Room } from "types/rooms";
@@ -68,12 +68,15 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
-  const isCurrentEventLive = isEventStartingSoon(event, 2 * EVENT_LIVE_RANGE);
+  const isCurrentEventLive = isEventStartingSoon(
+    event,
+    2 * EVENT_STARTING_SOON_TIMEFRAME
+  );
   const roomUrlParam = getUrlParamFromString(event.room ?? "");
 
   const handleCopyEventLink = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
+    (e?: React.MouseEvent<HTMLButtonElement>) => {
+      e && e.stopPropagation();
 
       const eventLink = getFullVenueInsideUrl(roomUrlParam);
       navigator.clipboard.writeText(eventLink);
@@ -166,7 +169,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
                 variant="primary"
               >
                 {/* See on Playa is needed only for `env/burn` */}
-                See on map
+                Visit event
               </ButtonNG>
             </div>
           </>
