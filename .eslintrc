@@ -12,10 +12,14 @@
   "extends": [
     "react-app",
     "eslint:recommended",
-    // "plugin:@typescript-eslint/recommended", // @debt enable this + fix the issues in a standalone PR
-    // "plugin:@typescript-eslint/recommended-requiring-type-checking", // @debt enable this + fix the issues in a standalone PR
+    "plugin:import/warnings",
+    "plugin:import/typescript",
+    "plugin:import/typescript",
+
     "plugin:react/recommended",
     "plugin:react-hooks/recommended"
+    // "plugin:@typescript-eslint/recommended", // @debt enable this + fix the issues in a standalone PR
+    // "plugin:@typescript-eslint/recommended-requiring-type-checking", // @debt enable this + fix the issues in a standalone PR
   ],
   "rules": {
     "@typescript-eslint/no-redeclare": "warn",

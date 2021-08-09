@@ -2,7 +2,7 @@ import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
 import Bugsnag from "@bugsnag/js";
 
-import { Room } from "types/rooms";
+import { Room, RoomData_v2 } from "types/rooms";
 import {
   VenueEvent,
   VenuePlacement,
@@ -10,12 +10,10 @@ import {
   Venue_v2_AdvancedConfig,
   Venue_v2_EntranceConfig,
 } from "types/venues";
-import { RoomData_v2 } from "types/rooms";
-import { UsernameVisibility } from "types/User";
+import { UsernameVisibility, UserStatus } from "types/User";
 
 import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
-import { UserStatus } from "types/User";
 
 export interface EventInput {
   name: string;

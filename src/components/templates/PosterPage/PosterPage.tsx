@@ -1,7 +1,11 @@
 import React, { useMemo } from "react";
 import { faTv, faShare, faStop } from "@fortawesome/free-solid-svg-icons";
 
-import { POSTERPAGE_MAX_VIDEO_PARTICIPANTS, IFRAME_ALLOW } from "settings";
+import {
+  POSTERPAGE_MAX_VIDEO_PARTICIPANTS,
+  IFRAME_ALLOW,
+  POSTERPAGE_MORE_INFO_URL_TITLE,
+} from "settings";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -23,8 +27,6 @@ import { ShareModal } from "./components/ShareModal";
 import { usePosterVideo } from "./usePosterVideo";
 
 import "./PosterPage.scss";
-
-import { POSTERPAGE_MORE_INFO_URL_TITLE } from "settings";
 
 export interface PosterPageProps {
   venue: WithId<PosterPageVenue>;

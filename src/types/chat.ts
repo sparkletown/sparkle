@@ -1,7 +1,13 @@
-import { IconDefinition } from "@fortawesome/free-solid-svg-icons";
-import { faPoll, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import {
+  IconDefinition,
+  faPoll,
+  faQuestion,
+} from "@fortawesome/free-solid-svg-icons";
+
 import { User } from "types/User";
+
 import { WithId } from "utils/id";
+
 import firebase from "firebase/app";
 
 export enum ChatMessageType {
