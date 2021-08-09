@@ -1,5 +1,4 @@
 import firebase, { UserInfo } from "firebase/app";
-import admin from "firebase-admin";
 import { omit } from "lodash";
 import Bugsnag from "@bugsnag/js";
 
@@ -530,7 +529,6 @@ export interface CreateRoomResult {
     };
     roomIndex: number;
     rooms: Room[];
-    writeResult: admin.firestore.WriteResult;
   };
 }
 
