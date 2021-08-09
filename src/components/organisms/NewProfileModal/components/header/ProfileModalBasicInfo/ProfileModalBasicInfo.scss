@@ -1,56 +1,25 @@
 @import "../../../styles";
 
-$section-margin: 1.5rem;
-
 .ProfileModalBasicInfo {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
 
-  &__left-container {
-    display: grid;
-    gap: 0 $section-margin;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: 1fr auto;
+  &__main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
     flex: 1;
-  }
-
-  &__party-name-section {
-    grid-row: 1;
-    grid-column: 2;
-    align-self: center;
-  }
-
-  &__choose-text {
-    user-select: none;
-    margin-top: 0.6rem;
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  &__default-pictures {
-    grid-row: 2;
-    grid-column: 2;
-  }
-
-  &__avatar {
-    margin-left: 0.5rem;
-    &:first-child {
-      margin-left: 0;
-    }
-  }
-
-  &--grow {
-    flex: 1;
-  }
-
-  &--section {
-    margin-left: $section-margin;
   }
 
   &__edit-container {
     margin-left: auto;
     margin-right: 0;
+  }
+
+  &--section {
+    margin-left: $header-sections-gap;
   }
 }

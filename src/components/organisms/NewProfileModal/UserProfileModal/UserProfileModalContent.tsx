@@ -1,6 +1,6 @@
 import { updateProfileLinks } from "api/profile";
 import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons/UserProfileModalButtons";
-import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
+import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalEditBasicInfo/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
@@ -23,7 +23,7 @@ import { ProfileLink, User } from "types/User";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { propName } from "utils/types";
-import "../UserProfileModal.scss";
+import "./UserProfileModal.scss";
 
 interface Props {
   user: WithId<User>;
@@ -177,8 +177,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <ProfileModalBasicInfo
-        editMode
+      <ProfileModalEditBasicInfo
         venueId={venue.id}
         viewingUser={user}
         containerClassName="UserProfileModal__section-editable"

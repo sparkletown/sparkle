@@ -1,5 +1,5 @@
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
-import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent/UserProfileModalContent";
+import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
 import { useBooleanState } from "hooks/useBooleanState";
 import React, { useCallback } from "react";
 import Modal from "react-bootstrap/Modal";

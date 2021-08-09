@@ -27,11 +27,7 @@ export const ProfileModalContent: React.FC<Props> = ({
 
   return (
     <>
-      <ProfileModalBasicInfo
-        venueId={venue.id}
-        viewingUser={viewingUser}
-        onEdit={onEditMode}
-      />
+      <ProfileModalBasicInfo viewingUser={viewingUser} onEdit={onEditMode} />
       <ProfileModalQuestions
         containerClassName="ProfileModal__section"
         questions={questions}
