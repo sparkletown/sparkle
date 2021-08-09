@@ -24,8 +24,7 @@ import {
   eventTimeComparator,
   getEventDayRange,
   isEventLiveOrFuture,
-  isEventWithinDateAndNotFinished,
-} from "utils/event";
+  isEventWithinDateAndNotFinished} from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 import {

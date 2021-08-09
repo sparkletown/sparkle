@@ -116,15 +116,18 @@ export const getEventDayRange = (
 };
 
 export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
-  var aSize = a.orderPriority ?? 0;
-  var bSize = b.orderPriority ?? 0;
-  var aLow = a.start_utc_seconds;
-  var bLow = b.start_utc_seconds;
-  console.log(aLow + " | " + bLow);
+  var aOrderPriority = a.orderPriority ?? 0;
+  var bOrderPriority = b.orderPriority ?? 0;
+  var aStartUtcSeconds = a.start_utc_seconds;
+  var bStartUtcSeconds = b.start_utc_seconds;
 
-  if (aSize === bSize) {
-    return aLow < bLow ? -1 : aLow > bLow ? 1 : 0;
+  if (aOrderPriority === bOrderPriority) {
+    return aStartUtcSeconds < bStartUtcSeconds
+      ? -1
+      : aStartUtcSeconds > bStartUtcSeconds
+      ? 1
+      : 0;
   } else {
-    return aSize < bSize ? -1 : 1;
+    return aOrderPriority > bOrderPriority ? -1 : 1;
   }
 };
