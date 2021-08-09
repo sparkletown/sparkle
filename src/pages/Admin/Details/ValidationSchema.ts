@@ -1,6 +1,12 @@
 import * as Yup from "yup";
+import dayjs from "dayjs";
 
-import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
+import {
+  createUrlSafeName,
+  VenueInput,
+  PlacementInput,
+  EventInput,
+} from "api/admin";
 
 import firebase from "firebase/app";
 import "firebase/functions";
@@ -61,7 +67,7 @@ const createFileSchema = (
       }
     );
 
-const urlIfNoFileValidation = (fieldName: string) =>
+export const urlIfNoFileValidation = (fieldName: string) =>
   Yup.string().when(
     fieldName,
     (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
@@ -70,46 +76,44 @@ const urlIfNoFileValidation = (fieldName: string) =>
         : schema.required("Required")
   );
 
-const mustBeMinimum = (fieldName: string, min: number) =>
+export const mustBeMinimum = (fieldName: string, min: number) =>
   `${fieldName} must be at least ${min} characters`;
+
+export const mustBeMaximum = (fieldName: string, max: number) =>
+  `${fieldName} must be less than ${max} characters`;
+
+export const roomTitleSchema = Yup.string()
+  .required("Name is required")
+  .min(VENUE_NAME_MIN_CHAR_COUNT, ({ min }) => mustBeMinimum("Name", min))
+  .max(VENUE_NAME_MAX_CHAR_COUNT, ({ max }) => mustBeMaximum("Name", max));
 
 export const validationSchema_v2 = Yup.object()
   .shape<SchemaShape>({
-    name: Yup.string()
-      .required("Name is required!")
-      .min(
-        VENUE_NAME_MIN_CHAR_COUNT,
-        ({ min }) => `Name must be at least ${min} characters`
-      )
-      .max(
-        VENUE_NAME_MAX_CHAR_COUNT,
-        ({ max }) => `Name must be less than ${max} characters`
-      )
-      .when(
-        "$editing",
-        (editing: boolean, schema: Yup.StringSchema) =>
-          !editing
-            ? schema
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
-                )
-                .test(
-                  "name",
-                  "This venue name is already taken",
-                  async (val: string) =>
-                    !val ||
-                    !(
-                      await firebase
-                        .firestore()
-                        .collection("venues")
-                        .doc(createUrlSafeName(val))
-                        .get()
-                    ).exists
-                )
-            : schema //will be set from the data from the api. Does not need to be unique
-      ),
+    name: roomTitleSchema.when(
+      "$editing",
+      (editing: boolean, schema: Yup.StringSchema) =>
+        !editing
+          ? schema
+              .test(
+                "name",
+                "Must have alphanumeric characters",
+                (val: string) => createUrlSafeName(val).length > 0
+              )
+              .test(
+                "name",
+                "This venue name is already taken",
+                async (val: string) =>
+                  !val ||
+                  !(
+                    await firebase
+                      .firestore()
+                      .collection("venues")
+                      .doc(createUrlSafeName(val))
+                      .get()
+                  ).exists
+              )
+          : schema //will be set from the data from the api. Does not need to be unique
+    ),
     subtitle: Yup.string()
       .required("Subtitle is required!")
       .min(3, ({ min }) => mustBeMinimum("Subtitle", min)),
@@ -131,17 +135,38 @@ export const validationSchema_v2 = Yup.object()
   })
   .required();
 
-const roomTitleSchema = Yup.string()
-  .required("Room name is required")
+const venueNameSchema = Yup.string()
+  .required("Venue name is required")
   .min(
     VENUE_NAME_MIN_CHAR_COUNT,
     ({ min }) => `Name must be at least ${min} characters`
+  )
+  .max(
+    VENUE_NAME_MAX_CHAR_COUNT,
+    ({ max }) => `Name must be less than ${max} characters`
   );
 
 export const roomUrlSchema = Yup.string()
   .required("Url is required!")
-  .min(3, ({ min }) => `Url must be at least ${min} characters`)
+  .min(3, ({ min }) => mustBeMinimum("Url", min))
   .test("url validation", "Please enter a valid URL", isValidUrl);
+
+export interface VenueRoomSchema {
+  template?: string;
+  roomTitle: string;
+  venueName?: string;
+  roomUrl?: string;
+}
+
+export const venueRoomSchema = Yup.object().shape<VenueRoomSchema>({
+  roomTitle: roomTitleSchema,
+  venueName: venueNameSchema,
+});
+
+export const roomSchema = Yup.object().shape<VenueRoomSchema>({
+  roomTitle: roomTitleSchema,
+  roomUrl: roomUrlSchema,
+});
 
 const roomImageUrlSchema = Yup.string().required("Room image is required");
 
@@ -151,16 +176,7 @@ export const roomCreateSchema = Yup.object().shape<RoomSchemaShape>({
   venueName: Yup.string()
     .when("useUrl", {
       is: false,
-      then: Yup.string()
-        .required("Venue name is required")
-        .min(
-          VENUE_NAME_MIN_CHAR_COUNT,
-          ({ min }) => `Name must be at least ${min} characters`
-        )
-        .max(
-          VENUE_NAME_MAX_CHAR_COUNT,
-          ({ max }) => `Name must be less than ${max} characters`
-        ),
+      then: roomTitleSchema,
     })
     .when("useUrl", (useUrl: boolean, schema: Yup.StringSchema) =>
       !useUrl
@@ -221,26 +237,17 @@ export const editVenueCastSchema = Yup.object()
 
   // possible locations for the banner image
   .from("config.landingPageConfig.coverImageUrl", "bannerImageUrl")
-  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl")
-
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl");
+  .from("config.landingPageConfig.bannerImageUrl", "bannerImageUrl");
 
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
 export const editPlacementCastSchema = Yup.object()
   .shape<Partial<PlacementInput>>({})
 
-  // possible locations for the map icon
-  .from("config.mapIconImageUrl", "mapIconImageUrl")
-  .from("mapIconImageUrl", "mapIconImageUrl")
   .from("placement.addressText", "addressText")
   .from("placement.notes", "notes")
   .required();
 
 export const editPlacementSchema = Yup.object().shape<PlacementInput>({
-  mapIconImageFile: createFileSchema("mapIconImageFile", false).notRequired(),
-  mapIconImageUrl: urlIfNoFileValidation("mapIconImageFile"),
   addressText: Yup.string(),
   notes: Yup.string(),
   width: Yup.number().required("Required"),
@@ -251,4 +258,31 @@ export const editPlacementSchema = Yup.object().shape<PlacementInput>({
       y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
     })
     .default(initialMapIconPlacement),
+});
+
+export const eventEditSchema = Yup.object().shape<EventInput>({
+  name: Yup.string().required("Name required"),
+  description: Yup.string().required("Description required"),
+  start_date: Yup.string()
+    .required("Start date required")
+    .matches(
+      /\d{4}-\d{2}-\d{2}/,
+      'Start date must have the format "yyyy-mm-dd"'
+    )
+    .test(
+      "start_date_future",
+      "Start date must be in the futur",
+      (start_date) => {
+        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
+      }
+    ),
+  start_time: Yup.string().required("Start time required"),
+  duration_hours: Yup.number()
+    .typeError("Hours must be a number")
+    .required("Hours required"),
+  duration_minutes: Yup.number()
+    .typeError("Minutes must be a number")
+    .required("Minutes equired"),
+  host: Yup.string().required("Host required"),
+  room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
 });

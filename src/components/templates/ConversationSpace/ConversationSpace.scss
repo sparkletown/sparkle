@@ -202,7 +202,6 @@
       padding: 2px 0;
       flex-grow: 1;
       &:focus {
-        outline: none;
         box-shadow: none;
         animation: pulse 0.5s ease 2;
       }
@@ -260,7 +259,7 @@
   }
 
   .seated-area {
-    border: 0px solid white;
+    border: 0px solid $white;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
