@@ -3,7 +3,7 @@
 $question-container-gap: 0.7rem;
 $question-answer-gap: 4px;
 $question-answer-gap-editable: 0.3rem;
-$question-color: rgba(255, 255, 255, 0.6);
+$question-color: rgba($white, 0.6);
 
 .ProfileModalQuestions {
   &__question-container {

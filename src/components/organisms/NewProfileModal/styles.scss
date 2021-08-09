@@ -12,17 +12,15 @@ $section-gap: 0.7rem;
 $section-gap-editable: 1.5rem;
 $section-header-bottom-margin: 0.5rem;
 
-$send-msg-online-color: #78b553;
-
 $content-font-size: 14px;
 $content-increased-font-size: 16px;
 
 $input-gap: 1rem;
 
-$input-border: 1px solid rgba(255, 255, 255, 0.1);
+$input-border: 1px solid rgba($white, 0.1);
 $input-border-radius: 22px;
 $input-backdrop-filter: blur(10px);
-$input-text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+$input-text-shadow: 0 1px 2px rgba($black, 0.25);
 
 @mixin ProfileModalCommon {
   display: flex;

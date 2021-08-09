@@ -1,7 +1,7 @@
 @import "../../../../styles";
 
-$background: rgba(255, 255, 255, 0.2);
-$background-hover: rgba(255, 255, 255, 0.3);
+$background: rgba($white, 0.2);
+$background-hover: rgba($white, 0.3);
 
 .ProfileModalLink {
   background-color: $background;
