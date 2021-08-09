@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-import { VenueRoom } from "types/rooms";
+import { Portal } from "types/rooms";
 
 import "./RoomInfoModal.scss";
 
@@ -9,14 +9,14 @@ export interface VenueRoomItemInfoModalProps {
   onAdd: () => void;
   onHide: () => void;
   show: boolean;
-  venueRoom: VenueRoom;
+  portal: Portal;
 }
 
 export const RoomInfoModal: React.FC<VenueRoomItemInfoModalProps> = ({
   onAdd,
   onHide,
   show,
-  venueRoom: { description, poster, text },
+  portal: { description, poster, text },
 }) => (
   <Modal
     centered

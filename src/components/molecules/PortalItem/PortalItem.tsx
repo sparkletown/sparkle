@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { faPlus, faInfo } from "@fortawesome/free-solid-svg-icons";
 
-import { VenueRoom } from "types/rooms";
+import { Portal } from "types/rooms";
 
 import { CreateRoomResult } from "api/admin";
 
@@ -12,17 +12,14 @@ import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { RoomAddModal } from "./RoomAddModal";
 import { RoomInfoModal } from "./RoomInfoModal";
 
-import "./VenueRoomItem.scss";
+import "./PortalItem.scss";
 
-export interface VenueRoomItemProps {
+export interface PortalItemProps {
   onAdd: (result: CreateRoomResult) => void;
-  venueRoom: VenueRoom;
+  portal: Portal;
 }
 
-export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
-  onAdd,
-  venueRoom,
-}) => {
+export const PortalItem: React.FC<PortalItemProps> = ({ onAdd, portal }) => {
   const {
     isShown: isAddModalVisible,
     show: showAddModal,
@@ -34,7 +31,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
     hide: hideInfoModal,
   } = useShowHide();
 
-  const { icon, text, template } = venueRoom;
+  const { icon, text, template } = portal;
 
   const onSwitchModals = useCallback(() => {
     hideInfoModal();
@@ -54,7 +51,7 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
       <RoomInfoModal
         onAdd={onSwitchModals}
         onHide={hideInfoModal}
-        venueRoom={venueRoom}
+        portal={portal}
         show={isInfoModalVisible}
       />
       <RoomAddModal
@@ -63,21 +60,21 @@ export const VenueRoomItem: React.FC<VenueRoomItemProps> = ({
         template={template}
         show={isAddModalVisible}
       />
-      <div className="VenueRoomItem">
-        <div className="VenueRoomItem__icon">
+      <div className="PortalItem">
+        <div className="PortalItem__icon">
           <img alt={`Icon of ${text}`} src={icon} />
         </div>
-        <div className="VenueRoomItem__name">{text}</div>
-        <div className="VenueRoomItem__buttons">
+        <div className="PortalItem__name">{text}</div>
+        <div className="PortalItem__buttons">
           <ButtonNG
-            className="VenueRoomItem__button"
+            className="PortalItem__button"
             onClick={showInfoModal}
             iconOnly={true}
             iconName={faInfo}
             title="Info about the room"
           />
           <ButtonNG
-            className="VenueRoomItem__button"
+            className="PortalItem__button"
             onClick={showAddModal}
             iconOnly={true}
             iconName={faPlus}

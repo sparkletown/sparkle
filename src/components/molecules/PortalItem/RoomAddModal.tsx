@@ -5,7 +5,7 @@ import { Modal, Form } from "react-bootstrap";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
-import { RoomAsVenueTemplate } from "types/rooms";
+import { PortalTemplate } from "types/rooms";
 import { VenueTemplate } from "types/venues";
 
 import {
@@ -34,7 +34,7 @@ export interface RoomAddModalProps {
   onAdd: (result: CreateRoomResult) => void;
   onHide: () => void;
   show: boolean;
-  template: VenueTemplate | RoomAsVenueTemplate;
+  template: VenueTemplate | PortalTemplate;
 }
 
 export const RoomAddModal: React.FC<RoomAddModalProps> = ({
@@ -43,7 +43,7 @@ export const RoomAddModal: React.FC<RoomAddModalProps> = ({
   show,
   template,
 }) => {
-  const isVenuePortal = template !== RoomAsVenueTemplate.external;
+  const isVenuePortal = template !== PortalTemplate.external;
 
   const venueId = useVenueId();
 
@@ -78,7 +78,7 @@ export const RoomAddModal: React.FC<RoomAddModalProps> = ({
 
     // TS doesn't work properly with const statements and won't 'know' that this is already checked.
     // That's why this is inline instead of isVenuePortal
-    if (template !== RoomAsVenueTemplate.external) {
+    if (template !== PortalTemplate.external) {
       const venueData = buildEmptyVenue(roomValues.venueName, template);
 
       await createVenue_v2(venueData, user);

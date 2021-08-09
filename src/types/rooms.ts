@@ -44,12 +44,12 @@ export interface RoomData_v2 {
   roomIndex?: number;
 }
 
-export enum RoomAsVenueTemplate {
+export enum PortalTemplate {
   external = "external",
 }
 
-export interface VenueRoom {
-  template: VenueTemplate | RoomAsVenueTemplate;
+export interface Portal {
+  template: VenueTemplate | PortalTemplate;
   text: string;
   icon: string;
   poster: string;

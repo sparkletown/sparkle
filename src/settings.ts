@@ -10,7 +10,7 @@ import {
   IS_BURN,
 } from "secrets";
 import { VenueTemplate } from "types/venues";
-import { RoomType, VenueRoom, RoomAsVenueTemplate } from "types/rooms";
+import { RoomType, Portal, PortalTemplate } from "types/rooms";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
@@ -337,7 +337,7 @@ export const BURN_VENUE_TEMPLATES_MAP: Map<VenueTemplate, Template> = new Map(
   BURN_VENUE_TEMPLATES.map((item) => [item.template, item])
 );
 
-export const SPACES_VENUES_AND_ROOMS: VenueRoom[] = [
+export const SPACES_PORTALS: Portal[] = [
   { template: VenueTemplate.conversationspace },
   { template: VenueTemplate.audience },
   { template: VenueTemplate.jazzbar },
@@ -345,7 +345,7 @@ export const SPACES_VENUES_AND_ROOMS: VenueRoom[] = [
   { template: VenueTemplate.artpiece },
   { template: VenueTemplate.zoomroom },
   {
-    template: RoomAsVenueTemplate.external,
+    template: PortalTemplate.external,
     text: "External link",
     icon: RoomIconExternalLink,
     poster: "/venues/add-venue-room-external.png",
@@ -353,7 +353,7 @@ export const SPACES_VENUES_AND_ROOMS: VenueRoom[] = [
   { template: VenueTemplate.partymap },
 ].map(({ template, icon, text }) => {
   const original = (BURN_VENUE_TEMPLATES_MAP as Map<
-    VenueTemplate | RoomAsVenueTemplate,
+    VenueTemplate | PortalTemplate,
     Template
   >).get(template);
   return {

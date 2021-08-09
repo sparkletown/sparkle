@@ -7,7 +7,7 @@ import {
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { SPACES_VENUES_AND_ROOMS } from "settings";
+import { SPACES_PORTALS } from "settings";
 
 import { Venue_v2 } from "types/venues";
 import { RoomData_v2 } from "types/rooms";
@@ -17,7 +17,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { VenueRoomItem } from "components/molecules/VenueRoomItem";
+import { PortalItem } from "components/molecules/PortalItem";
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
@@ -107,11 +107,11 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
 
   const renderAddRooms = useMemo(
     () =>
-      SPACES_VENUES_AND_ROOMS.map((venueRoom, index) => {
+      SPACES_PORTALS.map((portal, index) => {
         return (
-          <VenueRoomItem
-            key={`${venueRoom.text}-${index}`}
-            venueRoom={venueRoom}
+          <PortalItem
+            key={`${portal.text}-${index}`}
+            portal={portal}
             onAdd={onAdd}
           />
         );
