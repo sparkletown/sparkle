@@ -18,16 +18,16 @@ import {
   getMessageReplies,
   partitionMessagesFromReplies,
 } from "utils/chat";
+import { WithId } from "utils/id";
 import { venueChatMessagesSelector } from "utils/selectors";
 import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
-import { WithId } from "utils/id";
 
-import { useSelector } from "../useSelector";
-import { useFirestoreConnect } from "../useFirestoreConnect";
-import { useUser } from "hooks/useUser";
-import { useWorldUsersByIdWorkaround } from "../users";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useRoles } from "hooks/useRoles";
+import { useWorldUsersByIdWorkaround } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 

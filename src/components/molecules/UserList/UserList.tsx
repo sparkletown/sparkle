@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
@@ -13,7 +13,6 @@ import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
-import { useMemo } from "react";
 
 const noop = () => {};
 
