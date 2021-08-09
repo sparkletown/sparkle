@@ -10,7 +10,7 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
-import RoomAttendance from "../RoomAttendance";
+import { RoomAttendance } from "../RoomAttendance";
 
 import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
 
