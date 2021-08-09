@@ -71,7 +71,9 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
             onChange={uploadMapBackground}
           />
 
-          <h3>Or choose a map</h3>
+          <h3 className="BackgroundSelect__maps-header">
+            Or select one of our map backgrounds
+          </h3>
           {isLoadingBackgrounds && <div>Loading maps...</div>}
 
           <div className="BackgroundSelect__map-grid">
