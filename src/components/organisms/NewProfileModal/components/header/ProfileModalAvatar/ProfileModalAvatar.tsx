@@ -2,7 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import classNames from "classnames";
 
 import { useBooleanState } from "hooks/useBooleanState";
-import { useSameUser } from "hooks/useIsSameUser";
+import { useIsSameUser } from "hooks/useIsSameUser";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 import { useForm } from "react-hook-form";
@@ -36,7 +36,7 @@ export const ProfileModalAvatar: React.FC<Props> = ({
   setPictureUrl,
   containerClassName,
 }: Props) => {
-  const sameUser = useSameUser(viewingUser);
+  const sameUser = useIsSameUser(viewingUser);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");

@@ -4,7 +4,7 @@ import classNames from "classnames";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useVenueId } from "hooks/useVenueId";
 import { useIsOnline } from "hooks/useIsOnline";
-import { useSameUser } from "hooks/useIsSameUser";
+import { useIsSameUser } from "hooks/useIsSameUser";
 import { useUser } from "hooks/useUser";
 
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
@@ -29,7 +29,7 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
   const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const { lastSeenIn } = useIsOnline(viewingUser.id);
-  const sameUser = useSameUser(viewingUser);
+  const sameUser = useIsSameUser(viewingUser);
   const { user: firebaseUser } = useUser();
 
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;

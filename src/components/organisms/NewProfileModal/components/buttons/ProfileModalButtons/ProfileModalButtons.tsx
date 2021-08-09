@@ -1,7 +1,7 @@
 import React, { useMemo } from "react";
 
 import { useIsOnline } from "hooks/useIsOnline";
-import { useSameUser } from "hooks/useIsSameUser";
+import { useIsSameUser } from "hooks/useIsSameUser";
 
 import { Button } from "components/atoms/Button";
 
@@ -25,7 +25,7 @@ export const ProfileModalButtons: React.FC<Props> = ({
   viewingUser,
 }: Props) => {
   const { isOnline } = useIsOnline(viewingUser.id);
-  const sameUser = useSameUser(viewingUser);
+  const sameUser = useIsSameUser(viewingUser);
 
   const sendMessageButtonStyle = useMemo(
     () =>
