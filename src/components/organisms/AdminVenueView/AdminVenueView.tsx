@@ -3,13 +3,17 @@ import { useParams, useHistory } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
-import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
+import { Venue_v2 } from "types/venues";
+
+import { adminNGVenueUrl, adminNGRootUrl, openUrl } from "utils/url";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
+import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
+import { Timing } from "./components/Timing";
+import { Spaces } from "./components/Spaces";
 
 import "./AdminVenueView.scss";
 
@@ -41,7 +45,10 @@ export const AdminVenueView: React.FC = () => {
   const { isAdminUser } = useIsAdminUser(userId);
 
   // Get and pass venue to child components when working on tabs
-  const { isCurrentVenueLoaded } = useConnectCurrentVenueNG(venueId);
+  const {
+    isCurrentVenueLoaded,
+    currentVenue: venue,
+  } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
     return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
@@ -77,8 +84,25 @@ export const AdminVenueView: React.FC = () => {
       <div className="AdminVenueView">
         <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
-      {selectedTab === AdminVenueTab.spaces && <div>Spaces</div>}
-      {selectedTab === AdminVenueTab.timing && <div>Timing</div>}
+      {selectedTab === AdminVenueTab.spaces && (
+        <Spaces
+          venue={venue as Venue_v2}
+          onClickNext={() =>
+            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.timing))
+          }
+        />
+      )}
+      {selectedTab === AdminVenueTab.timing && (
+        <Timing
+          venue={venue}
+          onClickBack={() =>
+            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.spaces))
+          }
+          onClickNext={() =>
+            openUrl(adminNGVenueUrl(venueId, AdminVenueTab.run))
+          }
+        />
+      )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
     </>
   );

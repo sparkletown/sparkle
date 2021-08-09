@@ -170,6 +170,8 @@ $page-max-width: 1240px;
   display: flex;
   justify-content: center;
   z-index: z(account-profile-picture-preview);
+  background-color: transparent;
+  border: none;
 }
 
 .profile-picture-input {
@@ -185,7 +187,9 @@ $page-max-width: 1240px;
   padding: 15px 50px;
   color: $white;
   font-weight: 700;
-
+  background-color: transparent;
+  margin-bottom: $spacing--lg;
+  margin-top: $spacing--lg;
   &:hover {
     transform: translateY(-1px);
     background-image: linear-gradient(
