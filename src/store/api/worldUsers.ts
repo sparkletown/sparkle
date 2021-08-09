@@ -64,10 +64,10 @@ export const worldUsersApi = createApi({
         // error: undefined,
         // meta: undefined,
       }),
-      async onCacheEntryAdded(
+      onCacheEntryAdded: async (
         { relatedLocationIds, currentUserId },
         { updateCachedData, cacheEntryRemoved }
-      ) {
+      ) => {
         // Used to hold the changes queued from the snapshot listener so that we can proces them in batches
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 

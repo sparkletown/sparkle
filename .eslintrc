@@ -8,7 +8,7 @@
       "jsx": true
     }
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "prefer-arrow"],
   "extends": [
     "react-app",
     // "eslint:recommended", // @debt enable this + fix the issues in a standalone PR
@@ -25,6 +25,16 @@
     // these base rules can report incorrect errors when using TypeScript, see the corresponding @typescript-eslint versions
     "no-redeclare": "off",
     "no-use-before-define": "off",
+    "prefer-arrow/prefer-arrow-functions": [
+      "warn",
+      {
+        "disallowPrototype": true,
+        "singleReturnOnly": false,
+        "classPropertiesAllowed": false
+      }
+    ],
+    "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
+    "func-style": ["error", "expression", { "allowArrowFunctions": true }],
     "no-restricted-imports": [
       "error",
       {
