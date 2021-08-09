@@ -20,4 +20,8 @@
     font-weight: $font-weight--700;
     color: $concrete;
   }
+
+  &--bookmark {
+    margin: auto $spacing--xl auto auto;
+  }
 }
