@@ -27,7 +27,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModal";
+import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";

@@ -4,7 +4,7 @@ import { Modal } from "react-bootstrap";
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
-import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent/ProfileModalContent";
+import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
 
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
@@ -37,6 +37,7 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
 
   return (
     <Modal
+      centered
       className="ProfileModal"
       show={hasSelectedProfile}
       onHide={closeUserProfileModal}

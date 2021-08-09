@@ -12,8 +12,8 @@ import {
   getProfileModalLinkUsername,
 } from "utils/profileModalLinkUtilities";
 
-import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon/ProfileModalRoundIcon";
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
 
 import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";

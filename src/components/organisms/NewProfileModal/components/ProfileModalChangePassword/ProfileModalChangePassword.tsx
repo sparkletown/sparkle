@@ -2,8 +2,8 @@ import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { useCallback } from "react";
 import { FieldErrors, useForm } from "react-hook-form";
 
-import { ProfileModalSectionHeader } from "../ProfileModalSectionHeader/ProfileModalSectionHeader";
-import { ProfileModalInput } from "../ProfileModalInput/ProfileModalInput";
+import { ProfileModalSectionHeader } from "../ProfileModalSectionHeader";
+import { ProfileModalInput } from "../ProfileModalInput";
 
 import { UserProfileModalFormData } from "types/profileModal";
 import { ContainerClassName } from "types/utility";

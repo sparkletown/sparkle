@@ -25,7 +25,7 @@ import { ReactionPage } from "components/templates/ReactionPage";
 import { ExternalRoom } from "components/templates/ExternalRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
-import { ProfileModal } from "components/organisms/NewProfileModal/ProfileModal/ProfileModal";
+import { ProfileModal } from "components/organisms/NewProfileModal/ProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";

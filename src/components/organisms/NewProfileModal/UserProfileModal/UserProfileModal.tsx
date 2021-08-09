@@ -7,8 +7,8 @@ import { useHistory } from "react-router-dom";
 
 import { venueLandingUrl } from "utils/url";
 
-import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent/ProfileModalContent";
-import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent/UserProfileModalContent";
+import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
+import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
 
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
@@ -56,7 +56,7 @@ export const UserProfileModal: React.FC<Props> = ({
 
   return (
     <Modal
-      style={{ display: "flex" }}
+      centered
       className="UserProfileModal"
       show={show}
       onHide={hideHandler}

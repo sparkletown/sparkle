@@ -5,8 +5,8 @@ import { FieldError, useForm } from "react-hook-form";
 import { useToggle } from "react-use";
 
 import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
-import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar/ProfileModalAvatar";
-import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput/ProfileModalInput";
+import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar";
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
 
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";

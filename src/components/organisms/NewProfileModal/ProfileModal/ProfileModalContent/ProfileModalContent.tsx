@@ -2,11 +2,11 @@ import React from "react";
 
 import { useProfileQuestions } from "hooks/useProfileQuestions";
 
-import { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons/ProfileModalButtons";
-import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo/ProfileModalBasicInfo";
-import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions/ProfileModalQuestions";
-import { ProfileModalLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLinks";
-import { ProfileModalBadges } from "components/organisms/NewProfileModal/components/ProfileModalBadges/ProfileModalBadges";
+import { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons";
+import { ProfileModalBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicInfo";
+import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
+import { ProfileModalLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks";
+import { ProfileModalBadges } from "components/organisms/NewProfileModal/components/ProfileModalBadges";
 
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
