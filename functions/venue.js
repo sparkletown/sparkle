@@ -211,6 +211,7 @@ const createVenueData = (data, context) => {
     showUserStatus:
       typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    availableAvatars: data.availableAvatars || [],
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -287,6 +288,7 @@ const createVenueData_v2 = (data, context) => {
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
+    availableAvatars: data.availableAvatars || [],
   };
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
@@ -395,6 +397,10 @@ const createBaseUpdateVenueData = (data, updated) => {
 
   if (data.showNametags) {
     updated.showNametags = data.showNametags;
+  }
+
+  if (data.availableAvatars) {
+    updated.availableAvatars = data.availableAvatars;
   }
 };
 

@@ -178,6 +178,7 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  availableAvatars?: string[];
 }
 
 export interface GenericVenue extends BaseVenue {
