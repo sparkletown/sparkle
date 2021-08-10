@@ -7,9 +7,9 @@ export const useCanDeleteVenueChatMessages = (venue: AnyVenue) => {
   const { userId } = useUser();
   const { userRoles } = useRoles();
 
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-
   if (!userId) return false;
+  
+  const isAdmin = Boolean(userRoles?.includes("admin"));
   const isOwner = venue.owners?.includes(userId);
 
   return isAdmin && isOwner;
