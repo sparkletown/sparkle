@@ -6,20 +6,18 @@ import { Resizable } from "re-resizable";
 import { Dimensions } from "types/utility";
 import { SubVenueIconMap } from "./Container";
 
-function getStyles(
+const getStyles = (
   left: number,
   top: number,
   isDragging: boolean
-): React.CSSProperties {
-  return {
-    position: "absolute",
-    top,
-    left,
-    opacity: isDragging ? 0 : 1,
-    height: isDragging ? 0 : "",
-    background: "rgba(147, 124, 99, 0.2)",
-  };
-}
+): React.CSSProperties => ({
+  position: "absolute",
+  top,
+  left,
+  opacity: isDragging ? 0 : 1,
+  height: isDragging ? 0 : "",
+  background: "rgba(147, 124, 99, 0.2)",
+});
 
 export type PropsType = SubVenueIconMap[string] & {
   id: string;

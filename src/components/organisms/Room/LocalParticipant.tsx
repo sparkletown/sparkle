@@ -19,13 +19,13 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
 
   useEffect(() => {
     if (muted) {
-      participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach((audioTrack) => {
         audioTrack.track &&
           "disable" in audioTrack.track &&
           audioTrack.track.disable();
       });
     } else {
-      participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach((audioTrack) => {
         audioTrack.track &&
           "enable" in audioTrack.track &&
           audioTrack.track.enable();

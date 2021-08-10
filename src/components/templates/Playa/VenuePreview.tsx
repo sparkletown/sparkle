@@ -124,7 +124,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .firestore()
       .collection(`venues/${venue.id}/events`)
       .get()
-      .then(function (array) {
+      .then((array) => {
         const currentEvents = array.docs
           .map((doc) => doc.data())
           .filter(
@@ -143,7 +143,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .firestore()
       .collection(`venues/${venue.id}/events`)
       .get()
-      .then(function (array) {
+      .then((array) => {
         const futureEvents = array.docs
           .map((doc) => doc.data() as VenueEvent) // TODO: is this type cast correct?
           .filter(isEventLiveOrFuture)
