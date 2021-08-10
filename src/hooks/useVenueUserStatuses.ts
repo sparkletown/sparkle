@@ -1,8 +1,8 @@
 import { useCallback, useMemo } from "react";
 
-import { updateUserOnlineStatus } from "api/profile";
+import { DEFAULT_SHOW_USER_STATUSES, DEFAULT_USER_STATUS } from "settings";
 
-import { DEFAULT_USER_STATUS, DEFAULT_SHOW_USER_STATUSES } from "settings";
+import { updateUserOnlineStatus } from "api/profile";
 
 import { User, UserStatus } from "types/User";
 

@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { isEqual } from "lodash";
+import { isEmpty, isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -8,9 +8,9 @@ import { User, UsernameVisibility } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useRecentWorldUsers } from "hooks/users";
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useWorldUserLocation } from "hooks/users";
 import { useVenueId } from "hooks/useVenueId";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
@@ -38,7 +38,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { recentWorldUsers } = useRecentWorldUsers();
+  const { userLocation } = useWorldUserLocation(user?.id);
+  const userLastSeenIn = userLocation?.lastSeenIn;
 
   const {
     userStatus,
@@ -59,10 +60,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     [`UserAvatar--${size}`]: size,
   });
 
-  const isOnline = useMemo(
-    () => recentWorldUsers.find((worldUser) => worldUser.id === user?.id),
-    [user, recentWorldUsers]
-  );
+  const isOnline = useMemo(() => !isEmpty(userLastSeenIn), [userLastSeenIn]);
 
   const status = user?.status;
 

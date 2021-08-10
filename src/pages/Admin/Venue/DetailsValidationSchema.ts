@@ -1,26 +1,34 @@
-import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
-import "firebase/functions";
 import * as Yup from "yup";
 
 import {
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
-  PLAYA_VENUE_SIZE,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  GIF_RESIZER_URL,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-  MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
-  MINIMUM_COLUMNS,
-  MAXIMUM_COLUMNS,
-  VENUE_NAME_MAX_CHAR_COUNT,
-  VENUE_NAME_MIN_CHAR_COUNT,
+  GIF_RESIZER_URL,
+  IFRAME_TEMPLATES,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  MAX_IMAGE_FILE_SIZE_TEXT,
+  MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
+  MAXIMUM_AUDITORIUM_ROWS_COUNT,
+  MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+  MINIMUM_AUDITORIUM_ROWS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+  PLAYA_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_WIDTH,
+  ZOOM_URL_TEMPLATES,
 } from "settings";
 
-import { VenueTemplate } from "types/venues";
+import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
+
 import { UsernameVisibility } from "types/User";
+import { VenueTemplate } from "types/venues";
+
+import {
+  roomTitleSchema,
+  urlIfNoFileValidation,
+} from "pages/Admin/Details/ValidationSchema";
+
+import "firebase/functions";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -47,53 +55,34 @@ const createFileSchema = (name: string, required: boolean) =>
       }
     );
 
-const urlIfNoFileValidation = (fieldName: string) =>
-  Yup.string().when(
-    fieldName,
-    (file: FileList | undefined, schema: Yup.MixedSchema<FileList>) =>
-      file && file.length > 0
-        ? schema.notRequired()
-        : schema.required("Required")
-  );
-
 export const validationSchema = Yup.object()
   .shape<VenueInput>({
     template: Yup.mixed<VenueTemplate>().required(),
-    name: Yup.string()
-      .required("Venue name is required")
-      .min(
-        VENUE_NAME_MIN_CHAR_COUNT,
-        ({ min }) => `Name must be at least ${min} characters`
-      )
-      .max(
-        VENUE_NAME_MAX_CHAR_COUNT,
-        ({ max }) => `Name must be less than ${max} characters`
-      )
-      .when(
-        "$editing",
-        (editing: boolean, schema: Yup.StringSchema) =>
-          !editing
-            ? schema
-                .test(
-                  "name",
-                  "Must have alphanumeric characters",
-                  (val: string) => createUrlSafeName(val).length > 0
-                )
-                .test(
-                  "name",
-                  "This venue name is already taken",
-                  async (val: string) =>
-                    !val ||
-                    !(
-                      await firebase
-                        .firestore()
-                        .collection("venues")
-                        .doc(createUrlSafeName(val))
-                        .get()
-                    ).exists
-                )
-            : schema //will be set from the data from the api. Does not need to be unique
-      ),
+    name: roomTitleSchema.when(
+      "$editing",
+      (editing: boolean, schema: Yup.StringSchema) =>
+        !editing
+          ? schema
+              .test(
+                "name",
+                "Must have alphanumeric characters",
+                (val: string) => createUrlSafeName(val).length > 0
+              )
+              .test(
+                "name",
+                "This venue name is already taken",
+                async (val: string) =>
+                  !val ||
+                  !(
+                    await firebase
+                      .firestore()
+                      .collection("venues")
+                      .doc(createUrlSafeName(val))
+                      .get()
+                  ).exists
+              )
+          : schema //will be set from the data from the api. Does not need to be unique
+    ),
     bannerImageFile: createFileSchema("bannerImageFile", false).notRequired(), // override files to make them non required
     logoImageFile: createFileSchema("logoImageFile", false).notRequired(),
 
@@ -102,10 +91,10 @@ export const validationSchema = Yup.object()
       is: true,
       then: Yup.number()
         .required(
-          `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+          `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
         )
-        .min(MINIMUM_COLUMNS)
-        .max(MAXIMUM_COLUMNS),
+        .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+        .max(MAXIMUM_AUDITORIUM_COLUMNS_COUNT),
     }),
 
     mapBackgroundImageUrl: Yup.string().when(
@@ -190,10 +179,24 @@ export const validationSchema = Yup.object()
       .notRequired(),
     auditoriumColumns: Yup.number()
       .notRequired()
-      .min(5, "Columns must be at least 5"),
+      .min(
+        MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+        `The columns need to be between ${MINIMUM_AUDITORIUM_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
+      )
+      .max(
+        MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
+        `The columns need to be between ${MINIMUM_AUDITORIUM_COLUMNS_COUNT} and ${MAXIMUM_AUDITORIUM_COLUMNS_COUNT}.`
+      ),
     auditoriumRows: Yup.number()
       .notRequired()
-      .min(5, "Rows must be at least 5"),
+      .min(
+        MINIMUM_AUDITORIUM_ROWS_COUNT,
+        `The rows need to be between ${MINIMUM_AUDITORIUM_ROWS_COUNT} and ${MAXIMUM_AUDITORIUM_ROWS_COUNT}.`
+      )
+      .max(
+        MAXIMUM_AUDITORIUM_ROWS_COUNT,
+        `The rows need to be between ${MINIMUM_AUDITORIUM_ROWS_COUNT} and ${MAXIMUM_AUDITORIUM_ROWS_COUNT}.`
+      ),
   })
   .required();
 

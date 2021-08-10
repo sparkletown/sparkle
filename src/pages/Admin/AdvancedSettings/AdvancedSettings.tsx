@@ -1,22 +1,25 @@
 import React from "react";
-import * as Yup from "yup";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
-import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
+import {
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+} from "settings";
 
 import { updateVenue_v2 } from "api/admin";
 
-import { Venue_v2_AdvancedConfig } from "types/venues";
 import { UsernameVisibility } from "types/User";
+import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
 import { Checkbox } from "components/atoms/Checkbox";
 
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
-
 import * as S from "../Admin.styles";
+
+import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
@@ -60,10 +63,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     is: true,
     then: Yup.number()
       .required(
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_PARTYMAP_COLUMNS_COUNT}.`
       )
-      .min(MINIMUM_COLUMNS)
-      .max(MAXIMUM_COLUMNS),
+      .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+      .max(MAXIMUM_PARTYMAP_COLUMNS_COUNT),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,

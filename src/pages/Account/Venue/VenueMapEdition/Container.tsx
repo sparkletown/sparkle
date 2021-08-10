@@ -1,20 +1,23 @@
 import React, {
-  useCallback,
-  useState,
-  useMemo,
   CSSProperties,
+  useCallback,
   useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { useDrop } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
-import { DraggableSubvenue } from "./DraggableSubvenue";
-import { snapToGrid as doSnapToGrid } from "./snapToGrid";
-import update from "immutability-helper";
-import { DragItem } from "./interfaces";
-import { DEFAULT_MAP_ICON_URL } from "settings";
-import { CustomDragLayer } from "./CustomDragLayer";
 import ReactResizeDetector from "react-resize-detector";
+import update from "immutability-helper";
+
+import { DEFAULT_MAP_ICON_URL } from "settings";
+
 import { Dimensions } from "types/utility";
+
+import { CustomDragLayer } from "./CustomDragLayer";
+import { DraggableSubvenue } from "./DraggableSubvenue";
+import { DragItem } from "./interfaces";
+import { ItemTypes } from "./ItemTypes";
+import { snapToGrid as doSnapToGrid } from "./snapToGrid";
 
 const styles: React.CSSProperties = {
   width: "100%",
@@ -135,6 +138,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useMemo(() => {
     if (!imageDims) return;
+
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,
@@ -194,7 +198,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
-    drop(item: DragItem, monitor) {
+    drop: (item: DragItem, monitor) => {
       if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;

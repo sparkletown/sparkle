@@ -10,19 +10,19 @@ import { getEventStatus, isEventLive } from "utils/event";
 import { WithVenueId } from "utils/id";
 import {
   enterVenue,
-  openUrl,
-  getUrlWithoutTrailingSlash,
   getLastUrlParam,
   getUrlParamFromString,
+  getUrlWithoutTrailingSlash,
+  openUrl,
 } from "utils/url";
 
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
-import { Button } from "components/atoms/Button";
-
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Button } from "components/atoms/Button";
 
 import "./EventModal.scss";
 
@@ -45,13 +45,13 @@ export const EventModal: React.FC<EventModalProps> = ({
     () =>
       eventVenue?.rooms?.find((room) => {
         const { room: eventRoom = "" } = event;
-
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
+        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
 
-        return roomUrlParam.endsWith(`${roomName}`);
+        return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
     [eventVenue, event]
   );

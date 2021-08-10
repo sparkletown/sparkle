@@ -4,18 +4,19 @@ import {
   API_KEY,
   APP_ID,
   AUTH_DOMAIN,
-  MEASUREMENT_ID,
   BUCKET_URL,
-  PROJECT_ID,
   IS_BURN,
+  MEASUREMENT_ID,
+  PROJECT_ID,
 } from "secrets";
-import { VenueTemplate } from "types/venues";
+
 import { RoomType } from "types/rooms";
+import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -122,8 +123,13 @@ export const MAX_TABLE_CAPACITY = 10;
 export const DOCUMENT_ID = "__name__";
 export const NUM_CHAT_UIDS_TO_LOAD = 10;
 
-export const MINIMUM_COLUMNS = 5;
-export const MAXIMUM_COLUMNS = 100;
+export const MINIMUM_PARTYMAP_COLUMNS_COUNT = 5;
+export const MAXIMUM_PARTYMAP_COLUMNS_COUNT = 100;
+
+export const MINIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
+export const MAXIMUM_AUDITORIUM_COLUMNS_COUNT = 5;
+export const MINIMUM_AUDITORIUM_ROWS_COUNT = 5;
+export const MAXIMUM_AUDITORIUM_ROWS_COUNT = 5;
 // playa is 4000x4000 pixels, Burning Seed paddock is 2000x2000
 export const PLAYA_HEIGHT = 2000;
 export const PLAYA_WIDTH = 3000;
@@ -154,7 +160,7 @@ export const PLAYA_VENUE_STYLES: Record<string, CSSProperties> = {
 };
 
 export const ACCEPTED_IMAGE_TYPES =
-  "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif";
+  "image/png,image/x-png,image/gif,image/jpg,image/jpeg,image/tiff,image/bmp,image/gif,image/webp";
 
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
@@ -293,6 +299,11 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
   },
+  {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -349,6 +360,11 @@ export const BURN_VENUE_TEMPLATES_V2: Array<Template_v2> = [
     description: [
       "Insert almost anything into a styled iFrame. This space does not have video chatting.",
     ],
+  },
+  {
+    template: VenueTemplate.screeningroom,
+    name: "Screening room",
+    description: ["Add an screening room with the videos listed inside."],
   },
 ];
 
@@ -700,3 +716,5 @@ export const DEFAULT_TABLE_CAPACITY =
 export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
+
+export const CHATBOX_NEXT_RENDER_SIZE = 50;

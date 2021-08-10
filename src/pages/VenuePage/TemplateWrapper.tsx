@@ -1,10 +1,9 @@
-import React, { Suspense, lazy } from "react";
-import { Route, Switch, useHistory, useRouteMatch } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
 
@@ -15,13 +14,14 @@ import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
-import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
@@ -30,20 +30,11 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-const PlayaRouter = lazy(() =>
-  tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
-    import("components/templates/Playa/Router").then(({ PlayaRouter }) => ({
-      default: PlayaRouter,
-    }))
-  )
-);
-
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
 }
 
 export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const history = useHistory();
   const match = useRouteMatch();
 
   let template;
@@ -73,37 +64,11 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.artpiece:
       template = <ArtPiece venue={venue} />;
       break;
-
-    case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
-      template = <PlayaRouter />;
-      break;
-
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
-      if (venue.zoomUrl) {
-        window.location.replace(venue.zoomUrl);
-
-        // Note that we are explicitly returning here so that none of the rest of this component has a chance to render
-        return <LoadingPage />;
-      } else {
-        template = (
-          <p>
-            Venue {venue.name} should redirect to a URL, but none was set.
-            <br />
-            <button
-              role="link"
-              className="btn btn-primary"
-              onClick={() => history.goBack()}
-            >
-              Go Back
-            </button>
-          </p>
-        );
-      }
+      template = <ExternalRoom venue={venue} />;
       break;
-
     // Note: This is the template that is used for Auditorium (v1)
     case VenueTemplate.audience:
       template = (
@@ -149,6 +114,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.avatargrid:
+    case VenueTemplate.playa:
+    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform

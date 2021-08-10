@@ -1,35 +1,17 @@
-import "./wdyr";
-
 import React, { useEffect } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
-
+import { Provider as ReduxStoreProvider } from "react-redux";
+import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import BugsnagPluginReact from "@bugsnag/plugin-react";
+import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
-
-import { Provider } from "react-redux";
-import { createStore, combineReducers, applyMiddleware, Reducer } from "redux";
-import thunkMiddleware from "redux-thunk";
-import { createFirestoreInstance, firestoreReducer } from "redux-firestore";
-import {
-  ReactReduxFirebaseProvider,
-  firebaseReducer,
-  isLoaded,
-  FirebaseReducer,
-} from "react-redux-firebase";
-import { composeWithDevTools } from "redux-devtools-extension";
-
-import firebase from "firebase/app";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/performance";
-
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { createFirestoreInstance } from "redux-firestore";
+import { ThemeProvider } from "styled-components";
 
 import {
   BUGSNAG_API_KEY,
@@ -40,15 +22,8 @@ import {
   LOGROCKET_APP_ID,
   MIXPANEL_PROJECT_TOKEN,
 } from "secrets";
+
 import { FIREBASE_CONFIG } from "settings";
-
-import { VenueTemplateReducers, MiscReducers } from "store/reducers";
-
-import * as serviceWorker from "./serviceWorker";
-import { activatePolyFills } from "./polyfills";
-
-import { Firestore } from "types/Firestore";
-import { User } from "types/User";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -60,9 +35,20 @@ import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import "scss/global.scss";
-import { ThemeProvider } from "styled-components";
+import "./wdyr";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
+import "firebase/performance";
+
+import { activatePolyFills } from "./polyfills";
+import * as serviceWorker from "./serviceWorker";
+import { store } from "./store";
+
 import { theme } from "theme/theme";
+
+import "scss/global.scss";
 
 activatePolyFills();
 
@@ -92,30 +78,6 @@ const rrfConfig = {
   userProfile: "users",
   useFirestoreForProfile: true,
 };
-
-// Add firebase to reducers
-const rootReducer = combineReducers({
-  firebase: firebaseReducer as Reducer<FirebaseReducer.Reducer<User>>,
-  firestore: firestoreReducer as Reducer<Firestore>,
-  ...VenueTemplateReducers,
-  ...MiscReducers,
-});
-
-export type RootState = ReturnType<typeof rootReducer>;
-
-const initialState = {};
-const store = createStore(
-  rootReducer,
-  initialState,
-  composeWithDevTools(
-    applyMiddleware(
-      thunkMiddleware,
-      LogRocket.reduxMiddleware() // logrocket needs to be last
-    )
-  )
-);
-
-export type AppDispatch = typeof store.dispatch;
 
 const rrfProps = {
   firebase,
@@ -258,7 +220,7 @@ traceReactScheduler("initial render", performance.now(), () => {
     <BugsnagErrorBoundary>
       <ThemeProvider theme={theme}>
         <DndProvider backend={HTML5Backend}>
-          <Provider store={store}>
+          <ReduxStoreProvider store={store}>
             <ReactReduxFirebaseProvider {...rrfProps}>
               <AuthIsLoaded>
                 <CustomSoundsProvider
@@ -269,7 +231,7 @@ traceReactScheduler("initial render", performance.now(), () => {
                 </CustomSoundsProvider>
               </AuthIsLoaded>
             </ReactReduxFirebaseProvider>
-          </Provider>
+          </ReduxStoreProvider>
         </DndProvider>
       </ThemeProvider>
     </BugsnagErrorBoundary>,

@@ -10,7 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UserStatus, UsernameVisibility } from "./User";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -28,10 +28,8 @@ export enum VenueTemplate {
   jazzbar = "jazzbar",
   partymap = "partymap",
   performancevenue = "performancevenue",
-  playa = "playa",
   posterhall = "posterhall",
   posterpage = "posterpage",
-  preplaya = "preplaya",
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -40,6 +38,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below

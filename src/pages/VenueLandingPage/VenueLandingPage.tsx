@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { format } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
@@ -11,10 +12,11 @@ import {
 } from "settings";
 
 import { VenueAccessMode } from "types/VenueAcccess";
-import { getTimeBeforeParty } from "utils/time";
-import { venueEntranceUrl, venueInsideUrl } from "utils/url";
+
+import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
-import { hasEventFinished } from "utils/event";
+import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
+import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -128,22 +130,23 @@ export const VenueLandingPage: React.FC = () => {
             </div>
           )}
 
-          {!isPasswordRequired &&
-            (!futureOrOngoingVenueEvents ||
-              futureOrOngoingVenueEvents.length === 0) && (
-              <button
-                className="btn btn-primary btn-block btn-centered"
-                onClick={onJoinClick}
-              >
-                Join the event
-                {(venue?.start_utc_seconds ?? 0) >
-                  new Date().getTime() / 1000 && (
-                  <span className="countdown">
-                    Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
-                  </span>
-                )}
-              </button>
-            )}
+          {!isPasswordRequired && (
+            // @debt: this is commented out because we want the button to show even if there are future and ongoing events, but we are not sure why this logic is in place
+            // (!futureOrOngoingVenueEvents ||
+            //   futureOrOngoingVenueEvents.length === 0) &&
+            <button
+              className="btn btn-primary btn-block btn-centered"
+              onClick={onJoinClick}
+            >
+              Join the event
+              {(venue?.start_utc_seconds ?? 0) >
+                new Date().getTime() / 1000 && (
+                <span className="countdown">
+                  Begins in {getTimeBeforeParty(venue.start_utc_seconds)}
+                </span>
+              )}
+            </button>
+          )}
         </div>
 
         <div className="row">
@@ -213,16 +216,17 @@ export const VenueLandingPage: React.FC = () => {
               futureOrOngoingVenueEvents &&
               futureOrOngoingVenueEvents.length > 0 && (
                 <>
-                  <div className="upcoming-gigs-title">Upcoming gigs</div>
+                  <div className="upcoming-gigs-title">Upcoming events</div>
                   {futureOrOngoingVenueEvents.map((venueEvent) => {
-                    const startingDate = new Date(
-                      venueEvent.start_utc_seconds * 1000
+                    const startTime = formatTimeLocalised(
+                      eventStartTime(venueEvent)
                     );
-
-                    const endingDate = new Date(
-                      (venueEvent.start_utc_seconds +
-                        60 * venueEvent.duration_minutes) *
-                        1000
+                    const endTime = formatTimeLocalised(
+                      eventEndTime(venueEvent)
+                    );
+                    const startDay = format(
+                      eventStartTime(venueEvent),
+                      "EEEE LLLL do"
                     );
 
                     const isNextVenueEvent = venueEvent.id === nextVenueEventId;
@@ -233,11 +237,7 @@ export const VenueLandingPage: React.FC = () => {
                         className={`${!isNextVenueEvent ? "disabled" : ""}`}
                       >
                         <div className="date">
-                          {`${dayjs(startingDate).format("ha")}-${dayjs(
-                            endingDate
-                          ).format("ha")} ${dayjs(startingDate).format(
-                            "dddd MMMM Do"
-                          )}`}
+                          {`${startTime}-${endTime} ${startDay}`}
                         </div>
                         <div className="event-description">
                           <RenderMarkdown text={venueEvent.description} />

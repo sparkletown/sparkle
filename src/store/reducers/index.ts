@@ -1,9 +1,9 @@
 import { Reducer } from "redux";
 
-import { roomReducer } from "./Room";
-import { locationReducer } from "./Location";
 import { attendanceReducer } from "./Attendance";
 import { chatReducer } from "./Chat";
+import { locationReducer } from "./Location";
+import { roomReducer } from "./Room";
 import { sovereignVenueReducer } from "./SovereignVenue";
 import { userProfileReducer } from "./UserProfile";
 

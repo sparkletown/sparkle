@@ -1,16 +1,38 @@
 import React, {
   useCallback,
-  useMemo,
   useEffect,
-  useState,
+  useMemo,
   useRef,
+  useState,
 } from "react";
+import { Form } from "react-bootstrap";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { Form } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
-import "firebase/functions";
 import * as Yup from "yup";
+
+import { IS_BURN } from "secrets";
+
+import {
+  BACKGROUND_IMG_TEMPLATES,
+  BANNER_MESSAGE_TEMPLATES,
+  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
+  DEFAULT_AUDIENCE_ROWS_NUMBER,
+  DEFAULT_SHOW_SCHEDULE,
+  DEFAULT_SHOW_USER_STATUSES,
+  DEFAULT_USER_STATUS,
+  HAS_GRID_TEMPLATES,
+  HAS_REACTIONS_TEMPLATES,
+  HAS_ROOMS_TEMPLATES,
+  IFRAME_TEMPLATES,
+  PLAYA_HEIGHT,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_NAME,
+  PLAYA_VENUE_SIZE,
+  PLAYA_VENUE_STYLES,
+  PLAYA_WIDTH,
+  ZOOM_URL_TEMPLATES,
+} from "settings";
 
 import {
   createUrlSafeName,
@@ -21,42 +43,21 @@ import {
 
 import { setSovereignVenue } from "store/actions/SovereignVenue";
 
-import {
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_VENUE_NAME,
-  HAS_ROOMS_TEMPLATES,
-  BANNER_MESSAGE_TEMPLATES,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-  HAS_GRID_TEMPLATES,
-  HAS_REACTIONS_TEMPLATES,
-  BACKGROUND_IMG_TEMPLATES,
-  DEFAULT_SHOW_SCHEDULE,
-  DEFAULT_USER_STATUS,
-  DEFAULT_SHOW_USER_STATUSES,
-  DEFAULT_AUDIENCE_COLUMNS_NUMBER,
-  DEFAULT_AUDIENCE_ROWS_NUMBER,
-} from "settings";
-
-import { IS_BURN } from "secrets";
-
-import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
-import { ExtractProps } from "types/utility";
 import { UserStatus } from "types/User";
+import { ExtractProps } from "types/utility";
+import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 
 import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-import { useUser } from "hooks/useUser";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useShowHide } from "hooks/useShowHide";
-import { useQuery } from "hooks/useQuery";
 import { useDispatch } from "hooks/useDispatch";
+import { useQuery } from "hooks/useQuery";
+import { useShowHide } from "hooks/useShowHide";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
+
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
@@ -64,19 +65,18 @@ import { UserStatusManager } from "components/molecules/UserStatusManager";
 
 import { Toggler } from "components/atoms/Toggler";
 
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+import "firebase/functions";
 
 import {
   editVenueCastSchema,
   validationSchema,
 } from "./DetailsValidationSchema";
-import { WizardPage } from "./VenueWizard";
-import QuestionInput from "./QuestionInput";
 import EntranceInput from "./EntranceInput";
+import QuestionInput from "./QuestionInput";
+import { WizardPage } from "./VenueWizard";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
-
 import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
@@ -102,7 +102,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 }) => {
   const defaultValues = useMemo(
     () =>
-      !!venueId
+      venueId
         ? editVenueCastSchema.cast(state.detailsPage?.venue)
         : validationSchema.cast(),
     [state.detailsPage, venueId]
@@ -533,7 +533,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderLogoInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a square logo</h4>
+      <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
         ref={register}
@@ -541,8 +541,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
         name={"logoImageFile"}
-        containerClassName="input-square-container"
-        imageClassName="input-square-image"
+        containerClassName="host-icon-container"
+        imageClassName="host-icon"
         error={errors.logoImageFile || errors.logoImageUrl}
       />
     </div>

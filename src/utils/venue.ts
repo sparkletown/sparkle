@@ -4,12 +4,14 @@ import {
   SUBVENUE_TEMPLATES,
 } from "settings";
 
+import { VenueInput_v2 } from "api/admin";
+
 import { User } from "types/User";
 import {
-  urlFromImage,
   AnyVenue,
-  VenueTemplate,
   JazzbarVenue,
+  urlFromImage,
+  VenueTemplate,
 } from "types/venues";
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
@@ -32,6 +34,28 @@ export const checkIfValidVenueId = (venueId?: string): boolean => {
   if (typeof venueId !== "string") return false;
 
   return /[a-z0-9_]{1,250}/.test(venueId);
+};
+
+export const buildEmptyVenue = (
+  venueName: string,
+  template: VenueTemplate
+): VenueInput_v2 => {
+  const list = new DataTransfer();
+
+  const fileList = list.files;
+
+  return {
+    name: venueName,
+    subtitle: "",
+    description: "",
+    template: template,
+    bannerImageFile: fileList,
+    bannerImageUrl: "",
+    logoImageUrl: "",
+    mapBackgroundImageUrl: "",
+    logoImageFile: fileList,
+    rooms: [],
+  };
 };
 
 /**

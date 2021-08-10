@@ -3,9 +3,9 @@ import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
+import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
-import { eventEndTime, eventStartTime } from "utils/event";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -14,7 +14,8 @@ export interface VenueEventDetailsProps {
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
-  className: string;
+  className?: string;
+  isEditable?: boolean;
 }
 
 const VenueEventDetails = ({
@@ -22,7 +23,8 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-  className,
+  className = "",
+  isEditable = false,
 }: VenueEventDetailsProps) => {
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
   const endTime = formatTimeLocalised(eventEndTime(venueEvent));
@@ -48,6 +50,34 @@ const VenueEventDetails = ({
         {venueEvent.descriptions?.map((description, index) => (
           <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
+      </div>
+      <div className="button-container">
+        {isEditable && (
+          <div>
+            <div>
+              <button
+                role="link"
+                className="btn btn-primary"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowCreateEventModal(true);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                role="link"
+                className="btn btn-primary"
+                onClick={() => {
+                  setEditedEvent && setEditedEvent(venueEvent);
+                  setShowDeleteEventModal(true);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

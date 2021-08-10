@@ -1,10 +1,12 @@
 import firebase from "firebase/app";
 
-import { updateUserProfile } from "pages/Account/helpers";
-import { useInterval } from "hooks/useInterval";
-
 import { LOCATION_INCREMENT_MS, LOCATION_INCREMENT_SECONDS } from "settings";
 
+import { useInterval } from "hooks/useInterval";
+
+import { updateUserProfile } from "pages/Account/helpers";
+
+import { logEventGoogleAnalytics } from "./googleAnalytics";
 import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl } from "./url";
 
@@ -30,6 +32,8 @@ export interface SetLocationDataProps {
   locationName: string;
 }
 
+// TODO: refactor how user location updates works here?
+//   Called from VenuePage useEffect when venue changes, etc
 export const setLocationData = ({
   userId,
   locationName,
@@ -49,6 +53,8 @@ export interface UpdateCurrentLocationDataProps {
 
 // NOTE: The intended effect is to update the current location, without rewriting it.
 // profileLocationData can only have 1 key at any point of time
+// TODO: refactor how user location updates works here?
+//   Called from VenuePage interval
 export const updateCurrentLocationData = ({
   userId,
   profileLocationData,
@@ -61,6 +67,8 @@ export const updateCurrentLocationData = ({
   });
 };
 
+// TODO: refactor how user location updates works here?
+//   Called from VenuePage useEffect + onBeforeUnloadHandler
 export const clearLocationData = (userId: string) => {
   updateLocationData({ userId, newLocationData: {} });
 };
@@ -79,6 +87,15 @@ export const enterExternalRoom = ({
   setLocationData({
     userId,
     locationName,
+  });
+
+  logEventGoogleAnalytics({
+    eventName: "ENTER_THIRD_PARTY_ROOM",
+    eventAction: {
+      locationName,
+      userId,
+      roomUrl,
+    },
   });
 
   openRoomUrl(roomUrl);
