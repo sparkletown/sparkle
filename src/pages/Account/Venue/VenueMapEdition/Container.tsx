@@ -135,6 +135,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   useMemo(() => {
     if (!imageDims) return;
+
     const copy = Object.keys(iconsMap).reduce(
       (acc, val) => ({
         ...acc,
@@ -194,7 +195,7 @@ export const Container: React.FC<PropsType> = (props) => {
 
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
-    drop(item: DragItem, monitor) {
+    drop: (item: DragItem, monitor) => {
       if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;

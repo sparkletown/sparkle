@@ -1,0 +1,17 @@
+name: Deploy the changes to the env branches
+on:
+  push:
+    branches:
+      - master
+jobs:
+  push-to-prod-envs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0
+      - name: Push to sparkle 9
+        run: |
+          git fetch origin master:master
+          git push origin master:sparkle9

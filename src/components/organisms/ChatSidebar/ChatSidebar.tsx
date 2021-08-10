@@ -8,7 +8,10 @@ import {
   faCommentDots,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { useChatSidebarControls, useChatSidebarInfo } from "hooks/chatSidebar";
+import {
+  useChatSidebarControls,
+  useChatSidebarInfo,
+} from "hooks/chats/chatSidebar";
 
 import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
