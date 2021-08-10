@@ -3,11 +3,8 @@ import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBorderNone,
-  faClock,
-  faPlayCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 
 import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
 
