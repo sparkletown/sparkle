@@ -102,7 +102,6 @@
           ["^(components/organisms)(/.*|$)"],
           ["^(components/molecules)(/.*|$)"],
           ["^(components/atoms)(/.*|$)"],
-          ["^(types)(/.*|$)"],
           // Side effect imports.
           ["^\\u0000"],
           // Parent imports. Put `..` last.
