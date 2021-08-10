@@ -1,18 +1,18 @@
 import firebase from "firebase/app";
 
-import { WithId, withId } from "utils/id";
-
 import {
   BaseChatMessage,
-  ChatMessage,
-  PreviewChatMessageToDisplay,
-  PreviewChatMessage,
-  PrivateChatMessage,
   BaseMessageToDisplay,
+  ChatMessage,
   ChatMessageType,
   PollMessage,
+  PreviewChatMessage,
+  PreviewChatMessageToDisplay,
+  PrivateChatMessage,
 } from "types/chat";
 import { User } from "types/User";
+
+import { WithId, withId } from "utils/id";
 
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,
@@ -23,7 +23,6 @@ export interface GetBaseMessageToDisplayProps<T extends ChatMessage> {
   message: T;
   usersById: Partial<Record<string, User>>;
   myUserId?: string;
-  isAdmin?: boolean;
 }
 
 export type GetBaseMessageToDisplayReturn<T extends ChatMessage> =
@@ -34,7 +33,6 @@ export const getBaseMessageToDisplay = <T extends ChatMessage>({
   message,
   usersById,
   myUserId,
-  isAdmin,
 }: GetBaseMessageToDisplayProps<T>): GetBaseMessageToDisplayReturn<T> => {
   const user = usersById[message.from];
 
@@ -46,7 +44,6 @@ export const getBaseMessageToDisplay = <T extends ChatMessage>({
     ...message,
     author: withId(user, message.from),
     isMine,
-    ...(isAdmin && { canBeDeleted: isAdmin }),
   };
 };
 

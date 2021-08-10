@@ -3,31 +3,31 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
 import { IS_BURN } from "secrets";
+
 import { DEFAULT_PARTY_NAME } from "settings";
 
 import { QuestionType } from "types/Question";
 import { ProfileLink, User } from "types/User";
 
 import { WithId } from "utils/id";
-import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-} from "utils/selectors";
+import { currentVenueSelector } from "utils/selectors";
 import { venueLandingUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
 import { Badges } from "components/organisms/Badges";
-import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
+
 import { Button } from "components/atoms/Button";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import editIcon from "assets/icons/profile-edit-icon.svg";
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 
 import { UserProfileMode } from "../ProfilePopoverContent";
+
+import editIcon from "assets/icons/profile-edit-icon.svg";
 
 import "./UserInformationContent.scss";
 
@@ -44,14 +44,14 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
   user,
   email,
 }) => {
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
   const venueId = useVenueId();
   const venue = useSelector(currentVenueSelector);
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const history = useHistory();
   const firebase = useFirebase();
+
+  const profileQuestions = sovereignVenue?.profile_questions;
 
   const logout = useCallback(async () => {
     await firebase.auth().signOut();
@@ -135,7 +135,7 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
       <h1 className="UserInformationContent__title">My Profile</h1>
       <div className="UserInformationContent__information">
         <div>
-          <UserAvatar user={user} showStatus large />
+          <UserAvatar user={user} showStatus size="large" />
         </div>
         <div className="UserInformationContent__text-container">
           <h3 className="UserInformationContent__user-name">
@@ -148,12 +148,14 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
           >
             {email}
           </div>
-          <div className="UserInformationContent__status-container">
-            <span className="UserInformationContent__status-prefix">
-              Available
-            </span>
-            <UserStatusDropdown />
-          </div>
+          {sovereignVenue?.showUserStatus &&
+            !!sovereignVenue?.userStatuses?.length && (
+              <div className="UserInformationContent__status-container">
+                <UserStatusDropdown
+                  userStatuses={sovereignVenue.userStatuses}
+                />
+              </div>
+            )}
         </div>
         <Button
           customClass="UserInformationContent__edit"

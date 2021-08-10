@@ -8,8 +8,8 @@ import { usePosters } from "hooks/posters";
 
 import { Button } from "components/atoms/Button";
 
-import { PosterPreview } from "./components/PosterPreview";
 import { PosterHallSearch } from "./components/PosterHallSearch";
+import { PosterPreview } from "./components/PosterPreview";
 
 import "./PosterHall.scss";
 

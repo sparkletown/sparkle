@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { isEqual } from "lodash";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { isEqual } from "lodash";
 
 import { RoomInput_v2, updateRoom, updateVenue_v2 } from "api/admin";
+
+import { RoomData_v2 } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 
@@ -11,11 +13,13 @@ import {
   Container,
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
+
 import Legend from "components/atoms/Legend";
+
+import { BackgroundSelect } from "../BackgroundSelect";
+
 import * as S from "./MapPreview.styles";
-import BackgroundSelect from "../BackgroundSelect";
 import { MapPreviewProps } from "./MapPreview.types";
-import { RoomData_v2 } from "types/rooms";
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
@@ -24,6 +28,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   venueId,
   isEditing,
   setIsEditing,
+  onRoomChange,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
@@ -66,6 +71,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         height_percent: room.height,
       }));
       setMapRooms(normalizeRooms);
+      onRoomChange && onRoomChange(normalizeRooms);
     }
   };
 

@@ -6,15 +6,18 @@ import { getSeconds } from "date-fns";
 import { REACTION_TIMEOUT } from "settings";
 
 import {
+  EmojiReactionType,
   isTextReaction,
   ReactionData,
-  EmojiReactionType,
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
+import { useAudio } from "hooks/audio/useAudio";
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
+
+import { Reaction } from "components/atoms/Reaction";
 
 import "./UserReactions.scss";
 
@@ -93,18 +96,8 @@ export const DisplayEmojiReaction: React.FC<EmojiReactionProps> = ({
   emojiReaction,
   isMuted = false,
 }) => {
-  const { ariaLabel, text: emojiText, audioPath } = emojiReaction;
+  const { audioPath } = emojiReaction;
+  useAudio({ audioPath, isMuted });
 
-  return (
-    <div className="UserReactions__reaction" role="img" aria-label={ariaLabel}>
-      {emojiText}
-
-      {/* @debt replace this with useSound or calling new Audio in useEffect or similar */}
-      {!isMuted && (
-        <audio autoPlay loop>
-          <source src={audioPath} />
-        </audio>
-      )}
-    </div>
-  );
+  return <Reaction reaction={emojiReaction} />;
 };

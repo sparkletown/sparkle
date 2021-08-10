@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
 import { VenueTemplate } from "types/venues";
 
-import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
-import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
+import "./Venue.scss";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
@@ -16,18 +18,19 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: "/venues/venue-performance.jpg",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/venue-camp.jpg",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
   [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.auditorium]: undefined,
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
@@ -41,19 +44,20 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
   [VenueTemplate.firebarrel]: undefined,
   [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.auditorium]: undefined,
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
@@ -61,7 +65,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
     Template | undefined
   >(state.templatePage?.template);
 
-  const templateImage = !!selectedTemplate
+  const templateImage = selectedTemplate
     ? templateImageMap[selectedTemplate.template]
     : undefined;
   const hasTemplateImage = !!templateImage;

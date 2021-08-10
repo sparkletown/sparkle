@@ -1,20 +1,19 @@
+import Bugsnag from "@bugsnag/js";
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
-import Bugsnag from "@bugsnag/js";
 
-import { Room } from "types/rooms";
+import { Room, RoomData_v2 } from "types/rooms";
+import { UsernameVisibility, UserStatus } from "types/User";
 import {
+  Venue_v2_AdvancedConfig,
+  Venue_v2_EntranceConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
-  Venue_v2_AdvancedConfig,
-  Venue_v2_EntranceConfig,
 } from "types/venues";
-import { RoomData_v2 } from "types/rooms";
-import { UsernameVisibility } from "types/User";
 
-import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
   name: string;
@@ -22,7 +21,7 @@ export interface EventInput {
   start_date: string;
   start_time: string;
   duration_hours: number;
-  price: number;
+  duration_minutes: number;
   host: string;
   room?: string;
 }
@@ -41,13 +40,11 @@ export interface AdvancedVenueInput {
 type VenueImageFileKeys =
   | "bannerImageFile"
   | "logoImageFile"
-  | "mapIconImageFile"
   | "mapBackgroundImageFile";
 
 type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
-  | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
 
 type ImageFileKeys =
@@ -80,7 +77,6 @@ export type VenueInput = AdvancedVenueInput &
     name: string;
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
-    mapIconImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
     subtitle: string;
     description: string;
@@ -103,11 +99,13 @@ export type VenueInput = AdvancedVenueInput &
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
+    userStatuses?: UserStatus[];
     showReactions?: boolean;
+    showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
     showNametags?: UsernameVisibility;
-    showZendesk?: boolean;
+    showUserStatus?: boolean;
   };
 
 export interface VenueInput_v2
@@ -143,8 +141,6 @@ type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
   };
 
 export type PlacementInput = {
-  mapIconImageFile?: FileList;
-  mapIconImageUrl?: string;
   addressText?: string;
   notes?: string;
   placement?: Omit<VenuePlacement, "state">;
@@ -182,10 +178,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     {
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapIconImageFile",
-      urlKey: "mapIconImageUrl",
     },
     {
       fileKey: "mapBackgroundImageFile",
@@ -231,11 +223,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
-
-  // Default to showing Zendesk
-  if (input.showZendesk === undefined) {
-    input.showZendesk = true;
-  }
 
   return firestoreVenueInput;
 };
@@ -462,11 +449,40 @@ export const upsertRoom = async (
     user
   );
 
-  return await firebase.functions().httpsCallable("venue-upsertRoom")({
-    venueId,
-    roomIndex,
-    room: firestoreVenueInput,
-  });
+  return await firebase
+    .functions()
+    .httpsCallable("venue-upsertRoom")({
+      venueId,
+      roomIndex,
+      room: firestoreVenueInput,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::upsertRoom", {
+          venueId,
+          roomIndex,
+        });
+      });
+      throw e;
+    });
+};
+
+export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-deleteRoom")({
+      venueId,
+      room,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::deleteRoom", {
+          venueId,
+          room,
+        });
+      });
+      throw e;
+    });
 };
 
 export const updateRoom = async (

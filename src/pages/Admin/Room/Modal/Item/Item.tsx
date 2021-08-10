@@ -1,21 +1,24 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import * as S from "./Item.styles";
+import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import ImageInput from "components/atoms/ImageInput";
 import {
   faChevronCircleDown,
   faChevronCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "react-bootstrap";
-import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { CustomInputsType } from "settings";
+
+import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import ImageInput from "components/atoms/ImageInput";
+import { Toggler } from "components/atoms/Toggler";
+
+import * as S from "./Item.styles";
 import { RoomModalItemProps } from "./Item.types";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
@@ -115,17 +118,13 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <h4 className="italic input-header">Create venue</h4>
       </S.Flex>
       <S.Flex>
-        <label id={"useUrl"} className="switch">
-          <input
-            type="checkbox"
-            id={"useUrl"}
-            name={"useUrl"}
-            checked={useUrl}
-            onChange={handleUrlToggle}
-            ref={register}
-          />
-          <span className="slider round"></span>
-        </label>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
+        <Toggler
+          name="useUrl"
+          forwardedRef={register}
+          toggled={useUrl}
+          onChange={handleUrlToggle}
+        />
       </S.Flex>
       <S.Flex>
         <h4 className="italic input-header">Use url</h4>

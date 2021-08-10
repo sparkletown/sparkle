@@ -1,24 +1,24 @@
 import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
-import { MessageToDisplay } from "types/chat";
+import { DeleteMessage, MessageToDisplay } from "types/chat";
 
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
 import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import { TextButton } from "components/atoms/TextButton";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ChatMessage.scss";
 
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
-  deleteMessage: (messageId: string) => void;
+  deleteMessage?: DeleteMessage;
   selectThisThread: () => void;
 }
 
@@ -29,7 +29,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
 }) => {
   const { text, replies, id, isMine, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(() => deleteMessage(id), [
+  const deleteThisMessage = useCallback(() => deleteMessage?.(id), [
     deleteMessage,
     id,
   ]);
@@ -43,15 +43,17 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const renderedReplies = useMemo(
     () =>
-      replies?.map((reply) => (
-        <div key={reply.id} className="ChatMessage__reply">
-          <RenderMarkdown text={reply.text} allowHeadings={false} />
-          <ChatMessageInfo
-            message={reply}
-            deleteMessage={() => deleteMessage(reply.id)}
-          />
-        </div>
-      )),
+      replies?.map((reply) => {
+        return (
+          <div key={reply.id} className="ChatMessage__reply">
+            <RenderMarkdown text={reply.text} allowHeadings={false} />
+            <ChatMessageInfo
+              message={reply}
+              deleteMessage={deleteMessage && (() => deleteMessage(reply.id))}
+            />
+          </div>
+        );
+      }),
     [replies, deleteMessage]
   );
 
@@ -75,13 +77,13 @@ export const ChatMessage: React.FC<ChatProps> = ({
             <RenderMarkdown text={text} allowHeadings={false} />
           </div>
 
-          <div className="ChatMessage__reply-icon">
-            <FontAwesomeIcon
-              icon={faReply}
-              size="sm"
-              onClick={selectThisThread}
-            />
-          </div>
+          <button
+            aria-label={replyButtonText}
+            className="ChatMessage__reply-icon"
+            onClick={selectThisThread}
+          >
+            <FontAwesomeIcon icon={faReply} size="sm" />
+          </button>
           {hasReplies && (
             <TextButton
               containerClassName="ChatMessage__show-replies-button"
@@ -100,7 +102,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisMessage}
+        deleteMessage={deleteMessage && deleteThisMessage}
       />
     </div>
   );

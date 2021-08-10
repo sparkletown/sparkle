@@ -1,30 +1,50 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Dropdown, DropdownButton } from "react-bootstrap";
 
-import { USER_STATUSES } from "settings";
+import { UserStatus } from "types/User";
 
-import { useProfileStatus } from "hooks/useProfileStatus";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserStatusDropdown.scss";
 
-export const UserStatusDropdown: React.FC = () => {
-  const { status, changeUserStatus } = useProfileStatus();
+export interface UserStatusDropdownProps {
+  userStatuses: UserStatus[];
+}
+
+export const UserStatusDropdown: React.FC<UserStatusDropdownProps> = ({
+  userStatuses,
+}) => {
+  const { userStatus, changeUserStatus } = useVenueUserStatuses();
+
+  // This will check if the user status from the database exists in the venue user statuses and if it doesn't, it will fallback to the first one from the list.
+  useEffect(() => {
+    const statusTexts = userStatuses.map((userStatus) => userStatus.status);
+
+    const defaultUserStatus = userStatuses[0].status;
+
+    if (!statusTexts.includes(userStatus.status)) {
+      changeUserStatus(defaultUserStatus);
+    }
+  }, [changeUserStatus, userStatus, userStatuses]);
 
   const userStatusDropdownOptions = useMemo(
     () =>
-      USER_STATUSES.map((option) => (
-        <Dropdown.Item key={option} onClick={() => changeUserStatus(option)}>
-          {option}
+      userStatuses.map((userStatus) => (
+        <Dropdown.Item
+          key={userStatus.status}
+          onClick={() => changeUserStatus(userStatus.status)}
+        >
+          {userStatus.status}
         </Dropdown.Item>
       )),
-    [changeUserStatus]
+    [userStatuses, changeUserStatus]
   );
 
   return (
     // @debt replace with our own dropdown component
     <DropdownButton
       id="user-status-dropdown"
-      title={status ?? "change status"}
+      title={userStatus.status ?? "change status"}
       className="UserStatusDropdown"
     >
       {userStatusDropdownOptions}

@@ -1,72 +1,58 @@
 import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAsyncFn } from "react-use";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import {
-  PollMessage,
   BaseMessageToDisplay,
-  PollVoteBase,
-  PollQuestion,
   DeleteMessage,
+  PollMessage,
+  PollQuestion,
+  PollVoteBase,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
-import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
-import Button from "components/atoms/Button";
-
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { Loading } from "components/molecules/Loading";
+
+import Button from "components/atoms/Button";
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
 import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
-  venue: WithId<AnyVenue>;
-  deletePollMessage: DeleteMessage;
+  deletePollMessage?: DeleteMessage;
   voteInPoll: (pollVote: PollVoteBase) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
-  venue,
   voteInPoll,
   deletePollMessage,
 }) => {
   const { userId } = useUser();
-  const { userRoles } = useRoles();
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-  const owners = venue.owners;
 
   const { id, poll, votes, isMine } = pollMessage;
   const { questions, topic } = poll;
-
-  const canBeDeleted: boolean = useMemo(() => {
-    if (!userId || !owners.length) return false;
-
-    return isAdmin && owners.includes(userId);
-  }, [isAdmin, userId, owners]);
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
     : false;
 
-  const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
-    pollMessage,
-    canBeDeleted,
-  ]);
+  const message = useMemo(() => ({ ...pollMessage }), [pollMessage]);
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
   });
 
-  const handleVote = useCallback(
-    (question) =>
+  const [{ loading: isVoting }, handleVote] = useAsyncFn(
+    async (question) =>
       voteInPoll({
         questionId: question.id,
         pollId: id,
@@ -82,7 +68,12 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           customClass="ChatPoll__question"
           onClick={() => handleVote(question)}
         >
-          <RenderMarkdown text={question.name} />
+          <RenderMarkdown
+            text={question.name}
+            components={{
+              p: "span",
+            }}
+          />
         </Button>
       )),
     [questions, handleVote]
@@ -115,12 +106,29 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
           style={{ width: `${question.share}%` }}
         />
         <span className="ChatPoll__text-count">{question.share}%</span>
-        <RenderMarkdown text={question.name} />
+        <RenderMarkdown
+          text={question.name}
+          components={{
+            p: "span",
+          }}
+        />
       </div>
     ));
   }, [questions, calculateVotePercentage]);
 
-  const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
+  const renderPollContent = () => {
+    if (isVoting) {
+      return <Loading />;
+    }
+
+    if (hasVoted || isMine) {
+      return renderResults;
+    }
+
+    return renderQuestions;
+  };
+
+  const deleteThisPollMessage = useCallback(() => deletePollMessage?.(id), [
     id,
     deletePollMessage,
   ]);
@@ -132,7 +140,8 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
         <div className="ChatPoll__topic">
           <RenderMarkdown text={topic} />
         </div>
-        <div>{isMine || hasVoted ? renderResults : renderQuestions}</div>
+        {renderPollContent()}
+
         <div className="ChatPoll__details">
           <span>{`${votes.length} votes`}</span>
         </div>
@@ -141,7 +150,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisPollMessage}
+        deleteMessage={deletePollMessage && deleteThisPollMessage}
       />
     </div>
   );

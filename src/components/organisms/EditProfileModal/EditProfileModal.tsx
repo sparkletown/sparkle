@@ -7,15 +7,14 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
+import { updateUserProfile } from "pages/Account/helpers";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
-import { updateUserProfile } from "pages/Account/helpers";
+
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./EditProfileModal.scss";
@@ -31,9 +30,10 @@ export const EditProfileModal: React.FunctionComponent<EditProfileModalProps> = 
 }) => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
+  const { sovereignVenue } = useSovereignVenue({ venueId });
+
+  const profileQuestions = sovereignVenue?.profile_questions;
+
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);

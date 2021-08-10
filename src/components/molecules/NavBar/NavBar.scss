@@ -164,10 +164,16 @@ $border-radius: 28px;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: transform 400ms $transition-function;
+  border: none;
+  appearance: none;
+  color: $white;
+
   img {
     height: 40px;
   }
-  &:hover {
+  &:hover,
+  &:focus {
+    border: none;
     background-color: rgba($white, 0.14);
     &:after {
       opacity: 0.7;
@@ -212,7 +218,6 @@ $border-radius: 28px;
   z-index: z(navbar-schedule-backdrop);
   width: 100%;
   height: 100%;
-  background-color: rgba($black, 0.8);
   cursor: pointer;
   transition: opacity 600ms $transition-function,
     transform 600ms $transition-function;
@@ -222,40 +227,6 @@ $border-radius: 28px;
   &.show {
     opacity: 1;
     pointer-events: all;
-  }
-}
-
-.back-map-btn {
-  position: fixed;
-  top: $navbar-height;
-  z-index: z(navbar-map-back-button);
-  left: 0px;
-  height: 40px;
-  width: auto;
-  cursor: pointer;
-  background-color: $secondary;
-  box-shadow: 0 10px 20px rgba($secondary, 0.2);
-  backdrop-filter: blur(8px);
-
-  border-radius: 0 0 16px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 10px 0 0;
-  font-size: 0.9rem;
-
-  &:hover {
-    background-color: $lighter-intermediate-grey;
-    .back-icon {
-      opacity: 1;
-    }
-  }
-  .back-icon {
-    height: 22px;
-    width: 22px;
-    background-image: url(/assets/icons/slide-btn-icon.png);
-    background-size: 22px 22px;
-    opacity: 0.7;
   }
 }
 
@@ -282,5 +253,9 @@ $border-radius: 28px;
       font-size: 27px;
       margin-right: $spacing--sm;
     }
+  }
+
+  &__profile-popover {
+    height: 100%;
   }
 }

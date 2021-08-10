@@ -1,10 +1,14 @@
 import React from "react";
-import "firebase/storage";
-import "./Account.scss";
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
-import { useUser } from "hooks/useUser";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+
+import { useUser } from "hooks/useUser";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 interface CodeOfConductFormData {
   contributeToExperience: string;

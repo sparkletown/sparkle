@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
 
-import { AnyVenue } from "types/venues";
-
 import { fetchCustomAuthConfig } from "api/auth";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";
@@ -11,6 +11,7 @@ import { isDefined } from "utils/types";
 import { openUrl } from "utils/url";
 
 import { useSAMLSignIn } from "hooks/useSAMLSignIn";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { InitialForm } from "components/organisms/AuthenticationModal/InitialForm";
 import LoginForm from "components/organisms/AuthenticationModal/LoginForm";
@@ -35,11 +36,11 @@ export const Login: React.FC<LoginProps> = ({
   venue,
 }) => {
   const venueId = venue.id;
-
+  const { sovereignVenue } = useSovereignVenue({ venueId });
   const [formToDisplay, setFormToDisplay] = useState(formType);
 
   const { signInWithSAML, hasSamlAuthProviderId } = useSAMLSignIn(
-    venue.samlAuthProviderId
+    sovereignVenue?.samlAuthProviderId
   );
 
   const {
@@ -95,7 +96,7 @@ export const Login: React.FC<LoginProps> = ({
           <div className="Login__login-box">
             <span>Quick log in with</span>
 
-            <div className="Login__alternative-logins">
+            <button className="Login__alternative-logins">
               {hasCustomAuthConnect && (
                 <img
                   className="Login__quick-login-icon"
@@ -114,7 +115,7 @@ export const Login: React.FC<LoginProps> = ({
                   alt="SAML SSO login"
                 />
               )}
-            </div>
+            </button>
           </div>
         )}
         {formToDisplay === "initial" && (

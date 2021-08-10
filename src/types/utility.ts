@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * Type helper representing all types of T except undefined
  */
@@ -15,6 +17,11 @@ export type Point = {
 export type Dimensions = {
   width: number;
   height: number;
+};
+
+export type Position = {
+  left: number;
+  top: number;
 };
 
 export type Bounds = Point & Dimensions;

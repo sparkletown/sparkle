@@ -1,8 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
-import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
+import { UserInfo } from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -12,7 +12,11 @@ import {
 
 import { resizeFile } from "utils/image";
 
-import { useSovereignVenueId } from "hooks/useSovereignVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
+import { Loading } from "components/molecules/Loading";
+
+import "firebase/storage";
 
 import "./ProfilePictureInput.scss";
 
@@ -42,7 +46,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
   const firebase = useFirebase();
   const uploadRef = useRef<HTMLInputElement>(null);
 
-  const { sovereignVenueId, isSovereignVenueIdLoading } = useSovereignVenueId({
+  const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({
     venueId,
   });
 
@@ -92,15 +96,21 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     setValue("pictureUrl", pictureUrlRef, true);
   };
 
+  const uploadProfilePic = useCallback((event) => {
+    event.preventDefault();
+    uploadRef.current?.click();
+  }, []);
+
   const uploadDefaultAvatar = useCallback(
-    async (avatar: string) => {
+    async (event, avatar: string) => {
+      event.preventDefault();
       setValue("pictureUrl", avatar, true);
     },
     [setValue]
   );
 
   const isLoading =
-    (isSovereignVenueIdLoading || isLoadingCustomAvatars) &&
+    (isSovereignVenueLoading || isLoadingCustomAvatars) &&
     (customAvatars !== undefined || error !== undefined);
 
   const defaultAvatars = customAvatars?.length
@@ -109,17 +119,17 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
 
   const avatarImages = useMemo(() => {
     return defaultAvatars.map((avatar, index) => (
-      <div
+      <button
         key={`${avatar}-${index}`}
         className="profile-picture-preview-container"
-        onClick={() => uploadDefaultAvatar(avatar)}
+        onClick={(event) => uploadDefaultAvatar(event, avatar)}
       >
         <img
           src={avatar}
           className="profile-icon profile-picture-preview"
           alt={`default avatar ${index}`}
         />
-      </div>
+      </button>
     ));
   }, [defaultAvatars, uploadDefaultAvatar]);
 
@@ -144,9 +154,12 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         className="profile-picture-input"
         ref={uploadRef}
       />
-      <label htmlFor="profile-picture-input" className="profile-picture-button">
+      <button
+        className="profile-picture-button"
+        onClick={(event) => uploadProfilePic(event)}
+      >
         Upload your profile pic
-      </label>
+      </button>
       {errors.pictureUrl && errors.pictureUrl.type === "required" && (
         <span className="input-error">Profile picture is required</span>
       )}
@@ -154,7 +167,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       {error && <small>Error uploading: {error}</small>}
       <small>Or pick one from our Sparkle profile pics</small>
       <div className="default-avatars-container">
-        {isLoading ? <div>Loading...</div> : avatarImages}
+        {isLoading ? <Loading /> : avatarImages}
       </div>
       <input
         name="pictureUrl"

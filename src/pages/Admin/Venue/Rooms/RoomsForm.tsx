@@ -1,29 +1,28 @@
-import React, { useEffect, useState, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { ErrorMessage, useForm } from "react-hook-form";
 import { useFirestore } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { ErrorMessage, useForm } from "react-hook-form";
-
 import Bugsnag from "@bugsnag/js";
 import * as Yup from "yup";
 
 import {
   ALL_VENUE_TEMPLATES,
-  PLAYA_IMAGE,
-  PLAYA_ICON_SIDE_PERCENTAGE,
-  PLAYA_VENUE_STYLES,
   HAS_ROOMS_TEMPLATES,
+  PLAYA_ICON_SIDE_PERCENTAGE,
+  PLAYA_IMAGE,
+  PLAYA_VENUE_STYLES,
 } from "settings";
 
-import { upsertRoom, RoomInput } from "api/admin";
+import { RoomInput, upsertRoom } from "api/admin";
 
 import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
-import { PartyMapVenue, AnyVenue } from "types/venues";
+import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { withId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
 import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import Login from "pages/Account/Login";
@@ -34,11 +33,12 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
 
+import { Toggler } from "components/atoms/Toggler";
+
+import RoomDeleteModal from "./RoomDeleteModal";
 import { validationSchema } from "./RoomsValidationSchema";
 
 import "../Venue.scss";
-
-import RoomDeleteModal from "./RoomDeleteModal";
 
 export const RoomsForm: React.FC = () => {
   const venueId = useVenueId();
@@ -96,7 +96,7 @@ export const RoomsForm: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar hasBackButton={false}>
       <RoomInnerForm
         venueId={venueId}
         venue={venue}
@@ -262,7 +262,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                   <div className="input-container">
                     <div className="input-title">
                       Upload an image for how your room should appear on the
-                      camp map
+                      Space map
                     </div>
                     <ImageInput
                       disabled={disable}
@@ -319,30 +319,22 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                     )}
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Enabled ?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isEnabled"
-                        name={"isEnabled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isEnabled"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                   <div className="toggle-room">
+                    {/* @debt pass the header into Toggler's 'label' prop instead of being external like this*/}
                     <div className="input-title">Is label hidden?</div>
-                    <label className="switch">
-                      <input
-                        disabled={disable}
-                        type="checkbox"
-                        id="isLabeled"
-                        name={"isLabeled"}
-                        ref={register}
-                      />
-                      <span className="slider round"></span>
-                    </label>
+                    <Toggler
+                      name="isLabelHidden"
+                      forwardedRef={register}
+                      disabled={disable}
+                    />
                   </div>
                 </div>
                 <div className="page-container-left-bottombar">
@@ -390,7 +382,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
             className="italic"
             style={{ textAlign: "center", fontSize: "22px" }}
           >
-            Position your room in the camp
+            Position your room in the Space
           </h4>
           <p>
             First upload or select the icon you would like to appear in your

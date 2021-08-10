@@ -1,16 +1,23 @@
-import React, { useMemo, useCallback, useReducer, useEffect } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import "./Venue.scss";
-import { TemplateForm } from "./TemplateForm";
-import { DetailsForm } from "./DetailsForm";
-import { Redirect, useHistory } from "react-router-dom";
-import { useQuery } from "hooks/useQuery";
-import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
+import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
+import { Redirect, useHistory } from "react-router-dom";
+
+import { ALL_VENUE_TEMPLATES, DEFAULT_VENUE, Template } from "settings";
+
 import { AnyVenue } from "types/venues";
-import { useUser } from "hooks/useUser";
+
 import { venueInsideUrl } from "utils/url";
+
+import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { DetailsForm } from "./DetailsForm";
+import { TemplateForm } from "./TemplateForm";
+
+import "./Venue.scss";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;
@@ -71,28 +78,36 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+
       if (!venueSnapshot.exists) return;
+
       const data = venueSnapshot.data() as AnyVenue;
+
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
+
       if (!template) return;
 
       // ensure reducer is synchronised with API data
       dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
       dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: data });
     };
+
     fetchVenueFromAPI();
   }, [firestore, venueId]);
 
+  // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
+
   return <DetailsForm venueId={venueId} state={state} />;
 };
 
@@ -140,5 +155,5 @@ const VenueWizardCreate: React.FC = () => {
     return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
-  return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;
+  return <WithNavigationBar>{Page}</WithNavigationBar>;
 };

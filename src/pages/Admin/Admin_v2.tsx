@@ -1,40 +1,38 @@
 import React from "react";
-import "firebase/storage";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
-import { orderedVenuesSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
-import { useUser } from "hooks/useUser";
-import useRoles from "hooks/useRoles";
 import { useIsAdminUser } from "hooks/roles";
-import { useAdminVenues } from "hooks/useAdminVenues";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useRoles } from "hooks/useRoles";
+import { useUser } from "hooks/useUser";
 
 import { AdminVenues } from "components/organisms/AdminVenues/AdminVenues";
 import {
   AuthenticationModal,
   AuthOptions,
 } from "components/organisms/AuthenticationModal";
+
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import "./Admin.scss";
+import "firebase/storage";
+
 import * as S from "./Admin.styles";
+
+import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
 
 const Admin_v2: React.FC = () => {
   const { user } = useUser();
-  useAdminVenues(user?.uid);
 
-  // @debt This selector relies on all venues in firebase being loaded into memory.. not very efficient
-  const venues = useSelector(orderedVenuesSelector);
+  const { ownedVenues, isLoading } = useOwnedVenues({});
 
   const { roles } = useRoles();
 
   const { isAdminUser } = useIsAdminUser(user?.uid);
 
-  if (!venues || !roles) {
+  if (isLoading || !roles) {
     return <LoadingPage />;
   }
 
@@ -50,7 +48,7 @@ const Admin_v2: React.FC = () => {
     <>
       <S.Wrapper className="no-venue-selected">
         <S.ViewWrapper>
-          <AdminVenues venues={venues} />
+          <AdminVenues venues={ownedVenues} />
         </S.ViewWrapper>
       </S.Wrapper>
 

@@ -10,7 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UsernameVisibility } from "./User";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -20,6 +20,7 @@ export enum VenueTemplate {
   artcar = "artcar",
   artpiece = "artpiece",
   audience = "audience",
+  auditorium = "auditorium",
   conversationspace = "conversationspace",
   embeddable = "embeddable",
   firebarrel = "firebarrel",
@@ -27,10 +28,8 @@ export enum VenueTemplate {
   jazzbar = "jazzbar",
   partymap = "partymap",
   performancevenue = "performancevenue",
-  playa = "playa",
   posterhall = "posterhall",
   posterpage = "posterpage",
-  preplaya = "preplaya",
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -39,6 +38,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
@@ -49,11 +58,13 @@ export type GenericVenueTemplates = Exclude<
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
+  | VenueTemplate.auditorium
 >;
 
-// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types)
+// We shouldn't include 'Venue' here, that is what 'GenericVenue' is for (which correctly narrows the types; these should remain alphabetically sorted, except with GenericVenue at the top)
 export type AnyVenue =
   | GenericVenue
+  | AuditoriumVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -100,7 +111,6 @@ export interface Venue_v2_AdvancedConfig {
   showNametags?: UsernameVisibility;
   showRadio?: boolean;
   showRangers?: boolean;
-  showZendesk?: boolean;
 }
 
 export interface Venue_v2_EntranceConfig {
@@ -127,7 +137,6 @@ export interface BaseVenue {
   owners: string[];
   iframeUrl?: string;
   events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
-  mapIconImageUrl?: string;
   placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
@@ -150,7 +159,7 @@ export interface BaseVenue {
   hasPaidEvents?: boolean;
   profileAvatars?: boolean;
   hideVideo?: boolean;
-  showLiveSchedule?: boolean;
+  showSchedule?: boolean;
   showGrid?: boolean;
   roomVisibility?: RoomVisibility;
   rooms?: Room[];
@@ -160,7 +169,6 @@ export interface BaseVenue {
     text: string;
   };
   showLearnMoreLink?: boolean;
-  liveScheduleOtherVenues?: string[];
   start_utc_seconds?: number;
   attendeesTitle?: string;
   requiresDateOfBirth?: boolean;
@@ -168,14 +176,16 @@ export interface BaseVenue {
   showRangers?: boolean;
   chatTitle?: string;
   showReactions?: boolean;
+  showShoutouts?: boolean;
   auditoriumColumns?: number;
   auditoriumRows?: number;
   videoAspect?: VideoAspectRatio;
   termsAndConditions: TermOfService[];
+  userStatuses?: UserStatus[];
   showRadio?: boolean;
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
-  showZendesk?: boolean;
+  showUserStatus?: boolean;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -235,6 +245,11 @@ export interface PosterPageVenue extends BaseVenue {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
+}
+
+export interface AuditoriumVenue extends BaseVenue {
+  template: VenueTemplate.auditorium;
+  title?: string;
 }
 
 export interface Question {
@@ -312,8 +327,6 @@ export interface VenueEvent {
   description: string;
   descriptions?: string[];
   duration_minutes: number;
-  price: number;
-  collective_price: number;
   host: string;
   room?: string;
   id?: string;

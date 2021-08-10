@@ -1,20 +1,26 @@
 import React, {
-  useState,
+  Fragment,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
-  Fragment,
+  useState,
 } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
+
+import { getTwilioVideoToken } from "api/video";
+
+import { User } from "types/User";
+
+import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
+
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
-import "./Room.scss";
-import { useUser } from "hooks/useUser";
-import { useWorldUsersById } from "hooks/users";
-import { User } from "types/User";
 import VideoErrorModal from "./VideoErrorModal";
+
+import "./Room.scss";
 
 interface RoomProps {
   roomName: string;
@@ -59,18 +65,14 @@ const Room: React.FC<RoomProps> = ({
     return originalMessage;
   };
 
+  // @debt refactor this to use useAsync or similar?
   useEffect(() => {
-    (async () => {
-      if (!user) return;
+    if (!user) return;
 
-      // @ts-ignore
-      const getToken = firebase.functions().httpsCallable("video-getToken");
-      const response = await getToken({
-        identity: user.uid,
-        room: roomName,
-      });
-      setToken(response.data.token);
-    })();
+    getTwilioVideoToken({
+      userId: user.uid,
+      roomName,
+    }).then(setToken);
   }, [firebase, roomName, user]);
 
   const connectToVideoRoom = () => {
@@ -89,7 +91,7 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
+        room.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -171,7 +173,7 @@ const Room: React.FC<RoomProps> = ({
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
+        localRoom.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -248,7 +250,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 

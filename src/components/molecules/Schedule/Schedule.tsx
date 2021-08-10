@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 import {
   eachHourOfInterval,
@@ -8,7 +9,6 @@ import {
   getUnixTime,
   setHours,
 } from "date-fns";
-import { useCss } from "react-use";
 
 import {
   SCHEDULE_CURRENT_TIMELINE_MS,
@@ -16,10 +16,11 @@ import {
   SCHEDULE_MAX_START_HOUR,
 } from "settings";
 
-import { PersonalizedVenueEvent, LocationEvents } from "types/venues";
+import { LocationEvents, PersonalizedVenueEvent } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
+import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -66,10 +67,15 @@ export const Schedule: React.FC<ScheduleProps> = ({
     [scheduleStartHour, scheduleDate]
   );
 
+  const sortedEvents = useMemo(
+    () => sortScheduleRoomsAlphabetically(locatedEvents),
+    [locatedEvents]
+  );
+
   // pairs (venueId, roomTitle) are unique because they are grouped earlier (see NavBarSchedule#schedule)
   const roomCells = useMemo(
     () =>
-      locatedEvents.map(({ location, events }) => (
+      sortedEvents.map(({ location, events }) => (
         <div
           key={`RoomCell-${location.venueId}-${location.roomTitle}`}
           className="Schedule__room"
@@ -82,7 +88,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           </span>
         </div>
       )),
-    [locatedEvents]
+    [sortedEvents]
   );
 
   const hoursRow = useMemo(

@@ -1,7 +1,10 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import "firebase/functions";
 import firebase from "firebase/app";
+
+import { ACCEPTED_IMAGE_TYPES } from "settings";
+
+import "firebase/functions";
 
 interface ImageInputProps {
   collectionPath: string;
@@ -75,6 +78,8 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
     []
   );
 
+  const hasImageCollections = !!imageCollection.length;
+
   // this keeps the component state synchronised with the parent form state
   useEffect(() => {
     if (selectedCollectionImageUrl) {
@@ -108,7 +113,7 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
           disabled={disabled}
           type="file"
           onChange={handleFileChange}
-          accept="image/png,image/x-png,image/gif,image/jpeg"
+          accept={ACCEPTED_IMAGE_TYPES}
           className="default-input"
           ref={register}
         />
@@ -131,9 +136,11 @@ export const ImageCollectionInput: React.FC<ImageInputProps> = (props) => {
         value={imageUrlForPreview}
       />
       {error?.message && <span className="input-error">{error.message}</span>}
-      <div style={{ marginTop: 10, fontSize: "16px" }}>
-        {`Or choose one of our popular ${imageType}`}
-      </div>
+      {hasImageCollections && (
+        <div style={{ marginTop: 10, fontSize: "16px" }}>
+          {`Or choose one of our popular ${imageType}`}
+        </div>
+      )}
       <div
         style={{
           display: "flex",

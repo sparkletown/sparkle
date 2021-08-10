@@ -3,9 +3,9 @@ import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
+import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
-import { eventEndTime, eventStartTime } from "utils/event";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
@@ -14,7 +14,8 @@ export interface VenueEventDetailsProps {
   setEditedEvent: Function | undefined;
   setShowCreateEventModal: Function;
   setShowDeleteEventModal: Function;
-  className: string;
+  className?: string;
+  isEditable?: boolean;
 }
 
 const VenueEventDetails = ({
@@ -22,7 +23,8 @@ const VenueEventDetails = ({
   setEditedEvent,
   setShowCreateEventModal,
   setShowDeleteEventModal,
-  className,
+  className = "",
+  isEditable = false,
 }: VenueEventDetailsProps) => {
   const startTime = formatTimeLocalised(eventStartTime(venueEvent));
   const endTime = formatTimeLocalised(eventEndTime(venueEvent));
@@ -50,17 +52,12 @@ const VenueEventDetails = ({
         ))}
       </div>
       <div className="button-container">
-        <div className="price-container">
-          {venueEvent.price > 0 && (
-            <>Individual tickets £{venueEvent.price / 100}</>
-          )}
-        </div>
-        {!className && (
-          <div className="event-payment-button-container">
+        {isEditable && (
+          <div>
             <div>
               <button
                 role="link"
-                className="btn btn-primary buy-tickets-button"
+                className="btn btn-primary"
                 onClick={() => {
                   setEditedEvent && setEditedEvent(venueEvent);
                   setShowCreateEventModal(true);
@@ -70,7 +67,7 @@ const VenueEventDetails = ({
               </button>
               <button
                 role="link"
-                className="btn btn-primary buy-tickets-button"
+                className="btn btn-primary"
                 onClick={() => {
                   setEditedEvent && setEditedEvent(venueEvent);
                   setShowDeleteEventModal(true);

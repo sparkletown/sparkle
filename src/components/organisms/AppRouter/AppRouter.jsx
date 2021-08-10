@@ -1,11 +1,19 @@
 import React from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 
+import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
+
+import { venueLandingUrl } from "utils/url";
+
+import CodeOfConduct from "pages/Account/CodeOfConduct";
+import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
+import Profile from "pages/Account/Profile";
+import Questions from "pages/Account/Questions";
 // import { SplashPage } from "pages/Account/SplashPage";
 import Step1 from "pages/Account/Step1";
 import Step2 from "pages/Account/Step2";
@@ -14,26 +22,18 @@ import Step4 from "pages/Account/Step4";
 import Step5 from "pages/Account/Step5";
 import Step6a from "pages/Account/Step6a";
 import Step6b from "pages/Account/Step6b";
-import Profile from "pages/Account/Profile";
-import Questions from "pages/Account/Questions";
-import CodeOfConduct from "pages/Account/CodeOfConduct";
-import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import Admin from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
-
-import { VenueLandingPage } from "pages/VenueLandingPage";
-import { VenueEntrancePage } from "pages/VenueEntrancePage";
-import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
-
-import { VersionPage } from "pages/VersionPage/VersionPage";
-import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
-
-import VenuePage from "pages/VenuePage";
-import { venueLandingUrl } from "utils/url";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
+import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
+import VenueWizard_v2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
+import { VenueEntrancePage } from "pages/VenueEntrancePage";
+import { VenueLandingPage } from "pages/VenueLandingPage";
+import VenuePage from "pages/VenuePage";
+import { VersionPage } from "pages/VersionPage/VersionPage";
+
 import { AdminVenueView } from "components/organisms/AdminVenueView";
 
 const AppRouter = () => {
@@ -67,7 +67,6 @@ const AppRouter = () => {
         <Route path="/admin/venue/creation" component={VenueWizard} />
         <Route path="/admin/venue/edit/:venueId" component={VenueWizard} />
 
-        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
         <Route
           path="/admin-ng/advanced-settings/:venueId?"
           component={AdminAdvancedSettings}
@@ -75,6 +74,7 @@ const AppRouter = () => {
 
         <Route path="/admin-ng/venue/creation" component={VenueWizard_v2} />
         <Route path="/admin-ng/edit/:venueId" component={VenueWizard_v2} />
+        <Route path="/admin-ng/venue/:venueId?" component={AdminVenueView} />
 
         <Route path="/admin/:venueId" component={Admin} />
 

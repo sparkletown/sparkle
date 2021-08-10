@@ -1,25 +1,25 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChevronLeft,
   faLock,
   faLockOpen,
-  faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
-import { User } from "types/User";
 import { Table } from "types/Table";
-
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useShowHide } from "hooks/useShowHide";
+import { User } from "types/User";
 
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
@@ -34,7 +34,7 @@ export interface TableHeaderProps {
   tables: Table[];
 }
 
-const TableHeader: React.FC<TableHeaderProps> = ({
+export const TableHeader: React.FC<TableHeaderProps> = ({
   seatedAtTable,
   setSeatedAtTable,
   venueName,
@@ -43,7 +43,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   const { user, profile } = useUser();
 
   const { tables: allTables } = useSelector(experienceSelector) ?? {};
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName });
   const { isShown, show, hide } = useShowHide();
 
   const tableOfUser = useMemo(
@@ -180,10 +180,12 @@ const TableHeader: React.FC<TableHeaderProps> = ({
         <div className="TableHeader__lock-indication">
           {isCurrentTableLocked ? "Table Locked" : "Lock Table"}
         </div>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
+        {/* @debt should this use 'toggled' instead of 'defaultToggled' to make it a controlled component? */}
         <Toggler
           containerClassName="TableHeader__lock-toggle"
           defaultToggled={isCurrentTableLocked}
-          onToggle={toggleIsCurrentTableLocked}
+          onChange={toggleIsCurrentTableLocked}
         />
       </div>
 
@@ -198,4 +200,7 @@ const TableHeader: React.FC<TableHeaderProps> = ({
   );
 };
 
+/**
+ * @deprecated use named export instead
+ */
 export default TableHeader;

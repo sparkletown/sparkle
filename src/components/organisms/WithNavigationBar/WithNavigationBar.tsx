@@ -1,22 +1,28 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 
-import { useVenueId } from "hooks/useVenueId";
+import { tracePromise } from "utils/performance";
+
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
 
-import { NavBar } from "components/molecules/NavBar";
 import { Footer } from "components/molecules/Footer";
+import { Loading } from "components/molecules/Loading";
 
 import "./WithNavigationBar.scss";
 
+const NavBar = lazy(() =>
+  tracePromise("WithNavigationBar::lazy-import::NavBar", () =>
+    import("components/molecules/NavBar").then(({ NavBar }) => ({
+      default: NavBar,
+    }))
+  )
+);
+
 export interface WithNavigationBarProps {
-  redirectionUrl?: string;
-  fullscreen?: boolean;
   hasBackButton?: boolean;
 }
 
 export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
-  redirectionUrl,
-  fullscreen,
   hasBackButton,
   children,
 }) => {
@@ -32,12 +38,12 @@ export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
        *    works on the user side of things.
        */}
       <RelatedVenuesProvider venueId={venueId}>
-        <NavBar redirectionUrl={redirectionUrl} hasBackButton={hasBackButton} />
+        <Suspense fallback={<Loading />}>
+          <NavBar hasBackButton={hasBackButton} />
+        </Suspense>
       </RelatedVenuesProvider>
 
-      <div className={`navbar-margin ${fullscreen ? "fullscreen" : ""}`}>
-        {children}
-      </div>
+      <div className="navbar-margin">{children}</div>
 
       <Footer />
     </>
