@@ -1,6 +1,9 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { Nav } from "react-bootstrap";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 
 import { Venue_v2 } from "types/venues";
 
@@ -27,6 +30,12 @@ const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.run]: "Run",
 };
 
+const tabIcons = {
+  [AdminVenueTab.spaces]: faBorderNone,
+  [AdminVenueTab.timing]: faClock,
+  [AdminVenueTab.run]: faPlayCircle,
+};
+
 const DEFAULT_TAB = AdminVenueTab.spaces;
 
 export const AdminVenueView: React.FC = () => {
@@ -51,6 +60,10 @@ export const AdminVenueView: React.FC = () => {
         })}
         eventKey={key}
       >
+        <FontAwesomeIcon
+          className="AdminVenueView__tabIcon"
+          icon={tabIcons[key as AdminVenueTab]}
+        />
         {text}
       </Nav.Link>
     ));
