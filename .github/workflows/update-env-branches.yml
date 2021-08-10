@@ -12,7 +12,7 @@ jobs:
           ref: auto-deploy-test
           fetch-depth: 0
           token: ${{ secrets.SERVICE_USER_PAT }}
-      - name: Push to sparkle 9
+      - name: Push to sparkle test
         run: |
           git fetch origin auto-deploy-test
           git push origin auto-deploy-test:auto-deploy-test-test
