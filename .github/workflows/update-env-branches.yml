@@ -2,16 +2,17 @@ name: Deploy the changes to the env branches
 on:
   push:
     branches:
-      - master
+      - auto-deploy-test
 jobs:
   push-to-prod-envs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: auto-deploy-test
           fetch-depth: 0
+          token: ${{ secrets.SERVICE_USER_PAT }}
       - name: Push to sparkle 9
         run: |
-          git fetch origin master
-          git push origin master:sparkle9
+          git fetch origin auto-deploy-test
+          git push origin auto-deploy-test:auto-deploy-test-test
