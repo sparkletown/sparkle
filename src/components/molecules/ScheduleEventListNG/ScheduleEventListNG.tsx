@@ -1,5 +1,7 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import isToday from "date-fns/isToday";
+
+import { EVENTS_PREVIEW_LIST_LENGTH } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
@@ -21,16 +23,29 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   daysEvents,
   scheduleDate,
 }) => {
-  // TODO: add show more/show less functionality
-  const liveEvents = useMemo(
-    () =>
-      daysEvents
-        .filter(isEventLive)
-        .map((event) => <ScheduleItemNG key={event.id} event={event} />),
-    [daysEvents]
-  );
-  const hasLiveEvents = liveEvents.length > 0;
+  const [showMoreLiveEvents, setShowMoreLiveEvents] = useState(false);
+  const toggleShowMoreLiveEvents = useCallback(() => {
+    setShowMoreLiveEvents(!showMoreLiveEvents);
+  }, [showMoreLiveEvents, setShowMoreLiveEvents]);
+  const liveEvents = useMemo(() => daysEvents.filter(isEventLive), [
+    daysEvents,
+  ]);
+  const renderLiveEvents = useMemo(() => {
+    if (showMoreLiveEvents) {
+      return liveEvents.map((event) => (
+        <ScheduleItemNG key={event.id} event={event} />
+      ));
+    }
 
+    return liveEvents
+      .slice(0, EVENTS_PREVIEW_LIST_LENGTH)
+      .map((event) => <ScheduleItemNG key={event.id} event={event} />);
+  }, [liveEvents, showMoreLiveEvents]);
+  const hasLiveEvents = liveEvents.length > 0;
+  const shouldShowMoreLiveEvents =
+    liveEvents.length > EVENTS_PREVIEW_LIST_LENGTH;
+
+  // TODO: add show more/show less functionality
   const comingSoonEvents = useMemo(
     () =>
       daysEvents
@@ -49,6 +64,7 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   );
   const hasLaterEvents = laterEvents.length > 0;
 
+  // TODO: add show more/show less functionality
   const eventsRows = useMemo(
     () =>
       daysEvents.map((event) => (
@@ -75,7 +91,17 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   return (
     <div className="ScheduleEventListNG">
       {hasLiveEvents && listTitle("What’s on now")}
-      {liveEvents}
+      {renderLiveEvents}
+      {shouldShowMoreLiveEvents && (
+        <div
+          className="ScheduleEventListNG__button"
+          onClick={toggleShowMoreLiveEvents}
+        >
+          {showMoreLiveEvents
+            ? "Show less"
+            : `Show more (${liveEvents.length - EVENTS_PREVIEW_LIST_LENGTH})`}
+        </div>
+      )}
       {hasComingSoonEvents && listTitle("Starting soon")}
       {comingSoonEvents}
       {hasLaterEvents && listTitle("More events today")}
