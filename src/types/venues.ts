@@ -28,10 +28,8 @@ export enum VenueTemplate {
   jazzbar = "jazzbar",
   partymap = "partymap",
   performancevenue = "performancevenue",
-  playa = "playa",
   posterhall = "posterhall",
   posterpage = "posterpage",
-  preplaya = "preplaya",
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -40,6 +38,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
