@@ -27,6 +27,7 @@
     cursor: pointer;
     color: rgba($white, 0.6);
     text-decoration: none;
+    padding: $spacing--sm $spacing--xl;
 
     &:hover {
       color: $white;
