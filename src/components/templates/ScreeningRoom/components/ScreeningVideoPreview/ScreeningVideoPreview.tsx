@@ -1,7 +1,7 @@
 import React from "react";
-import classNames from "classnames";
 import { faPlayCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { ScreeningRoomVideo } from "types/screeningRoom";
 

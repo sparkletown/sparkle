@@ -8,7 +8,7 @@ var read = require("read");
 // var schema = require("./schema.json");
 var schema = require("./venue-schema.json");
 
-function usage() {
+const usage = () => {
   console.log(`
 ${process.argv[1]}: Upload event config
 
@@ -21,9 +21,9 @@ Example: node ${process.argv[1]} co-reality-map aaazzz111222333 example example.
 Example: node ${process.argv[1]} co-reality-map aaazzz111222333 example example.js user@name.com password
 `);
   process.exit(1);
-}
+};
 
-function uploadConfig(username, password, projectId, apiKey, venueId, doc) {
+const uploadConfig = (username, password, projectId, apiKey, venueId, doc) => {
   const path = `venues/${venueId}`;
   console.log(`Uploading "${venueId}" to venues: ${path}...`);
 
@@ -35,24 +35,24 @@ function uploadConfig(username, password, projectId, apiKey, venueId, doc) {
   firebase
     .auth()
     .signInWithEmailAndPassword(username, password)
-    .then(function () {
+    .then(() => {
       firebase
         .firestore()
         .doc(path)
         .set(doc)
-        .then(function () {
+        .then(() => {
           console.log(`Document ${path} successfully written!`);
           process.exit(0);
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error("Error writing document: ", err);
           process.exit(1);
         });
     })
-    .catch(function (err) {
+    .catch((err) => {
       console.error("Login error:", err);
     });
-}
+};
 
 const argv = process.argv.slice(2);
 if (argv.length < 4) {
@@ -82,12 +82,12 @@ if (!validateResult.valid) {
     uploadConfig(username, password, projectId, apiKey, venueId, doc);
   } else {
     console.log(`log in to upload.`);
-    read({ prompt: "Username:" }, function (err, username) {
+    read({ prompt: "Username:" }, (err, username) => {
       if (err) {
         console.error("Error obtaining username:", err);
         process.exit(1);
       }
-      read({ prompt: "Password:", silent: true }, function (err, password) {
+      read({ prompt: "Password:", silent: true }, (err, password) => {
         if (err) {
           console.error("Error obtaining password:", err);
           process.exit(1);

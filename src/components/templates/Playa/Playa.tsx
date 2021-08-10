@@ -1,29 +1,29 @@
 import React, {
   useCallback,
   useEffect,
-  useState,
-  useRef,
-  useMemo,
   useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
+import { Modal, Overlay } from "react-bootstrap";
 import { unstable_batchedUpdates } from "react-dom";
 import { useParams } from "react-router-dom";
-import { Modal, Overlay } from "react-bootstrap";
 import Bugsnag from "@bugsnag/js";
+import firebase from "firebase/app";
 import { throttle } from "lodash";
 
 import { IS_BURN } from "secrets";
-import {
-  PLAYA_TEMPLATES,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_NAME,
-  REFETCH_SCHEDULE_MS,
-  DEFAULT_PARTY_NAME,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-} from "settings";
 
-import firebase from "firebase/app";
+import {
+  DEFAULT_PARTY_NAME,
+  PLAYA_HEIGHT,
+  PLAYA_TEMPLATES,
+  PLAYA_VENUE_NAME,
+  PLAYA_VENUE_SIZE,
+  PLAYA_WIDTH,
+  REFETCH_SCHEDULE_MS,
+} from "settings";
 
 import { OnlineStatsData } from "types/OnlineStatsData";
 import { UserVideoState } from "types/RelayMessage";
@@ -41,8 +41,8 @@ import { isTruthy } from "utils/types";
 import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
 
 import { useInterval } from "hooks/useInterval";
-import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
 import { useSynchronizedRef } from "hooks/useSynchronizedRef";
 import { useUser } from "hooks/useUser";
 
@@ -204,7 +204,9 @@ const Playa = () => {
           setCenterY(state.y);
           loadedInitialState.current = true;
         }
-      } catch {}
+      } catch {
+        console.log("Caught error");
+      }
     }
     localStorage.setItem(
       PLAYA_VENUE_NAME,

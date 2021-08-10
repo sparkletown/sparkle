@@ -1,18 +1,19 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import "firebase/storage";
 import { useAsyncFn, useSearchParam } from "react-use";
 
 import { IS_BURN } from "secrets";
 
 import { DEFAULT_VENUE, DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
-import { useVenueId } from "hooks/useVenueId";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
+
+import "firebase/storage";
 
 import { updateUserProfile } from "./helpers";
 

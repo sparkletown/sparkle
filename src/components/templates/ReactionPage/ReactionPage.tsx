@@ -4,11 +4,11 @@ import { SHOW_EMOJI_IN_REACTION_PAGE } from "settings";
 
 import { messagesToTheBandSelector, reactionsSelector } from "utils/selectors";
 
+import { useVenueChat } from "hooks/chats/venueChat";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useSelector } from "hooks/useSelector";
 import { useRecentVenueUsers } from "hooks/users";
-import { useVenueChat } from "hooks/chats/venueChat";
+import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
 
 import { UserList } from "components/molecules/UserList";

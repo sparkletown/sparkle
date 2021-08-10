@@ -1,40 +1,39 @@
-import React, { useCallback, useMemo, MouseEventHandler } from "react";
+import React, { MouseEventHandler, useCallback, useMemo } from "react";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
-
 import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
-
-import { PersonalizedVenueEvent } from "types/venues";
-import { Room } from "types/rooms";
-
-import { eventEndTime, eventStartTime, isEventStartingSoon } from "utils/event";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
-import {
-  enterVenue,
-  openUrl,
-  getUrlParamFromString,
-  getUrlWithoutTrailingSlash,
-  getLastUrlParam,
-  getFullVenueInsideUrl,
-} from "utils/url";
-
-import { useShowHide } from "hooks/useShowHide";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoom } from "hooks/useRoom";
-import { useUser } from "hooks/useUser";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
-
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
+
+import { Room } from "types/rooms";
+import { PersonalizedVenueEvent } from "types/venues";
+
+import { eventEndTime, eventStartTime, isEventStartingSoon } from "utils/event";
+import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import {
+  enterVenue,
+  getFullVenueInsideUrl,
+  getLastUrlParam,
+  getUrlParamFromString,
+  getUrlWithoutTrailingSlash,
+  openUrl,
+} from "utils/url";
+
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRoom } from "hooks/useRoom";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./ScheduleItemNG.scss";
 

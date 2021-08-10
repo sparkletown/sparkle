@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
-import { ReactHook } from "types/utility";
 import { GridPosition } from "types/grid";
+import { ReactHook } from "types/utility";
 
 import { useMousetrap } from "hooks/useMousetrap";
 import { useUser } from "hooks/useUser";

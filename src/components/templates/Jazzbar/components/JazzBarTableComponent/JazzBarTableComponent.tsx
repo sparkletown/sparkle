@@ -1,9 +1,13 @@
 import React, { useMemo } from "react";
-import { TableComponentPropsType } from "types/Table";
+
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
-import { useSelector } from "hooks/useSelector";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
+
+import { TableComponentPropsType } from "types/Table";
+
 import { currentVenueSelectorData } from "utils/selectors";
+
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useSelector } from "hooks/useSelector";
 
 import "./JazzBarTableComponent.scss";
 
