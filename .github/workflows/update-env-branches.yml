@@ -11,7 +11,33 @@ jobs:
         with:
           ref: master
           fetch-depth: 0
-      - name: Push to sparkle 9
+          token: ${{ secrets.SERVICE_USER_PAT }}
+      - name: Push to sparkle production branches
         run: |
           git fetch origin master
+
+          git push origin master:sparkle1
+          git push origin master:sparkle2
+          git push origin master:sparkle3
+          git push origin master:sparkle4
+          git push origin master:sparkle5
+
+          git push origin master:sparkle6
+          git push origin master:sparkle7
+          git push origin master:sparkle8
           git push origin master:sparkle9
+          git push origin master:sparkle10
+
+          git push origin master:bigtop
+          git push origin master:deloitte
+
+          git push origin master:env/memrise
+          git push origin master:env/unesco
+          git push origin master:env/pa
+          git push origin master:env/clever
+          git push origin master:env/unity
+          git push origin master:env/demo
+
+          # git push origin master:env/kotr # Note: This runs custom code/is no longer used/required. Don't deploy to it.
+          # git push origin master:env/github # Note: This runs custom code.
+          # git push origin master:env/ohbm # Note: This runs custom code.
