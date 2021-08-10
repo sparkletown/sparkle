@@ -1,12 +1,9 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { MessageToDisplay } from "types/chat";
-
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
-import { useUser } from "hooks/useUser";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -44,13 +41,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
 
   const { selectPrivateChat } = useChatSidebarControls();
 
-  const { userWithId } = useUser();
-
-  const canDeleteMessage = useCallback(
-    (msg: MessageToDisplay) => msg.from === userWithId?.id,
-    [userWithId?.id]
-  );
-
   return (
     <div className="recipient-chat">
       <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
@@ -67,7 +57,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           messages={messagesToDisplay}
           sendMessage={sendMessageToSelectedRecipient}
           deleteMessage={deleteMessage}
-          canDeleteMessage={canDeleteMessage}
           sendThreadReply={sendThreadReply}
         />
       </div>

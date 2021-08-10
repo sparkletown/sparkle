@@ -1,14 +1,12 @@
-import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
-import { useCallback } from "react";
 import React from "react";
 import { isEqual } from "lodash";
-import { MessageToDisplay } from "types/chat";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useVenueChat } from "hooks/chats/venueChat";
+import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -26,12 +24,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     sendThreadReply,
   } = useVenueChat(venue.id);
 
-  const canDeleteMessage = useCanDeleteVenueChatMessages(venue);
-
-  const canDeleteSingleMessage = useCallback(
-    (msg: MessageToDisplay) => canDeleteMessage,
-    [canDeleteMessage]
-  );
+  const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
 
   return (
     <div className="venue-chat">
@@ -42,7 +35,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
         deleteMessage={deleteMessage}
-        canDeleteMessage={canDeleteSingleMessage}
+        canDeleteMessages={canDeleteMessages}
       />
     </div>
   );
