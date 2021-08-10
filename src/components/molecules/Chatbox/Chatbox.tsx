@@ -11,7 +11,6 @@ import {
   SendChatReply,
   SendMessage,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
 
 import { checkIfPollMessage } from "utils/chat";
 import { WithId } from "utils/id";
@@ -33,16 +32,14 @@ import "./Chatbox.scss";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
-  deleteMessage: DeleteMessage;
+  deleteMessage?: DeleteMessage;
   displayPoll?: boolean;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
-  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
@@ -100,7 +97,6 @@ const _ChatBox: React.FC<ChatboxProps> = ({
               pollMessage={message}
               deletePollMessage={deleteMessage}
               voteInPoll={voteInPoll}
-              venue={venue}
             />
           ) : (
             <ChatMessage
@@ -111,7 +107,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             />
           )
         ),
-    [messages, renderedMessagesCount, deleteMessage, voteInPoll, venue]
+    [messages, renderedMessagesCount, deleteMessage, voteInPoll]
   );
 
   const onReplyToThread = useCallback(
