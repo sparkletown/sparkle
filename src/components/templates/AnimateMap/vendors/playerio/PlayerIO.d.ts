@@ -34,6 +34,13 @@ export interface client {
 }
 
 export type ConnectionSuccessCallback = (connection: connection) => void;
+export type RoomInfo<RoomData extends object, RoomType extends string> = {
+  id: string;
+  onlineUsers: number;
+  roomData: RoomData;
+  roomType: RoomType;
+};
+export type ListRoomSuccessCallback<RoomInfo> = (roomInfo: RoomInfo[]) => void;
 
 export interface multiplayer {
   createJoinRoom(
@@ -43,6 +50,14 @@ export interface multiplayer {
     roomData: object,
     joinData: object,
     successCallback: ConnectionSuccessCallback,
+    errorCallback: ErrorCallback
+  ): void;
+  listRooms<RoomInfo>(
+    roomType: string,
+    searchCriteria: object | null,
+    resultLimit: number,
+    resultOffset: number,
+    successCallback: ListRoomSuccessCallback<RoomInfo>,
     errorCallback: ErrorCallback
   ): void;
 }
@@ -109,7 +124,7 @@ export interface connection {
   disconnect(): void;
   // removeDisconnectCallback;
   // removeMessageCallback;
-  send(type: string, ...args): void;
+  // send(type: string, ...args: unknown[]): void;
   // sendMessage;
 }
 

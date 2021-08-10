@@ -131,7 +131,7 @@ export class CloudDataProvider
         //@ts-ignore
         q.forEach((doc) => {
           const data = doc.data();
-          console.log(data);
+          // console.log(data);
           const vn = {
             x: data.animatemap.x,
             y: data.animatemap.y,

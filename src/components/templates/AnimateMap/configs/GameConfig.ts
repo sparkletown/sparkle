@@ -39,9 +39,13 @@ export class GameConfig {
   ];
 
   private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
-  private _zoomLevelViewportCoresponding: Array<number> = [1.6137, 0.809, 0.32];
-  private _zoomLevelAvatarRadiusCoresponding: Array<number> = [25, 17, 6];
-  private _zoomLevelLineOfSightCoresponding: Array<number> = [
+  private _zoomLevelViewportCorresponding: Array<number> = [
+    1.6137,
+    0.809,
+    0.32,
+  ];
+  private _zoomLevelAvatarRadiusCorresponding: Array<number> = [25, 17, 6];
+  private _zoomLevelLineOfSightCorresponding: Array<number> = [
     78 * 10,
     28 * 30,
     8 * 20,
@@ -86,30 +90,30 @@ export class GameConfig {
   }
 
   public get zoomLevelsViewportCoresponding(): Array<number> {
-    return this._zoomLevelViewportCoresponding.slice(0);
+    return this._zoomLevelViewportCorresponding.slice(0);
   }
 
-  public get zoomLevelAvatarRadiusCoresponding(): Array<number> {
-    return this._zoomLevelAvatarRadiusCoresponding.slice(0);
+  public get zoomLevelAvatarRadiusCorresponding(): Array<number> {
+    return this._zoomLevelAvatarRadiusCorresponding.slice(0);
   }
 
   public zoomLevelToViewport(zoomLevel: number): number {
     zoomLevel = Math.max(zoomLevel, 0);
     zoomLevel = Math.min(
       zoomLevel,
-      this._zoomLevelViewportCoresponding.length - 1
+      this._zoomLevelViewportCorresponding.length - 1
     );
-    return this._zoomLevelViewportCoresponding[zoomLevel];
+    return this._zoomLevelViewportCorresponding[zoomLevel];
   }
 
   public zoomViewportToLevel(zoom: number): number {
     zoom = Math.max(zoom, 0.1);
-    for (let i = 0; i < this._zoomLevelViewportCoresponding.length; i++) {
-      if (zoom >= this._zoomLevelViewportCoresponding[i]) {
+    for (let i = 0; i < this._zoomLevelViewportCorresponding.length; i++) {
+      if (zoom >= this._zoomLevelViewportCorresponding[i]) {
         return i;
       }
     }
-    return this._zoomLevelViewportCoresponding.length - 1;
+    return this._zoomLevelViewportCorresponding.length - 1;
   }
 
   public getSpeedByZoomLevel(zoomLevel: number = 0): number {
@@ -122,17 +126,17 @@ export class GameConfig {
     zoomLevel = Math.max(zoomLevel, 0);
     zoomLevel = Math.min(
       zoomLevel,
-      this._zoomLevelAvatarRadiusCoresponding.length - 1
+      this._zoomLevelAvatarRadiusCorresponding.length - 1
     );
-    return this._zoomLevelAvatarRadiusCoresponding[zoomLevel];
+    return this._zoomLevelAvatarRadiusCorresponding[zoomLevel];
   }
 
   public getAvatarLineOfSightByZoomLevel(zoomLevel: number): number {
     zoomLevel = Math.max(zoomLevel, 0);
     zoomLevel = Math.min(
       zoomLevel,
-      this._zoomLevelLineOfSightCoresponding.length - 1
+      this._zoomLevelLineOfSightCorresponding.length - 1
     );
-    return this._zoomLevelLineOfSightCoresponding[zoomLevel];
+    return this._zoomLevelLineOfSightCorresponding[zoomLevel];
   }
 }

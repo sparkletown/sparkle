@@ -2,7 +2,6 @@ import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
 import firebase from "firebase/app";
 // import { isEqual } from "lodash";
-
 import {
   extractLocationFromUser,
   User,
@@ -72,11 +71,6 @@ export const worldUsersApi = createApi({
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
         const processQueuedChanges = () => {
-          console.log(
-            "[worldUsersApi::processQueuedChanges] queuedChanges.length = ",
-            queuedChanges.length
-          );
-
           if (queuedChanges.length === 0) return;
 
           updateCachedData((draft) => {

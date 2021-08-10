@@ -1,14 +1,17 @@
 import PlayerIO, {
-  client,
-  connection,
   ConnectionSuccessCallback,
   Message,
+  RoomInfo,
   UInt,
   ULong,
 } from "../../../../vendors/playerio/PlayerIO";
 
 import { utils } from "pixi.js";
-import { PlayerIOPromisesWrapper } from "../../../../vendors/playerio/PlayerIOPromisesWrapper";
+import {
+  ProxyClient,
+  ProxyConnection,
+  ProxyPlayerIO,
+} from "../../../../vendors/playerio/PromisesWrappers";
 
 export enum RoomTypes {
   Zone = "Z",
@@ -20,76 +23,80 @@ export enum MessagesTypes {
 
 export type MoveMessageTuple = [ULong, UInt, UInt, string];
 
+const initialRoomData = {
+  speaker: 1,
+  a: 150,
+  b: 150,
+  c: 250,
+  d: 250,
+};
+export type RoomDataType = typeof initialRoomData;
+export type RoomInfoType = RoomInfo<RoomDataType, RoomTypes>;
+
 export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
   public PlayerIOWrapper;
   private _PlayerIO = PlayerIO;
-  public client: client | undefined;
-  public connection: connection | undefined;
+  public client: ProxyClient | undefined;
+  public connection: ProxyConnection | undefined;
 
   constructor(
     readonly playerId: string,
     private _connectionInitCallback: ConnectionSuccessCallback
   ) {
     super();
-    this.PlayerIOWrapper = new PlayerIOPromisesWrapper(this._PlayerIO);
-    this.initConnection();
+    this.PlayerIOWrapper = new ProxyPlayerIO(this._PlayerIO);
+    this.init();
   }
 
-  public initConnection() {
-    if (this.connection?.connected) return;
-
-    this.PlayerIOWrapper.authenticate(
-      "bm-test-f30xkxglekvwxqoqgcw6w",
-      "public",
-      { userId: this.playerId }
-    )
-      .then((client: client) => this._successConnectionHandler(client))
+  public async init() {
+    this._initConnection()
+      .then((client) => (this.client = client))
+      .then(() => {
+        this.createRoom().then(() => {
+          setTimeout(() => {
+            this._findRooms()
+              .then((rooms) => console.log(rooms))
+              .catch((error) => console.error(error));
+          }, 5000);
+        });
+      })
       .catch((error) => console.error(error));
   }
 
-  private _successConnectionHandler(client: client) {
-    this.client = client;
-    console.log("Connect success");
-    client.multiplayer.createJoinRoom(
-      "test",
+  private async _initConnection() {
+    if (this.client) return Promise.resolve(this.client);
+
+    return this.PlayerIOWrapper.authenticate(
+      "bm-test-f30xkxglekvwxqoqgcw6w",
+      "public",
+      { userId: this.playerId }
+    );
+  }
+
+  private async _findRooms() {
+    return this.client?.multiplayer?.listRooms<RoomInfoType>(
       RoomTypes.Zone,
-      true,
-      {
-        speaker: 1,
-        a: 150,
-        b: 150,
-        c: 250,
-        d: 250,
-      },
-      {},
-      (connection) => {
-        console.log("connection to room success");
+      null,
+      0,
+      0
+    );
+  }
+
+  private async createRoom() {
+    if (!this.client) return Promise.reject("Client not exist");
+
+    // this.client.multiplayer.createJoinRoom("",
+    // RoomTypes.Zone,
+    //   true,
+    //   initialRoomData)
+
+    return this.client.multiplayer
+      .createJoinRoom("test", RoomTypes.Zone, true, initialRoomData)
+      .then((connection) => {
         this._connectionInitCallback(connection);
         this.connection = connection;
-      },
-      (error) => {
-        console.log("connection to room failure");
-        //TODO: create room?
-      }
-    );
-
-    // setTimeout(() => {
-    //   //@ts-ignore
-    //   client.multiplayer.listRooms(
-    //     RoomTypes.Zone,
-    //     null,
-    //     0,
-    //     0,
-    //     (roomInfo: object[]) => {
-    //       console.log("SUCCESS");
-    //       console.log(roomInfo);
-    //     }, //@ts-ignore
-    //     (error) => {
-    //       console.log("FAIL");
-    //       console.error(error);
-    //     }
-    //   );
-    // }, 5000);
+      });
+    // .catch((error) => console.error("connection to room failure ", error));
   }
 
   public async loadOrCreate(
@@ -100,7 +107,7 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
   ) {
     if (this.client) {
       return new Promise((resolve, reject) => {
-        this.client?.bigDB.loadOrCreate(
+        this.client?.originClient.bigDB.loadOrCreate(
           table,
           key,
           (dbObj: dbObj) => {
@@ -124,7 +131,7 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
   ) {
     if (this.client) {
       return new Promise((resolve, reject) => {
-        this.client?.bigDB.loadOrCreate(
+        this.client?.originClient.bigDB.loadOrCreate(
           table,
           key,
           (dbObj: dbObj) => {
