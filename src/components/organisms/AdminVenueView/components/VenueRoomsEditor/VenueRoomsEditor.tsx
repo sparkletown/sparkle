@@ -210,7 +210,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
 
   const [, drop] = useDrop({
     accept: ItemTypes.SUBVENUE_ICON,
-    drop(item: DragItem, monitor) {
+    drop: (item: DragItem, monitor) => {
       if (!interactive) return;
       const delta = monitor.getDifferenceFromInitialOffset() as {
         x: number;
