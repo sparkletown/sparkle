@@ -13,4 +13,5 @@ jobs:
           fetch-depth: 0
       - name: Push to test staging
         run: |
+          git fetch origin chore/adds-github-action-push-script:chore/adds-github-action-push-script
           git push origin chore/adds-github-action-push-script:staging-test
