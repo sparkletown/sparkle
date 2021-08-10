@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReply } from "@fortawesome/free-solid-svg-icons";
+import { DeleteMessage } from "types/chat";
 
 import { MessageToDisplay } from "types/chat";
 
@@ -18,7 +19,7 @@ import "./ChatMessage.scss";
 
 export interface ChatProps {
   message: WithId<MessageToDisplay>;
-  deleteMessage: (messageId: string) => void;
+  deleteMessage?: DeleteMessage;
   selectThisThread: () => void;
 }
 
@@ -29,7 +30,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
 }) => {
   const { text, replies, id, isMine, isQuestion } = message;
 
-  const deleteThisMessage = useCallback(() => deleteMessage(id), [
+  const deleteThisMessage = useCallback(() => deleteMessage?.(id), [
     deleteMessage,
     id,
   ]);
@@ -43,15 +44,19 @@ export const ChatMessage: React.FC<ChatProps> = ({
 
   const renderedReplies = useMemo(
     () =>
-      replies?.map((reply) => (
-        <div key={reply.id} className="ChatMessage__reply">
-          <RenderMarkdown text={reply.text} allowHeadings={false} />
-          <ChatMessageInfo
-            message={reply}
-            deleteMessage={() => deleteMessage(reply.id)}
-          />
-        </div>
-      )),
+      replies?.map((reply) => {
+        return (
+          <div key={reply.id} className="ChatMessage__reply">
+            <RenderMarkdown text={reply.text} allowHeadings={false} />
+            <ChatMessageInfo
+              message={reply}
+              deleteMessage={
+                deleteMessage ? () => deleteMessage(reply.id) : undefined
+              }
+            />
+          </div>
+        );
+      }),
     [replies, deleteMessage]
   );
 
@@ -100,7 +105,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisMessage}
+        deleteMessage={deleteMessage ? deleteThisMessage : undefined}
       />
     </div>
   );

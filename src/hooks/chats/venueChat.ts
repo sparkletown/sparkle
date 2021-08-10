@@ -27,7 +27,6 @@ import { useSelector } from "../useSelector";
 import { useFirestoreConnect } from "../useFirestoreConnect";
 import { useUser } from "hooks/useUser";
 import { useWorldUsersByIdWorkaround } from "../users";
-import { useRoles } from "hooks/useRoles";
 
 const noMessages: WithId<VenueChatMessage>[] = [];
 
@@ -98,8 +97,6 @@ const useChatActions = (venueId?: string) => {
 
 const useChatMessages = (venueId?: string) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userRoles } = useRoles();
-  const isAdmin = Boolean(userRoles?.includes("admin"));
   const { userId } = useUser();
 
   useConnectVenueChatMessages(venueId);
@@ -134,8 +131,6 @@ const useChatMessages = (venueId?: string) => {
             message,
             usersById: worldUsersById,
             myUserId: userId,
-
-            isAdmin,
           });
 
           if (!displayMessage) return undefined;
@@ -149,7 +144,6 @@ const useChatMessages = (venueId?: string) => {
                 message: reply,
                 usersById: worldUsersById,
                 myUserId: userId,
-                isAdmin,
               })
             )
             .filter(isTruthy);
@@ -157,7 +151,7 @@ const useChatMessages = (venueId?: string) => {
           return { ...displayMessage, replies: messageReplies };
         })
         .filter(isTruthy),
-    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
+    [userId, worldUsersById, messages, allMessagesReplies]
   );
 };
 

@@ -44,8 +44,6 @@ export type ChatMessage = PrivateChatMessage | VenueChatMessage | PollMessage;
 export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
   author: WithId<User>;
   isMine: boolean;
-  // @debt remove this from Types. It should be decided in the in-component level
-  canBeDeleted?: boolean;
 };
 
 export type MessageToDisplay<

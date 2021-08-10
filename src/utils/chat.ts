@@ -23,7 +23,6 @@ export interface GetBaseMessageToDisplayProps<T extends ChatMessage> {
   message: T;
   usersById: Partial<Record<string, User>>;
   myUserId?: string;
-  isAdmin?: boolean;
 }
 
 export type GetBaseMessageToDisplayReturn<T extends ChatMessage> =
@@ -34,7 +33,6 @@ export const getBaseMessageToDisplay = <T extends ChatMessage>({
   message,
   usersById,
   myUserId,
-  isAdmin,
 }: GetBaseMessageToDisplayProps<T>): GetBaseMessageToDisplayReturn<T> => {
   const user = usersById[message.from];
 
@@ -46,7 +44,6 @@ export const getBaseMessageToDisplay = <T extends ChatMessage>({
     ...message,
     author: withId(user, message.from),
     isMine,
-    ...(isAdmin && { canBeDeleted: isAdmin }),
   };
 };
 

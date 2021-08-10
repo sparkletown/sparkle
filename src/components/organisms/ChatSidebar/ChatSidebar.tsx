@@ -113,9 +113,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       {isExpanded && (
         <div role="tabpanel" className="chat-sidebar__tab-content">
           {isVenueChat && <VenueChat venue={venue} />}
-          {isPrivateChat && (
-            <PrivateChats recipientId={recipientId} venue={venue} />
-          )}
+          {isPrivateChat && <PrivateChats recipientId={recipientId} />}
         </div>
       )}
     </div>

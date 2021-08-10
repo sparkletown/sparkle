@@ -1,10 +1,9 @@
+import { useUser } from "hooks/useUser";
+import { useCallback } from "react";
 import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
-
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { MessageToDisplay } from "types/chat";
 
 import { Chatbox } from "components/molecules/Chatbox";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -15,12 +14,10 @@ import "./RecipientChat.scss";
 import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
-  venue: WithId<AnyVenue>;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  venue,
 }) => {
   const {
     messagesToDisplay,
@@ -46,6 +43,13 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
 
   const { selectPrivateChat } = useChatSidebarControls();
 
+  const { userWithId } = useUser();
+
+  const canDeleteMessage = useCallback(
+    (msg: MessageToDisplay) => msg.from === userWithId?.id,
+    [userWithId?.id]
+  );
+
   return (
     <div className="recipient-chat">
       <div className="recipient-chat__breadcrumbs" onClick={selectPrivateChat}>
@@ -62,8 +66,8 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
           messages={messagesToDisplay}
           sendMessage={sendMessageToSelectedRecipient}
           deleteMessage={deleteMessage}
+          canDeleteMessage={canDeleteMessage}
           sendThreadReply={sendThreadReply}
-          venue={venue}
         />
       </div>
     </div>

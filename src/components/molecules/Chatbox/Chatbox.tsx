@@ -11,7 +11,6 @@ import {
   SendChatReply,
   SendMessage,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { checkIfPollMessage } from "utils/chat";
@@ -32,19 +31,19 @@ import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
   deleteMessage: DeleteMessage;
+  canDeleteMessage: (msg: MessageToDisplay) => boolean;
   displayPoll?: boolean;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
-  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
+  canDeleteMessage,
   displayPoll: isDisplayedPoll,
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
@@ -97,20 +96,29 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             <ChatPoll
               key={message.id}
               pollMessage={message}
-              deletePollMessage={deleteMessage}
+              deletePollMessage={
+                canDeleteMessage(message) ? deleteMessage : undefined
+              }
               voteInPoll={voteInPoll}
-              venue={venue}
             />
           ) : (
             <ChatMessage
               key={message.id}
               message={message}
-              deleteMessage={deleteMessage}
+              deleteMessage={
+                canDeleteMessage(message) ? deleteMessage : undefined
+              }
               selectThisThread={() => setSelectedThread(message)}
             />
           )
         ),
-    [messages, renderedMessagesCount, deleteMessage, voteInPoll, venue]
+    [
+      messages,
+      renderedMessagesCount,
+      canDeleteMessage,
+      deleteMessage,
+      voteInPoll,
+    ]
   );
 
   const onReplyToThread = useCallback(
