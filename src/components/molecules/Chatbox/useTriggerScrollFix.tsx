@@ -1,5 +1,5 @@
-import { WithId } from "../../../utils/id";
-import { MessageToDisplay } from "../../../types/chat";
+import { WithId } from "utils/id";
+import { MessageToDisplay } from "types/chat";
 import { useEffect, useRef } from "react";
 
 /**
@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
  * 'next' function is not being called when height of initially loaded items is less than container's height.
  * https://github.com/ankeetmaini/react-infinite-scroll-component/issues/217
  */
-export function useTriggerScrollFix(messages: WithId<MessageToDisplay>[]) {
+export const useTriggerScrollFix = (messages: WithId<MessageToDisplay>[]) => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -15,4 +15,4 @@ export function useTriggerScrollFix(messages: WithId<MessageToDisplay>[]) {
   }, [messages.length, ref]);
 
   return ref;
-}
+};
