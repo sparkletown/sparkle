@@ -34,8 +34,7 @@ export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
-  deleteMessage: DeleteMessage;
-  canDeleteMessages?: boolean;
+  deleteMessage?: DeleteMessage;
   displayPoll?: boolean;
 }
 
@@ -44,7 +43,6 @@ const _ChatBox: React.FC<ChatboxProps> = ({
   sendMessage,
   sendThreadReply,
   deleteMessage,
-  canDeleteMessages,
   displayPoll: isDisplayedPoll,
 }) => {
   const scrollableComponentRef = useTriggerScrollFix(messages);
@@ -97,25 +95,19 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             <ChatPoll
               key={message.id}
               pollMessage={message}
-              deletePollMessage={canDeleteMessages ? deleteMessage : undefined}
+              deletePollMessage={deleteMessage}
               voteInPoll={voteInPoll}
             />
           ) : (
             <ChatMessage
               key={message.id}
               message={message}
-              deleteMessage={canDeleteMessages ? deleteMessage : undefined}
+              deleteMessage={deleteMessage}
               selectThisThread={() => setSelectedThread(message)}
             />
           )
         ),
-    [
-      messages,
-      renderedMessagesCount,
-      canDeleteMessages,
-      deleteMessage,
-      voteInPoll,
-    ]
+    [messages, renderedMessagesCount, deleteMessage, voteInPoll]
   );
 
   const onReplyToThread = useCallback(

@@ -22,7 +22,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
     recipient,
 
     sendMessageToSelectedRecipient,
-    deleteMessage,
     markMessageRead,
     sendThreadReply,
   } = useRecipientChat(recipientId);
@@ -56,7 +55,6 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         <Chatbox
           messages={messagesToDisplay}
           sendMessage={sendMessageToSelectedRecipient}
-          deleteMessage={deleteMessage}
           sendThreadReply={sendThreadReply}
         />
       </div>

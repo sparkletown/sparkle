@@ -34,8 +34,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
-        deleteMessage={deleteMessage}
-        canDeleteMessages={canDeleteMessages}
+        deleteMessage={canDeleteMessages ? deleteMessage : undefined}
       />
     </div>
   );

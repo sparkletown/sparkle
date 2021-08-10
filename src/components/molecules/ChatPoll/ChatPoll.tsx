@@ -150,7 +150,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deletePollMessage ? deleteThisPollMessage : undefined}
+        deleteMessage={deletePollMessage && deleteThisPollMessage}
       />
     </div>
   );

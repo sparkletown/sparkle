@@ -49,9 +49,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
             <RenderMarkdown text={reply.text} allowHeadings={false} />
             <ChatMessageInfo
               message={reply}
-              deleteMessage={
-                deleteMessage ? () => deleteMessage(reply.id) : undefined
-              }
+              deleteMessage={deleteMessage && (() => deleteMessage(reply.id))}
             />
           </div>
         );
@@ -104,7 +102,7 @@ export const ChatMessage: React.FC<ChatProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteMessage ? deleteThisMessage : undefined}
+        deleteMessage={deleteMessage && deleteThisMessage}
       />
     </div>
   );
