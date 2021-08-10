@@ -73,7 +73,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         description: data.description,
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes: data.duration_hours * 60 + (data.duration_minutes ?? 0)
+        duration_minutes:
+          data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
