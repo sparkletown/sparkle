@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Button } from "react-bootstrap";
+
 import "./RadioModal.scss";
 
 export interface RadioModalPropsType {

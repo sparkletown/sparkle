@@ -2,12 +2,12 @@
 
 import { resolve } from "path";
 
-import admin from "firebase-admin";
 import { differenceInMilliseconds, formatDistanceStrict } from "date-fns";
+import admin from "firebase-admin";
 
-import { withId } from "../src/utils/id";
 import { User } from "../src/types/User";
 import { AnyVenue } from "../src/types/venues";
+import { withId } from "../src/utils/id";
 
 import {
   FieldValue,

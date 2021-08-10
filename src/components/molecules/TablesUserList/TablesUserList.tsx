@@ -3,27 +3,27 @@ import { Modal } from "react-bootstrap";
 import firebase from "firebase/app";
 
 import {
-  DEFAULT_TABLE_ROWS,
-  DEFAULT_TABLE_COLUMNS,
-  DEFAULT_TABLE_CAPACITY,
   ALLOWED_EMPTY_TABLES_NUMBER,
+  DEFAULT_TABLE_CAPACITY,
+  DEFAULT_TABLE_COLUMNS,
+  DEFAULT_TABLE_ROWS,
 } from "settings";
 
 import { Table, TableComponentPropsType } from "types/Table";
 import { User } from "types/User";
 
+import { WithId } from "utils/id";
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
 import { getUserExperience } from "utils/user";
-import { WithId } from "utils/id";
 
+import { useRecentVenueUsers } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
-import { useRecentVenueUsers } from "hooks/users";
 
-import { StartTable } from "components/molecules/StartTable";
 import { Loading } from "components/molecules/Loading";
+import { StartTable } from "components/molecules/StartTable";
 
 import "./TablesUserList.scss";
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
@@ -16,8 +16,10 @@ import { useSelector } from "hooks/useSelector";
 
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { updateUserPrivate } from "pages/Account/helpers";
+
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {

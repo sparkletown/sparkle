@@ -1,24 +1,23 @@
-import React, { useState, useCallback } from "react";
+import React, { useCallback, useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
 // import { useForm } from "react-hook-form";
-
 import {
-  IFRAME_ALLOW,
-  DEFAULT_USER_LIST_LIMIT,
   DEFAULT_SHOW_REACTIONS,
+  DEFAULT_USER_LIST_LIMIT,
+  IFRAME_ALLOW,
 } from "settings";
 
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
-import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
+import { openUrl, venueInsideUrl } from "utils/url";
 
 import { useExperiences } from "hooks/useExperiences";
-import { useRecentVenueUsers } from "hooks/users";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -28,13 +27,13 @@ import { ReactionsBar } from "components/molecules/ReactionsBar";
 // import CallOutMessageForm from "components/molecules/CallOutMessageForm/CallOutMessageForm";
 import TableHeader from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
-import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
+import { UserList } from "components/molecules/UserList";
 
 import { BackButton } from "components/atoms/BackButton";
 
-import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import Room from "../components/JazzBarRoom";
+import JazzBarTableComponent from "../components/JazzBarTableComponent";
 
 import { JAZZBAR_TABLES } from "./constants";
 

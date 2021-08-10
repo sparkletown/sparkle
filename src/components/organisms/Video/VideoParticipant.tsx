@@ -1,5 +1,4 @@
 import React, { useEffect, useRef } from "react";
-import { LocalParticipant, RemoteParticipant } from "twilio-video";
 import {
   faEye,
   faEyeSlash,
@@ -7,12 +6,13 @@ import {
   faMicrophoneSlash,
   faVideo,
   faVideoSlash,
-  faVolumeUp,
   faVolumeMute,
+  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { ClassValue } from "classnames/types";
+import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
 import { User } from "types/User";
 

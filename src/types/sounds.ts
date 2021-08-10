@@ -1,5 +1,5 @@
-import * as Yup from "yup";
 import { SpriteMap } from "use-sound/dist/types";
+import * as Yup from "yup";
 
 import { WithId } from "utils/id";
 

@@ -1,10 +1,13 @@
 import React, { useState } from "react";
-import "firebase/storage";
-import "./Account.scss";
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+import { ReactMic } from "react-mic";
 import { useHistory } from "react-router-dom";
 import Webcam from "react-webcam";
-import { ReactMic } from "react-mic";
+
+import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 const Step4 = () => {
   const history = useHistory();
