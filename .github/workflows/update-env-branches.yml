@@ -13,5 +13,5 @@ jobs:
           fetch-depth: 0
       - name: Push to sparkle 9
         run: |
-          git fetch origin master:master
+          git fetch origin master
           git push origin master:sparkle9
