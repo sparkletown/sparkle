@@ -1,9 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react";
-import {
-  faCaretDown,
-  faCaretRight,
-  faHome,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faCaretRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
@@ -16,7 +12,9 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
 
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { EditRoomForm } from "components/molecules/EditRoomForm";
 import { VenueRoomItem } from "components/molecules/VenueRoomItem";
@@ -81,20 +79,15 @@ const venueRooms: VenueRooms[] = [
   },
 ];
 
-export interface SpacesProps {
-  onClickBack?: () => void;
-  onClickHome?: () => void;
-  onClickNext?: () => void;
+interface SpacesProps extends TabNavigationProps {
   venue?: WithId<AnyVenue>;
 }
 
 const emptyRoomsArray: RoomData_v2[] = [];
 
 export const Spaces: React.FC<SpacesProps> = ({
-  onClickBack,
-  onClickHome,
-  onClickNext,
   venue,
+  ...tabNavigationProps
 }) => {
   const [selectedRoom, setSelectedRoom] = useState<RoomData_v2>();
   const [updatedRoom, setUpdatedRoom] = useState<RoomData_v2>({});
@@ -220,25 +213,7 @@ export const Spaces: React.FC<SpacesProps> = ({
               />
             </div>
             {showAddRoom && renderAddRooms}
-            <div className="Spaces__footer">
-              {onClickHome && (
-                <div className="Spaces__home-button" onClick={onClickHome}>
-                  <FontAwesomeIcon icon={faHome} />
-                </div>
-              )}
-              <div className="Spaces__nav-buttons">
-                {onClickBack && (
-                  <div className="Spaces__back-button" onClick={onClickHome}>
-                    Back
-                  </div>
-                )}
-                {onClickNext && (
-                  <div className="Spaces__next-button" onClick={onClickNext}>
-                    Next
-                  </div>
-                )}
-              </div>
-            </div>
+            <TabFooter {...tabNavigationProps} />
           </>
         )}
       </div>
