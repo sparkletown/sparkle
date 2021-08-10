@@ -10,26 +10,26 @@ import { ReactionsProvider } from "hooks/reactions";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
+import { AnimateMap } from "components/templates/AnimateMap";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
-import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
-import { AnimateMap } from "components/templates/AnimateMap";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 const PlayaRouter = lazy(() =>

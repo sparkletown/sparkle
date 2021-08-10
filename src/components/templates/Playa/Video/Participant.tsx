@@ -1,14 +1,18 @@
 import React, {
-  useState,
-  useEffect,
-  useRef,
-  useMemo,
   useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from "react";
-import { DEFAULT_PARTY_NAME } from "settings";
 import Video from "twilio-video";
+
+import { DEFAULT_PARTY_NAME } from "settings";
+
 import { User } from "types/User";
+
 import { WithId } from "utils/id";
+
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 export interface ParticipantProps {

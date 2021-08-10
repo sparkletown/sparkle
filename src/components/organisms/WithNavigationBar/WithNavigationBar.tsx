@@ -1,9 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 
 import { tracePromise } from "utils/performance";
 
-import { useVenueId } from "hooks/useVenueId";
 import { RelatedVenuesProvider } from "hooks/useRelatedVenues";
+import { useVenueId } from "hooks/useVenueId";
 
 import { Footer } from "components/molecules/Footer";
 import { Loading } from "components/molecules/Loading";

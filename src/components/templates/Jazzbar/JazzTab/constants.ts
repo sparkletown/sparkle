@@ -1,6 +1,6 @@
 import {
-  DEFAULT_TABLE_CAPACITY,
   DEFAULT_JAZZBAR_TABLES_NUMBER,
+  DEFAULT_TABLE_CAPACITY,
 } from "settings";
 
 import { Table } from "types/Table";

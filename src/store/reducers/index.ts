@@ -1,11 +1,12 @@
-import { roomReducer } from "./Room";
-import { locationReducer } from "./Location";
+import { VenueTemplate } from "types/venues";
+
+import { animateMapReducer } from "./AnimateMap";
 import { attendanceReducer } from "./Attendance";
 import { chatReducer } from "./Chat";
+import { locationReducer } from "./Location";
+import { roomReducer } from "./Room";
 import { sovereignVenueReducer } from "./SovereignVenue";
 import { userProfileReducer } from "./UserProfile";
-import { animateMapReducer } from "./AnimateMap";
-import { VenueTemplate } from "types/venues";
 
 // Reducers per VenueTemplate (eg. reducer for playa template)
 export const VenueTemplateReducers = {

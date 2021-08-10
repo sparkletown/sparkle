@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 import { useCopyToClipboard } from "react-use";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFacebook, faTwitter } from "@fortawesome/free-brands-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { PosterPageVenue } from "types/venues";
 
@@ -13,8 +13,8 @@ import { getFullVenueInsideUrl } from "utils/url";
 import { LinkButton } from "components/atoms/LinkButton";
 
 import {
-  getTitleTextForSharing,
   getFacebookHref,
+  getTitleTextForSharing,
   getTwitterHref,
 } from "./utils";
 

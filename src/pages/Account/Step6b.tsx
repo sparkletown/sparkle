@@ -1,14 +1,18 @@
 import React from "react";
-import "firebase/storage";
-import "./Account.scss";
+import { useHistory } from "react-router-dom";
+
 import {
   DEFAULT_VENUE,
   PLAYA_IMAGE,
   PLAYA_VENUE_NAME,
   SPARKLEVERSE_LOGO_URL,
 } from "settings";
-import { useHistory } from "react-router-dom";
+
 import { venueInsideUrl } from "utils/url";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 const Step6 = () => {
   const history = useHistory();

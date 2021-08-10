@@ -1,23 +1,23 @@
-import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import {
+  actionTypes as reactReduxFirebaseActionTypes,
   FirebaseReducer,
   firebaseReducer,
   getFirebase,
-  actionTypes as reactReduxFirebaseActionTypes,
 } from "react-redux-firebase";
-import {
-  firestoreReducer,
-  constants as reduxFirestoreConstants,
-} from "redux-firestore";
+import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
+import {
+  constants as reduxFirestoreConstants,
+  firestoreReducer,
+} from "redux-firestore";
+import subscribeActionMiddleware from "redux-subscribe-action";
 
 import { Firestore } from "types/Firestore";
 import { UserWithLocation } from "types/User";
 
+import { AnimateMapActionTypes } from "./actions/AnimateMap";
 import { worldUsersApi } from "./api";
 import { MiscReducers, VenueTemplateReducers } from "./reducers";
-import { AnimateMapActionTypes } from "./actions/AnimateMap";
-import subscribeActionMiddleware from "redux-subscribe-action";
 
 export const rootReducer = combineReducers({
   firebase: firebaseReducer as Reducer<

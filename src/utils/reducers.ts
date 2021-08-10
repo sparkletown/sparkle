@@ -1,4 +1,5 @@
 import { Matrix } from "types/utility";
+
 import { WithId } from "./id";
 
 /**

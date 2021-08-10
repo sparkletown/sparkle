@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { AnyVenue, VenueEvent } from "types/venues";
 import { Room } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";

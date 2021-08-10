@@ -1,31 +1,37 @@
 import React, { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import { FirebaseReducer } from "react-redux-firebase";
+import firebase from "firebase/app";
+
+import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
+
+import { retainAttendance } from "store/actions/Attendance";
+
 import {
   AnyVenue,
   VenueEvent,
   VenuePlacementState,
   VenueTemplate,
 } from "types/venues";
-import "./VenuePreview.scss";
-import { UserList } from "components/molecules/UserList";
-import { BURN_VENUE_TEMPLATES, ENABLE_PLAYA_ADDRESS } from "settings";
-import { useRecentVenueUsers } from "hooks/users";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+
+import { playaAddress } from "utils/address";
 import {
   eventsByStartUtcSecondsSorter,
   isEventLiveOrFuture,
 } from "utils/event";
-import { venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
-import firebase from "firebase/app";
-import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
-import { playaAddress } from "utils/address";
-import { Modal } from "react-bootstrap";
+import { venueInsideUrl } from "utils/url";
+
 import { useDispatch } from "hooks/useDispatch";
-import { retainAttendance } from "store/actions/Attendance";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useRecentVenueUsers } from "hooks/users";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import { UserList } from "components/molecules/UserList";
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
+
+import "./VenuePreview.scss";
 import "components/molecules/OnlineStats/OnlineStats.scss";
 
 interface VenuePreviewProps {
@@ -124,7 +130,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .firestore()
       .collection(`venues/${venue.id}/events`)
       .get()
-      .then(function (array) {
+      .then((array) => {
         const currentEvents = array.docs
           .map((doc) => doc.data())
           .filter(
@@ -143,7 +149,7 @@ const VenuePreview: React.FC<VenuePreviewProps> = ({
       .firestore()
       .collection(`venues/${venue.id}/events`)
       .get()
-      .then(function (array) {
+      .then((array) => {
         const futureEvents = array.docs
           .map((doc) => doc.data() as VenueEvent) // TODO: is this type cast correct?
           .filter(isEventLiveOrFuture)

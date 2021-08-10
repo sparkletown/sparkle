@@ -6,7 +6,6 @@ import admin from "firebase-admin";
 
 import { Table } from "../src/types/Table";
 import { AnyVenue } from "../src/types/venues";
-
 import { generateTables } from "../src/utils/table";
 
 import {

@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
 import { sendVenueMessage, voteInVenuePoll } from "api/chat";
 
@@ -11,8 +11,8 @@ import {
 
 import { buildMessage } from "utils/chat";
 
-import { useVenueId } from "./useVenueId";
 import { useUser } from "./useUser";
+import { useVenueId } from "./useVenueId";
 
 export const useVenuePoll = () => {
   const venueId = useVenueId();

@@ -1,6 +1,6 @@
-import firebase from "firebase/app";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import firebase from "firebase/app";
 
 interface PropsType {
   displayLoginForm: () => void;

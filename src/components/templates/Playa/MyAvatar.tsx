@@ -1,22 +1,27 @@
-import React, { useRef, useEffect, useState, forwardRef } from "react";
-import {
-  UserState,
-  UserStateKey,
-  stateBoolean,
-  UserVideoState,
-} from "types/RelayMessage";
+import React, { forwardRef, useEffect, useRef, useState } from "react";
 import { throttle } from "lodash";
+
 import {
-  PLAYA_AVATAR_SIZE,
   DEFAULT_PARTY_NAME,
+  PLAYA_AVATAR_SIZE,
   PLAYA_HEIGHT,
   PLAYA_WIDTH,
 } from "settings";
-import { useUser } from "hooks/useUser";
-import { Shout } from "./Playa";
+
+import {
+  stateBoolean,
+  UserState,
+  UserStateKey,
+  UserVideoState,
+} from "types/RelayMessage";
+
 import { getLinkFromText } from "utils/getLinkFromText";
-import AvatarPartygoers from "./AvatarPartygoers";
+
+import { useUser } from "hooks/useUser";
+
 import AvatarImage from "./AvatarImage";
+import AvatarPartygoers from "./AvatarPartygoers";
+import { Shout } from "./Playa";
 
 interface PropsType {
   useProfilePicture: boolean;
