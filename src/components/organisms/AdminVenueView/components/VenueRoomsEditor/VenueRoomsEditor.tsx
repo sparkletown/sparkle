@@ -1,24 +1,24 @@
 import React, {
-  useCallback,
-  useState,
-  useMemo,
   CSSProperties,
   Dispatch,
   SetStateAction,
+  useCallback,
   useEffect,
+  useMemo,
+  useState,
 } from "react";
 import { useDrop } from "react-dnd";
-import update from "immutability-helper";
 import ReactResizeDetector from "react-resize-detector";
 import classNames from "classnames";
+import update from "immutability-helper";
 
-import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
 
+import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
+import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
 import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
-import { DraggableSubvenue } from "pages/Account/Venue/VenueMapEdition/DraggableSubvenue";
-import { CustomDragLayer } from "pages/Account/Venue/VenueMapEdition";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
 import "./VenueRoomsEditor.scss";

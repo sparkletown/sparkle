@@ -1,6 +1,8 @@
-import { WithId } from "utils/id";
-import { MessageToDisplay } from "types/chat";
 import { useEffect, useRef } from "react";
+
+import { MessageToDisplay } from "types/chat";
+
+import { WithId } from "utils/id";
 
 /**
  * Resolves a bug in 'react-infinite-scroll-component' when

@@ -1,14 +1,15 @@
 import React from "react";
+import { Modal } from "react-bootstrap";
 
-// Typings
-import { RoomModalProps } from "./RoomModal.types";
+import { ROOM_TEMPLATES } from "settings";
 
+import { useUser } from "hooks/useUser";
+
+import Item from "./Item";
 // Styles
 import * as S from "./RoomModal.styles";
-import Item from "./Item";
-import { useUser } from "hooks/useUser";
-import { Modal } from "react-bootstrap";
-import { ROOM_TEMPLATES } from "settings";
+// Typings
+import { RoomModalProps } from "./RoomModal.types";
 
 const RoomModal: React.FC<RoomModalProps> = ({
   isVisible = false,
