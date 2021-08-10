@@ -1,6 +1,8 @@
 import React, { useCallback, useRef } from "react";
+
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
+// @debt Refactor this to use our useImage hook?
 export const BadgeImage: React.FC<{
   image?: string;
   name: string;
@@ -17,7 +19,7 @@ export const BadgeImage: React.FC<{
 
   return (
     <img
-      className="badge-list-item-image"
+      className="Badges__item-image"
       ref={imageRef}
       src={image ?? DEFAULT_AVATAR_IMAGE}
       title={badgeLabel}

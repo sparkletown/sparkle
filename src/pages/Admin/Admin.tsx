@@ -5,7 +5,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { shallowEqual } from "react-redux";
 import {
   Link,
   Redirect,
@@ -17,9 +16,9 @@ import {
 } from "react-router-dom";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import "firebase/storage";
 
 import { IS_BURN } from "secrets";
+
 import {
   DEFAULT_VENUE,
   PLACEABLE_VENUE_TEMPLATES,
@@ -32,16 +31,10 @@ import {
 } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
-import {
-  isVenueWithRooms,
-  Venue,
-  VenueEvent,
-  VenueTemplate,
-} from "types/venues";
+import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
 
 import { isTruthyFilter } from "utils/filter";
 import { WithId } from "utils/id";
-import { makeVenueSelector, orderedVenuesSelector } from "utils/selectors";
 import { venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
@@ -50,10 +43,11 @@ import {
   canHaveSubvenues,
 } from "utils/venue";
 
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useIsAdminUser } from "hooks/roles";
+import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
-import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -61,11 +55,15 @@ import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
+import { Loading } from "components/molecules/Loading";
+
+import "firebase/storage";
+
+import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import AdminDeleteEvent from "./AdminDeleteEvent";
 import AdminEventModal from "./AdminEventModal";
 import { AdminVenuePreview } from "./AdminVenuePreview";
 import EventsComponent from "./EventsComponent";
-import VenueDeleteModal from "./Venue/VenueDeleteModal";
 import { VenueOwnersModal } from "./VenueOwnersModal";
 
 import "./Admin.scss";
@@ -81,9 +79,11 @@ const VenueList: React.FC<VenueListProps> = ({
   selectedVenueId,
   roomIndex,
 }) => {
-  const venues = useSelector(orderedVenuesSelector);
+  const { isLoading, ownedVenues } = useOwnedVenues({
+    currentVenueId: selectedVenueId,
+  });
 
-  if (!venues) return <>Loading...</>;
+  if (isLoading) return <Loading />;
 
   return (
     <>
@@ -94,11 +94,11 @@ const VenueList: React.FC<VenueListProps> = ({
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {venues.map((venue, index) => (
+        {ownedVenues.map((venue) => (
           <li
-            key={index}
+            key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
-              canHaveSubvenues(venue) ? "camp" : ""
+              canHaveSubvenues(venue) ? "space" : ""
             }`}
           >
             <Link to={`/admin/${venue.id}`}>{venue.name}</Link>
@@ -132,11 +132,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { url: matchUrl } = useRouteMatch();
   const { pathname: urlPath } = useLocation();
 
-  const venueSelector = useCallback(
-    (state) => makeVenueSelector(venueId)(state),
-    [venueId]
-  );
-  const venue = useSelector(venueSelector, shallowEqual);
+  const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
 
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
@@ -153,19 +149,22 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   }, []);
 
   const tabs = useMemo(() => {
-    if (!venue) return [];
+    if (!currentVenue) return [];
 
     return [
       { url: matchUrl, label: "Venue Info" },
-      canHaveEvents(venue) && { url: `${matchUrl}/events`, label: "Events" },
-      canHavePlacement(venue) && {
+      canHaveEvents(currentVenue) && {
+        url: `${matchUrl}/events`,
+        label: "Events",
+      },
+      canHavePlacement(currentVenue) && {
         url: `${matchUrl}/placement`,
         label: "Placement & Editing",
       },
     ].filter(isTruthyFilter);
-  }, [matchUrl, venue]);
+  }, [matchUrl, currentVenue]);
 
-  if (!venue) {
+  if (!currentVenue) {
     return <>{"Oops, seems we can't find your venue!"}</>;
   }
 
@@ -187,10 +186,9 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         <Switch>
           <Route path={`${matchUrl}/events`}>
             <EventsComponent
-              venue={venue}
-              showCreateEventModal={showCreateEventModal}
+              venue={currentVenue}
               setShowCreateEventModal={setShowCreateEventModal}
-              editedEvent={editedEvent}
+              setShowDeleteEventModal={setShowDeleteEventModal}
               setEditedEvent={setEditedEvent}
             />
           </Route>
@@ -198,13 +196,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             <>Appearance Component</>
           </Route>
           <Route path={matchUrl}>
-            <VenueInfoComponent
-              venue={venue}
-              roomIndex={roomIndex}
-              showCreateEventModal={showCreateEventModal}
-              setShowCreateEventModal={setShowCreateEventModal}
-              setShowDeleteEventModal={setShowDeleteEventModal}
-            />
+            <VenueInfoComponent venue={currentVenue} roomIndex={roomIndex} />
           </Route>
         </Switch>
       </div>
@@ -213,7 +205,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
         onHide={adminEventModalOnHide}
         venueId={venueId}
         event={editedEvent}
-        template={venue.template}
+        template={currentVenue.template}
         setEditedEvent={setEditedEvent}
         setShowDeleteEventModal={setShowDeleteEventModal}
       />
@@ -228,11 +220,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 };
 
 export type VenueInfoComponentProps = {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   roomIndex?: number;
-  showCreateEventModal: boolean;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
   editedEvent?: WithId<VenueEvent>;
   setEditedEvent?: Function;
 };
@@ -240,9 +229,6 @@ export type VenueInfoComponentProps = {
 const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   venue,
   roomIndex,
-  showCreateEventModal,
-  setShowCreateEventModal,
-  setShowDeleteEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -250,8 +236,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
     push,
   ]);
-  const history = useHistory();
-  const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -264,14 +248,11 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
     );
   }, [venue]);
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
-  const visitText =
-    venue.template === VenueTemplate.themecamp ? "Visit camp" : "Visit venue";
-  const editText =
-    venue.template === VenueTemplate.themecamp ? "Edit camp" : "Edit venue";
-  const deleteText =
-    venue.template === VenueTemplate.themecamp ? "Delete camp" : "Delete venue";
+  const {
+    isShown: isDeleteModalVisible,
+    show: showDeleteModal,
+    hide: hideDeleteModal,
+  } = useShowHide();
 
   return (
     <>
@@ -302,14 +283,13 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                       interactive={false}
                       resizable={false}
                       iconsMap={
-                        venue.placement && venue.mapIconImageUrl
+                        venue.placement
                           ? {
                               icon: {
                                 width: PLAYA_VENUE_SIZE,
                                 height: PLAYA_VENUE_SIZE,
                                 top: venue.placement.y,
                                 left: venue.placement.x,
-                                url: venue.mapIconImageUrl,
                               },
                             }
                           : {}
@@ -347,13 +327,13 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               rel="noopener noreferer"
               className="btn btn-primary btn-block"
             >
-              {visitText}
+              Visit space
             </Link>
             <Link
               to={`/admin/venue/edit/${venue.id}`}
               className="btn btn-block"
             >
-              {editText}
+              Edit space
             </Link>
             {canHaveSubvenues(venue) && (
               <Link
@@ -371,63 +351,40 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 Edit Room
               </Link>
             )}
-            {canBeDeleted(venue) && (
-              <button
-                role="link"
-                className="btn btn-block btn-danger"
-                onClick={() => setShowDeleteModal(true)}
-              >
-                {deleteText}
-              </button>
-            )}
-            <button
-              className="btn btn-primary"
-              onClick={() => {
-                history.push(`${match.url}/events`);
-                setShowCreateEventModal(true);
-              }}
-              style={{ marginBottom: 10, width: "100%" }}
-            >
-              Create an Event
-            </button>
+
             <Link
               to={{ search: "manageUsers=true" }}
-              className="btn btn-primary"
+              className="btn btn-block btn-primary"
             >
               Manage Venue Owners
             </Link>
             {typeof roomIndex !== "number" && (
-              <div>
+              <div className="page-container-adminpanel-actions__note">
                 If you are looking to edit one of your rooms, please select the
                 room in the left hand menu
               </div>
+            )}
+            {canBeDeleted(venue) && (
+              <button
+                role="link"
+                className="btn btn-block btn-danger"
+                onClick={showDeleteModal}
+              >
+                Delete space
+              </button>
             )}
           </>
         )}
       </div>
       <VenueDeleteModal
-        show={showDeleteModal}
-        onHide={() => {
-          setShowDeleteModal(false);
-        }}
+        show={isDeleteModalVisible}
+        onHide={hideDeleteModal}
         venue={venue}
       />
       <VenueOwnersModal
         visible={manageUsers}
         onHide={onManageUsersModalHide}
         venue={venue}
-      />
-      <AdminEventModal
-        show={showCreateEventModal}
-        onHide={() => {
-          setShowCreateEventModal(false);
-          setEditedEvent(undefined);
-        }}
-        venueId={venue.id}
-        event={editedEvent}
-        template={venue.template}
-        setEditedEvent={setEditedEvent}
-        setShowDeleteEventModal={setShowDeleteEventModal}
       />
     </>
   );
@@ -462,7 +419,7 @@ const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar fullscreen>
+    <WithNavigationBar hasBackButton={false}>
       <div className="admin-dashboard">
         <div className="page-container page-container_adminview">
           <div className="page-container-adminsidebar">

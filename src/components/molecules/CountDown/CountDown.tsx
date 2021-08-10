@@ -1,4 +1,5 @@
 import React from "react";
+
 import { getTimeBeforeParty } from "utils/time";
 
 interface PropsType {
@@ -8,20 +9,15 @@ interface PropsType {
 
 export const CountDown: React.FunctionComponent<PropsType> = ({
   startUtcSeconds,
-  textBeforeCountdown,
+  textBeforeCountdown = "Begins in",
 }) => {
   const timeBeforeParty = getTimeBeforeParty(startUtcSeconds);
-  const isPartyOngoing = timeBeforeParty === 0;
-  return !isPartyOngoing ? (
+
+  if (timeBeforeParty === "0") return null;
+
+  return (
     <div className="count-down-container">
-      {`${textBeforeCountdown || "Begins in"} ${timeBeforeParty}`}
+      {textBeforeCountdown} {timeBeforeParty}
     </div>
-  ) : (
-    <></>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default CountDown;

@@ -10,12 +10,11 @@ function role(name) {
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /config/{configFile} {
-      allow read: if true;
-      allow write: if request.auth.uid != null;
+    match /authConfigs/{authConfigId} {
+      allow read, write: if false;
     }
     match /users/{userId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
       allow write: if request.auth.uid == userId;
 
       match /visits/{venueId} {
@@ -26,24 +25,13 @@ service cloud.firestore {
     match /userprivate/{userId} {
       allow read,write: if request.auth.uid == userId;
     }
-    match /chatsv3/{chatId} {
-      allow write, read: if request.auth.uid != null;
-    }
     match /privatechats/{userId}/{restOfPath=**} {
       allow create: if request.auth.uid != null && request.resource.data.from == request.auth.uid;
       allow read: if request.auth.uid != null && userId == request.auth.uid;
       allow update: if request.auth.uid != null && isUpdateRestrictedToField(request, 'isRead');
     }
     match /experiences/{experienceId}/{restOfPath=**} {
-      allow read: if true;
-      allow write: if request.auth.uid != null;
-    }
-    match /faq/{faqId} {
-      allow read: if true;
-    }
-    match /marketingemails/{emailId} {
-      allow read: if request.auth.uid != null;
-      allow write: if true;
+      allow read, write: if request.auth.uid != null;
     }
     match /venues/{venue} {
       allow read: if true;
@@ -67,16 +55,21 @@ service cloud.firestore {
       match /accessgranted/{userId} {
         allow read, write: if false;
       }
-    }
-    match /customers/{userId} {
-      allow read: if false;
-      allow write: if false;
-    }
-    match /purchases/{restOfPath=**} {
-      allow read,write: if true;
+      match /sections/{sectionId} {
+        allow read: if request.auth.uid != null;
+        allow write: if request.auth.uid in venueData().owners;
+      }
+      match /screeningRoomVideos/{screeningRoomVideoId} {
+        allow read: if request.auth.uid != null;
+        allow write: if false;
+      }
     }
     match /roles/{roleId} {
-      allow read: if true;
+      allow read: if request.auth.uid != null;
+      allow write: if false;
+    }
+    match /sounds/{soundId} {
+      allow read: if request.auth.uid != null;
       allow write: if false;
     }
   }

@@ -1,23 +1,25 @@
 import React from "react";
+import { Button, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
+
+import {
+  MAXIMUM_PARTYMAP_COLUMNS_COUNT,
+  MINIMUM_PARTYMAP_COLUMNS_COUNT,
+} from "settings";
+
 import { updateVenue_v2 } from "api/admin";
 
-// Hooks
-import { useForm } from "react-hook-form";
-import { useUser } from "hooks/useUser";
-
-// Components
-import { Button, Form } from "react-bootstrap";
-import ToggleSwitch from "components/atoms/ToggleSwitch";
-
-// Typings
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
+import { UsernameVisibility } from "types/User";
 import { Venue_v2_AdvancedConfig } from "types/venues";
 
-import { MAXIMUM_COLUMNS, MINIMUM_COLUMNS } from "settings";
+import { useUser } from "hooks/useUser";
 
-// Styles
+import { Checkbox } from "components/atoms/Checkbox";
+
 import * as S from "../Admin.styles";
+
+import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {
@@ -43,12 +45,11 @@ const ToggleElement: React.FC<ToggleElementProps> = ({
     </S.ItemHeader>
 
     <S.ItemBody>
-      <ToggleSwitch
+      <Checkbox
         name={name}
-        forwardRef={forwardRef}
-        withText
-        isChecked={isChecked}
-        isLarge
+        forwardedRef={forwardRef}
+        defaultChecked={isChecked}
+        toggler
       />
 
       {children}
@@ -62,10 +63,10 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
     is: true,
     then: Yup.number()
       .required(
-        `The columns need to be between ${MINIMUM_COLUMNS} and ${MAXIMUM_COLUMNS}.`
+        `The columns need to be between ${MINIMUM_PARTYMAP_COLUMNS_COUNT} and ${MAXIMUM_PARTYMAP_COLUMNS_COUNT}.`
       )
-      .min(MINIMUM_COLUMNS)
-      .max(MAXIMUM_COLUMNS),
+      .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
+      .max(MAXIMUM_PARTYMAP_COLUMNS_COUNT),
   }),
   radioStations: Yup.string().when("showRadio", {
     is: true,
@@ -73,9 +74,11 @@ const validationSchema = Yup.object().shape<Venue_v2_AdvancedConfig>({
   }),
   requiresDateOfBirth: Yup.bool().notRequired(),
   showBadges: Yup.bool().notRequired(),
+  showNametags: Yup.mixed()
+    .oneOf(Object.values(UsernameVisibility))
+    .notRequired(),
   showRadio: Yup.bool().notRequired(),
   showRangers: Yup.bool().notRequired(),
-  showZendesk: Yup.bool().notRequired(),
 
   // TODO: Figure out how to validate with enum values
   // roomVisibility: Yup.string().notRequired()
@@ -100,9 +103,9 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
       radioStations: venue.radioStations ? venue.radioStations[0] : "",
       requiresDateOfBirth: venue.requiresDateOfBirth,
       showBadges: venue.showBadges,
+      showNametags: venue.showNametags,
       showGrid: venue.showGrid,
       showRadio: venue.showRadio,
-      showZendesk: venue.showZendesk,
       showRangers: venue.showRangers,
       bannerMessage: venue.bannerMessage,
       attendeesTitle: venue.attendeesTitle,
@@ -173,6 +176,27 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
         )}
       </Form.Group>
     </ToggleElement>
+  );
+
+  const renderShowNametags = () => (
+    <S.ItemWrapper>
+      <S.ItemHeader>
+        <S.TitleWrapper>
+          <S.ItemTitle>Show Nametags</S.ItemTitle>
+        </S.TitleWrapper>
+
+        <S.ItemSubtitle>Display user names on their avatars</S.ItemSubtitle>
+      </S.ItemHeader>
+
+      <S.ItemBody>
+        <Form.Control as="select" custom name="showNametags" ref={register}>
+          <option value="none">None</option>
+          {/* TODO: Implement Inline state */}
+          {/* <option value="inline">Inline</option> */}
+          <option value="hover">Inline and hover</option>
+        </Form.Control>
+      </S.ItemBody>
+    </S.ItemWrapper>
   );
 
   const renderRoomVisibility = () => (
@@ -291,12 +315,7 @@ const AdvancedSettings: React.FC<AdvancedSettingsProps> = ({
           title="Show badges"
         />
 
-        <ToggleElement
-          forwardRef={register}
-          isChecked={values.showZendesk}
-          name="showZendesk"
-          title="Show Zendesk support popup"
-        />
+        {renderShowNametags()}
 
         <ToggleElement
           forwardRef={register}

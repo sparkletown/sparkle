@@ -1,0 +1,101 @@
+@import "scss/constants.scss";
+
+$edit-topic-button-width: 25px;
+$edit-topic-button-height: 25px;
+$edit-topic-button-diameter: 0px 5px;
+
+.TableHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+
+  &__leave-table {
+    display: flex;
+    flex: 1;
+    justify-content: flex-start;
+  }
+
+  &__leave-button {
+    background-color: $secondary;
+    font-size: 0.9rem;
+    color: $white;
+    border: none;
+    padding: 15px 15px 15px 25px;
+    border-radius: 0 0 16px 0;
+    font-weight: $font-weight--500;
+
+    &--icon {
+      margin-right: 8px;
+      color: $concrete;
+      opacity: 0.7;
+    }
+
+    &:hover {
+      background-color: $secondary;
+
+      &--icon {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__topic {
+    display: flex;
+    align-items: center;
+  }
+
+  &__topic-info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: $font-size--lg;
+    font-weight: $font-weight--500;
+  }
+
+  &__table-details {
+    font-size: $font-size--xs;
+    font-weight: $font-weight--400;
+  }
+
+  &__edit-topic-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: $border-radius--max;
+    background-color: $secondary;
+    width: $edit-topic-button-width;
+    height: $edit-topic-button-height;
+    margin: $edit-topic-button-diameter;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $secondary--light;
+
+      &--icon {
+        opacity: 1;
+      }
+    }
+  }
+
+  &__lock-button {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+
+    &--icon {
+      margin-right: 5px;
+    }
+  }
+
+  &__lock-indication {
+    margin-right: 10px;
+    font-size: $font-size--sm;
+  }
+
+  &__lock-toggle {
+    margin: 0;
+  }
+}

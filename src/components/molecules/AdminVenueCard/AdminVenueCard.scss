@@ -1,0 +1,79 @@
+@import "scss/constants.scss";
+
+$admin-venue-card-button-margin: 5px 0;
+
+.AdminVenueCard {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+  flex-direction: column;
+  border: none;
+  padding: 1rem;
+  border-radius: 20px;
+
+  &__bg {
+    position: absolute;
+    z-index: z(admin-venue-card-bg);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+
+    &:after {
+      transition: all 400ms $transition-function;
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: linear-gradient(
+        180deg,
+        rgba(25, 24, 26, 0.6) 0%,
+        $saturated-black 100%
+      );
+    }
+
+    &:hover {
+      background-image: linear-gradient(
+        180deg,
+        rgba(38, 36, 39, 0.6) 0%,
+        $saturated-black-alt 100%
+      );
+    }
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+  }
+
+  &__logo {
+    height: 70px;
+    width: 70px;
+    border-radius: 50%;
+    background-size: cover;
+    background-color: $black;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  }
+
+  &__button {
+    background-color: $primary;
+    padding: 0.5rem;
+    border-radius: 16px;
+    text-align: center;
+    text-decoration: none;
+    margin: $admin-venue-card-button-margin;
+
+    &:hover {
+      color: $white;
+      background-color: darken($primary, 5%);
+      box-shadow: 0 2px 30px rgba(124, 70, 251, 0.6);
+      text-decoration: none;
+    }
+  }
+}

@@ -1,16 +1,14 @@
 import styled from "styled-components";
 
-import { Container as VenueHeroContainer } from "components/molecules/VenueHero/VenueHero.styles";
+import { Container as VenueHeroContainer } from "components/molecules/VenueCard/VenueCard.styles";
+
 import { Button } from "components/atoms/Button/Button.styles";
 
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  padding-right: 15%;
-
   overflow: hidden;
   scrollbar-width: thin;
-
   background-color: #000000;
 `;
 

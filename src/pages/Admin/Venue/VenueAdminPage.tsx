@@ -1,21 +1,22 @@
 import React from "react";
 
+import { IFRAME_TEMPLATES } from "settings";
+
 import {
   isCurrentVenueNGRequestedSelector,
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
-import { IFRAME_TEMPLATES } from "settings";
-
-import { useSelector } from "hooks/useSelector";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-import { AdminVideo } from "components/molecules/AdminVideo";
 import { BannerAdmin } from "components/organisms/BannerAdmin";
+
+import { IframeAdmin } from "components/molecules/IframeAdmin";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./VenueAdminPage.scss";
 
@@ -48,13 +49,13 @@ export const VenueAdminPage: React.FC = () => {
     );
   }
 
-  const isVideoVenue = IFRAME_TEMPLATES.includes(venue.template);
+  const isIframeVenue = IFRAME_TEMPLATES.includes(venue.template);
 
   return (
     <>
       <h4 className="admin-page-title">You are editing venue: {venue.name}</h4>
       <BannerAdmin venueId={venueId} venue={venue} />
-      {isVideoVenue && <AdminVideo venueId={venueId} venue={venue} />}
+      {isIframeVenue && <IframeAdmin venueId={venueId} venue={venue} />}
     </>
   );
 };

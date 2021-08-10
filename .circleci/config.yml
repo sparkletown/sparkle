@@ -1,7 +1,12 @@
 notify-on-fail: &notify-on-fail
   when:
-    condition: always
+    condition: on_fail
     steps:
+      - run:
+          command: |
+            if [ -z "$SLACK_ACCESS_TOKEN" ]; then
+              circleci-agent step halt
+            fi
       - slack/notify:
           event: fail
           custom: |
@@ -129,10 +134,50 @@ jobs:
             if [ $CIRCLE_BRANCH = "deloitte" ]; then
               ENV=sparkle-deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              ENV=sparkle-kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              ENV=sparkle-memrise
+            fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              ENV=sparkle-unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              ENV=sparkle-ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              ENV=sparkle-pa
+            fi
+            if [ $CIRCLE_BRANCH = "env/demo" ]; then
+              ENV=sparkle-demo-e65b1
+            fi
+            if [ $CIRCLE_BRANCH = "env/unity" ]; then
+              ENV=sparkle-unity
+            fi
+            if [ $CIRCLE_BRANCH = "env/clever" ]; then
+              ENV=sparkle-clever
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn" ]; then
+              ENV=sparkle-burn
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn-staging" ]; then
+              ENV=sparkle-burn-staging
+            fi
+            if [ $CIRCLE_BRANCH = "env/github" ]; then
+              ENV=sparkle-github
+            fi
+            if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
+              ENV=sparkle-summit-hack
+            fi
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
-            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN"
+
+            # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
+            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+
             ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
       - *notify-on-fail
@@ -233,6 +278,78 @@ jobs:
               TARGET=sparkle-deloitte
               RELEASE_STAGE=deloitte
             fi
+            if [ $CIRCLE_BRANCH = "env/kotr" ]; then
+              PREFIX=KOTR_
+              ENV=sparkle-kotr
+              TARGET=sparkle-kotr
+              RELEASE_STAGE=env/kotr
+            fi
+            if [ $CIRCLE_BRANCH = "env/memrise" ]; then
+              PREFIX=MEMRISE_
+              ENV=sparkle-memrise
+              TARGET=sparkle-memrise
+              RELEASE_STAGE=env/memrise
+            fi
+            if [ $CIRCLE_BRANCH = "env/unesco" ]; then
+              PREFIX=UNESCO_
+              ENV=sparkle-unesco
+              TARGET=sparkle-unesco
+              RELEASE_STAGE=env/unesco
+            fi
+            if [ $CIRCLE_BRANCH = "env/ohbm" ]; then
+              PREFIX=OHBM_
+              ENV=sparkle-ohbm
+              TARGET=sparkle-ohbm
+              RELEASE_STAGE=env/ohbm
+            fi
+            if [ $CIRCLE_BRANCH = "env/pa" ]; then
+              PREFIX=PA_
+              ENV=sparkle-pa
+              TARGET=sparkle-pa
+              RELEASE_STAGE=env/pa
+            fi
+            if [ $CIRCLE_BRANCH = "env/demo" ]; then
+              PREFIX=DEMO_
+              ENV=sparkle-demo-e65b1
+              TARGET=sparkle-demo-e65b1
+              RELEASE_STAGE=env/demo
+            fi
+            if [ $CIRCLE_BRANCH = "env/unity" ]; then
+              PREFIX=UNITY_
+              ENV=sparkle-unity
+              TARGET=sparkle-unity
+              RELEASE_STAGE=env/unity
+            fi
+            if [ $CIRCLE_BRANCH = "env/clever" ]; then
+              PREFIX=CLEVER_
+              ENV=sparkle-clever
+              TARGET=sparkle-clever
+              RELEASE_STAGE=env/clever
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn" ]; then
+              PREFIX=BURN_
+              ENV=sparkle-burn
+              TARGET=sparkle-burn
+              RELEASE_STAGE=env/burn
+            fi
+            if [ $CIRCLE_BRANCH = "env/burn-staging" ]; then
+              PREFIX=BURN_STAGING_
+              ENV=sparkle-burn-staging
+              TARGET=sparkle-burn-staging
+              RELEASE_STAGE=env/burn-staging
+            fi
+            if [ $CIRCLE_BRANCH = "env/github" ]; then
+              PREFIX=GITHUB_
+              ENV=sparkle-github
+              TARGET=sparkle-github
+              RELEASE_STAGE=env/github
+            fi
+            if [ $CIRCLE_BRANCH = "env/summit-hack" ]; then
+              PREFIX=SUMMIT_HACK_
+              ENV=sparkle-summit-hack
+              TARGET=sparkle-summit-hack
+              RELEASE_STAGE=env/summit-hack
+            fi
 
             ./scripts/init-env.sh $PREFIX
 
@@ -286,6 +403,18 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
+                - env/demo
+                - env/unity
+                - env/clever
+                - env/burn
+                - env/burn-staging
+                - env/github
+                - env/summit-hack
       - deploy-hosting:
           requires:
             - lint-and-test
@@ -307,6 +436,18 @@ workflows:
                 - sparkle10
                 - bigtop
                 - deloitte
+                - env/kotr
+                - env/memrise
+                - env/unesco
+                - env/ohbm
+                - env/pa
+                - env/demo
+                - env/unity
+                - env/clever
+                - env/burn
+                - env/burn-staging
+                - env/github
+                - env/summit-hack
 #      - smoke-test:
 #          requires:
 #            - deploy-functions

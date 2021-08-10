@@ -1,14 +1,18 @@
+import Bugsnag from "@bugsnag/js";
 import firebase, { UserInfo } from "firebase/app";
 import { omit } from "lodash";
-import { Room } from "types/rooms";
+
+import { Room, RoomData_v2 } from "types/rooms";
+import { UsernameVisibility, UserStatus } from "types/User";
 import {
+  Venue_v2_AdvancedConfig,
+  Venue_v2_EntranceConfig,
   VenueEvent,
   VenuePlacement,
   VenueTemplate,
-  Venue_v2_AdvancedConfig,
-  Venue_v2_EntranceConfig,
 } from "types/venues";
-import { RoomData_v2 } from "types/rooms";
+
+import { WithId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 
 export interface EventInput {
@@ -17,7 +21,7 @@ export interface EventInput {
   start_date: string;
   start_time: string;
   duration_hours: number;
-  price: number;
+  duration_minutes: number;
   host: string;
   room?: string;
 }
@@ -36,13 +40,11 @@ export interface AdvancedVenueInput {
 type VenueImageFileKeys =
   | "bannerImageFile"
   | "logoImageFile"
-  | "mapIconImageFile"
   | "mapBackgroundImageFile";
 
 type VenueImageUrlKeys =
   | "bannerImageUrl"
   | "logoImageUrl"
-  | "mapIconImageUrl"
   | "mapBackgroundImageUrl";
 
 type ImageFileKeys =
@@ -75,7 +77,6 @@ export type VenueInput = AdvancedVenueInput &
     name: string;
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
-    mapIconImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
     subtitle: string;
     description: string;
@@ -92,16 +93,19 @@ export type VenueInput = AdvancedVenueInput &
     height?: number;
     bannerMessage?: string;
     parentId?: string;
-    owners: string[];
+    owners?: string[];
     showRangers?: boolean;
     chatTitle?: string;
     attendeesTitle?: string;
     auditoriumRows?: number;
     auditoriumColumns?: number;
+    userStatuses?: UserStatus[];
     showReactions?: boolean;
+    showShoutouts?: boolean;
     showRadio?: boolean;
     radioStations?: string;
-    showZendesk?: boolean;
+    showNametags?: UsernameVisibility;
+    showUserStatus?: boolean;
   };
 
 export interface VenueInput_v2
@@ -118,6 +122,7 @@ export interface VenueInput_v2
   mapBackgroundImageFile?: FileList;
   mapBackgroundImageUrl?: string;
   template?: VenueTemplate;
+  iframeUrl?: string;
 }
 
 type FirestoreVenueInput = Omit<VenueInput, VenueImageFileKeys> &
@@ -136,8 +141,6 @@ type FirestoreRoomInput_v2 = Omit<RoomInput_v2, RoomImageFileKeys> &
   };
 
 export type PlacementInput = {
-  mapIconImageFile?: FileList;
-  mapIconImageUrl?: string;
   addressText?: string;
   notes?: string;
   placement?: Omit<VenuePlacement, "state">;
@@ -151,7 +154,7 @@ const randomPrefix = () => Math.random().toString();
 export const createUrlSafeName = (name: string) =>
   name.replace(/\W/g, "").toLowerCase();
 
-const getVenueOwners = async (venueId: string): Promise<string[]> => {
+export const getVenueOwners = async (venueId: string): Promise<string[]> => {
   const owners = (
     await firebase.firestore().collection("venues").doc(venueId).get()
   ).data()?.owners;
@@ -175,10 +178,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     {
       fileKey: "bannerImageFile",
       urlKey: "bannerImageUrl",
-    },
-    {
-      fileKey: "mapIconImageFile",
-      urlKey: "mapIconImageUrl",
     },
     {
       fileKey: "mapBackgroundImageFile",
@@ -224,11 +223,6 @@ const createFirestoreVenueInput = async (input: VenueInput, user: UserInfo) => {
     ...imageInputData,
     rooms: [], // eventually we will be getting the rooms from the form
   };
-
-  // Default to showing Zendesk
-  if (input.showZendesk === undefined) {
-    input.showZendesk = true;
-  }
 
   return firestoreVenueInput;
 };
@@ -312,7 +306,10 @@ export const createVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   );
 };
 
-export const updateVenue = async (input: VenueInput, user: UserInfo) => {
+export const updateVenue = async (
+  input: WithId<VenueInput>,
+  user: UserInfo
+) => {
   const firestoreVenueInput = await createFirestoreVenueInput(input, user);
 
   return await firebase.functions().httpsCallable("venue-updateVenue")(
@@ -323,9 +320,22 @@ export const updateVenue = async (input: VenueInput, user: UserInfo) => {
 export const updateVenue_v2 = async (input: VenueInput_v2, user: UserInfo) => {
   const firestoreVenueInput = await createFirestoreVenueInput_v2(input, user);
 
-  await firebase.functions().httpsCallable("venue-updateVenue_v2")(
-    firestoreVenueInput
-  );
+  return firebase
+    .functions()
+    .httpsCallable("venue-updateVenue_v2")(firestoreVenueInput)
+    .catch((error) => {
+      const msg = `[updateVenue_v2] updating venue ${input.name}`;
+      const context = {
+        location: "api/admin::updateVenue_v2",
+      };
+
+      Bugsnag.notify(msg, (event) => {
+        event.severity = "warning";
+        event.addMetadata("context", context);
+        event.addMetadata("firestoreVenueInput", firestoreVenueInput);
+      });
+      throw error;
+    });
 };
 
 const createFirestoreRoomInput = async (
@@ -417,9 +427,10 @@ const createFirestoreRoomInput_v2 = async (
       input,
       imageKeys.map((entry) => entry.fileKey)
     ),
-    url: input.useUrl
-      ? input.url
-      : window.origin + venueInsideUrl(input.venueName!),
+    url:
+      input.useUrl || !input.venueName
+        ? input.url
+        : window.origin + venueInsideUrl(input.venueName!),
     ...imageInputData,
   };
 
@@ -438,11 +449,40 @@ export const upsertRoom = async (
     user
   );
 
-  return await firebase.functions().httpsCallable("venue-upsertRoom")({
-    venueId,
-    roomIndex,
-    room: firestoreVenueInput,
-  });
+  return await firebase
+    .functions()
+    .httpsCallable("venue-upsertRoom")({
+      venueId,
+      roomIndex,
+      room: firestoreVenueInput,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::upsertRoom", {
+          venueId,
+          roomIndex,
+        });
+      });
+      throw e;
+    });
+};
+
+export const deleteRoom = async (venueId: string, room: RoomData_v2) => {
+  return await firebase
+    .functions()
+    .httpsCallable("venue-deleteRoom")({
+      venueId,
+      room,
+    })
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("api/admin::deleteRoom", {
+          venueId,
+          room,
+        });
+      });
+      throw e;
+    });
 };
 
 export const updateRoom = async (

@@ -1,7 +1,12 @@
-import { RoomInput } from "api/admin";
-import "firebase/functions";
 import * as Yup from "yup";
+
 import { PLAYA_ICON_SIDE_PERCENTAGE } from "settings";
+
+import { RoomInput } from "api/admin";
+
+import { roomUrlSchema } from "pages/Admin/Details/ValidationSchema";
+
+import "firebase/functions";
 
 const INITIAL_PERCENTAGE_POS = 50 - PLAYA_ICON_SIDE_PERCENTAGE / 2;
 
@@ -26,7 +31,7 @@ export const validationSchema = Yup.object()
     title: Yup.string().required("Required"),
     subtitle: Yup.string().required("Required"),
     about: Yup.string().required("Required"),
-    url: Yup.string().required("Required"),
+    url: roomUrlSchema,
     x_percent: Yup.number()
       .default(INITIAL_PERCENTAGE_POS)
       .required("Required")

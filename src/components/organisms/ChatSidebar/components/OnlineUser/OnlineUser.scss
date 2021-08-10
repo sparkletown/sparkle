@@ -1,0 +1,25 @@
+@import "scss/constants";
+
+.online-user {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 24px;
+  cursor: pointer;
+
+  content-visibility: auto;
+
+  &:hover {
+    background-color: $black;
+
+    .online-user__name {
+      opacity: 1;
+    }
+  }
+
+  &__name {
+    opacity: 0.75;
+    font-size: 14px;
+    margin-left: 16px;
+  }
+}

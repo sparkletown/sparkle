@@ -1,11 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
 import {
   AudioTrack,
+  connect,
   LocalParticipant,
+  LocalVideoTrack,
   RemoteParticipant,
+  Room,
   Track,
   VideoTrack,
 } from "twilio-video";
+
+import { getTwilioVideoToken } from "api/video";
 
 import {
   appendTrack,
@@ -18,8 +23,10 @@ import {
   trackMapToVideoTracks,
 } from "utils/twilio";
 
+import { useShowHide } from "./useShowHide";
+
 export interface UseParticipantStateProps {
-  participant: LocalParticipant | RemoteParticipant;
+  participant?: LocalParticipant | RemoteParticipant;
   defaultMute: boolean;
   defaultVideoHidden: boolean;
 }
@@ -52,6 +59,8 @@ export const useParticipantState = ({
   const [audioTracks, setAudioTracks] = useState<AudioTrack[]>([]);
 
   useEffect(() => {
+    if (!participant) return;
+
     setVideoTracks(trackMapToVideoTracks(participant.videoTracks));
     setAudioTracks(trackMapToAudioTracks(participant.audioTracks));
 
@@ -84,11 +93,16 @@ export const useParticipantState = ({
   }, [participant]);
 
   // Mute/unmute audio
-  const [isMuted, setMuted] = useState<boolean>(defaultMute);
-  const toggleMuted = useCallback(
-    () => setMuted((prevIsMuted) => !prevIsMuted),
-    []
-  );
+  const {
+    isShown: isAudioOn,
+
+    setShown: setMuted,
+    toggle: toggleMuted,
+    show: unmuteAudio,
+    hide: muteAudio,
+  } = useShowHide(!defaultMute);
+
+  const isMuted = !isAudioOn;
 
   useEffect(() => {
     if (isMuted) {
@@ -105,11 +119,15 @@ export const useParticipantState = ({
   }, [audioTracks, isMuted]);
 
   // Show/hide video
-  const [isVideoHidden, setVideoHidden] = useState<boolean>(defaultVideoHidden);
-  const toggleVideoHidden = useCallback(
-    () => setVideoHidden((prevIsVideoHidden) => !prevIsVideoHidden),
-    []
-  );
+  const {
+    isShown: isVideoShown,
+
+    show: showVideo,
+    hide: hideVideo,
+    toggle: toggleVideo,
+  } = useShowHide(!defaultVideoHidden);
+
+  const isVideoHidden = !isVideoShown;
 
   useEffect(() => {
     if (isVideoHidden) {
@@ -131,10 +149,127 @@ export const useParticipantState = ({
 
     isMuted,
     setMuted,
+    muteAudio,
+    unmuteAudio,
     toggleMuted,
 
     isVideoHidden,
-    setVideoHidden,
-    toggleVideoHidden,
+    hideVideo,
+    showVideo,
+    toggleVideo,
+  };
+};
+
+export interface UseVideoRoomStateProps {
+  userId?: string;
+  roomName?: string;
+  activeParticipantByDefault?: boolean;
+}
+
+export const useVideoRoomState = ({
+  userId,
+  roomName,
+  activeParticipantByDefault = true,
+}: UseVideoRoomStateProps) => {
+  const [token, setToken] = useState<string>();
+
+  useEffect(() => {
+    if (!userId || !!token || !roomName) return;
+
+    getTwilioVideoToken({
+      userId,
+      roomName,
+    }).then((token) => {
+      if (!token) return;
+
+      setToken(token);
+    });
+  }, [userId, roomName, token]);
+
+  const [room, setRoom] = useState<Room>();
+  const [participants, setParticipants] = useState<
+    (LocalParticipant | RemoteParticipant)[]
+  >([]);
+
+  const disconnect = useCallback(() => {
+    setRoom((currentRoom) => {
+      if (currentRoom?.localParticipant?.state !== "connected")
+        return currentRoom;
+
+      currentRoom.localParticipant.tracks.forEach((trackPublication) => {
+        (trackPublication.track as LocalVideoTrack).stop();
+      });
+
+      currentRoom.disconnect();
+
+      return undefined;
+    });
+  }, []);
+
+  const {
+    isShown: isActiveParticipant,
+
+    show: becomeActiveParticipant,
+    hide: becomePassiveParticipant,
+  } = useShowHide(activeParticipantByDefault);
+
+  const participantConnected = useCallback((participant: RemoteParticipant) => {
+    setParticipants((prevParticipants) => [...prevParticipants, participant]);
+  }, []);
+
+  const participantDisconnected = useCallback(
+    (participant: RemoteParticipant) => {
+      setParticipants((prevParticipants) =>
+        prevParticipants.filter((p) => p !== participant)
+      );
+    },
+    []
+  );
+
+  useEffect(() => {
+    if (!token || !roomName) return;
+
+    // https://media.twiliocdn.com/sdk/js/video/releases/2.7.1/docs/global.html#ConnectOptions
+    connect(token, {
+      name: roomName,
+      video: isActiveParticipant,
+      audio: isActiveParticipant,
+      enableDscp: true,
+    }).then(setRoom);
+
+    return () => {
+      disconnect();
+    };
+  }, [disconnect, roomName, token, isActiveParticipant]);
+
+  useEffect(() => {
+    if (!room) return;
+
+    room.on("participantConnected", participantConnected);
+    room.on("participantDisconnected", participantDisconnected);
+
+    const remoteParticipants = Array.from(room.participants.values());
+    setParticipants(
+      room.localParticipant
+        ? [room.localParticipant, ...remoteParticipants]
+        : remoteParticipants
+    );
+
+    // Do we need `.off`? It looks like it's not in the docs
+    return () => {
+      room.off("participantConnected", participantConnected);
+      room.off("participantDisconnected", participantDisconnected);
+    };
+  }, [room, participantConnected, participantDisconnected]);
+
+  return {
+    token,
+
+    room,
+    participants,
+
+    disconnect,
+    becomeActiveParticipant,
+    becomePassiveParticipant,
   };
 };

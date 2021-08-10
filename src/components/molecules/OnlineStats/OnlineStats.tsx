@@ -1,30 +1,35 @@
-import React, { useCallback, useEffect, useState, useMemo } from "react";
-import Bugsnag from "@bugsnag/js";
-import firebase from "firebase/app";
-import "firebase/functions";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
-import { AnyVenue, VenueEvent } from "types/venues";
-import { User } from "types/User";
-
-import { openUrl, venueInsideUrl } from "utils/url";
-import { WithId } from "utils/id";
-import "./OnlineStats.scss";
-import Fuse from "fuse.js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Bugsnag from "@bugsnag/js";
 import { faCommentDots, faSearch } from "@fortawesome/free-solid-svg-icons";
-import UserProfileModal from "components/organisms/UserProfileModal";
-import { useInterval } from "hooks/useInterval";
-import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
-import { OnlineStatsData } from "types/OnlineStatsData";
-import { getRandomInt } from "utils/getRandomInt";
-import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import firebase from "firebase/app";
+import Fuse from "fuse.js";
+
 import { ENABLE_PLAYA_ADDRESS, PLAYA_VENUE_NAME } from "settings";
+
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { User } from "types/User";
+import { AnyVenue, VenueEvent } from "types/venues";
+
 import { playaAddress } from "utils/address";
+import { getRandomInt } from "utils/getRandomInt";
+import { WithId } from "utils/id";
 import { currentVenueSelectorData } from "utils/selectors";
 import { FIVE_MINUTES_MS } from "utils/time";
+import { openUrl, venueInsideUrl } from "utils/url";
+import { peopleAttending, peopleByLastSeenIn } from "utils/venue";
+
+import { useInterval } from "hooks/useInterval";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+
+import VenueInfoEvents from "components/molecules/VenueInfoEvents/VenueInfoEvents";
+
+import "firebase/functions";
+
+import "./OnlineStats.scss";
 
 interface PotLuckButtonProps {
   venues?: Array<WithId<AnyVenue>>;
@@ -70,15 +75,14 @@ const OnlineStats: React.FC = () => {
   const [loaded, setLoaded] = useState(false);
   const [filterVenueText, setFilterVenueText] = useState("");
   const [filterUsersText, setFilterUsersText] = useState("");
-  const [selectedUserProfile, setSelectedUserProfile] = useState<
-    WithId<User>
-  >();
 
   const venue = useSelector(currentVenueSelectorData);
-  const { recentVenueUsers } = useRecentVenueUsers();
+  const { recentVenueUsers } = useRecentVenueUsers({ venueName: venue?.name });
 
   const venueName = venue?.name;
+  const { openUserProfileModal } = useProfileModalControls();
 
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()
@@ -189,6 +193,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search venues"
                     onChange={(e) => setFilterVenueText(e.target.value)}
                     value={filterVenueText}
+                    autoComplete="off"
                   />
                   <PotLuckButton
                     venues={venuesWithAttendance.map((v) => v.venue)}
@@ -295,6 +300,7 @@ const OnlineStats: React.FC = () => {
                     placeholder="Search people"
                     onChange={(e) => setFilterUsersText(e.target.value)}
                     value={filterUsersText}
+                    autoComplete="off"
                   />
                 </div>
                 <div className="people">
@@ -304,7 +310,7 @@ const OnlineStats: React.FC = () => {
                         <div
                           key={index}
                           className="user-row"
-                          onClick={() => setSelectedUserProfile(user)}
+                          onClick={() => openUserProfileModal(user)}
                         >
                           <div>
                             <img src={user.pictureUrl} alt="user profile pic" />
@@ -336,6 +342,7 @@ const OnlineStats: React.FC = () => {
       allVenues,
       liveVenues,
       peopleByLastSeen,
+      openUserProfileModal,
     ]
   );
 
@@ -345,8 +352,7 @@ const OnlineStats: React.FC = () => {
         <OverlayTrigger
           trigger="click"
           placement="bottom-end"
-          overlay={popover}
-          rootClose={!selectedUserProfile} // allows modal inside popover
+          overlay={popover} // allows modal inside popover
         >
           <span>
             <FontAwesomeIcon className={"search-icon"} icon={faSearch} />
@@ -355,12 +361,6 @@ const OnlineStats: React.FC = () => {
           </span>
         </OverlayTrigger>
       )}
-      <UserProfileModal
-        zIndex={2000} // popover has 1060 so needs to be greater than that to show on top
-        userProfile={selectedUserProfile}
-        show={selectedUserProfile !== undefined}
-        onHide={() => setSelectedUserProfile(undefined)}
-      />
     </>
   );
 };

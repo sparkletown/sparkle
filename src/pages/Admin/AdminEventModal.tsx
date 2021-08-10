@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import * as Yup from "yup";
 
-import { VenueEvent, VenueTemplate } from "types/venues";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { WithId } from "utils/id";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
-import { HAS_ROOMS_TEMPLATES } from "settings";
+import { WithId } from "utils/id";
 
 dayjs.extend(isSameOrAfter);
 
@@ -46,10 +46,8 @@ const validationSchema = Yup.object().shape<EventInput>({
   duration_hours: Yup.number()
     .typeError("Duration must be a number")
     .required("Duration required"),
-  price: Yup.number()
-    .typeError("Price must be a number")
-    .required("Price is required")
-    .default(0),
+  duration_minutes: Yup.number().typeError().required(),
+
   host: Yup.string().required(),
   room: Yup.string(),
 });
@@ -86,6 +84,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         start_date: dayjs.unix(event.start_utc_seconds).format("YYYY-MM-DD"),
         start_time: dayjs.unix(event.start_utc_seconds).format("HH:mm"),
         duration_hours: event.duration_minutes / 60,
+        host: event.host,
         room: event.room,
       });
     }
@@ -100,8 +99,6 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
         duration_minutes: data.duration_hours * 60,
-        price: 0,
-        collective_price: 0,
         host: data.host,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
@@ -213,8 +210,8 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
                 ref={register}
                 value={roomName}
               />
-              {errors.host && (
-                <span className="input-error">{errors.host.message}</span>
+              {errors.room && (
+                <span className="input-error">{errors.room.message}</span>
               )}
             </div>
           )}

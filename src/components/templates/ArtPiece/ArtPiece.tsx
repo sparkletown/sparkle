@@ -1,25 +1,29 @@
-import React, { useState } from "react";
-import "./ArtPiece.scss";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { useSelector } from "hooks/useSelector";
-import InformationCard from "components/molecules/InformationCard";
-import ChatDrawer from "components/organisms/ChatDrawer";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import Room from "components/organisms/Room";
-import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
-import { Modal } from "react-bootstrap";
-import { SchedulePageModal } from "components/organisms/SchedulePageModal/SchedulePageModal";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
-import { currentVenueSelectorData } from "utils/selectors";
+import React from "react";
+
 import { IFRAME_ALLOW } from "settings";
+
+import { GenericVenue } from "types/venues";
 import { VideoAspectRatio } from "types/VideoAspectRatio";
 
-export const ArtPiece = () => {
-  const venue = useSelector(currentVenueSelectorData);
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
 
-  const [showEventSchedule, setShowEventSchedule] = useState(false);
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+import Room from "components/organisms/Room";
 
-  if (!venue) return <>Loading...</>;
+import InformationCard from "components/molecules/InformationCard";
+import { Loading } from "components/molecules/Loading";
+import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import "./ArtPiece.scss";
+
+export interface ArtPieceProps {
+  venue: WithId<GenericVenue>;
+}
+
+export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
+  if (!venue) return <Loading label="Loading..." />;
 
   const iframeUrl = ConvertToEmbeddableUrl(venue.iframeUrl);
 
@@ -28,7 +32,7 @@ export const ArtPiece = () => {
   }`;
 
   return (
-    <WithNavigationBar>
+    <>
       <div className="full-page-container art-piece-container">
         <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
           <InformationCard title="About the venue">
@@ -36,9 +40,11 @@ export const ArtPiece = () => {
             <p className="short-description-sidebar" style={{ fontSize: 18 }}>
               {venue.config?.landingPageConfig.subtitle}
             </p>
-            <p style={{ fontSize: 13 }}>
-              {venue.config?.landingPageConfig.description}
-            </p>
+            <div style={{ fontSize: 13 }}>
+              <RenderMarkdown
+                text={venue.config?.landingPageConfig.description}
+              />
+            </div>
           </InformationCard>
         </InformationLeftColumn>
         <div className="content">
@@ -61,14 +67,6 @@ export const ArtPiece = () => {
               defaultMute={true}
             />
           </div>
-          <div className="chat-pop-up" style={{ zIndex: 100 }}>
-            <ChatDrawer
-              title={`${venue.name ?? "Art Piece"} Chat`}
-              roomName={venue.name}
-              chatInputPlaceholder="Chat"
-              defaultShow={true}
-            />
-          </div>
         </div>
       </div>
       {venue?.showRangers && (
@@ -76,20 +74,6 @@ export const ArtPiece = () => {
           <SparkleFairiesPopUp />
         </div>
       )}
-      <Modal
-        show={showEventSchedule}
-        onHide={() => setShowEventSchedule(false)}
-        dialogClassName="custom-dialog"
-      >
-        <Modal.Body>
-          <SchedulePageModal />
-        </Modal.Body>
-      </Modal>
-    </WithNavigationBar>
+    </>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default ArtPiece;

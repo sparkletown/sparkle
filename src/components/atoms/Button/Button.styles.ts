@@ -9,9 +9,9 @@ export const Button = styled.button<ButtonProps>`
 
   border-radius: 1.375em;
   border: none;
-  background-color: #361f6e;
-  background-image: ${({ hasGradient }) =>
-    hasGradient
+  background-color: #6f43ff;
+  background-image: ${({ hasGradient, disabled }) =>
+    hasGradient && !disabled
       ? "linear-gradient(124deg, #00f6d5 0%, #6f43ff 50%, #e15ada 100%)"
       : "none"};
 
@@ -24,8 +24,4 @@ export const Button = styled.button<ButtonProps>`
   transform: translateY(0);
 
   transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-
-  &:hover {
-    transform: translateY(-1px);
-  }
 `;

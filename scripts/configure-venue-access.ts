@@ -1,9 +1,10 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import fs from "fs";
 import { resolve } from "path";
 
-import fs from "fs";
 import admin from "firebase-admin";
+
 import "firebase/firestore";
 
 import { VenueAccessMode } from "../src/types/VenueAcccess";
@@ -29,7 +30,7 @@ if (!projectId || !venueId || !method || !accessDetail) {
   usage();
 }
 
-if (!VenueAccessMode[method]) {
+if (!VenueAccessMode[method as keyof typeof VenueAccessMode]) {
   console.error(`Invalid access method ${method}`);
   process.exit(1);
 }
@@ -89,7 +90,7 @@ initFirebaseAdminApp(projectId, {
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
         .forEach((line) => {
-          access.codes.push(line.trim());
+          access?.codes?.push(line.trim());
         });
       console.log(`Setting venues/${venueId}/access/${method}...`);
       await accessDocRef.set(

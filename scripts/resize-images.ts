@@ -31,14 +31,16 @@
     once configured, in a terminal, run: npx ts-node resize-images.ts
 */
 
+import fs from "fs";
 import { resolve } from "path";
 
 import admin from "firebase-admin";
-import { uuid } from "uuidv4";
-import jimp from "jimp";
-import fs from "fs";
 import { GifUtil } from "gifwrap";
+import jimp from "jimp";
 import p from "phin";
+import { uuid } from "uuidv4";
+
+import { ACCEPTED_IMAGE_TYPES } from "../src/settings";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
@@ -66,15 +68,6 @@ const BACKUP = false;
 const SELECTIVELY_PROCESS_FILE_NAME_PARTS: string[] = [
   // "BIGFILE.png",
   // "HUGE_ANIMATED_GIF.gif",
-];
-
-const ACCEPTED_MIME_TYPES = [
-  "image/png",
-  "image/jpg",
-  "image/jpeg",
-  "image/tiff",
-  "image/bmp",
-  "image/gif",
 ];
 
 initFirebaseAdminApp(projectId, {
@@ -160,7 +153,7 @@ const main = async () => {
     });
     console.log("\n\n");
 
-    if (!ACCEPTED_MIME_TYPES.includes(file.metadata.contentType)) {
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.metadata.contentType)) {
       console.log(
         `Skipping - ${file.metadata.contentType} Not a processible file type`
       );

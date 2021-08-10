@@ -3,9 +3,10 @@ import React from "react";
 import { PartyMapVenue } from "types/venues";
 
 import { currentVenueSelectorData } from "utils/selectors";
+
 import { useSelector } from "hooks/useSelector";
 
-import CountDown from "components/molecules/CountDown";
+import { CountDown } from "components/molecules/CountDown";
 
 import "./PartyTitle.scss";
 

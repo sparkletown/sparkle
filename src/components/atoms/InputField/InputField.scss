@@ -1,0 +1,60 @@
+@import "scss/constants";
+
+$icon-width: 2.5rem;
+
+.InputField {
+  position: relative;
+
+  &--icon-start {
+    .InputField__input {
+      padding-left: $icon-width;
+    }
+  }
+
+  &--icon-end {
+    .InputField__input {
+      padding-right: $icon-width;
+    }
+  }
+
+  &--invalid .InputField__input {
+    box-shadow: inset 0 0 0 1px $input--invalid;
+  }
+
+  &__input {
+    height: 100%;
+
+    &:focus + .InputField__icon > * {
+      opacity: 0.6;
+    }
+  }
+
+  &__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    height: 100%;
+    width: $icon-width;
+    z-index: z(input-icon);
+
+    &--start {
+      left: 0;
+    }
+
+    &--end {
+      right: 0;
+    }
+
+    & > * {
+      opacity: 0.2;
+      max-width: 100%;
+    }
+  }
+
+  &__error {
+    color: $input--invalid;
+    font-size: 0.8rem;
+  }
+}

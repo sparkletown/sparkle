@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
-import { getLinkFromText } from "utils/getLinkFromText";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./AnnouncementMessage.scss";
 
@@ -14,6 +17,7 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   message = "",
 }) => {
   const [isVisible, setVisibility] = useState<boolean>(false);
+  const { isExpanded } = useChatSidebarControls();
 
   const hideAnnouncement = useCallback(() => {
     setVisibility(false);
@@ -28,11 +32,23 @@ export const AnnouncementMessage: React.FC<AnnouncementMessageProps> = ({
   if (!isVisible || !message) return null;
 
   return (
-    <div className="announcement-container">
-      {getLinkFromText(message)}
-      <span className="close-button" onClick={hideAnnouncement}>
+    <div
+      aria-labelledby="announcement-container-message"
+      role="dialog"
+      className={classNames("announcement-container", {
+        centered: !isExpanded,
+      })}
+    >
+      <div className="announcement-message" id="announcement-container-message">
+        <RenderMarkdown text={message} />
+      </div>
+      <button
+        aria-label="Close announcement message"
+        className="close-button"
+        onClick={hideAnnouncement}
+      >
         <FontAwesomeIcon icon={faTimesCircle} />
-      </span>
+      </button>
     </div>
   );
 };

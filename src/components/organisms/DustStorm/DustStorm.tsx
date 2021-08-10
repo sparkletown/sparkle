@@ -1,22 +1,25 @@
-import Bugsnag from "@bugsnag/js";
-import React, { useState, useCallback } from "react";
-
-import { AnyVenue } from "types/venues";
-
-import "./DustStorm.scss";
-import { WithId } from "utils/id";
-import firebase from "firebase/app";
+import React, { useCallback, useState } from "react";
 import { useHistory } from "react-router-dom";
-import { OnlineStatsData } from "types/OnlineStatsData";
-import { useInterval } from "hooks/useInterval";
-import { getRandomInt } from "utils/getRandomInt";
+import Bugsnag from "@bugsnag/js";
+import firebase from "firebase/app";
+
 import {
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
   DUST_STORM_TEXT_1,
   DUST_STORM_TEXT_2,
+  IFRAME_TEMPLATES,
+  ZOOM_URL_TEMPLATES,
 } from "settings";
+
+import { OnlineStatsData } from "types/OnlineStatsData";
+import { AnyVenue } from "types/venues";
+
+import { getRandomInt } from "utils/getRandomInt";
+import { WithId } from "utils/id";
 import { FIVE_MINUTES_MS } from "utils/time";
+
+import { useInterval } from "hooks/useInterval";
+
+import "./DustStorm.scss";
 
 interface PotLuckProps {
   openVenues?: Array<WithId<AnyVenue>>;
@@ -58,6 +61,7 @@ export const DustStorm = () => {
     []
   );
 
+  // @debt FIVE_MINUTES_MS is deprecated; create needed constant in settings
   useInterval(() => {
     firebase
       .functions()

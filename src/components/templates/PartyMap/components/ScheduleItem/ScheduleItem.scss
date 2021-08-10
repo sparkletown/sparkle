@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-.shedule-item-container {
+.ScheduleItem {
   display: flex;
   padding: 10px 16px;
   margin-top: 10px;
@@ -9,30 +9,51 @@
     background: $dark;
   }
 
-  .time-section {
+  &__time-section {
     border-right: 1px solid $concrete;
     min-width: 110px;
     margin-right: 10px;
   }
 
-  .event-description {
+  &__event-description {
+    display: block;
     color: $concrete;
     white-space: pre-wrap;
+
+    p {
+      display: inline;
+    }
   }
 
-  .primary {
+  &--primary {
     color: $primaryColor;
   }
 
-  .event-section {
+  &__event-section {
     display: flex;
     width: 100%;
     justify-content: space-between;
   }
 
-  .entry-room-button {
+  &__entry-room-button {
     display: flex;
     align-items: center;
     margin-left: 10px;
+  }
+
+  &__event-time,
+  &__event-name {
+    display: block;
+    font-weight: 700;
+  }
+
+  &__event-date {
+    display: block;
+    font-weight: 700;
+    color: $concrete;
+  }
+
+  &__event-host {
+    font-weight: 700;
   }
 }

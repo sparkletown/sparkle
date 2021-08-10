@@ -3,10 +3,13 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
+import { deleteEvent, EventInput } from "api/admin";
+
 import { VenueEvent } from "types/venues";
 
-import { deleteEvent, EventInput } from "api/admin";
 import { WithId } from "utils/id";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 interface PropsType {
   show: boolean;
@@ -54,7 +57,7 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
         <form onSubmit={handleSubmit(onSubmit)} className="form">
           <div className="input-group">
             <p>Name: {event?.name}</p>
-            <p>Description: {event?.description}</p>
+            <RenderMarkdown text={`Description: ${event?.description}`} />
             <p>
               Time:{" "}
               {event

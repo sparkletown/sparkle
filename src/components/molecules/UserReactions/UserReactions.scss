@@ -1,0 +1,117 @@
+@import "scss/constants";
+
+$reactionOffset: calc(-1 * #{$reactionSize} / 2);
+$shoutBounceTranslateXOffset: 50%;
+$reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
+
+.UserReactions {
+  // Note: we need this to ensure the reactions use this container for their positioning
+  position: relative;
+
+  // Ensure reactions are positioned 'on top' of the element rendered before it (eg. UserAvatar)
+  top: -100%;
+
+  width: 100%;
+  height: 100%;
+
+  &--reaction-left {
+    .Reaction {
+      left: $reactionOffset;
+    }
+
+    .UserReactions__shout {
+      right: 50%;
+      transform-origin: right center;
+      animation: shout-bounce--left $reactionTimeout ease;
+    }
+  }
+
+  &--reaction-right {
+    .Reaction {
+      right: $reactionOffset;
+    }
+
+    .UserReactions__shout {
+      left: 50%;
+      transform-origin: left center;
+      animation: shout-bounce--right $reactionTimeout ease;
+    }
+  }
+
+  .Reaction {
+    position: absolute;
+    top: $reactionOffset;
+
+    z-index: z(user-reactions-emoji);
+
+    // Note: emoji reactions are sized with font-size
+    font-size: $reactionSize;
+
+    animation: reaction-pulse $reactionTimeout ease-in-out infinite;
+  }
+
+  &__shout {
+    position: absolute;
+    bottom: 0;
+
+    z-index: z(user-reactions-shout);
+
+    width: max-content;
+    max-width: 20em;
+    padding: 6px 10px;
+
+    background-color: $white;
+    color: $black;
+    font-size: 20px;
+    border-radius: 10px;
+  }
+}
+
+@keyframes reaction-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.3);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+// @debt de-duplicate these with SCSS helper functions/etc?
+@keyframes shout-bounce--right {
+  0%,
+  100% {
+    transform: scale(0) translateX(0);
+  }
+
+  25% {
+    transform: scale(1.25) translateX($shoutBounceTranslateXOffset);
+  }
+
+  40%,
+  80% {
+    transform: scale(1) translateX($shoutBounceTranslateXOffset);
+  }
+}
+
+// @debt de-duplicate these with SCSS helper functions/etc?
+@keyframes shout-bounce--left {
+  0%,
+  100% {
+    transform: scale(0) translateX(0);
+  }
+
+  25% {
+    transform: scale(1.25)
+      translateX(calc(-1 * #{$shoutBounceTranslateXOffset}));
+  }
+
+  40%,
+  80% {
+    transform: scale(1) translateX(calc(-1 * #{$shoutBounceTranslateXOffset}));
+  }
+}

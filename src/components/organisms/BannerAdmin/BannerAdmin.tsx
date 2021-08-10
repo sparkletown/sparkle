@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 
 import { makeUpdateBanner } from "api/bannerAdmin";
 
@@ -9,10 +9,12 @@ interface BannerAdminProps {
   venue: AnyVenue;
 }
 
+// @debt This component is almost exactly the same as IframeAdmin, we should refactor them both to use the same generic base component
+//   BannerAdmin is the 'canonical example' to follow when we do this
 export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
   const existingBannerMessage = venue?.bannerMessage ?? "";
 
-  const inputFieldRef = useRef<HTMLInputElement>(null);
+  const textareaFieldRef = useRef<HTMLTextAreaElement>(null);
   const [error, setError] = useState<string | null>();
 
   const handleInputChange = useCallback(() => {
@@ -32,9 +34,9 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
 
-      if (!inputFieldRef.current) return;
+      if (!textareaFieldRef.current) return;
 
-      updateBannerInFirestore(inputFieldRef.current.value);
+      updateBannerInFirestore(textareaFieldRef.current.value);
     },
     [updateBannerInFirestore]
   );
@@ -51,12 +53,12 @@ export const BannerAdmin: React.FC<BannerAdminProps> = ({ venueId, venue }) => {
             <div className="form-group">
               <label htmlFor="bannerMessage">Banner Message</label>
 
-              <input
-                ref={inputFieldRef}
-                type="text"
+              <textarea
+                ref={textareaFieldRef}
                 defaultValue={existingBannerMessage}
                 onChange={handleInputChange}
                 placeholder="Enter banner message here..."
+                autoComplete="off"
               />
 
               {error && <span className="error">{error}</span>}

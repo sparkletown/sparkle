@@ -1,9 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { isEqual } from "lodash";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { isEqual } from "lodash";
 
-import { updateRoom, updateVenue_v2 } from "api/admin";
+import { RoomInput_v2, updateRoom, updateVenue_v2 } from "api/admin";
+
+import { RoomData_v2 } from "types/rooms";
 
 import { useUser } from "hooks/useUser";
 
@@ -11,11 +13,13 @@ import {
   Container,
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
+
 import Legend from "components/atoms/Legend";
+
+import { BackgroundSelect } from "../BackgroundSelect";
+
 import * as S from "./MapPreview.styles";
-import BackgroundSelect from "../BackgroundSelect";
 import { MapPreviewProps } from "./MapPreview.types";
-import { RoomData_v2 } from "types/rooms";
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
@@ -24,9 +28,11 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   venueId,
   isEditing,
   setIsEditing,
+  onRoomChange,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
+  const [isSaving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -65,16 +71,18 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         height_percent: room.height,
       }));
       setMapRooms(normalizeRooms);
+      onRoomChange && onRoomChange(normalizeRooms);
     }
   };
 
   const handleSavePositions = async () => {
+    setSaving(true);
     const roomArr = Object.values(roomRef.current);
 
     let roomIndex = 0;
 
     for (const r of roomArr) {
-      const room = {
+      const room: RoomInput_v2 = {
         ...rooms[roomIndex],
         x_percent: r.left,
         y_percent: r.top,
@@ -86,6 +94,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
       roomIndex++;
     }
 
+    setSaving(false);
     setIsEditing(false);
   };
 
@@ -108,6 +117,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 
     return setIsEditing(true);
   };
+
+  const editButtonText = isEditing ? "Save layout" : "Edit layout";
 
   return (
     <DndProvider backend={HTML5Backend}>
@@ -171,12 +182,13 @@ const MapPreview: React.FC<MapPreviewProps> = ({
               height: 100,
             }}
             otherIconsStyle={{ opacity: 0.4 }}
-            // lockAspectRatio
+            lockAspectRatio
+            isSaving={isSaving}
           />
         )}
 
-        <S.EditButton onClick={handleEditButton}>
-          {isEditing ? "Save layout" : "Edit layout"}
+        <S.EditButton disabled={isSaving} onClick={handleEditButton}>
+          {isSaving ? <div>Saving...</div> : <div>{editButtonText}</div>}
         </S.EditButton>
       </S.Wrapper>
     </DndProvider>

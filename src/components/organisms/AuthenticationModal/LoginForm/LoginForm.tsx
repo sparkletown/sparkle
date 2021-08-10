@@ -2,18 +2,15 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 
-import { checkAccess } from "api/auth";
+import { VenueAccessMode } from "types/VenueAcccess";
+
+import { venueSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
-import { venueSelector } from "utils/selectors";
-import { setLocalStorageToken } from "utils/localStorage";
-
-import { VenueAccessMode } from "types/VenueAcccess";
-
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 
-interface PropsType {
+export interface LoginFormProps {
   displayRegisterForm: () => void;
   displayPasswordResetForm: () => void;
   closeAuthenticationModal: () => void;
@@ -27,7 +24,7 @@ interface LoginFormData {
   backend?: string;
 }
 
-const LoginForm: React.FunctionComponent<PropsType> = ({
+const LoginForm: React.FunctionComponent<LoginFormProps> = ({
   displayRegisterForm,
   displayPasswordResetForm,
   closeAuthenticationModal,
@@ -62,34 +59,6 @@ const LoginForm: React.FunctionComponent<PropsType> = ({
     if (!venue) return;
     try {
       await signIn(data);
-
-      let result = null;
-
-      switch (venue.access) {
-        case VenueAccessMode.Codes:
-          result = await checkAccess({
-            venueId: venue.id,
-            code: data.code,
-          });
-          break;
-        case VenueAccessMode.Emails:
-          result = await checkAccess({
-            venueId: venue.id,
-            email: data.email,
-          });
-          break;
-
-        default:
-          break;
-      }
-
-      if (!result) return;
-
-      if (result.data === false) {
-        throw new Error("access denied");
-      }
-
-      setLocalStorageToken(venue.id, result.data.token);
 
       afterUserIsLoggedIn && afterUserIsLoggedIn();
 

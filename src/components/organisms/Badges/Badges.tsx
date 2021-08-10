@@ -1,13 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
-import { User } from "@bugsnag/js";
-
 import { useFirestore } from "react-redux-firebase";
+import { User } from "@bugsnag/js";
+import { chunk } from "lodash";
 
-import { DEFAULT_AVATAR_IMAGE } from "settings";
+import {
+  DEFAULT_AVATAR_IMAGE,
+  FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS,
+} from "settings";
 
 import { UserVisit } from "types/Firestore";
-import { AnyVenue, isVenueWithRooms, Venue } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";
@@ -18,7 +20,7 @@ import "./Badges.scss";
 
 export const Badges: React.FC<{
   user: WithId<User>;
-  currentVenue: WithId<Venue>;
+  currentVenue: WithId<AnyVenue>;
 }> = ({ user, currentVenue }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
@@ -39,7 +41,10 @@ export const Badges: React.FC<{
           } as WithId<UserVisit>)
       ) ?? [];
 
-    const venuesRequests = chunk(visits, 10).map((visitChunk) =>
+    const venuesRequests = chunk(
+      visits,
+      FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS
+    ).map((visitChunk) =>
       firestore
         .collection("venues")
         .where(
@@ -124,7 +129,7 @@ export const Badges: React.FC<{
   const badgeList = useMemo(
     () =>
       badges.filter(notEmpty).map((badge) => (
-        <li className="badge-list-item" key={badge.label}>
+        <li className="Badges__list-item" key={badge.label}>
           <BadgeImage image={badge.image} name={badge.venue.name} />
         </li>
       )),
@@ -140,28 +145,26 @@ export const Badges: React.FC<{
   }
 
   return (
-    <div className="badges-component">
-      <div className="visits">
-        <div className="visit-item">
-          <span className="visit-item__value">
-            {visitHours > 1 ? `${visitHours}` : "< 1"} hrs
+    <div className="Badges">
+      <div className="Badges__visits">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
+            {visitHours > 1 ? visitHours : "< 1"} hrs
           </span>
-          <span className="visit-item__label">Time spent in Sparkle</span>
+          <span className="Badges__visit-label">Time spent in Sparkle</span>
         </div>
 
-        <div className="visit-separator" />
-
-        <div className="visit-item">
-          <span className="visit-item__value">
+        <div className="Badges__visit">
+          <span className="Badges__visit-value">
             {relevantVisits?.length ?? 0}
           </span>
-          <span className="visit-item__label">Venues visited</span>
+          <span className="Badges__visit-label">Venues visited</span>
         </div>
       </div>
 
-      <div className="badges-container">
-        <div className="badges-title">{badges.length} Badges</div>
-        <ul className="badge-list">{badgeList}</ul>
+      <div className="Badges__container">
+        <div className="Badges__title">{badges.length} Badges</div>
+        <ul className="Badges__list">{badgeList}</ul>
       </div>
     </div>
   );

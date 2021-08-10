@@ -1,14 +1,20 @@
 import React, { useState } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import ChatBox from "components/organisms/Chatbox";
+
+import { currentVenueSelectorData } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
+// import ChatBox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
-import TablesUserList from "components/molecules/TablesUserList";
-import "./FriendShipPage.scss";
-import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
-import { useSelector } from "hooks/useSelector";
-import { currentVenueSelectorData } from "utils/selectors";
+import { TablesUserList } from "components/molecules/TablesUserList";
+
+import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
+
+import "./FriendShipPage.scss";
 
 export const FriendShipPage: React.FunctionComponent = () => {
   const [seatedAtTable, setSeatedAtTable] = useState("");
@@ -36,9 +42,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
                   />
                 </div>
               </div>
-              <div className="col-4">
-                <ChatBox room="friendship" />
-              </div>
+              <div className="col-4">{/* <ChatBox room="friendship" /> */}</div>
             </div>
           )}
         </div>
@@ -76,9 +80,7 @@ export const FriendShipPage: React.FunctionComponent = () => {
         </div>
         {seatedAtTable && (
           <div className="centered-row">
-            <div className="col-6">
-              <ChatBox room="friendship" />
-            </div>
+            <div className="col-6">{/* <ChatBox room="friendship" /> */}</div>
           </div>
         )}
       </div>

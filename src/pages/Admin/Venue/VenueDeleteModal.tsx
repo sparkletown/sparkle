@@ -1,14 +1,16 @@
-import React, { useState, useCallback } from "react";
-import firebase from "firebase/app";
+import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
+import { useHistory } from "react-router-dom";
+import firebase from "firebase/app";
+
+import { AnyVenue } from "types/venues";
+
 import { WithId } from "utils/id";
-import { Venue } from "types/venues";
 
 import "./VenueDeleteModal.scss";
-import { useHistory } from "react-router-dom";
 
 interface PropsType {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
   show: boolean;
   onHide: () => void;
 }

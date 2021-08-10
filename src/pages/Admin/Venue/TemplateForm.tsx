@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
-import { VenueTemplate } from "types/venues";
-
-import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
 import { BURN_VENUE_TEMPLATES, Template } from "settings";
 
+import { VenueTemplate } from "types/venues";
+
+import { WizardPage } from "./VenueWizard";
+
+import "./Venue.scss";
+
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/venue-zoom.jpg",
   [VenueTemplate.artpiece]: "/venues/venue-art.jpg",
@@ -18,6 +21,11 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
+  [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.auditorium]: undefined,
+  [VenueTemplate.posterhall]: undefined,
+  [VenueTemplate.posterpage]: undefined,
+  [VenueTemplate.screeningroom]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
@@ -25,6 +33,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.playa]: undefined,
 };
 
+// @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
@@ -39,6 +48,11 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
   [VenueTemplate.firebarrel]: undefined,
+  [VenueTemplate.embeddable]: undefined,
+  [VenueTemplate.auditorium]: undefined,
+  [VenueTemplate.posterhall]: undefined,
+  [VenueTemplate.posterpage]: undefined,
+  [VenueTemplate.screeningroom]: undefined,
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
@@ -51,7 +65,7 @@ export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {
     Template | undefined
   >(state.templatePage?.template);
 
-  const templateImage = !!selectedTemplate
+  const templateImage = selectedTemplate
     ? templateImageMap[selectedTemplate.template]
     : undefined;
   const hasTemplateImage = !!templateImage;

@@ -1,15 +1,18 @@
 import React, { useState } from "react";
-import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
-import { Room } from "types/rooms";
-import { canHaveSubvenues } from "utils/venue";
-import { isVenueWithRooms, Venue, VenueEvent } from "types/venues";
-import { WithId } from "utils/id";
 import { Link } from "react-router-dom";
-import AdminEventModal from "./AdminEventModal";
+
+import { Room } from "types/rooms";
+import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
+
+import { WithId } from "utils/id";
+import { canHaveSubvenues } from "utils/venue";
+
 import AdminDeleteEvent from "./AdminDeleteEvent";
+import AdminEventModal from "./AdminEventModal";
+import { AdminVenueRoomDetails } from "./AdminVenueRoomDetails";
 
 interface Props {
-  venue: WithId<Venue>;
+  venue: WithId<AnyVenue>;
 }
 
 export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {

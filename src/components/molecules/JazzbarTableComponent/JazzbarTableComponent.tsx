@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useMemo } from "react";
+
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
+
 import { TableComponentPropsType } from "types/Table";
-import { DEFAULT_PROFILE_IMAGE, DEFAULT_PARTY_NAME } from "settings";
+
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 const DEFAULT_TABLE_CAPACITY = 7;
 const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = ({
@@ -8,16 +12,20 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
   tableLocked,
   experienceName,
   users,
-  setSelectedUserProfile,
   tableCapacity = DEFAULT_TABLE_CAPACITY,
   onJoinClicked,
   nameOfVideoRoom,
   imageSize = 35,
 }) => {
+  const { openUserProfileModal } = useProfileModalControls();
   const locked = tableLocked(table.reference);
-  const people = users.filter(
-    (u) => u.data?.[experienceName]?.table === table.reference
+
+  const people = useMemo(
+    () =>
+      users.filter((u) => u.data?.[experienceName]?.table === table.reference),
+    [users, experienceName, table]
   );
+
   return (
     <>
       <div className="profiles">
@@ -25,7 +33,7 @@ const JazzbarTableComponent: React.FunctionComponent<TableComponentPropsType> = 
         <span>
           {people.map((user, idx) => (
             <img
-              onClick={() => setSelectedUserProfile(user)}
+              onClick={() => openUserProfileModal(user)}
               key={`${user.room}-${idx}`}
               className="profile-icon"
               src={

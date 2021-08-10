@@ -1,34 +1,38 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import firebase from "firebase/app";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { isEqual } from "lodash";
 import { Link } from "react-router-dom";
+import firebase from "firebase/app";
+import { isEqual } from "lodash";
 
-import { updateRoom } from "api/admin";
-
-import { venueLandingUrl } from "utils/url";
-
-import { useUser } from "hooks/useUser";
-
-import { Room, RoomData_v2 } from "types/rooms";
-import { VenueDetailsProps } from "./VenueDetails.types";
-
-import VenueHero from "components/molecules/VenueHero";
-import Button from "components/atoms/Button";
-import AdminEventModal from "pages/Admin/AdminEventModal";
-import RoomEdit from "pages/Admin/Room/Edit";
-import RoomModal from "pages/Admin/Room/Modal";
-import RoomCard from "pages/Admin/Room/Card";
-import MapPreview from "pages/Admin/MapPreview";
-import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
-import RoomDeleteModal from "../Rooms/RoomDeleteModal";
-
-import * as S from "./VenueDetails.styles";
 import {
   DEFAULT_MAP_BACKGROUND,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
 } from "settings";
+
+import { updateRoom } from "api/admin";
+
+import { Room, RoomData_v2 } from "types/rooms";
+
+import { venueLandingUrl } from "utils/url";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useUser } from "hooks/useUser";
+
+import AdminEventModal from "pages/Admin/AdminEventModal";
+import MapPreview from "pages/Admin/MapPreview";
+import RoomCard from "pages/Admin/Room/Card";
+import { RoomEditModal } from "pages/Admin/Room/Edit";
+import RoomModal from "pages/Admin/Room/Modal";
+import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
+
+import { VenueCard } from "components/molecules/VenueCard";
+
+import Button from "components/atoms/Button";
+
+import RoomDeleteModal from "../Rooms/RoomDeleteModal";
+
+import * as S from "./VenueDetails.styles";
+import { VenueDetailsProps } from "./VenueDetails.types";
 
 type Owner = {
   id: string;
@@ -83,7 +87,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   useEffect(() => {
     const newOwners: Owner[] = [];
-    async function getOwnersData() {
+    const getOwnersData = async () => {
       if (owners && owners.length > 0) {
         for (const owner of owners) {
           const user = await firebase
@@ -104,7 +108,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           setOwnersData(newOwners);
         }
       }
-    }
+    };
     getOwnersData();
   }, [owners, ownersData]);
 
@@ -153,33 +157,25 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   if (!user) return null;
 
   const handleEditRoomSave = async (values: RoomData_v2, index: number) => {
-    const newData = {
+    const roomValues: RoomData_v2 = {
+      ...editingRoom,
       ...values,
-      x_percent: editingRoom?.x_percent,
-      y_percent: editingRoom?.y_percent,
-      width_percent: editingRoom?.width_percent,
-      height_percent: editingRoom?.height_percent,
     };
 
-    await updateRoom(newData, venueId!, user, index);
+    await updateRoom(roomValues, venueId, user, index);
     closeEditingModal();
   };
 
-  console.log(coverImageUrl);
   return (
     <S.Container>
       <S.Header>
-        <VenueHero
-          bannerImageUrl={
-            !!coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER
-          }
-          logoImageUrl={!!icon ? icon : DEFAULT_VENUE_LOGO}
+        <VenueCard
+          bannerImageUrl={coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER}
+          logoImageUrl={icon ? icon : DEFAULT_VENUE_LOGO}
           name={name}
           subtitle={subtitle}
           description={description}
           large
-          showEdit
-          venueId={venue.id!}
         />
 
         <S.HeaderActions>
@@ -256,7 +252,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
       />
 
       {editingRoom && (
-        <RoomEdit
+        <RoomEditModal
           isVisible={!!editingRoom && !showDeleteModal}
           onClickOutsideHandler={closeEditingModal}
           room={editingRoom}

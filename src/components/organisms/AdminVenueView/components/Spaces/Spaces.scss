@@ -1,0 +1,177 @@
+@import "scss/constants.scss";
+
+$venue-room-logo-size: 34px;
+$button-size: 50px;
+$icon-size: 20px;
+
+.Spaces {
+  display: flex;
+  flex: 1;
+
+  &__rooms {
+    width: 20%;
+  }
+
+  &__map {
+    width: 80%;
+    background-color: $secondary--dark;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+  }
+
+  &__background {
+    padding: 20px;
+  }
+
+  &__upload-background-wrapper {
+    background-color: $secondary--dark;
+    border-radius: $border-radius--lg;
+    padding: 40px;
+  }
+
+  &__upload-background-button {
+    background-color: opaque-white(0.2);
+    border-radius: $border-radius--xl;
+    padding: $spacing--md;
+    text-align: center;
+  }
+
+  &__backgrounds {
+    display: flex;
+    position: relative;
+    overflow-x: scroll;
+  }
+
+  &__title {
+    font-size: $font-size--sm;
+    font-weight: bolder;
+  }
+
+  &__venue-rooms {
+    padding: $spacing--md;
+    background-color: $saturated-black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    border-bottom: 1px solid opaque-white(0.1);
+
+    &:hover {
+      background-color: lighten($saturated-black, 5%);
+    }
+  }
+
+  &__venue-room {
+    padding: $spacing--md;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    &:hover {
+      background-color: $saturated-black;
+    }
+  }
+
+  &__venue-room-logo {
+    height: $venue-room-logo-size;
+    width: $venue-room-logo-size;
+    margin-right: $spacing--md;
+    background-size: contain;
+    background-position: center;
+    border-radius: $border-radius--xs;
+    box-shadow: 0 0 0 3px $primary;
+  }
+
+  &__footer {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 20%;
+    padding: $spacing--md;
+    background-color: $black;
+    border-top: 1px solid opaque-white(0.2);
+  }
+
+  &__home-button {
+    cursor: pointer;
+    display: flex;
+    width: $button-size;
+    height: $button-size;
+    border-radius: 100%;
+    justify-content: center;
+    align-items: center;
+    transition: all 400ms $transition-function;
+    background-color: lighten($color: $saturated-black, $amount: 10);
+
+    &:hover {
+      background-color: lighten($color: $saturated-black, $amount: 20);
+    }
+  }
+
+  &__nav-buttons {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &__back-button {
+    cursor: pointer;
+    display: flex;
+    height: $button-size;
+    font-weight: $font-weight--400;
+    font-size: $font-size--xs;
+    border-radius: $border-radius--xl;
+    justify-content: center;
+    align-items: center;
+    padding: $spacing--md $spacing--lg;
+    margin: 0 5px;
+    transition: all 400ms $transition-function;
+    background-color: lighten($color: $saturated-black, $amount: 10);
+
+    &:hover {
+      background-color: lighten($color: $saturated-black, $amount: 20);
+    }
+  }
+
+  &__next-button {
+    cursor: pointer;
+    display: flex;
+    height: $button-size;
+    font-weight: $font-weight--400;
+    font-size: $font-size--xs;
+    border-radius: $border-radius--xl;
+    justify-content: center;
+    align-items: center;
+    padding: $spacing--md $spacing--lg;
+    margin: 0 5px;
+    transition: all 400ms $transition-function;
+    background-color: $primary;
+
+    &:hover {
+      background-color: lighten($color: $primary, $amount: 10);
+    }
+  }
+
+  &__home-icon {
+    width: $icon-size;
+    height: $icon-size;
+    background-size: $icon-size $icon-size;
+  }
+
+  &__appearance {
+    padding: 20px;
+  }
+
+  &__room-appearance-title {
+    display: block;
+    margin-bottom: 0.3rem;
+  }
+
+  &__room-appearance-description {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 0.8em;
+    opacity: 0.6;
+  }
+}

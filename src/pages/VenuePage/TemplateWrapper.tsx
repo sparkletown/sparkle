@@ -1,71 +1,116 @@
-import React from "react";
-import { useHistory } from "react-router-dom";
+import React, { Suspense } from "react";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
 
-import { Venue, VenueTemplate } from "types/venues";
+import { AnyVenue, VenueTemplate } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { ReactionsProvider } from "hooks/reactions";
 
 import { FriendShipPage } from "pages/FriendShipPage";
+
 import { ArtPiece } from "components/templates/ArtPiece";
-import { ConversationSpace } from "components/templates/ConversationSpace";
-import { FireBarrel } from "components/templates/FireBarrel";
 import { Audience } from "components/templates/Audience/Audience";
-import { WithNavigationBar } from "components/organisms/WithNavigationBar";
-import { PartyMap } from "components/templates/PartyMap";
+import { Auditorium } from "components/templates/Auditorium";
+import { ConversationSpace } from "components/templates/ConversationSpace";
+import { Embeddable } from "components/templates/Embeddable";
+import { ExternalRoom } from "components/templates/ExternalRoom";
+import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
+import { PartyMap } from "components/templates/PartyMap";
+import { PosterHall } from "components/templates/PosterHall";
+import { PosterPage } from "components/templates/PosterPage";
+import { ReactionPage } from "components/templates/ReactionPage";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
+
+import { ChatSidebar } from "components/organisms/ChatSidebar";
+import { UserProfileModal } from "components/organisms/UserProfileModal";
+import { WithNavigationBar } from "components/organisms/WithNavigationBar";
+
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
-type TemplateWrapperProps = {
-  venue: Venue;
-};
+export interface TemplateWrapperProps {
+  venue: WithId<AnyVenue>;
+}
 
-const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
-  const history = useHistory();
+export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
+  const match = useRouteMatch();
 
   let template;
-  let fullscreen = false;
+  // @debt remove backButton from Navbar
+  let hasBackButton = true;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
-      template = <Jazzbar />;
+      template = (
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route render={() => <Jazzbar venue={venue} />} />
+        </Switch>
+      );
+      // NOTE: Remove the back button, because we don't need it in Table view
+      hasBackButton = false;
       break;
+
     case VenueTemplate.friendship:
       template = <FriendShipPage />;
       break;
+
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
-      template = <PartyMap />;
+      template = <PartyMap venue={venue} />;
       break;
+
     case VenueTemplate.artpiece:
-      template = <ArtPiece />;
+      template = <ArtPiece venue={venue} />;
       break;
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
-      if (venue.zoomUrl) {
-        window.location.replace(venue.zoomUrl);
-      }
+      template = <ExternalRoom venue={venue} />;
+      break;
+    // Note: This is the template that is used for Auditorium (v1)
+    case VenueTemplate.audience:
       template = (
-        <p>
-          Venue {venue.name} should redirect to a URL, but none was set.
-          <br />
-          <button
-            role="link"
-            className="btn btn-primary"
-            onClick={() => history.goBack()}
-          >
-            Go Back
-          </button>
-        </p>
+        <Switch>
+          <Route path={`${match.path}/reactions`} component={ReactionPage} />
+          <Route>
+            <Audience venue={venue} />
+          </Route>
+        </Switch>
       );
       break;
-    case VenueTemplate.audience:
-      template = <Audience />;
-      fullscreen = true;
+
+    case VenueTemplate.auditorium:
+      template = <Auditorium venue={venue} />;
+      // NOTE: Remove the back button, because we need to implement it differently in Section
+      hasBackButton = false;
       break;
+
     case VenueTemplate.conversationspace:
-      template = <ConversationSpace />;
+      template = <ConversationSpace venue={venue} />;
+      // Remove the back button, because we don't need it in Table view
+      hasBackButton = false;
+      break;
+
+    case VenueTemplate.embeddable:
+      template = <Embeddable venue={venue} />;
       break;
 
     case VenueTemplate.firebarrel:
       template = <FireBarrel />;
+      break;
+
+    case VenueTemplate.posterhall:
+      template = <PosterHall venue={venue} />;
+      break;
+
+    case VenueTemplate.posterpage:
+      template = <PosterPage venue={venue} />;
+      break;
+
+    case VenueTemplate.screeningroom:
+      template = <ScreeningRoom venue={venue} />;
       break;
 
     case VenueTemplate.avatargrid:
@@ -79,15 +124,21 @@ const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     default:
-      template = <div>Unknown Template: ${venue.template}</div>;
+      // Technically TypeScript should prevent us missing a case here, but just in case, we work around it with an explicit cast to be able to render this
+      template = <div>Unknown Template: ${(venue as AnyVenue).template}</div>;
   }
 
+  // @debt remove backButton from Navbar
   return (
-    <WithNavigationBar fullscreen={fullscreen}>
-      <AnnouncementMessage message={venue?.bannerMessage} />
-      {template}
-    </WithNavigationBar>
+    <ReactionsProvider venueId={venue.id}>
+      <WithNavigationBar hasBackButton={hasBackButton}>
+        <AnnouncementMessage message={venue.bannerMessage} />
+
+        <Suspense fallback={<LoadingPage />}>{template}</Suspense>
+
+        <ChatSidebar venue={venue} />
+        <UserProfileModal venue={venue} />
+      </WithNavigationBar>
+    </ReactionsProvider>
   );
 };
-
-export default TemplateWrapper;

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Modal } from "react-bootstrap";
-import "./AuthenticationModal.scss";
+
 import { InitialForm } from "./InitialForm";
 import LoginForm from "./LoginForm";
 import PasswordResetForm from "./PasswordResetForm";
 import RegisterForm from "./RegisterForm";
+
+import "./AuthenticationModal.scss";
 
 export enum AuthOptions {
   login = "login",
@@ -80,8 +82,3 @@ export const AuthenticationModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-/**
- * @deprecated use named export instead
- */
-export default AuthenticationModal;

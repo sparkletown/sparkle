@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import { LocalParticipant, RemoteParticipant } from "twilio-video";
+import React, { useEffect, useRef } from "react";
 import {
   faEye,
   faEyeSlash,
@@ -7,12 +6,13 @@ import {
   faMicrophoneSlash,
   faVideo,
   faVideoSlash,
-  faVolumeUp,
   faVolumeMute,
+  faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { ClassValue } from "classnames/types";
+import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
 import { User } from "types/User";
 
@@ -21,8 +21,7 @@ import { isLocalParticipant } from "utils/twilio";
 
 import { useParticipantState } from "hooks/twilio";
 
-import UserProfileModal from "components/organisms/UserProfileModal";
-import UserProfilePicture from "components/molecules/UserProfilePicture";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./VideoParticipant.scss";
 
@@ -49,22 +48,19 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
   const shouldMirrorVideo = participantUser?.mirrorVideo ?? false;
 
-  // Show/hide UserProfileModal
-  const [isProfileVisible, setProfileVisible] = useState<boolean>(false);
-  const showProfileModal = useCallback(() => setProfileVisible(true), []);
-  const hideProfileModal = useCallback(() => setProfileVisible(false), []);
-
   const {
     videoTracks,
     audioTracks,
 
     isMuted,
-    setMuted,
+    muteAudio,
+    unmuteAudio,
     toggleMuted,
 
     isVideoHidden,
-    toggleVideoHidden,
-    setVideoHidden,
+    toggleVideo,
+    showVideo,
+    hideVideo,
   } = useParticipantState({
     participant,
     defaultMute,
@@ -83,10 +79,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       ? videoTrack.attach(videoRef.current)
       : videoTrack.detach();
 
-    // TODO: can we move this into useParticipantState()?
-    const hideVideo = () => setVideoHidden(true);
-    const showVideo = () => setVideoHidden(false);
-
     videoTrack.on("enabled", showVideo);
     videoTrack.on("disabled", hideVideo);
 
@@ -96,7 +88,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       videoTrack.detach();
     };
-  }, [videoTrack, setVideoHidden]);
+  }, [videoTrack, showVideo, hideVideo]);
 
   // @debt should we be handling the other audio tracks?
   const audioTrack = audioTracks[0];
@@ -109,10 +101,6 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
       audioTrack.detach();
     }
 
-    // TODO: can we move this into useParticipantState()?
-    const muteAudio = () => setMuted(true);
-    const unmuteAudio = () => setMuted(false);
-
     audioTrack.on("enabled", unmuteAudio);
     audioTrack.on("disabled", muteAudio);
 
@@ -122,7 +110,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       audioTrack.detach();
     };
-  }, [audioTrack, isMuted, setMuted]);
+  }, [audioTrack, isMuted, muteAudio, unmuteAudio]);
 
   const micIconMe = isMuted ? faMicrophoneSlash : faMicrophone;
   const micIconOther = isMuted ? faVolumeMute : faVolumeUp;
@@ -151,16 +139,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
 
       {showIcon && participantUser && (
         <div className="video-participant__profile">
-          <UserProfilePicture
-            user={participantUser}
-            setSelectedUserProfile={showProfileModal}
-          />
-
-          <UserProfileModal
-            userProfile={participantUser}
-            show={isProfileVisible}
-            onHide={hideProfileModal}
-          />
+          <UserProfilePicture user={participantUser} />
         </div>
       )}
 
@@ -169,7 +148,7 @@ export const VideoParticipant: React.FC<VideoParticipantProps> = ({
           size="lg"
           icon={videoIcon}
           color={videoIconColor}
-          onClick={toggleVideoHidden}
+          onClick={toggleVideo}
         />
 
         <FontAwesomeIcon

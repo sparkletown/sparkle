@@ -1,11 +1,13 @@
 import React from "react";
 
-import InformationCard from "components/molecules/InformationCard";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
-import { currentVenueSelectorData } from "utils/selectors";
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import InformationCard from "components/molecules/InformationCard";
 
 import "./JazzBarSkeletonPage.scss";
 
@@ -40,7 +42,9 @@ const JazzBarSkeletonPage: React.FunctionComponent<PropsType> = ({
               : "Choose your table, invite your friends to join you and listen to the sounds of our House band."}
           </p>
           {venue?.config?.landingPageConfig.description ? (
-            venue.config?.landingPageConfig.description
+            <RenderMarkdown
+              text={venue.config?.landingPageConfig.description}
+            />
           ) : (
             <>
               <p>

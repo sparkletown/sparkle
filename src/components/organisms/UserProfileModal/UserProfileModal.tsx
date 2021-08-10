@@ -3,84 +3,115 @@ import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import {
-  currentVenueSelector,
-  currentVenueSelectorData,
-  orderedVenuesSelector,
-  privateChatsSelector,
-} from "utils/selectors";
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_PIC,
+  ENABLE_SUSPECTED_LOCATION,
+  RANDOM_AVATARS,
+} from "settings";
 
 import { User } from "types/User";
-import { isVenueWithRooms } from "types/venues";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
-import { useUser } from "hooks/useUser";
-
-import "./UserProfileModal.scss";
-import ChatBox from "components/molecules/Chatbox";
-import { useSelector } from "hooks/useSelector";
 import { WithId } from "utils/id";
 import { venueInsideUrl, venuePreviewUrl } from "utils/url";
-import { ENABLE_SUSPECTED_LOCATION, RANDOM_AVATARS } from "settings";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { PrivateChatMessage, sendPrivateChat } from "store/actions/Chat";
-import { Badges } from "../Badges";
-import { useDispatch } from "hooks/useDispatch";
 
-type PropTypes = {
-  show: boolean;
-  onHide: () => void;
-  zIndex?: number;
-  userProfile?: WithId<User>;
-};
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUserLocation } from "hooks/users";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
 
-const UserProfileModal: React.FunctionComponent<PropTypes> = ({
-  show,
-  onHide,
-  zIndex,
-  userProfile,
+import { Badges } from "components/organisms/Badges";
+
+import Button from "components/atoms/Button";
+
+import "./UserProfileModal.scss";
+
+export interface UserProfileModalProps {
+  venue: WithId<AnyVenue>;
+}
+
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
+  venue,
 }) => {
-  const venue = useSelector(currentVenueSelector);
-  const privateChats = useSelector(privateChatsSelector) ?? [];
-
   const { user } = useUser();
+  const { sovereignVenue } = useSovereignVenue({ venueId: venue.id });
 
-  const dispatch = useDispatch();
+  const { selectRecipientChat } = useChatSidebarControls();
 
-  const submitMessage = useCallback(
-    async (data: { messageToTheBand: string }) => {
-      if (!user || !userProfile) return;
+  const {
+    selectedUserProfile,
+    hasSelectedProfile,
+    closeUserProfileModal,
+  } = useProfileModalControls();
 
-      dispatch(
-        sendPrivateChat({
-          from: user.uid,
-          to: userProfile?.id,
-          text: data.messageToTheBand,
-        })
-      );
-    },
-    [userProfile, user, dispatch]
+  const chosenUserId = selectedUserProfile?.id;
+
+  const profileQuestions = sovereignVenue?.profile_questions;
+
+  const openChosenUserChat = useCallback(() => {
+    if (!chosenUserId) return;
+
+    selectRecipientChat(chosenUserId);
+    // NOTE: Hide the modal, after the chat is opened;
+    closeUserProfileModal();
+  }, [selectRecipientChat, closeUserProfileModal, chosenUserId]);
+
+  const renderedProfileQuestionAnswers = useMemo(
+    () =>
+      selectedUserProfile
+        ? profileQuestions?.map((question) => {
+            // @ts-ignore User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
+            const questionAnswer = selectedUserProfile[question.name];
+
+            if (!questionAnswer) return undefined;
+
+            return (
+              <React.Fragment key={question.text}>
+                <p className="light question">{question.text}</p>
+                <h6>{questionAnswer}</h6>
+              </React.Fragment>
+            );
+          })
+        : undefined,
+    [selectedUserProfile, profileQuestions]
   );
 
-  const chats: WithId<PrivateChatMessage>[] = useMemo(() => {
-    if (!userProfile || !userProfile.id) return [];
-    return privateChats.filter(
-      (chat) => chat.from === userProfile.id || chat.to === userProfile.id
-    );
-  }, [privateChats, userProfile]);
+  const renderedProfileLinks = useMemo(
+    () =>
+      selectedUserProfile?.profileLinks?.map((link) => (
+        <a
+          key={link.title}
+          className="UserProfileModal__profile-link"
+          href={link.url}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {link.title}
+        </a>
+      )),
+    [selectedUserProfile?.profileLinks]
+  );
 
-  if (!userProfile || !userProfile.id || !user) {
-    return <></>;
+  if (!selectedUserProfile || !chosenUserId || !user) {
+    return null;
   }
 
-  // REVISIT: remove the hack to cast to any below
   return (
-    <Modal show={show} onHide={onHide} style={zIndex && { zIndex }}>
+    <Modal
+      className="UserProfileModal"
+      show={hasSelectedProfile}
+      onHide={closeUserProfileModal}
+    >
       <Modal.Body>
         <div className="modal-container modal-container_profile">
           <div className="profile-information-container">
             <div className="profile-basics">
               <div className="profile-pic">
+                {/* @debt Refactor this to use our useImage hook? Or just UserAvatar / UserProfilePicture directly? */}
                 <img
-                  src={userProfile.pictureUrl || "/default-profile-pic.png"}
+                  src={selectedUserProfile.pictureUrl || DEFAULT_PROFILE_PIC}
                   alt="profile"
                   onError={(e) => {
                     (e.target as HTMLImageElement).onerror = null;
@@ -88,7 +119,7 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
                       "/avatars/" +
                       RANDOM_AVATARS[
                         Math.floor(
-                          userProfile.id.charCodeAt(0) % RANDOM_AVATARS.length
+                          chosenUserId.charCodeAt(0) % RANDOM_AVATARS.length
                         )
                       ];
                   }}
@@ -96,44 +127,31 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
               </div>
               <div className="profile-text">
                 <h2 className="italic">
-                  {userProfile.partyName || "Captain Party"}
+                  {selectedUserProfile.partyName || DEFAULT_PARTY_NAME}
                 </h2>
               </div>
             </div>
             <div className="profile-extras">
-              {venue?.profile_questions?.map((question) => (
-                <React.Fragment key="question.text">
-                  <p className="light question">{question.text}</p>
-                  <h6>
-                    {/*
-                    // @debt typing - need to support known User interface with unknown question keys
-                    // @ts-ignore */}
-                    {userProfile[question.name] || //@debt typing - look at the changelog, was this a bug?
-                      "I haven't edited my profile to tell you yet"}
-                  </h6>
-                </React.Fragment>
-              ))}
+              {renderedProfileQuestionAnswers}
             </div>
+            <div>{renderedProfileLinks}</div>
             {ENABLE_SUSPECTED_LOCATION && (
               <div className="profile-location">
                 <p className="question">Suspected Location:</p>
                 <h6 className="location">
-                  <SuspectedLocation user={userProfile} />
+                  <SuspectedLocation
+                    user={selectedUserProfile}
+                    currentVenue={venue}
+                  />
                 </h6>
               </div>
             )}
           </div>
           {venue?.showBadges && (
-            <Badges user={userProfile} currentVenue={venue} />
+            <Badges user={selectedUserProfile} currentVenue={venue} />
           )}
-          {userProfile.id !== user.uid && (
-            <div className="private-chat-container">
-              <ChatBox
-                chats={chats}
-                onMessageSubmit={submitMessage}
-                showSenderImage={false}
-              />
-            </div>
+          {chosenUserId !== user.uid && (
+            <Button onClick={openChosenUserChat}>Send message</Button>
           )}
         </div>
       </Modal.Body>
@@ -141,27 +159,35 @@ const UserProfileModal: React.FunctionComponent<PropTypes> = ({
   );
 };
 
-const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
-  useFirestoreConnect("venues");
-  const currentVenue = useSelector(currentVenueSelectorData);
-  const allVenues = useSelector(orderedVenuesSelector);
+/**
+ * @debt I believe this relates to Playa features, which are legacy code that will be removed soon
+ * @deprecated legacy tech debt related to Playa, soon to be removed
+ */
+const SuspectedLocation: React.FC<{
+  user: WithId<User>;
+  currentVenue: WithId<AnyVenue>;
+}> = ({ user, currentVenue }) => {
+  const { relatedVenues } = useRelatedVenues({
+    currentVenueId: currentVenue.id,
+  });
+  const { userLocation } = useWorldUserLocation(user.id);
+  const { lastSeenIn } = userLocation ?? {};
 
   const suspectedLocation = useMemo(
     () => ({
-      venue: allVenues?.find(
-        (v) =>
-          (user.lastSeenIn && user.lastSeenIn[currentVenue?.name ?? ""]) ||
-          v.name === user.room
+      venue: relatedVenues.find(
+        (venue) => lastSeenIn?.[currentVenue.name] || venue.name === user.room
       ),
-      room: allVenues?.find(
-        (v) =>
-          isVenueWithRooms(v) && v.rooms?.find((r) => r.title === user.room)
+      room: relatedVenues.find(
+        (venue) =>
+          isVenueWithRooms(venue) &&
+          venue.rooms?.find((r) => r.title === user.room)
       ),
     }),
-    [user, allVenues, currentVenue]
+    [relatedVenues, lastSeenIn, currentVenue.name, user.room]
   );
 
-  if (!user.room || !allVenues) {
+  if (!user.room || relatedVenues.length === 0) {
     return null;
   }
 
@@ -183,5 +209,3 @@ const SuspectedLocation: React.FC<{ user: WithId<User> }> = ({ user }) => {
 
   return <>This user has gone walkabout. Location unguessable</>;
 };
-
-export default UserProfileModal;

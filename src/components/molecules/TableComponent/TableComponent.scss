@@ -112,10 +112,10 @@
     margin-right: 5px;
     background-color: rgba(black, 0.4);
     color: rgba(black, 0);
-    transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+    transition: all 400ms $transition-function;
     font-size: 2rem;
     &:hover {
-      background-color: white;
+      background-color: $white;
       transform: scale(1.05) rotate(90deg);
       color: rgba(black, 0.7);
       box-shadow: 2px 0px 10px rgba($white, 0.6);

@@ -1,18 +1,25 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import * as S from "./Item.styles";
+import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import ImageInput from "components/atoms/ImageInput";
 import {
   faChevronCircleDown,
   faChevronCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "react-bootstrap";
-import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { CustomInputsType } from "settings";
-import { RoomModalItemProps } from "./Item.types";
+
+import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
+
+import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import ImageInput from "components/atoms/ImageInput";
+import { Toggler } from "components/atoms/Toggler";
+
+import * as S from "./Item.styles";
+import { RoomModalItemProps } from "./Item.types";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
   name,
@@ -51,6 +58,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       url: editValues ? editValues.url : "",
       title: editValues ? editValues.title : "",
       description: editValues ? editValues.description : "",
+      image_url: editValues ? editValues.image_url : "",
     },
   });
 
@@ -63,6 +71,7 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       const valuesWithTemplate = {
         ...values,
         template,
+        isEnabled: true,
       };
 
       const list = new DataTransfer();
@@ -83,19 +92,21 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
       };
 
       try {
-        if (!editValues || !useUrl) {
+        if (!editValues && !useUrl) {
           await createVenue_v2(venueInput, user);
         }
         await createRoom(valuesWithTemplate, venueId, user);
 
         onSubmitHandler();
-      } catch (error) {}
+      } catch (error) {
+        console.error(error);
+      }
     } catch (err) {
       console.error(err);
     }
   }, [editValues, onSubmitHandler, template, useUrl, user, values, venueId]);
 
-  const handleOnChange = (val: string) => setValue("image_url", val, false);
+  const handleOnChange = (val: string) => setValue("image_url", val);
 
   const handleUrlToggle = useCallback(() => {
     setUseUrl((value) => !value);
@@ -107,17 +118,13 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         <h4 className="italic input-header">Create venue</h4>
       </S.Flex>
       <S.Flex>
-        <label id={"useUrl"} className="switch">
-          <input
-            type="checkbox"
-            id={"useUrl"}
-            name={"useUrl"}
-            checked={useUrl}
-            onChange={handleUrlToggle}
-            ref={register}
-          />
-          <span className="slider round"></span>
-        </label>
+        {/* @debt pass the header into Toggler's 'label' prop instead of being external like this */}
+        <Toggler
+          name="useUrl"
+          forwardedRef={register}
+          toggled={useUrl}
+          onChange={handleUrlToggle}
+        />
       </S.Flex>
       <S.Flex>
         <h4 className="italic input-header">Use url</h4>
@@ -195,6 +202,9 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
         nameWithUnderscore
         imgUrl={editValues ? editValues.image_url : ""}
       />
+      {errors.image_url && (
+        <span className="input-error">{errors.image_url.message}</span>
+      )}
     </S.InputWrapper>
   );
 
@@ -213,7 +223,9 @@ const RoomModalItem: React.FC<RoomModalItemProps> = ({
 
         <S.TitleWrapper>
           <S.Title>{name}</S.Title>
-          <S.Description>{description}</S.Description>
+          <S.Description>
+            <RenderMarkdown text={description} />
+          </S.Description>
         </S.TitleWrapper>
 
         <FontAwesomeIcon

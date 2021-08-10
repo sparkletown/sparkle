@@ -4,17 +4,16 @@ import React, {
   useImperativeHandle,
   useState,
 } from "react";
-import classNames from "classnames";
-
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faAmbulance,
   faAngleDoubleRight,
-  faHeart,
   faEdit,
+  faHeart,
   faInfoCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import "./InformationLeftColumn.scss";
 
@@ -45,6 +44,7 @@ export const InformationLeftColumn = forwardRef<
   const [isExpanded, setExpanded] = useState(false);
 
   const toggleExpanded = useCallback((e?: React.MouseEvent<HTMLElement>) => {
+    // @debt we should try to avoid using event.stopPropagation()
     e && e.stopPropagation();
 
     setExpanded((prev) => !prev);

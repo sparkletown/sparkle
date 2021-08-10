@@ -1,24 +1,25 @@
 import React, { useState } from "react";
-import firebase from "firebase/app";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-
-import { checkAccess } from "api/auth";
+import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
+
+import { checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
 import { venueSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
-import { setLocalStorageToken } from "utils/localStorage";
 
 import { useSelector } from "hooks/useSelector";
 
 import { CodeOfConductFormData } from "pages/Account/CodeOfConduct";
 import { updateUserPrivate } from "pages/Account/helpers";
+
 import { DateOfBirthField } from "components/organisms/DateOfBirthField";
 import { TicketCodeField } from "components/organisms/TicketCodeField";
+
 import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 
 interface PropsType {
@@ -92,35 +93,24 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
   const onSubmit = async (data: RegisterFormData) => {
     try {
       setShowLoginModal(false);
+
+      if (venue.access === VenueAccessMode.Emails) {
+        const isEmailWhitelisted = await checkIsEmailWhitelisted({
+          venueId: venue.id,
+          email: data.email,
+        });
+
+        if (!isEmailWhitelisted.data) {
+          setError(
+            "email",
+            "validation",
+            "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
       const auth = await signUp(data);
-
-      let result = null;
-
-      switch (venue.access) {
-        case VenueAccessMode.Codes:
-          result = await checkAccess({
-            venueId: venue.id,
-            code: data.code,
-          });
-          break;
-        case VenueAccessMode.Emails:
-          result = await checkAccess({
-            venueId: venue.id,
-            email: data.email,
-          });
-          break;
-
-        default:
-          break;
-      }
-
-      if (!result) return;
-
-      if (result.data === false) {
-        throw new Error("access denied");
-      }
-
-      setLocalStorageToken(venue.id, result.data.token);
 
       if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {

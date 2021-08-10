@@ -109,7 +109,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: $primaryColor;
+  background-color: $dark;
+  border: thin $concrete solid;
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 22px;
@@ -118,18 +119,22 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 17px;
-  width: 17px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
+  height: 19px;
+  width: 19px;
+  left: 1px;
+  bottom: 1px;
+  background-color: $concrete;
   -webkit-transition: 0.4s;
   transition: 0.4s;
   border-radius: 50%;
 }
 
 input:checked + .slider {
-  background-color: $green;
+  background-color: $primary;
+  border-color: $white;
+  &::before {
+    background-color: $white;
+  }
 }
 
 input:focus + .slider {
