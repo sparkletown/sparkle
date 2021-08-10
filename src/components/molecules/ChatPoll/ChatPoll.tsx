@@ -11,11 +11,9 @@ import {
   PollQuestion,
   PollVoteBase,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useRoles } from "hooks/useRoles";
 import { useUser } from "hooks/useUser";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -29,40 +27,25 @@ import "./ChatPoll.scss";
 
 export interface ChatPollProps {
   pollMessage: WithId<BaseMessageToDisplay<PollMessage>>;
-  venue: WithId<AnyVenue>;
-  deletePollMessage: DeleteMessage;
+  deletePollMessage?: DeleteMessage;
   voteInPoll: (pollVote: PollVoteBase) => void;
 }
 
 export const ChatPoll: React.FC<ChatPollProps> = ({
   pollMessage,
-  venue,
   voteInPoll,
   deletePollMessage,
 }) => {
   const { userId } = useUser();
-  const { userRoles } = useRoles();
-
-  const isAdmin = Boolean(userRoles?.includes("admin"));
-  const owners = venue.owners;
 
   const { id, poll, votes, isMine } = pollMessage;
   const { questions, topic } = poll;
-
-  const canBeDeleted: boolean = useMemo(() => {
-    if (!userId || !owners.length) return false;
-
-    return isAdmin && owners.includes(userId);
-  }, [isAdmin, userId, owners]);
 
   const hasVoted = userId
     ? votes.some(({ userId: existingUserId }) => userId === existingUserId)
     : false;
 
-  const message = useMemo(() => ({ ...pollMessage, canBeDeleted }), [
-    pollMessage,
-    canBeDeleted,
-  ]);
+  const message = useMemo(() => ({ ...pollMessage }), [pollMessage]);
 
   const containerStyles = classNames("ChatPoll", {
     "ChatPoll--me": isMine,
@@ -145,7 +128,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
     return renderQuestions;
   };
 
-  const deleteThisPollMessage = useCallback(() => deletePollMessage(id), [
+  const deleteThisPollMessage = useCallback(() => deletePollMessage?.(id), [
     id,
     deletePollMessage,
   ]);
@@ -167,7 +150,7 @@ export const ChatPoll: React.FC<ChatPollProps> = ({
       <ChatMessageInfo
         message={message}
         reversed={isMine}
-        deleteMessage={deleteThisPollMessage}
+        deleteMessage={deletePollMessage && deleteThisPollMessage}
       />
     </div>
   );
