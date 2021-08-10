@@ -25,6 +25,10 @@ $dark-grey: #1a1d23;
 $almost-black: $secondary--darkest;
 $saturated-black: $secondary--dark;
 $saturated-black-alt: #262427;
+$baltic-sea: #232225;
+$abbey: #464648;
+$manatee: #9e9e9f;
+$grey-suit: #979799;
 $lighter-intermediate-grey: #3d3a3f;
 $light-grey: #292929;
 $light-grey--lightest: #acadb0;
@@ -188,7 +192,8 @@ $z-layers: (
   loading-page-sparkle: 10,
   private-recipient-search-input-dropdown: 1,
   venuepage-preview-indication: 1,
-  map-preview-header: 5
+  map-preview-header: 5,
+  emails-input-placeholder: 1
 );
 
 @function z($layer) {

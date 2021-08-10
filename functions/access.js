@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { uuid } = require("uuidv4");
+const { checkUserIsOwner } = require("./src/utils/venue");
 
 const { passwordsMatch } = require("./auth");
 
@@ -140,6 +141,62 @@ const createToken = async (venueId, uid, password, email, code) => {
 
 exports.checkIsEmailWhitelisted = functions.https.onCall(async (data) =>
   isValidEmail(data.venueId, data.email)
+);
+
+exports.addEmailsToWhitelist = functions.https.onCall(async (data, context) => {
+  const { venueId, emails } = data;
+
+  if (!venueId) return;
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  const access = await getAccessDoc(venueId, "Emails");
+  const oldEmails =
+    access && access.exists && access.data().emails ? access.data().emails : [];
+  const emailsToSet = [
+    ...oldEmails,
+    ...emails.filter((email) => !oldEmails.includes(email)),
+  ];
+  await access.ref.set({ emails: emailsToSet });
+});
+
+exports.getWhitelistedEmails = functions.https.onCall(async (data, context) => {
+  const { venueId } = data;
+
+  if (!venueId) return [];
+
+  await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+  const access = await getAccessDoc(venueId, "Emails");
+
+  if (!(access && access.exists && access.data().emails)) {
+    return [];
+  }
+
+  return access.data().emails;
+});
+
+exports.removeEmailFromWhitelist = functions.https.onCall(
+  async (data, context) => {
+    const { venueId, email } = data;
+
+    if (!venueId) return;
+
+    await checkUserIsOwner(venueId, context.auth.token.user_id);
+
+    const access = await getAccessDoc(venueId, "Emails");
+
+    if (!(access && access.exists && access.data().emails)) {
+      return;
+    }
+
+    const emailsToSet = access
+      .data()
+      .emails.filter((oldEmail) => oldEmail !== email);
+    await access.ref.set({
+      emails: emailsToSet,
+    });
+  }
 );
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {

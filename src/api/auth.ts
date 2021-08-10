@@ -14,8 +14,35 @@ export interface CheckIsEmailWhitelisted {
   email: string;
 }
 
+export interface AddEmailsToWhitelist {
+  venueId: string;
+  emails: string[];
+}
+
+export interface GetWhitelistedEmails {
+  venueId: string;
+}
+
+export interface RemoveEmailFromWhitelist {
+  venueId: string;
+  email: string;
+}
+
 export const checkIsEmailWhitelisted = async (data: CheckIsEmailWhitelisted) =>
   await firebase.functions().httpsCallable("access-checkIsEmailWhitelisted")(
+    data
+  );
+
+export const addEmailsToWhitelist = async (data: AddEmailsToWhitelist) =>
+  await firebase.functions().httpsCallable("access-addEmailsToWhitelist")(data);
+
+export const getWhitelistedEmails = async (data: GetWhitelistedEmails) =>
+  await firebase.functions().httpsCallable("access-getWhitelistedEmails")(data);
+
+export const removeEmailFromWhitelist = async (
+  data: RemoveEmailFromWhitelist
+) =>
+  await firebase.functions().httpsCallable("access-removeEmailFromWhitelist")(
     data
   );
 

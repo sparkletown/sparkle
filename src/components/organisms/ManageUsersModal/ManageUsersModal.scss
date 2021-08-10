@@ -1,0 +1,77 @@
+@import "scss/constants.scss";
+
+$border-radius: 22px;
+$modal-line-height: 17px;
+$addEmailsButton-line-height: 19px;
+$whitelistEmail-line-height: 19px;
+
+.ManageUsersModal {
+  font-family: Rubik, sans-serif;
+  font-size: $font-size--md;
+  line-height: $modal-line-height;
+  color: $white;
+
+  & > .modal-dialog > .modal-content {
+    background-color: $baltic-sea;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+    border-radius: $border-radius;
+
+    & > .modal-body {
+      padding: $spacing--xxl;
+
+      & > .spinner-border {
+        display: block !important;
+        margin: $spacing--md 0 $spacing--md auto;
+      }
+    }
+  }
+
+  &__title {
+    text-align: center;
+
+    & > h2 {
+      font-size: 20px;
+      line-height: 22px;
+    }
+  }
+
+  &__description {
+    text-align: center;
+    margin: $spacing--md;
+  }
+
+  &__addEmailsButton {
+    display: block !important;
+    margin: $spacing--md 0 $spacing--md auto;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+
+    font-family: Rubik, sans-serif;
+    font-weight: $font-weight--500 !important;
+    font-size: $font-size--lg !important;
+    line-height: $addEmailsButton-line-height;
+  }
+
+  &__whitelistTitle {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  &__whitelistEmail {
+    display: flex;
+    justify-content: space-between;
+    margin: $spacing--md 0;
+    font-size: $font-size--lg;
+    line-height: $whitelistEmail-line-height;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  &__whitelistEmailCloseButton {
+    background: transparent;
+    border: none;
+    color: $secondary--light;
+    outline: none !important;
+
+    &:active {
+      color: $secondary--lightest;
+    }
+  }
+}

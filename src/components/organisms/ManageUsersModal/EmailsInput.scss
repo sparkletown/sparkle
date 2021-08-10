@@ -1,0 +1,51 @@
+@import "scss/constants.scss";
+
+$border-radius: 22px;
+$min-height: 100px;
+$input-line-height: 19px;
+
+.react-multi-email {
+  min-height: $min-height;
+  background: $abbey;
+  border-radius: $border-radius;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+
+  &.focused {
+    background: $abbey;
+    border-color: $white;
+  }
+
+  & > span[data-placeholder] {
+    color: $manatee !important;
+
+    font-weight: normal;
+    font-size: $font-size--lg;
+    line-height: $input-line-height;
+    z-index: z(emails-input-placeholder);
+  }
+
+  & > input {
+    background: $abbey;
+    text-align: left;
+    box-shadow: none;
+  }
+
+  & > .EmailsInput__chip {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: $border-radius;
+    padding: $spacing--xs $spacing--md !important;
+    color: $white;
+
+    font-weight: normal;
+    font-size: $font-size--lg;
+    line-height: $input-line-height;
+
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  & .EmailsInput__removeChip {
+    color: $grey-suit;
+  }
+}

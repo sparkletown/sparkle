@@ -5,7 +5,11 @@ const { HttpsError } = require("firebase-functions/lib/providers/https");
 const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
-const { getVenueId, checkIfValidVenueId } = require("./src/utils/venue");
+const {
+  getVenueId,
+  checkIfValidVenueId,
+  checkUserIsOwner,
+} = require("./src/utils/venue");
 
 const PLAYA_VENUE_ID = "jamonline";
 
@@ -89,54 +93,6 @@ const PlacementState = {
   SelfPlaced: "SELF_PLACED",
   AdminPlaced: "ADMIN_PLACED",
   Hidden: "HIDDEN",
-};
-
-const checkUserIsOwner = async (venueId, uid) => {
-  await admin
-    .firestore()
-    .collection("venues")
-    .doc(venueId)
-    .get()
-    .then(async (doc) => {
-      if (!doc.exists) {
-        throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
-      }
-      const venue = doc.data();
-      if (venue.owners && venue.owners.includes(uid)) return;
-
-      if (venue.parentId) {
-        const doc = await admin
-          .firestore()
-          .collection("venues")
-          .doc(venue.parentId)
-          .get();
-
-        if (!doc.exists) {
-          throw new HttpsError(
-            "not-found",
-            `Venue ${venueId} references missing parent ${venue.parentId}`
-          );
-        }
-        const parentVenue = doc.data();
-        if (!(parentVenue.owners && parentVenue.owners.includes(uid))) {
-          throw new HttpsError(
-            "permission-denied",
-            `User is not an owner of ${venueId} nor parent ${venue.parentId}`
-          );
-        }
-      }
-
-      throw new HttpsError(
-        "permission-denied",
-        `User is not an owner of ${venueId}`
-      );
-    })
-    .catch((err) => {
-      throw new HttpsError(
-        "internal",
-        `Error occurred obtaining venue ${venueId}: ${err.toString()}`
-      );
-    });
 };
 
 // @debt extract this into a new functions/chat backend script file
