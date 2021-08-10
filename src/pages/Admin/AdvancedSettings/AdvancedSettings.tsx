@@ -1,7 +1,7 @@
 import React from "react";
-import * as Yup from "yup";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import * as Yup from "yup";
 
 import {
   MAXIMUM_PARTYMAP_COLUMNS_COUNT,
@@ -10,16 +10,16 @@ import {
 
 import { updateVenue_v2 } from "api/admin";
 
-import { Venue_v2_AdvancedConfig } from "types/venues";
 import { UsernameVisibility } from "types/User";
+import { Venue_v2_AdvancedConfig } from "types/venues";
 
 import { useUser } from "hooks/useUser";
 
 import { Checkbox } from "components/atoms/Checkbox";
 
-import { AdvancedSettingsProps } from "./AdvancedSettings.types";
-
 import * as S from "../Admin.styles";
+
+import { AdvancedSettingsProps } from "./AdvancedSettings.types";
 
 // TODO: MOVE THIS TO A NEW FILE, DONT CLUTTER!
 interface ToggleElementProps {

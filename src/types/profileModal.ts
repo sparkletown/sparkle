@@ -1,8 +1,9 @@
 import { omit } from "lodash";
 
+import { ProfileLink } from "types/User";
+
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
-import { ProfileLink } from "types/User";
 
 export const profileModalWideButtonCustomStyleGrey = {
   backgroundColor: "#ffffff33",

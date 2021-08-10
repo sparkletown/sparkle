@@ -1,25 +1,24 @@
-import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { ChangeEvent, useCallback, useState } from "react";
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import { FieldError, NestDataObject, ValidateResult } from "react-hook-form";
+import { IconDefinition } from "@fortawesome/fontawesome-common-types";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
-
-import { useBooleanState } from "hooks/useBooleanState";
-
-import {
-  getProfileModalLinkIcon,
-  getProfileModalLinkUsername,
-} from "utils/profileModalLinkUtilities";
-
-import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
 
 import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
 
+import {
+  getProfileModalLinkIcon,
+  getProfileModalLinkUsername,
+} from "utils/profileModalLinkUtilities";
+import { userProfileModalFormProp as formProp } from "utils/propName";
 import { urlRegex } from "utils/types";
+
+import { useBooleanState } from "hooks/useBooleanState";
+
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
 
 import "./ProfileModalEditLink.scss";
 

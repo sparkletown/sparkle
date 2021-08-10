@@ -1,8 +1,11 @@
 import React, { useMemo } from "react";
 import { FieldError } from "react-hook-form";
-import "firebase/functions";
+
 import { ACCEPTED_IMAGE_TYPES } from "settings";
-import { ContainerClassName } from "../../../types/utility";
+
+import { ContainerClassName } from "types/utility";
+
+import "firebase/functions";
 
 interface ImageInputProps extends ContainerClassName {
   disabled: boolean;

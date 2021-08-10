@@ -1,9 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
-import classNames from "classnames";
-import { User } from "@bugsnag/js";
-
 import { useFirestore } from "react-redux-firebase";
+import { User } from "@bugsnag/js";
+import classNames from "classnames";
+import { chunk } from "lodash";
 
 import {
   DEFAULT_AVATAR_IMAGE,
@@ -11,8 +10,8 @@ import {
 } from "settings";
 
 import { UserVisit } from "types/Firestore";
-import { AnyVenue, isVenueWithRooms } from "types/venues";
 import { ContainerClassName } from "types/utility";
+import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy, notEmpty } from "utils/types";

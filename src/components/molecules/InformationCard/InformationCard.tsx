@@ -1,8 +1,9 @@
 import React from "react";
 import classNames from "classnames";
 
+import { ContainerClassName } from "types/utility";
+
 import "./InformationCard.scss";
-import { ContainerClassName } from "../../../types/utility";
 
 export interface InformationCardProps extends ContainerClassName {
   title: string;

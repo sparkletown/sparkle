@@ -1,12 +1,12 @@
 import React from "react";
 
+import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
+import { AnyVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 
 import { Badges } from "components/organisms/Badges";
-
-import { AnyVenue } from "types/venues";
-import { ContainerClassName } from "types/utility";
-import { User } from "types/User";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

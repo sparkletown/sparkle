@@ -1,13 +1,14 @@
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
 
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
-
-import { AnyVenue } from "types/venues";
-import { WithId } from "utils/id";
 
 import "./ProfileModal.scss";
 

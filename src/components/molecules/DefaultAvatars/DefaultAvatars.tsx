@@ -1,15 +1,16 @@
-import classNames from "classnames";
 import React, { useCallback, useMemo } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
-
-import { useSovereignVenue } from "hooks/useSovereignVenue";
+import classNames from "classnames";
 
 import { DEFAULT_AVATARS } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
 import "firebase/storage";
+
 import "./DefaultAvatars.scss";
 
 interface Props extends ContainerClassName {

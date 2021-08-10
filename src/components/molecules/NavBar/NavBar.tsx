@@ -1,44 +1,42 @@
-import { useBooleanState } from "hooks/useBooleanState";
-import React, { useState, useMemo, useRef, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback,useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
+import { useHistory } from "react-router-dom";
+import { faHome,faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTicketAlt, faHome } from "@fortawesome/free-solid-svg-icons";
-
 import firebase from "firebase/app";
 
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 import { IS_BURN } from "secrets";
+
+import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { radioStationsSelector } from "utils/selectors";
-
 import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useBooleanState } from "hooks/useBooleanState"
 import { useRadio } from "hooks/useRadio";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
+import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal"
+import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
 import { BackButton } from "components/atoms/BackButton";
-
-import { NavBarLogin } from "./NavBarLogin";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import * as S from "./Navbar.styles";
+import { NavBarLogin } from "./NavBarLogin";
+
 import "./NavBar.scss";
 import "./playa.scss";
 

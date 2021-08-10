@@ -1,5 +1,5 @@
-import { AnyVenue } from "types/venues";
 import { ReduxAction } from "types/redux";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 

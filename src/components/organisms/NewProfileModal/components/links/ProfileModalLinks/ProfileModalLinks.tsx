@@ -1,10 +1,11 @@
 import React, { useMemo } from "react";
 
-import { ProfileModalLink } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLink";
-
-import { ContainerClassName } from "types/utility";
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
+
 import { WithId } from "utils/id";
+
+import { ProfileModalLink } from "components/organisms/NewProfileModal/components/links/ProfileModalLinks/ProfileModalLink";
 
 import "./ProfileModalLinks.scss";
 

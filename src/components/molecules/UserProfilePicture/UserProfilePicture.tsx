@@ -2,9 +2,9 @@ import React, { useCallback } from "react";
 import classNames from "classnames";
 
 import { User, UsernameVisibility } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-import { ContainerClassName } from "../../../types/utility";
 
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 

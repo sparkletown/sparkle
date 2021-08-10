@@ -1,15 +1,18 @@
 import React, { useMemo } from "react";
 
+import {
+  profileModalWideButtonCustomStyle,
+  profileModalWideButtonCustomStyleGrey,
+} from "types/profileModal";
+import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
+
+import { WithId } from "utils/id";
+
 import { useIsOnline } from "hooks/useIsOnline";
 import { useIsSameUser } from "hooks/useIsSameUser";
 
 import { Button } from "components/atoms/Button";
-
-import { profileModalWideButtonCustomStyle } from "types/profileModal";
-import { profileModalWideButtonCustomStyleGrey } from "types/profileModal";
-import { User } from "types/User";
-import { WithId } from "utils/id";
-import { ContainerClassName } from "types/utility";
 
 import "./ProfileModalButtons.scss";
 

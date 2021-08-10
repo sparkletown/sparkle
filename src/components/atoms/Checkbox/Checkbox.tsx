@@ -1,9 +1,9 @@
 import React, { DetailedHTMLProps, InputHTMLAttributes } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
-import { ContainerClassName } from "../../../types/utility";
+import { ContainerClassName } from "types/utility";
 
 import "./Checkbox.scss";
 

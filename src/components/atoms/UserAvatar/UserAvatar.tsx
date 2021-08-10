@@ -5,15 +5,15 @@ import { isEqual } from "lodash";
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
-
-import { WithId } from "utils/id";
 import { ContainerClassName } from "types/utility";
 
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { WithId } from "utils/id";
+
+import { useIsOnline } from "hooks/useIsOnline";
 import { useVenueId } from "hooks/useVenueId";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
-import { useIsOnline } from "hooks/useIsOnline";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
 

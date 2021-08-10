@@ -1,8 +1,8 @@
 import { existsSync, readFileSync, writeFileSync } from "fs";
 import { relative, resolve } from "path";
 
-import admin from "firebase-admin";
 import formatDate from "date-fns/format/index.js";
+import admin from "firebase-admin";
 
 export interface CredentialFile {
   type?: string;

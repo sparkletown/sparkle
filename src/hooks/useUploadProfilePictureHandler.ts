@@ -1,15 +1,15 @@
-import "firebase/storage";
-import { UserInfo } from "firebase/app";
-import { useFirebase } from "react-redux-firebase";
-
 import { ChangeEvent, useCallback } from "react";
-
-import { resizeFile } from "utils/image";
+import { useFirebase } from "react-redux-firebase";
+import { UserInfo } from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
   MAX_AVATAR_IMAGE_FILE_SIZE_BYTES,
 } from "settings";
+
+import { resizeFile } from "utils/image";
+
+import "firebase/storage";
 
 export const useUploadProfilePictureHandler = (
   setError: (error: string) => void,

@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-
 import { User } from "types/User";
+
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 export const useProfileQuestions = (user?: User, venueId?: string) => {
   const { sovereignVenue } = useSovereignVenue({ venueId });

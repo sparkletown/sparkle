@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "components/atoms/Button";
 
 import {
   profileModalWideButtonCustomStyle,
@@ -7,6 +6,8 @@ import {
   profileModalWideButtonCustomStyleGrey,
 } from "types/profileModal";
 import { ContainerClassName } from "types/utility";
+
+import { Button } from "components/atoms/Button";
 
 import "./UserProfileModalButtons.scss";
 

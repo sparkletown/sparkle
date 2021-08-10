@@ -1,6 +1,6 @@
 import React from "react";
-import { formatDistanceToNow } from "date-fns";
 import classNames from "classnames";
+import { formatDistanceToNow } from "date-fns";
 
 import { PreviewChatMessageToDisplay } from "types/chat";
 

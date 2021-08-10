@@ -1,11 +1,12 @@
-import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 import React, { useCallback, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { UserInfo } from "firebase/app";
 
-import { ACCEPTED_IMAGE_TYPES, DEFAULT_PROFILE_PIC } from "settings";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
+
+import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvatars";
 
 export interface ProfilePictureInputProps {
   venueId: string;
@@ -60,7 +61,7 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
         onClick={() => uploadRef.current?.click()}
       >
         <img
-          src={pictureUrl || DEFAULT_PROFILE_PIC}
+          src={pictureUrl || "/default-profile-pic.png"}
           className="profile-icon profile-picture-preview"
           alt="your profile"
         />

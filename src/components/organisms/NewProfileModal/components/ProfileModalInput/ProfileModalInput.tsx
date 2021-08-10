@@ -1,11 +1,11 @@
 import React from "react";
-import classNames from "classnames";
-import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FieldError } from "react-hook-form";
-
-import { InputField } from "components/atoms/InputField";
+import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
+
+import { InputField } from "components/atoms/InputField";
 
 import "./ProfileModalInput.scss";
 

@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from "react";
+import classNames from "classnames";
 import {
   addDays,
   format,
@@ -7,7 +8,6 @@ import {
   startOfDay,
   startOfToday,
 } from "date-fns";
-import classNames from "classnames";
 
 import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
@@ -18,18 +18,18 @@ import {
 } from "types/venues";
 
 import {
+  eventTimeComparator,
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
-  eventTimeComparator,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";

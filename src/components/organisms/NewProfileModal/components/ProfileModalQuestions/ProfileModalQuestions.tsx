@@ -1,12 +1,12 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
 
-import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
-import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader";
-
 import { FormFieldProps } from "types/forms";
 import { ContainerClassName } from "types/utility";
 import { Question } from "types/venues";
+
+import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
+import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader";
 
 import "./ProfileModalQuestions.scss";
 

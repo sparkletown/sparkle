@@ -1,19 +1,20 @@
 import React from "react";
 import classNames from "classnames";
 
-import { useSovereignVenue } from "hooks/useSovereignVenue";
-import { useVenueId } from "hooks/useVenueId";
+import { DEFAULT_PARTY_NAME } from "settings";
+
+import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
+
+import { WithId } from "utils/id";
+
 import { useIsOnline } from "hooks/useIsOnline";
 import { useIsSameUser } from "hooks/useIsSameUser";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
-
-import { ContainerClassName } from "types/utility";
-import { WithId } from "utils/id";
-import { User } from "types/User";
-
-import { DEFAULT_PARTY_NAME } from "settings";
 
 import "./ProfilModalBasicTextInfo.scss";
 

@@ -1,10 +1,10 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
-
-import { WithId } from "utils/id";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -13,15 +13,17 @@ import { EventsView } from "../EventsView";
 import "./Timing.scss";
 
 export type TimingProps = {
+  onClickBack?: () => void;
+  onClickHome?: () => void;
+  onClickNext?: () => void;
   venue?: WithId<AnyVenue>;
-  onClickNext: () => void;
-  onClickBack: () => void;
 };
 
 export const Timing: React.FC<TimingProps> = ({
-  venue,
-  onClickNext,
   onClickBack,
+  onClickHome,
+  onClickNext,
+  venue,
 }) => {
   if (!venue) {
     return <LoadingPage />;
@@ -32,30 +34,36 @@ export const Timing: React.FC<TimingProps> = ({
       <div className="Timing__left">
         <div className="Timing__left-bottombar">
           <div className="Timing__left-bottombar-btnleft">
-            <button
-              // href="/admin-ng"
-              className="Timing__left-bottombar-btngrey Timing__btn"
-            >
-              <FontAwesomeIcon
-                icon={faHome}
-                className="edit-button__icon"
-                size="lg"
-              />
-            </button>
+            {onClickHome && (
+              <button
+                className="Timing__left-bottombar-btngrey Timing__btn"
+                onClick={onClickHome}
+              >
+                <FontAwesomeIcon
+                  icon={faHome}
+                  className="edit-button__icon"
+                  size="lg"
+                />
+              </button>
+            )}
           </div>
           <div className="Timing__left-bottombar-btnright">
-            <button
-              className="Timing__left-bottombar-btngrey Timing__btn"
-              onClick={onClickBack}
-            >
-              Back
-            </button>
-            <button
-              className="Timing__left-bottombar-btnprimary Timing__btn"
-              onClick={onClickNext}
-            >
-              Next
-            </button>
+            {onClickBack && (
+              <button
+                className="Timing__left-bottombar-btngrey Timing__btn"
+                onClick={onClickBack}
+              >
+                Back
+              </button>
+            )}
+            {onClickNext && (
+              <button
+                className="Timing__left-bottombar-btnprimary Timing__btn"
+                onClick={onClickNext}
+              >
+                Next
+              </button>
+            )}
           </div>
         </div>
         <div className="Timing__left-content">

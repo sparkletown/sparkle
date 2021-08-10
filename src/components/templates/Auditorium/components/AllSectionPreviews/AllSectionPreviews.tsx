@@ -1,13 +1,13 @@
-import React, { useMemo, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 import { sample } from "lodash";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
+import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";

@@ -1,7 +1,7 @@
 import React, { ButtonHTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
 
-import { ContainerClassName } from "../../../types/utility";
+import { ContainerClassName } from "types/utility";
 
 import "./TextButton.scss";
 

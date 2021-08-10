@@ -1,8 +1,9 @@
 import React from "react";
 import classNames from "classnames";
 
-import { ContainerClassName } from "../../../types/utility";
 import { IFRAME_ALLOW } from "settings";
+
+import { ContainerClassName } from "types/utility";
 
 import "./IFrame.scss";
 

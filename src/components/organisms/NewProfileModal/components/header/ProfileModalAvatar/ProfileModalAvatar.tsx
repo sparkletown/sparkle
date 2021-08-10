@@ -1,24 +1,25 @@
 import React, { useCallback, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import classNames from "classnames";
+
+import { ACCEPTED_IMAGE_TYPES } from "settings";
+
+import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
+
+import { WithId } from "utils/id";
+import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { useBooleanState } from "hooks/useBooleanState";
 import { useIsSameUser } from "hooks/useIsSameUser";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
-import { useForm } from "react-hook-form";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { userProfileModalFormProp as formProp } from "utils/propName";
-
-import { User } from "types/User";
-import { ContainerClassName } from "types/utility";
-import { WithId } from "utils/id";
-
-import { ACCEPTED_IMAGE_TYPES } from "settings";
+import "firebase/storage";
 
 import "./ProfileModalAvatar.scss";
-import "firebase/storage";
 
 interface Props extends ContainerClassName {
   viewingUser: WithId<User>;

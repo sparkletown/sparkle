@@ -1,28 +1,31 @@
-import { UserProfileModalFormDataPasswords } from "types/profileModal";
-import { userProfileModalFormProp as formProp } from "utils/propName";
 import React, { useCallback } from "react";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
-import { isEqual, pick } from "lodash";
 import { useFirebase } from "react-redux-firebase";
+import { isEqual, pick } from "lodash";
 
-import { useProfileQuestions } from "hooks/useProfileQuestions";
+import { updateProfileLinks } from "api/profile";
+
+import {
+  UserProfileModalFormData,
+  UserProfileModalFormDataPasswords,
+} from "types/profileModal";
+import { ProfileLink, User } from "types/User";
+import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+import { propName, userProfileModalFormProp as formProp } from "utils/propName";
+
 import { useBooleanState } from "hooks/useBooleanState";
+import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
+import { useProfileQuestions } from "hooks/useProfileQuestions";
+
+import { updateUserProfile } from "pages/Account/helpers";
 
 import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons";
 import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
-
-import { propName } from "utils/propName";
-import { updateUserProfile } from "pages/Account/helpers";
-import { updateProfileLinks } from "api/profile";
-import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
-
-import { UserProfileModalFormData } from "types/profileModal";
-import { ProfileLink, User } from "types/User";
-import { AnyVenue } from "types/venues";
-import { WithId } from "utils/id";
 
 import "../UserProfileModal.scss";
 

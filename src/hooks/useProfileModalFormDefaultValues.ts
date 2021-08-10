@@ -1,14 +1,15 @@
 import { useMemo } from "react";
 
-import { User } from "types/User";
-import { Question } from "types/venues";
-import { WithId } from "utils/id";
+import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
+
 import {
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
+import { User } from "types/User";
+import { Question } from "types/venues";
 
-import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_PIC } from "settings";
+import { WithId } from "utils/id";
 
 export const useProfileModalFormDefaultValues: (
   user: WithId<User>,

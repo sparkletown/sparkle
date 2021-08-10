@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { memoize } from "lodash";
 import { IconDefinition } from "@fortawesome/fontawesome-common-types";
 import {
   faFacebook,
@@ -16,6 +15,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import { faEnvelope } from "@fortawesome/free-regular-svg-icons";
 import { faLink } from "@fortawesome/free-solid-svg-icons";
+import { memoize } from "lodash";
 
 export const getProfileModalLinkIcon = (url: string) => {
   const type = Object.entries(profileModalLinkTypesRegexes).find(([, regex]) =>
@@ -79,11 +79,11 @@ const profileModalLinkTypesIcons: Record<
   [ProfileModalLinkType.Mail]: faEnvelope,
 };
 
-function buildMatchingRegex(...hosts: string[]) {
+const buildMatchingRegex = (...hosts: string[]) => {
   const escaped = hosts.map((h) => h.replace(".", "\\."));
 
   return new RegExp(`^(https?:\\/\\/)(www\\.)?(${escaped.join("|")}).*$`);
-}
+};
 
 const profileModalLinkTypesRegexes: Record<ProfileModalLinkType, RegExp> = {
   [ProfileModalLinkType.Mail]: /^((([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,})))$/,

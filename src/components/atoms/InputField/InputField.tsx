@@ -1,10 +1,11 @@
 import React, { forwardRef } from "react";
 import { FieldError } from "react-hook-form";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
-import { ContainerClassName } from "../../../types/utility";
+import { ContainerClassName } from "types/utility";
+
 import { isDefined, isTruthy } from "utils/types";
 
 import "./InputField.scss";

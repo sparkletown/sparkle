@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { isEmpty } from "lodash";
+
 import { useWorldUserLocation } from "./users";
 
 export const useIsOnline = (userId?: string) => {

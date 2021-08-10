@@ -1,10 +1,9 @@
 import React, { CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import classNames from "classnames";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons/faCircleNotch";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { getExtraLinkProps } from "utils/url";
 

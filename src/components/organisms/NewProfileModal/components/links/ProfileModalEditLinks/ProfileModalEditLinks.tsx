@@ -1,16 +1,17 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FieldError, NestDataObject } from "react-hook-form";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import classNames from "classnames";
+
+import { FormFieldProps } from "types/forms";
+import { ProfileLink } from "types/User";
+import { ContainerClassName } from "types/utility";
+
+import { WithId } from "utils/id";
 
 import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
 import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/components/ProfileModalSectionHeader";
-
-import { FormFieldProps } from "types/forms";
-import { ContainerClassName } from "types/utility";
-import { ProfileLink } from "types/User";
-import { WithId } from "utils/id";
 
 import "./ProfileModalEditLinks.scss";
 

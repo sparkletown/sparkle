@@ -1,5 +1,5 @@
-import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 import { MyPersonalizedSchedule } from "types/User";
+import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
 import { WithVenueId } from "utils/id";
 import { arrayIncludes } from "utils/types";

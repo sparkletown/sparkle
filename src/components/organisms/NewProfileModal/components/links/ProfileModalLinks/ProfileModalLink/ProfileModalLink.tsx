@@ -1,11 +1,11 @@
 import React from "react";
-import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import { useProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
+import classNames from "classnames";
 
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
+
+import { useProfileModalLinkIcon } from "utils/profileModalLinkUtilities";
 
 import "./ProfileModalLink.scss";
 

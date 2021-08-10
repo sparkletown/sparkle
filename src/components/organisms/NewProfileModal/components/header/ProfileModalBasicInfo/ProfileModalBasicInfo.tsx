@@ -1,15 +1,15 @@
 import React from "react";
+import { faPen } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
-import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar";
-import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
-import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo";
-
-import { faPen } from "@fortawesome/free-solid-svg-icons";
-
-import { WithId } from "utils/id";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
+
+import { WithId } from "utils/id";
+
+import { ProfileModalAvatar } from "components/organisms/NewProfileModal/components/header/ProfileModalAvatar";
+import { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo";
+import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
 
 import "./ProfileModalBasicInfo.scss";
 
