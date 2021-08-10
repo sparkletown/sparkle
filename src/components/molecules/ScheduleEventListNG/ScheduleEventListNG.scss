@@ -1,16 +1,9 @@
 @import "scss/constants.scss";
 
-.ScheduleNG {
-  padding-top: $ScheduleNG--padding;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+.ScheduleEventListNG__title {
+  margin-bottom: $spacing--lg;
 
-  &__loading {
-    margin-top: $ScheduleNG--padding;
-  }
-
-  &__no-events {
-    padding: $ScheduleNG--padding;
-  }
+  font-size: $font-size--xl;
+  font-weight: $font-weight--700;
+  line-height: 22px;
 }

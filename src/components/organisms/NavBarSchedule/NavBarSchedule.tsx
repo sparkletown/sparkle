@@ -40,6 +40,7 @@ const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
 export interface ScheduleNGDay {
   daysEvents: PersonalizedVenueEvent[];
+  scheduleDate: Date;
 }
 
 export const emptyPersonalizedSchedule = {};
@@ -141,6 +142,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     return {
+      scheduleDate: startOfSelectedDay,
       daysEvents: showPersonalisedSchedule
         ? daysEvents.filter((event) => event.isSaved)
         : daysEvents,

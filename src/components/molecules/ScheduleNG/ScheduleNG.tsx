@@ -9,6 +9,7 @@ import "./ScheduleNG.scss";
 
 export interface ScheduleNGProps {
   daysEvents: PersonalizedVenueEvent[];
+  scheduleDate: Date;
   isLoading: boolean;
   showPersonalisedSchedule: boolean;
 }
@@ -17,6 +18,7 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   daysEvents,
   isLoading,
   showPersonalisedSchedule,
+  scheduleDate,
 }) => {
   const hasEvents = daysEvents.length > 0;
 
@@ -36,7 +38,10 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
           {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
         </div>
       ) : (
-        <ScheduleEventListNG daysEvents={daysEvents} isToday />
+        <ScheduleEventListNG
+          daysEvents={daysEvents}
+          scheduleDate={scheduleDate}
+        />
       )}
     </div>
   );

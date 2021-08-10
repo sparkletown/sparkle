@@ -1,24 +1,53 @@
 import React, { useMemo } from "react";
+import isToday from "date-fns/isToday";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { Loading } from "components/molecules/Loading";
+import { isEventLive } from "utils/event";
+import { formatDateRelativeToNow } from "utils/time";
+
 import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
+
+import { isEventLater, isEventSoon } from "./utils";
 
 import "./ScheduleEventListNG.scss";
 
 export interface ScheduleEventListNGProps {
   daysEvents: PersonalizedVenueEvent[];
-  isLoading: boolean;
-  showPersonalisedSchedule: boolean;
+  scheduleDate: Date;
 }
 
 export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   daysEvents,
-  isLoading,
-  showPersonalisedSchedule,
+  scheduleDate,
 }) => {
-  const hasEvents = daysEvents.length > 0;
+  // TODO: add show more/show less functionality
+  const liveEvents = useMemo(
+    () =>
+      daysEvents
+        .filter(isEventLive)
+        .map((event) => <ScheduleItemNG key={event.id} event={event} />),
+    [daysEvents]
+  );
+  const hasLiveEvents = liveEvents.length > 0;
+
+  const comingSoonEvents = useMemo(
+    () =>
+      daysEvents
+        .filter(isEventSoon)
+        .map((event) => <ScheduleItemNG key={event.id} event={event} />),
+    [daysEvents]
+  );
+  const hasComingSoonEvents = comingSoonEvents.length > 0;
+
+  const laterEvents = useMemo(
+    () =>
+      daysEvents
+        .filter(isEventLater)
+        .map((event) => <ScheduleItemNG key={event.id} event={event} />),
+    [daysEvents]
+  );
+  const hasLaterEvents = laterEvents.length > 0;
 
   const eventsRows = useMemo(
     () =>
@@ -28,24 +57,29 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
     [daysEvents]
   );
 
-  if (isLoading) {
+  const listTitle = (title: string) => (
+    <div className="ScheduleEventListNG__title">{title}</div>
+  );
+
+  const isTodayDate = isToday(scheduleDate);
+
+  if (!isTodayDate) {
     return (
-      <Loading
-        containerClassName="ScheduleNG__loading"
-        label="Events are loading"
-      />
+      <div className="ScheduleEventListNG">
+        {listTitle(`Events on ${formatDateRelativeToNow(scheduleDate)}`)}
+        {eventsRows}
+      </div>
     );
   }
 
   return (
-    <div className="ScheduleNG">
-      {!hasEvents ? (
-        <div className="ScheduleNG__no-events">
-          {showPersonalisedSchedule ? "No saved events" : "No events scheduled"}
-        </div>
-      ) : (
-        eventsRows
-      )}
+    <div className="ScheduleEventListNG">
+      {hasLiveEvents && listTitle("What’s on now")}
+      {liveEvents}
+      {hasComingSoonEvents && listTitle("Starting soon")}
+      {comingSoonEvents}
+      {hasLaterEvents && listTitle("More events today")}
+      {laterEvents}
     </div>
   );
 };
