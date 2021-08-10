@@ -31,7 +31,10 @@ import {
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
-import { formatDateRelativeToNow, isDateLessOrEqualsToday } from "utils/time";
+import {
+  formatDateRelativeToNow,
+  isDateRangeStartWithinToday,
+} from "utils/time";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -105,10 +108,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useShowHide(false);
 
   const liveAndFutureEvents = useMemo(
-    () => relatedVenueEvents.filter(isEventLiveOrFuture),
+    () => relatedVenueEvents.slice(0, 0).filter(isEventLiveOrFuture),
     [relatedVenueEvents]
   );
-  const hasSavedEvents = liveAndFutureEvents
+  const hasSavedEvents = !!liveAndFutureEvents
     .map(
       prepareForSchedule({
         usersEvents: userEventIds,
@@ -135,17 +138,18 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     [firstLiveEvent, liveEventsMinimalStartValue]
   );
 
-  const firstRangeDayTimeValue = isDateLessOrEqualsToday({
+  const isMinDateWithinToday = isDateRangeStartWithinToday({
     dateValue: secondsToMilliseconds(minDate),
     targetDateValue: millisecondsToSeconds(startOfToday().getTime()),
   });
 
   const firstRangeDateInSeconds = getUnixTime(
-    max([
-      new Date(secondsToMilliseconds(minDate)).getTime(),
-      todaysDate.getTime(),
-    ])
+    max([new Date(minDate), todaysDate])
   );
+
+  const isOneEventAndLive =
+    secondsToMilliseconds(firstRangeDateInSeconds) <= todaysDate.getTime() &&
+    liveAndFutureEvents.length === 1;
 
   const maxDate = useMemo(
     () =>
@@ -164,7 +168,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     fromUnixTime(maxDate),
     fromUnixTime(firstRangeDateInSeconds)
   );
-  const dayDifference = getEventDayRange(daysInBetween);
+
+  const dayDifference = getEventDayRange(daysInBetween, isOneEventAndLive);
 
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
@@ -179,7 +184,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const firstScheduleDate = firstRangeDayTimeValue
+      const firstScheduleDate = isMinDateWithinToday
         ? todaysDate
         : new Date(secondsToMilliseconds(minDate));
       const day = addDays(firstScheduleDate, dayIndex);
@@ -218,11 +223,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     dayDifference,
     liveAndFutureEvents,
     minDate,
-    firstRangeDayTimeValue,
+    isMinDateWithinToday,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
-    const firstScheduleDate = firstRangeDayTimeValue
+    const firstScheduleDate = isMinDateWithinToday
       ? todaysDate
       : new Date(secondsToMilliseconds(minDate));
     const day = addDays(firstScheduleDate, selectedDayIndex);
@@ -247,7 +252,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     minDate,
     showPersonalisedSchedule,
-    firstRangeDayTimeValue,
+    isMinDateWithinToday,
   ]);
 
   const downloadPersonalEventsCalendar = useCallback(() => {
@@ -282,14 +287,14 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
       {!isLoadingSchedule && (
         <div className="NavBarSchedule__download-buttons">
-          {isShowPersonalDownloadBtn ? (
+          {isShowPersonalDownloadBtn && (
             <Button
               onClick={downloadPersonalEventsCalendar}
               customClass="NavBarSchedule__download-schedule-btn"
             >
               Download your schedule
             </Button>
-          ) : null}
+          )}
           <Button
             onClick={downloadAllEventsCalendar}
             customClass="NavBarSchedule__download-schedule-btn"

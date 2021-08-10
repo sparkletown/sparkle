@@ -254,7 +254,7 @@ export const getDayInterval = (date: Date | number) => ({
   end: endOfDay(date),
 });
 
-export const isDateLessOrEqualsToday = ({
+export const isDateRangeStartWithinToday = ({
   dateValue,
   targetDateValue,
 }: {
