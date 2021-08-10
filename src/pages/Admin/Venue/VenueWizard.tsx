@@ -1,16 +1,23 @@
-import React, { useMemo, useCallback, useReducer, useEffect } from "react";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-import "./Venue.scss";
-import { TemplateForm } from "./TemplateForm";
-import { DetailsForm } from "./DetailsForm";
-import { Redirect, useHistory } from "react-router-dom";
-import { useQuery } from "hooks/useQuery";
-import { Template, ALL_VENUE_TEMPLATES, DEFAULT_VENUE } from "settings";
+import React, { useCallback, useEffect, useMemo, useReducer } from "react";
 import { useFirestore } from "react-redux-firebase";
+import { Redirect, useHistory } from "react-router-dom";
+
+import { ALL_VENUE_TEMPLATES, DEFAULT_VENUE, Template } from "settings";
+
 import { AnyVenue } from "types/venues";
-import { useUser } from "hooks/useUser";
+
 import { venueInsideUrl } from "utils/url";
+
+import { useQuery } from "hooks/useQuery";
+import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { DetailsForm } from "./DetailsForm";
+import { TemplateForm } from "./TemplateForm";
+
+import "./Venue.scss";
 
 export interface WizardPage {
   next?: (action: WizardActions) => void;

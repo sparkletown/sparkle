@@ -1,20 +1,10 @@
 import { useCallback, useMemo } from "react";
 
 import {
+  deletePrivateMessage,
   sendPrivateMessage,
   setChatMessageRead,
-  deletePrivateMessage,
 } from "api/chat";
-
-import {
-  chatSort,
-  buildMessage,
-  partitionMessagesFromReplies,
-  getMessageReplies,
-  getBaseMessageToDisplay,
-} from "utils/chat";
-import { WithId, withId } from "utils/id";
-import { isTruthy } from "utils/types";
 
 import {
   DeleteMessage,
@@ -23,8 +13,19 @@ import {
   SendMessage,
 } from "types/chat";
 
-import { useUser } from "hooks/useUser";
+import {
+  buildMessage,
+  chatSort,
+  getBaseMessageToDisplay,
+  getMessageReplies,
+  partitionMessagesFromReplies,
+} from "utils/chat";
+import { WithId, withId } from "utils/id";
+import { isTruthy } from "utils/types";
+
 import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
+
 import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const useRecipientChat = (recipientId: string) => {

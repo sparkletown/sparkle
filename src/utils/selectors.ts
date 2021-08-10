@@ -1,17 +1,16 @@
 import { FirebaseReducer } from "react-redux-firebase";
 
 import { RootState } from "store";
+import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
-import { TextReaction, Reaction, TextReactionType } from "types/reactions";
+import { Reaction, TextReaction, TextReactionType } from "types/reactions";
+import { ScreeningRoomVideo } from "types/screeningRoom";
 import { SparkleSelector } from "types/SparkleSelector";
 import { User } from "types/User";
 import { AnyVenue, PosterPageVenue, VenueEvent } from "types/venues";
-import { ScreeningRoomVideo } from "types/screeningRoom";
-
-import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
 import { WithId } from "utils/id";
 

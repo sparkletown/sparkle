@@ -1,13 +1,16 @@
 import React, { useState } from "react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import updateLocale from "dayjs/plugin/updateLocale";
-import "./PlayaTime.scss";
 import { faClock } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import updateLocale from "dayjs/plugin/updateLocale";
+import utc from "dayjs/plugin/utc";
+
 import { CURRENT_TIME_IN_LOCATION } from "settings";
+
 import { useInterval } from "hooks/useInterval";
+
+import "./PlayaTime.scss";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import "./PlayaBackground.scss";
+import utc from "dayjs/plugin/utc";
+
 import { PLAYA_BG_DAYPART_MS, PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+
 import { useInterval } from "hooks/useInterval";
+
+import "./PlayaBackground.scss";
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

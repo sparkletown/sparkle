@@ -1,9 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
+  Redirect,
   Route,
   Switch,
-  Redirect,
 } from "react-router-dom";
 
 import { DEFAULT_REDIRECT_URL, SPARKLEVERSE_HOMEPAGE_URL } from "settings";
@@ -15,8 +15,9 @@ import { LoginWithCustomToken } from "pages/Account/LoginWithCustomToken";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
 import { VersionPage } from "pages/VersionPage/VersionPage";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
 import { Provided } from "components/organisms/AppRouter/Provided";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 const AccountSubrouter = lazy(() =>
   tracePromise("AppRouter::lazy-import::AccountSubrouter", () =>

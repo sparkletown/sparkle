@@ -1,5 +1,5 @@
-import Bugsnag from "@bugsnag/js";
 import { generatePath } from "react-router";
+import Bugsnag from "@bugsnag/js";
 
 import { VALID_URL_PROTOCOLS } from "settings";
 

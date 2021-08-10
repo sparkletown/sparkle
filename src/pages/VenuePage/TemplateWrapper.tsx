@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from "react";
+import React, { lazy, Suspense } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
@@ -15,14 +15,14 @@ import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
-import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";

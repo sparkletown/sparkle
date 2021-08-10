@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { COVERT_ROOM_TYPES } from "settings";
 
@@ -6,18 +6,18 @@ import { Room } from "types/rooms";
 import { PartyMapVenue } from "types/venues";
 
 import {
-  isEventLiveOrFuture,
   eventsByStartUtcSecondsSorter,
+  isEventLiveOrFuture,
 } from "utils/event";
 
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-
-import { Map, RoomModal } from "./components";
+import { useRecentVenueUsers } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
+
+import { Map, RoomModal } from "./components";
 
 import "./PartyMap.scss";
 
