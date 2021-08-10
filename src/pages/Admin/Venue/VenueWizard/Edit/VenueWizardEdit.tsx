@@ -1,19 +1,20 @@
 import React, { useCallback, useEffect } from "react";
-
-// Components
-import Details from "pages/Admin/Details";
-import WithNavigationBar from "components/organisms/WithNavigationBar";
-
 // Hooks
 import { useFirestore } from "react-redux-firebase";
 
 // Typings
 import { Venue_v2 } from "types/venues";
-import { VenueWizardEditProps } from "./VenueWizardEdit.types";
 
+// Components
+import Details from "pages/Admin/Details";
+
+import WithNavigationBar from "components/organisms/WithNavigationBar";
+
+import { SET_FORM_VALUES } from "../redux";
 // Reducer
 import { setBannerURL, setSquareLogoUrl } from "../redux/actions";
-import { SET_FORM_VALUES } from "../redux";
+
+import { VenueWizardEditProps } from "./VenueWizardEdit.types";
 
 const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   venueId,

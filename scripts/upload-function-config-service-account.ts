@@ -1,7 +1,7 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
-import { resolve } from "path";
 import { exec } from "child_process";
+import { resolve } from "path";
 
 import {
   ensureProjectIdMatchesCredentialProjectId,

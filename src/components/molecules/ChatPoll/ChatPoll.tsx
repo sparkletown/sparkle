@@ -1,15 +1,15 @@
 import React, { useCallback, useMemo } from "react";
 import { useAsyncFn } from "react-use";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPoll } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import {
   BaseMessageToDisplay,
-  PollVoteBase,
-  PollQuestion,
   DeleteMessage,
   PollMessage,
+  PollQuestion,
+  PollVoteBase,
 } from "types/chat";
 
 import { WithId } from "utils/id";
@@ -20,8 +20,8 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { Loading } from "components/molecules/Loading";
 
-import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 import Button from "components/atoms/Button";
+import { ChatMessageInfo } from "components/atoms/ChatMessageInfo";
 
 import "./ChatPoll.scss";
 

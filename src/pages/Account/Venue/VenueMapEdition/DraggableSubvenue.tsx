@@ -1,10 +1,12 @@
-import React, { useEffect, CSSProperties } from "react";
-import { useDrag, DragSourceMonitor } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
+import React, { CSSProperties, useEffect } from "react";
+import { DragSourceMonitor, useDrag } from "react-dnd";
 import { getEmptyImage } from "react-dnd-html5-backend";
 import { Resizable } from "re-resizable";
+
 import { Dimensions } from "types/utility";
+
 import { SubVenueIconMap } from "./Container";
+import { ItemTypes } from "./ItemTypes";
 
 const getStyles = (
   left: number,

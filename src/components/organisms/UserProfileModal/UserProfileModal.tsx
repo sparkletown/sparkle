@@ -3,26 +3,27 @@ import { Modal } from "react-bootstrap";
 import { Link } from "react-router-dom";
 
 import {
+  DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_PIC,
   ENABLE_SUSPECTED_LOCATION,
   RANDOM_AVATARS,
-  DEFAULT_PROFILE_PIC,
-  DEFAULT_PARTY_NAME,
 } from "settings";
-
-import { WithId } from "utils/id";
-import { venueInsideUrl, venuePreviewUrl } from "utils/url";
 
 import { User } from "types/User";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
-import { useUser } from "hooks/useUser";
-import { useWorldUserLocation } from "hooks/users";
+import { WithId } from "utils/id";
+import { venueInsideUrl, venuePreviewUrl } from "utils/url";
+
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUserLocation } from "hooks/users";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
 
 import { Badges } from "components/organisms/Badges";
+
 import Button from "components/atoms/Button";
 
 import "./UserProfileModal.scss";

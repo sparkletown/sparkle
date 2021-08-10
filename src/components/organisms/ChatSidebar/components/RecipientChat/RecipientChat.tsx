@@ -1,17 +1,18 @@
-import { useUser } from "hooks/useUser";
-import { useCallback } from "react";
-import React, { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { useCallback, useEffect } from "react";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { MessageToDisplay } from "types/chat";
 
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
+import { useUser } from "hooks/useUser";
+
 import { Chatbox } from "components/molecules/Chatbox";
+
 import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useChatSidebarControls } from "hooks/chats/chatSidebar";
-
 import "./RecipientChat.scss";
-import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 export interface RecipientChatProps {
   recipientId: string;
 }

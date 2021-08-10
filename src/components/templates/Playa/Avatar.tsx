@@ -1,12 +1,16 @@
 import React from "react";
+
+import { DEFAULT_PARTY_NAME, PLAYA_AVATAR_SIZE } from "settings";
+
 import { UserVideoState } from "types/RelayMessage";
 import { User } from "types/User";
-import { WithId } from "utils/id";
-import { DEFAULT_PARTY_NAME, PLAYA_AVATAR_SIZE } from "settings";
-import { Shout } from "./Playa";
+
 import { getLinkFromText } from "utils/getLinkFromText";
-import AvatarPartygoers from "./AvatarPartygoers";
+import { WithId } from "utils/id";
+
 import AvatarImage from "./AvatarImage";
+import AvatarPartygoers from "./AvatarPartygoers";
+import { Shout } from "./Playa";
 
 interface PropsType {
   useProfilePicture: boolean;

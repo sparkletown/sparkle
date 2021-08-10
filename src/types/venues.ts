@@ -10,7 +10,7 @@ import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UserStatus, UsernameVisibility } from "./User";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
