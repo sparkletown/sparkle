@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from "react";
+
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useRecentWorldUsers } from "hooks/users";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
+import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 
 import "./RunTabUsers.scss";
-import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
-import { useShowHide } from "hooks/useShowHide";
 
 interface RunTabSidebarProps {
   venueId?: string;

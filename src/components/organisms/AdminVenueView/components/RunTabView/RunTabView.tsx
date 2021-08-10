@@ -6,18 +6,17 @@ import { DEFAULT_MAP_BACKGROUND } from "settings";
 import { adminNGSettingsUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+
+import { PartyMapVenue } from "types/venues";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import "./RunTabView.scss";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
-import { PartyMapVenue } from "types/venues";
-
-const noop = () => undefined;
 
 export const RunTabView: React.FC = () => {
   const venueId = useVenueId();
@@ -54,7 +53,6 @@ export const RunTabView: React.FC = () => {
               width: 100,
               height: 100,
             }}
-            onChange={noop}
             snapToGrid={false}
             iconsMap={{}}
             backgroundImage={

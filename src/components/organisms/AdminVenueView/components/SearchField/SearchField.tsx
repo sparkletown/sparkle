@@ -30,7 +30,7 @@ export const SearchField: React.FC<SearchUsersProps> = ({
     [debounceTime, onChange]
   );
 
-  const cn = classNames({
+  const searchFieldClassNames = classNames({
     "SearchField SearchField--empty": !text,
     "SearchField SearchField--full": text,
   });
@@ -39,7 +39,7 @@ export const SearchField: React.FC<SearchUsersProps> = ({
   const refocus = () => ref.current?.focus();
 
   return (
-    <div className={cn} onFocus={refocus} onClick={refocus}>
+    <div className={searchFieldClassNames} onFocus={refocus} onClick={refocus}>
       <FontAwesomeIcon className="SearchField__icon" icon={faSearch} />
       <input
         className="SearchField__input"
