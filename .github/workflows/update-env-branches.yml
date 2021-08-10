@@ -2,7 +2,7 @@ name: Deploy the changes to the env branches
 on:
   push:
     branches:
-      - staging
+      - chore/adds-github-action-push-script
 jobs:
   push-to-prod-envs:
     runs-on: ubuntu-latest
@@ -13,4 +13,4 @@ jobs:
           fetch-depth: 0
       - name: Push to test staging
         run: |
-          git push origin staging:staging-test
+          git push origin chore/adds-github-action-push-script:staging-test
