@@ -1,10 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
-
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
 import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
@@ -16,14 +12,10 @@ import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 import "./PrivateChats.scss";
 
 export interface PrivateChatsProps {
-  venue: WithId<AnyVenue>;
   recipientId?: string;
 }
 
-export const PrivateChats: React.FC<PrivateChatsProps> = ({
-  recipientId,
-  venue,
-}) => {
+export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const [userSearchQuery, setUserSearchQuery] = useState("");
   const onInputChange = useCallback(
     (e) => setUserSearchQuery(e.target.value),
@@ -90,7 +82,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({
   const numberOfOtherOnlineUsers = renderedOnlineUsers.length;
 
   if (recipientId) {
-    return <RecipientChat recipientId={recipientId} venue={venue} />;
+    return <RecipientChat recipientId={recipientId} />;
   }
 
   return (
