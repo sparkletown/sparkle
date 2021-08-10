@@ -8,9 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: staging
-          fetch-depth: 0
       - name: Push to test staging
         run: |
           git fetch origin chore/adds-github-action-push-script:chore/adds-github-action-push-script
