@@ -3,17 +3,17 @@ import * as admin from "firebase-admin";
 // re-export type definitions to decrease declaration verbosity in other files
 // and for some reason, ESLint thinks they're unused, thus the disable comments
 //
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import CollectionReference = admin.firestore.CollectionReference;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import DocumentData = admin.firestore.DocumentData;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import DocumentReference = admin.firestore.DocumentReference;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import DocumentSnapshot = admin.firestore.DocumentSnapshot;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import QueryDocumentSnapshot = admin.firestore.QueryDocumentSnapshot;
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars,no-undef
 export import Timestamp = admin.firestore.Timestamp;
 
 export type LogFunction = typeof console.log;

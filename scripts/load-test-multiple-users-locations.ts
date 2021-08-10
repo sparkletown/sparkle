@@ -3,19 +3,19 @@
 
 import { resolve } from "path";
 
-import admin from "firebase-admin";
 import { differenceInMilliseconds, formatDistanceStrict } from "date-fns";
+import admin from "firebase-admin";
 
 import { User } from "../src/types/User";
 import { AnyVenue } from "../src/types/venues";
-
-import { withId, WithId } from "../src/utils/id";
+import { WithId, withId } from "../src/utils/id";
 
 import {
   FieldValue,
   initFirebaseAdminApp,
   makeScriptUsage,
 } from "./lib/helpers";
+import { DocumentData, DocumentReference } from "./lib/types";
 
 const usage = makeScriptUsage({
   description: "Simulate user location updates to load test the platform",
@@ -64,7 +64,7 @@ initFirebaseAdminApp(projectId, {
 });
 
 type EnterVenueOptions = {
-  userRef: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>;
+  userRef: DocumentReference<DocumentData>;
   venueId: string;
 };
 const enterVenue = async ({ userRef, venueId }: EnterVenueOptions) => {
@@ -88,7 +88,7 @@ const enterVenue = async ({ userRef, venueId }: EnterVenueOptions) => {
 };
 
 type TakeSeatOptions = {
-  userRef: FirebaseFirestore.DocumentReference<FirebaseFirestore.DocumentData>;
+  userRef: DocumentReference<DocumentData>;
   venue: WithId<AnyVenue>;
   index: number;
   count: number;

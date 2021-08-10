@@ -1,11 +1,11 @@
 import { strict as assert } from "assert";
 
-import admin from "firebase-admin";
 import chalk from "chalk";
+import admin from "firebase-admin";
 
 import { User } from "types/User";
 
-import { DocumentReference, LogFunction, GridSize } from "./types";
+import { DocumentReference, GridSize, LogFunction } from "./types";
 
 export type GetVenueRefOptions = {
   venueId: string;

@@ -1,11 +1,11 @@
 import { strict as assert } from "assert";
-import chalk from "chalk";
 
-import { SimulatorContext } from "../simulator";
+import chalk from "chalk";
 
 import { sendBotVenueMessage as actualSendBotVenueMessage } from "../lib/bot";
 import { withErrorReporter } from "../lib/log";
 import { sleep } from "../lib/utils";
+import { SimulatorContext } from "../simulator";
 
 export const DEFAULT_CHAT_CHUNK_SIZE = 100;
 export const DEFAULT_CHAT_TICK_MS = 1000;

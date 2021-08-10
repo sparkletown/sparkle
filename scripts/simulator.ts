@@ -4,15 +4,15 @@
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
-import { differenceInSeconds, parseISO, differenceInMinutes } from "date-fns";
+import { differenceInMinutes, differenceInSeconds, parseISO } from "date-fns";
 
 import {
   ensureBotUsers as actualEnsureBotUsers,
-  removeBotUsers,
-  removeBotReactions,
   removeBotChatMessages,
+  removeBotReactions,
+  removeBotUsers,
 } from "./lib/bot";
-import { getReactionsRef, getChatlinesRef } from "./lib/collections";
+import { getChatlinesRef, getReactionsRef } from "./lib/collections";
 import { getVenueRef } from "./lib/documents";
 import { withErrorReporter } from "./lib/log";
 import { run } from "./lib/runner";
@@ -22,7 +22,6 @@ import {
   RunContext,
   SimConfig,
 } from "./lib/types";
-
 import { simChat } from "./simulation/chat";
 import { simExperience } from "./simulation/experience";
 import { simSeat } from "./simulation/seat";

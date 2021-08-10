@@ -3,14 +3,13 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import faker from "faker";
 
-import { SimulatorContext } from "../simulator";
-
 import { takeSeat as actualTakeSeat } from "../lib/bot";
 import { getSectionsRef } from "../lib/collections";
 import { getVenueGridSize } from "../lib/documents";
 import { withErrorReporter } from "../lib/log";
 import { DocumentReference, GridSize } from "../lib/types";
-import { sleep, pickFrom } from "../lib/utils";
+import { pickFrom, sleep } from "../lib/utils";
+import { SimulatorContext } from "../simulator";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;

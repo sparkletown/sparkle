@@ -1,27 +1,27 @@
 import { strict as assert } from "assert";
 
-import * as faker from "faker";
 import chalk from "chalk";
+import * as faker from "faker";
 import admin from "firebase-admin";
 
 import { getUsersRef } from "./collections";
 import { getVenueName } from "./documents";
+import { checkTypeUser } from "./guards";
 import { FieldValue } from "./helpers";
 import { withErrorReporter } from "./log";
-import { checkTypeUser } from "./guards";
 import {
   CollectionReference,
   DocumentReference,
   DocumentSnapshot,
+  LogFunction,
   QueryDocumentSnapshot,
   SimConfig,
   SimStats,
-  LogFunction,
   StopSignal,
 } from "./types";
 import {
-  generateRandomText,
   generateRandomReaction,
+  generateRandomText,
   generateUserId,
   sleep,
 } from "./utils";

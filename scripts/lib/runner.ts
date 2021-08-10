@@ -1,18 +1,18 @@
 import { strict as assert } from "assert";
-import { resolve, parse, sep } from "path";
+import { parse, resolve, sep } from "path";
 
 import chalk from "chalk";
 import { formatDistanceStrict } from "date-fns";
 
 import { initFirebaseAdminApp } from "./helpers";
 import {
+  displayHelp,
+  displayProps,
+  log as actualLog,
   log,
   SCRIPT,
-  displayHelp,
-  log as actualLog,
-  displayProps,
 } from "./log";
-import { SimConfig, SimStats, LogFunction, StopSignal } from "./types";
+import { LogFunction, SimConfig, SimStats, StopSignal } from "./types";
 import { loopUntilKilled, readConfig } from "./utils";
 
 export const SIM_EXT = [".config.json5", ".config.json"];

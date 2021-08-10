@@ -1,6 +1,6 @@
 import { strict as assert } from "assert";
-import { readFileSync, existsSync } from "fs";
-import { resolve, relative } from "path";
+import { existsSync, readFileSync } from "fs";
+import { relative, resolve } from "path";
 
 import chalk from "chalk";
 import { addMinutes, formatISO } from "date-fns";
