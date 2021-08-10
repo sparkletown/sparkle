@@ -213,18 +213,16 @@ export const UserProfileModalContent: React.FC<Props> = ({
           register={register}
         />
       }
-      {user?.profileLinks && (
-        <ProfileModalEditLinks
-          containerClassName="UserProfileModal__section-editable"
-          register={register}
-          initialLinks={defaultValues.profileLinks}
-          links={links}
-          setLinkTitle={setLinkTitle}
-          errors={errors?.profileLinks}
-          onDeleteLink={removeLink}
-          onAddLink={addLinkHandler}
-        />
-      )}
+      <ProfileModalEditLinks
+        containerClassName="UserProfileModal__section-editable"
+        register={register}
+        initialLinks={defaultValues.profileLinks ?? []}
+        links={links}
+        setLinkTitle={setLinkTitle}
+        errors={errors?.profileLinks}
+        onDeleteLink={removeLink}
+        onAddLink={addLinkHandler}
+      />
       <ProfileModalChangePassword
         containerClassName="UserProfileModal__section-editable"
         register={register}
