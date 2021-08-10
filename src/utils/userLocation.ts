@@ -6,8 +6,8 @@ import { useInterval } from "hooks/useInterval";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import { getCurrentTimeInMilliseconds } from "./time";
 import { logEventGoogleAnalytics } from "./googleAnalytics";
+import { getCurrentTimeInMilliseconds } from "./time";
 import { openRoomUrl } from "./url";
 
 export type LocationData = Record<string, number>;

@@ -2,10 +2,9 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Admin from "pages/Admin/Admin";
+import AdminV2 from "pages/Admin/Admin_v2";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-
-import AdminV2 from "pages/Admin/Admin_v2";
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 

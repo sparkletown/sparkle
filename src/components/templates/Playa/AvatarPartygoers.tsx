@@ -1,9 +1,13 @@
 import React from "react";
-import { useRecentVenueUsers } from "hooks/users";
+
 import { PLAYA_AVATAR_SIZE } from "../../../settings";
+
+import { useRecentVenueUsers } from "hooks/users";
+
 import { UserState } from "../../../types/RelayMessage";
-import { WithId } from "../../../utils/id";
 import { User } from "../../../types/User";
+import { WithId } from "../../../utils/id";
+
 import AvatarImage from "./AvatarImage";
 interface PropsType {
   user: WithId<User>;

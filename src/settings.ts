@@ -4,18 +4,19 @@ import {
   API_KEY,
   APP_ID,
   AUTH_DOMAIN,
-  MEASUREMENT_ID,
   BUCKET_URL,
-  PROJECT_ID,
   IS_BURN,
+  MEASUREMENT_ID,
+  PROJECT_ID,
 } from "secrets";
-import { VenueTemplate } from "types/venues";
+
 import { RoomType } from "types/rooms";
+import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";

@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import * as Yup from "yup";
 import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
+import * as Yup from "yup";
 
-import { VenueEvent, VenueTemplate } from "types/venues";
+import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { createEvent, EventInput, updateEvent } from "api/admin";
 
-import { WithId } from "utils/id";
+import { VenueEvent, VenueTemplate } from "types/venues";
 
-import { HAS_ROOMS_TEMPLATES } from "settings";
+import { WithId } from "utils/id";
 
 dayjs.extend(isSameOrAfter);
 

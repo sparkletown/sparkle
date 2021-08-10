@@ -1,5 +1,6 @@
-import React, { DetailedHTMLProps, AnchorHTMLAttributes } from "react";
+import React, { AnchorHTMLAttributes, DetailedHTMLProps } from "react";
 import classNames from "classnames";
+
 import { externalUrlAdditionalProps } from "utils/url";
 
 import "./LinkButton.scss";

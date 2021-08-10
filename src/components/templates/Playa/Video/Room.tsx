@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
 
-import { useUser } from "hooks/useUser";
 import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import LocalParticipant from "./LocalParticipant";
 import RemoteParticipant from "./RemoteParticipant";

@@ -1,20 +1,21 @@
-import React, { useMemo, useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
 import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
-import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
+import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
 
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsAdminUser } from "hooks/roles";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-import { Timing } from "./components/Timing";
+
 import { Spaces } from "./components/Spaces";
+import { Timing } from "./components/Timing";
 
 import "./AdminVenueView.scss";
 
