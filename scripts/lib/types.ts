@@ -111,7 +111,7 @@ export type RunContext<T> = {
   conf: T;
   log: LogFunction;
   stats: SimStats;
-  stop: Promise<void>;
+  stop: Promise<StopSignal>;
 };
 
 export type GridSize = {
