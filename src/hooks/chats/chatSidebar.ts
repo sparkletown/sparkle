@@ -1,21 +1,22 @@
 import { useCallback, useMemo } from "react";
 
 import {
-  chatVisibilitySelector,
-  selectedChatSettingsSelector,
-} from "utils/selectors";
-
-import {
+  setChatSidebarVisibility,
   setPrivateChatTabOpened,
   setVenueChatTabOpened,
-  setChatSidebarVisibility,
 } from "store/actions/Chat";
 
 import { AnyVenue } from "types/venues";
 
-import { useSelector } from "hooks/useSelector";
+import {
+  chatVisibilitySelector,
+  selectedChatSettingsSelector,
+} from "utils/selectors";
+
 import { useDispatch } from "hooks/useDispatch";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
+
 import { usePrivateChatPreviews } from "./privateChats/usePrivateChatPreviews";
 
 export const useChatSidebarControls = () => {

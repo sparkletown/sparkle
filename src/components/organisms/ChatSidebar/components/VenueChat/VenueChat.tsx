@@ -6,6 +6,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useVenueChat } from "hooks/chats/venueChat";
+import { useCanDeleteVenueChatMessages } from "hooks/useCanDeleteVenueChatMessages";
 
 import { Chatbox } from "components/molecules/Chatbox";
 
@@ -23,6 +24,8 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     sendThreadReply,
   } = useVenueChat(venue.id);
 
+  const canDeleteMessages = useCanDeleteVenueChatMessages(venue);
+
   return (
     <div className="venue-chat">
       <Chatbox
@@ -31,8 +34,7 @@ export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
         messages={messagesToDisplay}
         sendMessage={sendMessage}
         sendThreadReply={sendThreadReply}
-        deleteMessage={deleteMessage}
-        venue={venue}
+        deleteMessage={canDeleteMessages ? deleteMessage : undefined}
       />
     </div>
   );

@@ -6,7 +6,8 @@ import React, {
   useMemo,
   useState,
 } from "react";
-
+import Bugsnag from "@bugsnag/js";
+import { HowlOptions } from "howler";
 import useSound from "use-sound";
 import {
   ExposedData,
@@ -14,9 +15,6 @@ import {
   PlayFunction,
   PlayOptions,
 } from "use-sound/dist/types";
-import { HowlOptions } from "howler";
-
-import Bugsnag from "@bugsnag/js";
 
 import { fetchSoundConfigs } from "api/sounds";
 

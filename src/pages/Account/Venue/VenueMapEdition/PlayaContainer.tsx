@@ -1,12 +1,14 @@
 import React, { useMemo } from "react";
 
-import { useSelector } from "hooks/useSelector";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { PLAYA_HEIGHT, PLAYA_WIDTH } from "settings";
 
-import { Container, SubVenueIconMap } from "./Container";
 import { ExtractProps } from "types/utility";
 import { VenuePlacementState } from "types/venues";
-import { PLAYA_HEIGHT, PLAYA_WIDTH } from "settings";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+
+import { Container, SubVenueIconMap } from "./Container";
 
 type PropsType = Omit<ExtractProps<typeof Container>, "otherIcons"> & {
   venueId?: string;

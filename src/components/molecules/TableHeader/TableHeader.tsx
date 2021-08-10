@@ -1,25 +1,25 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+  faChevronLeft,
   faLock,
   faLockOpen,
-  faChevronLeft,
   faPen,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
 import { MAX_TABLE_CAPACITY } from "settings";
 
-import { User } from "types/User";
 import { Table } from "types/Table";
-
-import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
-import { useShowHide } from "hooks/useShowHide";
+import { User } from "types/User";
 
 import { experienceSelector } from "utils/selectors";
 import { isTruthy } from "utils/types";
+
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
