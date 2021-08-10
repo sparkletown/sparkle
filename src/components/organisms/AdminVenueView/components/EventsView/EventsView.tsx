@@ -8,6 +8,7 @@ import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
@@ -63,33 +64,24 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   );
 
   return (
-    <>
-      <div className="EventsView">
+    <div className="EventsView">
+      <div className="EventsView__box">
         <h4 className="EventsView__title">Events Schedule</h4>
         <div className="EventsView__content">
           {renderedEvents}
           {!hasVenueEvents && (
             <div className="EventsView__no-events">
               <p>No events yet, lets start planning!</p>
-              <button
-                className="btn btn-primary"
-                onClick={setShowCreateEventModal}
-              >
-                Create an Event
-              </button>
             </div>
           )}
         </div>
       </div>
-
-      {hasVenueEvents && (
-        <div className="create-button">
-          <button className="btn btn-primary" onClick={setShowCreateEventModal}>
-            Create an Event
-          </button>
-        </div>
-      )}
-
+      <div className="EventsView__footer">
+        <ButtonNG>Import from CSV</ButtonNG>
+        <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
+          Create an Event
+        </ButtonNG>
+      </div>
       {showCreateEventModal && (
         <TimingEventModal
           show={showCreateEventModal}
@@ -117,6 +109,6 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           event={editedEvent}
         />
       )}
-    </>
+    </div>
   );
 };
