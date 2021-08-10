@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
+import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
@@ -11,8 +13,6 @@ import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
 import { RoomAttendance } from "../RoomAttendance";
-
-import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
 
 import "./MapRoom.scss";
 

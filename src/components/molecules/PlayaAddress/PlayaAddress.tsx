@@ -1,8 +1,11 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationArrow } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { playaAddress } from "utils/address";
+
 import { useSelector } from "hooks/useSelector";
+
 import "./PlayaAddress.scss";
 
 const PlayaAddress: React.FC = () => {

@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
-import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import "firebase/storage";
+import { UserInfo } from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -16,6 +15,8 @@ import { resizeFile } from "utils/image";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { Loading } from "components/molecules/Loading";
+
+import "firebase/storage";
 
 import "./ProfilePictureInput.scss";
 

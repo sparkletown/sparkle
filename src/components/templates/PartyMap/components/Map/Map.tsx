@@ -7,25 +7,24 @@ import {
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
 
-import { User, UserExperienceData } from "types/User";
-import { Room } from "types/rooms";
-import { PartyMapVenue } from "types/venues";
-import { GridPosition } from "types/grid";
-
 import { setGridData } from "api/profile";
 
-import { hasElements } from "utils/types";
+import { GridPosition } from "types/grid";
+import { Room } from "types/rooms";
+import { User, UserExperienceData } from "types/User";
+import { PartyMapVenue } from "types/venues";
+
 import { filterEnabledRooms, makeRoomHitFilter } from "utils/filter";
 import { WithId } from "utils/id";
+import { hasElements } from "utils/types";
 import { setLocationData } from "utils/userLocation";
 
+import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
 import { usePartygoersOverlay } from "./hooks/usePartygoersOverlay";
-import { useGetUserByPosition } from "hooks/useGetUserByPosition";
-
 import { MapGrid } from "./MapGrid";
 import { MapRoom } from "./MapRoom";
 

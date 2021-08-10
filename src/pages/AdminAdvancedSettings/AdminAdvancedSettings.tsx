@@ -1,5 +1,5 @@
-import React, { useMemo, useCallback } from "react";
-import { useParams, useHistory } from "react-router";
+import React, { useCallback, useMemo } from "react";
+import { useHistory, useParams } from "react-router";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
@@ -7,10 +7,10 @@ import { Venue_v2 } from "types/venues";
 
 import { adminNGSettingsUrl } from "utils/url";
 
-import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useUser } from "hooks/useUser";
 
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";

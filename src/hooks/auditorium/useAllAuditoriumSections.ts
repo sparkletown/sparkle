@@ -8,9 +8,9 @@ import { WithId } from "utils/id";
 import { currentAuditoriumSectionsSelector } from "utils/selectors";
 import { getUrlWithoutTrailingSlash } from "utils/url";
 
-import { useSelector } from "../useSelector";
-import { useFirestoreConnect, isLoaded } from "../useFirestoreConnect";
+import { isLoaded, useFirestoreConnect } from "../useFirestoreConnect";
 import { useRecentVenueUsers } from "../users";
+import { useSelector } from "../useSelector";
 import { useShowHide } from "../useShowHide";
 
 export const useConnectAllAuditoriumSections = (venueId?: string) => {

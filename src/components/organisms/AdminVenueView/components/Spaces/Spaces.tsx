@@ -1,32 +1,34 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCaretRight,
   faCaretDown,
+  faCaretRight,
   faHome,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { VenueTemplate, AnyVenue } from "types/venues";
 import { RoomData_v2, RoomTemplate, VenueRoomTemplate } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
+import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useShowHide } from "hooks/useShowHide";
 
 import { BackgroundSelect } from "pages/Admin/BackgroundSelect";
-import { VenueRoomItem } from "components/molecules/VenueRoomItem";
-import { EditRoomForm } from "components/molecules/EditRoomForm";
+
 import { MapPreview } from "components/organisms/AdminVenueView/components/MapPreview";
 
-import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
-import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
-import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
-import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import { EditRoomForm } from "components/molecules/EditRoomForm";
+import { VenueRoomItem } from "components/molecules/VenueRoomItem";
+
 import RoomIconArtPiece from "assets/icons/icon-room-artpiece.svg";
+import RoomIconAuditorium from "assets/icons/icon-room-auditorium.svg";
+import RoomIconBurnBarrel from "assets/icons/icon-room-burnbarrel.svg";
+import RoomIconConversation from "assets/icons/icon-room-conversation.svg";
 import RoomIconExperience from "assets/icons/icon-room-experience.svg";
 import RoomIconExternalLink from "assets/icons/icon-room-externallink.svg";
 import RoomIconMap from "assets/icons/icon-room-map.svg";
+import RoomIconMusicBar from "assets/icons/icon-room-musicbar.svg";
 
 import "./Spaces.scss";
 

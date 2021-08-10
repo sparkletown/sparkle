@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from "react";
-import firebase from "firebase/app";
+import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
+import firebase from "firebase/app";
 
 import { Room, RoomData_v2 } from "types/rooms";
 

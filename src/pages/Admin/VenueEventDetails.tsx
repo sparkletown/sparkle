@@ -3,9 +3,9 @@ import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
+import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
-import { eventEndTime, eventStartTime } from "utils/event";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 

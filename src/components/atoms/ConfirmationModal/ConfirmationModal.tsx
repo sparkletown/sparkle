@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+
 import { isTruthy } from "utils/types";
 
 import "./ConfirmationModal.scss";

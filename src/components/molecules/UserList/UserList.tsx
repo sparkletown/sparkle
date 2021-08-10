@@ -1,14 +1,14 @@
 import React, { useMemo } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { useShowHide } from "hooks/useShowHide";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useShowHide } from "hooks/useShowHide";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 

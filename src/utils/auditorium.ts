@@ -5,8 +5,8 @@ import {
 } from "settings";
 
 import { AuditoriumSection, AuditoriumSize } from "types/auditorium";
-import { AuditoriumVenue } from "types/venues";
 import { User } from "types/User";
+import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "./id";
 

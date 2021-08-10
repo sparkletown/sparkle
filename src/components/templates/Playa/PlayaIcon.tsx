@@ -1,5 +1,7 @@
 import React from "react";
+
 import { AnyVenue, PlayaIcon } from "types/venues";
+
 import { WithId } from "utils/id";
 
 type PropsType = {

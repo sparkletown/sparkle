@@ -1,13 +1,13 @@
 import React from "react";
 
-// Typings
-import { DetailsPreviewProps } from "./DetailsPreview.types";
-
-// Styles
-import * as S from "./DetailsPreview.styles";
 import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+// Styles
+import * as S from "./DetailsPreview.styles";
+// Typings
+import { DetailsPreviewProps } from "./DetailsPreview.types";
 
 const DetailsPreview: React.FC<DetailsPreviewProps> = ({
   bannerImageUrl,

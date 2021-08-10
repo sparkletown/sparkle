@@ -3,8 +3,8 @@ import { useAsyncFn } from "react-use";
 
 import { updateVenue_v2 } from "api/admin";
 
-import { useUser } from "hooks/useUser";
 import { useFetchAssets } from "hooks/useFetchAssets";
+import { useUser } from "hooks/useUser";
 
 import { FileButton } from "components/atoms/FileButton";
 

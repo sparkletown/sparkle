@@ -1,7 +1,6 @@
 import React from "react";
 
 import * as ActionTypes from "./actionTypes";
-
 import { WizardAction } from "./types";
 
 export const setBannerURL = (

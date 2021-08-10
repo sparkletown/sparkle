@@ -1,14 +1,13 @@
 import {
-  IconDefinition,
   faPoll,
   faQuestion,
+  IconDefinition,
 } from "@fortawesome/free-solid-svg-icons";
+import firebase from "firebase/app";
 
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
-
-import firebase from "firebase/app";
 
 export enum ChatMessageType {
   poll = "poll",

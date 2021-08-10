@@ -6,13 +6,15 @@ import { VideoState } from "types/User";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { currentVenueSelector } from "utils/selectors";
 
-import { useUser } from "hooks/useUser";
+import { useVideoRoomState } from "hooks/twilio";
 import { useRecentVenueUsers, useWorldUsersById } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
-import { useVideoRoomState } from "hooks/twilio";
+import { useUser } from "hooks/useUser";
 
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
+
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
+
 import LocalParticipant from "../Playa/Video/LocalParticipant";
 import RemoteParticipant from "../Playa/Video/RemoteParticipant";
 

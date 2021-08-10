@@ -1,9 +1,11 @@
 import React from "react";
-import { XYCoord, useDragLayer } from "react-dnd";
-import { ItemTypes } from "./ItemTypes";
-import { SubvenueDragPreview } from "./SubvenueDragPreview";
-import { snapToGrid } from "./snapToGrid";
+import { useDragLayer, XYCoord } from "react-dnd";
+
 import { Dimensions } from "types/utility";
+
+import { ItemTypes } from "./ItemTypes";
+import { snapToGrid } from "./snapToGrid";
+import { SubvenueDragPreview } from "./SubvenueDragPreview";
 
 const layerStyles: React.CSSProperties = {
   position: "fixed",

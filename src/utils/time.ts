@@ -1,5 +1,6 @@
 import {
   differenceInSeconds,
+  Duration,
   endOfDay,
   format,
   formatDuration,
@@ -16,7 +17,6 @@ import {
   startOfDay,
   subDays,
   subHours,
-  Duration,
 } from "date-fns";
 
 /**

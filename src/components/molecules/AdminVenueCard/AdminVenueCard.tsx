@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { AnyVenue } from "types/venues";
-
 import { DEFAULT_VENUE_LOGO } from "settings";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl, adminNGVenueUrl } from "utils/url";

@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
 import { VenueTemplate } from "types/venues";
 
-import "./Venue.scss";
 import { WizardPage } from "./VenueWizard";
-import { BURN_VENUE_TEMPLATES, Template } from "settings";
+
+import "./Venue.scss";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateImageMap: Record<VenueTemplate, string | undefined> = {
