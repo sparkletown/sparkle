@@ -1,16 +1,17 @@
 import React, { useCallback, useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { InputField } from "components/atoms/InputField";
 
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useChatSidebarControls } from "hooks/chats/chatSidebar";
-import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
 import { useOnlineUsersToDisplay } from "hooks/chats/privateChats/useOnlineUsersToDisplay";
+import { usePrivateChatPreviews } from "hooks/chats/privateChats/usePrivateChatPreviews";
 
-import { PrivateChatPreview, RecipientChat, OnlineUser } from "..";
+import { InputField } from "components/atoms/InputField";
+
+import { OnlineUser, PrivateChatPreview, RecipientChat } from "..";
 
 import "./PrivateChats.scss";
 

@@ -1,9 +1,11 @@
-import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 import React from "react";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { AnyVenue } from "types/venues";
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -11,16 +13,13 @@ import { EventsView } from "../EventsView";
 
 import "./Timing.scss";
 
-export type TimingProps = {
+interface TimingProps extends TabNavigationProps {
   venue?: WithId<AnyVenue>;
-  onClickNext: () => void;
-  onClickBack: () => void;
-};
+}
 
 export const Timing: React.FC<TimingProps> = ({
   venue,
-  onClickNext,
-  onClickBack,
+  ...tabNavigationProps
 }) => {
   if (!venue) {
     return <LoadingPage />;
@@ -29,7 +28,7 @@ export const Timing: React.FC<TimingProps> = ({
   return (
     <div className="Timing">
       <div className="Timing__left">
-        <TabFooter onBackClick={onClickBack} onNextClick={onClickNext} />
+        <TabFooter {...tabNavigationProps} />
         <div className="Timing__left-content">
           <h2 className="mb-1">Plan your events</h2>
 

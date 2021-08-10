@@ -1,7 +1,7 @@
 import React from "react";
-import classNames from "classnames";
 import { IconProp } from "@fortawesome/fontawesome-svg-core";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import "./PosterPageControl.scss";
 

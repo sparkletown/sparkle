@@ -4,6 +4,7 @@ import {
 } from "store/actions/UserProfile";
 
 import { User } from "types/User";
+
 import { WithId } from "utils/id";
 
 export type UserProfileState = {

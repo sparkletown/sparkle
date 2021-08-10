@@ -1,4 +1,5 @@
 import React, { useCallback, useRef } from "react";
+
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 // @debt Refactor this to use our useImage hook?

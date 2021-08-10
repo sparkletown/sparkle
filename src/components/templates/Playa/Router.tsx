@@ -1,5 +1,6 @@
 import React from "react";
-import { useRouteMatch, Switch, Route } from "react-router-dom";
+import { Route, Switch, useRouteMatch } from "react-router-dom";
+
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 
 import Playa from ".";

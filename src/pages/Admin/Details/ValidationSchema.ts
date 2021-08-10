@@ -1,25 +1,27 @@
-import * as Yup from "yup";
 import dayjs from "dayjs";
+import firebase from "firebase/app";
+import * as Yup from "yup";
+
+import {
+  GIF_RESIZER_URL,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  PLAYA_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_WIDTH,
+  VENUE_NAME_MAX_CHAR_COUNT,
+  VENUE_NAME_MIN_CHAR_COUNT,
+} from "settings";
 
 import {
   createUrlSafeName,
-  VenueInput,
-  PlacementInput,
   EventInput,
+  PlacementInput,
+  VenueInput,
 } from "api/admin";
 
-import firebase from "firebase/app";
-import "firebase/functions";
-import {
-  PLAYA_VENUE_SIZE,
-  VENUE_NAME_MIN_CHAR_COUNT,
-  VENUE_NAME_MAX_CHAR_COUNT,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  GIF_RESIZER_URL,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-} from "settings";
 import { isValidUrl } from "utils/url";
+
+import "firebase/functions";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,

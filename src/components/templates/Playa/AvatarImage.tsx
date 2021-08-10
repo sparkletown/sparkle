@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
+
 import {
-  RANDOM_AVATARS,
-  DEFAULT_PROFILE_IMAGE,
   DEFAULT_PARTY_NAME,
+  DEFAULT_PROFILE_IMAGE,
+  RANDOM_AVATARS,
 } from "../../../settings";
-import { WithId } from "../../../utils/id";
+
 import { User } from "../../../types/User";
+import { WithId } from "../../../utils/id";
 
 interface PropsType {
   user: WithId<User>;

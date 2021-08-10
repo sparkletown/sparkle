@@ -1,39 +1,26 @@
+import React from "react";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
-import { useAdminV3NavigateHome } from "hooks/useAdminV3NavigateHome";
-import React from "react";
+
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
 
 import "./TabFooter.scss";
 
-interface Props {
-  containerClassName?: string;
-  onHomeClick?: () => void;
-  onBackClick: () => void;
-  onNextClick: () => void;
-}
-
-export const TabFooter: React.FC<Props> = ({
-  onHomeClick,
-  onBackClick,
-  onNextClick,
-  containerClassName,
-}: Props) => {
-  const navigateToAdmin = useAdminV3NavigateHome();
-
+export const TabFooter: React.FC<TabNavigationProps> = ({
+  onClickHome,
+  onClickBack,
+  onClickNext,
+}) => {
   return (
-    <div className={classNames("TabFooter", containerClassName)}>
-      <div
-        className="TabFooter__home-button"
-        onClick={onHomeClick ?? navigateToAdmin}
-      >
+    <div className="TabFooter">
+      <div className="TabFooter__home-button" onClick={onClickHome}>
         <FontAwesomeIcon icon={faHome} />
       </div>
       <div className="TabFooter__nav-buttons">
-        <div className="TabFooter__back-button" onClick={onBackClick}>
+        <div className={"TabFooter__back-button"} onClick={onClickBack}>
           Back
         </div>
-        <div className="TabFooter__next-button" onClick={onNextClick}>
+        <div className="TabFooter__next-button" onClick={onClickNext}>
           Next
         </div>
       </div>
