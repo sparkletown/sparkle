@@ -88,3 +88,6 @@ export const eventTimeComparator = (a: VenueEvent, b: VenueEvent) => {
 
   return a.duration_minutes - b.duration_minutes;
 };
+
+export const eventsAlphabeticalSorter = (a: VenueEvent, b: VenueEvent) =>
+  a.name.localeCompare(b.name);

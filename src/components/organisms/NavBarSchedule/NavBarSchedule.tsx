@@ -8,6 +8,7 @@ import {
   startOfToday,
 } from "date-fns";
 import classNames from "classnames";
+import { Dropdown, DropdownButton } from "react-bootstrap";
 
 import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
@@ -21,6 +22,7 @@ import {
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
   eventTimeComparator,
+  eventsAlphabeticalSorter,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
@@ -80,6 +82,20 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   }, [scheduledStartDate]);
 
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
+
+  const [eventSortType, setEventSortType] = useState<string>("Default sorting");
+
+  const eventSortOptions = useMemo(() => {
+    const eventSortTypes = ["Default sorting", "A-Z", "Attendance"];
+
+    const options = eventSortTypes.map((sortType) => (
+      <Dropdown.Item key={sortType} onClick={() => setEventSortType(sortType)}>
+        {sortType}
+      </Dropdown.Item>
+    ));
+
+    return options;
+  }, []);
 
   const {
     isEventsLoading,
@@ -144,7 +160,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
           ? isEventWithinDate(startOfSelectedDay)
           : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
-      .sort(eventTimeComparator)
+      .sort(
+        eventSortType === "A-Z" ? eventsAlphabeticalSorter : eventTimeComparator
+      )
       .map(
         prepareForSchedule({
           usersEvents: userEventIds,
@@ -163,6 +181,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     firstDayOfSchedule,
     isScheduleTimeshifted,
     showPersonalisedSchedule,
+    eventSortType,
   ]);
 
   // const downloadPersonalEventsCalendar = useCallback(() => {
@@ -224,6 +243,16 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         onChange={togglePersonalisedSchedule}
         label="Bookmarked events"
       />
+
+      <DropdownButton
+        id="options-dropdown"
+        title={eventSortType}
+        className="NavBarSchedule__sort-dropdown"
+        variant="link"
+        drop="down"
+      >
+        {eventSortOptions}
+      </DropdownButton>
 
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
