@@ -1,7 +1,7 @@
-import React, { useCallback,useMemo, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome,faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 
@@ -15,7 +15,7 @@ import { radioStationsSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
-import { useBooleanState } from "hooks/useBooleanState"
+import { useBooleanState } from "hooks/useBooleanState";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
@@ -24,7 +24,7 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal"
+import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
