@@ -1,13 +1,16 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Nav } from "react-bootstrap";
+import React, { useMemo, useCallback } from "react";
+import { useParams } from "react-router";
+import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
+import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
 
-import { Venue_v2 } from "types/venues";
+import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
-import { useUser } from "hooks/useUser";
 import { useIsAdminUser } from "hooks/roles";
+import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 import { Timing } from "./components/Timing";
@@ -21,17 +24,29 @@ export enum AdminVenueTab {
   run = "run",
 }
 
+export interface AdminVenueViewRouteParams {
+  venueId?: string;
+  selectedTab?: AdminVenueTab;
+}
+
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",
 };
 
-const DEFAULT_TAB = AdminVenueTab.spaces;
+const tabIcons = {
+  [AdminVenueTab.spaces]: faBorderNone,
+  [AdminVenueTab.timing]: faClock,
+  [AdminVenueTab.run]: faPlayCircle,
+};
 
 export const AdminVenueView: React.FC = () => {
-  const venueId = useVenueId();
-  const [selectedTab, setSelectedTab] = useState<AdminVenueTab>(DEFAULT_TAB);
+  const history = useHistory();
+  const {
+    venueId,
+    selectedTab = AdminVenueTab.spaces,
+  } = useParams<AdminVenueViewRouteParams>();
 
   const { userId } = useUser();
   const { isAdminUser } = useIsAdminUser(userId);
@@ -43,26 +58,41 @@ export const AdminVenueView: React.FC = () => {
   } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabLabelMap).map(([key, text]) => (
-      <Nav.Link
+    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
+      <Link
         key={key}
-        className={classNames("AdminVenueView__tab", {
+        to={adminNGVenueUrl(venueId, key)}
+        className={classNames({
+          AdminVenueView__tab: true,
           "AdminVenueView__tab--selected": selectedTab === key,
         })}
-        eventKey={key}
       >
-        {text}
-      </Nav.Link>
+        <FontAwesomeIcon
+          className="AdminVenueView__tabIcon"
+          icon={tabIcons[key as AdminVenueTab]}
+        />
+        {label}
+      </Link>
     ));
-  }, [selectedTab]);
+  }, [selectedTab, venueId]);
 
-  const selectTab = useCallback((tab: string) => {
-    setSelectedTab(tab as AdminVenueTab);
-  }, []);
+  const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
+    history,
+  ]);
 
-  const selectTiming = useCallback(
-    () => setSelectedTab(AdminVenueTab.timing),
-    []
+  const navigateToSpaces = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.spaces)),
+    [history, venueId]
+  );
+
+  const navigateToTiming = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.timing)),
+    [history, venueId]
+  );
+
+  const navigateToRun = useCallback(
+    () => history.push(adminNGVenueUrl(venueId, AdminVenueTab.run)),
+    [history, venueId]
   );
 
   if (!isCurrentVenueLoaded) {
@@ -76,23 +106,21 @@ export const AdminVenueView: React.FC = () => {
   return (
     <>
       <div className="AdminVenueView">
-        <Nav
-          className="AdminVenueView__options"
-          activeKey={selectedTab}
-          onSelect={selectTab}
-        >
-          {renderAdminVenueTabs}
-        </Nav>
+        <div className="AdminVenueView__options">{renderAdminVenueTabs}</div>
       </div>
-
       {selectedTab === AdminVenueTab.spaces && (
-        <Spaces venue={venue as Venue_v2} onClickNext={selectTiming} />
+        <Spaces
+          onClickHome={navigateToHome}
+          onClickNext={navigateToTiming}
+          venue={venue}
+        />
       )}
       {selectedTab === AdminVenueTab.timing && (
         <Timing
+          onClickBack={navigateToSpaces}
+          onClickHome={navigateToHome}
+          onClickNext={navigateToRun}
           venue={venue}
-          onClickNext={() => setSelectedTab(AdminVenueTab.run)}
-          onClickBack={() => setSelectedTab(AdminVenueTab.spaces)}
         />
       )}
       {selectedTab === AdminVenueTab.run && <div>Run</div>}
