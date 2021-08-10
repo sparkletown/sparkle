@@ -1,11 +1,8 @@
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
+import { useAdminV3NavigateHome } from "hooks/useAdminV3NavigateHome";
 import React, { useCallback, useMemo, useState } from "react";
-import { useHistory } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCaretRight,
-  faCaretDown,
-  faHome,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCaretRight, faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -98,10 +95,10 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     toggle: toggleShowAdvancedSettings,
   } = useShowHide(false);
 
-  const history = useHistory();
-
   const hasSelectedRoom = !!selectedRoom;
   const numberOfRooms = venue.rooms?.length ?? 0;
+
+  const navigateToAdmin = useAdminV3NavigateHome();
 
   const clearSelectedRoom = useCallback(() => {
     setSelectedRoom(undefined);
@@ -159,10 +156,6 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
     []
   );
 
-  const navigateToAdmin = useCallback(() => {
-    history.push("/admin-ng/");
-  }, [history]);
-
   const selectedRoomIndex =
     venue.rooms?.findIndex((room) => room === selectedRoom) ?? -1;
 
@@ -216,19 +209,11 @@ export const Spaces: React.FC<SpacesProps> = ({ venue, onClickNext }) => {
               />
             </div>
             {showAddRoom && renderAddRooms}
-            <div className="Spaces__footer">
-              <div className="Spaces__home-button" onClick={navigateToAdmin}>
-                <FontAwesomeIcon icon={faHome} />
-              </div>
-              <div className="Spaces__nav-buttons">
-                <div className="Spaces__back-button" onClick={navigateToAdmin}>
-                  Back
-                </div>
-                <div className="Spaces__next-button" onClick={onClickNext}>
-                  Next
-                </div>
-              </div>
-            </div>
+            <TabFooter
+              onHomeClick={navigateToAdmin}
+              onBackClick={navigateToAdmin}
+              onNextClick={onClickNext}
+            />
           </>
         )}
       </div>
