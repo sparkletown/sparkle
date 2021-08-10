@@ -2,16 +2,16 @@ name: Deploy the changes to the env branches
 on:
   push:
     branches:
-      - master
+      - fix/github-actions-script
 jobs:
   push-to-prod-envs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: fix/github-actions-script
           fetch-depth: 0
       - name: Push to sparkle 9
         run: |
-          git fetch origin master:master
-          git push origin master:sparkle9
+          git fetch origin fix/github-actions-script
+          git push origin fix/github-actions-script:staging-test
