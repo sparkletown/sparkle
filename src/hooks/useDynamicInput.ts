@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 
 export const useDynamicInput = (questions?: number) => {
   const defaultCounter = questions ?? 0;

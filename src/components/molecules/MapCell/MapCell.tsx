@@ -1,6 +1,7 @@
 import React, { useCallback } from "react";
 
 import { User } from "types/User";
+
 import { WithId } from "utils/id";
 
 interface MapCellProps {

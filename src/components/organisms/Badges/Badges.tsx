@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
-import { User } from "@bugsnag/js";
-
 import { useFirestore } from "react-redux-firebase";
+import { User } from "@bugsnag/js";
+import { chunk } from "lodash";
 
 import {
   DEFAULT_AVATAR_IMAGE,

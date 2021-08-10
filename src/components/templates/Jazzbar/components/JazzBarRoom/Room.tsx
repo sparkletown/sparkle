@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
+import { getTwilioVideoToken } from "api/video";
+
 import { User } from "types/User";
 
-import { getTwilioVideoToken } from "api/video";
+import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import LocalParticipant from "components/organisms/Room/LocalParticipant";
 import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
-
-import { useUser } from "hooks/useUser";
-import { useWorldUsersById } from "hooks/users";
 
 import "./Room.scss";
 
@@ -93,7 +93,7 @@ const Room: React.FC<RoomProps> = ({
   useEffect(() => {
     return () => {
       if (room && room.localParticipant.state === "connected") {
-        room.localParticipant.tracks.forEach(function (trackPublication) {
+        room.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -175,7 +175,7 @@ const Room: React.FC<RoomProps> = ({
 
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
-        localRoom.localParticipant.tracks.forEach(function (trackPublication) {
+        localRoom.localParticipant.tracks.forEach((trackPublication) => {
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -236,7 +236,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
@@ -261,7 +261,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 

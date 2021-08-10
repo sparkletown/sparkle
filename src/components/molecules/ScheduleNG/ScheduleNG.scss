@@ -1,0 +1,16 @@
+@import "scss/constants.scss";
+
+.ScheduleNG {
+  padding-top: $ScheduleNG--padding;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &__loading {
+    margin-top: $ScheduleNG--padding;
+  }
+
+  &__no-events {
+    padding: $ScheduleNG--padding;
+  }
+}

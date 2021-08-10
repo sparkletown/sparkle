@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { EmojiData } from "emoji-mart";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { EmojiData } from "emoji-mart";
 
 import { CHAT_MESSAGE_TIMEOUT } from "settings";
 

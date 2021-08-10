@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 
 import { checkAccess } from "api/auth";
 
-import { venueEntranceUrl } from "utils/url";
 import { setLocalStorageToken } from "utils/localStorage";
 import { isDefined, isTruthy } from "utils/types";
+import { venueEntranceUrl } from "utils/url";
 
 import { useVenueId } from "hooks/useVenueId";
 

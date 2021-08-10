@@ -1,12 +1,15 @@
 import React from "react";
 import { useFirebase } from "react-redux-firebase";
 
-import { useUser } from "hooks/useUser";
+import { PROJECT_ID } from "secrets";
+
+import { VideoState } from "types/User";
+
 import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import Room from "./Video/Room";
-import { VideoState } from "types/User";
-import { PROJECT_ID } from "secrets";
+
 import "./VideoChatLayer.scss";
 
 const ROOM_PREFIX = PROJECT_ID + "-";
