@@ -1,15 +1,15 @@
-import { configureStore, combineReducers, Reducer } from "@reduxjs/toolkit";
 import {
+  actionTypes as reactReduxFirebaseActionTypes,
   FirebaseReducer,
   firebaseReducer,
   getFirebase,
-  actionTypes as reactReduxFirebaseActionTypes,
 } from "react-redux-firebase";
-import {
-  firestoreReducer,
-  constants as reduxFirestoreConstants,
-} from "redux-firestore";
+import { combineReducers, configureStore, Reducer } from "@reduxjs/toolkit";
 import LogRocket from "logrocket";
+import {
+  constants as reduxFirestoreConstants,
+  firestoreReducer,
+} from "redux-firestore";
 
 import { Firestore } from "types/Firestore";
 import { UserWithLocation } from "types/User";

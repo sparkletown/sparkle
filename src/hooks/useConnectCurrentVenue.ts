@@ -1,8 +1,8 @@
 import { currentVenueSelector } from "utils/selectors";
 
+import { useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 import { useVenueId } from "./useVenueId";
-import { useFirestoreConnect } from "./useFirestoreConnect";
 
 /**
  * @deprecated use useConnectCurrentVenueNG instead

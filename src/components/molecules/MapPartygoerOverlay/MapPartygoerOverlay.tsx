@@ -1,6 +1,6 @@
 import React from "react";
-import classNames from "classnames";
 import { useCss } from "react-use";
+import classNames from "classnames";
 
 import { User } from "types/User";
 

@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useAsync } from "react-use";
-import { UserInfo } from "firebase/app";
 import { FirebaseStorage } from "@firebase/storage-types";
-import "firebase/storage";
+import firebase from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -17,6 +16,8 @@ import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { Loading } from "components/molecules/Loading";
 
+import "firebase/storage";
+
 import "./ProfilePictureInput.scss";
 
 type Reference = ReturnType<FirebaseStorage["ref"]>;
@@ -24,7 +25,7 @@ type Reference = ReturnType<FirebaseStorage["ref"]>;
 export interface ProfilePictureInputProps {
   venueId: string;
   setValue: (inputName: string, value: string, rerender: boolean) => void;
-  user: UserInfo;
+  user: firebase.UserInfo;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors: Record<string, any>;
   pictureUrl: string;

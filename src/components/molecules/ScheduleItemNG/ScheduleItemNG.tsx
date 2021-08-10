@@ -1,21 +1,20 @@
-import React, { useCallback, MouseEventHandler } from "react";
-import { differenceInCalendarDays } from "date-fns";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import React, { MouseEventHandler, useCallback } from "react";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
 import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
-
-import { PersonalizedVenueEvent } from "types/venues";
-
-import { useUser } from "hooks/useUser";
-
-import { eventEndTime, eventStartTime } from "utils/event";
-import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { differenceInCalendarDays } from "date-fns";
 
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
+
+import { PersonalizedVenueEvent } from "types/venues";
+
+import { eventEndTime, eventStartTime } from "utils/event";
+import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
+
+import { useUser } from "hooks/useUser";
 
 import "./ScheduleItemNG.scss";
 

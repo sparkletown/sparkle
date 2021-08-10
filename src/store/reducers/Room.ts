@@ -1,8 +1,8 @@
 import {
   EXIT_PREVIEW_ROOM,
   PREVIEW_ROOM,
-  TOGGLE_MUTE_REACTIONS,
   RoomActions,
+  TOGGLE_MUTE_REACTIONS,
 } from "store/actions/Room";
 
 export interface RoomState {
