@@ -5,8 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
 
-import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
-
 import {
   addEventToPersonalizedSchedule,
   removeEventFromPersonalizedSchedule,
@@ -15,7 +13,7 @@ import {
 import { Room } from "types/rooms";
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { eventEndTime, eventStartTime, isEventStartingSoon } from "utils/event";
+import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import {
   enterVenue,
@@ -67,10 +65,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   const showDate = Boolean(
     differenceInCalendarDays(eventEndTime(event), eventStartTime(event))
   );
-  const isCurrentEventLive = isEventStartingSoon(
-    event,
-    2 * EVENT_STARTING_SOON_TIMEFRAME
-  );
+  const isCurrentEventLive = isEventLive(event);
   const roomUrlParam = getUrlParamFromString(event.room ?? "");
 
   const handleCopyEventLink = useCallback(

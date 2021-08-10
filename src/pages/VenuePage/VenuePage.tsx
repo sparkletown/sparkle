@@ -2,11 +2,7 @@ import React, { lazy, Suspense, useEffect, useMemo } from "react";
 import { Redirect } from "react-router-dom";
 import { useTitle } from "react-use";
 
-import {
-  EVENT_STARTING_SOON_TIMEFRAME,
-  LOC_UPDATE_FREQ_MS,
-  PLATFORM_BRAND_NAME,
-} from "settings";
+import { LOC_UPDATE_FREQ_MS, PLATFORM_BRAND_NAME } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -237,7 +233,7 @@ export const VenuePage: React.FC = () => {
       return <>Forbidden</>;
     }
 
-    if (isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME)) {
+    if (isEventStartingSoon(event)) {
       return (
         <CountDown
           startUtcSeconds={event.start_utc_seconds}
