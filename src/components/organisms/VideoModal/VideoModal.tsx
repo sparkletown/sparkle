@@ -1,8 +1,11 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
-import "./VideoModal.scss";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import { IFRAME_ALLOW } from "settings";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
+import "./VideoModal.scss";
 
 interface PropsType {
   show: boolean;

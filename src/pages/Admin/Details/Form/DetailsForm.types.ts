@@ -1,3 +1,5 @@
+import React from "react";
+
 import { WizardAction, WizardState } from "pages/Admin/Venue/VenueWizard/redux";
 import { TVenueWizard } from "pages/Admin/Venue/VenueWizard/VenueWizard.types";
 

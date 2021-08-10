@@ -1,13 +1,14 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
 
-import { PLAYA_IMAGE, PLAYA_VENUE_NAME, PLAYA_VENUE_ID } from "settings";
+import { PLAYA_IMAGE, PLAYA_VENUE_ID, PLAYA_VENUE_NAME } from "settings";
 
 import { venueInsideUrl } from "utils/url";
 
 import { useUser } from "hooks/useUser";
 
 import "firebase/storage";
+
 import "./Account.scss";
 
 export interface ProfileFormData {

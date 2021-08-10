@@ -1,8 +1,9 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-const { passwordsMatch } = require("./auth");
 const { uuid } = require("uuidv4");
+
+const { passwordsMatch } = require("./auth");
 
 const checkIsValidToken = async (venueId, uid, token) => {
   if (!venueId || !uid || !token) return false;
