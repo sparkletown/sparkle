@@ -14,11 +14,11 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
+  max,
   startOfDay,
+  startOfToday,
   subDays,
   subHours,
-  startOfToday,
-  max,
 } from "date-fns";
 
 /**

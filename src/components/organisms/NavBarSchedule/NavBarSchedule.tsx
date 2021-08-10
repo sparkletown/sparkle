@@ -108,7 +108,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useShowHide(false);
 
   const liveAndFutureEvents = useMemo(
-    () => relatedVenueEvents.slice(0, 0).filter(isEventLiveOrFuture),
+    () => relatedVenueEvents.filter(isEventLiveOrFuture),
     [relatedVenueEvents]
   );
   const hasSavedEvents = !!liveAndFutureEvents
@@ -144,7 +144,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   const firstRangeDateInSeconds = getUnixTime(
-    max([new Date(minDate), todaysDate])
+    max([new Date(secondsToMilliseconds(minDate)), todaysDate])
   );
 
   const isOneEventAndLive =
