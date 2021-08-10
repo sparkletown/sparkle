@@ -2,6 +2,12 @@ import React, { useMemo, useCallback } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import classNames from "classnames";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faBorderNone,
+  faClock,
+  faPlayCircle,
+} from "@fortawesome/free-solid-svg-icons";
 
 import { adminNGVenueUrl, adminNGRootUrl } from "utils/url";
 
@@ -32,6 +38,12 @@ const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.run]: "Run",
 };
 
+const tabIcons = {
+  [AdminVenueTab.spaces]: faBorderNone,
+  [AdminVenueTab.timing]: faClock,
+  [AdminVenueTab.run]: faPlayCircle,
+};
+
 export const AdminVenueView: React.FC = () => {
   const history = useHistory();
   const {
@@ -58,6 +70,10 @@ export const AdminVenueView: React.FC = () => {
           "AdminVenueView__tab--selected": selectedTab === key,
         })}
       >
+        <FontAwesomeIcon
+          className="AdminVenueView__tabIcon"
+          icon={tabIcons[key as AdminVenueTab]}
+        />
         {label}
       </Link>
     ));
