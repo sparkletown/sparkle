@@ -14,7 +14,7 @@ export const TabFooter: React.FC<TabNavigationProps> = ({
   return (
     <div className="TabFooter">
       <div className="TabFooter__home-button" onClick={onClickHome}>
-        <FontAwesomeIcon icon={faHome} />
+        <FontAwesomeIcon icon={faHome} size={"lg"} />
       </div>
       <div className="TabFooter__nav-buttons">
         <div className={"TabFooter__back-button"} onClick={onClickBack}>

@@ -3,6 +3,7 @@
 $venue-room-logo-size: 34px;
 $button-size: 50px;
 $icon-size: 20px;
+$footer-width: 360px;
 
 .TabFooter {
   display: flex;
@@ -10,20 +11,37 @@ $icon-size: 20px;
   bottom: 0;
   flex-direction: row;
   justify-content: space-between;
-  width: 20%;
+  width: $footer-width;
   padding: $spacing--md;
   background-color: $black;
   border-top: 1px solid opaque-white(0.2);
 
-  &__home-button {
+  @mixin button {
     cursor: pointer;
     display: flex;
-    width: $button-size;
     height: $button-size;
-    border-radius: 100%;
     justify-content: center;
     align-items: center;
     transition: all 400ms $transition-function;
+  }
+
+  @mixin text-button {
+    @include button;
+    margin: 0 5px;
+    font-weight: $font-weight--700;
+    font-size: $font-size--lg;
+    border-radius: $border-radius--xl;
+    padding: $spacing--md $spacing--lg;
+
+    &:hover {
+      background-color: lighten($color: $primary, $amount: 10);
+    }
+  }
+
+  &__home-button {
+    @include button;
+    width: $button-size;
+    border-radius: 100%;
     background-color: lighten($color: $saturated-black, $amount: 10);
 
     &:hover {
@@ -37,41 +55,13 @@ $icon-size: 20px;
   }
 
   &__back-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
+    @include text-button;
     background-color: lighten($color: $saturated-black, $amount: 10);
-
-    &:hover {
-      background-color: lighten($color: $saturated-black, $amount: 20);
-    }
   }
 
   &__next-button {
-    cursor: pointer;
-    display: flex;
-    height: $button-size;
-    font-weight: $font-weight--400;
-    font-size: $font-size--xs;
-    border-radius: $border-radius--xl;
-    justify-content: center;
-    align-items: center;
-    padding: $spacing--md $spacing--lg;
-    margin: 0 5px;
-    transition: all 400ms $transition-function;
+    @include text-button;
     background-color: $primary;
-
-    &:hover {
-      background-color: lighten($color: $primary, $amount: 10);
-    }
   }
 
   &__home-icon {
