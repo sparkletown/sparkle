@@ -3,11 +3,10 @@ import isToday from "date-fns/isToday";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
-import { isEventLive } from "utils/event";
+import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
-import { isEventLater, isEventSoon } from "./utils";
 
 import "./ScheduleEventListNG.scss";
 
