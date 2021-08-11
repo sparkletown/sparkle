@@ -1,7 +1,10 @@
 import React from "react";
-import "firebase/storage";
-import "./Account.scss";
+
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
+
+import "firebase/storage";
+
+import "./Account.scss";
 
 const Step6 = () => {
   return (

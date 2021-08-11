@@ -10,7 +10,6 @@ import { resolve } from "path";
 // import { PartyMapVenue, VenueTemplate } from "../src/types/venues";
 //
 // import { WithoutId } from "../src/utils/id";
-
 import { AdminRole } from "../src/hooks/roles";
 
 import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";

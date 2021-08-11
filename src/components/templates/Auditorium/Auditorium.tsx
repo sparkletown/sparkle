@@ -1,11 +1,12 @@
 import React from "react";
-import { Switch, Route, useRouteMatch } from "react-router";
+import { Route, Switch, useRouteMatch } from "react-router";
 
 import { AuditoriumVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 
-import { Section } from "./components/Section";
 import { AllSectionPreviews } from "./components/AllSectionPreviews";
+import { Section } from "./components/Section";
 
 export interface AuditoriumProps {
   venue: WithId<AuditoriumVenue>;

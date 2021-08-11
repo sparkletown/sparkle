@@ -1,5 +1,7 @@
 import { isEmpty, isLoaded } from "react-redux-firebase";
+
 import { SparkleSelector } from "types/SparkleSelector";
+
 import { AnySparkleRFQuery, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
 

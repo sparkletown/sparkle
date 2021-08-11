@@ -1,10 +1,11 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { AnyVenue } from "types/venues";
+import { TabNavigationProps } from "components/organisms/AdminVenueView/AdminVenueView";
+import { TabFooter } from "components/organisms/AdminVenueView/components/TabFooter";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -12,16 +13,13 @@ import { EventsView } from "../EventsView";
 
 import "./Timing.scss";
 
-export type TimingProps = {
+interface TimingProps extends TabNavigationProps {
   venue?: WithId<AnyVenue>;
-  onClickNext: () => void;
-  onClickBack: () => void;
-};
+}
 
 export const Timing: React.FC<TimingProps> = ({
   venue,
-  onClickNext,
-  onClickBack,
+  ...tabNavigationProps
 }) => {
   if (!venue) {
     return <LoadingPage />;
@@ -30,34 +28,7 @@ export const Timing: React.FC<TimingProps> = ({
   return (
     <div className="Timing">
       <div className="Timing__left">
-        <div className="Timing__left-bottombar">
-          <div className="Timing__left-bottombar-btnleft">
-            <button
-              // href="/admin-ng"
-              className="Timing__left-bottombar-btngrey Timing__btn"
-            >
-              <FontAwesomeIcon
-                icon={faHome}
-                className="edit-button__icon"
-                size="lg"
-              />
-            </button>
-          </div>
-          <div className="Timing__left-bottombar-btnright">
-            <button
-              className="Timing__left-bottombar-btngrey Timing__btn"
-              onClick={onClickBack}
-            >
-              Back
-            </button>
-            <button
-              className="Timing__left-bottombar-btnprimary Timing__btn"
-              onClick={onClickNext}
-            >
-              Next
-            </button>
-          </div>
-        </div>
+        <TabFooter {...tabNavigationProps} />
         <div className="Timing__left-content">
           <h2 className="mb-1">Plan your events</h2>
 

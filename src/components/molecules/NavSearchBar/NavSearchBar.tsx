@@ -1,13 +1,12 @@
-import React, { useCallback, useState, ChangeEvent, useMemo } from "react";
+import React, { ChangeEvent, useCallback, useMemo, useState } from "react";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-
 import {
+  COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   DEFAULT_VENUE_LOGO,
-  COVERT_ROOM_TYPES,
 } from "settings";
 
 import { Room } from "types/rooms";
@@ -16,22 +15,25 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { WithVenueId } from "utils/id";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
-import { isTruthy, isDefined } from "utils/types";
+import { isDefined, isTruthy } from "utils/types";
 
 import { useVenueEvents } from "hooks/events";
-import { useWorldUsers } from "hooks/users";
 import { useDebounceSearch } from "hooks/useDebounceSearch";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useWorldUsers } from "hooks/users";
 
 import { RoomModal } from "components/templates/PartyMap/components";
+
 import { EventModal } from "components/organisms/EventModal";
+
 import { Loading } from "components/molecules/Loading";
+
 import { InputField } from "components/atoms/InputField";
 
-import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
-
 import { NavSearchResult } from "./NavSearchResult";
+
+import navDropdownCloseIcon from "assets/icons/nav-dropdown-close.png";
 
 import "./NavSearchBar.scss";
 

@@ -1,20 +1,20 @@
 import React, {
-  useState,
+  Fragment,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
-  Fragment,
+  useState,
 } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
 import Video from "twilio-video";
 
-import { User } from "types/User";
-
 import { getTwilioVideoToken } from "api/video";
 
-import { useUser } from "hooks/useUser";
+import { User } from "types/User";
+
 import { useWorldUsersById } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 import LocalParticipant from "./LocalParticipant";
 import Participant from "./Participant";
@@ -250,7 +250,7 @@ const Room: React.FC<RoomProps> = ({
           return null;
         }
 
-        const bartender = !!meIsBartender
+        const bartender = meIsBartender
           ? worldUsersById[participant.identity]?.data?.[roomName]?.bartender
           : undefined;
 
