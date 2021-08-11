@@ -101,7 +101,9 @@ export class ViewportSystem extends System {
         const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: 90 });
         try {
           this._viewport.plugins.get("wheel").wheel(wheel);
-        } catch (err) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     );
 
@@ -111,7 +113,9 @@ export class ViewportSystem extends System {
         const wheel: WheelEvent = new WheelEvent("wheel", { deltaY: -90 });
         try {
           this._viewport.plugins.get("wheel").wheel(wheel);
-        } catch (err) {}
+        } catch (error) {
+          console.error(error);
+        }
       }
     );
 

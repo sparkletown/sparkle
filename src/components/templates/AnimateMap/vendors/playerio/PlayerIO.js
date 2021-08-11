@@ -8200,6 +8200,5 @@ class PlayerIOWrapper {
   }
 }
 
-const PlayerIO = new PlayerIOWrapper().PlayerIO;
-export default PlayerIO;
+export const PlayerIOInstance = new PlayerIOWrapper().PlayerIO;
 /* eslint-enable */

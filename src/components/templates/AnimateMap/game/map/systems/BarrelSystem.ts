@@ -1,7 +1,8 @@
-import { Engine, System, NodeList } from "@ash.ts/ash";
+import { Engine, NodeList, System } from "@ash.ts/ash";
+
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { PlayerNode } from "../nodes/PlayerNode";
 import { BarrelNode } from "../nodes/BarrelNode";
+import { PlayerNode } from "../nodes/PlayerNode";
 
 export class VideoChatSystem extends System {
   private bots: NodeList<AvatarTuningNode> | null = null;

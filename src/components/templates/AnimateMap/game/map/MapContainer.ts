@@ -1,8 +1,10 @@
 import { Engine } from "@ash.ts/ash";
-import { Viewport } from "pixi-viewport";
 import { Application, Container } from "pixi.js";
+import { Viewport } from "pixi-viewport";
+
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
 import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
+
 import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
@@ -10,6 +12,7 @@ import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
 import { Point } from "../utils/Point";
+
 import EntityFactory from "./entities/EntityFactory";
 import { AnimationNode } from "./nodes/AnimationNode";
 import { AnimationSystem } from "./systems/AnimationSysem";
@@ -278,7 +281,7 @@ export class MapContainer extends Container {
           > = GameInstance.instance.getState().users;
           const itrb: IterableIterator<ReplicatedUser> = bots.values();
           const self: MapContainer = this;
-          (async function loop() {
+          const loop = async () => {
             for (
               let bot: ReplicatedUser = itrb.next().value;
               bot;
@@ -294,7 +297,8 @@ export class MapContainer extends Container {
                 }, 30);
               });
             }
-          })();
+          };
+          loop();
         }
         return Promise.resolve();
       })
@@ -319,7 +323,7 @@ export class MapContainer extends Container {
       .then(() => {
         if (this.entityFactory) {
           const self: MapContainer = this;
-          (async function loop() {
+          const loop = async () => {
             for (let i = 0; i < artcars.length; i++) {
               await new Promise((resolve) => {
                 const user: PlayerModel = new PlayerModel();
@@ -331,7 +335,8 @@ export class MapContainer extends Container {
                 }, 30);
               });
             }
-          })();
+          };
+          loop();
         }
       });
   }

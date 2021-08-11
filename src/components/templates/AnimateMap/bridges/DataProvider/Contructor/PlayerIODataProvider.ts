@@ -1,8 +1,9 @@
 import { utils } from "pixi.js";
 
-import PlayerIO, {
+import {
   client,
   connection,
+  PlayerIOInstance,
 } from "../../../vendors/playerio/PlayerIO";
 
 export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
@@ -17,7 +18,7 @@ export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
     super();
 
     //TODO: do connect once
-    this._PlayerIO = PlayerIO;
+    this._PlayerIO = PlayerIOInstance;
     this._PlayerIO.authenticate(
       "bm-test-f30xkxglekvwxqoqgcw6w",
       "public",

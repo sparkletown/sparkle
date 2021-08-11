@@ -1,6 +1,6 @@
 import { Point } from "./Point";
 
-export function getNormilzedYFromBezier(
+export const getNormilzedYFromBezier = (
   p0: Point,
   p0hr: Point,
   p1hl: Point,
@@ -8,7 +8,7 @@ export function getNormilzedYFromBezier(
   min: number,
   max: number,
   current: number
-) {
+) => {
   const t = (current - min) / (max - min);
   const calc = (p1: Point, p2: Point) => {
     return {
@@ -24,4 +24,4 @@ export function getNormilzedYFromBezier(
   const p2: Point = calc(p2hl, p2hr);
 
   return p2.y /* (max - min) + min*/;
-}
+};

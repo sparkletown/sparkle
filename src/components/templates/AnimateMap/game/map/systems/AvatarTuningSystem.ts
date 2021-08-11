@@ -1,6 +1,8 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { Sprite } from "pixi.js";
+
+import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { avatarCycles } from "../../constants/AssetConstants";
 import EntityFactory from "../entities/EntityFactory";
 import { Avatar } from "../graphics/Avatar";

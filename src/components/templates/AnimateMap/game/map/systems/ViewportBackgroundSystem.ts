@@ -1,8 +1,10 @@
 import { Engine, System } from "@ash.ts/ash";
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { Viewport } from "pixi-viewport";
 import { BaseTexture, Sprite } from "pixi.js";
+import { Viewport } from "pixi-viewport";
+
+import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";

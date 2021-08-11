@@ -87,6 +87,5 @@ export interface bigDB {
   saveChanges;
 }
 
-declare const playerIO: PlayerIO;
-export default playerIO;
+export const PlayerIOInstance: PlayerIO;
 /* eslint-enable */

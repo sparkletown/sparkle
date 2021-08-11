@@ -1,5 +1,7 @@
 import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
+import { uuid } from "uuidv4";
+
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
   AnimateMapEntityType,
@@ -7,8 +9,9 @@ import {
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
+
 import { Point } from "types/utility";
-import { uuid } from "uuidv4";
+
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";

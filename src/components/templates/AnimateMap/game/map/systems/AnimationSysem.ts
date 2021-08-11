@@ -1,4 +1,5 @@
 import { ListIteratingSystem } from "@ash.ts/ash";
+
 import { AnimationComponent } from "../components/AnimationComponent";
 import { AnimationNode } from "../nodes/AnimationNode";
 
