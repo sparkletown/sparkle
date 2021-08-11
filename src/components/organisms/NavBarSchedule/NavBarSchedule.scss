@@ -48,12 +48,7 @@ $schedule-btn--height: 40px;
 
   &__download-buttons {
     display: flex;
-    position: fixed;
-    left: 0;
-    right: 0;
-    bottom: 0;
     justify-content: flex-end;
-    align-items: center;
     background-color: opaque-black(0.9);
     height: $schedule-btn--height;
     padding-left: $NavBarSchedule--padding;
@@ -67,6 +62,7 @@ $schedule-btn--height: 40px;
     opacity: 0.8;
 
     margin-right: $spacing--sm;
+    margin-top: auto;
 
     text-shadow: 0 2px 4px opaque-black(0.3);
     box-shadow: 0 3px 6px opaque-black(0.2);
