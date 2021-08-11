@@ -270,24 +270,19 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
           <div key={`${room.title}-${index}`}>{renderSelectedRoom(index)}</div>
         ) : (
           <div
-            className="Container__room-preview"
+            className={classNames("Container__room-preview", {
+              "Container__room-image--disabled": !room.isEnabled,
+            })}
             style={{
               top: `${room.y_percent}%`,
               left: `${room.x_percent}%`,
               width: `${room.width_percent}%`,
               height: `${room.height_percent}%`,
+              backgroundImage: "url(" + room.image_url + ")",
             }}
             key={`${room.title}-${index}`}
             onClick={() => !selectedRoom && setSelectedRoom(room)}
           >
-            <img
-              className={classNames("Container__room-image", {
-                "Container__room-image--disabled": !room.isEnabled,
-              })}
-              src={room.image_url}
-              alt="room-logo"
-              title={room.title}
-            />
             <div className="Container__room-title">{room.title}</div>
           </div>
         )

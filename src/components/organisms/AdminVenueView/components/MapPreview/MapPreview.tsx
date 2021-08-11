@@ -46,6 +46,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
         <VenueRoomsEditor
           interactive
           resizable
+          lockAspectRatio
           rooms={rooms}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
