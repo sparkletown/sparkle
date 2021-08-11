@@ -1,5 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Container, InteractionEvent } from "pixi.js";
+
 import { ClickableSpriteNode } from "../nodes/ClickableSpriteNode";
 
 export class ClickableSpriteSystem extends System {

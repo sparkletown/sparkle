@@ -1,5 +1,7 @@
 import React from "react";
+
 import { AnimateMapVenue } from "types/venues";
+
 import "./UIContainer.scss";
 
 export interface UIContainerProps {

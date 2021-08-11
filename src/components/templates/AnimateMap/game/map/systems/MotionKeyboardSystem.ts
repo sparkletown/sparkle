@@ -1,4 +1,5 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+
 import { KeyPollSingleton } from "../../utils/KeyPollSingleton";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
@@ -6,6 +7,7 @@ import EntityFactory from "../entities/EntityFactory";
 import { KeyboardNode } from "../nodes/KeyboardNode";
 import { MotionKeyboardControlNode } from "../nodes/MotionKeyboardControlNode";
 import { ViewportNode } from "../nodes/ViewportNode";
+
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionKeyboardSystem extends MotionBaseSystem {

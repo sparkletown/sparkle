@@ -1,6 +1,8 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+
 import EntityFactory from "../entities/EntityFactory";
 import { ArtcarNode } from "../nodes/ArtcarNode";
+
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionArtcarSystem extends MotionBaseSystem {

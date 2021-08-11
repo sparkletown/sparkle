@@ -1,12 +1,16 @@
 import { uuid } from "uuidv4";
-import { avatarAccessories, avatarCycles, avatarHats } from "./AssetConstants";
-import { getRandomInt } from "utils/getRandomInt";
-import { GameInstance } from "../GameInstance";
+
 import {
   AnimateMapEntityType,
   ReplicatedUser,
 } from "store/reducers/AnimateMap";
+
+import { getRandomInt } from "utils/getRandomInt";
+
 import { GameConfig } from "../../configs/GameConfig";
+import { GameInstance } from "../GameInstance";
+
+import { avatarAccessories, avatarCycles, avatarHats } from "./AssetConstants";
 
 export const stubUsersData = () => {
   const config = GameInstance.instance.getConfig();

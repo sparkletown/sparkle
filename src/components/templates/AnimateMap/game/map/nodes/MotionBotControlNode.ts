@@ -1,4 +1,5 @@
 import { defineNode } from "@ash.ts/ash";
+
 import { BotComponent } from "../components/BotComponent";
 import { MotionBotClickControlComponent } from "../components/MotionBotClickControlComponent";
 import { MovementComponent } from "../components/MovementComponent";

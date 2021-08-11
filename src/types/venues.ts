@@ -58,8 +58,8 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
-  | VenueTemplate.partymap
   | VenueTemplate.animatemap
+  | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
   | VenueTemplate.auditorium
@@ -69,10 +69,10 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
+  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
-  | AnimateMapVenue
   | PosterPageVenue;
 
 // --- VENUE V2
@@ -261,6 +261,11 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  template: VenueTemplate.animatemap;
+  playerioGameId: string;
 }
 
 export interface Question {

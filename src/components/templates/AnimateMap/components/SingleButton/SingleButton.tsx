@@ -1,4 +1,5 @@
 import React from "react";
+
 import "./SingleButton.scss";
 
 export interface SingleButtonProps {

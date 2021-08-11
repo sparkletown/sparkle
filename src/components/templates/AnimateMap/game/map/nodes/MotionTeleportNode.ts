@@ -1,4 +1,5 @@
 import { defineNode } from "@ash.ts/ash";
+
 import { MotionTeleportComponent } from "../components/MotionTeleportComponent";
 import { PositionComponent } from "../components/PositionComponent";
 

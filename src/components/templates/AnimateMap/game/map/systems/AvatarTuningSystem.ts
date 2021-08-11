@@ -1,12 +1,14 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { DisplayObject, Sprite } from "pixi.js";
-import { SpriteComponent } from "../components/SpriteComponent";
-import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { ViewportNode } from "../nodes/ViewportNode";
+
+import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { avatarCycles } from "../../constants/AssetConstants";
-import { PlayerNode } from "../nodes/PlayerNode";
+import { SpriteComponent } from "../components/SpriteComponent";
 import EntityFactory from "../entities/EntityFactory";
+import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { PlayerNode } from "../nodes/PlayerNode";
+import { ViewportNode } from "../nodes/ViewportNode";
 
 export class AvatarTuningSystem extends System {
   private creator: EntityFactory;

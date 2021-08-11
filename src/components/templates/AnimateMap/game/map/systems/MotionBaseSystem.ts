@@ -1,4 +1,5 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
+
 import { GameInstance } from "../../GameInstance";
 import { getNormilzedYFromBezier } from "../../utils/bezierCurveFunction";
 import { ViewportNode } from "../nodes/ViewportNode";

@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "./TooltipWidget.scss";
+
+import { setAnimateMapRoom } from "store/actions/AnimateMap";
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
+import { Room } from "types/rooms";
+
+import { useDispatch } from "hooks/useDispatch";
+
 // import { useSelector } from "hooks/useSelector";
 // import {
 // animateMapEventProviderSelector
@@ -9,11 +16,9 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ENTER } from "../../game/utils/Keyboard";
-import { useDispatch } from "hooks/useDispatch";
-import { setAnimateMapRoom } from "store/actions/AnimateMap";
-import { Room } from "types/rooms";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
 import KeyPoll from "../../game/utils/KeyPollSingleton";
+
+import "./TooltipWidget.scss";
 
 export interface TooltipWidgetProps {}
 

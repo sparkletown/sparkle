@@ -1,19 +1,23 @@
 import { ExtendedFirebaseInstance } from "react-redux-firebase";
+import { utils } from "pixi.js";
+
+import { DEFAULT_AVATAR_IMAGE } from "../../../../../settings";
+
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { DataProvider } from "../DataProvider";
-import { FirebaseDataProvider } from "./Contructor/FirebaseDataProvider";
-import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
-import { DataProviderEvent } from "./Providers/DataProviderEvent";
+
 import {
   CommonInterface,
   CommonLinker,
   MessageType,
 } from "./Contructor/CommonInterface";
+import { FirebaseDataProvider } from "./Contructor/FirebaseDataProvider";
 import { PlayerIODataProvider } from "./Contructor/PlayerIODataProvider";
+import { DataProviderEvent } from "./Providers/DataProviderEvent";
+import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
-import { utils } from "pixi.js";
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
 import playerModel from "./Structures/PlayerModel";
-import { DEFAULT_AVATAR_IMAGE } from "../../../../../settings";
 
 const FREQUENCY_UPDATE = 0.02; //per second
 

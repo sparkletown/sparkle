@@ -7,18 +7,21 @@ import {
 } from "pixi.js";
 import { Store } from "redux";
 import { subscribeActionAfter } from "redux-subscribe-action";
+
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
   setAnimateMapUsers,
 } from "store/actions/AnimateMap";
 import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
+
+import { DataProvider } from "../bridges/DataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
 } from "../bridges/EventProvider/EventProvider";
-import { DataProvider } from "../bridges/DataProvider";
 import { GameConfig } from "../configs/GameConfig";
+
 import Command from "./commands/Command";
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";

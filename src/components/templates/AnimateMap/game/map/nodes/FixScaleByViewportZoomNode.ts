@@ -1,4 +1,5 @@
 import { defineNode } from "@ash.ts/ash";
+
 import { FixScaleByViewportZoomComponent } from "../components/FixScaleByViewportZoomComponent";
 import { PositionComponent } from "../components/PositionComponent";
 

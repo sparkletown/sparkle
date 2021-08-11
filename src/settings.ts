@@ -628,6 +628,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
   VenueTemplate.auditorium,
+  VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
 ];

@@ -1,21 +1,26 @@
 import React, { useState } from "react";
-import "./ControlPanel.scss";
-import AddIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-add.svg";
-import RemoveIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-remove.svg";
-import HumanIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-human.svg";
-import BikeIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-bike.svg";
-import PlaneIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-plane.svg";
+import { useEffectOnce } from "react-use";
 import { subscribeActionAfter } from "redux-subscribe-action";
+
 import {
   AnimateMapActionTypes,
   setAnimateMapZoom,
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
+
 import { useDispatch } from "hooks/useDispatch";
-import { useEffectOnce } from "react-use";
+
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
+
+import AddIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-add.svg";
+import BikeIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-bike.svg";
+import HumanIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-human.svg";
+import PlaneIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-plane.svg";
+import RemoveIcon from "assets/images/AnimateMap/UI/BikeToggler/icon-remove.svg";
+
+import "./ControlPanel.scss";
 // import { useSelector } from "hooks/useSelector";
 // import { animateMapEventProviderSelector } from "utils/selectors";
 

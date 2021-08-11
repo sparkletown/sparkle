@@ -1,6 +1,6 @@
-import { PlayerDataProviderInterface } from "../../DataProvider";
 import { Point } from "../../../game/utils/Point";
 import { dbObj } from "../../../vendors/playerio/PlayerIO";
+import { PlayerDataProviderInterface } from "../../DataProvider";
 import { CommonInterface } from "../Contructor/CommonInterface";
 import playerModel from "../Structures/PlayerModel";
 

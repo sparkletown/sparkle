@@ -1,5 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Container, Graphics, Point, Sprite, Text, TextStyle } from "pixi.js";
+
 import EntityFactory from "../entities/EntityFactory";
 import { BubbleNode } from "../nodes/BubbleNode";
 import { ViewportNode } from "../nodes/ViewportNode";

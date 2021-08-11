@@ -1,6 +1,7 @@
 import { defineNode } from "@ash.ts/ash";
-import { SpriteComponent } from "../components/SpriteComponent";
+
 import { PositionComponent } from "../components/PositionComponent";
+import { SpriteComponent } from "../components/SpriteComponent";
 
 export class SpriteNode extends defineNode({
   position: PositionComponent,

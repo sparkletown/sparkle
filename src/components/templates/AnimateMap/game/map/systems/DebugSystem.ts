@@ -1,8 +1,11 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
-import { Viewport } from "pixi-viewport";
 import { Container, DisplayObject, Graphics, Sprite } from "pixi.js";
+import { Viewport } from "pixi-viewport";
+
 import { Point } from "types/utility";
+
+import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";

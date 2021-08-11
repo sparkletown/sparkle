@@ -1,8 +1,10 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionClickControlNode } from "../nodes/MotionClickControlNode";
 import { ViewportNode } from "../nodes/ViewportNode";
+
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionClickSystem extends MotionBaseSystem {

@@ -1,6 +1,9 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { Point } from "types/utility";
+
+import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { GameInstance } from "../../GameInstance";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import EntityFactory from "../entities/EntityFactory";

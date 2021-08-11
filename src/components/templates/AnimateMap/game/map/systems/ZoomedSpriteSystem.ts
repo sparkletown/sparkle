@@ -1,5 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Texture } from "pixi.js";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { ViewportNode } from "../nodes/ViewportNode";

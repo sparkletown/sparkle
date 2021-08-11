@@ -1,4 +1,5 @@
 import { Point } from "types/utility";
+
 import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 

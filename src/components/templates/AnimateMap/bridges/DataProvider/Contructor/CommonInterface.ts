@@ -1,6 +1,7 @@
-import { PlayerIODataProvider } from "./PlayerIODataProvider";
 import { dbPlayer, idObject } from "../Providers/PlayerDataProvider";
+
 import { FirebaseDataProvider } from "./FirebaseDataProvider";
+import { PlayerIODataProvider } from "./PlayerIODataProvider";
 
 export interface User {
   id: string;

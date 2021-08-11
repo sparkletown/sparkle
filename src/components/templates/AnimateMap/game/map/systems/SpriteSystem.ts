@@ -1,5 +1,6 @@
 import { ListIteratingSystem } from "@ash.ts/ash";
 import { Container, Sprite } from "pixi.js";
+
 import { SpriteNode } from "../nodes/SpriteNode";
 
 export class SpriteSystem extends ListIteratingSystem<SpriteNode> {

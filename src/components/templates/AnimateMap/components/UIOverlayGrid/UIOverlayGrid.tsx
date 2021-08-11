@@ -1,27 +1,34 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { AnimateMapVenue } from "types/venues";
-import "./UIOverlayGrid.scss";
-import { UIContainer } from "../UIContainer/UIContainer";
-import { SingleButton } from "../SingleButton/SingleButton";
-import { WelcomePopUp } from "../WelcomePopUp/WelcomePopUp";
-import { RoomModal } from "../../../PartyMap/components";
-import { ControlPanel } from "../ControlPanel/ControlPanel";
-import CentreIcon from "assets/images/AnimateMap/UI/icon-aim.svg";
-import { Room } from "types/rooms";
 import { useEffectOnce } from "react-use";
 import { subscribeActionAfter } from "redux-subscribe-action";
+
 import {
   AnimateMapActionTypes,
   setAnimateMapRoomAction,
 } from "store/actions/AnimateMap";
-import { useSelector } from "hooks/useSelector";
+
+import { Room } from "types/rooms";
+import { AnimateMapVenue } from "types/venues";
+
 import { animateMapFirstEntranceSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
+
+import { RoomModal } from "../../../PartyMap/components";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
-import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { T } from "../../game/utils/Keyboard";
 import KeyPoll from "../../game/utils/KeyPollSingleton";
+import { ControlPanel } from "../ControlPanel/ControlPanel";
+import { SingleButton } from "../SingleButton/SingleButton";
+import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
+import { UIContainer } from "../UIContainer/UIContainer";
+import { WelcomePopUp } from "../WelcomePopUp/WelcomePopUp";
+
+import CentreIcon from "assets/images/AnimateMap/UI/icon-aim.svg";
+
+import "./UIOverlayGrid.scss";
 
 export interface UIOverlayGridProps {
   venue: AnimateMapVenue;

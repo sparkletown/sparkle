@@ -1,19 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-
-import "./AnimateMap.scss";
-import { GameInstance } from "./game/GameInstance";
-import { useFirebase } from "react-redux-firebase";
-import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { useStore } from "react-redux";
-import { AnimateMapVenue } from "types/venues";
-import { useUser } from "hooks/useUser";
-import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
-import { configs } from "./configs";
-import { GameConfig } from "./configs/GameConfig";
+import { useFirebase } from "react-redux-firebase";
+
 import { PLAYERIO_GAME_ID } from "secrets";
 
+import { AnimateMapVenue } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { useUser } from "hooks/useUser";
+
+import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
+import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
+import { GameConfig } from "./configs/GameConfig";
+import { GameInstance } from "./game/GameInstance";
+import { configs } from "./configs";
+
+import "./AnimateMap.scss";
+
 export interface AnimateMapProps {
-  venue: AnimateMapVenue;
+  venue: WithId<AnimateMapVenue>;
 }
 
 export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {

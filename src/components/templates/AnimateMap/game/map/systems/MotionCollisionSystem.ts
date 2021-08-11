@@ -1,9 +1,10 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { VenueNode } from "../nodes/VenueNode";
-import { GameInstance } from "../../GameInstance";
+
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { GameInstance } from "../../GameInstance";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
+import { VenueNode } from "../nodes/VenueNode";
 
 export class MotionCollisionSystem extends System {
   private player: NodeList<PlayerNode> | null = null;

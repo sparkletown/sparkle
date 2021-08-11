@@ -1,8 +1,11 @@
-import { ReplicatedUser, ReplicatedVenue, } from "store/reducers/AnimateMap";
-import { ReduxAction } from "types/redux";
 import { Box } from "js-quadtree";
-import { Point } from "components/templates/AnimateMap/game/utils/Point";
+
+import { ReplicatedUser, ReplicatedVenue, } from "store/reducers/AnimateMap";
+
+import { ReduxAction } from "types/redux";
 import { Room } from "types/rooms";
+
+import { Point } from "components/templates/AnimateMap/game/utils/Point";
 
 export enum AnimateMapActionTypes {
   SET_STAGE_OPTIONS = "AnimateMapActionTypes.SET_STAGE_OPTIONS",

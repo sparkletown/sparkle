@@ -1,9 +1,12 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+
 import { Point } from "types/utility";
+
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
 import { MotionBotIdleNode } from "../nodes/MotionBotIdleNode";
+
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionBotSystem extends MotionBaseSystem {

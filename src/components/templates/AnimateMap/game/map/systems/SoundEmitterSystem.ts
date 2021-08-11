@@ -1,6 +1,7 @@
 import { ListIteratingSystem } from "@ash.ts/ash";
-import { SoundEmitterNode } from "../nodes/SoundEmitterNode";
 import { Howl } from "howler";
+
+import { SoundEmitterNode } from "../nodes/SoundEmitterNode";
 
 export class SoundEmitterSystem extends ListIteratingSystem<SoundEmitterNode> {
   constructor() {

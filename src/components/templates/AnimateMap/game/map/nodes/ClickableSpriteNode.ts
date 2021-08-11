@@ -1,4 +1,5 @@
 import { defineNode } from "@ash.ts/ash";
+
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 

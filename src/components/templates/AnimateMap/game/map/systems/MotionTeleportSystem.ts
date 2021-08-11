@@ -1,7 +1,9 @@
 import { Engine, NodeList } from "@ash.ts/ash";
+
 import { Easing } from "../../utils/Easing";
 import EntityFactory from "../entities/EntityFactory";
 import { MotionTeleportNode } from "../nodes/MotionTeleportNode";
+
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionTeleportSystem extends MotionBaseSystem {

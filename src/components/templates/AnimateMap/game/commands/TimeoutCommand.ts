@@ -1,4 +1,5 @@
 import { setTimeout } from "timers";
+
 import Command from "./Command";
 
 export class TimeoutCommand implements Command {

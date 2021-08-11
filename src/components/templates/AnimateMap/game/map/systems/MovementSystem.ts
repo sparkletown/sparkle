@@ -1,4 +1,5 @@
 import { ListIteratingSystem } from "@ash.ts/ash";
+
 import { MovementNode } from "../nodes/MovementNode";
 
 export class MovementSystem extends ListIteratingSystem<MovementNode> {

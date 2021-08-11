@@ -1,16 +1,19 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
 import { Howler } from "howler";
-import { MovedEventData, Viewport, ZoomedEventData } from "pixi-viewport";
+import { throttle } from "lodash";
 import { Application, InteractionEvent, Point } from "pixi.js";
+import { MovedEventData, Viewport, ZoomedEventData } from "pixi-viewport";
 import { subscribeActionAfter } from "redux-subscribe-action";
+
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
   setAnimateMapZoom,
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
-import { throttle } from "lodash";
+
+import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
+
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";

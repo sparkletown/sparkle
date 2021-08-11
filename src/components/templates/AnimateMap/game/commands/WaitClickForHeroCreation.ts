@@ -1,10 +1,13 @@
-import Command from "./Command";
 import { subscribeActionAfter } from "redux-subscribe-action";
+
 import {
   AnimateMapActionTypes,
   setAnimateMapPointerAction,
 } from "store/actions/AnimateMap";
+
 import { Point } from "../utils/Point";
+
+import Command from "./Command";
 
 export default class WaitClickForHeroCreation implements Command {
   private resolve: Function | null = null;

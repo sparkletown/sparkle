@@ -1,9 +1,9 @@
+import { utils } from "pixi.js";
+
 import PlayerIO, {
   client,
   connection,
 } from "../../../vendors/playerio/PlayerIO";
-
-import { utils } from "pixi.js";
 
 export class PlayerIODataProvider<dbObj> extends utils.EventEmitter {
   private _PlayerIO;

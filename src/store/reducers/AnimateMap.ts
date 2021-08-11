@@ -1,10 +1,13 @@
+import { Box, QuadTree } from "js-quadtree";
+import { Reducer } from "redux";
+
 import {
   AnimateMapActions,
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
-import { Reducer } from "redux";
-import { Box, QuadTree } from "js-quadtree";
+
 import { Room } from "types/rooms";
+
 import {
   Point,
   StartPoint,
