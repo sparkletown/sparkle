@@ -4,6 +4,8 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { WithVenueId } from "utils/id";
 
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -13,7 +15,6 @@ import { UpcomingEvent } from "./UpcomingEvent";
 import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
-import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
 
 // These represent all of our templates (they should remain alphabetically sorted, deprecated should be separate from the rest)
 // @debt unify this with VenueTemplate in functions/venue.js + share the same code between frontend/backend
@@ -30,10 +31,8 @@ export enum VenueTemplate {
   partymap = "partymap",
   animatemap = "animatemap",
   performancevenue = "performancevenue",
-  playa = "playa",
   posterhall = "posterhall",
   posterpage = "posterpage",
-  preplaya = "preplaya",
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -42,6 +41,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below

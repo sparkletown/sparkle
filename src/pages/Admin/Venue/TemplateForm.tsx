@@ -19,8 +19,6 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/venue-camp.jpg",
   [VenueTemplate.animatemap]: "/venues/venue-camp.jpg",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
@@ -32,6 +30,8 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
@@ -46,8 +46,6 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
   [VenueTemplate.animatemap]: "/venues/pickspace-thumbnail_map.png",
-  [VenueTemplate.preplaya]: undefined,
-  [VenueTemplate.playa]: undefined,
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
@@ -60,6 +58,8 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
 
   // Legacy
   [VenueTemplate.avatargrid]: undefined,
+  [VenueTemplate.preplaya]: undefined,
+  [VenueTemplate.playa]: undefined,
 };
 
 export const TemplateForm: React.FC<WizardPage> = ({ next, state }) => {

@@ -23,10 +23,8 @@ const VenueTemplate = {
   partymap: "partymap",
   animatemap: "animatemap",
   performancevenue: "performancevenue",
-  playa: "playa",
   posterhall: "posterhall",
   posterpage: "posterpage",
-  preplaya: "preplaya",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
@@ -35,6 +33,16 @@ const VenueTemplate = {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid: "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya: "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa: "playa",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
