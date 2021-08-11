@@ -16,7 +16,7 @@ $schedule-info-block-width: 60px;
 
   &__info {
     margin-top: $spacing--xs;
-    min-width: $schedule-info-block-width;
+    width: $schedule-info-block-width;
 
     &--active {
       margin-top: 0;
@@ -25,6 +25,7 @@ $schedule-info-block-width: 60px;
   }
 
   &__details {
+    flex: 1;
     margin-left: $spacing--sm;
   }
 
