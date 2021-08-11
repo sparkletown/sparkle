@@ -177,42 +177,44 @@ export const Spaces: React.FC<SpacesProps> = ({
           />
         ) : (
           <>
-            <div className="Spaces__background">
-              <div className="Spaces__title">Build your spaces</div>
-            </div>
-            <div>
-              <div
-                className="Spaces__venue-rooms"
-                onClick={toggleShowAdvancedSettings}
-              >
-                <div>Map background</div>
-                <FontAwesomeIcon
-                  icon={showAdvancedSettings ? faCaretDown : faCaretRight}
-                />{" "}
+            <div className="Spaces__options">
+              <div className="Spaces__background">
+                <div className="Spaces__title">Build your spaces</div>
               </div>
-              {showAdvancedSettings && (
-                <BackgroundSelect venueName={venue?.name ?? ""} />
-              )}
-            </div>
+              <div>
+                <div
+                  className="Spaces__venue-rooms"
+                  onClick={toggleShowAdvancedSettings}
+                >
+                  <div>Map background</div>
+                  <FontAwesomeIcon
+                    icon={showAdvancedSettings ? faCaretDown : faCaretRight}
+                  />{" "}
+                </div>
+                {showAdvancedSettings && (
+                  <BackgroundSelect venueName={venue?.name ?? ""} />
+                )}
+              </div>
 
-            <div>
-              <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
-                <div>{numberOfRooms} Rooms</div>
+              <div>
+                <div className="Spaces__venue-rooms" onClick={toggleShowRooms}>
+                  <div>{numberOfRooms} Rooms</div>
+                  <FontAwesomeIcon
+                    icon={showRooms ? faCaretDown : faCaretRight}
+                  />
+                </div>
+
+                {showRooms && renderVenueRooms}
+              </div>
+
+              <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
+                <div>Add rooms</div>
                 <FontAwesomeIcon
-                  icon={showRooms ? faCaretDown : faCaretRight}
+                  icon={showAddRoom ? faCaretDown : faCaretRight}
                 />
               </div>
-
-              {showRooms && renderVenueRooms}
+              {showAddRoom && renderAddRooms}
             </div>
-
-            <div className="Spaces__venue-rooms" onClick={toggleShowAddRoom}>
-              <div>Add rooms</div>
-              <FontAwesomeIcon
-                icon={showAddRoom ? faCaretDown : faCaretRight}
-              />
-            </div>
-            {showAddRoom && renderAddRooms}
             <TabFooter {...tabNavigationProps} />
           </>
         )}
