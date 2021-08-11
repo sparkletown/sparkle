@@ -13,6 +13,7 @@ $secondary--light: #6a6a6a;
 $secondary: #333035;
 $secondary--dark: #19181a;
 $secondary--darkest: #090909;
+$secondary--live: #1a1d24;
 
 $secondary--schedule-event: #3f3d42;
 $secondary--schedule-event-hover: #4c494f;
@@ -48,6 +49,7 @@ $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
+$room-card-background: #323232;
 
 $gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
@@ -252,4 +254,14 @@ $z-layers: (
   min-width: $min;
   max-height: $max;
   max-width: $max;
+}
+
+@mixin link-style($color, $hover-color: $color) {
+  color: $color;
+  text-decoration: underline $color;
+
+  &:hover {
+    color: $hover-color;
+    text-decoration: underline $hover-color;
+  }
 }
