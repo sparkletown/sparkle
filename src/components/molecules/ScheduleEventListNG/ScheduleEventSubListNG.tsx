@@ -1,8 +1,10 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo } from "react";
 
 import { EVENTS_PREVIEW_LIST_LENGTH } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
+
+import { useShowHide } from "hooks/useShowHide";
 
 import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
 
@@ -17,10 +19,10 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
   events,
   title,
 }) => {
-  const [showMoreEvents, setShowMoreEvents] = useState(false);
-  const toggleShowMoreEvents = useCallback(() => {
-    setShowMoreEvents(!showMoreEvents);
-  }, [showMoreEvents, setShowMoreEvents]);
+  const {
+    isShown: showMoreEvents,
+    toggle: toggleShowMoreEvents,
+  } = useShowHide();
 
   const renderEvents = useMemo(() => {
     if (showMoreEvents) {
