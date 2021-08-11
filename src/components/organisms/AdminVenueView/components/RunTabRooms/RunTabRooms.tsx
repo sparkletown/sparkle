@@ -18,9 +18,13 @@ export interface RunTabRoomsProps {
   venue: WithId<AnyVenue>;
 }
 
+const emptyVenueRooms: Room[] = [];
+
 export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
   const venueWithRooms = isVenueWithRooms(venue);
-  const rooms = venueWithRooms ? venue?.rooms ?? [] : [];
+  const rooms = venueWithRooms
+    ? venue?.rooms ?? emptyVenueRooms
+    : emptyVenueRooms;
 
   const venueIds = useMemo(() => [venue.id], [venue.id]);
   const { events } = useVenueEvents({ venueIds: venueIds });

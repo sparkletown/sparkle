@@ -67,11 +67,11 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   ] = useAsyncFn(async () => {
     if (!user) return;
 
-    const roomType = isRoomUnclickable ? undefined : RoomType.unclickable;
+    const newRoomType = !isRoomUnclickable ? RoomType.unclickable : undefined;
 
     const roomValues: RoomInput = {
       ...room,
-      type: roomType,
+      type: newRoomType,
     };
 
     await upsertRoom(roomValues, venueId, user, index);

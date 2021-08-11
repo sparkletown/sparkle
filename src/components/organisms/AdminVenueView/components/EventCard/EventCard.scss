@@ -1,10 +1,10 @@
 @import "scss/constants.scss";
 
 .EventCard {
-  height: 10em;
-  margin: 1em 0;
-  padding: 1em;
-  gap: $spacing--xs 1em;
+  height: 10rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  gap: $spacing--xs 1rem;
   display: grid;
   border-radius: $border-radius--lg;
   background-color: opaque-black(0.1);

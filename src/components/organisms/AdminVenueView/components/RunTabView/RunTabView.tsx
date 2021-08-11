@@ -24,6 +24,13 @@ export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }
 
+const partyMapBoundaries = {
+  width: 100,
+  height: 100,
+};
+
+const emptyIconsMap = {};
+
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
     return <LoadingPage />;
@@ -54,17 +61,14 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
             interactive
             resizable
             venue={venue as PartyMapVenue}
-            coordinatesBoundary={{
-              width: 100,
-              height: 100,
-            }}
+            coordinatesBoundary={partyMapBoundaries}
             snapToGrid={false}
-            iconsMap={{}}
+            iconsMap={emptyIconsMap}
             backgroundImage={
               venue?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND
             }
-            iconImageStyle={{}}
-            draggableIconImageStyle={{}}
+            iconImageStyle={emptyIconsMap}
+            draggableIconImageStyle={emptyIconsMap}
             otherIconsStyle={{ opacity: 0.4 }}
           />
         </div>

@@ -8,7 +8,7 @@
   color: opaque-white(0.5);
   cursor: pointer;
 
-  & * {
+  * {
     @include link-style(opaque-white(0.5));
   }
 }

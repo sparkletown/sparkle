@@ -25,15 +25,15 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
   const [nextEvent, followingEvent] = sortBy(events ?? [], "start_utc_seconds");
   const live = nextEvent && isEventLive(nextEvent);
 
-  const parentClasses = classNames({
-    "EventCard EventCard--no-event": !nextEvent,
-    "EventCard EventCard--live-event": nextEvent && live,
-    "EventCard EventCard--future-event": nextEvent && !live,
+  const parentClasses = classNames("EventCard", {
+    "EventCard--no-event": !nextEvent,
+    "EventCard--live-event": nextEvent && live,
+    "EventCard--future-event": nextEvent && !live,
   });
 
-  const linkClasses = classNames({
-    "EventCard__add EventCard__add--no-event": !nextEvent,
-    "EventCard__add EventCard__add--future-event": nextEvent,
+  const linkClasses = classNames("EventCard__add", {
+    "EventCard__add--no-event": !nextEvent,
+    "EventCard__add--future-event": nextEvent,
   });
 
   return (
@@ -56,23 +56,23 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
       </Link>
 
       {nextEvent && (
-        <div className="EventCard__time--first">
-          {formatTimeLocalised(nextEvent.start_utc_seconds)}
-        </div>
-      )}
-
-      {nextEvent && (
-        <div className="EventCard__name--first">{nextEvent.name}</div>
-      )}
-
-      {followingEvent && (
-        <div className="EventCard__time--subsequent">
-          {formatTimeLocalised(followingEvent.start_utc_seconds)}
-        </div>
+        <>
+          <div className="EventCard__time--first">
+            {formatTimeLocalised(nextEvent.start_utc_seconds)}
+          </div>
+          <div className="EventCard__name--first">{nextEvent.name}</div>
+        </>
       )}
 
       {followingEvent && (
-        <div className="EventCard__name--subsequent">{followingEvent.name}</div>
+        <>
+          <div className="EventCard__time--subsequent">
+            {formatTimeLocalised(followingEvent.start_utc_seconds)}
+          </div>
+          <div className="EventCard__name--subsequent">
+            {followingEvent.name}
+          </div>
+        </>
       )}
     </div>
   );
