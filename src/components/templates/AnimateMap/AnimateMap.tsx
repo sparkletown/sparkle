@@ -2,8 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 
-import { PLAYERIO_GAME_ID } from "secrets";
-
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -40,7 +38,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
         user.userId,
         user.profile?.pictureUrl,
         firebase,
-        PLAYERIO_GAME_ID
+        venue.playerioGameId
       );
 
       const config = venue.gameOptions

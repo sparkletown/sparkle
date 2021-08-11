@@ -30,13 +30,9 @@
       pointer-events: none;
     }
 
-    &_active,
+    &--active,
     &:hover:not(&_disabled) {
       opacity: 1;
-    }
-
-    &_disabled {
-      filter: brightness(0.65);
     }
 
     &_top-border::before,

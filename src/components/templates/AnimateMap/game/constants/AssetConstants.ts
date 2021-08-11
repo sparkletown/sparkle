@@ -1,3 +1,5 @@
+import MAP_JSON from "components/templates/AnimateMap/configs/TiledEditorPlaya.json";
+
 import ARTCAR_0 from "assets/images/AnimateMap/artcars/6.1.png";
 import ARTCAR_1 from "assets/images/AnimateMap/artcars/7.1.png";
 import ARTCAR_2 from "assets/images/AnimateMap/artcars/8.1.png";
@@ -49,7 +51,6 @@ import MAP_IMAGE_13 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_13
 import MAP_IMAGE_14 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_14.jpg";
 import MAP_IMAGE_15 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_15.jpg";
 import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16.jpg";
-import MAP_JSON from "assets/images/AnimateMap/playa.json";
 import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
 import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
 import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";

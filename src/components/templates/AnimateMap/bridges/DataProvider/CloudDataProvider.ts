@@ -1,7 +1,7 @@
 import { ExtendedFirebaseInstance } from "react-redux-firebase";
 import { utils } from "pixi.js";
 
-import { DEFAULT_AVATAR_IMAGE } from "../../../../../settings";
+import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
