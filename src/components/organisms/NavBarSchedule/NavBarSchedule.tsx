@@ -82,7 +82,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
-  // @debt: probably will need to be re-calculated based on minDate instead of startOfDay.Check later
+  // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
     return scheduledStartDate
       ? startOfDay(fromUnixTime(scheduledStartDate))
@@ -127,19 +127,19 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     (event) => event.start_utc_seconds === liveEventsMinimalStartValue
   );
 
-  const minDate = useMemo(
+  const minDateUtcSeconds = useMemo(
     () =>
       firstLiveEvent ? getUnixTime(liveEventsMinimalStartValue) : minRangeValue,
     [firstLiveEvent, liveEventsMinimalStartValue]
   );
 
   const isMinDateWithinToday = isDateRangeStartWithinToday({
-    dateValue: secondsToMilliseconds(minDate),
+    dateValue: secondsToMilliseconds(minDateUtcSeconds),
     targetDateValue: millisecondsToSeconds(startOfToday().getTime()),
   });
 
   const firstRangeDateInSeconds = getUnixTime(
-    max([new Date(secondsToMilliseconds(minDate)), todaysDate])
+    max([new Date(secondsToMilliseconds(minDateUtcSeconds)), todaysDate])
   );
 
   const isOneEventAndLive =
@@ -166,6 +166,14 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const dayDifference = getEventDayRange(daysInBetween, isOneEventAndLive);
 
+  const firstScheduleDate = useMemo(
+    () =>
+      isMinDateWithinToday
+        ? todaysDate
+        : new Date(secondsToMilliseconds(minDateUtcSeconds)),
+    [isMinDateWithinToday, minDateUtcSeconds]
+  );
+
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
@@ -179,9 +187,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     };
 
     return range(dayDifference).map((dayIndex) => {
-      const firstScheduleDate = isMinDateWithinToday
-        ? todaysDate
-        : new Date(secondsToMilliseconds(minDate));
       const day = addDays(firstScheduleDate, dayIndex);
 
       const daysWithEvents = liveAndFutureEvents.some(
@@ -217,14 +222,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     isScheduleTimeshifted,
     dayDifference,
     liveAndFutureEvents,
-    minDate,
-    isMinDateWithinToday,
+    firstScheduleDate,
   ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
-    const firstScheduleDate = isMinDateWithinToday
-      ? todaysDate
-      : new Date(secondsToMilliseconds(minDate));
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
     const daysEvents = liveAndFutureEvents
@@ -239,9 +240,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   }, [
     liveAndFutureEvents,
     selectedDayIndex,
-    minDate,
     showPersonalisedSchedule,
-    isMinDateWithinToday,
+    firstScheduleDate,
   ]);
 
   const downloadPersonalEventsCalendar = useCallback(() => {
