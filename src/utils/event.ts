@@ -28,13 +28,11 @@ export const isEventFuture = (event: VenueEvent) =>
   isFuture(fromUnixTime(event.start_utc_seconds));
 
 export const isEventLater = (event: VenueEvent) =>
-  !(
-    isEventLive(event) ||
-    isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME)
-  );
+  isEventFuture(event) &&
+  !isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
 
 export const isEventSoon = (event: VenueEvent) =>
-  !isEventLive(event) &&
+  isEventFuture(event) &&
   isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);
 
 export const isEventLiveOrFuture = (event: VenueEvent) =>
@@ -66,9 +64,7 @@ export const eventEndTime = (event: VenueEvent) =>
 export const isEventStartingSoon = (
   event: VenueEvent,
   rangeInMinutes: number | undefined = 60
-) =>
-  differenceInMinutes(eventStartTime(event), Date.now()) <= rangeInMinutes &&
-  differenceInMinutes(eventStartTime(event), Date.now()) > 0;
+) => differenceInMinutes(eventStartTime(event), Date.now()) <= rangeInMinutes;
 
 export const getEventInterval = (event: VenueEvent) => ({
   start: eventStartTime(event),

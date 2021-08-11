@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import isToday from "date-fns/isToday";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
@@ -27,6 +27,10 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   const [allEvents, setAllEvents] = useState(daysEvents);
 
   useInterval(() => setAllEvents([...allEvents]), EVENT_STATUS_REFRESH_MS);
+
+  useEffect(() => {
+    setAllEvents([...daysEvents]);
+  }, [daysEvents, setAllEvents]);
 
   const liveEvents = useMemo(() => allEvents.filter(isEventLive), [allEvents]);
   const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
