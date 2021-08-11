@@ -11,4 +11,5 @@ export const isEventLater = (event: PersonalizedVenueEvent) =>
   );
 
 export const isEventSoon = (event: PersonalizedVenueEvent) =>
+  !isEventLive(event) &&
   isEventStartingSoon(event, EVENT_STARTING_SOON_TIMEFRAME);

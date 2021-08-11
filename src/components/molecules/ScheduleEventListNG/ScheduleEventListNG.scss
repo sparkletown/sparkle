@@ -1,6 +1,10 @@
 @import "scss/constants.scss";
 
 .ScheduleEventListNG {
+  margin-bottom: $spacing--lg;
+}
+
+.ScheduleEventSubListNG {
   &__title {
     margin-bottom: $spacing--lg;
 
@@ -11,7 +15,7 @@
 
   &__button {
     width: max-content;
-    margin: 0 auto $spacing--sm;
+    margin: $spacing--sm auto;
 
     font-size: $font-size--md;
     line-height: 17px;
