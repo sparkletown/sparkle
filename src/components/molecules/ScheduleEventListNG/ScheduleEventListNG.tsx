@@ -1,10 +1,14 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import isToday from "date-fns/isToday";
+
+import { EVENT_STATUS_REFRESH_MS } from "settings";
 
 import { PersonalizedVenueEvent } from "types/venues";
 
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
+
+import { useInterval } from "hooks/useInterval";
 
 import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
 
@@ -20,15 +24,16 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   scheduleDate,
 }) => {
   const isTodayDate = isToday(scheduleDate);
+  const [allEvents, setAllEvents] = useState(daysEvents);
 
-  const liveEvents = useMemo(() => daysEvents.filter(isEventLive), [
-    daysEvents,
+  useInterval(() => setAllEvents([...allEvents]), EVENT_STATUS_REFRESH_MS);
+
+  const liveEvents = useMemo(() => allEvents.filter(isEventLive), [allEvents]);
+  const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
+    allEvents,
   ]);
-  const comingSoonEvents = useMemo(() => daysEvents.filter(isEventSoon), [
-    daysEvents,
-  ]);
-  const laterEvents = useMemo(() => daysEvents.filter(isEventLater), [
-    daysEvents,
+  const laterEvents = useMemo(() => allEvents.filter(isEventLater), [
+    allEvents,
   ]);
 
   if (!isTodayDate) {
