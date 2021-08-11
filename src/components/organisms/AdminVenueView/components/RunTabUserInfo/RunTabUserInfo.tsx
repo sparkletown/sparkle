@@ -1,12 +1,12 @@
 import React from "react";
 
-import { UserAvatar } from "components/atoms/UserAvatar";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 
-import { User } from "types/User";
-
 import { useWorldUserLocation } from "hooks/users";
+
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 export interface RunTabUserInfoProps {
   user: WithId<User>;

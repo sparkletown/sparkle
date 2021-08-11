@@ -1,12 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { sortBy } from "lodash";
 import classNames from "classnames";
+import { sortBy } from "lodash";
 
 import { VenueEvent } from "types/venues";
 
-import { WithVenueId, WithId } from "utils/id";
 import { isEventLive } from "utils/event";
+import { WithId, WithVenueId } from "utils/id";
 import { formatTimeLocalised } from "utils/time";
 import { adminNGVenueUrl } from "utils/url";
 
@@ -56,27 +56,23 @@ export const EventCard: React.FC<EventCardProps> = ({ events }) => {
       </Link>
 
       {nextEvent && (
-        <div className="EventCard__time EventCard__time--first">
+        <div className="EventCard__time--first">
           {formatTimeLocalised(nextEvent.start_utc_seconds)}
         </div>
       )}
 
       {nextEvent && (
-        <div className="EventCard__name EventCard__name--first">
-          {nextEvent.name}
-        </div>
+        <div className="EventCard__name--first">{nextEvent.name}</div>
       )}
 
       {followingEvent && (
-        <div className="EventCard__time EventCard__time--subsequent">
+        <div className="EventCard__time--subsequent">
           {formatTimeLocalised(followingEvent.start_utc_seconds)}
         </div>
       )}
 
       {followingEvent && (
-        <div className="EventCard__name EventCard__name--subsequent">
-          {followingEvent.name}
-        </div>
+        <div className="EventCard__name--subsequent">{followingEvent.name}</div>
       )}
     </div>
   );

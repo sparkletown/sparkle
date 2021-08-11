@@ -1,15 +1,14 @@
 import React from "react";
 import { Card } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
-import Bugsnag from "@bugsnag/js";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faUserFriends,
-  faEye,
-  faHandPointer,
-  faEyeSlash,
   faBan,
+  faEye,
+  faEyeSlash,
+  faHandPointer,
+  faUserFriends,
 } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { RoomInput, upsertRoom } from "api/admin";
 
@@ -19,13 +18,14 @@ import { VenueEvent } from "types/venues";
 import { WithId, WithVenueId } from "utils/id";
 import { openRoomUrl } from "utils/url";
 
-import { useUser } from "hooks/useUser";
 import { useRoom } from "hooks/useRoom";
+import { useUser } from "hooks/useUser";
+
+import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
+import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
+import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { EventCard } from "components/organisms/AdminVenueView/components/EventCard/EventCard";
-import { RoomIcon } from "components/organisms/AdminVenueView/components/RoomIcon/RoomIcon";
-import { PrettyLink } from "components/organisms/AdminVenueView/components/PrettyLink";
 
 import "./RoomCard.scss";
 
@@ -53,22 +53,12 @@ export const RoomCard: React.FC<RoomCardProps> = ({
   const [{ loading: isTogglingRoom }, toggleRoom] = useAsyncFn(async () => {
     if (!user) return;
 
-    try {
-      const roomValues: RoomInput = {
-        ...room,
-        isEnabled: !room.isEnabled,
-      };
+    const roomValues: RoomInput = {
+      ...room,
+      isEnabled: !room.isEnabled,
+    };
 
-      await upsertRoom(roomValues, venueId, user, index);
-    } catch (e) {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("AdminVenueView/RoomCard::updateRoom", {
-          venueId: venueId,
-          roomIndex: index,
-          newState: !room.isEnabled,
-        });
-      });
-    }
+    await upsertRoom(roomValues, venueId, user, index);
   }, [index, room, user, venueId]);
 
   const [
@@ -79,22 +69,12 @@ export const RoomCard: React.FC<RoomCardProps> = ({
 
     const roomType = isRoomUnclickable ? undefined : RoomType.unclickable;
 
-    try {
-      const roomValues: RoomInput = {
-        ...room,
-        type: roomType,
-      };
+    const roomValues: RoomInput = {
+      ...room,
+      type: roomType,
+    };
 
-      await upsertRoom(roomValues, venueId, user, index);
-    } catch (e) {
-      Bugsnag.notify(e, (event) => {
-        event.addMetadata("AdminVenueView/RoomCard::updateRoom", {
-          venueId: venueId,
-          roomIndex: index,
-          newState: !room.isEnabled,
-        });
-      });
-    }
+    await upsertRoom(roomValues, venueId, user, index);
   }, [index, isRoomUnclickable, room, user, venueId]);
 
   return (

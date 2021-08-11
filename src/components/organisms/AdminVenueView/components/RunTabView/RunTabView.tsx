@@ -3,28 +3,33 @@ import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
+import { AnyVenue, PartyMapVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
-import { PartyMapVenue } from "types/venues";
+import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
+import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
+import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
+
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
-import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
-import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import "./RunTabView.scss";
 
-export const RunTabView: React.FC = () => {
-  const venueId = useVenueId();
-  const { currentVenue: venue } = useConnectCurrentVenueNG(venueId);
+export interface RunTabViewProps {
+  venue?: WithId<AnyVenue>;
+}
 
+export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
-    return <>{`Venue doesn't exit`}</>;
+    return <LoadingPage />;
   }
+
+  const venueId = venue.id;
 
   return (
     <div className="RunTabView">

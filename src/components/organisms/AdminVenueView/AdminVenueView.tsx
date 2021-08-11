@@ -132,7 +132,7 @@ export const AdminVenueView: React.FC = () => {
           venue={venue}
         />
       )}
-      {selectedTab === AdminVenueTab.run && <RunTabView />}
+      {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
     </>
   );
 };

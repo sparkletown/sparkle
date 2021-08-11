@@ -1,13 +1,15 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useRecentWorldUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
-import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
+
+import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
+import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
+
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./RunTabUsers.scss";
 

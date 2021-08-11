@@ -1,9 +1,9 @@
-import { debounce } from "lodash";
-import React, { useState, useMemo } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
+import React, { useMemo, useState } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faTimesCircle } from "@fortawesome/free-solid-svg-icons/faTimesCircle";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { debounce } from "lodash";
 
 import "./SearchField.scss";
 

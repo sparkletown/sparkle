@@ -8,7 +8,7 @@ export interface RoomIconProps {
 }
 
 export const RoomIcon: React.FC<RoomIconProps> = ({ src, className }) => (
-  <div className={"RoomIcon RoomIcon__wrapper " + className}>
+  <div className={`RoomIcon__wrapper ${className}`}>
     <img className="RoomIcon__image" src={src} alt="Room icon" />
   </div>
 );
