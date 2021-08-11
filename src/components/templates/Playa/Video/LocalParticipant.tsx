@@ -1,3 +1,4 @@
+import React, { useCallback, useEffect, useState } from "react";
 import {
   faMicrophone,
   faMicrophoneSlash,
@@ -5,7 +6,7 @@ import {
   faVideoSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useState, useEffect, useCallback } from "react";
+
 import Participant, { ParticipantProps } from "./Participant";
 
 type LocalParticipantProps = ParticipantProps & {

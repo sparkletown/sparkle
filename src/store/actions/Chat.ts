@@ -1,4 +1,4 @@
-import { VenueChatSettings, PrivateChatSettings, ChatTypes } from "types/chat";
+import { ChatTypes, PrivateChatSettings, VenueChatSettings } from "types/chat";
 import { ReduxAction } from "types/redux";
 
 export enum ChatActionTypes {

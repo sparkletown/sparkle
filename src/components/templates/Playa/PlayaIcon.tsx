@@ -1,5 +1,7 @@
 import React from "react";
+
 import { AnyVenue, PlayaIcon } from "types/venues";
+
 import { WithId } from "utils/id";
 
 type PropsType = {
@@ -25,7 +27,7 @@ export const PlayaIconComponent: React.FunctionComponent<PropsType> = ({
       onClick={() => {
         if (playaIcon.clickable && !!playaIcon.venueId) {
           const venueToShow = venues?.find((v) => playaIcon.venueId === v.id);
-          if (!!venueToShow) {
+          if (venueToShow) {
             showVenue(venueToShow);
           }
         }

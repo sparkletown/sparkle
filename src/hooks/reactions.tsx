@@ -8,7 +8,7 @@ import { isReaction, isReactionCreatedBy, Reaction } from "types/reactions";
 import { ReactHook } from "types/utility";
 
 import { isTruthyFilter } from "utils/filter";
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export type ReactionsById = Partial<Record<string, WithId<Reaction>>>;
 

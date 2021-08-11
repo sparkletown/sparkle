@@ -1,19 +1,19 @@
-import React, { useState, useCallback, useMemo } from "react";
-
-import { WithId } from "utils/id";
+import React, { useCallback, useMemo, useState } from "react";
 
 import { AnyVenue, VenueEvent } from "types/venues";
+
+import { WithId } from "utils/id";
+import { venueEventsNGSelector } from "utils/selectors";
 
 import { useConnectVenueEvents } from "hooks/useConnectVenueEvents";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
-import { TimingEventModal } from "components/organisms/TimingEventModal";
 import { TimingDeleteModal } from "components/organisms/TimingDeleteModal";
 import { TimingEvent } from "components/organisms/TimingEvent";
+import { TimingEventModal } from "components/organisms/TimingEventModal";
 
-import { venueEventsNGSelector } from "utils/selectors";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./EventsView.scss";
 

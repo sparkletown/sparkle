@@ -1,10 +1,10 @@
 import React from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
-
-import { WithId } from "utils/id";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { AnyVenue } from "types/venues";
+
+import { WithId } from "utils/id";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 

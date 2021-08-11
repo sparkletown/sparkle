@@ -1,41 +1,49 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useFirebase } from "react-redux-firebase";
+import Switch from "react-switch";
+
 import { WS_RELAY_URL } from "secrets";
-import { useUser } from "hooks/useUser";
-import {
-  UserStateMap,
-  HelloWsMessage,
-  MessageType,
-  BroadcastMessage,
-  UserState,
-  UpdateWsMessage,
-  UserStateKey,
-  stateBoolean,
-  UserVideoState,
-} from "types/RelayMessage";
+
 import {
   DEFAULT_WS_RELAY_URL,
   ENABLE_PLAYA_ADDRESS,
   PLAYA_VENUE_NAME,
 } from "settings";
-import { Avatar } from "./Avatar";
-import { useSelector } from "hooks/useSelector";
-import { useRecentVenueUsers } from "hooks/users";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { User } from "types/User";
-import MyAvatar from "./MyAvatar";
-import { useFirebase } from "react-redux-firebase";
-import { MenuConfig, Shout } from "./Playa";
-import Switch from "react-switch";
-import "./AvatarLayer.scss";
+
+import { UPDATE_LOCATION } from "store/actions/Location";
+
 import {
   ChatRequest,
   ChatRequestState,
   ChatRequestType,
 } from "types/ChatRequest";
-import { useDispatch } from "hooks/useDispatch";
-import { UPDATE_LOCATION } from "store/actions/Location";
+import {
+  BroadcastMessage,
+  HelloWsMessage,
+  MessageType,
+  stateBoolean,
+  UpdateWsMessage,
+  UserState,
+  UserStateKey,
+  UserStateMap,
+  UserVideoState,
+} from "types/RelayMessage";
+import { User } from "types/User";
+
 import { playaAddress } from "utils/address";
+
+import { useDispatch } from "hooks/useDispatch";
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+import { useRecentVenueUsers } from "hooks/users";
+import { useSelector } from "hooks/useSelector";
+import { useUser } from "hooks/useUser";
+
+import { Avatar } from "./Avatar";
+import MyAvatar from "./MyAvatar";
+import { MenuConfig, Shout } from "./Playa";
+
+import "./AvatarLayer.scss";
 
 interface PropsType {
   useProfilePicture: boolean;
@@ -440,9 +448,10 @@ const AvatarLayer: React.FunctionComponent<PropsType> = ({
         return;
       }
 
+      let accepted = false;
+
       switch (chatRequest.state) {
         case ChatRequestState.Asked:
-          let accepted = false;
           setMenu({
             prompt: `${fromUser.partyName} ${
               chatRequest.type === ChatRequestType.JoinTheirChat

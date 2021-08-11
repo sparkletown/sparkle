@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import { Overlay } from "react-bootstrap";
+
 import { PLAYA_VENUE_SIZE } from "settings";
+
 import { AnyVenue } from "types/venues";
+
 import { WithId } from "utils/id";
 
 interface Props {

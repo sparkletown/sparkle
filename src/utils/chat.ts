@@ -1,18 +1,18 @@
 import firebase from "firebase/app";
 
-import { WithId, withId } from "utils/id";
-
 import {
   BaseChatMessage,
-  ChatMessage,
-  PreviewChatMessageToDisplay,
-  PreviewChatMessage,
-  PrivateChatMessage,
   BaseMessageToDisplay,
+  ChatMessage,
   ChatMessageType,
   PollMessage,
+  PreviewChatMessage,
+  PreviewChatMessageToDisplay,
+  PrivateChatMessage,
 } from "types/chat";
 import { User } from "types/User";
+
+import { WithId, withId } from "utils/id";
 
 export const chatSort: (a: BaseChatMessage, b: BaseChatMessage) => number = (
   a: BaseChatMessage,

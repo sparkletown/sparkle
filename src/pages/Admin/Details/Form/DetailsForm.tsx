@@ -1,45 +1,43 @@
 import React, { useCallback, useEffect } from "react";
+import { Button, Form } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+// Hooks
+import { useHistory } from "react-router-dom";
 
 // API
 import {
   createUrlSafeName,
   createVenue_v2,
-  VenueInput_v2,
   updateVenue_v2,
+  VenueInput_v2,
 } from "api/admin";
 
-// Components
-import ImageInput from "components/atoms/ImageInput";
-
-// Hooks
-import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useUser } from "hooks/useUser";
+// Typings
+import { VenueTemplate } from "types/venues";
 
 // Utils | Settings | Constants | Helpers
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
-// Typings
-import { VenueTemplate } from "types/venues";
-import { DetailsFormProps } from "./DetailsForm.types";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
 import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
+// Reducer
+import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
-import { FormValues } from "./DetailsForm.types";
+// Components
+import ImageInput from "components/atoms/ImageInput";
 
 // Validation schemas
 import { validationSchema_v2 } from "../ValidationSchema";
 
-// Reducer
-import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
-
 // Stylings
 import * as S from "./DetailsForm.styles";
-import { Button, Form } from "react-bootstrap";
-import { useVenueId } from "hooks/useVenueId";
+import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
@@ -52,7 +50,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId) await updateVenue_v2(vals as VenueInput_v2, user);
+        if (venueId) await updateVenue_v2(vals as VenueInput_v2, user);
         else await createVenue_v2(vals as VenueInput_v2, user);
 
         if (vals.name) {
@@ -244,7 +242,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
       <S.FormFooter>
         <Button disabled={isSubmitting || !dirty} type="submit">
-          {!!venueId ? "Update Venue" : "Create Venue"}
+          {venueId ? "Update Venue" : "Create Venue"}
         </Button>
       </S.FormFooter>
     </Form>

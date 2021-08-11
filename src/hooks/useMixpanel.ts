@@ -1,6 +1,6 @@
-// eslint-disable-next-line no-restricted-imports
-import mixpanel, { Dict, RequestOptions, Callback } from "mixpanel-browser";
 import { useMemo } from "react";
+// eslint-disable-next-line no-restricted-imports
+import mixpanel, { Callback, Dict, RequestOptions } from "mixpanel-browser";
 
 // https://stackoverflow.com/questions/32203420/check-if-mixpanel-library-has-been-loaded
 const isLoaded = () => mixpanel.hasOwnProperty("get_distinct_id");

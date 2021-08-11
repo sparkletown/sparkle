@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
-import { useAsyncFn } from "react-use";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import dayjs from "dayjs";
 
-import { VenueEvent } from "types/venues";
-
 import { deleteEvent, EventInput } from "api/admin";
+
+import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
