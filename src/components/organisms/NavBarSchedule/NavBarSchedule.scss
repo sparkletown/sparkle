@@ -52,7 +52,7 @@ $schedule-btn--height: 51px;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
-  height: 91%;
+  height: calc(100% - 51px);
   width: $NavBarSchedule--width;
 
   padding-top: $navbar-height;
