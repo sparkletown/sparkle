@@ -1,27 +1,102 @@
 @import "scss/constants.scss";
 
+$schedule--grey: opaque-white(0.7);
+$action-button-width: 136px;
+$bookmark-icon-size: 30px;
+$schedule-info-block-width: 60px;
+
 .ScheduleItemNG {
   display: flex;
-  padding-bottom: $ScheduleNG--padding;
+  padding: $spacing--lg;
 
-  &--info {
-    flex-basis: 25%;
-    margin-right: $ScheduleNG--padding;
+  &:hover {
+    background: linear-gradient(0deg, opaque-white(0.05), opaque-white(0.05));
+    border-radius: 12px;
   }
 
-  &--time,
-  &--name {
+  &__info {
+    margin-top: $spacing--xs;
+    width: $schedule-info-block-width;
+
+    &--active {
+      margin-top: 0;
+      text-align: center;
+    }
+  }
+
+  &__details {
+    margin-left: $spacing--sm;
+  }
+
+  &__buttons {
+    display: flex;
+  }
+
+  &__button {
+    width: $action-button-width;
+    padding: $spacing--sm;
+    font-weight: $font-weight--500;
+    font-size: $font-size--md;
+    line-height: 17px;
+  }
+
+  &__time,
+  &__date {
     display: block;
-    font-weight: $font-weight--700;
+
+    font-weight: $font-weight--500;
+    font-size: $font-size--sm;
+    line-height: 15px;
   }
 
-  &--date {
-    display: block;
-    font-weight: $font-weight--700;
-    color: $concrete;
+  &__time--live {
+    height: 30px;
+    margin-bottom: $spacing--xs;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: $primary;
+    border-radius: $border-radius--xl;
+
+    font-size: $font-size--md;
+    line-height: 17px;
   }
 
-  &--bookmark {
-    margin: auto $spacing--xl auto auto;
+  &__time--end {
+    color: $schedule--grey;
+  }
+
+  &__name {
+    font-weight: $font-weight__700;
+    font-size: $font-size--lg;
+    line-height: 18px;
+  }
+
+  &__description {
+    font-size: $font-size--sm;
+    line-height: $font-size--md;
+  }
+
+  &__place {
+    font-size: $font-size--md;
+    line-height: 17px;
+
+    &--location {
+      color: $schedule--grey;
+    }
+  }
+
+  &__bookmark {
+    margin: 0 $spacing--sm 0 auto;
+    background: $secondary;
+    box-shadow: 0px 2px 4px opaque-white(0.25);
+    border-radius: $border-radius--xl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: $bookmark-icon-size;
+    height: $bookmark-icon-size;
   }
 }

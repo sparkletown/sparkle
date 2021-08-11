@@ -1,7 +1,8 @@
 @import "scss/constants.scss";
 
+$ScheduleNG--padding: 20px;
+
 .ScheduleNG {
-  padding-top: $ScheduleNG--padding;
   display: flex;
   flex-direction: column;
   position: relative;
