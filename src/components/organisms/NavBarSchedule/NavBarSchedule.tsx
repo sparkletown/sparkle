@@ -227,15 +227,15 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     const daysEvents = liveAndFutureEvents
       .filter(isEventWithinDateAndNotFinished(day))
 
-      const eventsWithFilledWithPriority = daysEvents
+      const eventsFilledWithPriority = daysEvents
       .map((event) => ({ ...event, orderPriority: event.orderPriority ?? 0 }))
       .sort(eventTimeAndOrderComparator)
 
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsWithFilledWithPriority.filter((event) => event.isSaved)
-        : eventsWithFilledWithPriority,
+        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        : eventsFilledWithPriority,
     };
   }, [
     liveAndFutureEvents,
