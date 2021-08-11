@@ -24,7 +24,6 @@ import { getDaysAgoInSeconds } from "utils/time";
 import { isTruthy } from "utils/types";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { useRoles } from "hooks/useRoles";
 import { useWorldUsersByIdWorkaround } from "hooks/users";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -98,8 +97,6 @@ const useChatActions = (venueId?: string) => {
 
 const useChatMessages = (venueId?: string) => {
   const { worldUsersById } = useWorldUsersByIdWorkaround();
-  const { userRoles } = useRoles();
-  const isAdmin = Boolean(userRoles?.includes("admin"));
   const { userId } = useUser();
 
   useConnectVenueChatMessages(venueId);
@@ -134,8 +131,6 @@ const useChatMessages = (venueId?: string) => {
             message,
             usersById: worldUsersById,
             myUserId: userId,
-
-            isAdmin,
           });
 
           if (!displayMessage) return undefined;
@@ -149,7 +144,6 @@ const useChatMessages = (venueId?: string) => {
                 message: reply,
                 usersById: worldUsersById,
                 myUserId: userId,
-                isAdmin,
               })
             )
             .filter(isTruthy);
@@ -157,7 +151,7 @@ const useChatMessages = (venueId?: string) => {
           return { ...displayMessage, replies: messageReplies };
         })
         .filter(isTruthy),
-    [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
+    [userId, worldUsersById, messages, allMessagesReplies]
   );
 };
 

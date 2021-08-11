@@ -1,10 +1,66 @@
-.default-avatars-container {
-  display: flex;
-  flex-direction: row;
+@import "scss/constants";
 
-  .profile-picture-preview {
-    width: 40px;
-    height: 40px;
-    border: 0px solid;
+$profile-picture-size--sm: 40px;
+$profile-picture-size--lg: 80px;
+
+$upload-button-max-width: 300px;
+
+.ProfilePictureUploadForm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: $spacing--md;
+
+  &__input {
+    display: none;
+  }
+
+  &__uploadButton {
+    max-width: $upload-button-max-width;
+    display: flex;
+    align-items: center;
+    border-radius: $border-radius--xl;
+    border: solid $primary;
+    padding: $spacing--lg 50px;
+    margin: $spacing--lg 0;
+    font-weight: $font-weight--700;
+    color: $white;
+    background-color: transparent;
+
+    &:hover {
+      transform: translateY(-1px);
+      background-image: linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.6) 0%,
+        rgba(0, 0, 0, 0.6) 100%
+      );
+      background-color: darken($primary, 20%);
+    }
+  }
+
+  &__defaultAvatarsContainer {
+    display: flex;
+    flex-direction: row;
+  }
+}
+
+.ProfilePicturePreviewContainer {
+  display: flex;
+  justify-content: center;
+  z-index: z(account-profile-picture-preview);
+  background-color: transparent;
+  border: none;
+
+  &__image {
+    width: $profile-picture-size--lg;
+    height: $profile-picture-size--lg;
+    border: 3px solid $white;
+
+    &--small {
+      width: $profile-picture-size--sm;
+      height: $profile-picture-size--sm;
+      border: 0 solid;
+    }
   }
 }

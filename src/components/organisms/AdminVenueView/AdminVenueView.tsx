@@ -30,6 +30,12 @@ export interface AdminVenueViewRouteParams {
   selectedTab?: AdminVenueTab;
 }
 
+export interface TabNavigationProps {
+  onClickHome: () => void;
+  onClickBack: () => void;
+  onClickNext: () => void;
+}
+
 const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
@@ -112,14 +118,15 @@ export const AdminVenueView: React.FC = () => {
       {selectedTab === AdminVenueTab.spaces && (
         <Spaces
           onClickHome={navigateToHome}
+          onClickBack={navigateToHome}
           onClickNext={navigateToTiming}
           venue={venue}
         />
       )}
       {selectedTab === AdminVenueTab.timing && (
         <Timing
-          onClickBack={navigateToSpaces}
           onClickHome={navigateToHome}
+          onClickBack={navigateToSpaces}
           onClickNext={navigateToRun}
           venue={venue}
         />
