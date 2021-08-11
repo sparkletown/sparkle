@@ -108,19 +108,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const liveAndFutureEvents = useMemo(
     () =>
-      [
-        ...relatedVenueEvents,
-        ...relatedVenueEvents,
-        ...relatedVenueEvents,
-        ...relatedVenueEvents,
-        ...relatedVenueEvents,
-      ]
-        .filter(isEventLiveOrFuture)
-        .map(
-          prepareForSchedule({
-            usersEvents: userEventIds,
-          })
-        ),
+      relatedVenueEvents.filter(isEventLiveOrFuture).map(
+        prepareForSchedule({
+          usersEvents: userEventIds,
+        })
+      ),
     [relatedVenueEvents, userEventIds]
   );
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
@@ -279,36 +271,38 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   });
 
   return (
-    <div className={containerClasses}>
-      {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-      {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+    <div className="NavBarWrapper">
+      <div className={containerClasses}>
+        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
+        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
 
-      <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
-      <Toggler
-        containerClassName="NavBarSchedule__bookmarked-toggle"
-        name="bookmarked-toggle"
-        toggled={showPersonalisedSchedule}
-        onChange={togglePersonalisedSchedule}
-        label="Bookmarked events"
-      />
-      <ScheduleNG
-        showPersonalisedSchedule={showPersonalisedSchedule}
-        isLoading={isLoadingSchedule}
-        {...scheduleNG}
-      />
+        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        <Toggler
+          containerClassName="NavBarSchedule__bookmarked-toggle"
+          name="bookmarked-toggle"
+          toggled={showPersonalisedSchedule}
+          onChange={togglePersonalisedSchedule}
+          label="Bookmarked events"
+        />
+        <ScheduleNG
+          showPersonalisedSchedule={showPersonalisedSchedule}
+          isLoading={isLoadingSchedule}
+          {...scheduleNG}
+        />
+      </div>
       {!isLoadingSchedule && (
-        <div className="NavBarSchedule__download-buttons">
+        <div className="NavBarWrapper__download-buttons">
           {isShowPersonalDownloadBtn && (
             <Button
               onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarSchedule__download-schedule-btn"
+              customClass="NavBarWrapper__download-schedule-btn"
             >
               Download your schedule
             </Button>
           )}
           <Button
             onClick={downloadAllEventsCalendar}
-            customClass="NavBarSchedule__download-schedule-btn"
+            customClass="NavBarWrapper__download-schedule-btn"
           >
             Download full schedule
           </Button>
