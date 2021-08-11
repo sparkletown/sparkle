@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm } from "react-hook-form";
+import { ErrorMessage, useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,8 +7,8 @@ import { makeUpdateBanner } from "api/bannerAdmin";
 
 import { venueInsideUrl } from "utils/url";
 
-import { InputField } from "components/atoms/InputField";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { InputField } from "components/atoms/InputField";
 
 import "./RunTabToolbar.scss";
 
@@ -23,7 +23,10 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({ venueId }) => {
     mode: "onSubmit",
   });
 
-  const [{ loading: isUpdatingBanner }, updateBanner] = useAsyncFn(async () => {
+  const [
+    { loading: isUpdatingBanner, error },
+    updateBanner,
+  ] = useAsyncFn(async () => {
     if (!venueId) return;
     const bannerMessage = getValues().message;
     await makeUpdateBanner(venueId)(bannerMessage);
@@ -47,6 +50,7 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({ venueId }) => {
           iconOnly={true}
           onClick={updateBanner}
         />
+        {error && <ErrorMessage name={error.message} message={error.message} />}
       </form>
       <div className="RunTabToolbar__toolbar RunTabToolbar__toolbar--right">
         <ButtonNG

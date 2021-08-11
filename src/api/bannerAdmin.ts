@@ -1,3 +1,4 @@
+import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 
 export const makeUpdateBanner = (
@@ -12,5 +13,14 @@ export const makeUpdateBanner = (
   await firebase
     .functions()
     .httpsCallable("venue-adminUpdateBannerMessage")(params)
-    .catch((e) => onError?.(e.toString()));
+    .catch((e) => {
+      Bugsnag.notify(e, (event) => {
+        event.addMetadata("context", {
+          location: "api/bannerAdmin::makeUpdateBanner",
+          venueId,
+          message,
+        });
+      });
+      onError?.(e.toString());
+    });
 };
