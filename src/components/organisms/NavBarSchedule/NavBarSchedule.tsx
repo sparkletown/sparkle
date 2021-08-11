@@ -11,11 +11,7 @@ import {
 
 import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
 
-import {
-  LocationEvents,
-  PersonalizedVenueEvent,
-  VenueEvent,
-} from "types/venues";
+import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
 import {
   eventTimeComparator,
@@ -42,15 +38,9 @@ import "./NavBarSchedule.scss";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
-export interface ScheduleDay {
-  isToday: boolean;
-  scheduleDate: Date;
-  locatedEvents: LocationEvents[];
-  personalEvents: PersonalizedVenueEvent[];
-}
-
 export interface ScheduleNGDay {
   daysEvents: PersonalizedVenueEvent[];
+  scheduleDate: Date;
 }
 
 export const emptyPersonalizedSchedule = {};
@@ -152,6 +142,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       );
 
     return {
+      scheduleDate: startOfSelectedDay,
       daysEvents: showPersonalisedSchedule
         ? daysEvents.filter((event) => event.isSaved)
         : daysEvents,
