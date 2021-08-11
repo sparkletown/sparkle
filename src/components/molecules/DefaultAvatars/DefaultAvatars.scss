@@ -4,6 +4,11 @@
   display: flex;
   flex-direction: row;
 
+  &__preview-container {
+    background-color: transparent;
+    border: none;
+  }
+
   &__picture-preview {
     width: 40px;
     height: 40px;

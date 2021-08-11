@@ -1,6 +1,6 @@
 import { ChangeEvent, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
-import { UserInfo } from "firebase/app";
+import firebase from "firebase/app";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -13,7 +13,7 @@ import "firebase/storage";
 
 export const useUploadProfilePictureHandler = (
   setError: (error: string) => void,
-  user?: UserInfo
+  user?: firebase.UserInfo
 ) => {
   const firebase = useFirebase();
 

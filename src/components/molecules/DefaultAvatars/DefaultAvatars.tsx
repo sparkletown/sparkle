@@ -64,7 +64,7 @@ export const DefaultAvatars: React.FC<Props> = ({
       <button
         key={`${avatar}-${index}`}
         className={classNames(
-          "profile-picture-preview-container",
+          "DefaultAvatars__preview-container",
           avatarClassName
         )}
         onClick={(event) => uploadDefaultAvatar(event, avatar)}
