@@ -62,5 +62,8 @@ $icon-width: 2.5rem;
   &__error {
     color: $input--invalid;
     font-size: 0.8rem;
+    position: absolute;
+    bottom: -1.3rem;
+    left: 8px;
   }
 }

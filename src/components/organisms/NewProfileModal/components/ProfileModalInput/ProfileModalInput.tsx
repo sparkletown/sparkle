@@ -17,31 +17,22 @@ interface Props extends ContainerClassName, React.HTMLProps<HTMLInputElement> {
 
 export const ProfileModalInput = React.forwardRef<HTMLInputElement, Props>(
   ({ error, containerClassName, notCondensed, iconEnd, ...rest }, ref) => {
-    const inputFieldError = !notCondensed ? { error } : {};
     return (
-      <div>
-        <InputField
-          containerClassName={containerClassName}
-          iconEnd={iconEnd}
-          inputClassName={classNames("ProfileModalInput__input", {
-            "ProfileModalInput__input--condensed": !notCondensed,
-          })}
-          iconEndClassName="ProfileModalInput__icon-end"
-          //eslint-disable-next-line @typescript-eslint/no-explicit-any
-          ref={ref as any}
-          {...inputFieldError}
-          {...rest}
-        />
-        {notCondensed && (
-          <span
-            className={classNames("ProfileModalInput__error-message", {
-              "ProfileModalInput__error-message--hidden": !error,
-            })}
-          >
-            {error?.message ?? "empty error"}
-          </span>
-        )}
-      </div>
+      <InputField
+        error={error}
+        containerClassName={containerClassName}
+        iconEnd={iconEnd}
+        inputClassName={classNames("ProfileModalInput__input", {
+          "ProfileModalInput__input--condensed": !notCondensed,
+        })}
+        errorTextClassName={classNames({
+          "ProfileModalInput__error-message--condensed": !notCondensed,
+        })}
+        iconEndClassName="ProfileModalInput__icon-end"
+        //eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ref={ref as any}
+        {...rest}
+      />
     );
   }
 );
