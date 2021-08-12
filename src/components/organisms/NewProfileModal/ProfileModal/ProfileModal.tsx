@@ -32,10 +32,6 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, selectedUserProfile?.id]);
 
-  if (!selectedUserProfile || !selectedUserProfile?.id) {
-    return null;
-  }
-
   return (
     <Modal
       className="ProfileModal"
@@ -43,11 +39,13 @@ export const ProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
       onHide={closeUserProfileModal}
     >
       <Modal.Body className="ProfileModal__body">
-        <ProfileModalContent
-          venue={venue}
-          viewingUser={selectedUserProfile}
-          onPrimaryButtonClick={openChosenUserChat}
-        />
+        {selectedUserProfile?.id && (
+          <ProfileModalContent
+            venue={venue}
+            viewingUser={selectedUserProfile}
+            onPrimaryButtonClick={openChosenUserChat}
+          />
+        )}
       </Modal.Body>
     </Modal>
   );
