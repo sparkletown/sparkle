@@ -442,7 +442,7 @@ const createFirestoreRoomInput_v2 = async (
     url:
       input.useUrl || !input.venueName
         ? input.url
-        : window.origin + venueInsideUrl(input.venueName!),
+        : window.origin + venueInsideUrl(input.venueName),
     ...imageInputData,
   };
 
