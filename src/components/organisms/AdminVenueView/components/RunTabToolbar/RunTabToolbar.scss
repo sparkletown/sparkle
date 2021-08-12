@@ -1,0 +1,34 @@
+@import "scss/constants.scss";
+
+.RunTabToolbar {
+  &__wrapper {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin: 0;
+  }
+
+  &__toolbar {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    gap: $spacing--xs;
+
+    &--left {
+      min-width: 65%;
+      flex-direction: row;
+    }
+
+    &--right {
+      min-width: 35%;
+      flex-direction: row-reverse;
+    }
+  }
+
+  &__announce {
+    width: 30em;
+    margin: -1px; // to avoid border artefacts
+    padding: 1px; // to avoid child artefacts
+  }
+}

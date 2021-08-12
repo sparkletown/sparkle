@@ -22,7 +22,7 @@ export interface ButtonProps {
   className?: string;
   style?: CSSProperties;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e?: React.MouseEvent<HTMLButtonElement>) => void;
   isLink?: boolean;
   linkTo?: string;
   newTab?: boolean;

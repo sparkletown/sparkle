@@ -14,6 +14,7 @@ import { useUser } from "hooks/useUser";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { RunTabView } from "./components/RunTabView/RunTabView";
 import { Spaces } from "./components/Spaces";
 import { Timing } from "./components/Timing";
 
@@ -131,7 +132,7 @@ export const AdminVenueView: React.FC = () => {
           venue={venue}
         />
       )}
-      {selectedTab === AdminVenueTab.run && <div>Run</div>}
+      {selectedTab === AdminVenueTab.run && <RunTabView venue={venue} />}
     </>
   );
 };
