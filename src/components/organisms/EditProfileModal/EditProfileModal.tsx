@@ -47,9 +47,11 @@ export const EditProfileModal: React.FunctionComponent<EditProfileModalProps> = 
     profileQuestions.map(
       (question: QuestionType) =>
         (defaultValues[question.name] = profile
-          ? //@ts-ignore
+          ? // some weird things going on here
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             profile[question.name]
-          : undefined) // no idea what's going on here. Typescript will clarify.
+          : undefined)
     );
 
   const {
