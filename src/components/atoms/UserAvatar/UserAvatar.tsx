@@ -19,7 +19,6 @@ export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
 export interface UserAvatarProps extends ContainerClassName {
   user?: WithId<User>;
-  overridePictureUrl?: string;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
@@ -30,7 +29,6 @@ export interface UserAvatarProps extends ContainerClassName {
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
   user,
-  overridePictureUrl,
   containerClassName,
   imageClassName,
   showNametag,
@@ -50,7 +48,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
-    : overridePictureUrl ?? user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+    : user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
 
   const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME

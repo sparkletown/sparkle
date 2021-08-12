@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
@@ -74,13 +74,20 @@ export const ProfileModalAvatar: React.FC<Props> = ({
     uploadRef.current?.click();
   }, []);
 
+  const userWithOverriddenPictureUrl = useMemo(
+    () => ({
+      ...user,
+      ...(pictureUrl ? { pictureUrl } : {}),
+    }),
+    [pictureUrl, user]
+  );
+
   return (
     <div className={classNames("ProfileModalAvatar", containerClassName)}>
       <div className="ProfileModalAvatar__upload-new-container">
         <UserAvatar
           imageClassName="ProfileModalAvatar__image"
-          user={user}
-          overridePictureUrl={pictureUrl}
+          user={userWithOverriddenPictureUrl}
           size="full"
           showStatus={!isCurrentUser}
         />
