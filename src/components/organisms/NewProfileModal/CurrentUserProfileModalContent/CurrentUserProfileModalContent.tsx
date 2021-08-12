@@ -89,15 +89,13 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
   });
 
   const {
-    fields,
+    fields: links,
     append: addLink,
     remove: removeLink,
   } = useFieldArray<ProfileLink>({
     control,
     name: formProp("profileLinks"),
   });
-
-  const links = fields as WithId<ProfileLink>[];
 
   const cancelEditing = useCallback(() => {
     turnOffEditMode();

@@ -25,8 +25,8 @@ import "./ProfileModalEditLink.scss";
 export interface ProfileModalEditLinkProps extends ContainerClassName {
   index: number;
   initialTitle?: string;
-  link: ProfileLink;
-  otherUrls: string[];
+  link: Partial<ProfileLink>;
+  otherUrls: (string | undefined)[];
   setTitle: (title: string) => void;
   register: FormFieldProps["register"];
   error?: NestDataObject<ProfileLink, FieldError>;
@@ -45,7 +45,7 @@ export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   containerClassName,
 }) => {
   const [linkIcon, setLinkIcon] = useState<IconDefinition>(
-    getProfileModalLinkIcon(link.url)
+    getProfileModalLinkIcon(link.url ?? "")
   );
 
   const getInputNameForForm = useCallback(

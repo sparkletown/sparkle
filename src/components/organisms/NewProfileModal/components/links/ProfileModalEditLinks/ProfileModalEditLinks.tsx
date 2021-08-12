@@ -1,13 +1,11 @@
 import React, { useMemo } from "react";
-import { FieldError, NestDataObject } from "react-hook-form";
+import { ArrayField, FieldError, NestDataObject } from "react-hook-form";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import { FormFieldProps } from "types/forms";
 import { ProfileLink } from "types/User";
 import { ContainerClassName } from "types/utility";
-
-import { WithId } from "utils/id";
 
 import { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
@@ -17,7 +15,7 @@ import "./ProfileModalEditLinks.scss";
 
 export interface ProfileModalEditLinksProps extends ContainerClassName {
   initialLinks: ProfileLink[];
-  links: WithId<ProfileLink>[];
+  links: Partial<ArrayField<ProfileLink>>[];
   setLinkTitle: (index: number, title: string) => void;
   register: FormFieldProps["register"];
   errors?: NestDataObject<ProfileLink, FieldError>[];
