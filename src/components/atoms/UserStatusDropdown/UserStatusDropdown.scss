@@ -17,7 +17,7 @@ $dropdown-width: 100px;
     text-decoration: underline;
     border: none;
     font-weight: $font-weight--400;
-    line-height: 1.3rem;
+    line-height: unset;
     vertical-align: baseline;
 
     &:focus {
