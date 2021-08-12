@@ -83,7 +83,10 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   //'isStatusEnabledForVenue' checks if the user status is enabled from the venue config.
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
-    isStatusEnabledForVenue && showStatus && !!venueUserStatuses.length;
+    isStatusEnabledForVenue &&
+    isOnline &&
+    showStatus &&
+    !!venueUserStatuses.length;
 
   return (
     <div className={containerClasses}>
