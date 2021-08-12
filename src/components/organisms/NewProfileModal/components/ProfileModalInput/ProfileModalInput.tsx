@@ -17,6 +17,7 @@ interface Props extends ContainerClassName, React.HTMLProps<HTMLInputElement> {
 
 export const ProfileModalInput = React.forwardRef<HTMLInputElement, Props>(
   ({ error, containerClassName, notCondensed, iconEnd, ...rest }, ref) => {
+    const inputFieldError = !notCondensed ? { error } : {};
     return (
       <div>
         <InputField
@@ -28,18 +29,18 @@ export const ProfileModalInput = React.forwardRef<HTMLInputElement, Props>(
           iconEndClassName="ProfileModalInput__icon-end"
           //eslint-disable-next-line @typescript-eslint/no-explicit-any
           ref={ref as any}
+          {...inputFieldError}
           {...rest}
         />
-        {
+        {notCondensed && (
           <span
             className={classNames("ProfileModalInput__error-message", {
               "ProfileModalInput__error-message--hidden": !error,
-              "ProfileModalInput__error-message--condensed": !notCondensed,
             })}
           >
             {error?.message ?? "empty error"}
           </span>
-        }
+        )}
       </div>
     );
   }

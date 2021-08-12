@@ -15,7 +15,7 @@ import {
 import { userProfileModalFormProp as formProp } from "utils/propName";
 import { urlRegex } from "utils/types";
 
-import { useBooleanState } from "hooks/useBooleanState";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ProfileModalInput } from "components/organisms/NewProfileModal/components/ProfileModalInput";
 import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/components/ProfileModalRoundIcon";
@@ -54,7 +54,9 @@ export const ProfileModalEditLink: React.FC<Props> = ({
     []
   );
 
-  const [titleTouched, setTitleTouched] = useBooleanState(!!initialTitle);
+  const { isShown: titleTouched, show: setTitleTouched } = useShowHide(
+    !!initialTitle
+  );
 
   const validateURLUnique: (url: string) => ValidateResult = useCallback(
     (url: string) => {

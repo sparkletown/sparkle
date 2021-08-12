@@ -15,10 +15,10 @@ import { radioStationsSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
-import { useBooleanState } from "hooks/useBooleanState";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -87,11 +87,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
-  const [
-    isShowUserProfile,
-    showUserProfile,
-    closeUserProfile,
-  ] = useBooleanState(false);
+  const {
+    isShown: isShowUserProfile,
+    show: showUserProfile,
+    hide: closeUserProfile,
+  } = useShowHide(false);
 
   const shouldShowSchedule =
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;

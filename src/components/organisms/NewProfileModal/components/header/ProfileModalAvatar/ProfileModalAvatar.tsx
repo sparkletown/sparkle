@@ -10,8 +10,8 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { userProfileModalFormProp as formProp } from "utils/propName";
 
-import { useBooleanState } from "hooks/useBooleanState";
 import { useIsSameUser } from "hooks/useIsSameUser";
+import { useShowHide } from "hooks/useShowHide";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 
@@ -42,7 +42,11 @@ export const ProfileModalAvatar: React.FC<Props> = ({
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
-  const [uploading, uploadStarted, uploadFinished] = useBooleanState(false);
+  const {
+    isShown: uploading,
+    show: uploadStarted,
+    hide: uploadFinished,
+  } = useShowHide(false);
 
   const { user } = useUser();
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(

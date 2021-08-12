@@ -11,7 +11,7 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { venueLandingUrl } from "utils/url";
 
-import { useBooleanState } from "hooks/useBooleanState";
+import { useShowHide } from "hooks/useShowHide";
 
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModal/ProfileModalContent";
 import { UserProfileModalContent } from "components/organisms/NewProfileModal/UserProfileModal/UserProfileModalContent";
@@ -31,13 +31,17 @@ export const UserProfileModal: React.FC<Props> = ({
   user,
   onClose,
 }: Props) => {
-  const [editMode, turnOnEditMode, turnOffEditMode] = useBooleanState(false);
+  const {
+    isShown: editMode,
+    show: turnOnEditMode,
+    hide: turnOffEditMode,
+  } = useShowHide(false);
 
   const firebase = useFirebase();
   const history = useHistory();
 
-  const isSubmittingState = useBooleanState(false);
-  const [isSubmitting] = isSubmittingState;
+  const isSubmittingState = useShowHide(false);
+  const { isShown: isSubmitting } = isSubmittingState;
 
   const logout = useCallback(async () => {
     await firebase.auth().signOut();

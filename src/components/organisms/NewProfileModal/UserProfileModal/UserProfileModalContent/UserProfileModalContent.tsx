@@ -15,9 +15,9 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 
-import { useBooleanState } from "hooks/useBooleanState";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
+import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -33,7 +33,7 @@ interface Props {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
-  isSubmittingState: ReturnType<typeof useBooleanState>;
+  isSubmittingState: ReturnType<typeof useShowHide>;
 }
 
 export const arePasswordsNotEmpty = (
@@ -58,7 +58,11 @@ export const UserProfileModalContent: React.FC<Props> = ({
 
   const { questions, answers } = useProfileQuestions(user, venue.id);
 
-  const [isSubmitting, startSubmitting, finishSubmitting] = isSubmittingState;
+  const {
+    isShown: isSubmitting,
+    show: startSubmitting,
+    hide: finishSubmitting,
+  } = isSubmittingState;
 
   const defaultValues = useProfileModalFormDefaultValues(
     user,
