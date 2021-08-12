@@ -22,9 +22,9 @@ $url-text-icon-right-margin: 0.5rem;
   }
 
   &__error-message {
+    bottom: -1rem;
     &--condensed {
       font-size: 0.7rem;
-      bottom: -1rem;
     }
   }
 }

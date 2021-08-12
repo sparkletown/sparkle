@@ -25,7 +25,7 @@ export const ProfileModalInput = React.forwardRef<HTMLInputElement, Props>(
         inputClassName={classNames("ProfileModalInput__input", {
           "ProfileModalInput__input--condensed": !notCondensed,
         })}
-        errorTextClassName={classNames({
+        errorTextClassName={classNames("ProfileModalInput__error-message", {
           "ProfileModalInput__error-message--condensed": !notCondensed,
         })}
         iconEndClassName="ProfileModalInput__icon-end"
