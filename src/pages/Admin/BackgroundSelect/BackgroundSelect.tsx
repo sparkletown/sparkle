@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useAsyncFn } from "react-use";
 
 import { updateVenue_v2 } from "api/admin";
@@ -7,6 +7,7 @@ import { useFetchAssets } from "hooks/useFetchAssets";
 import { useUser } from "hooks/useUser";
 
 import { FileButton } from "components/atoms/FileButton";
+import { FileButtonOnChangeData } from "components/atoms/FileButton/FileButton";
 
 import "./BackgroundSelect.scss";
 
@@ -59,6 +60,11 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     [isUploading, mapBackgrounds, uploadMapBackground]
   );
 
+  const onChange = useCallback(
+    ({ url, files }: FileButtonOnChangeData) => uploadMapBackground(url, files),
+    [uploadMapBackground]
+  );
+
   return (
     <div className="BackgroundSelect">
       {!mapBackground && (
@@ -66,9 +72,14 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
           <FileButton
             disabled={isUploading}
             title="Import a map background"
-            description="Recommended size: 2000px / 1200px"
-            onChange={uploadMapBackground}
-          />
+            variant="primary"
+            onChange={onChange}
+          >
+            Import a map background
+          </FileButton>
+          <span className="BackgroundSelect__file-description">
+            Recommended size: 2000px / 1200px
+          </span>
 
           <h3 className="BackgroundSelect__maps-header">
             Or select one of our map backgrounds

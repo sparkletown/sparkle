@@ -1,0 +1,106 @@
+@import "scss/constants";
+
+.CsvImportModal {
+  .modal-content {
+    padding: $spacing--xl;
+    background: $background--modal;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.5);
+    border-radius: $border-radius--xl;
+  }
+
+  &__dialog,
+  .modal-content {
+    min-width: 60vw;
+    min-height: 30vh;
+  }
+
+  &--with-data .modal-content,
+  &--with-data.modal-dialog {
+    min-width: 90vw;
+    min-height: 90vh;
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+
+  &--with-data &__wrapper {
+    justify-content: flex-start;
+    background-color: $black;
+
+    & tr:first-of-type {
+      background-color: $secondary--schedule-event;
+    }
+
+    & tr:nth-of-type(even) {
+      background-color: $secondary--dark;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    margin: $spacing--xl;
+    padding: 0;
+    min-height: 10em;
+  }
+
+  &__wrapper {
+    width: 100%;
+    height: 100%;
+    border: 2px solid opaque-white(0.2);
+    border-radius: $border-radius--md;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    place-content: center;
+    align-items: center;
+    overflow: auto;
+  }
+
+  &__title {
+    text-transform: capitalize;
+    text-align: center;
+  }
+
+  &__description {
+    color: $light-grey--lightest;
+  }
+
+  &__table {
+    th {
+      word-break: keep-all;
+      white-space: nowrap;
+    }
+
+    td,
+    th {
+      padding: $spacing--md;
+    }
+  }
+
+  &__header,
+  &__footer {
+    margin: $spacing--xl;
+    padding: 0;
+    border: none;
+    border-radius: unset;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    align-content: center;
+  }
+
+  &__button {
+    width: 13.5em;
+    height: 3em;
+  }
+
+  &__error {
+    color: $input--invalid;
+    max-height: 4em;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 $spacing--lg;
+    margin-bottom: $spacing--lg;
+  }
+}

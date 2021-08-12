@@ -15,6 +15,8 @@ import { TimingEventModal } from "components/organisms/TimingEventModal";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
+import { CsvImportModal } from "./CsvImportModal";
+
 import "./EventsView.scss";
 
 export type EventsViewProps = {
@@ -28,23 +30,28 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
   const events = useSelector(venueEventsNGSelector);
 
   const {
-    isShown: showCreateEventModal,
-    show: setShowCreateEventModal,
-    hide: setHideCreateEventModal,
+    isShown: isShownCreateEventModal,
+    show: showCreateEventModal,
+    hide: hideCreateEventModal,
   } = useShowHide();
 
   const {
-    isShown: showDeleteEventModal,
-    show: setShowDeleteEventModal,
-    hide: setHideDeleteEventModal,
+    isShown: isShowDeleteEventModal,
+    show: showDeleteEventModal,
+    hide: hideDeleteEventModal,
+  } = useShowHide();
+  const {
+    isShown: isShownCsvImportModal,
+    show: showCsvImportModal,
+    hide: hideCsvImportModal,
   } = useShowHide();
 
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();
 
   const adminEventModalOnHide = useCallback(() => {
-    setHideCreateEventModal();
+    hideCreateEventModal();
     setEditedEvent(undefined);
-  }, [setHideCreateEventModal]);
+  }, [hideCreateEventModal]);
 
   const hasVenueEvents = events?.length !== 0;
 
@@ -54,13 +61,13 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         return (
           <TimingEvent
             event={event}
-            setShowCreateEventModal={setShowCreateEventModal}
+            setShowCreateEventModal={showCreateEventModal}
             setEditedEvent={setEditedEvent}
             key={event.id}
           />
         );
       }),
-    [events, setShowCreateEventModal, setEditedEvent]
+    [events, showCreateEventModal, setEditedEvent]
   );
 
   return (
@@ -77,16 +84,20 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
         </div>
       </div>
       <div className="EventsView__footer">
-        <ButtonNG>Import from CSV</ButtonNG>
-        <ButtonNG variant="primary" onClick={setShowCreateEventModal}>
+        <CsvImportModal
+          show={isShownCsvImportModal}
+          onHide={hideCsvImportModal}
+        />
+        <ButtonNG onClick={showCsvImportModal}>Import from CSV</ButtonNG>
+        <ButtonNG variant="primary" onClick={showCreateEventModal}>
           Create an Event
         </ButtonNG>
       </div>
-      {showCreateEventModal && (
+      {isShownCreateEventModal && (
         <TimingEventModal
-          show={showCreateEventModal}
+          show={isShownCreateEventModal}
           onHide={() => {
-            setHideCreateEventModal();
+            hideCreateEventModal();
             adminEventModalOnHide();
           }}
           template={venue.template}
@@ -94,15 +105,15 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           venue={venue}
           event={editedEvent}
           setEditedEvent={setEditedEvent}
-          setShowDeleteEventModal={setShowDeleteEventModal}
+          setShowDeleteEventModal={showDeleteEventModal}
         />
       )}
 
-      {showDeleteEventModal && (
+      {isShowDeleteEventModal && (
         <TimingDeleteModal
-          show={showDeleteEventModal}
+          show={isShowDeleteEventModal}
           onHide={() => {
-            setHideDeleteEventModal();
+            hideDeleteEventModal();
             setEditedEvent && setEditedEvent(undefined);
           }}
           venueId={venue.id}

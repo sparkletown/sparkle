@@ -1,57 +1,64 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
+import { ButtonNG, ButtonProps } from "../ButtonNG/ButtonNG";
+
 import "./FileButton.scss";
 
-export interface FileButtonProps {
-  title: string;
-  description?: string;
-  disabled?: boolean;
-  onChange: (url: string, file: FileList) => void;
+export interface FileButtonOnChangeData {
+  url: string;
+  files: FileList;
+  file: File;
+}
+
+export interface FileButtonProps extends Omit<ButtonProps, "onClick"> {
+  onChange: (data: FileButtonOnChangeData) => void;
 }
 
 export const FileButton: React.FC<FileButtonProps> = ({
-  title,
-  description,
-  disabled: isDisabled,
+  disabled,
   onChange,
+  className,
+  children,
+  ...buttonNgProps
 }) => {
+  const inputId = `FileButton-input-id-${new Date().getTime()}-${Math.random()}`;
+
   const handleChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
+      const files: FileList | null = event.target.files;
 
-      if (!files || isDisabled) return;
+      if (!files?.[0] || disabled) return;
 
-      const url = URL.createObjectURL(files[0]);
+      const file = files[0];
+      const url: string = URL.createObjectURL(file);
 
-      onChange(url, files);
+      onChange({ url, files, file });
     },
-    [isDisabled, onChange]
+    [disabled, onChange]
   );
 
-  const buttonClasses = classNames("btn btn-primary", {
-    "btn-disabled": isDisabled,
-  });
+  const containerClass = classNames("FileButton", className);
 
   return (
-    <div className="FileButton">
-      <button className={buttonClasses} disabled={isDisabled}>
-        <label className="FileButton__label" htmlFor="fileButton">
-          {title}
+    <div className={containerClass}>
+      <ButtonNG
+        disabled={disabled}
+        className="FileButton__button"
+        {...buttonNgProps}
+      >
+        <label className="FileButton__label" htmlFor={inputId}>
+          {children}
         </label>
-      </button>
+      </ButtonNG>
 
       <input
         hidden
         type="file"
-        id="fileButton"
-        disabled={isDisabled}
+        id={inputId}
+        disabled={disabled}
         onChange={handleChange}
       />
-
-      {description && (
-        <span className="FileButton__description">{description}</span>
-      )}
     </div>
   );
 };
