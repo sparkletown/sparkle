@@ -73,9 +73,10 @@ $avatar-sizes-enum: (
 
     @include square-size($default-indicator-size);
 
-    // NOTE: for the illusion of transparency, the border's style and color should be set by @include background-color() mixin in the appropriate ancestor
-    border-style: var(--UserAvatar__status-indicator--border-style);
-    border-color: var(--UserAvatar__status-indicator--border-color);
+    // NOTE: for the illusion of transparency, the border's style and color should be set from outside
+    // NOTE: keeping these lines for future reference to be used with theme variables
+    //border-style: var(--UserAvatar__status-indicator--border-style);
+    //border-color: var(--UserAvatar__status-indicator--border-color);
     border-width: $default-indicator-border-width;
   }
 

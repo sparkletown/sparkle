@@ -256,12 +256,6 @@ $z-layers: (
   max-width: $max;
 }
 
-@mixin background-color($color) {
-  background-color: $color;
-  --UserAvatar__status-indicator--border-style: solid;
-  --UserAvatar__status-indicator--border-color: #{$color};
-}
-
 @mixin link-style($color, $hover-color: $color) {
   color: $color;
   text-decoration: underline $color;
