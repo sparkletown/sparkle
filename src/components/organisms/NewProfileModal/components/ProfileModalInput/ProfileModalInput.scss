@@ -22,9 +22,16 @@ $url-text-icon-right-margin: 0.5rem;
   }
 
   &__error-message {
+    color: $input--invalid;
+    font-size: 0.8rem;
+    position: relative;
+    left: 2.8%;
     &--condensed {
       font-size: 0.7rem;
       bottom: -1rem;
+    }
+    &--hidden {
+      visibility: hidden;
     }
   }
 }
