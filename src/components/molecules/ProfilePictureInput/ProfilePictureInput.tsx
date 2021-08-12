@@ -56,6 +56,15 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
     uploadRef.current?.click();
   }, []);
 
+  const setPictureUrl = useCallback(
+    (url: string) => {
+      setValue("pictureUrl", url, true);
+    },
+    [setValue]
+  );
+
+  const hasError = !!error;
+
   return (
     <div className="ProfilePictureUploadForm">
       <div
@@ -91,10 +100,8 @@ export const ProfilePictureInput: React.FunctionComponent<ProfilePictureInputPro
       <small>Or pick one from our Sparkle profile pics</small>
       <DefaultAvatars
         venueId={venueId}
-        onAvatarClick={(url) => {
-          setValue("pictureUrl", url, true);
-        }}
-        isLoadingExternal={!!error}
+        onAvatarClick={setPictureUrl}
+        isLoadingExternal={hasError}
       />
       <input
         name="pictureUrl"
