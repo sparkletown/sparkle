@@ -54,9 +54,15 @@ export const venueEventWithIdConverter: firebase.firestore.FirestoreDataConverte
   },
 };
 
+export interface ImportEventsBatchError {
+  event: VenueEvent;
+  index: number;
+  reason: string;
+  venueId: string;
+}
+
 export interface ImportEventsBatchResult {
-  invalidIds: string[];
-  invalidItems: VenueEventWithVenueId[];
+  errors: ImportEventsBatchError[];
   updateCount: number;
 }
 
@@ -65,8 +71,7 @@ export const importEventsBatch: (
 ) => Promise<ImportEventsBatchResult> = async (data) => {
   if (!data) {
     return {
-      invalidIds: [],
-      invalidItems: [],
+      errors: [],
       updateCount: 0,
     };
   }
@@ -76,34 +81,32 @@ export const importEventsBatch: (
 
   const batch = firebase.firestore().batch();
 
-  const invalidIds = [];
-  const invalidItems = [];
+  const errors: ImportEventsBatchError[] = [];
   let updateCount = 0;
 
-  for (const item of data) {
-    const { event, venueId } = item;
-
+  data.forEach(({ event, venueId }, index) => {
     if (!validIds.includes(venueId)) {
-      invalidIds.push(venueId);
-      invalidItems.push(item);
-      continue;
+      errors.push({ venueId, event, index, reason: "invalid venue id" });
+      return;
     }
-    const eventRef = firebase
-      .firestore()
-      .collection("venues")
-      .doc(venueId)
-      .collection("events")
-      .doc();
+    if (!Number.isSafeInteger(event.start_utc_seconds)) {
+      errors.push({ venueId, event, index, reason: "invalid event start" });
+      return;
+    }
+    if (!Number.isSafeInteger(event.duration_minutes)) {
+      errors.push({ venueId, event, index, reason: "invalid event duration" });
+      return;
+    }
+    const eventRef = venuesRef.doc(venueId).collection("events").doc();
 
     batch.set(eventRef, event);
     updateCount += 1;
-  }
+  });
 
   await batch.commit();
 
   return {
-    invalidIds,
-    invalidItems,
+    errors,
     updateCount,
   };
 };

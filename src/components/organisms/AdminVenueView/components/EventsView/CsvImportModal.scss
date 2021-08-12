@@ -96,13 +96,17 @@
     height: 3em;
   }
 
-  &__error {
-    color: $input--invalid;
+  &__error,
+  &__result {
     max-height: 4em;
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 0 $spacing--lg;
     margin-bottom: $spacing--lg;
+  }
+
+  &__error {
+    color: $input--invalid;
   }
 }

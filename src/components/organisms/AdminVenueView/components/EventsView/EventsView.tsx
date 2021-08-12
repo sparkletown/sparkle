@@ -40,6 +40,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
     show: showDeleteEventModal,
     hide: hideDeleteEventModal,
   } = useShowHide();
+
   const {
     isShown: isShownCsvImportModal,
     show: showCsvImportModal,
