@@ -13,12 +13,12 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 
 import "./ProfileModalBasicInfo.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalBasicInfoProps extends ContainerClassName {
   user: WithId<User>;
   onEdit?: () => void;
 }
 
-export const ProfileModalBasicInfo: React.FC<Props> = ({
+export const ProfileModalBasicInfo: React.FC<ProfileModalBasicInfoProps> = ({
   user,
   onEdit,
   containerClassName,

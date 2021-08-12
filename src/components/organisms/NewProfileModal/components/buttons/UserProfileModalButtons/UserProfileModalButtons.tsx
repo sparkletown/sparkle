@@ -11,16 +11,16 @@ import { Button } from "components/atoms/Button";
 
 import "./UserProfileModalButtons.scss";
 
-interface Props extends ContainerClassName {
+export interface UserProfileModalButtonsProps extends ContainerClassName {
   onCancelClick: () => void;
   isSubmitting: boolean;
 }
 
-export const UserProfileModalButtons: React.FC<Props> = ({
+export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = ({
   onCancelClick,
   containerClassName,
   isSubmitting,
-}: Props) => {
+}) => {
   return (
     <div className={containerClassName}>
       <Button

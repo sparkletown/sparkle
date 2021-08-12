@@ -21,7 +21,7 @@ import "firebase/storage";
 
 import "./ProfileModalAvatar.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalAvatarProps extends ContainerClassName {
   user: WithId<User>;
   editMode?: boolean;
   setPictureUrl?: (url: string) => void;
@@ -29,14 +29,14 @@ interface Props extends ContainerClassName {
   register?: ReturnType<typeof useForm>["register"];
 }
 
-export const ProfileModalAvatar: React.FC<Props> = ({
+export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   editMode,
   user,
   register,
   pictureUrl,
   setPictureUrl,
   containerClassName,
-}: Props) => {
+}: ProfileModalAvatarProps) => {
   const isCurrentUser = useIsCurrentUser(user);
 
   const uploadRef = useRef<HTMLInputElement>(null);

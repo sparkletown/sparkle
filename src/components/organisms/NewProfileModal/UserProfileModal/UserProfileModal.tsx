@@ -20,19 +20,19 @@ import { UserProfileModalContent } from "components/organisms/NewProfileModal/Us
 
 import "./UserProfileModal.scss";
 
-interface Props {
+export interface UserProfileModalProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   show: boolean;
   onClose: () => void;
 }
 
-export const UserProfileModal: React.FC<Props> = ({
+export const UserProfileModal: React.FC<UserProfileModalProps> = ({
   venue,
   show,
   user,
   onClose,
-}: Props) => {
+}) => {
   const {
     isShown: editMode,
     show: turnOnEditMode,

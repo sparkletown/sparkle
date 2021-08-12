@@ -18,7 +18,7 @@ import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvata
 
 import "./ProfileModalEditBasicInfo.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalEditBasicInfoProps extends ContainerClassName {
   user: WithId<User>;
   venueId: string;
   register: ReturnType<typeof useForm>["register"];
@@ -27,7 +27,7 @@ interface Props extends ContainerClassName {
   partyNameError?: FieldError;
 }
 
-export const ProfileModalEditBasicInfo: React.FC<Props> = ({
+export const ProfileModalEditBasicInfo: React.FC<ProfileModalEditBasicInfoProps> = ({
   user,
   venueId,
   register,
@@ -35,7 +35,7 @@ export const ProfileModalEditBasicInfo: React.FC<Props> = ({
   watch,
   partyNameError,
   containerClassName,
-}: Props) => {
+}) => {
   const pictureUrl = watch?.(formProp("pictureUrl"));
   const setPictureUrl = useCallback(
     (url: string) => {

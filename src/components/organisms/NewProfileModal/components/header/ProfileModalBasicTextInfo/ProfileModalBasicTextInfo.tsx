@@ -18,14 +18,14 @@ import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 
 import "./ProfilModalBasicTextInfo.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalBasicTextInfoProps extends ContainerClassName {
   user: WithId<User>;
 }
 
-export const ProfileModalBasicTextInfo: React.FC<Props> = ({
+export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps> = ({
   user,
   containerClassName,
-}: Props) => {
+}) => {
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
 

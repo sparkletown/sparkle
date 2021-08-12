@@ -16,16 +16,16 @@ import { Button } from "components/atoms/Button";
 
 import "./ProfileModalButtons.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalButtonsProps extends ContainerClassName {
   onClick: () => void;
   user: WithId<User>;
 }
 
-export const ProfileModalButtons: React.FC<Props> = ({
+export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   containerClassName,
   onClick,
   user,
-}: Props) => {
+}) => {
   const { isOnline } = useIsOnline(user.id);
   const isCurrentUser = useIsCurrentUser(user);
 

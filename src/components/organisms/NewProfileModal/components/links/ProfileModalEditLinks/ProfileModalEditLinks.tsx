@@ -15,7 +15,7 @@ import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/
 
 import "./ProfileModalEditLinks.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalEditLinksProps extends ContainerClassName {
   initialLinks: ProfileLink[];
   links: WithId<ProfileLink>[];
   setLinkTitle: (index: number, title: string) => void;
@@ -25,7 +25,7 @@ interface Props extends ContainerClassName {
   onAddLink: () => void;
 }
 
-export const ProfileModalEditLinks: React.FC<Props> = ({
+export const ProfileModalEditLinks: React.FC<ProfileModalEditLinksProps> = ({
   initialLinks,
   links,
   setLinkTitle,
@@ -34,7 +34,7 @@ export const ProfileModalEditLinks: React.FC<Props> = ({
   onDeleteLink,
   onAddLink,
   containerClassName,
-}: Props) => {
+}) => {
   const setTitles = useMemo(
     () => links.map((_, i) => (title: string) => setLinkTitle(i, title)),
     [links, setLinkTitle]

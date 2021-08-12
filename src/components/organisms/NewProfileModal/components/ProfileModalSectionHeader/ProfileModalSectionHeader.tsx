@@ -5,14 +5,14 @@ import { ContainerClassName } from "types/utility";
 
 import "./ProfileModalSectionHeader.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalSectionHeaderProps extends ContainerClassName {
   text: string;
 }
 
-export const ProfileModalSectionHeader: React.FC<Props> = ({
+export const ProfileModalSectionHeader: React.FC<ProfileModalSectionHeaderProps> = ({
   text,
   containerClassName,
-}: Props) => {
+}) => {
   return (
     <div
       className={classNames("ProfileModalSectionHeader", containerClassName)}

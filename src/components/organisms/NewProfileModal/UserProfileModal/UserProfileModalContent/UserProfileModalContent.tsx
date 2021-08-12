@@ -29,7 +29,7 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 
 import "../UserProfileModal.scss";
 
-interface Props {
+export interface UserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
@@ -46,7 +46,7 @@ const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
   "confirmNewPassword",
 ];
 
-export const UserProfileModalContent: React.FC<Props> = ({
+export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = ({
   venue,
   user,
   isSubmittingState,
@@ -208,13 +208,13 @@ export const UserProfileModalContent: React.FC<Props> = ({
         setValue={setValue}
         partyNameError={errors?.partyName}
       />
-        <ProfileModalQuestions
-          editMode
-          containerClassName="UserProfileModal__section-editable"
-          questions={questions}
-          answers={answers}
-          register={register}
-        />
+      <ProfileModalQuestions
+        editMode
+        containerClassName="UserProfileModal__section-editable"
+        questions={questions}
+        answers={answers}
+        register={register}
+      />
       <ProfileModalEditLinks
         containerClassName="UserProfileModal__section-editable"
         register={register}

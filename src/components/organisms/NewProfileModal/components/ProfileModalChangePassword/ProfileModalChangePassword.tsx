@@ -11,7 +11,7 @@ import { ProfileModalSectionHeader } from "../ProfileModalSectionHeader";
 
 import "./ProfileModalChangePassword.scss";
 
-interface Props
+export interface ProfileModalChangePasswordProps
   extends ContainerClassName,
     Pick<ReturnType<typeof useForm>, "register" | "getValues"> {
   errors?: Pick<
@@ -20,12 +20,12 @@ interface Props
   >;
 }
 
-export const ProfileModalChangePassword: React.FC<Props> = ({
+export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProps> = ({
   containerClassName,
   register,
   getValues,
   errors,
-}: Props) => {
+}) => {
   const newPasswordValidation = useCallback(
     (password: string) => {
       if (getValues(formProp("oldPassword")) && !password)

@@ -13,20 +13,20 @@ import "firebase/storage";
 
 import "./DefaultAvatars.scss";
 
-interface Props extends ContainerClassName {
+export interface DefaultAvatarsProps extends ContainerClassName {
   venueId: string;
   onAvatarClick: (url: string) => void;
   isLoadingExternal?: boolean;
   avatarClassName?: string;
 }
 
-export const DefaultAvatars: React.FC<Props> = ({
+export const DefaultAvatars: React.FC<DefaultAvatarsProps> = ({
   venueId,
   onAvatarClick,
   isLoadingExternal,
   avatarClassName,
   containerClassName,
-}: Props) => {
+}) => {
   const firebase = useFirebase();
 
   const { sovereignVenueId, isSovereignVenueLoading } = useSovereignVenue({

@@ -15,19 +15,19 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 
 import "../ProfileModal.scss";
 
-interface Props {
+export interface ProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
 
-export const ProfileModalContent: React.FC<Props> = ({
+export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
   user,
   onPrimaryButtonClick,
   onEditMode,
   venue,
-}: Props) => {
+}) => {
   const { questions, answers } = useProfileQuestions(user, venue?.id);
 
   return (

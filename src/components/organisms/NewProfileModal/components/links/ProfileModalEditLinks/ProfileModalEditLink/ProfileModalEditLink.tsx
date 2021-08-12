@@ -22,7 +22,7 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 
 import "./ProfileModalEditLink.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalEditLinkProps extends ContainerClassName {
   index: number;
   initialTitle?: string;
   link: ProfileLink;
@@ -33,7 +33,7 @@ interface Props extends ContainerClassName {
   onDelete: () => void;
 }
 
-export const ProfileModalEditLink: React.FC<Props> = ({
+export const ProfileModalEditLink: React.FC<ProfileModalEditLinkProps> = ({
   index,
   initialTitle,
   link,
@@ -43,7 +43,7 @@ export const ProfileModalEditLink: React.FC<Props> = ({
   error,
   onDelete,
   containerClassName,
-}: Props) => {
+}) => {
   const [linkIcon, setLinkIcon] = useState<IconDefinition>(
     getProfileModalLinkIcon(link.url)
   );

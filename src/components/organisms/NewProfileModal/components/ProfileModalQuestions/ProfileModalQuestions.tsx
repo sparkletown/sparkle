@@ -10,20 +10,20 @@ import { ProfileModalSectionHeader } from "components/organisms/NewProfileModal/
 
 import "./ProfileModalQuestions.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalQuestionsProps extends ContainerClassName {
   editMode?: boolean;
   register?: FormFieldProps["register"];
   questions: Question[];
   answers: string[];
 }
 
-export const ProfileModalQuestions: React.FC<Props> = ({
+export const ProfileModalQuestions: React.FC<ProfileModalQuestionsProps> = ({
   editMode,
   register,
   questions,
   answers,
   containerClassName,
-}: Props) => {
+}) => {
   const renderedProfileQuestionAnswers = useMemo(
     () =>
       questions?.map((question, i) => (

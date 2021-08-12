@@ -9,11 +9,11 @@ import { ProfileModalLink } from "components/organisms/NewProfileModal/component
 
 import "./ProfileModalLinks.scss";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalLinksProps extends ContainerClassName {
   user: WithId<User>;
 }
 
-export const ProfileModalLinks: React.FC<Props> = ({
+export const ProfileModalLinks: React.FC<ProfileModalLinksProps> = ({
   containerClassName,
   user,
 }) => {

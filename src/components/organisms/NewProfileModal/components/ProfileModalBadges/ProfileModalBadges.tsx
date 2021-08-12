@@ -8,12 +8,12 @@ import { WithId } from "utils/id";
 
 import { Badges } from "components/organisms/Badges";
 
-interface Props extends ContainerClassName {
+export interface ProfileModalBadgesProps extends ContainerClassName {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
 }
 
-export const ProfileModalBadges: React.FC<Props> = ({
+export const ProfileModalBadges: React.FC<ProfileModalBadgesProps> = ({
   venue,
   user,
   containerClassName,

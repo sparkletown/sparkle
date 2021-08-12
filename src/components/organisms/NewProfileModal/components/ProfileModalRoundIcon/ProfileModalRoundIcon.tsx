@@ -9,15 +9,17 @@ import { ContainerClassName } from "types/utility";
 
 import "./ProfileModalRoundIcon.scss";
 
-interface Props extends FontAwesomeIconProps, ContainerClassName {
+export interface ProfileModalRoundIconProps
+  extends FontAwesomeIconProps,
+    ContainerClassName {
   onClick?: () => void;
 }
 
-export const ProfileModalRoundIcon: React.FC<Props> = ({
+export const ProfileModalRoundIcon: React.FC<ProfileModalRoundIconProps> = ({
   containerClassName,
   onClick,
   ...rest
-}: Props) => {
+}) => {
   return (
     <div
       className={classNames("ProfileModalRoundIcon", containerClassName)}
