@@ -13,7 +13,7 @@ import { ProfileModalLinks } from "components/organisms/NewProfileModal/componen
 import { ProfileModalBadges } from "components/organisms/NewProfileModal/components/ProfileModalBadges";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
 
-import "../ProfileModal.scss";
+import "./ProfileModalContent.scss";
 
 export interface ProfileModalContentProps {
   user: WithId<User>;
@@ -34,21 +34,21 @@ export const ProfileModalContent: React.FC<ProfileModalContentProps> = ({
     <>
       <ProfileModalBasicInfo user={user} onEdit={onEditMode} />
       <ProfileModalQuestions
-        containerClassName="ProfileModal__section"
+        containerClassName="ProfileModalContent__section"
         questions={questions}
         answers={answers}
       />
       <ProfileModalLinks
         user={user}
-        containerClassName="ProfileModal__section"
+        containerClassName="ProfileModalContent__section"
       />
       <ProfileModalBadges
         user={user}
-        containerClassName={"ProfileModal__section"}
+        containerClassName={"ProfileModalContent__section"}
         venue={venue}
       />
       <ProfileModalButtons
-        containerClassName="ProfileModal__section"
+        containerClassName="ProfileModalContent__section"
         onClick={onPrimaryButtonClick}
         user={user}
       />

@@ -15,16 +15,15 @@ import { radioStationsSelector } from "utils/selectors";
 import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
-import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { UserProfileModal } from "components/organisms/NewProfileModal/UserProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
@@ -87,11 +86,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
-  const {
-    isShown: isShowUserProfile,
-    show: showUserProfile,
-    hide: closeUserProfile,
-  } = useShowHide(false);
+  const { openUserProfileModal } = useProfileModalControls();
+
+  const handleAvatarClick = useCallback(() => {
+    openUserProfileModal(userWithId);
+  }, [openUserProfileModal, userWithId]);
 
   const shouldShowSchedule =
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
@@ -306,18 +305,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 )}
                 <div
                   className="navbar-links-user-avatar"
-                  onClick={showUserProfile}
+                  onClick={handleAvatarClick}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
                 </div>
-                {userWithId && (
-                  <UserProfileModal
-                    user={userWithId}
-                    show={isShowUserProfile}
-                    onClose={closeUserProfile}
-                    venue={currentVenue}
-                  />
-                )}
               </div>
             )}
           </div>

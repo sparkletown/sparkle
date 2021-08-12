@@ -27,7 +27,7 @@ import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/comp
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
 
-import "../UserProfileModal.scss";
+import "./CurrentUserProfileModalContent.scss";
 
 export interface UserProfileModalContentProps {
   user: WithId<User>;
@@ -46,7 +46,7 @@ const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
   "confirmNewPassword",
 ];
 
-export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = ({
+export const CurrentUserProfileModalContent: React.FC<UserProfileModalContentProps> = ({
   venue,
   user,
   isSubmittingState,
@@ -202,7 +202,7 @@ export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = (
       <ProfileModalEditBasicInfo
         venueId={venue.id}
         user={user}
-        containerClassName="UserProfileModal__section-editable"
+        containerClassName="CurrentUserProfileModalContent__section"
         register={register}
         watch={watch}
         setValue={setValue}
@@ -210,13 +210,13 @@ export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = (
       />
       <ProfileModalQuestions
         editMode
-        containerClassName="UserProfileModal__section-editable"
+        containerClassName="CurrentUserProfileModalContent__section"
         questions={questions}
         answers={answers}
         register={register}
       />
       <ProfileModalEditLinks
-        containerClassName="UserProfileModal__section-editable"
+        containerClassName="CurrentUserProfileModalContent__section"
         register={register}
         initialLinks={defaultValues.profileLinks ?? []}
         links={links}
@@ -226,7 +226,7 @@ export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = (
         onAddLink={addLinkHandler}
       />
       <ProfileModalChangePassword
-        containerClassName="UserProfileModal__section-editable"
+        containerClassName="CurrentUserProfileModalContent__section"
         register={register}
         getValues={getValues}
         errors={pick<
@@ -237,7 +237,7 @@ export const UserProfileModalContent: React.FC<UserProfileModalContentProps> = (
       <UserProfileModalButtons
         onCancelClick={cancelEditing}
         isSubmitting={isSubmitting}
-        containerClassName="UserProfileModal__edit-buttons"
+        containerClassName="CurrentUserProfileModalContent__edit-buttons"
       />
     </form>
   );

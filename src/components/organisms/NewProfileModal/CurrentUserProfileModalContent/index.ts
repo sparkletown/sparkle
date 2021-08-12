@@ -1,0 +1,1 @@
+export { CurrentUserProfileModalContent } from "components/organisms/NewProfileModal/CurrentUserProfileModalContent/CurrentUserProfileModalContent";
