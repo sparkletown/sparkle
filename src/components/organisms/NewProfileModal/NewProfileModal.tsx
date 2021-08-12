@@ -22,11 +22,11 @@ import { ProfileModalContent } from "components/organisms/NewProfileModal/Profil
 
 import "./NewProfileModal.scss";
 
-export interface UserProfileModalProps {
+interface NewProfileModalProps {
   venue: WithId<AnyVenue>;
 }
 
-export const NewProfileModal: React.FC<UserProfileModalProps> = ({ venue }) => {
+export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   const { selectRecipientChat } = useChatSidebarControls();
 
   const {

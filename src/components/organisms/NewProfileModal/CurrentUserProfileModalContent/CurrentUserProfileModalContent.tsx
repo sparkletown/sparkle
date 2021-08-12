@@ -29,7 +29,7 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 
 import "./CurrentUserProfileModalContent.scss";
 
-export interface UserProfileModalContentProps {
+export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
@@ -46,7 +46,7 @@ const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
   "confirmNewPassword",
 ];
 
-export const CurrentUserProfileModalContent: React.FC<UserProfileModalContentProps> = ({
+export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   venue,
   user,
   isSubmittingState,
