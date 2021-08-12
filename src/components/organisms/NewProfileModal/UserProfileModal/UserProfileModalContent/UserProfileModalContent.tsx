@@ -208,7 +208,6 @@ export const UserProfileModalContent: React.FC<Props> = ({
         setValue={setValue}
         partyNameError={errors?.partyName}
       />
-      {
         <ProfileModalQuestions
           editMode
           containerClassName="UserProfileModal__section-editable"
@@ -216,7 +215,6 @@ export const UserProfileModalContent: React.FC<Props> = ({
           answers={answers}
           register={register}
         />
-      }
       <ProfileModalEditLinks
         containerClassName="UserProfileModal__section-editable"
         register={register}
