@@ -1,1 +1,1 @@
-export { ProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/ProfileModalButtons/ProfileModalButtons";
+export { ProfileModalButtons } from "./ProfileModalButtons";

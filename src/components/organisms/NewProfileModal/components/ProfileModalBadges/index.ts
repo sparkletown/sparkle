@@ -1,1 +1,1 @@
-export { ProfileModalBadges } from "components/organisms/NewProfileModal/components/ProfileModalBadges/ProfileModalBadges";
+export { ProfileModalBadges } from "./ProfileModalBadges";

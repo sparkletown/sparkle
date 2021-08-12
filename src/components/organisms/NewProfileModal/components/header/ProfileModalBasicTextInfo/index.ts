@@ -1,1 +1,1 @@
-export { ProfileModalBasicTextInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalBasicTextInfo/ProfileModalBasicTextInfo";
+export { ProfileModalBasicTextInfo } from "./ProfileModalBasicTextInfo";

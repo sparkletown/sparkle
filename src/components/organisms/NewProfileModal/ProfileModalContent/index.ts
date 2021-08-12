@@ -1,1 +1,1 @@
-export { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModalContent/ProfileModalContent";
+export { ProfileModalContent } from "./ProfileModalContent";

@@ -1,1 +1,1 @@
-export { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword/ProfileModalChangePassword";
+export { ProfileModalChangePassword } from "./ProfileModalChangePassword";

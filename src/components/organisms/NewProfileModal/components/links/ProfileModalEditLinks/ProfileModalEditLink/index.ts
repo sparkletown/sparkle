@@ -1,1 +1,1 @@
-export { ProfileModalEditLink } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks/ProfileModalEditLink/ProfileModalEditLink";
+export { ProfileModalEditLink } from "./ProfileModalEditLink";
