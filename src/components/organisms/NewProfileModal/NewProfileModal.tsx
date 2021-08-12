@@ -17,7 +17,7 @@ import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useShowHide } from "hooks/useShowHide";
 
-import { CurrentUserProfileModalContent } from "components/organisms/NewProfileModal/CurrentUserProfileModalContent";
+import { EditingProfileModalContent } from "components/organisms/NewProfileModal/EditingProfileModalContent";
 import { ProfileModalContent } from "components/organisms/NewProfileModal/ProfileModalContent";
 
 import "./NewProfileModal.scss";
@@ -85,7 +85,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
         {isSameUser
           ? editMode
             ? selectedUserProfile && (
-                <CurrentUserProfileModalContent
+                <EditingProfileModalContent
                   user={selectedUserProfile}
                   venue={venue}
                   onCancelEditing={turnOffEditMode}

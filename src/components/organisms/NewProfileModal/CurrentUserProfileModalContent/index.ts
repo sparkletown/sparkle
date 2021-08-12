@@ -1,1 +1,0 @@
-export { CurrentUserProfileModalContent } from "./CurrentUserProfileModalContent";

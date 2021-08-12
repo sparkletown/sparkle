@@ -27,7 +27,7 @@ import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/comp
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
 import { ProfileModalQuestions } from "components/organisms/NewProfileModal/components/ProfileModalQuestions";
 
-import "./CurrentUserProfileModalContent.scss";
+import "./EditingProfileModalContent.scss";
 
 export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
@@ -46,11 +46,11 @@ const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
   "confirmNewPassword",
 ];
 
-export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
+export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   venue,
   user,
   isSubmittingState,
-  onCancelEditing: turnOffEditMode,
+  onCancelEditing,
 }) => {
   const firebase = useFirebase();
   const firebaseUser = firebase.auth()?.currentUser;
@@ -98,9 +98,9 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
   });
 
   const cancelEditing = useCallback(() => {
-    turnOffEditMode();
+    onCancelEditing();
     reset();
-  }, [reset, turnOffEditMode]);
+  }, [reset, onCancelEditing]);
 
   const addLinkHandler = useCallback(() => {
     addLink({ url: "", title: "" });
@@ -175,7 +175,7 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
           });
         }
 
-        turnOffEditMode();
+        onCancelEditing();
       } finally {
         finishSubmitting();
       }
@@ -189,7 +189,7 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
       questions,
       setError,
       startSubmitting,
-      turnOffEditMode,
+      onCancelEditing,
       user.id,
       user.profileLinks,
     ]
@@ -200,7 +200,7 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
       <ProfileModalEditBasicInfo
         venueId={venue.id}
         user={user}
-        containerClassName="CurrentUserProfileModalContent__section"
+        containerClassName="EditingProfileModalContent__section"
         register={register}
         watch={watch}
         setValue={setValue}
@@ -208,13 +208,13 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
       />
       <ProfileModalQuestions
         editMode
-        containerClassName="CurrentUserProfileModalContent__section"
+        containerClassName="EditingProfileModalContent__section"
         questions={questions}
         answers={answers}
         register={register}
       />
       <ProfileModalEditLinks
-        containerClassName="CurrentUserProfileModalContent__section"
+        containerClassName="EditingProfileModalContent__section"
         register={register}
         initialLinks={defaultValues.profileLinks ?? []}
         links={links}
@@ -224,7 +224,7 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
         onAddLink={addLinkHandler}
       />
       <ProfileModalChangePassword
-        containerClassName="CurrentUserProfileModalContent__section"
+        containerClassName="EditingProfileModalContent__section"
         register={register}
         getValues={getValues}
         errors={pick<
@@ -235,7 +235,7 @@ export const CurrentUserProfileModalContent: React.FC<CurrentUserProfileModalCon
       <UserProfileModalButtons
         onCancelClick={cancelEditing}
         isSubmitting={isSubmitting}
-        containerClassName="CurrentUserProfileModalContent__edit-buttons"
+        containerClassName="EditingProfileModalContent__edit-buttons"
       />
     </form>
   );
