@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?

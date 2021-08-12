@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
-
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import Video from "twilio-video";
 
 import { User } from "types/User";
+
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 export interface ParticipantProps {
   bartender?: User;

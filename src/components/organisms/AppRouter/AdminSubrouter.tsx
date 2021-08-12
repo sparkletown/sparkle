@@ -2,10 +2,9 @@ import React from "react";
 import { Route, Switch } from "react-router-dom";
 
 import Admin from "pages/Admin/Admin";
+import AdminV2 from "pages/Admin/Admin_v2";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueWizard } from "pages/Admin/Venue/VenueWizard";
-
-import AdminV2 from "pages/Admin/Admin_v2";
 import VenueWizardV2 from "pages/Admin/Venue/VenueWizard/VenueWizard";
 import { AdminAdvancedSettings } from "pages/AdminAdvancedSettings";
 
@@ -50,13 +49,13 @@ export const AdminSubrouter: React.FC = () => {
 
       {/* Admin V2/3/NG */}
 
-      <Route path="/admin-ng/venue/:venueId?">
+      <Route path="/admin-ng/venue/:venueId?/:selectedTab?">
         <Provided withWorldUsers>
           <AdminVenueView />
         </Provided>
       </Route>
 
-      <Route path="/admin-ng/advanced-settings/:venueId?">
+      <Route path="/admin-ng/advanced-settings/:venueId?/:selectedTab?">
         <Provided withWorldUsers>
           <AdminAdvancedSettings />
         </Provided>

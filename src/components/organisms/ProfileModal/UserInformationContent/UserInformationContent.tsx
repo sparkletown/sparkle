@@ -3,29 +3,31 @@ import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
 import { IS_BURN } from "secrets";
+
 import { DEFAULT_PARTY_NAME } from "settings";
 
 import { QuestionType } from "types/Question";
 import { ProfileLink, User } from "types/User";
 
 import { WithId } from "utils/id";
-import { venueLandingUrl } from "utils/url";
 import { currentVenueSelector } from "utils/selectors";
+import { venueLandingUrl } from "utils/url";
 
-import { useVenueId } from "hooks/useVenueId";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
+import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
 import { Badges } from "components/organisms/Badges";
-import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
+
 import { Button } from "components/atoms/Button";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import editIcon from "assets/icons/profile-edit-icon.svg";
+import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 
 import { UserProfileMode } from "../ProfilePopoverContent";
+
+import editIcon from "assets/icons/profile-edit-icon.svg";
 
 import "./UserInformationContent.scss";
 

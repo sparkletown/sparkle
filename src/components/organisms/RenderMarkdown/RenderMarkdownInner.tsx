@@ -1,10 +1,9 @@
 import React from "react";
-
 import ReactMarkdown from "react-markdown";
-import glm from "remark-gfm";
+import sanitize from "rehype-sanitize";
 import emoji from "remark-emoji";
 import externalLinks from "remark-external-links";
-import sanitize from "rehype-sanitize";
+import glm from "remark-gfm";
 
 import {
   MARKDOWN_BASIC_FORMATTING_TAGS,

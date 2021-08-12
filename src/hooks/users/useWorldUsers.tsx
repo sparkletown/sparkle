@@ -1,13 +1,13 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { skipToken } from "@reduxjs/toolkit/query/react";
 
-import { User } from "types/User";
-
 import {
   useWorldUsersQuery,
   useWorldUsersQueryState,
   WorldUsersApiArgs,
 } from "store/api/worldUsers";
+
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 

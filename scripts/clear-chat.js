@@ -3,7 +3,7 @@ require("firebase/auth");
 require("firebase/firestore");
 var read = require("read");
 
-function usage() {
+const usage = () => {
   console.log(`
 ${process.argv[1]}: Upload event config
 
@@ -15,7 +15,7 @@ Usage: node ${process.argv[1]} API_KEY DELETE_BEFORE_SECONDS_SINCE_EPOCH
 Example: node ${process.argv[1]} aaazzz111222333 1592672400
 `);
   process.exit(1);
-}
+};
 
 const argv = process.argv.slice(2);
 if (argv.length < 2) {
@@ -24,12 +24,12 @@ if (argv.length < 2) {
 var apiKey = argv[0];
 var deleteBeforeSecondsSinceEpoch = argv[1];
 
-read({ prompt: "Username:" }, function (err, username) {
+read({ prompt: "Username:" }, (err, username) => {
   if (err) {
     console.error("Error obtaining username:", err);
     process.exit(1);
   }
-  read({ prompt: "Password:", silent: true }, function (err, password) {
+  read({ prompt: "Password:", silent: true }, (err, password) => {
     if (err) {
       console.error("Error obtaining password:", err);
       process.exit(1);
@@ -46,7 +46,7 @@ read({ prompt: "Username:" }, function (err, username) {
     firebase
       .auth()
       .signInWithEmailAndPassword(username, password)
-      .then(function () {
+      .then(() => {
         firebase
           .firestore()
           .collection("chatsv3")
@@ -60,7 +60,7 @@ read({ prompt: "Username:" }, function (err, username) {
             });
           });
       })
-      .catch(function (err) {
+      .catch((err) => {
         console.error("Login error:", err);
       });
   });

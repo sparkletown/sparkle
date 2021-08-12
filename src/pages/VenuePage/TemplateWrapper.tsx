@@ -1,10 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense } from "react";
 import { Route, Switch, useRouteMatch } from "react-router-dom";
 
 import { AnyVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
-import { tracePromise } from "utils/performance";
 
 import { ReactionsProvider } from "hooks/reactions";
 
@@ -15,14 +14,14 @@ import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
 import { ConversationSpace } from "components/templates/ConversationSpace";
 import { Embeddable } from "components/templates/Embeddable";
+import { ExternalRoom } from "components/templates/ExternalRoom";
 import { FireBarrel } from "components/templates/FireBarrel";
 import { Jazzbar } from "components/templates/Jazzbar";
 import { PartyMap } from "components/templates/PartyMap";
 import { PosterHall } from "components/templates/PosterHall";
 import { PosterPage } from "components/templates/PosterPage";
-import { ScreeningRoom } from "components/templates/ScreeningRoom";
 import { ReactionPage } from "components/templates/ReactionPage";
-import { ExternalRoom } from "components/templates/ExternalRoom";
+import { ScreeningRoom } from "components/templates/ScreeningRoom";
 
 import { ChatSidebar } from "components/organisms/ChatSidebar";
 import { UserProfileModal } from "components/organisms/UserProfileModal";
@@ -30,14 +29,6 @@ import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
 import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-const PlayaRouter = lazy(() =>
-  tracePromise("TemplateWrapper::lazy-import::PlayaRouter", () =>
-    import("components/templates/Playa/Router").then(({ PlayaRouter }) => ({
-      default: PlayaRouter,
-    }))
-  )
-);
 
 export interface TemplateWrapperProps {
   venue: WithId<AnyVenue>;
@@ -73,12 +64,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.artpiece:
       template = <ArtPiece venue={venue} />;
       break;
-
-    case VenueTemplate.playa:
-    case VenueTemplate.preplaya:
-      template = <PlayaRouter />;
-      break;
-
     case VenueTemplate.zoomroom:
     case VenueTemplate.performancevenue:
     case VenueTemplate.artcar:
@@ -129,6 +114,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
       break;
 
     case VenueTemplate.avatargrid:
+    case VenueTemplate.playa:
+    case VenueTemplate.preplaya:
       template = (
         <div>
           Legacy Template: ${venue.template} has been removed from the platform

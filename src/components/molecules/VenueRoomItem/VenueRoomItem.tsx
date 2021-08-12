@@ -7,18 +7,18 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { createRoom, createVenue_v2, RoomInput_v2 } from "api/admin";
 
+import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
+
 import { venueInsideUrl } from "utils/url";
 import { buildEmptyVenue } from "utils/venue";
 
-import { RoomTemplate, VenueRoomTemplate } from "types/rooms";
-
+import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useShowHide } from "hooks/useShowHide";
 
 import {
-  venueRoomSchema,
   roomSchema,
+  venueRoomSchema,
 } from "pages/Admin/Details/ValidationSchema";
 
 import { InputField } from "components/atoms/InputField";

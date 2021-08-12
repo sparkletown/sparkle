@@ -4,9 +4,9 @@ import { useFirebase } from "react-redux-firebase";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
-import { useSelector } from "hooks/useSelector";
-
 import { venueSelector } from "utils/selectors";
+
+import { useSelector } from "hooks/useSelector";
 
 import { TicketCodeField } from "components/organisms/TicketCodeField";
 

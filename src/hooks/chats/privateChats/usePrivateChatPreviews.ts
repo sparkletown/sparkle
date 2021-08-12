@@ -4,7 +4,6 @@ import { PreviewChatMessageMap } from "types/chat";
 
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
-import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 import {
   chatSort,
@@ -12,6 +11,8 @@ import {
   getPreviewChatMessageToDisplay,
 } from "../../../utils/chat";
 import { withId } from "../../../utils/id";
+
+import { usePrivateChatMessages } from "./usePrivateChatMessages";
 
 export const usePrivateChatPreviews = () => {
   const { user } = useUser();

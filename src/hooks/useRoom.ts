@@ -2,9 +2,9 @@ import { useCallback, useMemo } from "react";
 
 import { Room } from "types/rooms";
 
-import { enterExternalRoom } from "utils/userLocation";
-import { enterVenue } from "utils/url";
 import { getExternalRoomSlug } from "utils/room";
+import { enterVenue } from "utils/url";
+import { enterExternalRoom } from "utils/userLocation";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentLocationUsers } from "hooks/users";

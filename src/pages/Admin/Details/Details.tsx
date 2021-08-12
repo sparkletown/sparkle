@@ -1,15 +1,14 @@
 import React from "react";
 
+import * as S from "./Details.styles";
+// Typings
+import { DetailsProps } from "./Details.types";
 // Components
 import DetailsForm from "./Form";
 import DetailsPreview from "./Preview";
 
-// Typings
-import { DetailsProps } from "./Details.types";
-
 // Styles
 import "../Venue/Venue.scss";
-import * as S from "./Details.styles";
 
 const Details: React.FC<DetailsProps> = ({ previous, dispatch, data }) => (
   <S.DetailsContainer>

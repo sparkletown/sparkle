@@ -6,7 +6,7 @@ import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 
 import { AnyVenue } from "types/venues";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 import { asArray } from "utils/types";
 
 export const getVenueCollectionRef = () =>

@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo, useState } from "react";
-import { isEqual } from "lodash";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { isEqual } from "lodash";
 
 import { CHATBOX_NEXT_RENDER_SIZE } from "settings";
 
@@ -11,37 +11,35 @@ import {
   SendChatReply,
   SendMessage,
 } from "types/chat";
-import { AnyVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { checkIfPollMessage } from "utils/chat";
-
-import { ChatMessageBox } from "components/molecules/ChatMessageBox";
-import { ChatPoll } from "components/molecules/ChatPoll";
-import { PollBox } from "components/molecules/PollBox";
-import { Loading } from "components/molecules/Loading";
-import { ChatMessage } from "components/atoms/ChatMessage";
+import { WithId } from "utils/id";
 
 import { useVenuePoll } from "hooks/useVenuePoll";
 
-import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
+import { ChatMessageBox } from "components/molecules/ChatMessageBox";
+import { ChatPoll } from "components/molecules/ChatPoll";
+import { Loading } from "components/molecules/Loading";
+import { PollBox } from "components/molecules/PollBox";
+
+import { ChatMessage } from "components/atoms/ChatMessage";
+
 import { ChatboxOptionsControls } from "./components/ChatboxOptionsControls";
+import { ChatboxThreadControls } from "./components/ChatboxThreadControls";
+import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 import "./Chatbox.scss";
-import { useTriggerScrollFix } from "./useTriggerScrollFix";
 
 export interface ChatboxProps {
   messages: WithId<MessageToDisplay>[];
-  venue: WithId<AnyVenue>;
   sendMessage: SendMessage;
   sendThreadReply: SendChatReply;
-  deleteMessage: DeleteMessage;
+  deleteMessage?: DeleteMessage;
   displayPoll?: boolean;
 }
 
 const _ChatBox: React.FC<ChatboxProps> = ({
   messages,
-  venue,
   sendMessage,
   sendThreadReply,
   deleteMessage,
@@ -99,7 +97,6 @@ const _ChatBox: React.FC<ChatboxProps> = ({
               pollMessage={message}
               deletePollMessage={deleteMessage}
               voteInPoll={voteInPoll}
-              venue={venue}
             />
           ) : (
             <ChatMessage
@@ -110,7 +107,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
             />
           )
         ),
-    [messages, renderedMessagesCount, deleteMessage, voteInPoll, venue]
+    [messages, renderedMessagesCount, deleteMessage, voteInPoll]
   );
 
   const onReplyToThread = useCallback(

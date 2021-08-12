@@ -1,5 +1,6 @@
-import { differenceInYears, parseISO } from "date-fns";
 import React from "react";
+import { differenceInYears, parseISO } from "date-fns";
+
 import { FormFieldProps } from "types/forms";
 
 const validateDateOfBirth = (stringDate: string) => {

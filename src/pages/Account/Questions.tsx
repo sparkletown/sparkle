@@ -1,18 +1,18 @@
 import React, { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { isLoaded } from "react-redux-firebase";
 import { useHistory, useLocation } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 
 import { QuestionType } from "types/Question";
 
 import { currentVenueSelectorData } from "utils/selectors";
 
-import { useUser } from "hooks/useUser";
-import { useVenueId } from "hooks/useVenueId";
+import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
-import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
@@ -23,7 +23,6 @@ import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into Questions.scss
 import "./Account.scss";
-
 import "./Questions.scss";
 
 export interface QuestionsFormData {

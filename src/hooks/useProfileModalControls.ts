@@ -1,14 +1,14 @@
 import { useCallback } from "react";
 
+import { updateUserProfileData } from "store/actions/UserProfile";
+
 import { User } from "types/User";
 
 import { WithId } from "utils/id";
 import { userProfileSelector } from "utils/selectors";
 
-import { updateUserProfileData } from "store/actions/UserProfile";
-
-import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
+import { useSelector } from "./useSelector";
 
 export const useProfileModalControls = () => {
   const dispatch = useDispatch();

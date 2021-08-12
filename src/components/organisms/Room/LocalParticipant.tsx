@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   faMicrophone,
   faMicrophoneSlash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import Participant, { ParticipantProps } from "./Participant";
 
 const LocalParticipant: React.FC<ParticipantProps> = ({
@@ -19,13 +20,13 @@ const LocalParticipant: React.FC<ParticipantProps> = ({
 
   useEffect(() => {
     if (muted) {
-      participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach((audioTrack) => {
         audioTrack.track &&
           "disable" in audioTrack.track &&
           audioTrack.track.disable();
       });
     } else {
-      participant.audioTracks.forEach(function (audioTrack) {
+      participant.audioTracks.forEach((audioTrack) => {
         audioTrack.track &&
           "enable" in audioTrack.track &&
           audioTrack.track.enable();

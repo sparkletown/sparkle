@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import { updateVenueTable } from "api/table";
-
 import { MAX_TABLE_CAPACITY, MIN_TABLE_CAPACITY } from "settings";
+
+import { updateVenueTable } from "api/table";
 
 import { Table } from "types/Table";
 

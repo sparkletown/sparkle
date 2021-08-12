@@ -1,4 +1,5 @@
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
+import classNames from "classnames";
 import {
   addDays,
   format,
@@ -7,20 +8,13 @@ import {
   startOfDay,
   startOfToday,
 } from "date-fns";
-import classNames from "classnames";
-import { groupBy } from "lodash";
 
-import { PLATFORM_BRAND_NAME, SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+
+import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
 import {
-  LocationEvents,
-  PersonalizedVenueEvent,
-  VenueEvent,
-  VenueLocation,
-} from "types/venues";
-
-import { createCalendar, downloadCalendar } from "utils/calendar";
-import {
+  eventTimeComparator,
   isEventWithinDate,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
@@ -28,29 +22,25 @@ import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
-import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useUser } from "hooks/useUser";
 import { useVenueEvents } from "hooks/events";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
-import { Button } from "components/atoms/Button";
-import { Schedule } from "components/molecules/Schedule";
+import { ScheduleNG } from "components/molecules/ScheduleNG";
 import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-import {
-  buildLocationString,
-  extractLocation,
-  prepareForSchedule,
-} from "./utils";
+import { Toggler } from "components/atoms/Toggler";
+
+import { prepareForSchedule } from "./utils";
 
 import "./NavBarSchedule.scss";
 
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
-export interface ScheduleDay {
-  isToday: boolean;
+export interface ScheduleNGDay {
+  daysEvents: PersonalizedVenueEvent[];
   scheduleDate: Date;
-  locatedEvents: LocationEvents[];
-  personalEvents: PersonalizedVenueEvent[];
 }
 
 export const emptyPersonalizedSchedule = {};
@@ -67,12 +57,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
-  const {
-    isLoading,
-    relatedVenues,
-    relatedVenueIds,
-    sovereignVenue,
-  } = useRelatedVenues({
+  const { isLoading, relatedVenueIds, sovereignVenue } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -96,6 +81,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+
+  const {
+    isShown: showPersonalisedSchedule,
+    toggle: togglePersonalisedSchedule,
+  } = useShowHide(false);
 
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
@@ -135,79 +125,61 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     });
   }, [selectedDayIndex, firstDayOfSchedule, isScheduleTimeshifted]);
 
-  const getEventLocation = useCallback(
-    (locString: string): VenueLocation => {
-      const [venueId, roomTitle] = extractLocation(locString);
-      const venueName = relatedVenues.find((venue) => venue.id === venueId)
-        ?.name;
-      return { venueId, venueName, roomTitle: roomTitle || undefined };
-    },
-    [relatedVenues]
-  );
-
-  const schedule: ScheduleDay = useMemo(() => {
+  const scheduleNG: ScheduleNGDay = useMemo(() => {
     const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+
     const daysEvents = relatedVenueEvents
       .filter(
         isScheduleTimeshifted
           ? isEventWithinDate(startOfSelectedDay)
           : isEventWithinDateAndNotFinished(startOfSelectedDay)
       )
+      .sort(eventTimeComparator)
       .map(
         prepareForSchedule({
-          day: startOfSelectedDay,
           usersEvents: userEventIds,
         })
       );
 
-    const locatedEvents: LocationEvents[] = Object.entries(
-      groupBy(daysEvents, buildLocationString)
-    ).map(([group, events]) => ({
-      events,
-      location: getEventLocation(group),
-    }));
-
     return {
-      locatedEvents,
-      isToday: selectedDayIndex === 0,
       scheduleDate: startOfSelectedDay,
-      personalEvents: daysEvents.filter((event) => event.isSaved),
+      daysEvents: showPersonalisedSchedule
+        ? daysEvents.filter((event) => event.isSaved)
+        : daysEvents,
     };
   }, [
     relatedVenueEvents,
     userEventIds,
     selectedDayIndex,
-    getEventLocation,
     firstDayOfSchedule,
     isScheduleTimeshifted,
+    showPersonalisedSchedule,
   ]);
 
-  const hasSavedEvents = schedule.personalEvents.length > 0;
+  // const downloadPersonalEventsCalendar = useCallback(() => {
+  //   const dayStart = addDays(startOfToday(), selectedDayIndex);
+  //   const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
+  //     .map(
+  //       prepareForSchedule({
+  //         day: dayStart,
+  //         usersEvents: userEventIds,
+  //         isForCalendarFile: true,
+  //       })
+  //     )
+  //     .filter((event) => event.isSaved);
 
-  const downloadPersonalEventsCalendar = useCallback(() => {
-    const dayStart = addDays(startOfToday(), selectedDayIndex);
-    const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-      .map(
-        prepareForSchedule({
-          day: dayStart,
-          usersEvents: userEventIds,
-          isForCalendarFile: true,
-        })
-      )
-      .filter((event) => event.isSaved);
+  //   downloadCalendar({
+  //     calendar: createCalendar({ events: allPersonalEvents }),
+  //     calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
+  //   });
+  // }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
 
-    downloadCalendar({
-      calendar: createCalendar({ events: allPersonalEvents }),
-      calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
-    });
-  }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
-
-  const downloadAllEventsCalendar = useCallback(() => {
-    downloadCalendar({
-      calendar: createCalendar({ events: relatedVenueEvents }),
-      calendarName: `${PLATFORM_BRAND_NAME}_Full`,
-    });
-  }, [relatedVenueEvents]);
+  // const downloadAllEventsCalendar = useCallback(() => {
+  //   downloadCalendar({
+  //     calendar: createCalendar({ events: relatedVenueEvents }),
+  //     calendarName: `${PLATFORM_BRAND_NAME}_Full`,
+  //   });
+  // }, [relatedVenueEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
@@ -216,7 +188,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className={containerClasses}>
       {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      {!isLoadingSchedule && (
+      {/* {!isLoadingSchedule && (
         <div className="NavBarSchedule__download-buttons">
           {hasSavedEvents && (
             <Button
@@ -234,10 +206,23 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             Download full schedule
           </Button>
         </div>
-      )}
+      )} */}
+
+      <Toggler
+        containerClassName="NavBarSchedule__bookmarked-toggle"
+        name="bookmarked-toggle"
+        toggled={showPersonalisedSchedule}
+        onChange={togglePersonalisedSchedule}
+        label="Bookmarked events"
+      />
+
       <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
 
-      <Schedule isLoading={isLoadingSchedule} {...schedule} />
+      <ScheduleNG
+        showPersonalisedSchedule={showPersonalisedSchedule}
+        isLoading={isLoadingSchedule}
+        {...scheduleNG}
+      />
     </div>
   );
 };

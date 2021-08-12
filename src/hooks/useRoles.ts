@@ -1,8 +1,8 @@
 import { isEqual } from "lodash";
 
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
-import { useUser } from "./useUser";
 import { useSelector } from "./useSelector";
+import { useUser } from "./useUser";
 
 export const useRoles = () => {
   const { user } = useUser();

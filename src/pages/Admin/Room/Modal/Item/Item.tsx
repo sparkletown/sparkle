@@ -1,23 +1,24 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
-import * as S from "./Item.styles";
+import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import ImageInput from "components/atoms/ImageInput";
 import {
   faChevronCircleDown,
   faChevronCircleUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "react-bootstrap";
-import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import { CustomInputsType } from "settings";
+
+import { createRoom, createVenue_v2, VenueInput_v2 } from "api/admin";
 
 import { roomCreateSchema } from "pages/Admin/Details/ValidationSchema";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
+import ImageInput from "components/atoms/ImageInput";
 import { Toggler } from "components/atoms/Toggler";
 
+import * as S from "./Item.styles";
 import { RoomModalItemProps } from "./Item.types";
 
 const RoomModalItem: React.FC<RoomModalItemProps> = ({
