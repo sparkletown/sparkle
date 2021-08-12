@@ -113,7 +113,7 @@ export const UserProfilePicture: React.FC<UserProfilePictureProp> = ({
       // aria-label={`${userDisplayName}'s avatar`}
     >
       <UserAvatar
-        viewingUser={user}
+        user={user}
         containerClassName="UserProfilePicture__avatar"
         showNametag={showNametags}
         showStatus={showStatus}

@@ -34,7 +34,7 @@ export const NavSearchResult: React.FC<NavSearchResultProps> = ({
     <div className="NavSearchResult font-size--small" onClick={onClick}>
       {user ? (
         <UserAvatar
-          viewingUser={user}
+          user={user}
           showStatus
           containerClassName="NavSearchResult__avatar"
         />

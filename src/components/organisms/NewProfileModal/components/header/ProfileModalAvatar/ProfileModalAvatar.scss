@@ -9,6 +9,7 @@ $upload-new-padding: 0.3rem;
   align-items: center;
   &__upload-new-container {
     position: relative;
+    @include square-size(6.2rem);
   }
 
   &__upload-new {

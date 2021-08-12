@@ -67,7 +67,7 @@ export const UserList: React.FC<UserListProps> = ({
       usersToDisplay.map((user) => (
         <div key={user.id} className={cellClasses}>
           <UserAvatar
-            viewingUser={user}
+            user={user}
             containerClassName="UserList__avatar"
             onClick={
               hasClickableAvatars ? () => openUserProfileModal(user) : noop

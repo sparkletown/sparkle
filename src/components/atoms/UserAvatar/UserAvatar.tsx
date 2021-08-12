@@ -15,10 +15,10 @@ import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
-export type UserAvatarSize = "small" | "medium" | "large" | "profileModal";
+export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
 export interface UserAvatarProps extends ContainerClassName {
-  viewingUser?: WithId<User>;
+  user?: WithId<User>;
   overridePictureUrl?: string;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
@@ -29,7 +29,7 @@ export interface UserAvatarProps extends ContainerClassName {
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
-  viewingUser,
+  user,
   overridePictureUrl,
   containerClassName,
   imageClassName,
@@ -40,28 +40,28 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { isOnline } = useIsOnline(viewingUser?.id);
+  const { isOnline } = useIsOnline(user?.id);
 
   const {
     userStatus,
     venueUserStatuses,
     isStatusEnabledForVenue,
-  } = useVenueUserStatuses(venueId, viewingUser);
+  } = useVenueUserStatuses(venueId, user);
 
-  const avatarSrc: string = viewingUser?.anonMode
+  const avatarSrc: string = user?.anonMode
     ? DEFAULT_PROFILE_IMAGE
-    : overridePictureUrl ?? viewingUser?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
+    : overridePictureUrl ?? user?.pictureUrl ?? DEFAULT_PROFILE_IMAGE;
 
-  const userDisplayName: string = viewingUser?.anonMode
+  const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME
-    : viewingUser?.partyName ?? DEFAULT_PARTY_NAME;
+    : user?.partyName ?? DEFAULT_PARTY_NAME;
 
   const containerClasses = classNames("UserAvatar", containerClassName, {
     "UserAvatar--clickable": onClick !== undefined,
     [`UserAvatar--${size}`]: size,
   });
 
-  const status = viewingUser?.status;
+  const status = user?.status;
 
   const nametagClasses = classNames("UserAvatar__nametag", {
     "UserAvatar__nametag--hover": showNametag === UsernameVisibility.hover,
@@ -87,9 +87,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 
   return (
     <div className={containerClasses}>
-      {showNametag && (
-        <div className={nametagClasses}>{viewingUser?.partyName}</div>
-      )}
+      {showNametag && <div className={nametagClasses}>{user?.partyName}</div>}
       <img
         className={imageClasses}
         src={avatarSrc}

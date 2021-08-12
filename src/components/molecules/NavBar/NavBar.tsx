@@ -308,11 +308,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   className="navbar-links-user-avatar"
                   onClick={showUserProfile}
                 >
-                  <UserAvatar
-                    viewingUser={userWithId}
-                    showStatus
-                    size="medium"
-                  />
+                  <UserAvatar user={userWithId} showStatus size="medium" />
                 </div>
                 {userWithId && (
                   <UserProfileModal
