@@ -5,6 +5,8 @@ import { useHistory } from "react-router-dom";
 
 import { IS_BURN } from "secrets";
 
+import { PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY } from "settings";
+
 import { User } from "types/User";
 import { AnyVenue } from "types/venues";
 
@@ -47,15 +49,19 @@ export const UserProfileModal: React.FC<Props> = ({
     await firebase.auth().signOut();
 
     history.push(
+      //@debt seems like a legacy logic
       IS_BURN ? "/enter" : venue.id ? venueLandingUrl(venue.id) : "/"
     );
   }, [firebase, history, venue.id]);
 
   const hideHandler = useCallback(() => {
-    if (!isSubmitting) {
-      onClose();
-      setTimeout(() => turnOffEditMode(), 130);
-    }
+    if (isSubmitting) return;
+
+    onClose();
+    setTimeout(
+      () => turnOffEditMode(),
+      PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY
+    );
   }, [isSubmitting, onClose, turnOffEditMode]);
 
   return (
