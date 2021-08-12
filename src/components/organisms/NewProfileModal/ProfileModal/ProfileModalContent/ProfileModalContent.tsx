@@ -16,41 +16,41 @@ import { ProfileModalQuestions } from "components/organisms/NewProfileModal/comp
 import "../ProfileModal.scss";
 
 interface Props {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
   venue: WithId<AnyVenue>;
   onPrimaryButtonClick: () => void;
   onEditMode?: () => void;
 }
 
 export const ProfileModalContent: React.FC<Props> = ({
-  viewingUser,
+  user,
   onPrimaryButtonClick,
   onEditMode,
   venue,
 }: Props) => {
-  const { questions, answers } = useProfileQuestions(viewingUser, venue?.id);
+  const { questions, answers } = useProfileQuestions(user, venue?.id);
 
   return (
     <>
-      <ProfileModalBasicInfo viewingUser={viewingUser} onEdit={onEditMode} />
+      <ProfileModalBasicInfo user={user} onEdit={onEditMode} />
       <ProfileModalQuestions
         containerClassName="ProfileModal__section"
         questions={questions}
         answers={answers}
       />
       <ProfileModalLinks
-        viewingUser={viewingUser}
+        user={user}
         containerClassName="ProfileModal__section"
       />
       <ProfileModalBadges
-        viewingUser={viewingUser}
+        user={user}
         containerClassName={"ProfileModal__section"}
         venue={venue}
       />
       <ProfileModalButtons
         containerClassName="ProfileModal__section"
         onClick={onPrimaryButtonClick}
-        viewingUser={viewingUser}
+        user={user}
       />
     </>
   );

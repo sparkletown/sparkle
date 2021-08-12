@@ -4,7 +4,7 @@ import { WithId } from "utils/id";
 
 import { useUser } from "./useUser";
 
-export const useIsSameUser = (otherUser?: WithId<User>) => {
+export const useIsCurrentUser = (otherUser?: WithId<User>) => {
   const { userWithId: user } = useUser();
 
   return otherUser?.id === user?.id;

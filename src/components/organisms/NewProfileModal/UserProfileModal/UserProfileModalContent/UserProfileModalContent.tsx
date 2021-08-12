@@ -201,7 +201,7 @@ export const UserProfileModalContent: React.FC<Props> = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       <ProfileModalEditBasicInfo
         venueId={venue.id}
-        viewingUser={user}
+        user={user}
         containerClassName="UserProfileModal__section-editable"
         register={register}
         watch={watch}

@@ -8,8 +8,8 @@ import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useIsOnline } from "hooks/useIsOnline";
-import { useIsSameUser } from "hooks/useIsSameUser";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -19,18 +19,18 @@ import { UserStatusDropdown } from "components/atoms/UserStatusDropdown";
 import "./ProfilModalBasicTextInfo.scss";
 
 interface Props extends ContainerClassName {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
 }
 
 export const ProfileModalBasicTextInfo: React.FC<Props> = ({
-  viewingUser,
+  user,
   containerClassName,
 }: Props) => {
   const venueId = useVenueId();
   const { sovereignVenue } = useSovereignVenue({ venueId });
 
-  const { lastSeenIn } = useIsOnline(viewingUser.id);
-  const sameUser = useIsSameUser(viewingUser);
+  const { lastSeenIn } = useIsOnline(user.id);
+  const isCurrentUser = useIsCurrentUser(user);
   const { user: firebaseUser } = useUser();
 
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
@@ -45,9 +45,9 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
       className={classNames("ProfileModalBasicTextInfo", containerClassName)}
     >
       <h3 className="ProfileModalBasicTextInfo__name italic">
-        {viewingUser.partyName || DEFAULT_PARTY_NAME}
+        {user.partyName || DEFAULT_PARTY_NAME}
       </h3>
-      {sameUser && firebaseUser?.email && (
+      {isCurrentUser && firebaseUser?.email && (
         <div className="ProfileModalBasicTextInfo--light">
           {firebaseUser?.email}
         </div>
@@ -57,11 +57,11 @@ export const ProfileModalBasicTextInfo: React.FC<Props> = ({
           is&nbsp;
           <UserStatusDropdown
             userStatuses={sovereignVenue?.userStatuses}
-            showDropdown={sameUser}
+            showDropdown={isCurrentUser}
           />
         </div>
       )}
-      {lastVenue && !sameUser && (
+      {lastVenue && !isCurrentUser && (
         <div>
           <span>last seen in</span>{" "}
           <span className="ProfileModalBasicTextInfo--underlined">

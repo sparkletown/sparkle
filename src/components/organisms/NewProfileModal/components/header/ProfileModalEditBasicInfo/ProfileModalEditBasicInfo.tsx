@@ -19,7 +19,7 @@ import { DefaultAvatars } from "components/molecules/DefaultAvatars/DefaultAvata
 import "./ProfileModalEditBasicInfo.scss";
 
 interface Props extends ContainerClassName {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
   venueId: string;
   register: ReturnType<typeof useForm>["register"];
   setValue: ReturnType<typeof useForm>["setValue"];
@@ -28,7 +28,7 @@ interface Props extends ContainerClassName {
 }
 
 export const ProfileModalEditBasicInfo: React.FC<Props> = ({
-  viewingUser,
+  user,
   venueId,
   register,
   setValue,
@@ -51,7 +51,7 @@ export const ProfileModalEditBasicInfo: React.FC<Props> = ({
       className={classNames("ProfileModalEditBasicInfo", containerClassName)}
     >
       <ProfileModalAvatar
-        viewingUser={viewingUser}
+        user={user}
         editMode={true}
         setPictureUrl={setPictureUrl}
         pictureUrl={pictureUrl}

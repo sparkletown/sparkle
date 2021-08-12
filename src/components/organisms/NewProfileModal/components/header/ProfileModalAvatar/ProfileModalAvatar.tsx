@@ -10,7 +10,7 @@ import { ContainerClassName } from "types/utility";
 import { WithId } from "utils/id";
 import { userProfileModalFormProp as formProp } from "utils/propName";
 
-import { useIsSameUser } from "hooks/useIsSameUser";
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useShowHide } from "hooks/useShowHide";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
@@ -22,7 +22,7 @@ import "firebase/storage";
 import "./ProfileModalAvatar.scss";
 
 interface Props extends ContainerClassName {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
   editMode?: boolean;
   setPictureUrl?: (url: string) => void;
   pictureUrl?: string;
@@ -31,13 +31,13 @@ interface Props extends ContainerClassName {
 
 export const ProfileModalAvatar: React.FC<Props> = ({
   editMode,
-  viewingUser,
+  user,
   register,
   pictureUrl,
   setPictureUrl,
   containerClassName,
 }: Props) => {
-  const sameUser = useIsSameUser(viewingUser);
+  const isCurrentUser = useIsCurrentUser(user);
 
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
@@ -48,10 +48,10 @@ export const ProfileModalAvatar: React.FC<Props> = ({
     hide: uploadFinished,
   } = useShowHide(false);
 
-  const { user } = useUser();
+  const { user: currentUser } = useUser();
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
-    user
+    currentUser
   );
 
   const handleFileChange = useCallback(
@@ -79,10 +79,10 @@ export const ProfileModalAvatar: React.FC<Props> = ({
       <div className="ProfileModalAvatar__upload-new-container">
         <UserAvatar
           imageClassName="ProfileModalAvatar__image"
-          user={viewingUser}
+          user={user}
           overridePictureUrl={pictureUrl}
           size="full"
-          showStatus={!sameUser}
+          showStatus={!isCurrentUser}
         />
         {editMode && (
           <div

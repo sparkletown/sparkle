@@ -70,7 +70,7 @@ export const UserProfileModal: React.FC<Props> = ({
           />
         ) : (
           <ProfileModalContent
-            viewingUser={user}
+            user={user}
             venue={venue}
             onPrimaryButtonClick={logout}
             onEditMode={turnOnEditMode}

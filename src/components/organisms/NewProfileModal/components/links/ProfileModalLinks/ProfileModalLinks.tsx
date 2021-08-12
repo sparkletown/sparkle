@@ -10,23 +10,23 @@ import { ProfileModalLink } from "components/organisms/NewProfileModal/component
 import "./ProfileModalLinks.scss";
 
 interface Props extends ContainerClassName {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
 }
 
 export const ProfileModalLinks: React.FC<Props> = ({
   containerClassName,
-  viewingUser,
+  user,
 }) => {
   const renderedProfileLinks = useMemo(
     () =>
-      viewingUser?.profileLinks?.map((link, i) => (
+      user?.profileLinks?.map((link, i) => (
         <ProfileModalLink
           containerClassName="ProfileModalLinks__link"
           link={link}
           key={link.url}
         />
       )),
-    [viewingUser?.profileLinks]
+    [user?.profileLinks]
   );
 
   return <div className={containerClassName}>{renderedProfileLinks}</div>;

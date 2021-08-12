@@ -14,22 +14,22 @@ import { ProfileModalRoundIcon } from "components/organisms/NewProfileModal/comp
 import "./ProfileModalBasicInfo.scss";
 
 interface Props extends ContainerClassName {
-  viewingUser: WithId<User>;
+  user: WithId<User>;
   onEdit?: () => void;
 }
 
 export const ProfileModalBasicInfo: React.FC<Props> = ({
-  viewingUser,
+  user,
   onEdit,
   containerClassName,
 }) => {
   return (
     <div className={classNames("ProfileModalBasicInfo", containerClassName)}>
       <div className="ProfileModalBasicInfo__main-container">
-        <ProfileModalAvatar viewingUser={viewingUser} editMode={false} />
+        <ProfileModalAvatar user={user} editMode={false} />
         <ProfileModalBasicTextInfo
           containerClassName="ProfileModalBasicInfo--section"
-          viewingUser={viewingUser}
+          user={user}
         />
       </div>
       <div className="ProfileModalBasicInfo__edit-container">
