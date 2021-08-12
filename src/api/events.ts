@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 
-import { VenueEvent } from "types/venues";
+import { VenueEvent, VenueEventWithVenueId } from "types/venues";
 
 import { WithId, withId, WithVenueId, withVenueId } from "utils/id";
 import { asArray } from "utils/types";
@@ -52,4 +52,58 @@ export const venueEventWithIdConverter: firebase.firestore.FirestoreDataConverte
 
     return withId(snapshot.data() as VenueEvent, snapshot.id);
   },
+};
+
+export interface ImportEventsBatchResult {
+  invalidIds: string[];
+  invalidItems: VenueEventWithVenueId[];
+  updateCount: number;
+}
+
+export const importEventsBatch: (
+  data: VenueEventWithVenueId[]
+) => Promise<ImportEventsBatchResult> = async (data) => {
+  if (!data) {
+    return {
+      invalidIds: [],
+      invalidItems: [],
+      updateCount: 0,
+    };
+  }
+
+  const venuesRef = firebase.firestore().collection("venues");
+  const validIds = (await venuesRef.get()).docs.map(({ id }) => id);
+
+  const batch = firebase.firestore().batch();
+
+  const invalidIds = [];
+  const invalidItems = [];
+  let updateCount = 0;
+
+  for (const item of data) {
+    const { event, venueId } = item;
+
+    if (!validIds.includes(venueId)) {
+      invalidIds.push(venueId);
+      invalidItems.push(item);
+      continue;
+    }
+    const eventRef = firebase
+      .firestore()
+      .collection("venues")
+      .doc(venueId)
+      .collection("events")
+      .doc();
+
+    batch.set(eventRef, event);
+    updateCount += 1;
+  }
+
+  await batch.commit();
+
+  return {
+    invalidIds,
+    invalidItems,
+    updateCount,
+  };
 };

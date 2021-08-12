@@ -60,7 +60,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
     [isUploading, mapBackgrounds, uploadMapBackground]
   );
 
-  const onChange = useCallback(
+  const onClick = useCallback(
     ({ url, files }: FileButtonOnChangeData) => uploadMapBackground(url, files),
     [uploadMapBackground]
   );
@@ -73,7 +73,7 @@ export const BackgroundSelect: React.FC<BackgroundSelectProps> = ({
             disabled={isUploading}
             title="Import a map background"
             variant="primary"
-            onChange={onChange}
+            onClick={onClick}
           >
             Import a map background
           </FileButton>

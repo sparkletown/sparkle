@@ -332,6 +332,11 @@ export interface VenueEvent {
   id?: string;
 }
 
+export interface VenueEventWithVenueId {
+  event: VenueEvent;
+  venueId: string;
+}
+
 export interface VenueLocation {
   venueId: string;
   roomTitle?: string;

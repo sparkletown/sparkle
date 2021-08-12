@@ -1,9 +1,12 @@
 import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 import { ParseError, ParseMeta } from "papaparse";
 
-import { parseCsv } from "utils/csv";
+import { importEventsBatch } from "api/events";
+
+import { parseCsv, ParseData, transformImportToEvents } from "utils/csv";
 
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { FileButton } from "components/atoms/FileButton";
@@ -22,20 +25,18 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
   onHide,
   show,
 }) => {
-  const [parseData, setParseData] = useState<
-    Record<string, string>[] | undefined
-  >();
-  const [parseMeta, setParseMeta] = useState<ParseMeta | undefined>();
-  const [parseErrors, setParseErrors] = useState<ParseError[] | undefined>([]);
+  const [parsedData, setParsedData] = useState<ParseData[] | undefined>();
+  const [parsedMeta, setParsedMeta] = useState<ParseMeta | undefined>();
+  const [parsedErrors, setParsedErrors] = useState<ParseError[] | undefined>();
   const [isParsing, setIsParsing] = useState<boolean>(false);
 
-  const clear = useCallback(() => {
-    setParseData(undefined);
-    setParseMeta(undefined);
-    setParseErrors(undefined);
+  const clearParsed = useCallback(() => {
+    setParsedData(undefined);
+    setParsedMeta(undefined);
+    setParsedErrors(undefined);
   }, []);
 
-  const download = useCallback(() => {
+  const downloadExample = useCallback(() => {
     const link = document.createElement("a");
     link.download = "example.csv";
     link.href = "/csv/import-events-example.csv";
@@ -43,31 +44,42 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
     link.remove();
   }, []);
 
-  const onSelect = useCallback(
+  const selectFile = useCallback(
     async ({ file }: FileButtonOnChangeData) => {
       try {
         if (!file) return;
 
         setIsParsing(true);
-        clear();
+        clearParsed();
         const { meta, data } = await parseCsv(file);
-        setParseMeta(meta);
-        setParseData(data);
+        setParsedMeta(meta);
+        setParsedData(data);
       } catch (errors) {
-        setParseErrors(errors);
+        setParsedErrors(errors);
       } finally {
         setIsParsing(false);
       }
     },
-    [clear]
+    [clearParsed]
   );
 
-  const hasError = parseErrors && parseErrors.length > 0;
+  const [
+    { loading: isImporting, error: importError },
+    importEvents,
+  ] = useAsyncFn(async () => {
+    if (!parsedData) {
+      return;
+    }
+    await importEventsBatch(transformImportToEvents(parsedData));
+  }, [parsedData]);
+
+  const hasParseError = parsedErrors && parsedErrors.length > 0;
+  const hasImportError = !!importError;
 
   const dialogClassName = classNames({
     "CsvImportModal CsvImportModal__dialog": true,
-    "CsvImportModal--with-data": parseData,
-    "CsvImportModal--with-error": hasError,
+    "CsvImportModal--with-data": parsedData,
+    "CsvImportModal--with-error": hasParseError || hasImportError,
   });
 
   return (
@@ -83,7 +95,18 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="CsvImportModal__body">
-        {hasError && parseErrors?.length === 1 && (
+        {hasImportError && (
+          <div className="CsvImportModal__error CsvImportModal__error--import">
+            <span className="CsvImportModal__error-static">
+              There has been an error importing the data. Error:
+            </span>
+            <br />
+            <span className="CsvImportModal__error-generated">
+              {"" + importError?.message}
+            </span>
+          </div>
+        )}
+        {hasParseError && parsedErrors?.length === 1 && (
           <div className="CsvImportModal__error CsvImportModal__error--single">
             <span className="CsvImportModal__error-static">
               There has been an error parsing the CSV file. Please make sure
@@ -91,11 +114,11 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             </span>
             <br />
             <span className="CsvImportModal__error-generated">
-              {parseErrors[0].message}
+              {parsedErrors[0].message}
             </span>
           </div>
         )}
-        {hasError && parseErrors && parseErrors?.length > 1 && (
+        {hasParseError && parsedErrors && parsedErrors?.length > 1 && (
           <div className="CsvImportModal__error CsvImportModal__error--multiple">
             <span className="CsvImportModal__error-static">
               There have been multiple errors parsing the CSV file. Please make
@@ -103,25 +126,25 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             </span>
             <br />
             <span className="CsvImportModal__error-generated">
-              {parseErrors.map((e) => e.message).join(". ")}
+              {parsedErrors.map((e) => e.message).join(". ")}
             </span>
           </div>
         )}
         <div className="CsvImportModal__wrapper">
-          {!parseData && (
+          {!parsedData && (
             <span className="CsvImportModal__description">
               The result of parsing the CSV file will be displayed here. You can
               download an example to get you started
             </span>
           )}
-          {parseData && (
+          {parsedData && (
             <table className="CsvImportModal__table">
               <tr>
-                {parseMeta?.fields?.map((heading) => (
+                {parsedMeta?.fields?.map((heading) => (
                   <th key={heading}>{heading}</th>
                 ))}
               </tr>
-              {parseData.map((row, key) => (
+              {parsedData.map((row, key) => (
                 <tr key={key}>
                   {Object.values(row).map((value, key) => (
                     <td key={key}>{value}</td>
@@ -135,13 +158,13 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       <Modal.Footer className="CsvImportModal__footer">
         <ButtonNG
           className="CsvImportModal__example CsvImportModal__button"
-          onClick={download}
+          onClick={downloadExample}
         >
           Download example CSV
         </ButtonNG>
         <FileButton
           className="CsvImportModal__select CsvImportModal__button"
-          onChange={onSelect}
+          onClick={selectFile}
           loading={isParsing}
           disabled={isParsing}
         >
@@ -149,7 +172,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         </FileButton>
         <ButtonNG
           className="CsvImportModal__clear CsvImportModal__button"
-          onClick={clear}
+          onClick={clearParsed}
           disabled={isParsing}
         >
           Clear
@@ -158,9 +181,10 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
           className="CsvImportModal__import CsvImportModal__button"
           title="Upload the selected events"
           type="submit"
-          onClick={onAdd}
+          onClick={importEvents}
           variant="primary"
-          disabled={isParsing}
+          loading={isImporting}
+          disabled={isParsing || isImporting || !parsedData?.length}
         >
           Import
         </ButtonNG>

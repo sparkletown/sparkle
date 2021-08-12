@@ -3,7 +3,7 @@
 $left-section-width: 360px;
 
 .Timing {
-  height: 100%;
+  height: calc(100% - #{$admin-navbar-height});
   display: grid;
   grid-template-columns: $left-section-width 1fr;
 

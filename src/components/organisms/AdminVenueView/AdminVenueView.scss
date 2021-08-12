@@ -3,6 +3,7 @@
 .AdminVenueView {
   display: flex;
   justify-content: space-around;
+  height: $admin-navbar-height;
 
   @media (max-width: $media-breakpoint--lg) {
     align-items: center;

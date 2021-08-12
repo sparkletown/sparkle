@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useRef } from "react";
 import classNames from "classnames";
 
 import { ButtonNG, ButtonProps } from "../ButtonNG/ButtonNG";
@@ -12,20 +12,21 @@ export interface FileButtonOnChangeData {
 }
 
 export interface FileButtonProps extends Omit<ButtonProps, "onClick"> {
-  onChange: (data: FileButtonOnChangeData) => void;
+  onClick: (data: FileButtonOnChangeData) => void;
 }
 
 export const FileButton: React.FC<FileButtonProps> = ({
   disabled,
-  onChange,
+  onClick,
   className,
   children,
   ...buttonNgProps
 }) => {
+  const formRef = useRef<HTMLFormElement>(null);
   const inputId = `FileButton-input-id-${new Date().getTime()}-${Math.random()}`;
 
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChange = useCallback(
+    (event) => {
       const files: FileList | null = event.target.files;
 
       if (!files?.[0] || disabled) return;
@@ -33,32 +34,35 @@ export const FileButton: React.FC<FileButtonProps> = ({
       const file = files[0];
       const url: string = URL.createObjectURL(file);
 
-      onChange({ url, files, file });
+      onClick({ url, files, file });
+      formRef.current?.reset();
     },
-    [disabled, onChange]
+    [disabled, onClick]
   );
 
   const containerClass = classNames("FileButton", className);
 
   return (
     <div className={containerClass}>
-      <ButtonNG
-        disabled={disabled}
-        className="FileButton__button"
-        {...buttonNgProps}
-      >
-        <label className="FileButton__label" htmlFor={inputId}>
-          {children}
-        </label>
-      </ButtonNG>
+      <form ref={formRef}>
+        <ButtonNG
+          disabled={disabled}
+          className="FileButton__button"
+          {...buttonNgProps}
+        >
+          <label className="FileButton__label" htmlFor={inputId}>
+            {children}
+          </label>
+        </ButtonNG>
 
-      <input
-        hidden
-        type="file"
-        id={inputId}
-        disabled={disabled}
-        onChange={handleChange}
-      />
+        <input
+          hidden
+          type="file"
+          id={inputId}
+          disabled={disabled}
+          onChange={onChange}
+        />
+      </form>
     </div>
   );
 };
