@@ -8,7 +8,7 @@
       "jsx": true
     }
   },
-  "plugins": ["@typescript-eslint", "prefer-arrow", "simple-import-sort"],
+  "plugins": ["@typescript-eslint", "prefer-arrow", "simple-import-sort", "unused-imports"],
   "extends": [
     "react-app",
     "eslint:recommended",
@@ -115,7 +115,8 @@
           ["^.+\\.s?css$"]
         ]
       }
-    ]
+    ],
+    "unused-imports/no-unused-imports": "error",
   },
   "globals": {
     "React": true,
