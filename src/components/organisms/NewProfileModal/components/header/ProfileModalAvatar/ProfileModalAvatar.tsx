@@ -74,6 +74,7 @@ export const ProfileModalAvatar: React.FC<Props> = ({
     <div className={classNames("ProfileModalAvatar", containerClassName)}>
       <div className="ProfileModalAvatar__upload-new-container">
         <UserAvatar
+          imageClassName="ProfileModalAvatar__image"
           user={viewingUser}
           overridePictureUrl={pictureUrl}
           size="full"

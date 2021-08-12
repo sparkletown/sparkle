@@ -12,6 +12,11 @@ $upload-new-padding: 0.3rem;
     @include square-size(6.2rem);
   }
 
+  &__image {
+    object-fit: cover;
+    object-position: top;
+  }
+
   &__upload-new {
     backdrop-filter: $input-backdrop-filter;
     background: $upload-new-background;
