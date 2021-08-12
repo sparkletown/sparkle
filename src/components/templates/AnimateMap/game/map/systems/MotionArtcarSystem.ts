@@ -26,7 +26,7 @@ export class MotionArtcarSystem extends MotionBaseSystem {
       node;
       node = node.next
     ) {
-      const speed = this.getArtcarDefaultSpeed() / 5;
+      const speed = this.getArtcarDefaultSpeed();
       node.elipse.rotation += speed * (time / 1000);
 
       const oldX = node.position.x;
