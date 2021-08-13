@@ -1,11 +1,11 @@
 import React, { useCallback } from "react";
 import { FieldErrors, OnSubmit, useFieldArray, useForm } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
-import { isEqual, pick } from "lodash";
-
-import { updateProfileLinks } from "api/profile";
+import { useAsyncFn } from "react-use";
+import { pick, uniq } from "lodash";
 
 import {
+  profileModalPasswordsFields,
   UserProfileModalFormData,
   UserProfileModalFormDataPasswords,
 } from "types/profileModal";
@@ -15,9 +15,9 @@ import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 import { propName, userProfileModalFormProp as formProp } from "utils/propName";
 
+import { useCheckOldPassword } from "hooks/useCheckOldPassword";
 import { useProfileModalFormDefaultValues } from "hooks/useProfileModalFormDefaultValues";
 import { useProfileQuestions } from "hooks/useProfileQuestions";
-import { useShowHide } from "hooks/useShowHide";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
@@ -33,42 +33,27 @@ export interface CurrentUserProfileModalContentProps {
   user: WithId<User>;
   venue: WithId<AnyVenue>;
   onCancelEditing: () => void;
-  isSubmittingState: ReturnType<typeof useShowHide>;
+  handleSubmitWrapper: (
+    handler: OnSubmit<UserProfileModalFormData>
+  ) => OnSubmit<UserProfileModalFormData>;
 }
-
-export const arePasswordsNotEmpty = (
-  passwords: UserProfileModalFormDataPasswords
-) => Object.values(pick(passwords, passwordsFields)).some((x) => x);
-
-const passwordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
-  "oldPassword",
-  "newPassword",
-  "confirmNewPassword",
-];
 
 export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContentProps> = ({
   venue,
   user,
-  isSubmittingState,
   onCancelEditing,
+  handleSubmitWrapper,
 }) => {
-  const firebase = useFirebase();
-  const firebaseUser = firebase.auth()?.currentUser;
-  const firebaseUserEmail = firebaseUser?.email;
-
   const { questions, answers } = useProfileQuestions(user, venue.id);
-
-  const {
-    isShown: isSubmitting,
-    show: startSubmitting,
-    hide: finishSubmitting,
-  } = isSubmittingState;
+  const firebaseUser = useFirebase().auth()?.currentUser;
 
   const defaultValues = useProfileModalFormDefaultValues(
     user,
     questions,
     answers
   );
+
+  const checkOldPassword = useCheckOldPassword();
 
   const {
     register,
@@ -81,6 +66,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     getValues,
     setValue,
     control,
+    formState,
   } = useForm<UserProfileModalFormData>({
     mode: "onBlur",
     reValidateMode: "onChange",
@@ -106,21 +92,6 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     addLink({ url: "", title: "" });
   }, [addLink]);
 
-  const checkOldPassword = useCallback(
-    async (password: string) => {
-      if (!firebaseUserEmail) return;
-      try {
-        await firebase
-          .auth()
-          .signInWithEmailAndPassword(firebaseUserEmail, password);
-        return true;
-      } catch {
-        return false;
-      }
-    },
-    [firebaseUserEmail, firebase]
-  );
-
   const setLinkTitle = useCallback(
     (index: number, title: string) => {
       setValue(
@@ -133,70 +104,56 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
     [setValue]
   );
 
-  const onSubmit: OnSubmit<UserProfileModalFormData> = useCallback(
-    async (data) => {
+  const [submitState, onSubmit] = useAsyncFn(
+    async (data: UserProfileModalFormData) => {
       if (!firebaseUser) return;
 
-      startSubmitting();
-      try {
-        const passwordsNotEmpty = arePasswordsNotEmpty(data);
-        if (passwordsNotEmpty) {
-          if (!(await checkOldPassword(data.oldPassword))) {
-            setError(formProp("oldPassword"), "validate", "Incorrect password");
-            return;
-          } else {
-            clearError(formProp("oldPassword"));
-            await firebaseUser.updatePassword(data.confirmNewPassword);
-          }
+      const passwordsNotEmpty = Object.values(
+        pick(data, profileModalPasswordsFields)
+      ).some((x) => x);
+      if (passwordsNotEmpty) {
+        if (!(await checkOldPassword(data.oldPassword))) {
+          setError(formProp("oldPassword"), "validate", "Incorrect password");
+          return;
+        } else {
+          clearError(formProp("oldPassword"));
+          await firebaseUser.updatePassword(data.confirmNewPassword);
         }
-
-        const fieldsToCheck = [
-          formProp("partyName"),
-          formProp("pictureUrl"),
-          ...questions.map((x) => x.name),
-        ];
-
-        const changedFields = fieldsToCheck.filter(
-          (field) =>
-            !isEqual(
-              defaultValues[field as keyof typeof defaultValues],
-              data[field as keyof typeof data]
-            )
-        ) as (keyof typeof data)[];
-
-        if (changedFields.length > 0) {
-          await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
-        }
-
-        if (!isEqual(user.profileLinks, data.profileLinks)) {
-          await updateProfileLinks({
-            profileLinks: data.profileLinks ?? [],
-            userId: user.id,
-          });
-        }
-
-        onCancelEditing();
-      } finally {
-        finishSubmitting();
       }
+
+      const changedFields = uniq(
+        Array.from(formState.dirtyFields)
+          .filter(
+            (k) =>
+              !profileModalPasswordsFields.includes(
+                k as keyof UserProfileModalFormDataPasswords
+              )
+          )
+          // formState.dirtyFields expressed nested fields like this: "profileLinks[0].url", "profileLinks[0].title"
+          // so we need to transform them
+          .map((k) =>
+            k.startsWith(formProp("profileLinks")) ? "profileLinks" : k
+          )
+      ) as (keyof UserProfileModalFormData)[];
+
+      if (changedFields.length > 0) {
+        await updateUserProfile(firebaseUser.uid, pick(data, changedFields));
+      }
+
+      onCancelEditing();
     },
     [
-      finishSubmitting,
-      checkOldPassword,
-      clearError,
-      defaultValues,
+      formState.dirtyFields,
       firebaseUser,
-      questions,
-      setError,
-      startSubmitting,
       onCancelEditing,
-      user.id,
-      user.profileLinks,
+      checkOldPassword,
+      setError,
+      clearError,
     ]
   );
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <form onSubmit={handleSubmit(handleSubmitWrapper(onSubmit))}>
       <ProfileModalEditBasicInfo
         venueId={venue.id}
         user={user}
@@ -234,7 +191,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
       />
       <UserProfileModalButtons
         onCancelClick={cancelEditing}
-        isSubmitting={isSubmitting}
+        isSubmitting={submitState.loading}
         containerClassName="EditingProfileModalContent__edit-buttons"
       />
     </form>

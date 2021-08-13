@@ -2,9 +2,6 @@ import { omit } from "lodash";
 
 import { ProfileLink } from "types/User";
 
-import { ProfileFormData } from "pages/Account/Profile";
-import { QuestionsFormData } from "pages/Account/Questions";
-
 export const profileModalWideButtonCustomStyleGrey = {
   backgroundColor: "#ffffff33",
   fontSize: 14,
@@ -26,9 +23,15 @@ export interface UserProfileModalFormDataPasswords {
   confirmNewPassword: string;
 }
 
+export const profileModalPasswordsFields: (keyof UserProfileModalFormDataPasswords)[] = [
+  "oldPassword",
+  "newPassword",
+  "confirmNewPassword",
+];
+
 export interface UserProfileModalFormData
-  extends ProfileFormData,
-    UserProfileModalFormDataPasswords,
-    QuestionsFormData {
+  extends UserProfileModalFormDataPasswords {
+  partyName: string;
+  pictureUrl: string;
   profileLinks: ProfileLink[];
 }

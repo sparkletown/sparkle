@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { Modal } from "react-bootstrap";
+import { OnSubmit } from "react-hook-form";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
 
@@ -7,6 +8,7 @@ import { IS_BURN } from "secrets";
 
 import { PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY } from "settings";
 
+import { UserProfileModalFormData } from "types/profileModal";
 import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -29,11 +31,20 @@ interface NewProfileModalProps {
 export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
   const { selectRecipientChat } = useChatSidebarControls();
 
+  const firebase = useFirebase();
+  const history = useHistory();
+
   const {
     isShown: editMode,
     show: turnOnEditMode,
     hide: turnOffEditMode,
-  } = useShowHide(false);
+  } = useShowHide();
+
+  const {
+    isShown: isSubmitting,
+    show: startSubmitting,
+    hide: stopSubmitting,
+  } = useShowHide();
 
   const {
     selectedUserProfile,
@@ -50,12 +61,6 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     closeUserProfileModal();
   }, [selectRecipientChat, closeUserProfileModal, selectedUserProfile?.id]);
 
-  const firebase = useFirebase();
-  const history = useHistory();
-
-  const isSubmittingState = useShowHide(false);
-  const { isShown: isSubmitting } = isSubmittingState;
-
   const logout = useCallback(async () => {
     await firebase.auth().signOut();
 
@@ -65,7 +70,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
     );
   }, [firebase, history, venue.id]);
 
-  const hideHandler = useCallback(() => {
+  const hideHandler = useCallback(async () => {
     if (isSubmitting) return;
 
     closeUserProfileModal();
@@ -74,6 +79,19 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
       PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY
     );
   }, [closeUserProfileModal, isSubmitting, turnOffEditMode]);
+
+  const handleSubmitWrapper: (
+    inner: OnSubmit<UserProfileModalFormData>
+  ) => OnSubmit<UserProfileModalFormData> = (
+    inner: OnSubmit<UserProfileModalFormData>
+  ) => async (data) => {
+    startSubmitting();
+    try {
+      await inner(data);
+    } finally {
+      stopSubmitting();
+    }
+  };
 
   return (
     <Modal
@@ -89,7 +107,7 @@ export const NewProfileModal: React.FC<NewProfileModalProps> = ({ venue }) => {
                   user={selectedUserProfile}
                   venue={venue}
                   onCancelEditing={turnOffEditMode}
-                  isSubmittingState={isSubmittingState}
+                  handleSubmitWrapper={handleSubmitWrapper}
                 />
               )
             : selectedUserProfile && (
