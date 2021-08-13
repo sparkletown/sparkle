@@ -89,6 +89,9 @@ jobs:
       - node/install-packages
       - run:
           command: |
+            if [ $CIRCLE_BRANCH = "test-functions-deploy" ]; then
+              ENV=staging
+            fi
             if [ $CIRCLE_BRANCH = "staging" ]; then
               ENV=staging
             fi
@@ -183,12 +186,12 @@ jobs:
             then
               echo "Functions haven't changed. Nothing to deploy."
             else
-              echo "Functions changed. Storing new hash..."
-              ./node_modules/.bin/firebase functions:config:set checksum.fileshash=$COMPUTED_HASH --token "$FIREBASE_TOKEN"
-
-              echo "Deploying functions..."
+              echo "Functions changed. Deploying..."
               # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
               ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+
+              echo "Saving new hash $COMPUTED_HASH"
+              ./node_modules/.bin/firebase functions:config:set checksum.fileshash=$COMPUTED_HASH --token "$FIREBASE_TOKEN"
             fi
 
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
@@ -403,6 +406,7 @@ workflows:
           filters:
             branches:
               only:
+                - test-functions-deploy
                 - master
                 - staging
                 - sparkleverse
