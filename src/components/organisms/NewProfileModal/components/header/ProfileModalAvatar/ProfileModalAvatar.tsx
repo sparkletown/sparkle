@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
@@ -11,7 +12,6 @@ import { WithId } from "utils/id";
 import { userProfileModalFormProp as formProp } from "utils/propName";
 
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
-import { useShowHide } from "hooks/useShowHide";
 import { useUploadProfilePictureHandler } from "hooks/useUploadProfilePictureHandler";
 import { useUser } from "hooks/useUser";
 
@@ -42,31 +42,20 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
   const uploadRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState("");
 
-  const {
-    isShown: uploading,
-    show: uploadStarted,
-    hide: uploadFinished,
-  } = useShowHide(false);
-
   const { user: currentUser } = useUser();
   const uploadProfilePictureHandler = useUploadProfilePictureHandler(
     setError,
     currentUser
   );
 
-  const handleFileChange = useCallback(
+  const [uploadingState, handleFileChange] = useAsyncFn(
     async (e: React.ChangeEvent<HTMLInputElement>) => {
-      uploadStarted();
-      try {
-        const pictureUrlRef = await uploadProfilePictureHandler(e);
-        if (pictureUrlRef && setPictureUrl) {
-          setPictureUrl(pictureUrlRef);
-        }
-      } finally {
-        uploadFinished();
+      const pictureUrlRef = await uploadProfilePictureHandler(e);
+      if (pictureUrlRef && setPictureUrl) {
+        setPictureUrl(pictureUrlRef);
       }
     },
-    [uploadStarted, uploadProfilePictureHandler, setPictureUrl, uploadFinished]
+    [uploadProfilePictureHandler, setPictureUrl]
   );
 
   const uploadProfilePic = useCallback((event) => {
@@ -94,11 +83,12 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         {editMode && (
           <div
             className={classNames("ProfileModalAvatar__upload-new", {
-              "ProfileModalAvatar__upload-new--uploading": uploading,
+              "ProfileModalAvatar__upload-new--uploading":
+                uploadingState.loading,
             })}
             onClick={uploadProfilePic}
           >
-            {uploading ? "Uploading..." : "Upload new"}
+            {uploadingState.loading ? "Uploading..." : "Upload new"}
           </div>
         )}
       </div>
