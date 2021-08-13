@@ -2,6 +2,7 @@ const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 
 const MAX_TRANSIENT_EVENT_DURATION_HOURS = 6; // transient events are a maximum of 6 hours
+
 // Someone snuck by our client side validation! Naughty naughty!
 const sanitizeEvent = (event, now) => {
   if (event.start_utc_seconds && isNaN(event.start_utc_seconds)) {
