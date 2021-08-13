@@ -89,9 +89,6 @@ jobs:
       - node/install-packages
       - run:
           command: |
-            if [ $CIRCLE_BRANCH = "test-functions-deploy" ]; then
-              ENV=staging
-            fi
             if [ $CIRCLE_BRANCH = "staging" ]; then
               ENV=staging
             fi
@@ -406,7 +403,6 @@ workflows:
           filters:
             branches:
               only:
-                - test-functions-deploy
                 - master
                 - staging
                 - sparkleverse
