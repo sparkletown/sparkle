@@ -12,7 +12,7 @@ export type UpdateUserProfileDataAction = ReduxAction<
   { userProfile?: WithId<User> }
 >;
 
-export const updateUserProfileData = (
+export const updateUserProfileDataAction = (
   userProfile?: WithId<User>
 ): UpdateUserProfileDataAction => ({
   type: UserProfileActionTypes.UPDATE_USER_PROFILE_DATA,

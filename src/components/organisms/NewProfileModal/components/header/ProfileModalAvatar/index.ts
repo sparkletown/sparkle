@@ -1,0 +1,1 @@
+export { ProfileModalAvatar } from "./ProfileModalAvatar";

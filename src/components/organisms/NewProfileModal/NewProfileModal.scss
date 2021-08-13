@@ -1,0 +1,20 @@
+@import "./profileModalStyles";
+
+.ProfileModal {
+  display: flex;
+  align-items: flex-start;
+  font-size: $content-font-size;
+
+  &__body {
+    background-color: $dark-grey;
+    padding: $modal-content-margin;
+  }
+
+  & > .modal-dialog {
+    max-width: $modal-content-max-width;
+    margin: $modal-dialog-viewport-margin;
+    & > .modal-content {
+      padding: 0;
+    }
+  }
+}
