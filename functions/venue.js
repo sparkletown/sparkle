@@ -1,7 +1,6 @@
 const admin = require("firebase-admin");
 const functions = require("firebase-functions");
 const { HttpsError } = require("firebase-functions/lib/providers/https");
-
 const { addAdmin, removeAdmin } = require("./src/api/roles");
 
 const { checkAuth } = require("./src/utils/assert");
