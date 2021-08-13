@@ -2,7 +2,7 @@
 
 $edit-buttons-gap: $input-gap;
 
-button.UserProfileModalButtons__button {
+button.EditProfileModalButtons__button {
   @include ProfileModalButton;
   margin-bottom: $edit-buttons-gap;
   &:last-child {

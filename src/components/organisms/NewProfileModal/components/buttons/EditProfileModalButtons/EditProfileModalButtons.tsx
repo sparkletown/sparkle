@@ -5,14 +5,14 @@ import { ContainerClassName } from "types/utility";
 
 import { Button } from "components/atoms/Button";
 
-import "./UserProfileModalButtons.scss";
+import "./EditProfileModalButtons.scss";
 
 export interface UserProfileModalButtonsProps extends ContainerClassName {
   onCancelClick: () => void;
   isSubmitting: boolean;
 }
 
-export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = ({
+export const EditProfileModalButtons: React.FC<UserProfileModalButtonsProps> = ({
   onCancelClick,
   containerClassName,
   isSubmitting,
@@ -20,8 +20,8 @@ export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = (
   return (
     <div className={containerClassName}>
       <Button
-        customClass={classNames("UserProfileModalButtons__button", {
-          "UserProfileModalButtons__button--disabled": isSubmitting,
+        customClass={classNames("EditProfileModalButtons__button", {
+          "EditProfileModalButtons__button--disabled": isSubmitting,
         })}
         disabled={isSubmitting}
         onClick={onCancelClick}
@@ -31,10 +31,10 @@ export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = (
       <Button
         type="submit"
         customClass={classNames(
-          "UserProfileModalButtons__button",
-          "UserProfileModalButtons__button--primary",
+          "EditProfileModalButtons__button",
+          "EditProfileModalButtons__button--primary",
           {
-            "UserProfileModalButtons__button--disabled": isSubmitting,
+            "EditProfileModalButtons__button--disabled": isSubmitting,
           }
         )}
         disabled={isSubmitting}

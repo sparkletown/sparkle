@@ -21,7 +21,7 @@ import { useProfileQuestions } from "hooks/useProfileQuestions";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
-import { UserProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/UserProfileModalButtons";
+import { EditProfileModalButtons } from "components/organisms/NewProfileModal/components/buttons/EditProfileModalButtons";
 import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalEditBasicInfo";
 import { ProfileModalEditLinks } from "components/organisms/NewProfileModal/components/links/ProfileModalEditLinks";
 import { ProfileModalChangePassword } from "components/organisms/NewProfileModal/components/ProfileModalChangePassword";
@@ -189,7 +189,7 @@ export const EditingProfileModalContent: React.FC<CurrentUserProfileModalContent
           "oldPassword" | "newPassword" | "confirmNewPassword"
         >(errors, ["oldPassword", "newPassword", "confirmNewPassword"])}
       />
-      <UserProfileModalButtons
+      <EditProfileModalButtons
         onCancelClick={cancelEditing}
         isSubmitting={submitState.loading}
         containerClassName="EditingProfileModalContent__edit-buttons"
