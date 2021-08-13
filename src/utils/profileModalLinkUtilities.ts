@@ -5,6 +5,7 @@ import {
   faGithub,
   faInstagram,
   faMedium,
+  faRedditAlien,
   faSnapchat,
   faStackExchange,
   faStackOverflow,
@@ -38,7 +39,6 @@ export const getProfileModalLinkUsername = (url: string) => {
         return match?.[1] as string;
       }
     );
-
     return res.find((x) => x);
   };
 
@@ -57,6 +57,7 @@ enum ProfileModalLinkType {
   Github = "Github",
   Youtube = "Youtube",
   Tiktok = "Tiktok",
+  Reddit = "Reddit",
   Mail = "Mail",
 }
 
@@ -76,6 +77,7 @@ const profileModalLinkTypesIcons: Record<
   [ProfileModalLinkType.Github]: faGithub,
   [ProfileModalLinkType.Youtube]: faYoutube,
   [ProfileModalLinkType.Tiktok]: faTiktok,
+  [ProfileModalLinkType.Reddit]: faRedditAlien,
   [ProfileModalLinkType.Mail]: faEnvelope,
 };
 
@@ -105,6 +107,7 @@ const profileModalLinkTypesRegexes: Record<ProfileModalLinkType, RegExp> = {
   [ProfileModalLinkType.Github]: buildMatchingRegex("github.com"),
   [ProfileModalLinkType.Youtube]: buildMatchingRegex("youtube.com"),
   [ProfileModalLinkType.Tiktok]: buildMatchingRegex("tiktok.com"),
+  [ProfileModalLinkType.Reddit]: buildMatchingRegex("reddit.com", "redd.it"),
 };
 
 export const profileModalProfileNameRegex: Record<
@@ -124,4 +127,5 @@ export const profileModalProfileNameRegex: Record<
   [ProfileModalLinkType.Github]: /(?:https?:)?\/\/(?:www\.)?github\.com\/([A-z0-9_-]+)\/?/,
   [ProfileModalLinkType.Youtube]: / (?:https?:)?\/\/(?:[A-z]+\.)?youtube.com\/user\/([A-z0-9]+)\/?/,
   [ProfileModalLinkType.Tiktok]: /(?:https?:)?\/\/(?:www\.)?tiktok\.com\/@([A-z0-9-_.]+)\/?/,
+  [ProfileModalLinkType.Reddit]: /(?:https?:)?\/\/(?:www\.)?reddit\.com\/user\/([A-z0-9-_.]+)\/?/,
 };
