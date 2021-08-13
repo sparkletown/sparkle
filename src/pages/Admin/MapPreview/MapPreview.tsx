@@ -175,6 +175,8 @@ const MapPreview: React.FC<MapPreviewProps> = ({
             onChange={handleOnChange}
             backgroundImage={mapBackground}
             otherIcons={{}}
+            // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             iconsMap={iconsMap}
             coordinatesBoundary={{

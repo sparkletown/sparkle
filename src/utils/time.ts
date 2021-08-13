@@ -14,7 +14,9 @@ import {
   isToday,
   isTomorrow,
   isYesterday,
+  max,
   startOfDay,
+  startOfToday,
   subDays,
   subHours,
 } from "date-fns";
@@ -251,3 +253,13 @@ export const getDayInterval = (date: Date | number) => ({
   start: startOfDay(date),
   end: endOfDay(date),
 });
+
+export const isDateRangeStartWithinToday = ({
+  dateValue,
+  targetDateValue,
+}: {
+  dateValue: number;
+  targetDateValue: number;
+}) => {
+  return max([dateValue, targetDateValue]) <= startOfToday();
+};
