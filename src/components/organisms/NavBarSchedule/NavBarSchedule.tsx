@@ -24,7 +24,8 @@ import {
   eventTimeAndOrderComparator,
   getEventDayRange,
   isEventLiveOrFuture,
-  isEventWithinDateAndNotFinished} from "utils/event";
+  isEventWithinDateAndNotFinished,
+} from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
 import {
@@ -224,12 +225,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const scheduleNG: ScheduleNGDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
-    const daysEvents = liveAndFutureEvents
-      .filter(isEventWithinDateAndNotFinished(day))
+    const daysEvents = liveAndFutureEvents.filter(
+      isEventWithinDateAndNotFinished(day)
+    );
 
-      const eventsFilledWithPriority = daysEvents
+    const eventsFilledWithPriority = daysEvents
       .map((event) => ({ ...event, orderPriority: event.orderPriority ?? 0 }))
-      .sort(eventTimeAndOrderComparator)
+      .sort(eventTimeAndOrderComparator);
 
     return {
       scheduleDate: day,
