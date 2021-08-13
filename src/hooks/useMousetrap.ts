@@ -54,12 +54,10 @@ export const useMousetrap: ReactHook<UseMousetrapProps, void> = ({
   callback,
   action,
   withGlobalBind = false,
-  ...rest
-}) => {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const bindRef = rest?.bindRef;
-
+  bindRef,
+}) => {
   const [boundElement, setBoundElement] = useState<HTMLElement | undefined>(
     bindRef
   );
