@@ -31,12 +31,12 @@ jobs:
           git push origin master:bigtop
           git push origin master:deloitte
 
-          git push origin master:env/memrise
-          git push origin master:env/unesco
-          git push origin master:env/pa
-          git push origin master:env/clever
-          git push origin master:env/unity
-          git push origin master:env/demo
+          # git push origin master:env/memrise
+          # git push origin master:env/unesco
+          # git push origin master:env/pa
+          # git push origin master:env/clever
+          # git push origin master:env/unity
+          # git push origin master:env/demo
 
           # git push origin master:env/kotr # Note: This runs custom code/is no longer used/required. Don't deploy to it.
           # git push origin master:env/github # Note: This runs custom code.
