@@ -330,6 +330,7 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+  orderPriority?: number;
 }
 
 export interface VenueLocation {
