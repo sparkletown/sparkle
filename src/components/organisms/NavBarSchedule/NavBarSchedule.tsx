@@ -1,26 +1,37 @@
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import classNames from "classnames";
 import {
   addDays,
+  differenceInDays,
   format,
   fromUnixTime,
+  getUnixTime,
   isToday,
+  max,
+  millisecondsToSeconds,
+  minutesToSeconds,
+  secondsToMilliseconds,
   startOfDay,
   startOfToday,
 } from "date-fns";
 
-import { SCHEDULE_SHOW_DAYS_AHEAD } from "settings";
+import { PLATFORM_BRAND_NAME } from "settings";
 
 import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
+import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
   eventTimeComparator,
-  isEventWithinDate,
+  getEventDayRange,
+  isEventLiveOrFuture,
   isEventWithinDateAndNotFinished,
 } from "utils/event";
 import { WithVenueId } from "utils/id";
 import { range } from "utils/range";
-import { formatDateRelativeToNow } from "utils/time";
+import {
+  formatDateRelativeToNow,
+  isDateRangeStartWithinToday,
+} from "utils/time";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -28,8 +39,10 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
-import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
+// Disabled as per designs. Up for deletion if confirmied not necessary
+// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
+import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
 
 import { prepareForSchedule } from "./utils";
@@ -49,6 +62,9 @@ export interface NavBarScheduleProps {
   venueId: string;
 }
 
+const minRangeValue = 0;
+const todaysDate = new Date();
+
 export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   isVisible,
   venueId,
@@ -63,6 +79,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
+  // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
   const firstDayOfSchedule = useMemo(() => {
     return scheduledStartDate
       ? startOfDay(fromUnixTime(scheduledStartDate))
@@ -77,7 +94,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
-
   const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
@@ -87,21 +103,96 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
 
+  const liveAndFutureEvents = useMemo(
+    () =>
+      relatedVenueEvents.filter(isEventLiveOrFuture).map(
+        prepareForSchedule({
+          usersEvents: userEventIds,
+        })
+      ),
+    [relatedVenueEvents, userEventIds]
+  );
+  const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
+    .length;
+
+  const isShowPersonalDownloadBtn = hasSavedEvents && showPersonalisedSchedule;
+  const liveEventsMinimalStartValue = Math.min(
+    ...liveAndFutureEvents.map((event) => event.start_utc_seconds)
+  );
+
+  const firstLiveEvent = liveAndFutureEvents.find(
+    (event) => event.start_utc_seconds === liveEventsMinimalStartValue
+  );
+
+  const minDateUtcSeconds = useMemo(
+    () =>
+      firstLiveEvent ? getUnixTime(liveEventsMinimalStartValue) : minRangeValue,
+    [firstLiveEvent, liveEventsMinimalStartValue]
+  );
+
+  const isMinDateWithinToday = isDateRangeStartWithinToday({
+    dateValue: secondsToMilliseconds(minDateUtcSeconds),
+    targetDateValue: millisecondsToSeconds(startOfToday().getTime()),
+  });
+
+  const firstRangeDateInSeconds = getUnixTime(
+    max([new Date(secondsToMilliseconds(minDateUtcSeconds)), todaysDate])
+  );
+
+  const isOneEventAndLive =
+    secondsToMilliseconds(firstRangeDateInSeconds) <= todaysDate.getTime() &&
+    liveAndFutureEvents.length === 1;
+
+  const maxDate = useMemo(
+    () =>
+      Math.max(
+        ...liveAndFutureEvents.map(
+          (event) =>
+            event.start_utc_seconds + minutesToSeconds(event.duration_minutes)
+        ),
+        // + 1 is needed to form a `daysInBetween` timeline and mitigate possible range error
+        firstRangeDateInSeconds + 1
+      ),
+    [liveAndFutureEvents, firstRangeDateInSeconds]
+  );
+
+  const daysInBetween = differenceInDays(
+    fromUnixTime(maxDate),
+    fromUnixTime(firstRangeDateInSeconds)
+  );
+
+  const dayDifference = getEventDayRange(daysInBetween, isOneEventAndLive);
+
+  const firstScheduleDate = useMemo(
+    () =>
+      isMinDateWithinToday
+        ? todaysDate
+        : new Date(secondsToMilliseconds(minDateUtcSeconds)),
+    [isMinDateWithinToday, minDateUtcSeconds]
+  );
+
   const weekdays = useMemo(() => {
     const formatDayLabel = (day: Date | number) => {
       if (isScheduleTimeshifted) {
-        return format(day, "E, LLL d");
+        return format(day, "do");
       } else {
         return formatDateRelativeToNow(day, {
-          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "E"),
+          formatOtherDate: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
+          formatTomorrow: (dateOrTimestamp) => format(dateOrTimestamp, "do"),
         });
       }
     };
 
-    return range(SCHEDULE_SHOW_DAYS_AHEAD).map((dayIndex) => {
-      const day = addDays(firstDayOfSchedule, dayIndex);
+    return range(dayDifference).map((dayIndex) => {
+      const day = addDays(firstScheduleDate, dayIndex);
+
+      const daysWithEvents = liveAndFutureEvents.some(
+        isEventWithinDateAndNotFinished(day)
+      );
+
       const classes = classNames("NavBarSchedule__weekday", {
         "NavBarSchedule__weekday--active": dayIndex === selectedDayIndex,
+        "NavBarSchedule__weekday--disabled": !daysWithEvents,
       });
 
       const formattedDay = formatDayLabel(day);
@@ -123,106 +214,97 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         </li>
       );
     });
-  }, [selectedDayIndex, firstDayOfSchedule, isScheduleTimeshifted]);
+  }, [
+    selectedDayIndex,
+    isScheduleTimeshifted,
+    dayDifference,
+    liveAndFutureEvents,
+    firstScheduleDate,
+  ]);
 
   const scheduleNG: ScheduleNGDay = useMemo(() => {
-    const startOfSelectedDay = addDays(firstDayOfSchedule, selectedDayIndex);
+    const day = addDays(firstScheduleDate, selectedDayIndex);
 
-    const daysEvents = relatedVenueEvents
-      .filter(
-        isScheduleTimeshifted
-          ? isEventWithinDate(startOfSelectedDay)
-          : isEventWithinDateAndNotFinished(startOfSelectedDay)
-      )
-      .sort(eventTimeComparator)
-      .map(
-        prepareForSchedule({
-          usersEvents: userEventIds,
-        })
-      );
-
+    const daysEvents = liveAndFutureEvents
+      .filter(isEventWithinDateAndNotFinished(day))
+      .sort(eventTimeComparator);
     return {
-      scheduleDate: startOfSelectedDay,
+      scheduleDate: day,
       daysEvents: showPersonalisedSchedule
         ? daysEvents.filter((event) => event.isSaved)
         : daysEvents,
     };
   }, [
-    relatedVenueEvents,
-    userEventIds,
+    liveAndFutureEvents,
     selectedDayIndex,
-    firstDayOfSchedule,
-    isScheduleTimeshifted,
     showPersonalisedSchedule,
+    firstScheduleDate,
   ]);
 
-  // const downloadPersonalEventsCalendar = useCallback(() => {
-  //   const dayStart = addDays(startOfToday(), selectedDayIndex);
-  //   const allPersonalEvents: PersonalizedVenueEvent[] = relatedVenueEvents
-  //     .map(
-  //       prepareForSchedule({
-  //         day: dayStart,
-  //         usersEvents: userEventIds,
-  //         isForCalendarFile: true,
-  //       })
-  //     )
-  //     .filter((event) => event.isSaved);
+  const downloadPersonalEventsCalendar = useCallback(() => {
+    const allPersonalEvents: PersonalizedVenueEvent[] = liveAndFutureEvents
+      .map(
+        prepareForSchedule({
+          usersEvents: userEventIds,
+        })
+      )
+      .filter((event) => event.isSaved);
 
-  //   downloadCalendar({
-  //     calendar: createCalendar({ events: allPersonalEvents }),
-  //     calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
-  //   });
-  // }, [relatedVenueEvents, userEventIds, selectedDayIndex]);
+    downloadCalendar({
+      calendar: createCalendar({ events: allPersonalEvents }),
+      calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
+    });
+  }, [userEventIds, liveAndFutureEvents]);
 
-  // const downloadAllEventsCalendar = useCallback(() => {
-  //   downloadCalendar({
-  //     calendar: createCalendar({ events: relatedVenueEvents }),
-  //     calendarName: `${PLATFORM_BRAND_NAME}_Full`,
-  //   });
-  // }, [relatedVenueEvents]);
+  const downloadAllEventsCalendar = useCallback(() => {
+    downloadCalendar({
+      calendar: createCalendar({ events: liveAndFutureEvents }),
+      calendarName: `${PLATFORM_BRAND_NAME}_Full`,
+    });
+  }, [liveAndFutureEvents]);
 
   const containerClasses = classNames("NavBarSchedule", {
     "NavBarSchedule--show": isVisible,
   });
 
   return (
-    <div className={containerClasses}>
-      {venueId && <ScheduleVenueDescription venueId={venueId} />}
-      {/* {!isLoadingSchedule && (
-        <div className="NavBarSchedule__download-buttons">
-          {hasSavedEvents && (
+    <div className="NavBarWrapper">
+      <div className={containerClasses}>
+        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
+        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+
+        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
+        <Toggler
+          containerClassName="NavBarSchedule__bookmarked-toggle"
+          name="bookmarked-toggle"
+          toggled={showPersonalisedSchedule}
+          onChange={togglePersonalisedSchedule}
+          label="Bookmarked events"
+        />
+        <ScheduleNG
+          showPersonalisedSchedule={showPersonalisedSchedule}
+          isLoading={isLoadingSchedule}
+          {...scheduleNG}
+        />
+      </div>
+      {!isLoadingSchedule && (
+        <div className="NavBarWrapper__download-buttons">
+          {isShowPersonalDownloadBtn && (
             <Button
               onClick={downloadPersonalEventsCalendar}
-              customClass="NavBarSchedule__download-schedule-btn"
+              customClass="NavBarWrapper__download-schedule-btn"
             >
               Download your schedule
             </Button>
           )}
-
           <Button
             onClick={downloadAllEventsCalendar}
-            customClass="NavBarSchedule__download-schedule-btn"
+            customClass="NavBarWrapper__download-schedule-btn"
           >
             Download full schedule
           </Button>
         </div>
-      )} */}
-
-      <Toggler
-        containerClassName="NavBarSchedule__bookmarked-toggle"
-        name="bookmarked-toggle"
-        toggled={showPersonalisedSchedule}
-        onChange={togglePersonalisedSchedule}
-        label="Bookmarked events"
-      />
-
-      <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
-
-      <ScheduleNG
-        showPersonalisedSchedule={showPersonalisedSchedule}
-        isLoading={isLoadingSchedule}
-        {...scheduleNG}
-      />
+      )}
     </div>
   );
 };
