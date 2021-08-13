@@ -1,8 +1,5 @@
 @import "../../../profileModalStyles";
 
-$name-bottom-margin: 4px;
-$light-color: #d2d2d2;
-
 .ProfileModalBasicTextInfo {
   font-size: $content-increased-font-size;
   display: flex;
@@ -11,7 +8,7 @@ $light-color: #d2d2d2;
 
   &__name {
     padding: 0;
-    margin-bottom: $name-bottom-margin;
+    margin-bottom: $basic-text-info-name-bottom-margin;
   }
 
   &__status {

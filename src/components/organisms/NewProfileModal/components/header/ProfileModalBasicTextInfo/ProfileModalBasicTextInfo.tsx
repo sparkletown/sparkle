@@ -36,9 +36,7 @@ export const ProfileModalBasicTextInfo: React.FC<ProfileModalBasicTextInfoProps>
   const lastVenue = lastSeenIn ? Object.keys(lastSeenIn)[0] : undefined;
 
   const userStatus =
-    sovereignVenue?.showUserStatus &&
-    sovereignVenue?.userStatuses?.length &&
-    sovereignVenue?.userStatuses?.[0];
+    sovereignVenue?.showUserStatus && sovereignVenue?.userStatuses?.[0];
 
   return (
     <div
