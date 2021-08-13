@@ -6,16 +6,16 @@ import { getSeconds } from "date-fns";
 import { REACTION_TIMEOUT } from "settings";
 
 import {
+  EmojiReactionType,
   isTextReaction,
   ReactionData,
-  EmojiReactionType,
 } from "types/reactions";
 
 import { uniqueEmojiReactionsDataMapReducer } from "utils/reactions";
 
+import { useAudio } from "hooks/audio/useAudio";
 import { useReactions } from "hooks/reactions";
 import { useSelector } from "hooks/useSelector";
-import { useAudio } from "hooks/audio/useAudio";
 
 import { Reaction } from "components/atoms/Reaction";
 

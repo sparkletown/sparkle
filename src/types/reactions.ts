@@ -1,4 +1,5 @@
 import { ChatMessage } from "types/chat";
+
 import { isTruthy } from "utils/types";
 
 export enum EmojiReactionType {

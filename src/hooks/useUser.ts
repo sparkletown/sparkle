@@ -6,7 +6,7 @@ import { RootState } from "store";
 
 import { User } from "types/User";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 import { authSelector, profileSelector } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";

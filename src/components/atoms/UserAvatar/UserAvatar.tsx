@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { isEqual, isEmpty } from "lodash";
+import { isEmpty, isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
@@ -9,8 +9,8 @@ import { User, UsernameVisibility } from "types/User";
 import { WithId } from "utils/id";
 
 import { useWorldUserLocation } from "hooks/users";
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import { useVenueId } from "hooks/useVenueId";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 

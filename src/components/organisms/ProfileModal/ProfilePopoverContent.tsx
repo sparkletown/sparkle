@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 import { ProfileLink } from "types/User";
+
 import { isDefined } from "utils/types";
 
 import { useUser } from "hooks/useUser";

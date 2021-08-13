@@ -1,6 +1,8 @@
-import firebase from "firebase/app";
 import { FirebaseReducer } from "react-redux-firebase";
+import firebase from "firebase/app";
+
 import { User } from "types/User";
+
 import { isTruthy } from "./types";
 
 export const updateProfileEnteredVenueIds = async (

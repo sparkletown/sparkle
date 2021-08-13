@@ -1,9 +1,13 @@
 import React, { CSSProperties, useMemo } from "react";
-import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
-import { WithId } from "utils/id";
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import { IFRAME_ALLOW, PLAYA_IMAGE, PLAYA_VENUE_STYLES } from "settings";
+
+import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
+
+import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+import { WithId } from "utils/id";
+
+import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 

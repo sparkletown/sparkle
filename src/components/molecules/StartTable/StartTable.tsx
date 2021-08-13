@@ -1,6 +1,6 @@
 import React from "react";
-import classNames from "classnames";
 import { useAsyncFn } from "react-use";
+import classNames from "classnames";
 
 import { DEFAULT_TABLE_CAPACITY } from "settings";
 

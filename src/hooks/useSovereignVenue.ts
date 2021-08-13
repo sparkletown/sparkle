@@ -1,20 +1,20 @@
 import { useEffect } from "react";
 import { isEqual } from "lodash";
 
-import {
-  setSovereignVenue,
-  setSovereignVenueIsLoading,
-  setSovereignVenueError,
-} from "store/actions/SovereignVenue";
-
 import { fetchSovereignVenue } from "api/venue";
 
-import { AnyVenue } from "types/venues";
+import {
+  setSovereignVenue,
+  setSovereignVenueError,
+  setSovereignVenueIsLoading,
+} from "store/actions/SovereignVenue";
+
 import { ReactHook } from "types/utility";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { sovereignVenueSelector } from "utils/selectors";
 import { tracePromise } from "utils/performance";
+import { sovereignVenueSelector } from "utils/selectors";
 
 import { useDispatch } from "./useDispatch";
 import { useSelector } from "./useSelector";

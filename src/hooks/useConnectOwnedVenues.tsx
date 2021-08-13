@@ -1,11 +1,12 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
+
 import { ReactHook } from "types/utility";
 import { AnyVenue } from "types/venues";
 
 import { WithId, withId } from "utils/id";
 import { ownedVenuesDataSelector, ownedVenuesSelector } from "utils/selectors";
 
-import { useFirestoreConnect, isLoaded } from "hooks/useFirestoreConnect";
+import { isLoaded, useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 

@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
-import classNames from "classnames";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 
 import { BaseMessageToDisplay } from "types/chat";
 
@@ -17,7 +17,7 @@ const deleteIconClass = "ChatMessageInfo__delete-icon";
 
 export interface ChatMessageInfoProps {
   message: BaseMessageToDisplay;
-  deleteMessage: () => void;
+  deleteMessage?: () => void;
   reversed?: boolean;
 }
 
@@ -26,7 +26,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
   deleteMessage,
   reversed: isReversed = false,
 }) => {
-  const { ts_utc, author, canBeDeleted } = message;
+  const { ts_utc, author } = message;
   const { openUserProfileModal } = useProfileModalControls();
 
   const timestamp = ts_utc.toMillis();
@@ -51,7 +51,7 @@ export const ChatMessageInfo: React.FC<ChatMessageInfoProps> = ({
       <span className="ChatMessageInfo__time">
         {formatTimeLocalised(timestamp)}
       </span>
-      {canBeDeleted && (
+      {deleteMessage && (
         <FontAwesomeIcon
           onClick={deleteMessage}
           icon={faTrash}

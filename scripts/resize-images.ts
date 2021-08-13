@@ -31,18 +31,18 @@
     once configured, in a terminal, run: npx ts-node resize-images.ts
 */
 
+import fs from "fs";
 import { resolve } from "path";
 
 import admin from "firebase-admin";
-import { uuid } from "uuidv4";
-import jimp from "jimp";
-import fs from "fs";
 import { GifUtil } from "gifwrap";
+import jimp from "jimp";
 import p from "phin";
-
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import { uuid } from "uuidv4";
 
 import { ACCEPTED_IMAGE_TYPES } from "../src/settings";
+
+import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description: "Backup or resize images (see code comments for further usage)",

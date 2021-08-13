@@ -1,9 +1,12 @@
-import React, { useRef, useState, useMemo, useCallback } from "react";
-import { User } from "types/User";
+import React, { useCallback, useMemo, useRef, useState } from "react";
 import { Dropdown, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
-import { useWorldUsers } from "hooks/users";
+
+import { User } from "types/User";
+
 import { WithId } from "utils/id";
+
+import { useWorldUsers } from "hooks/users";
 
 import "./PrivateRecipientSearchInput.scss";
 

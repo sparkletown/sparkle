@@ -1,21 +1,21 @@
 import React, { useCallback, useMemo } from "react";
 import { Modal } from "react-bootstrap";
 
-import { Room, RoomType } from "types/rooms";
-import { AnyVenue, VenueEvent } from "types/venues";
+import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { retainAttendance } from "store/actions/Attendance";
 
+import { Room, RoomType } from "types/rooms";
+import { AnyVenue, VenueEvent } from "types/venues";
+
 import { WithId, WithVenueId } from "utils/id";
 
-import { useDispatch } from "hooks/useDispatch";
 import { useCustomSound } from "hooks/sounds";
+import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import VideoModal from "components/organisms/VideoModal";
-
-import { DEFAULT_SHOW_SCHEDULE } from "settings";
 
 import { UserList } from "components/molecules/UserList";
 

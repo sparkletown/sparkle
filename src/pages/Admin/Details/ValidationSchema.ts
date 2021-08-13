@@ -1,19 +1,27 @@
+import dayjs from "dayjs";
+import firebase from "firebase/app";
 import * as Yup from "yup";
 
-import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
-
-import firebase from "firebase/app";
-import "firebase/functions";
 import {
-  PLAYA_VENUE_SIZE,
-  VENUE_NAME_MIN_CHAR_COUNT,
-  VENUE_NAME_MAX_CHAR_COUNT,
-  MAX_IMAGE_FILE_SIZE_BYTES,
   GIF_RESIZER_URL,
-  PLAYA_WIDTH,
+  MAX_IMAGE_FILE_SIZE_BYTES,
   PLAYA_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_WIDTH,
+  VENUE_NAME_MAX_CHAR_COUNT,
+  VENUE_NAME_MIN_CHAR_COUNT,
 } from "settings";
+
+import {
+  createUrlSafeName,
+  EventInput,
+  PlacementInput,
+  VenueInput,
+} from "api/admin";
+
 import { isValidUrl } from "utils/url";
+
+import "firebase/functions";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -252,4 +260,31 @@ export const editPlacementSchema = Yup.object().shape<PlacementInput>({
       y: Yup.number().required("Required").min(0).max(PLAYA_HEIGHT),
     })
     .default(initialMapIconPlacement),
+});
+
+export const eventEditSchema = Yup.object().shape<EventInput>({
+  name: Yup.string().required("Name required"),
+  description: Yup.string().required("Description required"),
+  start_date: Yup.string()
+    .required("Start date required")
+    .matches(
+      /\d{4}-\d{2}-\d{2}/,
+      'Start date must have the format "yyyy-mm-dd"'
+    )
+    .test(
+      "start_date_future",
+      "Start date must be in the futur",
+      (start_date) => {
+        return dayjs(start_date).isSameOrAfter(dayjs(), "day");
+      }
+    ),
+  start_time: Yup.string().required("Start time required"),
+  duration_hours: Yup.number()
+    .typeError("Hours must be a number")
+    .required("Hours required"),
+  duration_minutes: Yup.number()
+    .typeError("Minutes must be a number")
+    .required("Minutes equired"),
+  host: Yup.string().required("Host required"),
+  room: Yup.string().matches(/^(?!Select a room...$).*$/, "Room is required"),
 });

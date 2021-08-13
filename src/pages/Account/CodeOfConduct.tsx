@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { useAsyncFn, useSearchParam } from "react-use";
 
 import { IS_BURN } from "secrets";
@@ -16,14 +16,13 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
 import { Loading } from "components/molecules/Loading";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into CodeOfConduct.scss
 import "./Account.scss";
-
 import "./CodeOfConduct.scss";
 
 export interface CodeOfConductFormData {

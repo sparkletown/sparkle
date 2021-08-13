@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCss } from "react-use";
 import classNames from "classnames";
 import {
   eachHourOfInterval,
@@ -8,7 +9,6 @@ import {
   getUnixTime,
   setHours,
 } from "date-fns";
-import { useCss } from "react-use";
 
 import {
   SCHEDULE_CURRENT_TIMELINE_MS,
@@ -16,10 +16,11 @@ import {
   SCHEDULE_MAX_START_HOUR,
 } from "settings";
 
-import { PersonalizedVenueEvent, LocationEvents } from "types/venues";
+import { LocationEvents, PersonalizedVenueEvent } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
+import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 import { useInterval } from "hooks/useInterval";
 
@@ -29,7 +30,6 @@ import { ScheduleRoomEvents } from "components/molecules/ScheduleRoomEvents";
 import { calcStartPosition } from "./utils";
 
 import "./Schedule.scss";
-import { sortScheduleRoomsAlphabetically } from "utils/schedule";
 
 export interface ScheduleProps {
   locatedEvents: LocationEvents[];

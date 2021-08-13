@@ -4,18 +4,19 @@ import {
   SUBVENUE_TEMPLATES,
 } from "settings";
 
+import { VenueInput_v2 } from "api/admin";
+
 import { User } from "types/User";
 import {
-  urlFromImage,
   AnyVenue,
-  VenueTemplate,
   JazzbarVenue,
+  urlFromImage,
+  VenueTemplate,
 } from "types/venues";
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
 import { WithId } from "./id";
-import { VenueInput_v2 } from "api/admin";
 
 export const canHaveEvents = (venue: AnyVenue): boolean =>
   PLACEABLE_VENUE_TEMPLATES.includes(venue.template);

@@ -1,4 +1,4 @@
-import { Point, Bounds } from "types/utility";
+import { Bounds, Point } from "types/utility";
 
 /**
  * Check if point exists within the area denoted by bounds.

@@ -46,6 +46,7 @@ $profile-link--padding: 6px 18px;
   border-radius: $border-radius;
 
   margin-bottom: 1rem;
+
   h6 {
     margin-bottom: 0.5rem;
   }
@@ -69,6 +70,7 @@ $profile-link--padding: 6px 18px;
     grid-gap: 20px;
     margin-bottom: 1rem;
     align-items: center;
+
     .profile-pic {
       height: 110px;
       width: 110px;
@@ -79,8 +81,12 @@ $profile-link--padding: 6px 18px;
 
       img {
         width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
       }
     }
+
     .profile-text {
       grid-column: 2;
       grid-row: 1;

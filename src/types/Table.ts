@@ -1,4 +1,5 @@
 import { User } from "types/User";
+
 import { WithId } from "utils/id";
 
 export interface Table {

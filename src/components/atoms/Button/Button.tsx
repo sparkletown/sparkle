@@ -16,6 +16,7 @@ export interface ButtonProps extends LinkProps {
   onClick?: () => void;
   type?: "button" | "reset" | "submit";
   disabled?: boolean;
+  notPrimary?: boolean;
 }
 
 export const AppButton: React.FC<ButtonProps> = ({

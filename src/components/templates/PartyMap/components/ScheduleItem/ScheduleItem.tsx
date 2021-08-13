@@ -1,9 +1,9 @@
 import React, { useCallback } from "react";
 import classNames from "classnames";
 
-import { VenueEvent } from "types/venues";
-
 import { retainAttendance } from "store/actions/Attendance";
+
+import { VenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";

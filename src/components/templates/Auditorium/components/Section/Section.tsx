@@ -1,15 +1,15 @@
-import React, { useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router";
-import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
+import classNames from "classnames";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
+import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";

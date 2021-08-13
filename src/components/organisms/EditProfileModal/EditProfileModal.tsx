@@ -7,13 +7,14 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { QuestionType } from "types/Question";
 
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useSovereignVenue } from "hooks/useSovereignVenue";
 
+import { updateUserProfile } from "pages/Account/helpers";
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
-import { updateUserProfile } from "pages/Account/helpers";
+
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./EditProfileModal.scss";
