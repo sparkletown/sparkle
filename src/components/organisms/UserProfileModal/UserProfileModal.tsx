@@ -62,8 +62,12 @@ export const UserProfileModal: React.FC<UserProfileModalProps> = ({
     () =>
       selectedUserProfile
         ? profileQuestions?.map((question) => {
-            // @ts-ignore User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
-            const questionAnswer = selectedUserProfile[question.name];
+            // @debt User type doesn't accept string indexing. We need to rework the way we store answers to profile questions
+            const questionsContainer = (selectedUserProfile as unknown) as Record<
+              string,
+              string
+            >;
+            const questionAnswer = questionsContainer[question.name];
 
             if (!questionAnswer) return undefined;
 

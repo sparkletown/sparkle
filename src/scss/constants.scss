@@ -125,6 +125,7 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
+$z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
@@ -155,6 +156,7 @@ $z-layers: (
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
+  navbar-schedule-download: $z-layer-live-schedule-download,
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,
