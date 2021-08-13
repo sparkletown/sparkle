@@ -7,6 +7,8 @@ import { getTwilioVideoToken } from "api/video";
 
 import { User } from "types/User";
 
+import { stopLocalTrack } from "utils/twilio";
+
 import { useWorldUsersById } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
@@ -94,8 +96,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (room && room.localParticipant.state === "connected") {
         room.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         room.disconnect();
       }
@@ -176,8 +177,7 @@ const Room: React.FC<RoomProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach((trackPublication) => {
-          //@ts-ignored
-          trackPublication.track.stop(); //@debt typing does this work?
+          stopLocalTrack(trackPublication.track);
         });
         localRoom.disconnect();
       }

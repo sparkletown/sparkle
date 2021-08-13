@@ -1,0 +1,1 @@
+export { NewProfileModal } from "./NewProfileModal";

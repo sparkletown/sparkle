@@ -111,7 +111,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         <div className="AllSectionPreviews__main">
           <IFrame
             src={venue.iframeUrl}
-            containerClassname="AllSectionPreviews__iframe-overlay"
+            containerClassName="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />
           <div className="AllSectionPreviews__welcome-text">{venue.title}</div>

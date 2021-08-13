@@ -22,6 +22,8 @@ $secondary--schedule-event-users: #ebebeb;
 $background--modal: #232225;
 
 $input--invalid: #dc3545;
+$input--invalid-focus: #ff7384;
+$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
@@ -61,6 +63,8 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+
+$send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 360px;
@@ -128,6 +132,7 @@ $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
 $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
+$z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
@@ -158,6 +163,7 @@ $z-layers: (
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
   navbar-schedule: $z-layer-live-schedule,
+  navbar-schedule-download: $z-layer-live-schedule-download,
   navbar: $z-layer-navbar,
   navbar__schedule-event--hover: 1,
   navbar__drawer: $z-layer-navbar-drawer,

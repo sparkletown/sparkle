@@ -211,7 +211,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         <MapPreview
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          venueId={venueId!}
+          venueId={venueId}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
           rooms={rooms ?? []}
@@ -234,7 +234,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
               <RoomCard
                 key={room.title}
                 room={room}
-                venueId={venueId!}
+                venueId={venueId}
                 editHandler={() => handleEditRoom(room, index)}
                 onEventHandler={handleRoomEvent}
                 roomIndex={index}
@@ -246,7 +246,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <RoomModal
         isVisible={modalOpen}
-        venueId={venueId!}
+        venueId={venueId}
         onSubmitHandler={handleNewRoom}
         onClickOutsideHandler={closeModal}
       />
@@ -265,7 +265,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         <RoomDeleteModal
           show={showDeleteModal}
           onHide={closeDeleteModal}
-          venueId={venueId!}
+          venueId={venueId}
           room={editingRoom}
           onDelete={closeDeleteModals}
         />
@@ -279,7 +279,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <AdminEventModal
         show={showEventModal}
-        venueId={venueId!}
+        venueId={venueId}
         onHide={closeEventModal}
         setEditedEvent={noop}
         setShowDeleteEventModal={noop}
