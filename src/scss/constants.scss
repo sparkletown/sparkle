@@ -20,6 +20,8 @@ $secondary--schedule-event-hover: #4c494f;
 $secondary--schedule-event-users: #ebebeb;
 
 $input--invalid: #dc3545;
+$input--invalid-focus: #ff7384;
+$input--invalid-box-shadow-focus: 0 0 0 2px rgba($input--invalid-focus, 1);
 
 // @debt replace all greyish colors with $secondary alternatives
 $dark-grey: #1a1d23;
@@ -59,6 +61,8 @@ $danger-gradient: linear-gradient(
   #f60053 100%
 );
 $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
+
+$send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $chat-sidebar-width: 360px;

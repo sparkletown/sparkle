@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 
+import { ProfileLink } from "types/User";
+
 import { RegisterData } from "components/organisms/AuthenticationModal/RegisterForm/RegisterForm";
 
 import { CodeOfConductFormData } from "./CodeOfConduct";
@@ -26,6 +28,7 @@ type MirrorVideoUpdateData = {
 export const updateUserProfile = (
   userId: string,
   profileData:
+    | { profileLinks: ProfileLink[] }
     | CodeOfConductFormData
     | ProfileFormData
     | QuestionsFormData

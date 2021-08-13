@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
 import { User } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
@@ -16,11 +17,10 @@ import "./UserList.scss";
 
 const noop = () => {};
 
-interface UserListProps {
+interface UserListProps extends ContainerClassName {
   users: readonly WithId<User>[];
   limit?: number;
   activity?: string;
-  containerClassName?: string;
   cellClassName?: string;
   hasClickableAvatars?: boolean;
   showEvenWhenNoUsers?: boolean;
