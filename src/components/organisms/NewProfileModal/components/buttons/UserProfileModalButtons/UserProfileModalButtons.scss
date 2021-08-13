@@ -1,14 +1,11 @@
 @import "../../../profileModalStyles";
 
 $edit-buttons-gap: $input-gap;
-$edit-button-background-color: opaque-white(0.2);
 
-.UserProfileModalButtons {
-  &__button {
-    margin-bottom: $edit-buttons-gap;
-    background-color: $edit-button-background-color;
-    &:last-child {
-      margin-bottom: 0;
-    }
+button.UserProfileModalButtons__button {
+  @include ProfileModalButton;
+  margin-bottom: $edit-buttons-gap;
+  &:last-child {
+    margin-bottom: 0;
   }
 }

@@ -1,10 +1,6 @@
 import React from "react";
+import classNames from "classnames";
 
-import {
-  profileModalWideButtonCustomStyle,
-  profileModalWideButtonCustomStyleDisabled,
-  profileModalWideButtonCustomStyleGrey,
-} from "types/profileModal";
 import { ContainerClassName } from "types/utility";
 
 import { Button } from "components/atoms/Button";
@@ -24,12 +20,9 @@ export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = (
   return (
     <div className={containerClassName}>
       <Button
-        customClass={"UserProfileModalButtons__button"}
-        customStyle={
-          isSubmitting
-            ? profileModalWideButtonCustomStyleDisabled
-            : profileModalWideButtonCustomStyleGrey
-        }
+        customClass={classNames("UserProfileModalButtons__button", {
+          "UserProfileModalButtons__button--disabled": isSubmitting,
+        })}
         disabled={isSubmitting}
         onClick={onCancelClick}
       >
@@ -37,12 +30,13 @@ export const UserProfileModalButtons: React.FC<UserProfileModalButtonsProps> = (
       </Button>
       <Button
         type="submit"
-        customClass={"UserProfileModalButtons__button"}
-        customStyle={
-          isSubmitting
-            ? profileModalWideButtonCustomStyleDisabled
-            : profileModalWideButtonCustomStyle
-        }
+        customClass={classNames(
+          "UserProfileModalButtons__button",
+          "UserProfileModalButtons__button--primary",
+          {
+            "UserProfileModalButtons__button--disabled": isSubmitting,
+          }
+        )}
         disabled={isSubmitting}
       >
         {isSubmitting ? "Saving..." : "Save changes"}

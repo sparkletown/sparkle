@@ -22,3 +22,18 @@ $input-border: 1px solid opaque-white(0.1);
 $input-border-radius: 22px;
 $input-backdrop-filter: blur(10px);
 $input-text-shadow: 0 1px 2px opaque-black(0.25);
+
+@mixin ProfileModalButton {
+  background-color: opaque-white(0.2);
+  font-size: 14px;
+  width: 100%;
+  &--primary {
+    background-color: $primary;
+  }
+  &--online {
+    background-color: $send-msg-online-color;
+  }
+  &--disabled {
+    background-color: opaque-white(0.1);
+  }
+}

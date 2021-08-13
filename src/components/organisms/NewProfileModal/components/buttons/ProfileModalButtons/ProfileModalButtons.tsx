@@ -1,9 +1,6 @@
-import React, { useMemo } from "react";
+import React from "react";
+import classNames from "classnames";
 
-import {
-  profileModalWideButtonCustomStyle,
-  profileModalWideButtonCustomStyleGrey,
-} from "types/profileModal";
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 
@@ -29,25 +26,14 @@ export const ProfileModalButtons: React.FC<ProfileModalButtonsProps> = ({
   const { isOnline } = useIsOnline(user.id);
   const isCurrentUser = useIsCurrentUser(user);
 
-  const sendMessageButtonStyle = useMemo(
-    () =>
-      isCurrentUser
-        ? profileModalWideButtonCustomStyleGrey
-        : isOnline
-        ? {
-            ...profileModalWideButtonCustomStyle,
-            backgroundColor: "#78B553",
-          }
-        : profileModalWideButtonCustomStyle,
-    [isOnline, isCurrentUser]
-  );
-
   return (
     <>
       <div className={containerClassName}>
         <Button
-          customClass={"ProfileModalButtons__button"}
-          customStyle={sendMessageButtonStyle}
+          customClass={classNames("ProfileModalButtons__button", {
+            "ProfileModalButtons__button--online": !isCurrentUser && isOnline,
+            "ProfileModalButtons__button--primary": !isCurrentUser && !isOnline,
+          })}
           onClick={onClick}
         >
           {isCurrentUser ? "Log out" : "Send message"}
