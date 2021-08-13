@@ -176,7 +176,7 @@ jobs:
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
-            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | xargs md5sum | md5sum | awk '{ print $1 }')
+            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
             STORED_HASH=$(./node_modules/.bin/firebase functions:config:get checksum.fileshash --token "$FIREBASE_TOKEN" | tr -d '"')
 
             echo -e "Computed hash:\t$COMPUTED_HASH"
