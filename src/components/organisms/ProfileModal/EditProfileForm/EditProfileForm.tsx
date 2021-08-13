@@ -57,13 +57,6 @@ export const EditProfileForm: React.FunctionComponent<EditProfileFormProps> = ({
     pictureUrl: profile?.pictureUrl || DEFAULT_PROFILE_IMAGE,
   };
 
-  profileQuestions &&
-    profileQuestions.map(
-      (question: QuestionType) =>
-        // @ts-ignore wtf is this
-        (defaultValues[question.name] = profile?.[question.name] || "")
-    );
-
   const {
     register,
     handleSubmit,

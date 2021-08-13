@@ -1,0 +1,14 @@
+@import "scss/constants.scss";
+
+.PrettyLink {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: opaque-white(0.5);
+  cursor: pointer;
+
+  * {
+    @include link-style(opaque-white(0.5));
+  }
+}
