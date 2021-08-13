@@ -1,7 +1,8 @@
 import { Engine, Entity, NodeList, System } from "@ash.ts/ash";
 
+import { Point } from "types/utility";
+
 import { GameInstance } from "../../GameInstance";
-import { Point } from "../../utils/Point";
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import { MotionJoystickControlComponent } from "../components/MotionJoystickControlComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";

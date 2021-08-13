@@ -27,7 +27,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const firebase = useFirebase();
   const store = useStore();
   const user = useUser();
-  console.log(venue);
 
   useEffect(() => {
     if (

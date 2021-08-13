@@ -1,5 +1,6 @@
+import { Point } from "types/utility";
+
 import { GameInstance } from "../GameInstance";
-import { Point } from "../utils/Point";
 
 import Command from "./Command";
 

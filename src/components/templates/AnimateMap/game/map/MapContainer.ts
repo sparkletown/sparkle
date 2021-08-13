@@ -5,13 +5,16 @@ import { Viewport } from "pixi-viewport";
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
 import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
 
-import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
+import { Point } from "types/utility";
+
+import EventProvider, {
+  EventType,
+} from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
-import { Point } from "../utils/Point";
 
 import EntityFactory from "./entities/EntityFactory";
 import { AnimationNode } from "./nodes/AnimationNode";
@@ -60,6 +63,13 @@ export class MapContainer extends Container {
     super();
 
     this._app = app;
+
+    const clbck = (player: ReplicatedUser) => {
+      console.log("CREATE PLAYER");
+      this.entityFactory?.createPlayer(player);
+      EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
+    };
+    EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
   }
 
   public async start(): Promise<void> {
@@ -318,18 +328,18 @@ export class MapContainer extends Container {
       .then(() => {
         return new TimeoutCommand(1000).execute();
       })
-      .then(() => {
-        if (this.entityFactory) {
-          const config = GameInstance.instance.getConfig();
-          if (playerModel.x < 0 || playerModel.x > config.worldWidth) {
-            playerModel.x = config.worldWidth / 2;
-          }
-          if (playerModel.y < 0 || playerModel.y > config.worldHeight) {
-            playerModel.y = config.worldHeight / 2;
-          }
-          this.entityFactory.createPlayer(playerModel);
-        }
-      })
+      // .then(() => {
+      //   if (this.entityFactory) {
+      //     const config = GameInstance.instance.getConfig();
+      //     if (playerModel.x < 0 || playerModel.x > config.worldWidth) {
+      //       playerModel.x = config.worldWidth / 2;
+      //     }
+      //     if (playerModel.y < 0 || playerModel.y > config.worldHeight) {
+      //       playerModel.y = config.worldHeight / 2;
+      //     }
+      //     this.entityFactory.createPlayer(playerModel);
+      //   }
+      // })
       .then(() => {
         return new TimeoutCommand(1000).execute();
       })

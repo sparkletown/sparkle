@@ -7,11 +7,9 @@ import {
 } from "store/actions/AnimateMap";
 
 import { Room } from "types/rooms";
+import { Point } from "types/utility";
 
-import {
-  Point,
-  StartPoint,
-} from "components/templates/AnimateMap/game/utils/Point";
+import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
 export enum AnimateMapEntityType {
   user,

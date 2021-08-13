@@ -1,84 +1,116 @@
-export const ROOM_PREFIX = "Z_";
-export const MIRROR_ROOM_PREFIX = "mZ_";
+import { Point } from "types/utility";
 
-export interface RoomData {
-  a: number; // x-coord of rect top-left point
-  b: number; // y-coord of rect top-left point
-  c: number; // x-coord of rect bottom-right point
-  d: number; // y-coord of rect bottom-right point
-}
+import {
+  RoomInfoType,
+  RoomItem,
+  RoomsModel,
+} from "../../../Structures/RoomsModel";
 
-export interface RoomNode {
-  id: number;
-  name: string;
-  data: RoomData;
-}
+export abstract class NinePartRoomOperator {
+  protected _roomsModel;
 
-export class NinePartRoomOperator {
-  protected _virtualList: RoomNode[] = [];
+  protected _myRooms: RoomItem[] = [];
 
-  protected constructor(listRooms: RoomData[]) {
-    // listRooms.forEach(room => this._virtualList.push({id:0,name:"",}))
+  protected _myMainRoom?: RoomItem;
+  protected _myPeripheralRoom: RoomItem[] = [];
+
+  protected _userPosition: Point = { x: -100, y: -100 };
+
+  set position(point: Point) {
+    this._userPosition.x = point.x;
+    this._userPosition.y = point.y;
+  }
+
+  get position() {
+    return { ...this._userPosition };
+  }
+
+  protected constructor(/*listRooms: RoomInfoType[],*/ playerPosition: Point) {
+    this.position = playerPosition;
+    this._roomsModel = new RoomsModel(9920, 9920); //TODO: throw sizes from configs
+    // this.initlist(listRooms);
   }
 
   //general logic
-  updateList(listRooms: RoomData[]) {
-    //TODO: check all
+
+  // public initlist(listRooms: RoomInfoType[]) {
+  //   this.update(listRooms, true);
+  // }
+
+  update(listRooms: RoomInfoType[], hardUpdate = false) {
+    this._roomsModel.updateList(listRooms);
+    this._updateMainRoom();
+    this._updatePeripheralRoom();
   }
 
-  getMyMainRoom(x: number, y: number) {
-    if (!this._virtualList.length) return NinePartRoomOperator.getRoomName(0);
+  protected _updateMainRoom() {
+    if (this.position.x < 0 || this.position.y < 0) return; //todo: add checking with bounds ?
 
-    const mainRooms = this._virtualList.filter(
-      (room) =>
-        x >= room.data.a &&
-        y >= room.data.b &&
-        x <= room.data.c &&
-        y <= room.data.d
-    );
-
-    let name = "";
-    switch (mainRooms.length) {
-      case 0: //todo: create new room
-        break;
-      case 1: //todo: just join
-        name = mainRooms[0].name;
-        break;
-      default:
-        //todo: mirrors or cross-point
-        // if (mainRooms.filter(room => NinePartRoomOperator.isMirror(room.name)).length) {
-        //   //mirrors
-        //
-        // } else {
-        //   //cross_point
-        //
-        // }
-        break;
+    if (!this._roomsModel.size) {
+      this._myMainRoom = this._roomsModel.createRoomNode(0);
+      this.onCreate.call(this, this._myMainRoom.id, true); //note: создаем комнату
+      return;
     }
-    return name;
+
+    const roomByPoint = this._roomsModel.getRoomByPoint(this.position);
+    if (roomByPoint) {
+      console.log("Room by point ", roomByPoint.id);
+      this.onCreate.call(this, roomByPoint.id, true);
+    } else console.warn(roomByPoint);
   }
+
+  protected changeMainRoom(id: string) {}
+
+  protected _updatePeripheralRoom() {
+    if (this.position.x < 0 || this.position.y < 0) return; //reject
+  }
+
+  getMyMainRoomNode(x = this.position.x, y = this.position.y) {
+    // const mainRooms = this._roomsModel.list.filter(
+    //   (room) => true
+    // x >= room.roomData.a &&
+    // y >= room.data.b &&
+    // x <= room.data.c &&
+    // y <= room.data.d
+    // );
+    // let name = "";
+    // switch (mainRooms.length) {
+    //   case 0: //todo: create new room
+    //     break;
+    //   case 1: //todo: just join
+    //     name = mainRooms[0].roomNumber +"";
+    //     break;
+    //   default:
+    //     //todo: mirrors or cross-point
+    //     // if (mainRooms.filter(room => NinePartRoomOperator.isMirror(room.name)).length) {
+    //     //   //mirrors
+    //     //
+    //     // } else {
+    //     //   //cross_point
+    //     //
+    //     // }
+    //     break;
+    // }
+    // return name;
+  }
+
+  // protected createRoomNode(roomNumber: number) {
+  //   const room : RoomItem = {
+  //     roomNumber: roomNumber,
+  //     id: NinePartRoomOperator.getRoomIdByRoomNumber(roomNumber),
+  //     roomData: initialRoomData,
+  //     roomType: RoomTypes.Zone,
+  //     onlineUsers: 0,
+  //   }
+  //   return room;
+  // }
 
   getMyPeripheralRoom() {}
 
-  //utils methods
-  protected static getRoomName(id: number) {
-    return ROOM_PREFIX + id;
-  }
-
-  protected static isMirror(name: string) {
-    return name[0] === "m";
-  }
-
   // "magic" methods for overloading
-  protected onCreate() {
-    throw new Error("need implementation");
-  }
+  abstract onCreate(id: string, isMain: boolean): void;
 
-  protected onJoin() {
-    throw new Error("need implementation");
-  }
+  abstract onJoin(id: string): void;
 
-  protected onLeave() {
-    throw new Error("need implementation");
-  }
+  abstract onLeave(id: string): void;
 }

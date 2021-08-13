@@ -42,17 +42,13 @@ export class MotionBaseSystem extends System {
       min + (n < 0 ? 0 : n) * ((6 - min) / 20)
     );
     if (k < 0) {
-      console.error("k reset");
       k = 0;
     }
     if (k > 1) {
-      console.error("k reset");
       k = 1;
     }
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
     this.cashedSpeed = speed;
-    console.log(zoom);
-    console.log(speed);
     return speed;
   }
 

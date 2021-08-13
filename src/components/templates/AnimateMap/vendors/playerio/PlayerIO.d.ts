@@ -1,4 +1,6 @@
 // @formatter:off
+
+export type VoidCallback = () => void;
 export type ErrorCallback = (PlayerIOError: Error) => void;
 export type AuthenticateSuccessCallback = (client: client) => void;
 
@@ -120,17 +122,27 @@ export interface connection {
   connected: boolean;
   // addDisconnectCallback;
   addMessageCallback<T>(type: string, callback: (m: Message<T>) => void): void;
-  // createMessage;
+  createMessage<T>(type: string): Message<T>;
   disconnect(): void;
   // removeDisconnectCallback;
   // removeMessageCallback;
   // send(type: string, ...args: unknown[]): void;
-  // sendMessage;
+  sendMessage<T>(m: Message<T>): void;
 }
 
-export interface dbObj {
-  save(): void;
+export interface databaseobject {
+  existsInDatabase: boolean;
+  key: string;
+  table: string;
+  save(
+    useOptimisticLock: boolean,
+    fullOverwrite: boolean,
+    successCallback: VoidCallback,
+    errorCallback: ErrorCallback
+  ): void;
 }
+
+export type BigDBSuccessCallback = (dbObj: databaseobject) => void;
 
 export interface bigDB {
   createObject;
@@ -138,13 +150,16 @@ export interface bigDB {
   deleteRange;
   load;
   loadKeys;
-  loadKeysOrCreate<T>(
+  loadKeysOrCreate(
     table: string,
     key: string,
-    successCallback: (dbObj: T) => void,
-    errorCallback: (error: Error) => {}
+    successCallback: BigDBSuccessCallback,
+    errorCallback: ErrorCallback
   ): void;
-  loadMyPlayerObject;
+  loadMyPlayerObject(
+    successCallback: BigDBSuccessCallback,
+    errorCallback: ErrorCallback
+  );
   loadOrCreate;
   loadRange;
   loadSingle;

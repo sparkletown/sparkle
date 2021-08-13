@@ -6,18 +6,22 @@ import { connection } from "../../../../vendors/playerio/PlayerIO";
 
 import { getIntByHash } from "./utils/getIntByHash";
 import { getRandomBotId } from "./utils/getRandomBotId";
-import { MessagesTypes, PlayerIODataProvider } from "./PlayerIODataProvider";
+import { PlayerIODataProvider } from "./PlayerIODataProvider";
+import { MessagesTypes } from "./types";
 
 const dV_max = 200;
 const world_width = 9920;
 const world_height = 9920;
 
 export class PlayerIOBots {
+  constructor(readonly playerioGameId: string) {}
+
   private _bots: Bot[] = [];
 
   addBot() {
     this._bots.push(
       new Bot(
+        this.playerioGameId,
         getRandomBotId(28),
         getRandomInt(world_width),
         getRandomInt(world_height)
@@ -36,20 +40,29 @@ export class PlayerIOBots {
 
 class Bot {
   private _throttledUpdatePosition: Function;
-  private _playerio: PlayerIODataProvider<object>;
+  private _playerio: PlayerIODataProvider;
   private _playerioConnection: connection | undefined;
   private _shortId = getIntByHash(this.id);
 
-  constructor(readonly id: string, public x: number, public y: number) {
+  constructor(
+    readonly playerioGameId: string,
+    readonly id: string,
+    public x: number,
+    public y: number
+  ) {
     this._throttledUpdatePosition = throttle(
       this._updatePosition.bind(this),
       2000
     );
 
-    this._playerio = new PlayerIODataProvider(id, (connection) => {
-      this._playerioConnection = connection;
-      if (this._closed) this.closeConnection();
-    });
+    this._playerio = new PlayerIODataProvider(
+      this.playerioGameId,
+      id,
+      (connection) => {
+        this._playerioConnection = connection;
+        if (this._closed) this.closeConnection();
+      }
+    );
   }
 
   update() {
@@ -77,11 +90,11 @@ class Bot {
 
     console.log(MessagesTypes.move, this._shortId, this.x, this.y, this.id);
     this._playerio.sendPlayerPosition(
-      MessagesTypes.move,
-      this._shortId,
+      // MessagesTypes.move,
+      // this._shortId,
       this.x,
-      this.y,
-      this.id
+      this.y
+      // this.id
     );
   }
 }

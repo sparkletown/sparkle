@@ -1,8 +1,7 @@
 /**
  * Usage interfaces for GameInstance class
  */
-
-import { Point } from "../game/utils/Point";
+import { Point } from "types/utility";
 
 export interface DataProvider {
   on(eventName: string, callback: Function, context?: object): void;

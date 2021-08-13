@@ -1,5 +1,6 @@
+import { Point } from "types/utility";
+
 import { PlaygroundMap } from "../game/utils/PlaygroundMap";
-import { Point } from "../game/utils/Point";
 
 export interface GameOptionsFirebarrel {
   id: string;

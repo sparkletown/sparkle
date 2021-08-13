@@ -8,7 +8,7 @@ export class RoomMath {
   /**
    * In theory, the algorithm can work with higher partitioning pow if the index search algorithm (findIndexBasedOnThree) is unified.
    */
-  protected static getFramePoint(id: number) {
+  public static getFramePoint(id: number) {
     if (id === 0)
       return [
         [0, 0],

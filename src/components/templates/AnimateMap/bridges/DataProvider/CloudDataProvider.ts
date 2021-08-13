@@ -5,16 +5,12 @@ import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
-import { UInt, ULong } from "../../vendors/playerio/PlayerIO";
 import { DataProvider } from "../DataProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
-import {
-  MessagesTypes,
-  PlayerIODataProvider,
-} from "./Contructor/PlayerIO/PlayerIODataProvider";
+import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -58,7 +54,7 @@ export class CloudDataProvider
   ) {
     super();
 
-    this._testBots = new PlayerIOBots();
+    this._testBots = new PlayerIOBots(this.playerioGameId ?? "");
     //@ts-ignore
     window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots);
 
@@ -66,46 +62,44 @@ export class CloudDataProvider
     playerModel.id = playerId;
 
     this.commonInterface = new CommonLinker(
-      new PlayerIODataProvider(playerId, (connection) => {
-        connection.addMessageCallback("Join", (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          // @ts-ignore
-          const userId = m.getString(1) as string;
-          this.users.join(sessionId, userId);
-          if (userId === this.playerId) {
-            this.player.sessionId = sessionId;
-          } else {
-            this.emit(DataProviderEvent.USER_JOINED, userId);
-          }
-        });
-
-        connection.addMessageCallback("Left", (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          const userId = this.users.users.getId(sessionId);
-          this.users.left(sessionId);
-          this.emit(DataProviderEvent.USER_LEFT, userId);
-        });
-
-        connection.addMessageCallback<[ULong, UInt, UInt, string]>(
-          MessagesTypes.move,
-          (m) => {
-            const sessionId = m.getULong(1);
-            const x = m.getUInt(1);
-            const y = m.getUInt(2);
-            const userId = m.getString<3>(3);
-            if (userId === this.playerId) return; //reject
-
-            const isNewUser = this.users.update(sessionId, x, y, userId);
-            if (isNewUser) {
-              this.emit(DataProviderEvent.USER_JOINED, userId);
-              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-            } else {
-              this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-            }
-          }
-        );
+      new PlayerIODataProvider(playerioGameId ?? "", playerId, (connection) => {
+        // connection.addMessageCallback("Join", (m) => {
+        //   // @ts-ignore
+        //   const sessionId = m.getInt(0) as number;
+        //   // @ts-ignore
+        //   const userId = m.getString(1) as string;
+        //   this.users.join(sessionId, userId);
+        //   if (userId === this.playerId) {
+        //     this.player.sessionId = sessionId;
+        //   } else {
+        //     this.emit(DataProviderEvent.USER_JOINED, userId);
+        //   }
+        // });
+        // connection.addMessageCallback("Left", (m) => {
+        //   // @ts-ignore
+        //   const sessionId = m.getInt(0) as number;
+        //   const userId = this.users.users.getId(sessionId);
+        //   this.users.left(sessionId);
+        //   this.emit(DataProviderEvent.USER_LEFT, userId);
+        // });
+        // connection.addMessageCallback<[ULong, UInt, UInt, string]>(
+        //   MessagesTypes.move,
+        //   (m) => {
+        //     const sessionId = m.getULong(1);
+        //     const x = m.getUInt(1);
+        //     const y = m.getUInt(2);
+        //     const userId = m.getString<3>(3);
+        //     if (userId === this.playerId) return; //reject
+        //
+        //     const isNewUser = this.users.update(sessionId, x, y, userId);
+        //     if (isNewUser) {
+        //       this.emit(DataProviderEvent.USER_JOINED, userId);
+        //       this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+        //     } else {
+        //       this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
+        //     }
+        //   }
+        // );
       }),
       new FirebaseDataProvider(firebase)
     );
@@ -129,6 +123,7 @@ export class CloudDataProvider
 
   // player provider
   public async initPlayerPositionAsync(x: number, y: number) {
+    //TODO: REWORK
     this.commonInterface
       .loadVenuesAsync() //@ts-ignore
       .then((q) => {

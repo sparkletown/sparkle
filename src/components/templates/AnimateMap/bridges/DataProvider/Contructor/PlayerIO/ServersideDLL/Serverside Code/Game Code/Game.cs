@@ -1,5 +1,6 @@
 ﻿using System;
 using PlayerIO.GameLibrary;
+using System.Collections.Generic;
 
 namespace BurningMan {
 
@@ -10,12 +11,38 @@ namespace BurningMan {
 	}
 	static class MessagesTypesEnum
 	{
+		// users messages
 		public const string move = "z";
+		public const string moveReserve = "x";
+		// server messages
+		public const string processedMove = "a";
+		public const string processedMoveReserve = "b";
+		public const string roomInitResponse = "i";
+		public const string newUserJoined = "j";
+		public const string userLeft = "l";
+	}
+	static class PlayerObjectsFieldsEnum
+    {
+		public const string x = "x";
+		public const string y = "y";
+		public const string innerId = "i";
+	}
+	public class Position<X, Y>
+	{
+		public X x { get; set; }
+		public Y y { get; set; }
+
+		public Position(X x, Y y)
+		{
+			this.x = x;
+			this.y = y;
+		}
 	}
 
-
 	//Player class
-	public class Player : BasePlayer {}
+	public class Player : BasePlayer {
+		
+	}
 
 	//Letter class. Each letter on the screen is represented by an instance of this class.
 	//public class Letter {
@@ -31,19 +58,26 @@ namespace BurningMan {
 	public class GameCode : Game<Player>
     {
 
-		const string SPEAKERS = "speakers";
+		//const string SPEAKERS = "speakers";
 
-        //Create array to store our letters
-        //private Letter[] letters = new Letter[150];
 
-        //This method is called when an instance of your the game is created
-        public override void GameStarted()
+		//Create array to store our letters
+		//private Letter[] letters = new Letter[150];
+		//private Dictionary<int, uint> playerInnerIds = new Dictionary<int, uint>();
+		private Dictionary<ulong, Position<uint,uint>> usersPositions = new Dictionary<ulong, Position<uint, uint>>();
+		private HashSet<int> speakers = new HashSet<int>();
+		private uint listenersCount;
+
+		//This method is called when an instance of your the game is created
+		public override void GameStarted()
         {
+			PreloadPlayerObjects = true;
             //Anything you write to the Console will show up in the 
             //output window of the development server
             Console.WriteLine("Zone started, initializing letters.");
-
-			RoomData[SPEAKERS] = "1";
+			//RoomData[SPEAKERS] = "0";
+			//RoomData["listeners"] = "0";
+			//RoomData.Save();
 
             // Create 150 letters
             //for (int i = 0; i < letters.Length; i++) {
@@ -58,43 +92,65 @@ namespace BurningMan {
 
 		// This method is called whenever a player joins the game
 		public override void UserJoined(Player player) {
-			// Create init message for the joining player
-			Message m = Message.Create("init");
+			listenersCount++;
 
-			RoomData[SPEAKERS] = (int.Parse(RoomData[SPEAKERS])+1).ToString();
+			if (player.JoinData["isMain"] == "true")
+			{
+				speakers.Add(player.Id);
+				ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+				uint x = Convert.ToUInt32(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.x));
+				uint y = Convert.ToUInt32(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.y));
 
-			//Tell player their own id
-			m.Add(player.Id);
+				usersPositions.Add(playerInnerId, new Position<uint, uint>(x,y));
+				//Broadcast(MessagesTypesEnum.newUserJoined, player.ConnectUserId, x, y);
+				Broadcast(MessagesTypesEnum.newUserJoined, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString(), x, y);
+			}
 
-			//Add the current position of all letters to the init message
-			//for (int a = 0; a < letters.Length; a++) {
-			//	Letter l = letters[a];
-			//	m.Add(l.X, l.Y);
-			//}
-
-			//Send init message to player with a delay, to ensure client has setup all message handlers
-			ScheduleCallback(delegate () { player.Send(m); }, 50);
+			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send players positions
+			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
 		}
 
 		//This method is called when a player leaves the game
-		public override void UserLeft(Player player) {
-			Console.WriteLine("Player " + player.Id + " left the room");
+		public override void UserLeft(Player player)
+		{
+			listenersCount--;
+			if (player.JoinData["isMain"] == "true")
+			{
+				speakers.Remove(player.Id);
+				ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+				Position<uint, uint> pos = usersPositions[playerInnerId];
+				player.PlayerObject.Set(PlayerObjectsFieldsEnum.x, pos.x);
+				player.PlayerObject.Set(PlayerObjectsFieldsEnum.y, pos.y);
+				player.PlayerObject.Save();
+				usersPositions.Remove(playerInnerId);
+			}
+
+			Broadcast(MessagesTypesEnum.userLeft, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString());
 		}
 
 		//This method is called when a player sends a message into the server code
 		public override void GotMessage(Player player, Message message) {
 			//Switch on message type
 			switch (message.Type) {
-				case "move": {
-						//Move letter in internal representation
-						//Letter l = letters[message.GetInteger(0)];
-						//l.X = message.GetInteger(1);
-						//l.Y = message.GetInteger(2);
+				case MessagesTypesEnum.move: {
+						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+						Position<uint,uint> pos = usersPositions[playerInnerId];
+						pos.x = message.GetUInt(0);
+						pos.y = message.GetUInt(1);
 
-						//Broadcast move to all players
-						//Broadcast("move", message.GetInteger(0), l.X, l.Y);
+						Broadcast(MessagesTypesEnum.processedMove, playerInnerId, pos.x, pos.y);
 						break;
 					}
+				case MessagesTypesEnum.moveReserve:
+					{
+						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+						Position<uint, uint> pos = usersPositions[playerInnerId];
+						pos.x = message.GetUInt(0);
+						pos.y = message.GetUInt(1);
+
+						Broadcast(MessagesTypesEnum.processedMove, player.ConnectUserId, pos.x, pos.y);
+						break;
+                    }
 				default:
 					break;
 			}

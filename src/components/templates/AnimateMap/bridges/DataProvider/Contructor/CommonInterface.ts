@@ -1,10 +1,5 @@
-import { dbPlayer, idObject } from "../Providers/PlayerDataProvider";
-
 import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
-import {
-  MessagesTypes,
-  PlayerIODataProvider,
-} from "./PlayerIO/PlayerIODataProvider";
+import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
 
 export interface User {
   id: string;
@@ -24,13 +19,13 @@ export interface CommonInterface {
 
   // getUser(id: string): User;
 
-  loadPlayerPositionAsync(
-    playerId: string,
-    successCallback: (dbObj: dbPlayer) => void,
-    errorCallback: (error: Error) => void
-  ): Promise<unknown>;
+  // loadPlayerPositionAsync(
+  // playerId: string,
+  // successCallback: (dbObj: dbPlayer) => void,
+  // errorCallback: (error: Error) => void
+  // ): Promise<unknown>;
 
-  sendPlayerPosition(sessionId: number, x: number, y: number, id: string): void;
+  sendPlayerPosition(x: number, y: number): void;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   loadVenuesAsync(): any;
@@ -41,7 +36,7 @@ export interface CommonInterface {
  */
 export class CommonLinker implements CommonInterface {
   constructor(
-    private _playerIOProvider: PlayerIODataProvider<dbPlayer | idObject>,
+    private _playerIOProvider: PlayerIODataProvider,
     private _firebaseProvider: FirebaseDataProvider
   ) {}
 
@@ -49,32 +44,21 @@ export class CommonLinker implements CommonInterface {
     return Promise.resolve([]);
   }
 
-  loadPlayerPositionAsync(
-    playerId: string,
-    successCallback: (dbObj: dbPlayer) => void,
-    errorCallback: (error: Error) => void
-  ) {
-    return this._playerIOProvider.load(
-      RemoteTable.usersPosition,
-      playerId,
-      successCallback as (dbObj: dbPlayer | idObject) => void,
-      errorCallback
-    );
-  }
+  // loadPlayerPositionAsync(
+  // playerId: string,
+  // successCallback: (dbObj: dbPlayer) => void,
+  // errorCallback: (error: Error) => void
+  // ) {
+  // return this._playerIOProvider.load(
+  //   RemoteTable.usersPosition,
+  // playerId,
+  // successCallback as (dbObj: dbPlayer | idObject) => void,
+  // errorCallback
+  // );
+  // }
 
-  sendPlayerPosition(
-    sessionId: number,
-    x: number,
-    y: number,
-    id: string
-  ): void {
-    this._playerIOProvider.sendPlayerPosition(
-      MessagesTypes.move,
-      sessionId,
-      x,
-      y,
-      id
-    );
+  sendPlayerPosition(x: number, y: number): void {
+    this._playerIOProvider.sendPlayerPosition(x, y);
   }
 
   loadVenuesAsync() {

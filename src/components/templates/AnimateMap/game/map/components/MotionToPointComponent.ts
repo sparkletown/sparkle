@@ -1,4 +1,6 @@
-import { Point, StartPoint } from "../../utils/Point";
+import { Point } from "types/utility";
+
+import { StartPoint } from "../../utils/Point";
 
 export class MotionToPointComponent {
   constructor(

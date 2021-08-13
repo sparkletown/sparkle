@@ -1,4 +1,4 @@
-import { Point } from "./Point";
+import { Point } from "types/utility";
 
 export const getNormilzedYFromBezier = (
   p0: Point,
