@@ -179,7 +179,7 @@ jobs:
             COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
             STORED_HASH=$(./node_modules/.bin/firebase functions:config:get checksum.fileshash --token "$FIREBASE_TOKEN" | tr -d '"')
 
-            echo -e "Computed hash:\t$COMPUTED_HASH"
+            echo -e "Computed hash over *.js, *.json files:\t$COMPUTED_HASH"
             echo -e "Stored hash:\t$STORED_HASH"
 
             if [ "$COMPUTED_HASH" == "$STORED_HASH" ]
@@ -195,6 +195,7 @@ jobs:
             fi
 
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
+
             ./node_modules/.bin/firebase deploy --only storage --token "$FIREBASE_TOKEN"
             ./node_modules/.bin/firebase deploy --only storage:rules --token "$FIREBASE_TOKEN"
       - *notify-on-fail
