@@ -3,15 +3,16 @@ import { FieldError } from "react-hook-form";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
+import { ContainerClassName } from "types/utility";
+
 import "firebase/functions";
 
-interface ImageInputProps {
+interface ImageInputProps extends ContainerClassName {
   disabled: boolean;
   name: string;
   remoteUrlInputName?: string;
   remoteImageUrl?: string;
   image?: FileList;
-  containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
 }
