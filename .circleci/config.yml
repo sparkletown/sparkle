@@ -173,8 +173,23 @@ jobs:
 
             ./node_modules/.bin/firebase use $ENV --token "$FIREBASE_TOKEN"
 
-            # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
-            ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+            COMPUTED_HASH=$(find . -path ./node_modules -prune -false -o -name '*.js' -o -name '*.json' | sort | xargs md5sum | md5sum | awk '{ print $1 }')
+            STORED_HASH=$(./node_modules/.bin/firebase functions:config:get checksum.fileshash --token "$FIREBASE_TOKEN" | tr -d '"')
+
+            echo -e "Computed hash over *.js, *.json files:\t$COMPUTED_HASH"
+            echo -e "Stored hash:\t$STORED_HASH"
+
+            if [ "$COMPUTED_HASH" == "$STORED_HASH" ]
+            then
+              echo "Functions haven't changed. Nothing to deploy."
+            else
+              echo "Functions changed. Deploying..."
+              # -f, --force: delete Cloud Functions missing from the current working directory without confirmation
+              ./node_modules/.bin/firebase deploy --only functions --token "$FIREBASE_TOKEN" --force
+
+              echo "Saving new hash $COMPUTED_HASH"
+              ./node_modules/.bin/firebase functions:config:set checksum.fileshash=$COMPUTED_HASH --token "$FIREBASE_TOKEN"
+            fi
 
             ./node_modules/.bin/firebase deploy --only firestore:rules --token "$FIREBASE_TOKEN"
 
