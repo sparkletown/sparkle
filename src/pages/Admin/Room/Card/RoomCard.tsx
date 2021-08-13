@@ -104,7 +104,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
       ) : (
         renderFilteredEvents()
       )}
-      <Button onClick={() => onEventHandler(room!.title!)}>Add an event</Button>
+      <Button onClick={() => room.title && onEventHandler(room.title)}>
+        Add an event
+      </Button>
     </S.Wrapper>
   );
 };

@@ -112,19 +112,30 @@ export const UserInformationContent: React.FunctionComponent<UserInformationCont
     );
   }, [setProfileLinkToEdit, setUserProfileMode, user?.profileLinks]);
 
-  // @debt We need to rework the way we store answers to profile questions
   const questions = useMemo(
     () =>
       profileQuestions
-        // @ts-ignore question.name is a correct index for type User
-        ?.filter((question: QuestionType) => user?.[question.name])
-        .map((question) => (
-          <div key={question.name} className="question-section">
-            <div className="question">{question.text}</div>
-            {/* @ts-ignore question.name is a correct index for type User */}
-            <div>{user?.[question.name]}</div>
-          </div>
-        )),
+        ?.filter((question: QuestionType) => {
+          // @debt We need to rework the way we store answers to profile questions
+          const asQuestionsContainer = (user as unknown) as Record<
+            string,
+            string
+          >;
+          return asQuestionsContainer?.[question.name];
+        })
+        .map((question) => {
+          // @debt We need to rework the way we store answers to profile questions
+          const asQuestionsContainer = (user as unknown) as Record<
+            string,
+            string
+          >;
+          return (
+            <div key={question.name} className="question-section">
+              <div className="question">{question.text}</div>
+              <div>{asQuestionsContainer?.[question.name]}</div>
+            </div>
+          );
+        }),
     [profileQuestions, user]
   );
 
