@@ -17,10 +17,7 @@ import {
 
 import { PLATFORM_BRAND_NAME } from "settings";
 
-import {
-  PersonalizedVenueEvent,
-  VenueEvent,
-} from "types/venues";
+import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
