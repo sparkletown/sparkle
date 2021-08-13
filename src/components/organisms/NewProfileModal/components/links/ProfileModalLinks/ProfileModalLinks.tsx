@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import classNames from "classnames";
 
 import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
@@ -23,11 +24,15 @@ export const ProfileModalLinks: React.FC<ProfileModalLinksProps> = ({
         <ProfileModalLink
           containerClassName="ProfileModalLinks__link"
           link={link}
-          key={link.url}
+          key={`${link.title}-${link.url}`}
         />
       )),
     [user?.profileLinks]
   );
 
-  return <div className={containerClassName}>{renderedProfileLinks}</div>;
+  return (
+    <div className={classNames("ProfileModalLinks", containerClassName)}>
+      {renderedProfileLinks}
+    </div>
+  );
 };
