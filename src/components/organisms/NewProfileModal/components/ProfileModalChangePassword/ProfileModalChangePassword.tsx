@@ -27,26 +27,26 @@ export const ProfileModalChangePassword: React.FC<ProfileModalChangePasswordProp
   errors,
 }) => {
   const newPasswordValidation = useCallback(
-    (password: string) => {
-      if (getValues(formProp("oldPassword")) && !password)
-        return "New Password cannot by empty";
+    (newPassword: string) => {
+      const oldPassword = getValues(formProp("oldPassword"));
+      if (oldPassword && !newPassword) return "New Password cannot by empty";
 
-      if (!password) return;
+      if (!oldPassword && !newPassword) return;
 
-      if (password.length <= 2)
+      if (newPassword.length <= 2)
         return "Password must be at least 2 symbols long";
 
-      if (!/^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/.test(password))
+      if (!/^(?=.*[0-9])(?=.*[a-zA-Z]).{2,}$/.test(newPassword))
         return "Password must contain letters and numbers";
     },
     [getValues]
   );
 
   const confirmNewPasswordValidation = useCallback(
-    (password: string) => {
+    (confirmNewPassword: string) => {
       const newPassword = getValues(formProp("newPassword"));
       return newPassword
-        ? password === newPassword || "The passwords do not match"
+        ? confirmNewPassword === newPassword || "The passwords do not match"
         : undefined;
     },
     [getValues]
