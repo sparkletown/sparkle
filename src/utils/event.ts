@@ -114,3 +114,14 @@ export const getEventDayRange = (
   // add 1 day to daysInBetween to form a full timeline
   return daysInBetween + 1;
 };
+
+export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
+  const aOrderPriority = a.orderPriority ?? 0;
+  const bOrderPriority = b.orderPriority ?? 0;
+
+  if (aOrderPriority === bOrderPriority) {
+    return eventTimeComparator(a, b);
+  } else {
+    return bOrderPriority - aOrderPriority;
+  }
+};

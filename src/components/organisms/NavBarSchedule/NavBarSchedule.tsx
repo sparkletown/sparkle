@@ -21,7 +21,7 @@ import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
-  eventTimeComparator,
+  eventTimeAndOrderComparator,
   getEventDayRange,
   isEventLiveOrFuture,
   isEventWithinDateAndNotFinished,
@@ -225,14 +225,19 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const scheduleNG: ScheduleNGDay = useMemo(() => {
     const day = addDays(firstScheduleDate, selectedDayIndex);
 
-    const daysEvents = liveAndFutureEvents
-      .filter(isEventWithinDateAndNotFinished(day))
-      .sort(eventTimeComparator);
+    const daysEvents = liveAndFutureEvents.filter(
+      isEventWithinDateAndNotFinished(day)
+    );
+
+    const eventsFilledWithPriority = daysEvents
+      .map((event) => ({ ...event, orderPriority: event.orderPriority ?? 0 }))
+      .sort(eventTimeAndOrderComparator);
+
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? daysEvents.filter((event) => event.isSaved)
-        : daysEvents,
+        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        : eventsFilledWithPriority,
     };
   }, [
     liveAndFutureEvents,
