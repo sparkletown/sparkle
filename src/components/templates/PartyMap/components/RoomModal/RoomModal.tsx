@@ -6,6 +6,7 @@ import { DEFAULT_SHOW_SCHEDULE } from "settings";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
+import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -90,6 +91,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   }, [dispatch]);
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -153,7 +155,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <UserList
         containerClassName="room-modal__userlist"
-        users={recentRoomUsers}
+        users={userList}
         limit={11}
         activity="in this room"
         hasClickableAvatars
