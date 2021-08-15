@@ -296,6 +296,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         <ScheduleNG
           showPersonalisedSchedule={showPersonalisedSchedule}
           isLoading={isLoadingSchedule}
+          venueId={venueId}
           {...scheduleNG}
         />
       </div>

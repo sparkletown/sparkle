@@ -9,6 +9,8 @@ import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useInterval } from "hooks/useInterval";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+import { useRoomList } from "hooks/useRoomList";
 
 import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
 
@@ -17,11 +19,13 @@ import "./ScheduleEventListNG.scss";
 export interface ScheduleEventListNGProps {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
+  venueId: string;
 }
 
 export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
   daysEvents,
   scheduleDate,
+  venueId,
 }) => {
   const isTodayDate = isToday(scheduleDate);
   const [allEvents, setAllEvents] = useState(daysEvents);
@@ -32,7 +36,31 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
     setAllEvents([...daysEvents]);
   }, [daysEvents, setAllEvents]);
 
-  const liveEvents = useMemo(() => allEvents.filter(isEventLive), [allEvents]);
+  const { currentVenue } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+  const roomList = allEvents.map((el) => {
+    const [roomData] =
+      currentVenue?.rooms?.filter((room) => room.title === el?.room) || [];
+    return roomData;
+  });
+
+  const { recentRoomUsers } = useRoomList({ roomList });
+
+  const liveSortedEvents = useMemo(
+    () =>
+      allEvents
+        .map((event, index) => ({
+          ...event,
+          liveAudience: recentRoomUsers[index].length,
+        }))
+        .sort((a, b) => b.liveAudience - a.liveAudience),
+    [allEvents, recentRoomUsers]
+  );
+
+  const liveEvents = useMemo(() => liveSortedEvents.filter(isEventLive), [
+    liveSortedEvents,
+  ]);
   const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
     allEvents,
   ]);
