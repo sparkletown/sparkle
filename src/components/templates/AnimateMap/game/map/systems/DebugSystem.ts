@@ -6,6 +6,7 @@ import { Point } from "types/utility";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 
+import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
 import { BotNode } from "../nodes/BotNode";
@@ -51,6 +52,19 @@ export class DebugSystem extends System {
     this.venues = engine.getNodeList(VenueNode);
     this.venues.nodeAdded.add(this.venueAdded);
     this.venues.nodeRemoved.add(this.venueRemoved);
+
+    GameInstance.instance.eventProvider.on(
+      EventType.ON_ROOMS_CHANGED,
+      this.handleRooms
+    );
+
+    // TODO remove
+    const updateRooms = false;
+    if (updateRooms) {
+      setInterval(() => {
+        GameInstance.instance.eventProvider.emit(EventType.ON_ROOMS_CHANGED);
+      }, 3000);
+    }
   }
 
   removeFromEngine(engine: Engine): void {
@@ -65,6 +79,11 @@ export class DebugSystem extends System {
 
     this.bots = null;
     this.player = null;
+
+    GameInstance.instance.eventProvider.off(
+      EventType.ON_ROOMS_CHANGED,
+      this.handleRooms
+    );
   }
 
   update(time: number): void {
@@ -78,6 +97,43 @@ export class DebugSystem extends System {
       this.drawPlayaBorderCircle();
     }
   }
+
+  private handleRooms = (): void => {
+    const worldWidth = GameInstance.instance.getConfig().worldWidth;
+    const worldHeight = GameInstance.instance.getConfig().worldHeight;
+    const arr: Array<{ x: number; y: number }> = [];
+    for (let i = 0; i < 10; i++) {
+      const x = Math.random() * (6000 - 3000) + 3000;
+      const y = Math.random() * (6000 - 3000) + 3000;
+      arr.push({ x, y });
+    }
+
+    const name = "roomPoint";
+    if (this.container) {
+      this.container.children.forEach((display) => {
+        if (display.name.indexOf(name) > -1 && display.parent) {
+          display.parent.removeChild(display);
+        }
+      });
+
+      let count = 0;
+      arr.forEach((point) => {
+        let g: Graphics = new Graphics();
+        g.name = `${name}${++count}`;
+        g.beginFill(0x000000);
+        g.drawRect(-point.x, 0, worldWidth, 1);
+        g.position.set(point.x, point.y);
+        this.container?.addChild(g);
+
+        g = new Graphics();
+        g.name = `${name}${++count}`;
+        g.beginFill(0x000000);
+        g.drawRect(0, -point.y, 1, worldHeight);
+        g.position.set(point.x, point.y);
+        this.container?.addChild(g);
+      });
+    }
+  };
 
   private updateLineOfSight(): void {
     const name = "visionOfSightRadius";

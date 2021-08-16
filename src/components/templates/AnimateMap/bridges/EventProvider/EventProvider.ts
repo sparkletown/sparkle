@@ -10,6 +10,8 @@ export enum EventType {
   UI_CONTROL_PANEL_ZOOM_OUT = "EventProviderType.UI_CONTROL_PANEL_ZOOM_OUT",
   UI_SINGLE_BUTTON_FOLLOW = "EventProviderType.UI_SINGLE_BUTTON_FOLLOW",
 
+  ON_ROOMS_CHANGED = "EventProviderType.ON_ROOMS_CHANGED",
+
   ON_VENUE_COLLISION = "EventProviderType.ON_VENUE_COLLISION",
 }
 
@@ -31,6 +33,14 @@ export declare interface EventProviderSingleton {
     type: EventType.SOME_BAD_EVENT,
     ...params: Parameters<SomeBadEventCallback>
   ): boolean;
+
+  on(type: EventType.ON_ROOMS_CHANGED, callback: () => void): this;
+
+  emit(type: EventType.ON_ROOMS_CHANGED): boolean;
+
+  on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
+
+  emit(type: EventType.UI_CONTROL_PANEL_ZOOM_IN): boolean;
 
   on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
 

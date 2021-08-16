@@ -141,6 +141,11 @@ export class ViewportBackgroundSystem extends System {
   }
 
   colorMatrixFilter(): void {
+    const apply = false;
+
+    if (!apply) {
+      return;
+    }
     const bool = true;
 
     const colors: PIXI.filters.ColorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
