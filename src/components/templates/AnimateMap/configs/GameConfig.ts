@@ -9,7 +9,6 @@ export interface GameOptions {
   worldWidth: number;
   worldHeight: number;
   backgroundImage: string;
-  firebarrels?: GameOptionsFirebarrel[];
 }
 
 export class GameConfig {
@@ -21,23 +20,6 @@ export class GameConfig {
         //default options can be here
         worldWidth: 9920,
         worldHeight: 9920,
-        firebarrels: [
-          {
-            id: "animate-map-firebarrel-1",
-          },
-          {
-            id: "animate-map-firebarrel-2",
-          },
-          {
-            id: "animate-map-firebarrel-3",
-          },
-          {
-            id: "animate-map-firebarrel-4",
-          },
-          {
-            id: "animate-map-firebarrel-5",
-          },
-        ],
       },
       ...options,
     };
@@ -87,7 +69,23 @@ export class GameConfig {
   }
 
   public getFirebarrels(): GameOptionsFirebarrel[] | undefined {
-    return this.options.firebarrels;
+    return [
+      {
+        id: "animate-map-firebarrel-1",
+      },
+      {
+        id: "animate-map-firebarrel-2",
+      },
+      {
+        id: "animate-map-firebarrel-3",
+      },
+      {
+        id: "animate-map-firebarrel-4",
+      },
+      {
+        id: "animate-map-firebarrel-5",
+      },
+    ];
   }
 
   public get worldCenter(): Point {
