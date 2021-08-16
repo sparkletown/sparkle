@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
 import { useFirebase } from "react-redux-firebase";
 
-import { AnimateMapVenue } from "types/venues";
+import { AnimateMapVenue, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
@@ -10,6 +10,7 @@ import { useUser } from "hooks/useUser";
 
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
+import VideoRoom from "./components/VideoRoom/VideoRoom";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
 import { configs } from "./configs";
@@ -69,6 +70,12 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
+        <VideoRoom
+          roomName={"animatemap-testroom"}
+          venueName={VenueTemplate.animatemap}
+          setUserList={() => {}}
+          isAudioEffectDisabled={false}
+        />
         <UIOverlayGrid venue={venue} />
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />

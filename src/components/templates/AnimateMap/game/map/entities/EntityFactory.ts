@@ -589,6 +589,7 @@ export default class EntityFactory {
         entity.add(new PositionComponent(venue!.x, venue!.y, 0, scale, scale));
 
         const sprite: Barrel = new Barrel();
+        sprite.name = venue?.id || "";
         sprite.barrel = Sprite.from(comm.canvas);
         sprite.barrel.anchor.set(0.5);
         sprite.addChild(sprite.barrel);

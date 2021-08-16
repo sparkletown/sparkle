@@ -199,6 +199,14 @@ export class GameInstance {
     return this._config;
   }
 
+  public getMapContainer(): MapContainer | null {
+    return this._mapContainer;
+  }
+
+  public getRenderer(): Renderer | null {
+    return this._renderer;
+  }
+
   private _unsubscribeSetEnvironmentSound!: () => void;
 
   private _subscribes() {
