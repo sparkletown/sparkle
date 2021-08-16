@@ -1,0 +1,11 @@
+@import "../../../profileModalStyles";
+
+$edit-buttons-gap: $input-gap;
+
+button.EditProfileModalButtons__button {
+  @include ProfileModalButton;
+  margin-bottom: $edit-buttons-gap;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}

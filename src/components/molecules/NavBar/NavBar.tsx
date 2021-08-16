@@ -1,9 +1,16 @@
-import React, { useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
+import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
@@ -12,9 +19,10 @@ import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { radioStationsSelector } from "utils/selectors";
-import { hasElements } from "utils/types";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useIsCurrentUser } from "hooks/useIsCurrentUser";
+import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
@@ -23,7 +31,6 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { ProfilePopoverContent } from "components/organisms/ProfileModal";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
@@ -46,14 +53,6 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
-    </Popover.Content>
-  </Popover>
-);
-
-const ProfilePopover = (
-  <Popover id="profile-popover">
-    <Popover.Content className="NavBar__profile-popover">
-      <ProfilePopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -94,6 +93,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
+  const {
+    hasSelectedProfile,
+    openUserProfileModal,
+    updateUserProfileData,
+    selectedUserProfile,
+  } = useProfileModalControls();
+
+  const isSameUser = useIsCurrentUser(selectedUserProfile);
+
+  useEffect(() => {
+    if (hasSelectedProfile && isSameUser) updateUserProfileData(userWithId);
+  }, [hasSelectedProfile, isSameUser, updateUserProfileData, userWithId]);
+
+  const handleAvatarClick = useCallback(() => {
+    openUserProfileModal(userWithId);
+  }, [openUserProfileModal, userWithId]);
+
   const shouldShowSchedule =
     currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
 
@@ -106,16 +122,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 
-  const hasRadioStations = radioStations && radioStations.length;
+  const hasRadioStations = useCallback(
+    (arr: string[] | undefined): arr is string[] => !isEmpty(arr),
+    []
+  );
+
   const isSoundCloud =
-    !!hasRadioStations && RegExp("soundcloud").test(radioStations![0]);
+    hasRadioStations(radioStations) &&
+    RegExp("soundcloud").test(radioStations[0]);
 
   const sound = useMemo(
     () =>
-      radioStations && hasElements(radioStations) && !isSoundCloud
+      radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
-    [isSoundCloud, radioStations]
+    [hasRadioStations, isSoundCloud, radioStations]
   );
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
@@ -177,7 +198,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   // TODO: ideally this would find the top most parent of parents and use those details
   const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
-  const radioStation = !!hasRadioStations && radioStations![0];
+  const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
   const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio =
@@ -305,15 +326,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={ProfilePopover}
-                  rootClose={true}
+                <div
+                  className="navbar-links-user-avatar"
+                  onClick={handleAvatarClick}
                 >
                   <UserAvatar user={userWithId} showStatus size="medium" />
-                </OverlayTrigger>
+                </div>
               </div>
             )}
           </div>

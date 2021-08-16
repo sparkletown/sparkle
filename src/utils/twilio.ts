@@ -3,6 +3,7 @@ import {
   DataTrack,
   LocalAudioTrack,
   LocalParticipant,
+  LocalTrack,
   LocalVideoTrack,
   Participant,
   RemoteParticipant,
@@ -69,3 +70,9 @@ export const appendTrack = <T extends Track>(track: T) => (tracks: T[]) => [
 
 export const filterTrack = <T extends Track>(track: T) => (tracks: T[]) =>
   tracks.filter((t) => t !== track);
+
+export const stopLocalTrack = (track: LocalTrack) => {
+  if (track instanceof LocalAudioTrack || track instanceof LocalVideoTrack) {
+    track.stop();
+  }
+};
