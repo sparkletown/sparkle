@@ -4,6 +4,8 @@ import { checkTypeObject } from "./guards";
 import { LogFunction } from "./types";
 import { determineScriptRelativeFilename } from "./utils";
 
+export const NOT_AVAILABLE = "N/A";
+
 // NOTE: just caching the result since it shouldn't change while the script is running
 export const SCRIPT = determineScriptRelativeFilename();
 
@@ -32,16 +34,16 @@ Usage: {white ${SCRIPT}} {dim ${dir}}{white name}{dim ${ext}}
 `);
 };
 
-export type WithErrorReporterOptions = {
-  verbose?: boolean;
-  critical?: boolean;
-  stack?: boolean;
-};
-
-export const withErrorReporter = <T extends Function>(
-  options: WithErrorReporterOptions | undefined,
+export const withErrorReporter: <T extends Function>(
+  options:
+    | undefined
+    | {
+        verbose?: boolean;
+        critical?: boolean;
+        stack?: boolean;
+      },
   asyncFunction: T
-): T => {
+) => T = (options, asyncFunction) => {
   const { critical = false, stack = true, verbose = true } = options ?? {};
 
   if (!verbose) {
@@ -73,7 +75,7 @@ export const withErrorReporter = <T extends Function>(
     },
   };
 
-  return (temporaryObject[wrapperName] as unknown) as T;
+  return (temporaryObject[wrapperName] as unknown) as typeof asyncFunction;
 };
 
 export const displayProps: (
@@ -87,16 +89,18 @@ export const displayProps: (
       log(chalk`{magenta ${prefix + key}}: {redBright ${val}}`);
     } else if (val === true || val === false) {
       log(chalk`{magenta ${prefix + key}}: {blueBright ${val}}`);
-    } else if (val === "N/A") {
-      log(chalk`{magenta ${prefix + key}}: {green.dim ${val}}`);
-    } else if (typeof val === "string") {
-      log(chalk`{magenta ${prefix + key}}: {green ${val}}`);
-    } else if (typeof val === "number") {
-      log(chalk`{magenta ${prefix + key}}: {yellow ${val}}`);
-    } else if (checkTypeObject(val)) {
-      displayProps(val as Record<string, unknown>, prefix + key);
     } else {
-      log(chalk`{magenta ${prefix + key}}: {dim ${val}}`);
+      if (val === NOT_AVAILABLE) {
+        log(chalk`{magenta ${prefix + key}}: {green.dim ${val}}`);
+      } else if (typeof val === "string") {
+        log(chalk`{magenta ${prefix + key}}: {green ${val}}`);
+      } else if (typeof val === "number") {
+        log(chalk`{magenta ${prefix + key}}: {yellow ${val}}`);
+      } else if (checkTypeObject(val)) {
+        displayProps(val as Record<string, unknown>, prefix + key);
+      } else {
+        log(chalk`{magenta ${prefix + key}}: {dim ${val}}`);
+      }
     }
   }
 };

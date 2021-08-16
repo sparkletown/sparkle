@@ -3,13 +3,12 @@ import { strict as assert } from "assert";
 import chalk from "chalk";
 import faker from "faker";
 
-import { takeSeat as actualTakeSeat } from "../lib/bot";
+import { takeSeatInAudience as actualTakeSeat } from "../lib/bot";
 import { getSectionsRef } from "../lib/collections";
 import { getVenueGridSize } from "../lib/documents";
 import { withErrorReporter } from "../lib/log";
-import { DocumentReference, GridSize } from "../lib/types";
-import { pickFrom, sleep } from "../lib/utils";
-import { SimulatorContext } from "../simulator";
+import { DocumentReference, GridSize, SimContext } from "../lib/types";
+import { pickValueFrom, sleep } from "../lib/utils";
 
 export const DEFAULT_SEAT_CHUNK_SIZE = 100;
 export const DEFAULT_SEAT_TICK_MS = 1000;
@@ -23,7 +22,7 @@ export const DEFAULT_GRID_SIZE: GridSize = {
   maxCol: 9,
 };
 
-export const simSeat: (options: SimulatorContext) => Promise<void> = async (
+export const simSeat: (options: SimContext) => Promise<void> = async (
   options
 ) => {
   const { userRefs, conf, stop } = options;
@@ -83,7 +82,7 @@ export const simSeat: (options: SimulatorContext) => Promise<void> = async (
             return;
           }
 
-          const sec = pickFrom(sectionRefs)?.id;
+          const sec = pickValueFrom(sectionRefs)?.id;
 
           const row = faker.datatype.number({
             min: grid.minRow,

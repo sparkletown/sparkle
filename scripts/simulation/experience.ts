@@ -4,16 +4,16 @@ import chalk from "chalk";
 
 import { addBotReaction as actualReactToExperience } from "../lib/bot";
 import { withErrorReporter } from "../lib/log";
+import { SimContext } from "../lib/types";
 import { sleep } from "../lib/utils";
-import { SimulatorContext } from "../simulator";
 
 export const DEFAULT_EXPERIENCE_CHUNK_SIZE = 100;
 export const DEFAULT_EXPERIENCE_TICK_MS = 1000;
 export const DEFAULT_EXPERIENCE_AFFINITY = 0.005;
 
-export const simExperience: (
-  options: SimulatorContext
-) => Promise<void> = async (options) => {
+export const simExperience: (options: SimContext) => Promise<void> = async (
+  options
+) => {
   const { userRefs, conf, stop } = options;
 
   const affinity =

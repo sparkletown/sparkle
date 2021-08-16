@@ -2,7 +2,6 @@ import { strict as assert } from "assert";
 import { parse, resolve, sep } from "path";
 
 import chalk from "chalk";
-import { formatDistanceStrict } from "date-fns";
 
 import { initFirebaseAdminApp } from "./helpers";
 import {
@@ -13,7 +12,7 @@ import {
   SCRIPT,
 } from "./log";
 import { LogFunction, SimConfig, SimStats, StopSignal } from "./types";
-import { loopUntilKilled, readConfig } from "./utils";
+import { calculateScriptRunTime, loopUntilKilled, readConfig } from "./utils";
 
 export const SIM_EXT = [".config.json5", ".config.json"];
 
@@ -70,6 +69,7 @@ export const run: (
     }
 
     // setup before running main
+    const scriptStart = new Date();
 
     const { conf, filename } = readConfig({
       name: confName,
@@ -80,24 +80,26 @@ export const run: (
     isErrorStackToBeDisplayed = conf?.log?.stack;
     const log = conf?.log?.verbose ? actualLog : () => undefined;
     const stats: SimStats = { file: { configuration: filename } };
+
+    initFirebase({ log, conf, stats });
+
+    // run main, then wait for the stop signal, then pass the result for cleanup
+
     const stop: Promise<StopSignal> =
       conf.keepAlive ?? true
         ? loopUntilKilled(conf.timeout)
         : Promise.resolve("timeout");
 
-    initFirebase({ log, conf, stats });
-
-    // run main, then wait for the stop signal, then pass the result for cleanup
-    const startTime = new Date();
     const result = await main({ stats, conf, log, stop });
     await stop;
-    const finishTime = new Date();
-    stats.time = {
-      start: startTime.toISOString(),
-      finish: finishTime.toISOString(),
-      run: formatDistanceStrict(finishTime, startTime),
-    };
+
     await cleanup({ stats, conf, log, stop, result });
+
+    stats.script = calculateScriptRunTime({
+      stats,
+      start: scriptStart,
+      finish: new Date(),
+    });
 
     // wrap up console logging
     log(chalk`{blue.inverse INFO} {white Some useful stats:}`);

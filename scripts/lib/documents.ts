@@ -5,14 +5,10 @@ import admin from "firebase-admin";
 
 import { User } from "types/User";
 
-import { DocumentReference, GridSize, LogFunction } from "./types";
+import { DocumentReference, GridSize, SimContext, TableInfo } from "./types";
 
-export type GetVenueRefOptions = {
-  venueId: string;
-  log: LogFunction;
-};
 export const getVenueRef: (
-  options: GetVenueRefOptions
+  options: SimContext<"venueId" | "log">
 ) => Promise<DocumentReference | undefined> = async ({ venueId, log }) => {
   const venueRef = admin.firestore().collection("venues").doc(venueId);
   const venueSnap = await venueRef.get();
@@ -28,17 +24,10 @@ export const getVenueRef: (
   return;
 };
 
-export type FindUserOptions = {
+export const findUser: (options: {
   partyName: string;
   scriptTag?: string;
-};
-
-export type FindUserResult = Promise<User | undefined>;
-
-export const findUser: (options: FindUserOptions) => FindUserResult = async ({
-  partyName,
-  scriptTag,
-}) => {
+}) => Promise<User | undefined> = async ({ partyName, scriptTag }) => {
   let query = admin
     .firestore()
     .collection("users")
@@ -59,13 +48,8 @@ export const findUser: (options: FindUserOptions) => FindUserResult = async ({
   return snap.docs[0]?.data();
 };
 
-type GetVenueNameOptions = {
-  venueRef: DocumentReference;
-  log: LogFunction;
-};
-
 export const getVenueName: (
-  options: GetVenueNameOptions
+  options: SimContext<"venueRef" | "log">
 ) => Promise<string | undefined> = async ({ venueRef, log }) => {
   const name = (await (await venueRef.get()).data())?.name;
   if (!name) {
@@ -76,15 +60,21 @@ export const getVenueName: (
   return name;
 };
 
-export type GetVenueGridSizeOptions = {
-  venueRef: DocumentReference;
+export const getVenueTemplate: (
+  options: SimContext<"venueRef" | "log">
+) => Promise<string | undefined> = async ({ venueRef, log }) => {
+  const name = (await (await venueRef.get()).data())?.template;
+  if (!name) {
+    log(
+      chalk`{yellow.inverse WARN} Venue template was not found for venue with id {green ${venueRef.id}}.`
+    );
+  }
+  return name;
 };
 
-export type GetVenueGridSizeResult = {} | GridSize;
-
 export const getVenueGridSize: (
-  options: GetVenueGridSizeOptions
-) => Promise<GetVenueGridSizeResult> = async ({ venueRef }) => {
+  options: SimContext<"venueRef">
+) => Promise<{} | GridSize> = async ({ venueRef }) => {
   const snap = await venueRef.get();
   const data = await snap.data();
   const { auditoriumColumns, auditoriumRows, template } = data ?? {};
@@ -98,4 +88,36 @@ export const getVenueGridSize: (
         maxRow: auditoriumRows,
       }
     : {};
+};
+
+export const getVenueTablesInfo: (
+  options: SimContext<"venueRef">
+) => Promise<TableInfo[]> = async ({ venueRef }) => {
+  const snap = await venueRef.get();
+  const data = await snap.data();
+  const tables = data?.config?.tables;
+
+  return (tables ?? []).map(
+    (
+      {
+        capacity,
+        columns,
+        reference,
+        rows,
+        title,
+      }: Record<string, number | string | boolean>,
+      idx: number
+    ) => ({
+      dub: title,
+      idx,
+      cap: Number.isSafeInteger(rows)
+        ? capacity
+        : Number.parseInt(`${capacity}`),
+      col: Number.isSafeInteger(columns)
+        ? columns
+        : Number.parseInt(`${columns}`, 10),
+      row: Number.isSafeInteger(rows) ? rows : Number.parseInt(`${rows}`, 10),
+      ref: reference,
+    })
+  );
 };

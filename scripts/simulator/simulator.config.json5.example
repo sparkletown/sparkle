@@ -24,10 +24,10 @@
   // an empty array means no simulations will run
   //  simulate: [
   //    'chat',
+  //    'experience',
   //    'seat',
-  //    'experience'
+  //    'table',
   //  ],
-
 
   log: {
 

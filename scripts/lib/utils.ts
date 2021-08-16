@@ -3,12 +3,24 @@ import { existsSync, readFileSync } from "fs";
 import { relative, resolve } from "path";
 
 import chalk from "chalk";
-import { addMinutes, formatISO } from "date-fns";
+import {
+  addMinutes,
+  formatDistanceStrict,
+  formatISO,
+  parseISO,
+} from "date-fns";
 import faker from "faker";
 import JSON5 from "json5";
 
-import { log } from "./log";
-import { SimConfig, StopSignal } from "./types";
+import { log, NOT_AVAILABLE } from "./log";
+import {
+  ScriptRunTime,
+  SimAverages,
+  SimConfig,
+  SimStats,
+  StopSignal,
+  TableInfo,
+} from "./types";
 
 const INDEX_PADDING = 4;
 const INDEX_BASE = 10 ** INDEX_PADDING + 1;
@@ -35,11 +47,14 @@ const TEXTERS = [
   faker.random.words,
 ];
 
-export const pickFrom: <T>(array: T[]) => T | undefined = (array) =>
-  array[Math.floor(Math.random() * array.length)];
+export const pickIndexFor: <T>(array: T[]) => number = (array) =>
+  Math.floor(Math.random() * array.length);
 
-export const generateRandomReaction = () => pickFrom(REACTIONS);
-export const generateRandomText = () => pickFrom(TEXTERS)?.();
+export const pickValueFrom: <T>(array: T[]) => T | undefined = (array) =>
+  array[pickIndexFor(array)];
+
+export const generateRandomReaction = () => pickValueFrom(REACTIONS);
+export const generateRandomText = () => pickValueFrom(TEXTERS)?.();
 
 // export const STOP = Symbol("stop");
 // export const withLoop: (tick: number, fn: Function) => Function = (
@@ -68,15 +83,10 @@ export const sleep: (ms: number) => Promise<void> = (ms) => {
 export const determineScriptRelativeFilename = () =>
   relative(process.cwd(), process.argv[1]);
 
-type GenerateUserIdOptions = {
+export const generateUserId: (options: {
   scriptTag: string;
   index: number;
-};
-
-export const generateUserId: ({
-  scriptTag,
-  index,
-}: GenerateUserIdOptions) => string = ({ scriptTag, index }) =>
+}) => string = ({ scriptTag, index }) =>
   `${scriptTag}-` + `${index + INDEX_BASE}`.padStart(INDEX_PADDING, "0");
 
 export const loopUntilKilled: (
@@ -119,23 +129,15 @@ export const loopUntilKilled: (
   });
 };
 
-type ReadConfigOptions = {
+export const readConfig: (options: {
   name: string;
   dir: string;
   ext: string | string[];
-};
-
-type ReadConfigResult = {
+}) => {
   conf: SimConfig;
   filename: string;
   text: string;
-};
-
-export const readConfig: (options: ReadConfigOptions) => ReadConfigResult = ({
-  name,
-  dir,
-  ext,
-}) => {
+} = ({ name, dir, ext }) => {
   const extensions: string[] = Array.isArray(ext) ? ext : [ext];
 
   for (const extension of extensions) {
@@ -161,3 +163,64 @@ export const readConfig: (options: ReadConfigOptions) => ReadConfigResult = ({
     )}.(${extensions.join("|")})}`
   );
 };
+
+export const generateSingleTableFor = (
+  index: number,
+  defaults: Pick<TableInfo, "cap" | "col" | "row">
+) => {
+  const idx = String(index + 1);
+  const dub = `Table ${idx}`;
+  return {
+    ...defaults,
+    dub,
+    idx,
+    ref: dub,
+  };
+};
+
+export const generateMultipleTablesFor: (
+  count: number,
+  defaults: Pick<TableInfo, "cap" | "col" | "row">
+) => TableInfo[] = (count, defaults) =>
+  Array(count)
+    .fill(undefined)
+    .map((_, index) => generateSingleTableFor(index, defaults));
+
+export const increment: (value: number | undefined) => number = (value) =>
+  (value ?? 0) + 1;
+
+export const calculateAveragesPer: (
+  unit: number,
+  stats: SimStats
+) => SimAverages = (unit, stats) => ({
+  writes:
+    unit && stats.writes ? (stats.writes / unit).toFixed(2) : NOT_AVAILABLE,
+  relocations:
+    unit && stats.relocations
+      ? (stats.relocations / unit).toFixed(2)
+      : NOT_AVAILABLE,
+  reactions:
+    unit && stats.reactions?.created
+      ? (stats.reactions.created / unit).toFixed(2)
+      : NOT_AVAILABLE,
+  chatlines:
+    unit && stats.chatlines?.created
+      ? (stats.chatlines.created / unit).toFixed(2)
+      : NOT_AVAILABLE,
+});
+
+export const calculateScriptRunTime: (options: {
+  stats: SimStats;
+  start: Date;
+  finish: Date;
+}) => ScriptRunTime = ({ stats, start, finish }) => ({
+  start: start.toISOString(),
+  finish: finish.toISOString(),
+  run: formatDistanceStrict(finish, start),
+  init: stats?.sim?.start
+    ? formatDistanceStrict(start, parseISO(stats.sim.start))
+    : NOT_AVAILABLE,
+  cleanup: stats?.sim?.finish
+    ? formatDistanceStrict(finish, parseISO(stats.sim.finish))
+    : NOT_AVAILABLE,
+});

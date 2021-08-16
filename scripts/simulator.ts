@@ -1,10 +1,14 @@
 #!/usr/bin/env node -r esm -r ts-node/register
-// noinspection ES6PreferShortImport,JSVoidFunctionReturnValueUsed
 
 import { strict as assert } from "assert";
 
 import chalk from "chalk";
-import { differenceInMinutes, differenceInSeconds, parseISO } from "date-fns";
+import {
+  differenceInMinutes,
+  differenceInSeconds,
+  formatDistanceStrict,
+  parseISO,
+} from "date-fns";
 
 import {
   ensureBotUsers as actualEnsureBotUsers,
@@ -13,7 +17,7 @@ import {
   removeBotUsers,
 } from "./lib/bot";
 import { getChatlinesRef, getReactionsRef } from "./lib/collections";
-import { getVenueRef } from "./lib/documents";
+import { getVenueName, getVenueRef, getVenueTemplate } from "./lib/documents";
 import { withErrorReporter } from "./lib/log";
 import { run } from "./lib/runner";
 import {
@@ -21,29 +25,24 @@ import {
   DocumentReference,
   RunContext,
   SimConfig,
+  SimContext,
 } from "./lib/types";
+import { calculateAveragesPer } from "./lib/utils";
 import { simChat } from "./simulation/chat";
 import { simExperience } from "./simulation/experience";
 import { simSeat } from "./simulation/seat";
+import { simTable } from "./simulation/table";
 
-export type MainResult = {
+type MainResult = {
   chatsRef?: CollectionReference;
   reactionsRef?: CollectionReference;
   userRefs: DocumentReference[];
 };
 
-export type CleanupOptions = RunContext<SimConfig> & { result: MainResult };
-
-export type SimulatorContext = RunContext<SimConfig> & {
-  chatsRef: CollectionReference;
-  reactionsRef: CollectionReference;
-  userRefs: DocumentReference[];
-  venueId: string;
-  venueRef: DocumentReference;
-};
-
-const main = async (options: RunContext<SimConfig>) => {
-  const { conf, log } = options;
+const main: (options: RunContext<SimConfig>) => Promise<MainResult> = async (
+  options
+) => {
+  const { conf, log, stats, stop } = options;
   const { venue, simulate = [] } = conf;
 
   // if conf.simulate (different from simulate) is undefined, run all, otherwise if set to an empty array, run none
@@ -55,7 +54,7 @@ const main = async (options: RunContext<SimConfig>) => {
     { ...conf.log, critical: true },
     actualEnsureBotUsers
   );
-  const userRefs = await ensureBotUsers({ ...options, ...conf.user });
+  const userRefs = await ensureBotUsers(options);
 
   if (shouldRunNone) {
     return { userRefs };
@@ -63,25 +62,50 @@ const main = async (options: RunContext<SimConfig>) => {
 
   assert.ok(venue?.id, chalk`${main.name}(): {magenta venue.id} is required`);
 
-  const venueRef = await getVenueRef({ log, venueId: venue.id });
-  const reactionsRef = await getReactionsRef({ venueId: venue.id });
-  const chatsRef = await getChatlinesRef({ venueId: venue.id });
+  const venueId = venue.id;
+  const venueRef = await getVenueRef({ log, venueId: venueId });
+  const reactionsRef = await getReactionsRef({ venueId: venueId });
+  const chatsRef = await getChatlinesRef({ venueId: venueId });
 
   assert.ok(
     venueRef,
-    chalk`${main.name}(): venue was not found for {magenta venue.id}: {green ${venue.id}}`
+    chalk`${main.name}(): venue was not found for {magenta venue.id}: {green ${venueId}}`
   );
 
-  const simulatorContext: SimulatorContext = {
+  const template = await getVenueTemplate({ log, venueRef });
+  assert.ok(
+    template,
+    chalk`${main.name}(): venue with {magenta venue.id}: {green ${venueId}} has invalid {magenta venue.template}: {red ${template}}`
+  );
+
+  const venueName = await getVenueName({ log, venueRef });
+  assert.ok(
+    venueName,
+    chalk`${main.name}(): venue with {magenta venue.id}: {green ${venueId}} has invalid {magenta venue.name}: {red ${venueName}}`
+  );
+
+  const simulatorContext: SimContext = {
     ...options,
     userRefs,
     chatsRef,
     reactionsRef,
-    venueRef,
+    template,
     venueId: venueRef.id,
+    venueName,
+    venueRef,
   };
 
   const simulations = [];
+  const simStart = new Date();
+
+  stop.then(() => {
+    const simFinish = new Date();
+    stats.sim = {
+      start: simStart.toISOString(),
+      finish: simFinish.toISOString(),
+      run: formatDistanceStrict(simFinish, simStart),
+    };
+  });
 
   if (shouldRunAll || simulate.includes("chat")) {
     simulations.push(simChat(simulatorContext));
@@ -95,57 +119,52 @@ const main = async (options: RunContext<SimConfig>) => {
     simulations.push(simSeat(simulatorContext));
   }
 
+  if (shouldRunAll || simulate.includes("table")) {
+    simulations.push(simTable(simulatorContext));
+  }
+
   await Promise.all(simulations);
 
   return { chatsRef, reactionsRef, userRefs };
 };
 
-const cleanup: (options: CleanupOptions) => Promise<void> = async ({
-  conf,
-  log,
-  result: { chatsRef, reactionsRef, userRefs },
-  stats,
-}) => {
+const cleanup: (
+  options: RunContext<SimConfig> & {
+    result: MainResult;
+  }
+) => Promise<void> = async (options) => {
   // and now, clean up the mess
+
+  const { conf, stats, log } = options;
+  const { chatsRef, reactionsRef, userRefs } = options.result;
 
   if (conf.user?.cleanup ?? true) {
     log(chalk`{inverse NOTE} Doing little user cleanup...`);
-    await removeBotUsers({ conf, log, stats, userRefs });
+    await removeBotUsers({ ...options, userRefs });
     log(chalk`{green.inverse DONE} Removed bot users.`);
   }
 
   if (reactionsRef && (conf.experience?.cleanup ?? true)) {
     log(chalk`{inverse NOTE} Doing little reactions cleanup...`);
-    await removeBotReactions({ conf, log, stats, reactionsRef });
+    await removeBotReactions({ ...options, reactionsRef });
     log(chalk`{green.inverse DONE} Removed bot reactions.`);
   }
 
   if (chatsRef && (conf.chat?.cleanup ?? true)) {
     log(chalk`{inverse NOTE} Doing little reactions cleanup...`);
-    await removeBotChatMessages({ conf, log, stats, chatsRef });
+    await removeBotChatMessages({ ...options, chatsRef });
     log(chalk`{green.inverse DONE} Removed bot reactions.`);
   }
 
-  const calcPer = (unit: number) => ({
-    writes: unit && stats.writes ? (stats.writes / unit).toFixed(2) : "N/A",
-    relocations:
-      unit && stats.relocations ? (stats.relocations / unit).toFixed(2) : "N/A",
-    reactions:
-      unit && stats.reactions?.created
-        ? (stats.reactions.created / unit).toFixed(2)
-        : "N/A",
-    chatlines:
-      unit && stats.chatlines?.created
-        ? (stats.chatlines.created / unit).toFixed(2)
-        : "N/A",
-  });
+  const start = parseISO(stats.sim?.start ?? "");
+  const finish = parseISO(stats.sim?.finish ?? "");
 
-  const start = parseISO(stats.time?.start ?? "");
-  const finish = parseISO(stats.time?.finish ?? "");
+  const minutes = Math.abs(differenceInMinutes(start, finish));
+  const seconds = Math.abs(differenceInSeconds(start, finish));
 
   stats.average = {
-    "per.minute": calcPer(Math.abs(differenceInMinutes(start, finish))),
-    "per.second": calcPer(Math.abs(differenceInSeconds(start, finish))),
+    "per.minute": calculateAveragesPer(minutes, stats),
+    "per.second": calculateAveragesPer(seconds, stats),
   };
 };
 

@@ -4,14 +4,14 @@ import chalk from "chalk";
 
 import { sendBotVenueMessage as actualSendBotVenueMessage } from "../lib/bot";
 import { withErrorReporter } from "../lib/log";
+import { SimContext } from "../lib/types";
 import { sleep } from "../lib/utils";
-import { SimulatorContext } from "../simulator";
 
 export const DEFAULT_CHAT_CHUNK_SIZE = 100;
 export const DEFAULT_CHAT_TICK_MS = 1000;
 export const DEFAULT_CHAT_AFFINITY = 0.005;
 
-export const simChat: (options: SimulatorContext) => Promise<void> = async (
+export const simChat: (options: SimContext) => Promise<void> = async (
   options
 ) => {
   const { userRefs, venueRef, conf, stop } = options;

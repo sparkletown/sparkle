@@ -1,28 +1,19 @@
 import admin from "firebase-admin";
 
-import { CollectionReference } from "./types";
+import { CollectionReference, SimContext } from "./types";
 
-export type GetChatlinesRefOptions = {
-  venueId: string;
-};
 export const getChatlinesRef: (
-  options: GetChatlinesRefOptions
+  options: SimContext<"venueId">
 ) => Promise<CollectionReference> = async ({ venueId }) =>
   admin.firestore().collection("venues").doc(venueId).collection("chats");
 
-export type GetSectionsRefOptions = {
-  venueId: string;
-};
 export const getSectionsRef: (
-  options: GetSectionsRefOptions
+  options: SimContext<"venueId">
 ) => Promise<CollectionReference> = async ({ venueId }) =>
   admin.firestore().collection("venues").doc(venueId).collection("sections");
 
-export type GetReactionsRefOptions = {
-  venueId: string;
-};
 export const getReactionsRef: (
-  options: GetReactionsRefOptions
+  options: SimContext<"venueId">
 ) => Promise<CollectionReference> = async ({ venueId }) =>
   admin
     .firestore()

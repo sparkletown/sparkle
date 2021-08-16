@@ -13,34 +13,29 @@ import {
   CollectionReference,
   DocumentReference,
   DocumentSnapshot,
-  LogFunction,
   QueryDocumentSnapshot,
-  SimConfig,
-  SimStats,
-  StopSignal,
+  SimContext,
+  TableInfo,
 } from "./types";
 import {
   generateRandomReaction,
   generateRandomText,
   generateUserId,
+  increment,
   sleep,
 } from "./utils";
 
-export type EnterVenueOptions = {
-  userRef: DocumentReference;
-  venueRef?: DocumentReference;
-  venueId?: string;
-  log: LogFunction;
-  stats: SimStats;
-};
-
-export const enterVenue = async ({
+export const enterVenue: (
+  options: {
+    userRef: DocumentReference;
+  } & SimContext<"venueRef" | "venueId" | "stats" | "log">
+) => Promise<void | undefined> = async ({
   userRef,
   venueRef,
   venueId,
   log,
   stats,
-}: EnterVenueOptions) => {
+}) => {
   const userId = userRef.id;
   const user = (await userRef.get()).data();
 
@@ -65,27 +60,22 @@ export const enterVenue = async ({
   );
 
   await userRef.update({ enteredVenueIds: FieldValue.arrayUnion(candidateId) });
-  stats.entered = (stats.entered ?? 0) + 1;
-  stats.writes = (stats.writes ?? 0) + 1;
+  stats.entered = increment(stats.entered);
+  stats.writes = increment(stats.writes);
 
   log(
     chalk`{green.inverse DONE} User {green ${userId}} entered  venue {green ${candidateId}}.`
   );
 };
 
-export type TakeSeatOptions = {
-  userRef: DocumentReference;
-  venueRef: DocumentReference;
-  row: number;
-  col: number;
-  sec?: string;
-  stats: SimStats;
-  log: LogFunction;
-};
-
-export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
-  options
-) => {
+export const takeSeatInAudience: (
+  options: {
+    userRef: DocumentReference;
+    row: number;
+    col: number;
+    sec?: string;
+  } & SimContext<"venueRef" | "stats" | "log">
+) => Promise<void> = async (options) => {
   const { userRef, venueRef, stats, log, row, col, sec } = options;
   const venueId = venueRef.id;
   const venueName = await getVenueName(options);
@@ -103,17 +93,17 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
   await Promise.all([
     userRef
       .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
-      .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
+      .then(() => (stats.writes = increment(stats.writes))),
     userRef
       .update({
         [`data.${venueId}`]: sec
           ? { row, column: col, sectionId: sec }
           : { row, column: col },
       })
-      .then(() => (stats.writes = (stats.writes ?? 0) + 1)),
+      .then(() => (stats.writes = increment(stats.writes))),
   ]);
 
-  stats.relocations = (stats.relocations ?? 0) + 1;
+  stats.relocations = increment(stats.relocations);
 
   if (sec) {
     log(
@@ -126,25 +116,47 @@ export const takeSeat: (options: TakeSeatOptions) => Promise<void> = async (
   }
 };
 
-export type EnsureBotUsersOptions = {
-  conf: SimConfig;
-  count?: number;
-  log: LogFunction;
-  scriptTag?: string;
-  stats: SimStats;
-  stop: Promise<StopSignal>;
+export const takeSeatAtTable: (
+  options: {
+    userRef: DocumentReference;
+  } & TableInfo &
+    SimContext<"venueRef" | "venueId" | "venueName" | "stats" | "log">
+) => Promise<void> = async (options) => {
+  await enterVenue(options);
+
+  const { userRef, venueName, stats, log, row, col, ref, idx } = options;
+
+  const now = Date.now();
+
+  const vid = `${venueName}-table${idx}`;
+
+  await Promise.all([
+    userRef
+      .update({ lastSeenAt: now, lastSeenIn: { [venueName]: now } })
+      .then(() => (stats.writes = increment(stats.writes))),
+    userRef
+      .update({
+        [`data.${venueName}`]: {
+          col,
+          row,
+          table: ref,
+          videoRoom: vid,
+        },
+      })
+      .then(() => (stats.writes = increment(stats.writes))),
+  ]);
+
+  stats.relocations = increment(stats.relocations);
+
+  log(
+    chalk`{inverse NOTE} User {green ${userRef.id}} took seat at {dim (row,col,ref,vid)}: ({yellow ${row}},{yellow ${col}},{green ${ref}},{green ${vid}})`
+  );
 };
 
 export const ensureBotUsers: (
-  options: EnsureBotUsersOptions
-) => Promise<DocumentReference[]> = async ({
-  conf,
-  count,
-  log,
-  scriptTag,
-  stats,
-  stop,
-}) => {
+  options: SimContext<"conf" | "log" | "stats" | "stop">
+) => Promise<DocumentReference[]> = async ({ conf, log, stats, stop }) => {
+  const { scriptTag, count } = conf.user ?? {};
   assert.ok(
     scriptTag,
     chalk`${ensureBotUsers.name}(): {magenta scriptTag} is required`
@@ -194,8 +206,8 @@ export const ensureBotUsers: (
         await userRef.set(candidate);
         resultUserRefs.push(userRef);
 
-        stats.writes = (stats.writes ?? 0) + 1;
-        (stats.users ??= {}).created = (stats.users.created ?? 0) + 1;
+        stats.writes = increment(stats.writes);
+        (stats.users ??= {}).created = increment(stats.users.created);
         log(chalk`{greenBright.inverse DONE} User {green ${id}} created.`);
       }
       continue;
@@ -215,8 +227,8 @@ export const ensureBotUsers: (
     await userRef.update(candidate);
     resultUserRefs.push(userRef);
 
-    stats.writes = (stats.writes ?? 0) + 1;
-    (stats.users ??= {}).updated = (stats.users.updated ?? 0) + 1;
+    stats.writes = increment(stats.writes);
+    (stats.users ??= {}).updated = increment(stats.users.updated);
     log(chalk`{greenBright.inverse DONE} User {green ${id}} updated.`);
 
     // just so that busy loop doesn't mess with other async stuff, like the stop signal
@@ -232,15 +244,8 @@ export const ensureBotUsers: (
   return resultUserRefs;
 };
 
-export type RemoveBotUsersOptions = {
-  userRefs: DocumentReference[];
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-};
-
 export const removeBotUsers: (
-  options: RemoveBotUsersOptions
+  options: SimContext<"userRefs" | "conf" | "log" | "stats">
 ) => Promise<void> = async ({ userRefs, conf, log, stats }) => {
   const remove = withErrorReporter(conf.log, (userRef: DocumentReference) => {
     const promise = userRef.delete();
@@ -248,7 +253,7 @@ export const removeBotUsers: (
       log(
         chalk`{green.inverse DONE} Removed  user with id {green ${userRef.id}}.`
       );
-      (stats.users ??= {}).removed = (stats.users.removed ?? 0) + 1;
+      (stats.users ??= {}).removed = increment(stats.users.removed);
     });
     return promise;
   });
@@ -277,17 +282,11 @@ export const removeBotUsers: (
   }
 };
 
-export type AddBotReactionOptions = {
-  reactionsRef: CollectionReference;
-  userRef: DocumentReference;
-  venueId: string;
-  conf: SimConfig;
-  stats: SimStats;
-  log: LogFunction;
-};
-
 export const addBotReaction: (
-  options: AddBotReactionOptions
+  options: {
+    reactionsRef: CollectionReference;
+    userRef: DocumentReference;
+  } & SimContext<"venueRef" | "venueId" | "conf" | "stats" | "log">
 ) => Promise<void> = async (options) => {
   const { reactionsRef, userRef, conf, log, stats } = options;
   const snap = await userRef.get();
@@ -330,19 +329,12 @@ export const addBotReaction: (
       isText ? data.text : data.reaction
     }}.`
   );
-  stats.writes = (stats.writes ?? 0) + 1;
-  (stats.reactions ??= {}).created = (stats.reactions.created ?? 0) + 1;
-};
-
-export type RemoveBotReactionsOptions = {
-  reactionsRef: CollectionReference;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
+  stats.writes = increment(stats.writes);
+  (stats.reactions ??= {}).created = increment(stats.reactions.created);
 };
 
 export const removeBotReactions: (
-  options: RemoveBotReactionsOptions
+  options: SimContext<"reactionsRef" | "conf" | "log" | "stats">
 ) => Promise<void> = async ({ reactionsRef, conf, log, stats }) => {
   const remove = withErrorReporter(
     conf.log,
@@ -352,7 +344,7 @@ export const removeBotReactions: (
         log(
           chalk`{green.inverse DONE} Removed  reaction with id {green ${reactionRef.id}}.`
         );
-        (stats.reactions ??= {}).removed = (stats.reactions.removed ?? 0) + 1;
+        (stats.reactions ??= {}).removed = increment(stats.reactions.removed);
       });
       return promise;
     }
@@ -389,17 +381,10 @@ export const removeBotReactions: (
   }
 };
 
-export type SendBotVenueMessageOptions = {
-  chatsRef: CollectionReference;
-  userRef: DocumentReference;
-  venueRef: DocumentReference;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-};
-
 export const sendBotVenueMessage: (
-  options: SendBotVenueMessageOptions
+  options: {
+    userRef: DocumentReference;
+  } & SimContext<"venueRef" | "chatsRef" | "conf" | "log" | "stats">
 ) => Promise<void> = async (options) => {
   const { chatsRef, userRef, venueRef, conf, log, stats } = options;
   const snap = await userRef.get();
@@ -430,22 +415,15 @@ export const sendBotVenueMessage: (
     ts_utc: admin.firestore.Timestamp.now(),
   });
 
-  stats.writes = (stats.writes ?? 0) + 1;
-  (stats.chatlines ??= {}).created = (stats.chatlines.created ?? 0) + 1;
+  stats.writes = increment(stats.writes);
+  (stats.chatlines ??= {}).created = increment(stats.chatlines.created);
   log(
     chalk`{inverse NOTE} User {green ${userId}} sent chat ln {green ${text}}.`
   );
 };
 
-export type RemoveBotChatMessagesOptions = {
-  chatsRef: CollectionReference;
-  conf: SimConfig;
-  log: LogFunction;
-  stats: SimStats;
-};
-
 export const removeBotChatMessages: (
-  options: RemoveBotChatMessagesOptions
+  options: SimContext<"chatsRef" | "conf" | "log" | "stats">
 ) => Promise<void> = async ({ chatsRef, conf, log, stats }) => {
   const remove = withErrorReporter(conf.log, (chatRef: DocumentReference) => {
     const promise = chatRef.delete();
@@ -453,7 +431,7 @@ export const removeBotChatMessages: (
       log(
         chalk`{green.inverse DONE} Removed  chat with id {green ${chatRef.id}}.`
       );
-      (stats.chatlines ??= {}).removed = (stats.chatlines.removed ?? 0) + 1;
+      (stats.chatlines ??= {}).removed = increment(stats.chatlines.removed);
     });
     return promise;
   });

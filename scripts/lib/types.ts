@@ -23,14 +23,36 @@ export type Incomplete<T> = {
 };
 
 export type StopSignal = "sigint" | "timeout";
-export type SimulationName = "chat" | "experience" | "seat";
+export type SimulationName = "chat" | "experience" | "seat" | "table";
+
+export type RunContext<T> = {
+  conf: T;
+  log: LogFunction;
+  stats: SimStats;
+  stop: Promise<StopSignal>;
+};
+
+export interface RunTime {
+  start: string;
+  finish: string;
+  run: string;
+}
+
+export interface ScriptRunTime extends RunTime {
+  init: string;
+  cleanup: string;
+}
+
+export interface SimAverages {
+  chatlines: string;
+  reactions: string;
+  writes: string;
+  relocations: string;
+}
 
 export type SimStats = Incomplete<{
-  time: {
-    start: string;
-    finish: string;
-    run: string;
-  };
+  script: ScriptRunTime;
+  sim: RunTime;
 
   file: {
     configuration: string;
@@ -59,18 +81,17 @@ export type SimStats = Incomplete<{
   entered: number;
   writes: number;
 
-  average: Record<string, unknown>;
+  average: Record<string, SimAverages>;
 }>;
 
 export type SimLoopConfig = {
+  affinity: number;
   chunkSize: number;
   tick: number;
-  affinity: number;
 };
 
-export type HasCleanupFlag = {
-  cleanup: boolean;
-};
+export type HasCleanupFlag = { cleanup: boolean };
+export type HasImpatienceFlag = { impatience: boolean };
 
 export type SimConfig = Incomplete<
   SimLoopConfig & {
@@ -79,6 +100,7 @@ export type SimConfig = Incomplete<
 
     timeout: number;
     keepAlive: boolean;
+
     simulate: SimulationName[];
 
     log: {
@@ -98,25 +120,42 @@ export type SimConfig = Incomplete<
       minCol: number;
       maxRow: number;
       maxCol: number;
-      chunkSize: number;
     };
 
-    seat: SimLoopConfig & { impatience: boolean };
+    seat: SimLoopConfig & HasImpatienceFlag;
+    table: SimLoopConfig & HasImpatienceFlag;
     chat: SimLoopConfig & HasCleanupFlag;
     experience: SimLoopConfig & HasCleanupFlag;
   }
 >;
 
-export type RunContext<T> = {
-  conf: T;
-  log: LogFunction;
-  stats: SimStats;
-  stop: Promise<StopSignal>;
+// NOTE: local utility type for defining SimContext, use that one instead
+type FullSimContext = RunContext<SimConfig> & {
+  chatsRef: CollectionReference;
+  reactionsRef: CollectionReference;
+  template: string;
+  userRefs: DocumentReference[];
+  venueId: string;
+  venueName: string;
+  venueRef: DocumentReference;
 };
+
+export type SimContext<
+  T extends keyof FullSimContext = keyof FullSimContext
+> = Pick<FullSimContext, T>;
 
 export type GridSize = {
   maxCol: number;
   maxRow: number;
   minCol: number;
   minRow: number;
+};
+
+export type TableInfo = {
+  cap: number;
+  col: number;
+  dub: string;
+  idx: string;
+  row: number;
+  ref: string;
 };
