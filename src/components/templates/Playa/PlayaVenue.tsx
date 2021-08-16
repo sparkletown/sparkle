@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { Overlay } from "react-bootstrap";
-import { DEFAULT_MAP_ICON_URL, PLAYA_VENUE_SIZE } from "settings";
+import { PLAYA_VENUE_SIZE } from "settings";
 import { AnyVenue } from "types/venues";
 import { WithId } from "utils/id";
 
@@ -36,12 +36,13 @@ const PlayaVenue = ({
         onMouseOver={onMouseOver}
         onMouseLeave={onMouseLeave}
       >
-        <span className="img-vcenter-helper" />
+        {/* Removed as unnecessary. https://github.com/sparkletown/internal-sparkle-issues/issues/710  */}
+        {/* <span className="img-vcenter-helper" />
         <img
           className="venue-icon"
           src={venue.mapIconImageUrl || DEFAULT_MAP_ICON_URL}
           alt={`${venue.name} Icon`}
-        />
+        /> */}
         {selectedVenueId === venue.id && <div className="selected" />}
       </div>
       <Overlay target={venueRef.current} show={true}>

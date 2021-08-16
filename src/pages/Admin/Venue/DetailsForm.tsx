@@ -1,13 +1,3 @@
-import Bugsnag from "@bugsnag/js";
-import {
-  createUrlSafeName,
-  createVenue,
-  updateVenue,
-  VenueInput,
-} from "api/admin";
-import { ImageInput } from "components/molecules/ImageInput";
-import "firebase/functions";
-import { useUser } from "hooks/useUser";
 import React, {
   useCallback,
   useMemo,
@@ -17,16 +7,18 @@ import React, {
 } from "react";
 import { ErrorMessage, FieldErrors, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
-import { VenuePlacementState, VenueTemplate } from "types/venues";
-import { createJazzbar } from "utils/venue";
+import { Form } from "react-bootstrap";
+import Bugsnag from "@bugsnag/js";
+import "firebase/functions";
 import * as Yup from "yup";
+
 import {
-  editVenueCastSchema,
-  validationSchema,
-} from "./DetailsValidationSchema";
-import "./Venue.scss";
-import { WizardPage } from "./VenueWizard";
-import { venueLandingUrl } from "utils/url";
+  createUrlSafeName,
+  createVenue,
+  updateVenue,
+  VenueInput,
+} from "api/admin";
+
 import {
   ZOOM_URL_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -39,18 +31,37 @@ import {
   PLAYA_WIDTH,
   PLAYA_HEIGHT,
   HAS_GRID_TEMPLATES,
-  HAS_REACTIONS_TEMPLATES,
   BACKGROUND_IMG_TEMPLATES,
+  BM_PARENT_ID,
 } from "settings";
-import "./Venue.scss";
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
-import { ExtractProps } from "types/utility";
+
 import { IS_BURN } from "secrets";
-import { useQuery } from "hooks/useQuery";
-import { Form } from "react-bootstrap";
-import QuestionInput from "./QuestionInput";
-import EntranceInput from "./EntranceInput";
+
+import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
+import { ExtractProps } from "types/utility";
+
+import { isTruthy } from "utils/types";
+import { venueLandingUrl } from "utils/url";
+import { createJazzbar } from "utils/venue";
+
+import { useUser } from "hooks/useUser";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
+
+import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+
+import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
+
+import {
+  editVenueCastSchema,
+  validationSchema,
+} from "./DetailsValidationSchema";
+import { WizardPage } from "./VenueWizard";
+
+// @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
+import "../Admin.scss";
+
+import "./Venue.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -61,9 +72,11 @@ interface DetailsFormProps extends WizardPage {
 const iconPositionFieldName = "iconPosition";
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
+// @debt remove reference to legacy 'Theme Camp' here, both should probably just
+//  display the same text as themecamp is now essentially just an alias of partymap
 const backgroundTextByVenue: Record<string, string> = {
   [VenueTemplate.themecamp]: "Theme Camp",
-  [VenueTemplate.partymap]: "Party Map",
+  [VenueTemplate.partymap]: "Camp",
 };
 
 export const DetailsForm: React.FC<DetailsFormProps> = ({
@@ -79,8 +92,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [state.detailsPage, venueId]
   );
 
-  const queryParams = useQuery();
-  const parentIdQuery = queryParams.get("parentId");
+  const { sovereignVenue } = useSovereignVenue({ venueId });
 
   const {
     watch,
@@ -90,6 +102,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     control,
     handleSubmit,
     errors,
+    setError,
   } = useForm<FormValues>({
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -98,10 +111,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       template: state.templatePage?.template,
       editing: !!venueId,
     },
-    defaultValues: {
-      ...defaultValues,
-      parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
-    },
+    defaultValues,
   });
   const { user } = useUser();
   const history = useHistory();
@@ -127,14 +137,29 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     );
   }, [state]);
 
+  // @debt refactor this to split it into more manageable chunks, most likely with some things pulled into the api/* layer
+  // @debt refactor this to use useAsync or useAsyncFn as appropriate
   const onSubmit = useCallback(
     async (vals: Partial<FormValues>) => {
-      if (!user) return;
+      if (!user || formError) return;
       try {
         // unfortunately the typing is off for react-hook-forms.
-        if (!!venueId)
-          await updateVenue({ ...(vals as VenueInput), id: venueId }, user);
-        else await createVenue(vals as VenueInput, user);
+        if (venueId) {
+          await updateVenue(
+            {
+              ...(vals as VenueInput),
+              id: venueId,
+            },
+            user
+          );
+        } else
+          await createVenue(
+            {
+              ...vals,
+              parentId: BM_PARENT_ID,
+            } as VenueInput,
+            user
+          );
 
         vals.name
           ? history.push(`/admin/${createUrlSafeName(venueId ?? vals.name)}`)
@@ -149,29 +174,19 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [user, venueId, history]
+    [user, formError, venueId, history]
   );
 
-  const mapIconUrl = useMemo(() => {
-    const file = values.mapIconImageFile;
-    if (file && file.length > 0) return URL.createObjectURL(file[0]);
-    return values.mapIconImageUrl;
-  }, [values.mapIconImageFile, values.mapIconImageUrl]);
-
   const iconsMap = useMemo(
-    () =>
-      mapIconUrl
-        ? {
-            [iconPositionFieldName]: {
-              width: PLAYA_VENUE_SIZE,
-              height: PLAYA_VENUE_SIZE,
-              top: defaultValues?.placement?.y ?? 0,
-              left: defaultValues?.placement?.x ?? 0,
-              url: mapIconUrl,
-            },
-          }
-        : undefined,
-    [mapIconUrl, defaultValues]
+    () => ({
+      [iconPositionFieldName]: {
+        width: PLAYA_VENUE_SIZE,
+        height: PLAYA_VENUE_SIZE,
+        top: defaultValues?.placement?.y ?? 0,
+        left: defaultValues?.placement?.x ?? 0,
+      },
+    }),
+    [defaultValues]
   );
 
   const onBoxMove: ExtractProps<
@@ -188,9 +203,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     [setValue]
   );
 
+  useEffect(() => {
+    if (!previous || isTruthy(state.templatePage)) return;
+
+    previous();
+  }, [previous, state.templatePage]);
+
   if (!state.templatePage) {
-    previous && previous();
-    return null;
+    // In reality users should never actually see this, since the useEffect above should navigate us back to ?page=1
+    return <>Error: state.templatePage not defined.</>;
   }
 
   const isAdminPlaced =
@@ -198,25 +219,30 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     VenuePlacementState.AdminPlaced;
   const placementAddress = state.detailsPage?.venue?.placement?.addressText;
 
+  // @debt refactor any needed styles out of Admin.scss (eg. toggles, etc) and into DetailsForm.scss/similar, then remove the admin-dashboard class from this container
   return (
-    <div className="page page--admin">
+    <div className="page page--admin admin-dashboard">
       <div className="page-side page-side--admin">
         <div className="page-container-left page-container-left">
           <div className="page-container-left-content">
             <DetailsFormLeft
+              venueId={venueId}
               setValue={setValue}
               state={state}
               previous={previous}
               values={values}
+              sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
               watch={watch}
               onSubmit={onSubmit}
               editing={!!venueId}
               formError={formError}
+              setFormError={setFormError}
               control={control}
               handleSubmit={handleSubmit}
               errors={errors}
+              setError={setError}
             />
           </div>
         </div>
@@ -281,6 +307,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
 };
 
 interface DetailsFormLeftProps {
+  venueId?: string;
+  sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
   values: FormValues;
@@ -291,18 +319,20 @@ interface DetailsFormLeftProps {
   onSubmit: (vals: Partial<FormValues>) => Promise<void>;
   handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
+  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
   setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
+  setFormError: (value: boolean) => void;
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  sovereignVenue,
   editing,
   state,
   values,
   isSubmitting,
   register,
-  watch,
   errors,
   previous,
   onSubmit,
@@ -385,26 +415,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderRestrictToAdultsInput = () => (
-    <div className="input-container">
-      <label
-        htmlFor={"chkadultContent"}
-        className={`checkbox ${
-          watch("adultContent", false) && "checkbox-checked"
-        }`}
-      >
-        Restrict entry to adults aged 18+
-      </label>
-      <input
-        type="checkbox"
-        id={"chkadultContent"}
-        name={"adultContent"}
-        defaultChecked={values.adultContent}
-        ref={register}
-      />
-    </div>
-  );
-
   const renderBannerPhotoInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">Upload a banner photo</h4>
@@ -422,7 +432,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderLogoInput = () => (
     <div className="input-container">
-      <h4 className="italic input-header">Upload a square logo</h4>
+      <h4 className="italic input-header">Upload a logo</h4>
       <ImageInput
         disabled={disable}
         ref={register}
@@ -430,8 +440,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         remoteUrlInputName={"logoImageUrl"}
         remoteImageUrl={values.logoImageUrl}
         name={"logoImageFile"}
-        containerClassName="input-square-container"
-        imageClassName="input-square-image"
+        containerClassName="host-icon-container"
+        imageClassName="host-icon"
         error={errors.logoImageFile || errors.logoImageUrl}
       />
     </div>
@@ -454,44 +464,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <span className="input-error">{errors.bannerMessage.message}</span>
       )}
     </>
-  );
-
-  const renderAttendeesTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
-        For example: guests, attendees, partygoers.
-      </div>
-      <input
-        type="text"
-        disabled={disable}
-        name="attendeesTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Attendees title"
-      />
-      {errors.attendeesTitle && (
-        <span className="input-error">{errors.attendeesTitle.message}</span>
-      )}
-    </div>
-  );
-
-  const renderChatTitleInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Your venue type label</h4>
-      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
-      <input
-        type="text"
-        disabled={disable}
-        name="chatTitle"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Event label"
-      />
-      {errors.chatTitle && (
-        <span className="input-error">{errors.chatTitle.message}</span>
-      )}
-    </div>
   );
 
   const renderUrlInput = () => (
@@ -536,150 +508,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderLiveScheduleToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show live schedule</h4>
-      <label id={"showLiveSchedule"} className="switch">
-        <input
-          type="checkbox"
-          id={"showLiveSchedule"}
-          name={"showLiveSchedule"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowGridToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show grid layout</h4>
-      <label id={"showGrid"} className="switch">
-        <input
-          type="checkbox"
-          id={"showGrid"}
-          name={"showGrid"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowBadgesToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show badges</h4>
-      <label id={"showBadges"} className="switch">
-        <input
-          type="checkbox"
-          id={"showBadges"}
-          name={"showBadges"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowZendeskToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Zendesk support popup</h4>
-      <label id={"showZendesk"} className="switch">
-        <input
-          type="checkbox"
-          id={"showZendesk"}
-          name={"showZendesk"}
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderSeatingNumberInput = () => (
-    <>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats columns</h4>
-        <input
-          disabled={disable}
-          defaultValue={25}
-          min={5}
-          name="auditoriumColumns"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats columns"
-        />
-        {errors.auditoriumColumns ? (
-          <span className="input-error">
-            {errors.auditoriumColumns.message}
-          </span>
-        ) : null}
-      </div>
-      <div className="input-container">
-        <h4 className="italic input-header">Number of seats rows</h4>
-        <input
-          disabled={disable}
-          defaultValue={19}
-          name="auditoriumRows"
-          type="number"
-          ref={register}
-          className="align-left"
-          placeholder="Number of seats rows"
-          min={5}
-        />
-        {errors.auditoriumRows ? (
-          <span className="input-error">{errors.auditoriumRows.message}</span>
-        ) : null}
-      </div>
-    </>
-  );
-
-  const renderShowReactions = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show reactions</h4>
-      <label id="showReactions" className="switch">
-        <input
-          type="checkbox"
-          id="showReactions"
-          name="showReactions"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderShowRangersToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Show Rangers support</h4>
-      <label id="showRangers" className="switch">
-        <input
-          type="checkbox"
-          id="showRangers"
-          name="showRangers"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
-  const renderRestrictDOBToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Require date of birth on register</h4>
-      <label id="requiresDateOfBirth" className="switch">
-        <input
-          type="checkbox"
-          id="requiresDateOfBirth"
-          name="requiresDateOfBirth"
-          ref={register}
-        />
-        <span className="slider round"></span>
-      </label>
-    </div>
-  );
-
   const renderGridDimensionsInputs = () => (
     <>
       <div className="input-container">
@@ -706,37 +534,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         </div>
       </div>
     </>
-  );
-
-  const renderParentIdInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">
-        Enter the parent venue ID, for the &quot;back&quot; button to go to, and
-        for sharing events in the schedule
-      </h4>
-      <div style={{ fontSize: "16px" }}>
-        The nav bar can show a &quot;back&quot; button if you enter an ID here.
-        Clicking &quot;back&quot; will return the user to the venue whose ID you
-        enter. Additionally, the events you add here will be shown to users
-        while they are on all other venues which share the parent venue ID you
-        enter here, as well as in the parent venue. The value is a venue ID.
-        Enter the venue ID you wish to use. A venue ID is the part of the URL
-        after /in/, so eg. for <i>sparkle.space/in/abcdef</i> you would enter{" "}
-        <i>abcdef</i>
-        below
-      </div>
-      <input
-        type="text"
-        disabled={disable}
-        name="parentId"
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="abcdef"
-      />
-      {errors.parentId && (
-        <span className="input-error">{errors.parentId.message}</span>
-      )}
-    </div>
   );
 
   const renderRoomAppearanceSelect = () => (
@@ -778,31 +575,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
-  const renderRadioToggle = () => (
-    <div className="toggle-room">
-      <h4 className="italic input-header">Enable venue radio</h4>
-      <label id="showRadio" className="switch">
-        <input type="checkbox" id="showRadio" name="showRadio" ref={register} />
-        <span className="slider round" />
-      </label>
-    </div>
-  );
-
-  const renderRadioStationInput = () => (
-    <div className="input-container">
-      <h4 className="italic input-header">Radio station stream URL:</h4>
-      <input
-        type="text"
-        disabled={disable}
-        name={`radioStations`}
-        ref={register}
-        className="wide-input-block input-centered align-left"
-        placeholder="Radio station URL..."
-      />
-      {errors.radioStations && (
-        <span className="input-error">{errors.radioStations.message}</span>
-      )}
-    </div>
+  const renderHelper = (text: string) => (
+    <p className="small light helper">{text}</p>
   );
 
   return (
@@ -812,30 +586,21 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         <h4 className="italic" style={{ fontSize: "30px" }}>{`${
           editing ? "Edit" : "Create"
         } your ${templateType}`}</h4>
-        <p
-          className="small light"
-          style={{ marginBottom: "2rem", fontSize: "16px" }}
-        >
-          You can change anything except for the name of your venue later
-        </p>
+        {renderHelper(
+          "You can change anything except for the name of your venue later"
+        )}
 
         {renderVenueNameInput()}
         {renderTaglineInput()}
         {renderDescriptionInput()}
-        {renderRestrictToAdultsInput()}
 
         {renderBannerPhotoInput()}
         {renderLogoInput()}
+        {renderHelper("1:1 ratio recommended")}
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
           renderAnnouncementInput()}
-
-        {/* ATTENDEES (multiple) TITLE */}
-        {renderAttendeesTitleInput()}
-
-        {/* EVENT CHAT TITLE */}
-        {renderChatTitleInput()}
 
         {templateID && (
           <>
@@ -849,46 +614,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
 
-        <QuestionInput
-          title="Code of conduct questions"
-          fieldName="code_of_conduct_questions"
-          register={register}
-          hasLink
-          editing={state.detailsPage?.venue.code_of_conduct_questions}
-        />
-        <QuestionInput
-          title="Profile questions"
-          fieldName="profile_questions"
-          register={register}
-        />
-
-        <EntranceInput register={register} fieldName="entrance" />
-
-        {renderLiveScheduleToggle()}
-        {templateID &&
-          HAS_GRID_TEMPLATES.includes(templateID) &&
-          renderShowGridToggle()}
-        {renderShowBadgesToggle()}
-        {renderShowZendeskToggle()}
-        {templateID &&
-          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          renderShowReactions()}
-        {renderShowRangersToggle()}
-        {renderRestrictDOBToggle()}
-
-        {templateID &&
-          HAS_REACTIONS_TEMPLATES.includes(templateID) &&
-          renderSeatingNumberInput()}
-
-        {renderRadioToggle()}
-        {values.showRadio && renderRadioStationInput()}
-
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
           renderGridDimensionsInputs()}
-
-        {renderParentIdInput()}
 
         {templateID &&
           HAS_ROOMS_TEMPLATES.includes(templateID) &&
@@ -955,7 +684,7 @@ export const SubmitButton: React.FC<SubmitButtonProps> = ({
     <input
       className="btn btn-primary"
       type="submit"
-      value={editing ? `Update ${templateType}` : `Create ${templateType}`}
+      value={editing ? `Update ${templateType}` : "Build!"}
     />
   );
 };

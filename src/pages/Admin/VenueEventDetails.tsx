@@ -1,10 +1,10 @@
 import React from "react";
-import { format, getUnixTime } from "date-fns";
+import { format } from "date-fns";
 
 import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
-import { formatHourAndMinute } from "utils/time";
+import { formatTimeLocalised } from "utils/time";
 import { eventEndTime, eventStartTime } from "utils/event";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -24,8 +24,8 @@ const VenueEventDetails = ({
   setShowDeleteEventModal,
   className,
 }: VenueEventDetailsProps) => {
-  const startTime = formatHourAndMinute(venueEvent.start_utc_seconds);
-  const endTime = formatHourAndMinute(getUnixTime(eventEndTime(venueEvent)));
+  const startTime = formatTimeLocalised(eventStartTime(venueEvent));
+  const endTime = formatTimeLocalised(eventEndTime(venueEvent));
   const startDay = format(eventStartTime(venueEvent), "EEEE LLLL do");
 
   return (
@@ -48,39 +48,6 @@ const VenueEventDetails = ({
         {venueEvent.descriptions?.map((description, index) => (
           <RenderMarkdown text={description} key={`${description}#${index}`} />
         ))}
-      </div>
-      <div className="button-container">
-        <div className="price-container">
-          {venueEvent.price > 0 && (
-            <>Individual tickets £{venueEvent.price / 100}</>
-          )}
-        </div>
-        {!className && (
-          <div className="event-payment-button-container">
-            <div>
-              <button
-                role="link"
-                className="btn btn-primary buy-tickets-button"
-                onClick={() => {
-                  setEditedEvent && setEditedEvent(venueEvent);
-                  setShowCreateEventModal(true);
-                }}
-              >
-                Edit
-              </button>
-              <button
-                role="link"
-                className="btn btn-primary buy-tickets-button"
-                onClick={() => {
-                  setEditedEvent && setEditedEvent(venueEvent);
-                  setShowDeleteEventModal(true);
-                }}
-              >
-                Delete
-              </button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

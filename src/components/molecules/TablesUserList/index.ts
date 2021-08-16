@@ -1,1 +1,1 @@
-export { default } from "./TablesUserList";
+export { TablesUserList } from "./TablesUserList";

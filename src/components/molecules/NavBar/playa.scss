@@ -136,14 +136,14 @@ $sand: #937c63;
         font-weight: 700;
       }
 
-      .back-link {
-        letter-spacing: 1.5px;
-        font-size: 1.3em;
-        cursor: pointer;
-        &:hover {
-          text-decoration: underline;
-        }
-      }
+      // .back-link {
+      //   letter-spacing: 1.5px;
+      //   font-size: 1.3em;
+      //   cursor: pointer;
+      //   &:hover {
+      //     text-decoration: underline;
+      //   }
+      // }
     }
 
     .navbar-dropdown-middle {
@@ -172,14 +172,14 @@ $sand: #937c63;
         }
       }
       span,
-      .back-link {
-        display: block;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 66px;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
-      }
+      // .back-link {
+      //   display: block;
+      //   white-space: nowrap;
+      //   overflow: hidden;
+      //   text-overflow: ellipsis;
+      //   line-height: 66px;
+      //   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.21);
+      // }
       .search-icon {
         margin-right: 10px;
       }

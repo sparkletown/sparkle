@@ -18,7 +18,7 @@ export const BadgeImage: React.FC<{
 
   return (
     <img
-      className="badge-list-item-image"
+      className="Badges__item-image"
       ref={imageRef}
       src={image ?? DEFAULT_AVATAR_IMAGE}
       title={badgeLabel}

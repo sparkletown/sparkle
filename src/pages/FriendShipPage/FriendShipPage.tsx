@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 // import ChatBox from "components/organisms/Chatbox";
 import Room from "components/organisms/Room";
-import TablesUserList from "components/molecules/TablesUserList";
+import { TablesUserList } from "components/molecules/TablesUserList";
 import "./FriendShipPage.scss";
 import { FRIENDSHIP_CUSTOM_TABLES } from "./constants";
 import TableComponent from "components/molecules/TableComponent";

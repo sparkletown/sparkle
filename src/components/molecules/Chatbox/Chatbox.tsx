@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import {
   DeleteMessage,
@@ -33,7 +34,7 @@ export interface ChatboxProps {
   displayPoll?: boolean;
 }
 
-export const Chatbox: React.FC<ChatboxProps> = ({
+export const _Chatbox: React.FC<ChatboxProps> = ({
   messages,
   venue,
   sendMessage,
@@ -54,6 +55,15 @@ export const Chatbox: React.FC<ChatboxProps> = ({
   const unselectOption = useCallback(() => {
     setActiveOption(undefined);
   }, []);
+
+  // @debt createPoll should be returning Promise; make sense to use useAsync here
+  const onPollSubmit = useCallback(
+    (data) => {
+      createPoll(data);
+      unselectOption();
+    },
+    [createPoll, unselectOption]
+  );
 
   const isQuestionOptions = ChatOptionType.question === activeOption;
 
@@ -78,6 +88,15 @@ export const Chatbox: React.FC<ChatboxProps> = ({
         )
       ),
     [messages, deleteMessage, voteInPoll, venue]
+  );
+
+  const onReplyToThread = useCallback(
+    ({ replyText, threadId }) => {
+      sendThreadReply({ replyText, threadId });
+      unselectOption();
+      closeThread();
+    },
+    [unselectOption, closeThread, sendThreadReply]
   );
 
   return (
@@ -105,17 +124,19 @@ export const Chatbox: React.FC<ChatboxProps> = ({
           />
         )}
         {activeOption === ChatOptionType.poll ? (
-          <PollBox createPoll={createPoll} />
+          <PollBox onPollSubmit={onPollSubmit} />
         ) : (
           <ChatMessageBox
             selectedThread={selectedThread}
             sendMessage={sendMessage}
-            sendThreadReply={sendThreadReply}
             unselectOption={unselectOption}
             isQuestion={isQuestionOptions}
+            onReplyToThread={onReplyToThread}
           />
         )}
       </div>
     </div>
   );
 };
+
+export const Chatbox = React.memo(_Chatbox, isEqual);

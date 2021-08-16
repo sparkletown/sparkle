@@ -1,4 +1,5 @@
 import React from "react";
+import { isEqual } from "lodash";
 
 import { AnyVenue } from "types/venues";
 
@@ -14,7 +15,7 @@ export interface VenueChatProps {
   venue: WithId<AnyVenue>;
 }
 
-export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
+export const _VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
   const {
     sendMessage,
     deleteMessage,
@@ -36,3 +37,5 @@ export const VenueChat: React.FC<VenueChatProps> = ({ venue }) => {
     </div>
   );
 };
+
+export const VenueChat = React.memo(_VenueChat, isEqual);

@@ -1,3 +1,5 @@
+import { DEFAULT_TABLE_ROWS, DEFAULT_TABLE_COLUMNS } from "settings";
+
 import { Table } from "types/Table";
 
 /**
@@ -22,8 +24,8 @@ export const generateTables: (props: {
 }) => Table[] = ({
   num,
   capacity,
-  rows = 2,
-  columns = 3,
+  rows = DEFAULT_TABLE_ROWS,
+  columns = DEFAULT_TABLE_COLUMNS,
   titlePrefix = "Table",
   appendTableNumber = true,
   startFrom = 1,

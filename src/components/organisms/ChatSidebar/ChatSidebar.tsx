@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import { isEqual } from "lodash";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -22,7 +23,7 @@ export interface ChatSidebarProps {
   venue: WithId<AnyVenue>;
 }
 
-export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
+export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
     toggleSidebar,
@@ -31,26 +32,42 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     selectPrivateChat,
   } = useChatSidebarControls();
 
-  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo();
+  const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
+
+  const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
+  const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
+  const recipientId =
+    chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT
+      ? chatSettings.recipientId
+      : undefined;
 
   const containerStyles = classNames("chat-sidebar", {
     "chat-sidebar--expanded": isExpanded,
   });
 
   const venueChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected":
-      chatSettings.openedChatType === ChatTypes.VENUE_CHAT,
+    "chat-sidebar__tab--selected": isVenueChat,
   });
 
   const privateChatTabStyles = classNames("chat-sidebar__tab", {
-    "chat-sidebar__tab--selected":
-      chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT,
+    "chat-sidebar__tab--selected": isPrivateChat,
   });
 
+  const venueTabId = "chat-sidebar-tab-venue";
+  const privateTabId = "chat-sidebar-tab-private";
+
   return (
-    <div className={containerStyles}>
+    <div
+      role="dialog"
+      aria-labelledby={isVenueChat ? venueTabId : privateTabId}
+      className={containerStyles}
+    >
       <div className="chat-sidebar__header">
-        <div className="chat-sidebar__controller" onClick={toggleSidebar}>
+        <button
+          aria-label={isExpanded ? "Hide chat" : "Show chat"}
+          className="chat-sidebar__controller"
+          onClick={toggleSidebar}
+        >
           {isExpanded ? (
             <FontAwesomeIcon icon={faChevronRight} size="sm" />
           ) : (
@@ -63,25 +80,43 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
               />
             </>
           )}
-        </div>
+        </button>
 
-        <div className="chat-sidebar__tabs">
-          <div className={venueChatTabStyles} onClick={selectVenueChat}>
-            {venueChatTabTitle}
+        {isExpanded && (
+          <div className="chat-sidebar__tabs" role="tablist">
+            <button
+              role="tab"
+              id={venueTabId}
+              aria-label={venueChatTabTitle}
+              aria-selected={isVenueChat}
+              className={venueChatTabStyles}
+              onClick={selectVenueChat}
+            >
+              {venueChatTabTitle}
+            </button>
+            <button
+              role="tab"
+              id={privateTabId}
+              aria-label={privateChatTabTitle}
+              aria-selected={isPrivateChat}
+              className={privateChatTabStyles}
+              onClick={selectPrivateChat}
+            >
+              {privateChatTabTitle}
+            </button>
           </div>
-          <div className={privateChatTabStyles} onClick={selectPrivateChat}>
-            {privateChatTabTitle}
-          </div>
+        )}
+      </div>
+      {isExpanded && (
+        <div role="tabpanel" className="chat-sidebar__tab-content">
+          {isVenueChat && <VenueChat venue={venue} />}
+          {isPrivateChat && (
+            <PrivateChats recipientId={recipientId} venue={venue} />
+          )}
         </div>
-      </div>
-      <div className="chat-sidebar__tab-content">
-        {chatSettings.openedChatType === ChatTypes.VENUE_CHAT && (
-          <VenueChat venue={venue} />
-        )}
-        {chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT && (
-          <PrivateChats recipientId={chatSettings.recipientId} venue={venue} />
-        )}
-      </div>
+      )}
     </div>
   );
 };
+
+export const ChatSidebar = React.memo(_ChatSidebar, isEqual);

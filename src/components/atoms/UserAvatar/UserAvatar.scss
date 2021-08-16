@@ -1,14 +1,28 @@
 @import "scss/constants";
 
-.user-avatar {
+.UserAvatar {
   position: relative;
-
   width: 25px;
   height: 25px;
+
+  &:hover {
+    .UserAvatar__nametag--hover {
+      opacity: 1;
+
+      background-color: $primary;
+      padding: $spacing--xs;
+
+      transform: scale(1.5) translate(-35%, 50%);
+      box-shadow: 0 0 0 3px lighten($primary--darker, 10%),
+        0 2px 4px opaque-black(0.2);
+    }
+  }
+
   &__image {
     height: 100%;
     width: 100%;
     border-radius: 50%;
+    vertical-align: unset;
   }
 
   &__status-indicator {
@@ -16,21 +30,10 @@
     bottom: -1px;
     right: -1px;
     border-radius: 50%;
-    background-color: $green;
     height: 8px;
     width: 8px;
     z-index: z(user-avatar-status-indicator);
-
-    display: none;
-
-    &--online {
-      display: block;
-      background-color: $green;
-    }
-    &--busy {
-      display: block;
-      background-color: $ripple-color;
-    }
+    display: block;
 
     &--large {
       height: 12px;
@@ -46,8 +49,48 @@
     }
   }
 
-  &--large {
+  &--small {
+    width: 25px;
+    height: 25px;
+  }
+
+  &--medium {
     height: 40px;
     width: 40px;
+  }
+
+  &--large {
+    height: 54px;
+    width: 54px;
+  }
+
+  &__nametag {
+    position: absolute;
+    color: $white;
+
+    opacity: 0;
+
+    min-width: 70%;
+
+    text-align: center;
+
+    margin: 0 auto;
+    padding: 0 $spacing--xs;
+
+    bottom: 10%;
+    left: 50%;
+    margin-right: -50%;
+
+    border-radius: $border-radius--md;
+
+    font-size: $font-size--xs;
+    line-height: 1;
+
+    background-color: opaque-black(0.4);
+    box-shadow: 0 2px 4px opaque-black(0.2);
+
+    transform: translate(-50%, 0);
+    transition: transform 400ms, padding 400ms, opacity 600ms,
+      background-color 600ms;
   }
 }

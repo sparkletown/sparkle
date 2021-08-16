@@ -1,4 +1,5 @@
 import { useMemo, useCallback } from "react";
+import { isEqual } from "lodash";
 
 import { VENUE_CHAT_AGE_DAYS } from "settings";
 
@@ -29,6 +30,8 @@ import { useUser } from "./useUser";
 import { useWorldUsersByIdWorkaround } from "./users";
 import { useRoles } from "./useRoles";
 
+const noMessages: WithId<VenueChatMessage>[] = [];
+
 export const useConnectVenueChatMessages = (venueId?: string) => {
   useFirestoreConnect(
     venueId
@@ -49,19 +52,24 @@ export const useVenueChat = (venueId?: string) => {
 
   useConnectVenueChatMessages(venueId);
 
-  const chatMessages = useSelector(venueChatMessagesSelector) ?? [];
+  const chatMessages =
+    useSelector(venueChatMessagesSelector, isEqual) ?? noMessages;
 
   const isAdmin = Boolean(userRoles?.includes("admin"));
 
   const venueChatAgeThresholdSec = getDaysAgoInSeconds(VENUE_CHAT_AGE_DAYS);
 
-  const filteredMessages = chatMessages
-    .filter(
-      (message) =>
-        message.deleted !== true &&
-        message.ts_utc.seconds > venueChatAgeThresholdSec
-    )
-    .sort(chatSort);
+  const filteredMessages = useMemo(
+    () =>
+      chatMessages
+        .filter(
+          (message) =>
+            message.deleted !== true &&
+            message.ts_utc.seconds > venueChatAgeThresholdSec
+        )
+        .sort(chatSort),
+    [chatMessages, venueChatAgeThresholdSec]
+  );
 
   const sendMessage: SendMessage = useCallback(
     async ({ message, isQuestion }) => {
@@ -143,14 +151,11 @@ export const useVenueChat = (venueId?: string) => {
     [userId, worldUsersById, isAdmin, messages, allMessagesReplies]
   );
 
-  return useMemo(
-    () => ({
-      messagesToDisplay,
+  return {
+    messagesToDisplay,
 
-      sendMessage,
-      deleteMessage,
-      sendThreadReply,
-    }),
-    [messagesToDisplay, sendMessage, sendThreadReply, deleteMessage]
-  );
+    sendMessage,
+    deleteMessage,
+    sendThreadReply,
+  };
 };

@@ -76,7 +76,7 @@ $schedule--width: calc(#{$hours-count} * #{$hour-width} + #{$half-hour-width});
       content: "";
       display: block;
       height: $timeline-delimeter--height;
-      border-left: $timeline-delimeter--width solid white;
+      border-left: $timeline-delimeter--width solid $white;
       margin-left: $half-hour-width;
       margin-top: $timeline-delimeter--margin-top;
     }

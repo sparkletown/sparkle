@@ -4,8 +4,9 @@ import classNames from "classnames";
 import { AnyVenue, VenueEvent } from "types/venues";
 import { Room } from "types/rooms";
 
-import { formatHourAndMinute, getCurrentTimeInUTCSeconds } from "utils/time";
+import { eventEndTime, eventStartTime } from "utils/event";
 import { WithId } from "utils/id";
+import { formatTimeLocalised, getCurrentTimeInUTCSeconds } from "utils/time";
 
 import { useRoom } from "hooks/useRoom";
 
@@ -49,12 +50,10 @@ export const EventDisplay: React.FC<EventDisplayProps> = ({ event, venue }) => {
     <div className={containerClasses}>
       <div className="schedule-event-time">
         <div className="schedule-event-time-start">
-          {formatHourAndMinute(event.start_utc_seconds)}
+          {formatTimeLocalised(eventStartTime(event))}
         </div>
         <div className="schedule-event-time-end">
-          {formatHourAndMinute(
-            event.start_utc_seconds + event.duration_minutes * 60
-          )}
+          {formatTimeLocalised(eventEndTime(event))}
         </div>
         {isLiveEvent && <span className="schedule-event-time-live">Live</span>}
       </div>

@@ -12,9 +12,15 @@ $label-visible: flex;
   flex-direction: column;
   align-items: center;
 
+  appearance: none;
+  background: none;
+  border: none;
+  color: $white;
+
   transition: transform 600ms $transition-function;
 
-  &:hover {
+  &:hover,
+  &:focus {
     z-index: z(map-room--hovered);
     transform: scale(1.1);
 
@@ -36,19 +42,33 @@ $label-visible: flex;
     }
   }
 
-  &--unclickable {
-    z-index: z(map-room--unclickable);
-
+  &--covert {
     cursor: default;
 
-    &:hover {
-      z-index: z(map-room--unclickable);
-
+    &:hover,
+    &:focus {
       transform: none;
 
       .maproom__image {
         filter: none;
       }
+    }
+  }
+
+  &--unclickable {
+    z-index: z(map-room--unclickable);
+
+    &:hover,
+    &:focus {
+      z-index: z(map-room--unclickable);
+    }
+  }
+
+  &--iframe {
+    z-index: z(map-room--iframe);
+
+    &:hover {
+      z-index: z(map-room--iframe);
     }
   }
 
@@ -62,6 +82,11 @@ $label-visible: flex;
     position: relative;
     flex-shrink: 0;
 
+    width: 100%;
+    height: 100%;
+  }
+
+  &__iframe {
     width: 100%;
     height: 100%;
   }

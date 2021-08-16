@@ -71,28 +71,36 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({ venueId }) => {
   const firestore = useFirestore();
   const [state, dispatch] = useReducer(reducer, initialState);
 
+  // @debt refactor this to use useAsync / useAsyncFn as appropriate
   useEffect(() => {
     const fetchVenueFromAPI = async () => {
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+
       if (!venueSnapshot.exists) return;
+
       const data = venueSnapshot.data() as AnyVenue;
+
       //find the template
       const template = ALL_VENUE_TEMPLATES.find(
         (template) => data.template === template.template
       );
+
       if (!template) return;
 
       // ensure reducer is synchronised with API data
       dispatch({ type: "SUBMIT_TEMPLATE_PAGE", payload: template });
       dispatch({ type: "SUBMIT_DETAILS_PAGE", payload: data });
     };
+
     fetchVenueFromAPI();
   }, [firestore, venueId]);
 
+  // @debt replace this with LoadingPage or Loading as appropriate
   if (!state.detailsPage) return <div>Loading...</div>;
+
   return <DetailsForm venueId={venueId} state={state} />;
 };
 
@@ -140,5 +148,5 @@ const VenueWizardCreate: React.FC = () => {
     return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
-  return <WithNavigationBar fullscreen>{Page}</WithNavigationBar>;
+  return <WithNavigationBar>{Page}</WithNavigationBar>;
 };

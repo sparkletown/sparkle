@@ -1,1 +1,1 @@
-export { default } from "./TableFooter";
+export { TableFooter } from "./TableFooter";

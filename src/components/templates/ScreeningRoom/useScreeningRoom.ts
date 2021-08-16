@@ -112,10 +112,20 @@ export const useScreeningRoom = (screeningRoomVenueId: string) => {
 
   const fuseVideos = useMemo(
     () =>
-      new Fuse(screeningRoomVideos, {
-        keys: ["title"],
+      new Fuse(filteredVideosBySubCategory, {
+        keys: [
+          "title",
+          {
+            name: "authorName",
+            weight: 8,
+          },
+          "introduction",
+        ],
+        threshold: 0.2, // 0.1 seems to be exact, default 0.6: brings too distant if anyhow related hits
+        ignoreLocation: true, // default False: True - to search ignoring location of the words.
+        findAllMatches: true,
       }),
-    [screeningRoomVideos]
+    [filteredVideosBySubCategory]
   );
 
   const searchedVideos = useMemo(() => {

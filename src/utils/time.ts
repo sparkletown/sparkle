@@ -9,6 +9,10 @@ import {
   getUnixTime,
   intervalToDuration,
   isAfter,
+  isThisYear,
+  isToday,
+  isTomorrow,
+  isYesterday,
   startOfDay,
   subDays,
   subHours,
@@ -124,52 +128,82 @@ export const getTimeBeforeParty = (startUtcSeconds?: number): string => {
 };
 
 /**
- * Format UTC seconds as a string representing date.
+ * Format dateOrTimestamp as a string representing date.
  *
  * @example
- *   formatDate(1618509600)
- *   // 'Apr 15th'
+ *   formatDate(1623899620647)
+ *   // 'Jun 17th'
  *
- * @param utcSeconds
+ * @param dateOrTimestamp
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatDate(utcSeconds: number) {
-  return format(fromUnixTime(utcSeconds), "MMM do");
+export const formatDate = (dateOrTimestamp: Date | number): string =>
+  isThisYear(dateOrTimestamp)
+    ? format(dateOrTimestamp, "MMM do")
+    : format(dateOrTimestamp, "MMM do, yyyy");
+
+export interface FormatDateRelativeToNowOptions {
+  formatYesterday?: (dateOrTimestamp: Date | number) => string;
+  formatToday?: (dateOrTimestamp: Date | number) => string;
+  formatTomorrow?: (dateOrTimestamp: Date | number) => string;
+  formatOtherDate?: (dateOrTimestamp: Date | number) => string;
 }
 
 /**
- * Format UTC seconds as a string representing exact hour(using 12 hour AM/PM format) and minutes.
+ * Format dateOrTimestamp as a string representing the date relative to now.
  *
- * @example
- *   formatTimestampToDisplayHoursMinutes(1618509600)
- *   // '9:35 AM'
+ * These formats can be customised via the options prop if desired.
  *
- * @param timestamp
+ * @example Basic Usage
+ *   formatDateRelativeToNow(yesterdayDate) // "Yesterday"
+ *   formatDateRelativeToNow(todayDate)     // "Today"
+ *   formatDateRelativeToNow(tomorrowDate)  // "Tomorrow"
+ *   formatDateRelativeToNow(someOtherDate) // "Jun 17th"
+ *
+ * @example Customised Formats Usage
+ *   formatDateRelativeToNow(todayDate, { formatToday: () => "All we have is now!" })
+ *   // "All we have is now!"
+ *
+ * @param dateOrTimestamp
+ * @param options
  *
  * @see https://date-fns.org/docs/format
  */
-export function formatTimestampToDisplayHoursMinutes(timestamp: number) {
-  return format(timestamp, "h:mm aa");
-}
+export const formatDateRelativeToNow = (
+  dateOrTimestamp: Date | number,
+  options?: FormatDateRelativeToNowOptions
+): string => {
+  const {
+    formatYesterday = () => "Yesterday",
+    formatToday = () => "Today",
+    formatTomorrow = () => "Tomorrow",
+    formatOtherDate = formatDate,
+  } = options ?? {};
+
+  if (isYesterday(dateOrTimestamp)) return formatYesterday(dateOrTimestamp);
+  if (isToday(dateOrTimestamp)) return formatToday(dateOrTimestamp);
+  if (isTomorrow(dateOrTimestamp)) return formatTomorrow(dateOrTimestamp);
+
+  return formatOtherDate(dateOrTimestamp);
+};
+
+/**
+ * Format dateOrTimestamp as a string representing the time in long localized time format (eg. 12:00 AM).
+ *
+ * @example
+ *   formatTimestampToDisplayHoursMinutes(1623899620647)
+ *   // '1:13 PM'
+ *
+ * @param dateOrTimestamp
+ *
+ * @see https://date-fns.org/docs/format
+ */
+export const formatTimeLocalised = (dateOrTimestamp: Date | number): string =>
+  format(dateOrTimestamp, "p");
 
 export function oneHourAfterTimestamp(timestamp: number) {
   return timestamp + ONE_HOUR_IN_SECONDS;
-}
-
-/**
- * Format UTC seconds as a string representing time.
- *
- * @example
- *   formatUtcSeconds(1618509600)
- *   // '9:00 PM'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export function formatUtcSeconds(utcSeconds?: number | null) {
-  return utcSeconds ? format(fromUnixTime(utcSeconds), "p") : "(unknown)";
 }
 
 export const getHoursAgoInMilliseconds = (hours: number) =>
@@ -179,21 +213,6 @@ export const getCurrentTimeInMilliseconds = () => Date.now();
 
 export const getDaysAgoInSeconds = (days: number) =>
   getUnixTime(subDays(Date.now(), days));
-
-/**
- * Format UTC seconds as a string representing time in the format hh:mm.
- *
- * @example
- *   formatHourAndMinute(1618509600)
- *   // '21:00'
- *
- * @param utcSeconds
- *
- * @see https://date-fns.org/docs/format
- */
-export const formatHourAndMinute = (utcSeconds: number) => {
-  return format(fromUnixTime(utcSeconds), "HH:mm");
-};
 
 export const getSecondsFromStartOfDay = (utcSeconds: number) => {
   const time = fromUnixTime(utcSeconds);

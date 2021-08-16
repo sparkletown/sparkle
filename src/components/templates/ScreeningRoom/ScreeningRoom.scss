@@ -71,11 +71,14 @@ $video-container-height: 500px;
     display: flex;
     justify-content: center;
     margin-bottom: $spacing--sm;
+    flex-wrap: wrap;
   }
 
   &__subcategories {
     display: flex;
+    justify-content: center;
     margin-bottom: $spacing--sm;
+    flex-wrap: wrap;
   }
 
   &__video-previews {
@@ -88,5 +91,6 @@ $video-container-height: 500px;
   &__more-button {
     display: flex;
     justify-content: center;
+    margin-bottom: $spacing--xxl;
   }
 }
