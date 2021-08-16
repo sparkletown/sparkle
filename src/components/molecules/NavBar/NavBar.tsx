@@ -359,7 +359,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <div className="Navbar__menu--icon">
                     <FontAwesomeIcon icon={faBars} size="sm" />
                   </div>
-                  <UserAvatar user={userWithId} showStatus medium />
                 </OverlayTrigger>
               </div>
             )}
