@@ -103,7 +103,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         {importResult && (
           <div className="CsvImportModal__result">
             <div className="CsvImportModal__result-count">
-              The number of new events is {importResult.updateCount}.
+              The number of new events is {importResult.addedEventsCount}.
             </div>
             {importResult.errors.length > 0 && (
               <div className="CsvImportModal__result-errors">

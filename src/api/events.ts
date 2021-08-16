@@ -63,16 +63,16 @@ export interface ImportEventsBatchError {
 
 export interface ImportEventsBatchResult {
   errors: ImportEventsBatchError[];
-  updateCount: number;
+  addedEventsCount: number;
 }
 
 export const importEventsBatch: (
   data: VenueEventWithVenueId[]
 ) => Promise<ImportEventsBatchResult> = async (data) => {
-  if (!data) {
+  if (!data || data.length === 0) {
     return {
       errors: [],
-      updateCount: 0,
+      addedEventsCount: 0,
     };
   }
 
@@ -82,7 +82,7 @@ export const importEventsBatch: (
   const batch = firebase.firestore().batch();
 
   const errors: ImportEventsBatchError[] = [];
-  let updateCount = 0;
+  let addedEventsCount = 0;
 
   data.forEach(({ event, venueId }, index) => {
     if (!validIds.includes(venueId)) {
@@ -100,13 +100,13 @@ export const importEventsBatch: (
     const eventRef = venuesRef.doc(venueId).collection("events").doc();
 
     batch.set(eventRef, event);
-    updateCount += 1;
+    addedEventsCount += 1;
   });
 
   await batch.commit();
 
   return {
     errors,
-    updateCount,
+    addedEventsCount,
   };
 };
