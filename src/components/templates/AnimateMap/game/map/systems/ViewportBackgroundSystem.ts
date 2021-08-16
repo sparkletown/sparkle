@@ -1,6 +1,7 @@
 import { Engine, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
 import { BaseTexture, Sprite } from "pixi.js";
+import * as PIXI from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -11,8 +12,8 @@ import { GameInstance } from "../../GameInstance";
 
 export class ViewportBackgroundSystem extends System {
   private viewport: Viewport;
-  private background: Sprite;
-  private zoomed: Sprite;
+  private readonly background: Sprite;
+  private readonly zoomed: Sprite;
 
   private initialized = false;
   private worldDivision = 0;
@@ -50,6 +51,8 @@ export class ViewportBackgroundSystem extends System {
 
       this.initialized = true;
     });
+
+    this.colorMatrixFilter();
   }
 
   removeFromEngine(engine: Engine): void {
@@ -135,6 +138,21 @@ export class ViewportBackgroundSystem extends System {
         }
       }
     }
+  }
+
+  colorMatrixFilter(): void {
+    const bool = true;
+
+    const colors: PIXI.filters.ColorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+
+    colors.saturate(-1, bool); // multiple?
+    colors.hue(317, bool);
+    colors.brightness(0.1, bool);
+    colors.contrast(13, bool);
+    colors.night(0.3, bool);
+
+    this.background.filters = [colors];
+    this.zoomed.filters = [colors];
   }
 
   private addTile(point: Point): Sprite {
