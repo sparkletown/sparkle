@@ -30,6 +30,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
   nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
+  const [compressionError, setCompressionError] = useState(false);
 
   const [{ loading }, handleOnChange] = useAsyncFn(
     async (files: FileList | null) => {
@@ -44,8 +45,19 @@ const ImageInput: React.FC<ImageInputProps> = ({
           useWebWorker: true,
         };
 
-        file = await imageCompression(file, compressionOptions);
+        try {
+          file = await imageCompression(file, compressionOptions);
+        } catch (e) {
+          setCompressionError(true);
+          return;
+        }
+        if (file.size >= MAX_IMAGE_FILE_SIZE_BYTES) {
+          setCompressionError(true);
+          return;
+        }
       }
+
+      setCompressionError(false);
 
       const url = URL.createObjectURL(file);
 
@@ -58,6 +70,10 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
+
+  const errorMessage =
+    error?.message ??
+    (compressionError && "An error occurred while compressing the image.");
 
   return (
     <>
@@ -103,9 +119,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
         value={imageUrl}
         readOnly
       />
-      {error?.message && (
-        <div className="ImageInput__error">{error.message}</div>
-      )}
+      {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );
 };
