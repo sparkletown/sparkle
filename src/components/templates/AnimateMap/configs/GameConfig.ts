@@ -3,6 +3,8 @@ import { Point } from "../game/utils/Point";
 
 export interface GameOptionsFirebarrel {
   id: string;
+  x: number;
+  y: number;
 }
 
 export interface GameOptions {
@@ -72,18 +74,28 @@ export class GameConfig {
     return [
       {
         id: "animate-map-firebarrel-1",
+        x: this.worldCenter.x + 100,
+        y: this.worldCenter.y,
       },
       {
         id: "animate-map-firebarrel-2",
+        x: this.worldCenter.x,
+        y: this.worldCenter.y + 100,
       },
       {
         id: "animate-map-firebarrel-3",
+        x: this.worldCenter.x + 200,
+        y: this.worldCenter.y,
       },
       {
         id: "animate-map-firebarrel-4",
+        x: this.worldCenter.x,
+        y: this.worldCenter.y + 200,
       },
       {
         id: "animate-map-firebarrel-5",
+        x: this.worldCenter.x + 200,
+        y: this.worldCenter.y + 200,
       },
     ];
   }

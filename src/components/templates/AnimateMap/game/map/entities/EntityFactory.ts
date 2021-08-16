@@ -509,17 +509,18 @@ export default class EntityFactory {
 
   public createBarrel(
     id: string,
+    x: number,
+    y: number,
     venue: ReplicatedVenue | null = null
   ): Entity {
     const config = GameInstance.instance.getConfig();
 
     if (!venue) {
-      const point: Point = config.playgroundMap.getRandomPointInTheCentralCircle();
       venue = {
         id: uuid(),
         type: AnimateMapEntityType.venue,
-        x: point.x,
-        y: point.y,
+        x: x,
+        y: y,
         data: {
           videoUrlString: "",
           url: "",

@@ -273,7 +273,13 @@ export class MapContainer extends Container {
 
           if (firebarrels) {
             for (let i = 0; i < firebarrels.length; i++) {
-              this.entityFactory.createBarrel(firebarrels[i].id);
+              const firebarrel = firebarrels[i];
+
+              this.entityFactory.createBarrel(
+                firebarrel.id,
+                firebarrel.x,
+                firebarrel.y
+              );
             }
           }
         }
