@@ -1,3 +1,5 @@
+import React from "react";
+
 import { WizardAction, WizardState } from "../Venue/VenueWizard/redux";
 
 export interface DetailsProps {

@@ -9,15 +9,15 @@ import { useForm } from "react-hook-form";
 import classNames from "classnames";
 
 import {
-  IFRAME_ALLOW,
-  REACTION_TIMEOUT,
   DEFAULT_AUDIENCE_COLUMNS_NUMBER,
   DEFAULT_AUDIENCE_ROWS_NUMBER,
+  IFRAME_ALLOW,
+  REACTION_TIMEOUT,
 } from "settings";
 
-import { addReaction } from "store/actions/Reactions";
-
 import { makeUpdateUserGridLocation } from "api/profile";
+
+import { addReaction } from "store/actions/Reactions";
 
 import { GenericVenue } from "types/venues";
 
@@ -28,13 +28,13 @@ import { isDefined } from "utils/types";
 
 import { useDispatch } from "hooks/useDispatch";
 import { useRecentVenueUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { usePartygoersbySeat } from "components/templates/PartyMap/components/Map/hooks/usePartygoersBySeat";
 
-import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 import { ReactionsBar } from "components/molecules/ReactionsBar";
+import { UserProfilePicture } from "components/molecules/UserProfilePicture";
 
 import "./Audience.scss";
 

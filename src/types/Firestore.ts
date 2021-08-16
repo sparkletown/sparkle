@@ -1,6 +1,6 @@
 import { AuditoriumSection } from "types/auditorium";
-import { ChatRequest } from "types/ChatRequest";
 import { PrivateChatMessage, VenueChatMessage } from "types/chat";
+import { ChatRequest } from "types/ChatRequest";
 import { Reaction } from "types/reactions";
 import { Role } from "types/Role";
 import { ScreeningRoomVideo } from "types/screeningRoom";

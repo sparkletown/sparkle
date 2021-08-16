@@ -2,8 +2,8 @@ import React, { Dispatch, SetStateAction, useMemo } from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 
-import { Dimensions, Position } from "types/utility";
 import { RoomData_v2 } from "types/rooms";
+import { Dimensions, Position } from "types/utility";
 
 import { VenueRoomsEditor } from "../VenueRoomsEditor";
 import { RoomIcon } from "../VenueRoomsEditor/VenueRoomsEditor";

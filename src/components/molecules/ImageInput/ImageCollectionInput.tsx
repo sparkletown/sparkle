@@ -1,17 +1,20 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import "firebase/functions";
 import firebase from "firebase/app";
+
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-interface ImageInputProps {
+import { ContainerClassName } from "types/utility";
+
+import "firebase/functions";
+
+interface ImageInputProps extends ContainerClassName {
   collectionPath: string;
   disabled: boolean;
   imageUrl?: string;
   image?: FileList;
   fieldName: string;
   register: ReturnType<typeof useForm>["register"];
-  containerClassName?: string;
   imageClassName?: string;
   error?: FieldError;
   imageType: string;

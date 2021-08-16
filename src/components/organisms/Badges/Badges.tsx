@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { chunk } from "lodash";
-import { User } from "@bugsnag/js";
-
 import { useFirestore } from "react-redux-firebase";
+import { User } from "@bugsnag/js";
+import classNames from "classnames";
+import { chunk } from "lodash";
 
 import {
   DEFAULT_AVATAR_IMAGE,
@@ -10,6 +10,7 @@ import {
 } from "settings";
 
 import { UserVisit } from "types/Firestore";
+import { ContainerClassName } from "types/utility";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 
 import { WithId } from "utils/id";
@@ -19,10 +20,12 @@ import { BadgeImage } from "./BadgeImage";
 
 import "./Badges.scss";
 
-export const Badges: React.FC<{
-  user: WithId<User>;
-  currentVenue: WithId<AnyVenue>;
-}> = ({ user, currentVenue }) => {
+export const Badges: React.FC<
+  {
+    user: WithId<User>;
+    currentVenue: WithId<AnyVenue>;
+  } & ContainerClassName
+> = ({ user, currentVenue, containerClassName }) => {
   const [visits, setVisits] = useState<WithId<UserVisit>[]>([]);
   const [venues, setVenues] = useState<WithId<AnyVenue>[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -146,7 +149,7 @@ export const Badges: React.FC<{
   }
 
   return (
-    <div className="Badges">
+    <div className={classNames("Badges", containerClassName)}>
       <div className="Badges__visits">
         <div className="Badges__visit">
           <span className="Badges__visit-value">

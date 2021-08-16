@@ -1,8 +1,9 @@
 import React from "react";
-
 import { Button, Form } from "react-bootstrap";
-import { useDynamicInput } from "hooks/useDynamicInput";
+
 import { EntranceStepConfig } from "types/EntranceStep";
+
+import { useDynamicInput } from "hooks/useDynamicInput";
 
 interface EntranceButtonInputProps {
   fieldName: string;

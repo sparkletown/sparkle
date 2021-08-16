@@ -1,21 +1,22 @@
 import React from "react";
 
+import { IFRAME_TEMPLATES } from "settings";
+
 import {
   isCurrentVenueNGRequestedSelector,
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
-import { IFRAME_TEMPLATES } from "settings";
-
-import { useSelector } from "hooks/useSelector";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
+import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
-import { IframeAdmin } from "components/molecules/IframeAdmin";
 import { BannerAdmin } from "components/organisms/BannerAdmin";
+
+import { IframeAdmin } from "components/molecules/IframeAdmin";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "./VenueAdminPage.scss";
 

@@ -12,10 +12,11 @@ import {
 } from "settings";
 
 import { VenueAccessMode } from "types/VenueAcccess";
+
+import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
+import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
-import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
-import { eventEndTime, eventStartTime, hasEventFinished } from "utils/event";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
@@ -233,7 +234,9 @@ export const VenueLandingPage: React.FC = () => {
                       <InformationCard
                         title={venueEvent.name}
                         key={venueEvent.id}
-                        className={`${!isNextVenueEvent ? "disabled" : ""}`}
+                        containerClassName={`${
+                          !isNextVenueEvent ? "disabled" : ""
+                        }`}
                       >
                         <div className="date">
                           {`${startTime}-${endTime} ${startDay}`}

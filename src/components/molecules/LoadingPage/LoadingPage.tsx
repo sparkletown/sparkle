@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+
 import { IS_BURN } from "secrets";
 
-import "./loading.scss";
 import { useInterval } from "hooks/useInterval";
+
+import "./loading.scss";
 
 const quotes = IS_BURN
   ? [

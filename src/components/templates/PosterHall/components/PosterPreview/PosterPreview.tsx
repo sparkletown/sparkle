@@ -1,15 +1,16 @@
 import React, { useCallback, useMemo } from "react";
-import classNames from "classnames";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 
 import { PosterPageVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue, externalUrlAdditionalProps } from "utils/url";
 
-import { useWorldUsers, useRecentLocationUsers } from "hooks/users";
+import { useRecentLocationUsers, useWorldUsers } from "hooks/users";
 
 import { UserProfilePicture } from "components/molecules/UserProfilePicture";
+
 import { PosterCategory } from "components/atoms/PosterCategory";
 
 import "./PosterPreview.scss";

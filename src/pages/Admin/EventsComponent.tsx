@@ -1,10 +1,15 @@
 import React, { useMemo, useState } from "react";
-import { useSelector } from "hooks/useSelector";
-import { AnyVenue, VenueEvent } from "types/venues";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { WithId } from "utils/id";
-import InformationCard from "components/molecules/InformationCard";
 import Fuse from "fuse.js";
+
+import { AnyVenue, VenueEvent } from "types/venues";
+
+import { WithId } from "utils/id";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useSelector } from "hooks/useSelector";
+
+import InformationCard from "components/molecules/InformationCard";
+
 import VenueEventDetails from "./VenueEventDetails";
 
 export type EventsComponentProps = {

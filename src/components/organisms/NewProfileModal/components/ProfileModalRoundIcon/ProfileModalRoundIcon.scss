@@ -1,0 +1,13 @@
+@import "../../profileModalStyles";
+
+.ProfileModalRoundIcon {
+  @include square-size($round-icon-size);
+  padding: 0;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: $light-grey;
+  display: flex;
+  & > svg {
+    margin: auto;
+  }
+}

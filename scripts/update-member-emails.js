@@ -4,7 +4,7 @@ require("firebase/auth");
 require("firebase/firestore");
 var read = require("read");
 
-function usage() {
+const usage = () => {
   console.log(`
 ${process.argv[1]}: Upload new member emails
 
@@ -16,9 +16,9 @@ Example: node ${process.argv[1]} aaazzz111222333 example member_emails_one_per_l
 Example: node ${process.argv[1]} aaazzz111222333 example member_emails_one_per_line.txt user@name.com password
 `);
   process.exit(1);
-}
+};
 
-function mergeEmails(username, password, apiKey, venueId, newEmails) {
+const mergeEmails = (username, password, apiKey, venueId, newEmails) => {
   const path = `venues/${venueId}`;
 
   const firebaseConfig = {
@@ -30,19 +30,19 @@ function mergeEmails(username, password, apiKey, venueId, newEmails) {
   firebase
     .auth()
     .signInWithEmailAndPassword(username, password)
-    .then(function () {
+    .then(() => {
       firebase
         .firestore()
         .doc(path)
         .get()
-        .then(function (doc) {
+        .then((doc) => {
           if (!doc.exists) {
             console.error(`Document ${path} does not exist`);
             process.exit(1);
           }
           const emails = doc.data()?.config?.memberEmails || [];
           console.log(`Existing emails found: ${emails.join(",")}`);
-          newEmails.forEach(function (email) {
+          newEmails.forEach((email) => {
             if (email && email.length && !emails.includes(email)) {
               emails.push(email);
             }
@@ -59,20 +59,20 @@ function mergeEmails(username, password, apiKey, venueId, newEmails) {
             .firestore()
             .doc(path)
             .set(newDoc)
-            .then(function () {
+            .then(() => {
               console.log(`Document ${path} successfully written!`);
               process.exit(0);
             })
-            .catch(function (err) {
+            .catch((err) => {
               console.error("Error writing document: ", err);
               process.exit(1);
             });
         })
-        .catch(function (err) {
+        .catch((err) => {
           console.error("Login error:", err);
         });
     });
-}
+};
 
 const argv = process.argv.slice(2);
 if (argv.length < 3) {
@@ -97,7 +97,7 @@ if (!fs.existsSync(path)) {
 var emails = [];
 fs.readFileSync(path, "utf-8")
   .split(/\r?\n/)
-  .forEach(function (line) {
+  .forEach((line) => {
     emails.push(line);
   });
 console.log(
@@ -110,12 +110,12 @@ if (username && password) {
   mergeEmails(username, password, apiKey, venueId, emails);
 } else {
   console.log(`log in to upload.`);
-  read({ prompt: "Username:" }, function (err, username) {
+  read({ prompt: "Username:" }, (err, username) => {
     if (err) {
       console.error("Error obtaining username:", err);
       process.exit(1);
     }
-    read({ prompt: "Password:", silent: true }, function (err, password) {
+    read({ prompt: "Password:", silent: true }, (err, password) => {
       if (err) {
         console.error("Error obtaining password:", err);
         process.exit(1);

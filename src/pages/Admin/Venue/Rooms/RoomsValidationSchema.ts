@@ -1,8 +1,12 @@
-import { RoomInput } from "api/admin";
-import "firebase/functions";
 import * as Yup from "yup";
+
 import { PLAYA_ICON_SIDE_PERCENTAGE } from "settings";
+
+import { RoomInput } from "api/admin";
+
 import { roomUrlSchema } from "pages/Admin/Details/ValidationSchema";
+
+import "firebase/functions";
 
 const INITIAL_PERCENTAGE_POS = 50 - PLAYA_ICON_SIDE_PERCENTAGE / 2;
 

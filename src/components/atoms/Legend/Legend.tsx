@@ -1,10 +1,9 @@
 import React from "react";
 
-// Typings
-import { LegendProps } from "./Legend.types";
-
 // Styles
 import * as S from "./Legend.styles";
+// Typings
+import { LegendProps } from "./Legend.types";
 
 // @debt Remove this and all styled-components after v3.
 const Legend: React.FC<LegendProps> = ({

@@ -1,7 +1,11 @@
 import React from "react";
+
 import { IFRAME_ALLOW } from "settings";
+
 import { EntranceStepConfig } from "types/EntranceStep";
+
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
+
 import "./WelcomeVideo.scss";
 
 interface PropsType {

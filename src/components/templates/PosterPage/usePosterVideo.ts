@@ -1,13 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { LocalParticipant, RemoteParticipant } from "twilio-video";
 
-import { withId, WithId } from "utils/id";
-
 import { User } from "types/User";
 
-import { useUser } from "hooks/useUser";
-import { useWorldUsersByIdWorkaround } from "hooks/users";
+import { WithId, withId } from "utils/id";
+
 import { useVideoRoomState } from "hooks/twilio";
+import { useWorldUsersByIdWorkaround } from "hooks/users";
+import { useUser } from "hooks/useUser";
 
 export const usePosterVideo = (venueId: string) => {
   const { userId } = useUser();

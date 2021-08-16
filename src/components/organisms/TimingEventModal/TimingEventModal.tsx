@@ -1,18 +1,17 @@
 import React, { useCallback, useEffect, useMemo } from "react";
-import dayjs from "dayjs";
-
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-
-import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
-
-import { VenueEvent, VenueTemplate, AnyVenue } from "types/venues";
-
-import { createEvent, EventInput, updateEvent } from "api/admin";
+import dayjs from "dayjs";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
+import { createEvent, EventInput, updateEvent } from "api/admin";
+
+import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
+
 import { WithId } from "utils/id";
+
+import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
 
 import "./TimingEventModal.scss";
 
@@ -73,7 +72,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
         description: data.description,
         start_utc_seconds:
           start.unix() || Math.floor(new Date().getTime() / 1000),
-        duration_minutes: data.duration_hours * 60 + data.duration_minutes,
+        duration_minutes:
+          data.duration_hours * 60 + (data.duration_minutes ?? 0),
         host: data.host,
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))

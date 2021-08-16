@@ -1,24 +1,24 @@
 import React, { useMemo } from "react";
 import classNames from "classnames";
-import { isEqual, isEmpty } from "lodash";
+import { isEqual } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
 import { User, UsernameVisibility } from "types/User";
+import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
 
-import { useWorldUserLocation } from "hooks/users";
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
+import { useIsOnline } from "hooks/useIsOnline";
 import { useVenueId } from "hooks/useVenueId";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
 export type UserAvatarSize = "small" | "medium" | "large" | "full";
 
-export interface UserAvatarProps {
+export interface UserAvatarProps extends ContainerClassName {
   user?: WithId<User>;
-  containerClassName?: string;
   imageClassName?: string;
   showNametag?: UsernameVisibility;
   showStatus?: boolean;
@@ -38,8 +38,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
 }) => {
   const venueId = useVenueId();
 
-  const { userLocation } = useWorldUserLocation(user?.id);
-  const userLastSeenIn = userLocation?.lastSeenIn;
+  const { isOnline } = useIsOnline(user?.id);
 
   const {
     userStatus,
@@ -59,8 +58,6 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     "UserAvatar--clickable": onClick !== undefined,
     [`UserAvatar--${size}`]: size,
   });
-
-  const isOnline = useMemo(() => !isEmpty(userLastSeenIn), [userLastSeenIn]);
 
   const status = user?.status;
 
@@ -85,8 +82,8 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
   //'showStatus' is used to render this conditionally only in some of the screens.
   const hasUserStatus =
     isStatusEnabledForVenue &&
-    showStatus &&
     isOnline &&
+    showStatus &&
     !!venueUserStatuses.length;
 
   return (

@@ -3,9 +3,10 @@ import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import dayjs from "dayjs";
 
+import { deleteEvent, EventInput } from "api/admin";
+
 import { VenueEvent } from "types/venues";
 
-import { deleteEvent, EventInput } from "api/admin";
 import { WithId } from "utils/id";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
