@@ -193,15 +193,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="nav-logos">
-              <div className="nav-sparkle-logo">
-                <div />
-              </div>
-              <div
-                className="nav-sparkle-logo_small"
-                onClick={navigateToHomepage}
-              >
-                <div />
-              </div>
+              <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
               <div
                 className={`nav-party-logo ${
                   isEventScheduleVisible && "clicked"
