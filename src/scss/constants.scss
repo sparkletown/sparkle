@@ -124,6 +124,10 @@ $media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
+$upload-new-padding: 0.3rem;
+$upload-new-backdrop-filter: blur(10px);
+$upload-new-border-radius: 22px;
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)
@@ -269,5 +273,27 @@ $z-layers: (
   &:hover {
     color: $hover-color;
     text-decoration: underline $hover-color;
+  }
+}
+
+@mixin over-image-style {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  padding: $upload-new-padding;
+  border-radius: $upload-new-border-radius;
+  backdrop-filter: $upload-new-backdrop-filter;
+  background: opaque-white(0.2);
+  color: $white;
+  text-shadow: 0 1px 2px opaque-black(0.25);
+  white-space: nowrap;
+  font-weight: $font-weight--500;
+  cursor: pointer;
+  user-select: none;
+  &--disabled {
+    color: $light-grey--lightest;
+    cursor: initial;
   }
 }

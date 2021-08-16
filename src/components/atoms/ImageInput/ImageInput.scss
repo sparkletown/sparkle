@@ -1,0 +1,70 @@
+@import "scss/constants.scss";
+
+.ImageInput {
+  &__container {
+    position: relative;
+    display: flex;
+    padding: 2.5em 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background-size: cover;
+    background-color: #1a1d24;
+    background-position: center;
+    cursor: pointer;
+
+    &--error {
+      border: 2px solid red;
+    }
+
+    &--disabled {
+      pointer-events: none;
+      cursor: initial;
+    }
+
+    &--small {
+      display: inline-block;
+      padding: 2.5em;
+    }
+  }
+
+  &__error {
+    display: block;
+
+    color: red;
+    font-style: italic;
+  }
+
+  &__processing {
+    @include over-image-style();
+  }
+
+  &__upload-button {
+    padding: 0.7em 4.2em;
+    margin: 0;
+    border-radius: 22px;
+    font-weight: bold;
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+    background-color: #462a87;
+    &:hover,
+    &:active,
+    &:focus {
+      transform: translateY(-1px);
+      background-color: rgba(55, 90, 127, 0.18);
+    }
+    &--hidden {
+      background-color: transparent;
+      color: transparent;
+      &:hover,
+      &:active,
+      &:focus {
+        transform: none;
+        background-color: initial;
+      }
+    }
+
+    &--small {
+      padding: 0.7em 2em;
+    }
+  }
+}

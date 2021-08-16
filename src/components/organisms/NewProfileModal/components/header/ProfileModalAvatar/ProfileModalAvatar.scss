@@ -1,8 +1,5 @@
 @import "../../../profileModalStyles";
 
-$upload-new-background: opaque-white(0.2);
-$upload-new-padding: 0.3rem;
-
 .ProfileModalAvatar {
   display: flex;
   flex-direction: column;
@@ -18,23 +15,7 @@ $upload-new-padding: 0.3rem;
   }
 
   &__upload-new {
-    backdrop-filter: $input-backdrop-filter;
-    background: $upload-new-background;
-    border-radius: $input-border-radius;
-    padding: $upload-new-padding;
-    cursor: pointer;
-    position: absolute;
-    white-space: nowrap;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-shadow: $input-text-shadow;
-    color: $white;
-    font-weight: $font-weight--500;
-    &--uploading {
-      color: $light-grey--lightest;
-      cursor: unset;
-    }
+    @include over-image-style();
   }
 
   &__input {

@@ -83,7 +83,7 @@ export const ProfileModalAvatar: React.FC<ProfileModalAvatarProps> = ({
         {editMode && (
           <div
             className={classNames("ProfileModalAvatar__upload-new", {
-              "ProfileModalAvatar__upload-new--uploading":
+              "ProfileModalAvatar__upload-new--disabled":
                 uploadingState.loading,
             })}
             onClick={uploadProfilePic}
