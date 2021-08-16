@@ -16,7 +16,7 @@ import {
   SCHEDULE_MAX_START_HOUR,
 } from "settings";
 
-import { LocationEvents, PersonalizedVenueEvent } from "types/venues";
+import { LocationEvents, ScheduledVenueEvent } from "types/venues";
 
 import { eventStartTime } from "utils/event";
 import { formatMeasurement } from "utils/formatMeasurement";
@@ -33,7 +33,7 @@ import "./Schedule.scss";
 
 export interface ScheduleProps {
   locatedEvents: LocationEvents[];
-  personalEvents: PersonalizedVenueEvent[];
+  personalEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
   isToday: boolean;
   isLoading: boolean;

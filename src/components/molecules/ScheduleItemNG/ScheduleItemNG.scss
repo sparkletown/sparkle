@@ -1,5 +1,8 @@
 @import "scss/constants.scss";
 
+$event-icon--margin: 5px;
+$event-icon--size: 40px;
+
 $schedule--grey: opaque-white(0.7);
 $action-button-width: 136px;
 $bookmark-icon-size: 30px;
@@ -22,6 +25,19 @@ $schedule-info-block-width: 60px;
       margin-top: 0;
       text-align: center;
     }
+  }
+
+  &__icon {
+    flex-shrink: 0;
+    height: $event-icon--size;
+    width: $event-icon--size;
+    margin-left: $event-icon--margin;
+    margin-right: $event-icon--margin;
+    border-radius: $border-radius--sm;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: $black;
   }
 
   &__details {
