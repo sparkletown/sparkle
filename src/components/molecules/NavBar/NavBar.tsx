@@ -4,6 +4,7 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
@@ -35,6 +36,7 @@ import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedu
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
+import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 
 import { NavBarLogin } from "./NavBarLogin";
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -58,6 +60,14 @@ const ProfilePopover = (
   <Popover id="profile-popover">
     <Popover.Content>
       <ProfilePopoverContent />
+    </Popover.Content>
+  </Popover>
+);
+
+const MenuPopover = (
+  <Popover id="menu-popover">
+    <Popover.Content>
+      <MenuPopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -294,7 +304,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   overlay={ProfilePopover}
                   rootClose={true}
                 >
-                  <UserAvatar user={userWithId} showStatus large />
+                  <UserAvatar
+                    user={userWithId}
+                    showStatus
+                    containerClassName="Navbar__userAvatar"
+                  />
+                </OverlayTrigger>
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={MenuPopover}
+                  rootClose={true}
+                >
+                  <div className="Navbar__menu--icon">
+                    <FontAwesomeIcon icon={faBars} size="sm" />
+                  </div>
                 </OverlayTrigger>
               </div>
             )}

@@ -8,12 +8,14 @@
 
   &__search-input {
     text-align: left;
-    font-size: 0.9em;
+    font-size: 12px;
+    height: 32px;
   }
 
   &__clear-search {
     cursor: pointer;
     opacity: 0.4;
+    width: 24px;
 
     &:hover {
       opacity: 0.6;
