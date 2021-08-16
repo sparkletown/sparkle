@@ -18,8 +18,8 @@ import { DependencyList, useEffect, useRef } from "react";
  */
 export const useDebugWarnLog = (
   deps: DependencyList,
-  label?: String,
-  context?: object
+  label?: string,
+  context?: Record<string, unknown>
 ) => {
   const countRef = useRef(0);
 
@@ -39,7 +39,11 @@ export const useDebugWarnLog = (
 
 const warningStyles = "color: var(--warning, #F39C12)";
 
-const displayWarning = (title: string, msg: string, context?: object) => {
+const displayWarning = (
+  title: string,
+  msg: string,
+  context?: Record<string, unknown>
+) => {
   console.groupCollapsed(`%c${title}`, warningStyles);
   console.log(msg, context);
   console.groupCollapsed("click to show stacktrace");

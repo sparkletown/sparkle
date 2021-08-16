@@ -2,6 +2,8 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 import { relative, resolve } from "path";
 
 import formatDate from "date-fns/format/index.js";
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 import admin from "firebase-admin";
 
 export interface CredentialFile {
@@ -166,7 +168,7 @@ Example: ${scriptName} ${exampleParams}
  *   saveToDestBackupFile(destVenueEvents, `${destVenueRef.id}-events`);
  */
 export const makeSaveToBackupFile = (filenamePrefix: string) => (
-  data: string | {} | [],
+  data: string | Record<string, unknown> | [],
   type: string = "general",
   ext: string = "backup.json"
 ) => {
