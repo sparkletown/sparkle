@@ -1,0 +1,41 @@
+@import "scss/constants.scss";
+
+$modal-content-max-width: 29.5rem;
+$modal-dialog-viewport-margin: 10% auto 0 auto;
+$modal-content-margin: 1.7rem;
+
+$header-sections-gap: 1.5rem;
+$profile-pictures-margin: -2rem;
+
+$round-icon-size: 1.7rem;
+
+$section-gap: 0.7rem;
+$section-gap-editable: 1.5rem;
+$section-header-bottom-margin: 0.5rem;
+
+$content-font-size: 14px;
+$content-increased-font-size: 16px;
+
+$input-gap: 1rem;
+
+$input-border: 1px solid opaque-white(0.1);
+$input-border-radius: 22px;
+$input-backdrop-filter: blur(10px);
+$input-text-shadow: 0 1px 2px opaque-black(0.25);
+
+$basic-text-info-name-bottom-margin: 4px;
+
+@mixin ProfileModalButton {
+  background-color: opaque-white(0.2);
+  font-size: 14px;
+  width: 100%;
+  &--primary {
+    background-color: $primary;
+  }
+  &--online {
+    background-color: $send-msg-online-color;
+  }
+  &--disabled {
+    background-color: opaque-white(0.1);
+  }
+}

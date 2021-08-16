@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { updateUserProfileData } from "store/actions/UserProfile";
+import { updateUserProfileDataAction } from "store/actions/UserProfile";
 
 import { User } from "types/User";
 
@@ -16,18 +16,24 @@ export const useProfileModalControls = () => {
 
   const hasSelectedProfile = selectedUserProfile !== undefined;
 
+  const updateUserProfileData = useCallback(
+    (userProfile?: WithId<User>) =>
+      dispatch(updateUserProfileDataAction(userProfile)),
+    [dispatch]
+  );
+
   const openUserProfileModal = useCallback(
     (userProfile?: WithId<User>) => {
       // We can only open the modal when we actually have a userProfile
       if (!userProfile) return;
 
-      dispatch(updateUserProfileData(userProfile));
+      updateUserProfileData(userProfile);
     },
-    [dispatch]
+    [updateUserProfileData]
   );
 
   const closeUserProfileModal = useCallback(() => {
-    dispatch(updateUserProfileData(undefined));
+    dispatch(updateUserProfileDataAction(undefined));
   }, [dispatch]);
 
   return {
@@ -35,5 +41,6 @@ export const useProfileModalControls = () => {
     hasSelectedProfile,
     openUserProfileModal,
     closeUserProfileModal,
+    updateUserProfileData,
   };
 };

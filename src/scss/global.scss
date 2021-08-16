@@ -1,3 +1,5 @@
+@import "constants.scss";
+
 :root {
   --primary-color: #f6e652;
 }
@@ -6,6 +8,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./constants.scss";
+@import "./modifiers.scss";
 @import "./customOverrides";
 
 html,

@@ -1,0 +1,5 @@
+@import "../../../profileModalStyles";
+
+button.ProfileModalButtons__button {
+  @include ProfileModalButton;
+}

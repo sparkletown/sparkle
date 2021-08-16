@@ -38,11 +38,6 @@ $upload-button-max-width: 300px;
       background-color: darken($primary, 20%);
     }
   }
-
-  &__defaultAvatarsContainer {
-    display: flex;
-    flex-direction: row;
-  }
 }
 
 .ProfilePicturePreviewContainer {

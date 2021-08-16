@@ -1,1 +1,0 @@
-export { EditProfileForm } from "./EditProfileForm";
