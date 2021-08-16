@@ -10,17 +10,28 @@ $menu-item-size: 32px;
 
     margin-right: $spacing--sm;
   }
-  &__menu--icon {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    width: $menu-item-size;
-    height: $menu-item-size;
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+      &.mute {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px rgba($white, 1);
+      }
+    }
 
-    cursor: pointer;
+    &--icon {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: $menu-item-size;
+      height: $menu-item-size;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+    }
   }
 }
 

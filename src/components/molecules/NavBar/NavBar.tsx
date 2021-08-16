@@ -5,6 +5,8 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faVolumeUp } from "@fortawesome/free-solid-svg-icons";
+import { faVolumeMute } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
 
@@ -44,6 +46,7 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 import "./NavBar.scss";
 import * as S from "./Navbar.styles";
 import "./playa.scss";
+import classNames from "classnames";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -135,6 +138,22 @@ export const NavBar: React.FC<NavBarPropsType> = ({
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+  const handleMute = useCallback(
+    (volume: number) => (volume !== 0 ? 0 : 100),
+    []
+  );
+  const toggleMute = useCallback(() => setVolume(handleMute), [
+    handleMute,
+    setVolume,
+  ]);
+  const isMute = !Boolean(volume);
+
+  const volumeControlClassname = classNames(
+    "Navbar__menu--icon Navbar__menu--volume",
+    {
+      mute: isMute,
+    }
+  );
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -298,6 +317,12 @@ export const NavBar: React.FC<NavBarPropsType> = ({
                   </S.RadioTrigger>
                 )}
 
+                <div className={volumeControlClassname} onClick={toggleMute}>
+                  <FontAwesomeIcon
+                    icon={isMute ? faVolumeMute : faVolumeUp}
+                    size="sm"
+                  />
+                </div>
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"
