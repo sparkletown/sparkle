@@ -538,7 +538,10 @@ export default class EntityFactory {
       .add(
         new HoverableSpriteComponent(
           () => {
-            const tooltip: TooltipComponent = new TooltipComponent("Join", 0);
+            const tooltip: TooltipComponent = new TooltipComponent(
+              `Join ${id}`,
+              0
+            );
             tooltip.textColor = 0xffffff;
             tooltip.textSize = 14;
             tooltip.borderThikness = 0;
