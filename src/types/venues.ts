@@ -347,6 +347,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {

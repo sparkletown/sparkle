@@ -81,7 +81,11 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
 
   return (
     <div className="ScheduleEventListNG">
-      <ScheduleEventSubListNG events={liveEvents} title="What’s on now" />
+      <ScheduleEventSubListNG
+        events={liveEvents}
+        title="What’s on now"
+        isLive
+      />
       <ScheduleEventSubListNG events={comingSoonEvents} title="Starting soon" />
       <ScheduleEventSubListNG events={laterEvents} title="More events today" />
     </div>
