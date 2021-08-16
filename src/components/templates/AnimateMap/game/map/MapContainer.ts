@@ -267,9 +267,12 @@ export class MapContainer extends Container {
       .execute()
       .then(() => {
         if (this.entityFactory) {
-          // debug burrel
-          for (let i = 0; i < 5; i++) {
-            this.entityFactory.createBarrel();
+          const firebarrels = GameInstance.instance
+            .getConfig()
+            .getFirebarrels();
+
+          for (let i = 0; i < firebarrels.length; i++) {
+            this.entityFactory.createBarrel(firebarrels[i].id);
           }
         }
       })

@@ -1,10 +1,15 @@
 import { PlaygroundMap } from "../game/utils/PlaygroundMap";
 import { Point } from "../game/utils/Point";
 
+export interface GameOptionsFirebarrel {
+  id: string;
+}
+
 export interface GameOptions {
   worldWidth: number;
   worldHeight: number;
   backgroundImage: string;
+  firebarrels?: GameOptionsFirebarrel[];
 }
 
 export class GameConfig {
@@ -16,6 +21,23 @@ export class GameConfig {
         //default options can be here
         worldWidth: 9920,
         worldHeight: 9920,
+        firebarrels: [
+          {
+            id: "animate-map-firebarrel-1",
+          },
+          {
+            id: "animate-map-firebarrel-2",
+          },
+          {
+            id: "animate-map-firebarrel-3",
+          },
+          {
+            id: "animate-map-firebarrel-4",
+          },
+          {
+            id: "animate-map-firebarrel-5",
+          },
+        ],
       },
       ...options,
     };
@@ -47,6 +69,7 @@ export class GameConfig {
   ];
 
   private _playgroundMap: PlaygroundMap = new PlaygroundMap();
+  private _firebarrels: GameOptionsFirebarrel[] = [];
 
   public get backgroundImage() {
     return this.options.backgroundImage;
@@ -133,5 +156,9 @@ export class GameConfig {
       this._zoomLevelLineOfSightCoresponding.length - 1
     );
     return this._zoomLevelLineOfSightCoresponding[zoomLevel];
+  }
+
+  public getFirebarrels(): GameOptionsFirebarrel[] {
+    return this._firebarrels;
   }
 }
