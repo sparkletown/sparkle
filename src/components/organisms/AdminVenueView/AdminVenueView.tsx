@@ -37,7 +37,7 @@ export interface TabNavigationProps {
   onClickNext: () => void;
 }
 
-const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
+const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, string>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",

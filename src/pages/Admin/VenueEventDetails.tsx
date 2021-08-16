@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Dispatch, SetStateAction } from "react";
 import { format } from "date-fns";
 
 import { ContainerClassName } from "types/utility";
@@ -10,12 +10,20 @@ import { formatTimeLocalised } from "utils/time";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
-export interface VenueEventDetailsProps extends ContainerClassName {
+export interface VenueEventDetailsProps
+  extends ContainerClassName,
+    VenueEventDetailsActions {
   venueEvent: WithId<VenueEvent>;
-  setEditedEvent: Function | undefined;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
   isEditable?: boolean;
+}
+
+export interface VenueEventDetailsActions {
+  setEditedEvent: Dispatch<SetStateAction<WithId<VenueEvent> | undefined>>;
+  setShowCreateEventModal: (
+    showCreateEventModal: boolean,
+    roomName?: string
+  ) => void;
+  setShowDeleteEventModal: Dispatch<SetStateAction<boolean>>;
 }
 
 const VenueEventDetails = ({

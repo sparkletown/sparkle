@@ -27,8 +27,6 @@ export const rootReducer = combineReducers({
   [worldUsersApi.reducerPath]: worldUsersApi.reducer,
 });
 
-export const initialState: Readonly<{}> = {};
-
 /**
  * Configure the Redux store along with any associated middleware, enhancers, etc.
  *
@@ -43,7 +41,7 @@ export const store = configureStore({
   /**
    * @see https://redux-toolkit.js.org/api/configureStore#preloadedstate
    */
-  preloadedState: initialState,
+  preloadedState: {},
 
   /**
    * Note: As TypeScript often widens array types when combining arrays using the spread operator, we suggest using the

@@ -19,20 +19,20 @@ export type TextReactionType = typeof TextReactionType;
 
 export type ReactionType = EmojiReactionType | TextReactionType;
 
-interface BaseReaction {
+type BaseReaction = {
   created_at: number;
   created_by: string;
   reaction: unknown;
-}
+};
 
-export interface EmojiReaction extends BaseReaction {
+export type EmojiReaction = BaseReaction & {
   reaction: EmojiReactionType;
-}
+};
 
-export interface TextReaction extends BaseReaction {
+export type TextReaction = BaseReaction & {
   reaction: TextReactionType;
   text: string;
-}
+};
 
 export type Reaction = EmojiReaction | TextReaction;
 

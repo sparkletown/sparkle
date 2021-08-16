@@ -15,17 +15,16 @@ import { useUser } from "hooks/useUser";
 
 import { Toggler } from "components/atoms/Toggler";
 
-import VenueEventDetails from "./VenueEventDetails";
+import VenueEventDetails, {
+  VenueEventDetailsActions,
+} from "./VenueEventDetails";
 
 import "./Admin.scss";
 
-interface Props {
+interface Props extends VenueEventDetailsActions {
   index: number;
   venue: WithId<AnyVenue>;
   room: Room;
-  setEditedEvent: Function | undefined;
-  setShowCreateEventModal: Function;
-  setShowDeleteEventModal: Function;
 }
 
 export const AdminVenueRoomDetails = ({

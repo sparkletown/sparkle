@@ -3,15 +3,15 @@ import * as Yup from "yup";
 
 import { WithId } from "utils/id";
 
-export interface SoundConfig {
+export type SoundConfig = {
   url: string;
   sprites?: SpriteMap;
-}
+};
 
-export interface SoundConfigReference {
+export type SoundConfigReference = {
   soundId: string;
   spriteName?: string;
-}
+};
 
 export type SoundConfigMap = Partial<Record<string, WithId<SoundConfig>>>;
 
@@ -20,6 +20,7 @@ export type SoundConfigMap = Partial<Record<string, WithId<SoundConfig>>>;
  *
  * @see SpriteMap
  */
+// eslint-disable-next-line @typescript-eslint/ban-types
 export const SpriteMapSchema = Yup.lazy<{} | undefined>((data = {}) => {
   const lazyObjectShape: Record<
     string,
@@ -47,22 +48,3 @@ export const SoundConfigSchema: Yup.ObjectSchema<SoundConfig> = Yup.object()
   })
   .noUnknown()
   .required();
-
-/**
- * SoundConfigReference validation schema.
- *
- * @see SoundConfigReference
- */
-export const SoundConfigReferenceSchema = Yup.object()
-  .shape<SoundConfigReference>({
-    soundId: Yup.string().required(),
-    spriteName: Yup.string().notRequired(),
-  })
-  .noUnknown()
-  .required();
-
-export const isSoundConfig = (data: {}): data is SoundConfig =>
-  SoundConfigSchema.isValidSync(data);
-
-export const isSoundConfigReference = (data: {}): data is SoundConfigReference =>
-  SoundConfigReferenceSchema.isValidSync(data);

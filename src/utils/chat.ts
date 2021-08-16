@@ -80,7 +80,9 @@ export const buildMessage = <T extends ChatMessage>(
   ts_utc: firebase.firestore.Timestamp.now(),
 });
 
-export interface PartitionMessagesFromRepliesReturn<T extends object> {
+export interface PartitionMessagesFromRepliesReturn<
+  T extends Record<string, unknown>
+> {
   messages: WithId<T>[];
   allMessagesReplies: WithId<T>[];
 }
@@ -99,7 +101,7 @@ export const partitionMessagesFromReplies = <T extends ChatMessage>(
     { messages: [], allMessagesReplies: [] }
   );
 
-export interface GetMessageRepliesProps<T extends object> {
+export interface GetMessageRepliesProps<T extends Record<string, unknown>> {
   messageId: string;
   allReplies: WithId<T>[];
 }

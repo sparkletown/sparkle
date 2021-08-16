@@ -187,9 +187,9 @@ if (MIXPANEL_PROJECT_TOKEN) {
   mixpanel.init(MIXPANEL_PROJECT_TOKEN, { batch_requests: true });
 }
 
-const AuthIsLoaded: React.FunctionComponent<React.PropsWithChildren<{}>> = ({
-  children,
-}) => {
+const AuthIsLoaded: React.FunctionComponent<
+  React.PropsWithChildren<Record<never, never>>
+> = ({ children }) => {
   const auth = useSelector(authSelector);
 
   useEffect(() => {

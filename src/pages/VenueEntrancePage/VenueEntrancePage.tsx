@@ -18,7 +18,7 @@ import { WelcomeVideo } from "pages/entrance/WelcomeVideo";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-export const VenueEntrancePage: React.FunctionComponent<{}> = () => {
+export const VenueEntrancePage: React.FC = () => {
   const { user, profile } = useUser();
   const history = useHistory();
   const { step } = useParams<{ step?: string }>();

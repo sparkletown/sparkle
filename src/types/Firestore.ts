@@ -11,14 +11,14 @@ import { WithId } from "utils/id";
 
 import { AdminRole } from "hooks/roles";
 
-export interface Experience {
+export type Experience = {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
-}
+};
 
-export interface UserVisit {
+export type UserVisit = {
   timeSpent: number;
-}
+};
 
 export type ValidFirestoreRootCollections =
   | "customers"

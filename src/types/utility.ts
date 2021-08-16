@@ -32,9 +32,4 @@ export type ReactHook<T, U> = (props: T) => U;
 
 export type TFuncOrT<T> = (() => T) | T;
 
-/**
- * @deprecated use Partial<Record<K, T>> directly
- */
-export type PartialRecord<K extends keyof never, T> = Partial<Record<K, T>>;
-
 export type ContainerClassName = { containerClassName?: string };

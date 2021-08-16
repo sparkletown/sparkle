@@ -54,6 +54,9 @@ export type BaseMessageToDisplay<T extends ChatMessage = ChatMessage> = T & {
 export type MessageToDisplay<
   T extends ChatMessage = ChatMessage
 > = BaseMessageToDisplay<T> & {
+  //@debt Why TS isn't satisfied?
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   replies: WithId<BaseMessageToDisplay<T>>[];
 };
 

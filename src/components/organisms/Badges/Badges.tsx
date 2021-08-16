@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirestore } from "react-redux-firebase";
-import { User } from "@bugsnag/js";
 import classNames from "classnames";
 import { chunk } from "lodash";
 
@@ -10,6 +9,7 @@ import {
 } from "settings";
 
 import { UserVisit } from "types/Firestore";
+import { User } from "types/User";
 import { ContainerClassName } from "types/utility";
 import { AnyVenue, isVenueWithRooms } from "types/venues";
 

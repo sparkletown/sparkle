@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from "react";
+import { Components } from "react-markdown/src/ast-to-react";
 
 import { tracePromise } from "utils/performance";
 
@@ -12,7 +13,7 @@ const RenderMarkdownInner = lazy(() =>
 
 export interface RenderMarkdownProps {
   text?: string;
-  components?: object;
+  components?: Components;
   allowBasicFormatting?: boolean;
   allowPreAndCode?: boolean;
   allowHeadings?: boolean;

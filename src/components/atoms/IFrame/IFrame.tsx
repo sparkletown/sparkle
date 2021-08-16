@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import classNames from "classnames";
 
 import { IFRAME_ALLOW } from "settings";
@@ -11,7 +11,7 @@ export interface IFrameProps
   extends React.HTMLProps<HTMLIFrameElement>,
     ContainerClassName {
   iframeClassname?: string;
-  iframeInlineStyles?: {};
+  iframeInlineStyles?: CSSProperties;
 }
 
 export const IFrame: React.FC<IFrameProps> = ({

@@ -122,7 +122,7 @@ export interface Venue_v2_EntranceConfig {
 // @debt refactor this into separated logical chunks? (eg. if certain params are only expected to be set for certain venue types)
 // @debt The following keys are marked as required on this type, but i'm not sure they should be:
 //   profile_questions, code_of_conduct_questions, termsAndConditions, width, height
-export interface BaseVenue {
+export type BaseVenue = {
   template: VenueTemplate;
   parentId?: string;
   name: string;
@@ -186,15 +186,15 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
-}
+};
 
-export interface GenericVenue extends BaseVenue {
+export type GenericVenue = BaseVenue & {
   template: GenericVenueTemplates;
-}
+};
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
 // @debt we probably don't want to include id directly here.. that's what WithId is for
-export interface PartyMapVenue extends BaseVenue {
+export type PartyMapVenue = BaseVenue & {
   id: string;
   template: VenueTemplate.partymap | VenueTemplate.themecamp;
 
@@ -222,35 +222,35 @@ export interface PartyMapVenue extends BaseVenue {
   admin_password?: string;
   owners: string[];
   rooms?: Room[];
-}
+};
 
-export interface JazzbarVenue extends BaseVenue {
+export type JazzbarVenue = BaseVenue & {
   template: VenueTemplate.jazzbar;
   iframeUrl: string;
   logoImageUrl: string;
   host: {
     icon: string;
   };
-}
+};
 
-export interface EmbeddableVenue extends BaseVenue {
+export type EmbeddableVenue = BaseVenue & {
   template: VenueTemplate.embeddable;
   iframeUrl?: string;
   containerStyles?: CSSProperties;
   iframeStyles?: CSSProperties;
   iframeOptions?: Record<string, string>;
-}
+};
 
-export interface PosterPageVenue extends BaseVenue {
+export type PosterPageVenue = BaseVenue & {
   template: VenueTemplate.posterpage;
   poster?: Poster;
   isLive?: boolean;
-}
+};
 
-export interface AuditoriumVenue extends BaseVenue {
+export type AuditoriumVenue = BaseVenue & {
   template: VenueTemplate.auditorium;
   title?: string;
-}
+};
 
 export interface Question {
   name: string;
@@ -321,7 +321,7 @@ export interface PlayaIcon {
   venueId: string;
 }
 
-export interface VenueEvent {
+export type VenueEvent = {
   name: string;
   start_utc_seconds: number;
   description: string;
@@ -331,7 +331,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
-}
+};
 
 export interface VenueLocation {
   venueId: string;

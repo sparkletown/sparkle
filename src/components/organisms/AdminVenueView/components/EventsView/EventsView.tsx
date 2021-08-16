@@ -101,7 +101,7 @@ export const EventsView: React.FC<EventsViewProps> = ({ venueId, venue }) => {
           venue={venue}
           event={editedEvent}
           setEditedEvent={setEditedEvent}
-          setShowDeleteEventModal={setShowDeleteEventModal}
+          showDeleteEventModal={setShowDeleteEventModal}
         />
       )}
 

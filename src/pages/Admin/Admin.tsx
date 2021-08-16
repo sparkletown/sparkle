@@ -223,7 +223,6 @@ export type VenueInfoComponentProps = {
   venue: WithId<AnyVenue>;
   roomIndex?: number;
   editedEvent?: WithId<VenueEvent>;
-  setEditedEvent?: Function;
 };
 
 const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({

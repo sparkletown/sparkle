@@ -12,21 +12,23 @@ import { AnyVenue, VenueEvent, VenueTemplate } from "types/venues";
 import { WithId } from "utils/id";
 
 import { eventEditSchema } from "pages/Admin/Details/ValidationSchema";
+import { VenueEventDetailsActions } from "pages/Admin/VenueEventDetails";
 
 import "./TimingEventModal.scss";
 
-export type TimingEventModalProps = {
+export type TimingEventModalProps = Pick<
+  VenueEventDetailsActions,
+  "setEditedEvent"
+> & {
   show: boolean;
   onHide: () => void;
   venueId: string | undefined;
   event?: WithId<VenueEvent>;
   template?: VenueTemplate;
   venue: WithId<AnyVenue>;
-  setEditedEvent: Function | undefined;
-  setShowDeleteEventModal: () => void;
+  showDeleteEventModal: () => void;
 };
 
-// Dispatch<SetStateAction<WithId<VenueEvent> | undefined>>
 export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   show,
   onHide,
@@ -35,7 +37,7 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
   venue,
   setEditedEvent,
   event,
-  setShowDeleteEventModal,
+  showDeleteEventModal,
 }) => {
   const {
     register,
@@ -260,8 +262,8 @@ export const TimingEventModal: React.FC<TimingEventModalProps> = ({
                     onClick={(e) => {
                       e.preventDefault();
                       onHide();
-                      setEditedEvent && setEditedEvent(event);
-                      setShowDeleteEventModal();
+                      setEditedEvent?.(event);
+                      showDeleteEventModal();
                     }}
                     disabled={formState.isSubmitting}
                   />

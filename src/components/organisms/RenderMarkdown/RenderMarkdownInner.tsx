@@ -1,5 +1,6 @@
 import React from "react";
 import ReactMarkdown from "react-markdown";
+import { Components } from "react-markdown/src/ast-to-react";
 import sanitize from "rehype-sanitize";
 import emoji from "remark-emoji";
 import externalLinks from "remark-external-links";
@@ -21,7 +22,7 @@ const REHYPE_PLUGINS = [sanitize];
 
 export interface RenderMarkdownProps {
   text?: string;
-  components?: object;
+  components?: Components;
   allowBasicFormatting?: boolean;
   allowPreAndCode?: boolean;
   allowHeadings?: boolean;

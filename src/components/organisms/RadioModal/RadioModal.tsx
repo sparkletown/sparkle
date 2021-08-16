@@ -1,11 +1,11 @@
-import React, { useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback } from "react";
 import { Button } from "react-bootstrap";
 
 import "./RadioModal.scss";
 
 export interface RadioModalPropsType {
   volume: number;
-  setVolume: Function;
+  setVolume: Dispatch<SetStateAction<number>>;
   title?: string;
   onEnableHandler: () => void;
   isRadioPlaying: boolean;

@@ -46,9 +46,12 @@ export const AdminVenueRoomsList: React.FC<Props> = ({ venue }) => {
             venue={venue}
             room={room}
             setEditedEvent={setEditedEvent}
-            setShowCreateEventModal={(param1: boolean, param2: string) => {
-              setShowCreateEventModal(param1);
-              setRoomName(param2);
+            setShowCreateEventModal={(
+              showCreateEventModal: boolean,
+              roomName?: string
+            ) => {
+              setShowCreateEventModal(showCreateEventModal);
+              setRoomName(roomName ?? "");
             }}
             setShowDeleteEventModal={setShowDeleteEventModal}
           />

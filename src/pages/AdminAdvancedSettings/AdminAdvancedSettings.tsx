@@ -31,7 +31,7 @@ export interface AdminAdvancedSettingsRouteParams {
   selectedTab?: AdminAdvancedTab;
 }
 
-const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
+const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, string>> = {
   [AdminAdvancedTab.basicInfo]: "Start",
   [AdminAdvancedTab.entranceExperience]: "Entrance",
   [AdminAdvancedTab.advancedMapSettings]: "Advanced",

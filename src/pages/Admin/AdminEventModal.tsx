@@ -13,16 +13,20 @@ import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { VenueEventDetailsActions } from "pages/Admin/VenueEventDetails";
+
 dayjs.extend(isSameOrAfter);
 
-interface PropsType {
+interface PropsType
+  extends Pick<
+    VenueEventDetailsActions,
+    "setEditedEvent" | "setShowDeleteEventModal"
+  > {
   show: boolean;
   onHide: () => void;
   venueId: string;
   event?: WithId<VenueEvent>;
   template?: VenueTemplate;
-  setEditedEvent: Function | undefined;
-  setShowDeleteEventModal: Function;
   roomName?: string;
 }
 

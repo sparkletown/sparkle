@@ -10,15 +10,14 @@ import { useSelector } from "hooks/useSelector";
 
 import InformationCard from "components/molecules/InformationCard";
 
-import VenueEventDetails from "./VenueEventDetails";
+import VenueEventDetails, {
+  VenueEventDetailsActions,
+} from "./VenueEventDetails";
 
-export type EventsComponentProps = {
+export type EventsComponentProps = VenueEventDetailsActions & {
   venue: WithId<AnyVenue>;
   roomIndex?: number;
-  setShowDeleteEventModal: Function;
-  setShowCreateEventModal: Function;
   editedEvent?: WithId<VenueEvent>;
-  setEditedEvent?: Function;
 };
 
 const EventsComponent: React.FC<EventsComponentProps> = ({

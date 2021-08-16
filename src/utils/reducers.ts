@@ -35,7 +35,7 @@ export const makeMatrixReducer = <T>(
  * @param obj
  * @param item
  */
-export const itemsToObjectByIdReducer = <T extends object>(
+export const itemsToObjectByIdReducer = <T extends Record<string, unknown>>(
   obj: Record<string, WithId<T>>,
   item: WithId<T>
 ) => ({

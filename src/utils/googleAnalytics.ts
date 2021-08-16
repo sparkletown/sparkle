@@ -5,7 +5,7 @@ import { MEASUREMENT_ID } from "secrets";
 // @debt properly type the props, not just string
 type GAEvent = {
   eventName: string;
-  eventAction: Object;
+  eventAction: Record<string, unknown>;
 };
 
 export const logEventGoogleAnalytics = ({

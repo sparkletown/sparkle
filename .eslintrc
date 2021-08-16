@@ -25,8 +25,8 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/adjacent-overload-signatures": "error",
-    "@typescript-eslint/ban-ts-comment": "warn",
-    "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/ban-ts-comment": "error",
+    "@typescript-eslint/ban-types": "error",
     "@typescript-eslint/no-array-constructor": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-empty-interface": "off",
@@ -98,7 +98,7 @@
     ],
     // "simple-import-sort/imports": "error"
     "simple-import-sort/imports": [
-      "error",
+      "warn",
       {
         "groups": [
           // Node.js builtins. You could also generate this regex if you use a `.js` config.
