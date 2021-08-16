@@ -28,7 +28,6 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
   const [parsedData, setParsedData] = useState<ParseData[] | undefined>();
   const [parsedMeta, setParsedMeta] = useState<ParseMeta | undefined>();
   const [parsedErrors, setParsedErrors] = useState<ParseError[] | undefined>();
-  const [isParsing, setIsParsing] = useState<boolean>(false);
   const [importResult, setImportResult] = useState<ImportEventsBatchResult>();
 
   const clearParsed = useCallback(() => {
@@ -46,21 +45,19 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
     link.remove();
   }, []);
 
-  const selectFile = useCallback(
+  const [{ loading: isParsing }, selectFile] = useAsyncFn(
     async ({ file }: FileButtonOnChangeData) => {
-      try {
-        if (!file) return;
+      if (!file) return;
 
-        setIsParsing(true);
-        clearParsed();
-        const { meta, data } = await parseCsv(file);
-        setParsedMeta(meta);
-        setParsedData(data);
-      } catch (errors) {
-        setParsedErrors(errors);
-      } finally {
-        setIsParsing(false);
-      }
+      clearParsed();
+      const parsePromise = parseCsv(file);
+
+      // regrettably, useAsyncFn doesn't consider rejection reason as anything but Error | undefined
+      parsePromise.catch(setParsedErrors);
+
+      const { meta, data } = await parsePromise;
+      setParsedMeta(meta);
+      setParsedData(data);
     },
     [clearParsed]
   );
