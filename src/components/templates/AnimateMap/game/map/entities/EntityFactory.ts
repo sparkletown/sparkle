@@ -190,7 +190,7 @@ export default class EntityFactory {
     const entity: Entity = new Entity();
     const fsm: EntityStateMachine = new EntityStateMachine(entity);
 
-    fsm.createState("flying");
+    fsm.createState("flying").add(CollisionComponent).withInstance(collision);
 
     fsm.createState("cycling").add(CollisionComponent).withInstance(collision);
 
@@ -306,10 +306,10 @@ export default class EntityFactory {
       img.addEventListener("load", () => {
         canvas.width = img.height;
         canvas.height = img.width;
-        var x = canvas.width / 2;
-        var y = canvas.height / 2;
-        var width = img.width;
-        var height = img.height;
+        const x = canvas.width / 2;
+        const y = canvas.height / 2;
+        const width = img.width;
+        const height = img.height;
         context.translate(x, y);
         context.rotate(1.5708);
         context.drawImage(img, -width / 2, -height / 2, width, height);

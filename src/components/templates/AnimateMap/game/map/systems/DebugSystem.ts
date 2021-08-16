@@ -24,8 +24,6 @@ export class DebugSystem extends System {
   private zoomUpdated = true;
   private currentZoom = 0;
 
-  private deltaScale = 0.2;
-
   constructor(
     container: Container,
     private creator: EntityFactory,
@@ -70,19 +68,22 @@ export class DebugSystem extends System {
   }
 
   update(time: number): void {
-    // this.updateBubbling();
     this.updateLineOfSight();
+
+    const showDebug = false;
+    if (showDebug) {
+      this.updateBubbling();
+      this.drawVenuesInnerCircle();
+      this.drawVenuesOuterCircle();
+      this.drawPlayaBorderCircle();
+    }
   }
 
   private updateLineOfSight(): void {
     const name = "visionOfSightRadius";
     const config: GameConfig = GameInstance.instance.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
-    if (
-      currentZoomLevel !== GameConfig.ZOOM_LEVEL_FLYING &&
-      this.player &&
-      this.player.head
-    ) {
+    if (this.player && this.player.head) {
       const center: Point = this.player?.head
         ? { x: this.player.head.position.x, y: this.player.head.position.y }
         : this.viewport.center;
@@ -105,11 +106,23 @@ export class DebugSystem extends System {
         this.container?.addChild(s);
       }
       s.position.set(center.x, center.y);
+
+      const lineThikness =
+        currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING ? 2 : 4;
+
       const g: Graphics = s.getChildAt(0) as Graphics;
       g.clear();
-      g.beginFill(0xc3b4a3);
+      g.beginFill(0x5e07ca, 0.15);
       g.drawCircle(0, 0, visionOfSightRadius);
       g.endFill();
+      g.lineStyle(lineThikness, 0x6108e6);
+      g.drawCircle(0, 0, visionOfSightRadius);
+      s.scale.set(
+        Math.random() *
+          ((currentZoomLevel === GameConfig.ZOOM_LEVEL_FLYING ? 1.05 : 1.01) -
+            0.99) +
+          0.99
+      );
     } else {
       let s: Sprite | undefined = this.container?.getChildByName(
         name

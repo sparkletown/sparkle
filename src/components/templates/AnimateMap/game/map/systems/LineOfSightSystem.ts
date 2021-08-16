@@ -72,7 +72,8 @@ export class LineOfSightSystem extends System {
     const lineOfSight = config.getAvatarLineOfSightByZoomLevel(
       this.currentZoomLevel
     );
-    this.lineOfSightRadius = this.player.head.position.scaleX * lineOfSight;
+    this.lineOfSightRadius =
+      this.player.head.position.scaleX * lineOfSight * 10;
 
     const minX = center.x - this.lineOfSightRadius;
     const maxX = center.x + this.lineOfSightRadius;

@@ -28,9 +28,8 @@ export class GameConfig {
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
   public minSpeed = 0;
-  public maxSpeed = 2;
-  public minZoom = 0.1;
-  public maxZoom = 6;
+  public maxSpeed = 8;
+
   public pointForBezieSpeedCurve = [
     { x: 0, y: 0 },
     { x: 0.1, y: 0.1 },
@@ -40,11 +39,11 @@ export class GameConfig {
 
   private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
   private _zoomLevelViewportCoresponding: Array<number> = [1.6137, 0.809, 0.32];
-  private _zoomLevelAvatarRadiusCoresponding: Array<number> = [25, 17, 6];
+  private _zoomLevelAvatarRadiusCoresponding: Array<number> = [25, 17, 3];
   private _zoomLevelLineOfSightCoresponding: Array<number> = [
     78 * 10,
     28 * 30,
-    8 * 20,
+    8 * 100,
   ];
 
   private _playgroundMap: PlaygroundMap = new PlaygroundMap();
