@@ -1,6 +1,6 @@
 import { Box } from "js-quadtree";
 
-import { ReplicatedUser, ReplicatedVenue, } from "store/reducers/AnimateMap";
+import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { ReduxAction } from "types/redux";
 import { Room } from "types/rooms";
@@ -20,6 +20,8 @@ export enum AnimateMapActionTypes {
   SET_VENUES = "AnimateMapActionTypes.SET_VENUES",
 
   SET_ENVIRONMENT_SOUND = "AnimateMapActionTypes.SET_ENVIRONMENT_SOUND",
+
+  SET_FIREBARREL = "AnimateMapActionTypes.SET_FIREBARREL",
 }
 
 export type setAnimateMapZoomAction = ReduxAction<
@@ -85,6 +87,13 @@ export type setAnimateMapEnvironmentSoundAction = ReduxAction<
   }
 >;
 
+export type setAnimateMapFireBarrelAction = ReduxAction<
+  AnimateMapActionTypes.SET_FIREBARREL,
+  {
+    roomId: string;
+  }
+>;
+
 export const setAnimateMapZoom = (zoom: number): setAnimateMapZoomAction => ({
   type: AnimateMapActionTypes.SET_ZOOM,
   payload: { zoom },
@@ -144,6 +153,13 @@ export const setAnimateMapEnvironmentSound = (
   payload: { environmentSound },
 });
 
+export const setAnimateMapFireBarrel = (
+  roomId: string
+): setAnimateMapFireBarrelAction => ({
+  type: AnimateMapActionTypes.SET_FIREBARREL,
+  payload: { roomId },
+});
+
 export type AnimateMapActions =
   | setAnimateMapZoomAction
   | setAnimateMapExpectedZoomAction
@@ -153,4 +169,5 @@ export type AnimateMapActions =
   | setAnimateMapHeroAction
   | setAnimateMapUsersAction
   | setAnimateMapVenuesAction
-  | setAnimateMapEnvironmentSoundAction;
+  | setAnimateMapEnvironmentSoundAction
+  | setAnimateMapFireBarrelAction;

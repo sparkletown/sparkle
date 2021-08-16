@@ -14,11 +14,11 @@ import LocalParticipant from "components/organisms/Room/LocalParticipant";
 import Participant from "components/organisms/Room/Participant";
 import VideoErrorModal from "components/organisms/Room/VideoErrorModal";
 
-import "./VideoRoom.scss";
+import "./FirebarrelWidget.scss";
 
 const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 
-interface VideoRoomProps {
+export interface FirebarrelWidgetProps {
   roomName: string;
   venueName: string;
   setUserList: (val: User[]) => void;
@@ -34,7 +34,7 @@ interface VideoRoomProps {
 // The reason to copy it was the lack of time to refactor the whole thing, so the
 // safest approch (not to break other Venues that rely on TableComponent) is to copy this component
 // It needs to get deleted in the future
-const VideoRoom: React.FC<VideoRoomProps> = ({
+export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   roomName,
   venueName,
   setUserList,
@@ -251,7 +251,10 @@ const VideoRoom: React.FC<VideoRoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.identity}
+            className="firebarrel-room__participant"
+          >
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -276,7 +279,10 @@ const VideoRoom: React.FC<VideoRoomProps> = ({
           : undefined;
 
         return (
-          <div key={participant.identity} className="jazzbar-room__participant">
+          <div
+            key={participant.identity}
+            className="firebarrel-room__participant"
+          >
             <Participant
               participant={participant}
               profileData={worldUsersById[participant.identity]}
@@ -291,7 +297,7 @@ const VideoRoom: React.FC<VideoRoomProps> = ({
 
   const myVideo = useMemo(() => {
     return room && profileData ? (
-      <div className="jazzbar-room__participant">
+      <div className="firebarrel-room__participant">
         <LocalParticipant
           key={room.localParticipant.sid}
           participant={room.localParticipant}
@@ -309,9 +315,11 @@ const VideoRoom: React.FC<VideoRoomProps> = ({
 
   return (
     <>
-      {myVideo}
-      {sidedVideos}
-      <div className="jazzbar-room__participants">{otherVideos}</div>
+      <div className="firebarrel-room__participants">
+        {myVideo}
+        {sidedVideos}
+        {otherVideos}
+      </div>
 
       <VideoErrorModal
         show={!!videoError}
@@ -323,5 +331,3 @@ const VideoRoom: React.FC<VideoRoomProps> = ({
     </>
   );
 };
-
-export default VideoRoom;

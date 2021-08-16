@@ -3,7 +3,12 @@
 $video-participant-optimal-width: 260px;
 $video-participant-optimal-height: 195px;
 
-.videoroom-room {
+.firebarrel-room {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+
   &__participant {
     background-color: $light-grey;
     display: flex;
@@ -47,6 +52,7 @@ $video-participant-optimal-height: 195px;
         text-align: center;
         display: flex;
         justify-content: center;
+        visibility: hidden;
       }
 
       .mute-other-container {
@@ -56,15 +62,16 @@ $video-participant-optimal-height: 195px;
         text-align: center;
         display: flex;
         justify-content: center;
+        visibility: hidden;
       }
     }
   }
 
   &__participants {
     display: flex;
-    grid-area: items;
+    flex-direction: row;
 
-    .videoroom-room__participant {
+    .firebarrel-room__participant {
       margin: 0 0.25rem;
       width: $video-participant-optimal-width;
     }
@@ -73,7 +80,7 @@ $video-participant-optimal-height: 195px;
   @media (min-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: center;
-      .videoroom-room__participant {
+      .firebarrel-room__participant {
         max-width: 24%;
       }
     }
@@ -82,7 +89,7 @@ $video-participant-optimal-height: 195px;
   @media (max-width: $media-breakpoint--lg) {
     &__participants {
       justify-content: space-around;
-      .videoroom-room__participant {
+      .firebarrel-room__participant {
         max-width: 49%;
       }
     }

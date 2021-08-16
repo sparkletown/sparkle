@@ -17,10 +17,10 @@ import EntityFactory from "./entities/EntityFactory";
 import { AnimationNode } from "./nodes/AnimationNode";
 import { AnimationSystem } from "./systems/AnimationSysem";
 import { AvatarTuningSystem } from "./systems/AvatarTuningSystem";
-import { BarrelSystem } from "./systems/BarrelSystem";
 import { BubbleSystem } from "./systems/BubbleSystem";
 import { ClickableSpriteSystem } from "./systems/ClickableSpriteSystem";
 import { DebugSystem } from "./systems/DebugSystem";
+import { FirebarrelSystem } from "./systems/FirebarrelSystem";
 import { FixScaleByViewportZoomSystem } from "./systems/FixScaleByViewportZoomSystem";
 import { HoverableSpriteSystem } from "./systems/HoverableSpriteSystem";
 import { LineOfSightSystem } from "./systems/LineOfSightSystem";
@@ -205,7 +205,7 @@ export class MapContainer extends Container {
       new ViewportBackgroundSystem(this._viewport!),
       SystemPriorities.render
     );
-    this._engine.addSystem(new BarrelSystem(), SystemPriorities.render);
+    this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
