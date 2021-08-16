@@ -3,7 +3,7 @@ import { Sprite } from "pixi.js";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 
-import { avatarCycles } from "../../constants/AssetConstants";
+import { avatarCycles, avatarFeets } from "../../constants/AssetConstants";
 import EntityFactory from "../entities/EntityFactory";
 import { Avatar } from "../graphics/Avatar";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
@@ -81,11 +81,7 @@ export class AvatarTuningSystem extends System {
   }
 
   private handlePlayerAdded = (node: PlayerNode): void => {
-    if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_FLYING) {
-      this.creator.removePlayerTuning(node);
-    } else {
-      this.creator.updatePlayerTuning(node);
-    }
+    this.creator.updatePlayerTuning(node);
   };
 
   private handlePlayerRemoved = (node: PlayerNode): void => {
@@ -98,29 +94,56 @@ export class AvatarTuningSystem extends System {
       return;
     }
 
-    // CYCLE
     if (
       this.player &&
       this.player.head &&
-      this.player.head.player.data.id === node.tuning.user.id &&
-      this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
-      !view.cycle
+      this.player.head.player.data.id === node.tuning.user.id
     ) {
-      view.cycle = Sprite.from(avatarCycles[0]);
-      view.cycle.y = view.avatar.height / 2;
-      view.cycle.anchor.set(0.5);
-      // TODO HARDCODE
-      view.cycle.scale.set(1.3);
+      if (view.cycle && view.cycle.parent) {
+        view.cycle.parent.removeChild(view.cycle);
+      }
+      if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
+        view.cycle = Sprite.from(avatarFeets[0]);
+        view.cycle.y = view.avatar.height / 2;
+        view.cycle.anchor.set(0.5);
+        // TODO HARDCODE
+        view.cycle.scale.set(2);
 
-      view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-    } else if (
-      (!node.tuning.user.data.cycle ||
-        this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
-      view.cycle
-    ) {
-      view.removeChild(view.cycle);
-      view.cycle = null;
+        view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
+      } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
+        view.cycle = Sprite.from(avatarCycles[0]);
+        view.cycle.y = view.avatar.height / 2;
+        view.cycle.anchor.set(0.5);
+        // TODO HARDCODE
+        view.cycle.scale.set(1.4);
+
+        view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
+      }
     }
+
+    // // CYCLE
+    // if (
+    //   this.player &&
+    //   this.player.head &&
+    //   this.player.head.player.data.id === node.tuning.user.id &&
+    //   this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
+    //   !view.cycle
+    // ) {
+    //   view.cycle = Sprite.from(avatarCycles[0]);
+    //   view.cycle.y = view.avatar.height / 2;
+    //   view.cycle.anchor.set(0.5);
+    //   // TODO HARDCODE
+    //   view.cycle.scale.set(1.3);
+    //
+    //   view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
+    // } else if (
+    //   (!node.tuning.user.data.cycle ||
+    //     this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
+    //   view.cycle
+    // ) {
+    //   view.removeChild(view.cycle);
+    //   view.cycle = null;
+    // }
 
     // HAT
     if (

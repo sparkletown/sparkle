@@ -12,8 +12,10 @@ import ACCESSORY_1 from "assets/images/AnimateMap/avatarAccessoryes/cap_3.png";
 import ACCESSORY_2 from "assets/images/AnimateMap/avatarAccessoryes/cap_5.png";
 import ACCESSORY_3 from "assets/images/AnimateMap/avatarAccessoryes/cap_6.png";
 import ACCESSORY_4 from "assets/images/AnimateMap/avatarAccessoryes/cap_9.png";
+import AIRCRAFT from "assets/images/AnimateMap/avatarAircraft/aircraft.png";
 import CYCLE_0 from "assets/images/AnimateMap/avatarCycles/icon_1.png";
 import CYCLE_1 from "assets/images/AnimateMap/avatarCycles/icon_2.png";
+import FEETS from "assets/images/AnimateMap/avatarFeets/feets.png";
 import HAT_0 from "assets/images/AnimateMap/avatarHats/24.png";
 import HAT_1 from "assets/images/AnimateMap/avatarHats/cap_1.png";
 import HAT_2 from "assets/images/AnimateMap/avatarHats/cap_4.png";
@@ -90,6 +92,10 @@ const avatarAccessories = [
 
 const avatarCycles = [CYCLE_0, CYCLE_1];
 
+const avatarAircraft = [AIRCRAFT];
+
+const avatarFeets = [FEETS];
+
 const artcars = [
   ARTCAR_0,
   ARTCAR_1,
@@ -135,6 +141,8 @@ export {
   avatarHats,
   avatarAccessories,
   avatarCycles,
+  avatarAircraft,
+  avatarFeets,
   artcars,
   barrels,
   MAP_IMAGE,
