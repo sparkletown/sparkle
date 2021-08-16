@@ -48,6 +48,7 @@ const validationSchema = Yup.object().shape({
 
 const EntranceExperience: React.FC<EntranceExperienceProps> = ({
   venue,
+  sovereignVenue,
   onSave,
 }) => {
   const { register, handleSubmit, errors } = useForm<Venue_v2_EntranceConfig>({
@@ -56,7 +57,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
     validationSchema: validationSchema,
     defaultValues: {
       code_of_conduct_questions: venue.code_of_conduct_questions,
-      profile_questions: venue.profile_questions,
+      profile_questions: sovereignVenue?.profile_questions,
       entrance: venue.entrance,
     },
   });
@@ -114,7 +115,7 @@ const EntranceExperience: React.FC<EntranceExperienceProps> = ({
             <QuestionInput
               fieldName="profile_questions"
               register={register}
-              editing={venue.profile_questions}
+              editing={sovereignVenue?.profile_questions}
               errors={errors.profile_questions}
             />
           </S.ItemBody>

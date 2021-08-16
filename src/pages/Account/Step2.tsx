@@ -2,7 +2,7 @@ import React from "react";
 import "firebase/storage";
 import "./Account.scss";
 import { PLAYA_IMAGE, PLAYA_VENUE_NAME } from "settings";
-import Profile from "./Profile";
+import { Profile } from "./Profile";
 
 export interface ProfileFormData {
   partyName: string;

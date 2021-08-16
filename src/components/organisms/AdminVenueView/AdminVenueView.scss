@@ -3,7 +3,6 @@
 .AdminVenueView {
   display: flex;
   justify-content: space-around;
-  padding: 20px 0;
 
   @media (max-width: $media-breakpoint--lg) {
     align-items: center;
@@ -17,7 +16,7 @@
 
   &__options {
     display: flex;
-    width: 80%;
+    width: 100%;
     flex-direction: row;
     justify-content: space-between;
   }

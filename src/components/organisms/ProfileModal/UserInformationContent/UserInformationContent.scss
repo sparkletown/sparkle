@@ -1,0 +1,80 @@
+@import "scss/constants.scss";
+
+$button-size: 30px;
+
+.UserInformationContent {
+  &__title {
+    font-size: $font-size--md;
+    line-height: $spacing--xl;
+    font-weight: normal;
+    color: opaque-white(0.5);
+  }
+
+  &__information {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $spacing--lg;
+  }
+
+  &__text-container {
+    font-size: $font-size--sm;
+    margin-left: $spacing--md;
+    max-width: 162px;
+  }
+
+  &__user-name {
+    font-size: $font-size--xl;
+    margin: 0;
+  }
+
+  &__ellipsis-text {
+    font-size: $font-size--md;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: opaque-white(0.5);
+  }
+
+  &__status-container {
+    display: flex;
+  }
+
+  &__status-prefix {
+    padding-right: 6px;
+    color: opaque-white(0.7);
+    align-self: flex-end;
+  }
+
+  &__edit {
+    width: $button-size;
+    height: $button-size;
+  }
+
+  &__profile-links {
+    list-style-type: none;
+    margin-bottom: 0;
+  }
+
+  &__add-profile-link {
+    margin-bottom: $spacing--lg;
+  }
+}
+
+button.UserInformationContent__edit {
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $secondary;
+}
+
+button.UserInformationContent__button {
+  display: block;
+  width: 100%;
+  height: $button-size;
+  padding: 0;
+  margin-top: $spacing--md;
+  font-size: $font-size--md;
+  background-color: $secondary;
+}

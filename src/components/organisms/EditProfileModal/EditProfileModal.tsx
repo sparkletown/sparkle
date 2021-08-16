@@ -1,3 +1,4 @@
+// @debt is this component used? looks like we can get rid of it.
 import React, { useEffect } from "react";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -6,33 +7,32 @@ import { DISPLAY_NAME_MAX_CHAR_COUNT } from "settings";
 
 import { QuestionType } from "types/Question";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
 import { useUser } from "hooks/useUser";
-import { useSelector } from "hooks/useSelector";
 import { useVenueId } from "hooks/useVenueId";
+import { useSovereignVenue } from "hooks/useSovereignVenue";
 
 import { ProfileFormData } from "pages/Account/Profile";
 import { QuestionsFormData } from "pages/Account/Questions";
 import { updateUserProfile } from "pages/Account/helpers";
-import ProfilePictureInput from "components/molecules/ProfilePictureInput";
+import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
 import "./EditProfileModal.scss";
 
-interface PropsType {
+export interface EditProfileModalProps {
   show: boolean;
   onHide: () => void;
 }
 
-const EditProfileModal: React.FunctionComponent<PropsType> = ({
+export const EditProfileModal: React.FunctionComponent<EditProfileModalProps> = ({
   show,
   onHide,
 }) => {
   const venueId = useVenueId();
   const { user, profile } = useUser();
-  const profileQuestions = useSelector(
-    (state) => currentVenueSelectorData(state)?.profile_questions
-  );
+  const { sovereignVenue } = useSovereignVenue({ venueId });
+
+  const profileQuestions = sovereignVenue?.profile_questions;
+
   const onSubmit = async (data: ProfileFormData & QuestionsFormData) => {
     if (!user) return;
     await updateUserProfile(user.uid, data);
@@ -137,5 +137,3 @@ const EditProfileModal: React.FunctionComponent<PropsType> = ({
     </Modal>
   );
 };
-
-export default EditProfileModal;

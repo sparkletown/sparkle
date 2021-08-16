@@ -20,9 +20,12 @@ import * as S from "./FireBarrel.styled";
 
 const DEFAULT_BURN_BARREL_SEATS = 8;
 
+// @debt refactor this to pass in venue as a prop
 export const FireBarrel: React.FC = () => {
   const venue = useSelector(currentVenueSelector);
-  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers();
+  const { recentVenueUsers, isRecentVenueUsersLoaded } = useRecentVenueUsers({
+    venueName: venue?.name,
+  });
 
   const chairs =
     recentVenueUsers?.length > DEFAULT_BURN_BARREL_SEATS

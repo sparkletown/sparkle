@@ -14,8 +14,7 @@ import {
 import { useSelector } from "./useSelector";
 import { useDispatch } from "./useDispatch";
 import { useNumberOfUnreadChats } from "./privateChats";
-import { useVenueId } from "./useVenueId";
-import { useConnectCurrentVenueNG } from "./useConnectCurrentVenueNG";
+import { AnyVenue } from "types/venues";
 
 export const useChatSidebarControls = () => {
   const dispatch = useDispatch();
@@ -69,12 +68,9 @@ export const useChatSidebarControls = () => {
   };
 };
 
-export const useChatSidebarInfo = () => {
+export const useChatSidebarInfo = (venue: AnyVenue) => {
   const numberOfUnreadChats = useNumberOfUnreadChats();
-  const venueId = useVenueId();
-  const { currentVenue } = useConnectCurrentVenueNG(venueId);
-
-  const chatTitle = currentVenue?.chatTitle ?? "Venue";
+  const chatTitle = venue?.chatTitle ?? "Venue";
 
   return {
     privateChatTabTitle: `Direct Messages ${

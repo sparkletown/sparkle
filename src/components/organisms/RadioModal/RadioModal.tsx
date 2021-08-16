@@ -46,7 +46,7 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
   );
 
   return (
-    <div className="radio-modal-container">
+    <div role="dialog" className="radio-modal-container">
       {!isRadioPlaying ? (
         <Button onClick={handleEnableButtonClick}>Enable radio</Button>
       ) : (

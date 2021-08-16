@@ -6,6 +6,8 @@ import { Checkbox } from "components/atoms/Checkbox";
 
 import "./PosterHallSearch.scss";
 
+import { POSTERHALL_POSTER_IS_LIVE_TEXT } from "settings";
+
 export interface PosterHallSearchProps {
   searchInputValue?: string;
   setSearchInputValue: (title: string) => void;
@@ -46,7 +48,7 @@ export const PosterHallSearch: React.FC<PosterHallSearchProps> = ({
       <Checkbox
         checked={liveFilterValue}
         onChange={onCheckboxChange}
-        label="Presenter is online"
+        label={POSTERHALL_POSTER_IS_LIVE_TEXT}
         containerClassName="PosterHallSearch__checkbox"
       />
     </div>

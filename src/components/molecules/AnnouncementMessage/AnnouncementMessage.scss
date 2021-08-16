@@ -24,11 +24,15 @@ $message-margin: $spacing + $close-icon-width + 5px;
   text-align: center;
 
   .close-button {
+    background: transparent;
+    border: none;
+    color: $white;
     cursor: pointer;
     position: absolute;
     top: $spacing;
     right: $spacing;
-    :hover {
+    &:focus,
+    &:hover {
       color: var(--primary-color);
       text-decoration: underline;
     }

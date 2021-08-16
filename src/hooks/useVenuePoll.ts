@@ -22,7 +22,7 @@ export const useVenuePoll = () => {
     (pollVote: PollVoteBase) => {
       if (!venueId) return;
 
-      voteInVenuePoll({ pollVote, venueId });
+      return voteInVenuePoll({ pollVote, venueId });
     },
     [venueId]
   );

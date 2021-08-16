@@ -75,13 +75,13 @@ export const ChatMessage: React.FC<ChatProps> = ({
             <RenderMarkdown text={text} allowHeadings={false} />
           </div>
 
-          <div className="ChatMessage__reply-icon">
-            <FontAwesomeIcon
-              icon={faReply}
-              size="sm"
-              onClick={selectThisThread}
-            />
-          </div>
+          <button
+            aria-label={replyButtonText}
+            className="ChatMessage__reply-icon"
+            onClick={selectThisThread}
+          >
+            <FontAwesomeIcon icon={faReply} size="sm" />
+          </button>
           {hasReplies && (
             <TextButton
               containerClassName="ChatMessage__show-replies-button"
