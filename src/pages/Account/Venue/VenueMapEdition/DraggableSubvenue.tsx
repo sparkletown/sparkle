@@ -113,7 +113,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
             style={{
               ...styles.resizeableImageContainer,
               borderRadius: rounded ? "50%" : "none",
-              backgroundImage: "url(" + url + ")",
+              backgroundImage: `url(${url})`,
             }}
           ></div>
         </div>
