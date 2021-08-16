@@ -271,8 +271,10 @@ export class MapContainer extends Container {
             .getConfig()
             .getFirebarrels();
 
-          for (let i = 0; i < firebarrels.length; i++) {
-            this.entityFactory.createBarrel(firebarrels[i].id);
+          if (firebarrels) {
+            for (let i = 0; i < firebarrels.length; i++) {
+              this.entityFactory.createBarrel(firebarrels[i].id);
+            }
           }
         }
       })

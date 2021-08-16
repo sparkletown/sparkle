@@ -69,7 +69,6 @@ export class GameConfig {
   ];
 
   private _playgroundMap: PlaygroundMap = new PlaygroundMap();
-  private _firebarrels: GameOptionsFirebarrel[] = [];
 
   public get backgroundImage() {
     return this.options.backgroundImage;
@@ -85,6 +84,10 @@ export class GameConfig {
 
   public get worldHeight(): number {
     return this.options.worldHeight;
+  }
+
+  public getFirebarrels(): GameOptionsFirebarrel[] | undefined {
+    return this.options.firebarrels;
   }
 
   public get worldCenter(): Point {
@@ -156,9 +159,5 @@ export class GameConfig {
       this._zoomLevelLineOfSightCoresponding.length - 1
     );
     return this._zoomLevelLineOfSightCoresponding[zoomLevel];
-  }
-
-  public getFirebarrels(): GameOptionsFirebarrel[] {
-    return this._firebarrels;
   }
 }
