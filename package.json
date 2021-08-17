@@ -23,6 +23,7 @@
     "@welldone-software/why-did-you-render": "^4.3.2",
     "bootstrap": "^4.4.1",
     "bootswatch": "^4.5.0",
+    "browser-image-compression": "^1.0.15",
     "classnames": "^2.2.6",
     "date-fns": "^2.22.1",
     "dayjs": "^1.8.35",

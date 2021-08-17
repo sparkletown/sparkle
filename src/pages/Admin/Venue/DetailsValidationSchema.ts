@@ -6,7 +6,7 @@ import {
   GIF_RESIZER_URL,
   IFRAME_TEMPLATES,
   MAX_IMAGE_FILE_SIZE_BYTES,
-  MAX_IMAGE_FILE_SIZE_TEXT,
+  MAX_IMAGE_FILE_SIZE_MB_TEXT,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
@@ -47,7 +47,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is ${MAX_IMAGE_FILE_SIZE_MB_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
