@@ -74,7 +74,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
-  const { isLoading, relatedVenueIds, sovereignVenue } = useRelatedVenues({
+  const {
+    isLoading,
+    relatedVenueIds,
+    sovereignVenue,
+    currentVenue,
+  } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -88,8 +93,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       }),
     [sovereignVenue, venueId]
   )?.title;
-
-  console.log(venueRoomTitle);
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -302,7 +305,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             onClick={() => setFilterRelatedEvents(false)}
             className={filterRelatedEvents ? "button--a disabled" : "button--a"}
           >
-            {sovereignVenue?.id}
+            {sovereignVenue?.name}
           </button>
 
           {venueId !== sovereignVenue?.id && (
@@ -315,7 +318,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
                   !filterRelatedEvents ? "button--a disabled" : "button--a"
                 }
               >
-                {venueId}
+                {currentVenue?.name}
               </button>
             </>
           )}

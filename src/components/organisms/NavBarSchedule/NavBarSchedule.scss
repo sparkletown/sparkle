@@ -74,6 +74,24 @@ $schedule-btn--height: 51px;
     transform: translateY(0);
   }
 
+  &__breadcrumb {
+    margin-top: $spacing--md;
+    font-size: $font-size--sm;
+    color: $secondary--schedule-event-users;
+
+    button {
+      color: $secondary--schedule-event-users;
+
+      &.disabled {
+        text-decoration: underline transparent;
+      }
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
   &__weekdays {
     @include scrollbar;
     display: flex;
