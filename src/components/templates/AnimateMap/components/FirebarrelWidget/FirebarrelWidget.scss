@@ -68,6 +68,7 @@ $video-participant-optimal-height: 195px;
   }
 
   &__participants {
+    position: absolute;
     display: flex;
     flex-direction: row;
 
