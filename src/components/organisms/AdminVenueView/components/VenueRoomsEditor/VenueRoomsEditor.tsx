@@ -278,7 +278,7 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
               left: `${room.x_percent}%`,
               width: `${room.width_percent}%`,
               height: `${room.height_percent}%`,
-              backgroundImage: "url(" + room.image_url + ")",
+              backgroundImage: `url(${room.image_url})`,
             }}
             key={`${room.title}-${index}`}
             onClick={() => !selectedRoom && setSelectedRoom(room)}

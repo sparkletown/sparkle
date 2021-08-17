@@ -140,6 +140,7 @@ export const DraggableSubvenue: React.FC<PropsType> = (props) => {
   );
 };
 
+// @debt This styles syntax is legacy and should be refactored
 const styles: Record<string, CSSProperties> = {
   dragContainer: {
     height: "100%",
