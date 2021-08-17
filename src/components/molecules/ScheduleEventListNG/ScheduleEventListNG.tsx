@@ -52,7 +52,7 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
       allEvents
         .map((event, index) => ({
           ...event,
-          liveAudience: recentRoomUsers[index].length,
+          liveAudience: recentRoomUsers[index]?.length || 0,
         }))
         .sort((a, b) => b.liveAudience - a.liveAudience),
     [allEvents, recentRoomUsers]

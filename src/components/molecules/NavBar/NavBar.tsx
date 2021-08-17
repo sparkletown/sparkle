@@ -192,7 +192,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     () => setShowRadioPopover((prevState) => !prevState),
     []
   );
-  console.log("currentVenue", currentVenue);
+
   if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details

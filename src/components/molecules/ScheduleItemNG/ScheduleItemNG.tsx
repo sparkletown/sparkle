@@ -122,7 +122,6 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     [userId, event]
   );
 
-  console.log(event);
   return (
     <div className="ScheduleItemNG" onClick={toggleEventExpand}>
       <div className={infoContaier}>
