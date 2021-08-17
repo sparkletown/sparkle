@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect } from "react";
-import { Button, Form } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-// Hooks
 import { useHistory } from "react-router-dom";
 
-// API
 import {
   createUrlSafeName,
   createVenue_v2,
@@ -12,10 +10,8 @@ import {
   VenueInput_v2,
 } from "api/admin";
 
-// Typings
 import { VenueTemplate } from "types/venues";
 
-// Utils | Settings | Constants | Helpers
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
@@ -26,18 +22,17 @@ import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
-// Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
-// Components
+import { ButtonNG } from "components/atoms/ButtonNG";
 import ImageInput from "components/atoms/ImageInput";
 
-// Validation schemas
 import { validationSchema_v2 } from "../ValidationSchema";
 
-// Stylings
 import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
+
+import "./DetailsForm.scss";
 
 const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const history = useHistory();
@@ -114,7 +109,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   const handleLogoUpload = (url: string) => setSquareLogoUrl(dispatch, url);
 
   const renderVenueName = () => (
-    <S.InputContainer hasError={!!errors?.name}>
+    <S.InputContainer
+      className="DetailsForm__input-container"
+      hasError={!!errors?.name}
+    >
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Name your party
       </h4>
@@ -129,15 +127,18 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
       {errors.name ? (
         <span className="input-error">{errors.name.message}</span>
       ) : urlSafeName ? (
-        <S.InputInfo>
+        <div className="DetailsForm__input-info">
           The URL of your party will be: <b>{urlSafeName}</b>
-        </S.InputInfo>
+        </div>
       ) : null}
     </S.InputContainer>
   );
 
   const renderSubtitle = () => (
-    <S.InputContainer hasError={!!errors?.subtitle}>
+    <S.InputContainer
+      className="DetailsForm__input-container"
+      hasError={!!errors?.subtitle}
+    >
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Party subtitle
       </h4>
@@ -155,7 +156,10 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderDescription = () => (
-    <S.InputContainer hasError={!!errors?.description}>
+    <S.InputContainer
+      className="DetailsForm__input-container"
+      hasError={!!errors?.description}
+    >
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Party description
       </h4>
@@ -173,7 +177,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderBannerUpload = () => (
-    <S.InputContainer>
+    <S.InputContainer className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload a banner photo
       </h4>
@@ -188,7 +192,7 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   );
 
   const renderLogoUpload = () => (
-    <S.InputContainer>
+    <S.InputContainer className="DetailsForm__input-container">
       <h4 className="italic" style={{ fontSize: "20px" }}>
         Upload your logo
       </h4>
@@ -215,8 +219,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmit)} onChange={handleOnChange}>
-      <S.FormInnerWrapper>
+    <Form
+      className="DetailsForm"
+      onSubmit={handleSubmit(onSubmit)}
+      onChange={handleOnChange}
+    >
+      <div className="DetailsForm__inner-wrapper">
         <input
           type="hidden"
           name="template"
@@ -238,13 +246,17 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         {renderDescription()}
         {renderBannerUpload()}
         {renderLogoUpload()}
-      </S.FormInnerWrapper>
+      </div>
 
-      <S.FormFooter>
-        <Button disabled={isSubmitting || !dirty} type="submit">
-          {venueId ? "Update Venue" : "Create Venue"}
-        </Button>
-      </S.FormFooter>
+      <div className="DetailsForm__footer">
+        <ButtonNG
+          disabled={isSubmitting || !dirty}
+          type="submit"
+          variant="primary"
+        >
+          Build
+        </ButtonNG>
+      </div>
     </Form>
   );
 };

@@ -217,6 +217,11 @@ $z-layers: (
   @return 0 10px 30px 0 rgba($black, $transparency);
 }
 
+@function size-factor($multiplier) {
+  // NOTE: $spacing--lg could be used because 16px = 1rem (base) font-size
+  @return 1rem * $multiplier;
+}
+
 @mixin scrollbar {
   &::-webkit-scrollbar-track {
     border-radius: 3px;

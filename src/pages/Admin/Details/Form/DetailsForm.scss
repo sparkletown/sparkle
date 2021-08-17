@@ -1,0 +1,39 @@
+@import "scss/constants";
+
+.DetailsForm {
+  &__input-container {
+    margin-top: $spacing--md;
+
+    h4 {
+      font-size: $font-size--lg;
+    }
+
+    input {
+      padding: $spacing--md 0;
+    }
+  }
+
+  &__inner-wrapper {
+    padding: $spacing--lg size-factor(5);
+  }
+
+  &__input-info {
+    display: block;
+    margin-top: size-factor(0.2);
+
+    opacity: 0.8;
+
+    font-size: size-factor(0.8);
+  }
+
+  &__footer {
+    display: flex;
+    margin: $spacing--lg size-factor(3);
+    justify-content: flex-end;
+    border-top: 1px solid opaque-white(0.2);
+
+    .ButtonNG {
+      margin-top: $spacing--lg;
+    }
+  }
+}
