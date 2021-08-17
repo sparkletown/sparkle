@@ -125,6 +125,19 @@ $media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
+$image-overlay-padding: 0.3rem;
+$image-overlay-backdrop-filter: blur(10px);
+
+$image-input-padding: 2.5em 0;
+$image-input-padding--small: 2.5em;
+$image-input-upload-button-padding: 0.7em 4.2em;
+$image-input-upload-button-padding--small: 0.7em 2em;
+$image-input-upload-button-transition: transform 0.2s ease-in-out,
+  background-color 0.2s ease-in-out;
+$image-input-upload-button-background: #462a87;
+$image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
+$image-input-border--error: 2px solid red;
+
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
 //   components/atoms/Legend/Legend.styles.ts (z-index: 5)

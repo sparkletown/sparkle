@@ -1,62 +1,101 @@
 import React, { useState } from "react";
+import { FieldError } from "react-hook-form";
+import { useAsyncFn } from "react-use";
+import imageCompression from "browser-image-compression";
+import classNames from "classnames";
 
 import {
   ACCEPTED_IMAGE_TYPES,
-  GIF_RESIZER_URL,
   MAX_IMAGE_FILE_SIZE_BYTES,
+  MAX_IMAGE_FILE_SIZE_MB,
 } from "settings";
 
-// Styles
-import * as S from "./ImageInput.styles";
-// Typings
-import { ImageInputProps } from "./ImageInput.types";
+import { ImageOverlay } from "components/atoms/ImageOverlay";
+
+import "./ImageInput.scss";
+
+export interface ImageInputProps {
+  onChange?: (url: string) => void;
+  name: string;
+  imgUrl?: string;
+  error?: FieldError;
+  small?: boolean;
+  forwardRef: (
+    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
+  ) => void;
+  nameWithUnderscore?: boolean;
+}
 
 const ImageInput: React.FC<ImageInputProps> = ({
   onChange = () => {},
-  customClass,
   name,
   imgUrl,
   error,
-  small,
+  small = false,
   forwardRef,
   nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
-  const [imageSizeError, setImageSizeError] = useState(false);
+  const [compressionError, setCompressionError] = useState(false);
 
-  const handleOnChange = (files: FileList | null) => {
-    if (!files) return;
+  const [{ loading }, handleOnChange] = useAsyncFn(
+    async (files: FileList | null) => {
+      if (!files) return;
 
-    if (files[0].size < MAX_IMAGE_FILE_SIZE_BYTES) {
-      const url = URL.createObjectURL(files[0]);
+      let file = files?.[0];
+      if (!file) return;
 
-      setImageSizeError(false);
+      if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+        const compressionOptions = {
+          maxSizeMB: MAX_IMAGE_FILE_SIZE_MB,
+          useWebWorker: true,
+          maxIteration: 20,
+        };
+
+        try {
+          file = await imageCompression(file, compressionOptions);
+        } catch (e) {
+          setCompressionError(true);
+          return;
+        }
+        if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
+          setCompressionError(true);
+          return;
+        }
+      }
+
+      setCompressionError(false);
+
+      const url = URL.createObjectURL(file);
+
       setImageUrl(url);
 
       return onChange(url);
-    }
-
-    setImageSizeError(true);
-  };
-
-  const imageError =
-    error?.message ||
-    `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`;
+    },
+    [onChange]
+  );
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
 
+  const errorMessage =
+    error?.message ??
+    (compressionError && "An error occurred while compressing the image.");
+
   return (
     <>
-      <S.Wrapper
-        small={small}
-        hasError={!!error?.message}
-        backgroundImage={imageUrl}
-        as="label"
+      <label
+        className={classNames("ImageInput__container", {
+          "ImageInput__container--error": !!error?.message,
+          "ImageInput__container--small": small,
+          "ImageInput__container--disabled": loading,
+        })}
+        style={{
+          backgroundImage: `url(${imageUrl})`,
+        }}
       >
         <input
           accept={ACCEPTED_IMAGE_TYPES}
-          className={customClass}
           hidden
           id={name}
           name={fileName}
@@ -64,9 +103,17 @@ const ImageInput: React.FC<ImageInputProps> = ({
           ref={forwardRef}
           type="file"
         />
+        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
-        <S.UploadButton isHidden={!!imageUrl}>Upload</S.UploadButton>
-      </S.Wrapper>
+        <span
+          className={classNames("ImageInput__upload-button", {
+            "ImageInput__upload-button--small": small,
+            "ImageInput__upload-button--hidden": !!imageUrl,
+          })}
+        >
+          Upload
+        </span>
+      </label>
 
       <input
         type="hidden"
@@ -75,14 +122,9 @@ const ImageInput: React.FC<ImageInputProps> = ({
         value={imageUrl}
         readOnly
       />
-      {(error?.message || imageSizeError) && <S.Error>{imageError}</S.Error>}
+      {errorMessage && <div className="ImageInput__error">{errorMessage}</div>}
     </>
   );
-};
-
-ImageInput.defaultProps = {
-  small: false,
-  customClass: "",
 };
 
 export default ImageInput;
