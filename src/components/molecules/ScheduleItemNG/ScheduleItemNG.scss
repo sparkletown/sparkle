@@ -1,6 +1,5 @@
 @import "scss/constants.scss";
 
-$event-icon--margin: 5px;
 $event-icon--size: 40px;
 
 $schedule--grey: opaque-white(0.7);
@@ -31,8 +30,7 @@ $schedule-info-block-width: 60px;
     flex-shrink: 0;
     height: $event-icon--size;
     width: $event-icon--size;
-    margin-left: $event-icon--margin;
-    margin-right: $event-icon--margin;
+    margin: 0 $spacing--xs;
     border-radius: $border-radius--sm;
     background-size: contain;
     background-repeat: no-repeat;
