@@ -75,13 +75,6 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
     setImportResult(result);
   }, [parsedData]);
 
-  const dialogClassName = classNames({
-    "CsvImportModal CsvImportModal__dialog": true,
-    "CsvImportModal--with-data": parsedData,
-    "CsvImportModal--with-error":
-      (parsedErrors && parsedErrors.length > 0) || importError,
-  });
-
   const renderedHeaders = useMemo(
     () =>
       parsedMeta?.fields?.map((heading) => <th key={heading}>{heading}</th>),
@@ -144,6 +137,15 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       ),
     [parsedErrors]
   );
+
+  const isImportDisabled = isParsing || isImporting || !parsedData?.length;
+
+  const dialogClassName = classNames({
+    "CsvImportModal CsvImportModal__dialog": true,
+    "CsvImportModal--with-data": parsedData,
+    "CsvImportModal--with-error":
+      (parsedErrors && parsedErrors.length > 0) || importError,
+  });
 
   return (
     <Modal
@@ -219,7 +221,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
           onClick={importEvents}
           variant="primary"
           loading={isImporting}
-          disabled={isParsing || isImporting || !parsedData?.length}
+          disabled={isImportDisabled}
         >
           Import
         </ButtonNG>
