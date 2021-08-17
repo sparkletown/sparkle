@@ -32,6 +32,7 @@ import {
   formatDateRelativeToNow,
   isDateRangeStartWithinToday,
 } from "utils/time";
+import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -77,6 +78,19 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     currentVenueId: venueId,
   });
 
+  const venueRoomTitle = useMemo(
+    () =>
+      sovereignVenue?.rooms?.find((room) => {
+        const [roomName] = getLastUrlParam(
+          getUrlWithoutTrailingSlash(room.url)
+        );
+        return roomName === venueId;
+      }),
+    [sovereignVenue, venueId]
+  )?.title;
+
+  console.log(venueRoomTitle);
+
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
@@ -87,6 +101,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   }, [scheduledStartDate]);
 
   const isScheduleTimeshifted = !isToday(firstDayOfSchedule);
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
 
   const {
     isEventsLoading,
@@ -237,6 +253,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
         ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        : filterRelatedEvents
+        ? eventsFilledWithPriority.filter(
+            (event) => event.room === venueRoomTitle
+          )
         : eventsFilledWithPriority,
     };
   }, [
@@ -244,6 +264,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     showPersonalisedSchedule,
     firstScheduleDate,
+    filterRelatedEvents,
+    venueRoomTitle,
   ]);
 
   const downloadPersonalEventsCalendar = useCallback(() => {
@@ -275,6 +297,30 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
+        <div className="NavBarSchedule__breadcrumb">
+          <button
+            onClick={() => setFilterRelatedEvents(false)}
+            className={filterRelatedEvents ? "button--a disabled" : "button--a"}
+          >
+            {sovereignVenue?.id}
+          </button>
+
+          {venueId !== sovereignVenue?.id && (
+            <>
+              {" "}
+              /{" "}
+              <button
+                onClick={() => setFilterRelatedEvents(true)}
+                className={
+                  !filterRelatedEvents ? "button--a disabled" : "button--a"
+                }
+              >
+                {venueId}
+              </button>
+            </>
+          )}
+        </div>
+
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
 
