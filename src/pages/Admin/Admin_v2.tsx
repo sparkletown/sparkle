@@ -17,8 +17,7 @@ import { LoadingPage } from "components/molecules/LoadingPage";
 
 import "firebase/storage";
 
-import * as S from "./Admin.styles";
-
+// import * as S from "./Admin.styles";
 import "./Admin.scss";
 
 dayjs.extend(advancedFormat);
@@ -46,11 +45,11 @@ const Admin_v2: React.FC = () => {
 
   return (
     <>
-      <S.Wrapper className="no-venue-selected">
-        <S.ViewWrapper>
-          <AdminVenues venues={ownedVenues} />
-        </S.ViewWrapper>
-      </S.Wrapper>
+      {/* <S.Wrapper className="no-venue-selected">
+        <S.ViewWrapper> */}
+      <AdminVenues venues={ownedVenues} />
+      {/* </S.ViewWrapper>
+      </S.Wrapper> */}
 
       <AuthenticationModal
         show={!user}

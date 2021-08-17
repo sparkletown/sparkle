@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-import { Button } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import classNames from "classnames";
 
@@ -8,6 +7,8 @@ import { AnyVenue, isPartyMapVenue } from "types/venues";
 import { WithId } from "utils/id";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
+
+import { AdminNavBar } from "../AdminNavBar";
 
 import "./AdminVenues.scss";
 
@@ -27,28 +28,30 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
   const hasVenues = renderedPartyVenues.length > 0;
 
   return (
-    <div className="admin-venue">
-      <div className="admin-venue__header">
-        <div className="admin-venue__title">Admin Dashboard</div>
-        <Button as={Link} to="/admin-ng/create/venue">
-          Create a new space
-        </Button>
+    <AdminNavBar disableAll={true}>
+      <div className="admin-venue">
+        <div className="admin-venue__header">
+          <div className="admin-venue__title">Admin Dashboard</div>
+          <Link className="admin-venue__button" to="/admin-ng/create/venue">
+            Create a new space
+          </Link>
+        </div>
+        <div
+          className={classNames("admin-venue__cards", {
+            "admin-venue__cards--empty": !hasVenues,
+          })}
+        >
+          {!hasVenues && (
+            <>
+              <div className="admin-venue__title">Welcome!</div>
+              <div className="admin-venue__title">
+                Create your first Sparkle space
+              </div>
+            </>
+          )}
+          {hasVenues && renderedPartyVenues}
+        </div>
       </div>
-      <div
-        className={classNames("admin-venue__cards", {
-          "admin-venue__cards--empty": !hasVenues,
-        })}
-      >
-        {!hasVenues && (
-          <>
-            <div className="admin-venue__title">Welcome!</div>
-            <div className="admin-venue__title">
-              Create your first Sparkle space
-            </div>
-          </>
-        )}
-        {hasVenues && renderedPartyVenues}
-      </div>
-    </div>
+    </AdminNavBar>
   );
 };

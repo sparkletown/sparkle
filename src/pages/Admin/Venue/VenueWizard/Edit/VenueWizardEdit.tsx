@@ -51,7 +51,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
 
   return (
-    <AdminNavBar>
+    <AdminNavBar activeNav="run">
       <Details data={state} dispatch={dispatch} />
     </AdminNavBar>
   );

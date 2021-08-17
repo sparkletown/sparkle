@@ -38,6 +38,10 @@
       background-color: $primary;
     }
 
+    &--disabled {
+      cursor: not-allowed;
+    }
+
     @media (max-width: $media-breakpoint--lg) {
       width: 50%;
     }

@@ -33,32 +33,49 @@ const tabIcons = {
   [AdminNavBarTab.run]: faPlayCircle,
 };
 
-export interface AdminNavBarProps {}
+export interface AdminNavBarProps {
+  activeNav?: string;
+  disableAll?: boolean;
+}
 
-export const AdminNavBar: React.FC<AdminNavBarProps> = ({ children }) => {
+export const AdminNavBar: React.FC<AdminNavBarProps> = ({
+  activeNav = "",
+  disableAll = false,
+  children,
+}) => {
   const {
     venueId,
-    selectedTab = AdminNavBarTab.run,
+    selectedTab = activeNav,
   } = useParams<AdminNavBarRouteParams>();
 
   const renderAdminNavBarOptions = useMemo(() => {
-    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
-      <Link
-        key={key}
-        to={adminNGVenueUrl(venueId, key)}
-        className={classNames({
-          AdminNavBar__tab: true,
-          "AdminNavBar__tab--selected": selectedTab === key,
-        })}
-      >
-        <FontAwesomeIcon
-          className="AdminNavBar__tabIcon"
-          icon={tabIcons[key as AdminNavBarTab]}
-        />
-        {label}
-      </Link>
-    ));
-  }, [selectedTab, venueId]);
+    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => {
+      return disableAll ? (
+        <div className="AdminNavBar__tab AdminNavBar__tab--disabled">
+          <FontAwesomeIcon
+            className="AdminNavBar__tabIcon"
+            icon={tabIcons[key as AdminNavBarTab]}
+          />
+          {label}
+        </div>
+      ) : (
+        <Link
+          key={key}
+          to={adminNGVenueUrl(venueId, key)}
+          className={classNames({
+            AdminNavBar__tab: true,
+            "AdminNavBar__tab--selected": selectedTab === key,
+          })}
+        >
+          <FontAwesomeIcon
+            className="AdminNavBar__tabIcon"
+            icon={tabIcons[key as AdminNavBarTab]}
+          />
+          {label}
+        </Link>
+      );
+    });
+  }, [selectedTab, venueId, disableAll]);
 
   return (
     <div>
