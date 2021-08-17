@@ -39,10 +39,11 @@ const ImageInput: React.FC<ImageInputProps> = ({
       let file = files?.[0];
       if (!file) return;
 
-      if (file.size >= MAX_IMAGE_FILE_SIZE_BYTES) {
+      if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
         const compressionOptions = {
           maxSizeMB: 2,
           useWebWorker: true,
+          maxIteration: 20,
         };
 
         try {
@@ -51,7 +52,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           setCompressionError(true);
           return;
         }
-        if (file.size >= MAX_IMAGE_FILE_SIZE_BYTES) {
+        if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
           setCompressionError(true);
           return;
         }
