@@ -165,7 +165,8 @@ export const ACCEPTED_IMAGE_TYPES =
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
-  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
+export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 export const ENABLE_PLAYA_ADDRESS = false;
 
