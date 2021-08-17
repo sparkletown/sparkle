@@ -1,0 +1,23 @@
+@import "scss/constants";
+
+.Details {
+  &__container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "form preview";
+    height: calc(100% - #{$footer-height});
+  }
+
+  &__form-wrapper {
+    grid-area: form;
+  }
+
+  &__preview-wrapper {
+    grid-area: preview;
+  }
+
+  &__wrapper {
+    margin: 0;
+    padding: 0;
+  }
+}

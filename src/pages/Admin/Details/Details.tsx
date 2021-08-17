@@ -1,25 +1,22 @@
 import React from "react";
 
-import * as S from "./Details.styles";
-// Typings
 import { DetailsProps } from "./Details.types";
-// Components
 import DetailsForm from "./Form";
 import DetailsPreview from "./Preview";
 
-// Styles
 import "../Venue/Venue.scss";
+import "./Details.scss";
 
 const Details: React.FC<DetailsProps> = ({ previous, dispatch, data }) => (
-  <S.DetailsContainer>
-    <S.DetailsFormWrapper>
+  <div className="Details Details__container">
+    <div className="Details__wrapper Details__form-wrapper">
       <DetailsForm previous={previous} editData={data} dispatch={dispatch} />
-    </S.DetailsFormWrapper>
+    </div>
 
-    <S.PreviewWrapper>
+    <div className="Details__wrapper Details__preview-wrapper">
       <DetailsPreview {...data} />
-    </S.PreviewWrapper>
-  </S.DetailsContainer>
+    </div>
+  </div>
 );
 
 export default Details;

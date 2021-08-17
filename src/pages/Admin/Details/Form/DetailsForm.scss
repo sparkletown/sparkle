@@ -1,39 +1,70 @@
 @import "scss/constants";
 
 .DetailsForm {
+  &__inner-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__header,
+  &__body,
+  &__footer {
+    padding: 0 size-factor(5);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  &__form-title {
+    font-size: $font-size--xxl;
+    font-weight: $font-weight--900;
+    font-style: italic;
+  }
+
+  &__form-description {
+    margin-bottom: $spacing--xs;
+    font-size: $font-size--md;
+    color: $secondary--lightest;
+  }
+
+  &__input-title {
+    font-size: $font-size--xl;
+    font-weight: $font-weight--900;
+    font-style: italic;
+    margin: 0 0 $spacing--xs;
+  }
+
   &__input-container {
     margin-top: $spacing--md;
 
-    h4 {
-      font-size: $font-size--lg;
-    }
-
     input {
-      padding: $spacing--md;
-    }
-  }
+      border: none;
 
-  &__inner-wrapper {
-    padding: $spacing--lg size-factor(5);
+      &--has-error {
+        border: 2px solid $red;
+      }
+
+      &:focus {
+        outline: none;
+      }
+    }
   }
 
   &__input-info {
     display: block;
     margin-top: size-factor(0.2);
-
-    opacity: 0.8;
-
     font-size: size-factor(0.8);
+    opacity: 0.8;
+    color: $secondary--lightest;
   }
 
   &__footer {
     display: flex;
-    margin: $spacing--lg size-factor(3);
+    padding: $spacing--md size-factor(3);
     justify-content: flex-end;
     border-top: 1px solid opaque-white(0.2);
-
-    .ButtonNG {
-      margin-top: $spacing--lg;
-    }
   }
 }
