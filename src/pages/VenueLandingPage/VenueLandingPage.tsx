@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { format } from "date-fns";
@@ -19,6 +19,7 @@ import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -42,7 +43,21 @@ export const VenueLandingPage: React.FC = () => {
   const venueRequestStatus = useSelector(
     (state) => state.firestore.status.requested.currentVenue
   );
+  const { descendantVenues, sovereignVenueId } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
   const venueEvents = useSelector(venueEventsSelector);
+  const allVenueEvents = useMemo(
+    () => [
+      ...(venueEvents || []),
+      ...(sovereignVenueId === venueId
+        ? [...descendantVenues.flatMap((venue) => venue.events || [])]
+        : []),
+    ],
+    [descendantVenues, venueEvents, sovereignVenueId, venueId]
+  );
+
   const redirectUrl = venue?.config?.redirectUrl ?? "";
   const { hostname } = window.location;
 
@@ -56,7 +71,7 @@ export const VenueLandingPage: React.FC = () => {
 
   const { user } = useUser();
 
-  const futureOrOngoingVenueEvents = venueEvents?.filter(
+  const futureOrOngoingVenueEvents = allVenueEvents?.filter(
     (event) => !hasEventFinished(event)
   );
 

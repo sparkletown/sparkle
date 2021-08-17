@@ -16,7 +16,7 @@ import { IS_BURN } from "secrets";
 
 import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
-import { UpcomingEvent } from "types/UpcomingEvent";
+import { VenueEvent } from "types/venues";
 
 import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
@@ -46,7 +46,7 @@ import { NavBarLogin } from "./NavBarLogin";
 import "./NavBar.scss";
 import "./playa.scss";
 
-const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
+const TicketsPopover: React.FC<{ futureUpcoming: VenueEvent[] }> = (
   props: unknown,
   { futureUpcoming }
 ) => (
@@ -116,9 +116,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
   const now = firebase.firestore.Timestamp.fromDate(new Date());
+
   const futureUpcoming =
-    currentVenue?.events?.filter((e) => e.ts_utc.valueOf() > now.valueOf()) ??
-    []; //@debt typing does this exist?
+    currentVenue?.events?.filter(
+      (e) => e.start_utc_seconds?.valueOf() > parseInt(now.valueOf(), 10)
+    ) ?? []; //@debt typing does this exist?
 
   const hasUpcomingEvents = futureUpcoming && futureUpcoming.length > 0;
 

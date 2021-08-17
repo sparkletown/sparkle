@@ -4,13 +4,15 @@ import { chunk } from "lodash";
 
 import { FIRESTORE_QUERY_IN_ARRAY_MAX_ITEMS } from "settings";
 
-import { AnyVenue } from "types/venues";
+import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, withId } from "utils/id";
 import { asArray } from "utils/types";
 
 export const getVenueCollectionRef = () =>
   firebase.firestore().collection("venues");
+export const getVenueCollectionEventsRef = (venueId: string) =>
+  firebase.firestore().collection("venues").doc(venueId).collection("events");
 
 export const getVenueRef = (venueId: string) =>
   getVenueCollectionRef().doc(venueId);
@@ -110,12 +112,32 @@ export const fetchDirectChildVenues = async (
       async (venueIdsChunk: string[]) => {
         const childVenuesSnapshot = await getVenueCollectionRef()
           .where("parentId", "in", venueIdsChunk)
+
           .withConverter(anyVenueWithIdConverter)
           .get();
 
-        return childVenuesSnapshot.docs
-          .filter((docSnapshot) => docSnapshot.exists)
-          .map((docSnapshot) => docSnapshot.data());
+        const venueWithEvents = Promise.all(
+          childVenuesSnapshot.docs
+            .filter((docSnapshot) => docSnapshot.exists)
+            .map((docSnapshot) => docSnapshot.data())
+            .map(async (venue) => {
+              const second = await getVenueCollectionEventsRef(venue.id)
+                .withConverter(anyVenueEventWithIdConverter)
+                .get();
+
+              const rest = second.docs
+                .filter((docSnapshot) => docSnapshot.exists)
+                .map((docSnapshot) => docSnapshot.data());
+              return {
+                ...venue,
+                ...(rest.length
+                  ? { events: rest as WithId<VenueEvent>[] }
+                  : null),
+              };
+            })
+        );
+
+        return venueWithEvents;
       }
     )
   ).then((result) => result.flat());
@@ -143,7 +165,6 @@ export const fetchDescendantVenues = async (
     throw new Error(
       "Maximum depth reached before fetching all descendant venues."
     );
-
   const descendantVenues: WithId<AnyVenue>[] = await fetchDescendantVenues(
     directChildVenues.map((venue) => venue.id),
     {
@@ -151,7 +172,6 @@ export const fetchDescendantVenues = async (
       maxDepth: maxDepth ? maxDepth - 1 : undefined,
     }
   );
-
   return [...directChildVenues, ...descendantVenues];
 };
 
@@ -187,5 +207,29 @@ export const anyVenueWithIdConverter: firebase.firestore.FirestoreDataConverter<
     //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
 
     return withId(snapshot.data() as AnyVenue, snapshot.id);
+  },
+};
+/**
+ * Convert Venue objects between the app/firestore formats (@debt:, including validation).
+ */
+export const anyVenueEventWithIdConverter: firebase.firestore.FirestoreDataConverter<
+  WithId<VenueEvent>
+> = {
+  toFirestore: (
+    anyEvent: WithId<VenueEvent>
+  ): firebase.firestore.DocumentData => {
+    // @debt Properly check/validate this data
+    //   return AnyVenueSchema.validateSync(anyVenue);
+
+    return anyEvent;
+  },
+
+  fromFirestore: (
+    snapshot: firebase.firestore.QueryDocumentSnapshot
+  ): WithId<VenueEvent> => {
+    // @debt Properly check/validate this data rather than using 'as'
+    //   return withId(AnyVenueSchema.validateSync(snapshot.data(), snapshot.id);
+
+    return withId(snapshot.data() as VenueEvent, snapshot.id);
   },
 };

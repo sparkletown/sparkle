@@ -9,6 +9,8 @@ import { VenueEvent } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 interface PropsType {
@@ -29,6 +31,16 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
     reValidateMode: "onChange",
   });
 
+  const { descendantVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const [venueData] = descendantVenues.filter(
+    (venue) =>
+      venue?.events
+        ?.map((event) => event.id)
+        .filter((eventId) => eventId === event?.id).length
+  );
   useEffect(() => {
     if (!event) {
       reset({});
@@ -44,11 +56,17 @@ const AdminDeleteEvent: React.FunctionComponent<PropsType> = ({
   }, [event, reset]);
 
   const onSubmit = useCallback(async () => {
+    if (event && venueData) {
+      await deleteEvent(venueId, venueData.id);
+      onHide();
+
+      return;
+    }
     if (event) {
       await deleteEvent(venueId, event.id);
     }
     onHide();
-  }, [event, onHide, venueId]);
+  }, [event, onHide, venueId, venueData]);
 
   return (
     <Modal show={show} onHide={onHide}>

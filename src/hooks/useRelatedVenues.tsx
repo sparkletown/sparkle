@@ -71,7 +71,6 @@ export const RelatedVenuesProvider: React.FC<RelatedVenuesProviderProps> = ({
       }
     );
   }, [sovereignVenueId]);
-
   const relatedVenues = useMemo(() => {
     if (!sovereignVenue) return descendantVenues;
 

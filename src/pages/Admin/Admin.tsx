@@ -133,7 +133,6 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   const { pathname: urlPath } = useLocation();
 
   const { currentVenue } = useOwnedVenues({ currentVenueId: venueId });
-
   const [showCreateEventModal, setShowCreateEventModal] = useState(false);
   const [showDeleteEventModal, setShowDeleteEventModal] = useState(false);
   const [editedEvent, setEditedEvent] = useState<WithId<VenueEvent>>();

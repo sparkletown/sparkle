@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { isEqual } from "lodash";
 
 import { fetchSovereignVenue } from "api/venue";
@@ -35,7 +35,7 @@ export const useSovereignVenue: ReactHook<
   UseSovereignVenueData
 > = ({ venueId }) => {
   const dispatch = useDispatch();
-
+  const [stateVenueId, updateVenueId] = useState("");
   const {
     sovereignVenue,
     errorMsg,
@@ -44,9 +44,15 @@ export const useSovereignVenue: ReactHook<
 
   useEffect(() => {
     // NOTE: Force to fetch it only once
-    if (!venueId || sovereignVenue || isSovereignVenueLoading || errorMsg)
+    if (
+      !venueId ||
+      stateVenueId === venueId ||
+      isSovereignVenueLoading ||
+      errorMsg
+    )
       return;
 
+    updateVenueId(venueId);
     dispatch(setSovereignVenueIsLoading(true));
 
     tracePromise(
@@ -68,7 +74,14 @@ export const useSovereignVenue: ReactHook<
       .finally(() => {
         dispatch(setSovereignVenueIsLoading(false));
       });
-  }, [dispatch, errorMsg, isSovereignVenueLoading, sovereignVenue, venueId]);
+  }, [
+    dispatch,
+    errorMsg,
+    isSovereignVenueLoading,
+    sovereignVenue,
+    venueId,
+    stateVenueId,
+  ]);
 
   return {
     sovereignVenue,

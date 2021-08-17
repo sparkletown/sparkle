@@ -2,14 +2,13 @@ import { CSSProperties } from "react";
 
 import { HAS_ROOMS_TEMPLATES } from "settings";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
-import { UpcomingEvent } from "./UpcomingEvent";
 import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
@@ -136,7 +135,7 @@ export interface BaseVenue {
   code_of_conduct_questions: Question[];
   owners: string[];
   iframeUrl?: string;
-  events?: Array<UpcomingEvent>; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
+  events?: WithId<VenueEvent>[]; //@debt typing is this optional? I have a feeling this no longer exists @chris confirm
   placement?: VenuePlacement;
   zoomUrl?: string;
   mapBackgroundImageUrl?: string;
@@ -222,6 +221,7 @@ export interface PartyMapVenue extends BaseVenue {
   admin_password?: string;
   owners: string[];
   rooms?: Room[];
+  events: WithId<VenueEvent>[];
 }
 
 export interface JazzbarVenue extends BaseVenue {

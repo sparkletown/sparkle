@@ -6,6 +6,7 @@ import { AnyVenue, VenueEvent } from "types/venues";
 import { WithId } from "utils/id";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 
 import InformationCard from "components/molecules/InformationCard";
@@ -27,30 +28,43 @@ const EventsComponent: React.FC<EventsComponentProps> = ({
   setShowDeleteEventModal,
   setEditedEvent,
 }) => {
-  useFirestoreConnect([
-    {
-      collection: "venues",
-      doc: venue.id,
-      subcollections: [{ collection: "events" }],
-      orderBy: ["start_utc_seconds", "asc"],
-      storeAs: "events",
-    },
-  ]);
+  useFirestoreConnect({
+    collection: "venues",
+    doc: venue.id,
+    subcollections: [{ collection: "events" }],
+    orderBy: ["start_utc_seconds", "asc"],
+    storeAs: "events",
+  });
+  const { descendantVenues, sovereignVenueId } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+  console.log(descendantVenues);
+  const events = useSelector((state) => state.firestore.ordered.events || []);
+  const allVenueEvents = useMemo(
+    () => [
+      ...events,
+      ...(sovereignVenueId === venue.id
+        ? [...descendantVenues.flatMap((venue) => venue.events || [])]
+        : []),
+    ],
+    [descendantVenues, events, sovereignVenueId, venue.id]
+  );
 
-  const events = useSelector((state) => state.firestore.ordered.events);
   const [filterPastEvents, setFilterPastEvents] = useState(false);
   const [filterText, setFilterText] = useState("");
 
   const upcomingEvents = useMemo(
     () =>
       filterPastEvents
-        ? events?.filter(
+        ? allVenueEvents?.filter(
             (ev) =>
-              (ev.start_utc_seconds + ev.duration_minutes * 60) * 1000 >
+              ((ev?.start_utc_seconds || 1) +
+                (ev?.duration_minutes || 2) * 60) *
+                1000 >
               Date.now()
           )
-        : events,
-    [events, filterPastEvents]
+        : allVenueEvents,
+    [filterPastEvents, allVenueEvents]
   );
 
   const fuse = useMemo(

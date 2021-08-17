@@ -13,6 +13,8 @@ import { VenueEvent, VenueTemplate } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useRelatedVenues } from "hooks/useRelatedVenues";
+
 dayjs.extend(isSameOrAfter);
 
 interface PropsType {
@@ -73,6 +75,17 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
     validationSchema,
   });
 
+  const { descendantVenues } = useRelatedVenues({
+    currentVenueId: venueId,
+  });
+
+  const [venueData] = descendantVenues.filter(
+    (venue) =>
+      venue?.events
+        ?.map((event) => event.id)
+        .filter((eventId) => eventId === event?.id).length
+  );
+
   useEffect(() => {
     if (!event) {
       reset({});
@@ -102,6 +115,13 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       };
       if (template && HAS_ROOMS_TEMPLATES.includes(template))
         formEvent.room = data.room;
+
+      if (event && venueData) {
+        await updateEvent(venueData.id, event.id, formEvent);
+
+        onHide();
+        return;
+      }
       if (event) {
         await updateEvent(venueId, event.id, formEvent);
       } else {
@@ -109,7 +129,7 @@ const AdminEventModal: React.FunctionComponent<PropsType> = ({
       }
       onHide();
     },
-    [event, onHide, venueId, template]
+    [event, onHide, venueId, template, venueData]
   );
 
   return (
