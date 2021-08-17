@@ -9,6 +9,7 @@ import {
   faVolumeUp,
   faVolumeMute,
   faCaretLeft,
+  faBroadcastTower,
 } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
@@ -297,7 +298,7 @@ export const NavBar: React.FC = () => {
                     <div className="NavBar__menu--icon NavBar__menu--radio">
                       <FontAwesomeIcon
                         // TODO: fix with a new icon
-                        icon={faBars}
+                        icon={faBroadcastTower}
                         size="sm"
                       />
                     </div>
