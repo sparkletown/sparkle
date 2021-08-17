@@ -1,5 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useHistory, useParams } from "react-router";
+import { Link } from "react-router-dom";
+import classNames from "classnames";
 
 import { Venue_v2 } from "types/venues";
 
@@ -13,6 +15,8 @@ import { useUser } from "hooks/useUser";
 import AdvancedSettings from "pages/Admin/AdvancedSettings";
 import EntranceExperience from "pages/Admin/EntranceExperience";
 import VenueWizard from "pages/Admin/Venue/VenueWizard/VenueWizard";
+
+import { AdminTabsBar } from "components/organisms/AdminTabsBar";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
@@ -28,6 +32,12 @@ export interface AdminAdvancedSettingsRouteParams {
   venueId?: string;
   selectedTab?: AdminAdvancedTab;
 }
+
+const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
+  [AdminAdvancedTab.basicInfo]: "Start",
+  [AdminAdvancedTab.entranceExperience]: "Entrance",
+  [AdminAdvancedTab.advancedMapSettings]: "Advanced",
+};
 
 export const AdminAdvancedSettings: React.FC = () => {
   const history = useHistory();
@@ -46,6 +56,21 @@ export const AdminAdvancedSettings: React.FC = () => {
     isCurrentVenueLoaded,
   } = useConnectCurrentVenueNG(venueId);
 
+  const renderAdminAdvancedTabs = useMemo(() => {
+    return Object.entries(adminAdvancedTabLabelMap).map(([key, label]) => (
+      <Link
+        key={key}
+        className={classNames({
+          AdminVenueView__tab: true,
+          "AdminVenueView__tab--selected": selectedTab === key,
+        })}
+        to={adminNGSettingsUrl(venueId, key)}
+      >
+        {label}
+      </Link>
+    ));
+  }, [selectedTab, venueId]);
+
   const navigateToDefaultTab = useCallback(
     () => history.push(adminNGSettingsUrl(venueId, AdminAdvancedTab.basicInfo)),
     [venueId, history]
@@ -60,7 +85,12 @@ export const AdminAdvancedSettings: React.FC = () => {
   }
 
   return (
-    <>
+    <AdminTabsBar activeNav="advance">
+      <div className="AdminAdvancedSettings">
+        <div className="AdminAdvancedSettings__options">
+          {renderAdminAdvancedTabs}
+        </div>
+      </div>
       {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
       {selectedTab === AdminAdvancedTab.entranceExperience && (
         <EntranceExperience
@@ -76,6 +106,6 @@ export const AdminAdvancedSettings: React.FC = () => {
           onSave={navigateToDefaultTab}
         />
       )}
-    </>
+    </AdminTabsBar>
   );
 };

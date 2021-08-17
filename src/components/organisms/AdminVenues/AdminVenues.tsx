@@ -8,8 +8,6 @@ import { WithId } from "utils/id";
 
 import { AdminVenueCard } from "components/molecules/AdminVenueCard";
 
-import { AdminNavBar } from "../AdminNavBar";
-
 import "./AdminVenues.scss";
 
 export interface AdminVenuesProps {
@@ -28,30 +26,28 @@ export const AdminVenues: React.FC<AdminVenuesProps> = ({ venues }) => {
   const hasVenues = renderedPartyVenues.length > 0;
 
   return (
-    <AdminNavBar disableAll={true}>
-      <div className="admin-venue">
-        <div className="admin-venue__header">
-          <div className="admin-venue__title">Admin Dashboard</div>
-          <Link className="admin-venue__button" to="/admin-ng/create/venue">
-            Create a new space
-          </Link>
-        </div>
-        <div
-          className={classNames("admin-venue__cards", {
-            "admin-venue__cards--empty": !hasVenues,
-          })}
-        >
-          {!hasVenues && (
-            <>
-              <div className="admin-venue__title">Welcome!</div>
-              <div className="admin-venue__title">
-                Create your first Sparkle space
-              </div>
-            </>
-          )}
-          {hasVenues && renderedPartyVenues}
-        </div>
+    <div className="admin-venue">
+      <div className="admin-venue__header">
+        <div className="admin-venue__title">Admin Dashboard</div>
+        <Link className="admin-venue__button" to="/admin-ng/create/venue">
+          Create a new space
+        </Link>
       </div>
-    </AdminNavBar>
+      <div
+        className={classNames("admin-venue__cards", {
+          "admin-venue__cards--empty": !hasVenues,
+        })}
+      >
+        {!hasVenues && (
+          <>
+            <div className="admin-venue__title">Welcome!</div>
+            <div className="admin-venue__title">
+              Create your first Sparkle space
+            </div>
+          </>
+        )}
+        {hasVenues && renderedPartyVenues}
+      </div>
+    </div>
   );
 };

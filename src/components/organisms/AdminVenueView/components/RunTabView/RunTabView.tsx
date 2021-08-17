@@ -1,13 +1,13 @@
 import React from "react";
-import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
+// import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 import { DEFAULT_MAP_BACKGROUND } from "settings";
 
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { adminNGSettingsUrl } from "utils/url";
 
+// import { adminNGSettingsUrl } from "utils/url";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
@@ -15,8 +15,6 @@ import { RunTabToolbar } from "components/organisms/AdminVenueView/components/Ru
 import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunTabUsers/RunTabUsers";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
-
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 
 import "./RunTabView.scss";
 
@@ -42,14 +40,14 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
     <div className="RunTabView">
       <div className="RunTabView__sidebar">
         <div className="RunTabView__title">Run your space</div>
-        <ButtonNG
+        {/* <ButtonNG
           isLink
           className="RunTabView__advanced"
           linkTo={adminNGSettingsUrl(venueId)}
           iconName={faCog}
         >
           Advanced Settings
-        </ButtonNG>
+        </ButtonNG> */}
         <RunTabUsers venueId={venueId} />
       </div>
       <div className="RunTabView__main">

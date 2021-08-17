@@ -8,8 +8,6 @@ import { Venue_v2 } from "types/venues";
 // Components
 import Details from "pages/Admin/Details";
 
-import { AdminNavBar } from "components/organisms/AdminNavBar";
-
 import { SET_FORM_VALUES } from "../redux";
 // Reducer
 import { setBannerURL, setSquareLogoUrl } from "../redux/actions";
@@ -50,11 +48,7 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
     fetchVenueFromAPI();
   }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
 
-  return (
-    <AdminNavBar activeNav="run">
-      <Details data={state} dispatch={dispatch} />
-    </AdminNavBar>
-  );
+  return <Details data={state} dispatch={dispatch} />;
 };
 
 export default VenueWizardEdit;

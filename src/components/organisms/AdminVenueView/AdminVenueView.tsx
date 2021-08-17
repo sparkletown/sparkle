@@ -2,11 +2,11 @@ import React, { useCallback, useMemo } from "react";
 import { useParams } from "react-router";
 import { Link, useHistory } from "react-router-dom";
 import { faClock, faPlayCircle } from "@fortawesome/free-regular-svg-icons";
-import { faBorderNone } from "@fortawesome/free-solid-svg-icons";
+import { faBorderNone, faSlidersH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { adminNGRootUrl, adminNGVenueUrl } from "utils/url";
+import { adminNGRootUrl, adminNGSettingsUrl, adminNGVenueUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
@@ -24,6 +24,7 @@ export enum AdminVenueTab {
   spaces = "spaces",
   timing = "timing",
   run = "run",
+  advanceSetting = "advance",
 }
 
 export interface AdminVenueViewRouteParams {
@@ -41,12 +42,14 @@ const adminVenueTabLabelMap: Readonly<Record<AdminVenueTab, String>> = {
   [AdminVenueTab.spaces]: "Spaces",
   [AdminVenueTab.timing]: "Timing",
   [AdminVenueTab.run]: "Run",
+  [AdminVenueTab.advanceSetting]: "Advance setting",
 };
 
 const tabIcons = {
   [AdminVenueTab.spaces]: faBorderNone,
   [AdminVenueTab.timing]: faClock,
   [AdminVenueTab.run]: faPlayCircle,
+  [AdminVenueTab.advanceSetting]: faSlidersH,
 };
 
 export const AdminVenueView: React.FC = () => {
@@ -66,22 +69,39 @@ export const AdminVenueView: React.FC = () => {
   } = useConnectCurrentVenueNG(venueId);
 
   const renderAdminVenueTabs = useMemo(() => {
-    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => (
-      <Link
-        key={key}
-        to={adminNGVenueUrl(venueId, key)}
-        className={classNames({
-          AdminVenueView__tab: true,
-          "AdminVenueView__tab--selected": selectedTab === key,
-        })}
-      >
-        <FontAwesomeIcon
-          className="AdminVenueView__tabIcon"
-          icon={tabIcons[key as AdminVenueTab]}
-        />
-        {label}
-      </Link>
-    ));
+    return Object.entries(adminVenueTabLabelMap).map(([key, label]) => {
+      return key === AdminVenueTab.advanceSetting ? (
+        <Link
+          key={key}
+          to={adminNGSettingsUrl(venueId)}
+          className={classNames({
+            AdminVenueView__tab: true,
+            "AdminVenueView__tab--selected": selectedTab === key,
+          })}
+        >
+          <FontAwesomeIcon
+            className="AdminVenueView__tabIcon"
+            icon={tabIcons[key as AdminVenueTab]}
+          />
+          {label}
+        </Link>
+      ) : (
+        <Link
+          key={key}
+          to={adminNGVenueUrl(venueId, key)}
+          className={classNames({
+            AdminVenueView__tab: true,
+            "AdminVenueView__tab--selected": selectedTab === key,
+          })}
+        >
+          <FontAwesomeIcon
+            className="AdminVenueView__tabIcon"
+            icon={tabIcons[key as AdminVenueTab]}
+          />
+          {label}
+        </Link>
+      );
+    });
   }, [selectedTab, venueId]);
 
   const navigateToHome = useCallback(() => history.push(adminNGRootUrl()), [
