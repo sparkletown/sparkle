@@ -98,7 +98,7 @@ export const RoomsForm: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar>
       <RoomInnerForm
         venueId={venueId}
         venue={venue}

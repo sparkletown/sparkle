@@ -3,38 +3,6 @@
 $menu-item-size: 32px;
 $logo-size: 43px;
 
-.Navbar {
-  &__userAvatar {
-    width: $menu-item-size;
-    height: $menu-item-size;
-
-    margin-right: $spacing--sm;
-  }
-  &__menu {
-    &--volume {
-      margin-right: $spacing--sm;
-
-      &.mute {
-        opacity: 0.5;
-        box-shadow: 0 0 0 2px rgba($white, 1);
-      }
-    }
-
-    &--icon {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      width: $menu-item-size;
-      height: $menu-item-size;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      cursor: pointer;
-    }
-  }
-}
-
 .navbar-container {
   background: $black;
   display: flex;
@@ -233,19 +201,46 @@ $logo-size: 43px;
 }
 
 .NavBar {
-  &__home-icon {
+  &__home--icon {
     cursor: pointer;
     font-size: 24px;
+    color: opaque-white(0.5);
 
     margin-right: $spacing--md;
-
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
-    }
   }
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__userAvatar {
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    margin-right: $spacing--sm;
+  }
+
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
+
+      &.mute {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px rgba($white, 1);
+      }
+    }
+
+    &--icon {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: $menu-item-size;
+      height: $menu-item-size;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+    }
   }
 }

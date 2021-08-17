@@ -1,6 +1,5 @@
 import React, { useMemo, useCallback } from "react";
 import classNames from "classnames";
-import { useHistory } from "react-router-dom";
 import { sample } from "lodash";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
@@ -8,12 +7,9 @@ import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
-import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 
-import { BackButton } from "components/atoms/BackButton";
 import { Button } from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 import { IFrame } from "components/atoms/IFrame";
@@ -29,13 +25,6 @@ export interface SectionPreviewsProps {
 export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
   venue,
 }) => {
-  const { push: openUrlUsingRouter } = useHistory();
-
-  const { parentVenue } = useRelatedVenues({
-    currentVenueId: venue.id,
-  });
-  const parentVenueId = parentVenue?.id;
-
   const {
     auditoriumSections,
     toggleFullAuditoriums,
@@ -86,12 +75,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
     enterSection(randomSectionId);
   }, [enterSection, availableSectionIds]);
 
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
-
   const containerClasses = classNames(
     "AllSectionPreviews",
     `AllSectionPreviews--${auditoriumSize}`
@@ -99,12 +82,6 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
 
   return (
     <>
-      {parentVenue && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
-      )}
       <div className={containerClasses}>
         {emptyBlocks}
 

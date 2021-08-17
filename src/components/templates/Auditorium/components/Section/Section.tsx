@@ -1,5 +1,4 @@
-import React, { useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
 import classNames from "classnames";
 import { useCss } from "react-use";
@@ -7,14 +6,12 @@ import { useCss } from "react-use";
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
-import { enterVenue } from "utils/url";
 
 import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
 
-import { BackButton } from "components/atoms/BackButton";
 import { IFrame } from "components/atoms/IFrame";
 
 import "./Section.scss";
@@ -31,7 +28,6 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
   const { iframeUrl, id: venueId } = venue;
 
   const { sectionId } = useParams<{ sectionId?: string }>();
-  const { push: openUrlUsingRouter } = useHistory();
 
   const {
     auditoriumSection,
@@ -80,17 +76,10 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
     takeSeat,
   });
 
-  const backToMain = useCallback(() => {
-    if (!venueId) return;
-
-    enterVenue(venueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [venueId, openUrlUsingRouter]);
-
   if (!auditoriumSection) return <p>The section id is invalid</p>;
 
   return (
     <div className="Section">
-      <BackButton onClick={backToMain} locationName="overview" />
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>

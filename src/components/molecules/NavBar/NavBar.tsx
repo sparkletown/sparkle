@@ -5,10 +5,10 @@ import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTicketAlt,
-  faHome,
   faBars,
   faVolumeUp,
   faVolumeMute,
+  faCaretLeft,
 } from "@fortawesome/free-solid-svg-icons";
 
 import firebase from "firebase/app";
@@ -41,7 +41,6 @@ import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import PlayaTime from "components/molecules/PlayaTime";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { BackButton } from "components/atoms/BackButton";
 
 import { NavBarLogin } from "./NavBarLogin";
 
@@ -86,20 +85,15 @@ const GiftPopover = (
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
-export interface NavBarPropsType {
-  hasBackButton?: boolean;
-}
-
-export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
+export const NavBar: React.FC = () => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 
   const radioStations = useSelector(radioStationsSelector);
 
-  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
+  const { currentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
@@ -149,7 +143,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const isMute = !Boolean(volume);
 
   const volumeControlClassname = classNames(
-    "Navbar__menu--icon Navbar__menu--volume",
+    "NavBar__menu--icon NavBar__menu--volume",
     {
       mute: isMute,
     }
@@ -185,12 +179,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     setEventScheduleVisible(false);
   }, []);
 
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
-
   const navigateToHomepage = useCallback(() => {
     if (!sovereignVenueId) return;
 
@@ -223,14 +211,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="nav-logos">
-              <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
-                  icon={faHome}
-                  className="NavBar__home-icon"
+                  icon={faCaretLeft}
+                  className="NavBar__home--icon"
                   onClick={navigateToHomepage}
                 />
               )}
+              <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
               {/* {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
@@ -347,7 +335,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <UserAvatar
                     user={userWithId}
                     showStatus
-                    containerClassName="Navbar__userAvatar"
+                    containerClassName="NavBar__userAvatar"
                   />
                 </OverlayTrigger>
                 <OverlayTrigger
@@ -356,7 +344,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <div className="Navbar__menu--icon">
+                  <div className="NavBar__menu--icon">
                     <FontAwesomeIcon icon={faBars} size="sm" />
                   </div>
                 </OverlayTrigger>
@@ -381,14 +369,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
             />
           </div>
         </div>
-      )}
-
-      {/* @debt Remove back button from Navbar */}
-      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
       )}
     </>
   );

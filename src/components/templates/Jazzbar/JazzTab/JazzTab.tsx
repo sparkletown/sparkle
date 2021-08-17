@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState } from "react";
 import classNames from "classnames";
 
 // NOTE: This functionality will probably be returned in the nearest future.
@@ -13,12 +13,10 @@ import {
 import { User } from "types/User";
 import { JazzbarVenue } from "types/venues";
 
-import { openUrl, venueInsideUrl } from "utils/url";
 import { WithId } from "utils/id";
 
 import { useExperiences } from "hooks/useExperiences";
 import { useRecentVenueUsers } from "hooks/users";
-import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useShowHide } from "hooks/useShowHide";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -30,8 +28,6 @@ import TableHeader from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
 import { UserList } from "components/molecules/UserList";
 import { TablesUserList } from "components/molecules/TablesUserList";
-
-import { BackButton } from "components/atoms/BackButton";
 
 import JazzBarTableComponent from "../components/JazzBarTableComponent";
 import Room from "../components/JazzBarRoom";
@@ -58,17 +54,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
     isShown: showOnlyAvailableTables,
     toggle: toggleTablesVisibility,
   } = useShowHide();
-
-  const { parentVenue } = useRelatedVenues({ currentVenueId: venue.id });
-
-  const parentVenueId = parentVenue?.id;
-
-  // @debt This logic is a copy paste from NavBar. Move that into a separate Back button component
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    openUrl(venueInsideUrl(parentVenueId));
-  }, [parentVenueId]);
 
   useExperiences(venue.name);
 
@@ -141,13 +126,6 @@ const Jazz: React.FC<JazzProps> = ({ setUserList, venue }) => {
             </div>
           </div>
         </div>
-      )}
-
-      {!seatedAtTable && parentVenue && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
       )}
 
       {!seatedAtTable && (
