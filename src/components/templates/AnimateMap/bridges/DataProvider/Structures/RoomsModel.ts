@@ -1,27 +1,28 @@
 import { Box, Point as QPoint, QuadTree } from "js-quadtree";
+import { intersection } from "lodash";
 
 import { RoomInfo } from "../../../vendors/playerio/PlayerIO";
-import { RoomMath } from "../Contructor/PlayerIO/RoomLogic/RoomMath";
+import EventProvider, { EventType } from "../../EventProvider/EventProvider";
+import { RoomMath, Tuple } from "../Contructor/PlayerIO/RoomLogic/RoomMath";
 import { RoomTypes } from "../Contructor/PlayerIO/types";
 
 export const ROOM_PREFIX = "Z_";
 export const MIRROR_ROOM_PREFIX = "mZ_"; //Note: don't make this prefix a substring ROOM_PREFIX (or rewrite getRoomNumberById)
 
-export const initialRoomData = {
-  // speakers: 0,
-};
+export const initialRoomData = {};
 export type RoomDataType = typeof initialRoomData;
 export type RoomInfoType = RoomInfo<RoomDataType, RoomTypes>;
 
 export interface RoomItem extends RoomInfoType {
   roomNumber: number;
-  bounds: number[][];
+  depth: number;
+  bounds: Tuple<[number, number], 4>;
 }
 
-export interface RoomNode {
+export interface RoomPointNode {
   x: number;
   y: number;
-  data: string[];
+  data: string[]; //rooms ids
 }
 
 /**
@@ -32,7 +33,7 @@ export class RoomsModel {
   private _list: RoomItem[] = [];
   private _idList: string[] = [];
   private _tree: QuadTree;
-  private _treeItemList: RoomNode[] = [];
+  private _treeItemList: RoomPointNode[] = [];
 
   get size() {
     return this._list.length;
@@ -69,13 +70,19 @@ export class RoomsModel {
     this._list = newList;
   }
 
+  divideRoomNode(room: RoomItem) {
+    const roomsNumbers = RoomMath.getDividedParts(room.roomNumber);
+    return roomsNumbers.map((roomNumber) => this.createRoomNode(roomNumber));
+  }
+
   createRoomNode(roomNumber: number) {
     const roomId = getRoomIdByRoomNumber(roomNumber);
-    const bounds = RoomMath.getFramePoint(roomNumber);
+    const { depth, bounds } = RoomMath.getFramePoint(roomNumber);
     console.log(bounds);
     const newRoom: RoomItem = {
       id: roomId,
       roomNumber: roomNumber,
+      depth: depth,
       bounds: bounds,
       roomType: RoomTypes.Zone,
       roomData: initialRoomData,
@@ -91,11 +98,13 @@ export class RoomsModel {
     const treeItems = this._treeItemList;
     const newPoints: QPoint[] = [];
     roomIds.forEach((roomId) => {
-      const points = RoomMath.getFramePoint(getRoomNumberById(roomId));
+      const { bounds: points } = RoomMath.getFramePoint(
+        getRoomNumberById(roomId)
+      );
 
       points.forEach((point) => {
-        const x = point[0] * this.worldWidth;
-        const y = point[1] * this.worldHeight;
+        const x = point[0];
+        const y = point[1];
         const existingPoint = treeItems.find(
           (item) => item.x === x && item.y === y
         );
@@ -106,22 +115,51 @@ export class RoomsModel {
           treeItems.push(p);
         }
       });
+
+      EventProvider.emit(EventType.ON_ROOMS_CHANGED, this._treeItemList);
     });
     this._tree.insert(newPoints);
   }
 
   public getRoomByPoint(point: { x: number; y: number }) {
-    const roomsResult = this._list.filter(
-      (room) =>
-        room.bounds[0][0] * this.worldWidth < point.x &&
-        room.bounds[0][1] * this.worldWidth < point.y &&
-        room.bounds[3][0] * this.worldWidth > point.x &&
-        room.bounds[3][1] * this.worldWidth > point.y
+    const roomsResult = this._list.filter((room) =>
+      RoomMath.isPointInBounds(point, room.bounds)
     );
 
     if (roomsResult.length === 1) return roomsResult[0];
 
     if (roomsResult.length === 0) {
+      const allRooms = this._list.map((room) => room.roomNumber);
+      //todo: relocate to math class
+      let offset = 1;
+      let tempId = 0;
+      for (let n = 1; n < 9; n++) {
+        //todo: max_depth
+
+        const maxRoomId = Math.pow(9, n);
+        for (let i = 0; i < maxRoomId; i++) {
+          if (
+            RoomMath.isPointInBounds(
+              point,
+              RoomMath.getFramePoint(i + offset).bounds
+            )
+          ) {
+            tempId = i + offset;
+            break;
+          }
+        }
+
+        //find neighbours
+        const neighbours = [];
+        const remainder = tempId % 9;
+        const startNumber = tempId - remainder;
+        for (let i = 0; i < 9; i++) neighbours.push(startNumber + i);
+
+        if (intersection(allRooms, neighbours).length)
+          return this.createRoomNode(tempId);
+
+        offset += maxRoomId;
+      }
       //create new one
       // const roomId = getRoomIdByRoomNumber(roomNumber);
       // const newRoom : RoomItem = {
@@ -149,7 +187,7 @@ const normilizeListRoom = (listRooms: RoomInfoType[]) => {
     return {
       ...item,
       roomNumber: roomNumber,
-      bounds: RoomMath.getFramePoint(roomNumber),
+      ...RoomMath.getFramePoint(roomNumber),
     };
   }) as RoomItem[];
 };

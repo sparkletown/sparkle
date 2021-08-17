@@ -6,6 +6,7 @@ import { Point } from "types/utility";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 
+import { RoomPointNode } from "../../../bridges/DataProvider/Structures/RoomsModel";
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
 import EntityFactory from "../entities/EntityFactory";
@@ -57,14 +58,6 @@ export class DebugSystem extends System {
       EventType.ON_ROOMS_CHANGED,
       this.handleRooms
     );
-
-    // TODO remove
-    const updateRooms = false;
-    if (updateRooms) {
-      setInterval(() => {
-        GameInstance.instance.eventProvider.emit(EventType.ON_ROOMS_CHANGED);
-      }, 3000);
-    }
   }
 
   removeFromEngine(engine: Engine): void {
@@ -98,16 +91,7 @@ export class DebugSystem extends System {
     }
   }
 
-  private handleRooms = (): void => {
-    const worldWidth = GameInstance.instance.getConfig().worldWidth;
-    const worldHeight = GameInstance.instance.getConfig().worldHeight;
-    const arr: Array<{ x: number; y: number }> = [];
-    for (let i = 0; i < 10; i++) {
-      const x = Math.random() * (6000 - 3000) + 3000;
-      const y = Math.random() * (6000 - 3000) + 3000;
-      arr.push({ x, y });
-    }
-
+  private handleRooms = (points: RoomPointNode[]): void => {
     const name = "roomPoint";
     if (this.container) {
       this.container.children.forEach((display) => {
@@ -116,20 +100,26 @@ export class DebugSystem extends System {
         }
       });
 
+      const set: Set<string> = new Set();
+      points.forEach((item) => item.data.forEach((rect) => set.add(rect)));
+      console.log(set);
       let count = 0;
-      arr.forEach((point) => {
+      set.forEach((rect) => {
+        const rectPoints = points.filter((items) => items.data.includes(rect));
+
+        let min = { x: rectPoints[0].x, y: rectPoints[0].y };
+        let max = { x: rectPoints[0].x, y: rectPoints[0].y };
+
+        rectPoints.forEach((point) => {
+          if (point.x < min.x && point.y < min.y) min = point;
+          if (point.x > max.x && point.y > max.y) max = point;
+        });
+
         let g: Graphics = new Graphics();
         g.name = `${name}${++count}`;
-        g.beginFill(0x000000);
-        g.drawRect(-point.x, 0, worldWidth, 1);
-        g.position.set(point.x, point.y);
-        this.container?.addChild(g);
-
-        g = new Graphics();
-        g.name = `${name}${++count}`;
-        g.beginFill(0x000000);
-        g.drawRect(0, -point.y, 1, worldHeight);
-        g.position.set(point.x, point.y);
+        g.lineStyle(4, 0x6108e6);
+        g.drawRect(0, 0, max.x - min.x, max.y - min.y);
+        g.position.set(min.x, min.y);
         this.container?.addChild(g);
       });
     }

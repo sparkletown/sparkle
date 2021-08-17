@@ -41,6 +41,7 @@ export class MotionBaseSystem extends System {
       max,
       min + (n < 0 ? 0 : n) * ((6 - min) / 20)
     );
+    if (isNaN(k)) k = 1;
     if (k < 0) {
       k = 0;
     }
@@ -49,6 +50,7 @@ export class MotionBaseSystem extends System {
     }
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
     this.cashedSpeed = speed;
+    console.log(speed, k);
     return speed;
   }
 

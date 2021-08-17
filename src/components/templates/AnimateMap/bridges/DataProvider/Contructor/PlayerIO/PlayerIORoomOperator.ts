@@ -37,11 +37,11 @@ export class PlayerIORoomOperator extends NinePartRoomOperator {
       })
       .then((connection) => {
         if (isMain) {
-          console.log("Main Room created");
+          console.log(`Connect to ${id} as main`);
           this.mainConnection.id = id;
           this.mainConnection.instance = connection;
         } else {
-          console.log("Peripheral Room created");
+          console.log(`Connect to ${id} as peripheral`);
           this.peripheralConnections.push({
             id: id,
             instance: connection,
@@ -54,8 +54,7 @@ export class PlayerIORoomOperator extends NinePartRoomOperator {
           const userId = m.getString(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          console.log("!!! newUserJoined !!!");
-          console.log(userId, x, y);
+          console.log(`User ${userId} joint to ${id} on position (${x},${y})`);
           if (getIntByHash(this.playerId).toString() !== userId)
             EventProvider.emit(EventType.USER_JOINED, Number(userId), x, y);
         });
@@ -88,12 +87,19 @@ export class PlayerIORoomOperator extends NinePartRoomOperator {
           MessagesTypes.userLeft,
           (m) => {
             const innerUserId = m.getString(0);
-            console.log("user left");
-            console.log(innerUserId);
+            console.log(`User ${innerUserId} left from ${id}`);
             if (getIntByHash(this.playerId).toString() !== innerUserId)
               EventProvider.emit(EventType.USER_LEFT, Number(innerUserId));
           }
         );
+
+        connection.addMessageCallback<
+          FindMessageTuple<MessagesTypes.divideSpeakers>
+        >(MessagesTypes.divideSpeakers, (m) => {
+          console.log("DIVIDE!");
+          //TODO: check removeMessageCallback needed or not
+          this._divideHandler(id);
+        });
       });
   }
 
@@ -107,5 +113,10 @@ export class PlayerIORoomOperator extends NinePartRoomOperator {
       });
   }
 
-  public async onLeave(id: string) {}
+  public async onLeave(id: string) {
+    if (this.mainConnection.id === id) {
+      this.mainConnection.instance?.disconnect();
+      this.mainConnection.instance = undefined;
+    }
+  }
 }

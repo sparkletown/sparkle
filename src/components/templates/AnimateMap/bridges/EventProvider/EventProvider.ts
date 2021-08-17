@@ -2,6 +2,8 @@ import { utils } from "pixi.js";
 
 import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { RoomPointNode } from "../DataProvider/Structures/RoomsModel";
+
 export enum EventType {
   SOME_COOL_EVENT = "EventProviderType.SOME_COOL_EVENT", //TODO: remove examples events later
   SOME_BAD_EVENT = "EventProviderType.SOME_BAD_EVENT", //TODO: remove examples events later
@@ -24,12 +26,16 @@ export enum EventType {
 
 type SomeCoolEventCallback = (answer: 42) => void;
 type SomeBadEventCallback = (error: Error, message: string) => void;
+
+type OnRoomsChangedCallback = (points: RoomPointNode[]) => void;
+
 type OnVenueCollisionCallback = (venue: ReplicatedVenue) => void;
 type PlayerModelReadyCallback = (player: ReplicatedUser) => void;
 
 type UserJoinedCallback = (playerId: number, x: number, y: number) => void;
 type UserLeftCallback = (playerId: number) => void;
 type UserMovedCallback = (playerId: number, x: number, y: number) => void;
+
 // type UserJoinedCallback = (player: ReplicatedUser) => void;
 
 export declare interface EventProviderSingleton {
@@ -47,9 +53,12 @@ export declare interface EventProviderSingleton {
     ...params: Parameters<SomeBadEventCallback>
   ): boolean;
 
-  on(type: EventType.ON_ROOMS_CHANGED, callback: () => void): this;
+  on(type: EventType.ON_ROOMS_CHANGED, callback: OnRoomsChangedCallback): this;
 
-  emit(type: EventType.ON_ROOMS_CHANGED): boolean;
+  emit(
+    type: EventType.ON_ROOMS_CHANGED,
+    ...params: Parameters<OnRoomsChangedCallback>
+  ): boolean;
 
   on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
 

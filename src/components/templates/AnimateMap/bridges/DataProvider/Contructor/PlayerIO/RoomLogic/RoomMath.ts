@@ -1,8 +1,19 @@
+import { Point } from "types/utility";
+
 const D = 3; // dimension in line
 const DD = 9; // dimension in square
 const MAX_DEPTH = 9;
-const W = 39366;
-const H = 39366;
+const W = 9920; //TODO: 39366
+const H = 9920;
+
+export type Tuple<T, N extends number> = N extends N
+  ? number extends N
+    ? T[]
+    : _TupleOf<T, N, []>
+  : never;
+type _TupleOf<T, N extends number, R extends unknown[]> = R["length"] extends N
+  ? R
+  : _TupleOf<T, N, [T, ...R]>;
 
 export class RoomMath {
   /**
@@ -10,22 +21,17 @@ export class RoomMath {
    */
   public static getFramePoint(id: number) {
     if (id === 0)
-      return [
-        [0, 0],
-        [1, 0],
-        [0, 1],
-        [1, 1],
-      ];
+      return {
+        depth: 0,
+        bounds: [
+          [0, 0],
+          [1 * W, 0],
+          [0, 1 * H],
+          [1 * W, 1 * H],
+        ] as Tuple<[number, number], 4>,
+      };
 
-    let relativeId = id;
-    let depth = 0;
-    let dif = Math.pow(DD, depth);
-
-    while (depth <= MAX_DEPTH && relativeId - dif >= 0) {
-      relativeId -= dif;
-      depth++;
-      dif = Math.pow(DD, depth);
-    }
+    const [depth, relativeId] = RoomMath.getDepthAndRelativeId(id);
 
     const width = W / Math.pow(D, depth);
     const height = H / Math.pow(D, depth);
@@ -63,12 +69,15 @@ export class RoomMath {
     const y1 = column * height;
     const y2 = (column + 1) * height;
 
-    return [
-      [x1, y1],
-      [x1, y2],
-      [x2, y1],
-      [x2, y2],
-    ];
+    return {
+      depth: depth,
+      bounds: [
+        [x1, y1],
+        [x1, y2],
+        [x2, y1],
+        [x2, y2],
+      ] as Tuple<[number, number], 4>,
+    };
   }
 
   //@ts-ignore //TODO: refactor recursion to cycle
@@ -111,5 +120,43 @@ export class RoomMath {
         break;
     }
     return RoomMath.findIndexBasedOnThree(parental, min, max, i + 2);
+  }
+
+  protected static getDepthAndRelativeId(id: number) {
+    let depth = 0;
+    let dif = Math.pow(DD, depth);
+
+    while (depth <= MAX_DEPTH && id - dif >= 0) {
+      id -= dif;
+      depth++;
+      dif = Math.pow(DD, depth);
+    }
+
+    return [depth, id];
+  }
+
+  public static getDividedParts(id: number) {
+    //TODO: rework this method, O(2N) => O(N)
+    const [depth, relativeId] = RoomMath.getDepthAndRelativeId(id); // <-- it's too much
+
+    let sum = 0;
+    for (let i = 0; i <= depth; i++) {
+      sum += Math.pow(9, i);
+    }
+    sum += relativeId * 9;
+
+    const res = [];
+    for (let i = 0; i < 9; i++) res.push(sum + i);
+
+    return res;
+  }
+
+  public static isPointInBounds(p: Point, bounds: Tuple<[number, number], 4>) {
+    return (
+      bounds[0][0] < p.x &&
+      bounds[0][1] < p.y &&
+      bounds[3][0] > p.x &&
+      bounds[3][1] > p.y
+    );
   }
 }

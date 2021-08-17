@@ -17,6 +17,8 @@ namespace BurningMan {
 		// server messages
 		public const string processedMove = "a";
 		public const string processedMoveReserve = "b";
+		public const string divideSpeakers = "d";
+		public const string unitListeners = "u";
 		public const string roomInitResponse = "i";
 		public const string newUserJoined = "j";
 		public const string userLeft = "l";
@@ -27,6 +29,8 @@ namespace BurningMan {
 		public const string y = "y";
 		public const string innerId = "i";
 	}
+
+	//utils class
 	public class Position<X, Y>
 	{
 		public X x { get; set; }
@@ -39,60 +43,73 @@ namespace BurningMan {
 		}
 	}
 
-	//Player class
+	// general classes
 	public class Player : BasePlayer {
 		
 	}
 
-	//Letter class. Each letter on the screen is represented by an instance of this class.
-	//public class Letter {
-	//	public int X { get; set; }
-	//	public int Y { get; set; }
-	//	public Letter(int x, int y) {
-	//		X = x;
-	//		Y = y;
-	//	}
-	//}
-
 	[RoomType(RoomTypesEnum.Zone)]
 	public class GameCode : Game<Player>
     {
+		const string CONFIGS_TABLE = "Configs";
+		const string SERVER_CONFIG = "servers";
 
-		//const string SPEAKERS = "speakers";
+		const string MAX_SPEAKERS = "maxSpeakers";
+		const string UPDATE_TIME = "updateTime";
 
+		// room configs
+		private int maxSpeakers = 55;
+		private int updateTime = 300000;
+		private Timer configTimer;
+		private bool isClosedAndDivided = false;
 
-		//Create array to store our letters
-		//private Letter[] letters = new Letter[150];
-		//private Dictionary<int, uint> playerInnerIds = new Dictionary<int, uint>();
 		private Dictionary<ulong, Position<uint,uint>> usersPositions = new Dictionary<ulong, Position<uint, uint>>();
 		private HashSet<int> speakers = new HashSet<int>();
 		private uint listenersCount;
 
-		//This method is called when an instance of your the game is created
 		public override void GameStarted()
         {
 			PreloadPlayerObjects = true;
-            //Anything you write to the Console will show up in the 
-            //output window of the development server
-            Console.WriteLine("Zone started, initializing letters.");
-			//RoomData[SPEAKERS] = "0";
-			//RoomData["listeners"] = "0";
-			//RoomData.Save();
 
-            // Create 150 letters
-            //for (int i = 0; i < letters.Length; i++) {
-            //	letters[i] = new Letter(-1, -1);
-            //}
+			PlayerIO.BigDB.Load(CONFIGS_TABLE, SERVER_CONFIG, delegate (DatabaseObject config) {
+				if (config == null) return;
+
+				maxSpeakers = Convert.ToInt32(config.GetValue(MAX_SPEAKERS));
+				updateTime = Convert.ToInt32(config.GetValue(UPDATE_TIME));
+			});
+
+			configTimer = AddTimer(delegate {
+				CheckConfigsSetUp();
+			}, updateTime);
         }
 
-        // This method is called when the last player leaves the room, and it's closed down.
         public override void GameClosed() {
 			Console.WriteLine("FridgeMagnets stopped.");
 		}
+		public override bool AllowUserJoin(Player player)
+		{
+			if (isClosedAndDivided)
+            {
+				player.Send(MessagesTypesEnum.divideSpeakers);
+				return false;
+			}
 
-		// This method is called whenever a player joins the game
+			bool needDivide = player.JoinData["isMain"] == "true" && speakers.Count >= maxSpeakers;
+
+			if (needDivide)
+            {
+				player.Send(MessagesTypesEnum.divideSpeakers);
+				DivideSpeakers(true);
+			}
+
+			return !needDivide;
+		}
+
 		public override void UserJoined(Player player) {
 			listenersCount++;
+
+			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send players positions
+			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
 
 			if (player.JoinData["isMain"] == "true")
 			{
@@ -104,10 +121,9 @@ namespace BurningMan {
 				usersPositions.Add(playerInnerId, new Position<uint, uint>(x,y));
 				//Broadcast(MessagesTypesEnum.newUserJoined, player.ConnectUserId, x, y);
 				Broadcast(MessagesTypesEnum.newUserJoined, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString(), x, y);
+				//DivideSpeakers();
 			}
 
-			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send players positions
-			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
 		}
 
 		//This method is called when a player leaves the game
@@ -117,20 +133,13 @@ namespace BurningMan {
 			if (player.JoinData["isMain"] == "true")
 			{
 				speakers.Remove(player.Id);
-				ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
-				Position<uint, uint> pos = usersPositions[playerInnerId];
-				player.PlayerObject.Set(PlayerObjectsFieldsEnum.x, pos.x);
-				player.PlayerObject.Set(PlayerObjectsFieldsEnum.y, pos.y);
-				player.PlayerObject.Save();
-				usersPositions.Remove(playerInnerId);
+				SavePlayerPosition(player, true);
 			}
 
 			Broadcast(MessagesTypesEnum.userLeft, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString());
 		}
 
-		//This method is called when a player sends a message into the server code
 		public override void GotMessage(Player player, Message message) {
-			//Switch on message type
 			switch (message.Type) {
 				case MessagesTypesEnum.move: {
 						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
@@ -155,5 +164,57 @@ namespace BurningMan {
 					break;
 			}
 		}
+
+		private void CheckConfigsSetUp()
+		{
+			PlayerIO.BigDB.Load(CONFIGS_TABLE, SERVER_CONFIG, delegate (DatabaseObject config) {
+				if (config == null) return;
+
+				int newMaxSpeakers = Convert.ToInt32(config.GetValue(MAX_SPEAKERS));
+				int newUpdateTime = Convert.ToInt32(config.GetValue(UPDATE_TIME));
+
+				if (newMaxSpeakers != maxSpeakers)
+				{
+					maxSpeakers = newMaxSpeakers;
+					DivideSpeakers();
+				}
+
+				if (newUpdateTime != updateTime)
+				{
+					updateTime = newUpdateTime;
+					if (configTimer != null) configTimer.Stop();
+					configTimer = AddTimer(delegate {
+						CheckConfigsSetUp();
+					}, updateTime);
+				}
+			});
+		}
+
+		private void DivideSpeakers(bool hardFlag = false)
+		{
+			if (speakers.Count <= maxSpeakers && !hardFlag) return;
+
+			Broadcast(MessagesTypesEnum.divideSpeakers);
+			this.isClosedAndDivided = true;
+
+			ScheduleCallback(delegate () {
+				foreach (Player player in Players)
+				{
+					SavePlayerPosition(player);
+					player.Disconnect();
+				}
+			}, 10000);
+		}
+
+		private void SavePlayerPosition(Player player, bool removeFlag = false)
+		{
+			ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+			Position<uint, uint> pos = usersPositions[playerInnerId];
+			player.PlayerObject.Set(PlayerObjectsFieldsEnum.x, pos.x);
+			player.PlayerObject.Set(PlayerObjectsFieldsEnum.y, pos.y);
+			player.PlayerObject.Save();
+			if (removeFlag) usersPositions.Remove(playerInnerId);
+		}
+
 	}
 }

@@ -16,6 +16,8 @@ export enum MessagesTypes {
   // server messages
   processedMove = "a",
   processedMoveReserve = "b",
+  divideSpeakers = "d",
+  unitListeners = "u",
   roomInitResponse = "i",
   newUserJoined = "j",
   userLeft = "l",

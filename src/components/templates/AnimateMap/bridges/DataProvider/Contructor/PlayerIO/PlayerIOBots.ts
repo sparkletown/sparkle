@@ -7,7 +7,7 @@ import { connection } from "../../../../vendors/playerio/PlayerIO";
 import { getIntByHash } from "./utils/getIntByHash";
 import { getRandomBotId } from "./utils/getRandomBotId";
 import { PlayerIODataProvider } from "./PlayerIODataProvider";
-import { MessagesTypes } from "./types";
+// import { MessagesTypes } from "./types";
 
 const dV_max = 200;
 const world_width = 9920;
@@ -88,13 +88,13 @@ class Bot {
     if (this.x > world_width) this.x = world_width;
     if (this.x > world_height) this.x = world_height;
 
-    console.log(MessagesTypes.move, this._shortId, this.x, this.y, this.id);
-    this._playerio.sendPlayerPosition(
-      // MessagesTypes.move,
-      // this._shortId,
-      this.x,
-      this.y
-      // this.id
-    );
+    // console.log(MessagesTypes.move, this._shortId, this.x, this.y, this.id);
+    // this._playerio.sendPlayerPosition(
+    // MessagesTypes.move,
+    // this._shortId,
+    // this.x,
+    // this.y
+    // this.id
+    // );
   }
 }

@@ -29,7 +29,9 @@ export const stubUsersData = () => {
       y,
       data: {
         videoUrlString: "",
-        avatarUrlString: `/avatars/avatar-0${getRandomInt(8) + 1}.png`,
+        avatarUrlString: `/avatars/default-profile-pic-${
+          getRandomInt(3) + 1
+        }.png`,
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],

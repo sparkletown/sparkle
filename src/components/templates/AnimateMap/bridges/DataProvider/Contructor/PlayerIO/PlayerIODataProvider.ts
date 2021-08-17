@@ -2,7 +2,8 @@ import { utils } from "pixi.js";
 
 import { Point } from "types/utility";
 
-import { StartPoint } from "../../../../game/utils/Point";
+import { getRandomInt } from "../../../../../../../utils/getRandomInt";
+// import { StartPoint } from "../../../../game/utils/Point";
 import {
   ConnectionSuccessCallback,
   PlayerIOInstance,
@@ -91,9 +92,11 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     if (playerObject.x === undefined || playerObject.y === undefined) {
       needSave = true;
-      const pos = StartPoint();
-      playerObject.x = pos.x;
-      playerObject.y = pos.y;
+      // const pos = StartPoint();
+      // playerObject.x = pos.x;
+      // playerObject.y = pos.y;
+      playerObject.x = getRandomInt(9920);
+      playerObject.y = getRandomInt(9920);
       playerObject.i = getIntByHash(this.playerId);
     }
 
