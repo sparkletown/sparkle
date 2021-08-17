@@ -5,6 +5,8 @@ import { HTML5Backend } from "react-dnd-html5-backend";
 import { RoomData_v2 } from "types/rooms";
 import { Dimensions, Position } from "types/utility";
 
+import { useCheckImage } from "hooks/useCheckImage";
+
 import { VenueRoomsEditor } from "../VenueRoomsEditor";
 import { RoomIcon } from "../VenueRoomsEditor/VenueRoomsEditor";
 
@@ -39,10 +41,14 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [rooms]);
 
+  const [hasMapBackground] = useCheckImage(mapBackground ?? "");
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="MapPreview">
-        <div className="MapPreview__header">{`Preview of your space’s map`}</div>
+        {hasMapBackground && (
+          <div className="MapPreview__header">{`Preview of your space’s map`}</div>
+        )}
         <VenueRoomsEditor
           interactive
           resizable
@@ -50,7 +56,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
           rooms={rooms}
           selectedRoom={selectedRoom}
           setSelectedRoom={setSelectedRoom}
-          backgroundImage={mapBackground ?? ""}
+          backgroundImage={hasMapBackground ? mapBackground : undefined}
           roomIcons={iconsMap}
           coordinatesBoundary={{
             width: 100,
