@@ -126,23 +126,14 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             </span>
           </div>
         )}
-        {hasParseError && parsedErrors?.length === 1 && (
-          <div className="CsvImportModal__error CsvImportModal__error--single">
+        {hasParseError && parsedErrors && parsedErrors.length > 0 && (
+          <div className="CsvImportModal__error">
             <span className="CsvImportModal__error-static">
-              There has been an error parsing the CSV file. Please make sure
-              everything is OK before proceeding. Error:
-            </span>
-            <br />
-            <span className="CsvImportModal__error-generated">
-              {parsedErrors[0].message}
-            </span>
-          </div>
-        )}
-        {hasParseError && parsedErrors && parsedErrors?.length > 1 && (
-          <div className="CsvImportModal__error CsvImportModal__error--multiple">
-            <span className="CsvImportModal__error-static">
-              There have been multiple errors parsing the CSV file. Please make
-              sure everything is OK before proceeding. Errors:
+              There {parsedErrors.length > 1 ? "have" : "has"} been
+              {parsedErrors.length > 1 ? " multiple errors " : " an error "}
+              parsing the CSV file. Please make sure everything is OK before
+              proceeding.
+              {parsedErrors.length > 1 ? " Errors" : " Error"}:
             </span>
             <br />
             <span className="CsvImportModal__error-generated">
