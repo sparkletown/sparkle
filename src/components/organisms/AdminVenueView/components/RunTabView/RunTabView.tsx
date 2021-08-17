@@ -69,7 +69,6 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
             }
             iconImageStyle={emptyIconsMap}
             draggableIconImageStyle={emptyIconsMap}
-            otherIconsStyle={{ opacity: 0.4 }}
           />
         </div>
         <div className="RunTabView__cards RunTabView--spacing">
