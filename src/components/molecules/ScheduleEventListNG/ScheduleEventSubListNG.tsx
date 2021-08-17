@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 
 import { EVENTS_PREVIEW_LIST_LENGTH } from "settings";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -11,7 +11,7 @@ import { ScheduleItemNG } from "components/molecules/ScheduleItemNG";
 import "./ScheduleEventListNG.scss";
 
 export interface ScheduleEventSubListNGProps {
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
   title: string;
 }
 
