@@ -10,6 +10,8 @@ import {
   MAX_IMAGE_FILE_SIZE_MB,
 } from "settings";
 
+import { ImageOverlay } from "components/atoms/ImageOverlay";
+
 import "./ImageInput.scss";
 
 export interface ImageInputProps {
@@ -101,11 +103,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           ref={forwardRef}
           type="file"
         />
-        {loading && (
-          <div className="ImageInput__processing ImageInput__processing--disabled">
-            processing...
-          </div>
-        )}
+        {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
 
         <span
           className={classNames("ImageInput__upload-button", {

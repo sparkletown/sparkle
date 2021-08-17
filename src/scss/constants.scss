@@ -124,8 +124,8 @@ $media-breakpoint--xl: 1200px;
 
 $transition-function: cubic-bezier(0.23, 1, 0.32, 1);
 
-$upload-new-padding: 0.3rem;
-$upload-new-backdrop-filter: blur(10px);
+$image-overlay-padding: 0.3rem;
+$image-overlay-backdrop-filter: blur(10px);
 
 $image-input-padding: 2.5em 0;
 $image-input-padding--small: 2.5em;
@@ -282,27 +282,5 @@ $z-layers: (
   &:hover {
     color: $hover-color;
     text-decoration: underline $hover-color;
-  }
-}
-
-@mixin over-image-style {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
-  padding: $upload-new-padding;
-  border-radius: $border-radius--xl;
-  backdrop-filter: $upload-new-backdrop-filter;
-  background: opaque-white(0.2);
-  color: $white;
-  text-shadow: 0 1px 2px opaque-black(0.25);
-  white-space: nowrap;
-  font-weight: $font-weight--500;
-  cursor: pointer;
-  user-select: none;
-  &--disabled {
-    color: $light-grey--lightest;
-    cursor: initial;
   }
 }

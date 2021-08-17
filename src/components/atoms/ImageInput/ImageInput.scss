@@ -35,10 +35,6 @@
     font-style: italic;
   }
 
-  &__processing {
-    @include over-image-style();
-  }
-
   &__upload-button {
     padding: $image-input-upload-button-padding;
     margin: 0;
