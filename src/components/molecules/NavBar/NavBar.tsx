@@ -1,7 +1,7 @@
 import React, { useState, useMemo, useRef, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { OverlayTrigger, Popover } from "react-bootstrap";
-
+import classNames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faTicketAlt,
@@ -38,6 +38,7 @@ import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
+import PlayaTime from "components/molecules/PlayaTime";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { BackButton } from "components/atoms/BackButton";
@@ -47,7 +48,6 @@ import { NavBarLogin } from "./NavBarLogin";
 import * as S from "./Navbar.styles";
 import "./NavBar.scss";
 import "./playa.scss";
-import classNames from "classnames";
 
 const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   props: unknown,
@@ -172,9 +172,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   }, [radioFirstPlayStateLoaded]);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
-  const toggleEventSchedule = useCallback(() => {
-    setEventScheduleVisible(!isEventScheduleVisible);
-  }, [isEventScheduleVisible]);
+  // const toggleEventSchedule = useCallback(() => {
+  //   setEventScheduleVisible(!isEventScheduleVisible);
+  // }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -209,7 +209,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue.name;
+  // const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
   const radioStation = !!hasRadioStations && radioStations![0];
 
@@ -231,8 +231,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   onClick={navigateToHomepage}
                 />
               )}
-
-              {shouldShowSchedule ? (
+              {/* {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
                   className={`nav-party-logo ${
@@ -244,9 +243,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 </button>
               ) : (
                 <div>{navbarTitle}</div>
-              )}
-
-              <VenuePartygoers venueId={venueId} />
+              )} */}
+              <PlayaTime /> - <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}
@@ -332,12 +330,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   </S.RadioTrigger>
                 )}
 
-                <div className={volumeControlClassname} onClick={toggleMute}>
-                  <FontAwesomeIcon
-                    icon={isMute ? faVolumeMute : faVolumeUp}
-                    size="sm"
-                  />
-                </div>
+                {(showNormalRadio || showSoundCloudRadio) && (
+                  <div className={volumeControlClassname} onClick={toggleMute}>
+                    <FontAwesomeIcon
+                      icon={isMute ? faVolumeMute : faVolumeUp}
+                      size="sm"
+                    />
+                  </div>
+                )}
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"

@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
 $menu-item-size: 32px;
+$logo-size: 43px;
 
 .Navbar {
   &__userAvatar {
@@ -131,11 +131,13 @@ $menu-item-size: 32px;
 }
 
 .nav-sparkle-logo {
-  margin-right: 12px;
-  width: 43px;
-  height: 43px;
+  margin-right: $spacing--lg;
+  width: $logo-size;
+  height: $logo-size;
   background-image: url(/assets/icons/sparkle-nav-logo.png);
-  background-size: cover;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .nav-party-logo {
   position: relative;

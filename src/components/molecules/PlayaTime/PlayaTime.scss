@@ -1,7 +1,13 @@
-.playa_time-container {
-  font-size: 0.8em;
-  min-width: 75px;
-}
-.playa_time-icon {
-  margin-right: 3px;
+@import "scss/constants.scss";
+
+.PlayaTime {
+  &__container {
+    font-size: $font-size--sm;
+    line-height: $font-size--md;
+    color: opaque-white(0.8);
+  }
+
+  &__time {
+    font-weight: $font-weight--700;
+  }
 }
