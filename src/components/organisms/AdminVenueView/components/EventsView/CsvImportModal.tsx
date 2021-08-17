@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
@@ -75,14 +75,75 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
     setImportResult(result);
   }, [parsedData]);
 
-  const hasParseError = parsedErrors && parsedErrors.length > 0;
-  const hasImportError = !!importError;
-
   const dialogClassName = classNames({
     "CsvImportModal CsvImportModal__dialog": true,
     "CsvImportModal--with-data": parsedData,
-    "CsvImportModal--with-error": hasParseError || hasImportError,
+    "CsvImportModal--with-error":
+      (parsedErrors && parsedErrors.length > 0) || importError,
   });
+
+  const renderedHeaders = useMemo(
+    () =>
+      parsedMeta?.fields?.map((heading) => <th key={heading}>{heading}</th>),
+    [parsedMeta]
+  );
+
+  const renderedRows = useMemo(
+    () =>
+      parsedData?.map((row, rowIndex) => (
+        <tr key={rowIndex}>
+          <td>{rowIndex + 1}</td>
+          {Object.values(row).map((value, cellIndex) => (
+            <td key={cellIndex}>{value}</td>
+          ))}
+        </tr>
+      )),
+    [parsedData]
+  );
+
+  const renderedImportResult = useMemo(
+    () =>
+      importResult && (
+        <div className="CsvImportModal__result">
+          <div className="CsvImportModal__result-count">
+            The number of new events is {importResult.addedEventsCount}.
+          </div>
+          {importResult.errors.length > 0 && (
+            <div className="CsvImportModal__result-errors">
+              Some events weren&apos;t addded due to invalid data. Please check
+              lines:
+              {" " +
+                importResult.errors
+                  .map(({ index, reason }) => `#${index + 1} (${reason})`)
+                  .join(", ")}
+              .
+            </div>
+          )}
+        </div>
+      ),
+    [importResult]
+  );
+
+  const renderedParseErrors = useMemo(
+    () =>
+      parsedErrors &&
+      parsedErrors.length > 0 && (
+        <div className="CsvImportModal__error">
+          <span className="CsvImportModal__error-static">
+            There {parsedErrors.length > 1 ? "have" : "has"} been
+            {parsedErrors.length > 1 ? " multiple errors " : " an error "}
+            parsing the CSV file. Please make sure everything is OK before
+            proceeding.
+            {parsedErrors.length > 1 ? " Errors" : " Error"}:
+          </span>
+          <br />
+          <span className="CsvImportModal__error-generated">
+            {parsedErrors.map((e) => e.message).join(". ")}
+          </span>
+        </div>
+      ),
+    [parsedErrors]
+  );
 
   return (
     <Modal
@@ -97,50 +158,19 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="CsvImportModal__body">
-        {importResult && (
-          <div className="CsvImportModal__result">
-            <div className="CsvImportModal__result-count">
-              The number of new events is {importResult.addedEventsCount}.
-            </div>
-            {importResult.errors.length > 0 && (
-              <div className="CsvImportModal__result-errors">
-                Some events weren&apos;t addded due to invalid data. Please
-                check lines:
-                {" " +
-                  importResult.errors
-                    .map(({ index, reason }) => `#${index + 1} (${reason})`)
-                    .join(", ")}
-                .
-              </div>
-            )}
-          </div>
-        )}
-        {hasImportError && (
+        {renderedImportResult}
+        {importError && (
           <div className="CsvImportModal__error CsvImportModal__error--import">
             <span className="CsvImportModal__error-static">
               There has been an error importing the data. Error:
             </span>
             <br />
             <span className="CsvImportModal__error-generated">
-              {"" + importError?.message}
+              {`${importError.message}`}
             </span>
           </div>
         )}
-        {hasParseError && parsedErrors && parsedErrors.length > 0 && (
-          <div className="CsvImportModal__error">
-            <span className="CsvImportModal__error-static">
-              There {parsedErrors.length > 1 ? "have" : "has"} been
-              {parsedErrors.length > 1 ? " multiple errors " : " an error "}
-              parsing the CSV file. Please make sure everything is OK before
-              proceeding.
-              {parsedErrors.length > 1 ? " Errors" : " Error"}:
-            </span>
-            <br />
-            <span className="CsvImportModal__error-generated">
-              {parsedErrors.map((e) => e.message).join(". ")}
-            </span>
-          </div>
-        )}
+        {renderedParseErrors}
         <div className="CsvImportModal__wrapper">
           {!parsedData && (
             <span className="CsvImportModal__description">
@@ -152,18 +182,9 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
             <table className="CsvImportModal__table">
               <tr>
                 <th>#</th>
-                {parsedMeta?.fields?.map((heading) => (
-                  <th key={heading}>{heading}</th>
-                ))}
+                {renderedHeaders}
               </tr>
-              {parsedData.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  <td>{rowIndex + 1}</td>
-                  {Object.values(row).map((value, cellIndex) => (
-                    <td key={cellIndex}>{value}</td>
-                  ))}
-                </tr>
-              ))}
+              {renderedRows}
             </table>
           )}
         </div>
@@ -180,6 +201,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
           onClick={selectFile}
           loading={isParsing}
           disabled={isParsing}
+          accept=".csv"
         >
           Select CSV file...
         </FileButton>

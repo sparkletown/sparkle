@@ -12,10 +12,12 @@ export interface FileButtonOnChangeData {
 }
 
 export interface FileButtonProps extends Omit<ButtonProps, "onClick"> {
+  accept?: string;
   onClick: (data: FileButtonOnChangeData) => void;
 }
 
 export const FileButton: React.FC<FileButtonProps> = ({
+  accept,
   disabled,
   onClick,
   className,
@@ -56,11 +58,12 @@ export const FileButton: React.FC<FileButtonProps> = ({
         </ButtonNG>
 
         <input
-          hidden
-          type="file"
-          id={inputId}
+          accept={accept}
           disabled={disabled}
+          hidden
+          id={inputId}
           onChange={onChange}
+          type="file"
         />
       </form>
     </div>
