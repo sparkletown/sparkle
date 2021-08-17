@@ -44,7 +44,6 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { NavBarLogin } from "./NavBarLogin";
 
-import * as S from "./Navbar.styles";
 import "./NavBar.scss";
 import "./playa.scss";
 
@@ -187,13 +186,6 @@ export const NavBar: React.FC = () => {
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
-  const [showRadioPopover, setShowRadioPopover] = useState(false);
-
-  const toggleShowRadioPopover = useCallback(
-    () => setShowRadioPopover((prevState) => !prevState),
-    []
-  );
-
   if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
@@ -267,55 +259,49 @@ export const NavBar: React.FC = () => {
                   </OverlayTrigger>
                 )}
 
-                {showNormalRadio && (
+                {(showNormalRadio || showSoundCloudRadio) && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={
                       <Popover id="radio-popover">
-                        <Popover.Content>
-                          <RadioModal
-                            {...{
-                              volume,
-                              setVolume,
-                              title: currentVenue?.radioTitle,
-                            }}
-                            onEnableHandler={handleRadioEnable}
-                            isRadioPlaying={isRadioPlaying}
-                          />
+                        <Popover.Content className="NavBar__radio--container">
+                          <div className="NavBar__radio--title">
+                            {currentVenue?.radioTitle ?? "Playa Radio"}
+                          </div>
+                          {showNormalRadio && (
+                            <RadioModal
+                              {...{
+                                volume,
+                                setVolume,
+                              }}
+                              onEnableHandler={handleRadioEnable}
+                              isRadioPlaying={isRadioPlaying}
+                            />
+                          )}
+                          {showSoundCloudRadio && (
+                            <iframe
+                              title="venueRadio"
+                              id="sound-cloud-player"
+                              scrolling="no"
+                              allow="autoplay"
+                              src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+                            />
+                          )}
                         </Popover.Content>
                       </Popover>
                     }
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
-                    />
-                  </OverlayTrigger>
-                )}
-
-                {showSoundCloudRadio && (
-                  <S.RadioTrigger>
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
-                      }`}
-                      onClick={toggleShowRadioPopover}
-                    />
-
-                    <S.RadioWrapper showRadioPopover={showRadioPopover}>
-                      <iframe
-                        title="venueRadio"
-                        id="sound-cloud-player"
-                        scrolling="no"
-                        allow="autoplay"
-                        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+                    <div className="NavBar__menu--icon NavBar__menu--radio">
+                      <FontAwesomeIcon
+                        // TODO: fix with a new icon
+                        icon={faBars}
+                        size="sm"
                       />
-                    </S.RadioWrapper>
-                  </S.RadioTrigger>
+                    </div>
+                  </OverlayTrigger>
                 )}
 
                 {(showNormalRadio || showSoundCloudRadio) && (

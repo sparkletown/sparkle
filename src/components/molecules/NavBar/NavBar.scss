@@ -213,6 +213,23 @@ $logo-size: 43px;
     height: 100%;
   }
 
+  &__radio {
+    &--container {
+      padding: $spacing--lg $spacing--md;
+
+      & > iframe {
+        width: 100%;
+        border: none;
+      }
+    }
+
+    &--title {
+      font-size: $font-size--md;
+      color: opaque-white(0.5);
+      margin-bottom: $spacing--lg;
+    }
+  }
+
   &__userAvatar {
     width: $menu-item-size;
     height: $menu-item-size;
@@ -221,13 +238,9 @@ $logo-size: 43px;
   }
 
   &__menu {
-    &--volume {
-      margin-right: $spacing--sm;
-
-      &.mute {
-        opacity: 0.5;
-        box-shadow: 0 0 0 2px rgba($white, 1);
-      }
+    &--volume.mute {
+      opacity: 0.5;
+      box-shadow: 0 0 0 2px rgba($white, 1);
     }
 
     &--icon {
@@ -241,6 +254,8 @@ $logo-size: 43px;
       justify-content: center;
 
       cursor: pointer;
+
+      margin-right: $spacing--sm;
     }
   }
 }
