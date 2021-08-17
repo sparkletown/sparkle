@@ -1,15 +1,15 @@
 import React, { useState } from "react";
+
 import {
+  ACCEPTED_IMAGE_TYPES,
   GIF_RESIZER_URL,
   MAX_IMAGE_FILE_SIZE_BYTES,
-  ACCEPTED_IMAGE_TYPES,
 } from "settings";
-
-// Typings
-import { ImageInputProps } from "./ImageInput.types";
 
 // Styles
 import * as S from "./ImageInput.styles";
+// Typings
+import { ImageInputProps } from "./ImageInput.types";
 
 const ImageInput: React.FC<ImageInputProps> = ({
   onChange = () => {},

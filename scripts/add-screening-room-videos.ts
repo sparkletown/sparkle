@@ -2,13 +2,13 @@
 
 import fs from "fs";
 
+import { ScreeningRoomVideo } from "../src/types/screeningRoom";
+
 import {
   checkFileExists,
   initFirebaseAdminApp,
   makeScriptUsage,
 } from "./lib/helpers";
-
-import { ScreeningRoomVideo } from "../src/types/screeningRoom";
 
 // ---------------------------------------------------------
 // HERE THERE BE DRAGONS (edit below here at your own risk)

@@ -1,3 +1,5 @@
+@import "constants.scss";
+
 :root {
   --primary-color: #f6e652;
 }
@@ -6,6 +8,7 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootswatch/dist/darkly/bootswatch";
 @import "./constants.scss";
+@import "./modifiers.scss";
 @import "./customOverrides";
 
 html,
@@ -771,4 +774,19 @@ span.link {
 
 .flex-one {
   flex: 1;
+}
+
+.host-icon-container {
+  background: $black;
+  padding: 10px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+
+  .host-icon {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+  }
 }

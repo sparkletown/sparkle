@@ -2,6 +2,10 @@
 
 $border-radius: 28px;
 
+.navbar-links-user-avatar {
+  cursor: pointer;
+}
+
 .navbar-container {
   background: $black;
   display: flex;
@@ -21,10 +25,6 @@ $border-radius: 28px;
   .tickets-icon,
   .private-chat-icon {
     position: relative;
-    cursor: pointer;
-  }
-
-  .profile-icon-container {
     cursor: pointer;
   }
 
@@ -218,7 +218,6 @@ $border-radius: 28px;
   z-index: z(navbar-schedule-backdrop);
   width: 100%;
   height: 100%;
-  background-color: rgba($black, 0.8);
   cursor: pointer;
   transition: opacity 600ms $transition-function,
     transform 600ms $transition-function;

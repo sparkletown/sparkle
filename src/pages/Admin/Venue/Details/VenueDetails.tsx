@@ -1,34 +1,38 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import firebase from "firebase/app";
-import { useFirestoreConnect } from "hooks/useFirestoreConnect";
-import { isEqual } from "lodash";
 import { Link } from "react-router-dom";
+import firebase from "firebase/app";
+import { isEqual } from "lodash";
 
-import { updateRoom } from "api/admin";
-
-import { venueLandingUrl } from "utils/url";
-
-import { useUser } from "hooks/useUser";
-
-import { Room, RoomData_v2 } from "types/rooms";
-import { VenueDetailsProps } from "./VenueDetails.types";
-
-import { VenueCard } from "components/molecules/VenueCard";
-import Button from "components/atoms/Button";
-import AdminEventModal from "pages/Admin/AdminEventModal";
-import { RoomEditModal } from "pages/Admin/Room/Edit";
-import RoomModal from "pages/Admin/Room/Modal";
-import RoomCard from "pages/Admin/Room/Card";
-import MapPreview from "pages/Admin/MapPreview";
-import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
-import RoomDeleteModal from "../Rooms/RoomDeleteModal";
-
-import * as S from "./VenueDetails.styles";
 import {
   DEFAULT_MAP_BACKGROUND,
   DEFAULT_VENUE_BANNER,
   DEFAULT_VENUE_LOGO,
 } from "settings";
+
+import { updateRoom } from "api/admin";
+
+import { Room, RoomData_v2 } from "types/rooms";
+
+import { venueLandingUrl } from "utils/url";
+
+import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useUser } from "hooks/useUser";
+
+import AdminEventModal from "pages/Admin/AdminEventModal";
+import MapPreview from "pages/Admin/MapPreview";
+import RoomCard from "pages/Admin/Room/Card";
+import { RoomEditModal } from "pages/Admin/Room/Edit";
+import RoomModal from "pages/Admin/Room/Modal";
+import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
+
+import { VenueCard } from "components/molecules/VenueCard";
+
+import Button from "components/atoms/Button";
+
+import RoomDeleteModal from "../Rooms/RoomDeleteModal";
+
+import * as S from "./VenueDetails.styles";
+import { VenueDetailsProps } from "./VenueDetails.types";
 
 type Owner = {
   id: string;
@@ -83,7 +87,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
   useEffect(() => {
     const newOwners: Owner[] = [];
-    async function getOwnersData() {
+    const getOwnersData = async () => {
       if (owners && owners.length > 0) {
         for (const owner of owners) {
           const user = await firebase
@@ -104,7 +108,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           setOwnersData(newOwners);
         }
       }
-    }
+    };
     getOwnersData();
   }, [owners, ownersData]);
 
@@ -166,10 +170,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
     <S.Container>
       <S.Header>
         <VenueCard
-          bannerImageUrl={
-            !!coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER
-          }
-          logoImageUrl={!!icon ? icon : DEFAULT_VENUE_LOGO}
+          bannerImageUrl={coverImageUrl ? coverImageUrl : DEFAULT_VENUE_BANNER}
+          logoImageUrl={icon ? icon : DEFAULT_VENUE_LOGO}
           name={name}
           subtitle={subtitle}
           description={description}
@@ -209,7 +211,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         <MapPreview
           isEditing={isEditing}
           setIsEditing={setIsEditing}
-          venueId={venueId!}
+          venueId={venueId}
           venueName={name}
           mapBackground={mapBackgroundImageUrl}
           rooms={rooms ?? []}
@@ -232,7 +234,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
               <RoomCard
                 key={room.title}
                 room={room}
-                venueId={venueId!}
+                venueId={venueId}
                 editHandler={() => handleEditRoom(room, index)}
                 onEventHandler={handleRoomEvent}
                 roomIndex={index}
@@ -244,7 +246,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <RoomModal
         isVisible={modalOpen}
-        venueId={venueId!}
+        venueId={venueId}
         onSubmitHandler={handleNewRoom}
         onClickOutsideHandler={closeModal}
       />
@@ -263,7 +265,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
         <RoomDeleteModal
           show={showDeleteModal}
           onHide={closeDeleteModal}
-          venueId={venueId!}
+          venueId={venueId}
           room={editingRoom}
           onDelete={closeDeleteModals}
         />
@@ -277,7 +279,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
 
       <AdminEventModal
         show={showEventModal}
-        venueId={venueId!}
+        venueId={venueId}
         onHide={closeEventModal}
         setEditedEvent={noop}
         setShowDeleteEventModal={noop}

@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from "react";
 import classNames from "classnames";
 
+import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
@@ -10,9 +12,7 @@ import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
 import { useRoom } from "hooks/useRoom";
 
-import RoomAttendance from "../RoomAttendance";
-
-import { COVERT_ROOM_TYPES, IFRAME_ALLOW } from "settings";
+import { RoomAttendance } from "../RoomAttendance";
 
 import "./MapRoom.scss";
 
@@ -83,10 +83,14 @@ export const MapRoom: React.FC<MapRoomProps> = ({
   );
 
   const [play] = useCustomSound(room.enterSound, { interrupt: true });
-  const selectRoomWithSound = useCallback(() => {
-    play();
-    selectRoom();
-  }, [play, selectRoom]);
+  const selectRoomWithSound = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      play();
+      selectRoom();
+      e.currentTarget.blur();
+    },
+    [play, selectRoom]
+  );
 
   return (
     <button

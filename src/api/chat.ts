@@ -2,7 +2,7 @@ import Bugsnag from "@bugsnag/js";
 import firebase from "firebase/app";
 import noop from "lodash/noop";
 
-import { VenueChatMessage, PrivateChatMessage, PollVoteBase } from "types/chat";
+import { PollVoteBase, PrivateChatMessage, VenueChatMessage } from "types/chat";
 
 import { getVenueRef } from "./venue";
 

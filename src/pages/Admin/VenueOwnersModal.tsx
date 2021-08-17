@@ -1,18 +1,18 @@
-import React, { useMemo, useState, useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { FormControl, Modal } from "react-bootstrap";
 import { useFirestore } from "react-redux-firebase";
-import { Modal, FormControl } from "react-bootstrap";
 import { debounce } from "lodash";
 
 import { DEFAULT_PARTY_NAME, DEFAULT_PROFILE_IMAGE } from "settings";
 
-import { User } from "types/User";
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
 import { addVenueOwner, removeVenueOwner } from "api/admin";
 
+import { User } from "types/User";
+import { AnyVenue, Venue_v2 } from "types/venues";
+
+import { WithId } from "utils/id";
+
 import "./VenueOwnerModal.scss";
-import { Venue_v2 } from "types/venues";
 
 interface PartitionedOwnersOthers {
   owners: WithId<User>[];
@@ -108,12 +108,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
           <div className="row-container">
             <h4>Current Venue Owners</h4>
             {venueOwnerUsers.map((owner) => (
-              <UserRow
-                key={owner.id}
-                user={owner}
-                venueId={venue.id!}
-                isOwner
-              />
+              <UserRow key={owner.id} user={owner} venueId={venue.id} isOwner />
             ))}
           </div>
           <FormControl
@@ -125,7 +120,7 @@ export const VenueOwnersModal: React.FC<VenueOwnersModalProps> = ({
           <div className="row-container">
             {hasResults &&
               (filteredUsers ?? []).map((user) => (
-                <UserRow key={user.id} user={user} venueId={venue.id!} />
+                <UserRow key={user.id} user={user} venueId={venue.id} />
               ))}
             {isEnterSearchText && (
               <div>Enter the users name in the text input above</div>

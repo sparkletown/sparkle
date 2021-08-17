@@ -10,7 +10,7 @@ const { assertValidUrl, assertValidVenueId } = require("./src/utils/assert");
 const { createOAuth2Client } = require("./src/utils/auth");
 const { getJson, postJson } = require("./src/utils/fetch");
 
-// @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely..?)
+// @debt refactor lowercaseFirstChar into utils/* (or maybe remove it entirely...?)
 // Case-insensitive first character for iDevices
 const lowercaseFirstChar = (password) =>
   password.charAt(0).toLowerCase() + password.substring(1);

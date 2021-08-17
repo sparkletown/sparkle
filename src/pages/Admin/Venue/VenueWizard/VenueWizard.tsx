@@ -1,12 +1,12 @@
 import React, { useReducer } from "react";
 
+import { useVenueId } from "hooks/useVenueId";
+
+import VenueWizardCreate from "./Create";
 // Components
 import VenueWizardEdit from "./Edit";
-import VenueWizardCreate from "./Create";
-
 // Reducer
-import { VenueWizardReducer, initialState } from "./redux";
-import { useVenueId } from "hooks/useVenueId";
+import { initialState, VenueWizardReducer } from "./redux";
 
 const VenueWizard: React.FC = () => {
   const venueId = useVenueId();

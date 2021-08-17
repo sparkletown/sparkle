@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
@@ -32,7 +32,7 @@ export interface ProfileLink {
   url: string;
 }
 
-export interface User {
+export interface BaseUser {
   partyName?: string;
   pictureUrl?: string;
   anonMode?: boolean;
@@ -48,13 +48,18 @@ export interface User {
   // [question: string]: string;
 
   // @debt these types are legacy and should be cleaned up across the codebase
-  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
+  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, ProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
   // @debt these don't appear to be used by anything anymore
   // drinkOfChoice?: string;
   // favouriteRecord?: string;
   // doYouDance?: string;
+}
+
+export interface User extends BaseUser {
+  lastSeenIn?: never;
+  lastSeenAt?: never;
 }
 
 export interface UserStatus {
@@ -67,7 +72,7 @@ export interface UserLocation {
   lastSeenAt: number;
 }
 
-export type UserWithLocation = User & UserLocation;
+export type UserWithLocation = BaseUser & UserLocation;
 
 export enum UsernameVisibility {
   none = "none",
@@ -147,10 +152,21 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
 // @debt Not sure if the validations are too 'heavyweight' for this, but object destructuring seemed to work
 //  here, whereas the validations seemed to hang my browser tab. There might also be something wrong with the
 //  validation rules leading to infinite recursion or similar?
+// @debt refactor userWithLocationToUser to optionally not require WithId, then use that in profileSelector
 export const userWithLocationToUser = (
   user: WithId<UserWithLocation>
 ): WithId<User> => {
   const { lastSeenIn, lastSeenAt, ...userWithoutLocation } = user;
 
   return userWithoutLocation;
+};
+
+export const extractLocationFromUser = (
+  user: WithId<UserWithLocation>
+): WithId<UserLocation> => {
+  const { lastSeenIn, lastSeenAt } = user;
+
+  const userLocation = { lastSeenIn, lastSeenAt };
+
+  return withId(userLocation, user.id);
 };

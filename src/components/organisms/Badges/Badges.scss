@@ -5,7 +5,7 @@ $image--margin: 3px;
 
 .Badges {
   &__container {
-    padding: $spacing--lg 0;
+    padding: $spacing--lg 0 0 0;
   }
 
   &__title {
@@ -29,7 +29,7 @@ $image--margin: 3px;
 
   &__visits {
     display: flex;
-    background-color: $dark;
+    background-color: $black;
     border-radius: $border-radius--xl;
     padding: $spacing--lg;
     justify-content: space-around;

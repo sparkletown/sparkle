@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { useAsync } from "react-use";
 
-import { AnyVenue } from "types/venues";
-
 import { fetchCustomAuthConfig } from "api/auth";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { tracePromise } from "utils/performance";

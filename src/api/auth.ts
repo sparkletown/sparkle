@@ -1,5 +1,5 @@
-import firebase from "firebase/app";
 import Bugsnag from "@bugsnag/js";
+import firebase from "firebase/app";
 
 type CheckAccessTypes = {
   venueId: string;

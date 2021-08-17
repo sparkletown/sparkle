@@ -129,21 +129,6 @@
       .subtitle {
         font-size: 20px;
       }
-
-      .host-icon-container {
-        background: $black;
-        padding: 10px;
-        width: 200px;
-        height: 200px;
-        border-radius: 50%;
-
-        .host-icon {
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-      }
     }
 
     .countdown {

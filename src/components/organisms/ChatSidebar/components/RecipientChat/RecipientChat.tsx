@@ -1,33 +1,27 @@
 import React, { useEffect } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import { AnyVenue } from "types/venues";
-
-import { WithId } from "utils/id";
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
+import { useRecipientChat } from "hooks/chats/privateChats/useRecipientChat";
 
 import { Chatbox } from "components/molecules/Chatbox";
-import { UserAvatar } from "components/atoms/UserAvatar";
 
-import { useRecipientChat } from "hooks/privateChats";
-import { useChatSidebarControls } from "hooks/chatSidebar";
+import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./RecipientChat.scss";
 export interface RecipientChatProps {
   recipientId: string;
-  venue: WithId<AnyVenue>;
 }
 
 export const RecipientChat: React.FC<RecipientChatProps> = ({
   recipientId,
-  venue,
 }) => {
   const {
     messagesToDisplay,
     recipient,
 
     sendMessageToSelectedRecipient,
-    deleteMessage,
     markMessageRead,
     sendThreadReply,
   } = useRecipientChat(recipientId);
@@ -57,13 +51,13 @@ export const RecipientChat: React.FC<RecipientChatProps> = ({
         <UserAvatar user={recipient} showStatus />
         <div className="recipient-chat__nickname">{recipient.partyName}</div>
       </div>
-      <Chatbox
-        messages={messagesToDisplay}
-        sendMessage={sendMessageToSelectedRecipient}
-        deleteMessage={deleteMessage}
-        sendThreadReply={sendThreadReply}
-        venue={venue}
-      />
+      <div className="recipient-chat__chatbox">
+        <Chatbox
+          messages={messagesToDisplay}
+          sendMessage={sendMessageToSelectedRecipient}
+          sendThreadReply={sendThreadReply}
+        />
+      </div>
     </div>
   );
 };

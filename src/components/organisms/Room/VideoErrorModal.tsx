@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Modal } from "react-bootstrap";
+
 import "./VideoErrorModal.scss";
 
 interface PropsType {

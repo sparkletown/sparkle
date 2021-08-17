@@ -1,13 +1,13 @@
 import React from "react";
 
-import InformationCard from "components/molecules/InformationCard";
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
+import { currentVenueSelectorData } from "utils/selectors";
 
 import { useSelector } from "hooks/useSelector";
 
-import { currentVenueSelectorData } from "utils/selectors";
-
+import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
+
+import InformationCard from "components/molecules/InformationCard";
 
 import "./JazzBarSkeletonPage.scss";
 

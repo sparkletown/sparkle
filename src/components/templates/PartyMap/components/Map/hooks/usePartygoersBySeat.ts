@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from "react";
 
 import { User } from "types/User";
-import { WithId } from "utils/id";
-import { isDefined } from "utils/types";
 import { ReactHook } from "types/utility";
 
+import { WithId } from "utils/id";
 import { makeMatrixReducer } from "utils/reducers";
+import { isDefined } from "utils/types";
 
 interface UsePartygoersbySeatProps {
   venueId: string;

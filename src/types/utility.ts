@@ -1,3 +1,5 @@
+import React from "react";
+
 /**
  * Type helper representing all types of T except undefined
  */
@@ -17,6 +19,11 @@ export type Dimensions = {
   height: number;
 };
 
+export type Position = {
+  left: number;
+  top: number;
+};
+
 export type Bounds = Point & Dimensions;
 
 export type Matrix<T> = T[][];
@@ -29,3 +36,5 @@ export type TFuncOrT<T> = (() => T) | T;
  * @deprecated use Partial<Record<K, T>> directly
  */
 export type PartialRecord<K extends keyof never, T> = Partial<Record<K, T>>;
+
+export type ContainerClassName = { containerClassName?: string };

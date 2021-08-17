@@ -1,4 +1,4 @@
-import React, { useMemo, CSSProperties } from "react";
+import React, { CSSProperties, useMemo } from "react";
 
 export interface PropsType {
   url: string;

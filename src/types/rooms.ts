@@ -1,4 +1,5 @@
 import { SoundConfigReference } from "./sounds";
+import { VenueTemplate } from "./venues";
 
 export enum RoomType {
   unclickable = "UNCLICKABLE",
@@ -22,6 +23,7 @@ export interface Room {
   isLabelHidden?: boolean;
   image_url: string;
   enterSound?: SoundConfigReference;
+  template?: VenueRoomTemplate;
 }
 
 // @debt We should end up with 1 canonical room type
@@ -39,6 +41,12 @@ export interface RoomData_v2 {
   isEnabled?: boolean;
   image_url?: string;
   enterSound?: SoundConfigReference;
-  template?: string;
+  template?: VenueRoomTemplate;
   roomIndex?: number;
 }
+
+export enum RoomTemplate {
+  external = "external",
+}
+
+export type VenueRoomTemplate = VenueTemplate | RoomTemplate;

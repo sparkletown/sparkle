@@ -1,10 +1,10 @@
-import { useMemo, useCallback } from "react";
+import { useCallback, useMemo } from "react";
 
-import { User } from "types/User";
 import { GridPosition } from "types/grid";
+import { User } from "types/User";
 
-import { WithId } from "utils/id";
 import { getPositionHash } from "utils/grid";
+import { WithId } from "utils/id";
 import { isDefined } from "utils/types";
 
 export interface UseGetUserByPositionProps {
