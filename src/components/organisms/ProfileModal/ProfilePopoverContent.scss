@@ -1,9 +1,7 @@
 @import "scss/constants.scss";
 
-$profile-popover--margin-top: 12px;
-
 #profile-popover {
-  margin-top: $profile-popover--margin-top;
+  margin-top: $spacing--md;
 
   &.popover {
     @include scrollbar;

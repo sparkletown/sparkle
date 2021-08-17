@@ -32,13 +32,13 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { ProfilePopoverContent } from "components/organisms/ProfileModal";
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
+import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
 import PlayaTime from "components/molecules/PlayaTime";
 
 import { UserAvatar } from "components/atoms/UserAvatar";
@@ -91,7 +91,7 @@ export const NavBar: React.FC = () => {
 
   const radioStations = useSelector(radioStationsSelector);
 
-  const { currentVenue, sovereignVenueId } = useRelatedVenues({
+  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -166,9 +166,9 @@ export const NavBar: React.FC = () => {
   }, [radioFirstPlayStateLoaded]);
 
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
-  // const toggleEventSchedule = useCallback(() => {
-  //   setEventScheduleVisible(!isEventScheduleVisible);
-  // }, [isEventScheduleVisible]);
+  const toggleEventSchedule = useCallback(() => {
+    setEventScheduleVisible(!isEventScheduleVisible);
+  }, [isEventScheduleVisible]);
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -190,13 +190,15 @@ export const NavBar: React.FC = () => {
   if (!venueId || !currentVenue) return null;
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  // const navbarTitle = parentVenue?.name ?? currentVenue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue.name;
 
   const radioStation = !!hasRadioStations && radioStations![0];
 
   const showNormalRadio = (currentVenue?.showRadio && !isSoundCloud) ?? false;
   const showSoundCloudRadio =
     (currentVenue?.showRadio && isSoundCloud) ?? false;
+  const showRadio = showNormalRadio || showSoundCloudRadio;
+  const volumeIcon = isMute ? faVolumeMute : faVolumeUp;
 
   return (
     <>
@@ -212,7 +214,7 @@ export const NavBar: React.FC = () => {
                 />
               )}
               <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
-              {/* {shouldShowSchedule ? (
+              {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
                   className={`nav-party-logo ${
@@ -224,7 +226,7 @@ export const NavBar: React.FC = () => {
                 </button>
               ) : (
                 <div>{navbarTitle}</div>
-              )} */}
+              )}
               <PlayaTime /> - <VenuePartygoers venueId={venueId} />
             </div>
 
@@ -260,35 +262,25 @@ export const NavBar: React.FC = () => {
                   </OverlayTrigger>
                 )}
 
-                {(showNormalRadio || showSoundCloudRadio) && (
+                {showRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={
                       <Popover id="radio-popover">
                         <Popover.Content className="NavBar__radio--container">
-                          <div className="NavBar__radio--title">
-                            {currentVenue?.radioTitle ?? "Playa Radio"}
-                          </div>
-                          {showNormalRadio && (
-                            <RadioModal
-                              {...{
-                                volume,
-                                setVolume,
-                              }}
-                              onEnableHandler={handleRadioEnable}
-                              isRadioPlaying={isRadioPlaying}
-                            />
-                          )}
-                          {showSoundCloudRadio && (
-                            <iframe
-                              title="venueRadio"
-                              id="sound-cloud-player"
-                              scrolling="no"
-                              allow="autoplay"
-                              src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
-                            />
-                          )}
+                          <RadioPopoverContent
+                            radioTitle={
+                              currentVenue?.radioTitle ?? "Playa Radio"
+                            }
+                            showNormalRadio={showNormalRadio}
+                            showSoundCloudRadio={showSoundCloudRadio}
+                            radioStation={radioStation}
+                            isRadioPlaying={isRadioPlaying}
+                            handleRadioEnable={handleRadioEnable}
+                            volume={volume}
+                            setVolume={setVolume}
+                          />
                         </Popover.Content>
                       </Popover>
                     }
@@ -305,12 +297,9 @@ export const NavBar: React.FC = () => {
                   </OverlayTrigger>
                 )}
 
-                {(showNormalRadio || showSoundCloudRadio) && (
+                {showRadio && (
                   <div className={volumeControlClassname} onClick={toggleMute}>
-                    <FontAwesomeIcon
-                      icon={isMute ? faVolumeMute : faVolumeUp}
-                      size="sm"
-                    />
+                    <FontAwesomeIcon icon={volumeIcon} size="sm" />
                   </div>
                 )}
                 <OverlayTrigger
