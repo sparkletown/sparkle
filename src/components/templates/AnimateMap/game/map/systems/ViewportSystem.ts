@@ -189,7 +189,7 @@ export class ViewportSystem extends System {
       const y = this.player.head.position.y;
       const z = 1 - this.viewportList?.head?.viewport.zoomViewport;
 
-      Howler.pos(x, y, z);
+      if (isFinite(x) && isFinite(y) && isFinite(z)) Howler.pos(x, y, z);
     }
   }
 

@@ -50,7 +50,6 @@ export class MotionBaseSystem extends System {
     }
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
     this.cashedSpeed = speed;
-    console.log(speed, k);
     return speed;
   }
 

@@ -1,5 +1,6 @@
 import { Point } from "types/utility";
 
+//TODO: NaN exception handler must be added
 export const getNormilzedYFromBezier = (
   p0: Point,
   p0hr: Point,
