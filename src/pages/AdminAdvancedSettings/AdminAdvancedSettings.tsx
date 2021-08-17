@@ -1,7 +1,5 @@
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback } from "react";
 import { useHistory, useParams } from "react-router";
-import { Link } from "react-router-dom";
-import classNames from "classnames";
 
 import { Venue_v2 } from "types/venues";
 
@@ -31,12 +29,6 @@ export interface AdminAdvancedSettingsRouteParams {
   selectedTab?: AdminAdvancedTab;
 }
 
-const adminAdvancedTabLabelMap: Readonly<Record<AdminAdvancedTab, String>> = {
-  [AdminAdvancedTab.basicInfo]: "Start",
-  [AdminAdvancedTab.entranceExperience]: "Entrance",
-  [AdminAdvancedTab.advancedMapSettings]: "Advanced",
-};
-
 export const AdminAdvancedSettings: React.FC = () => {
   const history = useHistory();
   const {
@@ -54,21 +46,6 @@ export const AdminAdvancedSettings: React.FC = () => {
     isCurrentVenueLoaded,
   } = useConnectCurrentVenueNG(venueId);
 
-  const renderAdminAdvancedTabs = useMemo(() => {
-    return Object.entries(adminAdvancedTabLabelMap).map(([key, label]) => (
-      <Link
-        key={key}
-        className={classNames({
-          AdminVenueView__tab: true,
-          "AdminVenueView__tab--selected": selectedTab === key,
-        })}
-        to={adminNGSettingsUrl(venueId, key)}
-      >
-        {label}
-      </Link>
-    ));
-  }, [selectedTab, venueId]);
-
   const navigateToDefaultTab = useCallback(
     () => history.push(adminNGSettingsUrl(venueId, AdminAdvancedTab.basicInfo)),
     [venueId, history]
@@ -84,11 +61,6 @@ export const AdminAdvancedSettings: React.FC = () => {
 
   return (
     <>
-      <div className="AdminAdvancedSettings">
-        <div className="AdminAdvancedSettings__options">
-          {renderAdminAdvancedTabs}
-        </div>
-      </div>
       {selectedTab === AdminAdvancedTab.basicInfo && <VenueWizard />}
       {selectedTab === AdminAdvancedTab.entranceExperience && (
         <EntranceExperience

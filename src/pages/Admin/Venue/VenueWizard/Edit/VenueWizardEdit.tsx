@@ -8,7 +8,7 @@ import { Venue_v2 } from "types/venues";
 // Components
 import Details from "pages/Admin/Details";
 
-import WithNavigationBar from "components/organisms/WithNavigationBar";
+import { AdminNavBar } from "components/organisms/AdminNavBar";
 
 import { SET_FORM_VALUES } from "../redux";
 // Reducer
@@ -51,9 +51,9 @@ const VenueWizardEdit: React.FC<VenueWizardEditProps> = ({
   }, [dispatch, fetchVenueFromAPI, firestore, venueId]);
 
   return (
-    <WithNavigationBar>
+    <AdminNavBar>
       <Details data={state} dispatch={dispatch} />
-    </WithNavigationBar>
+    </AdminNavBar>
   );
 };
 
