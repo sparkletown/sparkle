@@ -4,7 +4,11 @@ import { useAsyncFn } from "react-use";
 import imageCompression from "browser-image-compression";
 import classNames from "classnames";
 
-import { ACCEPTED_IMAGE_TYPES, MAX_IMAGE_FILE_SIZE_BYTES } from "settings";
+import {
+  ACCEPTED_IMAGE_TYPES,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  MAX_IMAGE_FILE_SIZE_MB,
+} from "settings";
 
 import "./ImageInput.scss";
 
@@ -41,7 +45,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       if (file.size > MAX_IMAGE_FILE_SIZE_BYTES) {
         const compressionOptions = {
-          maxSizeMB: 2,
+          maxSizeMB: MAX_IMAGE_FILE_SIZE_MB,
           useWebWorker: true,
           maxIteration: 20,
         };

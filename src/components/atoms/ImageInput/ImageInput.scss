@@ -4,17 +4,17 @@
   &__container {
     position: relative;
     display: flex;
-    padding: 2.5em 0;
+    padding: $image-input-padding;
     align-items: center;
     justify-content: center;
-    border-radius: 22px;
+    border-radius: $border-radius--xl;
     background-size: cover;
-    background-color: #1a1d24;
+    background-color: $dark;
     background-position: center;
     cursor: pointer;
 
     &--error {
-      border: 2px solid red;
+      border: $image-input-border--error;
     }
 
     &--disabled {
@@ -24,7 +24,7 @@
 
     &--small {
       display: inline-block;
-      padding: 2.5em;
+      padding: $image-input-padding--small;
     }
   }
 
@@ -40,17 +40,17 @@
   }
 
   &__upload-button {
-    padding: 0.7em 4.2em;
+    padding: $image-input-upload-button-padding;
     margin: 0;
-    border-radius: 22px;
+    border-radius: $border-radius--xl;
     font-weight: bold;
-    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
-    background-color: #462a87;
+    transition: $image-input-upload-button-transition;
+    background-color: $image-input-upload-button-background;
     &:hover,
     &:active,
     &:focus {
       transform: translateY(-1px);
-      background-color: rgba(55, 90, 127, 0.18);
+      background-color: $image-input-upload-button-background--focus;
     }
     &--hidden {
       background-color: transparent;
@@ -64,7 +64,7 @@
     }
 
     &--small {
-      padding: 0.7em 2em;
+      padding: $image-input-upload-button-padding--small;
     }
   }
 }
