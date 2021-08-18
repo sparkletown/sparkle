@@ -11,9 +11,9 @@ import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
-import { Table  } from "./Table";
-import { UpcomingEvent  } from "./UpcomingEvent";
-import { UsernameVisibility,UserStatus } from "./User";
+import { Table } from "./Table";
+import { UpcomingEvent } from "./UpcomingEvent";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 

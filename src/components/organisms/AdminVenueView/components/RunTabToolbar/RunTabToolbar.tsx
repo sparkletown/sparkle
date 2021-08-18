@@ -29,7 +29,7 @@ export const RunTabToolbar: React.FC<RunTabToolbarProps> = ({ venueId }) => {
   ] = useAsyncFn(async () => {
     if (!venueId) return;
     const bannerMessage = getValues().message;
-    await makeUpdateBanner({venueId, banner: {title: bannerMessage}});
+    await makeUpdateBanner({ venueId, banner: { content: bannerMessage } });
   }, [getValues, venueId]);
 
   return (

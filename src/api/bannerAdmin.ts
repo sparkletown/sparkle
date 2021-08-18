@@ -6,13 +6,13 @@ import { Banner } from "types/banner";
 export interface MakeUpdateBannerProps {
   venueId: string;
   banner?: Banner;
-  onError?: (errorMsg: string) => void
+  onError?: (errorMsg: string) => void;
 }
 
 export const makeUpdateBanner = async ({
   venueId,
   banner,
-  onError = () => {}
+  onError = () => {},
 }: MakeUpdateBannerProps): Promise<void> => {
   const params = {
     venueId,

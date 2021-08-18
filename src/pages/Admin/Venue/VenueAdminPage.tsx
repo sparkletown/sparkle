@@ -5,7 +5,7 @@ import {
   isCurrentVenueNGRequestingSelector,
 } from "utils/selectors";
 
-import { useConnectCurrentVenueNG  } from "hooks/useConnectCurrentVenueNG";
+import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useIsUserVenueOwner } from "hooks/useIsUserVenueOwner";
 import { useSelector } from "hooks/useSelector";
 import { useShowHide } from "hooks/useShowHide";
@@ -16,8 +16,8 @@ import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { NewProfileModal } from "components/organisms/NewProfileModal";
 import { WithNavigationBar } from "components/organisms/WithNavigationBar";
 
-import { AnnouncementMessage  } from "components/molecules/AnnouncementMessage";
-import { LoadingPage  } from "components/molecules/LoadingPage";
+import { AnnouncementMessage } from "components/molecules/AnnouncementMessage";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AnnouncementOptions } from "./AnnouncementOptions";
 
@@ -85,5 +85,5 @@ export const VenueAdminPage: React.FC = () => {
       </div>
       <NewProfileModal venue={venue} />
     </WithNavigationBar>
-     );
+  );
 };

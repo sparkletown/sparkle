@@ -3,7 +3,7 @@ import { faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 
-import { Banner  } from "types/banner";
+import { Banner } from "types/banner";
 
 import { isDefined } from "utils/types";
 

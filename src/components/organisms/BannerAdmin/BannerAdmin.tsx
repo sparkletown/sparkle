@@ -1,13 +1,12 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import classNames from "classnames";
-import { useAsyncFn } from "react-use";
 
 import { makeUpdateBanner } from "api/bannerAdmin";
 
 import { Banner } from "types/banner";
-import { AnyVenue  } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { useShowHide } from "hooks/useShowHide";
 
@@ -17,7 +16,6 @@ import { ConfirmationModal } from "components/atoms/ConfirmationModal/Confirmati
 import { InputField } from "components/atoms/InputField";
 
 import "./BannerAdmin.scss";
-import { useEffect } from "react";
 
 interface BannerAdminProps {
   venueId?: string;
