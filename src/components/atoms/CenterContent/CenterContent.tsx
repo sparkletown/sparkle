@@ -3,12 +3,14 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import "./Centered.scss";
+import "./CenterContent.scss";
 
-export const Centered: React.FC<
+export const CenterContent: React.FC<
   React.PropsWithChildren<ContainerClassName>
 > = ({ children, containerClassName }) => {
   return (
-    <div className={classNames("Centered", containerClassName)}>{children}</div>
+    <div className={classNames("CenterContent", containerClassName)}>
+      {children}
+    </div>
   );
 };

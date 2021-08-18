@@ -1,1 +1,0 @@
-export { Centered } from "./Centered";

@@ -21,7 +21,7 @@ import { DragItem } from "pages/Account/Venue/VenueMapEdition/interfaces";
 import { ItemTypes } from "pages/Account/Venue/VenueMapEdition/ItemTypes";
 import { snapToGrid as doSnapToGrid } from "pages/Account/Venue/VenueMapEdition/snapToGrid";
 
-import { Centered } from "components/atoms/Centered";
+import { CenterContent } from "components/atoms/CenterContent";
 
 import "./VenueRoomsEditor.scss";
 
@@ -306,9 +306,9 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       />
       {!backgroundImage ? (
         <div className="Container__background-image-placeholder">
-          <Centered>
+          <CenterContent>
             Pick a background for your map{"\n"}(2000x1200px recommended size)
-          </Centered>
+          </CenterContent>
         </div>
       ) : (
         <img

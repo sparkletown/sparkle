@@ -1,5 +1,4 @@
-import { useEffect } from "react";
-import { useAsyncFn } from "react-use";
+import { useAsync } from "react-use";
 
 export const useCheckImage = (
   src: string
@@ -8,16 +7,12 @@ export const useCheckImage = (
   isLoading: boolean;
   error: string | undefined;
 } => {
-  const [{ loading, error }, checkImage] = useAsyncFn(async () => {
+  const { loading, error } = useAsync(async () => {
     const checkImage = new Image();
     checkImage.src = src;
 
     await checkImage.decode();
   }, [src]);
-
-  useEffect(() => {
-    void checkImage();
-  }, [checkImage]);
 
   return {
     isValid: !error,

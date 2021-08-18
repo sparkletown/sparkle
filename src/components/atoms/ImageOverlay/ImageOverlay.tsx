@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import { ContainerClassName } from "types/utility";
 
-import { Centered } from "components/atoms/Centered";
+import { CenterContent } from "components/atoms/CenterContent";
 
 import "./ImageOverlay.scss";
 
@@ -17,13 +17,13 @@ export const ImageOverlay: React.FC<
   React.PropsWithChildren<ImageOverlayProps>
 > = ({ disabled, children, containerClassName, ...rest }) => {
   return (
-    <Centered
+    <CenterContent
       containerClassName={classNames("ImageOverlay", containerClassName, {
         "ImageOverlay--disabled": disabled,
       })}
       {...rest}
     >
       {children}
-    </Centered>
+    </CenterContent>
   );
 };
