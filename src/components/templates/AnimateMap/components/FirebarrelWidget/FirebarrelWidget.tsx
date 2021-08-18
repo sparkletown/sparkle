@@ -103,6 +103,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     return () => {
       if (room && room.localParticipant.state === "connected") {
         room.localParticipant.tracks.forEach((trackPublication) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });
@@ -186,6 +187,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     return () => {
       if (localRoom && localRoom.localParticipant.state === "connected") {
         localRoom.localParticipant.tracks.forEach((trackPublication) => {
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           //@ts-ignored
           trackPublication.track.stop(); //@debt typing does this work?
         });

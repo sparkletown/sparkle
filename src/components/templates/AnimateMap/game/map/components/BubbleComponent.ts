@@ -4,7 +4,7 @@ export class BubbleComponent {
   public text: string;
   public backgroudnColor: number;
   public lifeTime: number;
-  public view: Sprite | null = null;
+  public view?: Sprite;
 
   constructor(text: string, backgroudnColor = 0xffffff) {
     this.text = text;

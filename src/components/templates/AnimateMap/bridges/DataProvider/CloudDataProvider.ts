@@ -7,13 +7,10 @@ import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { DataProvider } from "../DataProvider";
 
-import {
-  CommonInterface,
-  CommonLinker,
-  MessageType,
-} from "./Contructor/CommonInterface";
-import { FirebaseDataProvider } from "./Contructor/FirebaseDataProvider";
-import { PlayerIODataProvider } from "./Contructor/PlayerIODataProvider";
+import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
+import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
+import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
+import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -47,6 +44,8 @@ export class CloudDataProvider
     this._maxUpdateCounter = 1 / value;
   }
 
+  private _testBots;
+
   constructor(
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
@@ -55,52 +54,18 @@ export class CloudDataProvider
   ) {
     super();
 
+    this._testBots = new PlayerIOBots(this.playerioGameId ?? "");
+    //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
+
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
     playerModel.id = playerId;
 
     this.commonInterface = new CommonLinker(
-      new PlayerIODataProvider(playerId, (connection) => {
-        connection.addMessageCallback("Join", (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          // @ts-ignore
-          const userId = m.getString(1) as string;
-          this.users.join(sessionId, userId);
-          if (userId === this.playerId) {
-            this.player.sessionId = sessionId;
-          } else {
-            this.emit(DataProviderEvent.USER_JOINED, userId);
-          }
-        });
-
-        connection.addMessageCallback("Left", (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          const userId = this.users.users.getId(sessionId);
-          this.users.left(sessionId);
-          this.emit(DataProviderEvent.USER_LEFT, userId);
-        });
-
-        connection.addMessageCallback(MessageType.move, (m) => {
-          // @ts-ignore
-          const sessionId = m.getInt(0) as number;
-          // @ts-ignore
-          const x = m.getInt(1) as number;
-          // @ts-ignore
-          const y = m.getInt(2) as number;
-          // @ts-ignore
-          const userId = m.getString(3) as string;
-          if (userId === this.playerId) return; //reject
-
-          const isNewUser = this.users.update(sessionId, x, y, userId);
-          if (isNewUser) {
-            this.emit(DataProviderEvent.USER_JOINED, userId);
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-          } else {
-            this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-          }
-        });
-      }),
+      new PlayerIODataProvider(
+        playerioGameId ?? "",
+        playerId,
+        (connection) => {}
+      ), //TODO: remove callback
       new FirebaseDataProvider(firebase)
     );
     this.player = new PlayerDataProvider(playerId, this.commonInterface);
@@ -112,6 +77,7 @@ export class CloudDataProvider
     if (this._updateCounter > this._maxUpdateCounter) {
       this._updateCounter -= this._maxUpdateCounter;
       this.player.updatePosition();
+      this._testBots.update();
       this.update(0);
     }
   }
@@ -122,13 +88,13 @@ export class CloudDataProvider
 
   // player provider
   public async initPlayerPositionAsync(x: number, y: number) {
+    //TODO: REWORK
     this.commonInterface
-      .loadVenuesAsync() //@ts-ignore
+      .loadVenuesAsync()
       .then((q) => {
-        //@ts-ignore
         q.forEach((doc) => {
           const data = doc.data();
-          console.log(data);
+          // console.log(data);
           const vn = {
             x: data.animatemap.x,
             y: data.animatemap.y,
@@ -140,8 +106,8 @@ export class CloudDataProvider
           } as ReplicatedVenue;
           this.emit(DataProviderEvent.VENUE_ADDED, vn);
         });
-      }) //@ts-ignore
-      .catch((error) => console.log(error));
+      })
+      .catch(console.log);
     return this.player.initPositionAsync(x, y);
   }
 

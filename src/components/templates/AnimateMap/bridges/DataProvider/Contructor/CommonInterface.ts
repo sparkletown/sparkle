@@ -1,8 +1,7 @@
-import { dbPlayer, idObject } from "../Providers/PlayerDataProvider";
+import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
 
-import { FirebaseDataProvider } from "./FirebaseDataProvider";
-import { PlayerIODataProvider } from "./PlayerIODataProvider";
-
+import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
+import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
 export interface User {
   id: string;
   name: string;
@@ -13,10 +12,6 @@ export enum RemoteTable {
   usersIdBySession = "sessionIds",
 }
 
-export enum MessageType {
-  move = "m",
-}
-
 /**
  * Major abstraction for providing query from GameInstance to cloud services.
  */
@@ -25,16 +20,15 @@ export interface CommonInterface {
 
   // getUser(id: string): User;
 
-  loadPlayerPositionAsync(
-    playerId: string,
-    successCallback: (dbObj: dbPlayer) => void,
-    errorCallback: (error: Error) => void
-  ): Promise<unknown>;
+  // loadPlayerPositionAsync(
+  // playerId: string,
+  // successCallback: (dbObj: dbPlayer) => void,
+  // errorCallback: (error: Error) => void
+  // ): Promise<unknown>;
 
-  sendPlayerPosition(sessionId: number, x: number, y: number, id: string): void;
+  sendPlayerPosition(x: number, y: number): void;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  loadVenuesAsync(): any;
+  loadVenuesAsync(): Promise<QuerySnapshot<DocumentData>>;
 }
 
 /**
@@ -42,7 +36,7 @@ export interface CommonInterface {
  */
 export class CommonLinker implements CommonInterface {
   constructor(
-    private _playerIOProvider: PlayerIODataProvider<dbPlayer | idObject>,
+    private _playerIOProvider: PlayerIODataProvider,
     private _firebaseProvider: FirebaseDataProvider
   ) {}
 
@@ -50,32 +44,21 @@ export class CommonLinker implements CommonInterface {
     return Promise.resolve([]);
   }
 
-  loadPlayerPositionAsync(
-    playerId: string,
-    successCallback: (dbObj: dbPlayer) => void,
-    errorCallback: (error: Error) => void
-  ) {
-    return this._playerIOProvider.load(
-      RemoteTable.usersPosition,
-      playerId,
-      successCallback as (dbObj: dbPlayer | idObject) => void,
-      errorCallback
-    );
-  }
+  // loadPlayerPositionAsync(
+  // playerId: string,
+  // successCallback: (dbObj: dbPlayer) => void,
+  // errorCallback: (error: Error) => void
+  // ) {
+  // return this._playerIOProvider.load(
+  //   RemoteTable.usersPosition,
+  // playerId,
+  // successCallback as (dbObj: dbPlayer | idObject) => void,
+  // errorCallback
+  // );
+  // }
 
-  sendPlayerPosition(
-    sessionId: number,
-    x: number,
-    y: number,
-    id: string
-  ): void {
-    this._playerIOProvider.sendPlayerPosition(
-      MessageType.move,
-      sessionId,
-      x,
-      y,
-      id
-    );
+  sendPlayerPosition(x: number, y: number) {
+    this._playerIOProvider.sendPlayerPosition(x, y);
   }
 
   loadVenuesAsync() {

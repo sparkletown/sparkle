@@ -26,16 +26,16 @@ export class Easing {
     this.currentValue = this.startValue;
   }
 
-  public onComplete: Function | null = null;
-  public onStep: Function | null = null;
+  public onComplete?: Function; //TODO: need type, Function is bad practice
+  public onStep?: Function;
 
-  public clear(): void {
-    this.onComplete = null;
-    this.onStep = null;
+  public clear() {
+    this.onComplete = undefined;
+    this.onStep = undefined;
   }
 
-  public update(time: number): void {
-    let currentTime = Date.now();
+  public update(time: number) {
+    const currentTime = Date.now();
 
     let elapsed = (currentTime - this.startTime) / this.duration;
     elapsed = this.duration === 0 || elapsed > 1 ? 1 : elapsed;

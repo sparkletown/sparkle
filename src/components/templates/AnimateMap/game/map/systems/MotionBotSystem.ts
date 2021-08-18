@@ -10,27 +10,27 @@ import { MotionBotIdleNode } from "../nodes/MotionBotIdleNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionBotSystem extends MotionBaseSystem {
-  private botsIdle: NodeList<MotionBotIdleNode> | null = null;
-  private botsMotion: NodeList<MotionBotControlNode> | null = null;
+  private botsIdle?: NodeList<MotionBotIdleNode>;
+  private botsMotion?: NodeList<MotionBotControlNode>;
 
   constructor(private creator: EntityFactory) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.botsIdle = engine.getNodeList(MotionBotIdleNode);
     this.botsMotion = engine.getNodeList(MotionBotControlNode);
     this.botsMotion.nodeAdded.add(this.handleBotsMotionAdded);
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.botsIdle = null;
+  removeFromEngine(engine: Engine) {
+    this.botsIdle = undefined;
 
     this.botsMotion?.nodeAdded.remove(this.handleBotsMotionAdded);
-    this.botsMotion = null;
+    this.botsMotion = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     for (
       let idle: MotionBotIdleNode | null | undefined = this.botsIdle?.head;
       idle;
@@ -58,7 +58,7 @@ export class MotionBotSystem extends MotionBaseSystem {
     }
   }
 
-  private handleBotsMotionAdded = (node: MotionBotControlNode): void => {
+  private handleBotsMotionAdded = (node: MotionBotControlNode) => {
     const point: Point = GameInstance.instance
       .getConfig()
       .playgroundMap.getRandomPointInTheCentralCircle();
@@ -68,16 +68,25 @@ export class MotionBotSystem extends MotionBaseSystem {
     node.click.zoom = this.getRandomZoom();
   };
 
-  public updateMotionBotNode(node: MotionBotControlNode, time: number): void {
-    const speed = Math.sqrt(
+  public updateMotionBotNode(node: MotionBotControlNode, time: number) {
+    let speed = Math.sqrt(
       node.movement.velocityX * node.movement.velocityX +
         node.movement.velocityY * node.movement.velocityY
     );
     let dx = node.click.x - node.position.x;
     let dy = node.click.y - node.position.y;
 
-    // const defaultSpeed = this.getSpeedByZoomLevel(node.click.zoom);
-    const defaultSpeed = this.getSpeedByZoomLevel(0) / 3;
+    let defaultSpeed;
+    const ticks = 80;
+    if (!node.bot.realUser) defaultSpeed = this.getSpeedByZoomLevel(0) / 3;
+    else {
+      const distance = Math.sqrt(
+        Math.pow(node.click.x - node.position.x, 2) +
+          Math.pow(node.click.y - node.position.y, 2)
+      );
+      speed = defaultSpeed = distance / ticks;
+      if (speed < 1) defaultSpeed = speed = 1;
+    }
 
     if (Math.abs(dx) - defaultSpeed <= 0 && Math.abs(dy) - defaultSpeed <= 0) {
       node.position.x = node.click.x;

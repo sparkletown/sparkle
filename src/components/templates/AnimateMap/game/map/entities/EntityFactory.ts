@@ -57,11 +57,11 @@ import { PlayerNode } from "../nodes/PlayerNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export default class EntityFactory {
-  private engine?: Engine | null = null;
+  private engine: Engine;
 
   private fixScaleByViewportZoomComponent: FixScaleByViewportZoomComponent;
 
-  constructor(engine: Engine | null = null) {
+  constructor(engine: Engine) {
     this.engine = engine;
     this.fixScaleByViewportZoomComponent = new FixScaleByViewportZoomComponent([
       0.8,
@@ -71,11 +71,11 @@ export default class EntityFactory {
   }
 
   public getPlayerNode(): PlayerNode | null | undefined {
-    return this.engine?.getNodeList(PlayerNode).head;
+    return this.engine.getNodeList(PlayerNode).head;
   }
 
   public getBotNode(id: string): BotNode | null {
-    const bots: NodeList<BotNode> | undefined = this.engine?.getNodeList(
+    const bots: NodeList<BotNode> | undefined = this.engine.getNodeList(
       BotNode
     );
     for (
@@ -90,21 +90,22 @@ export default class EntityFactory {
     return null;
   }
 
-  public createViewport(comm: ViewportComponent): Entity {
-    const nodelist: NodeList<ViewportNode> = this.engine!.getNodeList(
+  public createViewport(com: ViewportComponent): Entity {
+    const nodelist: NodeList<ViewportNode> = this.engine.getNodeList(
       ViewportNode
     );
     while (nodelist.head) {
       this.removeEntity(nodelist.head.entity);
     }
-
-    const entity: Entity = new Entity().add(comm);
-    this.engine!.addEntity(entity);
-    return nodelist.head!.entity;
+    const entity: Entity = new Entity().add(com);
+    this.engine.addEntity(entity);
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    return nodelist.head.entity;
   }
 
-  public updateViewport(comm: ViewportComponent | null = null): void {
-    const nodelist: NodeList<ViewportNode> = this.engine!.getNodeList(
+  public updateViewport(comm?: ViewportComponent) {
+    const nodelist: NodeList<ViewportNode> = this.engine.getNodeList(
       ViewportNode
     );
     if (!nodelist.head) {
@@ -114,7 +115,7 @@ export default class EntityFactory {
   }
 
   public createJoystick(comm: JoystickComponent): Entity {
-    const nodelist: NodeList<JoystickNode> = this.engine!.getNodeList(
+    const nodelist: NodeList<JoystickNode> = this.engine.getNodeList(
       JoystickNode
     );
     while (nodelist.head) {
@@ -122,12 +123,12 @@ export default class EntityFactory {
     }
 
     const entity: Entity = new Entity().add(comm);
-    this.engine!.addEntity(entity);
+    this.engine.addEntity(entity);
     return entity;
   }
 
-  public updateJoystick(comm: JoystickComponent | null = null): void {
-    const nodelist: NodeList<JoystickNode> = this.engine!.getNodeList(
+  public updateJoystick(comm?: JoystickComponent) {
+    const nodelist: NodeList<JoystickNode> = this.engine.getNodeList(
       JoystickNode
     );
     if (!nodelist.head) {
@@ -140,7 +141,7 @@ export default class EntityFactory {
     comm: KeyboardComponent,
     control: MotionKeyboardControlComponent
   ): Entity {
-    const nodelist: NodeList<KeyboardNode> = this.engine!.getNodeList(
+    const nodelist: NodeList<KeyboardNode> = this.engine.getNodeList(
       KeyboardNode
     );
     while (nodelist.head) {
@@ -148,12 +149,12 @@ export default class EntityFactory {
     }
 
     const entity: Entity = new Entity().add(comm).add(control);
-    this.engine!.addEntity(entity);
+    this.engine.addEntity(entity);
     return entity;
   }
 
-  public updateKeyboard(comm: KeyboardComponent | null = null): void {
-    const nodelist: NodeList<KeyboardNode> = this.engine!.getNodeList(
+  public updateKeyboard(comm: KeyboardComponent) {
+    const nodelist: NodeList<KeyboardNode> = this.engine.getNodeList(
       KeyboardNode
     );
     if (!nodelist.head) {
@@ -171,7 +172,7 @@ export default class EntityFactory {
     return null;
   }
 
-  public removeBubble(entity: Entity): void {
+  public removeBubble(entity: Entity) {
     entity.remove(BubbleComponent);
   }
 
@@ -204,7 +205,7 @@ export default class EntityFactory {
       .add(new ViewportFollowComponent());
 
     fsm.changeState("flying");
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     const padding = 20;
     const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
@@ -212,17 +213,21 @@ export default class EntityFactory {
     new RoundAvatar(url)
       .execute()
       .then((comm: RoundAvatar) => {
+        if (!comm.canvas) return Promise.reject();
+
         // avatar
-        sprite.avatar = Sprite.from(comm.canvas!);
+        sprite.avatar = Sprite.from(comm.canvas);
         sprite.avatar.anchor.set(0.5);
         sprite.addChild(sprite.avatar);
 
         // halo
         const canvas = document.createElement("canvas");
-        const size = comm.canvas!.width + padding * 2;
+        const size = comm.canvas.width + padding * 2;
         canvas.width = size;
         canvas.height = size;
-        const ctx: CanvasRenderingContext2D = canvas.getContext("2d")!;
+        const ctx: CanvasRenderingContext2D = canvas.getContext(
+          "2d"
+        ) as CanvasRenderingContext2D;
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
         ctx.closePath();
@@ -235,6 +240,8 @@ export default class EntityFactory {
         return Promise.resolve(comm);
       })
       .then((comm: RoundAvatar) => {
+        if (!comm.canvas) return Promise.reject();
+
         const config = GameInstance.instance.getConfig();
         const size0 = config.getAvatarRadiusByZoomLevel(0) * 2;
         const size1 = config.getAvatarRadiusByZoomLevel(1) * 2;
@@ -245,9 +252,9 @@ export default class EntityFactory {
         entity.add(spriteComponent);
         entity.add(
           new FixScaleByViewportZoomComponent([
-            size0 / comm.canvas!.width,
-            size1 / comm.canvas!.width,
-            size2 / comm.canvas!.width,
+            size0 / comm.canvas.width,
+            size1 / comm.canvas.width,
+            size2 / comm.canvas.width,
           ])
         );
       });
@@ -263,13 +270,13 @@ export default class EntityFactory {
     }
 
     const config = GameInstance.instance.getConfig();
-    let innerRadius = config.venuesMainCircleOuterRadius;
-    let outerRadius = config.borderRadius;
-    let worldCenter: Point = config.worldCenter;
+    const innerRadius = config.venuesMainCircleOuterRadius;
+    const outerRadius = config.borderRadius;
+    const worldCenter: Point = config.worldCenter;
 
     const angle = this.getRandomNumber(0, 360) * (Math.PI / 180);
-    let radiusX = this.getRandomNumber(innerRadius, outerRadius);
-    let radiusY = this.getRandomNumber(innerRadius, outerRadius);
+    const radiusX = this.getRandomNumber(innerRadius, outerRadius);
+    const radiusY = this.getRandomNumber(innerRadius, outerRadius);
 
     user.x = worldCenter.x + Math.cos(angle) * radiusX;
     user.y = worldCenter.y + Math.sin(angle) * radiusY;
@@ -297,11 +304,13 @@ export default class EntityFactory {
       .add(new HoverableSpriteComponent());
 
     fsm.changeState("moving");
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     const img: HTMLImageElement = new Image();
     const canvas: HTMLCanvasElement = document.createElement("canvas");
-    const context: CanvasRenderingContext2D = canvas.getContext("2d")!;
+    const context: CanvasRenderingContext2D = canvas.getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
     new Promise((resolve) => {
       img.addEventListener("load", () => {
         canvas.width = img.height;
@@ -340,19 +349,19 @@ export default class EntityFactory {
     return entity;
   }
 
-  public updatePlayerTuning(node: PlayerNode): void {
+  public updatePlayerTuning(node: PlayerNode) {
     node.entity.add(new AvatarTuningComponent(node.player.data));
   }
 
-  public removePlayerTuning(node: PlayerNode): void {
+  public removePlayerTuning(node: PlayerNode) {
     node.entity.remove(AvatarTuningComponent);
   }
 
-  public updateBotTuning(node: BotNode): void {
+  public updateBotTuning(node: BotNode) {
     node.entity.add(new AvatarTuningComponent(node.bot.data));
   }
 
-  public removeAvatarTuning(node: AvatarTuningNode): void {
+  public removeAvatarTuning(node: AvatarTuningNode) {
     node.entity.remove(AvatarTuningComponent);
   }
 
@@ -411,7 +420,7 @@ export default class EntityFactory {
       );
 
     fsm.changeState("moving");
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
     const sprite: Avatar = new Avatar();
@@ -419,13 +428,17 @@ export default class EntityFactory {
     new RoundAvatar(url)
       .execute()
       .then((comm: RoundAvatar) => {
+        if (!comm.canvas) return Promise.reject();
+
         // avatar
-        sprite.avatar = Sprite.from(comm.canvas!);
+        sprite.avatar = Sprite.from(comm.canvas);
         sprite.avatar.anchor.set(0.5);
         sprite.addChild(sprite.avatar);
         return Promise.resolve(comm);
       })
       .then((comm: RoundAvatar) => {
+        if (!comm.canvas) return Promise.reject();
+
         const config = GameInstance.instance.getConfig();
         const size0 = config.getAvatarRadiusByZoomLevel(0) * 2;
         const size1 = config.getAvatarRadiusByZoomLevel(1) * 2;
@@ -436,9 +449,9 @@ export default class EntityFactory {
         entity.add(spriteComponent);
         entity.add(
           new FixScaleByViewportZoomComponent([
-            size0 / comm.canvas!.width,
-            size1 / comm.canvas!.width,
-            size2 / comm.canvas!.width,
+            size0 / comm.canvas.width,
+            size1 / comm.canvas.width,
+            size2 / comm.canvas.width,
           ])
         );
       });
@@ -446,12 +459,12 @@ export default class EntityFactory {
     return entity;
   }
 
-  public removeBot(entity: Entity): void {
-    this.engine?.removeEntity(entity);
+  public removeBot(entity: Entity) {
+    this.engine.removeEntity(entity);
   }
 
-  public removeBotById(id: string): void {
-    const list: NodeList<BotNode> = this.engine!.getNodeList(BotNode);
+  public removeBotById(id: string) {
+    const list: NodeList<BotNode> = this.engine.getNodeList(BotNode);
     for (let bot: BotNode | null | undefined = list.head; bot; bot = bot.next) {
       if (bot.bot.data.id === id) {
         this.removeBot(bot.entity);
@@ -460,15 +473,15 @@ export default class EntityFactory {
     }
   }
 
-  public updateBotPosition(user: ReplicatedUser, x: number, y: number): void {
-    const list: NodeList<BotNode> = this.engine!.getNodeList(BotNode);
-    for (let bot: BotNode | null | undefined = list.head; bot; bot = bot.next) {
+  public updateBotPosition(user: ReplicatedUser, x: number, y: number) {
+    const list: NodeList<BotNode> = this.engine.getNodeList(BotNode);
+    for (let bot = list.head; bot; bot = bot.next) {
       if (bot.bot.data.id === user.id) {
         bot.bot.fsm.changeState("idle");
         bot.bot.fsm.changeState("moving");
-        const node: MotionBotControlNode = this.engine!.getNodeList(
+        const node: MotionBotControlNode = this.engine.getNodeList(
           MotionBotControlNode
-        ).tail!;
+        ).tail as MotionBotControlNode;
         node.click.x = x;
         node.click.y = y;
         return;
@@ -476,7 +489,7 @@ export default class EntityFactory {
     }
   }
 
-  public updateUserPositionById(userId: string, x: number, y: number): void {
+  public updateUserPositionById(userId: string, x: number, y: number) {
     let bot: BotNode | null = this.getBotNode(userId);
     if (!bot) {
       const player: PlayerModel = new PlayerModel();
@@ -484,14 +497,14 @@ export default class EntityFactory {
       player.x = x;
       player.y = y;
       this.createBot(player, true);
-      bot = this.engine?.getNodeList(BotNode).head!;
+      bot = this.engine.getNodeList(BotNode).head as BotNode;
       bot.bot.fsm.changeState("idle");
     } else {
       this.updateBotPosition(bot.bot.data, x, y);
     }
   }
 
-  public removeUserById(id: string): void {
+  public removeUserById(id: string) {
     const node: BotNode | null = this.getBotNode(id);
     if (node) {
       this.removeEntity(node.entity);
@@ -503,7 +516,7 @@ export default class EntityFactory {
       new PositionComponent(hero.x, hero.y)
     );
 
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
     return entity;
   }
 
@@ -511,7 +524,7 @@ export default class EntityFactory {
     id: string,
     x: number,
     y: number,
-    venue: ReplicatedVenue | null = null
+    venue?: ReplicatedVenue
   ): Entity {
     const config = GameInstance.instance.getConfig();
 
@@ -580,20 +593,23 @@ export default class EntityFactory {
         )
       );
 
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     new LoadImage(venue.data.imageUrlString)
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
+          if (!comm.image) return Promise.reject();
+
           // the picture can be very large
-          const scale = ((collisionRadius * 2) / comm.image!.width) * 2;
-          return new ImageToCanvas(comm.image!).scaleTo(scale).execute();
+          const scale = ((collisionRadius * 2) / comm.image.width) * 2;
+          return new ImageToCanvas(comm.image).scaleTo(scale).execute();
         }
       )
       .then((comm: ImageToCanvas) => {
         const scale = (collisionRadius * 2) / comm.canvas.width / 2;
-        entity.add(new PositionComponent(venue!.x, venue!.y, 0, scale, scale));
+        if (venue)
+          entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
 
         const sprite: Barrel = new Barrel();
         sprite.name = id;
@@ -682,16 +698,18 @@ export default class EntityFactory {
       )
       .add(new CollisionComponent(config.venueDefaultCollisionRadius));
 
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     new LoadImage(venue.data.imageUrlString)
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
+          if (!comm.image) return Promise.reject();
+
           // the picture can be very large
           const scale =
-            ((config.venueDefaultCollisionRadius * 2) / comm.image!.width) * 2;
-          return new ImageToCanvas(comm.image!).scaleTo(scale).execute();
+            ((config.venueDefaultCollisionRadius * 2) / comm.image.width) * 2;
+          return new ImageToCanvas(comm.image).scaleTo(scale).execute();
         }
       )
       .then((comm: ImageToCanvas) => {
@@ -725,13 +743,13 @@ export default class EntityFactory {
     const entity: Entity = new Entity()
       .add(new PositionComponent(x, y))
       .add(new SoundEmitterComponent(radius, src));
-    this.engine?.addEntity(entity);
+    this.engine.addEntity(entity);
 
     return entity;
   }
 
-  public removeEntity(entity: Entity): void {
-    this.engine?.removeEntity(entity);
+  public removeEntity(entity: Entity) {
+    this.engine.removeEntity(entity);
   }
 
   public getRandomNumber(min: number, max: number): number {

@@ -1,7 +1,8 @@
 import { Engine, Entity, NodeList, System } from "@ash.ts/ash";
 
+import { Point } from "types/utility";
+
 import { GameInstance } from "../../GameInstance";
-import { Point } from "../../utils/Point";
 import { MotionClickControlComponent } from "../components/MotionClickControlComponent";
 import { MotionJoystickControlComponent } from "../components/MotionJoystickControlComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
@@ -14,14 +15,14 @@ import { MotionControlSwitchNode } from "../nodes/MotionControlSwitchNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class MotionControlSwitchSystem extends System {
-  private player: NodeList<MotionControlSwitchNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
-  private keyboard: NodeList<KeyboardNode> | null = null;
-  private joystick: NodeList<JoystickNode> | null = null;
+  private player?: NodeList<MotionControlSwitchNode>;
+  private viewport?: NodeList<ViewportNode>;
+  private keyboard?: NodeList<KeyboardNode>;
+  private joystick?: NodeList<JoystickNode>;
 
   private lastViewportClick = 0;
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.player = engine.getNodeList(MotionControlSwitchNode);
 
     this.keyboard = engine.getNodeList(KeyboardNode);
@@ -33,23 +34,23 @@ export class MotionControlSwitchSystem extends System {
     this.joystick.nodeAdded.add(this.handleJoystickAdded);
   }
 
-  removeFromEngine(): void {
+  removeFromEngine() {
     this.removePlayerKeyboardControl();
     this.removePlayerJoystickControl();
     this.removePlayerClickControl();
     this.removePlayerTweenControl();
 
-    this.keyboard = null;
-    this.player = null;
+    this.keyboard = undefined;
+    this.player = undefined;
 
     this.viewport?.nodeAdded.remove(this.handleViewportAdded);
-    this.viewport = null;
+    this.viewport = undefined;
 
     this.joystick?.nodeAdded.add(this.handleJoystickAdded);
-    this.joystick = null;
+    this.joystick = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (!this.getPlayerEntity()) {
       this.removePlayerClickControl();
       this.removePlayerJoystickControl();
@@ -73,7 +74,7 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private handleJoystickAdded = (node: JoystickNode): void => {
+  private handleJoystickAdded = (node: JoystickNode) => {
     if (!this.getPlayerEntity() || !node.joystick.active) {
       return;
     }
@@ -86,7 +87,7 @@ export class MotionControlSwitchSystem extends System {
     this.followThePlayer();
   };
 
-  private handleViewportAdded = (node: ViewportNode): void => {
+  private handleViewportAdded = (node: ViewportNode) => {
     const doubleClick = true;
 
     if (doubleClick) {
@@ -122,7 +123,7 @@ export class MotionControlSwitchSystem extends System {
     this.followThePlayer();
   };
 
-  private setPlayerTweenControl(e: Point): void {
+  private setPlayerTweenControl(e: Point) {
     const x = e.x;
     const y = e.y;
     if (
@@ -140,14 +141,14 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private removePlayerTweenControl(): void {
+  private removePlayerTweenControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && entity.has(MotionTeleportComponent)) {
       entity.remove(MotionTeleportComponent);
     }
   }
 
-  private setPlayerClickControl(e: Point): void {
+  private setPlayerClickControl(e: Point) {
     const x = e.x;
     const y = e.y;
 
@@ -166,7 +167,7 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private removePlayerClickControl(): void {
+  private removePlayerClickControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && entity.has(MotionClickControlComponent)) {
       entity.remove(MotionClickControlComponent);
@@ -179,7 +180,7 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private setPlayerKeyboardControl(): void {
+  private setPlayerKeyboardControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && !entity.has(MotionKeyboardControlComponent)) {
       entity.add(new MotionKeyboardControlComponent());
@@ -187,7 +188,7 @@ export class MotionControlSwitchSystem extends System {
     this.followThePlayer();
   }
 
-  private removePlayerKeyboardControl(): void {
+  private removePlayerKeyboardControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && entity.has(MotionKeyboardControlComponent)) {
       entity.remove(MotionKeyboardControlComponent);
@@ -200,14 +201,14 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private setPlayerJoystickControl(): void {
+  private setPlayerJoystickControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && !entity.has(MotionJoystickControlComponent)) {
       entity.add(new MotionJoystickControlComponent());
     }
   }
 
-  private removePlayerJoystickControl(): void {
+  private removePlayerJoystickControl() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && entity.has(MotionJoystickControlComponent)) {
       entity.remove(MotionJoystickControlComponent);
@@ -220,10 +221,10 @@ export class MotionControlSwitchSystem extends System {
     }
   }
 
-  private followThePlayer(): void {
+  private followThePlayer() {
     const entity: Entity | null = this.getPlayerEntity();
     if (entity && !entity.has(ViewportFollowComponent)) {
-      entity!.add(new ViewportFollowComponent());
+      entity.add(new ViewportFollowComponent());
     }
   }
 

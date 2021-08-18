@@ -7,23 +7,23 @@ import { PlayerNode } from "../nodes/PlayerNode";
 import { VenueNode } from "../nodes/VenueNode";
 
 export class MotionCollisionSystem extends System {
-  private player: NodeList<PlayerNode> | null = null;
-  private colliders: NodeList<MotionCollidedNode> | null = null;
-  private venues: NodeList<VenueNode> | null = null;
+  private player?: NodeList<PlayerNode>;
+  private colliders?: NodeList<MotionCollidedNode>;
+  private venues?: NodeList<VenueNode>;
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.player = null;
-    this.colliders = null;
-    this.venues = null;
+  removeFromEngine(engine: Engine) {
+    this.player = undefined;
+    this.colliders = undefined;
+    this.venues = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (
       this.colliders &&
       this.colliders.head &&

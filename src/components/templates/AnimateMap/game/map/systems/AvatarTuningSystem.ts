@@ -13,9 +13,9 @@ import { ViewportNode } from "../nodes/ViewportNode";
 export class AvatarTuningSystem extends System {
   private creator: EntityFactory;
 
-  private viewport: NodeList<ViewportNode> | null = null;
-  private avatars: NodeList<AvatarTuningNode> | null = null;
-  private player: NodeList<PlayerNode> | null = null;
+  private viewport?: NodeList<ViewportNode>;
+  private avatars?: NodeList<AvatarTuningNode>;
+  private player?: NodeList<PlayerNode>;
   private zoomLevelCurrent = 0;
   private zoomChanged = true;
 
@@ -24,7 +24,7 @@ export class AvatarTuningSystem extends System {
     this.creator = creator;
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
@@ -42,26 +42,26 @@ export class AvatarTuningSystem extends System {
     }
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.player) {
       this.player.nodeAdded.remove(this.handlePlayerAdded);
       this.player.nodeRemoved.remove(this.handlePlayerRemoved);
-      this.player = null;
+      this.player = undefined;
     }
 
     if (this.avatars) {
       this.avatars.nodeAdded.remove(this.handleAvatarAdded);
       this.avatars.nodeRemoved.remove(this.handleAvatarRemoved);
-      this.avatars = null;
+      this.avatars = undefined;
     }
 
     if (this.viewport) {
       this.viewport.nodeAdded.remove(this.handleViewportAdded);
-      this.viewport = null;
+      this.viewport = undefined;
     }
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (!this.zoomChanged) {
       return;
     }
@@ -80,15 +80,15 @@ export class AvatarTuningSystem extends System {
     }
   }
 
-  private handlePlayerAdded = (node: PlayerNode): void => {
+  private handlePlayerAdded = (node: PlayerNode) => {
     this.creator.updatePlayerTuning(node);
   };
 
-  private handlePlayerRemoved = (node: PlayerNode): void => {
+  private handlePlayerRemoved = (node: PlayerNode) => {
     this.creator.removePlayerTuning(node);
   };
 
-  private handleAvatarAdded = (node: AvatarTuningNode): void => {
+  private handleAvatarAdded = (node: AvatarTuningNode) => {
     const view: Avatar = node.sprite.view as Avatar;
     if (!view.avatar) {
       return;
@@ -161,7 +161,7 @@ export class AvatarTuningSystem extends System {
       view.hat
     ) {
       view.removeChild(view.hat);
-      view.hat = null;
+      view.hat = undefined;
     }
 
     // ACCESSORIES
@@ -179,30 +179,30 @@ export class AvatarTuningSystem extends System {
       view.accessories
     ) {
       view.removeChild(view.accessories);
-      view.accessories = null;
+      view.accessories = undefined;
     }
   };
 
-  private handleAvatarRemoved = (node: AvatarTuningNode): void => {
+  private handleAvatarRemoved = (node: AvatarTuningNode) => {
     const avatar: Avatar = node.sprite.view as Avatar;
     if (!avatar) {
       return;
     }
     if (avatar.cycle) {
       avatar.removeChild(avatar.cycle);
-      avatar.cycle = null;
+      avatar.cycle = undefined;
     }
     if (avatar.hat) {
       avatar.removeChild(avatar.hat);
-      avatar.hat = null;
+      avatar.hat = undefined;
     }
     if (avatar.accessories) {
       avatar.removeChild(avatar.accessories);
-      avatar.accessories = null;
+      avatar.accessories = undefined;
     }
   };
 
-  private handleViewportAdded = (node: ViewportNode): void => {
+  private handleViewportAdded = (node: ViewportNode) => {
     if (this.zoomLevelCurrent !== node.viewport.zoomLevel) {
       this.zoomChanged = true;
       this.zoomLevelCurrent = node.viewport.zoomLevel;

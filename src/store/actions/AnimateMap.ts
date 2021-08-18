@@ -4,8 +4,7 @@ import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { ReduxAction } from "types/redux";
 import { Room } from "types/rooms";
-
-import { Point } from "components/templates/AnimateMap/game/utils/Point";
+import { Point } from "types/utility";
 
 export enum AnimateMapActionTypes {
   SET_STAGE_OPTIONS = "AnimateMapActionTypes.SET_STAGE_OPTIONS",

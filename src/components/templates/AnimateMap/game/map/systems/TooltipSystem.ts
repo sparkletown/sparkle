@@ -5,14 +5,14 @@ import { TooltipNode } from "../nodes/TooltipNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class TooltipSystem extends System {
-  private tooltips: NodeList<TooltipNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
+  private tooltips?: NodeList<TooltipNode>;
+  private viewport?: NodeList<ViewportNode>;
 
   constructor(private container: Container) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.tooltips = engine.getNodeList(TooltipNode);
     this.tooltips.nodeAdded.add(this.handleTooltipAdded);
     this.tooltips.nodeRemoved.add(this.handleTooltipRemoved);
@@ -20,7 +20,7 @@ export class TooltipSystem extends System {
     this.viewport = engine.getNodeList(ViewportNode);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.tooltips) {
       for (
         let node: TooltipNode | null | undefined = this.tooltips?.head;
@@ -32,24 +32,20 @@ export class TooltipSystem extends System {
 
       this.tooltips.nodeAdded.remove(this.handleTooltipAdded);
       this.tooltips.nodeRemoved.remove(this.handleTooltipRemoved);
-      this.tooltips = null;
+      this.tooltips = undefined;
     }
 
-    this.viewport = null;
+    this.viewport = undefined;
   }
 
-  update(time: number): void {
-    for (
-      let node: TooltipNode | null | undefined = this.tooltips?.head;
-      node;
-      node = node.next
-    ) {
+  update(time: number) {
+    for (let node = this.tooltips?.head; node; node = node.next) {
       this.updateTooltipElementPosition(node);
     }
   }
 
-  private handleTooltipAdded = (node: TooltipNode): void => {
-    let view: Sprite | null = node.tooltip.view;
+  private handleTooltipAdded = (node: TooltipNode) => {
+    let view = node.tooltip.view;
     if (!view) {
       view = this.drawTooltipElement(node);
       node.tooltip.view = view;
@@ -62,7 +58,7 @@ export class TooltipSystem extends System {
     this.updateTooltipElementPosition(node);
   };
 
-  private handleTooltipRemoved = (node: TooltipNode): void => {
+  private handleTooltipRemoved = (node: TooltipNode) => {
     if (
       node.tooltip.view &&
       this.container?.children.includes(node.tooltip.view)
@@ -71,13 +67,15 @@ export class TooltipSystem extends System {
     }
   };
 
-  private updateTooltipElementPosition(node: TooltipNode): void {
+  private updateTooltipElementPosition(node: TooltipNode) {
+    if (!this.viewport?.head) return console.error();
+
     const point: Point = node.sprite.view.toGlobal({ x: 0, y: 0 });
 
     // TODO HACK
     const tooltipHeight = 40;
     const collisionRadius = node.tooltip.collisionRadius;
-    const k = collisionRadius * this.viewport!.head!.viewport.zoomViewport!;
+    const k = collisionRadius * this.viewport.head.viewport.zoomViewport;
     const delta =
       (k + tooltipHeight / 2) * (node.tooltip.position === "bottom" ? 1 : -1);
 

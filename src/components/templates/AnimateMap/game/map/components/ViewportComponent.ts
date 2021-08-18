@@ -1,4 +1,4 @@
-import { Point } from "../../utils/Point";
+import { Point } from "types/utility";
 
 export class ViewportComponent {
   constructor(

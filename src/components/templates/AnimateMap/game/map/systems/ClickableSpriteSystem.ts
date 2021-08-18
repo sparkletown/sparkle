@@ -4,13 +4,13 @@ import { Container, InteractionEvent } from "pixi.js";
 import { ClickableSpriteNode } from "../nodes/ClickableSpriteNode";
 
 export class ClickableSpriteSystem extends System {
-  private clickables: NodeList<ClickableSpriteNode> | null = null;
+  private clickables?: NodeList<ClickableSpriteNode>;
 
   constructor(private container: Container) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.container.interactive = true;
 
     this.clickables = engine.getNodeList(ClickableSpriteNode);
@@ -19,22 +19,22 @@ export class ClickableSpriteSystem extends System {
     this.container.on("pointerdown", this.handlePointerDown, this);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     this.container.off("pointerdown", this.handlePointerDown, this);
 
     if (this.clickables) {
       this.clickables.nodeAdded.remove(this.handleClickableAdded);
-      this.clickables = null;
+      this.clickables = undefined;
     }
   }
 
-  update(time: number): void {}
+  update(time: number) {}
 
-  private handleClickableAdded = (node: ClickableSpriteNode): void => {
+  private handleClickableAdded = (node: ClickableSpriteNode) => {
     node.sprite.view.interactive = true;
   };
 
-  private handlePointerDown = (event: InteractionEvent): void => {
+  private handlePointerDown = (event: InteractionEvent) => {
     for (
       let node: ClickableSpriteNode | null | undefined = this.clickables?.head;
       node;

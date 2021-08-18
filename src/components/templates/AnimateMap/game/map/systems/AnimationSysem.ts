@@ -4,7 +4,7 @@ import { AnimationComponent } from "../components/AnimationComponent";
 import { AnimationNode } from "../nodes/AnimationNode";
 
 export class AnimationSystem extends ListIteratingSystem<AnimationNode> {
-  updateNode(node: AnimationNode, delta: number): void {
+  updateNode(node: AnimationNode, delta: number) {
     node.animation.animation.animate(delta);
 
     node.animation.alive -= delta;

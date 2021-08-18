@@ -8,23 +8,23 @@ import { ViewportNode } from "../nodes/ViewportNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionClickSystem extends MotionBaseSystem {
-  private nodes: NodeList<MotionClickControlNode> | null = null;
+  private nodes?: NodeList<MotionClickControlNode>;
 
   constructor(private entityFactory: EntityFactory) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.nodes = engine.getNodeList(MotionClickControlNode);
     this.viewport = engine.getNodeList(ViewportNode);
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.nodes = null;
-    this.viewport = null;
+  removeFromEngine(engine: Engine) {
+    this.nodes = undefined;
+    this.viewport = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     for (
       let node: MotionClickControlNode | null | undefined = this.nodes?.head;
       node;

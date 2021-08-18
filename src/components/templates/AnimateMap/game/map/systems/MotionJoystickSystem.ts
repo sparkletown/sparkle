@@ -17,16 +17,16 @@ import { ViewportNode } from "../nodes/ViewportNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionJoystickSystem extends MotionBaseSystem {
-  private joystick: NodeList<JoystickNode> | null = null;
-  private motionJoystickControl: NodeList<MotionJoystickControlNode> | null = null;
-  private motionKeyboardControl: NodeList<MotionKeyboardControlNode> | null = null;
+  private joystick?: NodeList<JoystickNode>;
+  private motionJoystickControl?: NodeList<MotionJoystickControlNode>;
+  private motionKeyboardControl?: NodeList<MotionKeyboardControlNode>;
 
   private _container: Container;
   private _joystick: Joystick;
   private _outer: Graphics;
   private _inner: Sprite;
-  private easingX: Easing | null = null;
-  private easingY: Easing | null = null;
+  private easingX?: Easing;
+  private easingY?: Easing;
 
   constructor(container: Container, private entityFactory: EntityFactory) {
     super();
@@ -59,7 +59,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     this._container?.addChild(this._joystick);
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.motionJoystickControl = engine.getNodeList(MotionJoystickControlNode);
     this.motionKeyboardControl = engine.getNodeList(MotionKeyboardControlNode);
     this.viewport = engine.getNodeList(ViewportNode);
@@ -68,11 +68,11 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     this.entityFactory.createJoystick(new JoystickComponent());
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.joystick = null;
-    this.motionJoystickControl = null;
-    this.motionKeyboardControl = null;
-    this.viewport = null;
+  removeFromEngine(engine: Engine) {
+    this.joystick = undefined;
+    this.motionJoystickControl = undefined;
+    this.motionKeyboardControl = undefined;
+    this.viewport = undefined;
   }
 
   update(time: number) {
@@ -91,8 +91,8 @@ export class MotionJoystickSystem extends MotionBaseSystem {
       this.motionJoystickControl.head &&
       this.joystick.head.joystick.active
     ) {
-      this.easingX = null;
-      this.easingY = null;
+      this.easingX = undefined;
+      this.easingY = undefined;
       // move hero
       const speed = this.getSpeed();
       const angle = this.joystick.head.joystick.angle;
@@ -140,7 +140,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
         if (!this.easingX || this.easingX.endValue !== x) {
           this.easingX = new Easing(this._inner.position.x, x, time);
           this.easingX.onComplete = () => {
-            this.easingX = null;
+            this.easingX = undefined;
           };
 
           this.easingX.onStep = (value: number) => {
@@ -151,7 +151,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
         if (!this.easingY || this.easingY.endValue !== y) {
           this.easingY = new Easing(this._inner.position.y, y, time);
           this.easingY.onComplete = () => {
-            this.easingY = null;
+            this.easingY = undefined;
           };
 
           this.easingY.onStep = (value: number) => {
@@ -162,7 +162,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     }
   }
 
-  private _onJoystickChange(data: JoystickChangeEvent): void {
+  private _onJoystickChange(data: JoystickChangeEvent) {
     if (this.joystick && this.joystick.head) {
       this.joystick.head.joystick.active = true;
       this.joystick.head.joystick.angle = data.angle;
@@ -170,7 +170,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     }
   }
 
-  private _onJoystickStart(): void {
+  private _onJoystickStart() {
     if (this.joystick && this.joystick.head) {
       this.joystick.head.joystick.active = true;
       this.joystick.head.joystick.angle = 0;
@@ -180,7 +180,7 @@ export class MotionJoystickSystem extends MotionBaseSystem {
     }
   }
 
-  private _onJoystickEnd(): void {
+  private _onJoystickEnd() {
     if (this.joystick && this.joystick.head) {
       this.joystick.head.joystick.active = true;
       this.joystick.head.joystick.angle = 0;

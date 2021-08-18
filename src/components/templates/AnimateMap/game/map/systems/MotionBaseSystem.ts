@@ -6,7 +6,7 @@ import { ViewportNode } from "../nodes/ViewportNode";
 
 export class MotionBaseSystem extends System {
   private speedByZoomLevel: Array<number>;
-  protected viewport: NodeList<ViewportNode> | null = null;
+  protected viewport?: NodeList<ViewportNode>;
   protected cashedZoom: number = 0;
   protected cashedSpeed: number = 0;
 
@@ -41,12 +41,11 @@ export class MotionBaseSystem extends System {
       max,
       min + (n < 0 ? 0 : n) * ((6 - min) / 20)
     );
+    if (isNaN(k)) k = 1;
     if (k < 0) {
-      console.error("k reset");
       k = 0;
     }
     if (k > 1) {
-      console.error("k reset");
       k = 1;
     }
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
@@ -55,18 +54,18 @@ export class MotionBaseSystem extends System {
   }
 
   protected getArtcarDefaultSpeed(): number {
-    return this.speedByZoomLevel[0];
+    return 1.05;
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     throw new Error("Method not implemented.");
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     throw new Error("Method not implemented.");
   }
 
-  update(time: number): void {
+  update(time: number) {
     throw new Error("Method not implemented.");
   }
 }

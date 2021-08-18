@@ -6,27 +6,23 @@ import { ArtcarNode } from "../nodes/ArtcarNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionArtcarSystem extends MotionBaseSystem {
-  private artcars: NodeList<ArtcarNode> | null = null;
+  private artcars?: NodeList<ArtcarNode>;
 
   constructor(private creator: EntityFactory) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.artcars = engine.getNodeList(ArtcarNode);
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.artcars = null;
+  removeFromEngine(engine: Engine) {
+    this.artcars = undefined;
   }
 
-  update(time: number): void {
-    for (
-      let node: ArtcarNode | null | undefined = this.artcars?.head;
-      node;
-      node = node.next
-    ) {
-      const speed = this.getArtcarDefaultSpeed() / 5;
+  update(time: number) {
+    for (let node = this.artcars?.head; node; node = node.next) {
+      const speed = this.getArtcarDefaultSpeed();
       node.elipse.rotation += speed * (time / 1000);
 
       const oldX = node.position.x;

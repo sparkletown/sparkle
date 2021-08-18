@@ -29,7 +29,7 @@ export class KeyPollSingleton {
     return !this.isDown(key);
   }
 
-  private keyDownHandler = (event: KeyboardEvent): void => {
+  private keyDownHandler = (event: KeyboardEvent) => {
     const { keyCode } = event;
     const index = Math.floor(keyCode / WORD_SIZE);
     this.keys[index] |= 1 << (keyCode - index * WORD_SIZE);
@@ -38,7 +38,7 @@ export class KeyPollSingleton {
       .forEach((item) => item.callback("down"));
   };
 
-  private keyUpHandler = (event: KeyboardEvent): void => {
+  private keyUpHandler = (event: KeyboardEvent) => {
     const { keyCode } = event;
     const index = Math.floor(keyCode / WORD_SIZE);
     this.keys[index] &= ~(1 << (keyCode - index * WORD_SIZE));

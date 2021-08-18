@@ -14,10 +14,10 @@ import { ViewportNode } from "../nodes/ViewportNode";
 
 export class LineOfSightSystem extends System {
   private creator: EntityFactory;
-  private player: NodeList<PlayerNode> | null = null;
-  private avatars: NodeList<AvatarTuningNode> | null = null;
-  private bots: NodeList<BotNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
+  private player?: NodeList<PlayerNode>;
+  private avatars?: NodeList<AvatarTuningNode>;
+  private bots?: NodeList<BotNode>;
+  private viewport?: NodeList<ViewportNode>;
 
   private currentZoomLevel = -1;
   private lineOfSightRadius = 0;
@@ -27,7 +27,7 @@ export class LineOfSightSystem extends System {
     this.creator = creator;
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.viewport = engine.getNodeList(ViewportNode);
     this.avatars = engine.getNodeList(AvatarTuningNode);
@@ -35,14 +35,14 @@ export class LineOfSightSystem extends System {
     this.bots = engine.getNodeList(BotNode);
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.avatars = null;
-    this.player = null;
-    this.viewport = null;
-    this.bots = null;
+  removeFromEngine(engine: Engine) {
+    this.avatars = undefined;
+    this.player = undefined;
+    this.viewport = undefined;
+    this.bots = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (
       !this.player ||
       !this.player.head ||

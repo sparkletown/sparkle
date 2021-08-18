@@ -34,8 +34,8 @@ export abstract class ObjectPool<T> {
 
   private _capacityRatio: number = 0;
   private _decayRatio: number = 0;
-  private _borrowRateAverageProvider: AverageProvider | null = null;
-  private _marginAverageProvider: AverageProvider | null = null;
+  private _borrowRateAverageProvider: AverageProvider;
+  private _marginAverageProvider: AverageProvider;
 
   /**
    * @param {ObjectPoolOptions} options
@@ -173,7 +173,7 @@ export abstract class ObjectPool<T> {
    *
    * @param {T} object
    */
-  release(object: T): void {
+  release(object: T) {
     ++this._returnRate;
     --this._flowRate;
 
@@ -190,7 +190,7 @@ export abstract class ObjectPool<T> {
    *
    * @param {T[]} array
    */
-  releaseArray(array: T[]): void {
+  releaseArray(array: T[]) {
     this._returnRate += array.length;
     this._flowRate -= array.length;
 
@@ -214,7 +214,7 @@ export abstract class ObjectPool<T> {
    *
    * @param {number} count
    */
-  reserve(count: number): void {
+  reserve(count: number) {
     this._reserveCount = count;
 
     if (this._freeCount < count) {
@@ -232,7 +232,7 @@ export abstract class ObjectPool<T> {
    *
    * @param {number} count
    */
-  limit(count: number): void {
+  limit(count: number) {
     if (this._freeCount > count) {
       const oldCapacity = this.capacity;
 
@@ -261,7 +261,7 @@ export abstract class ObjectPool<T> {
    *
    * @param {Ticker}[ticker=Ticker.shared]
    */
-  startGC(ticker: Ticker = Ticker.shared): void {
+  startGC(ticker: Ticker = Ticker.shared) {
     ticker.add(this._gcTick, null, UPDATE_PRIORITY.UTILITY);
   }
 
@@ -270,11 +270,11 @@ export abstract class ObjectPool<T> {
    *
    * @param {Ticker}[ticker=Ticker.shared]
    */
-  stopGC(ticker: Ticker = Ticker.shared): void {
+  stopGC(ticker: Ticker = Ticker.shared) {
     ticker.remove(this._gcTick);
   }
 
-  private _gcTick = (): void => {
+  private _gcTick = () => {
     this._borrowRateAverage =
       this._borrowRateAverageProvider?.next(this._borrowRate) ?? 0;
     this._marginAverage =

@@ -23,7 +23,7 @@ export class ViewportBackgroundSystem extends System {
   private tileScaleX = 1;
   private tileScaleY = 1;
 
-  private tree: QuadTree | null = null;
+  private tree?: QuadTree;
   private currentVisibleTiles: Map<number, Sprite> = new Map();
 
   constructor(viewport: Viewport) {
@@ -33,7 +33,7 @@ export class ViewportBackgroundSystem extends System {
     this.zoomed = new Sprite();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.setup().then(() => {
       this.setupTree();
 
@@ -55,14 +55,14 @@ export class ViewportBackgroundSystem extends System {
     this.colorMatrixFilter();
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.zoomed.children.length) {
       this.zoomed.removeChildren();
       this.currentVisibleTiles.clear();
     }
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (!this.initialized || !this.tree) {
       return;
     }
@@ -140,7 +140,7 @@ export class ViewportBackgroundSystem extends System {
     }
   }
 
-  colorMatrixFilter(): void {
+  colorMatrixFilter() {
     const apply = false;
 
     if (!apply) {
@@ -194,7 +194,7 @@ export class ViewportBackgroundSystem extends System {
     });
   }
 
-  private setupTree(): void {
+  private setupTree() {
     const config: GameConfig = GameInstance.instance.getConfig();
     this.tree = new QuadTree(
       new Box(0, 0, config.worldWidth, config.worldWidth)

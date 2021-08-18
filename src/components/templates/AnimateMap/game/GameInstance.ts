@@ -15,6 +15,8 @@ import {
 } from "store/actions/AnimateMap";
 import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { Point } from "types/utility";
+
 import { DataProvider } from "../bridges/DataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
@@ -22,25 +24,23 @@ import EventProvider, {
 } from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
 
-import Command from "./commands/Command";
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";
 import { assets } from "./constants/AssetConstants";
 import { stubUsersData } from "./constants/StubData";
 import { MapContainer } from "./map/MapContainer";
-import { Point, StartPoint } from "./utils/Point";
+import { StartPoint } from "./utils/Point";
 
 export class GameInstance {
   public static DEBOUNCE_TIME: number = 25;
 
   public static instance: GameInstance;
 
-  private _app: Application | null = null;
-  private _renderer: Renderer | null = null;
+  private _app?: Application;
+  private _renderer?: Renderer;
 
-  private _stage: Container | null = null;
-  public _mapContainer: MapContainer | null = null;
-  // private _eventProvider = this.getState().eventProvider;
+  private _stage?: Container;
+  public _mapContainer?: MapContainer;
   private _eventProvider = EventProvider;
   get eventProvider() {
     return this._eventProvider;
@@ -69,7 +69,7 @@ export class GameInstance {
       transparent: true,
       antialias: true,
       resizeTo: this._containerElement,
-      backgroundColor: 0x10bb99,
+      backgroundColor: 0xe7d4c3,
       resolution: 1,
     });
 
@@ -80,6 +80,7 @@ export class GameInstance {
   }
 
   private async initMap(): Promise<void> {
+    if (!this._app) return console.error();
     this._store.dispatch(setAnimateMapUsers(stubUsersData()));
 
     this._mapContainer = new MapContainer(this._app);
@@ -125,8 +126,8 @@ export class GameInstance {
         .then(() => {
           return new WaitClickForHeroCreation().execute();
         })
-        .then(async (command: Command) => {
-          await this._play((command as WaitClickForHeroCreation).clickPoint!);
+        .then(async (command: WaitClickForHeroCreation) => {
+          await this._play(command.clickPoint);
           window.sessionStorage.setItem(
             "AnimateMapState.sessionStorage",
             "false"
@@ -136,11 +137,11 @@ export class GameInstance {
   }
 
   private async _play(position: Point = StartPoint()): Promise<void> {
-    await this.fillPlayerData(position).catch((error) => console.log(error));
+    this.fillPlayerData(position).catch((error) => console.log(error));
     await this._mapContainer?.start();
   }
 
-  private resize(): void {
+  private resize() {
     if (this._renderer) {
       if (this._mapContainer) {
         this._mapContainer.resize(
@@ -151,14 +152,14 @@ export class GameInstance {
     }
   }
 
-  private update(dt: number): void {
+  private update(dt: number) {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
     if (position) this._dataProvider.setPlayerPosition(position.x, position.y);
     this._dataProvider.update(dt);
     this._mapContainer?.update(dt);
-    if (Date.now() % 100 === 0) {
-      //TODO: can find better decision?
+    if (Date.now() % 200 === 0) {
+      //TODO: can find better decision? Possibly resize on rerender?
       this._app?.resize();
       this.resize();
     }
@@ -199,11 +200,11 @@ export class GameInstance {
     return this._config;
   }
 
-  public getMapContainer(): MapContainer | null {
+  public getMapContainer() {
     return this._mapContainer;
   }
 
-  public getRenderer(): Renderer | null {
+  public getRenderer() {
     return this._renderer;
   }
 
@@ -212,19 +213,23 @@ export class GameInstance {
   private _subscribes() {
     //TODO: refactor all subscribes to separate class? An example, rework eventProvider for this.
 
-    this._dataProvider.on(DataProviderEvent.USER_JOINED, (userId: string) => {
+    EventProvider.on(EventType.USER_JOINED, (userId: number) => {
       console.log(`- ${userId} join to room`);
     });
 
-    this._dataProvider.on(DataProviderEvent.USER_LEFT, (userId: string) => {
+    EventProvider.on(EventType.USER_LEFT, (userId: number) => {
       console.log(`- ${userId} left from room`);
-      this._mapContainer?.entityFactory?.removeUserById(userId);
+      this._mapContainer?.entityFactory?.removeUserById(userId.toString());
     });
 
-    this._dataProvider.on(
-      DataProviderEvent.USER_MOVED,
-      (userId: string, x: number, y: number) => {
-        this._mapContainer?.entityFactory?.updateUserPositionById(userId, x, y);
+    EventProvider.on(
+      EventType.USER_MOVED,
+      (userId: number, x: number, y: number) => {
+        this._mapContainer?.entityFactory?.updateUserPositionById(
+          userId.toString(),
+          x,
+          y
+        );
       }
     );
 
