@@ -1,10 +1,19 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { useTimeoutFn } from "react-use";
+import classNames from "classnames";
+import { isEqual } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import { useInterval } from "hooks/useInterval";
+import { LOADING_PAGE_ANIMATION_DELAY } from "settings";
 
-import "./loading.scss";
+import { useInterval } from "hooks/useInterval";
+import { useShowHide } from "hooks/useShowHide";
+
+import { ReactComponent as DiamondSvg } from "./svg/diamond.svg";
+import { ReactComponent as PlayaSvg } from "./svg/playa.svg";
+
+import "./LoadingPage.scss";
 
 const quotes = IS_BURN
   ? [
@@ -27,30 +36,35 @@ const quotes = IS_BURN
     ]
   : ["Loading..."];
 
-export const LoadingPage = () => {
+const _LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
 
   useInterval(
-    () => {
+    useCallback(() => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    },
+    }, []),
     IS_BURN ? 1000 : undefined
   );
 
+  const { isShown: animate, show: startAnimation } = useShowHide();
+  //this prevents "flickering" of the animation on page load
+  useTimeoutFn(startAnimation, LOADING_PAGE_ANIMATION_DELAY);
+
   return (
-    <div className="loading-screen">
-      <div className="loading-content">
-        <div className="burningman-loading-container">
-          <span className="loading-sparkle-1" />
-          <span className="loading-sparkle-2" />
-          <div className="burningman-loading">
-            <div className="burningman-loading-anim" />
-          </div>
+    <div className="LoadingPage">
+      <div className="LoadingPage__wrapper">
+        <div className="LoadingPage__logo-container">
+          <DiamondSvg
+            className={classNames("LoadingPage__diamond", {
+              "LoadingPage__diamond--animation": animate,
+            })}
+          />
+          <PlayaSvg className="LoadingPage__playa" />
         </div>
-        <span className={`loading-randomquote ${quote && "show"}`}>
-          {quote}
-        </span>
+        <span className={`LoadingPage__text`}>{quote}</span>
       </div>
     </div>
   );
 };
+
+export const LoadingPage = React.memo(_LoadingPage, isEqual);
