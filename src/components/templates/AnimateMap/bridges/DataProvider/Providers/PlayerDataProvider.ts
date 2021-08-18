@@ -1,6 +1,5 @@
 import { Point } from "types/utility";
 
-// import { databaseobject } from "../../../vendors/playerio/PlayerIO";
 import { PlayerDataProviderInterface } from "../../DataProvider";
 import { CommonInterface } from "../Contructor/CommonInterface";
 import playerModel from "../Structures/PlayerModel";
@@ -18,23 +17,10 @@ export enum PlayerDataProviderEvents {
   BASE_POINT_CHANGED = "BASE_POINT_CHANGED",
 }
 
-// export interface dbPlayer extends databaseobject {
-//   x: number;
-//   y: number;
-// }
-
-// export interface idObject extends databaseobject {
-//   id: string;
-// }
-
-export class PlayerDataProvider
-  // extends PlayerIOProvider<dbPlayer>
-  implements PlayerDataProviderInterface {
+export class PlayerDataProvider implements PlayerDataProviderInterface {
   private _sendPosition: Point = { x: 0, y: 0 };
-  // private _playerObj: dbPlayer = { x: 0, y: 0 } as dbPlayer;
   private _position = { x: 0, y: 0 };
   private _isReady = false;
-  public sessionId: number | null = null;
 
   public isReady() {
     return this._isReady;
@@ -75,23 +61,6 @@ export class PlayerDataProvider
   public async loadPosition(x: number, y: number) {
     if (!this.id) return Promise.reject("Unexpected player id");
     Promise.reject("Unexpected player id");
-    // const successCallback = (playerObj: dbPlayer) => {
-    //   console.log("success callback");
-    //   if (!playerObj.x || !playerObj.y) {
-    //     playerObj.x = x;
-    //     playerObj.y = y;
-    //     // playerObj.save();
-    //   }
-    //   this._playerObj = playerObj;
-    // };
-    // const errorCallback = (error: Error) => {
-    //   console.error(error);
-    // };
-
-    // return this.commonInterface //todo: wrap callback to promise
-    // .loadPlayerPositionAsync(this.id, successCallback, errorCallback)
-    // .loadPlayerPositionAsync(this.id,  console.log, console.error)
-    // .then(() => {});
   }
 
   public setPosition(x: number, y: number) {

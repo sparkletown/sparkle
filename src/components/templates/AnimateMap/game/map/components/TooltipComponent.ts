@@ -1,7 +1,7 @@
 import { Sprite } from "pixi.js";
 
 export class TooltipComponent {
-  public view: Sprite | null = null;
+  public view?: Sprite;
 
   public textColor = 0xede8fe;
   public textSize = 14;

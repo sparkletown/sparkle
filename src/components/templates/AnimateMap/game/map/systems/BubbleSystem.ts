@@ -6,14 +6,14 @@ import { BubbleNode } from "../nodes/BubbleNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class BubbleSystem extends System {
-  private bubbles: NodeList<BubbleNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
+  private bubbles?: NodeList<BubbleNode>;
+  private viewport?: NodeList<ViewportNode>;
 
   constructor(private container: Container, private creator: EntityFactory) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.bubbles = engine.getNodeList(BubbleNode);
     this.bubbles.nodeAdded.add(this.handleBubbleAdded);
     this.bubbles.nodeRemoved.add(this.handleBubbleRemoved);
@@ -21,7 +21,7 @@ export class BubbleSystem extends System {
     this.viewport = engine.getNodeList(ViewportNode);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.bubbles) {
       for (
         let node: BubbleNode | null | undefined = this.bubbles?.head;
@@ -33,13 +33,13 @@ export class BubbleSystem extends System {
 
       this.bubbles.nodeAdded.remove(this.handleBubbleAdded);
       this.bubbles.nodeRemoved.remove(this.handleBubbleRemoved);
-      this.bubbles = null;
+      this.bubbles = undefined;
     }
 
-    this.viewport = null;
+    this.viewport = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     for (
       let node: BubbleNode | null | undefined = this.bubbles?.head;
       node;
@@ -54,8 +54,8 @@ export class BubbleSystem extends System {
     }
   }
 
-  private handleBubbleAdded = (node: BubbleNode): void => {
-    let view: Sprite | null = node.bubble.view;
+  private handleBubbleAdded = (node: BubbleNode) => {
+    let view = node.bubble.view;
     if (!view) {
       view = this.drawBubbleElement(node);
       node.bubble.view = view;
@@ -68,7 +68,7 @@ export class BubbleSystem extends System {
     this.updateBubbleElementPosition(node);
   };
 
-  private handleBubbleRemoved = (node: BubbleNode): void => {
+  private handleBubbleRemoved = (node: BubbleNode) => {
     if (
       node.bubble.view &&
       this.container?.children.includes(node.bubble.view)
@@ -77,12 +77,14 @@ export class BubbleSystem extends System {
     }
   };
 
-  private updateBubbleElementPosition(node: BubbleNode): void {
+  private updateBubbleElementPosition(node: BubbleNode) {
+    if (!this.viewport?.head) return;
+
     const point: Point = node.sprite.view.toGlobal({ x: 0, y: 0 });
 
     // TODO HACK
     const bubbleHeight = 60;
-    const k = 10 * this.viewport!.head!.viewport.zoomViewport!;
+    const k = 10 * this.viewport.head.viewport.zoomViewport;
     const delta = k + bubbleHeight / 2;
 
     node.bubble.view?.position.set(
@@ -169,7 +171,7 @@ export class BubbleSystem extends System {
     pointerWidth: number,
     pointerHeight: number,
     centerOffset: number
-  ): void {
+  ) {
     x = Math.round(x);
     y = Math.round(y);
     w = Math.round(w);
@@ -177,7 +179,7 @@ export class BubbleSystem extends System {
     if (w < 30) w = 30;
     h = Math.round(h);
 
-    let rbr = typeof r === "object" && r["br"] ? r["br"] : r;
+    const rbr = typeof r === "object" && r["br"] ? r["br"] : r;
     const rbl = typeof r === "object" && r["bl"] ? r["bl"] : r;
     const rtl = typeof r === "object" && r["tl"] ? r["tl"] : r;
     const rtr = typeof r === "object" && r["tr"] ? r["tr"] : r;

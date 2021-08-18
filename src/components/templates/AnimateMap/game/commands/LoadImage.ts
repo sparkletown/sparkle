@@ -2,7 +2,7 @@ import Command from "./Command";
 
 export class LoadImage implements Command {
   public url: string;
-  public image: HTMLImageElement | null = null;
+  public image?: HTMLImageElement;
 
   constructor(url: string) {
     this.url = url;

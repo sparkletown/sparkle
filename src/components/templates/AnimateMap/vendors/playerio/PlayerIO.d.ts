@@ -135,8 +135,8 @@ export interface databaseobject {
   key: string;
   table: string;
   save(
-    useOptimisticLock: boolean,
-    fullOverwrite: boolean,
+    useOptimisticLock?: boolean,
+    fullOverwrite?: boolean,
     successCallback: VoidCallback,
     errorCallback: ErrorCallback
   ): void;

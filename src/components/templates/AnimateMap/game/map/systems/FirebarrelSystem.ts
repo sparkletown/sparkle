@@ -5,7 +5,8 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapFireBarrel,
-} from "../../../../../../store/actions/AnimateMap";
+} from "store/actions/AnimateMap";
+
 import { GameInstance } from "../../GameInstance";
 import { Barrel } from "../graphics/Barrel";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
@@ -13,13 +14,13 @@ import { BarrelNode } from "../nodes/BarrelNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 
 export class FirebarrelSystem extends System {
-  private bots: NodeList<AvatarTuningNode> | null = null;
-  private player: NodeList<PlayerNode> | null = null;
-  private barrels: NodeList<BarrelNode> | null = null;
+  private bots?: NodeList<AvatarTuningNode>;
+  private player?: NodeList<PlayerNode>;
+  private barrels?: NodeList<BarrelNode>;
 
   private _unsubscribeSetPointer!: () => void;
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.bots = engine.getNodeList(AvatarTuningNode);
     this.player = engine.getNodeList(PlayerNode);
     this.barrels = engine.getNodeList(BarrelNode);
@@ -48,15 +49,15 @@ export class FirebarrelSystem extends System {
     );
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     this._unsubscribeSetPointer();
 
-    this.bots = null;
-    this.player = null;
-    this.barrels = null;
+    this.bots = undefined;
+    this.player = undefined;
+    this.barrels = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (!this.player?.head || !this.barrels?.head) {
       return;
     }

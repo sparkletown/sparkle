@@ -6,7 +6,7 @@ import { ViewportNode } from "../nodes/ViewportNode";
 
 export class MotionBaseSystem extends System {
   private speedByZoomLevel: Array<number>;
-  protected viewport: NodeList<ViewportNode> | null = null;
+  protected viewport?: NodeList<ViewportNode>;
   protected cashedZoom: number = 0;
   protected cashedSpeed: number = 0;
 
@@ -57,15 +57,15 @@ export class MotionBaseSystem extends System {
     return 1.05;
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     throw new Error("Method not implemented.");
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     throw new Error("Method not implemented.");
   }
 
-  update(time: number): void {
+  update(time: number) {
     throw new Error("Method not implemented.");
   }
 }

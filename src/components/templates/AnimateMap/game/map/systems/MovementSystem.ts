@@ -7,7 +7,7 @@ export class MovementSystem extends ListIteratingSystem<MovementNode> {
     super(MovementNode);
   }
 
-  public updateNode(node: MovementNode, time: number): void {
+  public updateNode(node: MovementNode, time: number) {
     const { position, movement } = node;
 
     position.x += movement.velocityX * time;

@@ -55,52 +55,17 @@ export class CloudDataProvider
     super();
 
     this._testBots = new PlayerIOBots(this.playerioGameId ?? "");
-    //@ts-ignore
-    window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots);
+    //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
     playerModel.id = playerId;
 
     this.commonInterface = new CommonLinker(
-      new PlayerIODataProvider(playerioGameId ?? "", playerId, (connection) => {
-        // connection.addMessageCallback("Join", (m) => {
-        //   // @ts-ignore
-        //   const sessionId = m.getInt(0) as number;
-        //   // @ts-ignore
-        //   const userId = m.getString(1) as string;
-        //   this.users.join(sessionId, userId);
-        //   if (userId === this.playerId) {
-        //     this.player.sessionId = sessionId;
-        //   } else {
-        //     this.emit(DataProviderEvent.USER_JOINED, userId);
-        //   }
-        // });
-        // connection.addMessageCallback("Left", (m) => {
-        //   // @ts-ignore
-        //   const sessionId = m.getInt(0) as number;
-        //   const userId = this.users.users.getId(sessionId);
-        //   this.users.left(sessionId);
-        //   this.emit(DataProviderEvent.USER_LEFT, userId);
-        // });
-        // connection.addMessageCallback<[ULong, UInt, UInt, string]>(
-        //   MessagesTypes.move,
-        //   (m) => {
-        //     const sessionId = m.getULong(1);
-        //     const x = m.getUInt(1);
-        //     const y = m.getUInt(2);
-        //     const userId = m.getString<3>(3);
-        //     if (userId === this.playerId) return; //reject
-        //
-        //     const isNewUser = this.users.update(sessionId, x, y, userId);
-        //     if (isNewUser) {
-        //       this.emit(DataProviderEvent.USER_JOINED, userId);
-        //       this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-        //     } else {
-        //       this.emit(DataProviderEvent.USER_MOVED, userId, x, y);
-        //     }
-        //   }
-        // );
-      }),
+      new PlayerIODataProvider(
+        playerioGameId ?? "",
+        playerId,
+        (connection) => {}
+      ), //TODO: remove callback
       new FirebaseDataProvider(firebase)
     );
     this.player = new PlayerDataProvider(playerId, this.commonInterface);
@@ -125,9 +90,8 @@ export class CloudDataProvider
   public async initPlayerPositionAsync(x: number, y: number) {
     //TODO: REWORK
     this.commonInterface
-      .loadVenuesAsync() //@ts-ignore
+      .loadVenuesAsync()
       .then((q) => {
-        //@ts-ignore
         q.forEach((doc) => {
           const data = doc.data();
           // console.log(data);
@@ -142,8 +106,8 @@ export class CloudDataProvider
           } as ReplicatedVenue;
           this.emit(DataProviderEvent.VENUE_ADDED, vn);
         });
-      }) //@ts-ignore
-      .catch((error) => console.log(error));
+      })
+      .catch(console.log);
     return this.player.initPositionAsync(x, y);
   }
 

@@ -45,21 +45,21 @@ import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
 
 export class MapContainer extends Container {
-  private _app?: Application | null = null;
+  private _app: Application;
 
-  private _viewport?: Viewport | null = null;
+  private _viewport?: Viewport;
 
-  private _engine?: Engine | null = null;
-  public entityFactory?: EntityFactory | null = null;
-  public _entityContainer?: Container | null = null;
-  private _tooltipContainer?: Container | null = null;
-  private _bubbleContainer?: Container | null = null;
+  private _engine?: Engine;
+  public entityFactory?: EntityFactory;
+  public _entityContainer?: Container;
+  private _tooltipContainer?: Container;
+  private _bubbleContainer?: Container;
 
-  private _joystickContainer?: Container | null = null;
+  private _joystickContainer?: Container;
 
-  private _debugContainer?: Container | null = null;
+  private _debugContainer?: Container;
 
-  constructor(app: Application | null) {
+  constructor(app: Application) {
     super();
 
     this._app = app;
@@ -79,7 +79,33 @@ export class MapContainer extends Container {
   public async init(): Promise<void> {
     this.initViewport();
     this.initViewportLayers();
+    this.initSystems();
+    this.initMap(MAP_JSON);
 
+    this._viewport?.on("clicked", (e: { world: Point }) =>
+      GameInstance.instance.getStore().dispatch(
+        setAnimateMapPointer({
+          x: e.world.x,
+          y: e.world.y,
+        })
+      )
+    );
+  }
+
+  private initViewport() {
+    this._viewport = new Viewport({ noTicker: true });
+    this.addChild(this._viewport);
+  }
+
+  private initViewportLayers() {
+    this._debugContainer = new Container(); //TODO: maybe relocate all instantiate to constructor?
+    this._viewport?.addChild(this._debugContainer);
+
+    this._entityContainer = new Container();
+    this._viewport?.addChild(this._entityContainer);
+  }
+
+  private initSystems() {
     this._tooltipContainer = new Container();
     this.addChild(this._tooltipContainer);
     this._bubbleContainer = new Container();
@@ -87,35 +113,6 @@ export class MapContainer extends Container {
     this._joystickContainer = new Container();
     this.addChild(this._joystickContainer);
 
-    this.initSystems();
-    this.initMap(MAP_JSON);
-
-    this._viewport?.on("clicked", (e) =>
-      GameInstance.instance.getStore().dispatch(
-        setAnimateMapPointer({
-          //@ts-ignore
-          x: e.world.x,
-          //@ts-ignore
-          y: e.world.y,
-        })
-      )
-    );
-  }
-
-  private initViewport(): void {
-    this._viewport = new Viewport({ noTicker: true });
-    this.addChild(this._viewport);
-  }
-
-  private initViewportLayers(): void {
-    this._debugContainer = new Container();
-    this._viewport?.addChild(this._debugContainer);
-
-    this._entityContainer = new Container();
-    this._viewport?.addChild(this._entityContainer);
-  }
-
-  private initSystems(): void {
     // const keyPoll = keyPoll;
     this._engine = new Engine();
     this.entityFactory = new EntityFactory(this._engine);
@@ -137,7 +134,7 @@ export class MapContainer extends Container {
       SystemPriorities.update
     );
     this._engine.addSystem(
-      new MotionJoystickSystem(this._joystickContainer!, this.entityFactory),
+      new MotionJoystickSystem(this._joystickContainer, this.entityFactory),
       SystemPriorities.update
     );
     this._engine.addSystem(
@@ -159,12 +156,12 @@ export class MapContainer extends Container {
       SystemPriorities.update
     );
 
-    if (this._debugContainer) {
+    if (this._debugContainer && this._viewport) {
       this._engine.addSystem(
         new DebugSystem(
           this._debugContainer,
           this.entityFactory,
-          this._viewport!
+          this._viewport
         ),
         SystemPriorities.move
       );
@@ -190,36 +187,40 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new HoverableSpriteSystem(this._entityContainer!),
+      new HoverableSpriteSystem(this._entityContainer as Container),
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ClickableSpriteSystem(this._entityContainer!),
+      new ClickableSpriteSystem(this._entityContainer as Container),
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new TooltipSystem(this._tooltipContainer!),
+      new TooltipSystem(this._tooltipContainer),
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new BubbleSystem(this._bubbleContainer!, this.entityFactory),
+      new BubbleSystem(this._bubbleContainer, this.entityFactory),
       SystemPriorities.render
     );
 
     this._engine.addSystem(new ZoomedSpriteSystem(), SystemPriorities.render);
     this._engine.addSystem(
-      new ViewportSystem(this._app!, this._viewport!, this.entityFactory),
+      new ViewportSystem(
+        this._app,
+        this._viewport as Viewport,
+        this.entityFactory
+      ),
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport!),
+      new ViewportBackgroundSystem(this._viewport as Viewport),
       SystemPriorities.render
     );
     this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private initMap(config: any): void {
+  private initMap(config: any) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const objectsLayer = config.layers.find((o: any) => o.name === "objects");
 
@@ -268,7 +269,7 @@ export class MapContainer extends Container {
     }
   }
 
-  private initEntities(): void {
+  private initEntities() {
     if (!this.entityFactory) {
       return;
     }
@@ -364,7 +365,7 @@ export class MapContainer extends Container {
       });
   }
 
-  public resize(width: number, height: number): void {
+  public resize(width: number, height: number) {
     if (this._viewport) {
       this._viewport.resize(width, height);
     }
@@ -378,14 +379,14 @@ export class MapContainer extends Container {
     this.releaseLayers();
   }
 
-  private releaseLayers(): void {}
+  private releaseLayers() {}
 
-  private releaseSystems(): void {
+  private releaseSystems() {
     this._engine?.removeAllEntities();
     this._engine?.removeAllSystems();
   }
 
-  public update(dt: number): void {
+  public update(dt: number) {
     this._engine?.update(dt);
   }
 }

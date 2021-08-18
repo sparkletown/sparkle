@@ -4,14 +4,14 @@ import { FixScaleByViewportZoomNode } from "../nodes/FixScaleByViewportZoomNode"
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class FixScaleByViewportZoomSystem extends System {
-  private nodes: NodeList<FixScaleByViewportZoomNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
+  private nodes?: NodeList<FixScaleByViewportZoomNode>;
+  private viewport?: NodeList<ViewportNode>;
 
   private currentZoomViewport = -1;
   private currentZoomLevel = -1;
   private zoomUpdated = true;
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.viewport = engine.getNodeList(ViewportNode);
     this.viewport.nodeAdded.add(this.handleViewportAdded);
 
@@ -19,23 +19,23 @@ export class FixScaleByViewportZoomSystem extends System {
     this.nodes.nodeAdded.add(this.nodeAdded);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.viewport) {
       this.viewport.nodeAdded.remove(this.handleViewportAdded);
-      this.viewport = null;
+      this.viewport = undefined;
     }
 
     if (this.nodes) {
       this.nodes.nodeAdded.remove(this.nodeAdded);
-      this.nodes = null;
+      this.nodes = undefined;
     }
   }
 
-  update(time: number): void {
-    if (this.zoomUpdated) {
+  update(time: number) {
+    if (this.zoomUpdated && this.viewport?.head) {
       this.zoomUpdated = false;
-      this.currentZoomViewport = this.viewport!.head!.viewport.zoomViewport;
-      this.currentZoomLevel = this.viewport!.head!.viewport.zoomLevel;
+      this.currentZoomViewport = this.viewport.head.viewport.zoomViewport;
+      this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
 
       for (
         let node: FixScaleByViewportZoomNode | null | undefined = this.nodes
@@ -48,14 +48,14 @@ export class FixScaleByViewportZoomSystem extends System {
     }
   }
 
-  private updateNode(node: FixScaleByViewportZoomNode): void {
+  private updateNode(node: FixScaleByViewportZoomNode) {
     const position = node.position;
     const scale =
       node.fixSize.scales[this.currentZoomLevel] / this.currentZoomViewport;
     position.scaleX = position.scaleY = scale;
   }
 
-  private handleViewportAdded = (node: ViewportNode): void => {
+  private handleViewportAdded = (node: ViewportNode) => {
     if (
       node.viewport.zoomViewport !== this.currentZoomViewport ||
       node.viewport.zoomLevel !== this.currentZoomLevel

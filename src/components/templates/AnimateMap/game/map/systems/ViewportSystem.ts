@@ -24,10 +24,10 @@ import { ViewportFollowNode } from "../nodes/ViewportFollowNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class ViewportSystem extends System {
-  private player: NodeList<ViewportFollowNode> | null = null;
+  private player?: NodeList<ViewportFollowNode>;
 
-  private easing: Easing | null = null;
-  private viewportList: NodeList<ViewportNode> | null = null;
+  private easing?: Easing;
+  private viewportList?: NodeList<ViewportNode>;
 
   private _unsubscribeSetZoom!: () => void;
   private _unsubscribeSetEnvironmentSound!: () => void;
@@ -42,7 +42,7 @@ export class ViewportSystem extends System {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.viewportList = engine.getNodeList(ViewportNode);
     this._entityCreator.createViewport(new ViewportComponent());
 
@@ -135,8 +135,9 @@ export class ViewportSystem extends System {
       .zoomLevelToViewport(zoomLevel);
     this._viewport.setZoom(zoomViewport);
 
-    this.viewportList.head!.viewport.zoomLevel = zoomLevel;
-    this.viewportList.head!.viewport.zoomViewport = this._viewport.scale.y;
+    if (!this.viewportList?.head) return console.error(); //todo: refactor
+    this.viewportList.head.viewport.zoomLevel = zoomLevel;
+    this.viewportList.head.viewport.zoomViewport = this._viewport.scale.y;
     this._entityCreator.updateViewport();
 
     this._viewport.update(1);
@@ -148,8 +149,8 @@ export class ViewportSystem extends System {
     }
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.viewportList = null;
+  removeFromEngine(engine: Engine) {
+    this.viewportList = undefined;
 
     this._viewport.off("moved", this._viewportMovedHandler, this);
     this._viewport.off("zoomed", this._viewportZoomedHandler, this);
@@ -170,7 +171,7 @@ export class ViewportSystem extends System {
     );
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (this.easing) {
       this.easing.update(time);
     }
@@ -193,7 +194,7 @@ export class ViewportSystem extends System {
     }
   }
 
-  private handlePlayerAdded = (node: ViewportFollowNode): void => {
+  private handlePlayerAdded = (node: ViewportFollowNode) => {
     if (node.sprite.view) {
       this.initViewportFollowing(node);
     } else {
@@ -205,11 +206,11 @@ export class ViewportSystem extends System {
     }
   };
 
-  private handlePlayerRemoved = (node: ViewportFollowNode): void => {
+  private handlePlayerRemoved = (node: ViewportFollowNode) => {
     this.stopViewportFollowing();
   };
 
-  private initViewportFollowing = (player: ViewportFollowNode): void => {
+  private initViewportFollowing = (player: ViewportFollowNode) => {
     this._viewport.animate({
       position: new Point(player.position.x, player.position.y),
       time: 30,
@@ -223,7 +224,7 @@ export class ViewportSystem extends System {
     });
   };
 
-  private stopViewportFollowing = (): void => {
+  private stopViewportFollowing = () => {
     this._viewport.plugins.remove("follow");
 
     if (this.player) {
@@ -233,9 +234,9 @@ export class ViewportSystem extends System {
     }
   };
 
-  private _viewportMovedHandler(data: MovedEventData): void {}
+  private _viewportMovedHandler(data: MovedEventData) {}
 
-  private _viewportZoomedHandler(data: ZoomedEventData): void {
+  private _viewportZoomedHandler(data: ZoomedEventData) {
     if (this.viewportList && this.viewportList.head) {
       this.viewportList.head.viewport.zoomLevel = GameInstance.instance
         .getConfig()
@@ -245,11 +246,11 @@ export class ViewportSystem extends System {
     }
   }
 
-  private handleZoomOut = (): void => {};
+  private handleZoomOut = () => {};
 
-  private handleZoomIn = (): void => {};
+  private handleZoomIn = () => {};
 
-  private handleSetZoom(zoomLevel: number): void {
+  private handleSetZoom(zoomLevel: number) {
     const viewWidth = this._viewport?.width;
     const viewHeight = this._viewport?.height;
     if (!(viewWidth && viewHeight)) return;
@@ -267,14 +268,14 @@ export class ViewportSystem extends System {
     );
   }
 
-  private easeZoom(viewportZoom: number): void {
+  private easeZoom(viewportZoom: number) {
     const startValue = this._viewport.scale.y;
     const endValue = viewportZoom;
 
     this.easing = new Easing(startValue, endValue, 600, easeInOutQuad);
 
     this.easing.onComplete = () => {
-      this.easing = null;
+      this.easing = undefined;
       if (this.viewportList && this.viewportList.head) {
         this.viewportList.head.viewport.zoomLevel = GameInstance.instance
           .getConfig()
@@ -298,7 +299,7 @@ export class ViewportSystem extends System {
     };
   }
 
-  private _viewportZoomedEndHandler(viewport: Viewport): void {
+  private _viewportZoomedEndHandler(viewport: Viewport) {
     if (this.viewportList && this.viewportList.head) {
       this.viewportList.head.viewport.zoomViewport = viewport.scale.y;
       this.viewportList.head.viewport.zoomLevel = GameInstance.instance
@@ -312,17 +313,19 @@ export class ViewportSystem extends System {
     }
   }
 
-  private _viewportDragStartHandler(e: { world: Point }): void {
+  private _viewportDragStartHandler(e: { world: Point }) {
     this.stopViewportFollowing();
   }
 
-  private _viewportClickedHandler(e: { world: Point }): void {
-    this.viewportList!.head!.viewport.click = e.world;
+  private _viewportClickedHandler(e: { world: Point }) {
+    if (!this.viewportList?.head) return console.error();
+    this.viewportList.head.viewport.click = e.world;
     this._entityCreator.updateViewport();
   }
 
-  private _viewportPointerUpHandler(e: InteractionEvent): void {
-    this.viewportList!.head!.viewport.click = e.data.getLocalPosition(
+  private _viewportPointerUpHandler(e: InteractionEvent) {
+    if (!this.viewportList?.head) return console.error();
+    this.viewportList.head.viewport.click = e.data.getLocalPosition(
       this._viewport,
       e.data.global,
       e.data.global

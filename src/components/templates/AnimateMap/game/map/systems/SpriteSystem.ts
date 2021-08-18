@@ -12,7 +12,7 @@ export class SpriteSystem extends ListIteratingSystem<SpriteNode> {
     this._container = container;
   }
 
-  public updateNode(node: SpriteNode, time: number): void {
+  public updateNode(node: SpriteNode, time: number) {
     const view = node.sprite.view;
     const position = node.position;
 

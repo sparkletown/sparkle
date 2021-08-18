@@ -119,7 +119,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
     };
   });
 
-  let items = [];
+  const items = [];
 
   for (let i = 0; i < TOOLTIP_POOL_SIZE; i++) {
     const status = state.itemsData[i].status;

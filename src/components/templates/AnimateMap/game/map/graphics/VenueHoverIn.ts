@@ -4,7 +4,7 @@ import { Animatable } from "./Animatable";
 import { Venue } from "./Venue";
 
 export class VenueHoverIn implements Animatable {
-  public easing: Easing | null = null;
+  public easing?: Easing;
 
   constructor(venue: Venue, duration: number) {
     if (venue.venue) {
@@ -15,7 +15,7 @@ export class VenueHoverIn implements Animatable {
     }
   }
 
-  animate(time: number): void {
+  animate(time: number) {
     if (this.easing) {
       this.easing.update(time);
     }

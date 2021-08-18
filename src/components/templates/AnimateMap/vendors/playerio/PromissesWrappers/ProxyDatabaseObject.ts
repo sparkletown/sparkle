@@ -15,7 +15,7 @@ export class ProxyDatabaseObject {
     return this.originDatabaseObject.table;
   }
 
-  async save(useOptimisticLock: boolean, fullOverwrite: boolean) {
+  async save(useOptimisticLock?: boolean, fullOverwrite?: boolean) {
     return new Promise<void>((resolve, reject) => {
       this.originDatabaseObject.save(
         useOptimisticLock,

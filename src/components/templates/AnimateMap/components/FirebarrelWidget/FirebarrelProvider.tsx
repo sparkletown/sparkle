@@ -4,8 +4,9 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapFireBarrelAction,
-} from "../../../../../store/actions/AnimateMap";
-import { AnimateMapVenue } from "../../../../../types/venues";
+} from "store/actions/AnimateMap";
+
+import { AnimateMapVenue } from "types/venues";
 
 import { FirebarrelWidget } from "./FirebarrelWidget";
 

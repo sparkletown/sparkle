@@ -9,12 +9,12 @@ import { ZoomedSpriteNode } from "../nodes/ZoomedSpriteNode";
 export class ZoomedSpriteSystem extends System {
   private zoomUpdated = true;
   private currentZoomLevel = -1;
-  private sprites: NodeList<ZoomedSpriteNode> | null = null;
-  private viewport: NodeList<ViewportNode> | null = null;
+  private sprites?: NodeList<ZoomedSpriteNode>;
+  private viewport?: NodeList<ViewportNode>;
 
-  private player: NodeList<PlayerNode> | null = null;
+  private player?: NodeList<PlayerNode>;
 
-  public addToEngine(engine: Engine): void {
+  public addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
 
@@ -25,42 +25,43 @@ export class ZoomedSpriteSystem extends System {
     this.viewport.nodeAdded.add(this.handleViewportAdded);
   }
 
-  public removeFromEngine(): void {
+  public removeFromEngine() {
     if (this.player) {
       this.player.nodeAdded.remove(this.handlePlayerAdded);
-      this.player = null;
+      this.player = undefined;
     }
 
     this.sprites?.nodeAdded.remove(this.handleSpriteAdded);
-    this.sprites = null;
+    this.sprites = undefined;
 
     this.viewport?.nodeAdded.remove(this.handleViewportAdded);
-    this.viewport = null;
+    this.viewport = undefined;
   }
 
-  public update(time: number): void {
+  public update(time: number) {
     if (
       this.zoomUpdated &&
-      this.currentZoomLevel !== this.viewport!.head!.viewport.zoomLevel
+      this.viewport?.head &&
+      this.currentZoomLevel !== this.viewport.head.viewport.zoomLevel
     ) {
       this.zoomUpdated = false;
-      this.currentZoomLevel = this.viewport!.head!.viewport.zoomLevel;
+      this.currentZoomLevel = this.viewport.head.viewport.zoomLevel;
 
       this.updatePlayer();
 
-      for (let node = this.sprites!.head; node; node = node.next) {
+      for (let node = this.sprites?.head; node; node = node.next) {
         this.updateNode(node, this.currentZoomLevel);
       }
     }
   }
 
-  private handlePlayerAdded = (node: PlayerNode): void => {
+  private handlePlayerAdded = (node: PlayerNode) => {
     this.updatePlayer(node);
   };
 
   private updatePlayer(
     node: PlayerNode | null | undefined = this.player?.head
-  ): void {
+  ) {
     if (!node) {
       node = this.player?.head;
     }
@@ -78,7 +79,7 @@ export class ZoomedSpriteSystem extends System {
     }
   }
 
-  private updateNode(node: ZoomedSpriteNode, zoom: number): void {
+  private updateNode(node: ZoomedSpriteNode, zoom: number) {
     const view = node.sprite.view;
     const imageUrls = node.zoomedSprite.imageUrls;
 
@@ -95,11 +96,11 @@ export class ZoomedSpriteSystem extends System {
     }
   }
 
-  public handleSpriteAdded = (node: ZoomedSpriteNode): void => {
+  public handleSpriteAdded = (node: ZoomedSpriteNode) => {
     this.updateNode(node, this.currentZoomLevel);
   };
 
-  private handleViewportAdded = (node: ViewportNode): void => {
+  private handleViewportAdded = (node: ViewportNode) => {
     if (node.viewport.zoomLevel !== this.currentZoomLevel) {
       this.zoomUpdated = true;
     }

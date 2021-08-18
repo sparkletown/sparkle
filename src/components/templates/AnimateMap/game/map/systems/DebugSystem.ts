@@ -16,12 +16,12 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class DebugSystem extends System {
-  private container: Container | null = null;
+  private container: Container;
 
-  private venues: NodeList<VenueNode> | null = null;
-  private bots: NodeList<BotNode> | null = null;
-  private viewportNodes: NodeList<ViewportNode> | null = null;
-  private player: NodeList<PlayerNode> | null = null;
+  private venues?: NodeList<VenueNode>;
+  private bots?: NodeList<BotNode>;
+  private viewportNodes?: NodeList<ViewportNode>;
+  private player?: NodeList<PlayerNode>;
 
   private zoomUpdated = true;
   private currentZoom = 0;
@@ -35,7 +35,7 @@ export class DebugSystem extends System {
     this.container = container;
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.viewportNodes = engine.getNodeList(ViewportNode);
     this.viewportNodes.nodeAdded.add(this.handleViewprotAdded);
     if (this.viewportNodes.head) {
@@ -60,18 +60,18 @@ export class DebugSystem extends System {
     );
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     this.container?.removeChildren();
 
-    this.venues!.nodeAdded.remove(this.venueAdded);
-    this.venues!.nodeRemoved.remove(this.venueRemoved);
-    this.venues = null;
+    this.venues?.nodeAdded.remove(this.venueAdded);
+    this.venues?.nodeRemoved.remove(this.venueRemoved);
+    this.venues = undefined;
 
-    this.viewportNodes!.nodeAdded.remove(this.handleViewprotAdded);
-    this.viewportNodes = null;
+    this.viewportNodes?.nodeAdded.remove(this.handleViewprotAdded);
+    this.viewportNodes = undefined;
 
-    this.bots = null;
-    this.player = null;
+    this.bots = undefined;
+    this.player = undefined;
 
     GameInstance.instance.eventProvider.off(
       EventType.ON_ROOMS_CHANGED,
@@ -79,7 +79,7 @@ export class DebugSystem extends System {
     );
   }
 
-  update(time: number): void {
+  update(time: number) {
     this.updateLineOfSight();
 
     const showDebug = false;
@@ -91,7 +91,7 @@ export class DebugSystem extends System {
     }
   }
 
-  private handleRooms = (points: RoomPointNode[]): void => {
+  private handleRooms = (points: RoomPointNode[]) => {
     const name = "roomPoint";
     if (this.container) {
       this.container.children.forEach((display) => {
@@ -115,7 +115,7 @@ export class DebugSystem extends System {
           if (point.x > max.x && point.y > max.y) max = point;
         });
 
-        let g: Graphics = new Graphics();
+        const g: Graphics = new Graphics();
         g.name = `${name}${++count}`;
         g.lineStyle(4, 0x6108e6);
         g.drawRect(0, 0, max.x - min.x, max.y - min.y);
@@ -125,7 +125,7 @@ export class DebugSystem extends System {
     }
   };
 
-  private updateLineOfSight(): void {
+  private updateLineOfSight() {
     const name = "visionOfSightRadius";
     const config: GameConfig = GameInstance.instance.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
@@ -170,7 +170,7 @@ export class DebugSystem extends System {
           0.99
       );
     } else {
-      let s: Sprite | undefined = this.container?.getChildByName(
+      const s: Sprite | undefined = this.container?.getChildByName(
         name
       ) as Sprite;
       if (s) {
@@ -179,7 +179,7 @@ export class DebugSystem extends System {
     }
   }
 
-  private updateBubbling(): void {
+  private updateBubbling() {
     if (Math.random() > 0.05) {
       return;
     }
@@ -196,13 +196,13 @@ export class DebugSystem extends System {
     }
   }
 
-  private handleViewprotAdded = (node: ViewportNode): void => {
+  private handleViewprotAdded = (node: ViewportNode) => {
     if (node.viewport.zoomLevel !== this.currentZoom) {
       this.zoomUpdated = true;
     }
   };
 
-  private drawVenuesInnerCircle(): void {
+  private drawVenuesInnerCircle() {
     const config = GameInstance.instance.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.073;
@@ -215,7 +215,7 @@ export class DebugSystem extends System {
     this.container?.addChild(g);
   }
 
-  private drawVenuesOuterCircle(): void {
+  private drawVenuesOuterCircle() {
     const config = GameInstance.instance.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.1713;
@@ -228,7 +228,7 @@ export class DebugSystem extends System {
     this.container?.addChild(g);
   }
 
-  private drawPlayaBorderCircle(): void {
+  private drawPlayaBorderCircle() {
     const config = GameInstance.instance.getConfig();
     const center: Point = config.worldCenter;
     const radius = config.worldWidth * 0.4;
@@ -241,7 +241,7 @@ export class DebugSystem extends System {
     this.container?.addChild(g);
   }
 
-  private venueAdded = (node: VenueNode): void => {
+  private venueAdded = (node: VenueNode) => {
     const g: Graphics = new Graphics();
     g.position.set(node.position.x, node.position.y);
     g.name = node.venue.model.id;
@@ -252,7 +252,7 @@ export class DebugSystem extends System {
     // this.container?.addChild(g);
   };
 
-  private venueRemoved = (node: VenueNode): void => {
+  private venueRemoved = (node: VenueNode) => {
     const displayObject:
       | DisplayObject
       | null

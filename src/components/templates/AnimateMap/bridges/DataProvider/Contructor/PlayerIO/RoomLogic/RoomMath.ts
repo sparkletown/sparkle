@@ -36,7 +36,7 @@ export class RoomMath {
     const width = W / Math.pow(D, depth);
     const height = H / Math.pow(D, depth);
 
-    let id_baseD = relativeId.toString(D);
+    const id_baseD = relativeId.toString(D);
     let parentalForColumn_baseD = "1";
     for (let j = 2, i = id_baseD.length - 2; i >= 0; i--, j++) {
       parentalForColumn_baseD =
@@ -80,17 +80,16 @@ export class RoomMath {
     };
   }
 
-  //@ts-ignore //TODO: refactor recursion to cycle
+  //TODO: refactor recursion to cycle
   protected static findIndexBasedOnThree(
     parental: string,
     min: number,
     max: number,
     i = 0
-  ) {
+  ): number {
     if (parental === "0") return 0;
 
-    if (min === max) return min - 1; //find!
-    if (parental.length < i) throw new Error("WTF2");
+    if (min === max) return min - 1;
 
     const p = parental[i];
 
@@ -102,7 +101,7 @@ export class RoomMath {
       } else if (p === "2") {
         min = min + (max - min + 1) / 2;
         return RoomMath.findIndexBasedOnThree(parental, min, max, i + 2);
-      } else throw new Error("WTF");
+      }
     }
 
     //usual case

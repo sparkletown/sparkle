@@ -5,14 +5,14 @@ import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent
 import { HoverableSpriteNode } from "../nodes/HoverableSpriteNode";
 
 export class HoverableSpriteSystem extends System {
-  private hoverables: NodeList<HoverableSpriteNode> | null = null;
-  private hovered: Entity | null = null;
+  private hoverables?: NodeList<HoverableSpriteNode>;
+  private hovered?: Entity;
 
   constructor(private container: Container) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.container.interactive = true;
 
     this.hoverables = engine.getNodeList(HoverableSpriteNode);
@@ -23,37 +23,33 @@ export class HoverableSpriteSystem extends System {
     this.container.on("mouseout", this.handleMouseOut, this);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     this.container.off("mouseover", this.handleMouseOver, this);
     this.container.off("mouseout", this.handleMouseOut, this);
 
     if (this.hoverables) {
       this.hoverables.nodeAdded.remove(this.handleHoverableAdded);
       this.hoverables.nodeRemoved.remove(this.handleHoverableRemoved);
-      this.hoverables = null;
+      this.hoverables = undefined;
     }
   }
 
-  update(time: number): void {}
+  update(time: number) {}
 
-  private handleHoverableAdded = (node: HoverableSpriteNode): void => {
+  private handleHoverableAdded = (node: HoverableSpriteNode) => {
     node.sprite.view.interactive = true;
   };
 
-  private handleHoverableRemoved = (node: HoverableSpriteNode): void => {
+  private handleHoverableRemoved = (node: HoverableSpriteNode) => {
     if (this.hovered === node.entity) {
-      this.hovered = null;
+      this.hovered = undefined;
     }
   };
 
-  private handleMouseOver = (event: InteractionEvent): void => {
-    this.handleMouseOut();
+  private handleMouseOver = (event: InteractionEvent) => {
+    this.handleMouseOut(event);
 
-    for (
-      let node: HoverableSpriteNode | null | undefined = this.hoverables?.head;
-      node;
-      node = node.next
-    ) {
+    for (let node = this.hoverables?.head; node; node = node.next) {
       if (event.target === node.sprite.view) {
         this.hovered = node.entity;
         if (node.hover.on) {
@@ -64,15 +60,13 @@ export class HoverableSpriteSystem extends System {
     }
   };
 
-  private handleMouseOut = (event: InteractionEvent | null = null) => {
+  private handleMouseOut = (event: InteractionEvent) => {
     if (this.hovered) {
-      const comp: HoverableSpriteComponent | null = this.hovered.get(
-        HoverableSpriteComponent
-      );
+      const comp = this.hovered.get(HoverableSpriteComponent);
       if (comp && comp.off) {
         comp.off();
       }
-      this.hovered = null;
+      this.hovered = undefined;
     }
   };
 }

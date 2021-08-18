@@ -1,6 +1,7 @@
+import { DocumentData, QuerySnapshot } from "@firebase/firestore-types";
+
 import { FirebaseDataProvider } from "./Firebase/FirebaseDataProvider";
 import { PlayerIODataProvider } from "./PlayerIO/PlayerIODataProvider";
-
 export interface User {
   id: string;
   name: string;
@@ -27,8 +28,7 @@ export interface CommonInterface {
 
   sendPlayerPosition(x: number, y: number): void;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  loadVenuesAsync(): any;
+  loadVenuesAsync(): Promise<QuerySnapshot<DocumentData>>;
 }
 
 /**
@@ -57,7 +57,7 @@ export class CommonLinker implements CommonInterface {
   // );
   // }
 
-  sendPlayerPosition(x: number, y: number): void {
+  sendPlayerPosition(x: number, y: number) {
     this._playerIOProvider.sendPlayerPosition(x, y);
   }
 

@@ -7,25 +7,25 @@ import { MotionTeleportNode } from "../nodes/MotionTeleportNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionTeleportSystem extends MotionBaseSystem {
-  private nodes: NodeList<MotionTeleportNode> | null = null;
+  private nodes?: NodeList<MotionTeleportNode>;
 
   constructor(public creator: EntityFactory) {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.nodes = engine.getNodeList(MotionTeleportNode);
     this.nodes.nodeAdded.add(this.nodeAdded);
   }
 
-  removeFromEngine(engine: Engine): void {
+  removeFromEngine(engine: Engine) {
     if (this.nodes) {
       this.nodes.nodeAdded.remove(this.nodeAdded);
-      this.nodes = null;
+      this.nodes = undefined;
     }
   }
 
-  update(time: number): void {
+  update(time: number) {
     for (
       let node: MotionTeleportNode | null | undefined = this.nodes?.head;
       node;
@@ -42,7 +42,7 @@ export class MotionTeleportSystem extends MotionBaseSystem {
     }
   }
 
-  private nodeAdded = (node: MotionTeleportNode): void => {
+  private nodeAdded = (node: MotionTeleportNode) => {
     const duration = 500;
     const toX: Easing = new Easing(node.position.x, node.tween.x, duration);
     const toY: Easing = new Easing(node.position.y, node.tween.y, duration);

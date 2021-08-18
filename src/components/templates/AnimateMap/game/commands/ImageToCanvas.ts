@@ -18,7 +18,9 @@ export class ImageToCanvas implements Command {
   execute(): Promise<this> {
     this.canvas.width = this.image.width * this.scale;
     this.canvas.height = this.image.height * this.scale;
-    const ctx: CanvasRenderingContext2D = this.canvas.getContext("2d")!;
+    const ctx: CanvasRenderingContext2D = this.canvas.getContext(
+      "2d"
+    ) as CanvasRenderingContext2D;
     ctx.drawImage(
       this.image,
       0,

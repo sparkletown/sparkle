@@ -11,8 +11,8 @@ import { ViewportNode } from "../nodes/ViewportNode";
 import { MotionBaseSystem } from "./MotionBaseSystem";
 
 export class MotionKeyboardSystem extends MotionBaseSystem {
-  private keyboard: NodeList<KeyboardNode> | null = null;
-  private keyboardControl: NodeList<MotionKeyboardControlNode> | null = null;
+  private keyboard?: NodeList<KeyboardNode>;
+  private keyboardControl?: NodeList<MotionKeyboardControlNode>;
 
   constructor(
     private keyPoll: KeyPollSingleton,
@@ -21,7 +21,7 @@ export class MotionKeyboardSystem extends MotionBaseSystem {
     super();
   }
 
-  addToEngine(engine: Engine): void {
+  addToEngine(engine: Engine) {
     this.keyboard = engine.getNodeList(KeyboardNode);
     this.keyboardControl = engine.getNodeList(MotionKeyboardControlNode);
     this.viewport = engine.getNodeList(ViewportNode);
@@ -32,13 +32,13 @@ export class MotionKeyboardSystem extends MotionBaseSystem {
     );
   }
 
-  removeFromEngine(engine: Engine): void {
-    this.keyboard = null;
-    this.keyboardControl = null;
-    this.viewport = null;
+  removeFromEngine(engine: Engine) {
+    this.keyboard = undefined;
+    this.keyboardControl = undefined;
+    this.viewport = undefined;
   }
 
-  update(time: number): void {
+  update(time: number) {
     if (document.activeElement instanceof HTMLInputElement) {
       return;
     }

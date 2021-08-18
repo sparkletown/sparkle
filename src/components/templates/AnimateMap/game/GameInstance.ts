@@ -24,7 +24,6 @@ import EventProvider, {
 } from "../bridges/EventProvider/EventProvider";
 import { GameConfig } from "../configs/GameConfig";
 
-import Command from "./commands/Command";
 import { TimeoutCommand } from "./commands/TimeoutCommand";
 import WaitClickForHeroCreation from "./commands/WaitClickForHeroCreation";
 import { assets } from "./constants/AssetConstants";
@@ -37,12 +36,11 @@ export class GameInstance {
 
   public static instance: GameInstance;
 
-  private _app: Application | null = null;
-  private _renderer: Renderer | null = null;
+  private _app?: Application;
+  private _renderer?: Renderer;
 
-  private _stage: Container | null = null;
-  public _mapContainer: MapContainer | null = null;
-  // private _eventProvider = this.getState().eventProvider;
+  private _stage?: Container;
+  public _mapContainer?: MapContainer;
   private _eventProvider = EventProvider;
   get eventProvider() {
     return this._eventProvider;
@@ -82,6 +80,7 @@ export class GameInstance {
   }
 
   private async initMap(): Promise<void> {
+    if (!this._app) return console.error();
     this._store.dispatch(setAnimateMapUsers(stubUsersData()));
 
     this._mapContainer = new MapContainer(this._app);
@@ -127,8 +126,8 @@ export class GameInstance {
         .then(() => {
           return new WaitClickForHeroCreation().execute();
         })
-        .then(async (command: Command) => {
-          await this._play((command as WaitClickForHeroCreation).clickPoint!);
+        .then(async (command: WaitClickForHeroCreation) => {
+          await this._play(command.clickPoint);
           window.sessionStorage.setItem(
             "AnimateMapState.sessionStorage",
             "false"
@@ -142,7 +141,7 @@ export class GameInstance {
     await this._mapContainer?.start();
   }
 
-  private resize(): void {
+  private resize() {
     if (this._renderer) {
       if (this._mapContainer) {
         this._mapContainer.resize(
@@ -153,7 +152,7 @@ export class GameInstance {
     }
   }
 
-  private update(dt: number): void {
+  private update(dt: number) {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
     if (position) this._dataProvider.setPlayerPosition(position.x, position.y);
@@ -201,11 +200,11 @@ export class GameInstance {
     return this._config;
   }
 
-  public getMapContainer(): MapContainer | null {
+  public getMapContainer() {
     return this._mapContainer;
   }
 
-  public getRenderer(): Renderer | null {
+  public getRenderer() {
     return this._renderer;
   }
 

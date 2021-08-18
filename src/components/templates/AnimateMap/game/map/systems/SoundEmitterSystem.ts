@@ -8,7 +8,7 @@ export class SoundEmitterSystem extends ListIteratingSystem<SoundEmitterNode> {
     super(SoundEmitterNode);
   }
 
-  public updateNode(node: SoundEmitterNode, time: number): void {
+  public updateNode(node: SoundEmitterNode, time: number) {
     const position = node.position;
     const soundEmitter = node.soundEmitter;
 
@@ -56,7 +56,7 @@ export class SoundEmitterSystem extends ListIteratingSystem<SoundEmitterNode> {
       sound.stop();
       sound.unload();
 
-      soundEmitter.sound = null;
+      soundEmitter.sound = undefined;
     }
   };
 }

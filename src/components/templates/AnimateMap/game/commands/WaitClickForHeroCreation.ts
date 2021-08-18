@@ -5,9 +5,9 @@ import { GameInstance } from "../GameInstance";
 import Command from "./Command";
 
 export default class WaitClickForHeroCreation implements Command {
-  public clickPoint: Point | null = null;
+  public clickPoint?: Point;
 
-  public execute(): Promise<Command> {
+  public execute(): Promise<WaitClickForHeroCreation> {
     this.clickPoint = GameInstance.instance
       .getConfig()
       .playgroundMap.getRandomPointInTheCentralCircle();

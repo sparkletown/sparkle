@@ -2,8 +2,8 @@ import { utils } from "pixi.js";
 
 import { Point } from "types/utility";
 
-import { getRandomInt } from "../../../../../../../utils/getRandomInt";
-// import { StartPoint } from "../../../../game/utils/Point";
+import { getRandomInt } from "utils/getRandomInt";
+
 import {
   ConnectionSuccessCallback,
   PlayerIOInstance,
@@ -101,7 +101,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     }
 
     if (needSave)
-      await data[1] //@ts-ignore
+      await data[1]
         .save()
         .then(() => console.log("Save position"))
         .catch(console.error);
