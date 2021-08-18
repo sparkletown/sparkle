@@ -17,7 +17,7 @@ import {
 
 import { PLATFORM_BRAND_NAME } from "settings";
 
-import { PersonalizedVenueEvent, VenueEvent } from "types/venues";
+import { ScheduledVenueEvent, VenueEvent } from "types/venues";
 
 import { createCalendar, downloadCalendar } from "utils/calendar";
 import {
@@ -52,7 +52,7 @@ import "./NavBarSchedule.scss";
 const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
 export interface ScheduleNGDay {
-  daysEvents: PersonalizedVenueEvent[];
+  daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
 
@@ -73,7 +73,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const userEventIds =
     userWithId?.myPersonalizedSchedule ?? emptyPersonalizedSchedule;
 
-  const { isLoading, relatedVenueIds, sovereignVenue } = useRelatedVenues({
+  const {
+    isLoading,
+    relatedVenues,
+    relatedVenueIds,
+    sovereignVenue,
+  } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -107,10 +112,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     () =>
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
         prepareForSchedule({
+          relatedVenues,
           usersEvents: userEventIds,
         })
       ),
-    [relatedVenueEvents, userEventIds]
+    [relatedVenueEvents, relatedVenues, userEventIds]
   );
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
@@ -247,9 +253,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   ]);
 
   const downloadPersonalEventsCalendar = useCallback(() => {
-    const allPersonalEvents: PersonalizedVenueEvent[] = liveAndFutureEvents
+    const allPersonalEvents: ScheduledVenueEvent[] = liveAndFutureEvents
       .map(
         prepareForSchedule({
+          relatedVenues,
           usersEvents: userEventIds,
         })
       )
@@ -259,7 +266,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       calendar: createCalendar({ events: allPersonalEvents }),
       calendarName: `${PLATFORM_BRAND_NAME}_Personal`,
     });
-  }, [userEventIds, liveAndFutureEvents]);
+  }, [liveAndFutureEvents, relatedVenues, userEventIds]);
 
   const downloadAllEventsCalendar = useCallback(() => {
     downloadCalendar({

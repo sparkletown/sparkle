@@ -18,6 +18,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: "/venues/venue-performance.jpg",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/venue-camp.jpg",
+  [VenueTemplate.animatemap]: "/venues/venue-camp.jpg",
   [VenueTemplate.audience]: "/venues/venue-performance.jpg",
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
@@ -44,6 +45,7 @@ const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.jazzbar]: "/venues/pickspace-thumbnail_bar.png",
   [VenueTemplate.friendship]: undefined,
   [VenueTemplate.partymap]: "/venues/pickspace-thumbnail_map.png",
+  [VenueTemplate.animatemap]: "/venues/pickspace-thumbnail_map.png",
   [VenueTemplate.audience]: "/venues/pickspace-thumbnail_auditorium.png",
   [VenueTemplate.conversationspace]:
     "/venues/pickspace-thumbnail_conversation.png",
