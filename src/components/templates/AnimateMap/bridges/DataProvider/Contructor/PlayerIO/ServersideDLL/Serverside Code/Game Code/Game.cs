@@ -63,6 +63,7 @@ namespace BurningMan {
 		private Timer configTimer;
 		private bool isClosedAndDivided = false;
 
+		// room state
 		private Dictionary<ulong, Position<uint,uint>> usersPositions = new Dictionary<ulong, Position<uint, uint>>();
 		private HashSet<int> speakers = new HashSet<int>();
 		private uint listenersCount;
@@ -84,7 +85,7 @@ namespace BurningMan {
         }
 
         public override void GameClosed() {
-			Console.WriteLine("FridgeMagnets stopped.");
+			//todo: save speakers position
 		}
 		public override bool AllowUserJoin(Player player)
 		{
@@ -108,7 +109,7 @@ namespace BurningMan {
 		public override void UserJoined(Player player) {
 			listenersCount++;
 
-			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send players positions
+			Message messageForPlayer = Message.Create(MessagesTypesEnum.roomInitResponse); //TODO: send speakers positions
 			ScheduleCallback(delegate () { player.Send(messageForPlayer); }, 50);
 
 			if (player.JoinData["isMain"] == "true")
@@ -121,12 +122,10 @@ namespace BurningMan {
 				usersPositions.Add(playerInnerId, new Position<uint, uint>(x,y));
 				//Broadcast(MessagesTypesEnum.newUserJoined, player.ConnectUserId, x, y);
 				Broadcast(MessagesTypesEnum.newUserJoined, player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId).ToString(), x, y);
-				//DivideSpeakers();
 			}
 
 		}
 
-		//This method is called when a player leaves the game
 		public override void UserLeft(Player player)
 		{
 			listenersCount--;
