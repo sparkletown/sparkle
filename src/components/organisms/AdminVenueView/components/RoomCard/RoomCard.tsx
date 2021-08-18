@@ -101,14 +101,14 @@ export const RoomCard: React.FC<RoomCardProps> = ({
             iconName={room.isEnabled ? faEye : faEyeSlash}
             disabled={isTogglingRoom}
             onClick={toggleRoom}
-            title="click to show room"
+            title={`click to ${room.isEnabled ? "hide" : "show"} room`}
           />
           <ButtonNG
             iconOnly={true}
             iconName={isRoomUnclickable ? faBan : faHandPointer}
             disabled={isTogglingClickability}
             onClick={toggleRoomClickablility}
-            title="make room clickable"
+            title={`make room ${isRoomUnclickable ? "" : "un"}clickable`}
           />
         </div>
       </div>
