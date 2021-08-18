@@ -3,11 +3,7 @@ import { Link } from "react-router-dom";
 import firebase from "firebase/app";
 import { isEqual } from "lodash";
 
-import {
-  DEFAULT_MAP_BACKGROUND,
-  DEFAULT_VENUE_BANNER,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
 
 import { updateRoom } from "api/admin";
 
@@ -16,6 +12,7 @@ import { Room, RoomData_v2 } from "types/rooms";
 import { venueLandingUrl } from "utils/url";
 
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
+import { useMapBackground } from "hooks/useMapBackground";
 import { useUser } from "hooks/useUser";
 
 import AdminEventModal from "pages/Admin/AdminEventModal";
@@ -48,13 +45,7 @@ type EditRoomType = RoomData_v2 & {
 const noop = () => {};
 
 const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
-  const {
-    name,
-    owners,
-    id: venueId,
-    rooms,
-    mapBackgroundImageUrl = DEFAULT_MAP_BACKGROUND,
-  } = venue;
+  const { name, owners, id: venueId, rooms, mapBackgroundImageUrl } = venue;
   const {
     subtitle,
     description,
@@ -62,6 +53,8 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
   } = venue.config.landingPageConfig;
   const { icon } = venue.host;
   const { user } = useUser();
+
+  const [mapBackground] = useMapBackground(mapBackgroundImageUrl);
 
   const [ownersData, setOwnersData] = useState<Owner[]>([]);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -213,22 +206,20 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venue }) => {
           setIsEditing={setIsEditing}
           venueId={venueId}
           venueName={name}
-          mapBackground={mapBackgroundImageUrl}
+          mapBackground={mapBackground}
           rooms={rooms ?? []}
         />
 
-        {!!mapBackgroundImageUrl && (
-          <>
-            <S.RoomActions>
-              <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
-              <Button onClick={toggleRoomModal} gradient>
-                Add a room
-              </Button>
-            </S.RoomActions>
-          </>
-        )}
+        <>
+          <S.RoomActions>
+            <S.RoomCounter>{rooms ? rooms.length : "0"} Rooms</S.RoomCounter>
+            <Button onClick={toggleRoomModal} gradient>
+              Add a room
+            </Button>
+          </S.RoomActions>
+        </>
 
-        {!!rooms && !!mapBackgroundImageUrl && (
+        {!!rooms && (
           <S.RoomWrapper>
             {rooms.map((room: Room, index: number) => (
               <RoomCard

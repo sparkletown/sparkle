@@ -1,12 +1,12 @@
 import React from "react";
 import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
-
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
+
+import { useMapBackground } from "hooks/useMapBackground";
 
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 
@@ -32,6 +32,8 @@ const partyMapBoundaries = {
 const emptyIconsMap = {};
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
+  const [mapBackground] = useMapBackground(venue?.mapBackgroundImageUrl);
+
   if (!venue) {
     return <LoadingPage />;
   }
@@ -64,9 +66,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
             coordinatesBoundary={partyMapBoundaries}
             snapToGrid={false}
             iconsMap={emptyIconsMap}
-            backgroundImage={
-              venue?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND
-            }
+            backgroundImage={mapBackground}
             iconImageStyle={emptyIconsMap}
             draggableIconImageStyle={emptyIconsMap}
             otherIconsStyle={{ opacity: 0.4 }}
