@@ -287,20 +287,23 @@ export const NavBar: React.FC = () => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div className="NavBar__menu--icon NavBar__menu--radio">
+                    <button className="NavBar__menu--icon">
                       <FontAwesomeIcon
                         // TODO: fix with a new icon
                         icon={faBroadcastTower}
                         size="sm"
                       />
-                    </div>
+                    </button>
                   </OverlayTrigger>
                 )}
 
                 {showRadio && (
-                  <div className={volumeControlClassname} onClick={toggleMute}>
+                  <button
+                    className={volumeControlClassname}
+                    onClick={toggleMute}
+                  >
                     <FontAwesomeIcon icon={volumeIcon} size="sm" />
-                  </div>
+                  </button>
                 )}
                 <OverlayTrigger
                   trigger="click"
@@ -320,9 +323,9 @@ export const NavBar: React.FC = () => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <div className="NavBar__menu--icon">
+                  <button className="NavBar__menu--icon">
                     <FontAwesomeIcon icon={faBars} size="sm" />
-                  </div>
+                  </button>
                 </OverlayTrigger>
               </div>
             )}

@@ -240,7 +240,9 @@ $logo-size: 43px;
 
     &--icon {
       background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
+      color: opaque-white(0.8);
+      border: none;
+      border-radius: $border-radius--max;
       width: $menu-item-size;
       height: $menu-item-size;
 
@@ -248,9 +250,12 @@ $logo-size: 43px;
       align-items: center;
       justify-content: center;
 
-      cursor: pointer;
-
       margin-right: $spacing--sm;
+
+      &:focus {
+        box-shadow: 0 0 0 2px #fff;
+        outline: none;
+      }
     }
   }
 }
