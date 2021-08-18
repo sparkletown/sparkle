@@ -9,8 +9,9 @@ import {
   faVolumeUp,
   faVolumeMute,
   faCaretLeft,
-  faBroadcastTower,
 } from "@fortawesome/free-solid-svg-icons";
+
+import RadioIcon from "assets/icons/nav-link-radio.svg";
 
 import firebase from "firebase/app";
 
@@ -143,7 +144,7 @@ export const NavBar: React.FC = () => {
   const isMute = !Boolean(volume);
 
   const volumeControlClassname = classNames(
-    "NavBar__menu--icon NavBar__menu--volume",
+    "NavBar__menu--link NavBar__menu--volume",
     {
       mute: isMute,
     }
@@ -287,11 +288,11 @@ export const NavBar: React.FC = () => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button className="NavBar__menu--icon">
-                      <FontAwesomeIcon
-                        // TODO: fix with a new icon
-                        icon={faBroadcastTower}
-                        size="sm"
+                    <button className="NavBar__menu--link">
+                      <img
+                        className="NavBar__link--icon"
+                        src={RadioIcon}
+                        alt="radio icon"
                       />
                     </button>
                   </OverlayTrigger>
@@ -302,7 +303,7 @@ export const NavBar: React.FC = () => {
                     className={volumeControlClassname}
                     onClick={toggleMute}
                   >
-                    <FontAwesomeIcon icon={volumeIcon} size="sm" />
+                    <FontAwesomeIcon icon={volumeIcon} />
                   </button>
                 )}
                 <OverlayTrigger
@@ -323,8 +324,8 @@ export const NavBar: React.FC = () => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <button className="NavBar__menu--icon">
-                    <FontAwesomeIcon icon={faBars} size="sm" />
+                  <button className="NavBar__menu--link">
+                    <FontAwesomeIcon icon={faBars} />
                   </button>
                 </OverlayTrigger>
               </div>

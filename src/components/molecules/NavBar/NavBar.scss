@@ -238,9 +238,9 @@ $logo-size: 43px;
       box-shadow: 0 0 0 2px rgba($white, 1);
     }
 
-    &--icon {
+    &--link {
       background: rgba(255, 255, 255, 0.1);
-      color: opaque-white(0.8);
+      color: rgba($white, 1);
       border: none;
       border-radius: $border-radius--max;
       width: $menu-item-size;
@@ -251,10 +251,12 @@ $logo-size: 43px;
       justify-content: center;
 
       margin-right: $spacing--sm;
+      opacity: 0.8;
 
       &:focus {
         box-shadow: 0 0 0 2px #fff;
         outline: none;
+        opacity: 1;
       }
     }
   }
