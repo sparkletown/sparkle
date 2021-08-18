@@ -1,13 +1,13 @@
 import React from "react";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { ScheduleEvent } from "components/molecules/ScheduleEvent";
 
 import "./ScheduleRoomEvents.scss";
 
 export interface ScheduleRoomEventsProps {
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
   scheduleStartHour: number;
   personalizedRoom?: boolean;
 }

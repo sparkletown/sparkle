@@ -1,0 +1,31 @@
+@import "scss/constants.scss";
+
+.navbar-margin {
+  height: 100%;
+}
+
+.AnimateMap {
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+
+  &__app-wrapper {
+    height: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+
+    canvas {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  &__ui-wrapper {
+    position: absolute;
+    pointer-events: none;
+    height: 100%;
+    width: 100%;
+    max-width: 100vw;
+    max-height: 100vh;
+  }
+}

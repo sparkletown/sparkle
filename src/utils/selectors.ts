@@ -195,3 +195,11 @@ export const ownedVenuesDataSelector: SparkleSelector<
 export const ownedVenuesSelector: SparkleSelector<
   WithId<AnyVenue>[] | undefined
 > = (state) => state.firestore.ordered.ownedVenues;
+
+export const animateMapEnvironmentSoundSelector: SparkleSelector<boolean> = (
+  state
+) => state.animatemap.environmentSound;
+
+export const animateMapFirstEntranceSelector: SparkleSelector<string | null> = (
+  state
+) => state.animatemap.firstEntrance;

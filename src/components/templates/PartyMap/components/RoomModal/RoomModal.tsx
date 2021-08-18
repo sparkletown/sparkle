@@ -56,7 +56,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
   }
 
   return (
-    <Modal show={show} onHide={onHide}>
+    <Modal show={show} onHide={onHide} centered>
       <div className="room-modal">
         <RoomModalContent room={room} venueEvents={venueEvents} venue={venue} />
       </div>
