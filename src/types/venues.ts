@@ -357,11 +357,12 @@ export interface VenueLocation {
 
 export interface LocationEvents {
   location: VenueLocation;
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
+  venueIcon: string;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>
