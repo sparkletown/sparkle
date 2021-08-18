@@ -41,7 +41,7 @@ export const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [rooms]);
 
-  const [hasMapBackground] = useCheckImage(mapBackground ?? "");
+  const { isValid: hasMapBackground } = useCheckImage(mapBackground ?? "");
 
   return (
     <DndProvider backend={HTML5Backend}>

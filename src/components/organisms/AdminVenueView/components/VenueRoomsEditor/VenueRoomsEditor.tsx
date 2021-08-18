@@ -307,18 +307,13 @@ export const VenueRoomsEditor: React.FC<VenueRoomsEditorProps> = ({
       {!backgroundImage ? (
         <div className="Container__background-image-placeholder">
           <Centered>
-            <div className="Container__background-image-placeholder_text">
-              Pick a background for your map{"\n"}(2000x1200px recommended size)
-            </div>
+            Pick a background for your map{"\n"}(2000x1200px recommended size)
           </Centered>
         </div>
       ) : (
         <img
           alt="draggable background "
-          className={classNames(
-            "Container__background-image",
-            backgroundImageClassName
-          )}
+          className={`Container__background-image ${backgroundImageClassName}`}
           src={backgroundImage}
         />
       )}

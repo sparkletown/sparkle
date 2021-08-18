@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 
 export const useCheckImage = (
   src: string
-): [boolean, boolean, string | undefined] => {
+): {
+  isValid: boolean;
+  isLoading: boolean;
+  error: string | undefined;
+} => {
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -23,5 +27,9 @@ export const useCheckImage = (
       });
   }, [src]);
 
-  return [!error, isLoading, error];
+  return {
+    isValid: !error,
+    isLoading,
+    error,
+  };
 };
