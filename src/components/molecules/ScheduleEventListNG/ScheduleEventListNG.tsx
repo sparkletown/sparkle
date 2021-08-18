@@ -3,7 +3,7 @@ import isToday from "date-fns/isToday";
 
 import { EVENT_STATUS_REFRESH_MS } from "settings";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { isEventLater, isEventLive, isEventSoon } from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
@@ -15,7 +15,7 @@ import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
 import "./ScheduleEventListNG.scss";
 
 export interface ScheduleEventListNGProps {
-  daysEvents: PersonalizedVenueEvent[];
+  daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
 }
 

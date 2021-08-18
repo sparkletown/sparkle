@@ -4,6 +4,8 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { WithVenueId } from "utils/id";
 
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
@@ -27,6 +29,7 @@ export enum VenueTemplate {
   friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
+  animatemap = "animatemap",
   performancevenue = "performancevenue",
   posterhall = "posterhall",
   posterpage = "posterpage",
@@ -55,6 +58,7 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
+  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
@@ -65,6 +69,7 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
+  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -192,6 +197,12 @@ export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
 }
 
+export interface AnimateMapVenue extends BaseVenue {
+  id: string;
+  gameOptions: GameOptions;
+  template: VenueTemplate.animatemap;
+}
+
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
 // @debt we probably don't want to include id directly here.. that's what WithId is for
 export interface PartyMapVenue extends BaseVenue {
@@ -250,6 +261,11 @@ export interface PosterPageVenue extends BaseVenue {
 export interface AuditoriumVenue extends BaseVenue {
   template: VenueTemplate.auditorium;
   title?: string;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  template: VenueTemplate.animatemap;
+  playerioGameId: string;
 }
 
 export interface Question {
@@ -341,11 +357,12 @@ export interface VenueLocation {
 
 export interface LocationEvents {
   location: VenueLocation;
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
+  venueIcon: string;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

@@ -11,7 +11,7 @@ import {
 } from "api/profile";
 
 import { Room } from "types/rooms";
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
@@ -36,7 +36,7 @@ import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import "./ScheduleItemNG.scss";
 
 export interface ScheduleItemNGProps {
-  event: PersonalizedVenueEvent;
+  event: ScheduledVenueEvent;
 }
 
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
@@ -138,6 +138,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
           {formatTimeLocalised(eventEndTime(event))}
         </span>
       </div>
+
+      <img
+        className="ScheduleItemNG__icon"
+        src={eventRoom?.image_url ?? event.venueIcon}
+        alt="event location"
+      />
+
       <div className="ScheduleItemNG__details">
         <div className="ScheduleItemNG__name">{event.name}</div>
         <div className="ScheduleItemNG__place">

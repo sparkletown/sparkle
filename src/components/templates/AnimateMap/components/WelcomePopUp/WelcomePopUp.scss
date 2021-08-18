@@ -1,0 +1,17 @@
+.WelcomePopUp {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 200px;
+  text-align: center;
+
+  &__title {
+  }
+
+  &__desc {
+  }
+
+  &__accept-button {
+  }
+}

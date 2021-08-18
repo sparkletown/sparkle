@@ -9,6 +9,7 @@ import { ReactionsProvider } from "hooks/reactions";
 
 import { FriendShipPage } from "pages/FriendShipPage";
 
+import { AnimateMap } from "components/templates/AnimateMap";
 import { ArtPiece } from "components/templates/ArtPiece";
 import { Audience } from "components/templates/Audience/Audience";
 import { Auditorium } from "components/templates/Auditorium";
@@ -59,6 +60,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       template = <PartyMap venue={venue} />;
+      break;
+
+    case VenueTemplate.animatemap:
+      template = <AnimateMap venue={venue} />;
       break;
 
     case VenueTemplate.artpiece:
