@@ -1,0 +1,23 @@
+name: Create PRs to custom envs
+on:
+  push:
+    branches:
+      - dmarchuk/auto-PRs-to-custom-envs
+jobs:
+  push-to-prod-envs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+          fetch-depth: 0
+          token: ${{ secrets.SERVICE_USER_PAT }}
+      - name: Push to sparkle production branches
+        run: |
+          # git fetch origin dmarchuk/auto-PRs-to-custom-envs
+
+          git push origin dmarchuk/auto-PRs-to-custom-envs:env/kotr
+
+          # Unused envs with custom code
+          # git push origin master:env/github # Note: This runs custom code.
+          # git push origin master:env/ohbm # Note: This runs custom code.
