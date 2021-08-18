@@ -1,9 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useAsyncFn } from "react-use";
 import { isEqual } from "lodash";
 
-import { RoomInput_v2, updateRoom, updateVenue_v2 } from "api/admin";
+import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
 
@@ -14,12 +21,21 @@ import {
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
 
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
 
 import { BackgroundSelect } from "../BackgroundSelect";
 
-import * as S from "./MapPreview.styles";
-import { MapPreviewProps } from "./MapPreview.types";
+import "./MapPreview.scss";
+
+export interface MapPreviewProps {
+  venueName: string;
+  mapBackground?: string;
+  rooms: RoomData_v2[];
+  venueId: string;
+  isEditing: boolean;
+  onRoomChange?: (rooms: RoomData_v2[]) => void;
+}
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
@@ -27,12 +43,10 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   rooms,
   venueId,
   isEditing,
-  setIsEditing,
   onRoomChange,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
-  const [isSaving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -58,25 +72,27 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [isEditing, mapRooms, rooms]);
 
-  if (!user) return <></>;
+  const updateRoomPosition = useCallback(
+    (val: SubVenueIconMap) => {
+      if (!isEqual(roomRef.current, val)) {
+        roomRef.current = val;
+        const normalizeRooms = Object.values(val).map((room, index) => ({
+          ...rooms[index],
+          x_percent: room.left,
+          y_percent: room.top,
+          width_percent: room.width,
+          height_percent: room.height,
+        }));
+        setMapRooms(normalizeRooms);
+        onRoomChange && onRoomChange(normalizeRooms);
+      }
+    },
+    [onRoomChange, rooms]
+  );
 
-  const handleOnChange = (val: SubVenueIconMap) => {
-    if (!isEqual(roomRef.current, val)) {
-      roomRef.current = val;
-      const normalizeRooms = Object.values(val).map((room, index) => ({
-        ...rooms[index],
-        x_percent: room.left,
-        y_percent: room.top,
-        width_percent: room.width,
-        height_percent: room.height,
-      }));
-      setMapRooms(normalizeRooms);
-      onRoomChange && onRoomChange(normalizeRooms);
-    }
-  };
+  const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
+    if (isSaving || !user) return;
 
-  const handleSavePositions = async () => {
-    setSaving(true);
     const roomArr = Object.values(roomRef.current);
 
     let roomIndex = 0;
@@ -93,45 +109,12 @@ const MapPreview: React.FC<MapPreviewProps> = ({
       await updateRoom(room, venueId, user, roomIndex);
       roomIndex++;
     }
-
-    setSaving(false);
-    setIsEditing(false);
-  };
-
-  const handleBackgroundRemove = () => {
-    if (!user) return;
-
-    return updateVenue_v2(
-      {
-        name: venueName,
-        mapBackgroundImageUrl: "",
-      },
-      user
-    );
-  };
-
-  const handleEditButton = async () => {
-    if (isEditing) {
-      return await handleSavePositions();
-    }
-
-    return setIsEditing(true);
-  };
-
-  const editButtonText = isEditing ? "Save layout" : "Edit layout";
+  }, [rooms, user, venueId]);
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <S.Wrapper>
+      <div className="MapPreview">
         <Legend text={`${venueName}'s Map`} />
-
-        {!!mapBackground && (
-          <Legend
-            text="Edit background"
-            position="right"
-            onClick={() => handleBackgroundRemove()}
-          />
-        )}
 
         {!isEditing && (
           <BackgroundSelect
@@ -172,7 +155,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           <Container
             interactive
             resizable
-            onChange={handleOnChange}
+            onChange={updateRoomPosition}
             backgroundImage={mapBackground}
             otherIcons={{}}
             // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
@@ -189,10 +172,14 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           />
         )}
 
-        <S.EditButton disabled={isSaving} onClick={handleEditButton}>
-          {isSaving ? <div>Saving...</div> : <div>{editButtonText}</div>}
-        </S.EditButton>
-      </S.Wrapper>
+        <ButtonNG
+          className="MapPreview__save-button"
+          disabled={isSaving}
+          onClick={saveRoomPositions}
+        >
+          {isSaving ? <div>Saving...</div> : <div>Save layout</div>}
+        </ButtonNG>
+      </div>
     </DndProvider>
   );
 };
