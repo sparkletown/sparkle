@@ -45,7 +45,11 @@ export class GameConfig {
   ];
 
   private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
-  private _zoomLevelViewportCorresponding: Array<number> = [1.6137, 0.809, 0.32];
+  private _zoomLevelViewportCorresponding: Array<number> = [
+    1.6137,
+    0.809,
+    0.32,
+  ];
   private _zoomLevelAvatarRadiusCorresponding: Array<number> = [25, 17, 3];
   private _zoomLevelLineOfSightCorresponding: Array<number> = [
     78 * 10,
