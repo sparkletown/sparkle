@@ -44,15 +44,19 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       ? chatSettings.recipientId
       : undefined;
 
-  const containerStyles = classNames("chat-sidebar", {
+  const containerStyles = classNames({
+    "chat-sidebar": true,
     "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--collapsed": !isExpanded,
   });
 
-  const venueChatTabStyles = classNames("chat-sidebar__tab", {
+  const venueChatTabStyles = classNames({
+    "chat-sidebar__tab": true,
     "chat-sidebar__tab--selected": isVenueChat,
   });
 
-  const privateChatTabStyles = classNames("chat-sidebar__tab", {
+  const privateChatTabStyles = classNames({
+    "chat-sidebar__tab": true,
     "chat-sidebar__tab--selected": isPrivateChat,
   });
 
@@ -76,11 +80,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ) : (
             <>
               <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon
-                className="chat-sidebar__controller__second-icon"
-                icon={faCommentDots}
-                size="lg"
-              />
+              <FontAwesomeIcon icon={faCommentDots} size="lg" />
             </>
           )}
         </button>

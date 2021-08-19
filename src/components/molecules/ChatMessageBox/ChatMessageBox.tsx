@@ -117,30 +117,32 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
           placeholder={`Write your ${placeholderValue}...`}
           autoComplete="off"
         />
-        <button
-          aria-label="Send message"
-          className="Chatbox__submit-button"
-          type="button"
-          onClick={toggleEmojiPicker}
-        >
-          <FontAwesomeIcon
-            icon={faSmile}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
-        <button
-          aria-label="Send message"
-          className={buttonClasses}
-          type="submit"
-          disabled={!chatValue || isSendingMessage}
-        >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="Chatbox__submit-button-icon"
-            size="lg"
-          />
-        </button>
+        <div className="Chatbox__buttons">
+          <button
+            aria-label="Send message"
+            className="Chatbox__submit-button"
+            type="button"
+            onClick={toggleEmojiPicker}
+          >
+            <FontAwesomeIcon
+              icon={faSmile}
+              className="Chatbox__submit-button-icon"
+              size="lg"
+            />
+          </button>
+          <button
+            aria-label="Send message"
+            className={buttonClasses}
+            type="submit"
+            disabled={!chatValue || isSendingMessage}
+          >
+            <FontAwesomeIcon
+              icon={faPaperPlane}
+              className="Chatbox__submit-button-icon"
+              size="lg"
+            />
+          </button>
+        </div>
       </form>
 
       {isEmojiPickerVisible && (
