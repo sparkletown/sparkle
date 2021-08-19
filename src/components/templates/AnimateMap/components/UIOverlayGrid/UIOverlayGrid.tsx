@@ -19,6 +19,7 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
+import { FirebarrelProvider } from "../FirebarrelWidget/FirebarrelProvider";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
@@ -90,6 +91,12 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
       <div className="UIOverlayGrid__tooltip">
         <UIContainer venue={venue} disableInteractive>
           <TooltipWidget />
+        </UIContainer>
+      </div>
+
+      <div className="UIOverlayGrid__firebarrel-widget">
+        <UIContainer venue={venue}>
+          <FirebarrelProvider venue={venue} />
         </UIContainer>
       </div>
     </div>

@@ -32,6 +32,24 @@
     grid-area: tooltip;
   }
 
+  &--firebarrel-widget-on {
+    grid-template-rows: 1fr 1fr 160px 34px 100px 34px 150px;
+
+    grid-template-areas:
+      "test test test test test test"
+      ". . . . . ."
+      "zoom . . . . ."
+      "center . . . . ."
+      ". . . . . ."
+      ". . . tooltip . mute"
+      "firebarrel firebarrel firebarrel firebarrel firebarrel firebarrel";
+  }
+
+  &__firebarrel-widget {
+    grid-area: firebarrel;
+    background: rgba(0, 255, 208, 0.73);
+  }
+
   &__test {
     grid-area: test;
     background: rgba(0, 0, 0, 0.35);

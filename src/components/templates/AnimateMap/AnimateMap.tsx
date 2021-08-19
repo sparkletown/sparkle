@@ -7,7 +7,6 @@ import { WithId } from "utils/id";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
-import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
 import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
@@ -57,7 +56,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
-        <FirebarrelProvider venue={venue} />
         <UIOverlayGrid venue={venue} />
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />
