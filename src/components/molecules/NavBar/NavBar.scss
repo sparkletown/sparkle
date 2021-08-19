@@ -227,8 +227,12 @@ $logo-size: 43px;
   &__userAvatar {
     width: $menu-item-size;
     height: $menu-item-size;
-
     margin-right: $spacing--sm;
+
+    img {
+      width: $menu-item-size;
+      height: $menu-item-size;
+    }
   }
 
   &__menu {
@@ -251,6 +255,14 @@ $logo-size: 43px;
       justify-content: center;
 
       margin-right: $spacing--sm;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      img {
+        width: $menu-item-size;
+      }
 
       &:focus {
         box-shadow: 0 0 0 2px #fff;

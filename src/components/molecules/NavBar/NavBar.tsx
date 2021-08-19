@@ -321,11 +321,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     defaultShow={showRadioOverlay}
                   >
                     <button className="NavBar__menu--link">
-                      <img
-                        className="NavBar__link--icon"
-                        src={RadioIcon}
-                        alt="radio icon"
-                      />
+                      <img src={RadioIcon} alt="radio icon" />
                     </button>
                   </OverlayTrigger>
                 )}
@@ -345,7 +341,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <UserAvatar
                     user={userWithId}
                     showStatus
-                    size="medium"
                     containerClassName="NavBar__userAvatar"
                   />
                 </div>

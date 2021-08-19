@@ -3,6 +3,7 @@
 #radio-popover {
   &.popover {
     height: unset;
+    border-radius: 0 0 $border-radius--xl $border-radius--xl;
   }
 }
 
