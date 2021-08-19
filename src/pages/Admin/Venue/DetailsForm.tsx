@@ -40,6 +40,7 @@ import {
   updateVenue,
   VenueInput,
 } from "api/admin";
+import { fetchSovereignVenue } from "api/venue";
 
 import { setSovereignVenue } from "store/actions/SovereignVenue";
 
@@ -181,28 +182,32 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             },
             user
           );
-
           //@debt Create separate function that updates the userStatuses separately by venue id.
           if (
             sovereignVenueId &&
             sovereignVenue &&
             sovereignVenueId !== venueId
-          )
+          ) {
+            const {
+              sovereignVenue: sovereignVenueData,
+            } = await fetchSovereignVenue(sovereignVenueId);
+
             await updateVenue(
               {
-                id: sovereignVenueId,
-                name: sovereignVenue.name,
+                id: sovereignVenueData.id,
+                name: sovereignVenueData.name,
                 subtitle:
-                  sovereignVenue.config?.landingPageConfig.subtitle ?? "",
+                  sovereignVenueData.config?.landingPageConfig.subtitle ?? "",
                 description:
-                  sovereignVenue.config?.landingPageConfig.description ?? "",
-                adultContent: sovereignVenue.adultContent ?? false,
-                profile_questions: sovereignVenue.profile_questions,
+                  sovereignVenueData.config?.landingPageConfig.description ??
+                  "",
+                adultContent: sovereignVenueData.adultContent ?? false,
+                profile_questions: sovereignVenueData.profile_questions,
                 code_of_conduct_questions:
-                  sovereignVenue.code_of_conduct_questions,
-                userStatuses,
-                showUserStatus: showUserStatuses,
-                template: sovereignVenue.template,
+                  sovereignVenueData.code_of_conduct_questions,
+                userStatuses: sovereignVenueData.userStatuses,
+                showUserStatus: sovereignVenueData.showUserStatus,
+                template: sovereignVenueData.template,
               },
               user
             ).then(() => {
@@ -216,6 +221,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
                 );
               }
             });
+          }
         } else
           await createVenue(
             {
