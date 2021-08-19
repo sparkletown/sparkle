@@ -1,6 +1,28 @@
 @import "scss/constants.scss";
 
 $border-radius: 28px;
+$menu-item-size: 32px;
+
+.Navbar {
+  &__userAvatar {
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    margin-right: $spacing--sm;
+  }
+  &__menu--icon {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+  }
+}
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -153,7 +175,7 @@ $border-radius: 28px;
 .nav-party-logo {
   position: relative;
   background-color: rgba($white, 0.08);
-  height: 60px;
+  height: $navbar-height;
   padding: 0 50px 0 20px;
   text-align: center;
   cursor: pointer;

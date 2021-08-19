@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
@@ -33,6 +33,7 @@ import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicket
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
+import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
@@ -53,6 +54,14 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
+
+const MenuPopover = (
+  <Popover id="menu-popover">
+    <Popover.Content>
+      <MenuPopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -330,8 +339,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
                 >
-                  <UserAvatar user={userWithId} showStatus size="medium" />
+                  <UserAvatar
+                    user={userWithId}
+                    showStatus
+                    size="medium"
+                    containerClassName="Navbar__userAvatar"
+                  />
                 </div>
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={MenuPopover}
+                  rootClose={true}
+                >
+                  <div className="Navbar__menu--icon">
+                    <FontAwesomeIcon icon={faBars} size="sm" />
+                  </div>
+                </OverlayTrigger>
               </div>
             )}
           </div>
