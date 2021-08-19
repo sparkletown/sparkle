@@ -51,6 +51,8 @@ import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { NavBarLogin } from "./NavBarLogin";
 
+import RadioIcon from "assets/icons/nav-link-radio.svg";
+
 import "./NavBar.scss";
 import "./playa.scss";
 
@@ -167,7 +169,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   ]);
 
   const volumeControlClassname = classNames(
-    "NavBar__menu--icon NavBar__menu--volume",
+    "NavBar__menu--link NavBar__menu--volume",
     {
       mute: !volume,
     }
@@ -318,11 +320,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button className="NavBar__menu--icon">
-                      <FontAwesomeIcon
-                        // TODO: fix with a new icon
-                        icon={faBars}
-                        size="sm"
+                    <button className="NavBar__menu--link">
+                      <img
+                        className="NavBar__link--icon"
+                        src={RadioIcon}
+                        alt="radio icon"
                       />
                     </button>
                   </OverlayTrigger>
@@ -333,7 +335,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     className={volumeControlClassname}
                     onClick={toggleMute}
                   >
-                    <FontAwesomeIcon icon={volumeIcon} size="sm" />
+                    <FontAwesomeIcon icon={volumeIcon} />
                   </button>
                 )}
                 <div
@@ -353,8 +355,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <button className="NavBar__menu--icon">
-                    <FontAwesomeIcon icon={faBars} size="sm" />
+                  <button className="NavBar__menu--link">
+                    <FontAwesomeIcon icon={faBars} />
                   </button>
                 </OverlayTrigger>
               </div>
