@@ -10,8 +10,10 @@ import {
 
 import { EVENT_STARTING_SOON_TIMEFRAME } from "settings";
 
-import { VenueEvent } from "types/venues";
+import { User } from "types/User";
+import { ScheduledVenueEvent, VenueEvent } from "types/venues";
 
+import { WithId } from "./id";
 import {
   formatUtcSecondsRelativeToNow,
   getCurrentTimeInUTCSeconds,
@@ -124,4 +126,16 @@ export const eventTimeAndOrderComparator = (a: VenueEvent, b: VenueEvent) => {
   } else {
     return bOrderPriority - aOrderPriority;
   }
+};
+
+export const augmentEventWithAudience = (
+  events: ScheduledVenueEvent[],
+  recentRoomUsers: readonly WithId<User>[][]
+) => {
+  return events
+    .map((event, index) => ({
+      ...event,
+      liveAudience: recentRoomUsers[index]?.length || 0,
+    }))
+    .sort((a, b) => b.liveAudience - a.liveAudience);
 };
