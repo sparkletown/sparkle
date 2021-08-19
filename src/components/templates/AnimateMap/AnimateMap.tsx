@@ -13,6 +13,7 @@ import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProv
 import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
+import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -27,6 +28,10 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const firebase = useFirebase();
   const store = useStore();
   const user = useUser();
+
+  // TODO: Use this data to display venues
+  const rooms = useRelatedPartymapRooms({ venue });
+  console.log(rooms);
 
   useEffect(() => {
     if (

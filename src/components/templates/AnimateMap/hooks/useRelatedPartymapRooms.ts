@@ -2,11 +2,12 @@ import { useMemo } from "react";
 
 import { Room } from "types/rooms";
 import { ReactHook } from "types/utility";
-import { AnimateMapVenue, AnyVenue } from "types/venues";
+import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { isTruthy } from "utils/types";
 import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
+import { WithVenue, withVenue } from "utils/venue";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
@@ -14,9 +15,7 @@ export interface UseRelatedPartymapRoomsProps {
   venue: WithId<AnimateMapVenue>;
 }
 
-export type UseRelatedPartymapRoomsData =
-  | (Room & { venue: AnyVenue })[]
-  | undefined;
+export type UseRelatedPartymapRoomsData = WithVenue<Room>[] | undefined;
 
 export const useRelatedPartymapRooms: ReactHook<
   UseRelatedPartymapRoomsProps,
@@ -38,10 +37,7 @@ export const useRelatedPartymapRooms: ReactHook<
 
         if (!portalVenue) return undefined;
 
-        return {
-          ...portal,
-          venue: portalVenue,
-        };
+        return withVenue(portal, portalVenue);
       }),
     [relatedPartymap, findVenueInRelatedVenues]
   )?.filter(isTruthy);
