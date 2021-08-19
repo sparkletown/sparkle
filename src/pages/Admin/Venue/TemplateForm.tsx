@@ -155,13 +155,15 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 }) => {
   const thumbnailImage = templateThumbImageMap[template];
   const hasThumbnail = !!thumbnailImage;
-  const pickComponentStyles = HIDDEN_BURN_VENUE_TEMPLATES.includes(template)
+  const pickspaceComponentStyles = HIDDEN_BURN_VENUE_TEMPLATES.includes(
+    template
+  )
     ? { display: "none" }
     : {};
 
   return (
     <div
-      style={pickComponentStyles}
+      style={pickspaceComponentStyles}
       className={`pickspace-component-container pickspace-component-container_zoom ${
         selected ? "selected" : ""
       }`}
