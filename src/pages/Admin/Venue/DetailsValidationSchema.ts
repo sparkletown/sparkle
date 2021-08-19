@@ -108,7 +108,9 @@ export const validationSchema = Yup.object()
     attendeesTitle: Yup.string().notRequired().default("Guests"),
 
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    // TODO: make not required
     description: Yup.string().required("Description required"),
+    // TODO: make not required
     subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
