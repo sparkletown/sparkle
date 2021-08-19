@@ -4,20 +4,18 @@ on:
     branches:
       - dmarchuk/auto-PRs-to-custom-envs
 jobs:
-  push-to-prod-envs:
+  create-pr-to-kotr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: master
-          fetch-depth: 0
-          token: ${{ secrets.SERVICE_USER_PAT }}
-      - name: Push to sparkle production branches
+          ref: env/kotr
+          token: ${{ env.DMARCHUK_PAT }}
+      - name: Prepare branch
         run: |
-          # git fetch origin dmarchuk/auto-PRs-to-custom-envs
-
-          git push origin dmarchuk/auto-PRs-to-custom-envs:env/kotr
-
-          # Unused envs with custom code
-          # git push origin master:env/github # Note: This runs custom code.
-          # git push origin master:env/ohbm # Note: This runs custom code.
+          git fetch origin dmarchuk/auto-PRs-to-custom-envs:dmarchuk/auto-PRs-to-custom-envs
+          git reset --hard dmarchuk/auto-PRs-to-custom-envs
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          branch: kotr-auto-prs-branch
