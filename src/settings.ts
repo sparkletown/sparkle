@@ -82,7 +82,8 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+export const CURRENT_TIME_IN_LOCATION = "Playa";
+export const CURRENT_TIMEZONE = "America/Los_Angeles";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =

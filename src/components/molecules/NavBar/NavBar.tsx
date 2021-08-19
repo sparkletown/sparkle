@@ -9,7 +9,7 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import {
   faBars,
-  faHome,
+  faCaretLeft,
   faTicketAlt,
   faVolumeMute,
   faVolumeUp,
@@ -42,6 +42,7 @@ import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
+import { PlayaTime } from "components/molecules/PlayaTime";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
@@ -167,7 +168,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   ]);
 
   const volumeControlClassname = classNames(
-    "Navbar__menu--icon Navbar__menu--volume",
+    "NavBar__menu--icon NavBar__menu--volume",
     {
       mute: !volume,
     }
@@ -241,23 +242,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="nav-logos">
-              <div className="nav-sparkle-logo">
-                <div />
-              </div>
-              <div
-                className="nav-sparkle-logo_small"
-                onClick={navigateToHomepage}
-              >
-                <div />
-              </div>
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
-                  icon={faHome}
-                  className="NavBar__home-icon"
+                  icon={faCaretLeft}
+                  className="NavBar__home--icon"
                   onClick={navigateToHomepage}
                 />
               )}
-
+              <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
               {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
@@ -271,8 +263,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               ) : (
                 <div>{navbarTitle}</div>
               )}
-
-              <VenuePartygoers venueId={venueId} />
+              <PlayaTime /> - <VenuePartygoers venueId={venueId} />
             </div>
 
             {!user && <NavBarLogin />}
@@ -357,12 +348,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-                <div className={volumeControlClassname} onClick={toggleMute}>
-                  <FontAwesomeIcon
-                    icon={!volume ? faVolumeMute : faVolumeUp}
-                    size="sm"
-                  />
-                </div>
+                {(showNormalRadio || showSoundCloudRadio) && (
+                  <div className={volumeControlClassname} onClick={toggleMute}>
+                    <FontAwesomeIcon
+                      icon={!volume ? faVolumeMute : faVolumeUp}
+                      size="sm"
+                    />
+                  </div>
+                )}
                 <div
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
@@ -371,7 +364,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     user={userWithId}
                     showStatus
                     size="medium"
-                    containerClassName="Navbar__userAvatar"
+                    containerClassName="NavBar__userAvatar"
                   />
                 </div>
                 <OverlayTrigger
@@ -380,7 +373,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <div className="Navbar__menu--icon">
+                  <div className="NavBar__menu--icon">
                     <FontAwesomeIcon icon={faBars} size="sm" />
                   </div>
                 </OverlayTrigger>

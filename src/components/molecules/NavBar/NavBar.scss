@@ -1,39 +1,7 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
 $menu-item-size: 32px;
-
-.Navbar {
-  &__userAvatar {
-    width: $menu-item-size;
-    height: $menu-item-size;
-
-    margin-right: $spacing--sm;
-  }
-  &__menu {
-    &--volume {
-      margin-right: $spacing--sm;
-
-      &.mute {
-        opacity: 0.5;
-        box-shadow: 0 0 0 2px rgba($white, 1);
-      }
-    }
-
-    &--icon {
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 50%;
-      width: $menu-item-size;
-      height: $menu-item-size;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      cursor: pointer;
-    }
-  }
-}
+$logo-size: 43px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -130,58 +98,14 @@ $menu-item-size: 32px;
   align-items: center;
 }
 
-.nav-sparkle-logo,
-.nav-sparkle-logo_small {
-  position: relative;
-  margin-right: 12px;
-  &:hover {
-    width: 120px;
-  }
-  &.nav-sparkle-logo_small {
-    display: none;
-  }
-  div {
-    position: relative;
-    display: block;
-    width: 25px;
-    height: 35px;
-    background-image: url(/assets/icons/sparkle-nav-logo.png);
-    background-size: 25px 35px;
-    &:before {
-      position: absolute;
-      content: "";
-      opacity: 0;
-      pointer-events: none;
-      left: 22px;
-      width: 108px;
-      height: 35px;
-      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
-      background-size: 108px 35px;
-      transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms $transition-function;
-    }
-    @keyframes sparklelogoanimate {
-      100% {
-        background-position: -75px;
-      }
-    }
-
-    &:hover {
-      opacity: 1;
-      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
-      background-size: 75px 35px;
-      background-position: 0 0;
-      animation: sparklelogoanimate 0.4s steps(3) infinite;
-      &:before {
-        opacity: 1;
-        pointer-events: all;
-        transform: translateX(0px) scale(1);
-      }
-    }
-    &:active {
-      opacity: 0.7;
-    }
-  }
+.nav-sparkle-logo {
+  margin-right: $spacing--lg;
+  width: $logo-size;
+  height: $logo-size;
+  background-image: url(/assets/icons/sparkle-nav-logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 .nav-party-logo {
   position: relative;
@@ -276,19 +200,46 @@ $menu-item-size: 32px;
 }
 
 .NavBar {
-  &__home-icon {
+  &__home--icon {
     cursor: pointer;
     font-size: 24px;
+    color: opaque-white(0.5);
 
     margin-right: $spacing--md;
-
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
-    }
   }
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__userAvatar {
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    margin-right: $spacing--sm;
+  }
+
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
+
+      &.mute {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px rgba($white, 1);
+      }
+    }
+
+    &--icon {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      width: $menu-item-size;
+      height: $menu-item-size;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      cursor: pointer;
+    }
   }
 }

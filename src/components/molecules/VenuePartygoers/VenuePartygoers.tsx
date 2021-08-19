@@ -12,7 +12,7 @@ export interface VenuePartygoersProps {
 export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
   venueId,
 }) => {
-  const { isLoading, parentVenue, currentVenue } = useRelatedVenues({
+  const { isLoading } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -20,22 +20,15 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
 
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
-  const title = useMemo<string>(() => {
-    if (isLoading || !isRecentWorldUsersLoaded) return "";
+  const title = useMemo<number>(() => {
+    if (isLoading || !isRecentWorldUsersLoaded) return 0;
 
-    const attendeesTitle =
-      parentVenue?.attendeesTitle ??
-      currentVenue?.attendeesTitle ??
-      "attendees";
+    return numberOfRecentWorldUsers;
+  }, [isLoading, isRecentWorldUsersLoaded, numberOfRecentWorldUsers]);
 
-    return `${numberOfRecentWorldUsers} ${attendeesTitle} online`;
-  }, [
-    isLoading,
-    isRecentWorldUsersLoaded,
-    parentVenue?.attendeesTitle,
-    currentVenue?.attendeesTitle,
-    numberOfRecentWorldUsers,
-  ]);
-
-  return <div className="venue-partygoers-container">{title}</div>;
+  return (
+    <div className="VenuePartygoers__container">
+      <span className="VenuePartygoers__number">{title}</span> burners here
+    </div>
+  );
 };
