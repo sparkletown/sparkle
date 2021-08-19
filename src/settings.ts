@@ -268,9 +268,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.embeddable,
-    name: "Art Piece Viewer",
+    name: "Embeddable",
     description: [
-      "Our viewer is same as the Art Piece, without the interactivity!",
+      "Our embeddable is same as the Art Piece, without the interactivity!",
     ],
   },
   {
@@ -281,10 +281,40 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.jazzbar,
+    name: "Music Venue",
+    description: [
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    ],
+  },
+  {
+    template: VenueTemplate.conversationspace,
+    name: "Conversation Space",
+    description: ["A room of tables in which to talk and make merry."],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description: [
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    ],
+  },
+  {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.screeningroom,
     name: "Screening room",
     description: ["Add an screening room with the videos listed inside."],
   },
+];
+
+export const HIDDEN_BURN_VENUE_TEMPLATES: Array<Template["template"]> = [
+  VenueTemplate.animatemap,
+  VenueTemplate.screeningroom,
+  VenueTemplate.auditorium,
 ];
 
 // @debt Refactor this constant into types/templates or similar?

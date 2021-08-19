@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-import { BURN_VENUE_TEMPLATES, Template } from "settings";
+import {
+  BURN_VENUE_TEMPLATES,
+  HIDDEN_BURN_VENUE_TEMPLATES,
+  Template,
+} from "settings";
 
 import { VenueTemplate } from "types/venues";
 
@@ -151,9 +155,13 @@ const TemplateCard: React.FC<TemplateCardProps> = ({
 }) => {
   const thumbnailImage = templateThumbImageMap[template];
   const hasThumbnail = !!thumbnailImage;
+  const pickComponentStyles = HIDDEN_BURN_VENUE_TEMPLATES.includes(template)
+    ? { display: "none" }
+    : {};
 
   return (
     <div
+      style={pickComponentStyles}
       className={`pickspace-component-container pickspace-component-container_zoom ${
         selected ? "selected" : ""
       }`}
