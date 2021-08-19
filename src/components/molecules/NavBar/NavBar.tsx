@@ -318,20 +318,23 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <div className="NavBar__menu--icon NavBar__menu--radio">
+                    <button className="NavBar__menu--icon">
                       <FontAwesomeIcon
                         // TODO: fix with a new icon
                         icon={faBars}
                         size="sm"
                       />
-                    </div>
+                    </button>
                   </OverlayTrigger>
                 )}
 
-                {(showNormalRadio || showSoundCloudRadio) && (
-                  <div className={volumeControlClassname} onClick={toggleMute}>
+                {showRadio && (
+                  <button
+                    className={volumeControlClassname}
+                    onClick={toggleMute}
+                  >
                     <FontAwesomeIcon icon={volumeIcon} size="sm" />
-                  </div>
+                  </button>
                 )}
                 <div
                   className="navbar-links-user-avatar"
@@ -350,9 +353,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <div className="NavBar__menu--icon">
+                  <button className="NavBar__menu--icon">
                     <FontAwesomeIcon icon={faBars} size="sm" />
-                  </div>
+                  </button>
                 </OverlayTrigger>
               </div>
             )}
