@@ -183,11 +183,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
             user
           );
           //@debt Create separate function that updates the userStatuses separately by venue id.
-          if (
-            sovereignVenueId &&
-            sovereignVenue &&
-            sovereignVenueId !== venueId
-          ) {
+          if (sovereignVenueId && sovereignVenueId !== venueId) {
             const {
               sovereignVenue: sovereignVenueData,
             } = await fetchSovereignVenue(sovereignVenueId);
@@ -211,15 +207,11 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               },
               user
             ).then(() => {
-              if (sovereignVenue) {
-                dispatch(
-                  setSovereignVenue({
-                    ...sovereignVenue,
-                    userStatuses,
-                    showUserStatus: showUserStatuses,
-                  })
-                );
-              }
+              dispatch(
+                setSovereignVenue({
+                  ...sovereignVenueData,
+                })
+              );
             });
           }
         } else
@@ -245,15 +237,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
         });
       }
     },
-    [
-      user,
-      formError,
-      venueId,
-      history,
-      sovereignVenueId,
-      sovereignVenue,
-      dispatch,
-    ]
+    [user, formError, venueId, history, sovereignVenueId, dispatch]
   );
 
   const iconsMap = useMemo(
