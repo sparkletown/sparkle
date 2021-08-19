@@ -72,20 +72,22 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [isEditing, mapRooms, rooms]);
 
-  const updateRoomPosition = useCallback(
+  const updateRoomsPosition = useCallback(
     (val: SubVenueIconMap) => {
-      if (!isEqual(roomRef.current, val)) {
-        roomRef.current = val;
-        const normalizeRooms = Object.values(val).map((room, index) => ({
+      if (isEqual(roomRef.current, val)) return;
+
+      roomRef.current = val;
+      const normalizeRooms = Object.values(val).map(
+        ({ left, top, width, height }, index) => ({
           ...rooms[index],
-          x_percent: room.left,
-          y_percent: room.top,
-          width_percent: room.width,
-          height_percent: room.height,
-        }));
-        setMapRooms(normalizeRooms);
-        onRoomChange && onRoomChange(normalizeRooms);
-      }
+          x_percent: left,
+          y_percent: top,
+          width_percent: width,
+          height_percent: height,
+        })
+      );
+      setMapRooms(normalizeRooms);
+      onRoomChange?.(normalizeRooms);
     },
     [onRoomChange, rooms]
   );
@@ -93,21 +95,27 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
     if (isSaving || !user) return;
 
-    const roomArr = Object.values(roomRef.current);
+    // Why is this using the ref and not mapRooms state?
+    const updatedRooms = Object.values(roomRef.current);
 
+    // Remove after forEach implementation is added.
     let roomIndex = 0;
 
-    for (const r of roomArr) {
+    // Ideally this should be using forEach and promise all to send all of the requests at once, instead of 1 by 1
+    // Using forEach will also allow us to use the index param and get rid of roomIndex and it's incremention
+    for (const { left, top, width, height } of updatedRooms) {
       const room: RoomInput_v2 = {
         ...rooms[roomIndex],
-        x_percent: r.left,
-        y_percent: r.top,
-        width_percent: r.width,
-        height_percent: r.height,
+        x_percent: left,
+        y_percent: top,
+        width_percent: width,
+        height_percent: height,
       };
 
+      // Requests are triggered one by one instead of bulk at once.
       await updateRoom(room, venueId, user, roomIndex);
-      roomIndex++;
+
+      roomIndex += 1;
     }
   }, [rooms, user, venueId]);
 
@@ -155,7 +163,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           <Container
             interactive
             resizable
-            onChange={updateRoomPosition}
+            onChange={updateRoomsPosition}
             backgroundImage={mapBackground}
             otherIcons={{}}
             // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
@@ -175,9 +183,10 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         <ButtonNG
           className="MapPreview__save-button"
           disabled={isSaving}
+          loading={isSaving}
           onClick={saveRoomPositions}
         >
-          {isSaving ? <div>Saving...</div> : <div>Save layout</div>}
+          Save rooms
         </ButtonNG>
       </div>
     </DndProvider>

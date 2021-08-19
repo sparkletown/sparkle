@@ -2,7 +2,7 @@
 
 .MapPreview {
   width: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: $spacing--lg;
   position: relative;
   overflow: hidden;
 
@@ -10,7 +10,7 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    margin-bottom: 0;
+    margin: 0;
     border-radius: $border-radius--xl 0 $border-radius--xl 0;
 
     &:hover {
