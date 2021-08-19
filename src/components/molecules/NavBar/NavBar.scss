@@ -108,6 +108,7 @@ $logo-size: 43px;
   background-position: center;
 }
 .nav-party-logo {
+  margin-right: $spacing--lg;
   position: relative;
   background-color: rgba($white, 0.08);
   height: $navbar-height;
@@ -220,12 +221,6 @@ $logo-size: 43px;
         width: 100%;
         border: none;
       }
-    }
-
-    &--title {
-      font-size: $font-size--md;
-      color: opaque-white(0.5);
-      margin-bottom: $spacing--lg;
     }
   }
 
