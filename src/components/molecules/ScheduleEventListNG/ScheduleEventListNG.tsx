@@ -5,12 +5,17 @@ import { EVENT_STATUS_REFRESH_MS } from "settings";
 
 import { ScheduledVenueEvent } from "types/venues";
 
-import { isEventLater, isEventLive, isEventSoon } from "utils/event";
+import {
+  augmentEventWithAudience,
+  isEventLater,
+  isEventLive,
+  isEventSoon,
+} from "utils/event";
 import { formatDateRelativeToNow } from "utils/time";
 
 import { useInterval } from "hooks/useInterval";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-import { useRoomList } from "hooks/useRoomList";
+import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 
 import { ScheduleEventSubListNG } from "./ScheduleEventSubListNG";
 
@@ -45,21 +50,15 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
     return roomData;
   });
 
-  const { recentRoomUsers } = useRoomList({ roomList });
+  const recentRoomUsers = useRoomRecentUsersList({ roomList });
 
-  const liveSortedEvents = useMemo(
-    () =>
-      allEvents
-        .map((event, index) => ({
-          ...event,
-          liveAudience: recentRoomUsers[index]?.length || 0,
-        }))
-        .sort((a, b) => b.liveAudience - a.liveAudience),
+  const eventsWithAudience = useMemo(
+    () => augmentEventWithAudience(allEvents, recentRoomUsers),
     [allEvents, recentRoomUsers]
   );
 
-  const liveEvents = useMemo(() => liveSortedEvents.filter(isEventLive), [
-    liveSortedEvents,
+  const liveEvents = useMemo(() => eventsWithAudience.filter(isEventLive), [
+    eventsWithAudience,
   ]);
   const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
     allEvents,
