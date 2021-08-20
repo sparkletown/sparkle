@@ -83,7 +83,7 @@ export class ZoomedSpriteSystem extends System {
     const view = node.sprite.view;
     const imageUrls = node.zoomedSprite.imageUrls;
 
-    let image = null;
+    let image;
 
     if (Array.isArray(imageUrls)) {
       image = imageUrls[Math.min(zoom, imageUrls.length - 1)];
@@ -91,7 +91,7 @@ export class ZoomedSpriteSystem extends System {
       image = imageUrls;
     }
 
-    if (image) {
+    if (image && view) {
       view.texture = Texture.from(image);
     }
   }

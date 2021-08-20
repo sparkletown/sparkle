@@ -80,7 +80,7 @@ export class DebugSystem extends System {
   }
 
   update(time: number) {
-    this.updateLineOfSight();
+    this.updateLineOfSight(time);
 
     const showDebug = false;
     if (showDebug) {
@@ -125,7 +125,16 @@ export class DebugSystem extends System {
     }
   };
 
-  private updateLineOfSight() {
+  private halo = {
+    duration: 100,
+    time: 0,
+    direction: 1,
+    getValue: (x: number) => {
+      return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
+    },
+  };
+
+  private updateLineOfSight(time: number) {
     const name = "visionOfSightRadius";
     const config: GameConfig = GameInstance.instance.getConfig();
     const currentZoomLevel = config.zoomViewportToLevel(this.viewport.scale.y);
@@ -133,15 +142,11 @@ export class DebugSystem extends System {
       const center: Point = this.player?.head
         ? { x: this.player.head.position.x, y: this.player.head.position.y }
         : this.viewport.center;
-      const lineOfSight = config.getAvatarLineOfSightByZoomLevel(
-        currentZoomLevel
-      );
+      const lineOfSight = config.getAvatarLineOfSightByZoomLevel(1);
       const visionOfSightRadius =
         this.player.head.position.scaleX * lineOfSight;
 
-      let s: Sprite | undefined = this.container?.getChildByName(
-        name
-      ) as Sprite;
+      let s = this.container?.getChildByName(name) as Sprite;
       if (!s) {
         s = new Sprite();
         s.name = name;
@@ -163,12 +168,25 @@ export class DebugSystem extends System {
       g.endFill();
       g.lineStyle(lineThikness, 0x6108e6);
       g.drawCircle(0, 0, visionOfSightRadius);
-      s.scale.set(
-        Math.random() *
-          ((currentZoomLevel === GameConfig.ZOOM_LEVEL_FLYING ? 1.05 : 1.01) -
-            0.99) +
-          0.99
-      );
+      // s.scale.set(
+      //   Math.random() *
+      //     ((currentZoomLevel === GameConfig.ZOOM_LEVEL_FLYING ? 1.05 : 1.01) -
+      //       0.99) +
+      //     0.99
+      // );
+
+      this.halo.time +=
+        time * (this.halo.direction === 1 ? 1 : 0.7) * this.halo.direction;
+      if (this.halo.time <= 0) {
+        this.halo.time = 0;
+        this.halo.direction = 1;
+      } else if (this.halo.time >= this.halo.duration) {
+        this.halo.time = this.halo.duration;
+        this.halo.direction = -1;
+      }
+      const value = this.halo.getValue(this.halo.time / this.halo.duration) / 3;
+
+      s.scale.set(1 + value);
     } else {
       const s: Sprite | undefined = this.container?.getChildByName(
         name
