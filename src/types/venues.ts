@@ -85,8 +85,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle?: string;
-      description?: string;
+      subtitle: string;
+      description: string;
       coverImageUrl: string;
     };
   };
@@ -304,7 +304,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle?: string;
+  subtitle: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;

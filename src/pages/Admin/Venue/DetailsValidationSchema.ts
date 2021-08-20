@@ -108,6 +108,8 @@ export const validationSchema = Yup.object()
     attendeesTitle: Yup.string().notRequired().default("Guests"),
 
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
+    description: Yup.string().required("Description required"),
+    subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>

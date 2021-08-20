@@ -78,8 +78,8 @@ export type VenueInput = AdvancedVenueInput &
     bannerImageFile?: FileList;
     logoImageFile?: FileList;
     mapBackgroundImageFile?: FileList;
-    subtitle?: string;
-    description?: string;
+    subtitle: string;
+    description: string;
     zoomUrl?: string;
     iframeUrl?: string;
     template: VenueTemplate;
