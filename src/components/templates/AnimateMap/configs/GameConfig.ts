@@ -1,3 +1,5 @@
+import { ReplicatedUser } from "store/reducers/AnimateMap";
+
 import { Point } from "types/utility";
 
 import { PlaygroundMap } from "../game/utils/PlaygroundMap";
@@ -6,6 +8,11 @@ export interface GameOptionsFirebarrel {
   id: string;
   x: number;
   y: number;
+  maxUserCount: number;
+  isLocked: boolean;
+  connectedUsers?: ReplicatedUser[];
+  iconSrc?: string;
+  trackSrc?: string;
 }
 
 export interface GameOptions {
@@ -81,26 +88,36 @@ export class GameConfig {
         id: "animate-map-firebarrel-1",
         x: this.worldCenter.x + 100,
         y: this.worldCenter.y,
+        maxUserCount: 6,
+        isLocked: false,
       },
       {
         id: "animate-map-firebarrel-2",
         x: this.worldCenter.x,
         y: this.worldCenter.y + 100,
+        maxUserCount: 6,
+        isLocked: false,
       },
       {
         id: "animate-map-firebarrel-3",
         x: this.worldCenter.x + 200,
         y: this.worldCenter.y,
+        maxUserCount: 6,
+        isLocked: false,
       },
       {
         id: "animate-map-firebarrel-4",
         x: this.worldCenter.x,
         y: this.worldCenter.y + 200,
+        maxUserCount: 6,
+        isLocked: false,
       },
       {
         id: "animate-map-firebarrel-5",
         x: this.worldCenter.x + 200,
         y: this.worldCenter.y + 200,
+        maxUserCount: 6,
+        isLocked: false,
       },
     ];
   }
