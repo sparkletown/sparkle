@@ -56,13 +56,21 @@ export class ViewportBackgroundSystem extends System {
       lights[i] = i * 20;
     }
     const lightsCol = new Array();
-    for (let i = 0; i < 256 * 3; i++) {
-      lightsCol[i] = Math.random();
+    const koef = new Array();
+    for (let i = 0; i < 256; i++) {
+      lightsCol[3 * i] = Math.random();
+      lightsCol[3 * i + 1] = Math.random();
+      lightsCol[3 * i + 2] = Math.random();
+      koef[i * 2] = 0.027; // linear component
+      koef[i * 2 + 1] = 0.0028; // quadratic component
     }
+
     this.background.filters[0].uniforms.lightsPos = lights;
     this.background.filters[0].uniforms.lightsCol = lightsCol;
+    this.background.filters[0].uniforms.koef = koef;
     this.zoomed.filters[0].uniforms.lightsPos = lights;
     this.zoomed.filters[0].uniforms.lightsCol = lightsCol;
+    this.background.filters[0].uniforms.koef = koef;
   }
 
   addToEngine(engine: Engine) {
