@@ -10,8 +10,8 @@ import { LOADING_PAGE_ANIMATION_DELAY } from "settings";
 import { useInterval } from "hooks/useInterval";
 import { useShowHide } from "hooks/useShowHide";
 
-import { ReactComponent as DiamondSvg } from "./svg/diamond.svg";
-import { ReactComponent as PlayaSvg } from "./svg/playa.svg";
+import { ReactComponent as DiamondSvg } from "assets/icons/loading-diamond.svg";
+import { ReactComponent as PlayaSvg } from "assets/icons/loading-playa.svg";
 
 import "./LoadingPage.scss";
 
