@@ -14,7 +14,6 @@ import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
 
-import { useMapBackground } from "hooks/useMapBackground";
 import { useUser } from "hooks/useUser";
 
 import {
@@ -48,8 +47,6 @@ const MapPreview: React.FC<MapPreviewProps> = ({
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
-
-  const [validMapBackground] = useMapBackground(mapBackground);
 
   useEffect(() => {
     if (
@@ -130,11 +127,12 @@ const MapPreview: React.FC<MapPreviewProps> = ({
         {!isEditing && (
           <BackgroundSelect
             venueName={venueName}
-            mapBackground={validMapBackground}
+            mapBackground={mapBackground}
           />
         )}
 
-        {!isEditing &&
+        {mapBackground &&
+          !isEditing &&
           mapRooms.map((room) => (
             <div
               key={room.title}
@@ -161,12 +159,12 @@ const MapPreview: React.FC<MapPreviewProps> = ({
             </div>
           ))}
 
-        {isEditing && (
+        {mapBackground && isEditing && (
           <Container
             interactive
             resizable
             onChange={updateRoomsPosition}
-            backgroundImage={validMapBackground}
+            backgroundImage={mapBackground}
             otherIcons={{}}
             // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

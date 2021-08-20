@@ -52,7 +52,7 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
             isEditing
             venueId={venue.id}
             venueName={venue.name}
-            mapBackground={venue?.mapBackgroundImageUrl}
+            mapBackground={venue.mapBackgroundImageUrl}
             rooms={venue.rooms ?? []}
           />
         </div>
