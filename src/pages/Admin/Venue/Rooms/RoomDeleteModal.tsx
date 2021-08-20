@@ -1,6 +1,9 @@
 import React, { useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
-import firebase from "firebase/app";
+import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
+
+import { deleteRoom } from "api/admin";
 
 import { Room, RoomData_v2 } from "types/rooms";
 
@@ -21,28 +24,24 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
   onHide,
   onDelete,
 }) => {
-  const [deleting, setDeleting] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [error, setError] = useState<string>();
 
-  const closeDeleteModal = () => {
+  const history = useHistory();
+
+  const closeDeleteModal = useCallback(() => {
     if (onDelete) onDelete();
     onHide();
     setDeleted(false);
-  };
+    history.push(`/admin/${venueId}`);
+  }, [history, onDelete, onHide, venueId]);
 
-  const deleteRoom = useCallback(async () => {
-    setDeleting(true);
+  const [{ loading: isDeleting }, deleteVenueRoom] = useAsyncFn(async () => {
     try {
-      await firebase.functions().httpsCallable("venue-deleteRoom")({
-        venueId,
-        room,
-      });
+      await deleteRoom(venueId, room);
       setDeleted(true);
     } catch (error) {
       setError(error.message);
-    } finally {
-      setDeleting(false);
     }
   }, [venueId, room]);
 
@@ -61,7 +60,7 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
                 delete room: <em>{room.title}</em>?
               </span>
             </div>
-            {deleting && (
+            {isDeleting && (
               <div className="centered-flex" style={{ marginBottom: 10 }}>
                 <div className="spinner-border">
                   <span className="sr-only">Loading...</span>
@@ -70,15 +69,15 @@ const RoomDeleteModal: React.FunctionComponent<PropsType> = ({
             )}
             <div className="input-group">
               <button
-                disabled={deleting}
+                disabled={isDeleting}
                 className="btn btn-danger btn-block btn-centered"
-                onClick={deleteRoom}
+                onClick={deleteVenueRoom}
               >
                 Yes, Delete
               </button>
               {error && <span className="input-error">{error}</span>}
               <button
-                disabled={deleting}
+                disabled={isDeleting}
                 className="btn btn-primary btn-block btn-centered"
                 onClick={closeDeleteModal}
               >

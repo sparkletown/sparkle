@@ -18,7 +18,7 @@ export const AdminSubrouter: React.FC = () => {
       {/* Admin V1 */}
 
       <Route path="/admin/venue/rooms/:venueId">
-        <Provided withWorldUsers>
+        <Provided withWorldUsers withRelatedVenues>
           <RoomsForm />
         </Provided>
       </Route>

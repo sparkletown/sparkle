@@ -20,8 +20,10 @@ import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
 import { withId } from "utils/id";
+import { venueInsideUrl } from "utils/url";
 
 import { useQuery } from "hooks/useQuery";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
@@ -118,6 +120,21 @@ export type FormValues = Yup.InferType<typeof validationSchema>;
 
 const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
   const { venue, venueId, editingRoom, editingRoomIndex } = props;
+
+  const { relatedVenues } = useRelatedVenues({ currentVenueId: venueId });
+
+  const relatedVenuesNames = useMemo(
+    () =>
+      relatedVenues.map((venue) => (
+        <option
+          key={venue.id}
+          value={window.location.origin + venueInsideUrl(venue.id)}
+        >
+          {venue.name}
+        </option>
+      )),
+    [relatedVenues]
+  );
 
   const defaultValues = useMemo(() => validationSchema.cast(editingRoom), [
     editingRoom,
@@ -305,15 +322,23 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       </span>
                     )}
                   </div>
-                  <div className="input-container">
+                  <div className="input-group dropdown-container">
                     <div className="input-title">The room url</div>
-                    <input
+                    <select
                       disabled={disable}
-                      name={"url"}
+                      name="url"
+                      id="url"
+                      className="input-group__modal-input input-group__dropdown"
                       ref={register}
-                      className="wide-input-block align-left"
-                      placeholder={"The url this room will redirect to"}
-                    />
+                    >
+                      <option
+                        selected={true}
+                        className="input-group__dropdown__hidden"
+                      >
+                        Select a room...
+                      </option>
+                      {relatedVenuesNames}
+                    </select>
                     {errors.url && (
                       <span className="input-error">{errors.url.message}</span>
                     )}
