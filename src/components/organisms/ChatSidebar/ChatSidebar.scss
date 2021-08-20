@@ -89,6 +89,17 @@ $header-height: 45px;
     &__second-icon {
       margin-left: 5px;
     }
+
+    &--new-message {
+      background-color: #f44336;
+      height: 12px;
+      width: 12px;
+      border: 2px solid rgba($saturated-black, 0.9);
+      position: absolute;
+      border-radius: $border-radius--max;
+      right: 8px;
+      bottom: 10px;
+    }
   }
 
   &__tab-content {
