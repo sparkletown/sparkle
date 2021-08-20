@@ -28,8 +28,8 @@ const initialMapIconPlacement: VenueInput["placement"] = {
 
 export interface SchemaShape {
   name: string;
-  subtitle: string;
-  description: string;
+  subtitle?: string;
+  description?: string;
 
   bannerImageUrl: string;
   logoImageUrl: string;
@@ -90,12 +90,14 @@ export const validationSchema_v2 = Yup.object()
               )
           : schema //will be set from the data from the api. Does not need to be unique
     ),
-    subtitle: Yup.string()
-      .required("Subtitle is required!")
-      .min(3, ({ min }) => mustBeMinimum("Subtitle", min)),
-    description: Yup.string()
-      .required("Description is required!")
-      .min(3, ({ min }) => mustBeMinimum("Description", min)),
+    subtitle: Yup.string().matches(/.{3,}/, {
+      excludeEmptyString: true,
+      message: mustBeMinimum("Subtitle", 3),
+    }),
+    description: Yup.string().matches(/.{3,}/, {
+      excludeEmptyString: true,
+      message: mustBeMinimum("Description", 3),
+    }),
 
     bannerImageUrl: Yup.string().required("Banner is required!"),
     logoImageUrl: Yup.string().required("Logo is required!"),
