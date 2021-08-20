@@ -81,10 +81,10 @@ export class ViewportBackgroundSystem extends System {
     this.sunKeyFramer.addKey([0, 0, 0], -1);
     this.sunKeyFramer.addKey([0, 0, 0], 25);
     this.sunKeyFramer.addKey([0, 0, 0], 4);
-    this.sunKeyFramer.addKey([0.6, 0.6, 0.6], 7);
+    this.sunKeyFramer.addKey([0.6, 0.5, 0.5], 6);
     this.sunKeyFramer.addKey([0.8, 0.8, 0.8], 12);
-    this.sunKeyFramer.addKey([0.6, 0.6, 0.6], 19);
-    this.sunKeyFramer.addKey([0, 0, 0], 20);
+    this.sunKeyFramer.addKey([0.6, 0.5, 0.5], 20);
+    this.sunKeyFramer.addKey([0, 0, 0], 22);
     this.moonKeyFramer = new KeyFramer(interpolateDayNightKeys);
     this.moonKeyFramer.addKey([0.15, 0.15, 0.2], -1);
     this.moonKeyFramer.addKey([0.15, 0.15, 0.2], 25);
