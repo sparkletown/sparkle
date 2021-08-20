@@ -16,7 +16,7 @@ import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunT
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabView.scss";
 
