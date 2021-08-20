@@ -123,7 +123,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
 
   const { relatedVenues } = useRelatedVenues({ currentVenueId: venueId });
 
-  const relatedVenuesNames = useMemo(
+  const relatedVenuesOptions = useMemo(
     () =>
       relatedVenues.map((venue) => (
         <option
@@ -331,13 +331,7 @@ const RoomInnerForm: React.FC<RoomInnerFormProps> = (props) => {
                       className="input-group__modal-input input-group__dropdown"
                       ref={register}
                     >
-                      <option
-                        selected={true}
-                        className="input-group__dropdown__hidden"
-                      >
-                        Select a room...
-                      </option>
-                      {relatedVenuesNames}
+                      {relatedVenuesOptions}
                     </select>
                     {errors.url && (
                       <span className="input-error">{errors.url.message}</span>
