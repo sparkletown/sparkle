@@ -29,11 +29,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const store = useStore();
 
   useEffect(() => {
-    if (!app &&
-      dataProvider &&
-      containerRef &&
-      containerRef.current
-    ) {
+    if (!app && dataProvider && containerRef && containerRef.current) {
       const config = venue.gameOptions
         ? new GameConfig(venue.gameOptions)
         : configs.animateMap;
