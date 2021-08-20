@@ -7,10 +7,9 @@ export const useMapBackground = (
 ): [string, boolean] => {
   const { isValid } = useCheckImage(mapBackgroundUrl ?? "");
 
-  return [
-    isValid
-      ? mapBackgroundUrl ?? DEFAULT_MAP_BACKGROUND
-      : DEFAULT_MAP_BACKGROUND,
-    isValid,
-  ];
+  const validMapBackground = isValid
+    ? mapBackgroundUrl ?? DEFAULT_MAP_BACKGROUND
+    : DEFAULT_MAP_BACKGROUND;
+
+  return [validMapBackground, isValid];
 };
