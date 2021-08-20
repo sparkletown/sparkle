@@ -112,7 +112,7 @@ export class CloudDataProvider
         data: {
           ...room,
         },
-      };
+      } as ReplicatedVenue;
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
