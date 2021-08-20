@@ -1,4 +1,4 @@
-import { Engine, System } from "@ash.ts/ash";
+import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
 import { BaseTexture, Sprite } from "pixi.js";
 import * as PIXI from "pixi.js";
@@ -9,11 +9,23 @@ import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
+//shaders
+import {
+  mapLightningShader,
+  zoomedLightningShader,
+} from "../graphics/mapLightningShader";
+import { ArtcarNode } from "../nodes/ArtcarNode";
+import { BarrelNode } from "../nodes/BarrelNode";
 
 export class ViewportBackgroundSystem extends System {
+  private barrels?: NodeList<BarrelNode>;
+  private artCars?: NodeList<ArtcarNode>;
+
   private viewport: Viewport;
-  private readonly background: Sprite;
+  public readonly background: Sprite;
   private readonly zoomed: Sprite;
+
+  private time: number = 0;
 
   private initialized = false;
   private worldDivision = 0;
@@ -29,11 +41,33 @@ export class ViewportBackgroundSystem extends System {
   constructor(viewport: Viewport) {
     super();
     this.viewport = viewport;
+
     this.background = new Sprite();
+    this.background.name = "backgroundSprite";
     this.zoomed = new Sprite();
+
+    const backgroundLightning = [mapLightningShader];
+    const zoomedLightning = [zoomedLightningShader];
+    this.zoomed.filters = backgroundLightning;
+    this.background.filters = zoomedLightning;
+
+    const lights = new Array();
+    for (let i = 0; i < 512; i++) {
+      lights[i] = i * 20;
+    }
+    const lightsCol = new Array();
+    for (let i = 0; i < 256 * 3; i++) {
+      lightsCol[i] = Math.random();
+    }
+    this.background.filters[0].uniforms.lightsPos = lights;
+    this.background.filters[0].uniforms.lightsCol = lightsCol;
+    this.zoomed.filters[0].uniforms.lightsPos = lights;
+    this.zoomed.filters[0].uniforms.lightsCol = lightsCol;
   }
 
   addToEngine(engine: Engine) {
+    this.barrels = engine.getNodeList(BarrelNode);
+    this.artCars = engine.getNodeList(ArtcarNode);
     this.setup().then(() => {
       this.setupTree();
 
@@ -48,8 +82,15 @@ export class ViewportBackgroundSystem extends System {
 
       this.viewport.addChildAt(this.zoomed, 0);
       this.viewport.addChildAt(this.background, 0);
-
       this.initialized = true;
+
+      //shaders setup
+      this.background.filters[0].uniforms.frame = [
+        this.viewport.center.x,
+        this.viewport.center.y,
+        this.viewport.worldWidth,
+        this.viewport.worldHeight,
+      ];
     });
 
     this.colorMatrixFilter();
@@ -63,6 +104,43 @@ export class ViewportBackgroundSystem extends System {
   }
 
   update(time: number) {
+    if (this.initialized) {
+      let lightQuantity = 0;
+      const lightsPos = new Array<number>();
+      //let lightsCol = new Array<number>();
+
+      for (let i = this.barrels?.head; i; i = i?.next) {
+        lightsPos[lightQuantity * 2] = i.position.x;
+        lightsPos[lightQuantity * 2 + 1] = i.position.y;
+        lightQuantity += 1;
+      }
+      for (let i = this.artCars?.head; i; i = i?.next) {
+        lightsPos[lightQuantity * 2] = i.position.x;
+        lightsPos[lightQuantity * 2 + 1] = i.position.y;
+        lightQuantity += 1;
+      }
+      this.background.filters[0].uniforms.lightsPos = lightsPos;
+      this.zoomed.filters[0].uniforms.lightsPos = lightsPos;
+      this.background.filters[0].uniforms.lightQuantity = lightQuantity;
+      this.zoomed.filters[0].uniforms.lightQuantity = lightQuantity;
+
+      this.background.filters[0].uniforms.frame = [
+        this.viewport.left,
+        this.viewport.top,
+        this.viewport.worldScreenWidth,
+        this.viewport.worldScreenHeight,
+      ];
+      this.zoomed.filters[0].uniforms.frame = [
+        this.viewport.left,
+        this.viewport.top,
+        this.viewport.worldScreenWidth,
+        this.viewport.worldScreenHeight,
+      ];
+
+      this.time += 0.01;
+      this.setDayTime(this.time);
+    }
+
     if (!this.initialized || !this.tree) {
       return;
     }
@@ -79,7 +157,6 @@ export class ViewportBackgroundSystem extends System {
       }
       return;
     }
-
     const deltaX = this.worldTileWidth;
     const deltaY = this.worldTileHeight;
     const box: Box = new Box(
@@ -138,6 +215,40 @@ export class ViewportBackgroundSystem extends System {
         }
       }
     }
+  }
+
+  /**
+   * changing the background visible time
+   * @param time in hourse [0;24)
+   */
+  setDayTime(time: number) {
+    //const ambientLight = 0.1;
+    //TODO changing
+    const light = [0.0, 0.0, 0.0];
+    const sunrise = 5.5;
+    const sunset = 18.5;
+    const moonrise = (17 + 12) % 24;
+    const moonset = (7 + 12) % 24;
+    time = time % 24;
+    const invTime = (time + 12) % 24;
+    if (time > sunrise && time < sunset) {
+      light[0] +=
+        ((Math.sin(((time - sunrise) / (sunset - sunrise)) * Math.PI) + 1) /
+          2) *
+        0.8;
+      light[1] = light[0];
+      light[2] = light[0];
+    }
+    if (invTime > moonrise && invTime < moonset) {
+      const intensity =
+        Math.sin(((invTime - moonrise) / (moonset - moonrise)) * Math.PI) + 0.5;
+      light[0] += intensity * 0.15;
+      light[1] += intensity * 0.15;
+      light[2] += intensity * 0.2;
+    }
+
+    this.background.filters[0].uniforms.ambientLight = light;
+    this.zoomed.filters[0].uniforms.ambientLight = light;
   }
 
   colorMatrixFilter() {
