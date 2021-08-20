@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
+import { isEqual } from "lodash";
 
 import { IS_BURN } from "secrets";
 
 import { useInterval } from "hooks/useInterval";
 
-import "./loading.scss";
+import { ReactComponent as DiamondSvg } from "assets/icons/loading-diamond.svg";
+import { ReactComponent as PlayaSvg } from "assets/icons/loading-playa.svg";
+
+import "./LoadingPage.scss";
 
 const quotes = IS_BURN
   ? [
@@ -27,30 +31,27 @@ const quotes = IS_BURN
     ]
   : ["Loading..."];
 
-export const LoadingPage = () => {
+const _LoadingPage = () => {
   const [quote, setQuote] = useState("Loading...");
 
   useInterval(
-    () => {
+    useCallback(() => {
       setQuote(quotes[Math.floor(Math.random() * quotes.length)]);
-    },
+    }, []),
     IS_BURN ? 1000 : undefined
   );
 
   return (
-    <div className="loading-screen">
-      <div className="loading-content">
-        <div className="burningman-loading-container">
-          <span className="loading-sparkle-1" />
-          <span className="loading-sparkle-2" />
-          <div className="burningman-loading">
-            <div className="burningman-loading-anim" />
-          </div>
+    <div className="LoadingPage">
+      <div className="LoadingPage__wrapper">
+        <div className="LoadingPage__logo-container">
+          <DiamondSvg className="LoadingPage__diamond" />
+          <PlayaSvg />
         </div>
-        <span className={`loading-randomquote ${quote && "show"}`}>
-          {quote}
-        </span>
+        <span className={`LoadingPage__text`}>{quote}</span>
       </div>
     </div>
   );
 };
+
+export const LoadingPage = React.memo(_LoadingPage, isEqual);
