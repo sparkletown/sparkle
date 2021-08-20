@@ -316,12 +316,14 @@ const createVenueData_v2 = (data, context) => {
 };
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, updated) => {
-  if (data.subtitle) {
+const createBaseUpdateVenueData = (data, doc) => {
+  const updated = doc.data();
+
+  if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
-  if (data.description) {
+  if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description;
   }
 
@@ -407,6 +409,8 @@ const createBaseUpdateVenueData = (data, updated) => {
   if (data.showNametags) {
     updated.showNametags = data.showNametags;
   }
+
+  return updated;
 };
 
 const dataOrUpdateKey = (data, updated, key) =>
@@ -593,11 +597,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue_v2
-  const updated = doc.data();
-
-  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
@@ -694,11 +694,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue
-  const updated = doc.data();
-
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt in updateVenue we're checking/creating the updated.config object here if needed.
   //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?

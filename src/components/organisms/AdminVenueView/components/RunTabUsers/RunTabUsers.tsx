@@ -9,7 +9,7 @@ import { VenueOwnersModal } from "pages/Admin/VenueOwnersModal";
 import { RunTabUserInfo } from "components/organisms/AdminVenueView/components/RunTabUserInfo";
 import { SearchField } from "components/organisms/AdminVenueView/components/SearchField/SearchField";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabUsers.scss";
 

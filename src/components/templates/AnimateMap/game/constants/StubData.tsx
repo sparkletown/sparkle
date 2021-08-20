@@ -1,9 +1,6 @@
 import { uuid } from "uuidv4";
 
-import {
-  AnimateMapEntityType,
-  ReplicatedUser,
-} from "store/reducers/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { getRandomInt } from "utils/getRandomInt";
 
@@ -23,11 +20,10 @@ export const stubUsersData = () => {
     const x = getRandomInt(config.worldWidth - paddingH * 2) + paddingH;
     const y = getRandomInt(config.worldHeight - paddingV * 2) + paddingV;
     users.set(i.toString(), {
-      id: uuid(),
-      type: AnimateMapEntityType.user,
       x,
       y,
       data: {
+        id: uuid(),
         videoUrlString: "",
         avatarUrlString: `/avatars/default-profile-pic-${
           getRandomInt(3) + 1
