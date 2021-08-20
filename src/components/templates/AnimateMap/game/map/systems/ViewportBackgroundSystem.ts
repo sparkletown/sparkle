@@ -9,6 +9,7 @@ import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
 import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
+import { KeyFramer } from "../../utils/KeyFramer";
 //shaders
 import {
   mapLightningShader,
@@ -24,6 +25,8 @@ export class ViewportBackgroundSystem extends System {
   private viewport: Viewport;
   public readonly background: Sprite;
   private readonly zoomed: Sprite;
+  private sunKeyFramer: KeyFramer;
+  private moonKeyFramer: KeyFramer;
 
   private time: number = 0;
 
@@ -50,11 +53,6 @@ export class ViewportBackgroundSystem extends System {
     const zoomedLightning = [zoomedLightningShader];
     this.zoomed.filters = backgroundLightning;
     this.background.filters = zoomedLightning;
-
-    const lights = new Array();
-    for (let i = 0; i < 512; i++) {
-      lights[i] = i * 20;
-    }
     const lightsCol = new Array();
     const koef = new Array();
     for (let i = 0; i < 256; i++) {
@@ -64,13 +62,36 @@ export class ViewportBackgroundSystem extends System {
       koef[i * 2] = 0.027; // linear component
       koef[i * 2 + 1] = 0.0028; // quadratic component
     }
-
-    this.background.filters[0].uniforms.lightsPos = lights;
     this.background.filters[0].uniforms.lightsCol = lightsCol;
     this.background.filters[0].uniforms.koef = koef;
-    this.zoomed.filters[0].uniforms.lightsPos = lights;
     this.zoomed.filters[0].uniforms.lightsCol = lightsCol;
     this.background.filters[0].uniforms.koef = koef;
+
+    const interpolateDayNightKeys = (
+      left: Array<number>,
+      right: Array<number>,
+      time: number
+    ) => {
+      const r = (right[0] - left[0]) * time + left[0];
+      const g = (right[1] - left[1]) * time + left[1];
+      const b = (right[2] - left[2]) * time + left[2];
+      return [r, g, b];
+    };
+    this.sunKeyFramer = new KeyFramer(interpolateDayNightKeys);
+    this.sunKeyFramer.addKey([0, 0, 0], -1);
+    this.sunKeyFramer.addKey([0, 0, 0], 25);
+    this.sunKeyFramer.addKey([0, 0, 0], 4);
+    this.sunKeyFramer.addKey([0.6, 0.6, 0.6], 7);
+    this.sunKeyFramer.addKey([0.8, 0.8, 0.8], 12);
+    this.sunKeyFramer.addKey([0.6, 0.6, 0.6], 19);
+    this.sunKeyFramer.addKey([0, 0, 0], 20);
+    this.moonKeyFramer = new KeyFramer(interpolateDayNightKeys);
+    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], -1);
+    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], 25);
+    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], 4);
+    this.moonKeyFramer.addKey([0, 0, 0], 7);
+    this.moonKeyFramer.addKey([0, 0, 0], 19);
+    this.moonKeyFramer.addKey([0.1, 0.1, 0.12], 20);
   }
 
   addToEngine(engine: Engine) {
@@ -100,8 +121,6 @@ export class ViewportBackgroundSystem extends System {
         this.viewport.worldHeight,
       ];
     });
-
-    this.colorMatrixFilter();
   }
 
   removeFromEngine(engine: Engine) {
@@ -232,29 +251,14 @@ export class ViewportBackgroundSystem extends System {
   setDayTime(time: number) {
     //const ambientLight = 0.1;
     //TODO changing
-    const light = [0.0, 0.0, 0.0];
-    const sunrise = 5.5;
-    const sunset = 18.5;
-    const moonrise = (17 + 12) % 24;
-    const moonset = (7 + 12) % 24;
-    time = time % 24;
-    const invTime = (time + 12) % 24;
-    if (time > sunrise && time < sunset) {
-      light[0] +=
-        ((Math.sin(((time - sunrise) / (sunset - sunrise)) * Math.PI) + 1) /
-          2) *
-        0.8;
-      light[1] = light[0];
-      light[2] = light[0];
-    }
-    if (invTime > moonrise && invTime < moonset) {
-      const intensity =
-        Math.sin(((invTime - moonrise) / (moonset - moonrise)) * Math.PI) + 0.5;
-      light[0] += intensity * 0.15;
-      light[1] += intensity * 0.15;
-      light[2] += intensity * 0.2;
-    }
 
+    time = time % 24;
+
+    const sunLight = this.sunKeyFramer.getFrame(time);
+    const moonLight = this.moonKeyFramer.getFrame(time);
+    console.log(moonLight);
+    const light = [0, 0, 0];
+    for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
     this.background.filters[0].uniforms.ambientLight = light;
     this.zoomed.filters[0].uniforms.ambientLight = light;
   }
