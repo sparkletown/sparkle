@@ -3,7 +3,11 @@ import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
+import {
+  PlayerModel,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
@@ -11,7 +15,12 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
-import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
+import {
+  artcars,
+  barrels,
+  MAP_JSON,
+  sounds,
+} from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
@@ -286,11 +295,11 @@ export class MapContainer extends Container {
             for (let i = 0; i < firebarrels.length; i++) {
               const firebarrel = firebarrels[i];
 
-              this.entityFactory.createBarrel(
-                firebarrel.id,
-                firebarrel.x,
-                firebarrel.y
-              );
+              this.entityFactory.createBarrel({
+                x: firebarrel.x,
+                y: firebarrel.y,
+                data: { url: firebarrel.id, image_url: barrels[0] },
+              } as ReplicatedVenue);
             }
           }
         }
@@ -327,6 +336,15 @@ export class MapContainer extends Container {
         return Promise.resolve();
       })
       .then(() => {
+        if (this.entityFactory) {
+          const venue = GameInstance.instance.dataProvider.venuesData;
+          venue.forEach((venue) => {
+            this.entityFactory?.createVenue(venue);
+          });
+        }
+        return Promise.resolve();
+      })
+      .then(() => {
         return new TimeoutCommand(1000).execute();
       })
       // .then(() => {
@@ -351,7 +369,7 @@ export class MapContainer extends Container {
             for (let i = 0; i < artcars.length; i++) {
               await new Promise((resolve) => {
                 const user: PlayerModel = new PlayerModel();
-                user.id = `${i}${Date.now()}`;
+                user.data.id = `${i}${Date.now()}`;
                 user.data.avatarUrlString = artcars[i];
                 self.entityFactory?.createArtcar(user);
                 setTimeout(() => {
