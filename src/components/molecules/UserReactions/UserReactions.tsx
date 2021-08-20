@@ -1,9 +1,5 @@
 import React, { useMemo } from "react";
-import { useCss } from "react-use";
 import classNames from "classnames";
-import { getSeconds } from "date-fns";
-
-import { REACTION_TIMEOUT } from "settings";
 
 import {
   EmojiReactionType,
@@ -21,8 +17,6 @@ import { Reaction } from "components/atoms/Reaction";
 
 import "./UserReactions.scss";
 
-const REACTION_TIMEOUT_CSS = `${getSeconds(REACTION_TIMEOUT)}s`;
-
 export interface UserReactionsProps {
   userId: string;
   isMuted?: boolean;
@@ -33,7 +27,6 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
   userId,
   isMuted: isMutedLocally = false,
   reactionPosition,
-  children,
 }) => {
   // @debt some of the redux patterns exist for this, but I don't believe anything actually uses them/calls this at the moment. Used in MapPartygoersOverlay
   const isMutedGlobally = useSelector((state) => state.room.mute);
@@ -43,47 +36,41 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     userId,
   });
 
-  const { renderedEmojiReactions, userShoutout } = useMemo(() => {
-    const userUniqueEmojiReactions = userReactions.reduce(
-      uniqueEmojiReactionsDataMapReducer,
-      new Map()
+  const { userUniqueEmojiReactions, userShoutout } = useMemo(() => {
+    const userUniqueEmojiReactions = Array.from(
+      userReactions
+        .reduce(uniqueEmojiReactionsDataMapReducer, new Map())
+        .values()
     );
-
-    const renderedEmojiReactions = Array.from(
-      userUniqueEmojiReactions.values()
-    ).map((emojiReaction) => (
-      <DisplayEmojiReaction
-        key={emojiReaction.type}
-        emojiReaction={emojiReaction}
-        isMuted={isMuted}
-      />
-    ));
 
     const userShoutout = userReactions.find(isTextReaction);
 
-    return { renderedEmojiReactions, userShoutout };
-  }, [isMuted, userReactions]);
-
-  const containerVars = useCss({
-    "--user-reactions-reaction-timeout": REACTION_TIMEOUT_CSS,
-  });
+    return { userUniqueEmojiReactions, userShoutout };
+  }, [userReactions]);
 
   const containerClasses = classNames(
     "UserReactions",
-    `UserReactions--reaction-${reactionPosition}`,
-    containerVars
+    `UserReactions--reaction-${reactionPosition}`
   );
 
+  const hasReactions = userUniqueEmojiReactions.length > 0 || userShoutout;
   return (
-    <div className={containerClasses}>
-      {children}
-
-      {renderedEmojiReactions}
-
-      {userShoutout && (
-        <div className="UserReactions__shout">{userShoutout.text}</div>
+    <>
+      {hasReactions && (
+        <div className={containerClasses}>
+          {userUniqueEmojiReactions.map((emojiReaction) => (
+            <DisplayEmojiReaction
+              key={emojiReaction.type}
+              emojiReaction={emojiReaction}
+              isMuted={isMuted}
+            />
+          ))}
+          {userShoutout && (
+            <div className="UserReactions__shout">{userShoutout.text}</div>
+          )}
+        </div>
       )}
-    </div>
+    </>
   );
 };
 
