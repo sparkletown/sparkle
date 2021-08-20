@@ -2,10 +2,11 @@ import { skipToken } from "@reduxjs/toolkit/dist/query/react";
 
 import { useWorldUsersQueryState } from "store/api";
 
-import { User, UserLocation } from "types/User";
+import { User } from "types/User";
 
 import { WithId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
+import { getUserLocationData } from "utils/user";
 
 import { useUserLastSeenThreshold } from "hooks/useUserLastSeenThreshold";
 
@@ -50,19 +51,19 @@ export const useVisitedLocationsUser = ({
       const recentLocationUsers = locationNames?.map((location) => {
         const [, childLocation] = location.split("/");
         const result = worldUsers.filter((user) => {
-          const userLocation: WithId<UserLocation> | undefined =
-            worldUserLocationsById[user.id];
-
-          const userLastSeenIn = Object.keys(userLocation.lastSeenIn)[0];
+          const { isLocationMatch, userLastSeenLocation } = getUserLocationData(
+            {
+              worldUserLocationsById,
+              user,
+              location,
+              childLocation,
+            }
+          );
 
           return (
-            userLastSeenIn &&
-            (userLastSeenIn.includes(location) ||
-              userLastSeenIn.includes(childLocation)) &&
-            normalizeTimestampToMilliseconds(
-              userLocation.lastSeenIn?.[location] ||
-                userLocation.lastSeenIn?.[childLocation]
-            ) > lastSeenThreshold
+            isLocationMatch &&
+            normalizeTimestampToMilliseconds(userLastSeenLocation) >
+              lastSeenThreshold
           );
         });
 
