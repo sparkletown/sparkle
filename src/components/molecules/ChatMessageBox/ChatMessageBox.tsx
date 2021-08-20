@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { faPaperPlane, faSmile } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { EmojiData } from "emoji-mart";
 
@@ -15,6 +14,7 @@ import { useShowHide } from "hooks/useShowHide";
 
 import { EmojiPicker } from "components/molecules/EmojiPicker";
 
+import { ButtonNG } from "components/atoms/ButtonNG";
 import { InputField } from "components/atoms/InputField";
 
 import "./ChatMessageBox.scss";
@@ -100,7 +100,8 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
 
   const placeholderValue = isQuestion ? "question" : "message";
 
-  const buttonClasses = classNames("Chatbox__submit-button", {
+  const buttonClasses = classNames({
+    "Chatbox__submit-button": true,
     "Chatbox__submit-button--question": isQuestion,
   });
 
@@ -110,37 +111,35 @@ export const ChatMessageBox: React.FC<ChatMessageBoxProps> = ({
         className="Chatbox__form"
         onSubmit={hasChosenThread ? sendReplyToThread : sendMessageToChat}
       >
-        <InputField
-          inputClassName="Chatbox__input"
-          ref={register({ required: true })}
-          name="message"
-          placeholder={`Write your ${placeholderValue}...`}
-          autoComplete="off"
-        />
-        <button
-          aria-label="Send message"
-          className="Chatbox__submit-button"
-          type="button"
-          onClick={toggleEmojiPicker}
-        >
-          <FontAwesomeIcon
-            icon={faSmile}
-            className="Chatbox__submit-button-icon"
-            size="lg"
+        <div className="Chatbox__inputs">
+          <InputField
+            inputClassName="Chatbox__input"
+            ref={register({ required: true })}
+            name="message"
+            placeholder={`Write your ${placeholderValue}...`}
+            autoComplete="off"
           />
-        </button>
-        <button
-          aria-label="Send message"
-          className={buttonClasses}
-          type="submit"
-          disabled={!chatValue || isSendingMessage}
-        >
-          <FontAwesomeIcon
-            icon={faPaperPlane}
-            className="Chatbox__submit-button-icon"
-            size="lg"
+          <ButtonNG
+            aria-label="Send message"
+            className="Chatbox__emoji-button"
+            onClick={toggleEmojiPicker}
+            iconOnly={true}
+            iconName={faSmile}
+            iconSize="1x"
           />
-        </button>
+        </div>
+        <div className="Chatbox__buttons">
+          <ButtonNG
+            aria-label="Send message"
+            className={buttonClasses}
+            type="submit"
+            disabled={!chatValue || isSendingMessage}
+            variant="primary"
+            iconOnly={true}
+            iconName={faPaperPlane}
+            iconSize="1x"
+          />
+        </div>
       </form>
 
       {isEmojiPickerVisible && (

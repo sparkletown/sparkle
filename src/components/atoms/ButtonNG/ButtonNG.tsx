@@ -51,6 +51,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconOnly = false,
   iconName,
   iconSize = "1x",
+  ...extraProps
 }) => {
   const parentClasses = classNames({
     "ButtonNG ButtonNG__link": isLink,
@@ -72,7 +73,12 @@ export const ButtonNG: React.FC<ButtonProps> = ({
 
   if (loading) {
     return (
-      <button className={parentClasses} style={style} type={type}>
+      <button
+        className={parentClasses}
+        style={style}
+        type={type}
+        {...extraProps}
+      >
         <FontAwesomeIcon
           icon={faCircleNotch}
           spin
@@ -90,6 +96,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         style={style}
         to={disabled ? "#" : linkTo}
         {...getExtraLinkProps(newTab && !disabled)}
+        {...extraProps}
       >
         {iconName && (
           <FontAwesomeIcon
@@ -110,6 +117,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      {...extraProps}
     >
       {iconName && (
         <FontAwesomeIcon
