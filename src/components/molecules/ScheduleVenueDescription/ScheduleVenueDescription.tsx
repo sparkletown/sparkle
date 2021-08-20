@@ -4,6 +4,7 @@ import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
+import { useCheckImageWithFallback } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -21,7 +22,10 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     currentVenueId: venueId,
   });
 
-  const venueIcon = sovereignVenue?.host?.icon ?? DEFAULT_VENUE_LOGO;
+  const [venueIcon] = useCheckImageWithFallback(
+    sovereignVenue?.host?.icon,
+    DEFAULT_VENUE_LOGO
+  );
 
   const containerCssVars = useCss({
     "--venue-picture--background-image": `url(${venueIcon})`,
