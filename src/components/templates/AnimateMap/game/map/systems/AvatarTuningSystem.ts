@@ -97,7 +97,7 @@ export class AvatarTuningSystem extends System {
     if (
       this.player &&
       this.player.head &&
-      this.player.head.player.data.id === node.tuning.user.id
+      this.player.head.player.data.data.id === node.tuning.user.data.id
     ) {
       if (view.cycle && view.cycle.parent) {
         view.cycle.parent.removeChild(view.cycle);
