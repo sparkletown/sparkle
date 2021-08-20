@@ -68,9 +68,10 @@ $video-participant-optimal-height: 195px;
   }
 
   &__participants {
-    position: absolute;
     display: flex;
     flex-direction: row;
+    height: 100%;
+    padding: 20px;
 
     .firebarrel-room__participant {
       margin: 0 0.25rem;

@@ -7,6 +7,8 @@ import { WithId } from "utils/id";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
+import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
+import { UIOverlay } from "./components/UIOverlay/UIOverlay";
 import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
@@ -27,7 +29,11 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
   const store = useStore();
 
   useEffect(() => {
-    if (!app && dataProvider && containerRef && containerRef.current) {
+    if (!app &&
+      dataProvider &&
+      containerRef &&
+      containerRef.current
+    ) {
       const config = venue.gameOptions
         ? new GameConfig(venue.gameOptions)
         : configs.animateMap;
@@ -53,10 +59,27 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
     };
   }, [app]);
 
+  const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
+
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
-        <UIOverlayGrid venue={venue} />
+        <UIOverlay venue={venue}>
+          <div className="UIOverlay__main">
+            <UIOverlayGrid venue={venue} />
+          </div>
+          <div
+            className={
+              "UIOverlay__bottom-panel" +
+              (showFirebarrelFlag ? " UIOverlay__bottom-panel--show" : "")
+            }
+          >
+            <FirebarrelProvider
+              venue={venue}
+              onConnectChange={(value) => setShowFirebarrelFlag(value)}
+            />
+          </div>
+        </UIOverlay>
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />
       <CloudDataProviderWrapper

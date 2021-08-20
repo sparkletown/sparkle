@@ -3,18 +3,18 @@
   height: 100%;
   padding: 10px 19px 22px 26px;
   display: grid;
-  grid-template-columns: 34px 230px 1fr 4fr 1fr 287px;
-  grid-template-rows: 1fr 1fr 160px 34px 100px 34px;
+  grid-template-columns: 34px 1fr 4fr 1fr 287px 34px;
+  grid-template-rows: 1fr 1fr 1fr 1fr 160px 34px;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
 
   grid-template-areas:
     "test test test test test test"
     ". . . . . ."
-    "zoom . . . . ."
-    "center . . . . ."
     ". . . . . ."
-    ". . . tooltip . mute";
+    ". . . . . ."
+    ". . . . . zoom"
+    ". . . tooltip . center";
 
   &__zoom {
     grid-area: zoom;
@@ -30,24 +30,6 @@
 
   &__tooltip {
     grid-area: tooltip;
-  }
-
-  &--firebarrel-widget-on {
-    grid-template-rows: 1fr 1fr 160px 34px 100px 34px 150px;
-
-    grid-template-areas:
-      "test test test test test test"
-      ". . . . . ."
-      "zoom . . . . ."
-      "center . . . . ."
-      ". . . . . ."
-      ". . . tooltip . mute"
-      "firebarrel firebarrel firebarrel firebarrel firebarrel firebarrel";
-  }
-
-  &__firebarrel-widget {
-    grid-area: firebarrel;
-    background: rgba(0, 255, 208, 0.73);
   }
 
   &__test {

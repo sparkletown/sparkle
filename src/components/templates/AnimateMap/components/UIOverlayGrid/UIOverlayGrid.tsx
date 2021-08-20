@@ -19,7 +19,6 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
-import { FirebarrelProvider } from "../FirebarrelWidget/FirebarrelProvider";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
@@ -60,44 +59,40 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
   });
 
   return (
-    <div className="UIOverlayGrid">
-      {firstEntrance !== "false" && <WelcomePopUp />}
+    <div className="UIOverlay">
+      <div className="UIOverlayGrid">
+        {firstEntrance !== "false" && <WelcomePopUp />}
 
-      <RoomModal
-        room={selectedRoom}
-        venue={venue}
-        show={hasSelectedRoom}
-        onHide={unselectRoom}
-      />
+        <RoomModal
+          room={selectedRoom}
+          venue={venue}
+          show={hasSelectedRoom}
+          onHide={unselectRoom}
+        />
 
-      <div className="UIOverlayGrid__zoom">
-        <UIContainer venue={venue}>
-          <ControlPanel />
-        </UIContainer>
-      </div>
+        <div className="UIOverlayGrid__zoom">
+          <UIContainer venue={venue}>
+            <ControlPanel />
+          </UIContainer>
+        </div>
 
-      <div className="UIOverlayGrid__center">
-        <UIContainer venue={venue}>
-          <SingleButton
-            onClick={() =>
-              eventProvider.emit(EventType.UI_SINGLE_BUTTON_FOLLOW)
-            }
-            icon={CentreIcon}
-            alt="map-icon"
-          />
-        </UIContainer>
-      </div>
+        <div className="UIOverlayGrid__center">
+          <UIContainer venue={venue}>
+            <SingleButton
+              onClick={() =>
+                eventProvider.emit(EventType.UI_SINGLE_BUTTON_FOLLOW)
+              }
+              icon={CentreIcon}
+              alt="map-icon"
+            />
+          </UIContainer>
+        </div>
 
-      <div className="UIOverlayGrid__tooltip">
-        <UIContainer venue={venue} disableInteractive>
-          <TooltipWidget />
-        </UIContainer>
-      </div>
-
-      <div className="UIOverlayGrid__firebarrel-widget">
-        <UIContainer venue={venue}>
-          <FirebarrelProvider venue={venue} />
-        </UIContainer>
+        <div className="UIOverlayGrid__tooltip">
+          <UIContainer venue={venue} disableInteractive>
+            <TooltipWidget />
+          </UIContainer>
+        </div>
       </div>
     </div>
   );
