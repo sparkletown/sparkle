@@ -1,5 +1,6 @@
 @import "scss/constants.scss";
 
+$menu-item-size: 32px;
 $border-radius: 28px;
 
 .navbar-links-user-avatar {
@@ -243,19 +244,43 @@ $border-radius: 28px;
 }
 
 .NavBar {
-  &__home-icon {
+  &__home--icon {
     cursor: pointer;
     font-size: 24px;
 
     margin-right: $spacing--md;
-
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
-    }
   }
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__menu {
+    &--volume.mute {
+      opacity: 0.5;
+      box-shadow: 0 0 0 2px rgba($white, 1);
+    }
+
+    &--link {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba($white, 1);
+      opacity: 0.8;
+      border: none;
+      border-radius: $border-radius--max;
+      width: $menu-item-size;
+      height: $menu-item-size;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-right: $spacing--sm;
+
+      &:focus {
+        box-shadow: 0 0 0 2px #fff;
+        outline: none;
+        opacity: 1;
+      }
+    }
   }
 }

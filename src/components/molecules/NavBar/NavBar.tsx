@@ -7,8 +7,14 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHome,
+  faTicketAlt,
+  faVolumeMute,
+  faVolumeUp,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -141,6 +147,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+  const handleMute = useCallback(
+    (volume: number) => (volume !== 0 ? 0 : 100),
+    []
+  );
+  const toggleMute = useCallback(() => setVolume(handleMute), [
+    handleMute,
+    setVolume,
+  ]);
+  const volumeIcon = !volume ? faVolumeMute : faVolumeUp;
+  const volumeControlClassname = classNames(
+    "NavBar__menu--link NavBar__menu--volume",
+    {
+      mute: !volume,
+    }
+  );
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -222,7 +243,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
                   icon={faHome}
-                  className="NavBar__home-icon"
+                  className="NavBar__home--icon"
                   onClick={navigateToHomepage}
                 />
               )}
@@ -326,6 +347,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
+                <button className={volumeControlClassname} onClick={toggleMute}>
+                  <FontAwesomeIcon icon={volumeIcon} />
+                </button>
                 <div
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
