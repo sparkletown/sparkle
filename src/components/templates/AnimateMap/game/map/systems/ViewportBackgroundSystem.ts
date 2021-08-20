@@ -12,6 +12,7 @@ import { GameInstance } from "../../GameInstance";
 import { KeyFramer } from "../../utils/KeyFramer";
 //shaders
 import {
+  LightSize,
   mapLightningShader,
   zoomedLightningShader,
 } from "../graphics/mapLightningShader";
@@ -55,12 +56,14 @@ export class ViewportBackgroundSystem extends System {
     this.background.filters = zoomedLightning;
     const lightsCol = new Array();
     const koef = new Array();
+    const lightSizer = new LightSize();
     for (let i = 0; i < 256; i++) {
       lightsCol[3 * i] = Math.random();
       lightsCol[3 * i + 1] = Math.random();
       lightsCol[3 * i + 2] = Math.random();
-      koef[i * 2] = 0.027; // linear component
-      koef[i * 2 + 1] = 0.0028; // quadratic component
+      const size = lightSizer.getFrame(200);
+      koef[i * 2] = size[0]; // linear component
+      koef[i * 2 + 1] = size[1]; // quadratic component
     }
     this.background.filters[0].uniforms.lightsCol = lightsCol;
     this.background.filters[0].uniforms.koef = koef;
