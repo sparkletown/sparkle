@@ -5,6 +5,10 @@
 }
 
 .ScheduleEventSubListNG {
+  &_transparent {
+    background-color: transparent;
+  }
+
   &__title {
     margin-bottom: $spacing--lg;
 

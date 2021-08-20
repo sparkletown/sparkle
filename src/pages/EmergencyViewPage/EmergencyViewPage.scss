@@ -1,0 +1,317 @@
+@import "scss/constants.scss";
+
+.venue-entrance-experience-container {
+  height: 0px;
+
+  .count-down-container {
+    font-size: 15px;
+  }
+
+  .playa-container {
+    overflow: hidden;
+    position: relative;
+
+    .playa-abs-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      .playa-icon {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border-radius: 28px;
+        overflow: hidden;
+      }
+
+      .playa-icon-container {
+        position: relative;
+      }
+
+      .playa-venue-preview {
+        position: absolute;
+        top: -200px;
+        right: -600px;
+        width: 550px;
+        height: 600px;
+        background-color: black;
+        overflow: auto;
+        border-radius: 20px;
+      }
+    }
+  }
+
+  .login-invitation {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+  .quotation-container {
+    display: flex;
+    flex-direction: column;
+    color: $white;
+    align-items: center;
+    margin-bottom: 10px;
+
+    .quotation {
+      font-weight: 500;
+      font-size: 18px;
+      margin-bottom: 5px;
+      text-align: center;
+    }
+    .quotation-author {
+      font-size: 13px;
+    }
+  }
+
+  .toast {
+    position: absolute;
+    max-width: none;
+    width: 40%;
+    margin: auto;
+    background: $light-green;
+    color: $black;
+
+    .toast-header {
+      background: $dark-green;
+      color: $black;
+      display: flex;
+      justify-content: space-between;
+
+      button {
+        color: $black;
+        opacity: 0.7;
+        margin: 0;
+        outline: none;
+        border: none;
+
+        &:focus {
+          outline: none;
+          border: none;
+        }
+      }
+    }
+  }
+
+  .toast-container {
+    position: absolute;
+    width: 100%;
+    top: 60px;
+    right: 0px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    object-fit: cover;
+
+    .secret-password-form-wrapper {
+      background: rgba($black, 0.75);
+      padding: 20px;
+      width: 250px;
+      margin-right: 40px;
+      margin-bottom: 30px;
+      border-radius: 22px;
+    }
+
+    .venue-host {
+      margin: 30px 50px;
+
+      .title {
+        font-size: 50px;
+      }
+
+      .subtitle {
+        font-size: 20px;
+      }
+    }
+
+    .countdown {
+      font-weight: 400;
+      display: block;
+      font-style: italic;
+    }
+  }
+
+  .venue-presentation {
+    padding: 20px;
+
+    .presentation-paragraph {
+      color: $concrete;
+    }
+
+    .check-icon-container {
+      margin-right: 10px;
+      color: $primaryColor;
+      font-size: 25px;
+    }
+
+    .checklist-item {
+      margin: 20px 0;
+      display: flex;
+      font-size: 18px;
+      align-items: center;
+      font-weight: 500;
+    }
+
+    .youtube-video {
+      border-radius: 22px;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.oncoming-events {
+  .upcoming-gigs-title {
+    margin: 20px 0;
+    font-size: 25px;
+    font-weight: 700;
+  }
+  h4 {
+    font-size: 30px;
+    font-style: italic;
+  }
+  .date {
+    font-size: 15px;
+    color: $white;
+    margin-bottom: 5px;
+  }
+  .event-description {
+    margin-bottom: 20px;
+    font-size: 15px;
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .disabled {
+    background: rgba($dark, 0.6);
+  }
+  .information-card-container {
+    margin-bottom: 20px;
+    &:last-child {
+      margin-bottom: 50px;
+    }
+  }
+}
+
+.EmergencyView {
+  width: 100%;
+  height: 100%;
+  background-color: opaque-black(0.8);
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+
+  &__weekdays {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 30px;
+
+    &__column {
+      width: 33%;
+      display: flex;
+      flex-direction: column;
+      padding-left: 90px;
+      cursor: default;
+
+      .ScheduleItemNG {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &_tabs {
+    display: flex;
+    margin: 0 auto;
+    width: 15%;
+    justify-content: space-around;
+    font-size: 20px;
+    font-weight: 900;
+    margin-top: 22px;
+    cursor: pointer;
+
+    &_item {
+      height: 35px;
+
+      &--active {
+        border-bottom: 3px solid $primary--live;
+      }
+    }
+  }
+
+  &_venue {
+    margin: 14px;
+    font-weight: 900;
+    font-size: 16px;
+  }
+
+  &_content {
+    display: flex;
+
+    &_room {
+      height: 170px;
+      width: 180px;
+      border-radius: 12px;
+      background-color: opaque-white(0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 14px;
+
+      &_info {
+        display: flex;
+        width: 90%;
+        margin-top: 8px;
+
+        &_status {
+          display: flex;
+          background-color: $primary--live;
+          border-radius: 12px;
+          padding: 8px;
+          width: 60px;
+          height: 30px;
+          align-items: center;
+          justify-content: center;
+        }
+
+        &_audience {
+          display: flex;
+          background-color: opaque-white(0.2);
+          border-radius: 12px;
+          padding: 8px;
+          width: 60px;
+          height: 30px;
+          justify-content: space-around;
+          margin-left: auto;
+          span {
+            font-size: 12px;
+          }
+        }
+      }
+
+      &_body {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        &_image {
+          width: 100px;
+          height: 70px;
+          padding: 4px;
+        }
+      }
+    }
+  }
+}
