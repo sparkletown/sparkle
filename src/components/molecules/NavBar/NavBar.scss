@@ -2,6 +2,7 @@
 
 $menu-item-size: 32px;
 $border-radius: 28px;
+$volume-popover-width: 259px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -243,7 +244,28 @@ $border-radius: 28px;
   }
 }
 
+#volume-popover {
+  height: unset;
+  padding: $spacing--lg;
+  width: $volume-popover-width;
+}
+
 .NavBar {
+  &__volume--control {
+    margin-bottom: $spacing--md;
+
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    span {
+      min-width: 80px;
+      font-size: $font-size--xxs;
+      line-height: 18px;
+    }
+  }
+
   &__home--icon {
     cursor: pointer;
     font-size: 24px;
@@ -251,36 +273,25 @@ $border-radius: 28px;
     margin-right: $spacing--md;
   }
 
-  &__profile-popover {
-    height: 100%;
-  }
+  &__menu--link {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba($white, 1);
+    opacity: 0.8;
+    border: none;
+    border-radius: $border-radius--max;
+    width: $menu-item-size;
+    height: $menu-item-size;
 
-  &__menu {
-    &--volume.mute {
-      opacity: 0.5;
-      box-shadow: 0 0 0 2px rgba($white, 1);
-    }
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
-    &--link {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba($white, 1);
-      opacity: 0.8;
-      border: none;
-      border-radius: $border-radius--max;
-      width: $menu-item-size;
-      height: $menu-item-size;
+    margin-right: $spacing--sm;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      margin-right: $spacing--sm;
-
-      &:focus {
-        box-shadow: 0 0 0 2px #fff;
-        outline: none;
-        opacity: 1;
-      }
+    &:focus {
+      box-shadow: 0 0 0 2px #fff;
+      outline: none;
+      opacity: 1;
     }
   }
 }

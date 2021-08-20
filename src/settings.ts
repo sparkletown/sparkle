@@ -733,3 +733,7 @@ export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 export const EVENTS_PREVIEW_LIST_LENGTH = 5;
 
 export const BM_PARENT_ID = "playa";
+
+export const DEFAULT_NOTIFICATIONS_VOLUME: number = 100;
+export const MIN_VOLUME: number = 0;
+export const MAX_VOLUME: number = 100;

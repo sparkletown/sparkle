@@ -1,6 +1,8 @@
 import React, { useCallback } from "react";
 import { Button } from "react-bootstrap";
 
+import { VolumeControl } from "components/atoms/VolumeControl";
+
 import "./RadioModal.scss";
 
 export interface RadioModalPropsType {
@@ -34,15 +36,7 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
         src={"/radio-icon-color.png"}
         alt="radio-icon"
       />
-      <input
-        type="range"
-        id="vol"
-        name="vol"
-        min="0"
-        max="100"
-        onChange={(ev) => setVolume(Number(ev.target.value))}
-        value={volume}
-      />
+      <VolumeControl volume={volume} setVolume={setVolume} name="vol" />
     </>
   );
 

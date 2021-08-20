@@ -10,11 +10,9 @@ import { useHistory } from "react-router-dom";
 import {
   faHome,
   faTicketAlt,
-  faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -34,6 +32,7 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useVolumeControl } from "hooks/useVolumeControl";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
@@ -45,6 +44,7 @@ import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { VolumeControl } from "components/atoms/VolumeControl";
 
 import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
@@ -144,24 +144,24 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
         : undefined,
     [hasRadioStations, isSoundCloud, radioStations]
   );
+  console.log(sound);
 
+  // TODO: define Ambient Noise, Notifications, Interactions volumes in right way
+  // There is the radio volume control to manage Ambient Noise as an example
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
-  const handleMute = useCallback(
-    (volume: number) => (volume !== 0 ? 0 : 100),
-    []
-  );
-  const toggleMute = useCallback(() => setVolume(handleMute), [
-    handleMute,
-    setVolume,
-  ]);
-  const volumeIcon = !volume ? faVolumeMute : faVolumeUp;
-  const volumeControlClassname = classNames(
-    "NavBar__menu--link NavBar__menu--volume",
-    {
-      mute: !volume,
-    }
-  );
+
+  // Notifications volume control
+  const {
+    volume: notificationsVolume,
+    volumeCallback: setNotificationsVolume,
+  } = useVolumeControl();
+
+  // Interactions volume control
+  const {
+    volume: interactionsVolume,
+    volumeCallback: setInteractionsVolume,
+  } = useVolumeControl();
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -347,9 +347,47 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     </S.RadioWrapper>
                   </S.RadioTrigger>
                 )}
-                <button className={volumeControlClassname} onClick={toggleMute}>
-                  <FontAwesomeIcon icon={volumeIcon} />
-                </button>
+
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={
+                    <Popover id="volume-popover">
+                      <Popover.Content>
+                        <div className="NavBar__volume--control">
+                          <span>Ambient Noise</span>
+                          <VolumeControl
+                            volume={volume}
+                            setVolume={setVolume}
+                            name="noise"
+                          />
+                        </div>
+                        <div className="NavBar__volume--control">
+                          <span>Notifications</span>
+                          <VolumeControl
+                            volume={notificationsVolume}
+                            setVolume={setNotificationsVolume}
+                            name="notifications"
+                          />
+                        </div>
+                        <div className="NavBar__volume--control">
+                          <span>Interactions</span>
+                          <VolumeControl
+                            volume={interactionsVolume}
+                            setVolume={setInteractionsVolume}
+                            name="interactions"
+                          />
+                        </div>
+                      </Popover.Content>
+                    </Popover>
+                  }
+                  rootClose={true}
+                >
+                  <button className="NavBar__menu--link">
+                    <FontAwesomeIcon icon={faVolumeUp} />
+                  </button>
+                </OverlayTrigger>
+
                 <div
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
