@@ -19,13 +19,12 @@
     }
 
     &::-webkit-scrollbar {
-      width: $spacing--sm;
-      height: $spacing--sm;
+      @include square-size($spacing--sm);
       background-color: opaque-black(0);
     }
 
     &::-webkit-scrollbar-thumb {
-      border-radius: 4px;
+      border-radius: $border-radius--xs;
       background-color: opaque-white(0.3);
     }
 
