@@ -12,7 +12,7 @@ export interface Room {
   type?: RoomType;
   zIndex?: number;
   title: string;
-  subtitle?: string;
+  subtitle: string;
   url: string;
   about: string;
   x_percent: number;
