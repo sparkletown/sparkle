@@ -49,7 +49,7 @@ export class GameInstance {
   constructor(
     private _config: GameConfig,
     private _store: Store,
-    private _dataProvider: DataProvider,
+    public dataProvider: DataProvider,
     private _containerElement: HTMLDivElement,
     private _pictureUrl?: string
   ) {
@@ -106,7 +106,7 @@ export class GameInstance {
   }
 
   private async fillPlayerData(point: Point) {
-    return this._dataProvider.initPlayerPositionAsync(point.x, point.y);
+    return this.dataProvider.initPlayerPositionAsync(point.x, point.y);
   }
 
   public async start(): Promise<void> {
@@ -155,8 +155,8 @@ export class GameInstance {
   private update(dt: number) {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
-    if (position) this._dataProvider.setPlayerPosition(position.x, position.y);
-    this._dataProvider.update(dt);
+    if (position) this.dataProvider.setPlayerPosition(position.x, position.y);
+    this.dataProvider.update(dt);
     this._mapContainer?.update(dt);
     if (Date.now() % 200 === 0) {
       //TODO: can find better decision? Possibly resize on rerender?
@@ -233,7 +233,7 @@ export class GameInstance {
       }
     );
 
-    this._dataProvider.on(
+    this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
         this._mapContainer?.entityFactory?.createVenue(venue);

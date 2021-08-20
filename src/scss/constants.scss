@@ -137,6 +137,9 @@ $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 $image-input-border--error: 2px solid red;
 
+$venue-rooms-editor-background-placeholder-box-shadow: 0px 6px 12px
+  opaque-black(0.25);
+$venue-rooms-editor-background: #292c33;
 $loading-page-background-color: linear-gradient(
     0deg,
     rgba(124, 70, 251, 0.15),

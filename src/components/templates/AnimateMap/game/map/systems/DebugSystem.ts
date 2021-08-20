@@ -190,7 +190,7 @@ export class DebugSystem extends System {
       node = node?.next
     ) {
       if (Math.random() < 0.01) {
-        this.creator.createBubble(node.bot.data.id, "Hello from debug!!!");
+        this.creator.createBubble(node.bot.data.data.id, "Hello from debug!!!");
         return;
       }
     }
@@ -244,7 +244,7 @@ export class DebugSystem extends System {
   private venueAdded = (node: VenueNode) => {
     const g: Graphics = new Graphics();
     g.position.set(node.position.x, node.position.y);
-    g.name = node.venue.model.id;
+    g.name = node.venue.model.data.url;
     g.beginFill(0x0000ff);
     g.drawCircle(0, 0, node.collision.radius);
     g.endFill();
@@ -256,7 +256,7 @@ export class DebugSystem extends System {
     const displayObject:
       | DisplayObject
       | null
-      | undefined = this.container?.getChildByName(node.venue.model.id);
+      | undefined = this.container?.getChildByName(node.venue.model.data.url);
     if (displayObject) {
       this.container?.removeChild();
     }

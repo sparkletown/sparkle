@@ -79,7 +79,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
         width_percent: 5,
         height_percent: 5,
         isEnabled: true,
-        image_url: venue.data.imageUrlString,
+        image_url: venue.data.image_url,
       };
       state.itemsData[current].status = "active";
       state.itemsData[next].status = null;
