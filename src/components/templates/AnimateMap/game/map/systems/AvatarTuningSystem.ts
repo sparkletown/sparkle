@@ -62,6 +62,8 @@ export class AvatarTuningSystem extends System {
   }
 
   update(time: number) {
+    this.updatePlayerDirections();
+
     if (!this.zoomChanged) {
       return;
     }
@@ -86,6 +88,24 @@ export class AvatarTuningSystem extends System {
 
   private handlePlayerRemoved = (node: PlayerNode) => {
     this.creator.removePlayerTuning(node);
+  };
+
+  private updatePlayerDirections = () => {
+    if (
+      this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_FLYING &&
+      this.player &&
+      this.player.head &&
+      this.player.head.movement.velocityX !== 0
+    ) {
+      const sprite = (this.player.head.sprite.view as Avatar).cycle;
+      if (sprite) {
+        const scaleY = Math.abs(sprite.scale.y);
+        const scaleX =
+          scaleY * (this.player.head.movement.velocityX > 0 ? 1 : -1);
+        // console.log(sprite.scale.x, sprite.scale.y, scaleX, this.player.head.movement.velocityX)
+        sprite.scale.set(scaleX, scaleY);
+      }
+    }
   };
 
   private handleAvatarAdded = (node: AvatarTuningNode) => {

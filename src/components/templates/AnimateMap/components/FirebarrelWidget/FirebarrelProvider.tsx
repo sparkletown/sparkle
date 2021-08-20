@@ -12,10 +12,12 @@ import { FirebarrelWidget } from "./FirebarrelWidget";
 
 export interface FirebarrelProviderProps {
   venue: AnimateMapVenue;
+  onConnectChange: (isConnected: boolean) => void;
 }
 
 export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
   venue,
+  onConnectChange,
 }) => {
   const [selectedFirebarrel, setSelectedFirebarrel] = useState<
     string | undefined
@@ -25,6 +27,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
     const unsubscribe = subscribeActionAfter(
       AnimateMapActionTypes.SET_FIREBARREL,
       (action) => {
+        onConnectChange(typeof selectedFirebarrel === "string");
         setSelectedFirebarrel(
           (action as setAnimateMapFireBarrelAction).payload.roomId
         );

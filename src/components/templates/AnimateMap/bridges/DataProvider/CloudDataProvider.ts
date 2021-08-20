@@ -50,7 +50,7 @@ export class CloudDataProvider
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
     firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId?: string
+    readonly playerioGameId: string
   ) {
     super();
 
