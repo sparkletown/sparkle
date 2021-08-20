@@ -8,11 +8,13 @@ import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
+import { AnimateMapOnboardFlow } from "components/organisms/AnimateMapOnboardFlow";
+
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
-import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
+import { UIOverlayGrid } from "./components";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -69,6 +71,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   return (
     <div className="AnimateMap">
+      <AnimateMapOnboardFlow />
       <div className="AnimateMap__ui-wrapper">
         <FirebarrelProvider venue={venue} />
         <UIOverlayGrid venue={venue} />
