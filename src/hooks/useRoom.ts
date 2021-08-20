@@ -36,7 +36,6 @@ export const useRoom = ({ room, venueName }: UseRoomProps) => {
 
   const { recentLocationUsers } = useRecentLocationUsers({
     locationName: roomSlug,
-    isSingleObj: true,
   });
 
   const enterRoom = useCallback(() => {
