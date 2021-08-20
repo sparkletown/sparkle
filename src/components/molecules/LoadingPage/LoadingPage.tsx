@@ -59,7 +59,7 @@ const _LoadingPage = () => {
               "LoadingPage__diamond--animation": animate,
             })}
           />
-          <PlayaSvg className="LoadingPage__playa" />
+          <PlayaSvg />
         </div>
         <span className={`LoadingPage__text`}>{quote}</span>
       </div>
