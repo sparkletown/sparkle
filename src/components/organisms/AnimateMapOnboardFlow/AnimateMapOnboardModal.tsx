@@ -4,25 +4,22 @@ import classNames from "classnames";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import { AnimateMapOnboardFlowProps } from "./AnimateMapOnboardFlowProps";
-
 import "./AnimateMapOnboardModal.scss";
 
-export interface AnimateMapOnboardModalContentProps {
+export interface AnimateMapOnboardModalProps {
   className?: string;
   descriptionBottom?: string;
   descriptionTop?: string;
   disabledNext?: boolean;
   nextText?: string;
+  onNext?: () => void;
+  onSkip?: () => void;
   posterAlt?: string;
   posterSrc?: string;
   show?: boolean;
   skipText?: string;
   title?: string;
 }
-
-export type AnimateMapOnboardModalProps = AnimateMapOnboardFlowProps &
-  AnimateMapOnboardModalContentProps;
 
 export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
   className = "",
