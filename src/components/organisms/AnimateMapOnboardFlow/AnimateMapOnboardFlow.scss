@@ -1,4 +1,8 @@
-@import "scss/constants.scss";
+@import "scss/constants";
 
 .AnimateMapOnboardFlow {
+  &__step-video .AnimateMapOnboardModal__children {
+    display: grid;
+    place-items: center;
+  }
 }
