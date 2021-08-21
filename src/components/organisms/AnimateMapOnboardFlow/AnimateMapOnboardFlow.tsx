@@ -8,9 +8,8 @@ import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
 import { DeviceVideo } from "components/atoms/DeviceVideo";
+import { OnboardingModal } from "components/atoms/OnboardingModal";
 import { SvgLoop } from "components/atoms/SvgLoop";
-
-import { AnimateMapOnboardModal } from "./AnimateMapOnboardModal";
 
 // This flow works only for VenueTemplate.animatemap ATM
 const TEMPLATE = VenueTemplate.animatemap;
@@ -57,7 +56,7 @@ export const AnimateMapOnboardFlow: React.FC = () => {
 
   return (
     <>
-      <AnimateMapOnboardModal
+      <OnboardingModal
         show={step === BASE_STEP}
         onNext={next}
         onSkip={skip}
@@ -68,8 +67,8 @@ export const AnimateMapOnboardFlow: React.FC = () => {
           You need to allow the use of your microphone and camera to get started
           on the playa !
         </div>
-      </AnimateMapOnboardModal>
-      <AnimateMapOnboardModal
+      </OnboardingModal>
+      <OnboardingModal
         show={step === BASE_STEP + 1}
         onNext={next}
         onSkip={skip}
@@ -77,8 +76,8 @@ export const AnimateMapOnboardFlow: React.FC = () => {
         title="Information on the playa"
       >
         <SvgLoop delay={DELAY} sources={INFORMATION_SOURCES} />
-      </AnimateMapOnboardModal>
-      <AnimateMapOnboardModal
+      </OnboardingModal>
+      <OnboardingModal
         show={step === BASE_STEP + 2}
         onNext={finish}
         onSkip={skip}
@@ -87,7 +86,7 @@ export const AnimateMapOnboardFlow: React.FC = () => {
         nextText="Enter"
       >
         <SvgLoop delay={DELAY} sources={INTERACTION_SOURCES} />
-      </AnimateMapOnboardModal>
+      </OnboardingModal>
     </>
   );
 };

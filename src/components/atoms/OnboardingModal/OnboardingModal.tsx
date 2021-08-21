@@ -4,9 +4,9 @@ import classNames from "classnames";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
-import "./AnimateMapOnboardModal.scss";
+import "./OnboardingModal.scss";
 
-export interface AnimateMapOnboardModalProps {
+export interface OnboardingModalProps {
   className?: string;
   descriptionBottom?: string;
   descriptionTop?: string;
@@ -21,7 +21,7 @@ export interface AnimateMapOnboardModalProps {
   title?: string;
 }
 
-export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
+export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   className = "",
   descriptionBottom,
   descriptionTop,
@@ -45,7 +45,7 @@ export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
     <Modal
       centered
       dialogClassName={classNames({
-        "AnimateMapOnboardModal AnimateMapOnboardModal__dialog ": true,
+        "OnboardingModal OnboardingModal__dialog ": true,
         [className]: className,
       })}
       show={true}
@@ -55,33 +55,31 @@ export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
         )
       }
     >
-      <Modal.Title className="AnimateMapOnboardModal__title">
-        {title}
-      </Modal.Title>
-      <Modal.Body className="AnimateMapOnboardModal__body">
+      <Modal.Title className="OnboardingModal__title">{title}</Modal.Title>
+      <Modal.Body className="OnboardingModal__body">
         {descriptionTop && (
-          <div className="AnimateMapOnboardModal__description AnimateMapOnboardModal__description-top">
+          <div className="OnboardingModal__description OnboardingModal__description-top">
             {descriptionTop}
           </div>
         )}
         {posterSrc && (
           <img
-            className="AnimateMapOnboardModal__poster"
+            className="OnboardingModal__poster"
             alt={posterAlt}
             src={posterSrc}
           />
         )}
-        <div className="AnimateMapOnboardModal__children">{children}</div>
+        <div className="OnboardingModal__children">{children}</div>
         {descriptionBottom && (
-          <div className="AnimateMapOnboardModal__description AnimateMapOnboardModal__description-bottom">
+          <div className="OnboardingModal__description OnboardingModal__description-bottom">
             {descriptionBottom}
           </div>
         )}
       </Modal.Body>
-      <Modal.Footer className="AnimateMapOnboardModal__footer">
+      <Modal.Footer className="OnboardingModal__footer">
         {onSkip && (
           <ButtonNG
-            className="AnimateMapOnboardModal__button-next"
+            className="OnboardingModal__button-next"
             title={skipText}
             onClick={onSkip}
             isLink={true}
@@ -91,7 +89,7 @@ export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
         )}
         {onNext && (
           <ButtonNG
-            className="AnimateMapOnboardModal__button-next"
+            className="OnboardingModal__button-next"
             title={nextText}
             onClick={onNext}
             variant="primary"
