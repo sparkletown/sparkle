@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, filters, Sprite } from "pixi.js";
+import { BaseTexture, Container, filters, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -14,7 +14,6 @@ import {
   mapLightningShader,
   moonKeyFramer,
   sunKeyFramer,
-  zoomedLightningShader,
 } from "../graphics/shaders/mapLightningShader";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { BarrelNode } from "../nodes/BarrelNode";
@@ -24,6 +23,7 @@ export class ViewportBackgroundSystem extends System {
   private artCars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
+  private readonly backContainer: PIXI.Container;
   public readonly background: Sprite;
   private readonly zoomed: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
@@ -46,6 +46,7 @@ export class ViewportBackgroundSystem extends System {
     super();
     this.viewport = viewport;
 
+    this.backContainer = new Container();
     this.background = new Sprite();
     this.background.name = "backgroundSprite";
     this.zoomed = new Sprite();
@@ -55,9 +56,7 @@ export class ViewportBackgroundSystem extends System {
 
   public initLighting() {
     const backgroundLightning = [mapLightningShader];
-    const zoomedLightning = [zoomedLightningShader];
-    this.zoomed.filters = backgroundLightning;
-    this.background.filters = zoomedLightning;
+    this.backContainer.filters = backgroundLightning;
     const lightsCol = [];
     const koef = [];
     const lightSizer = new LightSize();
@@ -69,10 +68,8 @@ export class ViewportBackgroundSystem extends System {
       koef[i * 2] = size[0]; // linear component
       koef[i * 2 + 1] = size[1]; // quadratic component
     }
-    this.background.filters[0].uniforms.lightsCol = lightsCol;
-    this.background.filters[0].uniforms.koef = koef;
-    this.zoomed.filters[0].uniforms.lightsCol = lightsCol;
-    this.background.filters[0].uniforms.koef = koef;
+    this.backContainer.filters[0].uniforms.lightsCol = lightsCol;
+    this.backContainer.filters[0].uniforms.koef = koef;
   }
 
   addToEngine(engine: Engine) {
@@ -90,12 +87,14 @@ export class ViewportBackgroundSystem extends System {
       this.background.addChild(back);
       this.background.interactive = true;
 
-      this.viewport.addChildAt(this.zoomed, 0);
-      this.viewport.addChildAt(this.background, 0);
+      this.viewport.addChildAt(this.backContainer, 0);
+
+      this.backContainer.addChildAt(this.zoomed, 0);
+      this.backContainer.addChildAt(this.background, 0);
       this.initialized = true;
 
       //shaders setup
-      this.background.filters[0].uniforms.frame = [
+      this.backContainer.filters[0].uniforms.frame = [
         this.viewport.center.x,
         this.viewport.center.y,
         this.viewport.worldWidth,
@@ -115,7 +114,6 @@ export class ViewportBackgroundSystem extends System {
     if (this.initialized) {
       let lightQuantity = 0;
       const lightsPos = new Array<number>();
-      //let lightsCol = new Array<number>();
 
       for (let i = this.barrels?.head; i; i = i?.next) {
         lightsPos[lightQuantity * 2] = i.position.x;
@@ -127,18 +125,10 @@ export class ViewportBackgroundSystem extends System {
         lightsPos[lightQuantity * 2 + 1] = i.position.y;
         lightQuantity += 1;
       }
-      this.background.filters[0].uniforms.lightsPos = lightsPos;
-      this.zoomed.filters[0].uniforms.lightsPos = lightsPos;
-      this.background.filters[0].uniforms.lightQuantity = lightQuantity;
-      this.zoomed.filters[0].uniforms.lightQuantity = lightQuantity;
+      this.backContainer.filters[0].uniforms.lightsPos = lightsPos;
+      this.backContainer.filters[0].uniforms.lightQuantity = lightQuantity;
 
-      this.background.filters[0].uniforms.frame = [
-        this.viewport.left,
-        this.viewport.top,
-        this.viewport.worldScreenWidth,
-        this.viewport.worldScreenHeight,
-      ];
-      this.zoomed.filters[0].uniforms.frame = [
+      this.backContainer.filters[0].uniforms.frame = [
         this.viewport.left,
         this.viewport.top,
         this.viewport.worldScreenWidth,
@@ -239,8 +229,7 @@ export class ViewportBackgroundSystem extends System {
     const moonLight = this.moonKeyFramer.getFrame(time);
     const light = [0, 0, 0];
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
-    this.background.filters[0].uniforms.ambientLight = light;
-    this.zoomed.filters[0].uniforms.ambientLight = light;
+    this.backContainer.filters[0].uniforms.ambientLight = light;
   }
 
   colorMatrixFilter() {

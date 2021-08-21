@@ -19,12 +19,6 @@ export const mapLightningShader = new Filter(vertShader, fragShader, {
   koef: [0.027, 0.0028],
 });
 
-export const zoomedLightningShader = new Filter(vertShader, fragShader, {
-  ambientLight: [0.15, 0.15, 0.2],
-  frame: [0, 0, 100, 100],
-  koef: [0.027, 0.0028],
-});
-
 export class LightSize extends KeyFramer {
   constructor() {
     super((a, b, size) => {
