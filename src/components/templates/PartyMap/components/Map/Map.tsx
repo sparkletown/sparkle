@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FirebaseReducer } from "react-redux-firebase";
 
 import {
-  DEFAULT_MAP_BACKGROUND,
   MAXIMUM_PARTYMAP_COLUMNS_COUNT,
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
 } from "settings";
@@ -21,6 +20,7 @@ import { setLocationData } from "utils/userLocation";
 
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
+import { useMapBackground } from "hooks/useMapBackground";
 import { useRecentVenueUsers } from "hooks/users";
 
 // @debt refactor these hooks into somewhere more sensible
@@ -69,11 +69,11 @@ export const Map: React.FC<MapProps> = ({
   );
   const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
 
+  const [mapBackgroundUrl] = useMapBackground(venue?.mapBackgroundImageUrl);
+
   useEffect(() => {
     const img = new Image();
-    img.src = venue.mapBackgroundImageUrl
-      ? venue.mapBackgroundImageUrl
-      : DEFAULT_MAP_BACKGROUND;
+    img.src = mapBackgroundUrl;
     img.onload = () => {
       const imgRatio = img.width ? img.width / img.height : 1;
 
@@ -83,7 +83,7 @@ export const Map: React.FC<MapProps> = ({
 
       setTotalRows(calcRows);
     };
-  }, [venue.columns, venue.mapBackgroundImageUrl]);
+  }, [mapBackgroundUrl, venue.columns]);
 
   const takeSeat = useCallback(
     (gridPosition: GridPosition) => {
@@ -228,7 +228,7 @@ export const Map: React.FC<MapProps> = ({
         <img
           width="100%"
           className="party-map-background"
-          src={venue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND}
+          src={mapBackgroundUrl}
           alt=""
         />
         {hasRows && (
