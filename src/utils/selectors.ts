@@ -3,6 +3,7 @@ import { FirebaseReducer } from "react-redux-firebase";
 import { RootState } from "store";
 import { SovereignVenueState } from "store/reducers/SovereignVenue";
 
+import { ArtCar, Firebarrel } from "types/animateMap";
 import { AuditoriumSection } from "types/auditorium";
 import { ChatSettings, PrivateChatMessage, VenueChatMessage } from "types/chat";
 import { Experience } from "types/Firestore";
@@ -141,6 +142,14 @@ export const posterVenuesSelector: SparkleSelector<
 export const screeningRoomVideosSelector: SparkleSelector<
   WithId<ScreeningRoomVideo>[] | undefined
 > = (state) => state.firestore.ordered.screeningRoomVideos;
+
+export const animateMapFirebarrelsSelector: SparkleSelector<
+  WithId<Firebarrel>[] | undefined
+> = (state) => state.firestore.ordered.animatemapFirebarrels;
+
+export const animateMapArtCarsSelector: SparkleSelector<
+  WithId<ArtCar>[] | undefined
+> = (state) => state.firestore.ordered.animatemapArtcars;
 
 /**
  * Selector to retrieve sovereignVenueId state from the Redux store.

@@ -1,10 +1,8 @@
 import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
-import { uuid } from "uuidv4";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
-  AnimateMapEntityType,
   PlayerModel,
   ReplicatedUser,
   ReplicatedVenue,
@@ -15,7 +13,7 @@ import { Point } from "types/utility";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles, barrels, HALO } from "../../constants/AssetConstants";
+import { avatarCycles, HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
@@ -83,7 +81,7 @@ export default class EntityFactory {
       bot;
       bot = bot.next
     ) {
-      if (bot.bot.data.id === id) {
+      if (bot.bot.data.data.id === id) {
         return bot;
       }
     }
@@ -406,7 +404,7 @@ export default class EntityFactory {
             // add tooltip
             entity.add(
               new TooltipComponent(
-                `bot id: ${user.id}`.slice(0, 15) + "...",
+                `bot id: ${user.data.id}`.slice(0, 15) + "...",
                 15,
                 "top"
               )
@@ -466,7 +464,7 @@ export default class EntityFactory {
   public removeBotById(id: string) {
     const list: NodeList<BotNode> = this.engine.getNodeList(BotNode);
     for (let bot: BotNode | null | undefined = list.head; bot; bot = bot.next) {
-      if (bot.bot.data.id === id) {
+      if (bot.bot.data.data.id === id) {
         this.removeBot(bot.entity);
         return;
       }
@@ -476,7 +474,7 @@ export default class EntityFactory {
   public updateBotPosition(user: ReplicatedUser, x: number, y: number) {
     const list: NodeList<BotNode> = this.engine.getNodeList(BotNode);
     for (let bot = list.head; bot; bot = bot.next) {
-      if (bot.bot.data.id === user.id) {
+      if (bot.bot.data.data.id === user.data.id) {
         bot.bot.fsm.changeState("idle");
         bot.bot.fsm.changeState("moving");
         const node: MotionBotControlNode = this.engine.getNodeList(
@@ -493,7 +491,7 @@ export default class EntityFactory {
     let bot: BotNode | null = this.getBotNode(userId);
     if (!bot) {
       const player: PlayerModel = new PlayerModel();
-      player.id = userId;
+      player.data.id = userId;
       player.x = x;
       player.y = y;
       this.createBot(player, true);
@@ -520,27 +518,8 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(
-    id: string,
-    x: number,
-    y: number,
-    venue?: ReplicatedVenue
-  ): Entity {
+  public createBarrel(venue: ReplicatedVenue): Entity {
     const config = GameInstance.instance.getConfig();
-
-    if (!venue) {
-      venue = {
-        id: uuid(),
-        type: AnimateMapEntityType.venue,
-        x: x,
-        y: y,
-        data: {
-          videoUrlString: "",
-          url: "",
-          imageUrlString: barrels[0],
-        },
-      };
-    }
 
     const collisionRadius = config.venueDefaultCollisionRadius / 2;
 
@@ -553,7 +532,7 @@ export default class EntityFactory {
         new HoverableSpriteComponent(
           () => {
             const tooltip: TooltipComponent = new TooltipComponent(
-              `Join ${id}`,
+              `Join ${venue.data.url}`,
               0
             );
             tooltip.textColor = 0xffffff;
@@ -595,7 +574,7 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(venue.data.imageUrlString)
+    new LoadImage(venue.data.image_url)
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -612,7 +591,7 @@ export default class EntityFactory {
           entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
 
         const sprite: Barrel = new Barrel();
-        sprite.name = id;
+        sprite.name = venue.data.url;
         sprite.barrel = Sprite.from(comm.canvas);
         sprite.barrel.anchor.set(0.5);
         sprite.addChild(sprite.barrel);
@@ -646,7 +625,7 @@ export default class EntityFactory {
             // add tooltip
             entity.add(
               new TooltipComponent(
-                ("venue id: " + venue.id).slice(0, 15) + "..."
+                ("venue id: " + venue.data.title).slice(0, 15) + "..."
               )
             );
             // add increase
@@ -682,16 +661,16 @@ export default class EntityFactory {
         new ClickableSpriteComponent(() => {
           GameInstance.instance.getStore().dispatch(
             setAnimateMapRoom({
-              title: "Title " + venue.data.url.slice(4),
-              subtitle: "Subtitle ",
+              title: venue.data.title,
+              subtitle: venue.data.subtitle,
               url: venue.data.url,
-              about: "about text #",
+              about: venue.data.about,
               x_percent: 50,
               y_percent: 50,
               width_percent: 5,
               height_percent: 5,
-              isEnabled: true,
-              image_url: venue.data.imageUrlString,
+              isEnabled: venue.data.isEnabled,
+              image_url: venue.data.image_url,
             })
           );
         })
@@ -700,7 +679,7 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(venue.data.imageUrlString)
+    new LoadImage(venue.data.image_url)
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {

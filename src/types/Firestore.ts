@@ -11,6 +11,8 @@ import { WithId } from "utils/id";
 
 import { AdminRole } from "hooks/roles";
 
+import { ArtCar, Firebarrel } from "./animateMap";
+
 export interface Experience {
   reactions: Record<string, Reaction>;
   tables: Record<string, Record<string, Table>>;
@@ -65,6 +67,8 @@ export interface FirestoreData {
   playaVenues?: Record<string, AnyVenue>; // for the admin playa preview
   reactions?: Record<string, Reaction>;
   screeningRoomVideos: Record<string, ScreeningRoomVideo>;
+  animatemapFirebarrels: Partial<Record<string, Firebarrel>>;
+  animatemapArtcars: Partial<Record<string, ArtCar>>;
   // @debt this doesn't appear to be used by anything anymore
   // userModalVisits?: Record<string, UserVisit>;
   userRoles?: Record<string, Role>;
@@ -96,6 +100,8 @@ export interface FirestoreOrdered {
   screeningRoomVideos: WithId<ScreeningRoomVideo>[];
   siblingVenues?: WithId<AnyVenue>[];
   siblingVenueEvents?: WithId<VenueEvent>[];
+  animatemapFirebarrels: WithId<Firebarrel>[];
+  animatemapArtcars: WithId<ArtCar>[];
   // @debt this doesn't appear to be used by anything anymore
   // statsOnlineUsers?: WithId<User>[];
   // statsOpenVenues?: WithId<AnyVenue>[];
