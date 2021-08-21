@@ -19,7 +19,7 @@ const NO_STEP = Infinity;
 const BASE_STEP = 0;
 
 // time in ms before next SVG is displayed
-const DELAY = 3000;
+const DELAY = 4000;
 
 // images for the first modal
 const INFORMATION_SOURCES = [
