@@ -8,18 +8,22 @@ import { useRoom } from "hooks/useRoom";
 type EmergencyViewRoomProps = {
   room: Room;
   venueName: string;
+  isLive: boolean;
 };
 
 const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   room,
   venueName,
+  isLive,
 }) => {
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
   return (
     <div className="EmergencyView_content_room">
       <div className="EmergencyView_content_room_info">
-        <span className="EmergencyView_content_room_info_status">Live</span>
+        {isLive && (
+          <span className="EmergencyView_content_room_info_status">Live</span>
+        )}
         <div className="EmergencyView_content_room_info_audience">
           <FontAwesomeIcon icon={faUserFriends} size="sm" />
           <span>{recentRoomUsers.length}</span>

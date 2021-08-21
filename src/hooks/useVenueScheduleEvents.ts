@@ -48,7 +48,6 @@ const useVenueScheduleEvents = ({
   } = useVenueEvents({
     venueIds: relatedVenueIds,
   });
-
   const liveAndFutureEvents = useMemo(
     () =>
       relatedVenueEvents.filter(isEventLiveOrFuture).map(
