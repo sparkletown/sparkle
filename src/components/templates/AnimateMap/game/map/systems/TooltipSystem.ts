@@ -69,13 +69,16 @@ export class TooltipSystem extends System {
 
   private updateTooltipElementPosition(node: TooltipNode) {
     if (!this.viewport?.head) return console.error();
+    if (!node.sprite.view) {
+      return;
+    }
 
     const point: Point = node.sprite.view.toGlobal({ x: 0, y: 0 });
 
     // TODO HACK
     const tooltipHeight = 40;
-    const collisionRadius = node.tooltip.collisionRadius;
-    const k = collisionRadius * this.viewport.head.viewport.zoomViewport;
+    const k =
+      node.tooltip.collisionRadius * this.viewport.head.viewport.zoomViewport;
     const delta =
       (k + tooltipHeight / 2) * (node.tooltip.position === "bottom" ? 1 : -1);
 

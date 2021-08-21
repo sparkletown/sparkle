@@ -1,20 +1,19 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
-import { useFirebase } from "react-redux-firebase";
 
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
-import { useUser } from "hooks/useUser";
-
 import { AnimateMapOnboardFlow } from "components/organisms/AnimateMapOnboardFlow";
 
+import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
+import { UIOverlay } from "./components/UIOverlay/UIOverlay";
+import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
-import { UIOverlayGrid } from "./components";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -24,26 +23,15 @@ export interface AnimateMapProps {
 }
 
 export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
+  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
+    null
+  );
   const [app, setApp] = useState<GameInstance | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const firebase = useFirebase();
   const store = useStore();
-  const user = useUser();
 
   useEffect(() => {
-    if (
-      !app &&
-      containerRef &&
-      containerRef.current &&
-      typeof user.userId === "string"
-    ) {
-      const dataProvider = new CloudDataProvider(
-        user.userId,
-        user.profile?.pictureUrl,
-        firebase,
-        venue.playerioGameId
-      );
-
+    if (!app && dataProvider && containerRef && containerRef.current) {
       const config = venue.gameOptions
         ? new GameConfig(venue.gameOptions)
         : configs.animateMap;
@@ -57,11 +45,11 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
       game
         .init()
         .then(() => game.start())
-        .catch((error) => console.log(error));
+        .catch(console.error);
 
       setApp(game);
     }
-  }, [containerRef, app, firebase, store, user, venue]);
+  }, [containerRef, app, dataProvider, store, venue]);
 
   useEffect(() => {
     return () => {
@@ -69,14 +57,34 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
     };
   }, [app]);
 
+  const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
+
   return (
     <div className="AnimateMap">
       <AnimateMapOnboardFlow />
       <div className="AnimateMap__ui-wrapper">
-        <FirebarrelProvider venue={venue} />
-        <UIOverlayGrid venue={venue} />
+        <UIOverlay venue={venue}>
+          <div className="UIOverlay__main">
+            <UIOverlayGrid venue={venue} />
+          </div>
+          <div
+            className={
+              "UIOverlay__bottom-panel" +
+              (showFirebarrelFlag ? " UIOverlay__bottom-panel--show" : "")
+            }
+          >
+            <FirebarrelProvider
+              venue={venue}
+              onConnectChange={(value) => setShowFirebarrelFlag(value)}
+            />
+          </div>
+        </UIOverlay>
       </div>
       <div ref={containerRef} className="AnimateMap__app-wrapper" />
+      <CloudDataProviderWrapper
+        venue={venue}
+        newDataProviderCreate={setDataProvider}
+      />
     </div>
   );
 };
