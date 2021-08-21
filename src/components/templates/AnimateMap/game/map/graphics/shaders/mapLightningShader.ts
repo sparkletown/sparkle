@@ -1,43 +1,56 @@
-import * as PIXI from "pixi.js";
+import { Filter } from "pixi.js";
 
-import { KeyFramer } from "../../../utils/KeyFramer";
+import {
+  KeyFramer,
+  LinearInterpolationCallback,
+} from "../../../utils/KeyFramer";
 
 import fragShader from "./fsColorMatrix.glsl";
+import {
+  LIGHT_KEYFRAMES,
+  MOON_KEYFRAMES,
+  SUN_KEYFRAMES,
+} from "./KeyframesConfigs";
 import vertShader from "./vsColorMatrix.glsl";
 
-const mapLightningShader = new PIXI.Filter(vertShader, fragShader, {
+export const mapLightningShader = new Filter(vertShader, fragShader, {
   ambientLight: [0.15, 0.15, 0.2],
   frame: [0, 0, 9000, 9000],
   koef: [0.027, 0.0028],
 });
-const zoomedLightningShader = new PIXI.Filter(vertShader, fragShader, {
+
+export const zoomedLightningShader = new Filter(vertShader, fragShader, {
   ambientLight: [0.15, 0.15, 0.2],
   frame: [0, 0, 100, 100],
   koef: [0.027, 0.0028],
 });
-export { mapLightningShader, zoomedLightningShader };
 
 export class LightSize extends KeyFramer {
   constructor() {
-    super((a: Array<number>, b: Array<number>, size: number) => {
+    super((a, b, size) => {
       const l = (b[0] - a[0]) * size + a[0];
       const q = (b[1] - a[1]) * size + a[1];
       return [l, q];
-    });
-
-    this.addKey([0.7, 2], 0);
-    this.addKey([0.7, 1.8], 7);
-    this.addKey([0.35, 0.44], 13);
-    this.addKey([0.22, 0.2], 20);
-    this.addKey([0.14, 0.07], 32);
-    this.addKey([0.09, 0.032], 50);
-    this.addKey([0.07, 0.017], 65);
-    this.addKey([0.045, 0.0075], 100);
-    this.addKey([0.027, 0.0028], 160);
-    this.addKey([0.022, 0.0019], 200);
-    this.addKey([0.014, 0.0007], 325);
-    this.addKey([0.007, 0.0002], 600);
-    this.addKey([0.0014, 0.000007], 3250);
-    this.addKey([0.0014, 0.000007], Infinity);
+    }, LIGHT_KEYFRAMES);
   }
 }
+
+const interpolateDayNightKeys: LinearInterpolationCallback = (
+  left,
+  right,
+  time
+) => {
+  const r = (right[0] - left[0]) * time + left[0];
+  const g = (right[1] - left[1]) * time + left[1];
+  const b = (right[2] - left[2]) * time + left[2];
+  return [r, g, b];
+};
+
+export const sunKeyFramer = new KeyFramer(
+  interpolateDayNightKeys,
+  SUN_KEYFRAMES
+);
+export const moonKeyFramer = new KeyFramer(
+  interpolateDayNightKeys,
+  MOON_KEYFRAMES
+);

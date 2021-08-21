@@ -1,7 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, Sprite } from "pixi.js";
-import * as PIXI from "pixi.js";
+import { BaseTexture, filters, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -13,6 +12,8 @@ import { KeyFramer } from "../../utils/KeyFramer";
 import {
   LightSize,
   mapLightningShader,
+  moonKeyFramer,
+  sunKeyFramer,
   zoomedLightningShader,
 } from "../graphics/shaders/mapLightningShader";
 import { ArtcarNode } from "../nodes/ArtcarNode";
@@ -25,8 +26,8 @@ export class ViewportBackgroundSystem extends System {
   private viewport: Viewport;
   public readonly background: Sprite;
   private readonly zoomed: Sprite;
-  private sunKeyFramer: KeyFramer;
-  private moonKeyFramer: KeyFramer;
+  private sunKeyFramer: KeyFramer = sunKeyFramer;
+  private moonKeyFramer: KeyFramer = moonKeyFramer;
 
   private time: number = 0;
 
@@ -49,12 +50,16 @@ export class ViewportBackgroundSystem extends System {
     this.background.name = "backgroundSprite";
     this.zoomed = new Sprite();
 
+    this.initLighting();
+  }
+
+  public initLighting() {
     const backgroundLightning = [mapLightningShader];
     const zoomedLightning = [zoomedLightningShader];
     this.zoomed.filters = backgroundLightning;
     this.background.filters = zoomedLightning;
-    const lightsCol = new Array();
-    const koef = new Array();
+    const lightsCol = [];
+    const koef = [];
     const lightSizer = new LightSize();
     for (let i = 0; i < 256; i++) {
       lightsCol[3 * i] = Math.random();
@@ -68,32 +73,6 @@ export class ViewportBackgroundSystem extends System {
     this.background.filters[0].uniforms.koef = koef;
     this.zoomed.filters[0].uniforms.lightsCol = lightsCol;
     this.background.filters[0].uniforms.koef = koef;
-
-    const interpolateDayNightKeys = (
-      left: Array<number>,
-      right: Array<number>,
-      time: number
-    ) => {
-      const r = (right[0] - left[0]) * time + left[0];
-      const g = (right[1] - left[1]) * time + left[1];
-      const b = (right[2] - left[2]) * time + left[2];
-      return [r, g, b];
-    };
-    this.sunKeyFramer = new KeyFramer(interpolateDayNightKeys);
-    this.sunKeyFramer.addKey([0, 0, 0], -1);
-    this.sunKeyFramer.addKey([0, 0, 0], 25);
-    this.sunKeyFramer.addKey([0, 0, 0], 4);
-    this.sunKeyFramer.addKey([0.6, 0.5, 0.5], 6);
-    this.sunKeyFramer.addKey([0.8, 0.8, 0.8], 12);
-    this.sunKeyFramer.addKey([0.6, 0.5, 0.5], 20);
-    this.sunKeyFramer.addKey([0, 0, 0], 22);
-    this.moonKeyFramer = new KeyFramer(interpolateDayNightKeys);
-    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], -1);
-    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], 25);
-    this.moonKeyFramer.addKey([0.15, 0.15, 0.2], 4);
-    this.moonKeyFramer.addKey([0, 0, 0], 7);
-    this.moonKeyFramer.addKey([0, 0, 0], 19);
-    this.moonKeyFramer.addKey([0.1, 0.1, 0.12], 20);
   }
 
   addToEngine(engine: Engine) {
@@ -258,7 +237,6 @@ export class ViewportBackgroundSystem extends System {
 
     const sunLight = this.sunKeyFramer.getFrame(time);
     const moonLight = this.moonKeyFramer.getFrame(time);
-    console.log(moonLight);
     const light = [0, 0, 0];
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
     this.background.filters[0].uniforms.ambientLight = light;
@@ -272,8 +250,7 @@ export class ViewportBackgroundSystem extends System {
       return;
     }
     const bool = true;
-
-    const colors: PIXI.filters.ColorMatrixFilter = new PIXI.filters.ColorMatrixFilter();
+    const colors: filters.ColorMatrixFilter = new filters.ColorMatrixFilter();
 
     colors.saturate(-1, bool); // multiple?
     colors.hue(317, bool);

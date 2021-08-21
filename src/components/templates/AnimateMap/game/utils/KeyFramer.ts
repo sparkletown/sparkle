@@ -1,43 +1,45 @@
-export class Key {
-  public object;
-  public time: number;
-  constructor(object: Object, time: number) {
-    this.object = object;
-    this.time = time;
-  }
+export type KeyData = number[];
+export type LinearInterpolationCallback = (
+  left: KeyData,
+  right: KeyData,
+  dt: number
+) => number[];
+
+export interface Key {
+  time: number;
+  data: KeyData;
 }
 
 export class KeyFramer {
-  private callback: Function;
-  private keys = new Array<Key>();
-
-  /**
-   *
-   * @param callback it will be invoked for key frames interpolation
-   */
-  constructor(callback: Function) {
-    this.callback = callback;
+  constructor(
+    private _callback: LinearInterpolationCallback,
+    private _keyframes: Key[] = []
+  ) {
+    this._sort();
   }
 
-  public addKey(object: Object, time: number) {
-    this.keys.push(new Key(object, time));
-    this.keys.sort((a, b) => {
-      return a.time - b.time;
-    });
+  private _sort() {
+    this._keyframes.sort((a, b) => a.time - b.time);
+  }
+
+  public addKeys(keyframes: Key[]) {
+    this._keyframes.push(...keyframes);
+    this._sort();
   }
 
   public removeKey(index: number) {
-    this.keys.splice(index, 1);
+    this._keyframes.splice(index, 1);
   }
 
   public getFrame(time: number) {
-    const maxIndex = this.keys.findIndex((e) => e.time >= time);
-    const minIndex = (maxIndex - 1) % this.keys.length;
-    return this.callback(
-      this.keys[minIndex].object,
-      this.keys[maxIndex].object,
-      (time - this.keys[minIndex].time) /
-        (this.keys[maxIndex].time - this.keys[minIndex].time)
+    const maxIndex = this._keyframes.findIndex((frame) => frame.time >= time);
+    const minIndex = (maxIndex - 1) % this._keyframes.length;
+    const minFrame = this._keyframes[minIndex];
+    const maxFrame = this._keyframes[maxIndex];
+    return this._callback(
+      minFrame.data,
+      maxFrame.data,
+      (time - minFrame.time) / (maxFrame.time - minFrame.time)
     );
   }
 }
