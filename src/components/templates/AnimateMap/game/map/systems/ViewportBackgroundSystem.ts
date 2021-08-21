@@ -10,12 +10,11 @@ import { MAP_IMAGE } from "../../constants/AssetConstants";
 import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
 import { KeyFramer } from "../../utils/KeyFramer";
-//shaders
 import {
   LightSize,
   mapLightningShader,
   zoomedLightningShader,
-} from "../graphics/mapLightningShader";
+} from "../graphics/shaders/mapLightningShader";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { BarrelNode } from "../nodes/BarrelNode";
 
