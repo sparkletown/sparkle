@@ -17,10 +17,6 @@ $background--modal: opaque-black(0.8);
     padding: 0;
   }
 
-  &__body {
-    padding: $spacing--md;
-  }
-
   &__poster {
     width: 100%;
     height: 100%;
@@ -43,5 +39,10 @@ $background--modal: opaque-black(0.8);
     .ButtonNG__link {
       color: $white;
     }
+  }
+
+  &__children {
+    display: grid;
+    place-items: center;
   }
 }

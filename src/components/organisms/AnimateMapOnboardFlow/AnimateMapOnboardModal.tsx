@@ -67,11 +67,13 @@ export const AnimateMapOnboardModal: React.FC<AnimateMapOnboardModalProps> = ({
             {descriptionTop}
           </div>
         )}
-        <img
-          className="AnimateMapOnboardModal__poster"
-          alt={posterAlt}
-          src={posterSrc}
-        />
+        {posterSrc && (
+          <img
+            className="AnimateMapOnboardModal__poster"
+            alt={posterAlt}
+            src={posterSrc}
+          />
+        )}
         <div className="AnimateMapOnboardModal__children">{children}</div>
         {descriptionBottom && (
           <div className="AnimateMapOnboardModal__description AnimateMapOnboardModal__description-bottom">

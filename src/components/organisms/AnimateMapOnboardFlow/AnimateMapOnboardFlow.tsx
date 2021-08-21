@@ -1,11 +1,22 @@
 import React, { useCallback, useState } from "react";
 
+import { updateUserOnboarding } from "api/profile";
+
+import { VenueTemplate } from "types/venues";
+
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
+
 import { DeviceVideo } from "components/atoms/DeviceVideo";
 import { SvgLoop } from "components/atoms/SvgLoop";
 
 import { AnimateMapOnboardModal } from "./AnimateMapOnboardModal";
 
-import "./AnimateMapOnboardFlow.scss";
+// This flow works only for VenueTemplate.animatemap ATM
+const TEMPLATE = VenueTemplate.animatemap;
+
+const NO_STEP = Infinity;
+const BASE_STEP = 0;
 
 // time in ms before next SVG is displayed
 const DELAY = 3000;
@@ -25,16 +36,31 @@ const INTERACTION_SOURCES = [
 ];
 
 export const AnimateMapOnboardFlow: React.FC = () => {
-  const [step, setStep] = useState(0);
-  const advanceToNext = useCallback(() => setStep(step + 1), [step, setStep]);
-  const advanceToLast = useCallback(() => setStep(3), [setStep]);
+  const { userWithId: user } = useUser();
+  const venueId = useVenueId();
+  const [step, setStep] = useState(
+    // if user is already onboarded there will be no steps to take
+    user?.onboarded?.perTemplate?.[TEMPLATE] ? NO_STEP : BASE_STEP
+  );
+  const next = useCallback(() => setStep(step + 1), [step, setStep]);
+  const skip = useCallback(() => setStep(NO_STEP), [setStep]);
+
+  const finish = useCallback(() => {
+    const userId = user?.id;
+    skip();
+    if (userId) {
+      updateUserOnboarding({ userId, venueId, template: TEMPLATE }).catch((e) =>
+        console.error(AnimateMapOnboardFlow.name, e)
+      );
+    }
+  }, [user, venueId, skip]);
 
   return (
     <>
       <AnimateMapOnboardModal
-        show={step === 1}
-        onNext={advanceToNext}
-        onSkip={advanceToLast}
+        show={step === BASE_STEP}
+        onNext={next}
+        onSkip={skip}
         className="AnimateMapOnboardFlow__step-video"
       >
         <DeviceVideo />
@@ -44,17 +70,19 @@ export const AnimateMapOnboardFlow: React.FC = () => {
         </div>
       </AnimateMapOnboardModal>
       <AnimateMapOnboardModal
-        show={step === 2}
-        onNext={advanceToNext}
-        onSkip={advanceToLast}
+        show={step === BASE_STEP + 1}
+        onNext={next}
+        onSkip={skip}
+        className="AnimateMapOnboardFlow__step-information"
         title="Information on the playa"
       >
         <SvgLoop delay={DELAY} sources={INFORMATION_SOURCES} />
       </AnimateMapOnboardModal>
       <AnimateMapOnboardModal
-        show={step === 3}
-        onNext={advanceToNext}
-        onSkip={advanceToLast}
+        show={step === BASE_STEP + 2}
+        onNext={finish}
+        onSkip={skip}
+        className="AnimateMapOnboardFlow__step-interaction"
         title="Interactions on the playa"
         nextText="Enter"
       >

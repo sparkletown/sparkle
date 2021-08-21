@@ -18,7 +18,7 @@ $max-display-size: 460px;
   &__spinner.svg-inline--fa.fa-w-16 {
     @include square-size(20%);
     position: absolute;
-    top: 35%;
+    top: 40%;
     left: 40%;
     color: opaque-white(0.6);
   }
