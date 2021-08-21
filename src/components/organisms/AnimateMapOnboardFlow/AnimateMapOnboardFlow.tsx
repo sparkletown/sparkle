@@ -1,33 +1,40 @@
 import React, { useCallback, useState } from "react";
 
 import { DeviceVideo } from "components/atoms/DeviceVideo";
+import { SvgLoop } from "components/atoms/SvgLoop";
 
 import { AnimateMapOnboardModal } from "./AnimateMapOnboardModal";
 
 import "./AnimateMapOnboardFlow.scss";
 
-// steps
-const FIRST = 1;
-const INFO = 2;
-const INTERACT = 5;
-const LAST = 8;
+// time in ms before next SVG is displayed
+const DELAY = 3000;
 
-const INTER_TITLE = "Interactions on the playa";
-const INFO_TITLE = "Information on the playa";
+// images for the first modal
+const INFORMATION_SOURCES = [
+  "/animatemap-onboard/step-02.svg",
+  "/animatemap-onboard/step-03.svg",
+  "/animatemap-onboard/step-04.svg",
+];
+
+// images for the second modal
+const INTERACTION_SOURCES = [
+  "/animatemap-onboard/step-05.svg",
+  "/animatemap-onboard/step-06.svg",
+  "/animatemap-onboard/step-07.svg",
+];
 
 export const AnimateMapOnboardFlow: React.FC = () => {
-  const [step, setStep] = useState(FIRST);
+  const [step, setStep] = useState(0);
   const advanceToNext = useCallback(() => setStep(step + 1), [step, setStep]);
-  const advanceToInfo = useCallback(() => setStep(INFO), [setStep]);
-  const advanceToInteract = useCallback(() => setStep(INTERACT), [setStep]);
-  const advanceToLast = useCallback(() => setStep(LAST), [setStep]);
+  const advanceToLast = useCallback(() => setStep(3), [setStep]);
 
   return (
     <>
       <AnimateMapOnboardModal
         show={step === 1}
         onNext={advanceToNext}
-        onSkip={advanceToInfo}
+        onSkip={advanceToLast}
         className="AnimateMapOnboardFlow__step-video"
       >
         <DeviceVideo />
@@ -39,46 +46,20 @@ export const AnimateMapOnboardFlow: React.FC = () => {
       <AnimateMapOnboardModal
         show={step === 2}
         onNext={advanceToNext}
-        onSkip={advanceToInteract}
-        title={INFO_TITLE}
-        posterSrc="/animatemap-onboard/step-02.svg"
-      />
+        onSkip={advanceToLast}
+        title="Information on the playa"
+      >
+        <SvgLoop delay={DELAY} sources={INFORMATION_SOURCES} />
+      </AnimateMapOnboardModal>
       <AnimateMapOnboardModal
         show={step === 3}
         onNext={advanceToNext}
-        onSkip={advanceToInteract}
-        title={INFO_TITLE}
-        posterSrc="/animatemap-onboard/step-03.svg"
-      />
-      <AnimateMapOnboardModal
-        show={step === 4}
-        onNext={advanceToNext}
-        onSkip={advanceToInteract}
-        title={INFO_TITLE}
-        posterSrc="/animatemap-onboard/step-04.svg"
-      />
-      <AnimateMapOnboardModal
-        show={step === 5}
-        onNext={advanceToNext}
         onSkip={advanceToLast}
-        title={INTER_TITLE}
-        posterSrc="/animatemap-onboard/step-05.svg"
-      />
-      <AnimateMapOnboardModal
-        show={step === 6}
-        onNext={advanceToNext}
-        onSkip={advanceToLast}
-        title={INTER_TITLE}
-        posterSrc="/animatemap-onboard/step-06.svg"
-      />
-      <AnimateMapOnboardModal
-        show={step === 7}
-        onNext={advanceToNext}
-        onSkip={advanceToLast}
-        title={INTER_TITLE}
-        posterSrc="/animatemap-onboard/step-07.svg"
+        title="Interactions on the playa"
         nextText="Enter"
-      />
+      >
+        <SvgLoop delay={DELAY} sources={INTERACTION_SOURCES} />
+      </AnimateMapOnboardModal>
     </>
   );
 };
