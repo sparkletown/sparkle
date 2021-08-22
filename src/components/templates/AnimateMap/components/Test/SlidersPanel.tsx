@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 
 import { GameInstance } from "../../game/GameInstance";
 
@@ -7,20 +7,50 @@ import "./SlidersPanel.scss";
 export interface CurvesPanelProps {}
 
 const logLight = () => {
-  console.log({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    sun: [window.LIGHT_SR, window.LIGHT_SG, window.LIGHT_SB],
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    moon: [window.LIGHT_MR, window.LIGHT_MG, window.LIGHT_MB],
-  });
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const str = `[${window.LIGHT_SR}, ${window.LIGHT_SG},${window.LIGHT_SB}],\n[${window.LIGHT_MR}, ${window.LIGHT_MG}, ${window.LIGHT_MB}]`;
+  console.log(str);
 };
 
 export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
-  const ref1 = useRef<HTMLInputElement>(null);
-  const ref2 = useRef<HTMLInputElement>(null);
-  const ref3 = useRef<HTMLInputElement>(null);
+  const [refs] = useState(new Array());
+  refs[0] = useRef<HTMLInputElement>(null);
+  refs[1] = useRef<HTMLInputElement>(null);
+  refs[2] = useRef<HTMLInputElement>(null);
+  refs[3] = useRef<HTMLInputElement>(null);
+  refs[4] = useRef<HTMLInputElement>(null);
+  refs[5] = useRef<HTMLInputElement>(null);
+  console.log(refs);
+  const keys = ["SR", "SG", "SB", "MR", "MG", "MB"];
+  const colors = ["RED", "GREEN", "BLUE"];
+
+  const childs = [];
+  for (let i = 0; i < 6; i++) {
+    childs.push(
+      <label key={i}>
+        {colors[i % 3]}
+        <input
+          ref={refs[i]}
+          type="range"
+          min={0}
+          max={1}
+          defaultValue={
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window["LIGHT_" + keys[i]]
+          }
+          step={0.001}
+          onChange={(event) => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            //@ts-ignore
+            window["LIGHT_" + keys[i]] = event.target.value;
+            logLight();
+          }}
+        />
+      </label>
+    );
+  }
 
   if (!GameInstance.instance) return <></>;
 
@@ -28,69 +58,7 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
     <div className="SlidersPanel">
       <div className="column">
         SUN
-        <label>
-          RED
-          <input
-            ref={ref1}
-            type="range"
-            min={0}
-            max={1}
-            defaultValue={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SR
-            }
-            step={0.001}
-            onChange={(event) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SR = event.target.value;
-              logLight();
-            }}
-          />
-        </label>
-        <label>
-          GREEN
-          <input
-            ref={ref2}
-            type="range"
-            min={0}
-            max={1}
-            defaultValue={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SG
-            }
-            step={0.001}
-            onChange={(event) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SG = event.target.value;
-              logLight();
-            }}
-          />
-        </label>
-        <label>
-          BLUE
-          <input
-            ref={ref3}
-            type="range"
-            min={0}
-            max={1}
-            defaultValue={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SB
-            }
-            step={0.001}
-            onChange={(event) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_SB = event.target.value;
-              logLight();
-            }}
-          />
-        </label>
+        {childs.slice(0, 3)}
         <label>
           <input
             type="range"
@@ -105,13 +73,13 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
             onChange={(event) => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              ref1.current.value = window.LIGHT_SR = event.target.value;
+              refs[0].current.value = window.LIGHT_SR = event.target.value;
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              ref2.current.value = window.LIGHT_SG = event.target.value;
+              refs[1].current.value = window.LIGHT_SG = event.target.value;
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              ref3.current.value = window.LIGHT_SB = event.target.value;
+              refs[2].current.value = window.LIGHT_SB = event.target.value;
               logLight();
             }}
           />
@@ -119,48 +87,8 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
       </div>
       <div className="column">
         MOON
+        {childs.slice(3)}
         <label>
-          RED
-          <input
-            type="range"
-            min={0}
-            max={1}
-            defaultValue={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_MR
-            }
-            step={0.001}
-            onChange={(event) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_MR = event.target.value;
-              logLight();
-            }}
-          />
-        </label>
-        <label>
-          GREEN
-          <input
-            type="range"
-            min={0}
-            max={1}
-            defaultValue={
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_MG
-            }
-            step={0.001}
-            onChange={(event) => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-              //@ts-ignore
-              window.LIGHT_MG = event.target.value;
-              logLight();
-            }}
-          />
-        </label>
-        <label>
-          BLUE
           <input
             type="range"
             min={0}
@@ -174,7 +102,13 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
             onChange={(event) => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              window.LIGHT_MB = event.target.value;
+              refs[3].current.value = window.LIGHT_MR = event.target.value;
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              refs[4].current.value = window.LIGHT_MG = event.target.value;
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              refs[5].current.value = window.LIGHT_MB = event.target.value;
               logLight();
             }}
           />

@@ -1,6 +1,7 @@
 .SlidersPanel {
   display: flex;
   position: relative;
+  width: 100%;
 
   .column {
     margin: 25px 20px;
@@ -19,7 +20,7 @@
 
   label {
     max-height: 15px;
-    width: 210px;
+    width: 100%;
     display: flex;
   }
 
@@ -27,7 +28,7 @@
     margin: 2px;
     margin-left: auto;
     padding: 3px;
-    width: 150px;
+    width: 85%;
     max-height: 15px;
   }
 }
