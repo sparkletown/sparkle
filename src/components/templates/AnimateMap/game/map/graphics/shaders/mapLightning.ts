@@ -5,19 +5,21 @@ import {
   LinearInterpolationCallback,
 } from "../../../utils/KeyFramer";
 
-import fragShader from "./fsColorMatrix.glsl";
+import fragShader from "./ColorMatrixFS.glsl";
+import vertShader from "./ColorMatrixVS.glsl";
 import {
   LIGHT_KEYFRAMES,
   MOON_KEYFRAMES,
   SUN_KEYFRAMES,
 } from "./KeyframesConfigs";
-import vertShader from "./vsColorMatrix.glsl";
 
 export const mapLightningShader = new Filter(vertShader, fragShader, {
   ambientLight: [0.15, 0.15, 0.2],
   frame: [0, 0, 9000, 9000],
   koef: [0.027, 0.0028],
 });
+mapLightningShader.uniforms.lightsPos = [];
+mapLightningShader.uniforms.lightsCol = [];
 
 export class LightSize extends KeyFramer {
   constructor() {
@@ -44,6 +46,7 @@ export const sunKeyFramer = new KeyFramer(
   interpolateDayNightKeys,
   SUN_KEYFRAMES
 );
+
 export const moonKeyFramer = new KeyFramer(
   interpolateDayNightKeys,
   MOON_KEYFRAMES

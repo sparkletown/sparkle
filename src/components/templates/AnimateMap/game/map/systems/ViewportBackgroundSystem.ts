@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, Container, filters, Sprite } from "pixi.js";
+import { BaseTexture, Container, Sprite } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -14,7 +14,7 @@ import {
   mapLightningShader,
   moonKeyFramer,
   sunKeyFramer,
-} from "../graphics/shaders/mapLightningShader";
+} from "../graphics/shaders/mapLightning";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { BarrelNode } from "../nodes/BarrelNode";
 
@@ -23,9 +23,9 @@ export class ViewportBackgroundSystem extends System {
   private artCars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
-  private readonly backContainer: PIXI.Container;
-  public readonly background: Sprite;
-  private readonly zoomed: Sprite;
+  private readonly container: PIXI.Container;
+  private readonly mapLOD_1: Sprite;
+  private readonly mapLOD_0: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
   private moonKeyFramer: KeyFramer = moonKeyFramer;
 
@@ -46,17 +46,17 @@ export class ViewportBackgroundSystem extends System {
     super();
     this.viewport = viewport;
 
-    this.backContainer = new Container();
-    this.background = new Sprite();
-    this.background.name = "backgroundSprite";
-    this.zoomed = new Sprite();
+    this.container = new Container();
+    this.mapLOD_1 = new Sprite();
+    this.mapLOD_1.name = "backgroundSprite";
+    this.mapLOD_0 = new Sprite();
 
     this.initLighting();
   }
 
   public initLighting() {
     const backgroundLightning = [mapLightningShader];
-    this.backContainer.filters = backgroundLightning;
+    this.container.filters = backgroundLightning;
     const lightsCol = [];
     const koef = [];
     const lightSizer = new LightSize();
@@ -68,8 +68,8 @@ export class ViewportBackgroundSystem extends System {
       koef[i * 2] = size[0]; // linear component
       koef[i * 2 + 1] = size[1]; // quadratic component
     }
-    this.backContainer.filters[0].uniforms.lightsCol = lightsCol;
-    this.backContainer.filters[0].uniforms.koef = koef;
+    this.container.filters[0].uniforms.lightsCol = lightsCol;
+    this.container.filters[0].uniforms.koef = koef;
   }
 
   addToEngine(engine: Engine) {
@@ -84,73 +84,82 @@ export class ViewportBackgroundSystem extends System {
       back.scale.set(scale);
       back.anchor.set(0);
 
-      this.background.addChild(back);
-      this.background.interactive = true;
+      this.mapLOD_1.addChild(back);
+      this.mapLOD_1.interactive = true;
 
-      this.viewport.addChildAt(this.backContainer, 0);
+      this.viewport.addChildAt(this.container, 0);
 
-      this.backContainer.addChildAt(this.zoomed, 0);
-      this.backContainer.addChildAt(this.background, 0);
-      this.initialized = true;
+      this.container.addChildAt(this.mapLOD_0, 0);
+      this.container.addChildAt(this.mapLOD_1, 0);
 
       //shaders setup
-      this.backContainer.filters[0].uniforms.frame = [
+      this.container.filters[0].uniforms.frame = [
         this.viewport.center.x,
         this.viewport.center.y,
         this.viewport.worldWidth,
         this.viewport.worldHeight,
       ];
+
+      this.initialized = true;
     });
   }
 
   removeFromEngine(engine: Engine) {
-    if (this.zoomed.children.length) {
-      this.zoomed.removeChildren();
+    if (this.mapLOD_0.children.length) {
+      this.mapLOD_0.removeChildren();
       this.currentVisibleTiles.clear();
     }
   }
 
   update(time: number) {
-    if (this.initialized) {
-      let lightQuantity = 0;
-      const lightsPos = new Array<number>();
-
-      for (let i = this.barrels?.head; i; i = i?.next) {
-        lightsPos[lightQuantity * 2] = i.position.x;
-        lightsPos[lightQuantity * 2 + 1] = i.position.y;
-        lightQuantity += 1;
-      }
-      for (let i = this.artCars?.head; i; i = i?.next) {
-        lightsPos[lightQuantity * 2] = i.position.x;
-        lightsPos[lightQuantity * 2 + 1] = i.position.y;
-        lightQuantity += 1;
-      }
-      this.backContainer.filters[0].uniforms.lightsPos = lightsPos;
-      this.backContainer.filters[0].uniforms.lightQuantity = lightQuantity;
-
-      this.backContainer.filters[0].uniforms.frame = [
-        this.viewport.left,
-        this.viewport.top,
-        this.viewport.worldScreenWidth,
-        this.viewport.worldScreenHeight,
-      ];
-
-      this.time += 0.01;
-      this.setDayTime(this.time);
-    }
-
     if (!this.initialized || !this.tree) {
       return;
     }
+
+    // filters update
+    let lightQuantity = 0;
+    const lightsPos = [];
+
+    for (let i = this.barrels?.head; i; i = i?.next) {
+      lightsPos[lightQuantity * 2] = i.position.x;
+      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      lightQuantity += 1;
+    }
+    for (let i = this.artCars?.head; i; i = i?.next) {
+      lightsPos[lightQuantity * 2] = i.position.x;
+      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      lightQuantity += 1;
+    }
+
+    //note: remove later
+    const n = 340;
+    for (let i = 0; i < n; i++) {
+      lightsPos[lightQuantity * 2] = (i * 9920) / n;
+      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
+      lightQuantity += 1;
+    }
+
+    this.container.filters[0].uniforms.lightsPos = lightsPos;
+    this.container.filters[0].uniforms.lightQuantity = lightQuantity;
+
+    this.container.filters[0].uniforms.frame = [
+      this.viewport.left,
+      this.viewport.top,
+      this.viewport.worldScreenWidth,
+      this.viewport.worldScreenHeight,
+    ];
+
+    this.time += 0.01;
+    this.setDayTime(this.time);
 
     const zoomLevel = GameInstance.instance
       .getConfig()
       .zoomViewportToLevel(this.viewport.scale.y);
 
     if (zoomLevel === GameConfig.ZOOM_LEVEL_FLYING) {
-      // remove zoomed
-      if (this.zoomed.children.length) {
-        this.zoomed.removeChildren();
+      // removing mapLOD_0
+      if (this.mapLOD_0.children.length) {
+        this.mapLOD_0.removeChildren();
         this.currentVisibleTiles.clear();
       }
       return;
@@ -206,8 +215,8 @@ export class ViewportBackgroundSystem extends System {
       }
       if (!br) {
         const sprite: Sprite | undefined = this.currentVisibleTiles.get(key);
-        if (sprite && this.zoomed.children.includes(sprite)) {
-          this.zoomed.removeChild(sprite);
+        if (sprite && this.mapLOD_0.children.includes(sprite)) {
+          this.mapLOD_0.removeChild(sprite);
           this.currentVisibleTiles.delete(key);
           break;
         }
@@ -216,7 +225,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   /**
-   * changing the background visible time
+   * changing the mapLOD_1 visible time
    * @param time in hourse [0;24)
    */
   setDayTime(time: number) {
@@ -228,27 +237,9 @@ export class ViewportBackgroundSystem extends System {
     const sunLight = this.sunKeyFramer.getFrame(time);
     const moonLight = this.moonKeyFramer.getFrame(time);
     const light = [0, 0, 0];
+    // note: what's happen, if sum of elements more than 1?
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
-    this.backContainer.filters[0].uniforms.ambientLight = light;
-  }
-
-  colorMatrixFilter() {
-    const apply = false;
-
-    if (!apply) {
-      return;
-    }
-    const bool = true;
-    const colors: filters.ColorMatrixFilter = new filters.ColorMatrixFilter();
-
-    colors.saturate(-1, bool); // multiple?
-    colors.hue(317, bool);
-    colors.brightness(0.1, bool);
-    colors.contrast(13, bool);
-    colors.night(0.3, bool);
-
-    this.background.filters = [colors];
-    this.zoomed.filters = [colors];
+    this.container.filters[0].uniforms.ambientLight = light;
   }
 
   private addTile(point: Point): Sprite {
@@ -257,7 +248,7 @@ export class ViewportBackgroundSystem extends System {
     sprite.anchor.set(0.5);
     sprite.x = point.x;
     sprite.y = point.y;
-    this.zoomed.addChild(sprite);
+    this.mapLOD_0.addChild(sprite);
 
     return sprite;
   }

@@ -1,14 +1,16 @@
 varying vec2 vTextureCoord;
 
+const int MAX_LIGHTS = 340;
+
 uniform sampler2D uSampler;
 uniform vec3 ambientLight;
 uniform float maxMagnitude;
 uniform vec2 lightPosition;
 
 varying vec2 pixelPos;
-uniform vec2 lightsPos[256];
-uniform vec3 lightsCol[256];
-uniform vec2 koef[256];
+uniform vec2 lightsPos[MAX_LIGHTS];
+uniform vec3 lightsCol[MAX_LIGHTS];
+uniform vec2 koef[MAX_LIGHTS];
 uniform int lightQuantity;
 
 vec3 rgb2hsv(vec3 c)
@@ -52,7 +54,7 @@ void main(void){
     vec4 albedo = texture2D(uSampler, vTextureCoord);
 
     vec3 light = albedo.rgb*ambientLight;
-    for (int i = 0; i < 256; i++){
+    for (int i = 0; i < MAX_LIGHTS; i++){
         light += PointLightApply(lightsPos[i], lightsCol[i], albedo.rgb, koef[i]);
         if (i >= lightQuantity)
         break;
