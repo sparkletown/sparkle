@@ -116,41 +116,7 @@ export class ViewportBackgroundSystem extends System {
       return;
     }
 
-    // filters update
-    let lightQuantity = 0;
-    const lightsPos = [];
-
-    for (let i = this.barrels?.head; i; i = i?.next) {
-      lightsPos[lightQuantity * 2] = i.position.x;
-      lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      lightQuantity += 1;
-    }
-    for (let i = this.artCars?.head; i; i = i?.next) {
-      lightsPos[lightQuantity * 2] = i.position.x;
-      lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      lightQuantity += 1;
-    }
-
-    //note: remove later
-    const n = 340;
-    for (let i = 0; i < n; i++) {
-      lightsPos[lightQuantity * 2] = (i * 9920) / n;
-      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
-      lightQuantity += 1;
-    }
-
-    this.container.filters[0].uniforms.lightsPos = lightsPos;
-    this.container.filters[0].uniforms.lightQuantity = lightQuantity;
-
-    this.container.filters[0].uniforms.frame = [
-      this.viewport.left,
-      this.viewport.top,
-      this.viewport.worldScreenWidth,
-      this.viewport.worldScreenHeight,
-    ];
-
-    this.time += 0.01;
-    this.setDayTime(this.time);
+    this._updateFilters();
 
     const zoomLevel = GameInstance.instance
       .getConfig()
@@ -222,6 +188,43 @@ export class ViewportBackgroundSystem extends System {
         }
       }
     }
+  }
+
+  private _updateFilters() {
+    let lightQuantity = 0;
+    const lightsPos = [];
+
+    for (let i = this.barrels?.head; i; i = i?.next) {
+      lightsPos[lightQuantity * 2] = i.position.x;
+      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      lightQuantity += 1;
+    }
+    for (let i = this.artCars?.head; i; i = i?.next) {
+      lightsPos[lightQuantity * 2] = i.position.x;
+      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      lightQuantity += 1;
+    }
+
+    //note: remove later
+    const n = 340;
+    for (let i = 0; i < n; i++) {
+      lightsPos[lightQuantity * 2] = (i * 9920) / n;
+      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
+      lightQuantity += 1;
+    }
+
+    this.container.filters[0].uniforms.lightsPos = lightsPos;
+    this.container.filters[0].uniforms.lightQuantity = lightQuantity;
+
+    this.container.filters[0].uniforms.frame = [
+      this.viewport.left,
+      this.viewport.top,
+      this.viewport.worldScreenWidth,
+      this.viewport.worldScreenHeight,
+    ];
+
+    this.time += 0.01;
+    this.setDayTime(this.time);
   }
 
   /**
