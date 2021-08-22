@@ -1,0 +1,33 @@
+.SlidersPanel {
+  display: flex;
+  position: relative;
+
+  .column {
+    margin: 25px 20px;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+  }
+
+  .space {
+    margin: auto;
+  }
+
+  .row {
+    display: flex;
+  }
+
+  label {
+    max-height: 15px;
+    width: 210px;
+    display: flex;
+  }
+
+  input {
+    margin: 2px;
+    margin-left: auto;
+    padding: 3px;
+    width: 150px;
+    max-height: 15px;
+  }
+}

@@ -242,7 +242,16 @@ export class ViewportBackgroundSystem extends System {
     const light = [0, 0, 0];
     // note: what's happen, if sum of elements more than 1?
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
-    this.container.filters[0].uniforms.ambientLight = light;
+    // this.container.filters[0].uniforms.ambientLight = light;
+    this.container.filters[0].uniforms.ambientLight = [
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      [window.LIGHT_SR + window.LIGHT_MR], //@ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      [window.LIGHT_SG + window.LIGHT_MG], //@ts-ignore
+      [window.LIGHT_SB + window.LIGHT_MB],
+    ];
   }
 
   private addTile(point: Point): Sprite {

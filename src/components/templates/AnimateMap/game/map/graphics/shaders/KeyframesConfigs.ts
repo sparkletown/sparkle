@@ -25,6 +25,16 @@ export const SUN_KEYFRAMES = [
   { time: 22, data: [0, 0, 0] },
 ];
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_SR = SUN_KEYFRAMES[0].data[0];
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_SG = SUN_KEYFRAMES[0].data[1];
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_SB = SUN_KEYFRAMES[0].data[2];
+
 export const MOON_KEYFRAMES = [
   { time: -1, data: [0.15, 0.15, 0.2] },
   { time: 25, data: [0.15, 0.15, 0.2] },
@@ -33,3 +43,13 @@ export const MOON_KEYFRAMES = [
   { time: 19, data: [0, 0, 0] },
   { time: 20, data: [0.1, 0.1, 0.12] },
 ];
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_MR = MOON_KEYFRAMES[0].data[0];
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_MG = MOON_KEYFRAMES[0].data[1];
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_MB = MOON_KEYFRAMES[0].data[2];
