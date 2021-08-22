@@ -3,20 +3,22 @@ import { Point } from "types/utility";
 import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 
+const k = 1440 / 9920; //TODO: rework
+
 export class PlaygroundMap {
   private playgroundBounds: Array<number> = [
-    5055,
-    233,
-    9736,
-    4038,
-    7812,
-    9423,
-    1925,
-    8958,
-    246,
-    3271,
-    5055,
-    233,
+    k * 5055,
+    k * 233,
+    k * 9736,
+    k * 4038,
+    k * 7812,
+    k * 9423,
+    k * 1925,
+    k * 8958,
+    k * 246,
+    k * 3271,
+    k * 5055,
+    k * 233,
   ];
 
   public pointIsInTheCentralCircle(x: number, y: number): boolean {

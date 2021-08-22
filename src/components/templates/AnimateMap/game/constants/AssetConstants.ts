@@ -53,7 +53,7 @@ import MAP_IMAGE_13 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_13
 import MAP_IMAGE_14 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_14.jpg";
 import MAP_IMAGE_15 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_15.jpg";
 import MAP_IMAGE_16 from "assets/images/AnimateMap/map_tiles/SPA_PlayaMap_16k_16.jpg";
-import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_4096.jpg";
+import MAP_IMAGE from "assets/images/AnimateMap/SPA_PlayaMap_1440.jpg";
 import JOYSTICK_IMAGE from "assets/images/AnimateMap/UI/JoyStick/plate.png";
 import JOYSTICK_HANDLE_IMAGE from "assets/images/AnimateMap/UI/JoyStick/stick.png";
 import PLAYA_01_SOUND from "assets/sounds/AnimateMap/playa_01.mp3";

@@ -91,14 +91,15 @@ export class MapContainer extends Container {
     this.initSystems();
     this.initMap(MAP_JSON);
 
-    this._viewport?.on("clicked", (e: { world: Point }) =>
+    this._viewport?.on("clicked", (e: { world: Point }) => {
+      console.log(e.world);
       GameInstance.instance.getStore().dispatch(
         setAnimateMapPointer({
           x: e.world.x,
           y: e.world.y,
         })
-      )
-    );
+      );
+    });
   }
 
   private initViewport() {

@@ -169,6 +169,7 @@ export class ViewportBackgroundSystem extends System {
     this.zoomed.addChild(sprite);
 
     return sprite;
+    return new Sprite();
   }
 
   private setup(): Promise<void> {

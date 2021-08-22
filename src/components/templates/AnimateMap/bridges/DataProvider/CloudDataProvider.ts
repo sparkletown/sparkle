@@ -107,8 +107,8 @@ export class CloudDataProvider
     newVenues.forEach((room) => {
       console.log("create venue");
       const vn = {
-        x: ((room.x_percent / 100) * 9920) / 2.74 + 3180, //TODO: refactor configs and throw data to here
-        y: ((room.y_percent / 100) * 9920) / 2.74 + 3380,
+        x: ((room.x_percent / 100) * 1440) / 2.74 + 3180 * (1440 / 9920), //TODO: refactor configs and throw data to here
+        y: ((room.y_percent / 100) * 1440) / 2.74 + 3380 * (1440 / 9920),
         data: {
           ...room,
         },

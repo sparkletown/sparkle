@@ -95,8 +95,8 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       // const pos = StartPoint();
       // playerObject.x = pos.x;
       // playerObject.y = pos.y;
-      playerObject.x = getRandomInt(9920);
-      playerObject.y = getRandomInt(9920);
+      playerObject.x = getRandomInt(1440);
+      playerObject.y = getRandomInt(1440);
       playerObject.i = getIntByHash(this.playerId);
     }
 
@@ -106,8 +106,10 @@ export class PlayerIODataProvider extends utils.EventEmitter {
         .then(() => console.log("Save position"))
         .catch(console.error);
 
-    playerModel.x = playerObject.x;
-    playerModel.y = playerObject.y;
+    // playerModel.x = playerObject.x;
+    // playerModel.y = playerObject.y;
+    playerModel.x = 500;
+    playerModel.y = 500;
 
     EventProvider.emit(EventType.PLAYER_MODEL_READY, playerModel);
 

@@ -28,8 +28,8 @@ export class GameConfig {
     this.options = {
       ...{
         //default options can be here
-        worldWidth: 9920,
-        worldHeight: 9920,
+        worldWidth: 1440,
+        worldHeight: 1440,
       },
       ...options,
     };
@@ -41,8 +41,8 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
-  public minSpeed = 0;
-  public maxSpeed = 8;
+  public minSpeed = (1.58 * 1440) / 9920;
+  public maxSpeed = (8 * 1440) / 9920;
 
   public pointForBezieSpeedCurve = [
     { x: 0, y: 0 },
@@ -52,10 +52,15 @@ export class GameConfig {
   ];
 
   private _speedByZoomLevel: Array<number> = [0.3, 1, 2];
+  // private _zoomLevelViewportCorresponding: Array<number> = [
+  //   1.6137,
+  //   0.809,
+  //   0.32,
+  // ];
   private _zoomLevelViewportCorresponding: Array<number> = [
-    1.6137,
-    0.809,
-    0.32,
+    1.6137 / (1440 / 9920),
+    0.809 / (1440 / 9920),
+    0.32 / (1440 / 9920),
   ];
   private _zoomLevelAvatarRadiusCorresponding: Array<number> = [25, 17, 3];
   private _zoomLevelLineOfSightCorresponding: Array<number> = [

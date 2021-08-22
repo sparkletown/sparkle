@@ -3,8 +3,8 @@ import { Point } from "types/utility";
 const D = 3; // dimension in line
 const DD = 9; // dimension in square
 const MAX_DEPTH = 9;
-const W = 9920; //TODO: 39366
-const H = 9920;
+const W = 1440; //TODO: 39366
+const H = 1440;
 
 export type Tuple<T, N extends number> = N extends N
   ? number extends N

@@ -21,8 +21,8 @@ export class MotionBaseSystem extends System {
   }
 
   protected getSpeed() {
-    const min = 0.1;
-    const max = 8;
+    const min = 0.01414588235;
+    const max = 55;
     const minSpeed = GameInstance.instance.getConfig().minSpeed;
     const maxSpeed = GameInstance.instance.getConfig().maxSpeed;
     const points = GameInstance.instance.getConfig().pointForBezieSpeedCurve;
@@ -31,6 +31,7 @@ export class MotionBaseSystem extends System {
     if (this.cashedZoom === zoom) return this.cashedSpeed;
 
     const n = Math.log((zoom - min) / (min * 1.2)) / Math.log(1.2);
+    // console.log("N "+n)
 
     let k = getNormilzedYFromBezier(
       points[3],
@@ -39,7 +40,8 @@ export class MotionBaseSystem extends System {
       points[0],
       min,
       max,
-      min + (n < 0 ? 0 : n) * ((6 - min) / 20)
+      // min + (n < 0 ? 0 : n) * ((6 - min) / 20)
+      min + (n < 0 ? 0 : n) //* ((1 - min) / 200)
     );
     if (isNaN(k)) k = 1;
     if (k < 0) {
@@ -50,6 +52,8 @@ export class MotionBaseSystem extends System {
     }
     const speed = minSpeed + (maxSpeed - minSpeed) * k;
     this.cashedSpeed = speed;
+    // console.log(zoom);
+    // console.log(speed);
     return speed;
   }
 

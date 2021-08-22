@@ -29,7 +29,7 @@ export abstract class NinePartRoomOperator {
 
   protected constructor(playerPosition: Point) {
     this.position = playerPosition;
-    this._roomsModel = new RoomsModel(9920, 9920); //TODO: throw sizes from configs
+    this._roomsModel = new RoomsModel(1440, 1440); //TODO: throw sizes from configs
   }
 
   public update(listRooms: RoomInfoType[], hardUpdate = false) {

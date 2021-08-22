@@ -10,8 +10,8 @@ import { PlayerIODataProvider } from "./PlayerIODataProvider";
 // import { MessagesTypes } from "./types";
 
 const dV_max = 200;
-const world_width = 9920;
-const world_height = 9920;
+const world_width = 1440;
+const world_height = 1440;
 
 export class PlayerIOBots {
   constructor(readonly playerioGameId: string) {}

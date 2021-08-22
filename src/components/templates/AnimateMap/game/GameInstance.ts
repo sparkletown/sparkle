@@ -55,6 +55,7 @@ export class GameInstance {
   ) {
     if (GameInstance.instance) console.error("Multiply instancing!");
     GameInstance.instance = this;
+    console.log(_config.worldWidth, _config.worldHeight);
   }
 
   public async init(): Promise<void> {

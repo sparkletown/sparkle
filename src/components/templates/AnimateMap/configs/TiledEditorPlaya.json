@@ -10,15 +10,15 @@
       "objects": [
         {
           "gid": 1,
-          "height": 9920,
+          "height": 1440,
           "id": 15,
           "name": "",
           "rotation": 0,
           "type": "",
           "visible": true,
-          "width": 9920,
+          "width": 1440,
           "x": 0,
-          "y": 9900
+          "y": 1440
         }
       ],
       "opacity": 1,
@@ -34,7 +34,7 @@
       "objects": [
         {
           "ellipse": true,
-          "height": 5381.10498973832,
+          "height": 801,
           "id": 13,
           "name": "sound_playa_03",
           "properties": [
@@ -52,13 +52,13 @@
           "rotation": 0,
           "type": "",
           "visible": true,
-          "width": 5519.08538160595,
-          "x": 2178,
-          "y": 2178
+          "width": 801,
+          "x": 316,
+          "y": 316
         },
         {
           "ellipse": true,
-          "height": 3790.44792201128,
+          "height": 564,
           "id": 8,
           "name": "sound_playa_02",
           "properties": [
@@ -76,13 +76,13 @@
           "rotation": 0,
           "type": "",
           "visible": true,
-          "width": 3887.63889437054,
-          "x": 5942.53846153846,
-          "y": 6039
+          "width": 564,
+          "x": 876,
+          "y": 876
         },
         {
           "ellipse": true,
-          "height": 3762,
+          "height": 546,
           "id": 2,
           "name": "sound_playa_01",
           "properties": [
@@ -100,7 +100,7 @@
           "rotation": 0,
           "type": "",
           "visible": true,
-          "width": 3762,
+          "width": 546,
           "x": 0,
           "y": 0
         }
@@ -123,14 +123,14 @@
       "columns": 1,
       "firstgid": 1,
       "image": "../../images/AnimateMap/SPA_PlayaMap.jpg",
-      "imageheight": 9920,
-      "imagewidth": 9920,
+      "imageheight": 1440,
+      "imagewidth": 1440,
       "margin": 0,
       "name": "SPA_PlayaMap",
       "spacing": 0,
       "tilecount": 1,
-      "tileheight": 9920,
-      "tilewidth": 9920
+      "tileheight": 1440,
+      "tilewidth": 1440
     }
   ],
   "tilewidth": 99,
