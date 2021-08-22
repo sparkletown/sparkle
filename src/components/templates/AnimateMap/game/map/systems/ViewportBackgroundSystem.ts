@@ -247,10 +247,10 @@ export class ViewportBackgroundSystem extends System {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      [window.LIGHT_SR + window.LIGHT_MR], //@ts-ignore
+      window.LIGHT_SR + window.LIGHT_MR, //@ts-ignore
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      [window.LIGHT_SG + window.LIGHT_MG], //@ts-ignore
-      [window.LIGHT_SB + window.LIGHT_MB],
+      window.LIGHT_SG + window.LIGHT_MG, //@ts-ignore
+      window.LIGHT_SB + window.LIGHT_MB,
     ];
   }
 
