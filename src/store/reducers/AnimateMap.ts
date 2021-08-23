@@ -79,7 +79,6 @@ export interface AnimateMapState {
   usersQT: QuadTree | null;
   venuesQT: QuadTree | null;
   //flags
-  firstEntrance: string | null;
   environmentSound: boolean;
 }
 
@@ -95,10 +94,6 @@ const initialAnimateMapState: AnimateMapState = {
   venues: new Map<string, ReplicatedVenue>(),
   usersQT: null,
   venuesQT: null,
-  //flags
-  firstEntrance: window.sessionStorage.getItem(
-    "AnimateMapState.sessionStorage"
-  ),
   environmentSound: true,
 };
 
