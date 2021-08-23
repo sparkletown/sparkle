@@ -391,18 +391,7 @@ export class ViewportSystem extends System {
     this.debugMSG.push(data);
   }
   private debugToString() {
-    let log = "";
-    this.debugMSG.forEach((data) => {
-      const keys = Object.keys(data);
-      log += "[";
-      keys.forEach((key) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        log += key + ": " + data[key] + ", ";
-      });
-      log += "]\n";
-    });
-    return log;
+    return JSON.stringify(this.debugMSG);
   }
 
   private _viewportPointerUpHandler(e: InteractionEvent) {

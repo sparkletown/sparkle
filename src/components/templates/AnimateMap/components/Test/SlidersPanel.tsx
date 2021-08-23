@@ -141,7 +141,7 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
             defaultValue={
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              window.LIGHT_MB
+              window.LIGHT_R
             }
             step={0.001}
             onChange={(event) => {
