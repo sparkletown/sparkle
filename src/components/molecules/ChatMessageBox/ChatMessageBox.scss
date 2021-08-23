@@ -11,6 +11,10 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
     padding: $spacing--md;
     display: flex;
     align-items: center;
+
+    .InputField {
+      flex-grow: 1;
+    }
   }
 
   &__inputs {
@@ -52,6 +56,11 @@ $emoji-button-diameter: $submit-button-diameter - $spacing--md;
   &__input {
     text-align: left;
     padding-left: $spacing--lg;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-grow: 0;
   }
 
   &__submit-button {
