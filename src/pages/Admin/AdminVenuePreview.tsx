@@ -1,4 +1,5 @@
 import React, { CSSProperties, useMemo } from "react";
+import { format } from "date-fns";
 
 import { IFRAME_ALLOW } from "settings";
 
@@ -132,6 +133,15 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
             <RenderMarkdown
               text={venue.config?.landingPageConfig.description}
             />
+          </div>
+
+          <div>
+            <span className="title">Created At:</span>
+            {venue.createdAt && format(venue.createdAt, "yyyy-MM-dd HH:mm:ss")}
+          </div>
+          <div>
+            <span className="title">Updated At:</span>
+            {venue.updatedAt && format(venue.updatedAt, "yyyy-MM-dd HH:mm:ss")}
           </div>
         </div>
         <div className="content-group" style={{ display: "flex" }}>
