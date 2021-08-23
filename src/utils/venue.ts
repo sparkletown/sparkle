@@ -16,6 +16,7 @@ import {
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
+import { assertUnreachable } from "./error";
 import { WithId } from "./id";
 
 export const canHaveEvents = (venue: AnyVenue): boolean =>
@@ -168,6 +169,6 @@ export const sortVenues = (
           (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
       );
     default:
-      return venueList;
+      assertUnreachable();
   }
 };
