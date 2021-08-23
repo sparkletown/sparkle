@@ -44,7 +44,7 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
           onChange={(event) => {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
-            window["LIGHT_" + keys[i]] = event.target.value;
+            window["LIGHT_" + keys[i]] = Number(event.target.value);
             logLight();
           }}
         />
@@ -73,13 +73,19 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
             onChange={(event) => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[0].current.value = window.LIGHT_SR = event.target.value;
+              refs[0].current.value = window.LIGHT_SR = Number(
+                event.target.value
+              );
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[1].current.value = window.LIGHT_SG = event.target.value;
+              refs[1].current.value = window.LIGHT_SG = Number(
+                event.target.value
+              );
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[2].current.value = window.LIGHT_SB = event.target.value;
+              refs[2].current.value = window.LIGHT_SB = Number(
+                event.target.value
+              );
               logLight();
             }}
           />
@@ -102,13 +108,19 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
             onChange={(event) => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[3].current.value = window.LIGHT_MR = event.target.value;
+              refs[3].current.value = window.LIGHT_MR = Number(
+                event.target.value
+              );
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[4].current.value = window.LIGHT_MG = event.target.value;
+              refs[4].current.value = window.LIGHT_MG = Number(
+                event.target.value
+              );
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
-              refs[5].current.value = window.LIGHT_MB = event.target.value;
+              refs[5].current.value = window.LIGHT_MB = Number(
+                event.target.value
+              );
               logLight();
             }}
           />
