@@ -47,11 +47,14 @@ $dark-green: #208a28;
 $clickable-area-color: #ffffff11;
 $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
+$room-card-background: #323232;
+
+// chat relevant colors
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$room-card-background: #323232;
+$chat-bubble: #434046;
 
 $gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
