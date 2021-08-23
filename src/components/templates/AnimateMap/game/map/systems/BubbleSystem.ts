@@ -1,5 +1,5 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { Container, Graphics, Point, Sprite, Text, TextStyle } from "pixi.js";
+import { Container, Graphics, Sprite, Text, TextStyle } from "pixi.js";
 
 import EntityFactory from "../entities/EntityFactory";
 import { BubbleNode } from "../nodes/BubbleNode";
@@ -80,8 +80,10 @@ export class BubbleSystem extends System {
   private updateBubbleElementPosition(node: BubbleNode) {
     if (!this.viewport?.head) return;
 
-    const point: Point = node.sprite.view.toGlobal({ x: 0, y: 0 });
-
+    const point = node.sprite.view?.toGlobal({ x: 0, y: 0 });
+    if (!point) {
+      return;
+    }
     // TODO HACK
     const bubbleHeight = 60;
     const k = 10 * this.viewport.head.viewport.zoomViewport;

@@ -156,7 +156,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           await createVenue(
             {
               ...vals,
-              parentId: BM_PARENT_ID,
             } as VenueInput,
             user
           );
@@ -536,6 +535,38 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  const renderParentIdInput = () => (
+    <div className="input-container">
+      <h4 className="italic input-header">
+        Enter the parent venue ID, for the &quot;back&quot; button to go to, and
+        for sharing events in the schedule
+      </h4>
+      <div style={{ fontSize: "16px" }}>
+        The nav bar can show a &quot;back&quot; button if you enter an ID here.
+        Clicking &quot;back&quot; will return the user to the venue whose ID you
+        enter. Additionally, the events you add here will be shown to users
+        while they are on all other venues which share the parent venue ID you
+        enter here, as well as in the parent venue. The value is a venue ID.
+        Enter the venue ID you wish to use. A venue ID is the part of the URL
+        after /in/, so eg. for <i>sparkle.space/in/abcdef</i> you would enter{" "}
+        <i>abcdef</i>
+        below
+      </div>
+      <input
+        type="text"
+        defaultValue={BM_PARENT_ID}
+        disabled={disable}
+        name="parentId"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="abcdef"
+      />
+      {errors.parentId && (
+        <span className="input-error">{errors.parentId.message}</span>
+      )}
+    </div>
+  );
+
   const renderRoomAppearanceSelect = () => (
     <>
       <h4 className="italic input-header">
@@ -618,6 +649,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           HAS_GRID_TEMPLATES.includes(templateID) &&
           values.showGrid &&
           renderGridDimensionsInputs()}
+
+        {renderParentIdInput()}
 
         {templateID &&
           HAS_ROOMS_TEMPLATES.includes(templateID) &&

@@ -85,8 +85,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle: string;
-      description: string;
+      subtitle?: string;
+      description?: string;
       coverImageUrl: string;
     };
   };
@@ -200,6 +200,7 @@ export interface GenericVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
   gameOptions: GameOptions;
+  relatedPartymapId: string;
   template: VenueTemplate.animatemap;
 }
 
@@ -304,7 +305,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle: string;
+  subtitle?: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;
