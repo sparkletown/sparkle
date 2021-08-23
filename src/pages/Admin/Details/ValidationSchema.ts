@@ -3,8 +3,6 @@ import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
-  GIF_RESIZER_URL,
-  MAX_IMAGE_FILE_SIZE_BYTES,
   PLAYA_HEIGHT,
   PLAYA_VENUE_SIZE,
   PLAYA_WIDTH,
@@ -33,10 +31,7 @@ export interface SchemaShape {
   subtitle: string;
   description: string;
 
-  bannerImageFile: FileList;
   bannerImageUrl: string;
-
-  logoImageFile: FileList;
   logoImageUrl: string;
 }
 
@@ -47,27 +42,6 @@ export interface RoomSchemaShape {
   useUrl?: boolean;
   image_url: string;
 }
-
-const createFileSchema = (
-  name: string,
-  required: boolean,
-  fieldName: string = "Image"
-) =>
-  Yup.mixed<FileList>()
-    .test(
-      name,
-      `${fieldName} is required!`,
-      (val: FileList) => !required || val.length > 0
-    )
-    .test(
-      name,
-      `File size limit is 2mb. You can shrink images at ${GIF_RESIZER_URL}`,
-      async (val?: FileList) => {
-        if (!val || val.length === 0) return true;
-        const file = val[0];
-        return file.size <= MAX_IMAGE_FILE_SIZE_BYTES;
-      }
-    );
 
 export const urlIfNoFileValidation = (fieldName: string) =>
   Yup.string().when(
@@ -123,16 +97,7 @@ export const validationSchema_v2 = Yup.object()
       .required("Description is required!")
       .min(3, ({ min }) => mustBeMinimum("Description", min)),
 
-    bannerImageFile: Yup.mixed<FileList>().when("$editing", {
-      is: false,
-      then: createFileSchema("bannerImageUrl", true, "Banner"),
-    }),
     bannerImageUrl: Yup.string().required("Banner is required!"),
-
-    logoImageFile: Yup.mixed<FileList>().when("$editing", {
-      is: false,
-      then: createFileSchema("logoImageUrl", true, "Logo"),
-    }),
     logoImageUrl: Yup.string().required("Logo is required!"),
   })
   .required();
@@ -215,12 +180,6 @@ export const roomEditSchema = Yup.object().shape<RoomSchemaShape>({
   url: roomUrlSchema,
   image_url: roomImageUrlSchema,
 });
-
-// @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed
-export const venueEditSchema = Yup.object()
-  .shape<Partial<SchemaShape>>({})
-  .from("subtitle", "subtitle")
-  .from("config.landingPageConfig.description", "description");
 
 // this is used to transform the api data to conform to the yup schema
 // @debt I'm pretty sure every one of these .from that have the same fromKey / toKey are redundant noops and should be removed

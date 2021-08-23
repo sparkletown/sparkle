@@ -6,26 +6,20 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
-import { Room } from "types/rooms";
+import { Room, RoomType, VenueRoomTemplate } from "types/rooms";
+import { SoundConfigReference } from "types/sounds";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
-export enum AnimateMapEntityType {
-  user,
-  venue,
-  userWithControls,
-}
-
 export interface AnimateMapEntity {
-  type: AnimateMapEntityType;
-  id: string;
   x: number;
   y: number;
   data: ReplicatedUserData | ReplicatedVenueData;
 }
 
 export interface ReplicatedUserData {
+  id: string;
   videoUrlString: string;
   avatarUrlString: string | string[];
   dotColor: number; //hex
@@ -39,9 +33,19 @@ export interface ReplicatedUser extends AnimateMapEntity {
 }
 
 export interface ReplicatedVenueData {
+  image_url: string;
+  type?: RoomType;
+  zIndex?: number;
+  title: string;
+  subtitle: string;
   url: string;
-  videoUrlString: string;
-  imageUrlString: string;
+  about: string;
+  width_percent: number;
+  height_percent: number;
+  isEnabled: boolean;
+  isLabelHidden?: boolean;
+  enterSound?: SoundConfigReference;
+  template?: VenueRoomTemplate;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -50,6 +54,7 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 
 export class PlayerModel implements ReplicatedUser {
   data: ReplicatedUserData = {
+    id: "",
     videoUrlString: "",
     avatarUrlString: "",
     dotColor: Math.floor(Math.random() * 16777215),
@@ -57,8 +62,6 @@ export class PlayerModel implements ReplicatedUser {
     accessories: null,
     cycle: null,
   };
-  id: string = "";
-  type: AnimateMapEntityType = AnimateMapEntityType.userWithControls;
   x: number = 4960;
   y: number = 4960;
 }

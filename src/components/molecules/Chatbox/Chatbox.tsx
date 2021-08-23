@@ -128,7 +128,7 @@ const _ChatBox: React.FC<ChatboxProps> = ({
       >
         <InfiniteScroll
           dataLength={renderedMessagesCount}
-          className={"Chatbox__messages-infinite-scroll"}
+          className="Chatbox__messages-infinite-scroll"
           next={increaseRenderedMessagesCount}
           inverse
           hasMore={renderedMessagesCount < messages.length}
