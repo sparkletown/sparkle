@@ -3,10 +3,9 @@ import * as Yup from "yup";
 
 import {
   BACKGROUND_IMG_TEMPLATES,
-  GIF_RESIZER_URL,
   IFRAME_TEMPLATES,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  MAX_IMAGE_FILE_SIZE_MB_TEXT,
+  MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES,
+  MAX_UPLOAD_IMAGE_FILE_SIZE_MB,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_AUDITORIUM_COLUMNS_COUNT,
@@ -22,6 +21,8 @@ import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
 
 import { UsernameVisibility } from "types/User";
 import { VenueTemplate } from "types/venues";
+
+import { fileSizeLimitString } from "utils/misc";
 
 import {
   roomTitleSchema,
@@ -47,11 +48,11 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is ${MAX_IMAGE_FILE_SIZE_MB_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
+      fileSizeLimitString(MAX_UPLOAD_IMAGE_FILE_SIZE_MB),
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
-        return file.size <= MAX_IMAGE_FILE_SIZE_BYTES;
+        return file.size <= MAX_UPLOAD_IMAGE_FILE_SIZE_BYTES;
       }
     );
 
