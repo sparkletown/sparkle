@@ -366,7 +366,7 @@ export class ViewportSystem extends System {
       debugLightsSize.push(...lightSizer.getFrame(parseFloat(window.LIGHT_S)));
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
-      console.log("light coord", {
+      this.addToDebug({
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         r: window.LIGHT_R,
@@ -382,7 +382,27 @@ export class ViewportSystem extends System {
         //@ts-ignore
         size: window.LIGHT_S,
       });
+      console.log(this.debugToString());
     }
+  }
+
+  private debugMSG = new Array<Object>();
+  private addToDebug(data: Object) {
+    this.debugMSG.push(data);
+  }
+  private debugToString() {
+    let log = "";
+    this.debugMSG.forEach((data) => {
+      const keys = Object.keys(data);
+      log += "[";
+      keys.forEach((key) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        log += key + ": " + data[key] + ", ";
+      });
+      log += "]\n";
+    });
+    return log;
   }
 
   private _viewportPointerUpHandler(e: InteractionEvent) {

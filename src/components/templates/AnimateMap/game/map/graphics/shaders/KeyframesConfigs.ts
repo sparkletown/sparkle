@@ -53,3 +53,13 @@ window.LIGHT_MG = MOON_KEYFRAMES[0].data[1];
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 window.LIGHT_MB = MOON_KEYFRAMES[0].data[2];
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_R = 0;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_G = 0;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+window.LIGHT_B = 0;
