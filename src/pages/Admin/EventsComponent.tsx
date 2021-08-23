@@ -109,6 +109,14 @@ const EventsComponent: React.FC<EventsComponentProps> = ({
           )}
         </div>
       </div>
+      <div className="page-container-adminpanel-actions">
+        <button
+          className="btn btn-primary"
+          onClick={() => setShowCreateEventModal(true)}
+        >
+          Create an Event
+        </button>
+      </div>
     </>
   );
 };
