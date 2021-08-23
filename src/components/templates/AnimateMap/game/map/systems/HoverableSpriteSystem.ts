@@ -37,7 +37,9 @@ export class HoverableSpriteSystem extends System {
   update(time: number) {}
 
   private handleHoverableAdded = (node: HoverableSpriteNode) => {
-    node.sprite.view.interactive = true;
+    if (node.sprite.view) {
+      node.sprite.view.interactive = true;
+    }
   };
 
   private handleHoverableRemoved = (node: HoverableSpriteNode) => {

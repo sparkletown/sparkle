@@ -1,5 +1,7 @@
 @import "scss/constants";
 
+$emoji-button-diameter: $submit-button-diameter - $spacing--md;
+
 .Chatbox {
   &--question {
     background-color: $dark-green;
@@ -15,6 +17,42 @@
     }
   }
 
+  &__inputs {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    flex-grow: 1;
+    margin-right: $spacing--lg;
+
+    .InputField {
+      flex-grow: 1;
+
+      input {
+        // NOTE: this removes screen artefacts of the embedded <input> inside InputField being as wide as the parent
+        margin: 1px;
+      }
+
+      &__input {
+        padding-right: $submit-button-diameter;
+      }
+    }
+  }
+
+  &__emoji-button {
+    margin-left: -1 * $submit-button-diameter;
+    @include square-size(
+      $emoji-button-diameter,
+      $emoji-button-diameter,
+      $emoji-button-diameter
+    );
+  }
+
+  &__buttons {
+    display: flex;
+    flex-grow: 0;
+  }
+
   &__input {
     text-align: left;
     padding-left: $spacing--lg;
@@ -26,21 +64,8 @@
   }
 
   &__submit-button {
-    outline: none;
-    border: none;
     min-width: $submit-button-diameter;
     min-height: $submit-button-diameter;
-    border-radius: $border-radius--max;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-left: $spacing--md;
-
-    background-color: $primary;
-
-    &:disabled {
-      background-color: $saturated-black;
-    }
   }
 
   &__submit-button-icon {
@@ -55,7 +80,7 @@
 
     // Override default lib styles
     .emoji-mart-search {
-      margin: 9px 3px 3px 3px;
+      margin: $spacing--sm $spacing--xs $spacing--xs $spacing--xs;
     }
 
     .emoji-mart-search-icon {

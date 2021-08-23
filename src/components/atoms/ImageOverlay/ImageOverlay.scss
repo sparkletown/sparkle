@@ -1,11 +1,6 @@
 @import "scss/constants.scss";
 
 .ImageOverlay {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-
   padding: $image-overlay-padding;
   border-radius: $border-radius--xl;
   backdrop-filter: $image-overlay-backdrop-filter;

@@ -31,7 +31,9 @@ export class ClickableSpriteSystem extends System {
   update(time: number) {}
 
   private handleClickableAdded = (node: ClickableSpriteNode) => {
-    node.sprite.view.interactive = true;
+    if (node.sprite.view) {
+      node.sprite.view.interactive = true;
+    }
   };
 
   private handlePointerDown = (event: InteractionEvent) => {

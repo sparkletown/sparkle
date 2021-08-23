@@ -16,6 +16,10 @@ export class SpriteSystem extends ListIteratingSystem<SpriteNode> {
     const view = node.sprite.view;
     const position = node.position;
 
+    if (!view) {
+      return;
+    }
+
     view.setTransform(
       position.x,
       position.y,
@@ -49,7 +53,7 @@ export class SpriteSystem extends ListIteratingSystem<SpriteNode> {
 
   public nodeRemoved = (node: SpriteNode) => {
     const view = node.sprite.view;
-    if (this._container?.children.includes(view)) {
+    if (view && this._container?.children.includes(view)) {
       this._container?.removeChild(view);
     }
   };
