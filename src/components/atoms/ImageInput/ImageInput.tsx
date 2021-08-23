@@ -1,17 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useCallback, useState } from "react";
 import { FieldError, useForm } from "react-hook-form";
-import { useAsyncFn } from "react-use";
 import classNames from "classnames";
 
-import {
-  ACCEPTED_IMAGE_TYPES,
-  MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES,
-  MAX_SELECTABLE_IMAGE_FILE_SIZE_MB,
-} from "settings";
+import { ACCEPTED_IMAGE_TYPES } from "settings";
 
-import { fileSizeLimitString } from "utils/misc";
-
-import { useTryCompressImage } from "hooks/useTryCompressImage";
+import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import { ImageOverlay } from "components/atoms/ImageOverlay";
 
@@ -28,11 +21,6 @@ export interface ImageInputProps {
   nameWithUnderscore?: boolean;
 }
 
-const compressionError = "An error occurred while compressing the image.";
-const tooLargeFileError = fileSizeLimitString(
-  MAX_SELECTABLE_IMAGE_FILE_SIZE_MB
-);
-
 const ImageInput: React.FC<ImageInputProps> = ({
   onChange = () => {},
   name,
@@ -45,43 +33,26 @@ const ImageInput: React.FC<ImageInputProps> = ({
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
 
-  const tryCompress = useTryCompressImage();
-
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
 
-  const [isTooLargeFileError, setIsTooLargeFileError] = useState(false);
+  const {
+    loading,
+    errorMessage,
+    handleFileInputChange,
+  } = useImageInputCompression(register, error?.message, name);
 
-  const [{ loading, error: isCompressionError }, handleFileChange] = useAsyncFn(
+  const handleFileInputChangeWrapper = useCallback(
     async (event: ChangeEvent<HTMLInputElement>) => {
-      const files = event.target.files;
-      const file = files?.[0];
-      if (!files || !file) return;
-      if (file.size >= MAX_SELECTABLE_IMAGE_FILE_SIZE_BYTES) {
-        setIsTooLargeFileError(true);
-        return;
-      } else setIsTooLargeFileError(false);
-
-      const compressedFile = await tryCompress(file);
-
-      const url = URL.createObjectURL(file);
+      const [url, compressedFile] = await handleFileInputChange(event);
+      if (!compressedFile || !url) return;
 
       setImageUrl(url);
-
-      onChange(url);
       setValue(fileName, [compressedFile], false);
+      onChange(url);
     },
-    [tryCompress, onChange, setValue, fileName]
+    [handleFileInputChange, onChange, setValue, fileName]
   );
-
-  useEffect(() => {
-    register(fileName);
-  }, [fileName, register]);
-
-  const errorMessage =
-    error?.message ??
-    (isCompressionError && compressionError) ??
-    (isTooLargeFileError && tooLargeFileError);
 
   return (
     <>
@@ -99,7 +70,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
           id={name}
-          onChange={handleFileChange}
+          onChange={handleFileInputChangeWrapper}
           type="file"
         />
         {loading && <ImageOverlay disabled>processing...</ImageOverlay>}

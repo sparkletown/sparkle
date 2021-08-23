@@ -1,9 +1,11 @@
-import React, { useMemo } from "react";
-import { FieldError } from "react-hook-form";
+import React, { ChangeEvent, useCallback, useMemo } from "react";
+import { FieldError, useForm } from "react-hook-form";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { ContainerClassName } from "types/utility";
+
+import { useImageInputCompression } from "hooks/useImageInputCompression";
 
 import "firebase/functions";
 
@@ -15,11 +17,13 @@ interface ImageInputProps extends ContainerClassName {
   image?: FileList;
   imageClassName?: string;
   error?: FieldError;
+  setValue: <T>(prop: string, value: T, validate: boolean) => void;
+  register: ReturnType<typeof useForm>["register"];
 }
 
 export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
-  (props, ref) => {
-    const {
+  (
+    {
       image,
       remoteUrlInputName,
       remoteImageUrl,
@@ -28,13 +32,36 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
       name,
       error,
       disabled,
-    } = props;
-
+      setValue,
+      register,
+    },
+    ref
+  ) => {
     const imageUrl = useMemo(
       () =>
         (image && image.length > 0 && URL.createObjectURL(image[0])) ||
         remoteImageUrl,
       [image, remoteImageUrl]
+    );
+
+    const {
+      loading,
+      errorMessage,
+      handleFileInputChange,
+    } = useImageInputCompression(register, error?.message, name);
+
+    const handleFileInputChangeWrapper = useCallback(
+      async (event: ChangeEvent<HTMLInputElement>) => {
+        const [url, compressedFile] = await handleFileInputChange(event);
+        if (!compressedFile || !url) return;
+
+        setValue(name, [compressedFile], false);
+
+        if (remoteUrlInputName) {
+          setValue(remoteUrlInputName, url, true);
+        }
+      },
+      [handleFileInputChange, name, remoteUrlInputName, setValue]
     );
 
     return (
@@ -54,11 +81,10 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             </div>
           )}
           <input
-            disabled={disabled}
-            name={name}
+            disabled={disabled || loading}
             type="file"
-            ref={ref}
             accept={ACCEPTED_IMAGE_TYPES}
+            onChange={handleFileInputChangeWrapper}
             className="default-input"
           />
           {remoteUrlInputName && (
@@ -70,7 +96,7 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             />
           )}
         </div>
-        {error?.message && <span className="input-error">{error.message}</span>}
+        {errorMessage && <span className="input-error">{errorMessage}</span>}
       </>
     );
   }
