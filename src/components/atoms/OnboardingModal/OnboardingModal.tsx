@@ -41,14 +41,16 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
     return <></>;
   }
 
+  const dialogClassName = classNames({
+    "OnboardingModal OnboardingModal__dialog ": true,
+    [className]: className,
+  });
+
   return (
     <Modal
       centered
-      dialogClassName={classNames({
-        "OnboardingModal OnboardingModal__dialog ": true,
-        [className]: className,
-      })}
-      show={true}
+      dialogClassName={dialogClassName}
+      show
       onHide={() =>
         console.warn(
           "Automatic hiding of this window by clicking outside is not allowed. Please use the skip button."
@@ -82,7 +84,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             className="OnboardingModal__button-next"
             title={skipText}
             onClick={onSkip}
-            isLink={true}
+            isLink
           >
             {skipText}
           </ButtonNG>
