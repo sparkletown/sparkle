@@ -54,7 +54,7 @@ export const LoginWithCustomToken: React.FC<LoginCustomCodeProps> = () => {
   return (
     <div className="auth-container">
       <div className="logo-container">
-        <img src="/sparkle-header.png" alt="" width="100%" />
+        <img src="/sparkle-header-burn.png" alt="" width="100%" />
       </div>
 
       {error && <div>Error: {error.message}</div>}
