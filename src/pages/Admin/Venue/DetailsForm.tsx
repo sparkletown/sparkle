@@ -184,35 +184,39 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           );
           //@debt Create separate function that updates the userStatuses separately by venue id.
           if (sovereignVenueId && sovereignVenueId !== venueId) {
+            const { sovereignVenue } = await fetchSovereignVenue(
+              sovereignVenueId
+            );
+
             const {
-              sovereignVenue: sovereignVenueData,
-            } = await fetchSovereignVenue(sovereignVenueId);
+              id,
+              name,
+              adultContent = false,
+              profile_questions,
+              code_of_conduct_questions,
+              userStatuses,
+              showUserStatus,
+              template,
+            } = sovereignVenue;
+
+            const { subtitle = "", description = "" } =
+              sovereignVenue.config?.landingPageConfig ?? {};
 
             await updateVenue(
               {
-                id: sovereignVenueData.id,
-                name: sovereignVenueData.name,
-                subtitle:
-                  sovereignVenueData.config?.landingPageConfig.subtitle ?? "",
-                description:
-                  sovereignVenueData.config?.landingPageConfig.description ??
-                  "",
-                adultContent: sovereignVenueData.adultContent ?? false,
-                profile_questions: sovereignVenueData.profile_questions,
-                code_of_conduct_questions:
-                  sovereignVenueData.code_of_conduct_questions,
-                userStatuses: sovereignVenueData.userStatuses,
-                showUserStatus: sovereignVenueData.showUserStatus,
-                template: sovereignVenueData.template,
+                id,
+                name,
+                subtitle,
+                description,
+                adultContent,
+                profile_questions,
+                code_of_conduct_questions,
+                userStatuses,
+                showUserStatus,
+                template,
               },
               user
-            ).then(() => {
-              dispatch(
-                setSovereignVenue({
-                  ...sovereignVenueData,
-                })
-              );
-            });
+            ).then(() => dispatch(setSovereignVenue(sovereignVenue)));
           }
         } else
           await createVenue(
