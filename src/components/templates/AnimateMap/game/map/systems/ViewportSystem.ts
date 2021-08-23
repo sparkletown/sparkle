@@ -328,16 +328,30 @@ export class ViewportSystem extends System {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     if (
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       window.LIGHT_R > 0.01 ||
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       window.LIGHT_G > 0.01 ||
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       window.LIGHT_B > 0.01
     ) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       debugLightsCol.push(
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         ...[
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           parseFloat(window.LIGHT_R),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           parseFloat(window.LIGHT_G),
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           parseFloat(window.LIGHT_B),
         ]
       );
