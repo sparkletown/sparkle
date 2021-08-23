@@ -368,9 +368,13 @@ export class MapContainer extends Container {
           const loop = async () => {
             for (let i = 0; i < artcars.length; i++) {
               await new Promise((resolve) => {
-                const user: PlayerModel = new PlayerModel();
-                user.data.id = `${i}${Date.now()}`;
-                user.data.avatarUrlString = artcars[i];
+                const user: PlayerModel = new PlayerModel(
+                  `${i}${Date.now()}`,
+                  -1,
+                  artcars[i]
+                );
+                // user.data.id = `${i}${Date.now()}`;
+                // user.data.avatarUrlString = artcars[i];
                 self.entityFactory?.createArtcar(user);
                 setTimeout(() => {
                   resolve(true);

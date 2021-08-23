@@ -490,10 +490,10 @@ export default class EntityFactory {
   public updateUserPositionById(userId: string, x: number, y: number) {
     let bot: BotNode | null = this.getBotNode(userId);
     if (!bot) {
-      const player: PlayerModel = new PlayerModel();
-      player.data.id = userId;
-      player.x = x;
-      player.y = y;
+      const player: PlayerModel = new PlayerModel(userId, -1, "", x, y);
+      // player.data.id = userId;
+      // player.x = x;
+      // player.y = y;
       this.createBot(player, true);
       bot = this.engine.getNodeList(BotNode).head as BotNode;
       bot.bot.fsm.changeState("idle");
