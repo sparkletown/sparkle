@@ -23,13 +23,12 @@ vec3 PointLightApply(vec2 position, int color, vec3 albedo, vec2 koef)
 
     magnX *= magnX;
     magnY *= magnY;
-    int r = color / 256 / 256;
+    int r = color / 65536;
     int g =  (color / 256) * 256;
     int b =  color - g;
-    g = color - r * 256 * 256 - b;
-    g /= 256;
+    g = color - r * 65536 - b;
 
-    vec3 rgb = vec3(float(r)/255.0, float(g)/255.0, float(b)/255.0);
+    vec3 rgb = vec3(float(r), float(g)/256.0, float(b))*0.00392156862745;
 
     float magnitude = (magnX + magnY);
 
