@@ -47,6 +47,7 @@ import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import { NavBarLogin } from "./NavBarLogin";
@@ -160,7 +161,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
   const handleMute = useCallback(
-    (volume: number) => (volume !== 0 ? 0 : 100),
+    (volume: number) => (volume !== 0 ? 0 : volume),
     []
   );
   const toggleMute = useCallback(() => setVolume(handleMute), [
@@ -246,7 +247,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   onClick={navigateToHomepage}
                 />
               )}
-              <div className="nav-sparkle-logo" onClick={navigateToHomepage} />
+              <div
+                className="NavBar__sparkle-logo"
+                onClick={navigateToHomepage}
+              />
               {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
@@ -327,12 +331,13 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 )}
 
                 {showRadio && (
-                  <button
+                  <ButtonNG
                     className={volumeControlClassname}
                     onClick={toggleMute}
+                    iconOnly
                   >
                     <FontAwesomeIcon icon={volumeIcon} />
-                  </button>
+                  </ButtonNG>
                 )}
                 <div
                   className="navbar-links-user-avatar"
@@ -341,7 +346,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <UserAvatar
                     user={userWithId}
                     showStatus
-                    containerClassName="NavBar__userAvatar"
+                    containerClassName="NavBar__user-avatar"
+                    size="small"
                   />
                 </div>
                 <OverlayTrigger
@@ -350,9 +356,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <button className="NavBar__menu--link">
+                  <ButtonNG className="NavBar__menu--link" iconOnly>
                     <FontAwesomeIcon icon={faBars} />
-                  </button>
+                  </ButtonNG>
                 </OverlayTrigger>
               </div>
             )}

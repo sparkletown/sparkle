@@ -15,7 +15,7 @@
   &__clear-search {
     cursor: pointer;
     opacity: 0.4;
-    width: 24px;
+    width: $spacing--xl;
 
     &:hover {
       opacity: 0.6;

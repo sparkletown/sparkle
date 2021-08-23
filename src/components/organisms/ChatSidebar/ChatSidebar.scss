@@ -1,6 +1,7 @@
 @import "scss/constants";
 
 $header-height: 45px;
+$reserved-page-height: $navbar-height + $footer-height;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -8,10 +9,10 @@ $header-height: 45px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: $navbar-height;
+  top: $navbar-search-height;
   right: 0;
   width: $chat-sidebar-width;
-  height: calc(100vh - #{$navbar-height} - #{$footer-height});
+  height: calc(100vh - $reserved-page-height);
   background-color: $saturated-black;
   z-index: z(sidebar);
 

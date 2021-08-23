@@ -98,19 +98,10 @@ $logo-size: 43px;
   align-items: center;
 }
 
-.nav-sparkle-logo {
-  margin-right: $spacing--lg;
-  width: $logo-size;
-  height: $logo-size;
-  background-image: url(/assets/icons/sparkle-nav-logo.png);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-}
 .nav-party-logo {
   margin-right: $spacing--lg;
   position: relative;
-  background-color: rgba($white, 0.08);
+  background-color: opaque-white(0.08);
   height: $navbar-height;
   padding: 0 50px 0 20px;
   text-align: center;
@@ -132,7 +123,7 @@ $logo-size: 43px;
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
     &:after {
       opacity: 0.7;
     }
@@ -209,6 +200,18 @@ $logo-size: 43px;
     margin-right: $spacing--md;
   }
 
+  &__sparkle {
+    &-logo {
+      margin-right: $spacing--lg;
+      width: $logo-size;
+      height: $logo-size;
+      background-image: url(/assets/icons/sparkle-nav-logo.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
   &__profile-popover {
     height: 100%;
   }
@@ -224,7 +227,7 @@ $logo-size: 43px;
     }
   }
 
-  &__userAvatar {
+  &__user-avatar {
     width: $menu-item-size;
     height: $menu-item-size;
     margin-right: $spacing--sm;
@@ -238,12 +241,12 @@ $logo-size: 43px;
   &__menu {
     &--volume.mute {
       opacity: 0.5;
-      box-shadow: 0 0 0 2px rgba($white, 1);
+      box-shadow: 0 0 0 2px $white;
     }
 
     &--link {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba($white, 1);
+      background: opaque-white(0.1);
+      color: $white;
       opacity: 0.8;
       border: none;
       border-radius: $border-radius--max;
@@ -265,7 +268,7 @@ $logo-size: 43px;
       }
 
       &:focus {
-        box-shadow: 0 0 0 2px #fff;
+        box-shadow: 0 0 0 2px $white;
         outline: none;
         opacity: 1;
       }

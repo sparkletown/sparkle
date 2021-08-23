@@ -1,5 +1,7 @@
 import React from "react";
 
+import { getRadioStationUrl } from "utils/radio";
+
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
 import "./RadioPopoverContent.scss";
@@ -43,7 +45,7 @@ export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
         id="sound-cloud-player"
         scrolling="no"
         allow="autoplay"
-        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
+        src={getRadioStationUrl(radioStation)}
       />
     )}
   </>

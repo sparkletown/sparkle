@@ -20,7 +20,7 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
 
   const numberOfRecentWorldUsers = recentWorldUsers.length;
 
-  const title = useMemo<number>(() => {
+  const userCount = useMemo<number>(() => {
     if (isLoading || !isRecentWorldUsersLoaded) return 0;
 
     return numberOfRecentWorldUsers;
@@ -28,7 +28,7 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
 
   return (
     <div className="VenuePartygoers__container">
-      <span className="VenuePartygoers__number">{title}</span> burners here
+      <span className="VenuePartygoers__number">{userCount}</span> burners here
     </div>
   );
 };

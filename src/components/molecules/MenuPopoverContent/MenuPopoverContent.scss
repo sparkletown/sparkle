@@ -1,12 +1,14 @@
 @import "scss/constants.scss";
 
+$menu-popover-width: 180px;
+
 // @debt hack-fix to update popover sizes
 #menu-popover {
   margin-top: $spacing--md;
 
   &.popover {
     height: unset;
-    width: 180px;
+    width: $menu-popover-width;
     border-radius: 0 0 $border-radius--xl $border-radius--xl;
   }
 }
@@ -18,7 +20,7 @@
   height: auto;
 
   &__link {
-    padding: 3px 12px;
+    padding: $spacing--xs $spacing--md;
     text-decoration: none;
   }
 }
