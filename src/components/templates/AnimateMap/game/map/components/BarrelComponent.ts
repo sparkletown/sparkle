@@ -1,3 +1,5 @@
+import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
+
 export class BarrelComponent {
-  constructor(public temporary = false) {}
+  constructor(public data: GameOptionsFirebarrel) {}
 }

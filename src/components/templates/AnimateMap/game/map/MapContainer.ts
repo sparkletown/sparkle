@@ -3,11 +3,7 @@ import { Application, Container } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { setAnimateMapPointer } from "store/actions/AnimateMap";
-import {
-  PlayerModel,
-  ReplicatedUser,
-  ReplicatedVenue,
-} from "store/reducers/AnimateMap";
+import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
@@ -15,12 +11,7 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
-import {
-  artcars,
-  barrels,
-  MAP_JSON,
-  sounds,
-} from "../constants/AssetConstants";
+import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
 import KeyPoll from "../utils/KeyPollSingleton";
 import { PlaygroundMap } from "../utils/PlaygroundMap";
@@ -293,13 +284,12 @@ export class MapContainer extends Container {
 
           if (firebarrels) {
             for (let i = 0; i < firebarrels.length; i++) {
-              const firebarrel = firebarrels[i];
-
-              this.entityFactory.createBarrel({
-                x: firebarrel.x,
-                y: firebarrel.y,
-                data: { url: firebarrel.id, image_url: barrels[0] },
-              } as ReplicatedVenue);
+              this.entityFactory.createBarrel(firebarrels[i]);
+              // this.entityFactory.createBarrel({
+              //   x: firebarrel.x,
+              //   y: firebarrel.y,
+              //   data: { url: firebarrel.id, image_url: barrels[0] },
+              // } as ReplicatedVenue);
             }
           }
         }

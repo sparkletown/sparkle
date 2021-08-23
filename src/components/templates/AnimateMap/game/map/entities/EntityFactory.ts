@@ -10,6 +10,7 @@ import {
 
 import { Point } from "types/utility";
 
+import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
@@ -518,21 +519,20 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(venue: ReplicatedVenue): Entity {
+  public createBarrel(barrel: GameOptionsFirebarrel): Entity {
     const config = GameInstance.instance.getConfig();
 
     const collisionRadius = config.venueDefaultCollisionRadius / 2;
 
     const entity: Entity = new Entity();
     entity
-      .add(new VenueComponent(venue))
-      .add(new BarrelComponent())
+      .add(new BarrelComponent(barrel))
       .add(new CollisionComponent(collisionRadius))
       .add(
         new HoverableSpriteComponent(
           () => {
             const tooltip: TooltipComponent = new TooltipComponent(
-              `Join ${venue.data.url}`,
+              `Join to firebarrel`,
               0
             );
             tooltip.textColor = 0xffffff;
@@ -574,7 +574,7 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(venue.data.image_url)
+    new LoadImage(barrel.iconSrc)
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -587,11 +587,13 @@ export default class EntityFactory {
       )
       .then((comm: ImageToCanvas) => {
         const scale = (collisionRadius * 2) / comm.canvas.width / 2;
-        if (venue)
-          entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
+        if (barrel)
+          entity.add(
+            new PositionComponent(barrel.x, barrel.y, 0, scale, scale)
+          );
 
         const sprite: Barrel = new Barrel();
-        sprite.name = venue.data.url;
+        sprite.name = barrel.iconSrc;
         sprite.barrel = Sprite.from(comm.canvas);
         sprite.barrel.anchor.set(0.5);
         sprite.addChild(sprite.barrel);
