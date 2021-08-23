@@ -27,6 +27,6 @@ export const prepareForSchedule = ({
     venueIcon:
       relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon ??
       DEFAULT_VENUE_LOGO,
-    liveAudience: recentRoomUsers?.length ? recentRoomUsers[index].length : 0,
+    liveAudience: recentRoomUsers?.[index]?.length ?? 0,
   };
 };

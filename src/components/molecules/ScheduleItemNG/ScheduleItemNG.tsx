@@ -182,7 +182,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
       {isCurrentEventLive && (
         <div className="ScheduleItemNG__online">
           <FontAwesomeIcon
-            className="ScheduleItemNG__online__icon"
+            className="ScheduleItemNG__online-icon"
             icon={solidUsers}
           />
           <span>{event.liveAudience}</span>
