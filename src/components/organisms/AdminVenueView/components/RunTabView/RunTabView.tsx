@@ -1,14 +1,12 @@
 import React from "react";
 import { faCog } from "@fortawesome/free-solid-svg-icons/faCog";
 
-import { DEFAULT_MAP_BACKGROUND } from "settings";
-
-import { AnyVenue, PartyMapVenue } from "types/venues";
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { adminNGSettingsUrl } from "utils/url";
 
-import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
+import MapPreview from "pages/Admin/MapPreview";
 
 import { RunTabRooms } from "components/organisms/AdminVenueView/components/RunTabRooms/RunTabRooms";
 import { RunTabToolbar } from "components/organisms/AdminVenueView/components/RunTabToolbar/RunTabToolbar";
@@ -16,20 +14,13 @@ import { RunTabUsers } from "components/organisms/AdminVenueView/components/RunT
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabView.scss";
 
 export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }
-
-const partyMapBoundaries = {
-  width: 100,
-  height: 100,
-};
-
-const emptyIconsMap = {};
 
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
@@ -57,19 +48,12 @@ export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
           <RunTabToolbar venueId={venueId} />
         </div>
         <div className="RunTabView__map RunTabView--spacing">
-          <PartyMapContainer
-            interactive
-            resizable
-            venue={venue as PartyMapVenue}
-            coordinatesBoundary={partyMapBoundaries}
-            snapToGrid={false}
-            iconsMap={emptyIconsMap}
-            backgroundImage={
-              venue?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND
-            }
-            iconImageStyle={emptyIconsMap}
-            draggableIconImageStyle={emptyIconsMap}
-            otherIconsStyle={{ opacity: 0.4 }}
+          <MapPreview
+            isEditing
+            venueId={venue.id}
+            venueName={venue.name}
+            mapBackground={venue.mapBackgroundImageUrl}
+            rooms={venue.rooms ?? []}
           />
         </div>
         <div className="RunTabView__cards RunTabView--spacing">
