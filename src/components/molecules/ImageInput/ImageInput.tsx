@@ -17,7 +17,6 @@ interface ImageInputProps extends ContainerClassName {
   error?: FieldError;
 }
 
-// eslint-disable-next-line
 export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
   (props, ref) => {
     const {
@@ -76,3 +75,5 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
     );
   }
 );
+
+ImageInput.displayName = "ImageInput";

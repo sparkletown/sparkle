@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { FieldError } from "react-hook-form";
+import React, { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { FieldError, useForm } from "react-hook-form";
 import { useAsyncFn } from "react-use";
 import imageCompression from "browser-image-compression";
 import classNames from "classnames";
@@ -19,10 +19,9 @@ export interface ImageInputProps {
   name: string;
   imgUrl?: string;
   error?: FieldError;
+  setValue: <T>(prop: string, value: T, validate: boolean) => void;
   small?: boolean;
-  forwardRef: (
-    value: React.RefObject<HTMLInputElement> | HTMLInputElement | null
-  ) => void;
+  register: ReturnType<typeof useForm>["register"];
   nameWithUnderscore?: boolean;
 }
 
@@ -32,13 +31,14 @@ const ImageInput: React.FC<ImageInputProps> = ({
   imgUrl,
   error,
   small = false,
-  forwardRef,
+  register,
+  setValue,
   nameWithUnderscore = false,
 }) => {
   const [imageUrl, setImageUrl] = useState(imgUrl);
   const [compressionError, setCompressionError] = useState(false);
 
-  const [{ loading }, handleOnChange] = useAsyncFn(
+  const [{ loading }, compressIfNecessary] = useAsyncFn(
     async (files: FileList | null) => {
       if (!files) return;
 
@@ -70,13 +70,28 @@ const ImageInput: React.FC<ImageInputProps> = ({
 
       setImageUrl(url);
 
-      return onChange(url);
+      onChange(url);
+      return file;
     },
     [onChange]
   );
 
   const fileName = nameWithUnderscore ? `${name}_file` : `${name}File`;
   const fileUrl = nameWithUnderscore ? `${name}_url` : `${name}Url`;
+
+  const handleFileChange = useCallback(
+    async (event: ChangeEvent<HTMLInputElement>) => {
+      const compressedFile = await compressIfNecessary(event.target.files);
+
+      if (compressedFile) setValue(fileName, [compressedFile], false);
+      else setValue(fileName, null, false);
+    },
+    [fileName, compressIfNecessary, setValue]
+  );
+
+  useEffect(() => {
+    register(fileName);
+  }, [fileName, register]);
 
   const errorMessage =
     error?.message ??
@@ -98,9 +113,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
           accept={ACCEPTED_IMAGE_TYPES}
           hidden
           id={name}
-          name={fileName}
-          onChange={(event) => handleOnChange(event.target.files)}
-          ref={forwardRef}
+          onChange={handleFileChange}
           type="file"
         />
         {loading && <ImageOverlay disabled>processing...</ImageOverlay>}
@@ -118,7 +131,7 @@ const ImageInput: React.FC<ImageInputProps> = ({
       <input
         type="hidden"
         name={fileUrl}
-        ref={forwardRef}
+        ref={register}
         value={imageUrl}
         readOnly
       />
