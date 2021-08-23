@@ -631,15 +631,15 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         Livestream URL, or embed URL, for people to view in your venue
       </div>
       <div className="input-title">
-        (Enter an embeddable URL link. You can edit this later so you can leave
-        a placeholder for now)
+        (Enter an embeddable URL link. For now there is a placeholder video, so
+        you can edit this later.)
       </div>
       <textarea
         disabled={disable}
         name={"iframeUrl"}
         ref={register}
         className="wide-input-block input-centered align-left"
-        placeholder="https://youtu.be/embed/abcDEF987w"
+        value="https://player.vimeo.com/video/527446677?h=86a9c0dbf5&title=0&byline=0&portrait=0"
       />
       {errors.iframeUrl && (
         <span className="input-error">{errors.iframeUrl.message}</span>
