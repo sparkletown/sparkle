@@ -10,7 +10,7 @@ export interface OnboardingModalProps {
   className?: string;
   descriptionBottom?: string;
   descriptionTop?: string;
-  disabledNext?: boolean;
+  isNextDisabled?: boolean;
   nextText?: string;
   onNext?: () => void;
   onSkip?: () => void;
@@ -25,7 +25,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
   className = "",
   descriptionBottom,
   descriptionTop,
-  disabledNext = false,
+  isNextDisabled = false,
   nextText = "Next",
   onNext,
   onSkip,
@@ -95,7 +95,7 @@ export const OnboardingModal: React.FC<OnboardingModalProps> = ({
             title={nextText}
             onClick={onNext}
             variant="primary"
-            disabled={disabledNext}
+            disabled={isNextDisabled}
           >
             {nextText}
           </ButtonNG>
