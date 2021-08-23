@@ -66,8 +66,16 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
 
   const renderedUsers = useMemo(
     () =>
-      filteredUsers.slice(0, scrollPageNumber * PRIVATE_CHAT_NEXT_RENDER_SIZE),
-    [filteredUsers, scrollPageNumber]
+      filteredUsers
+        .slice(0, scrollPageNumber * PRIVATE_CHAT_NEXT_RENDER_SIZE)
+        .map((user) => (
+          <OnlineUser
+            key={user.id}
+            user={user}
+            onClick={() => selectRecipientChat(user.id)}
+          />
+        )),
+    [filteredUsers, scrollPageNumber, selectRecipientChat]
   );
 
   const numberOfUsers = filteredUsers.length;
@@ -113,13 +121,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
           </>
         )}
 
-        {renderedUsers.map((user) => (
-          <OnlineUser
-            key={user.id}
-            user={user}
-            onClick={() => selectRecipientChat(user.id)}
-          />
-        ))}
+        {renderedUsers}
       </InfiniteScroll>
     </div>
   );
