@@ -44,6 +44,7 @@ export class GameConfig {
 
   public minSpeed = 0;
   public maxSpeed = 8;
+  public firstEntrance = false;
 
   public pointForBezieSpeedCurve = [
     { x: 0, y: 0 },

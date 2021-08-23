@@ -121,6 +121,7 @@ export class GameInstance {
     if (this.getState().firstEntrance === "false") {
       return await this._play();
     } else {
+      this.getConfig().firstEntrance = true;
       return new TimeoutCommand(1000)
         .execute()
         .then(() => {

@@ -59,6 +59,8 @@ export class MapContainer extends Container {
 
   private _debugContainer?: Container;
 
+  private _player: ReplicatedUser | undefined;
+
   constructor(app: Application) {
     super();
 
@@ -66,14 +68,18 @@ export class MapContainer extends Container {
 
     const clbck = (player: ReplicatedUser) => {
       console.log("CREATE PLAYER");
-      this.entityFactory?.createPlayer(player);
+      this._player = player;
       EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
     };
     EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
   }
 
   public async start(): Promise<void> {
-    await this.initEntities();
+    await this.initEntities().then(() => {
+      if (this._player) {
+        this.entityFactory?.createPlayer(this._player);
+      }
+    });
   }
 
   public async init(): Promise<void> {
@@ -269,108 +275,110 @@ export class MapContainer extends Container {
     }
   }
 
-  private initEntities() {
+  private initEntities(): Promise<void> {
     if (!this.entityFactory) {
-      return;
+      return Promise.reject();
     }
 
-    new TimeoutCommand(1000)
-      .execute()
-      .then(() => {
-        if (this.entityFactory) {
-          const firebarrels = GameInstance.instance
-            .getConfig()
-            .getFirebarrels();
+    return (
+      new TimeoutCommand(1000)
+        .execute()
+        .then(() => {
+          if (this.entityFactory) {
+            const firebarrels = GameInstance.instance
+              .getConfig()
+              .getFirebarrels();
 
-          if (firebarrels) {
-            for (let i = 0; i < firebarrels.length; i++) {
-              this.entityFactory.createBarrel(firebarrels[i]);
-              // this.entityFactory.createBarrel({
-              //   x: firebarrel.x,
-              //   y: firebarrel.y,
-              //   data: { url: firebarrel.id, image_url: barrels[0] },
-              // } as ReplicatedVenue);
+            if (firebarrels) {
+              for (let i = 0; i < firebarrels.length; i++) {
+                this.entityFactory.createBarrel(firebarrels[i]);
+                // this.entityFactory.createBarrel({
+                //   x: firebarrel.x,
+                //   y: firebarrel.y,
+                //   data: { url: firebarrel.id, image_url: barrels[0] },
+                // } as ReplicatedVenue);
+              }
             }
           }
-        }
-      })
-      .then(() => {
-        if (this.entityFactory) {
-          const map: PlaygroundMap = GameInstance.instance.getConfig()
-            .playgroundMap;
-          const bots: Map<
-            string,
-            ReplicatedUser
-          > = GameInstance.instance.getState().users;
-          const itrb: IterableIterator<ReplicatedUser> = bots.values();
-          const self: MapContainer = this;
-          const loop = async () => {
-            for (
-              let bot: ReplicatedUser = itrb.next().value;
-              bot;
-              bot = itrb.next().value
-            ) {
-              await new Promise((resolve) => {
-                const point: Point = map.getRandomPointOnThePlayground();
-                bot.x = point.x;
-                bot.y = point.y;
-                self.entityFactory?.createBot(bot);
-                setTimeout(() => {
-                  resolve(true);
-                }, 30);
-              });
-            }
-          };
-          loop();
-        }
-        return Promise.resolve();
-      })
-      .then(() => {
-        if (this.entityFactory) {
-          const venue = GameInstance.instance.dataProvider.venuesData;
-          venue.forEach((venue) => {
-            this.entityFactory?.createVenue(venue);
-          });
-        }
-        return Promise.resolve();
-      })
-      .then(() => {
-        return new TimeoutCommand(1000).execute();
-      })
-      // .then(() => {
-      //   if (this.entityFactory) {
-      //     const config = GameInstance.instance.getConfig();
-      //     if (playerModel.x < 0 || playerModel.x > config.worldWidth) {
-      //       playerModel.x = config.worldWidth / 2;
-      //     }
-      //     if (playerModel.y < 0 || playerModel.y > config.worldHeight) {
-      //       playerModel.y = config.worldHeight / 2;
-      //     }
-      //     this.entityFactory.createPlayer(playerModel);
-      //   }
-      // })
-      .then(() => {
-        return new TimeoutCommand(1000).execute();
-      })
-      .then(() => {
-        if (this.entityFactory) {
-          const self: MapContainer = this;
-          const loop = async () => {
-            for (let i = 0; i < artcars.length; i++) {
-              await new Promise((resolve) => {
-                const user: PlayerModel = new PlayerModel();
-                user.data.id = `${i}${Date.now()}`;
-                user.data.avatarUrlString = artcars[i];
-                self.entityFactory?.createArtcar(user);
-                setTimeout(() => {
-                  resolve(true);
-                }, 30);
-              });
-            }
-          };
-          loop();
-        }
-      });
+        })
+        .then(() => {
+          if (this.entityFactory) {
+            const map: PlaygroundMap = GameInstance.instance.getConfig()
+              .playgroundMap;
+            const bots: Map<
+              string,
+              ReplicatedUser
+            > = GameInstance.instance.getState().users;
+            const itrb: IterableIterator<ReplicatedUser> = bots.values();
+            const self: MapContainer = this;
+            const loop = async () => {
+              for (
+                let bot: ReplicatedUser = itrb.next().value;
+                bot;
+                bot = itrb.next().value
+              ) {
+                await new Promise((resolve) => {
+                  const point: Point = map.getRandomPointOnThePlayground();
+                  bot.x = point.x;
+                  bot.y = point.y;
+                  self.entityFactory?.createBot(bot);
+                  setTimeout(() => {
+                    resolve(true);
+                  }, 30);
+                });
+              }
+            };
+            loop();
+          }
+          return Promise.resolve();
+        })
+        .then(() => {
+          if (this.entityFactory) {
+            const venue = GameInstance.instance.dataProvider.venuesData;
+            venue.forEach((venue) => {
+              this.entityFactory?.createVenue(venue);
+            });
+          }
+          return Promise.resolve();
+        })
+        .then(() => {
+          return new TimeoutCommand(1000).execute();
+        })
+        // .then(() => {
+        //   if (this.entityFactory) {
+        //     const config = GameInstance.instance.getConfig();
+        //     if (playerModel.x < 0 || playerModel.x > config.worldWidth) {
+        //       playerModel.x = config.worldWidth / 2;
+        //     }
+        //     if (playerModel.y < 0 || playerModel.y > config.worldHeight) {
+        //       playerModel.y = config.worldHeight / 2;
+        //     }
+        //     this.entityFactory.createPlayer(playerModel);
+        //   }
+        // })
+        .then(() => {
+          return new TimeoutCommand(1000).execute();
+        })
+        .then(() => {
+          if (this.entityFactory) {
+            const self: MapContainer = this;
+            const loop = async () => {
+              for (let i = 0; i < artcars.length; i++) {
+                await new Promise((resolve) => {
+                  const user: PlayerModel = new PlayerModel();
+                  user.data.id = `${i}${Date.now()}`;
+                  user.data.avatarUrlString = artcars[i];
+                  self.entityFactory?.createArtcar(user);
+                  setTimeout(() => {
+                    resolve(true);
+                  }, 30);
+                });
+              }
+            };
+            loop();
+          }
+        })
+    );
   }
 
   public resize(width: number, height: number) {

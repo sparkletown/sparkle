@@ -14,6 +14,7 @@ import {
 
 import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
 
+import { GameConfig } from "../../../configs/GameConfig";
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";
@@ -33,6 +34,8 @@ export class ViewportSystem extends System {
   private _unsubscribeSetEnvironmentSound!: () => void;
 
   private _setAnimateMapZoomThrottle!: (value: number) => void;
+
+  private firstPlayerAdding = true;
 
   constructor(
     private _app: Application,
@@ -211,17 +214,41 @@ export class ViewportSystem extends System {
   };
 
   private initViewportFollowing = (player: ViewportFollowNode) => {
-    this._viewport.animate({
-      position: new Point(player.position.x, player.position.y),
-      time: 30,
-      ease: "easeInOutQuad",
-      callbackOnComplete: () => {
-        if (player.sprite.view) {
-          this._viewport.plugins.remove("follow");
-          this._viewport.follow(player.sprite.view);
-        }
-      },
-    });
+    if (
+      GameInstance.instance.getConfig().firstEntrance &&
+      this.firstPlayerAdding
+    ) {
+      this.firstPlayerAdding = false;
+
+      new TimeoutCommand(200).execute().then(() => {
+        this._viewport.animate({
+          position: new Point(player.position.x, player.position.y),
+          scale: GameInstance.instance
+            .getConfig()
+            .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING),
+          time: 100,
+          ease: "easeInOutQuad",
+          callbackOnComplete: () => {
+            if (player.sprite.view) {
+              this._viewport.plugins.remove("follow");
+              this._viewport.follow(player.sprite.view);
+            }
+          },
+        });
+      });
+    } else {
+      this._viewport.animate({
+        position: new Point(player.position.x, player.position.y),
+        time: 30,
+        ease: "easeInOutQuad",
+        callbackOnComplete: () => {
+          if (player.sprite.view) {
+            this._viewport.plugins.remove("follow");
+            this._viewport.follow(player.sprite.view);
+          }
+        },
+      });
+    }
   };
 
   private stopViewportFollowing = () => {
@@ -258,8 +285,7 @@ export class ViewportSystem extends System {
       return;
     }
 
-    const currenZoomLevel = this.viewportList.head.viewport.zoomLevel;
-    if (zoomLevel === currenZoomLevel) {
+    if (zoomLevel === this.viewportList.head.viewport.zoomLevel) {
       return;
     }
 
