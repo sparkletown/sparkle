@@ -200,6 +200,7 @@ export interface GenericVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
   gameOptions: GameOptions;
+  relatedPartymapId: string;
   template: VenueTemplate.animatemap;
 }
 

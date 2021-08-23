@@ -130,3 +130,13 @@ export const createJazzbar = (values: FormValues): JazzbarVenue => {
     logoImageUrl: "",
   };
 };
+
+export type WithVenue<T extends object> = T & { venue: AnyVenue };
+
+export const withVenue = <T extends object>(
+  obj: T,
+  venue: AnyVenue
+): WithVenue<T> => ({
+  ...obj,
+  venue,
+});
