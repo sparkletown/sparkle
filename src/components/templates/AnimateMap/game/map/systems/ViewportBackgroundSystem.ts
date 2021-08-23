@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, Container, Sprite } from "pixi.js";
+import { BaseTexture, Container, Sprite, Text } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -42,6 +42,8 @@ export class ViewportBackgroundSystem extends System {
   private tree?: QuadTree;
   private currentVisibleTiles: Map<number, Sprite> = new Map();
 
+  private text: Text;
+
   /**
    *
    * @param viewport the app viewport
@@ -57,6 +59,13 @@ export class ViewportBackgroundSystem extends System {
     this.mapLOD_0 = new Sprite();
 
     this.initLighting();
+
+    this.text = new Text("24:00", {
+      align: "center",
+      dropShadow: true,
+      fill: "#ffffff",
+      fontSize: 72,
+    });
   }
 
   public initLighting() {
@@ -106,6 +115,8 @@ export class ViewportBackgroundSystem extends System {
       ];
 
       this.initialized = true;
+
+      this.viewport.parent.addChild(this.text);
     });
   }
 
@@ -231,7 +242,13 @@ export class ViewportBackgroundSystem extends System {
     //TODO changing
 
     time = (time * this.timeAccelerator) % 24;
-    console.log(time);
+
+    //DELETE ME
+    this.text.text =
+      Math.floor(time).toString() +
+      ":" +
+      Math.floor((time - Math.floor(time)) * 60);
+
     const sunLight = this.sunKeyFramer.getFrame(time);
     const moonLight = this.moonKeyFramer.getFrame(time);
     const light = [0, 0, 0];
