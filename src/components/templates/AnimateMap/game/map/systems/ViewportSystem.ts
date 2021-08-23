@@ -20,6 +20,10 @@ import { easeInOutQuad, Easing } from "../../utils/Easing";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
 import EntityFactory from "../entities/EntityFactory";
+import {
+  debugLightsCol,
+  debugLightsPos,
+} from "../graphics/shaders/mapLightning";
 import { ViewportFollowNode } from "../nodes/ViewportFollowNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
@@ -321,6 +325,27 @@ export class ViewportSystem extends System {
     if (!this.viewportList?.head) return console.error();
     this.viewportList.head.viewport.click = e.world;
     this._entityCreator.updateViewport();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    if (
+      window.LIGHT_R > 0.01 ||
+      window.LIGHT_G > 0.01 ||
+      window.LIGHT_B > 0.01
+    ) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      debugLightsCol.push(
+        ...[
+          parseFloat(window.LIGHT_R),
+          parseFloat(window.LIGHT_G),
+          parseFloat(window.LIGHT_B),
+        ]
+      );
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      debugLightsPos.push(...[e.world.x, e.world.y]);
+      console.log("light coord", e.world);
+    }
   }
 
   private _viewportPointerUpHandler(e: InteractionEvent) {

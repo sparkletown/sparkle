@@ -51,3 +51,6 @@ export const moonKeyFramer = new KeyFramer(
   interpolateDayNightKeys,
   MOON_KEYFRAMES
 );
+
+export const debugLightsCol = [];
+export const debugLightsPos = [];

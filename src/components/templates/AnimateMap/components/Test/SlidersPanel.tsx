@@ -21,12 +21,15 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
   refs[3] = useRef<HTMLInputElement>(null);
   refs[4] = useRef<HTMLInputElement>(null);
   refs[5] = useRef<HTMLInputElement>(null);
+  refs[6] = useRef<HTMLInputElement>(null);
+  refs[7] = useRef<HTMLInputElement>(null);
+  refs[8] = useRef<HTMLInputElement>(null);
   console.log(refs);
-  const keys = ["SR", "SG", "SB", "MR", "MG", "MB"];
+  const keys = ["SR", "SG", "SB", "MR", "MG", "MB", "R", "G", "B"];
   const colors = ["RED", "GREEN", "BLUE"];
 
   const childs = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 9; i++) {
     childs.push(
       <label key={i}>
         {colors[i % 3]}
@@ -93,7 +96,7 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
       </div>
       <div className="column">
         MOON
-        {childs.slice(3)}
+        {childs.slice(3, 6)}
         <label>
           <input
             type="range"
@@ -119,6 +122,41 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               //@ts-ignore
               refs[5].current.value = window.LIGHT_MB = Number(
+                event.target.value
+              );
+              logLight();
+            }}
+          />
+        </label>
+      </div>
+      <div className="column">
+        LIGHT
+        {childs.slice(6)}
+        <label>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            defaultValue={
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              window.LIGHT_MB
+            }
+            step={0.001}
+            onChange={(event) => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              refs[6].current.value = window.LIGHT_R = Number(
+                event.target.value
+              );
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              refs[7].current.value = window.LIGHT_G = Number(
+                event.target.value
+              );
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              //@ts-ignore
+              refs[8].current.value = window.LIGHT_B = Number(
                 event.target.value
               );
               logLight();
