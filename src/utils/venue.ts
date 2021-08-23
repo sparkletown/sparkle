@@ -169,6 +169,6 @@ export const sortVenues = (
           (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
       );
     default:
-      assertUnreachable();
+      assertUnreachable(sortingOption);
   }
 };

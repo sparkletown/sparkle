@@ -98,7 +98,7 @@ const VenueList: React.FC<VenueListProps> = ({
   );
 
   const sortedVenues = useMemo(() => {
-    return sortVenues(ownedVenues, currentSortingOption);
+    return sortVenues(ownedVenues, currentSortingOption) ?? [];
   }, [currentSortingOption, ownedVenues]);
 
   const sortingOptions = useMemo(
