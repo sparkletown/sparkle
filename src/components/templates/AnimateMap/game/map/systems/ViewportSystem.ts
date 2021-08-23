@@ -367,11 +367,19 @@ export class ViewportSystem extends System {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       console.log("light coord", {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         r: window.LIGHT_R,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         g: window.LIGHT_G,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         b: window.LIGHT_B,
         x: e.world.x,
         y: e.world.y,
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
         size: window.LIGHT_S,
       });
     }
