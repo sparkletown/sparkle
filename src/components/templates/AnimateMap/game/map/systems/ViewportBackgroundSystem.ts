@@ -42,7 +42,12 @@ export class ViewportBackgroundSystem extends System {
   private tree?: QuadTree;
   private currentVisibleTiles: Map<number, Sprite> = new Map();
 
-  constructor(viewport: Viewport) {
+  /**
+   *
+   * @param viewport the app viewport
+   * @param timeAccelerator set to 1 in prod
+   */
+  constructor(viewport: Viewport, private timeAccelerator: number = 1200) {
     super();
     this.viewport = viewport;
 
@@ -205,14 +210,6 @@ export class ViewportBackgroundSystem extends System {
       lightQuantity += 1;
     }
 
-    //note: remove later
-    const n = 340;
-    for (let i = 0; i < n; i++) {
-      lightsPos[lightQuantity * 2] = (i * 9920) / n;
-      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
-      lightQuantity += 1;
-    }
-
     this.container.filters[0].uniforms.lightsPos = lightsPos;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
 
@@ -222,21 +219,19 @@ export class ViewportBackgroundSystem extends System {
       this.viewport.worldScreenWidth,
       this.viewport.worldScreenHeight,
     ];
-
-    this.time += 0.01;
-    this.setDayTime(this.time);
+    this.setDayTime(GameInstance.instance.getConfig().getCurUTCTime());
   }
 
   /**
    * changing the mapLOD_1 visible time
    * @param time in hourse [0;24)
    */
-  setDayTime(time: number) {
+  public setDayTime(time: number) {
     //const ambientLight = 0.1;
     //TODO changing
 
-    time = time % 24;
-
+    time = (time * this.timeAccelerator) % 24;
+    console.log(time);
     const sunLight = this.sunKeyFramer.getFrame(time);
     const moonLight = this.moonKeyFramer.getFrame(time);
     const light = [0, 0, 0];
