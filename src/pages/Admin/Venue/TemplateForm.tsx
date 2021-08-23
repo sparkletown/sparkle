@@ -36,7 +36,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
 
 // @debt Refactor this constant into settings, or types/templates, or similar?
 const templateThumbImageMap: Record<VenueTemplate, string | undefined> = {
-  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoom.png",
+  [VenueTemplate.zoomroom]: "/venues/pickspace-thumbnail_zoomroom.png",
   [VenueTemplate.artpiece]: "/venues/pickspace-thumbnail_art.png",
   [VenueTemplate.performancevenue]:
     "/venues/pickspace-thumbnail_performance.png",
