@@ -11,7 +11,6 @@ export interface ScheduleNGProps {
   daysEvents: ScheduledVenueEvent[];
   scheduleDate: Date;
   isLoading: boolean;
-  venueId: string;
   showPersonalisedSchedule: boolean;
 }
 
@@ -20,7 +19,6 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
   isLoading,
   showPersonalisedSchedule,
   scheduleDate,
-  venueId,
 }) => {
   const hasEvents = daysEvents.length > 0;
 
@@ -43,7 +41,6 @@ export const ScheduleNG: React.FC<ScheduleNGProps> = ({
         <ScheduleEventListNG
           daysEvents={daysEvents}
           scheduleDate={scheduleDate}
-          venueId={venueId}
         />
       )}
     </div>

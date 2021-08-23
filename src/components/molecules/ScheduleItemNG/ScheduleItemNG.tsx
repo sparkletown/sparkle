@@ -40,13 +40,9 @@ import "./ScheduleItemNG.scss";
 
 export interface ScheduleItemNGProps {
   event: ScheduledVenueEvent;
-  isLive: boolean;
 }
 
-export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
-  event,
-  isLive,
-}) => {
+export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   const { currentVenue: eventVenue } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
@@ -183,9 +179,12 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
           </>
         )}
       </div>
-      {isLive && (
+      {isCurrentEventLive && (
         <div className="ScheduleItemNG__online">
-          <FontAwesomeIcon icon={solidUsers} />
+          <FontAwesomeIcon
+            className="ScheduleItemNG__online__icon"
+            icon={solidUsers}
+          />
           <span>{event.liveAudience}</span>
         </div>
       )}

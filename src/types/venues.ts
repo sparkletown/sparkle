@@ -365,6 +365,7 @@ export interface LocationEvents {
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

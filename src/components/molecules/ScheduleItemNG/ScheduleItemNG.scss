@@ -128,8 +128,8 @@ $online-container-min-width: 50px;
     height: $bookmark-icon-size;
     padding: $spacing--md;
 
-    svg {
-      margin-right: 5px;
+    &__icon {
+      margin-right: $spacing--xs;
     }
   }
 }

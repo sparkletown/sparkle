@@ -13,13 +13,11 @@ import "./ScheduleEventListNG.scss";
 export interface ScheduleEventSubListNGProps {
   events: ScheduledVenueEvent[];
   title: string;
-  isLive?: boolean;
 }
 
 export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
   events,
   title,
-  isLive = false,
 }) => {
   const {
     isShown: showMoreEvents,
@@ -29,16 +27,14 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
   const renderEvents = useMemo(() => {
     if (showMoreEvents) {
       return events.map((event) => (
-        <ScheduleItemNG key={event.id} event={event} isLive={isLive} />
+        <ScheduleItemNG key={event.id} event={event} />
       ));
     }
 
     return events
       .slice(0, EVENTS_PREVIEW_LIST_LENGTH)
-      .map((event) => (
-        <ScheduleItemNG key={event.id} event={event} isLive={isLive} />
-      ));
-  }, [events, showMoreEvents, isLive]);
+      .map((event) => <ScheduleItemNG key={event.id} event={event} />);
+  }, [events, showMoreEvents]);
 
   const hasEvents = events.length > 0;
   const shouldShowMoreEvents = events.length > EVENTS_PREVIEW_LIST_LENGTH;
