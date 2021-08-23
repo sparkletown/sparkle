@@ -1,4 +1,4 @@
-import { Engine, Entity, EntityStateMachine, NodeList } from "@ash.ts/ash";
+import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapRoom } from "store/actions/AnimateMap";
@@ -41,6 +41,7 @@ import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
+import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
 import { Barrel } from "../graphics/Barrel";
 import { Venue } from "../graphics/Venue";
@@ -177,22 +178,50 @@ export default class EntityFactory {
     // HACK
     user.data.cycle = avatarCycles[0];
 
+    const movementComponent = new MovementComponent();
+    const motionControl = new MotionControlSwitchComponent();
     const collision: CollisionComponent = new CollisionComponent(0);
+
     const scale = 0.2;
+
     const entity: Entity = new Entity();
-    const fsm: EntityStateMachine = new EntityStateMachine(entity);
+    const fsm: FSMBase = new FSMBase(entity);
+    const player = new PlayerComponent(user, fsm);
 
-    fsm.createState("flying").add(CollisionComponent).withInstance(collision);
+    fsm.createState(player.IMMOBILIZED);
 
-    fsm.createState("cycling").add(CollisionComponent).withInstance(collision);
+    fsm
+      .createState(player.FLYING)
+      .add(CollisionComponent)
+      .withInstance(collision)
+      .add(MovementComponent)
+      .withInstance(movementComponent)
+      .add(MotionControlSwitchComponent)
+      .withInstance(motionControl);
 
-    fsm.createState("walking").add(CollisionComponent).withInstance(collision);
+    fsm
+      .createState(player.CYCLING)
+      .add(CollisionComponent)
+      .withInstance(collision)
+      .add(MovementComponent)
+      .withInstance(movementComponent)
+      .add(MotionControlSwitchComponent)
+      .withInstance(motionControl);
+
+    fsm
+      .createState(player.WALKING)
+      .add(CollisionComponent)
+      .withInstance(collision)
+      .add(MovementComponent)
+      .withInstance(movementComponent)
+      .add(MotionControlSwitchComponent)
+      .withInstance(motionControl);
 
     entity
-      .add(new PlayerComponent(user, fsm))
-      .add(new MovementComponent())
+      .add(movementComponent)
+      .add(motionControl)
+      .add(player)
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(new MotionControlSwitchComponent())
       .add(new ViewportFollowComponent());
 
     fsm.changeState("flying");
@@ -245,7 +274,7 @@ export default class EntityFactory {
     user.y = worldCenter.y + Math.sin(angle) * radiusY;
 
     const entity: Entity = new Entity();
-    const fsm: EntityStateMachine = new EntityStateMachine(entity);
+    const fsm: FSMBase = new FSMBase(entity);
     fsm
       .createState("moving")
       .add(MovementComponent)
@@ -335,21 +364,24 @@ export default class EntityFactory {
     const scale = 0.2;
 
     const entity: Entity = new Entity();
-    const fsm: EntityStateMachine = new EntityStateMachine(entity);
+    const fsm: FSMBase = new FSMBase(entity);
+    const bot = new BotComponent(user, fsm, realUser);
+
+    fsm.createState(bot.IMMOBILIZED);
 
     fsm
-      .createState("idle")
+      .createState(bot.IDLE)
       .add(MotionBotIdleComponent)
       .withInstance(new MotionBotIdleComponent());
 
     fsm
-      .createState("moving")
+      .createState(bot.MOVING)
       .add(MotionBotClickControlComponent)
       .add(MovementComponent)
       .withInstance(new MovementComponent());
 
     entity
-      .add(new BotComponent(user, fsm, realUser))
+      .add(bot)
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(
         new HoverableSpriteComponent(
@@ -540,6 +572,7 @@ export default class EntityFactory {
 
         sprite.halo = Sprite.from(HALO);
         sprite.halo.anchor.set(0.5);
+        sprite.zIndex = -1;
         sprite.addChildAt(sprite.halo, 0);
 
         const spriteComponent: SpriteComponent = new SpriteComponent();
