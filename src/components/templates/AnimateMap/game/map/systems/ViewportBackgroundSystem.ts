@@ -12,6 +12,7 @@ import { KeyFramer } from "../../utils/KeyFramer";
 import {
   debugLightsCol,
   debugLightsPos,
+  debugLightsSize,
   LightSize,
   mapLightningShader,
   moonKeyFramer,
@@ -197,44 +198,32 @@ export class ViewportBackgroundSystem extends System {
     let lightQuantity = 0;
     const lightsPos = [];
     const lightsCol = [];
+    const koef = [];
+
     for (let i = this.barrels?.head; i; i = i?.next) {
       lightsPos[lightQuantity * 2] = i.position.x;
       lightsPos[lightQuantity * 2 + 1] = i.position.y;
       lightsCol.push(...[0.6, 0.6, 0.6]);
+      koef.push(...[0.027, 0.0028]);
       lightQuantity += 1;
     }
     for (let i = this.artCars?.head; i; i = i?.next) {
       lightsPos[lightQuantity * 2] = i.position.x;
       lightsPos[lightQuantity * 2 + 1] = i.position.y;
       lightsCol.push(...[0.6, 0.6, 0.6]);
+      koef.push(...[0.027, 0.0028]);
       lightQuantity += 1;
     }
 
     // DELETE ME
-    for (let i = 0; i < debugLightsCol.length / 3; i++) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      lightsCol.push(
-        ...[
-          debugLightsCol[3 * i],
-          debugLightsCol[3 * i + 1],
-          debugLightsCol[3 * i + 2],
-        ]
-      );
-      lightsPos.push(...[debugLightsPos[2 * i], debugLightsPos[2 * i + 1]]);
-      lightQuantity += 1;
-    }
-
-    //note: remove later
-    // const n = 340;
-    // for (let i = 0; i < n; i++) {
-    //   lightsPos[lightQuantity * 2] = (i * 9920) / n;
-    //   lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
-    //   lightQuantity += 1;
-    // }
+    lightsPos.push(...debugLightsPos);
+    lightsCol.push(...debugLightsCol);
+    koef.push(...debugLightsSize);
+    lightQuantity += lightsPos.length / 2;
 
     this.container.filters[0].uniforms.lightsPos = lightsPos;
     this.container.filters[0].uniforms.lightsCol = lightsCol;
+    this.container.filters[0].uniforms.koef = koef;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
 
     this.container.filters[0].uniforms.frame = [

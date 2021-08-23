@@ -54,3 +54,4 @@ export const moonKeyFramer = new KeyFramer(
 
 export const debugLightsCol = [];
 export const debugLightsPos = [];
+export const debugLightsSize = [];

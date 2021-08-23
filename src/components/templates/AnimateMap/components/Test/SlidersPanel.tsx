@@ -24,20 +24,21 @@ export const SlidersPanel: React.FC<CurvesPanelProps> = () => {
   refs[6] = useRef<HTMLInputElement>(null);
   refs[7] = useRef<HTMLInputElement>(null);
   refs[8] = useRef<HTMLInputElement>(null);
+  refs[9] = useRef<HTMLInputElement>(null);
   console.log(refs);
-  const keys = ["SR", "SG", "SB", "MR", "MG", "MB", "R", "G", "B"];
+  const keys = ["SR", "SG", "SB", "MR", "MG", "MB", "R", "G", "B", "S"];
   const colors = ["RED", "GREEN", "BLUE"];
 
   const childs = [];
-  for (let i = 0; i < 9; i++) {
+  for (let i = 0; i < 10; i++) {
     childs.push(
       <label key={i}>
-        {colors[i % 3]}
+        {i !== 9 ? colors[i % 3] : "SIZE"}
         <input
           ref={refs[i]}
           type="range"
-          min={0}
-          max={1}
+          min={i !== 9 ? 0 : 7}
+          max={i !== 9 ? 1 : 800}
           defaultValue={
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore

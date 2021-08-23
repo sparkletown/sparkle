@@ -23,6 +23,8 @@ import EntityFactory from "../entities/EntityFactory";
 import {
   debugLightsCol,
   debugLightsPos,
+  debugLightsSize,
+  LightSize,
 } from "../graphics/shaders/mapLightning";
 import { ViewportFollowNode } from "../nodes/ViewportFollowNode";
 import { ViewportNode } from "../nodes/ViewportNode";
@@ -358,7 +360,20 @@ export class ViewportSystem extends System {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       debugLightsPos.push(...[e.world.x, e.world.y]);
-      console.log("light coord", e.world);
+      const lightSizer = new LightSize();
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      debugLightsSize.push(...lightSizer.getFrame(parseFloat(window.LIGHT_S)));
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      console.log("light coord", {
+        r: window.LIGHT_R,
+        g: window.LIGHT_G,
+        b: window.LIGHT_B,
+        x: e.world.x,
+        y: e.world.y,
+        size: window.LIGHT_S,
+      });
     }
   }
 
