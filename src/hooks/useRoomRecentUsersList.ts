@@ -2,6 +2,8 @@ import { useMemo } from "react";
 
 import { Room } from "types/rooms";
 
+import { getRoomUrl } from "utils/url";
+
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 
 import { useVisitedLocationsUser } from "./users/useVisitedLocationsUser";
@@ -13,11 +15,8 @@ export interface UseRoomRecentUsersListProps {
 export const useRoomRecentUsersList = ({
   roomList,
 }: UseRoomRecentUsersListProps) => {
-  const roomUrls = roomList?.map(
-    (room) => room?.title.toLowerCase().replaceAll(" ", "") ?? ""
-  );
+  const roomUrls = roomList?.map((room) => getRoomUrl(room.url) ?? "");
   const { relatedVenues } = useRelatedVenues({});
-
   const matchedRoomVenues = useMemo(
     () =>
       relatedVenues.filter(

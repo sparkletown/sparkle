@@ -262,7 +262,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       currentVenue?.rooms?.filter((room) => room.title === el?.room) || [];
     return roomData;
   });
-
   const recentRoomUsers = useRoomRecentUsersList({ roomList });
 
   const scheduleNGWithAttendees = {
