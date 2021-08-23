@@ -71,13 +71,11 @@ export class ViewportBackgroundSystem extends System {
   public initLighting() {
     const backgroundLightning = [mapLightningShader];
     this.container.filters = backgroundLightning;
-    const lightsCol = [];
+    const lightsCol = new Array();
     const koef = [];
     const lightSizer = new LightSize();
-    for (let i = 0; i < 256; i++) {
-      lightsCol[3 * i] = Math.random();
-      lightsCol[3 * i + 1] = Math.random();
-      lightsCol[3 * i + 2] = Math.random();
+    for (let i = 0; i < 1024; i++) {
+      lightsCol[i] = Math.random() * 0xffffff;
       const size = lightSizer.getFrame(200);
       koef[i * 2] = size[0]; // linear component
       koef[i * 2 + 1] = size[1]; // quadratic component
@@ -209,6 +207,14 @@ export class ViewportBackgroundSystem extends System {
   private _updateFilters() {
     let lightQuantity = 0;
     const lightsPos = [];
+
+    //note: remove later
+    const n = 240;
+    for (let i = 0; i < n; i++) {
+      lightsPos[lightQuantity * 2] = (i * 9920) / n;
+      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
+      lightQuantity += 1;
+    }
 
     for (let i = this.barrels?.head; i; i = i?.next) {
       lightsPos[lightQuantity * 2] = i.position.x;

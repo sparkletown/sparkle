@@ -1,7 +1,6 @@
 varying vec2 vTextureCoord;
 
-const int MAX_LIGHTS = 340;
-
+const int MAX_LIGHTS = 1024;
 uniform sampler2D uSampler;
 uniform vec3 ambientLight;
 uniform float maxMagnitude;
@@ -9,29 +8,11 @@ uniform vec2 lightPosition;
 
 varying vec2 pixelPos;
 uniform vec2 lightsPos[MAX_LIGHTS];
-uniform vec3 lightsCol[MAX_LIGHTS];
+uniform int lightsCol[MAX_LIGHTS];
 uniform vec2 koef[MAX_LIGHTS];
 uniform int lightQuantity;
 
-vec3 rgb2hsv(vec3 c)
-{
-    vec4 K = vec4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-    vec4 p = mix(vec4(c.bg, K.wz), vec4(c.gb, K.xy), step(c.b, c.g));
-    vec4 q = mix(vec4(p.xyw, c.r), vec4(c.r, p.yzx), step(p.x, c.r));
-
-    float d = q.x - min(q.w, q.y);
-    float e = 1.0e-10;
-    return vec3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
-}
-
-vec3 hsv2rgb(vec3 c)
-{
-    vec4 K = vec4(1.0, 2.0 / 3.0, 1.0 / 3.0, 3.0);
-    vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-    return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
-}
-
-vec3 PointLightApply(vec2 position, vec3 intencity, vec3 albedo, vec2 koef)
+vec3 PointLightApply(vec2 position, int color, vec3 albedo, vec2 koef)
 {
 
     float magnX = (pixelPos.x - position.x);
@@ -42,10 +23,17 @@ vec3 PointLightApply(vec2 position, vec3 intencity, vec3 albedo, vec2 koef)
 
     magnX *= magnX;
     magnY *= magnY;
+    int r = color / 256 / 256;
+    int g =  (color / 256) * 256;
+    int b =  color - g;
+    g = color - r * 256 * 256 - b;
+    g /= 256;
+
+    vec3 rgb = vec3(float(r)/255.0, float(g)/255.0, float(b)/255.0);
 
     float magnitude = (magnX + magnY);
 
-    albedo *= intencity/(1.0 + koef.x*sqrt(magnitude) + koef.y*magnitude);
+    albedo *= rgb/(1.0 + koef.x*sqrt(magnitude) + koef.y*magnitude);
 
     return albedo;
 }
