@@ -5,6 +5,8 @@ import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { AnimateMapOnboardFlow } from "components/organisms/AnimateMapOnboardFlow";
+
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";
 import { FirebarrelProvider } from "./components/FirebarrelWidget/FirebarrelProvider";
@@ -59,6 +61,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   return (
     <div className="AnimateMap">
+      <AnimateMapOnboardFlow />
       <div className="AnimateMap__ui-wrapper">
         <UIOverlay venue={venue}>
           <div className="UIOverlay__main">

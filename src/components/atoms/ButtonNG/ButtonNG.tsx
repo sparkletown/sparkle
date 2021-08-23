@@ -45,7 +45,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   type = "button",
   gradient = "",
   isLink = false,
-  linkTo = "",
+  linkTo = "#",
   disabled = false,
   newTab = false,
   variant = "",
@@ -100,6 +100,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         to={disabled ? "#" : linkTo}
         {...getExtraLinkProps(newTab && !disabled)}
         title={title}
+        onClick={() => onClick?.()}
         {...extraProps}
       >
         {iconName && (
