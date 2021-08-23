@@ -33,6 +33,7 @@ export interface ButtonProps {
   iconOnly?: boolean;
   iconName?: IconProp;
   iconSize?: ButtonIconSize;
+  title?: string;
 }
 
 export const ButtonNG: React.FC<ButtonProps> = ({
@@ -51,6 +52,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
   iconOnly = false,
   iconName,
   iconSize = "1x",
+  title,
   ...extraProps
 }) => {
   const parentClasses = classNames({
@@ -77,6 +79,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         className={parentClasses}
         style={style}
         type={type}
+        title={title}
         {...extraProps}
       >
         <FontAwesomeIcon
@@ -96,6 +99,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
         style={style}
         to={disabled ? "#" : linkTo}
         {...getExtraLinkProps(newTab && !disabled)}
+        title={title}
         {...extraProps}
       >
         {iconName && (
@@ -117,6 +121,7 @@ export const ButtonNG: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
+      title={title}
       {...extraProps}
     >
       {iconName && (
