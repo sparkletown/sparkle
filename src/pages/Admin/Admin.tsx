@@ -196,7 +196,11 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
             <>Appearance Component</>
           </Route>
           <Route path={matchUrl}>
-            <VenueInfoComponent venue={currentVenue} roomIndex={roomIndex} />
+            <VenueInfoComponent
+              setShowCreateEventModal={setShowCreateEventModal}
+              venue={currentVenue}
+              roomIndex={roomIndex}
+            />
           </Route>
         </Switch>
       </div>
@@ -222,13 +226,13 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 export type VenueInfoComponentProps = {
   venue: WithId<AnyVenue>;
   roomIndex?: number;
-  editedEvent?: WithId<VenueEvent>;
-  setEditedEvent?: Function;
+  setShowCreateEventModal: Function;
 };
 
 const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   venue,
   roomIndex,
+  setShowCreateEventModal,
 }) => {
   const queryParams = useQuery();
   const manageUsers = !!queryParams.get("manageUsers");
@@ -236,6 +240,8 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   const onManageUsersModalHide = useCallback(() => push({ search: "" }), [
     push,
   ]);
+  const history = useHistory();
+  const match = useRouteMatch();
   const placementDivRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -351,7 +357,16 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
                 Edit Room
               </Link>
             )}
-
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                history.push(`${match.url}/events`);
+                setShowCreateEventModal(true);
+              }}
+              style={{ marginBottom: 10, width: "100%" }}
+            >
+              Create an Event
+            </button>
             <Link
               to={{ search: "manageUsers=true" }}
               className="btn btn-block btn-primary"
