@@ -121,56 +121,6 @@ $preview-margin: 30px;
   object-fit: cover;
 }
 
-.pickspace-component-container {
-  width: 100%;
-  padding: 18px;
-  border-radius: $border-radius;
-  background-color: $dark;
-  cursor: pointer;
-  min-height: 156px;
-  margin-bottom: 1rem;
-  transition: all 400ms $transition-function;
-  &:hover {
-    box-shadow: 0 0 0 4px rgba($white, 0.62);
-    background-color: lighten($dark, 4%);
-  }
-  &.selected {
-    box-shadow: 0 0 0 4px $primary;
-    background-color: lighten($dark, 4%);
-    .pickspace-thumbnail {
-      background-image: $gradient;
-    }
-  }
-  .pickspace-thumbnail {
-    position: relative;
-    float: left;
-    width: 120px;
-    height: 120px;
-    margin-right: 20px;
-    background-color: $black;
-    border-radius: $border-radius;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    &:after {
-      content: "";
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      left: 20px;
-      top: 20px;
-      margin: auto;
-    }
-    img {
-      max-width: 70%;
-      max-height: 70%;
-    }
-  }
-  ul {
-    text-indent: 20px;
-  }
-}
-
 .wizard-buttons-container {
   margin-top: 20px;
 }

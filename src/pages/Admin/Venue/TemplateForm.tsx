@@ -1,13 +1,10 @@
 import React, { useState } from "react";
 
-import {
-  BURN_VENUE_TEMPLATES,
-  HIDDEN_BURN_VENUE_TEMPLATES,
-  Template,
-} from "settings";
+import { BURN_VENUE_TEMPLATES, Template } from "settings";
 
 import { VenueTemplate } from "types/venues";
 
+import { TemplateCard } from "./TemplateCard";
 import { WizardPage } from "./VenueWizard";
 
 import "./Venue.scss";
@@ -120,6 +117,7 @@ const TemplateFormLeft: React.FC<TemplateFormLeftProps> = (props) => {
               key={template.name}
               template={template}
               onClick={() => setSelectedTemplate(template)}
+              thumbnail={templateThumbImageMap[template.template]}
             />
           ))}
         </div>
@@ -139,53 +137,5 @@ const TemplateFormLeft: React.FC<TemplateFormLeftProps> = (props) => {
         </button>
       </div>
     </>
-  );
-};
-
-interface TemplateCardProps {
-  selected: boolean;
-  template: Template;
-  onClick: () => void;
-}
-
-const TemplateCard: React.FC<TemplateCardProps> = ({
-  template: { template, name, description },
-  onClick,
-  selected,
-}) => {
-  const thumbnailImage = templateThumbImageMap[template];
-  const hasThumbnail = !!thumbnailImage;
-  const pickspaceComponentStyles = HIDDEN_BURN_VENUE_TEMPLATES.includes(
-    template
-  )
-    ? { display: "none" }
-    : {};
-
-  return (
-    <div
-      style={pickspaceComponentStyles}
-      className={`pickspace-component-container pickspace-component-container_zoom ${
-        selected ? "selected" : ""
-      }`}
-      onClick={onClick}
-    >
-      <div className="centered-flex">
-        <div className="pickspace-thumbnail">
-          {hasThumbnail && <img src={thumbnailImage} alt="venue thumb" />}
-        </div>
-        <div className="flex-one">
-          <h3>{name}</h3>
-          {description.length === 1 ? (
-            <div>{description[0]}</div>
-          ) : (
-            <ul>
-              {description.map((bullet, idx) => (
-                <li key={idx}>{bullet}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    </div>
   );
 };

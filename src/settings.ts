@@ -244,7 +244,7 @@ export interface Template_v2 {
 }
 
 // @debt Refactor this constant into types/templates or similar?
-export const BURN_VENUE_TEMPLATES: Array<Template> = [
+export const BURN_VENUE_TEMPLATES: Template[] = [
   {
     template: VenueTemplate.partymap,
     name: "Camp",
@@ -311,7 +311,7 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
 ];
 
-export const HIDDEN_BURN_VENUE_TEMPLATES: Array<Template["template"]> = [
+export const HIDDEN_BURN_VENUE_TEMPLATES: VenueTemplate[] = [
   VenueTemplate.animatemap,
   VenueTemplate.screeningroom,
   VenueTemplate.auditorium,
