@@ -25,7 +25,6 @@ import { BubbleComponent } from "../components/BubbleComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { EllipseComponent } from "../components/EllipseComponent";
-import { FixScaleByViewportZoomComponent } from "../components/FixScaleByViewportZoomComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
@@ -58,15 +57,8 @@ import { ViewportNode } from "../nodes/ViewportNode";
 export default class EntityFactory {
   private engine: Engine;
 
-  private fixScaleByViewportZoomComponent: FixScaleByViewportZoomComponent;
-
   constructor(engine: Engine) {
     this.engine = engine;
-    this.fixScaleByViewportZoomComponent = new FixScaleByViewportZoomComponent([
-      0.8,
-      0.3,
-      0.1,
-    ]);
   }
 
   public getPlayerNode(): PlayerNode | null | undefined {
@@ -186,7 +178,7 @@ export default class EntityFactory {
     user.data.cycle = avatarCycles[0];
 
     const collision: CollisionComponent = new CollisionComponent(0);
-
+    const scale = 0.2;
     const entity: Entity = new Entity();
     const fsm: EntityStateMachine = new EntityStateMachine(entity);
 
@@ -199,14 +191,13 @@ export default class EntityFactory {
     entity
       .add(new PlayerComponent(user, fsm))
       .add(new MovementComponent())
-      .add(new PositionComponent(user.x, user.y))
+      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new MotionControlSwitchComponent())
       .add(new ViewportFollowComponent());
 
     fsm.changeState("flying");
     this.engine.addEntity(entity);
 
-    const padding = 20;
     const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
     const sprite: Avatar = new Avatar();
     new RoundAvatar(url)
@@ -219,43 +210,14 @@ export default class EntityFactory {
         sprite.avatar.anchor.set(0.5);
         sprite.addChild(sprite.avatar);
 
-        // halo
-        const canvas = document.createElement("canvas");
-        const size = comm.canvas.width + padding * 2;
-        canvas.width = size;
-        canvas.height = size;
-        const ctx: CanvasRenderingContext2D = canvas.getContext(
-          "2d"
-        ) as CanvasRenderingContext2D;
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
-        ctx.closePath();
-        ctx.fillStyle = "#7c46fb";
-        ctx.fill();
-        sprite.halo = Sprite.from(canvas);
-        sprite.halo.anchor.set(0.5);
-        sprite.addChildAt(sprite.halo, 0);
-
         return Promise.resolve(comm);
       })
       .then((comm: RoundAvatar) => {
         if (!comm.canvas) return Promise.reject();
 
-        const config = GameInstance.instance.getConfig();
-        const size0 = config.getAvatarRadiusByZoomLevel(0) * 2;
-        const size1 = config.getAvatarRadiusByZoomLevel(1) * 2;
-        const size2 = config.getAvatarRadiusByZoomLevel(2) * 2;
-
         const spriteComponent: SpriteComponent = new SpriteComponent();
         spriteComponent.view = sprite;
         entity.add(spriteComponent);
-        entity.add(
-          new FixScaleByViewportZoomComponent([
-            size0 / comm.canvas.width,
-            size1 / comm.canvas.width,
-            size2 / comm.canvas.width,
-          ])
-        );
       });
 
     return entity;
@@ -267,6 +229,8 @@ export default class EntityFactory {
     if (!Array.isArray(avatarUrlString)) {
       avatarUrlString = [avatarUrlString];
     }
+
+    const scale = 0.3;
 
     const config = GameInstance.instance.getConfig();
     const innerRadius = config.venuesMainCircleOuterRadius;
@@ -299,7 +263,7 @@ export default class EntityFactory {
 
     entity
       .add(new ArtcarComponent(user, fsm))
-      .add(new PositionComponent(user.x, user.y, 0))
+      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new HoverableSpriteComponent());
 
     fsm.changeState("moving");
@@ -331,18 +295,6 @@ export default class EntityFactory {
       const spriteComponent: SpriteComponent = new SpriteComponent();
       spriteComponent.view = Sprite.from(canvas);
       entity.add(spriteComponent);
-
-      const config = GameInstance.instance.getConfig();
-      const size0 = config.getAvatarRadiusByZoomLevel(0) * 8;
-      const size1 = config.getAvatarRadiusByZoomLevel(1) * 8;
-      const size2 = config.getAvatarRadiusByZoomLevel(2) * 8;
-      entity.add(
-        new FixScaleByViewportZoomComponent([
-          size0 / canvas.width,
-          size1 / canvas.width,
-          size2 / canvas.width,
-        ])
-      );
     });
 
     return entity;
@@ -380,7 +332,7 @@ export default class EntityFactory {
       user.y = point.y;
     }
 
-    const scale = 0.3;
+    const scale = 0.2;
 
     const entity: Entity = new Entity();
     const fsm: EntityStateMachine = new EntityStateMachine(entity);
@@ -438,21 +390,9 @@ export default class EntityFactory {
       .then((comm: RoundAvatar) => {
         if (!comm.canvas) return Promise.reject();
 
-        const config = GameInstance.instance.getConfig();
-        const size0 = config.getAvatarRadiusByZoomLevel(0) * 2;
-        const size1 = config.getAvatarRadiusByZoomLevel(1) * 2;
-        const size2 = config.getAvatarRadiusByZoomLevel(2) * 2;
-
         const spriteComponent: SpriteComponent = new SpriteComponent();
         spriteComponent.view = sprite;
         entity.add(spriteComponent);
-        entity.add(
-          new FixScaleByViewportZoomComponent([
-            size0 / comm.canvas.width,
-            size1 / comm.canvas.width,
-            size2 / comm.canvas.width,
-          ])
-        );
       });
 
     return entity;
