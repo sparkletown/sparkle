@@ -11,6 +11,13 @@ import { DeviceVideo } from "components/atoms/DeviceVideo";
 import { OnboardingModal } from "components/atoms/OnboardingModal";
 import { SvgLoop } from "components/atoms/SvgLoop";
 
+import STEP_02 from "assets/images/AnimateMapOnboardFlow/step-02.svg";
+import STEP_03 from "assets/images/AnimateMapOnboardFlow/step-03.svg";
+import STEP_04 from "assets/images/AnimateMapOnboardFlow/step-04.svg";
+import STEP_05 from "assets/images/AnimateMapOnboardFlow/step-05.svg";
+import STEP_06 from "assets/images/AnimateMapOnboardFlow/step-06.svg";
+import STEP_07 from "assets/images/AnimateMapOnboardFlow/step-07.svg";
+
 // This flow works only for VenueTemplate.animatemap ATM
 const TEMPLATE = VenueTemplate.animatemap;
 
@@ -21,18 +28,10 @@ const BASE_STEP = 0;
 const DELAY = 4000;
 
 // images for the first modal
-const INFORMATION_SOURCES = [
-  "/animatemap-onboard/step-02.svg",
-  "/animatemap-onboard/step-03.svg",
-  "/animatemap-onboard/step-04.svg",
-];
+const INFORMATION_SOURCES = [STEP_02, STEP_03, STEP_04];
 
 // images for the second modal
-const INTERACTION_SOURCES = [
-  "/animatemap-onboard/step-05.svg",
-  "/animatemap-onboard/step-06.svg",
-  "/animatemap-onboard/step-07.svg",
-];
+const INTERACTION_SOURCES = [STEP_05, STEP_06, STEP_07];
 
 export const AnimateMapOnboardFlow: React.FC = () => {
   const { userWithId: user } = useUser();
