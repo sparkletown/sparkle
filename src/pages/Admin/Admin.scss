@@ -2,6 +2,12 @@
 
 $page-max-width: 1240px;
 
+$sorting-dropdown--width: 60%;
+$sorting-dropdown--left: calc(100% - #{$sorting-dropdown--width});
+$sorting-dropdown--top: 40px;
+
+$sorting-option--font-size: 0.8rem;
+
 .admin-dashboard {
   overflow: hidden;
   height: 100%;
@@ -66,9 +72,44 @@ $page-max-width: 1240px;
 
       background-image: $admin-gradient;
 
+      &__sorting-dropdown {
+        position: absolute;
+        top: $sorting-dropdown--top;
+        left: $sorting-dropdown--left;
+        width: $sorting-dropdown--width;
+        background: $room-card-background;
+        border-radius: $border-radius--lg;
+        padding: $spacing--lg $spacing--sm;
+      }
+
+      &__sorting-list {
+        list-style-type: none;
+        font-size: $sorting-option--font-size;
+        margin-bottom: 0;
+      }
+
+      &__sorting-option {
+        &:hover {
+          color: var(--primary-color);
+          cursor: pointer;
+        }
+
+        &--active {
+          color: $primary--lightest;
+        }
+      }
+
       .page-container-adminsidebar-title {
         background: rgba($black, 0.15);
         padding: 14px;
+
+        &__ellipsis {
+          float: right;
+          &:hover {
+            cursor: pointer;
+            color: $light-grey--lightest;
+          }
+        }
       }
       .page-container-adminsidebar-top {
         padding: 14px;
