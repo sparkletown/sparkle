@@ -47,11 +47,14 @@ $dark-green: #208a28;
 $clickable-area-color: #ffffff11;
 $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
+$room-card-background: #323232;
+
+// chat relevant colors
 $chat-open: rgba(80, 227, 194, 0.35);
 $chat-closed: rgba(dodgerblue, 0.35);
 $chat-busy: rgba($primary, 0.35);
 $chat-busy-me: rgba(#ffffff, 0.35);
-$room-card-background: #323232;
+$chat-bubble: #434046;
 
 $gradient: linear-gradient(124deg, #00f6d5 0%, $primary 50%, #e15ada 100%);
 $danger-gradient: linear-gradient(
@@ -65,9 +68,9 @@ $admin-gradient: linear-gradient(141deg, #5a35ad 0%, #26144f 100%);
 $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
-$chat-sidebar-width: 360px;
 $navbar-height: 66px;
 $footer-height: 30px;
+$chat-sidebar-width: 360px;
 $chat-input-height: 114px;
 $announcement-banner-height: 50px;
 $admin-spaces-sidebar-width: 20%;
@@ -136,6 +139,22 @@ $image-input-upload-button-transition: transform 0.2s ease-in-out,
 $image-input-upload-button-background: #462a87;
 $image-input-upload-button-background--focus: rgba(55, 90, 127, 0.18);
 $image-input-border--error: 2px solid red;
+
+$venue-rooms-editor-background-placeholder-box-shadow: 0px 6px 12px
+  opaque-black(0.25);
+$venue-rooms-editor-background: #292c33;
+$loading-page-background-color: linear-gradient(
+    0deg,
+    rgba(124, 70, 251, 0.15),
+    rgba(124, 70, 251, 0.15)
+  ),
+  #000000;
+
+$loading-page-text-gap: 1rem;
+$loading-page-icon-transform-animation: 2s infinite;
+$loading-page-icon-transform-big: translate(-50%, -59%) scale(1.1);
+$loading-page-icon-transform-small: translate(-50%, -59%) scale(0.8);
+$loading-page-icon-transform-small-opacity: 0.4;
 
 // @debt the following locations are using styled-components, so can't use our helper function yet
 //   pages/Admin/Room/Modal/RoomModal.styles.ts (z-index: 101)
