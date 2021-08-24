@@ -244,7 +244,7 @@ export interface Template_v2 {
 }
 
 // @debt Refactor this constant into types/templates or similar?
-export const BURN_VENUE_TEMPLATES: Array<Template> = [
+export const BURN_VENUE_TEMPLATES: Template[] = [
   {
     template: VenueTemplate.partymap,
     name: "Camp",
@@ -268,9 +268,9 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.embeddable,
-    name: "Art Piece Viewer",
+    name: "Embeddable",
     description: [
-      "Our viewer is same as the Art Piece, without the interactivity!",
+      "Our embeddable is same as the Art Piece, without the interactivity!",
     ],
   },
   {
@@ -281,10 +281,40 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
     ],
   },
   {
+    template: VenueTemplate.jazzbar,
+    name: "Music Venue",
+    description: [
+      "Add a music venue with an embedded video and tables for people to join to have video chats and discuss life, the universe, and everything.",
+    ],
+  },
+  {
+    template: VenueTemplate.conversationspace,
+    name: "Conversation Space",
+    description: ["A room of tables in which to talk and make merry."],
+  },
+  {
+    template: VenueTemplate.audience,
+    name: "Auditorium",
+    description: [
+      "Add an auditorium with an embedded video and seats for people to take to watch the experience.",
+    ],
+  },
+  {
+    template: VenueTemplate.auditorium,
+    name: "New Auditorium",
+    description: ["Add an NEW auditorium with an embedded video and sections"],
+  },
+  {
     template: VenueTemplate.screeningroom,
     name: "Screening room",
     description: ["Add an screening room with the videos listed inside."],
   },
+];
+
+export const HIDDEN_BURN_VENUE_TEMPLATES: VenueTemplate[] = [
+  VenueTemplate.animatemap,
+  VenueTemplate.screeningroom,
+  VenueTemplate.auditorium,
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -614,7 +644,7 @@ export const FIREBASE_CONFIG = {
 };
 
 export const DEFAULT_VENUE = "zilloween";
-export const DEFAULT_REDIRECT_URL = IS_BURN ? "/enter" : HOMEPAGE_URL;
+export const DEFAULT_REDIRECT_URL = "/in/playa";
 
 // Trouble connecting? Run a local relay:
 // git clone git@github.com:sparkletown/sparkle-relay && cd sparkle-relay && docker-compose up
@@ -724,7 +754,9 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
+export const NAV_BAR_MAX_USER_SEARCH_RESULTS = 100;
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
 export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 

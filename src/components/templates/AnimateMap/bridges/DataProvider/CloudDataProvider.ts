@@ -3,8 +3,8 @@ import { utils } from "pixi.js";
 
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
-
+import { ReplicatedVenue } from "../../../../../store/reducers/AnimateMap";
+import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
 import { DataProvider } from "../DataProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
@@ -50,7 +50,7 @@ export class CloudDataProvider
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
     firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId?: string
+    readonly playerioGameId: string
   ) {
     super();
 
@@ -58,7 +58,7 @@ export class CloudDataProvider
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
-    playerModel.id = playerId;
+    playerModel.data.id = playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
@@ -89,29 +89,32 @@ export class CloudDataProvider
   // player provider
   public async initPlayerPositionAsync(x: number, y: number) {
     //TODO: REWORK
-    this.commonInterface
-      .loadVenuesAsync()
-      .then((q) => {
-        q.forEach((doc) => {
-          const data = doc.data();
-          // console.log(data);
-          const vn = {
-            x: data.animatemap.x,
-            y: data.animatemap.y,
-            data: {
-              url: "/in/" + doc.id,
-              videoUrlString: "",
-              imageUrlString: data?.host?.icon,
-            },
-          } as ReplicatedVenue;
-          this.emit(DataProviderEvent.VENUE_ADDED, vn);
-        });
-      })
-      .catch(console.log);
     return this.player.initPositionAsync(x, y);
   }
 
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
+  }
+
+  public venuesData: ReplicatedVenue[] = [];
+
+  public updateRooms(data: UseRelatedPartymapRoomsData) {
+    if (!data) return;
+
+    const newVenues = data.filter(
+      (item) => !this.venuesData.find((venue) => venue.data.url === item.url)
+    );
+    newVenues.forEach((room) => {
+      console.log("create venue");
+      const vn = {
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
+        data: {
+          ...room,
+        },
+      } as ReplicatedVenue;
+      this.venuesData.push(vn);
+      this.emit(DataProviderEvent.VENUE_ADDED, vn);
+    });
   }
 }

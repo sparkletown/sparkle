@@ -1,0 +1,36 @@
+@import "scss/constants.scss";
+
+.MapPreview {
+  width: 100%;
+  margin-bottom: $spacing--lg;
+  position: relative;
+  overflow: hidden;
+
+  &__zoom {
+    width: 50%;
+    max-width: 30vw;
+    height: 55px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: $z-layer-sidebar;
+    background-color: opaque-black(0.5);
+    border-radius: $border-radius--xl 0 $border-radius--xl 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing--sm;
+  }
+
+  &__save-button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 0;
+    border-radius: $border-radius--xl 0 $border-radius--xl 0;
+
+    &:hover {
+      transform: none;
+    }
+  }
+}

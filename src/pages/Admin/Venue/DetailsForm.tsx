@@ -166,7 +166,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
           await createVenue(
             {
               ...vals,
-              parentId: BM_PARENT_ID,
             } as VenueInput,
             user
           );

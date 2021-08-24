@@ -10,7 +10,7 @@ import { useVenueEvents } from "hooks/events";
 
 import { RoomCard } from "components/organisms/AdminVenueView/components/RoomCard/RoomCard";
 
-import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./RunTabRooms.scss";
 

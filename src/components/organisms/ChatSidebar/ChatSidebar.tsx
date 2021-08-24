@@ -3,6 +3,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faCommentDots,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -29,7 +30,9 @@ export interface ChatSidebarProps {
 export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
+    newPrivateMessageRecived,
     toggleSidebar,
+    togglePrivateChatSidebar,
     chatSettings,
     selectVenueChat,
     selectPrivateChat,
@@ -44,15 +47,19 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
       ? chatSettings.recipientId
       : undefined;
 
-  const containerStyles = classNames("chat-sidebar", {
+  const containerStyles = classNames({
+    "chat-sidebar": true,
     "chat-sidebar--expanded": isExpanded,
+    "chat-sidebar--collapsed": !isExpanded,
   });
 
-  const venueChatTabStyles = classNames("chat-sidebar__tab", {
+  const venueChatTabStyles = classNames({
+    "chat-sidebar__tab": true,
     "chat-sidebar__tab--selected": isVenueChat,
   });
 
-  const privateChatTabStyles = classNames("chat-sidebar__tab", {
+  const privateChatTabStyles = classNames({
+    "chat-sidebar__tab": true,
     "chat-sidebar__tab--selected": isPrivateChat,
   });
 
@@ -76,14 +83,30 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           ) : (
             <>
               <FontAwesomeIcon icon={faChevronLeft} size="sm" />
-              <FontAwesomeIcon
-                className="chat-sidebar__controller__second-icon"
-                icon={faCommentDots}
-                size="lg"
-              />
+              <FontAwesomeIcon icon={faCommentDots} size="lg" />
             </>
           )}
         </button>
+
+        {!isExpanded && (
+          <button
+            aria-label={isExpanded ? "Hide chat" : "Show chat"}
+            className="chat-sidebar__controller chat-sidebar__private-chat"
+            onClick={togglePrivateChatSidebar}
+          >
+            {isExpanded ? (
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                {newPrivateMessageRecived > 0 && (
+                  <div className="chat-sidebar__controller--new-message"></div>
+                )}
+              </>
+            )}
+          </button>
+        )}
 
         {isExpanded && (
           <div className="chat-sidebar__tabs" role="tablist">
