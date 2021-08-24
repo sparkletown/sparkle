@@ -8,6 +8,7 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
+  setAnimateMapLastZoom,
   setAnimateMapZoom,
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
@@ -83,9 +84,11 @@ export class ViewportSystem extends System {
     this._viewport.on("drag-start", this._viewportDragStartHandler, this);
 
     this._unsubscribeSetZoom = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ZOOM,
+      AnimateMapActionTypes.SET_ZOOM_LEVEL,
       (action) =>
-        this.handleSetZoom((action as setAnimateMapZoomAction).payload.zoom)
+        this.handleSetZoom(
+          (action as setAnimateMapZoomAction).payload.zoomLevel
+        )
     );
 
     this._unsubscribeSetEnvironmentSound = subscribeActionAfter(
@@ -132,7 +135,7 @@ export class ViewportSystem extends System {
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
-    const zoomLevel = GameInstance.instance.getState().zoom;
+    const zoomLevel = GameInstance.instance.getState().zoomLevel;
     const zoomViewport = GameInstance.instance
       .getConfig()
       .zoomLevelToViewport(zoomLevel);
@@ -337,6 +340,10 @@ export class ViewportSystem extends System {
         this.viewportList.head.viewport.zoomLevel
       );
     }
+
+    GameInstance.instance
+      .getStore()
+      .dispatch(setAnimateMapLastZoom(viewport.scale.y));
   }
 
   private _viewportDragStartHandler(e: { world: Point }) {
