@@ -7,6 +7,7 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import {
   faHome,
   faTicketAlt,
@@ -21,8 +22,9 @@ import { IS_BURN } from "secrets";
 import {
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
+  LD_KEY_RADIO_VOLUME,
+  LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
   PLAYA_VENUE_ID,
-  STORAGE_KEY_RADIO,
 } from "settings";
 
 import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
@@ -161,17 +163,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { volume: radioVolume, setVolume: setRadioVolume } = useAudioVolume({
     audioElement: radioAudio,
     isAudioPlaying: isRadioPlaying,
-    storageKey: STORAGE_KEY_RADIO,
+    storageKey: LD_KEY_RADIO_VOLUME,
     initialVolume: DEFAULT_AMBIENT_VOLUME,
   });
 
-  const isAmbientAudioPlaying = useSelector(animateMapEnvironmentSoundSelector);
   const dispatch = useDispatch();
-
-  const onMuteAmbient = useCallback(
-    () => dispatch(setAnimateMapEnvironmentSound(!isAmbientAudioPlaying)),
-    [dispatch, isAmbientAudioPlaying]
+  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
+  const [, setAmbientAudioVocal] = useLocalStorage(
+    LS_KEY_IS_AMBIENT_AUDIO_VOCAL
   );
+
+  const onToggleAmbientAudio = useCallback(() => {
+    const toggledValue = !isAmbientAudioVocal;
+    setAmbientAudioVocal(toggledValue);
+    dispatch(setAnimateMapEnvironmentSound(toggledValue));
+  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
 
   // Notifications volume control
   const {
@@ -265,7 +271,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
                   icon={faHome}
-                  className="NavBar__home--icon"
+                  className="NavBar__home-icon"
                   onClick={navigateToHomepage}
                 />
               )}
@@ -383,9 +389,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                           className="NavBar__volume-control"
                           label="Ambient Noise"
                           name="noise"
-                          muted={isAmbientAudioPlaying}
+                          muted={isAmbientAudioVocal}
                           withMute
-                          onMute={onMuteAmbient}
+                          onMute={onToggleAmbientAudio}
                         />
                         <VolumeControl
                           className="NavBar__volume-control NavBar__volume-control--hidden"

@@ -1,6 +1,8 @@
 import { Box, QuadTree } from "js-quadtree";
 import { Reducer } from "redux";
 
+import { LS_KEY_IS_AMBIENT_AUDIO_VOCAL } from "settings";
+
 import {
   AnimateMapActions,
   AnimateMapActionTypes,
@@ -101,7 +103,8 @@ const initialAnimateMapState: AnimateMapState = {
   lastZoom: lastZoom ? parseFloat(lastZoom) : 1,
   //flags
   firstEntrance: window.sessionStorage.getItem("AnimateMapState.firstEntrance"),
-  environmentSound: true,
+  environmentSound:
+    window.localStorage.getItem(LS_KEY_IS_AMBIENT_AUDIO_VOCAL) !== "false",
 };
 
 export type AnimateMapReducer = Reducer<AnimateMapState, AnimateMapActions>;
