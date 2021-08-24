@@ -9,6 +9,7 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { faHome, faTicketAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -158,10 +159,20 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
+  const [isScheduleTriggered, updateScheduleTriggered] = useState(false);
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
+
   const toggleEventSchedule = useCallback(() => {
+    if (!isScheduleTriggered && isEventScheduleVisible) {
+      updateScheduleTriggered(!isScheduleTriggered);
+    }
     setEventScheduleVisible(!isEventScheduleVisible);
-  }, [isEventScheduleVisible]);
+  }, [isEventScheduleVisible, isScheduleTriggered]);
+
+  const scheduleBtnClasses = classNames("nav-schedule", {
+    "nav-schedule-clicked": isEventScheduleVisible,
+    "nav-schedule-triggered": isScheduleTriggered,
+  });
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -228,15 +239,29 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               )}
 
               {shouldShowSchedule ? (
-                <button
+                <div
                   aria-label="Schedule"
-                  className={`nav-party-logo ${
-                    isEventScheduleVisible && "clicked"
-                  }`}
+                  className={scheduleBtnClasses}
                   onClick={toggleEventSchedule}
                 >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
-                </button>
+                  {!isEventScheduleVisible && (
+                    <>
+                      <div className="nav-schedule__text">
+                        <span className="nav-schedule__text-first" />
+                        <span className="nav-schedule__text-second" />
+                      </div>
+                      <div className="nav-schedule__star-one"></div>
+                      <div className="nav-schedule__star-two"></div>
+                      <div className="nav-schedule__star-three"></div>
+                      <div className="nav-schedule__star-four"></div>
+                    </>
+                  )}
+                  <div
+                    className={`nav-schedule__triangle${
+                      isEventScheduleVisible ? "-inverted" : ""
+                    }`}
+                  ></div>
+                </div>
               ) : (
                 <div>{navbarTitle}</div>
               )}

@@ -1,6 +1,15 @@
 @import "scss/constants.scss";
 
 $border-radius: 28px;
+$triangle-width: 7px;
+$star-height: 19px;
+$star-width: 10px;
+$nav-container-width: 96px;
+$nav-container-height: 66px;
+$nav-text-head-width: 75px;
+$nav-text-body-width: 50px;
+$nav-text-height: 45px;
+$nav-text-body-height: 34px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -150,55 +159,103 @@ $border-radius: 28px;
     }
   }
 }
-.nav-party-logo {
-  position: relative;
-  background-color: rgba($white, 0.08);
-  height: 60px;
-  padding: 0 50px 0 20px;
-  text-align: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transition: transform 400ms $transition-function;
-  border: none;
-  appearance: none;
-  color: $white;
 
-  img {
-    height: 40px;
+.nav-schedule {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: 70px;
+  left: 0px;
+  background-color: $primary;
+  color: $white;
+  width: $nav-container-width;
+  height: $nav-container-height;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  cursor: pointer;
+
+  &-clicked {
+    margin-left: 40%;
+    background-color: $schedule-opened-grey;
+    width: 30px;
   }
-  &:hover,
-  &:focus {
-    border: none;
-    background-color: rgba($white, 0.14);
-    &:after {
-      opacity: 0.7;
+
+  &-triggered {
+    background-color: $lighter-intermediate-grey;
+  }
+
+  &__text {
+    display: flex;
+    width: $nav-text-body-width;
+    height: $nav-text-height;
+    flex-direction: column;
+    align-items: center;
+
+    &-first {
+      width: $nav-text-head-width;
+      height: $nav-text-body-height;
+      font-size: 20px;
+      background-image: url(/assets/icons/nav-schedule-whats.png);
+    }
+    &-second {
+      width: $nav-text-body-width;
+      height: $nav-text-body-height;
+      font-size: 22px;
+      background-image: url(/assets/icons/nav-schedule-on.png);
     }
   }
-  &:after {
-    content: "";
+
+  &__star-one {
+    width: $star-width;
+    height: $star-height;
     position: absolute;
-    right: 20px;
+    left: 10px;
     top: 20px;
-    height: 20px;
-    width: 20px;
-    background-image: url(/assets/icons/nav-party-logo-icon.png);
-    background-size: 20px;
-    opacity: 0.4;
-    transform: rotate(0deg);
-    transition: transform 400ms $transition-function;
+    background-image: url(/assets/icons/nav-schedule-star.png);
   }
-  &.clicked {
-    &:after {
-      transform: rotate(180deg);
+  &__star-two {
+    width: $star-width;
+    height: $star-height;
+    position: absolute;
+    left: 20px;
+    top: 40px;
+    background-image: url(/assets/icons/nav-schedule-star.png);
+  }
+  &__star-three {
+    width: $star-width;
+    height: $star-height;
+    position: absolute;
+    right: 16px;
+    top: 32px;
+    background-image: url(/assets/icons/nav-schedule-star.png);
+  }
+  &__star-four {
+    width: $star-width;
+    height: $star-height;
+    position: absolute;
+    right: 22px;
+    top: 45px;
+    background-image: url(/assets/icons/nav-schedule-star.png);
+  }
+
+  &__triangle {
+    position: absolute;
+    left: 90%;
+    width: 0;
+    height: 0;
+    border-top: $triangle-width solid transparent;
+    border-bottom: $triangle-width solid transparent;
+    border-left: $triangle-width solid $white;
+
+    &-inverted {
+      border-top: $triangle-width solid transparent;
+      border-bottom: $triangle-width solid transparent;
+
+      border-right: $triangle-width solid $white;
+      border-left: 0px solid $white;
     }
-  }
-  &.slide {
-    transform: translateX(110px);
   }
 }
 
