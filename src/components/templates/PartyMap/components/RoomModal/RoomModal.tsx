@@ -99,6 +99,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -139,12 +140,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     <>
       <h2>{room.title ?? portalVenue?.name}</h2>
 
-      {room.subtitle ||
-        portalVenue?.config?.landingPageConfig?.subtitle(
-          <div className="room-modal__title">
-            {room.subtitle || portalVenue?.config?.landingPageConfig.subtitle}
-          </div>
-        )}
+      {(room.subtitle || portalVenueSubtitle) && (
+        <div className="room-modal__title">
+          {room.subtitle || portalVenueSubtitle}
+        </div>
+      )}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -177,7 +177,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
         <div className="room-modal__description">
           <RenderMarkdown
             text={
-              room.about ?? portalVenue?.config?.landingPageConfig.description
+              room.about ?? portalVenue?.config?.landingPageConfig?.description
             }
           />
         </div>
