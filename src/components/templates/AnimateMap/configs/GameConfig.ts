@@ -42,6 +42,8 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
+  public static ACTIVE_VENUE_MIN_PEOPLE_FOR_ANIMATED_HALO = 25;
+
   public minSpeed = 0;
   public maxSpeed = 8;
   public firstEntrance = false;
