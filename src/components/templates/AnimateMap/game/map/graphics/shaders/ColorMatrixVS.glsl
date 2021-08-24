@@ -9,7 +9,7 @@ uniform vec4 outputFrame;
 
 uniform vec4 frame;
 varying vec2 pixelPos;
-
+varying vec2 pixelNPos;
 vec4 filterVertexPosition( void )
 {
     vec2 position = aVertexPosition * max(outputFrame.zw, vec2(0.)) + outputFrame.xy;
@@ -27,4 +27,5 @@ void main(void)
     gl_Position = filterVertexPosition();
     vTextureCoord = filterTextureCoord();
     pixelPos = frame.xy + aVertexPosition*frame.zw;
+    pixelNPos = (frame.xy + aVertexPosition*frame.zw)/9920.;
 }

@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { BaseTexture, Container, Sprite, Text } from "pixi.js";
+import { Application, BaseTexture, Container, Sprite, Text } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -15,6 +15,10 @@ import {
   moonKeyFramer,
   sunKeyFramer,
 } from "../graphics/shaders/mapLightning";
+import {
+  ShaderDataProvider,
+  staticLightData,
+} from "../graphics/shaders/StaticShaderData";
 import { ArtcarNode } from "../nodes/ArtcarNode";
 import { BarrelNode } from "../nodes/BarrelNode";
 
@@ -23,14 +27,14 @@ export class ViewportBackgroundSystem extends System {
   private artCars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
+  private staticLightManager: ShaderDataProvider;
   private readonly container: PIXI.Container;
   private readonly mapLOD_1: Sprite;
   private readonly mapLOD_0: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
   private moonKeyFramer: KeyFramer = moonKeyFramer;
-
+  private lightsPos = new Float32Array(1024);
   private time: number = 0;
-
   private initialized = false;
   private worldDivision = 0;
   private worldTileWidth = 0;
@@ -49,10 +53,13 @@ export class ViewportBackgroundSystem extends System {
    * @param viewport the app viewport
    * @param timeAccelerator set to 1 in prod
    */
-  constructor(viewport: Viewport, private timeAccelerator: number = 1200) {
+  constructor(
+    viewport: Viewport,
+    private app: Application,
+    private timeAccelerator: number = 1200
+  ) {
     super();
     this.viewport = viewport;
-
     this.container = new Container();
     this.mapLOD_1 = new Sprite();
     this.mapLOD_1.name = "backgroundSprite";
@@ -66,6 +73,7 @@ export class ViewportBackgroundSystem extends System {
       fill: "#ffffff",
       fontSize: 72,
     });
+    this.staticLightManager = new ShaderDataProvider(staticLightData, this.app);
   }
 
   public initLighting() {
@@ -74,12 +82,13 @@ export class ViewportBackgroundSystem extends System {
     const lightsCol = new Array();
     const koef = [];
     const lightSizer = new LightSize();
-    for (let i = 0; i < 1024; i++) {
+    for (let i = 0; i < this.lightsPos.length / 2; i++) {
       lightsCol[i] = Math.random() * 0xffffff;
       const size = lightSizer.getFrame(200);
       koef[i * 2] = size[0]; // linear component
       koef[i * 2 + 1] = size[1]; // quadratic component
     }
+
     this.container.filters[0].uniforms.lightsCol = lightsCol;
     this.container.filters[0].uniforms.koef = koef;
   }
@@ -89,6 +98,8 @@ export class ViewportBackgroundSystem extends System {
     this.artCars = engine.getNodeList(ArtcarNode);
     this.setup().then(() => {
       this.setupTree();
+
+      this.container.filters[0].uniforms.texStaticLights = this.staticLightManager.renderSprite();
 
       const back: Sprite = Sprite.from(MAP_IMAGE);
       back.anchor.set(0.5);
@@ -113,8 +124,9 @@ export class ViewportBackgroundSystem extends System {
       ];
 
       this.initialized = true;
-
       this.viewport.parent.addChild(this.text);
+
+      this.staticLightManager.sprite.texture.update();
     });
   }
 
@@ -206,28 +218,22 @@ export class ViewportBackgroundSystem extends System {
 
   private _updateFilters() {
     let lightQuantity = 0;
-    const lightsPos = [];
 
     //note: remove later
-    const n = 240;
-    for (let i = 0; i < n; i++) {
-      lightsPos[lightQuantity * 2] = (i * 9920) / n;
-      lightsPos[lightQuantity * 2 + 1] = (i * 9920) / n;
-      lightQuantity += 1;
-    }
+    lightQuantity = 0;
 
     for (let i = this.barrels?.head; i; i = i?.next) {
-      lightsPos[lightQuantity * 2] = i.position.x;
-      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
       lightQuantity += 1;
     }
     for (let i = this.artCars?.head; i; i = i?.next) {
-      lightsPos[lightQuantity * 2] = i.position.x;
-      lightsPos[lightQuantity * 2 + 1] = i.position.y;
+      this.lightsPos[lightQuantity * 2] = i.position.x;
+      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
       lightQuantity += 1;
     }
 
-    this.container.filters[0].uniforms.lightsPos = lightsPos;
+    this.container.filters[0].uniforms.lightsPos = this.lightsPos;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
 
     this.container.filters[0].uniforms.frame = [

@@ -3,18 +3,16 @@ varying vec2 vTextureCoord;
 
 const int MAX_LIGHTS = 256;
 uniform sampler2D uSampler;
-uniform sampler2D texStaticLights;
-uniform vec3 ambientLight;
 
 varying vec2 pixelPos;
-varying vec2 pixelNPos;
 uniform mediump vec2 lightsPos[MAX_LIGHTS];
 uniform mediump int lightsCol[MAX_LIGHTS];
+
 uniform int lightQuantity;
 
 void main(void){
     lowp vec4 albedo = texture2D(uSampler, vTextureCoord);
-    lowp vec3 light = albedo.rgb*ambientLight + texture2D(texStaticLights, pixelNPos).rgb;
+    lowp vec3 light = vec3(0.0,0.0,0.0);
     for (int i = 0; i < MAX_LIGHTS; i++){
 
         mediump float magnX = (pixelPos.x - lightsPos[i].x);
@@ -35,11 +33,11 @@ void main(void){
 
             rgb /= (1.0 + 0.027*sqrt(magnitude) + 0.0028*magnitude);
 
-            //light += rgb;
+            light += rgb;
         }
         if (i > lightQuantity)
         break;
     }
 
-    gl_FragColor = vec4(light, 1.0);
+    gl_FragColor = vec4(light, 0.2);
 }
