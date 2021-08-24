@@ -101,6 +101,8 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
   const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -137,10 +139,9 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
-  const roomTitle = room.title ?? portalVenue?.name;
+  const roomTitle = room.title || portalVenue?.name;
   const roomSubtitle = room.subtitle || portalVenueSubtitle;
-  const roomDescription =
-    room.about ?? portalVenue?.config?.landingPageConfig?.description;
+  const roomDescription = room.about || portalVenueDescription;
 
   return (
     <>
