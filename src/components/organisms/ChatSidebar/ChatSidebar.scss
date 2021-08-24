@@ -94,12 +94,27 @@ $media-width--mobile-max: 1024px;
       margin-left: 2 * $spacing--xs;
       margin-right: -1 * $spacing--xs;
     }
+
+    &--new-message {
+      background-color: $red;
+      height: 12px;
+      width: 12px;
+      border: 2px solid $secondary;
+      position: absolute;
+      border-radius: $border-radius--max;
+      right: 6px;
+      bottom: 10px;
+    }
   }
 
   &__tab-content {
     flex: 1 1 auto;
     height: calc(100% - #{$header-height});
     width: 100%;
+  }
+
+  &__private-chat {
+    margin-top: $spacing--xl * 2;
   }
 
   @media only screen and (min-device-width: $media-width--mobile-min) and (max-device-width: $media-width--mobile-max) {
