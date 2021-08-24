@@ -47,7 +47,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
   const renderedPrivateChatPreviews = useMemo(
     () =>
       privateChatPreviews
-        // Filter out self
+        // NOTE: Filter out self
         .filter((chatMessage) => chatMessage.from !== chatMessage.to)
         .map((chatMessage) => (
           <PrivateChatPreview
