@@ -100,6 +100,10 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
+
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
@@ -135,13 +139,15 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
+  const roomTitle = room.title || portalVenue?.name;
+  const roomSubtitle = room.subtitle || portalVenueSubtitle;
+  const roomDescription = room.about || portalVenueDescription;
+
   return (
     <>
-      <h2>{room.title ?? portalVenue?.name}</h2>
+      <h2>{roomTitle}</h2>
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -172,7 +178,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {room.about && (
         <div className="room-modal__description">
-          <RenderMarkdown text={room.about ?? portalVenue?.description} />
+          <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
