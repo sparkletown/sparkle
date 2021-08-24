@@ -18,6 +18,7 @@ export const DeviceVideo: React.FC<DeviceVideoProps> = ({
   const [error, setError] = useState();
   const [playing, setPlaying] = useState(false);
   const [mediaStream, setMediaStream] = useState<MediaStream | null>(null);
+  const [cameraPermission, setCameraPermission] = useState<PermissionState>();
   const videoRef = useRef<HTMLVideoElement>(null);
 
   const play = useCallback(
@@ -35,6 +36,21 @@ export const DeviceVideo: React.FC<DeviceVideoProps> = ({
         }),
     [onPlay, onError]
   );
+
+  useEffect(() => {
+    navigator.permissions
+      .query(
+        // other possible query is { name: "microphone" }
+        { name: "camera" }
+      )
+      .then((permissionStatus) => {
+        setCameraPermission(permissionStatus.state);
+
+        permissionStatus.onchange = function permissionStatusOnChange() {
+          setCameraPermission(this.state);
+        };
+      });
+  }, []);
 
   useEffect(() => {
     if (mediaStream) {
@@ -67,18 +83,8 @@ export const DeviceVideo: React.FC<DeviceVideoProps> = ({
     videoRef.current.srcObject = mediaStream;
   }
 
-  if (!mediaStream) {
-    return (
-      <div className="DeviceVideo DeviceVideo--no-stream">
-        <FontAwesomeIcon
-          icon={faCircleNotch}
-          spin
-          size="3x"
-          className="DeviceVideo__spinner"
-        />
-      </div>
-    );
-  }
+  // NOTE: logging in console for debug purpose
+  console.log(DeviceVideo.name, "cameraPermission:", cameraPermission);
 
   return (
     <div className="DeviceVideo  DeviceVideo--with-stream">
