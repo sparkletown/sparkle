@@ -50,7 +50,7 @@ export class CloudDataProvider
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
     firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId?: string
+    readonly playerioGameId: string
   ) {
     super();
 
@@ -107,8 +107,8 @@ export class CloudDataProvider
     newVenues.forEach((room) => {
       console.log("create venue");
       const vn = {
-        x: ((room.x_percent / 100) * 9920) / 2.74 + 3180, //TODO: refactor configs and throw data to here
-        y: ((room.y_percent / 100) * 9920) / 2.74 + 3380,
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
         data: {
           ...room,
         },

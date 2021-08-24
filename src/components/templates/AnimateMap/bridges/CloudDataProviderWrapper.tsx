@@ -39,7 +39,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           user.userId,
           user.profile?.pictureUrl,
           firebase,
-          venue.playerioGameId
+          venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
         );
         dataProvider.updateRooms(rooms);
         setDataProvider(dataProvider);
