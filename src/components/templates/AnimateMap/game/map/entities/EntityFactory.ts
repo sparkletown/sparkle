@@ -600,11 +600,12 @@ export default class EntityFactory {
         new HoverableSpriteComponent(
           () => {
             // add tooltip
-            entity.add(
-              new TooltipComponent(
-                ("venue id: " + venue.data.title).slice(0, 15) + "..."
-              )
+            const tooltip: TooltipComponent = new TooltipComponent(
+              venue.data.title.slice(0, 15) + "..."
             );
+            tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
+            tooltip.backgroundColor = tooltip.borderColor;
+            entity.add(tooltip);
             // add increase
             const comm: SpriteComponent | null = entity.get(SpriteComponent);
             const duration = 100;
@@ -670,8 +671,7 @@ export default class EntityFactory {
         const spriteComponent: SpriteComponent = new SpriteComponent();
         spriteComponent.view = sprite;
 
-        // TODO debuging for
-        if (venue.data.isEnabled && Math.random() < 0.1) {
+        if (venue.data.isEnabled) {
           // halo
           sprite.halo = Sprite.from(VENUE_HALO);
           sprite.halo.anchor.set(0.5);
