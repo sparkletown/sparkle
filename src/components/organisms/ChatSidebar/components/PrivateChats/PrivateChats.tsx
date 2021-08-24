@@ -29,7 +29,10 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
     setScrollPageNumber(1);
   }, []);
 
-  const showNextPage = () => setScrollPageNumber(scrollPageNumber + 1);
+  const showNextPage = useCallback(
+    () => setScrollPageNumber(scrollPageNumber + 1),
+    [setScrollPageNumber, scrollPageNumber]
+  );
 
   const { privateChatPreviews } = usePrivateChatPreviews();
   const onlineUsers = useOnlineUsersToDisplay();
@@ -92,7 +95,7 @@ export const PrivateChats: React.FC<PrivateChatsProps> = ({ recipientId }) => {
         hasMore={renderedUsers.length < filteredUsers.length}
         next={showNextPage}
         scrollableTarget="private_chats_scrollable_div"
-        loader={<Loading />}
+        loader={Loading}
       >
         <InputField
           containerClassName="private-chats__search"
