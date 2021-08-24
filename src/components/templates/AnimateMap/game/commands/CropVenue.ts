@@ -37,32 +37,7 @@ export class CropVenue implements Command {
           "2d"
         ) as CanvasRenderingContext2D;
 
-        const x = 0;
-        const y = 0;
-        const radius = size / 2.5;
-        const width = size;
-        const height = size;
-
-        ctx.save();
-
-        ctx.beginPath();
-        ctx.moveTo(x + radius, y);
-        ctx.lineTo(x + width - radius, y);
-        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
-        ctx.lineTo(x + width, y + height - radius);
-        ctx.quadraticCurveTo(
-          x + width,
-          y + height,
-          x + width - radius,
-          y + height
-        );
-        ctx.lineTo(x + radius, y + height);
-        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
-        ctx.lineTo(x, y + radius);
-        ctx.quadraticCurveTo(x, y, x + radius, y);
-        ctx.closePath();
-
-        ctx.clip();
+        this.drawPath(ctx);
 
         ctx.drawImage(
           comm.image,
@@ -78,6 +53,15 @@ export class CropVenue implements Command {
 
         ctx.restore();
 
+        // draw frame
+        const frameCanvas = document.createElement("canvas");
+        const frameCtx = frameCanvas.getContext("2d");
+        if (frameCanvas && frameCtx) {
+          frameCanvas.width = this.canvas.width;
+          frameCanvas.height = this.canvas.height;
+        }
+        this.drawFrame(ctx);
+
         return Promise.resolve();
       })
       .catch((error) => {
@@ -89,15 +73,44 @@ export class CropVenue implements Command {
           "2d"
         ) as CanvasRenderingContext2D;
         ctx.fillStyle = "#cc0000";
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
-        ctx.closePath();
+        this.drawPath(ctx);
         ctx.fill();
+
+        this.drawFrame(ctx);
 
         return Promise.resolve();
       })
       .finally(() => {
         this.complete();
       });
+  }
+
+  private drawFrame(ctx: CanvasRenderingContext2D): void {
+    ctx.strokeStyle = "rgba(255, 255, 255, 0.5)";
+    ctx.lineWidth = this.canvas.width * 0.1;
+    this.drawPath(ctx);
+    ctx.stroke();
+  }
+
+  private drawPath(ctx: CanvasRenderingContext2D): void {
+    const x = 0;
+    const y = 0;
+    const width = ctx.canvas.width;
+    const height = ctx.canvas.height;
+    const radius = Math.min(width, height) / 2.5;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+    ctx.clip();
   }
 }
