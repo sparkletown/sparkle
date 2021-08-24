@@ -1,31 +1,52 @@
 import React, { useCallback } from "react";
+import classNames from "classnames";
 
-import { MAX_VOLUME, MIN_VOLUME } from "settings";
+import { MAX_AUDIO_VOLUME, MIN_AUDIO_VOLUME } from "settings";
+
+import "./VolumeControl.scss";
 
 export interface VolumeControlProps {
+  className?: string;
+  label?: string;
+  name: string;
   setVolume: Function;
   volume: number;
-  name: string;
 }
 
 export const VolumeControl: React.FC<VolumeControlProps> = ({
+  className = "",
+  label,
+  name,
   setVolume,
   volume,
-  name,
 }) => {
-  const handleVolumeChange = useCallback(
-    (ev) => setVolume(Number(ev.target.value)),
+  const onChange = useCallback(
+    (ev) => {
+      const volume = Number(ev.target.value);
+      return setVolume(volume);
+    },
     [setVolume]
   );
+
+  const parentClasses = classNames({
+    VolumeControl: true,
+    VolumeControl__container: true,
+    [className]: className,
+  });
+
   return (
-    <input
-      type="range"
-      id={name}
-      name={name}
-      min={MIN_VOLUME}
-      max={MAX_VOLUME}
-      onChange={handleVolumeChange}
-      value={volume}
-    />
+    <div className={parentClasses}>
+      <div className="VolumeControl__label">{label}</div>
+      <input
+        className="VolumeControl__input"
+        type="range"
+        id={name}
+        name={name}
+        min={MIN_AUDIO_VOLUME}
+        max={MAX_AUDIO_VOLUME}
+        onChange={onChange}
+        value={volume}
+      />
+    </div>
   );
 };

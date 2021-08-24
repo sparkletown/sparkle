@@ -764,6 +764,11 @@ export const EVENTS_PREVIEW_LIST_LENGTH = 5;
 
 export const BM_PARENT_ID = "playa";
 
+// NOTE: volume numbers are expressed in %, thus between 0 and 100
+export const DEFAULT_AMBIENCE_VOLUME: number = 10;
+export const DEFAULT_INTERACTIONS_VOLUME: number = 50;
 export const DEFAULT_NOTIFICATIONS_VOLUME: number = 100;
-export const MIN_VOLUME: number = 0;
-export const MAX_VOLUME: number = 100;
+export const MIN_AUDIO_VOLUME: number = 0;
+export const MAX_AUDIO_VOLUME: number = 100;
+
+export const STORAGE_KEY_RADIO = "Radio";

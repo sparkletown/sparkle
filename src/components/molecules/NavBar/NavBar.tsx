@@ -18,16 +18,21 @@ import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import {
+  DEFAULT_AMBIENCE_VOLUME,
+  DEFAULT_SHOW_SCHEDULE,
+  PLAYA_VENUE_ID,
+  STORAGE_KEY_RADIO,
+} from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
 import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useAudioVolume } from "hooks/useAudioVolume";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -137,19 +142,26 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     hasRadioStations(radioStations) &&
     RegExp("soundcloud").test(radioStations[0]);
 
-  const sound = useMemo(
+  const ambientAudio = useMemo(
     () =>
       radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
         : undefined,
     [hasRadioStations, isSoundCloud, radioStations]
   );
-  console.log(sound);
 
   // TODO: define Ambient Noise, Notifications, Interactions volumes in right way
   // There is the radio volume control to manage Ambient Noise as an example
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
-  const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+
+  const { volume: ambientVolume, setVolume: setAmbientVolume } = useAudioVolume(
+    {
+      audioElement: ambientAudio,
+      isAudioPlaying: isRadioPlaying,
+      storageKey: STORAGE_KEY_RADIO,
+      initialVolume: DEFAULT_AMBIENCE_VOLUME,
+    }
+  );
 
   // Notifications volume control
   const {
@@ -306,8 +318,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                         <Popover.Content>
                           <RadioModal
                             {...{
-                              volume,
-                              setVolume,
+                              volume: ambientVolume,
+                              setVolume: setAmbientVolume,
                               title: currentVenue?.radioTitle,
                             }}
                             onEnableHandler={handleRadioEnable}
@@ -321,7 +333,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   >
                     <button
                       className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
+                        ambientVolume === 0 && "off"
                       }`}
                     />
                   </OverlayTrigger>
@@ -331,7 +343,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <S.RadioTrigger>
                     <button
                       className={`profile-icon navbar-link-radio ${
-                        volume === 0 && "off"
+                        ambientVolume === 0 && "off"
                       }`}
                       onClick={toggleShowRadioPopover}
                     />
@@ -354,30 +366,27 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={
                     <Popover id="volume-popover">
                       <Popover.Content>
-                        <div className="NavBar__volume--control">
-                          <span>Ambient Noise</span>
-                          <VolumeControl
-                            volume={volume}
-                            setVolume={setVolume}
-                            name="noise"
-                          />
-                        </div>
-                        <div className="NavBar__volume--control">
-                          <span>Notifications</span>
-                          <VolumeControl
-                            volume={notificationsVolume}
-                            setVolume={setNotificationsVolume}
-                            name="notifications"
-                          />
-                        </div>
-                        <div className="NavBar__volume--control">
-                          <span>Interactions</span>
-                          <VolumeControl
-                            volume={interactionsVolume}
-                            setVolume={setInteractionsVolume}
-                            name="interactions"
-                          />
-                        </div>
+                        <VolumeControl
+                          className="NavBar__volume-control"
+                          label="Ambient Noise"
+                          name="noise"
+                          volume={ambientVolume}
+                          setVolume={setAmbientVolume}
+                        />
+                        <VolumeControl
+                          className="NavBar__volume-control"
+                          label="Notifications"
+                          name="notifications"
+                          volume={notificationsVolume}
+                          setVolume={setNotificationsVolume}
+                        />
+                        <VolumeControl
+                          className="NavBar__volume-control"
+                          label="Interactions"
+                          name="interactions"
+                          volume={interactionsVolume}
+                          setVolume={setInteractionsVolume}
+                        />
                       </Popover.Content>
                     </Popover>
                   }
