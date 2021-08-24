@@ -22,8 +22,8 @@ import { IS_BURN } from "secrets";
 import {
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
-  LD_KEY_RADIO_VOLUME,
   LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
+  LS_KEY_RADIO_VOLUME,
   PLAYA_VENUE_ID,
 } from "settings";
 
@@ -163,7 +163,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { volume: radioVolume, setVolume: setRadioVolume } = useAudioVolume({
     audioElement: radioAudio,
     isAudioPlaying: isRadioPlaying,
-    storageKey: LD_KEY_RADIO_VOLUME,
+    storageKey: LS_KEY_RADIO_VOLUME,
     initialVolume: DEFAULT_AMBIENT_VOLUME,
   });
 

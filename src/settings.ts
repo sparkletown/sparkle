@@ -775,4 +775,4 @@ export const MIN_AUDIO_VOLUME: number = 0;
 export const MAX_AUDIO_VOLUME: number = 100;
 
 export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
-export const LD_KEY_RADIO_VOLUME = "LD_KEY_RADIO_VOLUME";
+export const LS_KEY_RADIO_VOLUME = "LD_KEY_RADIO_VOLUME";
