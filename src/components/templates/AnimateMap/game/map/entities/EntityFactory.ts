@@ -9,7 +9,7 @@ import {
 
 import { Point } from "types/utility";
 
-import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
@@ -492,9 +492,7 @@ export default class EntityFactory {
   }
 
   public createBarrel(barrel: GameOptionsFirebarrel): Entity {
-    const config = GameInstance.instance.getConfig();
-
-    const collisionRadius = config.venueDefaultCollisionRadius / 2;
+    const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 
     const entity: Entity = new Entity();
     entity

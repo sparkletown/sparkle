@@ -42,6 +42,7 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
+  public static VENUE_DEFAULT_COLLISION_RADIUS = 50;
   public static ACTIVE_VENUE_MIN_PEOPLE_FOR_ANIMATED_HALO = 25;
 
   public minSpeed = 0;
@@ -146,10 +147,6 @@ export class GameConfig {
 
   public get borderRadius(): number {
     return this.worldWidth * 0.371;
-  }
-
-  public get venueDefaultCollisionRadius(): number {
-    return 50;
   }
 
   public get speedByZoomLevelArray(): Array<number> {

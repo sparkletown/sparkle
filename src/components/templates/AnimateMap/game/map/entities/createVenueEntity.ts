@@ -3,8 +3,8 @@ import { Sprite } from "pixi.js";
 
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedVenue } from "../../../../../../store/reducers/AnimateMap";
+import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
-import { VENUE_HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -14,37 +14,80 @@ import { PositionComponent } from "../components/PositionComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { VenueComponent } from "../components/VenueComponent";
+import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Venue } from "../graphics/Venue";
+import { VenueHalo } from "../graphics/VenueHalo";
+import { VenueHaloAnimated } from "../graphics/VenueHaloAnimated";
+import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
-export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
-  const config = GameInstance.instance.getConfig();
+const addTooltip = (venue: ReplicatedVenue, entity: Entity) => {
+  const tooltip: TooltipComponent = new TooltipComponent(
+    venue.data.title.slice(0, 15) + "..."
+  );
+  tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
+  tooltip.backgroundColor = tooltip.borderColor;
+  entity.add(tooltip);
+  // add increase
+  const comm: SpriteComponent | null = entity.get(SpriteComponent);
+  const duration = 100;
+  if (comm) {
+    entity.add(
+      new AnimationComponent(
+        new VenueHoverIn(comm.view as Venue, duration),
+        duration
+      )
+    );
+  }
+};
 
+export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
   const entity: Entity = new Entity();
+  const fsm: FSMBase = new FSMBase(entity);
+  const venueComponent = new VenueComponent(venue, fsm);
+  const spriteComponent: SpriteComponent = new SpriteComponent();
+  const sprite: Venue = new Venue();
+  spriteComponent.view = sprite;
+
+  fsm
+    .createState(venueComponent.WITHOUT_HALO)
+    .add(VenueHaloEmpty)
+    .withMethod(
+      (): VenueHaloEmpty => {
+        return new VenueHaloEmpty(sprite);
+      }
+    );
+
+  fsm
+    .createState(venueComponent.HALO)
+    .add(VenueHalo)
+    .withMethod(
+      (): VenueHalo => {
+        return new VenueHalo(sprite, entity.get(PositionComponent)?.scaleY);
+      }
+    );
+
+  fsm
+    .createState(venueComponent.HALO_ANIMATED)
+    .add(AnimationComponent)
+    .withMethod(
+      (): AnimationComponent => {
+        return new AnimationComponent(
+          new VenueHaloAnimated(sprite, entity.get(PositionComponent)?.scaleY),
+          Number.MAX_VALUE
+        );
+      }
+    );
+
   entity
-    .add(new VenueComponent(venue))
+    .add(venueComponent)
+    .add(spriteComponent)
     .add(
       new HoverableSpriteComponent(
         () => {
           // add tooltip
-          const tooltip: TooltipComponent = new TooltipComponent(
-            venue.data.title.slice(0, 15) + "..."
-          );
-          tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
-          tooltip.backgroundColor = tooltip.borderColor;
-          entity.add(tooltip);
-          // add increase
-          const comm: SpriteComponent | null = entity.get(SpriteComponent);
-          const duration = 100;
-          if (comm) {
-            entity.add(
-              new AnimationComponent(
-                new VenueHoverIn(comm.view as Venue, duration),
-                duration
-              )
-            );
-          }
+          addTooltip(venue, entity);
         },
         () => {
           // remove tooltip
@@ -81,7 +124,7 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
         );
       })
     )
-    .add(new CollisionComponent(config.venueDefaultCollisionRadius));
+    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS));
 
   engine.addEntity(entity);
 
@@ -89,25 +132,12 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
     .execute()
     .then((comm: CropVenue) => {
       const scale =
-        (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
+        (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
       entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
 
-      const sprite: Venue = new Venue();
       sprite.venue = Sprite.from(comm.canvas);
       sprite.venue.anchor.set(0.5);
       sprite.addChild(sprite.venue);
-      const spriteComponent: SpriteComponent = new SpriteComponent();
-      spriteComponent.view = sprite;
-
-      if (venue.data.isEnabled) {
-        // halo
-        sprite.halo = Sprite.from(VENUE_HALO);
-        sprite.halo.anchor.set(0.5);
-        sprite.addChildAt(sprite.halo, 0);
-        sprite.halo.scale.set(1 / scale);
-      }
-
-      entity.add(spriteComponent);
     })
     .catch((err) => {
       // TODO default venue image

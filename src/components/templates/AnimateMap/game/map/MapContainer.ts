@@ -41,6 +41,7 @@ import { SoundEmitterSystem } from "./systems/SoundEmitterSystem";
 import { SpriteSystem } from "./systems/SpriteSystem";
 import { SystemPriorities } from "./systems/SystemPriorities";
 import { TooltipSystem } from "./systems/TooltipSystem";
+import { VenueSystem } from "./systems/VenueSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
@@ -131,6 +132,7 @@ export class MapContainer extends Container {
     this._engine = new Engine();
     this.entityFactory = new EntityFactory(this._engine);
 
+    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
       new MotionControlSwitchSystem(),
       SystemPriorities.update
