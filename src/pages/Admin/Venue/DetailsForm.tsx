@@ -17,6 +17,9 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
   BM_PARENT_ID,
+  DEFAULT_SHOW_SCHEDULE,
+  DEFAULT_SHOW_USER_STATUSES,
+  DEFAULT_USER_STATUS,
   HAS_GRID_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -36,6 +39,7 @@ import {
   VenueInput,
 } from "api/admin";
 
+import { UserStatus } from "types/User";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, VenuePlacementState, VenueTemplate } from "types/venues";
 
@@ -43,6 +47,7 @@ import { isTruthy } from "utils/types";
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
+import { useShowHide } from "hooks/useShowHide";
 import { useSovereignVenue } from "hooks/useSovereignVenue";
 import { useUser } from "hooks/useUser";
 
@@ -50,6 +55,9 @@ import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import { ImageInput } from "components/molecules/ImageInput";
 import { ImageCollectionInput } from "components/molecules/ImageInput/ImageCollectionInput";
+import { UserStatusManager } from "components/molecules/UserStatusManager";
+
+import { Toggler } from "components/atoms/Toggler";
 
 import "firebase/functions";
 
@@ -57,11 +65,14 @@ import {
   editVenueCastSchema,
   validationSchema,
 } from "./DetailsValidationSchema";
+import EntranceInput from "./EntranceInput";
+import QuestionInput from "./QuestionInput";
 import { WizardPage } from "./VenueWizard";
 
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
+import "./DetailsForm.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -326,6 +337,7 @@ interface DetailsFormLeftProps {
 }
 
 const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
+  venueId,
   sovereignVenue,
   editing,
   state,
@@ -333,11 +345,13 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   isSubmitting,
   register,
   errors,
+  setError,
   previous,
   onSubmit,
   handleSubmit,
   setValue,
   formError,
+  setFormError,
 }) => {
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
@@ -465,10 +479,50 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </>
   );
 
+  const renderAttendeesTitleInput = () => (
+    <div className="input-container DetailsForm--hidden">
+      <h4 className="italic input-header">Title of your venues attendees</h4>
+      <div className="DetailsForm__attendees-title">
+        For example: guests, attendees, partygoers.
+      </div>
+      <input
+        type="text"
+        disabled={disable}
+        name="attendeesTitle"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Attendees title"
+      />
+      {errors.attendeesTitle && (
+        <span className="input-error">{errors.attendeesTitle.message}</span>
+      )}
+    </div>
+  );
+
+  const renderChatTitleInput = () => (
+    <div className="input-container DetailsForm--hidden">
+      <h4 className="italic input-header">Your venue type label</h4>
+      <div className="DetailsForm__attendees-title">
+        For example: Party, Event, Meeting
+      </div>
+      <input
+        type="text"
+        disabled={disable}
+        name="chatTitle"
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Event label"
+      />
+      {errors.chatTitle && (
+        <span className="input-error">{errors.chatTitle.message}</span>
+      )}
+    </div>
+  );
+
   const renderUrlInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         Please post a URL to, for example, a Zoom room, Twitch stream, other
         Universe, or any interesting thing out there on the open web.
       </div>
@@ -507,6 +561,34 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowScheduleToggle = () => (
+    <div className="toggle-room DetailsForm--hidden">
+      <h4 className="italic input-header">Show Schedule</h4>
+      <Toggler
+        name="showSchedule"
+        forwardedRef={register}
+        defaultToggled={DEFAULT_SHOW_SCHEDULE}
+      />
+    </div>
+  );
+
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowBadgesToggle = () => (
+    <div className="toggle-room DetailsForm--hidden">
+      <h4 className="italic input-header">Show badges</h4>
+      <Toggler name="showBadges" forwardedRef={register} />
+    </div>
+  );
+
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderShowRangersToggle = () => (
+    <div className="toggle-room DetailsForm--hidden">
+      <h4 className="italic input-header">Show Rangers support</h4>
+      <Toggler name="showRangers" forwardedRef={register} />
+    </div>
+  );
+
   const renderGridDimensionsInputs = () => (
     <>
       <div className="input-container">
@@ -536,12 +618,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderParentIdInput = () => (
-    <div className="input-container">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">
         Enter the parent venue ID, for the &quot;back&quot; button to go to, and
         for sharing events in the schedule
       </h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         The nav bar can show a &quot;back&quot; button if you enter an ID here.
         Clicking &quot;back&quot; will return the user to the venue whose ID you
         enter. Additionally, the events you add here will be shown to users
@@ -553,8 +635,8 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         below
       </div>
       <input
-        type="text"
         defaultValue={BM_PARENT_ID}
+        type="text"
         disabled={disable}
         name="parentId"
         ref={register}
@@ -569,10 +651,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderRoomAppearanceSelect = () => (
     <>
-      <h4 className="italic input-header">
+      <h4 className="italic input-header DetailsForm--hidden">
         Choose how you&apos;d like your rooms to appear on the map
       </h4>
-      <div className="input-container">
+      <div className="input-container DetailsForm--hidden">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
@@ -606,9 +688,107 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     </div>
   );
 
+  // @debt pass the header into Toggler's 'label' prop instead of being external like this
+  const renderRadioToggle = () => (
+    <div className="toggle-room DetailsForm--hidden">
+      <h4 className="italic input-header">Enable venue radio</h4>
+      <Toggler name="showRadio" forwardedRef={register} />
+    </div>
+  );
+
+  const renderRadioStationInput = () => (
+    <div className="input-container DetailsForm--hidden">
+      <h4 className="italic input-header">Radio station stream URL:</h4>
+      <input
+        type="text"
+        disabled={disable}
+        name={`radioStations`}
+        ref={register}
+        className="wide-input-block input-centered align-left"
+        placeholder="Radio station URL..."
+      />
+      {errors.radioStations && (
+        <span className="input-error">{errors.radioStations.message}</span>
+      )}
+    </div>
+  );
+
   const renderHelper = (text: string) => (
     <p className="small light helper">{text}</p>
   );
+
+  const [userStatuses, setUserStatuses] = useState<UserStatus[]>([]);
+
+  const {
+    isShown: hasUserStatuses,
+    show: showUserStatuses,
+    hide: hideUserStatuses,
+    toggle: toggleUserStatus,
+  } = useShowHide(DEFAULT_SHOW_USER_STATUSES);
+
+  // Because this is not using the useForm validation. The use effect needs to manually open the dropdown with user statuses.
+  useEffect(() => {
+    if (!sovereignVenue) return;
+
+    const venueUserStatuses = sovereignVenue?.userStatuses ?? [];
+    const venueShowUserStatus =
+      sovereignVenue?.showUserStatus ?? DEFAULT_SHOW_USER_STATUSES;
+
+    setUserStatuses(venueUserStatuses);
+
+    if (venueShowUserStatus) {
+      showUserStatuses();
+    } else {
+      hideUserStatuses();
+    }
+  }, [hideUserStatuses, showUserStatuses, sovereignVenue]);
+
+  const removeUserStatus = (index: number) => {
+    const statuses = [...userStatuses];
+    statuses.splice(index, 1);
+    setUserStatuses(statuses);
+  };
+
+  const addUserStatus = () =>
+    setUserStatuses([
+      ...userStatuses,
+      { status: "", color: DEFAULT_USER_STATUS.color },
+    ]);
+
+  const updateStatusColor = (color: string, index: number) => {
+    const statuses = [...userStatuses];
+    statuses[index] = { ...statuses[index], color };
+    setUserStatuses(statuses);
+  };
+
+  const updateStatusText = (
+    event: React.FormEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    const statuses = [...userStatuses];
+
+    const userStatusExists = statuses.find(
+      (userStatus) => userStatus.status === event.currentTarget.value
+    );
+
+    // @debt Move user statuses to useForm with useDynamicInput, add schema for this validation instead
+    if (userStatusExists) {
+      setError("User statuses", {
+        type: "manual",
+        message: "User status already exists.",
+      });
+      setFormError(true);
+    } else {
+      setError("", "");
+      setFormError(false);
+    }
+
+    statuses[index] = {
+      ...statuses[index],
+      status: event.currentTarget.value,
+    };
+    setUserStatuses(statuses);
+  };
 
   return (
     <form className="full-height-container" onSubmit={handleSubmit(onSubmit)}>
@@ -633,6 +813,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
           renderAnnouncementInput()}
 
+        {/* ATTENDEES (multiple) TITLE */}
+        {renderAttendeesTitleInput()}
+
+        {/* EVENT CHAT TITLE */}
+        {renderChatTitleInput()}
+
         {templateID && (
           <>
             {ZOOM_URL_TEMPLATES.includes(templateID) && renderUrlInput()}
@@ -644,6 +830,51 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {templateID &&
           BACKGROUND_IMG_TEMPLATES.includes(templateID) &&
           renderMapBackgroundInput(templateID)}
+
+        <QuestionInput
+          className="DetailsForm--hidden"
+          title="Code of conduct questions"
+          fieldName="code_of_conduct_questions"
+          register={register}
+          hasLink
+          editing={state.detailsPage?.venue.code_of_conduct_questions}
+        />
+        <QuestionInput
+          className="DetailsForm--hidden"
+          title="Profile questions"
+          fieldName="profile_questions"
+          register={register}
+          editing={state.detailsPage?.venue.profile_questions}
+        />
+
+        <EntranceInput
+          className="DetailsForm--hidden"
+          fieldName="entrance"
+          register={register}
+          editing={state.detailsPage?.venue.entrance}
+        />
+
+        {renderShowScheduleToggle()}
+
+        {renderShowBadgesToggle()}
+
+        {renderShowRangersToggle()}
+
+        {renderRadioToggle()}
+
+        <UserStatusManager
+          className={"DetailsForm__hidden-component"}
+          venueId={venueId}
+          checked={hasUserStatuses}
+          userStatuses={userStatuses}
+          onCheck={toggleUserStatus}
+          onDelete={removeUserStatus}
+          onAdd={addUserStatus}
+          onPickColor={updateStatusColor}
+          onChangeInput={updateStatusText}
+        />
+
+        {values.showRadio && renderRadioStationInput()}
 
         {templateID &&
           HAS_GRID_TEMPLATES.includes(templateID) &&

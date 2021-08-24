@@ -1,7 +1,7 @@
 import React, { CSSProperties, useMemo } from "react";
 import { format } from "date-fns";
 
-import { IFRAME_ALLOW } from "settings";
+import { DEFAULT_MAP_BACKGROUND, IFRAME_ALLOW } from "settings";
 
 import { AnyVenue, PartyMapVenue, VenueTemplate } from "types/venues";
 
@@ -81,7 +81,9 @@ export const AdminVenuePreview: React.FC<AdminVenuePreviewProps> = ({
               isEditing
               venueId={partyMapVenue.id}
               venueName={partyMapVenue.name}
-              mapBackground={partyMapVenue.mapBackgroundImageUrl}
+              mapBackground={
+                partyMapVenue.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND
+              }
               rooms={partyMapVenue.rooms ?? []}
             />
           </div>
