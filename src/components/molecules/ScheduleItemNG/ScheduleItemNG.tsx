@@ -45,8 +45,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
   });
 
   const relatedVenuesRooms = relatedVenues
-    ?.map((venue) => venue.rooms ?? [])
-    .flat()
+    ?.flatMap((venue) => venue.rooms ?? [])
     .filter((room) => room !== undefined);
 
   const eventRoom = useMemo<Room | undefined>(
