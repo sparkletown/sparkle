@@ -139,9 +139,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     <>
       <h2>{room.title ?? portalVenue?.name}</h2>
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+      {room.subtitle ||
+        portalVenue?.config?.landingPageConfig?.subtitle(
+          <div className="room-modal__title">
+            {room.subtitle || portalVenue?.config?.landingPageConfig.subtitle}
+          </div>
+        )}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -172,7 +175,11 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {room.about && (
         <div className="room-modal__description">
-          <RenderMarkdown text={room.about ?? portalVenue?.description} />
+          <RenderMarkdown
+            text={
+              room.about ?? portalVenue?.config?.landingPageConfig.description
+            }
+          />
         </div>
       )}
 
