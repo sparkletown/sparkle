@@ -410,7 +410,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   }
                   rootClose={true}
                 >
-                  <button className="NavBar__menu--link">
+                  <button className="NavBar__menu-link">
                     <FontAwesomeIcon icon={faVolumeUp} />
                   </button>
                 </OverlayTrigger>
