@@ -52,7 +52,8 @@ export class GameInstance {
     private _store: Store,
     public dataProvider: DataProvider,
     private _containerElement: HTMLDivElement,
-    private _pictureUrl?: string
+    private _pictureUrl?: string,
+    public firstEntrance?: boolean
   ) {
     if (GameInstance.instance) console.error("Multiply instancing!");
     GameInstance.instance = this;
@@ -119,7 +120,7 @@ export class GameInstance {
 
     window.addEventListener("resize", this.resize);
 
-    if (this.getState().firstEntrance === "false") {
+    if (this.firstEntrance) {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
