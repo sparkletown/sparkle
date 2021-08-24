@@ -137,7 +137,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
   return (
     <>
-      <h2>{room.title ?? portalVenue.name}</h2>
+      <h2>{room.title ?? portalVenue?.name}</h2>
 
       {room.subtitle && (
         <div className="room-modal__title">{room.subtitle}</div>
