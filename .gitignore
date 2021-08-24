@@ -44,5 +44,8 @@ reporting/*.pdf
 reporting/*.txt
 reporting/cookies.json
 
+# script output files
+scripts/venueOwners.csv
+
 #IDEs
 .idea/
