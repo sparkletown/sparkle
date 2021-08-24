@@ -232,7 +232,7 @@ export class ViewportSystem extends System {
           time: 100,
           ease: "easeInOutQuad",
           callbackOnComplete: () => {
-            if (player.sprite.view) {
+            if (player && player.sprite && player.sprite.view) {
               this._viewport.plugins.remove("follow");
               this._viewport.follow(player.sprite.view);
             }
@@ -245,7 +245,7 @@ export class ViewportSystem extends System {
         time: 30,
         ease: "easeInOutQuad",
         callbackOnComplete: () => {
-          if (player.sprite.view) {
+          if (player && player.sprite && player.sprite.view) {
             this._viewport.plugins.remove("follow");
             this._viewport.follow(player.sprite.view);
           }
