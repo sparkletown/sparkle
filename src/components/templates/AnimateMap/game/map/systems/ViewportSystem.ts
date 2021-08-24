@@ -217,18 +217,25 @@ export class ViewportSystem extends System {
   };
 
   private initViewportFollowing = (player: ViewportFollowNode) => {
-    if (
-      GameInstance.instance.getConfig().firstEntrance &&
-      this.firstPlayerAdding
-    ) {
+    if (this.firstPlayerAdding) {
       this.firstPlayerAdding = false;
+
+      let zoom: number;
+      if (GameInstance.instance.getConfig().firstEntrance) {
+        zoom = GameInstance.instance
+          .getConfig()
+          .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING);
+      } else {
+        zoom = GameInstance.instance.getState().lastZoom;
+        if (zoom < 0.1) {
+          zoom = 0.1;
+        }
+      }
 
       new TimeoutCommand(200).execute().then(() => {
         this._viewport.animate({
           position: new Point(player.position.x, player.position.y),
-          scale: GameInstance.instance
-            .getConfig()
-            .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING),
+          scale: zoom,
           time: 100,
           ease: "easeInOutQuad",
           callbackOnComplete: () => {
@@ -242,7 +249,7 @@ export class ViewportSystem extends System {
     } else {
       this._viewport.animate({
         position: new Point(player.position.x, player.position.y),
-        time: 30,
+        time: 100,
         ease: "easeInOutQuad",
         callbackOnComplete: () => {
           if (player && player.sprite && player.sprite.view) {
