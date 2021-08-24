@@ -130,7 +130,7 @@ export class GameInstance {
         })
         .then(async (command: WaitClickForHeroCreation) => {
           await this._play(command.clickPoint);
-          this.getStore().dispatch(setAnimateMapFirstEntrance("true"));
+          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
         });
     }
   }
