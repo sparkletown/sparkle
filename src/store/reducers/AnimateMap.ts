@@ -109,7 +109,7 @@ export type AnimateMapReducer = Reducer<AnimateMapState, AnimateMapActions>;
 export const animateMapReducer: AnimateMapReducer = (
   state = initialAnimateMapState,
   action: AnimateMapActions
-): AnimateMapState => {
+) => {
   const immutableState = state;
 
   switch (action.type) {

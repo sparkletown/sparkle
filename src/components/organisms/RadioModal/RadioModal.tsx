@@ -7,7 +7,7 @@ import "./RadioModal.scss";
 
 export interface RadioModalPropsType {
   volume: number;
-  setVolume: Function;
+  setVolume: (volume: number) => void;
   title?: string;
   onEnableHandler: () => void;
   isRadioPlaying: boolean;
@@ -36,7 +36,7 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
         src={"/radio-icon-color.png"}
         alt="radio-icon"
       />
-      <VolumeControl volume={volume} setVolume={setVolume} name="vol" />
+      <VolumeControl volume={volume} onVolume={setVolume} name="vol" />
     </>
   );
 

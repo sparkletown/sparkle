@@ -19,18 +19,24 @@ import { isEmpty } from "lodash";
 import { IS_BURN } from "secrets";
 
 import {
-  DEFAULT_AMBIENCE_VOLUME,
+  DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
   PLAYA_VENUE_ID,
   STORAGE_KEY_RADIO,
 } from "settings";
 
+import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import { radioStationsSelector } from "utils/selectors";
+import {
+  animateMapEnvironmentSoundSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
+import { useDispatch } from "hooks/useDispatch";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -142,7 +148,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     hasRadioStations(radioStations) &&
     RegExp("soundcloud").test(radioStations[0]);
 
-  const ambientAudio = useMemo(
+  const radioAudio = useMemo(
     () =>
       radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
@@ -150,29 +156,33 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     [hasRadioStations, isSoundCloud, radioStations]
   );
 
-  // TODO: define Ambient Noise, Notifications, Interactions volumes in right way
-  // There is the radio volume control to manage Ambient Noise as an example
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
 
-  const { volume: ambientVolume, setVolume: setAmbientVolume } = useAudioVolume(
-    {
-      audioElement: ambientAudio,
-      isAudioPlaying: isRadioPlaying,
-      storageKey: STORAGE_KEY_RADIO,
-      initialVolume: DEFAULT_AMBIENCE_VOLUME,
-    }
+  const { volume: radioVolume, setVolume: setRadioVolume } = useAudioVolume({
+    audioElement: radioAudio,
+    isAudioPlaying: isRadioPlaying,
+    storageKey: STORAGE_KEY_RADIO,
+    initialVolume: DEFAULT_AMBIENT_VOLUME,
+  });
+
+  const isAmbientAudioPlaying = useSelector(animateMapEnvironmentSoundSelector);
+  const dispatch = useDispatch();
+
+  const onMuteAmbient = useCallback(
+    () => dispatch(setAnimateMapEnvironmentSound(!isAmbientAudioPlaying)),
+    [dispatch, isAmbientAudioPlaying]
   );
 
   // Notifications volume control
   const {
     volume: notificationsVolume,
-    volumeCallback: setNotificationsVolume,
+    // volumeCallback: setNotificationsVolume,
   } = useVolumeControl();
 
   // Interactions volume control
   const {
     volume: interactionsVolume,
-    volumeCallback: setInteractionsVolume,
+    // volumeCallback: setInteractionsVolume,
   } = useVolumeControl();
 
   const radioFirstPlayStateLoaded = useRef(false);
@@ -318,8 +328,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                         <Popover.Content>
                           <RadioModal
                             {...{
-                              volume: ambientVolume,
-                              setVolume: setAmbientVolume,
+                              volume: radioVolume,
+                              setVolume: setRadioVolume,
                               title: currentVenue?.radioTitle,
                             }}
                             onEnableHandler={handleRadioEnable}
@@ -333,7 +343,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   >
                     <button
                       className={`profile-icon navbar-link-radio ${
-                        ambientVolume === 0 && "off"
+                        radioVolume === 0 && "off"
                       }`}
                     />
                   </OverlayTrigger>
@@ -343,7 +353,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <S.RadioTrigger>
                     <button
                       className={`profile-icon navbar-link-radio ${
-                        ambientVolume === 0 && "off"
+                        radioVolume === 0 && "off"
                       }`}
                       onClick={toggleShowRadioPopover}
                     />
@@ -373,23 +383,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                           className="NavBar__volume-control"
                           label="Ambient Noise"
                           name="noise"
-                          volume={ambientVolume}
-                          setVolume={setAmbientVolume}
+                          muted={isAmbientAudioPlaying}
                           withMute
+                          onMute={onMuteAmbient}
                         />
                         <VolumeControl
                           className="NavBar__volume-control NavBar__volume-control--hidden"
                           label="Notifications"
                           name="notifications"
                           volume={notificationsVolume}
-                          setVolume={setNotificationsVolume}
                         />
                         <VolumeControl
                           className="NavBar__volume-control NavBar__volume-control--hidden"
                           label="Interactions"
                           name="interactions"
                           volume={interactionsVolume}
-                          setVolume={setInteractionsVolume}
                         />
                       </Popover.Content>
                     </Popover>
