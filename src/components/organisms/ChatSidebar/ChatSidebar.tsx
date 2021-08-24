@@ -3,6 +3,7 @@ import {
   faChevronLeft,
   faChevronRight,
   faCommentDots,
+  faEnvelope,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -29,7 +30,9 @@ export interface ChatSidebarProps {
 export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const {
     isExpanded,
+    newPrivateMessageRecived,
     toggleSidebar,
+    togglePrivateChatSidebar,
     chatSettings,
     selectVenueChat,
     selectPrivateChat,
@@ -84,6 +87,26 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
             </>
           )}
         </button>
+
+        {!isExpanded && (
+          <button
+            aria-label={isExpanded ? "Hide chat" : "Show chat"}
+            className="chat-sidebar__controller chat-sidebar__private-chat"
+            onClick={togglePrivateChatSidebar}
+          >
+            {isExpanded ? (
+              <FontAwesomeIcon icon={faChevronRight} size="sm" />
+            ) : (
+              <>
+                <FontAwesomeIcon icon={faChevronLeft} size="sm" />
+                <FontAwesomeIcon icon={faEnvelope} size="lg" />
+                {newPrivateMessageRecived > 0 && (
+                  <div className="chat-sidebar__controller--new-message"></div>
+                )}
+              </>
+            )}
+          </button>
+        )}
 
         {isExpanded && (
           <div className="chat-sidebar__tabs" role="tablist">
