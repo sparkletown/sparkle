@@ -31,9 +31,9 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({ children }) => {
 
   useEffectOnce(() => {
     const unsubscribe = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ZOOM,
+      AnimateMapActionTypes.SET_ZOOM_LEVEL,
       (action) => {
-        setZoom((action as setAnimateMapZoomAction).payload.zoom);
+        setZoom((action as setAnimateMapZoomAction).payload.zoomLevel);
       }
     );
     return () => {
