@@ -67,7 +67,7 @@ export class PlayerModel implements ReplicatedUser {
 }
 
 export interface AnimateMapState {
-  zoom: number;
+  zoomLevel: number;
   room: Room | null;
   expectedZoom: number;
   cameraRect: Box;
@@ -78,12 +78,16 @@ export interface AnimateMapState {
   venues: Map<string, ReplicatedVenue>;
   usersQT: QuadTree | null;
   venuesQT: QuadTree | null;
+  lastZoom: number;
   //flags
+  firstEntrance: string | null;
   environmentSound: boolean;
 }
 
+const lastZoom = window.sessionStorage.getItem("AnimateMapState.lastZoom");
+
 const initialAnimateMapState: AnimateMapState = {
-  zoom: 2,
+  zoomLevel: 2,
   room: null,
   expectedZoom: 2,
   cameraRect: new Box(0, 0, 0, 0),
@@ -94,6 +98,9 @@ const initialAnimateMapState: AnimateMapState = {
   venues: new Map<string, ReplicatedVenue>(),
   usersQT: null,
   venuesQT: null,
+  lastZoom: lastZoom ? parseFloat(lastZoom) : 1,
+  //flags
+  firstEntrance: window.sessionStorage.getItem("AnimateMapState.firstEntrance"),
   environmentSound: true,
 };
 
@@ -106,9 +113,27 @@ export const animateMapReducer: AnimateMapReducer = (
   const immutableState = state;
 
   switch (action.type) {
-    case AnimateMapActionTypes.SET_ZOOM:
-      const { zoom } = action.payload;
-      return { ...immutableState, zoom: zoom };
+    case AnimateMapActionTypes.SET_ZOOM_LEVEL:
+      const { zoomLevel } = action.payload;
+      return { ...immutableState, zoomLevel: zoomLevel };
+
+    case AnimateMapActionTypes.SET_LAST_ZOOM:
+      const { lastZoom } = action.payload;
+      console.log("SAVE lastZoom ", lastZoom);
+      window.sessionStorage.setItem(
+        "AnimateMapState.lastZoom",
+        lastZoom.toString()
+      );
+      return { ...immutableState, lastZoom: lastZoom };
+
+    case AnimateMapActionTypes.SET_FIRST_ENTRANCE:
+      const { firstEntrance } = action.payload;
+      console.log("SAVE firstEntrance ", firstEntrance);
+      window.sessionStorage.setItem(
+        "AnimateMapState.firstEntrance",
+        firstEntrance
+      );
+      return { ...immutableState, firstEntrance: firstEntrance };
 
     case AnimateMapActionTypes.SET_EXPECTED_ZOOM:
       const { expectedZoom } = action.payload;
