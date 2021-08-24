@@ -243,25 +243,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   aria-label="Schedule"
                   className={scheduleBtnClasses}
                   onClick={toggleEventSchedule}
-                >
-                  {!isEventScheduleVisible && (
-                    <>
-                      <div className="nav-schedule__text">
-                        <span className="nav-schedule__text-first" />
-                        <span className="nav-schedule__text-second" />
-                      </div>
-                      <div className="nav-schedule__star-one"></div>
-                      <div className="nav-schedule__star-two"></div>
-                      <div className="nav-schedule__star-three"></div>
-                      <div className="nav-schedule__star-four"></div>
-                    </>
-                  )}
-                  <div
-                    className={`nav-schedule__triangle${
-                      isEventScheduleVisible ? "-inverted" : ""
-                    }`}
-                  ></div>
-                </div>
+                ></div>
               ) : (
                 <div>{navbarTitle}</div>
               )}
