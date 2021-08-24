@@ -15,7 +15,7 @@ import { CropVenue } from "../../commands/CropVenue";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles, HALO } from "../../constants/AssetConstants";
+import { avatarCycles, HALO, VENUE_HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
@@ -92,6 +92,7 @@ export default class EntityFactory {
     }
     const entity: Entity = new Entity().add(com);
     this.engine.addEntity(entity);
+
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     return nodelist.head.entity;
@@ -669,43 +670,21 @@ export default class EntityFactory {
         const spriteComponent: SpriteComponent = new SpriteComponent();
         spriteComponent.view = sprite;
 
+        // TODO debuging for
+        if (venue.data.isEnabled && Math.random() < 0.1) {
+          // halo
+          sprite.halo = Sprite.from(VENUE_HALO);
+          sprite.halo.anchor.set(0.5);
+          sprite.addChildAt(sprite.halo, 0);
+          sprite.halo.scale.set(1 / scale);
+        }
+
         entity.add(spriteComponent);
       })
       .catch((err) => {
         // TODO default venue image
         console.log("err", err);
       });
-
-    // new LoadImage(venue.data.image_url)
-    //   .execute()
-    //   .then(
-    //     (comm: LoadImage): Promise<ImageToCanvas> => {
-    //       if (!comm.image) return Promise.reject();
-    //
-    //       // the picture can be very large
-    //       const scale =
-    //         ((config.venueDefaultCollisionRadius * 2) / comm.image.width) * 2;
-    //       return new ImageToCanvas(comm.image).scaleTo(scale).execute();
-    //     }
-    //   )
-    //   .then((comm: ImageToCanvas) => {
-    //     const scale =
-    //       (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
-    //     entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
-    //
-    //     const sprite: Venue = new Venue();
-    //     sprite.venue = Sprite.from(comm.canvas);
-    //     sprite.venue.anchor.set(0.5);
-    //     sprite.addChild(sprite.venue);
-    //     const spriteComponent: SpriteComponent = new SpriteComponent();
-    //     spriteComponent.view = sprite;
-    //
-    //     entity.add(spriteComponent);
-    //   })
-    //   .catch((err) => {
-    //     // TODO default venue image
-    //     console.log("err", err);
-    //   });
 
     return entity;
   }

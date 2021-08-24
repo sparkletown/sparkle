@@ -13,6 +13,9 @@ export class VenueHoverIn implements Animatable {
         venue.venue?.scale.set(value);
       };
     }
+    if (venue.halo) {
+      venue.halo.scale.set(venue.halo.scale.y + venue.halo.scale.y / 9);
+    }
   }
 
   animate(time: number) {

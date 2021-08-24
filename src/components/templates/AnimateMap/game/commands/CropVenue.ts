@@ -39,7 +39,7 @@ export class CropVenue implements Command {
 
         const x = 0;
         const y = 0;
-        const radius = size / 4;
+        const radius = size / 3;
         const width = size;
         const height = size;
 
