@@ -5,6 +5,8 @@ import { Question } from "types/venues";
 
 import { useDynamicInput } from "hooks/useDynamicInput";
 
+import "./QuestionInput.scss";
+
 interface QuestionInputProps {
   fieldName: string;
   hasLink?: boolean;
@@ -68,10 +70,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   };
 
   return (
-    <div
-      className={`input-container ${className}`}
-      style={{ marginBottom: "1.5rem" }}
-    >
+    <div className={`QuestionInput input-container ${className}`}>
       {title && <h4 className="italic input-header">{title}</h4>}
 
       {indexes.map((i) => renderFieldset(i))}

@@ -480,9 +480,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderAttendeesTitleInput = () => (
-    <div className="input-container DetailsForm__hidden-component">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Title of your venues attendees</h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         For example: guests, attendees, partygoers.
       </div>
       <input
@@ -500,9 +500,11 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderChatTitleInput = () => (
-    <div className="input-container DetailsForm__hidden-component">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Your venue type label</h4>
-      <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
+      <div className="DetailsForm__attendees-title">
+        For example: Party, Event, Meeting
+      </div>
       <input
         type="text"
         disabled={disable}
@@ -520,7 +522,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   const renderUrlInput = () => (
     <div className="input-container">
       <h4 className="italic input-header">URL</h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         Please post a URL to, for example, a Zoom room, Twitch stream, other
         Universe, or any interesting thing out there on the open web.
       </div>
@@ -561,7 +563,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
-    <div className="toggle-room DetailsForm__hidden-component">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show Schedule</h4>
       <Toggler
         name="showSchedule"
@@ -573,7 +575,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
-    <div className="toggle-room DetailsForm__hidden-component">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show badges</h4>
       <Toggler name="showBadges" forwardedRef={register} />
     </div>
@@ -581,7 +583,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
-    <div className="toggle-room DetailsForm__hidden-component">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Show Rangers support</h4>
       <Toggler name="showRangers" forwardedRef={register} />
     </div>
@@ -616,12 +618,12 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderParentIdInput = () => (
-    <div className="input-container DetailsForm__hidden-component">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">
         Enter the parent venue ID, for the &quot;back&quot; button to go to, and
         for sharing events in the schedule
       </h4>
-      <div style={{ fontSize: "16px" }}>
+      <div className="DetailsForm__attendees-title">
         The nav bar can show a &quot;back&quot; button if you enter an ID here.
         Clicking &quot;back&quot; will return the user to the venue whose ID you
         enter. Additionally, the events you add here will be shown to users
@@ -649,10 +651,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderRoomAppearanceSelect = () => (
     <>
-      <h4 className="italic input-header DetailsForm__hidden-component">
+      <h4 className="italic input-header DetailsForm--hidden">
         Choose how you&apos;d like your rooms to appear on the map
       </h4>
-      <div className="input-container DetailsForm__hidden-component">
+      <div className="input-container DetailsForm--hidden">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
@@ -688,14 +690,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
-    <div className="toggle-room DetailsForm__hidden-component">
+    <div className="toggle-room DetailsForm--hidden">
       <h4 className="italic input-header">Enable venue radio</h4>
       <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 
   const renderRadioStationInput = () => (
-    <div className="input-container DetailsForm__hidden-component">
+    <div className="input-container DetailsForm--hidden">
       <h4 className="italic input-header">Radio station stream URL:</h4>
       <input
         type="text"
@@ -755,7 +757,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const updateStatusColor = (color: string, index: number) => {
     const statuses = [...userStatuses];
-    statuses[index] = { color, status: statuses[index].status };
+    statuses[index] = { ...statuses[index], color };
     setUserStatuses(statuses);
   };
 
@@ -782,7 +784,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
     }
 
     statuses[index] = {
-      color: statuses[index].color,
+      ...statuses[index],
       status: event.currentTarget.value,
     };
     setUserStatuses(statuses);
@@ -830,7 +832,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderMapBackgroundInput(templateID)}
 
         <QuestionInput
-          className="DetailsForm__hidden-component"
+          className="DetailsForm--hidden"
           title="Code of conduct questions"
           fieldName="code_of_conduct_questions"
           register={register}
@@ -838,7 +840,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           editing={state.detailsPage?.venue.code_of_conduct_questions}
         />
         <QuestionInput
-          className="DetailsForm__hidden-component"
+          className="DetailsForm--hidden"
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
@@ -846,7 +848,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         />
 
         <EntranceInput
-          className="DetailsForm__hidden-component"
+          className="DetailsForm--hidden"
           fieldName="entrance"
           register={register}
           editing={state.detailsPage?.venue.entrance}

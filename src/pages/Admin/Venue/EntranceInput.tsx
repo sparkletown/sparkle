@@ -5,6 +5,8 @@ import { EntranceStepConfig } from "types/EntranceStep";
 
 import { useDynamicInput } from "hooks/useDynamicInput";
 
+import "./EntranceInput.scss";
+
 interface EntranceButtonInputProps {
   fieldName: string;
   register: (Ref: unknown, RegisterOptions?: unknown) => void;
@@ -130,10 +132,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
   };
 
   return (
-    <div
-      className={`input-container ${className}`}
-      style={{ marginBottom: "1.5rem" }}
-    >
+    <div className={`EntranceInput input-container ${className}`}>
       {showTitle && <h4 className="italic input-header">Venue entrance</h4>}
       {indexes.map((i) => renderEntranceInput(i))}
 
