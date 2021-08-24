@@ -9,7 +9,7 @@ import {
 
 import { AnimateMapVenue } from "types/venues";
 
-import { useDispatch } from "../../../../../hooks/useDispatch";
+import { useDispatch } from "hooks/useDispatch";
 
 import { FirebarrelWidget } from "./FirebarrelWidget";
 
@@ -52,7 +52,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
       roomName={selectedFirebarrel}
       venueName={venue.name}
       setUserList={() => {}}
-      onExit={() => onExit()}
+      onExit={onExit}
       isAudioEffectDisabled={false}
     />
   ) : (

@@ -333,7 +333,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
       <div className="firebarrel-room__participants">
         <div
           className="firebarrel-room__exit-container"
-          onClick={() => onExitClick()}
+          onClick={onExitClick}
         >
           <FontAwesomeIcon size="lg" icon={faDoorOpen} />
         </div>
