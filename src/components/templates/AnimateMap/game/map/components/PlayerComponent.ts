@@ -1,7 +1,20 @@
-import { EntityStateMachine } from "@ash.ts/ash";
-
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
+import { FSMBase } from "../finalStateMachines/FSMBase";
+
 export class PlayerComponent {
-  constructor(public data: ReplicatedUser, public fsm: EntityStateMachine) {}
+  get WALKING(): string {
+    return "walking";
+  }
+  get CYCLING(): string {
+    return "cycling";
+  }
+  get FLYING(): string {
+    return "flying";
+  }
+  get IMMOBILIZED(): string {
+    return "immobilized";
+  }
+
+  constructor(public data: ReplicatedUser, public fsm: FSMBase) {}
 }
