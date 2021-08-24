@@ -53,24 +53,28 @@ export const UserReactions: React.FC<UserReactionsProps> = ({
     `UserReactions--reaction-${reactionPosition}`
   );
 
+  const renderedEmojis = useMemo(
+    () =>
+      userUniqueEmojiReactions.map((emojiReaction) => (
+        <DisplayEmojiReaction
+          key={emojiReaction.type}
+          emojiReaction={emojiReaction}
+          isMuted={isMuted}
+        />
+      )),
+    [userUniqueEmojiReactions, isMuted]
+  );
+
   const hasReactions = userUniqueEmojiReactions.length > 0 || userShoutout;
+
+  if (!hasReactions) return <></>;
   return (
-    <>
-      {hasReactions && (
-        <div className={containerClasses}>
-          {userUniqueEmojiReactions.map((emojiReaction) => (
-            <DisplayEmojiReaction
-              key={emojiReaction.type}
-              emojiReaction={emojiReaction}
-              isMuted={isMuted}
-            />
-          ))}
-          {userShoutout && (
-            <div className="UserReactions__shout">{userShoutout.text}</div>
-          )}
-        </div>
+    <div className={containerClasses}>
+      {renderedEmojis}
+      {userShoutout && (
+        <div className="UserReactions__shout">{userShoutout.text}</div>
       )}
-    </>
+    </div>
   );
 };
 
