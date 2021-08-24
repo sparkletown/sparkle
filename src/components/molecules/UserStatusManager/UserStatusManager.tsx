@@ -21,7 +21,7 @@ export interface UserStatusManagerProps {
     value: React.FormEvent<HTMLInputElement>,
     index: number
   ) => void;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
@@ -32,7 +32,7 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
   onAdd,
   onPickColor,
   onChangeInput,
-  style,
+  className,
 }) => {
   const deleteStatus = useCallback(
     (index: number) => {
@@ -70,7 +70,7 @@ export const UserStatusManager: React.FC<UserStatusManagerProps> = ({
   );
 
   return (
-    <div className="UserStatusManager" style={style}>
+    <div className={`UserStatusManager ${className}`}>
       <div className="UserStatusManager__checkbox">
         <Checkbox checked={checked} onChange={onCheck} />
         <div>

@@ -72,6 +72,7 @@ import { WizardPage } from "./VenueWizard";
 // @debt refactor any needed styles out of this file (eg. toggles, etc) and into DetailsForm.scss/similar, then remove this import
 import "../Admin.scss";
 import "./Venue.scss";
+import "./DetailsForm.scss";
 
 export type FormValues = Partial<Yup.InferType<typeof validationSchema>>; // bad typing. If not partial, react-hook-forms should force defaultValues to conform to FormInputs but it doesn't
 
@@ -352,9 +353,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   formError,
   setFormError,
 }) => {
-  // Styles to hide some fields from Details Form
-  const hiddenStyles = { display: "none" };
-
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)
@@ -482,7 +480,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderAttendeesTitleInput = () => (
-    <div className="input-container" style={hiddenStyles}>
+    <div className="input-container DetailsForm__hidden-component">
       <h4 className="italic input-header">Title of your venues attendees</h4>
       <div style={{ fontSize: "16px" }}>
         For example: guests, attendees, partygoers.
@@ -502,7 +500,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderChatTitleInput = () => (
-    <div className="input-container" style={hiddenStyles}>
+    <div className="input-container DetailsForm__hidden-component">
       <h4 className="italic input-header">Your venue type label</h4>
       <div style={{ fontSize: "16px" }}>For example: Party, Event, Meeting</div>
       <input
@@ -563,7 +561,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowScheduleToggle = () => (
-    <div className="toggle-room" style={hiddenStyles}>
+    <div className="toggle-room DetailsForm__hidden-component">
       <h4 className="italic input-header">Show Schedule</h4>
       <Toggler
         name="showSchedule"
@@ -575,7 +573,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowBadgesToggle = () => (
-    <div className="toggle-room" style={hiddenStyles}>
+    <div className="toggle-room DetailsForm__hidden-component">
       <h4 className="italic input-header">Show badges</h4>
       <Toggler name="showBadges" forwardedRef={register} />
     </div>
@@ -583,7 +581,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderShowRangersToggle = () => (
-    <div className="toggle-room" style={hiddenStyles}>
+    <div className="toggle-room DetailsForm__hidden-component">
       <h4 className="italic input-header">Show Rangers support</h4>
       <Toggler name="showRangers" forwardedRef={register} />
     </div>
@@ -618,7 +616,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderParentIdInput = () => (
-    <div className="input-container" style={hiddenStyles}>
+    <div className="input-container DetailsForm__hidden-component">
       <h4 className="italic input-header">
         Enter the parent venue ID, for the &quot;back&quot; button to go to, and
         for sharing events in the schedule
@@ -651,10 +649,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   const renderRoomAppearanceSelect = () => (
     <>
-      <h4 className="italic input-header" style={hiddenStyles}>
+      <h4 className="italic input-header DetailsForm__hidden-component">
         Choose how you&apos;d like your rooms to appear on the map
       </h4>
-      <div className="input-container" style={hiddenStyles}>
+      <div className="input-container DetailsForm__hidden-component">
         <Form.Control as="select" name="roomVisibility" ref={register} custom>
           <option value="hover">Hover</option>
           <option value="count">Count</option>
@@ -690,14 +688,14 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
   // @debt pass the header into Toggler's 'label' prop instead of being external like this
   const renderRadioToggle = () => (
-    <div className="toggle-room" style={hiddenStyles}>
+    <div className="toggle-room DetailsForm__hidden-component">
       <h4 className="italic input-header">Enable venue radio</h4>
       <Toggler name="showRadio" forwardedRef={register} />
     </div>
   );
 
   const renderRadioStationInput = () => (
-    <div className="input-container" style={hiddenStyles}>
+    <div className="input-container DetailsForm__hidden-component">
       <h4 className="italic input-header">Radio station stream URL:</h4>
       <input
         type="text"
@@ -832,7 +830,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           renderMapBackgroundInput(templateID)}
 
         <QuestionInput
-          style={hiddenStyles}
+          className="DetailsForm__hidden-component"
           title="Code of conduct questions"
           fieldName="code_of_conduct_questions"
           register={register}
@@ -840,7 +838,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
           editing={state.detailsPage?.venue.code_of_conduct_questions}
         />
         <QuestionInput
-          style={hiddenStyles}
+          className="DetailsForm__hidden-component"
           title="Profile questions"
           fieldName="profile_questions"
           register={register}
@@ -848,7 +846,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         />
 
         <EntranceInput
-          style={hiddenStyles}
+          className="DetailsForm__hidden-component"
           fieldName="entrance"
           register={register}
           editing={state.detailsPage?.venue.entrance}
@@ -863,7 +861,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderRadioToggle()}
 
         <UserStatusManager
-          style={hiddenStyles}
+          className={"DetailsForm__hidden-component"}
           venueId={venueId}
           checked={hasUserStatuses}
           userStatuses={userStatuses}

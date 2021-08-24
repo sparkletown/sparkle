@@ -13,7 +13,7 @@ interface QuestionInputProps {
   editing?: Question[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   errors?: any;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 const QuestionInput: React.FC<QuestionInputProps> = ({
@@ -23,7 +23,7 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
   title,
   editing,
   errors,
-  style,
+  className,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
@@ -69,8 +69,8 @@ const QuestionInput: React.FC<QuestionInputProps> = ({
 
   return (
     <div
-      className="input-container"
-      style={{ marginBottom: "1.5rem", ...style }}
+      className={`input-container ${className}`}
+      style={{ marginBottom: "1.5rem" }}
     >
       {title && <h4 className="italic input-header">{title}</h4>}
 

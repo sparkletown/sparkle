@@ -78,7 +78,7 @@ interface EntranceInputProps {
   showTitle?: boolean;
   editing?: EntranceStepConfig[];
   errors?: Record<number, EntranceErrorTypes>;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 const EntranceInput: React.FC<EntranceInputProps> = ({
@@ -87,7 +87,7 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
   showTitle = true,
   editing,
   errors,
-  style,
+  className,
 }) => {
   const { indexes, add, remove, clear } = useDynamicInput(editing?.length);
 
@@ -131,8 +131,8 @@ const EntranceInput: React.FC<EntranceInputProps> = ({
 
   return (
     <div
-      className="input-container"
-      style={{ marginBottom: "1.5rem", ...style }}
+      className={`input-container ${className}`}
+      style={{ marginBottom: "1.5rem" }}
     >
       {showTitle && <h4 className="italic input-header">Venue entrance</h4>}
       {indexes.map((i) => renderEntranceInput(i))}
