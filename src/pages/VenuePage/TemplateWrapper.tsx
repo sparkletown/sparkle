@@ -64,6 +64,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
+      // NOTE: Remove the back button, because we don't need it in AnimateMap
+      hasBackButton = false;
       break;
 
     case VenueTemplate.artpiece:
