@@ -26,27 +26,31 @@ export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
   handleRadioEnable,
   volume,
   setVolume,
-}) => (
-  <>
-    <div className="RadioPopoverContent--title">{radioTitle}</div>
-    {showNormalRadio && (
-      <RadioModal
-        {...{
-          volume,
-          setVolume,
-        }}
-        onEnableHandler={handleRadioEnable}
-        isRadioPlaying={isRadioPlaying}
-      />
-    )}
-    {showSoundCloudRadio && (
-      <iframe
-        title="venueRadio"
-        id="sound-cloud-player"
-        scrolling="no"
-        allow="autoplay"
-        src={getRadioStationUrl(radioStation)}
-      />
-    )}
-  </>
-);
+}) => {
+  const radioUrl = radioStation ? getRadioStationUrl(radioStation) : "";
+
+  return (
+    <>
+      <div className="RadioPopoverContent_title">{radioTitle}</div>
+      {showNormalRadio && (
+        <RadioModal
+          {...{
+            volume,
+            setVolume,
+          }}
+          onEnableHandler={handleRadioEnable}
+          isRadioPlaying={isRadioPlaying}
+        />
+      )}
+      {showSoundCloudRadio && (
+        <iframe
+          title="venueRadio"
+          id="sound-cloud-player"
+          scrolling="no"
+          allow="autoplay"
+          src={radioUrl}
+        />
+      )}
+    </>
+  );
+};

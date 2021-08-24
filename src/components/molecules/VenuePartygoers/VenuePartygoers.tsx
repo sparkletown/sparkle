@@ -28,7 +28,8 @@ export const VenuePartygoers: React.FC<VenuePartygoersProps> = ({
 
   return (
     <div className="VenuePartygoers__container">
-      <span className="VenuePartygoers__number">{userCount}</span> burners here
+      <span className="VenuePartygoers__users-count">{userCount}</span> burners
+      here
     </div>
   );
 };

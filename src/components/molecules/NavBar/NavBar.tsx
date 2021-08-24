@@ -233,7 +233,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     (currentVenue?.showRadio && isSoundCloud) ?? false;
 
   const showRadio = showNormalRadio || showSoundCloudRadio;
-  const volumeIcon = !volume ? faVolumeMute : faVolumeUp;
+  const volumeIcon = volume ? faVolumeUp : faVolumeMute;
 
   return (
     <>
@@ -244,7 +244,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
                   icon={faCaretLeft}
-                  className="NavBar__home--icon"
+                  className="NavBar__home-icon"
                   onClick={navigateToHomepage}
                 />
               )}
@@ -306,7 +306,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     placement="bottom-end"
                     overlay={
                       <Popover id="radio-popover">
-                        <Popover.Content className="NavBar__radio--container">
+                        <Popover.Content className="NavBar__radio-container">
                           <RadioPopoverContent
                             radioTitle={
                               currentVenue?.radioTitle ?? "Playa Radio"
@@ -325,9 +325,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button className="NavBar__menu--link">
+                    <ButtonNG className="NavBar__menu-link" iconOnly>
                       <img src={RadioIcon} alt="radio icon" />
-                    </button>
+                    </ButtonNG>
                   </OverlayTrigger>
                 )}
 
@@ -336,9 +336,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     className={volumeControlClassname}
                     onClick={toggleMute}
                     iconOnly
-                  >
-                    <FontAwesomeIcon icon={volumeIcon} />
-                  </ButtonNG>
+                    iconName={volumeIcon}
+                    iconSize="1x"
+                  />
                 )}
                 <div
                   className="navbar-links-user-avatar"
@@ -357,9 +357,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   overlay={MenuPopover}
                   rootClose={true}
                 >
-                  <ButtonNG className="NavBar__menu--link" iconOnly>
-                    <FontAwesomeIcon icon={faBars} />
-                  </ButtonNG>
+                  <ButtonNG
+                    className="NavBar__menu--link"
+                    iconOnly
+                    iconName={faBars}
+                  />
                 </OverlayTrigger>
               </div>
             )}

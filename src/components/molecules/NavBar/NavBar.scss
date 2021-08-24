@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
-$menu-item-size: 32px;
-$logo-size: 43px;
+$menu-item-size: $spacing--xxl;
+$logo-size: $spacing--xxl + $spacing--md;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -192,7 +192,7 @@ $logo-size: 43px;
 }
 
 .NavBar {
-  &__home--icon {
+  &__home-icon {
     cursor: pointer;
     font-size: 24px;
     color: opaque-white(0.5);
@@ -217,7 +217,7 @@ $logo-size: 43px;
   }
 
   &__radio {
-    &--container {
+    &-container {
       padding: $spacing--lg $spacing--md;
 
       & > iframe {
@@ -244,7 +244,7 @@ $logo-size: 43px;
       box-shadow: 0 0 0 2px $white;
     }
 
-    &--link {
+    &-link {
       background: opaque-white(0.1);
       color: $white;
       opacity: 0.8;

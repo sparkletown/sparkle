@@ -8,8 +8,8 @@
 
   &__search-input {
     text-align: left;
-    font-size: 12px;
-    height: 32px;
+    font-size: $font-size--sm;
+    height: $spacing--xxl;
   }
 
   &__clear-search {
