@@ -93,7 +93,7 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   );
 
   const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
-    if (isSaving || !user) return;
+    if (!user) return;
 
     // Why is this using the ref and not mapRooms state?
     const updatedRooms = Object.values(roomRef.current);
