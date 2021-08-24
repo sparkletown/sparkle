@@ -50,6 +50,14 @@ export class FirebarrelSystem extends System {
         }
       }
     );
+
+    for (let node = this.barrels?.head; node; node = node.next) {
+      this.barrelNodeAdded(node);
+    }
+
+    // setTimeout(() => {
+    //   this.updateDebug();
+    // }, 3000);
   }
 
   removeFromEngine(engine: Engine) {
@@ -63,9 +71,48 @@ export class FirebarrelSystem extends System {
     this.barrels = undefined;
   }
 
-  update(time: number) {
-    if (!this.player?.head || !this.barrels?.head) {
+  update(time: number) {}
+
+  private updateDebug(): void {
+    for (
+      let nodeBarrel = this.barrels?.head;
+      nodeBarrel;
+      nodeBarrel = nodeBarrel.next
+    ) {
+      let count = 0;
+      for (let nodeBot = this.bots?.head; nodeBot; nodeBot = nodeBot.next) {
+        if (nodeBot.bot.fsm.currentStateName !== nodeBot.bot.IMMOBILIZED) {
+          count++;
+          nodeBot.bot.fsm.changeState(nodeBot.bot.IMMOBILIZED);
+          nodeBarrel.barrel.data.connectedUsers.push(nodeBot.bot.data);
+          if (count > 5) {
+            return;
+          }
+        }
+        nodeBarrel.entity.add(nodeBarrel.barrel);
+      }
+    }
+  }
+
+  private barrelNodeDraw(node: BarrelNode): void {
+    console.log("barrelNodeDraw", node.barrel.data.connectedUsers.length);
+    // to place bots around barrel
+    if (node.barrel.data.connectedUsers.length === 0) {
       return;
+    }
+
+    const radius = 50;
+    const angle = (2 * Math.PI) / node.barrel.data.connectedUsers.length;
+    for (let i = 0; i < node.barrel.data.connectedUsers.length; i++) {
+      const user = node.barrel.data.connectedUsers[i];
+      const botNode = this.getBot(user);
+      if (botNode) {
+        botNode.position.x = Math.cos(angle) * radius;
+        botNode.position.y = Math.sin(angle) * radius;
+      } else if (this.player?.head?.player.data.data.id === user.data.id) {
+        this.player.head.position.x = Math.cos(angle) * radius;
+        this.player.head.position.y = Math.sin(angle) * radius;
+      }
     }
   }
 
@@ -73,20 +120,26 @@ export class FirebarrelSystem extends System {
     node.barrel.data.connectedUsers.forEach((user) => {
       const botNode = this.getBot(user);
       if (botNode) {
-        botNode.bot.fsm.changeState("immobilized");
+        botNode.bot.fsm.changeState(botNode.bot.IMMOBILIZED);
       } else if (this.player?.head?.player.data.data.id === user.data.id) {
-        this.player?.head.player.fsm.changeState("immobilized");
+        this.player?.head.player.fsm.changeState(
+          this.player?.head.player.IMMOBILIZED
+        );
       }
     });
+
+    this.barrelNodeDraw(node);
   };
 
   private barrelNodeRemoved = (node: BarrelNode): void => {
     node.barrel.data.connectedUsers.forEach((user) => {
       const botNode = this.getBot(user);
       if (botNode) {
-        botNode.bot.fsm.changeState("idle");
+        botNode.bot.fsm.changeState(botNode.bot.IDLE);
       } else if (this.player?.head?.player.data.data.id === user.data.id) {
-        this.player?.head.player.fsm.changeState("immobilized");
+        this.player?.head.player.fsm.changeState(
+          this.player?.head.player.FLYING
+        );
       }
     });
   };
