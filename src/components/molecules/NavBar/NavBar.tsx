@@ -160,8 +160,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+
   const handleMute = useCallback(
-    (volume: number) => (volume !== 0 ? 0 : volume),
+    (volume: number) => (volume !== 0 ? 0 : 100),
     []
   );
   const toggleMute = useCallback(() => setVolume(handleMute), [
