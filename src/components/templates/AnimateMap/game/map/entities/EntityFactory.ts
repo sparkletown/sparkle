@@ -11,6 +11,7 @@ import {
 import { Point } from "types/utility";
 
 import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { CropVenue } from "../../commands/CropVenue";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
@@ -654,19 +655,9 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(venue.data.image_url)
+    new CropVenue(venue.data.image_url)
       .execute()
-      .then(
-        (comm: LoadImage): Promise<ImageToCanvas> => {
-          if (!comm.image) return Promise.reject();
-
-          // the picture can be very large
-          const scale =
-            ((config.venueDefaultCollisionRadius * 2) / comm.image.width) * 2;
-          return new ImageToCanvas(comm.image).scaleTo(scale).execute();
-        }
-      )
-      .then((comm: ImageToCanvas) => {
+      .then((comm: CropVenue) => {
         const scale =
           (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
         entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
@@ -684,6 +675,37 @@ export default class EntityFactory {
         // TODO default venue image
         console.log("err", err);
       });
+
+    // new LoadImage(venue.data.image_url)
+    //   .execute()
+    //   .then(
+    //     (comm: LoadImage): Promise<ImageToCanvas> => {
+    //       if (!comm.image) return Promise.reject();
+    //
+    //       // the picture can be very large
+    //       const scale =
+    //         ((config.venueDefaultCollisionRadius * 2) / comm.image.width) * 2;
+    //       return new ImageToCanvas(comm.image).scaleTo(scale).execute();
+    //     }
+    //   )
+    //   .then((comm: ImageToCanvas) => {
+    //     const scale =
+    //       (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
+    //     entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
+    //
+    //     const sprite: Venue = new Venue();
+    //     sprite.venue = Sprite.from(comm.canvas);
+    //     sprite.venue.anchor.set(0.5);
+    //     sprite.addChild(sprite.venue);
+    //     const spriteComponent: SpriteComponent = new SpriteComponent();
+    //     spriteComponent.view = sprite;
+    //
+    //     entity.add(spriteComponent);
+    //   })
+    //   .catch((err) => {
+    //     // TODO default venue image
+    //     console.log("err", err);
+    //   });
 
     return entity;
   }
