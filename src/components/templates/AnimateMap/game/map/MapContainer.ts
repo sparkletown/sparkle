@@ -7,6 +7,7 @@ import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
+import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -66,12 +67,19 @@ export class MapContainer extends Container {
 
     this._app = app;
 
-    const clbck = (player: ReplicatedUser) => {
-      console.log("CREATE PLAYER");
-      this._player = player;
-      EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
-    };
-    EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
+    if (
+      playerModel.x !== 0 &&
+      playerModel.y !== 0 &&
+      playerModel.data.id !== ""
+    ) {
+      this._player = playerModel;
+    } else {
+      const clbck = (player: ReplicatedUser) => {
+        this._player = player;
+        EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
+      };
+      EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
+    }
   }
 
   public async start(): Promise<void> {

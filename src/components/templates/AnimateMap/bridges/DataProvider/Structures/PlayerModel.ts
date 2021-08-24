@@ -10,8 +10,8 @@ class PlayerModel implements ReplicatedUser {
     accessories: null,
     cycle: null,
   };
-  x: number = 4960;
-  y: number = 4960;
+  x: number = 0;
+  y: number = 0;
 }
 
 const playerModel = new PlayerModel();
