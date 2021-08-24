@@ -26,7 +26,7 @@ initFirebaseAdminApp(projectId, {
     : undefined,
 });
 
-const getEnvVenueOwners = async () => {
+(async () => {
   const { users, pageToken } = await admin.auth().listUsers(1000);
 
   const allUsers = [...users];
@@ -66,6 +66,4 @@ const getEnvVenueOwners = async () => {
   });
 
   process.exit(0);
-};
-
-export default getEnvVenueOwners;
+})();
