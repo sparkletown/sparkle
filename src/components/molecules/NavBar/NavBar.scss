@@ -1,7 +1,8 @@
 @import "scss/constants.scss";
 
 $menu-item-size: 32px;
-$volume-popover-width: 30em;
+$volume-popover-width-with-sliders: 30em;
+$volume-popover-width-without-sliders: 15em;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -256,16 +257,27 @@ $volume-popover-width: 30em;
   }
 }
 
-#volume-popover {
-  height: unset;
-  max-width: unset;
-  width: $volume-popover-width;
-  transform: translateX(-0.5 * $volume-popover-width);
-  padding: $spacing--lg;
-  background-color: $card-background;
-}
-
 .NavBar {
+  &__volume-control--hidden {
+    display: none;
+  }
+
+  &__volume-popover {
+    height: unset;
+    max-width: unset;
+    padding: $spacing--lg;
+    background-color: $card-background;
+
+    &--with-sliders {
+      width: $volume-popover-width-with-sliders;
+      //transform: translateX(-0.5 * $volume-popover-width-with-sliders);
+    }
+
+    &--without-sliders {
+      width: $volume-popover-width-without-sliders;
+    }
+  }
+
   &__home--icon {
     cursor: pointer;
     font-size: 24px;

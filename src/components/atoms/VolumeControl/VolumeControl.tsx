@@ -1,7 +1,10 @@
 import React, { useCallback } from "react";
+import { faVolumeMute, faVolumeUp } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 
 import { MAX_AUDIO_VOLUME, MIN_AUDIO_VOLUME } from "settings";
+
+import { ButtonNG } from "components/atoms/ButtonNG";
 
 import "./VolumeControl.scss";
 
@@ -11,6 +14,8 @@ export interface VolumeControlProps {
   name: string;
   setVolume: Function;
   volume: number;
+  withMute?: boolean;
+  withSlider?: boolean;
 }
 
 export const VolumeControl: React.FC<VolumeControlProps> = ({
@@ -19,6 +24,8 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   name,
   setVolume,
   volume,
+  withMute = false,
+  withSlider = false,
 }) => {
   const onChange = useCallback(
     (ev) => {
@@ -37,16 +44,26 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
   return (
     <div className={parentClasses}>
       <div className="VolumeControl__label">{label}</div>
-      <input
-        className="VolumeControl__input"
-        type="range"
-        id={name}
-        name={name}
-        min={MIN_AUDIO_VOLUME}
-        max={MAX_AUDIO_VOLUME}
-        onChange={onChange}
-        value={volume}
-      />
+      {withMute && (
+        <ButtonNG
+          className="VolumeControl__mute"
+          iconOnly
+          iconName={volume ? faVolumeUp : faVolumeMute}
+          iconSize="1x"
+        />
+      )}
+      {withSlider && (
+        <input
+          className="VolumeControl__slide"
+          type="range"
+          id={name}
+          name={name}
+          min={MIN_AUDIO_VOLUME}
+          max={MAX_AUDIO_VOLUME}
+          onChange={onChange}
+          value={volume}
+        />
+      )}
     </div>
   );
 };

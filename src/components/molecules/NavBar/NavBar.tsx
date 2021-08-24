@@ -364,7 +364,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   trigger="click"
                   placement="bottom-end"
                   overlay={
-                    <Popover id="volume-popover">
+                    <Popover
+                      id="volume-popover"
+                      className="NavBar__volume-popover NavBar__volume-popover--without-sliders"
+                    >
                       <Popover.Content>
                         <VolumeControl
                           className="NavBar__volume-control"
@@ -372,16 +375,17 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                           name="noise"
                           volume={ambientVolume}
                           setVolume={setAmbientVolume}
+                          withMute
                         />
                         <VolumeControl
-                          className="NavBar__volume-control"
+                          className="NavBar__volume-control NavBar__volume-control--hidden"
                           label="Notifications"
                           name="notifications"
                           volume={notificationsVolume}
                           setVolume={setNotificationsVolume}
                         />
                         <VolumeControl
-                          className="NavBar__volume-control"
+                          className="NavBar__volume-control NavBar__volume-control--hidden"
                           label="Interactions"
                           name="interactions"
                           volume={interactionsVolume}

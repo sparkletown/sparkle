@@ -1,7 +1,8 @@
 @import "scss/constants";
 
 $label-width: 35%;
-$input-width: 100% - $label-width;
+$mute-size: 32px;
+$input-width: calc(100% - #{$label-width} - #{$mute-size} - #{$spacing--md});
 
 .VolumeControl {
   margin: $spacing--xs;
@@ -12,7 +13,11 @@ $input-width: 100% - $label-width;
 
   color: opaque-white(0.5);
 
-  &__input {
+  &__mute {
+    @include square-size($mute-size);
+  }
+
+  &__slide {
     padding: 0;
     max-width: $input-width;
     color: opaque-white(0.5);
