@@ -1,0 +1,1 @@
+export { AdminForbidden } from "./AdminForbidden";
