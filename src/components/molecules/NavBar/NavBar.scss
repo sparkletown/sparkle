@@ -2,6 +2,7 @@
 
 $nav-container-width: 96px;
 $nav-container-height: 66px;
+$nav-btn-hover-background: #8e5ffc;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -168,10 +169,20 @@ $nav-container-height: 66px;
   cursor: pointer;
   background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
 
+  &:hover {
+    background-color: $nav-btn-hover-background;
+    box-shadow: 0 5px 18px rgb(124 70 251 / 60%);
+  }
+
   &-clicked {
     margin-left: $sidebar-schedule-width;
     width: 30px;
     background: url(/assets/icons/nav-schedule-whatson-clicked.png);
+
+    &:hover {
+      background-color: transparent;
+      box-shadow: none;
+    }
   }
 
   &-triggered {
@@ -179,6 +190,11 @@ $nav-container-height: 66px;
     color: $white;
     background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
       $schedule-opened-grey;
+
+    &:hover {
+      background-color: $schedule-opened-grey;
+      box-shadow: none;
+    }
   }
 }
 
