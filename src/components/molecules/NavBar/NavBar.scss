@@ -169,7 +169,7 @@ $nav-container-height: 66px;
   background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
 
   &-clicked {
-    margin-left: 40%;
+    margin-left: $sidebar-schedule-width;
     width: 30px;
     background: url(/assets/icons/nav-schedule-whatson-clicked.png);
   }
