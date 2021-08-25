@@ -22,7 +22,7 @@ import Step4 from "pages/Account/Step4";
 import Step5 from "pages/Account/Step5";
 import Step6a from "pages/Account/Step6a";
 import Step6b from "pages/Account/Step6b";
-import Admin from "pages/Admin/Admin";
+import { Admin } from "pages/Admin/Admin";
 import Admin_v2 from "pages/Admin/Admin_v2";
 import { RoomsForm } from "pages/Admin/Venue/Rooms/RoomsForm";
 import { VenueAdminPage } from "pages/Admin/Venue/VenueAdminPage";
