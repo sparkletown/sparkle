@@ -76,6 +76,7 @@ export const Map: React.FC<MapProps> = ({
   );
 
   useEffect(() => {
+    //@debt the image is already loaded and checked inside useValidImage
     const img = new Image();
     img.src = mapBackground ?? DEFAULT_MAP_BACKGROUND;
     img.onload = () => {
