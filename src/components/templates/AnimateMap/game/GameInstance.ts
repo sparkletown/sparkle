@@ -11,6 +11,7 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
+  setAnimateMapFirstEntrance,
   setAnimateMapUsers,
 } from "store/actions/AnimateMap";
 import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
@@ -121,6 +122,7 @@ export class GameInstance {
     if (this.getState().firstEntrance === "false") {
       return await this._play();
     } else {
+      this.getConfig().firstEntrance = true;
       return new TimeoutCommand(1000)
         .execute()
         .then(() => {
@@ -128,10 +130,7 @@ export class GameInstance {
         })
         .then(async (command: WaitClickForHeroCreation) => {
           await this._play(command.clickPoint);
-          window.sessionStorage.setItem(
-            "AnimateMapState.sessionStorage",
-            "false"
-          ); //TODO: add complex save system with types support
+          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
         });
     }
   }

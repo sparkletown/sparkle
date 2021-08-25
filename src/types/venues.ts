@@ -191,6 +191,8 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface GenericVenue extends BaseVenue {

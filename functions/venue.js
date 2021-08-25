@@ -221,6 +221,8 @@ const createVenueData = (data, context) => {
     showUserStatus:
       typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -298,6 +300,8 @@ const createVenueData_v2 = (data, context) => {
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
@@ -409,6 +413,8 @@ const createBaseUpdateVenueData = (data, doc) => {
   if (data.showNametags) {
     updated.showNametags = data.showNametags;
   }
+
+  updated.updatedAt = Date.now();
 
   return updated;
 };
