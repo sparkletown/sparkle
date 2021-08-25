@@ -3,6 +3,8 @@
 $nav-container-width: 96px;
 $nav-container-height: 66px;
 $nav-btn-hover-background: #8e5ffc;
+$nav-schedule-btn-width-clicked: 30px;
+$nav-btn-border-radius: 10px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -159,13 +161,13 @@ $nav-btn-hover-background: #8e5ffc;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  top: 65px;
+  top: $navbar-height;
   left: 0;
   color: $white;
   width: $nav-container-width;
   height: $nav-container-height;
-  border-top-right-radius: 10px;
-  border-bottom-right-radius: 10px;
+  border-top-right-radius: $nav-btn-border-radius;
+  border-bottom-right-radius: $nav-btn-border-radius;
   cursor: pointer;
   background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
   margin-top: $spacing--sm;
@@ -179,7 +181,7 @@ $nav-btn-hover-background: #8e5ffc;
     margin-left: $sidebar-schedule-width;
     transition-property: margin-left;
     transition: 0.15s;
-    width: 30px;
+    width: $nav-schedule-btn-width-clicked;
     background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
       $saturated-black-alt;
 
