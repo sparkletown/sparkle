@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { setAnimateMapRoom } from "store/actions/AnimateMap";
+//import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Room } from "types/rooms";
 
-import { useDispatch } from "hooks/useDispatch";
-
+//import { useDispatch } from "hooks/useDispatch";
 // import { useSelector } from "hooks/useSelector";
 // import {
 // animateMapEventProviderSelector
@@ -101,7 +100,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
   });
 
   // const keyPoll = useSelector(animateMapKeyPollSelector);
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   useEffect(() => {
     const callback = (type: "down" | "up") => {
       if (!state.timeoutFunc) return; //reject
@@ -110,7 +109,8 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
           state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
         if (!state.itemsData[current]) return; //FIXME
         const room = state.itemsData[current].room;
-        dispatch(setAnimateMapRoom(room));
+        window.location.assign(room.url);
+        //dispatch(setAnimateMapRoom(room));
       }
     };
     KeyPoll.on(ENTER, callback);
