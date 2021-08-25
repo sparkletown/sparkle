@@ -83,14 +83,16 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+export const CURRENT_TIME_IN_LOCATION = "playa";
+export const CURRENT_TIMEZONE = "America/Los_Angeles";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
+export const ONE_MINUTE_MS = 60 * 1000;
 // How often to refresh events schedule
-export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const REFETCH_SCHEDULE_MS = 10 * ONE_MINUTE_MS; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
@@ -104,13 +106,16 @@ export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
-export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+export const PLAYA_BG_DAYPART_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh current time line in the schedule
-export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+export const SCHEDULE_CURRENT_TIMELINE_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
-export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+export const EVENT_STATUS_REFRESH_MS = ONE_MINUTE_MS; // 1 min
+
+// How often to refresh playa current time
+export const PLAYA_TIME_REFRESH_MS = ONE_MINUTE_MS / 2;
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_MB = 2;

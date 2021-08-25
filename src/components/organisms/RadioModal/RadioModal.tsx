@@ -6,7 +6,6 @@ import "./RadioModal.scss";
 export interface RadioModalPropsType {
   volume: number;
   setVolume: Function;
-  title?: string;
   onEnableHandler: () => void;
   isRadioPlaying: boolean;
 }
@@ -14,7 +13,6 @@ export interface RadioModalPropsType {
 export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
   volume,
   setVolume,
-  title,
   onEnableHandler,
   isRadioPlaying,
 }) => {
@@ -25,7 +23,6 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
 
   const renderRadioBody = () => (
     <>
-      <div className="title-radio">{title ?? "Radio"}</div>
       <div className="text-radio">
         We recommend turning on the radio as you explore the map!
       </div>

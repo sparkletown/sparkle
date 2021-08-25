@@ -1,6 +1,7 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$menu-item-size: $spacing--lg * 2;
+$logo-size: $spacing--xxl + $spacing--md;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -97,63 +98,11 @@ $border-radius: 28px;
   align-items: center;
 }
 
-.nav-sparkle-logo,
-.nav-sparkle-logo_small {
-  position: relative;
-  margin-right: 12px;
-  &:hover {
-    width: 120px;
-  }
-  &.nav-sparkle-logo_small {
-    display: none;
-  }
-  div {
-    position: relative;
-    display: block;
-    width: 25px;
-    height: 35px;
-    background-image: url(/assets/icons/sparkle-nav-logo.png);
-    background-size: 25px 35px;
-    &:before {
-      position: absolute;
-      content: "";
-      opacity: 0;
-      pointer-events: none;
-      left: 22px;
-      width: 108px;
-      height: 35px;
-      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
-      background-size: 108px 35px;
-      transform: translateX(-40px) scale(0.75);
-      transition: opacity 200ms, transform 400ms $transition-function;
-    }
-    @keyframes sparklelogoanimate {
-      100% {
-        background-position: -75px;
-      }
-    }
-
-    &:hover {
-      opacity: 1;
-      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
-      background-size: 75px 35px;
-      background-position: 0 0;
-      animation: sparklelogoanimate 0.4s steps(3) infinite;
-      &:before {
-        opacity: 1;
-        pointer-events: all;
-        transform: translateX(0px) scale(1);
-      }
-    }
-    &:active {
-      opacity: 0.7;
-    }
-  }
-}
 .nav-party-logo {
+  margin-right: $spacing--lg;
   position: relative;
-  background-color: rgba($white, 0.08);
-  height: 60px;
+  background-color: opaque-white(0.08);
+  height: $navbar-height;
   padding: 0 50px 0 20px;
   text-align: center;
   cursor: pointer;
@@ -174,7 +123,7 @@ $border-radius: 28px;
   &:hover,
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
     &:after {
       opacity: 0.7;
     }
@@ -246,16 +195,95 @@ $border-radius: 28px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: opaque-white(0.5);
 
     margin-right: $spacing--md;
+  }
 
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
+  &__separator {
+    margin: 0 $spacing--xs 0 $spacing--xs;
+  }
+
+  &__sparkle {
+    &-logo {
+      margin-right: $spacing--lg;
+      @include square-size($logo-size);
+      background-image: url(/assets/icons/sparkle-nav-logo.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
   }
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__radio {
+    &-container {
+      padding: $spacing--lg $spacing--md;
+      margin-top: $spacing--lg;
+
+      & > iframe {
+        width: 100%;
+        border: none;
+      }
+    }
+  }
+
+  &__user-avatar {
+    @include square-size($menu-item-size);
+    margin-right: $spacing--sm;
+
+    img {
+      @include square-size($menu-item-size);
+    }
+  }
+
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
+      background: opaque-white(0.1);
+      @include square-size($menu-item-size);
+
+      &--muted {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px $white;
+      }
+    }
+
+    &-link {
+      background: opaque-white(0.1);
+      color: $white;
+      opacity: 0.8;
+      border: none;
+      border-radius: $border-radius--max;
+      @include square-size($menu-item-size);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-right: $spacing--sm;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      img {
+        width: $menu-item-size;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 2px $white;
+        outline: none;
+        opacity: 1;
+      }
+    }
+
+    &-icon {
+      @include square-size($menu-item-size);
+      background: opaque-white(0.1);
+    }
   }
 }
