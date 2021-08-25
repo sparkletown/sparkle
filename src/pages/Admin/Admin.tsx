@@ -14,6 +14,9 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
@@ -41,6 +44,8 @@ import {
   canHaveEvents,
   canHavePlacement,
   canHaveSubvenues,
+  sortVenues,
+  VenueSortingOptions,
 } from "utils/venue";
 
 import { useIsAdminUser } from "hooks/roles";
@@ -83,18 +88,58 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
+  const {
+    isShown: showSortingDropdown,
+    toggle: toggleSortingDropdown,
+  } = useShowHide();
+
+  const [currentSortingOption, setCurrentSortingOption] = useState(
+    VenueSortingOptions.az
+  );
+
+  const sortedVenues = useMemo(() => {
+    return sortVenues(ownedVenues, currentSortingOption) ?? [];
+  }, [currentSortingOption, ownedVenues]);
+
+  const sortingOptions = useMemo(
+    () =>
+      Object.values(VenueSortingOptions).map((sortingOption) => (
+        <li
+          key={sortingOption}
+          className={classNames("page-container-adminsidebar__sorting-option", {
+            "page-container-adminsidebar__sorting-option--active":
+              currentSortingOption === sortingOption,
+          })}
+          onClick={() => {
+            setCurrentSortingOption(sortingOption);
+            toggleSortingDropdown();
+          }}
+        >
+          {sortingOption}
+        </li>
+      )),
+    [currentSortingOption, toggleSortingDropdown]
+  );
+
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <div className="page-container-adminsidebar-title title">My Venues</div>
+      <div className="page-container-adminsidebar-title title">
+        My Venues
+        <FontAwesomeIcon
+          className="page-container-adminsidebar-title__ellipsis"
+          icon={faEllipsisV}
+          onClick={toggleSortingDropdown}
+        />
+      </div>
       <div className="page-container-adminsidebar-top">
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {ownedVenues.map((venue) => (
+        {sortedVenues.map((venue) => (
           <li
             key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
@@ -119,6 +164,14 @@ const VenueList: React.FC<VenueListProps> = ({
           </li>
         ))}
       </ul>
+
+      {showSortingDropdown && (
+        <div className="page-container-adminsidebar__sorting-dropdown">
+          <ul className="page-container-adminsidebar__sorting-list">
+            {sortingOptions}
+          </ul>
+        </div>
+      )}
     </>
   );
 };
