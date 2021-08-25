@@ -16,13 +16,13 @@ export const LIGHT_KEYFRAMES = [
 ];
 
 export const SUN_KEYFRAMES = [
-  { time: -1, data: [0, 0, 0] },
-  { time: 25, data: [0, 0, 0] },
-  { time: 4, data: [0, 0, 0] },
-  { time: 6, data: [0.6, 0.5, 0.5] },
-  { time: 12, data: [0.8, 0.8, 0.8] },
-  { time: 20, data: [0.6, 0.5, 0.5] },
-  { time: 22, data: [0, 0, 0] },
+  { time: -1, data: [0.012, 0.004, 0.041] },
+  { time: 5, data: [0.167, 0.101, 0.107] },
+  { time: 7, data: [0.658, 0.658, 0.667] },
+  { time: 12, data: [0.97, 0.975, 0.935] },
+  { time: 16, data: [0.535, 0.521, 0.498] },
+  { time: 21, data: [0.155, 0.138, 0.138] },
+  { time: 24, data: [0.012, 0.004, 0.041] },
 ];
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -36,12 +36,23 @@ window.LIGHT_SG = SUN_KEYFRAMES[0].data[1];
 window.LIGHT_SB = SUN_KEYFRAMES[0].data[2];
 
 export const MOON_KEYFRAMES = [
-  { time: -1, data: [0.15, 0.15, 0.2] },
-  { time: 25, data: [0.15, 0.15, 0.2] },
-  { time: 4, data: [0.15, 0.15, 0.2] },
-  { time: 7, data: [0, 0, 0] },
-  { time: 19, data: [0, 0, 0] },
-  { time: 20, data: [0.1, 0.1, 0.12] },
+  { time: -1, data: [0.085, 0.073, 0.119] },
+  { time: 5, data: [0.051, 0.056, 0.105] },
+  { time: 7, data: [0.071, 0.071, 0.062] },
+  { time: 12, data: [0.079, 0.062, 0.076] },
+  { time: 16, data: [0.142, 0.133, 0.128] },
+  { time: 21, data: [0.133, 0.076, 0.113] },
+  { time: 24, data: [0.085, 0.073, 0.119] },
+];
+
+export const STAT_LIGHT_KEYFRAMES = [
+  { time: -1, data: [1] },
+  { time: 5, data: [1] },
+  { time: 7, data: [0.5] },
+  { time: 12, data: [0.2] },
+  { time: 16, data: [0.5] },
+  { time: 21, data: [1] },
+  { time: 24, data: [1] },
 ];
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

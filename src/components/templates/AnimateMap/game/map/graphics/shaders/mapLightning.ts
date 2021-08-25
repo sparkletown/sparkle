@@ -10,14 +10,22 @@ import vertShader from "./ColorMatrixVS.glsl";
 import {
   LIGHT_KEYFRAMES,
   MOON_KEYFRAMES,
+  STAT_LIGHT_KEYFRAMES,
   SUN_KEYFRAMES,
 } from "./KeyframesConfigs";
+import staticLightsFS from "./StaticLigthsFS.glsl";
 
 export const mapLightningShader = new Filter(vertShader, fragShader, {
   ambientLight: [0.15, 0.15, 0.2],
   frame: [0, 0, 9000, 9000],
   koef: [0.027, 0.0028],
 });
+
+export const mapStaticLightningShader = new Filter(vertShader, staticLightsFS, {
+  frame: [0, 0, 9000, 9000],
+  koef: [0.027, 0.0028],
+});
+
 mapLightningShader.uniforms.lightsPos = [];
 mapLightningShader.uniforms.lightsCol = [];
 
@@ -41,6 +49,19 @@ const interpolateDayNightKeys: LinearInterpolationCallback = (
   const b = (right[2] - left[2]) * time + left[2];
   return [r, g, b];
 };
+
+const interpolateStaticLightKeys: LinearInterpolationCallback = (
+  left,
+  right,
+  time
+) => {
+  return [(right[0] - left[0]) * time + left[0]];
+};
+
+export const staticLightKeyFramer = new KeyFramer(
+  interpolateStaticLightKeys,
+  STAT_LIGHT_KEYFRAMES
+);
 
 export const sunKeyFramer = new KeyFramer(
   interpolateDayNightKeys,
