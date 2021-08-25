@@ -8,7 +8,7 @@ import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { isDefined, isTruthy } from "utils/types";
 
 import { useVenueEvents } from "hooks/events";
@@ -54,7 +54,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<AnyVenue>();
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
+  >();
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);

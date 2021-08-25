@@ -9,9 +9,11 @@ import { Room, RoomType } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
+import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useCustomSound } from "hooks/sounds";
 import { useDispatch } from "hooks/useDispatch";
+import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoom } from "hooks/useRoom";
 
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
@@ -28,7 +30,7 @@ const emptyEvents: WithVenueId<WithId<VenueEvent>>[] = [];
 export interface RoomModalProps {
   onHide: () => void;
   show: boolean;
-  venue?: AnyVenue;
+  venue?: WithId<AnyVenue>;
   room?: Room;
   venueEvents?: WithVenueId<WithId<VenueEvent>>[];
 }
@@ -66,7 +68,7 @@ export const RoomModal: React.FC<RoomModalProps> = ({
 
 export interface RoomModalContentProps {
   room: Room;
-  venue: AnyVenue;
+  venue: WithId<AnyVenue>;
   venueEvents: WithVenueId<WithId<VenueEvent>>[];
 }
 
@@ -88,6 +90,19 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const clearAttendance = useCallback(() => {
     dispatch(retainAttendance(false));
   }, [dispatch]);
+
+  const { findVenueInRelatedVenues } = useRelatedVenues({
+    currentVenueId: venue.id,
+  });
+
+  const noTrailSlashPortalUrl = getUrlWithoutTrailingSlash(room.url);
+
+  const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
+  const portalVenue = findVenueInRelatedVenues(portalVenueId);
+
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
 
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
 
@@ -124,13 +139,15 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
+  const roomTitle = room.title || portalVenue?.name;
+  const roomSubtitle = room.subtitle || portalVenueSubtitle;
+  const roomDescription = room.about || portalVenueDescription;
+
   return (
     <>
-      <h2>{room.title}</h2>
+      <h2>{roomTitle}</h2>
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -161,7 +178,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {room.about && (
         <div className="room-modal__description">
-          <RenderMarkdown text={room.about} />
+          <RenderMarkdown text={roomDescription} />
         </div>
       )}
 

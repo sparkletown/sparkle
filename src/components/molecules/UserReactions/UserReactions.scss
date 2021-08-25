@@ -2,7 +2,7 @@
 
 $reactionOffset: calc(-1 * #{$reactionSize} / 2);
 $shoutBounceTranslateXOffset: 50%;
-$reactionTimeout: var(--user-reactions-reaction-timeout, 5s);
+$reactionTimeout: 5s;
 
 .UserReactions {
   // Note: we need this to ensure the reactions use this container for their positioning
