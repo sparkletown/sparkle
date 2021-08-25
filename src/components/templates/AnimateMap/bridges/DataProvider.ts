@@ -21,7 +21,7 @@ export interface DataProvider {
 
   // player
   player: PlayerDataProviderInterface;
-  initPlayerPositionAsync: (x: number, y: number) => Promise<boolean | void>;
+  // initPlayerPositionAsync: (x: number, y: number) => Promise<boolean | void>;
   setPlayerPosition: (x: number, y: number) => void;
 }
 
