@@ -15,6 +15,7 @@ import {
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import firebase from "firebase/app";
 import { isEmpty } from "lodash";
 
@@ -229,10 +230,21 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     return false;
   }, [radioFirstPlayStateLoaded]);
 
+  const [isScheduleTriggered, updateScheduleTriggered] = useState(false);
   const [isEventScheduleVisible, setEventScheduleVisible] = useState(false);
+
   const toggleEventSchedule = useCallback(() => {
+    if (!isScheduleTriggered && isEventScheduleVisible) {
+      updateScheduleTriggered(true);
+    }
     setEventScheduleVisible(!isEventScheduleVisible);
-  }, [isEventScheduleVisible]);
+  }, [isEventScheduleVisible, isScheduleTriggered]);
+
+  const scheduleBtnClasses = classNames("nav-schedule", {
+    "nav-schedule-clicked": isEventScheduleVisible,
+    "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
+  });
+
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -286,15 +298,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 onClick={navigateToHomepage}
               />
               {shouldShowSchedule ? (
-                <button
+                <div
                   aria-label="Schedule"
-                  className={`nav-party-logo ${
-                    isEventScheduleVisible && "clicked"
-                  }`}
+                  className={scheduleBtnClasses}
                   onClick={toggleEventSchedule}
-                >
-                  {navbarTitle} <span className="schedule-text">Schedule</span>
-                </button>
+                ></div>
               ) : (
                 <div>{navbarTitle}</div>
               )}

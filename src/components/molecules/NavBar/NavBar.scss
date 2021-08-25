@@ -1,5 +1,10 @@
 @import "scss/constants.scss";
 
+$nav-container-width: 96px;
+$nav-container-height: 66px;
+$nav-btn-hover-background: #8e5ffc;
+$nav-schedule-btn-width-clicked: 30px;
+$nav-btn-border-radius: 10px;
 $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 $volume-popover-width-with-sliders: 30em;
@@ -100,30 +105,82 @@ $volume-popover-width-without-sliders: 15em;
   align-items: center;
 }
 
-.nav-party-logo {
-  margin-right: $spacing--lg;
+.nav-sparkle-logo,
+.nav-sparkle-logo_small {
   position: relative;
-  background-color: opaque-white(0.08);
-  height: $navbar-height;
-  padding: 0 50px 0 20px;
-  text-align: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transition: transform 400ms $transition-function;
-  border: none;
-  appearance: none;
-  color: $white;
+  margin-right: 12px;
+  &:hover {
+    width: 120px;
+  }
+  &.nav-sparkle-logo_small {
+    display: none;
+  }
+  div {
+    position: relative;
+    display: block;
+    width: 25px;
+    height: 35px;
+    background-image: url(/assets/icons/sparkle-nav-logo.png);
+    background-size: 25px 35px;
+    &:before {
+      position: absolute;
+      content: "";
+      opacity: 0;
+      pointer-events: none;
+      left: 22px;
+      width: 108px;
+      height: 35px;
+      background-image: url(/assets/icons/sparkle-nav-logo-text.png);
+      background-size: 108px 35px;
+      transform: translateX(-40px) scale(0.75);
+      transition: opacity 200ms, transform 400ms $transition-function;
+    }
+    @keyframes sparklelogoanimate {
+      100% {
+        background-position: -75px;
+      }
+    }
 
-  img {
-    height: 40px;
+    &:hover {
+      opacity: 1;
+      background-image: url(/assets/icons/sparkle-nav-logo-animate.png);
+      background-size: 75px 35px;
+      background-position: 0 0;
+      animation: sparklelogoanimate 0.4s steps(3) infinite;
+      &:before {
+        opacity: 1;
+        pointer-events: all;
+        transform: translateX(0px) scale(1);
+      }
+    }
+    &:active {
+      opacity: 0.7;
+    }
+  }
+}
+
+.nav-schedule {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: $navbar-height;
+  left: 0;
+  color: $white;
+  width: $nav-container-width;
+  height: $nav-container-height;
+  border-top-right-radius: $nav-btn-border-radius;
+  border-bottom-right-radius: $nav-btn-border-radius;
+  cursor: pointer;
+  background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
+  margin-top: $spacing--sm;
+
+  &:hover {
+    background-color: $nav-btn-hover-background;
+    box-shadow: 0 5px 18px rgb(124 70 251 / 60%);
   }
 
-  &:hover,
   &:focus {
     border: none;
     background-color: opaque-white(0.14);
@@ -133,28 +190,29 @@ $volume-popover-width-without-sliders: 15em;
     }
   }
 
-  &:after {
-    content: "";
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    height: 20px;
-    width: 20px;
-    background-image: url(/assets/icons/nav-party-logo-icon.png);
-    background-size: 20px;
-    opacity: 0.4;
-    transform: rotate(0deg);
-    transition: transform 400ms $transition-function;
-  }
+  &-triggered {
+    color: $white;
+    background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
+      $saturated-black-alt;
 
-  &.clicked {
-    &:after {
-      transform: rotate(180deg);
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      box-shadow: none;
     }
   }
 
-  &.slide {
-    transform: translateX(110px);
+  &-clicked {
+    margin-left: $sidebar-schedule-width;
+    transition-property: margin-left;
+    transition: 0.15s;
+    width: $nav-schedule-btn-width-clicked;
+    background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
+      $saturated-black-alt;
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      box-shadow: none;
+    }
   }
 }
 
