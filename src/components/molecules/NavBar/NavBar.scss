@@ -222,6 +222,7 @@ $logo-size: $spacing--xxl + $spacing--md;
   &__radio {
     &-container {
       padding: $spacing--lg $spacing--md;
+      margin-top: $spacing--lg;
 
       & > iframe {
         width: 100%;

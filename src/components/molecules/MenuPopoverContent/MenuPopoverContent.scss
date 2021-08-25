@@ -4,7 +4,7 @@ $menu-popover-width: 180px;
 
 // @debt hack-fix to update popover sizes
 #menu-popover {
-  margin-top: $spacing--md;
+  margin-top: $spacing--lg;
 
   &.popover {
     height: unset;

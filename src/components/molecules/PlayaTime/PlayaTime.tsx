@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -21,10 +21,15 @@ dayjs.extend(updateLocale);
 
 export const PlayaTime: React.FC = () => {
   const [currentTime, setCurrentTime] = useState("");
-
-  useInterval(() => {
+  const setPlayaTime = () => {
     const pt = dayjs().tz(CURRENT_TIMEZONE);
     setCurrentTime(pt.format("h:mm A"));
+  };
+
+  useEffect(setPlayaTime, []);
+
+  useInterval(() => {
+    setPlayaTime();
   }, PLAYA_TIME_REFRESH_MS);
 
   return (
