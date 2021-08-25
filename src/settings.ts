@@ -17,6 +17,7 @@ import { FIVE_MINUTES_MS } from "utils/time";
 
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapBackground from "assets/images/bm-default-map-background.jpg";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -48,7 +49,7 @@ export const PRIVACY_POLICY = IS_BURN
   : SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
-export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
+export const DEFAULT_MAP_BACKGROUND = defaultMapBackground;
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
@@ -82,14 +83,16 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+export const CURRENT_TIME_IN_LOCATION = "playa";
+export const CURRENT_TIMEZONE = "America/Los_Angeles";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
+export const ONE_MINUTE_MS = 60 * 1000;
 // How often to refresh events schedule
-export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const REFETCH_SCHEDULE_MS = 10 * ONE_MINUTE_MS; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
@@ -103,13 +106,16 @@ export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
-export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+export const PLAYA_BG_DAYPART_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh current time line in the schedule
-export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+export const SCHEDULE_CURRENT_TIMELINE_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
-export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+export const EVENT_STATUS_REFRESH_MS = ONE_MINUTE_MS; // 1 min
+
+// How often to refresh playa current time
+export const PLAYA_TIME_REFRESH_MS = ONE_MINUTE_MS / 2;
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_MB = 2;
@@ -754,7 +760,9 @@ export const ALLOWED_EMPTY_TABLES_NUMBER = 4;
 export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
+export const NAV_BAR_MAX_USER_SEARCH_RESULTS = 100;
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
 export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 

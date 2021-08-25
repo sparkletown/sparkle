@@ -5,6 +5,8 @@ $nav-container-height: 66px;
 $nav-btn-hover-background: #8e5ffc;
 $nav-schedule-btn-width-clicked: 30px;
 $nav-btn-border-radius: 10px;
+$menu-item-size: $spacing--lg * 2;
+$logo-size: $spacing--xxl + $spacing--md;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -177,12 +179,17 @@ $nav-btn-border-radius: 10px;
     box-shadow: 0 5px 18px rgb(124 70 251 / 60%);
   }
 
-  &-clicked {
-    margin-left: $sidebar-schedule-width;
-    transition-property: margin-left;
-    transition: 0.15s;
-    width: $nav-schedule-btn-width-clicked;
-    background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
+  &:focus {
+    border: none;
+    background-color: opaque-white(0.14);
+    &:after {
+      opacity: 0.7;
+    }
+  }
+
+  &-triggered {
+    color: $white;
+    background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
       $saturated-black-alt;
 
     &:hover {
@@ -191,9 +198,12 @@ $nav-btn-border-radius: 10px;
     }
   }
 
-  &-triggered {
-    color: $white;
-    background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
+  &-clicked {
+    margin-left: $sidebar-schedule-width;
+    transition-property: margin-left;
+    transition: 0.15s;
+    width: $nav-schedule-btn-width-clicked;
+    background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
       $saturated-black-alt;
 
     &:hover {
@@ -247,16 +257,95 @@ $nav-btn-border-radius: 10px;
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
+    color: opaque-white(0.5);
 
     margin-right: $spacing--md;
+  }
 
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
+  &__separator {
+    margin: 0 $spacing--xs 0 $spacing--xs;
+  }
+
+  &__sparkle {
+    &-logo {
+      margin-right: $spacing--lg;
+      @include square-size($logo-size);
+      background-image: url(/assets/icons/sparkle-nav-logo.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
     }
   }
 
   &__profile-popover {
     height: 100%;
+  }
+
+  &__radio {
+    &-container {
+      padding: $spacing--lg $spacing--md;
+      margin-top: $spacing--lg;
+
+      & > iframe {
+        width: 100%;
+        border: none;
+      }
+    }
+  }
+
+  &__user-avatar {
+    @include square-size($menu-item-size);
+    margin-right: $spacing--sm;
+
+    img {
+      @include square-size($menu-item-size);
+    }
+  }
+
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
+      background: opaque-white(0.1);
+      @include square-size($menu-item-size);
+
+      &--muted {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px $white;
+      }
+    }
+
+    &-link {
+      background: opaque-white(0.1);
+      color: $white;
+      opacity: 0.8;
+      border: none;
+      border-radius: $border-radius--max;
+      @include square-size($menu-item-size);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-right: $spacing--sm;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      img {
+        width: $menu-item-size;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 2px $white;
+        outline: none;
+        opacity: 1;
+      }
+    }
+
+    &-icon {
+      @include square-size($menu-item-size);
+      background: opaque-white(0.1);
+    }
   }
 }

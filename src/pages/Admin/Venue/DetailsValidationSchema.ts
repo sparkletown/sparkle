@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
-  BACKGROUND_IMG_TEMPLATES,
   GIF_RESIZER_URL,
   IFRAME_TEMPLATES,
   MAX_IMAGE_FILE_SIZE_BYTES,
@@ -96,14 +95,6 @@ export const validationSchema = Yup.object()
         .min(MINIMUM_PARTYMAP_COLUMNS_COUNT)
         .max(MAXIMUM_AUDITORIUM_COLUMNS_COUNT),
     }),
-
-    mapBackgroundImageUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.StringSchema) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
-          : schema.notRequired()
-    ),
 
     attendeesTitle: Yup.string().notRequired().default("Guests"),
 

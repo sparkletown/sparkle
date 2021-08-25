@@ -7,12 +7,13 @@ import {
   COVERT_ROOM_TYPES,
   DEFAULT_PARTY_NAME,
   DEFAULT_VENUE_LOGO,
+  NAV_BAR_MAX_USER_SEARCH_RESULTS,
 } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithVenueId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { isDefined, isTruthy } from "utils/types";
@@ -59,7 +60,9 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const [selectedRoom, setSelectedRoom] = useState<Room>();
   const hideRoomModal = useCallback(() => setSelectedRoom(undefined), []);
 
-  const [selectedRoomVenue, setSelectedRoomVenue] = useState<AnyVenue>();
+  const [selectedRoomVenue, setSelectedRoomVenue] = useState<
+    WithId<AnyVenue>
+  >();
 
   const [selectedEvent, setSelectedEvent] = useState<WithVenueId<VenueEvent>>();
   const hideEventModal = useCallback(() => setSelectedEvent(undefined), []);
@@ -132,11 +135,18 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   const { worldUsers } = useWorldUsers();
   const { openUserProfileModal } = useProfileModalControls();
 
-  const foundUsers = useMemo<JSX.Element[]>(() => {
-    if (!searchQuery) return [];
+  const { foundUsers, foundUsersLength } = useMemo<{
+    foundUsers: JSX.Element[];
+    foundUsersLength: number;
+  }>(() => {
+    if (!searchQuery) return { foundUsers: [], foundUsersLength: 0 };
 
-    return worldUsers
-      .filter((user) => user.partyName?.toLowerCase().includes(searchQuery))
+    const filtered = worldUsers.filter((user) =>
+      user.partyName?.toLowerCase().includes(searchQuery)
+    );
+
+    const elements = filtered
+      .slice(0, NAV_BAR_MAX_USER_SEARCH_RESULTS)
       .map((user) => (
         <NavSearchResult
           key={`user-${user.id}`}
@@ -148,6 +158,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           }}
         />
       ));
+    return { foundUsers: elements, foundUsersLength: filtered.length };
   }, [searchQuery, worldUsers, clearSearch, openUserProfileModal]);
 
   const foundEvents = useMemo<JSX.Element[]>(() => {
@@ -197,7 +208,7 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
   ]);
 
   const numberOfSearchResults =
-    foundRooms.length + foundEvents.length + foundUsers.length;
+    foundRooms.length + foundEvents.length + foundUsersLength;
 
   const clearSearchIcon = (
     <img
