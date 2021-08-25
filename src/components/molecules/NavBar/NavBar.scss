@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-$menu-item-size: $spacing--xxl + 2px;
+$menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 
 .navbar-links-user-avatar {

@@ -7,7 +7,7 @@ import utc from "dayjs/plugin/utc";
 import {
   CURRENT_TIME_IN_LOCATION,
   CURRENT_TIMEZONE,
-  ONE_MINUTE_MS,
+  PLAYA_TIME_REFRESH_MS,
 } from "settings";
 
 import { useInterval } from "hooks/useInterval";
@@ -25,7 +25,7 @@ export const PlayaTime: React.FC = () => {
   useInterval(() => {
     const pt = dayjs().tz(CURRENT_TIMEZONE);
     setCurrentTime(pt.format("h:mm A"));
-  }, ONE_MINUTE_MS);
+  }, PLAYA_TIME_REFRESH_MS);
 
   return (
     <div className="PlayaTime__container">
