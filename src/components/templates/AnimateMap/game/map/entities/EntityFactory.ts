@@ -585,7 +585,6 @@ export default class EntityFactory {
 
     return entity;
   }
-
   public createVenue(venue: ReplicatedVenue): Entity {
     return createVenueEntity(venue, this.engine);
   }

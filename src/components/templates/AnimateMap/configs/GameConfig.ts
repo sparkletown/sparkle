@@ -42,6 +42,7 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
+  public static VENUE_DEFAULT_SIZE = 256;
   public static VENUE_DEFAULT_COLLISION_RADIUS = 50;
   public static ACTIVE_VENUE_MIN_PEOPLE_FOR_ANIMATED_HALO = 25;
 
