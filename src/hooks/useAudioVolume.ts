@@ -31,11 +31,11 @@ export const useAudioVolume: (options: {
         isInitialStateLoadedRef.current = true;
       }
     } catch (e) {
-      console.error("useRadio", "Couldn't load initial volume", "error:", e);
+      console.error("useAudioVolume", "Problem loading initial volume", e);
 
       Bugsnag.notify(e, (event) => {
         event.addMetadata("context", {
-          location: "hooks/useRadio::useRadio",
+          location: "hooks/useAudioVolume::useAudioVolume",
           storageKey: storageKey,
           isInitialStateLoaded: isInitialStateLoadedRef.current,
           volume,
@@ -56,10 +56,12 @@ export const useAudioVolume: (options: {
     if (audioElement && isAudioPlaying) {
       // division used because volume values go from 0 to 100 (as in %)
       audioElement.volume = clampedVolume / 100;
+      // audioElement.loop = true;
       audioElement?.play();
 
       return () => {
         audioElement.volume = 0;
+        // audioElement.pause();
         audioElement.remove();
       };
     }

@@ -103,6 +103,7 @@ const initialAnimateMapState: AnimateMapState = {
   lastZoom: lastZoom ? parseFloat(lastZoom) : 1,
   //flags
   firstEntrance: window.sessionStorage.getItem("AnimateMapState.firstEntrance"),
+  // NOTE: null should default to true, hence the check as !== "false" instead of === "true"
   environmentSound:
     window.localStorage.getItem(LS_KEY_IS_AMBIENT_AUDIO_VOCAL) !== "false",
 };

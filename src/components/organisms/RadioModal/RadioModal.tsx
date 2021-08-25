@@ -31,12 +31,13 @@ export const RadioModal: React.FunctionComponent<RadioModalPropsType> = ({
       <div className="text-radio">
         We recommend turning on the radio as you explore the map!
       </div>
-      <img
-        className="img-radio"
-        src={"/radio-icon-color.png"}
-        alt="radio-icon"
+      <img className="img-radio" src="/radio-icon-color.png" alt="radio icon" />
+      <VolumeControl
+        withSlider
+        volume={volume}
+        onVolume={setVolume}
+        name="vol"
       />
-      <VolumeControl volume={volume} onVolume={setVolume} name="vol" />
     </>
   );
 

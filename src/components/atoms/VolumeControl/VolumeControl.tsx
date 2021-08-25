@@ -45,7 +45,9 @@ export const VolumeControl: React.FC<VolumeControlProps> = ({
 
   const parentClasses = classNames({
     VolumeControl: true,
-    VolumeControl__container: true,
+    "VolumeControl--with-label": label,
+    "VolumeControl--with-mute": withMute,
+    "VolumeControl--with-slider": withSlider,
     [className]: className,
   });
 

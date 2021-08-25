@@ -775,5 +775,8 @@ export const DEFAULT_NOTIFICATIONS_VOLUME: number = 100;
 export const MIN_AUDIO_VOLUME: number = 0;
 export const MAX_AUDIO_VOLUME: number = 100;
 
+// @debt There could/should be more direct way of inter-component communication
+// @debt localStorage isn't as reliable on all browsers (e.g. specific Safari versions where it got broken)
+// localStorage keys for syncing volume with AnimateMap's game instance
 export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
-export const LS_KEY_RADIO_VOLUME = "LD_KEY_RADIO_VOLUME";
+export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";
