@@ -7,7 +7,6 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import { useLocalStorage } from "react-use";
 import {
   faBars,
   faCaretLeft,
@@ -25,30 +24,22 @@ import {
   BM_PARENT_ID,
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
-  LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
   LS_KEY_RADIO_VOLUME,
   PLAYA_VENUE_ID,
 } from "settings";
 
-import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
-
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import {
-  animateMapEnvironmentSoundSelector,
-  radioStationsSelector,
-} from "utils/selectors";
+import { radioStationsSelector } from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
-import { useDispatch } from "hooks/useDispatch";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-import { useVolumeControl } from "hooks/useVolumeControl";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
@@ -60,10 +51,10 @@ import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
-import { BackButton } from "components/atoms/BackButton";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
-import { VolumeControl } from "components/atoms/VolumeControl";
+
+import VolumePopOverContent from "../VolumePopOverContent/VolumePopOverContent";
 
 import { NavBarLogin } from "./NavBarLogin";
 
@@ -99,13 +90,20 @@ const GiftPopover = (
   </Popover>
 );
 
+const VolumePopover = (
+  <Popover
+    id="volume-popover"
+    className="NavBar__volume-popover NavBar__volume-popover--without-sliders"
+  >
+    <Popover.Content>
+      <VolumePopOverContent />
+    </Popover.Content>
+  </Popover>
+);
+
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
-export interface NavBarPropsType {
-  hasBackButton?: boolean;
-}
-
-export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
+export const NavBar: React.FC = () => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 
@@ -114,7 +112,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
     currentVenueId: venueId,
   });
-  const parentVenueId = parentVenue?.id;
 
   const {
     location: { pathname },
@@ -182,29 +179,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     initialVolume: DEFAULT_AMBIENT_VOLUME,
   });
 
-  const dispatch = useDispatch();
-  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
-  const [, setAmbientAudioVocal] = useLocalStorage(
-    LS_KEY_IS_AMBIENT_AUDIO_VOCAL
-  );
-
-  const onToggleAmbientAudio = useCallback(() => {
-    const toggledValue = !isAmbientAudioVocal;
-    setAmbientAudioVocal(toggledValue);
-    dispatch(setAnimateMapEnvironmentSound(toggledValue));
-  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
-
-  // Notifications volume control
-  const {
-    volume: notificationsVolume,
-    // volumeCallback: setNotificationsVolume,
-  } = useVolumeControl();
-
-  // Interactions volume control
-  const {
-    volume: interactionsVolume,
-    // volumeCallback: setInteractionsVolume,
-  } = useVolumeControl();
   const handleMute = useCallback(
     (volume: number) => (volume !== 0 ? 0 : 100),
     []
@@ -254,12 +228,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
     setEventScheduleVisible(false);
   }, []);
-
-  const backToParentVenue = useCallback(() => {
-    if (!parentVenueId) return;
-
-    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
     enterVenue(BM_PARENT_ID, { customOpenRelativeUrl: openUrlUsingRouter });
@@ -382,35 +350,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                 <OverlayTrigger
                   trigger="click"
                   placement="bottom-end"
-                  overlay={
-                    <Popover
-                      id="volume-popover"
-                      className="NavBar__volume-popover NavBar__volume-popover--without-sliders"
-                    >
-                      <Popover.Content>
-                        <VolumeControl
-                          className="NavBar__volume-control"
-                          label="Ambient Noise"
-                          name="noise"
-                          muted={isAmbientAudioVocal}
-                          withMute
-                          onMute={onToggleAmbientAudio}
-                        />
-                        <VolumeControl
-                          className="NavBar__volume-control NavBar__volume-control--hidden"
-                          label="Notifications"
-                          name="notifications"
-                          volume={notificationsVolume}
-                        />
-                        <VolumeControl
-                          className="NavBar__volume-control NavBar__volume-control--hidden"
-                          label="Interactions"
-                          name="interactions"
-                          volume={interactionsVolume}
-                        />
-                      </Popover.Content>
-                    </Popover>
-                  }
+                  overlay={VolumePopover}
                   rootClose={true}
                 >
                   <button className="NavBar__menu-link">
@@ -463,14 +403,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
             />
           </div>
         </div>
-      )}
-
-      {/* @debt Remove back button from Navbar */}
-      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
-        <BackButton
-          onClick={backToParentVenue}
-          locationName={parentVenue.name}
-        />
       )}
     </>
   );

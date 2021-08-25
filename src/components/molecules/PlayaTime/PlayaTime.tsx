@@ -28,9 +28,7 @@ export const PlayaTime: React.FC = () => {
 
   useEffect(setPlayaTime, []);
 
-  useInterval(() => {
-    setPlayaTime();
-  }, PLAYA_TIME_REFRESH_MS);
+  useInterval(setPlayaTime, PLAYA_TIME_REFRESH_MS);
 
   return (
     <div className="PlayaTime__container">

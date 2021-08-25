@@ -39,8 +39,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
   let template;
-  // @debt remove backButton from Navbar
-  let hasBackButton = true;
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
@@ -49,8 +47,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
-      // NOTE: Remove the back button, because we don't need it in Table view
-      hasBackButton = false;
       break;
 
     case VenueTemplate.friendship:
@@ -64,8 +60,6 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
-      // @debt Remove the back button, because we don't need it in AnimateMap for now
-      hasBackButton = false;
       break;
 
     case VenueTemplate.artpiece:
@@ -90,14 +84,10 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
-      // NOTE: Remove the back button, because we need to implement it differently in Section
-      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
-      // Remove the back button, because we don't need it in Table view
-      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:
@@ -138,7 +128,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar hasBackButton={hasBackButton}>
+      <WithNavigationBar>
         <AnnouncementMessage message={venue.bannerMessage} />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>
