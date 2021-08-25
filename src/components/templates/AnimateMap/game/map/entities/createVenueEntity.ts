@@ -73,6 +73,9 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
       }
     );
 
+  let hoverEffectEntity: Entity;
+  const hoverEffectDuration = 100;
+
   entity
     .add(venueComponent)
     .add(spriteComponent)
@@ -84,14 +87,18 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
 
           // add increase
           const comm = entity.get(SpriteComponent);
-          const duration = 100;
           if (comm) {
-            entity.add(
+            if (hoverEffectEntity) {
+              engine.removeEntity(hoverEffectEntity);
+            }
+            hoverEffectEntity = new Entity();
+            hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverIn(comm.view as Venue, duration),
-                duration
+                new VenueHoverIn(comm.view as Venue, hoverEffectDuration),
+                hoverEffectDuration
               )
             );
+            engine.addEntity(hoverEffectEntity);
           }
         },
         () => {
@@ -99,14 +106,18 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
           entity.remove(TooltipComponent);
           // add decrease
           const comm: SpriteComponent | null = entity.get(SpriteComponent);
-          const duration = 100;
           if (comm) {
-            entity.add(
+            if (hoverEffectEntity) {
+              engine.removeEntity(hoverEffectEntity);
+            }
+            hoverEffectEntity = new Entity();
+            hoverEffectEntity.add(
               new AnimationComponent(
-                new VenueHoverOut(comm.view as Venue, duration),
-                duration
+                new VenueHoverOut(comm.view as Venue, hoverEffectDuration),
+                hoverEffectDuration
               )
             );
+            engine.addEntity(hoverEffectEntity);
           }
         }
       )
