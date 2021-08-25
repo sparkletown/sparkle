@@ -57,6 +57,8 @@ export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+export const HELP_CENTER_URL =
+  "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
