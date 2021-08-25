@@ -47,7 +47,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
     onConnectChange(false);
   };
 
-  return selectedFirebarrel && selectedFirebarrel !== "" ? (
+  return selectedFirebarrel ? (
     <FirebarrelWidget
       roomName={selectedFirebarrel}
       venueName={venue.name}

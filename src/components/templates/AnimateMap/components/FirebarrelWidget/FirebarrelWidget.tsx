@@ -316,25 +316,19 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     ) : null;
   }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
 
+  const onExitClick = useCallback(() => {
+    if (!room) return;
+
+    room.disconnect();
+    onExit();
+  }, [room, onExit]);
+
   if (!token) return null;
-
-  const onExitClick = () => {
-    if (room) {
-      room.disconnect();
-
-      if (onExit) {
-        onExit();
-      }
-    }
-  };
 
   return (
     <>
       <div className="firebarrel-room__participants">
-        <div
-          className="firebarrel-room__exit-container"
-          onClick={onExitClick}
-        >
+        <div className="firebarrel-room__exit-container" onClick={onExitClick}>
           <FontAwesomeIcon size="lg" icon={faDoorOpen} />
         </div>
         {myVideo}
