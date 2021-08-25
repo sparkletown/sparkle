@@ -7,6 +7,7 @@ import { WithId } from "utils/id";
 
 import { useUser } from "hooks/useUser";
 
+import { useWorldUsers } from "../../../../hooks/users";
 import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
@@ -25,12 +26,17 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
   const firebase = useFirebase();
   const user = useUser();
+  const worldUsers = useWorldUsers();
 
   const rooms = useRelatedPartymapRooms({ venue });
 
   useEffect(() => {
     if (dataProvider) dataProvider.updateRooms(rooms);
   }, [rooms, dataProvider]);
+
+  useEffect(() => {
+    if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
+  }, [worldUsers, dataProvider]);
 
   useEffect(
     () => {
@@ -42,6 +48,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
         );
         dataProvider.updateRooms(rooms);
+        dataProvider.updateUsers(worldUsers);
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);
       }
