@@ -1,6 +1,9 @@
 import React, { MouseEventHandler, useCallback, useMemo } from "react";
 import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBookmark as solidBookmark,
+  faUserFriends as solidUsers,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { differenceInCalendarDays } from "date-fns";
@@ -176,6 +179,15 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
           </>
         )}
       </div>
+      {isCurrentEventLive && (
+        <div className="ScheduleItemNG__online">
+          <FontAwesomeIcon
+            className="ScheduleItemNG__online-icon"
+            icon={solidUsers}
+          />
+          <span>{event.liveAudience}</span>
+        </div>
+      )}
       <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
         <FontAwesomeIcon
           icon={event.isSaved ? solidBookmark : regularBookmark}

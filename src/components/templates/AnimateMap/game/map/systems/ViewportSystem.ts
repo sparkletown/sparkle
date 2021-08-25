@@ -8,12 +8,14 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
+  setAnimateMapLastZoom,
   setAnimateMapZoom,
   setAnimateMapZoomAction,
 } from "store/actions/AnimateMap";
 
 import { EventType } from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
 
+import { GameConfig } from "../../../configs/GameConfig";
 import { TimeoutCommand } from "../../commands/TimeoutCommand";
 import { GameInstance } from "../../GameInstance";
 import { easeInOutQuad, Easing } from "../../utils/Easing";
@@ -33,6 +35,8 @@ export class ViewportSystem extends System {
   private _unsubscribeSetEnvironmentSound!: () => void;
 
   private _setAnimateMapZoomThrottle!: (value: number) => void;
+
+  private firstPlayerAdding = true;
 
   constructor(
     private _app: Application,
@@ -80,9 +84,11 @@ export class ViewportSystem extends System {
     this._viewport.on("drag-start", this._viewportDragStartHandler, this);
 
     this._unsubscribeSetZoom = subscribeActionAfter(
-      AnimateMapActionTypes.SET_ZOOM,
+      AnimateMapActionTypes.SET_ZOOM_LEVEL,
       (action) =>
-        this.handleSetZoom((action as setAnimateMapZoomAction).payload.zoom)
+        this.handleSetZoom(
+          (action as setAnimateMapZoomAction).payload.zoomLevel
+        )
     );
 
     this._unsubscribeSetEnvironmentSound = subscribeActionAfter(
@@ -129,7 +135,7 @@ export class ViewportSystem extends System {
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
-    const zoomLevel = GameInstance.instance.getState().zoom;
+    const zoomLevel = GameInstance.instance.getState().zoomLevel;
     const zoomViewport = GameInstance.instance
       .getConfig()
       .zoomLevelToViewport(zoomLevel);
@@ -211,17 +217,48 @@ export class ViewportSystem extends System {
   };
 
   private initViewportFollowing = (player: ViewportFollowNode) => {
-    this._viewport.animate({
-      position: new Point(player.position.x, player.position.y),
-      time: 30,
-      ease: "easeInOutQuad",
-      callbackOnComplete: () => {
-        if (player.sprite.view) {
-          this._viewport.plugins.remove("follow");
-          this._viewport.follow(player.sprite.view);
+    if (this.firstPlayerAdding) {
+      this.firstPlayerAdding = false;
+
+      let zoom: number;
+      if (GameInstance.instance.getConfig().firstEntrance) {
+        zoom = GameInstance.instance
+          .getConfig()
+          .zoomLevelToViewport(GameConfig.ZOOM_LEVEL_WALKING);
+      } else {
+        zoom = GameInstance.instance.getState().lastZoom;
+        if (zoom < 0.1) {
+          zoom = 0.1;
         }
-      },
-    });
+      }
+
+      new TimeoutCommand(200).execute().then(() => {
+        this._viewport.animate({
+          position: new Point(player.position.x, player.position.y),
+          scale: zoom,
+          time: 100,
+          ease: "easeInOutQuad",
+          callbackOnComplete: () => {
+            if (player && player.sprite && player.sprite.view) {
+              this._viewport.plugins.remove("follow");
+              this._viewport.follow(player.sprite.view);
+            }
+          },
+        });
+      });
+    } else {
+      this._viewport.animate({
+        position: new Point(player.position.x, player.position.y),
+        time: 100,
+        ease: "easeInOutQuad",
+        callbackOnComplete: () => {
+          if (player && player.sprite && player.sprite.view) {
+            this._viewport.plugins.remove("follow");
+            this._viewport.follow(player.sprite.view);
+          }
+        },
+      });
+    }
   };
 
   private stopViewportFollowing = () => {
@@ -258,8 +295,7 @@ export class ViewportSystem extends System {
       return;
     }
 
-    const currenZoomLevel = this.viewportList.head.viewport.zoomLevel;
-    if (zoomLevel === currenZoomLevel) {
+    if (zoomLevel === this.viewportList.head.viewport.zoomLevel) {
       return;
     }
 
@@ -311,6 +347,10 @@ export class ViewportSystem extends System {
         this.viewportList.head.viewport.zoomLevel
       );
     }
+
+    GameInstance.instance
+      .getStore()
+      .dispatch(setAnimateMapLastZoom(viewport.scale.y));
   }
 
   private _viewportDragStartHandler(e: { world: Point }) {

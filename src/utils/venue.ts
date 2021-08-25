@@ -12,6 +12,7 @@ import {
 
 import { FormValues } from "pages/Admin/Venue/DetailsForm";
 
+import { assertUnreachable } from "./error";
 import { WithId } from "./id";
 
 export const canHaveSubvenues = (venue: AnyVenue): boolean =>
@@ -133,3 +134,34 @@ export const withVenue = <T extends object>(
   ...obj,
   venue,
 });
+
+export enum VenueSortingOptions {
+  az = "A - Z",
+  za = "Z - A",
+  newestFirst = "Newest First",
+  oldestFirst = "Oldest First",
+}
+
+export const sortVenues = (
+  venueList: WithId<AnyVenue>[],
+  sortingOption: VenueSortingOptions
+) => {
+  switch (sortingOption) {
+    case VenueSortingOptions.az:
+      return [...venueList].sort((a, b) => a.id.localeCompare(b.id));
+    case VenueSortingOptions.za:
+      return [...venueList].sort((a, b) => -1 * a.id.localeCompare(b.id));
+    case VenueSortingOptions.oldestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (a.createdAt ?? 0) - (b.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    case VenueSortingOptions.newestFirst:
+      return [...venueList].sort(
+        (a, b) =>
+          (b.createdAt ?? 0) - (a.createdAt ?? 0) || a.id.localeCompare(b.id)
+      );
+    default:
+      assertUnreachable(sortingOption);
+  }
+};
