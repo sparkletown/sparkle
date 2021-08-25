@@ -168,6 +168,7 @@ $nav-btn-hover-background: #8e5ffc;
   border-bottom-right-radius: 10px;
   cursor: pointer;
   background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
+  margin-top: $spacing--sm;
 
   &:hover {
     background-color: $nav-btn-hover-background;
@@ -176,6 +177,8 @@ $nav-btn-hover-background: #8e5ffc;
 
   &-clicked {
     margin-left: $sidebar-schedule-width;
+    transition-property: margin-left;
+    transition: 0.15s;
     width: 30px;
     background: url(/assets/icons/nav-schedule-whatson-clicked.png);
 
@@ -186,7 +189,6 @@ $nav-btn-hover-background: #8e5ffc;
   }
 
   &-triggered {
-    margin-top: $spacing--sm;
     color: $white;
     background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
       $schedule-opened-grey;
