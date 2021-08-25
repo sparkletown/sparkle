@@ -17,6 +17,7 @@ import { FIVE_MINUTES_MS } from "utils/time";
 
 import defaultMapIcon from "assets/icons/default-map-icon.png";
 import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
+import defaultMapBackground from "assets/images/bm-default-map-background.jpg";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -48,7 +49,7 @@ export const PRIVACY_POLICY = IS_BURN
   : SPARKLE_PRIVACY_POLICY;
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
-export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
+export const DEFAULT_MAP_BACKGROUND = defaultMapBackground;
 export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
 export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?

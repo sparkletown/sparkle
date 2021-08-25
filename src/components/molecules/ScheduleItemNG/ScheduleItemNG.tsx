@@ -40,12 +40,17 @@ export interface ScheduleItemNGProps {
 }
 
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
-  const { currentVenue: eventVenue } = useRelatedVenues({
+  const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
+
+  const relatedVenuesRooms = relatedVenues
+    ?.flatMap((venue) => venue.rooms ?? [])
+    .filter((room) => room !== undefined);
+
   const eventRoom = useMemo<Room | undefined>(
     () =>
-      eventVenue?.rooms?.find((room) => {
+      relatedVenuesRooms?.find((room) => {
         const { room: eventRoom = "" } = event;
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
@@ -55,7 +60,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
 
         return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
-    [eventVenue, event]
+    [relatedVenuesRooms, event]
   );
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const { enterRoom } = useRoom({
