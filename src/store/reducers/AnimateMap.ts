@@ -20,12 +20,13 @@ export interface AnimateMapEntity {
 
 export interface ReplicatedUserData {
   id: string;
+  messengerId: number; //playerio messager id
   videoUrlString: string;
   avatarUrlString: string | string[];
   dotColor: number; //hex
-  hat: string | null;
-  accessories: string | null;
-  cycle: string | null;
+  hat?: string;
+  accessories?: string;
+  cycle?: string;
 }
 
 export interface ReplicatedUser extends AnimateMapEntity {
@@ -53,17 +54,25 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export class PlayerModel implements ReplicatedUser {
-  data: ReplicatedUserData = {
+  public data: ReplicatedUserData = {
     id: "",
+    messengerId: 0,
     videoUrlString: "",
     avatarUrlString: "",
     dotColor: Math.floor(Math.random() * 16777215),
-    hat: null,
-    accessories: null,
-    cycle: null,
   };
-  x: number = 4960;
-  y: number = 4960;
+
+  public constructor(
+    id: string,
+    messengerId: number,
+    avatarUrlString: string,
+    public x: number = 9920 / 2,
+    public y: number = 9920 / 2
+  ) {
+    this.data.id = id;
+    this.data.messengerId = messengerId;
+    this.data.avatarUrlString = avatarUrlString;
+  }
 }
 
 export interface AnimateMapState {
