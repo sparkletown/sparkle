@@ -22,10 +22,10 @@ export const useRecentVenueUsers: ReactHook<
   const {
     recentLocationUsers,
     isRecentLocationUsersLoaded,
-  } = useRecentLocationUsers(venueName);
+  } = useRecentLocationUsers({ locationName: venueName });
 
   return {
-    recentVenueUsers: recentLocationUsers,
+    recentVenueUsers: recentLocationUsers as readonly WithId<User>[],
     isRecentVenueUsersLoaded: isRecentLocationUsersLoaded,
   };
 };
