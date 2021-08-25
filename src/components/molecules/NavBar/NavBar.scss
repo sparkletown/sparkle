@@ -180,10 +180,11 @@ $nav-btn-hover-background: #8e5ffc;
     transition-property: margin-left;
     transition: 0.15s;
     width: 30px;
-    background: url(/assets/icons/nav-schedule-whatson-clicked.png);
+    background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
+      $saturated-black-alt;
 
     &:hover {
-      background-color: transparent;
+      background-color: $lighter-intermediate-grey;
       box-shadow: none;
     }
   }
@@ -191,10 +192,10 @@ $nav-btn-hover-background: #8e5ffc;
   &-triggered {
     color: $white;
     background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
-      $schedule-opened-grey;
+      $saturated-black-alt;
 
     &:hover {
-      background-color: $schedule-opened-grey;
+      background-color: $lighter-intermediate-grey;
       box-shadow: none;
     }
   }
