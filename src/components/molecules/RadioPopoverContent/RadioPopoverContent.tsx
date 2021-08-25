@@ -14,7 +14,8 @@ export interface RadioPopoverContentProps {
   isRadioPlaying: boolean;
   handleRadioEnable: () => void;
   volume: number;
-  setVolume: React.Dispatch<React.SetStateAction<number>>;
+  setVolume: (volume: number) => void;
+  onMute: () => void;
 }
 
 export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
@@ -26,6 +27,7 @@ export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
   handleRadioEnable,
   volume,
   setVolume,
+  onMute,
 }) => {
   const radioUrl = radioStation ? getSoundCloudPlayerUrl(radioStation) : "";
 
@@ -38,6 +40,7 @@ export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
             volume,
             setVolume,
           }}
+          onMute={onMute}
           onEnableHandler={handleRadioEnable}
           isRadioPlaying={isRadioPlaying}
         />
