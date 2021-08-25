@@ -43,11 +43,15 @@ const addTooltip = (venue: ReplicatedVenue, entity: Entity) => {
 };
 
 export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
+  // venue.data.isEnabled = false;
+  // venue.data.usersCount = 0;
+
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const venueComponent = new VenueComponent(venue, fsm);
   const spriteComponent: SpriteComponent = new SpriteComponent();
   const sprite: Venue = new Venue();
+  sprite.zIndex = -1;
   spriteComponent.view = sprite;
 
   fsm
@@ -128,7 +132,8 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
 
   engine.addEntity(entity);
 
-  new CropVenue(venue.data.image_url)
+  new CropVenue(venue.data.image_url, venue.data.isEnabled)
+    .setUsersCount(venue.data.usersCount)
     .execute()
     .then((comm: CropVenue) => {
       const scale =
@@ -138,9 +143,9 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
       sprite.venue = Sprite.from(comm.canvas);
       sprite.venue.anchor.set(0.5);
       sprite.addChild(sprite.venue);
+      return Promise.resolve();
     })
     .catch((err) => {
-      // TODO default venue image
       console.log("err", err);
     });
 

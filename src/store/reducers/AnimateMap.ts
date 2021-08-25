@@ -6,8 +6,7 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
-import { Room, RoomType, VenueRoomTemplate } from "types/rooms";
-import { SoundConfigReference } from "types/sounds";
+import { Room } from "types/rooms";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
@@ -32,20 +31,8 @@ export interface ReplicatedUser extends AnimateMapEntity {
   data: ReplicatedUserData;
 }
 
-export interface ReplicatedVenueData {
-  image_url: string;
-  type?: RoomType;
-  zIndex?: number;
-  title: string;
-  subtitle: string;
-  url: string;
-  about: string;
-  width_percent: number;
-  height_percent: number;
-  isEnabled: boolean;
-  isLabelHidden?: boolean;
-  enterSound?: SoundConfigReference;
-  template?: VenueRoomTemplate;
+export interface ReplicatedVenueData extends Room {
+  usersCount: number;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {

@@ -110,6 +110,7 @@ export class CloudDataProvider
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
         data: {
+          usersCount: Math.floor(Math.random() * 100),
           ...room,
         },
       } as ReplicatedVenue;
