@@ -1,13 +1,13 @@
 @import "scss/constants.scss";
 
-.VenuePartygoers {
+.PlayaTime {
   &__container {
     font-size: $font-size--sm;
     line-height: $font-size--md;
     color: opaque-white(0.8);
   }
 
-  &__users-count {
+  &__time {
     font-weight: $font-weight--700;
   }
 }

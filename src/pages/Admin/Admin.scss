@@ -62,7 +62,7 @@ $sorting-option--font-size: 0.8rem;
     overflow: hidden;
 
     .page-container-adminsidebar {
-      height: calc(100vh - 66px);
+      height: calc(100vh - #{$navbar-height});
 
       position: sticky;
       top: 0;

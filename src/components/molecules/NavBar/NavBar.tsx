@@ -9,7 +9,8 @@ import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
-  faHome,
+  faBars,
+  faCaretLeft,
   faTicketAlt,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -20,6 +21,7 @@ import { isEmpty } from "lodash";
 import { IS_BURN } from "secrets";
 
 import {
+  BM_PARENT_ID,
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
   LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
@@ -49,18 +51,22 @@ import { useVolumeControl } from "hooks/useVolumeControl";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
-import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
+import { MenuPopoverContent } from "components/molecules/MenuPopoverContent";
 import { NavSearchBar } from "components/molecules/NavSearchBar";
+import { PlayaTime } from "components/molecules/PlayaTime";
+import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 
 import { BackButton } from "components/atoms/BackButton";
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
 import { VolumeControl } from "components/atoms/VolumeControl";
 
-import * as S from "./Navbar.styles";
 import { NavBarLogin } from "./NavBarLogin";
+
+import RadioIcon from "assets/icons/nav-link-radio.svg";
 
 import "./NavBar.scss";
 import "./playa.scss";
@@ -72,6 +78,14 @@ const TicketsPopover: React.FC<{ futureUpcoming: UpcomingEvent[] }> = (
   <Popover id="popover-basic" {...props}>
     <Popover.Content>
       <UpcomingTickets events={futureUpcoming} />
+    </Popover.Content>
+  </Popover>
+);
+
+const MenuPopover = (
+  <Popover id="menu-popover">
+    <Popover.Content>
+      <MenuPopoverContent />
     </Popover.Content>
   </Popover>
 );
@@ -190,6 +204,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     volume: interactionsVolume,
     // volumeCallback: setInteractionsVolume,
   } = useVolumeControl();
+  const handleMute = useCallback(
+    (volume: number) => (volume !== 0 ? 0 : 100),
+    []
+  );
+  const toggleMute = useCallback(
+    () => setRadioVolume(handleMute(radioVolume)),
+    [handleMute, setRadioVolume, radioVolume]
+  );
 
   const radioFirstPlayStateLoaded = useRef(false);
   const showRadioOverlay = useMemo(() => {
@@ -228,19 +250,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
-
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterVenue(BM_PARENT_ID, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
-
-  const [showRadioPopover, setShowRadioPopover] = useState(false);
-
-  const toggleShowRadioPopover = useCallback(
-    () => setShowRadioPopover((prevState) => !prevState),
-    []
-  );
 
   if (!venueId || !currentVenue) return null;
 
@@ -253,29 +266,25 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const showSoundCloudRadio =
     (currentVenue?.showRadio && isSoundCloud) ?? false;
 
+  const showRadio = showNormalRadio || showSoundCloudRadio;
+
   return (
     <>
       <header>
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="nav-logos">
-              <div className="nav-sparkle-logo">
-                <div />
-              </div>
-              <div
-                className="nav-sparkle-logo_small"
-                onClick={navigateToHomepage}
-              >
-                <div />
-              </div>
               {shouldShowHomeButton && (
                 <FontAwesomeIcon
-                  icon={faHome}
+                  icon={faCaretLeft}
                   className="NavBar__home-icon"
                   onClick={navigateToHomepage}
                 />
               )}
-
+              <div
+                className="NavBar__sparkle-logo"
+                onClick={navigateToHomepage}
+              />
               {shouldShowSchedule ? (
                 <button
                   aria-label="Schedule"
@@ -289,8 +298,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               ) : (
                 <div>{navbarTitle}</div>
               )}
-
-              <VenuePartygoers venueId={venueId} />
+              <PlayaTime />
+              <div className="NavBar__separator">-</div>
+              <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
@@ -325,21 +335,25 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   </OverlayTrigger>
                 )}
 
-                {showNormalRadio && (
+                {showRadio && (
                   <OverlayTrigger
                     trigger="click"
                     placement="bottom-end"
                     overlay={
                       <Popover id="radio-popover">
-                        <Popover.Content>
-                          <RadioModal
-                            {...{
-                              volume: radioVolume,
-                              setVolume: setRadioVolume,
-                              title: currentVenue?.radioTitle,
-                            }}
-                            onEnableHandler={handleRadioEnable}
+                        <Popover.Content className="NavBar__radio-container">
+                          <RadioPopoverContent
+                            radioTitle={
+                              currentVenue?.radioTitle ?? "Playa Radio"
+                            }
+                            showNormalRadio={showNormalRadio}
+                            showSoundCloudRadio={showSoundCloudRadio}
+                            radioStation={radioStation}
                             isRadioPlaying={isRadioPlaying}
+                            handleRadioEnable={handleRadioEnable}
+                            volume={radioVolume}
+                            setVolume={setRadioVolume}
+                            onMute={toggleMute}
                           />
                         </Popover.Content>
                       </Popover>
@@ -347,33 +361,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        radioVolume === 0 && "off"
-                      }`}
-                    />
+                    <ButtonNG
+                      className="NavBar__menu-link"
+                      iconOnly
+                      iconSize="1x"
+                    >
+                      <img src={RadioIcon} alt="radio icon" />
+                    </ButtonNG>
                   </OverlayTrigger>
-                )}
-
-                {showSoundCloudRadio && (
-                  <S.RadioTrigger>
-                    <button
-                      className={`profile-icon navbar-link-radio ${
-                        radioVolume === 0 && "off"
-                      }`}
-                      onClick={toggleShowRadioPopover}
-                    />
-
-                    <S.RadioWrapper showRadioPopover={showRadioPopover}>
-                      <iframe
-                        title="venueRadio"
-                        id="sound-cloud-player"
-                        scrolling="no"
-                        allow="autoplay"
-                        src={`https://w.soundcloud.com/player/?url=${radioStation}&amp;start_track=0&amp;single_active=true&amp;show_artwork=false`}
-                      />
-                    </S.RadioWrapper>
-                  </S.RadioTrigger>
                 )}
 
                 <OverlayTrigger
@@ -419,8 +414,26 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
                 >
-                  <UserAvatar user={userWithId} showStatus size="medium" />
+                  <UserAvatar
+                    user={userWithId}
+                    showStatus
+                    containerClassName="NavBar__user-avatar"
+                    size="small"
+                  />
                 </div>
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={MenuPopover}
+                  rootClose={true}
+                >
+                  <ButtonNG
+                    className="NavBar__menu--link NavBar__menu-icon"
+                    iconOnly
+                    iconSize="1x"
+                    iconName={faBars}
+                  />
+                </OverlayTrigger>
               </div>
             )}
           </div>
