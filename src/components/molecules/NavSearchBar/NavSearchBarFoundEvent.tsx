@@ -9,7 +9,7 @@ import { WithId, WithVenueId } from "utils/id";
 import { uppercaseFirstChar } from "utils/string";
 import { formatUtcSecondsRelativeToNow } from "utils/time";
 
-import { useCheckImageWithFallback } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/useCheckImage";
 
 import { NavSearchResult } from "components/molecules/NavSearchBar/NavSearchResult";
 
@@ -26,7 +26,7 @@ export const NavSearchBarFoundEvent: React.FC<NavSearchBarFoundEventProps> = ({
   relatedVenues,
   onClick,
 }) => {
-  const [imageUrl] = useCheckImageWithFallback(
+  const [imageUrl] = useValidImage(
     enabledRelatedRooms.find((room) => room.title === event.room)?.image_url ??
       relatedVenues.find((venue) => venue.id === event.venueId)?.host?.icon,
     DEFAULT_VENUE_LOGO

@@ -19,7 +19,7 @@ import { WithId } from "utils/id";
 import { hasElements } from "utils/types";
 import { setLocationData } from "utils/userLocation";
 
-import { useCheckImageWithFallback } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/useCheckImage";
 import { useGetUserByPosition } from "hooks/useGetUserByPosition";
 import { useKeyboardControls } from "hooks/useKeyboardControls";
 import { useRecentVenueUsers } from "hooks/users";
@@ -70,7 +70,7 @@ export const Map: React.FC<MapProps> = ({
   );
   const rowsArray = useMemo(() => Array.from(Array(totalRows)), [totalRows]);
 
-  const [mapBackground] = useCheckImageWithFallback(
+  const [mapBackground] = useValidImage(
     venue?.mapBackgroundImageUrl,
     DEFAULT_MAP_BACKGROUND
   );

@@ -18,7 +18,7 @@ import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
-import { useCheckImageWithFallback } from "hooks/useCheckImage";
+import { useValidImage } from "hooks/useCheckImage";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -68,15 +68,12 @@ export const VenueLandingPage: React.FC = () => {
     updateTheme(venue);
   }, [venue]);
 
-  const [validBannerImageUrl] = useCheckImageWithFallback(
+  const [validBannerImageUrl] = useValidImage(
     venue?.config?.landingPageConfig.bannerImageUrl,
     DEFAULT_VENUE_BANNER
   );
 
-  const [validLogoUrl] = useCheckImageWithFallback(
-    venue?.host?.icon,
-    DEFAULT_VENUE_LOGO
-  );
+  const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
 
   if (venueRequestStatus && !venue) {
     return <>This venue does not exist</>;

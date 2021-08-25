@@ -18,7 +18,7 @@ export const useCheckImage = (
 
   return useMemo(
     () => ({
-      //here we consider the image valid event while it still loading
+      //here we consider the image valid while it's still loading
       isValid: !error,
       isLoading: loading,
       error: error?.message,
@@ -27,15 +27,13 @@ export const useCheckImage = (
   );
 };
 
-export const useCheckImageWithFallback = (
+export const useValidImage = (
   src: string | undefined,
-  fallbackSrc: string
+  fallbackIfInvalid: string
 ): [string | undefined, ReturnType<typeof useCheckImage>] => {
   const checkImageState = useCheckImage(src);
 
-  const processedSrc = checkImageState.isValid
-    ? src ?? fallbackSrc
-    : fallbackSrc;
+  const processedSrc = checkImageState.isValid ? src : fallbackIfInvalid;
 
   return [processedSrc, checkImageState];
 };
