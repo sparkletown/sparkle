@@ -160,7 +160,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
   const { volume, setVolume } = useRadio(isRadioPlaying, sound);
-
   const handleMute = useCallback(
     (volume: number) => (volume !== 0 ? 0 : 100),
     []
@@ -263,7 +262,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <PlayaTime /> - <VenuePartygoers />
+              <PlayaTime />
+              <div className="NavBar__separator">-</div>
+              <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
@@ -360,7 +361,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   rootClose={true}
                 >
                   <ButtonNG
-                    className="NavBar__menu--link"
+                    className="NavBar__menu--link NavBar__menu-icon"
                     iconOnly
                     iconSize="1x"
                     iconName={faBars}

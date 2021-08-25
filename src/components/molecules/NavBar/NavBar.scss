@@ -1,6 +1,6 @@
 @import "scss/constants.scss";
 
-$menu-item-size: $spacing--xxl;
+$menu-item-size: $spacing--xxl + 2px;
 $logo-size: $spacing--xxl + $spacing--md;
 
 .navbar-links-user-avatar {
@@ -200,6 +200,10 @@ $logo-size: $spacing--xxl + $spacing--md;
     margin-right: $spacing--md;
   }
 
+  &__separator {
+    margin: 0 $spacing--xs 0 $spacing--xs;
+  }
+
   &__sparkle {
     &-logo {
       margin-right: $spacing--lg;
@@ -237,6 +241,10 @@ $logo-size: $spacing--xxl + $spacing--md;
 
   &__menu {
     &--volume {
+      margin-right: $spacing--sm;
+      background: opaque-white(0.1);
+      @include square-size($menu-item-size);
+
       &--muted {
         opacity: 0.5;
         box-shadow: 0 0 0 2px $white;
@@ -270,6 +278,11 @@ $logo-size: $spacing--xxl + $spacing--md;
         outline: none;
         opacity: 1;
       }
+    }
+
+    &-icon {
+      @include square-size($menu-item-size);
+      background: opaque-white(0.1);
     }
   }
 }
