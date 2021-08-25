@@ -387,7 +387,7 @@ export class MapContainer extends Container {
     }
     if (this._joystickContainer) {
       const joystickPosX = 86;
-      const joystickOffsetY = 100;
+      const joystickOffsetY = 75;
       this._joystickContainer.position.set(
         joystickPosX,
         height - joystickPosX - joystickOffsetY

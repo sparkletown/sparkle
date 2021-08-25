@@ -21,6 +21,7 @@ import "./RunTabView.scss";
 export interface RunTabViewProps {
   venue?: WithId<AnyVenue>;
 }
+
 export const RunTabView: React.FC<RunTabViewProps> = ({ venue }) => {
   if (!venue) {
     return <LoadingPage />;
