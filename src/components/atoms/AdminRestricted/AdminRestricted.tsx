@@ -1,58 +1,68 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useFirebase } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
 
 import { venueLandingUrl } from "utils/url";
 
 import { useIsAdminUser } from "hooks/roles";
+import { useUser } from "hooks/useUser";
+import { useVenueId } from "hooks/useVenueId";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
 import SHAPE_DENIED from "assets/images/denied.svg";
 
-import "./AdminForbidden.scss";
+import "./AdminRestricted.scss";
 
-export interface AdminForbiddenProps {
-  userId: string;
+export interface AdminRestrictedProps {
+  userId?: string;
   venueId?: string;
 }
 
-export const AdminForbidden: React.FC<AdminForbiddenProps> = ({
+export const AdminRestricted: React.FC<AdminRestrictedProps> = ({
   children,
   userId,
   venueId,
 }) => {
-  const { isAdminUser, isLoading } = useIsAdminUser(userId);
   const firebase = useFirebase();
   const history = useHistory();
-  const logout = useCallback(async () => {
-    await firebase.auth().signOut();
+  const venueIdFromHook = useVenueId();
+  const { userId: userIdFromHook } = useUser();
 
+  // Webpack lacking babel loader for ??= operator? O.o
+  venueId = venueId ?? venueIdFromHook;
+  userId = userId ?? userIdFromHook;
+
+  const { isAdminUser, isLoading } = useIsAdminUser(userId);
+
+  const [, logout] = useAsyncFn(async () => {
+    await firebase.auth().signOut();
     history.push(venueId ? venueLandingUrl(venueId) : "/");
   }, [firebase, history, venueId]);
 
   if (isAdminUser) {
     return (
-      <div className="AdminForbidden AdminForbidden--allowed">{children}</div>
+      <div className="AdminRestricted AdminRestricted--allowed">{children}</div>
     );
   }
 
   if (isLoading)
     return (
-      <div className="AdminForbidden AdminForbidden--loading">Loading...</div>
+      <div className="AdminRestricted AdminRestricted--loading">Loading...</div>
     );
 
   return (
-    <div className="AdminForbidden AdminForbidden--forbidden">
-      <div className="AdminForbidden__message-container">
-        <SparkleLogo className="AdminForbidden__logo" />
+    <div className="AdminRestricted AdminRestricted--forbidden">
+      <div className="AdminRestricted__message-container">
+        <SparkleLogo className="AdminRestricted__logo" />
         <img
-          className="AdminForbidden__denied-shape"
+          className="AdminRestricted__denied-shape"
           alt="shape indicating denied access"
           src={SHAPE_DENIED}
         />
-        <p className="AdminForbidden__title">Admin Access Denied</p>
+        <p className="AdminRestricted__title">Admin Access Denied</p>
         <p>
           Oops. You cannot access Admin Panel. Please log in with your Admin
           enabled Sparkle account.
@@ -62,7 +72,7 @@ export const AdminForbidden: React.FC<AdminForbiddenProps> = ({
           organiser.
         </p>
         <ButtonNG
-          className="AdminForbidden__switch-button"
+          className="AdminRestricted__switch-button"
           variant="primary"
           onClick={logout}
         >

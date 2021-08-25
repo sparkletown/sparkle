@@ -3,7 +3,7 @@
 $message-container-width: 28rem;
 $denied-shape-size: 96px;
 
-.AdminForbidden {
+.AdminRestricted {
   height: calc(100vh - #{$reserved-page-height});
   width: calc(100vw);
 

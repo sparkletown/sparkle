@@ -61,7 +61,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { Loading } from "components/molecules/Loading";
 
-import { AdminForbidden } from "components/atoms/AdminForbidden";
+import { AdminRestricted } from "components/atoms/AdminRestricted";
 
 import "firebase/storage";
 
@@ -477,20 +477,20 @@ const Admin: React.FC = () => {
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  // @debt deliberately returning AdminForbidden before redirect as to keep original logic/behavior. Ideally they'd be in reverse
+  // @debt deliberately returning AdminRestricted before redirect as to keep original logic/behavior. Ideally they'd be in reverse
   if (!user) {
     return (
       <WithNavigationBar hasBackButton={false}>
-        <AdminForbidden userId={userId}>
+        <AdminRestricted>
           <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
-        </AdminForbidden>
+        </AdminRestricted>
       </WithNavigationBar>
     );
   }
 
   return (
     <WithNavigationBar hasBackButton={false}>
-      <AdminForbidden userId={userId}>
+      <AdminRestricted>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">
             <div className="page-container-adminsidebar">
@@ -505,7 +505,7 @@ const Admin: React.FC = () => {
             </div>
           </div>
         </div>
-      </AdminForbidden>
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };
