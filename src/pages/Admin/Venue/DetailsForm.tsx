@@ -20,6 +20,8 @@ import {
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
+  DEFAULT_VENUE_BANNER,
+  DEFAULT_VENUE_LOGO,
   HAS_GRID_TEMPLATES,
   HAS_ROOMS_TEMPLATES,
   IFRAME_TEMPLATES,
@@ -122,12 +124,16 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       template: state.templatePage?.template,
       editing: !!venueId,
     },
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      logoImageUrl: DEFAULT_VENUE_LOGO,
+      bannerImageUrl: DEFAULT_VENUE_BANNER,
+      parentId: defaultValues?.parentId ?? "",
+    },
   });
   const { user } = useUser();
   const history = useHistory();
   const { isSubmitting } = formState;
-  const values = watch();
 
   const [formError, setFormError] = useState(false);
 
@@ -240,7 +246,6 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
               setValue={setValue}
               state={state}
               previous={previous}
-              values={values}
               sovereignVenue={sovereignVenue}
               isSubmitting={isSubmitting}
               register={register}
@@ -316,12 +321,15 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
   );
 };
 
-interface DetailsFormLeftProps {
+interface DetailsFormLeftProps
+  extends Pick<
+    ReturnType<typeof useForm>,
+    "register" | "watch" | "control" | "handleSubmit" | "setError" | "setValue"
+  > {
   venueId?: string;
   sovereignVenue?: AnyVenue;
   state: WizardPage["state"];
   previous: WizardPage["previous"];
-  values: FormValues;
   isSubmitting: boolean;
   register: ReturnType<typeof useForm>["register"];
   watch: ReturnType<typeof useForm>["watch"];
@@ -329,9 +337,7 @@ interface DetailsFormLeftProps {
   onSubmit: (vals: Partial<FormValues>) => Promise<void>;
   handleSubmit: ReturnType<typeof useForm>["handleSubmit"];
   errors: FieldErrors<FormValues>;
-  setError: ReturnType<typeof useForm>["setError"];
   editing?: boolean;
-  setValue: ReturnType<typeof useForm>["setValue"];
   formError: boolean;
   setFormError: (value: boolean) => void;
 }
@@ -341,7 +347,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   sovereignVenue,
   editing,
   state,
-  values,
   isSubmitting,
   register,
   errors,
@@ -352,7 +357,10 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   setValue,
   formError,
   setFormError,
+  watch,
 }) => {
+  const values = watch();
+
   const urlSafeName = values.name
     ? `${window.location.host}${venueLandingUrl(
         createUrlSafeName(values.name)

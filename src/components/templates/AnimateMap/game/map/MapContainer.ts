@@ -7,6 +7,7 @@ import { PlayerModel, ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
+import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -40,6 +41,7 @@ import { SoundEmitterSystem } from "./systems/SoundEmitterSystem";
 import { SpriteSystem } from "./systems/SpriteSystem";
 import { SystemPriorities } from "./systems/SystemPriorities";
 import { TooltipSystem } from "./systems/TooltipSystem";
+import { VenueSystem } from "./systems/VenueSystem";
 import { ViewportBackgroundSystem } from "./systems/ViewportBackgroundSystem";
 import { ViewportSystem } from "./systems/ViewportSystem";
 import { ZoomedSpriteSystem } from "./systems/ZoomedSpriteSystem";
@@ -66,12 +68,19 @@ export class MapContainer extends Container {
 
     this._app = app;
 
-    const clbck = (player: ReplicatedUser) => {
-      console.log("CREATE PLAYER");
-      this._player = player;
-      EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
-    };
-    EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
+    if (
+      playerModel.x !== 0 &&
+      playerModel.y !== 0 &&
+      playerModel.data.id !== ""
+    ) {
+      this._player = playerModel;
+    } else {
+      const clbck = (player: ReplicatedUser) => {
+        this._player = player;
+        EventProvider.off(EventType.PLAYER_MODEL_READY, clbck);
+      };
+      EventProvider.on(EventType.PLAYER_MODEL_READY, clbck);
+    }
   }
 
   public async start(): Promise<void> {
@@ -123,6 +132,7 @@ export class MapContainer extends Container {
     this._engine = new Engine();
     this.entityFactory = new EntityFactory(this._engine);
 
+    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
       new MotionControlSwitchSystem(),
       SystemPriorities.update
@@ -365,9 +375,13 @@ export class MapContainer extends Container {
             const loop = async () => {
               for (let i = 0; i < artcars.length; i++) {
                 await new Promise((resolve) => {
-                  const user: PlayerModel = new PlayerModel();
-                  user.data.id = `${i}${Date.now()}`;
-                  user.data.avatarUrlString = artcars[i];
+                  const user: PlayerModel = new PlayerModel(
+                    `${i}${Date.now()}`,
+                    -1,
+                    artcars[i]
+                  );
+                  // user.data.id = `${i}${Date.now()}`;
+                  // user.data.avatarUrlString = artcars[i];
                   self.entityFactory?.createArtcar(user);
                   setTimeout(() => {
                     resolve(true);

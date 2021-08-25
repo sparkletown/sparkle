@@ -1,7 +1,6 @@
 import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { setAnimateMapRoom } from "store/actions/AnimateMap";
 import {
   PlayerModel,
   ReplicatedUser,
@@ -10,12 +9,11 @@ import {
 
 import { Point } from "types/utility";
 
-import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
-import { CropVenue } from "../../commands/CropVenue";
+import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles, HALO, VENUE_HALO } from "../../constants/AssetConstants";
+import { avatarCycles, HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
@@ -23,7 +21,6 @@ import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
 import { BotComponent } from "../components/BotComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
-import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { EllipseComponent } from "../components/EllipseComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
@@ -39,7 +36,6 @@ import { PositionComponent } from "../components/PositionComponent";
 import { SoundEmitterComponent } from "../components/SoundEmitterComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
-import { VenueComponent } from "../components/VenueComponent";
 import { ViewportComponent } from "../components/ViewportComponent";
 import { ViewportFollowComponent } from "../components/ViewportFollowComponent";
 import { FSMBase } from "../finalStateMachines/FSMBase";
@@ -55,6 +51,8 @@ import { KeyboardNode } from "../nodes/KeyboardNode";
 import { MotionBotControlNode } from "../nodes/MotionBotControlNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { ViewportNode } from "../nodes/ViewportNode";
+
+import { createVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
   private engine: Engine;
@@ -465,10 +463,10 @@ export default class EntityFactory {
   public updateUserPositionById(userId: string, x: number, y: number) {
     let bot: BotNode | null = this.getBotNode(userId);
     if (!bot) {
-      const player: PlayerModel = new PlayerModel();
-      player.data.id = userId;
-      player.x = x;
-      player.y = y;
+      const player: PlayerModel = new PlayerModel(userId, -1, "", x, y);
+      // player.data.id = userId;
+      // player.x = x;
+      // player.y = y;
       this.createBot(player, true);
       bot = this.engine.getNodeList(BotNode).head as BotNode;
       bot.bot.fsm.changeState("idle");
@@ -494,9 +492,7 @@ export default class EntityFactory {
   }
 
   public createBarrel(barrel: GameOptionsFirebarrel): Entity {
-    const config = GameInstance.instance.getConfig();
-
-    const collisionRadius = config.venueDefaultCollisionRadius / 2;
+    const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 
     const entity: Entity = new Entity();
     entity
@@ -589,104 +585,8 @@ export default class EntityFactory {
 
     return entity;
   }
-
   public createVenue(venue: ReplicatedVenue): Entity {
-    const config = GameInstance.instance.getConfig();
-
-    const entity: Entity = new Entity();
-    entity
-      .add(new VenueComponent(venue))
-      .add(
-        new HoverableSpriteComponent(
-          () => {
-            // add tooltip
-            const tooltip: TooltipComponent = new TooltipComponent(
-              venue.data.title.slice(0, 15) + "..."
-            );
-            tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
-            tooltip.backgroundColor = tooltip.borderColor;
-            entity.add(tooltip);
-            // add increase
-            const comm: SpriteComponent | null = entity.get(SpriteComponent);
-            const duration = 100;
-            if (comm) {
-              entity.add(
-                new AnimationComponent(
-                  new VenueHoverIn(comm.view as Venue, duration),
-                  duration
-                )
-              );
-            }
-          },
-          () => {
-            // remove tooltip
-            entity.remove(TooltipComponent);
-            // add decrease
-            const comm: SpriteComponent | null = entity.get(SpriteComponent);
-            const duration = 100;
-            if (comm) {
-              entity.add(
-                new AnimationComponent(
-                  new VenueHoverOut(comm.view as Venue, duration),
-                  duration
-                )
-              );
-            }
-          }
-        )
-      )
-      .add(
-        new ClickableSpriteComponent(() => {
-          GameInstance.instance.getStore().dispatch(
-            setAnimateMapRoom({
-              title: venue.data.title,
-              subtitle: venue.data.subtitle,
-              url: venue.data.url,
-              about: venue.data.about,
-              x_percent: 50,
-              y_percent: 50,
-              width_percent: 5,
-              height_percent: 5,
-              isEnabled: venue.data.isEnabled,
-              image_url: venue.data.image_url,
-            })
-          );
-        })
-      )
-      .add(new CollisionComponent(config.venueDefaultCollisionRadius));
-
-    this.engine.addEntity(entity);
-
-    new CropVenue(venue.data.image_url)
-      .execute()
-      .then((comm: CropVenue) => {
-        const scale =
-          (config.venueDefaultCollisionRadius * 2) / comm.canvas.width;
-        entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
-
-        const sprite: Venue = new Venue();
-        sprite.venue = Sprite.from(comm.canvas);
-        sprite.venue.anchor.set(0.5);
-        sprite.addChild(sprite.venue);
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-
-        if (venue.data.isEnabled) {
-          // halo
-          sprite.halo = Sprite.from(VENUE_HALO);
-          sprite.halo.anchor.set(0.5);
-          sprite.addChildAt(sprite.halo, 0);
-          sprite.halo.scale.set(1 / scale);
-        }
-
-        entity.add(spriteComponent);
-      })
-      .catch((err) => {
-        // TODO default venue image
-        console.log("err", err);
-      });
-
-    return entity;
+    return createVenueEntity(venue, this.engine);
   }
 
   public createSoundEmitter(

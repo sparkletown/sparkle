@@ -47,7 +47,7 @@ $dark-green: #208a28;
 $clickable-area-color: #ffffff11;
 $ripple-color: chocolate;
 $profile-image-bg-color: #999999;
-$room-card-background: #323232;
+$card-background: #323232;
 
 // chat relevant colors
 $chat-open: rgba(80, 227, 194, 0.35);
@@ -69,6 +69,7 @@ $send-msg-online-color: #78b553;
 
 $map-sidebar-width: 20%;
 $navbar-height: 66px;
+$sidebar-schedule-width: 40%;
 $footer-height: 30px;
 $reserved-page-height: $navbar-height + $footer-height;
 $chat-sidebar-width: 360px;
