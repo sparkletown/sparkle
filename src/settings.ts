@@ -771,3 +771,17 @@ export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 export const EVENTS_PREVIEW_LIST_LENGTH = 5;
 
 export const BM_PARENT_ID = "playa";
+
+// NOTE: volume numbers are expressed in %, thus between 0 and 100
+export const DEFAULT_AUDIO_VOLUME: number = 10;
+export const DEFAULT_AMBIENT_VOLUME: number = 10;
+export const DEFAULT_INTERACTIONS_VOLUME: number = 50;
+export const DEFAULT_NOTIFICATIONS_VOLUME: number = 100;
+export const MIN_AUDIO_VOLUME: number = 0;
+export const MAX_AUDIO_VOLUME: number = 100;
+
+// @debt There could/should be more direct way of inter-component communication
+// @debt localStorage isn't as reliable on all browsers (e.g. specific Safari versions where it got broken)
+// localStorage keys for syncing volume with AnimateMap's game instance
+export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
+export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";

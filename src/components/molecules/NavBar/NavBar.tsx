@@ -7,11 +7,11 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import {
   faBars,
   faCaretLeft,
   faTicketAlt,
-  faVolumeMute,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -21,20 +21,34 @@ import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import { BM_PARENT_ID, DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import {
+  BM_PARENT_ID,
+  DEFAULT_AMBIENT_VOLUME,
+  DEFAULT_SHOW_SCHEDULE,
+  LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
+  LS_KEY_RADIO_VOLUME,
+  PLAYA_VENUE_ID,
+} from "settings";
+
+import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import { radioStationsSelector } from "utils/selectors";
+import {
+  animateMapEnvironmentSoundSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
+import { useAudioVolume } from "hooks/useAudioVolume";
+import { useDispatch } from "hooks/useDispatch";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
-import { useRadio } from "hooks/useRadio";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
+import { useVolumeControl } from "hooks/useVolumeControl";
 
 import { GiftTicketModal } from "components/organisms/GiftTicketModal/GiftTicketModal";
 import { NavBarSchedule } from "components/organisms/NavBarSchedule/NavBarSchedule";
@@ -49,6 +63,7 @@ import { VenuePartygoers } from "components/molecules/VenuePartygoers";
 import { BackButton } from "components/atoms/BackButton";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
+import { VolumeControl } from "components/atoms/VolumeControl";
 
 import { NavBarLogin } from "./NavBarLogin";
 
@@ -150,7 +165,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     hasRadioStations(radioStations) &&
     RegExp("soundcloud").test(radioStations[0]);
 
-  const sound = useMemo(
+  const radioAudio = useMemo(
     () =>
       radioStations && hasRadioStations(radioStations) && !isSoundCloud
         ? new Audio(radioStations[0])
@@ -159,21 +174,44 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   );
 
   const [isRadioPlaying, setIsRadioPlaying] = useState(false);
-  const { volume, setVolume } = useRadio(isRadioPlaying, sound);
+
+  const { volume: radioVolume, setVolume: setRadioVolume } = useAudioVolume({
+    audioElement: radioAudio,
+    isAudioPlaying: isRadioPlaying,
+    storageKey: LS_KEY_RADIO_VOLUME,
+    initialVolume: DEFAULT_AMBIENT_VOLUME,
+  });
+
+  const dispatch = useDispatch();
+  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
+  const [, setAmbientAudioVocal] = useLocalStorage(
+    LS_KEY_IS_AMBIENT_AUDIO_VOCAL
+  );
+
+  const onToggleAmbientAudio = useCallback(() => {
+    const toggledValue = !isAmbientAudioVocal;
+    setAmbientAudioVocal(toggledValue);
+    dispatch(setAnimateMapEnvironmentSound(toggledValue));
+  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
+
+  // Notifications volume control
+  const {
+    volume: notificationsVolume,
+    // volumeCallback: setNotificationsVolume,
+  } = useVolumeControl();
+
+  // Interactions volume control
+  const {
+    volume: interactionsVolume,
+    // volumeCallback: setInteractionsVolume,
+  } = useVolumeControl();
   const handleMute = useCallback(
     (volume: number) => (volume !== 0 ? 0 : 100),
     []
   );
-  const toggleMute = useCallback(() => setVolume(handleMute), [
-    handleMute,
-    setVolume,
-  ]);
-
-  const volumeControlClassname = classNames(
-    "NavBar__menu--link NavBar__menu--volume",
-    {
-      "NavBar__menu--link NavBar__menu--volume--muted": !volume,
-    }
+  const toggleMute = useCallback(
+    () => setRadioVolume(handleMute(radioVolume)),
+    [handleMute, setRadioVolume, radioVolume]
   );
 
   const radioFirstPlayStateLoaded = useRef(false);
@@ -206,6 +244,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     "nav-schedule-clicked": isEventScheduleVisible,
     "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
   });
+
   const hideEventSchedule = useCallback((e) => {
     if (
       e.target.closest(`.${navBarScheduleClassName}`) ||
@@ -240,7 +279,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
     (currentVenue?.showRadio && isSoundCloud) ?? false;
 
   const showRadio = showNormalRadio || showSoundCloudRadio;
-  const volumeIcon = volume ? faVolumeUp : faVolumeMute;
 
   return (
     <>
@@ -321,8 +359,9 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                             radioStation={radioStation}
                             isRadioPlaying={isRadioPlaying}
                             handleRadioEnable={handleRadioEnable}
-                            volume={volume}
-                            setVolume={setVolume}
+                            volume={radioVolume}
+                            setVolume={setRadioVolume}
+                            onMute={toggleMute}
                           />
                         </Popover.Content>
                       </Popover>
@@ -340,15 +379,45 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   </OverlayTrigger>
                 )}
 
-                {showRadio && (
-                  <ButtonNG
-                    className={volumeControlClassname}
-                    onClick={toggleMute}
-                    iconOnly
-                    iconName={volumeIcon}
-                    iconSize="1x"
-                  />
-                )}
+                <OverlayTrigger
+                  trigger="click"
+                  placement="bottom-end"
+                  overlay={
+                    <Popover
+                      id="volume-popover"
+                      className="NavBar__volume-popover NavBar__volume-popover--without-sliders"
+                    >
+                      <Popover.Content>
+                        <VolumeControl
+                          className="NavBar__volume-control"
+                          label="Ambient Noise"
+                          name="noise"
+                          muted={isAmbientAudioVocal}
+                          withMute
+                          onMute={onToggleAmbientAudio}
+                        />
+                        <VolumeControl
+                          className="NavBar__volume-control NavBar__volume-control--hidden"
+                          label="Notifications"
+                          name="notifications"
+                          volume={notificationsVolume}
+                        />
+                        <VolumeControl
+                          className="NavBar__volume-control NavBar__volume-control--hidden"
+                          label="Interactions"
+                          name="interactions"
+                          volume={interactionsVolume}
+                        />
+                      </Popover.Content>
+                    </Popover>
+                  }
+                  rootClose={true}
+                >
+                  <button className="NavBar__menu-link">
+                    <FontAwesomeIcon icon={faVolumeUp} />
+                  </button>
+                </OverlayTrigger>
+
                 <div
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}

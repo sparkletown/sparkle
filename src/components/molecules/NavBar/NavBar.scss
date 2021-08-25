@@ -7,6 +7,8 @@ $nav-schedule-btn-width-clicked: 30px;
 $nav-btn-border-radius: 10px;
 $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
+$volume-popover-width-with-sliders: 30em;
+$volume-popover-width-without-sliders: 15em;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -182,6 +184,7 @@ $logo-size: $spacing--xxl + $spacing--md;
   &:focus {
     border: none;
     background-color: opaque-white(0.14);
+
     &:after {
       opacity: 0.7;
     }
@@ -254,6 +257,26 @@ $logo-size: $spacing--xxl + $spacing--md;
 }
 
 .NavBar {
+  &__volume-control--hidden {
+    display: none;
+  }
+
+  &__volume-popover {
+    height: unset;
+    max-width: unset;
+    padding: $spacing--lg;
+    background-color: $card-background;
+
+    &--with-sliders {
+      width: $volume-popover-width-with-sliders;
+      //transform: translateX(-0.5 * $volume-popover-width-with-sliders);
+    }
+
+    &--without-sliders {
+      width: $volume-popover-width-without-sliders;
+    }
+  }
+
   &__home-icon {
     cursor: pointer;
     font-size: 24px;
@@ -277,8 +300,26 @@ $logo-size: $spacing--xxl + $spacing--md;
     }
   }
 
-  &__profile-popover {
-    height: 100%;
+  &__menu-link {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba($white, 1);
+    opacity: 0.8;
+    border: none;
+    border-radius: $border-radius--max;
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: $spacing--sm;
+
+    &:focus {
+      box-shadow: 0 0 0 2px #ffffff;
+      outline: none;
+      opacity: 1;
+    }
   }
 
   &__radio {
