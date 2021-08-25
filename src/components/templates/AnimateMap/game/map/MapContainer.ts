@@ -386,7 +386,12 @@ export class MapContainer extends Container {
       this._viewport.resize(width, height);
     }
     if (this._joystickContainer) {
-      this._joystickContainer.position.set(86, height - 86);
+      const joystickPosX = 86;
+      const joystickOffsetY = 100;
+      this._joystickContainer.position.set(
+        joystickPosX,
+        height - joystickPosX - joystickOffsetY
+      );
     }
   }
 

@@ -38,7 +38,7 @@ export const RunTabRooms: React.FC<RunTabRoomsProps> = ({ venue }) => {
         <div className="RunTabRooms__add">
           {venueWithRooms && (
             <ButtonNG
-              isLink={true}
+              isLink
               linkTo={`/admin/venue/rooms/${venue.id}`}
               variant="primary"
             >

@@ -1,0 +1,10 @@
+@import "scss/constants.scss";
+
+$background: #e37600;
+
+.CallARangerButton {
+  background-color: $background;
+  &:hover {
+    background-color: lighten($background, 20%);
+  }
+}

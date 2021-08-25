@@ -3,8 +3,8 @@
   height: 100%;
   padding: 10px 19px 22px 26px;
   display: grid;
-  grid-template-columns: 34px 1fr 4fr 1fr 287px 34px;
-  grid-template-rows: 1fr 1fr 1fr 1fr 160px 34px;
+  grid-template-columns: auto 1fr 4fr 1fr 287px 34px;
+  grid-template-rows: 1fr 1fr 1fr 1fr 160px auto;
   grid-column-gap: 10px;
   grid-row-gap: 10px;
 
@@ -14,10 +14,14 @@
     ". . . . . ."
     ". . . . . ."
     ". . . . . zoom"
-    ". . . tooltip . center";
+    "call . . tooltip . center";
 
   &__zoom {
     grid-area: zoom;
+  }
+
+  &__call-a-ranger {
+    grid-area: call;
   }
 
   &__center {
