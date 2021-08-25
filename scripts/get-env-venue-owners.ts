@@ -5,19 +5,29 @@ import { resolve } from "path";
 
 import admin from "firebase-admin";
 
-import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
+import {
+  initFirebaseAdminApp,
+  makeScriptUsage,
+  parseCredentialFile,
+} from "./lib/helpers";
 
 const usage = makeScriptUsage({
   description: "Print venue owners' email addresses.",
-  usageParams: "PROJECT_ID [CREDENTIAL_PATH]",
-  exampleParams: "co-reality-map [theMatchingAccountServiceKey.json]",
+  usageParams: "[CREDENTIAL_PATH]",
+  exampleParams: "[theMatchingAccountServiceKey.json]",
 });
 
-const [projectId, credentialPath] = process.argv.slice(2);
+const [credentialPath] = process.argv.slice(2);
 
-// Note: no need to check credentialPath here as initFirebaseAdmin defaults it when undefined
-if (!projectId) {
+if (!credentialPath) {
   usage();
+}
+
+const { project_id: projectId } = parseCredentialFile(credentialPath);
+
+if (!projectId) {
+  console.error("Credential file has no project_id:", credentialPath);
+  process.exit(1);
 }
 
 initFirebaseAdminApp(projectId, {
@@ -45,24 +55,32 @@ initFirebaseAdminApp(projectId, {
   const venues = firestoreVenues.docs;
 
   // clear file
-  fs.truncate("./venueOwners.csv", 0, () =>
-    console.log("Venue Owners file cleared")
-  );
+  fs.writeFileSync("./venueOwners.csv", "");
+
+  const headingLine = ["Venue Id", "Venue Name", "Venue Owners"]
+    .map((heading) => `"${heading}"`)
+    .join(",");
+
+  fs.writeFileSync("./venueOwners.csv", `${headingLine} \n`, { flag: "a" });
 
   venues.forEach((doc) => {
     if (!doc.exists) return;
 
-    fs.writeFileSync(
-      "./venueOwners.csv",
-      `Venue: ${doc.id} (${doc.data().name}) is owned by emails:
-      ${doc
+    const dto = [
+      doc.id,
+      doc.data().name,
+      doc
         .data()
-        .owners.map(
+        .owners?.map(
           (uid: string) => allUsers.find((u) => u.uid === uid)?.email ?? uid
-        )
-        .join(", ")} \n`,
-      { flag: "a" }
-    );
+        ) || [],
+    ];
+
+    const csvFormattedLine = dto.map((s) => `"${s} "`).join(",");
+
+    fs.writeFileSync("./venueOwners.csv", `${csvFormattedLine} \n`, {
+      flag: "a",
+    });
   });
 
   process.exit(0);
