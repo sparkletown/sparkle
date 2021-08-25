@@ -48,7 +48,6 @@ import {
   VenueSortingOptions,
 } from "utils/venue";
 
-import { useIsAdminUser } from "hooks/roles";
 import { useOwnedVenues } from "hooks/useConnectOwnedVenues";
 import { useFirestoreConnect } from "hooks/useFirestoreConnect";
 import { useQuery } from "hooks/useQuery";
@@ -61,6 +60,8 @@ import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { Loading } from "components/molecules/Loading";
+
+import { AdminForbidden } from "components/atoms/AdminForbidden/AdminForbidden";
 
 import "firebase/storage";
 
@@ -459,10 +460,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
 };
 
 const Admin: React.FC = () => {
-  const { user } = useUser();
-  const userId = user?.uid || "";
-
-  const { isAdminUser, isLoading: isAdminUserLoading } = useIsAdminUser(userId);
+  const { user, userId = "" } = useUser();
 
   // @debt refactor this + related code so as not to rely on using a shadowed 'storeAs' key
   //   this should be something like `storeAs: "venuesOwnedByUser"` or similar
@@ -479,31 +477,35 @@ const Admin: React.FC = () => {
     ? parseInt(queryRoomIndexString)
     : undefined;
 
-  if (isAdminUserLoading) return <>Loading...</>;
-  if (!IS_BURN && !isAdminUser) return <>Forbidden</>;
-
-  if (!user) {
-    return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
-  }
-
-  return (
-    <WithNavigationBar hasBackButton={false}>
-      <div className="admin-dashboard">
-        <div className="page-container page-container_adminview">
-          <div className="page-container-adminsidebar">
-            <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
-          </div>
-          <div className="page-container-adminpanel">
-            {venueId ? (
-              <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
-            ) : (
-              <>Select a venue to see its details</>
-            )}
+  if (user) {
+    return (
+      <WithNavigationBar hasBackButton={false}>
+        <AdminForbidden userId={userId} />;
+        <div className="admin-dashboard">
+          <div className="page-container page-container_adminview">
+            <div className="page-container-adminsidebar">
+              <VenueList selectedVenueId={venueId} roomIndex={queryRoomIndex} />
+            </div>
+            <div className="page-container-adminpanel">
+              {venueId ? (
+                <VenueDetails venueId={venueId} roomIndex={queryRoomIndex} />
+              ) : (
+                <>Select a venue to see its details</>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </WithNavigationBar>
-  );
+      </WithNavigationBar>
+    );
+  } else {
+    // @debt deliberatelly returning AdminForbidden before redirect as to keep original logic. Ideally they'd be in reverse
+    return (
+      <>
+        <AdminForbidden userId={userId} />;
+        <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />
+      </>
+    );
+  }
 };
 
 export default Admin;

@@ -12,12 +12,11 @@ const VenueWizard: React.FC = () => {
   const venueId = useVenueId();
   const [state, dispatch] = useReducer(VenueWizardReducer, initialState);
 
-  if (venueId)
-    return (
-      <VenueWizardEdit venueId={venueId} state={state} dispatch={dispatch} />
-    );
-
-  return <VenueWizardCreate state={state} dispatch={dispatch} />;
+  return venueId ? (
+    <VenueWizardEdit venueId={venueId} state={state} dispatch={dispatch} />
+  ) : (
+    <VenueWizardCreate state={state} dispatch={dispatch} />
+  );
 };
 
 export default VenueWizard;
