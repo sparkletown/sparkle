@@ -10,6 +10,7 @@ import vertShader from "./ColorMatrixVS.glsl";
 import {
   LIGHT_KEYFRAMES,
   MOON_KEYFRAMES,
+  STAT_LIGHT_KEYFRAMES,
   SUN_KEYFRAMES,
 } from "./KeyframesConfigs";
 import staticLightsFS from "./StaticLigthsFS.glsl";
@@ -48,6 +49,19 @@ const interpolateDayNightKeys: LinearInterpolationCallback = (
   const b = (right[2] - left[2]) * time + left[2];
   return [r, g, b];
 };
+
+const interpolateStaticLightKeys: LinearInterpolationCallback = (
+  left,
+  right,
+  time
+) => {
+  return [(right[0] - left[0]) * time + left[0]];
+};
+
+export const staticLightKeyFramer = new KeyFramer(
+  interpolateStaticLightKeys,
+  STAT_LIGHT_KEYFRAMES
+);
 
 export const sunKeyFramer = new KeyFramer(
   interpolateDayNightKeys,

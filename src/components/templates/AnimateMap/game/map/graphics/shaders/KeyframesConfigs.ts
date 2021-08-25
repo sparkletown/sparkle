@@ -34,3 +34,13 @@ export const MOON_KEYFRAMES = [
   { time: 21, data: [0.133, 0.076, 0.113] },
   { time: 24, data: [0.085, 0.073, 0.119] },
 ];
+
+export const STAT_LIGHT_KEYFRAMES = [
+  { time: -1, data: [1] },
+  { time: 5, data: [1] },
+  { time: 7, data: [0] },
+  { time: 12, data: [0] },
+  { time: 16, data: [0] },
+  { time: 21, data: [1] },
+  { time: 24, data: [1] },
+];

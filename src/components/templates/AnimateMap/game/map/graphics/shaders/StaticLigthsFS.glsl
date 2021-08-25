@@ -7,7 +7,7 @@ uniform sampler2D uSampler;
 varying vec2 pixelPos;
 uniform mediump vec2 lightsPos[MAX_LIGHTS];
 uniform mediump int lightsCol[MAX_LIGHTS];
-
+uniform mediump vec2 koef[MAX_LIGHTS];
 uniform int lightQuantity;
 
 void main(void){
@@ -18,8 +18,6 @@ void main(void){
         mediump float magnX = (pixelPos.x - lightsPos[i].x);
         mediump float magnY = (pixelPos.y - lightsPos[i].y);
 
-        if (!((magnX > 600.0) || (magnY > 600.0)))
-        {
             magnX *= magnX;
             magnY *= magnY;
             lowp int r = lightsCol[i] / 65536;
@@ -31,10 +29,9 @@ void main(void){
 
             mediump float magnitude = (magnX + magnY);
 
-            rgb /= (1.0 + 0.027*sqrt(magnitude) + 0.0028*magnitude);
+            rgb /= (1.0 + koef[i].x*sqrt(magnitude) + koef[i].y*magnitude);
 
             light += rgb;
-        }
         if (i > lightQuantity)
         break;
     }

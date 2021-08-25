@@ -13,6 +13,7 @@ import {
   LightSize,
   mapLightningShader,
   moonKeyFramer,
+  staticLightKeyFramer,
   sunKeyFramer,
 } from "../graphics/shaders/mapLightning";
 import {
@@ -267,6 +268,9 @@ export class ViewportBackgroundSystem extends System {
     // note: what's happen, if sum of elements more than 1?
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
     this.container.filters[0].uniforms.ambientLight = light;
+    this.container.filters[0].uniforms.staticLightAlpha = staticLightKeyFramer.getFrame(
+      time
+    )[0];
   }
 
   private addTile(point: Point): Sprite {
