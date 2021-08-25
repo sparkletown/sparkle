@@ -11,6 +11,7 @@ import {
 import { LightSize, mapStaticLightningShader } from "./mapLightning";
 
 const MAX_LIGHTS = 512;
+const BATCH_SIZE = 128;
 const textureSize = 2048;
 export interface LightData {
   r: number;
@@ -20,18 +21,6 @@ export interface LightData {
   y: number;
   size: number;
 }
-
-export const staticLightData: LightData[] = [
-  { r: 0.8, g: 0.254, b: 0.0, x: 4455, y: 5097, size: 128.146 },
-  {
-    r: 0.254,
-    g: 0.254,
-    b: 0.254,
-    x: 9000,
-    y: 5544.292999514062,
-    size: 128.146,
-  },
-];
 
 export class ShaderDataProvider {
   private lightsPos = new Float32Array(MAX_LIGHTS * 2);
@@ -78,15 +67,36 @@ export class ShaderDataProvider {
   }
 
   public renderSprite() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
     this.sprite.filterArea = new Rectangle(0, 0, textureSize, textureSize);
-    return this.app.renderer.generateTexture(
-      this.sprite,
-      SCALE_MODES.LINEAR,
-      1,
-      new Rectangle(0, 0, textureSize, textureSize)
-    );
-    //this.sprite.cacheAsBitmap = true;
+    while (this.lightsCol.length > 0) {
+      if (this.lightsCol.length >= BATCH_SIZE) {
+        this.sprite.filters[0].uniforms.lightsQuantity = BATCH_SIZE;
+      } else {
+        this.sprite.filters[0].uniforms.lightsQuantity = this.lightsCol.length;
+      }
+      this.app.renderer.render(this.sprite, this.renderTexture, true);
+      if (this.lightsCol.length < BATCH_SIZE) {
+        this.lightsCol = new Int32Array();
+        this.lightsPos = new Float32Array();
+      } else {
+        this.lightsCol = this.lightsCol.slice(BATCH_SIZE);
+        this.lightsPos = this.lightsPos.slice(BATCH_SIZE * 2);
+        this.koef = this.koef.slice(BATCH_SIZE * 2);
+      }
+    }
+    return this.renderTexture;
   }
 }
+
+export const staticLightData: LightData[] = [
+  { r: 0.8, g: 0.254, b: 0.0, x: 4455, y: 5097, size: 128.146 },
+  { r: 0.8, g: 0.254, b: 0.0, x: 4455, y: 5097, size: 3000 },
+  {
+    r: 0.254,
+    g: 0.254,
+    b: 0.254,
+    x: 9000,
+    y: 5544.292999514062,
+    size: 128.146,
+  },
+];
