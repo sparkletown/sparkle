@@ -1,6 +1,7 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
+import { ShowTooltipClickEnter } from "../../commands/ShowTooltipClickEnter";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { PositionComponent } from "../components/PositionComponent";
@@ -56,6 +57,8 @@ export class MotionCollisionSystem extends System {
             node.collision
           )
         ) {
+          new ShowTooltipClickEnter(node).execute();
+
           GameInstance.instance.eventProvider.emit(
             EventType.ON_VENUE_COLLISION,
             node.venue.model

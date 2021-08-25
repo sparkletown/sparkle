@@ -390,6 +390,7 @@ export default class EntityFactory {
             entity.add(
               new TooltipComponent(
                 `bot id: ${user.data.id}`.slice(0, 15) + "...",
+                "",
                 15,
                 "top"
               )
@@ -503,6 +504,7 @@ export default class EntityFactory {
           () => {
             const tooltip: TooltipComponent = new TooltipComponent(
               `Join to firebarrel`,
+              "",
               0
             );
             tooltip.textColor = 0xffffff;

@@ -22,30 +22,19 @@ import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
-const addTooltip = (venue: ReplicatedVenue, entity: Entity) => {
-  const tooltip: TooltipComponent = new TooltipComponent(
-    venue.data.title.slice(0, 15) + "..."
-  );
+export const addVenueTooltip = (
+  venue: ReplicatedVenue,
+  entity: Entity,
+  text: string,
+  additionalText = ""
+) => {
+  const tooltip = new TooltipComponent(text, additionalText);
   tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
-  // add increase
-  const comm: SpriteComponent | null = entity.get(SpriteComponent);
-  const duration = 100;
-  if (comm) {
-    entity.add(
-      new AnimationComponent(
-        new VenueHoverIn(comm.view as Venue, duration),
-        duration
-      )
-    );
-  }
 };
 
 export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
-  // venue.data.isEnabled = false;
-  // venue.data.usersCount = 0;
-
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const venueComponent = new VenueComponent(venue, fsm);
@@ -91,7 +80,19 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
       new HoverableSpriteComponent(
         () => {
           // add tooltip
-          addTooltip(venue, entity);
+          addVenueTooltip(venue, entity, venue.data.title.slice(0, 15) + "...");
+
+          // add increase
+          const comm = entity.get(SpriteComponent);
+          const duration = 100;
+          if (comm) {
+            entity.add(
+              new AnimationComponent(
+                new VenueHoverIn(comm.view as Venue, duration),
+                duration
+              )
+            );
+          }
         },
         () => {
           // remove tooltip
