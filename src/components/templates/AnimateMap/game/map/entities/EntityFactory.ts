@@ -585,15 +585,8 @@ export default class EntityFactory {
 
     return entity;
   }
-  private count = 0;
   public createVenue(venue: ReplicatedVenue): Entity {
-    this.count++;
-    console.log("venue count", this.count);
-    if (this.count < 10) {
-      return createVenueEntity(venue, this.engine);
-    } else {
-      return new Entity();
-    }
+    return createVenueEntity(venue, this.engine);
   }
 
   public createSoundEmitter(

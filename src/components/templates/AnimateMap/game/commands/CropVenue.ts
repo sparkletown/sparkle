@@ -39,7 +39,7 @@ export class CropVenue implements Command {
         if (!comm.image) return console.error();
 
         const size = Math.min(comm.image.width, comm.image.height);
-        const scale = size / GameConfig.VENUE_DEFAULT_SIZE;
+        const scale = GameConfig.VENUE_DEFAULT_SIZE / size;
         this.canvas.width = size * scale;
         this.canvas.height = size * scale;
 
