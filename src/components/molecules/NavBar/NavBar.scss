@@ -203,8 +203,7 @@ $logo-size: $spacing--xxl + $spacing--md;
   &__sparkle {
     &-logo {
       margin-right: $spacing--lg;
-      width: $logo-size;
-      height: $logo-size;
+      @include square-size($logo-size);
       background-image: url(/assets/icons/sparkle-nav-logo.png);
       background-size: contain;
       background-repeat: no-repeat;
@@ -228,20 +227,20 @@ $logo-size: $spacing--xxl + $spacing--md;
   }
 
   &__user-avatar {
-    width: $menu-item-size;
-    height: $menu-item-size;
+    @include square-size($menu-item-size);
     margin-right: $spacing--sm;
 
     img {
-      width: $menu-item-size;
-      height: $menu-item-size;
+      @include square-size($menu-item-size);
     }
   }
 
   &__menu {
-    &--volume.mute {
-      opacity: 0.5;
-      box-shadow: 0 0 0 2px $white;
+    &--volume {
+      &--muted {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px $white;
+      }
     }
 
     &-link {
@@ -250,8 +249,7 @@ $logo-size: $spacing--xxl + $spacing--md;
       opacity: 0.8;
       border: none;
       border-radius: $border-radius--max;
-      width: $menu-item-size;
-      height: $menu-item-size;
+      @include square-size($menu-item-size);
 
       display: flex;
       align-items: center;

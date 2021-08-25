@@ -21,7 +21,7 @@ import { isEmpty } from "lodash";
 
 import { IS_BURN } from "secrets";
 
-import { DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
+import { BM_PARENT_ID, DEFAULT_SHOW_SCHEDULE, PLAYA_VENUE_ID } from "settings";
 
 import { UpcomingEvent } from "types/UpcomingEvent";
 
@@ -173,7 +173,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const volumeControlClassname = classNames(
     "NavBar__menu--link NavBar__menu--volume",
     {
-      mute: !volume,
+      "NavBar__menu--link NavBar__menu--volume--muted": !volume,
     }
   );
 
@@ -214,10 +214,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   }, [parentVenueId, openUrlUsingRouter]);
 
   const navigateToHomepage = useCallback(() => {
-    if (!sovereignVenueId) return;
-
-    enterVenue(sovereignVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
-  }, [sovereignVenueId, openUrlUsingRouter]);
+    enterVenue(BM_PARENT_ID, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [openUrlUsingRouter]);
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
@@ -265,7 +263,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <PlayaTime /> - <VenuePartygoers venueId={venueId} />
+              <PlayaTime /> - <VenuePartygoers />
             </div>
 
             {!user && <NavBarLogin />}
@@ -325,7 +323,11 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                     rootClose={true}
                     defaultShow={showRadioOverlay}
                   >
-                    <ButtonNG className="NavBar__menu-link" iconOnly>
+                    <ButtonNG
+                      className="NavBar__menu-link"
+                      iconOnly
+                      iconSize="1x"
+                    >
                       <img src={RadioIcon} alt="radio icon" />
                     </ButtonNG>
                   </OverlayTrigger>
@@ -360,6 +362,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   <ButtonNG
                     className="NavBar__menu--link"
                     iconOnly
+                    iconSize="1x"
                     iconName={faBars}
                   />
                 </OverlayTrigger>

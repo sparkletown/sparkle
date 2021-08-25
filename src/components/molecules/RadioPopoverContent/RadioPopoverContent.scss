@@ -1,7 +1,7 @@
 @import "scss/constants.scss";
 
 .RadioPopoverContent {
-  &_title {
+  &__title {
     font-size: $font-size--md;
     color: opaque-white(0.5);
     margin-bottom: $spacing--lg;

@@ -13,10 +13,10 @@ $media-width--mobile-max: 1024px;
   position: fixed;
   display: flex;
   flex-flow: column;
-  top: $navbar-search-height;
+  top: $navbar-height;
   right: 0;
   width: $chat-sidebar-width;
-  height: calc(100vh - $reserved-page-height);
+  height: calc(100vh - #{$reserved-page-height});
   background-color: $saturated-black;
   z-index: z(sidebar);
 

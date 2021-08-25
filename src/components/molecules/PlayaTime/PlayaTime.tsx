@@ -4,12 +4,17 @@ import timezone from "dayjs/plugin/timezone";
 import updateLocale from "dayjs/plugin/updateLocale";
 import utc from "dayjs/plugin/utc";
 
-import { CURRENT_TIME_IN_LOCATION, CURRENT_TIMEZONE } from "settings";
+import {
+  CURRENT_TIME_IN_LOCATION,
+  CURRENT_TIMEZONE,
+  ONE_MINUTE_MS,
+} from "settings";
 
 import { useInterval } from "hooks/useInterval";
 
 import "./PlayaTime.scss";
 
+// @debt deprecated dayjs library, use date-fns instead
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.extend(updateLocale);
@@ -20,7 +25,7 @@ export const PlayaTime: React.FC = () => {
   useInterval(() => {
     const pt = dayjs().tz(CURRENT_TIMEZONE);
     setCurrentTime(pt.format("h:mm A"));
-  }, 1000);
+  }, ONE_MINUTE_MS);
 
   return (
     <div className="PlayaTime__container">

@@ -1,6 +1,6 @@
 import React from "react";
 
-import { getRadioStationUrl } from "utils/radio";
+import { getSoundCloudPlayerUrl } from "utils/radio";
 
 import { RadioModal } from "components/organisms/RadioModal/RadioModal";
 
@@ -27,11 +27,11 @@ export const RadioPopoverContent: React.FC<RadioPopoverContentProps> = ({
   volume,
   setVolume,
 }) => {
-  const radioUrl = radioStation ? getRadioStationUrl(radioStation) : "";
+  const radioUrl = radioStation ? getSoundCloudPlayerUrl(radioStation) : "";
 
   return (
     <>
-      <div className="RadioPopoverContent_title">{radioTitle}</div>
+      <div className="RadioPopoverContent__title">{radioTitle}</div>
       {showNormalRadio && (
         <RadioModal
           {...{
