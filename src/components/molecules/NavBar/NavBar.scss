@@ -1,18 +1,7 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
-$triangle-width: 7px;
-$star-height: 19px;
-$star-width: 10px;
-$nav-container-width: 113px;
-$nav-container-triggered-width: 96px;
-$nav-container-height: 80px;
-$nav-container-triggered-height: 66px;
-$nav-text-head-width: 75px;
-$nav-text-body-width: 50px;
-$nav-text-height: 45px;
-$nav-btn-opened-height: 66px;
-$nav-text-body-height: 34px;
+$nav-container-width: 96px;
+$nav-container-height: 66px;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -170,29 +159,26 @@ $nav-text-body-height: 34px;
   align-items: center;
   justify-content: center;
   top: 65px;
-  left: -$spacing--md;
+  left: 0;
   color: $white;
   width: $nav-container-width;
   height: $nav-container-height;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   cursor: pointer;
-  background-image: url(/assets/icons/nav-schedule-whatson.png);
+  background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
 
   &-clicked {
-    margin-left: 41%;
+    margin-left: 40%;
     width: 30px;
-    height: $nav-btn-opened-height;
-    background-image: url(/assets/icons/nav-schedule-whatson-clicked.png);
+    background: url(/assets/icons/nav-schedule-whatson-clicked.png);
   }
 
   &-triggered {
     margin-top: $spacing--sm;
     color: $white;
-    left: 0px;
-    width: $nav-container-triggered-width;
-    height: $nav-container-triggered-height;
-    background-image: url(/assets/icons/nav-schedule-whatson-triggered.png);
+    background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
+      $schedule-opened-grey;
   }
 }
 

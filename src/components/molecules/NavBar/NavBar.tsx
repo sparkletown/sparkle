@@ -164,14 +164,14 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const toggleEventSchedule = useCallback(() => {
     if (!isScheduleTriggered && isEventScheduleVisible) {
-      updateScheduleTriggered(!isScheduleTriggered);
+      updateScheduleTriggered(true);
     }
     setEventScheduleVisible(!isEventScheduleVisible);
   }, [isEventScheduleVisible, isScheduleTriggered]);
 
   const scheduleBtnClasses = classNames("nav-schedule", {
     "nav-schedule-clicked": isEventScheduleVisible,
-    "nav-schedule-triggered": isScheduleTriggered,
+    "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
   });
   const hideEventSchedule = useCallback((e) => {
     if (
