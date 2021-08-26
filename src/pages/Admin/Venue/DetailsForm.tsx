@@ -131,7 +131,7 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
       bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
       mapBackgroundImageUrl:
         defaultValues?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND,
-      parentId: defaultValues?.parentId ?? "",
+      parentId: defaultValues?.parentId ?? BM_PARENT_ID,
     },
   });
   const { user } = useUser();
@@ -629,7 +629,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
   );
 
   const renderParentIdInput = () => (
-    <div className="input-container DetailsForm--hidden">
+    <div className="input-container">
       <h4 className="italic input-header">
         Enter the parent venue ID, for the &quot;back&quot; button to go to, and
         for sharing events in the schedule
@@ -646,7 +646,6 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         below
       </div>
       <input
-        defaultValue={BM_PARENT_ID}
         type="text"
         disabled={disable}
         name="parentId"
@@ -818,7 +817,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         {renderBannerPhotoInput()}
         {renderLogoInput()}
-        {renderHelper("1:1 ratio recommended")}
+        {renderHelper(
+          "This is how you will appear on the map. Please upload a square image."
+        )}
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
@@ -874,7 +875,7 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
         {renderRadioToggle()}
 
         <UserStatusManager
-          className={"DetailsForm__hidden-component"}
+          className="DetailsForm--hidden"
           venueId={venueId}
           checked={hasUserStatuses}
           userStatuses={userStatuses}
