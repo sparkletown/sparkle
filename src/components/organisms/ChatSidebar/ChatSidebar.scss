@@ -67,6 +67,19 @@ $media-width--mobile-max: 1024px;
     }
   }
 
+  &__help-center-header {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &__help-center {
+    width: 100%;
+    height: 100%;
+  }
+
   &__controller {
     color: $white;
     background-color: $secondary;
@@ -116,8 +129,33 @@ $media-width--mobile-max: 1024px;
     margin-top: $spacing--xl * 2;
   }
 
+  &__controller {
+    margin-top: $spacing--md;
+    min-width: 66px;
+  }
+
+  &--expanded &__controller {
+    margin-top: 0;
+  }
+
+  &__private-chat {
+    margin-top: $header-height + 2 * $spacing--md;
+  }
+
+  &__help-center-icon {
+    margin-top: 2 * $header-height + 3 * $spacing--md;
+  }
+
+  &--wide {
+    width: 90%;
+  }
+
   @media only screen and (min-device-width: $media-width--mobile-min) and (max-device-width: $media-width--mobile-max) {
     &--expanded {
+      width: 100%;
+    }
+
+    &--wide {
       width: 100%;
     }
 
