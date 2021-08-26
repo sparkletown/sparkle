@@ -149,9 +149,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       isEventWithinDateAndNotFinished(day)
     );
 
-    const eventsFilledWithPriority = daysEvents
-      .map((event) => ({ ...event, orderPriority: event.orderPriority ?? 0 }))
-      .sort(eventTimeAndOrderComparator);
+    const eventsFilledWithPriority = daysEvents.sort(
+      eventTimeAndOrderComparator
+    );
 
     return {
       scheduleDate: day,

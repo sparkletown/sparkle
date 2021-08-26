@@ -5,16 +5,12 @@
 }
 
 .ScheduleEventSubListNG {
-  &_transparent {
-    background-color: transparent;
-  }
-
   &__title {
     margin-bottom: $spacing--lg;
 
     font-size: $font-size--xl;
     font-weight: $font-weight--700;
-    line-height: 22px;
+    line-height: $spacing--xl;
   }
 
   &__button {
@@ -22,7 +18,7 @@
     margin: $spacing--sm auto;
 
     font-size: $font-size--md;
-    line-height: 17px;
+    line-height: $spacing--lg;
     text-decoration: underline;
   }
 }
