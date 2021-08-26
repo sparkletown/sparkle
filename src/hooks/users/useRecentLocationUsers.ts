@@ -28,14 +28,14 @@ export interface RecentLocationUsersData {
  *   userLocation.lastSeenAt, whereas useRecentLocationUsers checks userLocation.lastSeenIn[locationName]
  *   Can we cleanly refactor them into a single hook somehow to de-duplicate the logic?
  */
-export const useRecentLocationUsers = (
-  locationName?: string
-): RecentLocationUsersData => {
+export const useRecentLocationUsers = ({
+  locationName,
+}: {
+  locationName?: string;
+}): RecentLocationUsersData => {
   const lastSeenThreshold = useUserLastSeenThreshold();
-
   // We mostly use this here to ensure that the WorldUsersProvider has definitely been connected
   const { worldUsersApiArgs } = useWorldUsersContext();
-
   const {
     isSuccess: isRecentLocationUsersLoaded,
     recentLocationUsers,

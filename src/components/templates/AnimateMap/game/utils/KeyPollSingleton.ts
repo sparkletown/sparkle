@@ -11,6 +11,7 @@ export class KeyPollSingleton {
   private constructor() {
     window.addEventListener("keyup", this.keyUpHandler);
     window.addEventListener("keydown", this.keyDownHandler);
+    document.addEventListener("blur", this.windowBlurHandler);
   }
 
   public static getInstance(): KeyPollSingleton {
@@ -45,6 +46,15 @@ export class KeyPollSingleton {
     this.keyEventHandlers
       .filter((item) => item.code === keyCode)
       .forEach((item) => item.callback("up"));
+  };
+
+  private windowBlurHandler = () => {
+    const keycodes = [87, 65, 83, 68, 38, 37, 40, 39];
+    keycodes.forEach((keyCode) => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      this.keyUpHandler({ keyCode: keyCode });
+    });
   };
 
   private keyEventHandlers: {

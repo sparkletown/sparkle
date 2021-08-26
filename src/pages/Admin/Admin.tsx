@@ -14,21 +14,15 @@ import {
   useLocation,
   useRouteMatch,
 } from "react-router-dom";
+import { faEllipsisV } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
 import { IS_BURN } from "secrets";
 
-import {
-  DEFAULT_VENUE,
-  PLACEABLE_VENUE_TEMPLATES,
-  PLAYA_HEIGHT,
-  PLAYA_IMAGE,
-  PLAYA_VENUE_NAME,
-  PLAYA_VENUE_SIZE,
-  PLAYA_VENUE_STYLES,
-  PLAYA_WIDTH,
-} from "settings";
+import { DEFAULT_VENUE } from "settings";
 
 import { ValidStoreAsKeys } from "types/Firestore";
 import { AnyVenue, isVenueWithRooms, VenueEvent } from "types/venues";
@@ -38,9 +32,10 @@ import { WithId } from "utils/id";
 import { venueInsideUrl } from "utils/url";
 import {
   canBeDeleted,
-  canHaveEvents,
   canHavePlacement,
   canHaveSubvenues,
+  sortVenues,
+  VenueSortingOptions,
 } from "utils/venue";
 
 import { useIsAdminUser } from "hooks/roles";
@@ -50,8 +45,6 @@ import { useQuery } from "hooks/useQuery";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
-
-import { PlayaContainer } from "pages/Account/Venue/VenueMapEdition";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -83,18 +76,58 @@ const VenueList: React.FC<VenueListProps> = ({
     currentVenueId: selectedVenueId,
   });
 
+  const {
+    isShown: showSortingDropdown,
+    toggle: toggleSortingDropdown,
+  } = useShowHide();
+
+  const [currentSortingOption, setCurrentSortingOption] = useState(
+    VenueSortingOptions.az
+  );
+
+  const sortedVenues = useMemo(() => {
+    return sortVenues(ownedVenues, currentSortingOption) ?? [];
+  }, [currentSortingOption, ownedVenues]);
+
+  const sortingOptions = useMemo(
+    () =>
+      Object.values(VenueSortingOptions).map((sortingOption) => (
+        <li
+          key={sortingOption}
+          className={classNames("page-container-adminsidebar__sorting-option", {
+            "page-container-adminsidebar__sorting-option--active":
+              currentSortingOption === sortingOption,
+          })}
+          onClick={() => {
+            setCurrentSortingOption(sortingOption);
+            toggleSortingDropdown();
+          }}
+        >
+          {sortingOption}
+        </li>
+      )),
+    [currentSortingOption, toggleSortingDropdown]
+  );
+
   if (isLoading) return <Loading />;
 
   return (
     <>
-      <div className="page-container-adminsidebar-title title">My Venues</div>
+      <div className="page-container-adminsidebar-title title">
+        My Venues
+        <FontAwesomeIcon
+          className="page-container-adminsidebar-title__ellipsis"
+          icon={faEllipsisV}
+          onClick={toggleSortingDropdown}
+        />
+      </div>
       <div className="page-container-adminsidebar-top">
         <Link to="/admin/venue/creation" className="btn btn-primary">
           Create a venue
         </Link>
       </div>
       <ul className="page-container-adminsidebar-venueslist">
-        {ownedVenues.map((venue) => (
+        {sortedVenues.map((venue) => (
           <li
             key={venue.id}
             className={`${selectedVenueId === venue.id ? "selected" : ""} ${
@@ -119,6 +152,14 @@ const VenueList: React.FC<VenueListProps> = ({
           </li>
         ))}
       </ul>
+
+      {showSortingDropdown && (
+        <div className="page-container-adminsidebar__sorting-dropdown">
+          <ul className="page-container-adminsidebar__sorting-list">
+            {sortingOptions}
+          </ul>
+        </div>
+      )}
     </>
   );
 };
@@ -152,7 +193,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
 
     return [
       { url: matchUrl, label: "Venue Info" },
-      canHaveEvents(currentVenue) && {
+      {
         url: `${matchUrl}/events`,
         label: "Events",
       },
@@ -269,56 +310,6 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
               venue={venue}
               containerStyle={{ marginTop: 20 }}
             />
-            {IS_BURN && PLACEABLE_VENUE_TEMPLATES.includes(venue.template) && (
-              <>
-                <h4
-                  className="italic"
-                  style={{ fontSize: "30px", textAlign: "center" }}
-                >
-                  How your experience appears on the {PLAYA_VENUE_NAME}
-                </h4>
-                <div className="container venue-entrance-experience-container">
-                  <div
-                    className="playa-container"
-                    ref={placementDivRef}
-                    style={{ width: "100%", height: 1000, overflow: "scroll" }}
-                  >
-                    <PlayaContainer
-                      rounded
-                      interactive={false}
-                      resizable={false}
-                      iconsMap={
-                        venue.placement
-                          ? {
-                              icon: {
-                                width: PLAYA_VENUE_SIZE,
-                                height: PLAYA_VENUE_SIZE,
-                                top: venue.placement.y,
-                                left: venue.placement.x,
-                              },
-                            }
-                          : {}
-                      }
-                      coordinatesBoundary={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      backgroundImage={PLAYA_IMAGE}
-                      iconImageStyle={PLAYA_VENUE_STYLES.iconImage}
-                      draggableIconImageStyle={
-                        PLAYA_VENUE_STYLES.draggableIconImage
-                      }
-                      containerStyle={{
-                        width: PLAYA_WIDTH,
-                        height: PLAYA_HEIGHT,
-                      }}
-                      venueId={venue.id}
-                      otherIconsStyle={{ opacity: 0.4 }}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
           </>
         )}
       </div>
@@ -404,7 +395,7 @@ const VenueInfoComponent: React.FC<VenueInfoComponentProps> = ({
   );
 };
 
-const Admin: React.FC = () => {
+export const Admin: React.FC = () => {
   const { user } = useUser();
   const userId = user?.uid || "";
 
@@ -451,5 +442,3 @@ const Admin: React.FC = () => {
     </WithNavigationBar>
   );
 };
-
-export default Admin;
