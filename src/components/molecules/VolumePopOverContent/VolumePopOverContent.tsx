@@ -15,7 +15,7 @@ import { VolumeControl } from "components/atoms/VolumeControl";
 
 import "./VolumePopOverContent.scss";
 
-const VolumePopOverContent = () => {
+export const VolumePopOverContent = () => {
   const dispatch = useDispatch();
   const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
   const [, setAmbientAudioVocal] = useLocalStorage(
@@ -65,5 +65,3 @@ const VolumePopOverContent = () => {
     </>
   );
 };
-
-export default VolumePopOverContent;

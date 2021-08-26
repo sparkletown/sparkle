@@ -190,6 +190,10 @@ $volume-popover-width-without-sliders: 15em;
     }
   }
 
+  &-marged {
+    margin-top: $spacing--xl * 2;
+  }
+
   &-triggered {
     color: $white;
     background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat

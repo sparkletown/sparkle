@@ -7,9 +7,9 @@ import React, {
 } from "react";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
+import { useLocalStorage } from "react-use";
 import {
   faBars,
-  faCaretLeft,
   faTicketAlt,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -24,16 +24,24 @@ import {
   BM_PARENT_ID,
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
+  IS_SIMPLE_MUTE_BUTTON,
+  LS_KEY_IS_AMBIENT_AUDIO_VOCAL,
   LS_KEY_RADIO_VOLUME,
   PLAYA_VENUE_ID,
 } from "settings";
 
+import { setAnimateMapEnvironmentSound } from "store/actions/AnimateMap";
+
 import { UpcomingEvent } from "types/UpcomingEvent";
 
-import { radioStationsSelector } from "utils/selectors";
+import {
+  animateMapEnvironmentSoundSelector,
+  radioStationsSelector,
+} from "utils/selectors";
 import { enterVenue, venueInsideUrl } from "utils/url";
 
 import { useAudioVolume } from "hooks/useAudioVolume";
+import { useDispatch } from "hooks/useDispatch";
 import { useIsCurrentUser } from "hooks/useIsCurrentUser";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -50,11 +58,12 @@ import { PlayaTime } from "components/molecules/PlayaTime";
 import { RadioPopoverContent } from "components/molecules/RadioPopoverContent";
 import UpcomingTickets from "components/molecules/UpcomingTickets";
 import { VenuePartygoers } from "components/molecules/VenuePartygoers";
+import { VolumePopOverContent } from "components/molecules/VolumePopOverContent";
 
+import { BackButton } from "components/atoms/BackButton";
 import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import { UserAvatar } from "components/atoms/UserAvatar";
-
-import VolumePopOverContent from "../VolumePopOverContent/VolumePopOverContent";
+import { VolumeControl } from "components/atoms/VolumeControl";
 
 import { NavBarLogin } from "./NavBarLogin";
 
@@ -102,14 +111,17 @@ const VolumePopover = (
 );
 
 const navBarScheduleClassName = "NavBar__schedule-dropdown";
+export interface NavBarPropsType {
+  hasBackButton?: boolean;
+}
 
-export const NavBar: React.FC = () => {
+export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
   const { user, userWithId } = useUser();
   const venueId = useVenueId();
 
   const radioStations = useSelector(radioStationsSelector);
 
-  const { currentVenue, parentVenue, sovereignVenueId } = useRelatedVenues({
+  const { currentVenue, parentVenue } = useRelatedVenues({
     currentVenueId: venueId,
   });
 
@@ -118,11 +130,10 @@ export const NavBar: React.FC = () => {
     push: openUrlUsingRouter,
   } = useHistory();
 
-  const isSovereignVenue = venueId === sovereignVenueId;
-
-  const hasSovereignVenue = sovereignVenueId !== undefined;
-
-  const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
+  // Disabled caret back button on navBar
+  // const isSovereignVenue = venueId === sovereignVenueId;
+  // const hasSovereignVenue = sovereignVenueId !== undefined;
+  // const shouldShowHomeButton = hasSovereignVenue && !isSovereignVenue;
 
   const {
     hasSelectedProfile,
@@ -158,6 +169,14 @@ export const NavBar: React.FC = () => {
     []
   );
 
+  const parentVenueId = parentVenue?.id;
+
+  const backToParentVenue = useCallback(() => {
+    if (!parentVenueId) return;
+
+    enterVenue(parentVenueId, { customOpenRelativeUrl: openUrlUsingRouter });
+  }, [parentVenueId, openUrlUsingRouter]);
+
   const isSoundCloud =
     hasRadioStations(radioStations) &&
     RegExp("soundcloud").test(radioStations[0]);
@@ -178,6 +197,18 @@ export const NavBar: React.FC = () => {
     storageKey: LS_KEY_RADIO_VOLUME,
     initialVolume: DEFAULT_AMBIENT_VOLUME,
   });
+
+  const dispatch = useDispatch();
+  const isAmbientAudioVocal = useSelector(animateMapEnvironmentSoundSelector);
+  const [, setAmbientAudioVocal] = useLocalStorage(
+    LS_KEY_IS_AMBIENT_AUDIO_VOCAL
+  );
+
+  const onToggleAmbientAudio = useCallback(() => {
+    const toggledValue = !isAmbientAudioVocal;
+    setAmbientAudioVocal(toggledValue);
+    dispatch(setAnimateMapEnvironmentSound(toggledValue));
+  }, [dispatch, isAmbientAudioVocal, setAmbientAudioVocal]);
 
   const handleMute = useCallback(
     (volume: number) => (volume !== 0 ? 0 : 100),
@@ -217,6 +248,7 @@ export const NavBar: React.FC = () => {
   const scheduleBtnClasses = classNames("nav-schedule", {
     "nav-schedule-clicked": isEventScheduleVisible,
     "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
+    "nav-schedule-marged": hasBackButton,
   });
 
   const hideEventSchedule = useCallback((e) => {
@@ -254,13 +286,14 @@ export const NavBar: React.FC = () => {
         <div className={`navbar navbar_playa ${!isOnPlaya && "nonplaya"}`}>
           <div className="navbar-container">
             <div className="nav-logos">
-              {shouldShowHomeButton && (
+              {/* Disabled caret back button on navBar */}
+              {/* {shouldShowHomeButton && (
                 <FontAwesomeIcon
                   icon={faCaretLeft}
                   className="NavBar__home-icon"
                   onClick={navigateToHomepage}
                 />
-              )}
+              )} */}
               <div
                 className="NavBar__sparkle-logo"
                 onClick={navigateToHomepage}
@@ -347,17 +380,26 @@ export const NavBar: React.FC = () => {
                   </OverlayTrigger>
                 )}
 
-                <OverlayTrigger
-                  trigger="click"
-                  placement="bottom-end"
-                  overlay={VolumePopover}
-                  rootClose={true}
-                >
-                  <button className="NavBar__menu-link">
-                    <FontAwesomeIcon icon={faVolumeUp} />
-                  </button>
-                </OverlayTrigger>
-
+                {IS_SIMPLE_MUTE_BUTTON ? (
+                  <VolumeControl
+                    className="NavBar__volume-control"
+                    name="noise"
+                    muted={isAmbientAudioVocal}
+                    withMute
+                    onMute={onToggleAmbientAudio}
+                  />
+                ) : (
+                  <OverlayTrigger
+                    trigger="click"
+                    placement="bottom-end"
+                    overlay={VolumePopover}
+                    rootClose={true}
+                  >
+                    <button className="NavBar__menu-link">
+                      <FontAwesomeIcon icon={faVolumeUp} />
+                    </button>
+                  </OverlayTrigger>
+                )}
                 <div
                   className="navbar-links-user-avatar"
                   onClick={handleAvatarClick}
@@ -403,6 +445,14 @@ export const NavBar: React.FC = () => {
             />
           </div>
         </div>
+      )}
+
+      {/* @debt Remove back button from Navbar */}
+      {hasBackButton && currentVenue?.parentId && parentVenue?.name && (
+        <BackButton
+          onClick={backToParentVenue}
+          locationName={parentVenue.name}
+        />
       )}
     </>
   );

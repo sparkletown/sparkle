@@ -39,6 +39,8 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
   let template;
+  let hasBackButton = true;
+
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (
@@ -47,6 +49,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
+      hasBackButton = false;
       break;
 
     case VenueTemplate.friendship:
@@ -60,6 +63,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
+      hasBackButton = false;
       break;
 
     case VenueTemplate.artpiece:
@@ -84,10 +88,12 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
+      hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
+      hasBackButton = false;
       break;
 
     case VenueTemplate.embeddable:
@@ -128,7 +134,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   // @debt remove backButton from Navbar
   return (
     <ReactionsProvider venueId={venue.id}>
-      <WithNavigationBar>
+      <WithNavigationBar hasBackButton={hasBackButton}>
         <AnnouncementMessage message={venue.bannerMessage} />
 
         <Suspense fallback={<LoadingPage />}>{template}</Suspense>

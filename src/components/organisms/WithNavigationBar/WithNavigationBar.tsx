@@ -18,7 +18,14 @@ const NavBar = lazy(() =>
   )
 );
 
-export const WithNavigationBar: React.FC = ({ children }) => {
+export interface WithNavigationBarProps {
+  hasBackButton?: boolean;
+}
+
+export const WithNavigationBar: React.FC<WithNavigationBarProps> = ({
+  hasBackButton,
+  children,
+}) => {
   // @debt remove useVenueId from here and just pass it through as a prop/similar
   const venueId = useVenueId();
 
@@ -32,7 +39,7 @@ export const WithNavigationBar: React.FC = ({ children }) => {
        */}
       <RelatedVenuesProvider venueId={venueId}>
         <Suspense fallback={<Loading />}>
-          <NavBar />
+          <NavBar hasBackButton={hasBackButton} />
         </Suspense>
       </RelatedVenuesProvider>
 
