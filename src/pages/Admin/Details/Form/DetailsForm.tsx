@@ -1,10 +1,8 @@
 import React, { useCallback, useEffect } from "react";
 import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-// Hooks
 import { useHistory } from "react-router-dom";
 
-// API
 import {
   createUrlSafeName,
   createVenue_v2,
@@ -12,10 +10,8 @@ import {
   VenueInput_v2,
 } from "api/admin";
 
-// Typings
 import { VenueTemplate } from "types/venues";
 
-// Utils | Settings | Constants | Helpers
 import { venueLandingUrl } from "utils/url";
 import { createJazzbar } from "utils/venue";
 
@@ -26,16 +22,12 @@ import {
   setBannerURL,
   setSquareLogoUrl,
 } from "pages/Admin/Venue/VenueWizard/redux/actions";
-// Reducer
 import { SET_FORM_VALUES } from "pages/Admin/Venue/VenueWizard/redux/actionTypes";
 
-// Components
 import ImageInput from "components/atoms/ImageInput";
 
-// Validation schemas
 import { validationSchema_v2 } from "../ValidationSchema";
 
-// Stylings
 import * as S from "./DetailsForm.styles";
 import { DetailsFormProps, FormValues } from "./DetailsForm.types";
 

@@ -1,3 +1,5 @@
+// import { ReplicatedUser } from "store/reducers/AnimateMap";
+
 import { Point } from "types/utility";
 
 import { PlayerDataProviderInterface } from "../../DataProvider";
@@ -40,28 +42,28 @@ export class PlayerDataProvider implements PlayerDataProviderInterface {
     if (radicandExpression > MAX_POSITION_DELTA_SQUARE) this.sendPosition();
   }
 
-  public async savePosition() {
-    if (!this.id) return Promise.reject("Unexpected player id");
-
-    try {
-      // this._playerObj?.save();
-    } catch (error) {
-      // console.log("PlayerDataProvider.savePosition: ", error);
-    }
-  }
+  // public async savePosition() {
+  //   if (!this.id) return Promise.reject("Unexpected player id");
+  //
+  //   try {
+  //     // this._playerObj?.save();
+  //   } catch (error) {
+  //     // console.log("PlayerDataProvider.savePosition: ", error);
+  //   }
+  // }
 
   public async sendPosition() {
     //TODO: send
     this.commonInterface.sendPlayerPosition(this._position.x, this._position.y);
     this._sendPosition.x = this._position.x;
     this._sendPosition.y = this._position.y;
-    this.savePosition();
+    // this.savePosition();
   }
 
-  public async loadPosition(x: number, y: number) {
-    if (!this.id) return Promise.reject("Unexpected player id");
-    Promise.reject("Unexpected player id");
-  }
+  // public async loadPosition(x: number, y: number) {
+  //   if (!this.id) return Promise.reject("Unexpected player id");
+  //   Promise.reject("Unexpected player id");
+  // }
 
   public setPosition(x: number, y: number) {
     this._position.x = x;
@@ -70,20 +72,20 @@ export class PlayerDataProvider implements PlayerDataProviderInterface {
     playerModel.y = y;
   }
 
-  public async initPositionAsync(x: number, y: number) {
-    if (this._isReady) return Promise.reject("Player already init!");
-
-    return this.loadPosition(x, y)
-      .then(() => (this._isReady = true))
-      .catch(() => {
-        //Note: unreal case for player.io ?
-        this.setPosition(x, y);
-        this._isReady = true;
-        return Promise.reject("Can't load position");
-      });
-  }
+  // public async initPositionAsync(x: number, y: number) {
+  //   if (this._isReady) return Promise.reject("Player already init!");
+  //
+  //   return this.loadPosition(x, y)
+  //     .then(() => (this._isReady = true))
+  //     .catch(() => {
+  //       //Note: unreal case for player.io ?
+  //       this.setPosition(x, y);
+  //       this._isReady = true;
+  //       return Promise.reject("Can't load position");
+  //     });
+  // }
 
   public release() {
-    this.savePosition().catch((error) => console.error(error));
+    // this.savePosition().catch((error) => console.error(error));
   }
 }
