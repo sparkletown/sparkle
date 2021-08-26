@@ -48,8 +48,8 @@ const updateVenueImage = (
     .setUsersCount(replicatedVenue.data.countUsers)
     .execute()
     .then((comm: CropVenue) => {
-      const scale =
-        (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
+      const size = GameConfig.VENUE_DEFAULT_SIZE;
+      const scale = size / comm.canvas.width;
       positionComponent.scaleY = scale;
       positionComponent.scaleX = scale;
 
