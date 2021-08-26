@@ -5,7 +5,7 @@ function isUpdateRestrictedToField(request, field) {
 }
 
 function role(name) {
-  return get(/databases/$(database)/documents/roles/$(name)).data
+  return get(/databases/$(database)/documents/roles/$(name)).data;
 }
 
 service cloud.firestore {
@@ -37,7 +37,7 @@ service cloud.firestore {
       allow read: if true;
 
       function venueData() {
-        return get(/databases/$(database)/documents/venues/$(venue)).data
+        return get(/databases/$(database)/documents/venues/$(venue)).data;
       }
 
       match /events/{event} {
@@ -70,6 +70,10 @@ service cloud.firestore {
     }
     match /sounds/{soundId} {
       allow read: if request.auth.uid != null;
+      allow write: if false;
+    }
+    match /weather/{docId} {
+      allow read: if true;
       allow write: if false;
     }
   }
