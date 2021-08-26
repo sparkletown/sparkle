@@ -5,9 +5,14 @@ import { DEFAULT_AVATAR_IMAGE } from "settings";
 
 import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { Room } from "types/rooms";
+
+import { WithVenue } from "utils/venue";
+
 import { WorldUsersData } from "hooks/users/useWorldUsers";
 
-import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
+// import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
+import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
@@ -102,32 +107,52 @@ export class CloudDataProvider
 
   public venuesData: ReplicatedVenue[] = [];
 
-  public updateRooms(data: UseRelatedPartymapRoomsData) {
+  public updateRooms(
+    data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
+  ) {
     if (!data) return;
 
     const newVenues = data.filter(
       (item) => !this.venuesData.find((venue) => venue.data.url === item.url)
     );
+
+    const deprecatedVenues = this.venuesData.filter(
+      (item) => !data.find((room) => room.url === item.data.url)
+    );
+    deprecatedVenues.forEach((venue) =>
+      this.emit(DataProviderEvent.VENUE_REMOVED, venue)
+    );
+    this.venuesData = this.venuesData.filter(
+      (venue) => !deprecatedVenues.find((v) => v.data.url === venue.data.url)
+    );
+
+    const existedVenues = this.venuesData.filter((venue) =>
+      data.find((room) => room.url === venue.data.url)
+    );
+    existedVenues.forEach((venue) =>
+      this.emit(DataProviderEvent.VENUE_UPDATED, venue)
+    );
+
     newVenues.forEach((room) => {
-      console.log("create venue");
+      const usersCount = "countUsers" in room ? room.countUsers : 0;
       const vn = {
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
         data: {
-          usersCount: Math.floor(Math.random() * 100),
+          usersCount: usersCount,
           ...room,
         },
       } as ReplicatedVenue;
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
-    //TODO: update scenario
   }
 
   // public usersData: ReplicatedUser[] = []
   private countersForVenue = new Map<string, number>();
 
   private isUpdateUsersLocked = false;
+
   public async updateUsersAsync(data: WorldUsersData) {
     if (this.isUpdateUsersLocked) return;
 

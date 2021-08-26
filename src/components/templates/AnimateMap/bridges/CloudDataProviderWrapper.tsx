@@ -8,6 +8,9 @@ import { WithId } from "utils/id";
 import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
+import { Room } from "../../../../types/rooms";
+import { getRandomInt } from "../../../../utils/getRandomInt";
+import { WithVenue } from "../../../../utils/venue";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
 
@@ -17,6 +20,10 @@ export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
 }
+
+export type RoomWithFullData<T> =
+  | T
+  | (T & { countUsers: number; isLive: boolean });
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
@@ -32,16 +39,43 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const rooms = useRelatedPartymapRooms({ venue });
   const venues = rooms
     ?.map((room) => {
-      return "venue" in room ? room?.venue.name : null;
+      return "venue" in room ? room.venue.name : null;
     })
-    .filter((room) => !!room);
-  const users = useRecentLocationsUsers(venues);
+    .filter((room) => room);
+  const recentLocationUsersResult = useRecentLocationsUsers(venues).filter(
+    (item) => item.isSuccess && item.users.length
+  );
 
-  console.log("-------useRecentLocationsUsers", users);
+  console.log(recentLocationUsersResult);
+  const roomWithFullData:
+    | RoomWithFullData<WithVenue<Room> | Room>[]
+    | undefined = rooms?.map((room) => {
+    if ("venue" in room) {
+      // eslint-disable-next-line no-debugger
+      // debugger;
+      const res = recentLocationUsersResult.find(
+        (i) => i.name === room.venue.name
+      );
+      return {
+        ...room,
+        ...{
+          countUsers: res ? res.users.length : 0,
+          isLive: getRandomInt(2),
+        },
+      };
+    } else return room;
+  });
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  console.log(
+    "-------useRecentLocationsUsers",
+    roomWithFullData?.filter((i) => i.countUsers)
+  );
 
   useEffect(() => {
-    if (dataProvider) dataProvider.updateRooms(rooms);
-  }, [rooms, dataProvider]);
+    if (dataProvider) dataProvider.updateRooms(roomWithFullData);
+  }, [roomWithFullData, dataProvider]);
 
   useEffect(() => {
     if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
@@ -56,7 +90,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           firebase,
           venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
         );
-        dataProvider.updateRooms(rooms);
+        dataProvider.updateRooms(roomWithFullData);
         dataProvider.updateUsers(worldUsers);
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);
