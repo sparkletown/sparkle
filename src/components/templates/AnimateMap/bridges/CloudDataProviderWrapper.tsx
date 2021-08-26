@@ -5,9 +5,10 @@ import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
+import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { useWorldUsers } from "../../../../hooks/users";
+import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
@@ -29,6 +30,14 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const worldUsers = useWorldUsers();
 
   const rooms = useRelatedPartymapRooms({ venue });
+  const venues = rooms
+    ?.map((room) => {
+      return "venue" in room ? room?.venue.name : null;
+    })
+    .filter((room) => !!room);
+  const users = useRecentLocationsUsers(venues);
+
+  console.log("-------useRecentLocationsUsers", users);
 
   useEffect(() => {
     if (dataProvider) dataProvider.updateRooms(rooms);
