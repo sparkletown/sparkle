@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo } from "react";
+import { useAsync } from "react-use";
 
 import { Room } from "types/rooms";
 import { AnimateMapVenue, AnyVenue, VenueEvent } from "types/venues";
@@ -8,32 +9,33 @@ import { WithVenue } from "utils/venue";
 
 import { useVenueEvents } from "hooks/events";
 
-import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
+import {
+  useRelatedPartymapRooms,
+  UseRelatedPartymapRoomsData,
+} from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
 
 export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
+  relatedRooms: UseRelatedPartymapRoomsData;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
 }
 
 const emptyRelatedVenues: WithId<AnyVenue>[] = [];
-const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
+  relatedRooms,
 }) => {
-  const relatedRooms = useRelatedPartymapRooms({ venue });
-  const rooms = useMemo(() => relatedRooms, [relatedRooms]);
-
   const venues: Array<AnyVenue> = useMemo(
     () =>
-      rooms
-        ? rooms
+      relatedRooms
+        ? relatedRooms
             .filter((room) => "venue" in room && "id" in venue)
             .map((room) => (room as WithVenue<Room>)?.venue)
         : emptyRelatedVenues,
-    [rooms]
+    [relatedRooms, venue]
   );
 
   const venueIds = useMemo(
@@ -41,31 +43,11 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     [venues]
   );
 
-  console.log(emptyRelatedEvents);
-
-  // Если раскоментировать вот это, то компонент начинает циклично ререндерится и вызывать хуки, пока прилл не повиснет
-  const { isEventsLoading, events = emptyRelatedEvents } = useVenueEvents({
-    venueIds: venueIds,
+  const { events, isEventsLoading } = useVenueEvents({
+    venueIds,
   });
 
-  console.log("venue", venue);
-  console.log("events", isEventsLoading, events);
-
-  useEffect(() => {
-    console.log("change venue", venue);
-  }, [venue]);
-
-  useEffect(() => {
-    console.log("change rooms", rooms);
-  }, [rooms]);
-
-  useEffect(() => {
-    console.log("change venues", venues);
-  }, [venues]);
-
-  useEffect(() => {
-    console.log("change venueIds", venueIds);
-  }, [venueIds]);
+  console.log({ events, isEventsLoading });
 
   return null;
 };
