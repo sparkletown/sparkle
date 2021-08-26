@@ -361,6 +361,16 @@ export class ViewportSystem extends System {
     if (!this.viewportList?.head) return console.error();
     this.viewportList.head.viewport.click = e.world;
     this._entityCreator.updateViewport();
+    //DELETE ME
+    const point = this._viewport.toScreen(e.world);
+    GameInstance.instance.eventProvider.emit(
+      EventType.UI_PLAYER_CLICK,
+      true,
+      point.x,
+      point.y,
+      this._viewport.screenWidth,
+      this._viewport.screenHeight
+    );
   }
 
   private _viewportPointerUpHandler(e: InteractionEvent) {

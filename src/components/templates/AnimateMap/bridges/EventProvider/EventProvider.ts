@@ -15,7 +15,7 @@ export enum EventType {
   UI_CONTROL_PANEL_ZOOM_IN = "EventProviderType.UI_CONTROL_PANEL_ZOOM_IN",
   UI_CONTROL_PANEL_ZOOM_OUT = "EventProviderType.UI_CONTROL_PANEL_ZOOM_OUT",
   UI_SINGLE_BUTTON_FOLLOW = "EventProviderType.UI_SINGLE_BUTTON_FOLLOW",
-
+  UI_PLAYER_CLICK = "EventProviderType.UI_PLAYER_CLICK",
   // playerio
   USER_JOINED = "EventProviderType.USER_JOINED",
   USER_LEFT = "EventProviderType.USER_LEFT",
@@ -26,6 +26,15 @@ type OnRoomsChangedCallback = (points: RoomPointNode[]) => void;
 
 type OnVenueCollisionCallback = (venue: ReplicatedVenue) => void;
 type PlayerModelReadyCallback = (player: ReplicatedUser) => void;
+
+//UI
+type OnPlayerClickCallback = (
+  isShown: boolean,
+  x: number,
+  y: number,
+  viewportWidth: number,
+  viewportHeight: number
+) => void;
 
 // playerio
 type UserJoinedCallback = (playerId: number, x: number, y: number) => void;
@@ -47,7 +56,7 @@ export declare interface EventProviderSingleton {
   on(type: EventType.UI_CONTROL_PANEL_ZOOM_IN, callback: () => void): this;
   on(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT, callback: () => void): this;
   on(type: EventType.UI_SINGLE_BUTTON_FOLLOW, callback: () => void): this;
-
+  on(type: EventType.UI_PLAYER_CLICK, callback: OnPlayerClickCallback): this;
   // playerio
   on(type: EventType.USER_JOINED, callback: UserJoinedCallback): this;
   on(type: EventType.USER_LEFT, callback: UserLeftCallback): this;
@@ -70,7 +79,10 @@ export declare interface EventProviderSingleton {
   emit(type: EventType.UI_CONTROL_PANEL_ZOOM_OUT): boolean;
   emit(type: EventType.UI_SINGLE_BUTTON_FOLLOW): boolean;
   emit(type: EventType.UI_CONTROL_PANEL_ZOOM_IN): boolean;
-
+  emit(
+    type: EventType.UI_PLAYER_CLICK,
+    ...params: Parameters<OnPlayerClickCallback>
+  ): boolean;
   // playerio
   emit(
     type: EventType.USER_JOINED,
