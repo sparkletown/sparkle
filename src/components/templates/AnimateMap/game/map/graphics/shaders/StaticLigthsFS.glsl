@@ -36,5 +36,5 @@ void main(void){
         break;
     }
 
-    gl_FragColor = vec4(light, 0.2);
+    gl_FragColor = vec4(light + albedo.rgb, 1.0);
 }
