@@ -114,14 +114,9 @@ export class CloudDataProvider
     const newVenues = data.filter(
       (item) => !this.venuesData.find((venue) => venue.data.id === item.id)
     );
-    console.log("newVenues");
-    console.log(newVenues);
-
     const deprecatedVenues = this.venuesData.filter(
       (item) => !data.find((room) => room.id === item.data.id)
     );
-    console.log("deprecatedVenues");
-    console.log(deprecatedVenues);
     deprecatedVenues.forEach((venue) =>
       this.emit(DataProviderEvent.VENUE_REMOVED, venue)
     );
@@ -158,15 +153,12 @@ export class CloudDataProvider
         } as ReplicatedVenue;
         return vn;
       });
-    console.log("existedVenues");
-    console.log(existedVenues);
     existedVenues.forEach((venue) => {
       this.emit(DataProviderEvent.VENUE_UPDATED, venue);
     });
 
     newVenues.forEach((room) => {
       const countUsers = "countUsers" in room ? room.countUsers : 0;
-      console.log(countUsers);
       const vn = {
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,

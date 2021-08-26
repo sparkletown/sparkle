@@ -39,6 +39,46 @@ const addVenueTooltip = (
   entity.add(tooltip);
 };
 
+const updateVenueImage = (
+  replicatedVenue: ReplicatedVenue,
+  spriteComponent: SpriteComponent,
+  positionComponent: PositionComponent
+) => {
+  new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
+    .setUsersCount(replicatedVenue.data.countUsers)
+    .execute()
+    .then((comm: CropVenue) => {
+      const scale =
+        (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
+      positionComponent.scaleY = scale;
+      positionComponent.scaleX = scale;
+
+      const venueSprite = spriteComponent.view as Venue;
+      if (venueSprite.venue) {
+        venueSprite.venue.parent?.removeChild(venueSprite.venue);
+      }
+
+      venueSprite.venue = Sprite.from(comm.canvas);
+      venueSprite.venue.anchor.set(0.5);
+      venueSprite.addChild(venueSprite.venue);
+      return Promise.resolve();
+    })
+    .catch((err) => {
+      console.log("err", err);
+    });
+};
+
+export const updateVenueEntity = (
+  venue: ReplicatedVenue,
+  creator: EntityFactory
+) => {
+  const node = creator.getVenueNode(venue);
+  if (!node) {
+    return;
+  }
+  updateVenueImage(node.venue.model, node.sprite, node.position);
+};
+
 export const createVenueEntity = (
   venue: ReplicatedVenue,
   creator: EntityFactory
@@ -164,23 +204,7 @@ export const createVenueEntity = (
   entity.add(position);
   engine.addEntity(entity);
 
-  new CropVenue(venue.data.image_url, venue.data.isEnabled)
-    .setUsersCount(venue.data.countUsers)
-    .execute()
-    .then((comm: CropVenue) => {
-      const scale =
-        (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
-      position.scaleY = scale;
-      position.scaleX = scale;
-
-      sprite.venue = Sprite.from(comm.canvas);
-      sprite.venue.anchor.set(0.5);
-      sprite.addChild(sprite.venue);
-      return Promise.resolve();
-    })
-    .catch((err) => {
-      console.log("err", err);
-    });
+  updateVenueImage(venue, spriteComponent, position);
 
   return entity;
 };

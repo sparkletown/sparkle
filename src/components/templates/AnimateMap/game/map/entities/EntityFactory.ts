@@ -19,7 +19,6 @@ import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
-import { BotComponent } from "../components/BotComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
@@ -27,8 +26,6 @@ import { EllipseComponent } from "../components/EllipseComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
-import { MotionBotClickControlComponent } from "../components/MotionBotClickControlComponent";
-import { MotionBotIdleComponent } from "../components/MotionBotIdleComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
 import { MovementComponent } from "../components/MovementComponent";
@@ -57,7 +54,8 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
-import { createVenueEntity } from "./createVenueEntity";
+import { createBotEntity } from "./createBotEntity";
+import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
   public engine: Engine;
@@ -95,11 +93,6 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    console.log(
-      "createWaitingVenueClick CREATE",
-      venueNode.position.x,
-      venueNode.position.y
-    );
     return entity;
   }
 
@@ -392,88 +385,7 @@ export default class EntityFactory {
   }
 
   public createBot(user: ReplicatedUser, realUser = false): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
-
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
-
-    const point: Point = GameInstance.instance
-      .getConfig()
-      .playgroundMap.getRandomPointInTheCentralCircle();
-
-    if (!realUser) {
-      user.x = point.x;
-      user.y = point.y;
-    }
-
-    const scale = 0.2;
-
-    const entity: Entity = new Entity();
-    const fsm: FSMBase = new FSMBase(entity);
-    const bot = new BotComponent(user, fsm, realUser);
-
-    fsm.createState(bot.IMMOBILIZED);
-
-    fsm
-      .createState(bot.IDLE)
-      .add(MotionBotIdleComponent)
-      .withInstance(new MotionBotIdleComponent());
-
-    fsm
-      .createState(bot.MOVING)
-      .add(MotionBotClickControlComponent)
-      .add(MovementComponent)
-      .withInstance(new MovementComponent());
-
-    entity
-      .add(bot)
-      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(
-        new HoverableSpriteComponent(
-          () => {
-            // add tooltip
-            entity.add(
-              new TooltipComponent(
-                `bot id: ${user.data.id}`.slice(0, 15) + "...",
-                15,
-                "top"
-              )
-            );
-          },
-          () => {
-            // remove tooltip
-            entity.remove(TooltipComponent);
-          }
-        )
-      );
-
-    fsm.changeState("moving");
-    this.engine.addEntity(entity);
-
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
-    const sprite: Avatar = new Avatar();
-
-    new RoundAvatar(url)
-      .execute()
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
-
-        // avatar
-        sprite.avatar = Sprite.from(comm.canvas);
-        sprite.avatar.anchor.set(0.5);
-        sprite.addChild(sprite.avatar);
-        return Promise.resolve(comm);
-      })
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
-
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-        entity.add(spriteComponent);
-      });
-
-    return entity;
+    return createBotEntity(user, this, realUser);
   }
 
   public removeBot(entity: Entity) {
@@ -633,18 +545,16 @@ export default class EntityFactory {
     return entity;
   }
   public createVenue(venue: ReplicatedVenue): Entity {
-    console.log(`create venue ${venue.data.id}`);
     return createVenueEntity(venue, this);
   }
 
   public removeVenue(venue: ReplicatedVenue) {
-    console.log(`Remove venue ${venue.data.id}`);
     const node = this.getVenueNode(venue);
-    // eslint-disable-next-line no-debugger
-    if (!node) console.log("can't find");
     if (node) this.engine.removeEntity(node.entity);
-    // eslint-disable-next-line no-debugger
-    // if (this.getVenueNode(venue)?.entity) debugger;
+  }
+
+  public updateVenue(venue: ReplicatedVenue) {
+    updateVenueEntity(venue, this);
   }
 
   public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {
