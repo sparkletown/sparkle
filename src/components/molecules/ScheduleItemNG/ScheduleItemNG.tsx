@@ -40,16 +40,12 @@ import "./ScheduleItemNG.scss";
 
 export interface ScheduleItemNGProps {
   event: ScheduledVenueEvent;
-  isShowImage: boolean;
-  isShowBookmark: boolean;
-  isShowDayDate: boolean;
+  isShowFullInfo: boolean;
 }
 
 export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   event,
-  isShowImage,
-  isShowBookmark,
-  isShowDayDate,
+  isShowFullInfo,
 }) => {
   const { currentVenue: eventVenue } = useRelatedVenues({
     currentVenueId: event.venueId,
@@ -132,7 +128,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         <span className="ScheduleItemNG__date">
           {!isCurrentEventLive &&
             showDate &&
-            isShowDayDate &&
+            isShowFullInfo &&
             formatDateRelativeToNow(eventStartTime(event))}
         </span>
 
@@ -151,7 +147,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
         </span>
       </div>
 
-      {isShowImage && (
+      {isShowFullInfo && (
         <img
           className="ScheduleItemNG__icon"
           src={eventRoom?.image_url ?? event.venueIcon}
@@ -199,7 +195,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
           <span>{event.liveAudience}</span>
         </div>
       )}
-      {isShowBookmark && (
+      {isShowFullInfo && (
         <div className="ScheduleItemNG__bookmark" onClick={bookmarkEvent}>
           <FontAwesomeIcon
             icon={event.isSaved ? solidBookmark : regularBookmark}

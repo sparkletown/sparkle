@@ -97,9 +97,7 @@ export const EmergencyViewPage: React.FC = () => {
             <ScheduleEventSubListNG
               events={eventsFilledWithPriority}
               title={`Events on ${formatDateRelativeToNow(day)}`}
-              isShowBookmark={false}
-              isShowImage={false}
-              isShowDayDate={false}
+              isShowFullInfo={false}
             />
           </div>
         );

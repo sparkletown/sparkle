@@ -13,17 +13,13 @@ import "./ScheduleEventListNG.scss";
 export interface ScheduleEventSubListNGProps {
   events: ScheduledVenueEvent[];
   title: string;
-  isShowImage?: boolean;
-  isShowBookmark?: boolean;
-  isShowDayDate?: boolean;
+  isShowFullInfo?: boolean;
 }
 
 export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
   events,
   title,
-  isShowImage = true,
-  isShowBookmark = true,
-  isShowDayDate = true,
+  isShowFullInfo = true,
 }) => {
   const {
     isShown: showMoreEvents,
@@ -36,9 +32,7 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
         <ScheduleItemNG
           key={event.id}
           event={event}
-          isShowImage={isShowImage}
-          isShowBookmark={isShowBookmark}
-          isShowDayDate={isShowDayDate}
+          isShowFullInfo={isShowFullInfo}
         />
       ));
     }
@@ -49,12 +43,10 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
         <ScheduleItemNG
           key={event.id}
           event={event}
-          isShowImage={isShowImage}
-          isShowBookmark={isShowBookmark}
-          isShowDayDate={isShowDayDate}
+          isShowFullInfo={isShowFullInfo}
         />
       ));
-  }, [events, showMoreEvents, isShowImage, isShowBookmark, isShowDayDate]);
+  }, [events, showMoreEvents, isShowFullInfo]);
 
   const hasEvents = events.length > 0;
   const shouldShowMoreEvents = events.length > EVENTS_PREVIEW_LIST_LENGTH;
