@@ -346,7 +346,7 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             const venue = GameInstance.instance.dataProvider.venuesData;
             venue.forEach((venue) => {
-              this.entityFactory?.createVenue(venue);
+              // this.entityFactory?.createVenue(venue);
             });
           }
           return Promise.resolve();
