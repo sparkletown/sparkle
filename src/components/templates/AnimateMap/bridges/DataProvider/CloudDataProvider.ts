@@ -11,7 +11,6 @@ import { WithVenue } from "utils/venue";
 
 import { WorldUsersData } from "hooks/users/useWorldUsers";
 
-// import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 
@@ -113,22 +112,39 @@ export class CloudDataProvider
     if (!data) return;
 
     const newVenues = data.filter(
-      (item) => !this.venuesData.find((venue) => venue.data.url === item.url)
+      (item) => !this.venuesData.find((venue) => venue.data.id === item.id)
     );
+    console.log(newVenues);
 
     const deprecatedVenues = this.venuesData.filter(
-      (item) => !data.find((room) => room.url === item.data.url)
+      (item) => !data.find((room) => room.id === item.data.id)
     );
+    console.log(deprecatedVenues);
     deprecatedVenues.forEach((venue) =>
       this.emit(DataProviderEvent.VENUE_REMOVED, venue)
     );
     this.venuesData = this.venuesData.filter(
-      (venue) => !deprecatedVenues.find((v) => v.data.url === venue.data.url)
+      (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
 
-    const existedVenues = this.venuesData.filter((venue) =>
-      data.find((room) => room.url === venue.data.url)
-    );
+    const existedVenues = this.venuesData.filter((venue) => {
+      const room = data.find((room) => room.id === venue.data.id);
+
+      if (!room) return false;
+
+      return !(
+        room.url === venue.data.url &&
+        room.title === venue.data.title &&
+        room.subtitle === venue.data.subtitle &&
+        room.image_url === venue.data.image_url &&
+        room.isLive === venue.data.isLive &&
+        room.countUsers === venue.data.usersCount &&
+        room.isEnabled === venue.data.isEnabled
+      );
+    });
+    console.log(existedVenues);
+    // eslint-disable-next-line no-debugger
+    if (existedVenues.length > 20) debugger;
     existedVenues.forEach((venue) =>
       this.emit(DataProviderEvent.VENUE_UPDATED, venue)
     );

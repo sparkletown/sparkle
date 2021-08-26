@@ -644,7 +644,7 @@ export default class EntityFactory {
   public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {
     const nodes: NodeList<VenueNode> = this.engine.getNodeList(VenueNode);
     for (let node = nodes.head; node; node = node.next) {
-      if (node.venue.model.data.url === venue.data.url) {
+      if (node.venue.model.data.id === venue.data.id) {
         return node;
       }
     }

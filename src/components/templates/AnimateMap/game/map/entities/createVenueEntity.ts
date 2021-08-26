@@ -93,11 +93,13 @@ export const createVenueEntity = (
         () => {
           // add tooltip
           const waiting = creator.getWaitingVenueClick();
-          if (!waiting || waiting.data.url !== venue.data.url) {
+          if (!waiting || waiting.data.id !== venue.data.id) {
             addVenueTooltip(
               venue,
               entity,
-              venue.data.title.slice(0, 15) + "..."
+              venue.data.title.length > 18
+                ? venue.data.title.slice(0, 15) + "..."
+                : venue.data.title
             );
           }
 

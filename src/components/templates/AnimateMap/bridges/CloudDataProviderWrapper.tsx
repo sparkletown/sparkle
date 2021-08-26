@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 
+import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
+import { WithVenue } from "utils/venue";
 
 import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { Room } from "../../../../types/rooms";
-import { getRandomInt } from "../../../../utils/getRandomInt";
-import { WithVenue } from "../../../../utils/venue";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
 
@@ -21,9 +20,11 @@ export interface CloudDataProviderWrapperProps {
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
 }
 
-export type RoomWithFullData<T> =
-  | T
-  | (T & { countUsers: number; isLive: boolean });
+export type RoomWithFullData<T> = T & {
+  id: number;
+  isLive?: boolean;
+  countUsers?: number;
+};
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
@@ -49,21 +50,24 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   console.log(recentLocationUsersResult);
   const roomWithFullData:
     | RoomWithFullData<WithVenue<Room> | Room>[]
-    | undefined = rooms?.map((room) => {
+    | undefined = rooms?.map((room, index) => {
     if ("venue" in room) {
-      // eslint-disable-next-line no-debugger
-      // debugger;
       const res = recentLocationUsersResult.find(
-        (i) => i.name === room.venue.name
+        (item) => item.name === room.venue.name
       );
       return {
         ...room,
         ...{
           countUsers: res ? res.users.length : 0,
-          isLive: getRandomInt(2),
+          isLive: !!(room.title.length % 2), //todo: remove random flag
+          id: index,
         },
       };
-    } else return room;
+    } else
+      return {
+        ...room,
+        ...{ id: index, isLive: !!(room.title.length % 2), countUsers: 0 },
+      };
   });
 
   useEffect(() => {
