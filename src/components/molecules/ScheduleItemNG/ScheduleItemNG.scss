@@ -6,6 +6,7 @@ $schedule--grey: opaque-white(0.7);
 $action-button-width: 136px;
 $bookmark-icon-size: 30px;
 $schedule-info-block-width: 60px;
+$online-container-min-width: 50px;
 
 .ScheduleItemNG {
   display: flex;
@@ -113,5 +114,22 @@ $schedule-info-block-width: 60px;
     justify-content: center;
     width: $bookmark-icon-size;
     height: $bookmark-icon-size;
+  }
+
+  &__online {
+    margin: 0 $spacing--sm 0 auto;
+    background: opaque-white(0.2);
+    box-shadow: 0px 2px 4px opaque-white(0.25);
+    border-radius: $border-radius--xl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: $online-container-min-width;
+    height: $bookmark-icon-size;
+    padding: $spacing--md;
+
+    &-icon {
+      margin-right: $spacing--xs;
+    }
   }
 }
