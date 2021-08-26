@@ -18,7 +18,8 @@ import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { DataProvider } from "../bridges/DataProvider";
+// import { DataProvider } from "../bridges/DataProvider";
+import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
@@ -50,7 +51,7 @@ export class GameInstance {
   constructor(
     private _config: GameConfig,
     private _store: Store,
-    public dataProvider: DataProvider,
+    public dataProvider: CloudDataProvider,
     private _containerElement: HTMLDivElement,
     private _pictureUrl?: string
   ) {
@@ -106,9 +107,9 @@ export class GameInstance {
     });
   }
 
-  private async fillPlayerData(point: Point) {
-    return this.dataProvider.initPlayerPositionAsync(point.x, point.y);
-  }
+  // private async fillPlayerData(point: Point) {
+  //   return this.dataProvider.initPlayerPositionAsync(point.x, point.y);
+  // }
 
   public async start(): Promise<void> {
     if (!this._app) return Promise.reject("App is not init!");
@@ -136,7 +137,7 @@ export class GameInstance {
   }
 
   private async _play(position: Point = StartPoint()): Promise<void> {
-    this.fillPlayerData(position).catch((error) => console.log(error));
+    // this.fillPlayerData(position).catch((error) => console.log(error));
     await this._mapContainer?.start();
   }
 
@@ -235,6 +236,21 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.createVenue(venue);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_REMOVED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.removeVenue(venue);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_UPDATED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.removeVenue(venue);
         this._mapContainer?.entityFactory?.createVenue(venue);
       }
     );

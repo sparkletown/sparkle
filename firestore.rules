@@ -63,6 +63,14 @@ service cloud.firestore {
         allow read: if request.auth.uid != null;
         allow write: if false;
       }
+      match /firebarrels/{firebarrelId} {
+        allow read: if request.auth.uid != null;
+        allow write: if false;
+      }
+      match /artcars/{artcarId} {
+        allow read: if request.auth.uid != null;
+        allow write: if false;
+      }
     }
     match /roles/{roleId} {
       allow read: if request.auth.uid != null;

@@ -6,8 +6,7 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
-import { Room, RoomType, VenueRoomTemplate } from "types/rooms";
-import { SoundConfigReference } from "types/sounds";
+import { Room } from "types/rooms";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
@@ -20,32 +19,23 @@ export interface AnimateMapEntity {
 
 export interface ReplicatedUserData {
   id: string;
+  messengerId: number; //playerio messager id
   videoUrlString: string;
   avatarUrlString: string | string[];
   dotColor: number; //hex
-  hat: string | null;
-  accessories: string | null;
-  cycle: string | null;
+  hat?: string;
+  accessories?: string;
+  cycle?: string;
 }
 
 export interface ReplicatedUser extends AnimateMapEntity {
   data: ReplicatedUserData;
 }
 
-export interface ReplicatedVenueData {
-  image_url: string;
-  type?: RoomType;
-  zIndex?: number;
-  title: string;
-  subtitle: string;
-  url: string;
-  about: string;
-  width_percent: number;
-  height_percent: number;
-  isEnabled: boolean;
-  isLabelHidden?: boolean;
-  enterSound?: SoundConfigReference;
-  template?: VenueRoomTemplate;
+export interface ReplicatedVenueData extends Room {
+  id: number;
+  isLive: boolean;
+  countUsers: number;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -53,17 +43,25 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export class PlayerModel implements ReplicatedUser {
-  data: ReplicatedUserData = {
+  public data: ReplicatedUserData = {
     id: "",
+    messengerId: 0,
     videoUrlString: "",
     avatarUrlString: "",
     dotColor: Math.floor(Math.random() * 16777215),
-    hat: null,
-    accessories: null,
-    cycle: null,
   };
-  x: number = 4960;
-  y: number = 4960;
+
+  public constructor(
+    id: string,
+    messengerId: number,
+    avatarUrlString: string,
+    public x: number = 9920 / 2,
+    public y: number = 9920 / 2
+  ) {
+    this.data.id = id;
+    this.data.messengerId = messengerId;
+    this.data.avatarUrlString = avatarUrlString;
+  }
 }
 
 export interface AnimateMapState {
