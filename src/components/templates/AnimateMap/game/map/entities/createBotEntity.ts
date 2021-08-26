@@ -44,6 +44,9 @@ export const createBotEntity = (
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const bot = new BotComponent(user, fsm, realUser);
+  const sprite: Avatar = new Avatar();
+  const spriteComponent: SpriteComponent = new SpriteComponent();
+  spriteComponent.view = sprite;
 
   fsm.createState(bot.IMMOBILIZED);
 
@@ -63,12 +66,10 @@ export const createBotEntity = (
     .add(new PositionComponent(user.x, user.y, 0, scale, scale))
     .add(
       new ClickableSpriteComponent(() => {
-        console.log(realUser ? "user click" : "bot click");
-      })
-    )
-    .add(
-      new ClickableSpriteComponent(() => {
-        console.log(`user ${user.data.id} was clicked`);
+        console.log(
+          realUser ? "user click" : "bot click",
+          spriteComponent.view?.toGlobal({ x: 0, y: 0 })
+        );
       })
     )
     .add(
@@ -94,7 +95,6 @@ export const createBotEntity = (
   creator.engine.addEntity(entity);
 
   const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
-  const sprite: Avatar = new Avatar();
 
   new RoundAvatar(url)
     .execute()
@@ -110,8 +110,6 @@ export const createBotEntity = (
     .then((comm: RoundAvatar) => {
       if (!comm.canvas) return Promise.reject();
 
-      const spriteComponent: SpriteComponent = new SpriteComponent();
-      spriteComponent.view = sprite;
       entity.add(spriteComponent);
     });
 
