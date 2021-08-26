@@ -35,7 +35,9 @@ export interface ReplicatedUser extends AnimateMapEntity {
 }
 
 export interface ReplicatedVenueData extends Room {
-  usersCount: number;
+  id: number;
+  isLive: boolean;
+  countUsers: number;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
