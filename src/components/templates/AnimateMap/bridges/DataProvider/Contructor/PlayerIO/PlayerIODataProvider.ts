@@ -85,19 +85,20 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     console.log(data);
     const rooms = data[0];
-    // todo: доделать типизацию
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const playerObject: any = data[1].originDatabaseObject;
+    this._playerObject = data[1].originDatabaseObject as PlayerObject;
     let needSave = false;
 
-    if (playerObject.x === undefined || playerObject.y === undefined) {
+    if (
+      this._playerObject.x === undefined ||
+      this._playerObject.y === undefined
+    ) {
       needSave = true;
       // const pos = StartPoint();
       // playerObject.x = pos.x;
       // playerObject.y = pos.y;
-      playerObject.x = getRandomInt(9920);
-      playerObject.y = getRandomInt(9920);
-      playerObject.i = getIntByHash(this.playerId);
+      this._playerObject.x = getRandomInt(9920);
+      this._playerObject.y = getRandomInt(9920);
+      this._playerObject.i = getIntByHash(this.playerId);
     }
 
     if (needSave)
@@ -106,8 +107,8 @@ export class PlayerIODataProvider extends utils.EventEmitter {
         .then(() => console.log("Save position"))
         .catch(console.error);
 
-    playerModel.x = playerObject.x;
-    playerModel.y = playerObject.y;
+    playerModel.x = this._playerObject.x;
+    playerModel.y = this._playerObject.y;
 
     EventProvider.emit(EventType.PLAYER_MODEL_READY, playerModel);
 
@@ -115,13 +116,13 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       console.log("init room operator");
       this.playerIORoomOperator = new PlayerIORoomOperator(
         this.client.multiplayer,
-        { x: playerObject.x, y: playerObject.y },
+        { x: this._playerObject.x, y: this._playerObject.y },
         this.playerId
       );
     }
     this.playerIORoomOperator.position = {
-      x: playerObject.x,
-      y: playerObject.y,
+      x: this._playerObject.x,
+      y: this._playerObject.y,
     };
     this.playerIORoomOperator.update(rooms);
 

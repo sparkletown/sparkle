@@ -3,7 +3,10 @@ import { utils } from "pixi.js";
 
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { ReplicatedVenue } from "../../../../../store/reducers/AnimateMap";
+import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
+
+import { WorldUsersData } from "hooks/users/useWorldUsers";
+
 import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
 import { DataProvider } from "../DataProvider";
 
@@ -11,6 +14,7 @@ import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
 import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
+import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -87,10 +91,10 @@ export class CloudDataProvider
   }
 
   // player provider
-  public async initPlayerPositionAsync(x: number, y: number) {
-    //TODO: REWORK
-    return this.player.initPositionAsync(x, y);
-  }
+  // public async initPlayerPositionAsync(x: number, y: number) {
+  //   //TODO: REWORK
+  //   return this.player.initPositionAsync(x, y);
+  // }
 
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
@@ -107,14 +111,55 @@ export class CloudDataProvider
     newVenues.forEach((room) => {
       console.log("create venue");
       const vn = {
-        x: ((room.x_percent / 100) * 9920) / 2.74 + 3180, //TODO: refactor configs and throw data to here
-        y: ((room.y_percent / 100) * 9920) / 2.74 + 3380,
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
         data: {
+          usersCount: Math.floor(Math.random() * 100),
           ...room,
         },
       } as ReplicatedVenue;
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
+    //TODO: update scenario
+  }
+
+  // public usersData: ReplicatedUser[] = []
+  private countersForVenue = new Map<string, number>();
+
+  private isUpdateUsersLocked = false;
+  public async updateUsersAsync(data: WorldUsersData) {
+    if (this.isUpdateUsersLocked) return;
+
+    this.isUpdateUsersLocked = true;
+    await this.updateUsers(data);
+    this.isUpdateUsersLocked = false;
+  }
+
+  public updateUsers(data: WorldUsersData) {
+    if (!data?.isWorldUsersLoaded) return;
+
+    // new entities scenario
+    const usersData: ReplicatedUser[] = [];
+    data.worldUsers.forEach((user) => {
+      // if (user.lastSeenIn) //todo: add counter
+
+      usersData.push({
+        x: -1000,
+        y: -1000,
+        data: {
+          id: user.id,
+          messengerId: getIntByHash(user.id),
+          avatarUrlString: user.pictureUrl ?? "",
+          videoUrlString: "",
+          dotColor: 0xabfcfb,
+        },
+      });
+    });
+
+    //TODO: update scenario
+
+    // todo: add normalization
+    this.users.updateUsers(usersData);
   }
 }
