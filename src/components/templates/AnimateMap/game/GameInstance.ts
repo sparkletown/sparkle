@@ -11,13 +11,15 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 import {
   AnimateMapActionTypes,
   setAnimateMapEnvironmentSoundAction,
+  setAnimateMapFirstEntrance,
   setAnimateMapUsers,
 } from "store/actions/AnimateMap";
 import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { DataProvider } from "../bridges/DataProvider";
+// import { DataProvider } from "../bridges/DataProvider";
+import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
   EventType,
@@ -49,7 +51,7 @@ export class GameInstance {
   constructor(
     private _config: GameConfig,
     private _store: Store,
-    private _dataProvider: DataProvider,
+    public dataProvider: CloudDataProvider,
     private _containerElement: HTMLDivElement,
     private _pictureUrl?: string
   ) {
@@ -105,9 +107,9 @@ export class GameInstance {
     });
   }
 
-  private async fillPlayerData(point: Point) {
-    return this._dataProvider.initPlayerPositionAsync(point.x, point.y);
-  }
+  // private async fillPlayerData(point: Point) {
+  //   return this.dataProvider.initPlayerPositionAsync(point.x, point.y);
+  // }
 
   public async start(): Promise<void> {
     if (!this._app) return Promise.reject("App is not init!");
@@ -121,6 +123,7 @@ export class GameInstance {
     if (this.getState().firstEntrance === "false") {
       return await this._play();
     } else {
+      this.getConfig().firstEntrance = true;
       return new TimeoutCommand(1000)
         .execute()
         .then(() => {
@@ -128,16 +131,13 @@ export class GameInstance {
         })
         .then(async (command: WaitClickForHeroCreation) => {
           await this._play(command.clickPoint);
-          window.sessionStorage.setItem(
-            "AnimateMapState.sessionStorage",
-            "false"
-          ); //TODO: add complex save system with types support
+          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
         });
     }
   }
 
   private async _play(position: Point = StartPoint()): Promise<void> {
-    this.fillPlayerData(position).catch((error) => console.log(error));
+    // this.fillPlayerData(position).catch((error) => console.log(error));
     await this._mapContainer?.start();
   }
 
@@ -155,8 +155,8 @@ export class GameInstance {
   private update(dt: number) {
     const position = this._mapContainer?.entityFactory?.getPlayerNode()
       ?.position;
-    if (position) this._dataProvider.setPlayerPosition(position.x, position.y);
-    this._dataProvider.update(dt);
+    if (position) this.dataProvider.setPlayerPosition(position.x, position.y);
+    this.dataProvider.update(dt);
     this._mapContainer?.update(dt);
     if (Date.now() % 200 === 0) {
       //TODO: can find better decision? Possibly resize on rerender?
@@ -233,7 +233,7 @@ export class GameInstance {
       }
     );
 
-    this._dataProvider.on(
+    this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
         this._mapContainer?.entityFactory?.createVenue(venue);

@@ -85,8 +85,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle: string;
-      description: string;
+      subtitle?: string;
+      description?: string;
       coverImageUrl: string;
     };
   };
@@ -191,6 +191,8 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -200,6 +202,7 @@ export interface GenericVenue extends BaseVenue {
 export interface AnimateMapVenue extends BaseVenue {
   id: string;
   gameOptions: GameOptions;
+  relatedPartymapId: string;
   template: VenueTemplate.animatemap;
 }
 
@@ -304,7 +307,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle: string;
+  subtitle?: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;
@@ -347,6 +350,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -363,6 +367,7 @@ export interface LocationEvents {
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

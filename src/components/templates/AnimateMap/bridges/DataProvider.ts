@@ -1,6 +1,8 @@
 /**
  * Usage interfaces for GameInstance class
  */
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { Point } from "types/utility";
 
 export interface DataProvider {
@@ -15,9 +17,11 @@ export interface DataProvider {
 
   release: () => void;
 
+  venuesData: ReplicatedVenue[];
+
   // player
   player: PlayerDataProviderInterface;
-  initPlayerPositionAsync: (x: number, y: number) => Promise<boolean | void>;
+  // initPlayerPositionAsync: (x: number, y: number) => Promise<boolean | void>;
   setPlayerPosition: (x: number, y: number) => void;
 }
 

@@ -11,37 +11,29 @@ import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
-export enum AnimateMapEntityType {
-  user,
-  venue,
-  userWithControls,
-}
-
 export interface AnimateMapEntity {
-  type: AnimateMapEntityType;
-  id: string;
   x: number;
   y: number;
   data: ReplicatedUserData | ReplicatedVenueData;
 }
 
 export interface ReplicatedUserData {
+  id: string;
+  messengerId: number; //playerio messager id
   videoUrlString: string;
   avatarUrlString: string | string[];
   dotColor: number; //hex
-  hat: string | null;
-  accessories: string | null;
-  cycle: string | null;
+  hat?: string;
+  accessories?: string;
+  cycle?: string;
 }
 
 export interface ReplicatedUser extends AnimateMapEntity {
   data: ReplicatedUserData;
 }
 
-export interface ReplicatedVenueData {
-  url: string;
-  videoUrlString: string;
-  imageUrlString: string;
+export interface ReplicatedVenueData extends Room {
+  usersCount: number;
 }
 
 export interface ReplicatedVenue extends AnimateMapEntity {
@@ -49,22 +41,29 @@ export interface ReplicatedVenue extends AnimateMapEntity {
 }
 
 export class PlayerModel implements ReplicatedUser {
-  data: ReplicatedUserData = {
+  public data: ReplicatedUserData = {
+    id: "",
+    messengerId: 0,
     videoUrlString: "",
     avatarUrlString: "",
     dotColor: Math.floor(Math.random() * 16777215),
-    hat: null,
-    accessories: null,
-    cycle: null,
   };
-  id: string = "";
-  type: AnimateMapEntityType = AnimateMapEntityType.userWithControls;
-  x: number = 4960;
-  y: number = 4960;
+
+  public constructor(
+    id: string,
+    messengerId: number,
+    avatarUrlString: string,
+    public x: number = 9920 / 2,
+    public y: number = 9920 / 2
+  ) {
+    this.data.id = id;
+    this.data.messengerId = messengerId;
+    this.data.avatarUrlString = avatarUrlString;
+  }
 }
 
 export interface AnimateMapState {
-  zoom: number;
+  zoomLevel: number;
   room: Room | null;
   expectedZoom: number;
   cameraRect: Box;
@@ -75,13 +74,16 @@ export interface AnimateMapState {
   venues: Map<string, ReplicatedVenue>;
   usersQT: QuadTree | null;
   venuesQT: QuadTree | null;
+  lastZoom: number;
   //flags
   firstEntrance: string | null;
   environmentSound: boolean;
 }
 
+const lastZoom = window.sessionStorage.getItem("AnimateMapState.lastZoom");
+
 const initialAnimateMapState: AnimateMapState = {
-  zoom: 2,
+  zoomLevel: 2,
   room: null,
   expectedZoom: 2,
   cameraRect: new Box(0, 0, 0, 0),
@@ -92,10 +94,9 @@ const initialAnimateMapState: AnimateMapState = {
   venues: new Map<string, ReplicatedVenue>(),
   usersQT: null,
   venuesQT: null,
+  lastZoom: lastZoom ? parseFloat(lastZoom) : 1,
   //flags
-  firstEntrance: window.sessionStorage.getItem(
-    "AnimateMapState.sessionStorage"
-  ),
+  firstEntrance: window.sessionStorage.getItem("AnimateMapState.firstEntrance"),
   environmentSound: true,
 };
 
@@ -108,9 +109,27 @@ export const animateMapReducer: AnimateMapReducer = (
   const immutableState = state;
 
   switch (action.type) {
-    case AnimateMapActionTypes.SET_ZOOM:
-      const { zoom } = action.payload;
-      return { ...immutableState, zoom: zoom };
+    case AnimateMapActionTypes.SET_ZOOM_LEVEL:
+      const { zoomLevel } = action.payload;
+      return { ...immutableState, zoomLevel: zoomLevel };
+
+    case AnimateMapActionTypes.SET_LAST_ZOOM:
+      const { lastZoom } = action.payload;
+      console.log("SAVE lastZoom ", lastZoom);
+      window.sessionStorage.setItem(
+        "AnimateMapState.lastZoom",
+        lastZoom.toString()
+      );
+      return { ...immutableState, lastZoom: lastZoom };
+
+    case AnimateMapActionTypes.SET_FIRST_ENTRANCE:
+      const { firstEntrance } = action.payload;
+      console.log("SAVE firstEntrance ", firstEntrance);
+      window.sessionStorage.setItem(
+        "AnimateMapState.firstEntrance",
+        firstEntrance
+      );
+      return { ...immutableState, firstEntrance: firstEntrance };
 
     case AnimateMapActionTypes.SET_EXPECTED_ZOOM:
       const { expectedZoom } = action.payload;

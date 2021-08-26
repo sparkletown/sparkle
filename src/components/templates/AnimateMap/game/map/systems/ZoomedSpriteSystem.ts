@@ -71,11 +71,11 @@ export class ZoomedSpriteSystem extends System {
     }
 
     if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING) {
-      node.player.fsm.changeState("walking");
+      node.player.fsm.changeState(node.player.WALKING);
     } else if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_CYCLING) {
-      node.player.fsm.changeState("cycling");
+      node.player.fsm.changeState(node.player.CYCLING);
     } else {
-      node.player.fsm.changeState("flying");
+      node.player.fsm.changeState(node.player.FLYING);
     }
   }
 
@@ -83,7 +83,7 @@ export class ZoomedSpriteSystem extends System {
     const view = node.sprite.view;
     const imageUrls = node.zoomedSprite.imageUrls;
 
-    let image = null;
+    let image;
 
     if (Array.isArray(imageUrls)) {
       image = imageUrls[Math.min(zoom, imageUrls.length - 1)];
@@ -91,7 +91,7 @@ export class ZoomedSpriteSystem extends System {
       image = imageUrls;
     }
 
-    if (image) {
+    if (image && view) {
       view.texture = Texture.from(image);
     }
   }

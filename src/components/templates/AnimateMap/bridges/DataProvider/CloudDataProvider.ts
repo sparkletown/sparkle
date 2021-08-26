@@ -3,14 +3,18 @@ import { utils } from "pixi.js";
 
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { ReplicatedVenue } from "store/reducers/AnimateMap";
+import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
 
+import { WorldUsersData } from "hooks/users/useWorldUsers";
+
+import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
 import { DataProvider } from "../DataProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
 import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
+import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -50,7 +54,7 @@ export class CloudDataProvider
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
     firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId?: string
+    readonly playerioGameId: string
   ) {
     super();
 
@@ -58,7 +62,7 @@ export class CloudDataProvider
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
-    playerModel.id = playerId;
+    playerModel.data.id = playerId;
 
     this.commonInterface = new CommonLinker(
       new PlayerIODataProvider(
@@ -87,31 +91,75 @@ export class CloudDataProvider
   }
 
   // player provider
-  public async initPlayerPositionAsync(x: number, y: number) {
-    //TODO: REWORK
-    this.commonInterface
-      .loadVenuesAsync()
-      .then((q) => {
-        q.forEach((doc) => {
-          const data = doc.data();
-          // console.log(data);
-          const vn = {
-            x: data.animatemap.x,
-            y: data.animatemap.y,
-            data: {
-              url: "/in/" + doc.id,
-              videoUrlString: "",
-              imageUrlString: data?.host?.icon,
-            },
-          } as ReplicatedVenue;
-          this.emit(DataProviderEvent.VENUE_ADDED, vn);
-        });
-      })
-      .catch(console.log);
-    return this.player.initPositionAsync(x, y);
-  }
+  // public async initPlayerPositionAsync(x: number, y: number) {
+  //   //TODO: REWORK
+  //   return this.player.initPositionAsync(x, y);
+  // }
 
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
+  }
+
+  public venuesData: ReplicatedVenue[] = [];
+
+  public updateRooms(data: UseRelatedPartymapRoomsData) {
+    if (!data) return;
+
+    const newVenues = data.filter(
+      (item) => !this.venuesData.find((venue) => venue.data.url === item.url)
+    );
+    newVenues.forEach((room) => {
+      console.log("create venue");
+      const vn = {
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
+        data: {
+          usersCount: Math.floor(Math.random() * 100),
+          ...room,
+        },
+      } as ReplicatedVenue;
+      this.venuesData.push(vn);
+      this.emit(DataProviderEvent.VENUE_ADDED, vn);
+    });
+    //TODO: update scenario
+  }
+
+  // public usersData: ReplicatedUser[] = []
+  private countersForVenue = new Map<string, number>();
+
+  private isUpdateUsersLocked = false;
+  public async updateUsersAsync(data: WorldUsersData) {
+    if (this.isUpdateUsersLocked) return;
+
+    this.isUpdateUsersLocked = true;
+    await this.updateUsers(data);
+    this.isUpdateUsersLocked = false;
+  }
+
+  public updateUsers(data: WorldUsersData) {
+    if (!data?.isWorldUsersLoaded) return;
+
+    // new entities scenario
+    const usersData: ReplicatedUser[] = [];
+    data.worldUsers.forEach((user) => {
+      // if (user.lastSeenIn) //todo: add counter
+
+      usersData.push({
+        x: -1000,
+        y: -1000,
+        data: {
+          id: user.id,
+          messengerId: getIntByHash(user.id),
+          avatarUrlString: user.pictureUrl ?? "",
+          videoUrlString: "",
+          dotColor: 0xabfcfb,
+        },
+      });
+    });
+
+    //TODO: update scenario
+
+    // todo: add normalization
+    this.users.updateUsers(usersData);
   }
 }
