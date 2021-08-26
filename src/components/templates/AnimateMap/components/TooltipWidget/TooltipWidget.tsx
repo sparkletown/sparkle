@@ -67,10 +67,9 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
       const current = state.current;
       const next = state.current === TOOLTIP_POOL_SIZE - 1 ? 0 : current + 1;
       const prev = state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : current - 1;
-      const title = venue.data.url.slice(4);
-      state.itemsData[current].text = title;
+      state.itemsData[current].text = venue.data.title;
       state.itemsData[current].room = {
-        title: title,
+        title: venue.data.title,
         subtitle: "Subtitle ",
         url: venue.data.url,
         about: "about text #",
