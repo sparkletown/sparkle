@@ -250,6 +250,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
       (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.removeVenue(venue);
         this._mapContainer?.entityFactory?.createVenue(venue);
       }
     );
