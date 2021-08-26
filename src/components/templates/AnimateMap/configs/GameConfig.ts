@@ -2,6 +2,7 @@ import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
+import { barrels } from "../game/constants/AssetConstants";
 import { PlaygroundMap } from "../game/utils/PlaygroundMap";
 
 export interface GameOptionsFirebarrel {
@@ -10,8 +11,8 @@ export interface GameOptionsFirebarrel {
   y: number;
   maxUserCount: number;
   isLocked: boolean;
-  connectedUsers?: ReplicatedUser[];
-  iconSrc?: string;
+  connectedUsers: ReplicatedUser[];
+  iconSrc: string;
   trackSrc?: string;
 }
 
@@ -41,8 +42,13 @@ export class GameConfig {
 
   public static QA_BOTS_NUMBER = 20; //TODO: remove this
 
+  public static VENUE_DEFAULT_SIZE = 256;
+  public static VENUE_DEFAULT_COLLISION_RADIUS = 50;
+  public static ACTIVE_VENUE_MIN_PEOPLE_FOR_ANIMATED_HALO = 25;
+
   public minSpeed = 0;
   public maxSpeed = 8;
+  public firstEntrance = false;
 
   public pointForBezieSpeedCurve = [
     { x: 0, y: 0 },
@@ -90,6 +96,8 @@ export class GameConfig {
         y: this.worldCenter.y,
         maxUserCount: 6,
         isLocked: false,
+        connectedUsers: [],
+        iconSrc: barrels[0],
       },
       {
         id: "animate-map-firebarrel-2",
@@ -97,6 +105,8 @@ export class GameConfig {
         y: this.worldCenter.y + 100,
         maxUserCount: 6,
         isLocked: false,
+        connectedUsers: [],
+        iconSrc: barrels[0],
       },
       {
         id: "animate-map-firebarrel-3",
@@ -104,6 +114,8 @@ export class GameConfig {
         y: this.worldCenter.y,
         maxUserCount: 6,
         isLocked: false,
+        connectedUsers: [],
+        iconSrc: barrels[0],
       },
       {
         id: "animate-map-firebarrel-4",
@@ -111,6 +123,8 @@ export class GameConfig {
         y: this.worldCenter.y + 200,
         maxUserCount: 6,
         isLocked: false,
+        connectedUsers: [],
+        iconSrc: barrels[0],
       },
       {
         id: "animate-map-firebarrel-5",
@@ -118,6 +132,8 @@ export class GameConfig {
         y: this.worldCenter.y + 200,
         maxUserCount: 6,
         isLocked: false,
+        connectedUsers: [],
+        iconSrc: barrels[0],
       },
     ];
   }
@@ -132,10 +148,6 @@ export class GameConfig {
 
   public get borderRadius(): number {
     return this.worldWidth * 0.371;
-  }
-
-  public get venueDefaultCollisionRadius(): number {
-    return 50;
   }
 
   public get speedByZoomLevelArray(): Array<number> {

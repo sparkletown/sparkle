@@ -191,6 +191,8 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface GenericVenue extends BaseVenue {
@@ -348,6 +350,7 @@ export interface VenueEvent {
   room?: string;
   id?: string;
   orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -364,6 +367,7 @@ export interface LocationEvents {
 export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
   venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

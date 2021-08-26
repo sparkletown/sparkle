@@ -71,11 +71,11 @@ export class ZoomedSpriteSystem extends System {
     }
 
     if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_WALKING) {
-      node.player.fsm.changeState("walking");
+      node.player.fsm.changeState(node.player.WALKING);
     } else if (this.currentZoomLevel === GameConfig.ZOOM_LEVEL_CYCLING) {
-      node.player.fsm.changeState("cycling");
+      node.player.fsm.changeState(node.player.CYCLING);
     } else {
-      node.player.fsm.changeState("flying");
+      node.player.fsm.changeState(node.player.FLYING);
     }
   }
 
