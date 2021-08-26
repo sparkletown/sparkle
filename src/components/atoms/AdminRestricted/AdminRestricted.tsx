@@ -12,7 +12,7 @@ import { useVenueId } from "hooks/useVenueId";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
-import SHAPE_DENIED from "assets/images/denied.svg";
+import SHAPE_DENIED from "assets/images/access-forbidden.svg";
 
 import "./AdminRestricted.scss";
 
