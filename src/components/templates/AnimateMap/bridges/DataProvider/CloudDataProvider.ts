@@ -129,31 +129,44 @@ export class CloudDataProvider
       (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
     );
 
-    const existedVenues = this.venuesData.filter((venue) => {
-      const room = data.find((room) => room.id === venue.data.id);
+    const existedVenues = this.venuesData
+      .filter((venue) => {
+        const room = data.find((room) => room.id === venue.data.id);
 
-      if (!room) return false;
+        if (!room) return false;
 
-      return !(
-        room.url === venue.data.url &&
-        room.title === venue.data.title &&
-        room.subtitle === venue.data.subtitle &&
-        room.image_url === venue.data.image_url &&
-        room.isLive === venue.data.isLive &&
-        room.countUsers === venue.data.countUsers &&
-        room.isEnabled === venue.data.isEnabled
-      );
-    });
+        return !(
+          room.url === venue.data.url &&
+          room.title === venue.data.title &&
+          room.subtitle === venue.data.subtitle &&
+          room.image_url === venue.data.image_url &&
+          room.isLive === venue.data.isLive &&
+          room.countUsers === venue.data.countUsers &&
+          room.isEnabled === venue.data.isEnabled
+        );
+      })
+      .map((venue) => {
+        const room = data.find((item) => item.id === venue.data.id);
+        if (!room) return venue;
+        const vn = {
+          x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+          y: (room.y_percent / 100) * 9920 + 50,
+          data: {
+            countUsers: room.countUsers ?? 0,
+            ...room,
+          },
+        } as ReplicatedVenue;
+        return vn;
+      });
     console.log("existedVenues");
     console.log(existedVenues);
-    // eslint-disable-next-line no-debugger
-    if (existedVenues.length > 20) debugger;
-    existedVenues.forEach((venue) =>
-      this.emit(DataProviderEvent.VENUE_UPDATED, venue)
-    );
+    existedVenues.forEach((venue) => {
+      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    });
 
     newVenues.forEach((room) => {
       const countUsers = "countUsers" in room ? room.countUsers : 0;
+      console.log(countUsers);
       const vn = {
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
@@ -165,6 +178,9 @@ export class CloudDataProvider
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
     });
+    // const fff = this.venuesData.filter(item => item.data.countUsers);
+    // eslint-disable-next-line no-debugger
+    // debugger;
   }
 
   // public usersData: ReplicatedUser[] = []

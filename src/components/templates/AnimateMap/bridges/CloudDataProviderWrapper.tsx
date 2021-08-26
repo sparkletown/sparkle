@@ -48,10 +48,12 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
 
   console.log(recentLocationUsersResult);
+  console.log("recentLocationUsersResult");
   const roomWithFullData:
     | RoomWithFullData<WithVenue<Room> | Room>[]
     | undefined = rooms?.map((room, index) => {
     if ("venue" in room) {
+      console.log("venue with room");
       const res = recentLocationUsersResult.find(
         (item) => item.name === room.venue.name
       );
