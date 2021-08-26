@@ -90,7 +90,6 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
 
   const defaultVenue = createJazzbar({});
 
-  console.log(values.bannerImageUrl);
   useEffect(() => {
     if (editData && venueId) {
       setValue([
