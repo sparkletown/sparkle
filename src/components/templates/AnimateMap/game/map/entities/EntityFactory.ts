@@ -93,6 +93,8 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
+    // removeAllTooltip on this venue
+
     return entity;
   }
 
