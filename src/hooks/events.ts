@@ -30,7 +30,7 @@ export const useVenueEvents: ReactHook<VenueEventsProps, VenueEventsData> = ({
     error: eventsError,
     value: events = emptyArray,
   } = useAsync(async () => {
-    if (!venueIds) return emptyArray;
+    if (!venueIds || (venueIds && !venueIds.length)) return emptyArray;
 
     return tracePromise(
       "useVenueEvents::fetchAllVenueEvents",

@@ -3,8 +3,9 @@ import { skipToken } from "@reduxjs/toolkit/dist/query/react";
 import { useWorldUsersQueryState } from "store/api";
 
 import { User, UserLocation } from "types/User";
+import { AnyVenue, VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
 import { normalizeTimestampToMilliseconds } from "utils/time";
 
 import { useWorldUsersContext } from "hooks/users/useWorldUsers";
@@ -17,36 +18,37 @@ export interface RecentLocationsUsersData {
 }
 
 export const useRecentLocationsUsers = (
-  locationsName?: Array<string | null>
+  venues: Array<AnyVenue>, events: WithVenueId<VenueEvent>[]
 ): Array<RecentLocationsUsersData> => {
   const lastSeenThreshold = useUserLastSeenThreshold();
   const { worldUsersApiArgs } = useWorldUsersContext();
+
+  console.log('useRecentLocationsUsers', events);
 
   return useWorldUsersQueryState(worldUsersApiArgs ?? skipToken, {
     selectFromResult: ({
       isSuccess,
       data: { worldUsers, worldUserLocationsById } = {},
     }) => {
-      if (!worldUsers || !worldUserLocationsById || !locationsName) return [];
+      if (!worldUsers || !worldUserLocationsById || !venues.length) return [];
 
       const locations = [];
 
-      for (let i = 0; i < locationsName.length; i++) {
-        const locationName = locationsName[i];
-
-        if (!locationName) continue;
+      for (let i = 0; i < venues.length; i++) {
+        const venue = venues[i];
+        const venueName = venue.name;
 
         locations.push({
           isSuccess: isSuccess,
-          name: locationName,
+          name: venueName,
           users: worldUsers.filter((user) => {
             const userLocation: WithId<UserLocation> | undefined =
               worldUserLocationsById[user.id];
 
             return (
-              userLocation.lastSeenIn?.[locationName] &&
+              userLocation.lastSeenIn?.[venueName] &&
               normalizeTimestampToMilliseconds(
-                userLocation.lastSeenIn[locationName]
+                userLocation.lastSeenIn[venueName]
               ) > lastSeenThreshold
             );
           }),

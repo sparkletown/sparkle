@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { useFirebase } from "react-redux-firebase";
+import React, { useEffect, useMemo } from "react";
 
-import { AnimateMapVenue } from "types/venues";
+import { Room } from "types/rooms";
+import { AnimateMapVenue, AnyVenue, VenueEvent } from "types/venues";
 
-import { WithId } from "utils/id";
+import { WithId, WithVenueId } from "utils/id";
+import { WithVenue } from "utils/venue";
 
-import { useWorldUsers } from "hooks/users";
-import { useUser } from "hooks/useUser";
+import { useVenueEvents } from "hooks/events";
 
-import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
@@ -18,54 +17,55 @@ export interface CloudDataProviderWrapperProps {
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
 }
 
+const emptyRelatedVenues: WithId<AnyVenue>[] = [];
+const emptyRelatedEvents: WithVenueId<VenueEvent>[] = [];
+
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
-  newDataProviderCreate,
 }) => {
-  const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
-    null
+  const relatedRooms = useRelatedPartymapRooms({ venue });
+  const rooms = useMemo(() => relatedRooms, [relatedRooms]);
+
+  const venues: Array<AnyVenue> = useMemo(
+    () =>
+      rooms
+        ? rooms
+            .filter((room) => "venue" in room && "id" in venue)
+            .map((room) => (room as WithVenue<Room>)?.venue)
+        : emptyRelatedVenues,
+    [rooms]
   );
-  const firebase = useFirebase();
-  const user = useUser();
-  const worldUsers = useWorldUsers();
 
-  const rooms = useRelatedPartymapRooms({ venue });
-  const venues = rooms
-    ?.map((room) => {
-      return "venue" in room ? room?.venue.name : null;
-    })
-    .filter((room) => !!room);
-  const users = useRecentLocationsUsers(venues);
+  const venueIds = useMemo(
+    () => venues.map((venue) => (venue as WithId<AnyVenue>).id),
+    [venues]
+  );
 
-  console.log("-------useRecentLocationsUsers", users);
+  console.log(emptyRelatedEvents);
+
+  // Если раскоментировать вот это, то компонент начинает циклично ререндерится и вызывать хуки, пока прилл не повиснет
+  const { isEventsLoading, events = emptyRelatedEvents } = useVenueEvents({
+    venueIds: venueIds,
+  });
+
+  console.log("venue", venue);
+  console.log("events", isEventsLoading, events);
 
   useEffect(() => {
-    if (dataProvider) dataProvider.updateRooms(rooms);
-  }, [rooms, dataProvider]);
+    console.log("change venue", venue);
+  }, [venue]);
 
   useEffect(() => {
-    if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
-  }, [worldUsers, dataProvider]);
+    console.log("change rooms", rooms);
+  }, [rooms]);
 
-  useEffect(
-    () => {
-      if (typeof user.userId === "string" && !dataProvider && firebase) {
-        const dataProvider = new CloudDataProvider(
-          user.userId,
-          user.profile?.pictureUrl,
-          firebase,
-          venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
-        );
-        dataProvider.updateRooms(rooms);
-        dataProvider.updateUsers(worldUsers);
-        setDataProvider(dataProvider);
-        newDataProviderCreate(dataProvider);
-      }
-    },
-    // note: we really doesn't need rerender this for others dependencies
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-    [user, dataProvider, firebase]
-  );
+  useEffect(() => {
+    console.log("change venues", venues);
+  }, [venues]);
+
+  useEffect(() => {
+    console.log("change venueIds", venueIds);
+  }, [venueIds]);
 
   return null;
 };
