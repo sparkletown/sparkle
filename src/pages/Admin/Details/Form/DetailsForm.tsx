@@ -3,6 +3,8 @@ import { Button, Form } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
+import { DEFAULT_VENUE_BANNER, DEFAULT_VENUE_LOGO } from "settings";
+
 import {
   createUrlSafeName,
   createVenue_v2,
@@ -94,12 +96,12 @@ const DetailsForm: React.FC<DetailsFormProps> = ({ dispatch, editData }) => {
         { name: editData?.name },
         { subtitle: editData?.subtitle },
         { description: editData?.description },
-        { bannerImageUrl: editData?.bannerImageUrl },
-        { logoImageUrl: editData?.logoImageUrl },
+        { bannerImageUrl: editData?.bannerImageUrl ?? DEFAULT_VENUE_BANNER },
+        { logoImageUrl: editData?.logoImageUrl ?? DEFAULT_VENUE_LOGO },
         { showGrid: editData?.showGrid },
       ]);
     }
-  }, [editData, setValue, values.columns, venueId]);
+  }, [editData, setValue, venueId]);
 
   const handleBannerUpload = (url: string) => setBannerURL(dispatch, url);
 

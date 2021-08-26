@@ -49,7 +49,10 @@ export const DeviceVideo: React.FC<DeviceVideoProps> = ({
         permissionStatus.onchange = function permissionStatusOnChange() {
           setCameraPermission(this.state);
         };
-      });
+      })
+      .catch((e) =>
+        console.error(DeviceVideo.name, "Problem detecting permission", e)
+      );
   }, []);
 
   useEffect(() => {

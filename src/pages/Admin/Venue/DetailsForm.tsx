@@ -17,6 +17,7 @@ import {
   BACKGROUND_IMG_TEMPLATES,
   BANNER_MESSAGE_TEMPLATES,
   BM_PARENT_ID,
+  DEFAULT_MAP_BACKGROUND,
   DEFAULT_SHOW_SCHEDULE,
   DEFAULT_SHOW_USER_STATUSES,
   DEFAULT_USER_STATUS,
@@ -126,8 +127,10 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     },
     defaultValues: {
       ...defaultValues,
-      logoImageUrl: DEFAULT_VENUE_LOGO,
-      bannerImageUrl: DEFAULT_VENUE_BANNER,
+      logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
+      mapBackgroundImageUrl:
+        defaultValues?.mapBackgroundImageUrl ?? DEFAULT_MAP_BACKGROUND,
       parentId: defaultValues?.parentId ?? "",
     },
   });
