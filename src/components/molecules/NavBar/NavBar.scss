@@ -1,6 +1,14 @@
 @import "scss/constants.scss";
 
-$border-radius: 28px;
+$nav-container-width: 96px;
+$nav-container-height: 66px;
+$nav-btn-hover-background: #8e5ffc;
+$nav-schedule-btn-width-clicked: 30px;
+$nav-btn-border-radius: 10px;
+$menu-item-size: $spacing--lg * 2;
+$logo-size: $spacing--xxl + $spacing--md;
+$volume-popover-width-with-sliders: 30em;
+$volume-popover-width-without-sliders: 15em;
 
 .navbar-links-user-avatar {
   cursor: pointer;
@@ -150,55 +158,61 @@ $border-radius: 28px;
     }
   }
 }
-.nav-party-logo {
-  position: relative;
-  background-color: rgba($white, 0.08);
-  height: 60px;
-  padding: 0 50px 0 20px;
-  text-align: center;
-  cursor: pointer;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  transition: transform 400ms $transition-function;
-  border: none;
-  appearance: none;
-  color: $white;
 
-  img {
-    height: 40px;
+.nav-schedule {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  top: $navbar-height;
+  left: 0;
+  color: $white;
+  width: $nav-container-width;
+  height: $nav-container-height;
+  border-top-right-radius: $nav-btn-border-radius;
+  border-bottom-right-radius: $nav-btn-border-radius;
+  cursor: pointer;
+  background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat $primary;
+  margin-top: $spacing--sm;
+
+  &:hover {
+    background-color: $nav-btn-hover-background;
+    box-shadow: 0 5px 18px rgb(124 70 251 / 60%);
   }
-  &:hover,
+
   &:focus {
     border: none;
-    background-color: rgba($white, 0.14);
+    background-color: opaque-white(0.14);
+
     &:after {
       opacity: 0.7;
     }
   }
-  &:after {
-    content: "";
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    height: 20px;
-    width: 20px;
-    background-image: url(/assets/icons/nav-party-logo-icon.png);
-    background-size: 20px;
-    opacity: 0.4;
-    transform: rotate(0deg);
-    transition: transform 400ms $transition-function;
-  }
-  &.clicked {
-    &:after {
-      transform: rotate(180deg);
+
+  &-triggered {
+    color: $white;
+    background: url(/assets/icons/nav-schedule-whatson.svg) no-repeat
+      $saturated-black-alt;
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      box-shadow: none;
     }
   }
-  &.slide {
-    transform: translateX(110px);
+
+  &-clicked {
+    margin-left: $sidebar-schedule-width;
+    transition-property: margin-left;
+    transition: 0.15s;
+    width: $nav-schedule-btn-width-clicked;
+    background: url(/assets/icons/nav-schedule-whatson-clicked.svg)
+      $saturated-black-alt;
+
+    &:hover {
+      background-color: $lighter-intermediate-grey;
+      box-shadow: none;
+    }
   }
 }
 
@@ -243,19 +257,136 @@ $border-radius: 28px;
 }
 
 .NavBar {
-  &__home-icon {
-    cursor: pointer;
-    font-size: 24px;
+  &__volume-control--hidden {
+    display: none;
+  }
 
-    margin-right: $spacing--md;
+  &__volume-popover {
+    height: unset;
+    max-width: unset;
+    padding: $spacing--lg;
+    background-color: $card-background;
 
-    &:hover {
-      font-size: 27px;
-      margin-right: $spacing--sm;
+    &--with-sliders {
+      width: $volume-popover-width-with-sliders;
+      //transform: translateX(-0.5 * $volume-popover-width-with-sliders);
+    }
+
+    &--without-sliders {
+      width: $volume-popover-width-without-sliders;
     }
   }
 
-  &__profile-popover {
-    height: 100%;
+  &__home-icon {
+    cursor: pointer;
+    font-size: 24px;
+    color: opaque-white(0.5);
+
+    margin-right: $spacing--md;
+  }
+
+  &__separator {
+    margin: 0 $spacing--xs 0 $spacing--xs;
+  }
+
+  &__sparkle {
+    &-logo {
+      margin-right: $spacing--lg;
+      @include square-size($logo-size);
+      background-image: url(/assets/icons/sparkle-nav-logo.png);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  &__menu-link {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba($white, 1);
+    opacity: 0.8;
+    border: none;
+    border-radius: $border-radius--max;
+    width: $menu-item-size;
+    height: $menu-item-size;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: $spacing--sm;
+
+    &:focus {
+      box-shadow: 0 0 0 2px #ffffff;
+      outline: none;
+      opacity: 1;
+    }
+  }
+
+  &__radio {
+    &-container {
+      padding: $spacing--lg $spacing--md;
+      margin-top: $spacing--lg;
+
+      & > iframe {
+        width: 100%;
+        border: none;
+      }
+    }
+  }
+
+  &__user-avatar {
+    @include square-size($menu-item-size);
+    margin-right: $spacing--sm;
+
+    img {
+      @include square-size($menu-item-size);
+    }
+  }
+
+  &__menu {
+    &--volume {
+      margin-right: $spacing--sm;
+      background: opaque-white(0.1);
+      @include square-size($menu-item-size);
+
+      &--muted {
+        opacity: 0.5;
+        box-shadow: 0 0 0 2px $white;
+      }
+    }
+
+    &-link {
+      background: opaque-white(0.1);
+      color: $white;
+      opacity: 0.8;
+      border: none;
+      border-radius: $border-radius--max;
+      @include square-size($menu-item-size);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-right: $spacing--sm;
+
+      &:last-child {
+        margin: 0;
+      }
+
+      img {
+        width: $menu-item-size;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 2px $white;
+        outline: none;
+        opacity: 1;
+      }
+    }
+
+    &-icon {
+      @include square-size($menu-item-size);
+      background: opaque-white(0.1);
+    }
   }
 }

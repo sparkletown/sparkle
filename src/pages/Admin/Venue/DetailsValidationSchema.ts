@@ -2,7 +2,6 @@ import firebase from "firebase/app";
 import * as Yup from "yup";
 
 import {
-  BACKGROUND_IMG_TEMPLATES,
   GIF_RESIZER_URL,
   IFRAME_TEMPLATES,
   MAX_IMAGE_FILE_SIZE_BYTES,
@@ -97,18 +96,8 @@ export const validationSchema = Yup.object()
         .max(MAXIMUM_AUDITORIUM_COLUMNS_COUNT),
     }),
 
-    mapBackgroundImageUrl: Yup.string().when(
-      "$template.template",
-      (template: VenueTemplate, schema: Yup.StringSchema) =>
-        BACKGROUND_IMG_TEMPLATES.includes(template)
-          ? urlIfNoFileValidation("mapBackgroundImageFile")
-          : schema.notRequired()
-    ),
-
     attendeesTitle: Yup.string().notRequired().default("Guests"),
-    chatTitle: Yup.string().notRequired().default("Party"),
 
-    bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
     zoomUrl: Yup.string().when(
       "$template.template",
@@ -167,7 +156,7 @@ export const validationSchema = Yup.object()
 
     owners: Yup.array<string>().notRequired(),
     placementRequests: Yup.string().notRequired(),
-    adultContent: Yup.bool().required(),
+    adultContent: Yup.bool().required().default(false),
     bannerMessage: Yup.string().notRequired(),
     parentId: Yup.string().notRequired(),
     showReactions: Yup.bool().notRequired(),

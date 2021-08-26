@@ -1,5 +1,13 @@
-.venue-partygoers-container {
-  font-size: 0.8rem;
-  opacity: 0.7;
-  margin-left: 40px;
+@import "scss/constants.scss";
+
+.VenuePartygoers {
+  &__container {
+    font-size: $font-size--sm;
+    line-height: $font-size--md;
+    color: opaque-white(0.8);
+  }
+
+  &__users-count {
+    font-weight: $font-weight--700;
+  }
 }
