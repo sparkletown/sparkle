@@ -66,13 +66,6 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     } else return room;
   });
 
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  console.log(
-    "-------useRecentLocationsUsers",
-    roomWithFullData?.filter((i) => i.countUsers)
-  );
-
   useEffect(() => {
     if (dataProvider) dataProvider.updateRooms(roomWithFullData);
   }, [roomWithFullData, dataProvider]);
