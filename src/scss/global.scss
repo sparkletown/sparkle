@@ -76,6 +76,11 @@ h6 {
 }
 
 // Buttons
+
+button:focus {
+  outline: 1px auto $white !important;
+}
+
 button.btn,
 a.btn,
 input.btn {
