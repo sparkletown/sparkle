@@ -817,7 +817,9 @@ const DetailsFormLeft: React.FC<DetailsFormLeftProps> = ({
 
         {renderBannerPhotoInput()}
         {renderLogoInput()}
-        {renderHelper("1:1 ratio recommended")}
+        {renderHelper(
+          "This is how you will appear on the map. Please upload a square image."
+        )}
 
         {templateID &&
           BANNER_MESSAGE_TEMPLATES.includes(templateID) &&
