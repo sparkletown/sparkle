@@ -15,7 +15,9 @@ export interface UseRoomRecentUsersListProps {
 export const useRoomRecentUsersList = ({
   roomList,
 }: UseRoomRecentUsersListProps) => {
-  const roomUrls = roomList?.map((room) => getRoomUrl(room.url) ?? "");
+  const roomUrls = roomList?.map((room) =>
+    room?.url ? getRoomUrl(room.url) : ""
+  );
   const { relatedVenues } = useRelatedVenues({});
   const matchedRoomVenues = useMemo(
     () =>
