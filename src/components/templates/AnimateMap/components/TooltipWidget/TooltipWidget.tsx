@@ -5,6 +5,8 @@ import { ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Room } from "types/rooms";
 
+import { openRoomUrl } from "utils/url";
+
 //import { useDispatch } from "hooks/useDispatch";
 // import { useSelector } from "hooks/useSelector";
 // import {
@@ -109,7 +111,7 @@ export const TooltipWidget: React.FC<TooltipWidgetProps> = () => {
           state.current === 0 ? TOOLTIP_POOL_SIZE - 1 : state.current - 1; //FIXME
         if (!state.itemsData[current]) return; //FIXME
         const room = state.itemsData[current].room;
-        window.location.assign(room.url);
+        openRoomUrl(room.url);
         //dispatch(setAnimateMapRoom(room));
       }
     };
