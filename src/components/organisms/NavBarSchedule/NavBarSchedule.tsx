@@ -39,6 +39,7 @@ import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
 import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
+import { NavBarScheduleWeather } from "components/molecules/NavBarScheduleWeather";
 import { ScheduleNG } from "components/molecules/ScheduleNG";
 
 // Disabled as per designs. Up for deletion if confirmied not necessary
@@ -309,6 +310,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
         {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
 
+        <NavBarScheduleWeather containerClassName="NavBarSchedule__weather" />
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"

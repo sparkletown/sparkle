@@ -1,0 +1,20 @@
+@import "scss/constants.scss";
+
+.NavBarScheduleWeather {
+  cursor: default;
+  background-image: url("/assets/images/bm-default-map-background.jpg");
+  padding: 15px 36px 43px 16px;
+  & b {
+    font-weight: $font-weight--500;
+  }
+
+  &__temp-and-state {
+    display: flex;
+    align-items: flex-end;
+  }
+  &__state {
+    margin-bottom: 0.6rem;
+    margin-left: 0.5rem;
+    font-weight: $font-weight--300;
+  }
+}
