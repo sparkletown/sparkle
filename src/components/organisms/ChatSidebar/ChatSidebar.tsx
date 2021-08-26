@@ -72,6 +72,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     "chat-sidebar": true,
     "chat-sidebar--expanded": isExpanded,
     "chat-sidebar--collapsed": !isExpanded,
+    "chat-sidebar--wide": isShownHelpCenter,
   });
 
   const venueChatTabStyles = classNames({
