@@ -77,7 +77,6 @@ export class TooltipSystem extends System {
 
     // TODO HACK
     const tooltipHeight = 40;
-    console.log("tooltipHeight 40", node.tooltip.view?.height);
     const k =
       node.tooltip.collisionRadius *
       this.viewport.head.viewport.zoomViewport *

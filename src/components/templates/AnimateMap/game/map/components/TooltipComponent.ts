@@ -11,7 +11,6 @@ export class TooltipComponent {
 
   constructor(
     public text = "default tooltip",
-    public additionalText = "",
     public collisionRadius = 50,
     public position = "bottom"
   ) {}

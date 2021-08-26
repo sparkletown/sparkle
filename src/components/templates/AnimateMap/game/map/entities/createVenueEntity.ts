@@ -1,4 +1,4 @@
-import { Engine, Entity } from "@ash.ts/ash";
+import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
@@ -22,19 +22,28 @@ import { VenueHaloEmpty } from "../graphics/VenueHaloEmpty";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
-export const addVenueTooltip = (
+import EntityFactory from "./EntityFactory";
+
+const addVenueTooltip = (
   venue: ReplicatedVenue,
   entity: Entity,
-  text: string,
-  additionalText = ""
+  text: string
 ) => {
-  const tooltip = new TooltipComponent(text, additionalText);
+  if (entity.get(TooltipComponent)) {
+    return;
+  }
+
+  const tooltip = new TooltipComponent(text);
   tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
 
-export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
+export const createVenueEntity = (
+  venue: ReplicatedVenue,
+  creator: EntityFactory
+) => {
+  const engine = creator.engine;
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const venueComponent = new VenueComponent(venue, fsm);
@@ -83,7 +92,14 @@ export const createVenueEntity = (venue: ReplicatedVenue, engine: Engine) => {
       new HoverableSpriteComponent(
         () => {
           // add tooltip
-          addVenueTooltip(venue, entity, venue.data.title.slice(0, 15) + "...");
+          const waiting = creator.getWaitingVenueClick();
+          if (!waiting || waiting.data.url !== venue.data.url) {
+            addVenueTooltip(
+              venue,
+              entity,
+              venue.data.title.slice(0, 15) + "..."
+            );
+          }
 
           // add increase
           const comm = entity.get(SpriteComponent);
