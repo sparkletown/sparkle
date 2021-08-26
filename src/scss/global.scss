@@ -75,10 +75,12 @@ h6 {
   font-size: 1em;
 }
 
-button:focus {
-  outline: 1px auto $white;
-}
 // Buttons
+
+button:focus {
+  outline: 1px auto $white !important;
+}
+
 button.btn,
 a.btn,
 input.btn {
