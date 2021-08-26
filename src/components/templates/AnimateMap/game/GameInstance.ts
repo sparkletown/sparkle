@@ -240,6 +240,20 @@ export class GameInstance {
       }
     );
 
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_REMOVED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.removeVenue(venue);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_UPDATED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.createVenue(venue);
+      }
+    );
+
     window.addEventListener("resize", this.resize.bind(this));
 
     this.eventProvider.on(EventType.UI_SINGLE_BUTTON_FOLLOW, () =>

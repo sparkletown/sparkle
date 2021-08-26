@@ -636,6 +636,11 @@ export default class EntityFactory {
     return createVenueEntity(venue, this);
   }
 
+  public removeVenue(venue: ReplicatedVenue) {
+    const node = this.getVenueNode(venue);
+    if (node) this.engine.removeEntity(node.entity);
+  }
+
   public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {
     const nodes: NodeList<VenueNode> = this.engine.getNodeList(VenueNode);
     for (let node = nodes.head; node; node = node.next) {
