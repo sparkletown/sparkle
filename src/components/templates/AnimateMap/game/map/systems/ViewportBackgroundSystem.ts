@@ -236,6 +236,7 @@ export class ViewportBackgroundSystem extends System {
 
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
+    this.container.filters[0].uniforms.zoom = 2 * (this.viewport.scale.x + 0.3);
 
     this.container.filters[0].uniforms.frame = [
       this.viewport.left,
