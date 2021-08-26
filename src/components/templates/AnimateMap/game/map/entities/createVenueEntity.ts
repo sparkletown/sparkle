@@ -160,15 +160,18 @@ export const createVenueEntity = (
     )
     .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS));
 
+  const position = new PositionComponent(venue.x, venue.y, 0, 0, 0);
+  entity.add(position);
   engine.addEntity(entity);
 
   new CropVenue(venue.data.image_url, venue.data.isEnabled)
-    .setUsersCount(venue.data.usersCount)
+    .setUsersCount(venue.data.countUsers)
     .execute()
     .then((comm: CropVenue) => {
       const scale =
         (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
-      entity.add(new PositionComponent(venue.x, venue.y, 0, scale, scale));
+      position.scaleY = scale;
+      position.scaleX = scale;
 
       sprite.venue = Sprite.from(comm.canvas);
       sprite.venue.anchor.set(0.5);

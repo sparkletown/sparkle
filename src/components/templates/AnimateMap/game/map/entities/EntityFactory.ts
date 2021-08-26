@@ -633,12 +633,18 @@ export default class EntityFactory {
     return entity;
   }
   public createVenue(venue: ReplicatedVenue): Entity {
+    console.log(`create venue ${venue.data.id}`);
     return createVenueEntity(venue, this);
   }
 
   public removeVenue(venue: ReplicatedVenue) {
+    console.log(`Remove venue ${venue.data.id}`);
     const node = this.getVenueNode(venue);
+    // eslint-disable-next-line no-debugger
+    if (!node) console.log("can't find");
     if (node) this.engine.removeEntity(node.entity);
+    // eslint-disable-next-line no-debugger
+    // if (this.getVenueNode(venue)?.entity) debugger;
   }
 
   public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {
