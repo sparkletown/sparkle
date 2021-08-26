@@ -16,28 +16,15 @@ import SHAPE_DENIED from "assets/images/denied.svg";
 
 import "./AdminRestricted.scss";
 
-export interface AdminRestrictedProps {
-  userId?: string;
-  venueId?: string;
-}
-
-export const AdminRestricted: React.FC<AdminRestrictedProps> = ({
-  children,
-  userId,
-  venueId,
-}) => {
+export const AdminRestricted: React.FC = ({ children }) => {
   const firebase = useFirebase();
   const history = useHistory();
-  const venueIdFromHook = useVenueId();
-  const { userId: userIdFromHook } = useUser();
+  const venueId = useVenueId();
+  const { userId } = useUser();
 
-  // Webpack lacking babel loader for ??= operator? O.o
-  venueId = venueId ?? venueIdFromHook;
-  userId = userId ?? userIdFromHook;
+  const { isAdminUser, isLoading: isCheckingRole } = useIsAdminUser(userId);
 
-  const { isAdminUser, isLoading } = useIsAdminUser(userId);
-
-  const [, logout] = useAsyncFn(async () => {
+  const [{ loading: isLoggingOut }, logout] = useAsyncFn(async () => {
     await firebase.auth().signOut();
     history.push(venueId ? venueLandingUrl(venueId) : "/");
   }, [firebase, history, venueId]);
@@ -48,7 +35,7 @@ export const AdminRestricted: React.FC<AdminRestrictedProps> = ({
     );
   }
 
-  if (isLoading)
+  if (isCheckingRole)
     return (
       <div className="AdminRestricted AdminRestricted--loading">Loading...</div>
     );
@@ -74,6 +61,8 @@ export const AdminRestricted: React.FC<AdminRestrictedProps> = ({
         <ButtonNG
           className="AdminRestricted__switch-button"
           variant="primary"
+          loading={isLoggingOut}
+          disabled={isLoggingOut}
           onClick={logout}
         >
           Switch Account
