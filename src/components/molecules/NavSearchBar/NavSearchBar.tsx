@@ -3,18 +3,12 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import classNames from "classnames";
 import { isEqual, reduce } from "lodash";
 
-import {
-  COVERT_ROOM_TYPES,
-  DEFAULT_PARTY_NAME,
-  DEFAULT_VENUE_LOGO,
-} from "settings";
+import { COVERT_ROOM_TYPES, DEFAULT_PARTY_NAME } from "settings";
 
 import { Room } from "types/rooms";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
-import { uppercaseFirstChar } from "utils/string";
-import { formatUtcSecondsRelativeToNow } from "utils/time";
 import { isDefined, isTruthy } from "utils/types";
 
 import { useVenueEvents } from "hooks/events";
@@ -28,6 +22,7 @@ import { RoomModal } from "components/templates/PartyMap/components";
 import { EventModal } from "components/organisms/EventModal";
 
 import { Loading } from "components/molecules/Loading";
+import { NavSearchBarFoundEvent } from "components/molecules/NavSearchBar/NavSearchBarFoundEvent";
 
 import { InputField } from "components/atoms/InputField";
 
@@ -166,29 +161,18 @@ export const NavSearchBar: React.FC<NavSearchBarProps> = ({ venueId }) => {
           isEventRoomEnabled && event.name.toLowerCase().includes(searchQuery)
         );
       })
-      .map((event) => {
-        const imageUrl =
-          enabledRelatedRooms.find((room) => room.title === event.room)
-            ?.image_url ??
-          relatedVenues.find((venue) => venue.id === event.venueId)?.host
-            ?.icon ??
-          DEFAULT_VENUE_LOGO;
-
-        return (
-          <NavSearchResult
-            key={`event-${event.id ?? event.name}`}
-            title={event.name}
-            description={`Event - ${uppercaseFirstChar(
-              formatUtcSecondsRelativeToNow(event.start_utc_seconds)
-            )}`}
-            image={imageUrl ?? DEFAULT_VENUE_LOGO}
-            onClick={() => {
-              setSelectedEvent(event);
-              clearSearch();
-            }}
-          />
-        );
-      });
+      .map((event) => (
+        <NavSearchBarFoundEvent
+          key={`event-${event.id ?? event.name}`}
+          event={event}
+          enabledRelatedRooms={enabledRelatedRooms}
+          relatedVenues={relatedVenues}
+          onClick={() => {
+            setSelectedEvent(event);
+            clearSearch();
+          }}
+        />
+      ));
   }, [
     searchQuery,
     relatedEvents,

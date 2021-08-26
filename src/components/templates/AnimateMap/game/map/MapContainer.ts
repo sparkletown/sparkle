@@ -133,6 +133,7 @@ export class MapContainer extends Container {
     this._engine = new Engine();
     this.entityFactory = new EntityFactory(this._engine);
 
+    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
       new DeadSystem(this._engine),
       SystemPriorities.update

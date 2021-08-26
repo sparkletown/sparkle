@@ -18,7 +18,6 @@ import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
 import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
-import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
