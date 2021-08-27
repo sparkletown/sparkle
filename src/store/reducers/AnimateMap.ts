@@ -11,10 +11,12 @@ import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
 
+import { Firebarrel } from "../../types/animateMap";
+
 export interface AnimateMapEntity {
   x: number;
   y: number;
-  data: ReplicatedUserData | ReplicatedVenueData;
+  data: ReplicatedUserData | ReplicatedVenueData | ReplicatedFirebarrelData;
 }
 
 export interface ReplicatedUserData {
@@ -40,6 +42,18 @@ export interface ReplicatedVenueData extends Room {
 
 export interface ReplicatedVenue extends AnimateMapEntity {
   data: ReplicatedVenueData;
+}
+
+export interface ReplicatedVenue extends AnimateMapEntity {
+  data: ReplicatedVenueData;
+}
+
+export interface ReplicatedFirebarrelData extends Firebarrel {
+  connectedUsers: ReplicatedUser[];
+}
+
+export interface ReplicatedFirebarrel extends AnimateMapEntity {
+  data: ReplicatedFirebarrelData;
 }
 
 export class PlayerModel implements ReplicatedUser {
