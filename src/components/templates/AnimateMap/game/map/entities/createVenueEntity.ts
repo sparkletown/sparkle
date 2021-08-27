@@ -77,11 +77,12 @@ export const updateVenueEntity = (
   if (!node) {
     return;
   }
+  node.venue.model = venue;
   const sprite = node.entity.get(SpriteComponent);
   if (!sprite) {
     return;
   }
-  updateVenueImage(node.venue.model, sprite, node.position);
+  updateVenueImage(venue, sprite, node.position);
 };
 
 export const createVenueEntity = (

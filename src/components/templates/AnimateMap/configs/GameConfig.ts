@@ -11,12 +11,16 @@ export interface GameOptions {
 export class GameConfig {
   private options: GameOptions;
 
-  constructor(options: GameOptions) {
+  constructor(
+    options: GameOptions,
+    private timeOffset: number = new Date().getTimezoneOffset() / 60
+  ) {
     this.options = {
       ...{
         //default options can be here
         worldWidth: 9920,
         worldHeight: 9920,
+        timeOffset: new Date().getTimezoneOffset(),
       },
       ...options,
     };
@@ -142,5 +146,18 @@ export class GameConfig {
       this._zoomLevelLineOfSightCorresponding.length - 1
     );
     return this._zoomLevelLineOfSightCorresponding[zoomLevel];
+  }
+
+  /**
+   * returns current time for Black Rock City
+   */
+  public getCurUTCTime(): number {
+    const date = new Date();
+    return (
+      ((date.getHours() + 24 - 7 + this.timeOffset) % 24) +
+      date.getUTCMinutes() / 60 +
+      date.getUTCSeconds() / 3600 +
+      date.getUTCMilliseconds() / 3600000
+    );
   }
 }

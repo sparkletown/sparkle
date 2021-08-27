@@ -8,10 +8,10 @@ import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
 import { WithVenue } from "utils/venue";
 
+import { useVenueEvents } from "hooks/events";
 import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { useVenueEvents } from "../../../../hooks/events";
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
