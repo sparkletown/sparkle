@@ -6,8 +6,8 @@ import {
   AnimateMapActionTypes,
   setAnimateMapFireBarrel,
 } from "store/actions/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 import { GameInstance } from "../../GameInstance";
 import { Barrel } from "../graphics/Barrel";
 import { BarrelNode } from "../nodes/BarrelNode";

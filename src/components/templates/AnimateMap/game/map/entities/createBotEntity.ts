@@ -1,8 +1,11 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
-import { Point } from "../../../../../../types/utility";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
+
+import { Point } from "types/utility";
+
+import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { GameInstance } from "../../GameInstance";
 import { BotComponent } from "../components/BotComponent";
@@ -59,10 +62,14 @@ export const createBotEntity = (
     .add(bot)
     .add(new PositionComponent(user.x, user.y, 0, scale, scale))
     .add(
-      new ClickableSpriteComponent(() => {
-        console.log(
-          realUser ? "user click" : "bot click",
-          spriteComponent.view?.toGlobal({ x: 0, y: 0 })
+      new ClickableSpriteComponent((event) => {
+        const replicatedUser = creator.getBotNode(user.data.id)?.bot.data;
+        if (!replicatedUser || !realUser) return;
+        GameInstance.instance.eventProvider.emit(
+          EventType.ON_REPLICATED_USER_CLICK,
+          replicatedUser,
+          event.data.global.x,
+          event.data.global.y
         );
       })
     )

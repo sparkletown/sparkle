@@ -18,7 +18,6 @@ import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-// import { DataProvider } from "../bridges/DataProvider";
 import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
