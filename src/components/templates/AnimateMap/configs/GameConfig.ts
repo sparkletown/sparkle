@@ -27,7 +27,7 @@ export class GameConfig {
 
   constructor(
     options: GameOptions,
-    private timeOffset: number = new Date().getTimezoneOffset()
+    private timeOffset: number = new Date().getTimezoneOffset() / 60
   ) {
     this.options = {
       ...{
@@ -215,7 +215,7 @@ export class GameConfig {
   public getCurUTCTime(): number {
     const date = new Date();
     return (
-      ((date.getHours() + (24 - 7 - this.timeOffset)) % 24) +
+      ((date.getHours() + 24 - 7 + this.timeOffset) % 24) +
       date.getUTCMinutes() / 60 +
       date.getUTCSeconds() / 3600 +
       date.getUTCMilliseconds() / 3600000
