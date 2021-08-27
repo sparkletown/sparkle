@@ -301,20 +301,11 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels = GameInstance.instance
-              .getConfig()
-              .getFirebarrels();
-
-            if (firebarrels) {
-              for (let i = 0; i < firebarrels.length; i++) {
-                this.entityFactory.createBarrel(firebarrels[i]);
-                // this.entityFactory.createBarrel({
-                //   x: firebarrel.x,
-                //   y: firebarrel.y,
-                //   data: { url: firebarrel.id, image_url: barrels[0] },
-                // } as ReplicatedVenue);
-              }
-            }
+            const firebarrels =
+              GameInstance.instance.dataProvider.firebarrelsData;
+            firebarrels.forEach((firebarrel) => {
+              this.entityFactory?.createBarrel(firebarrel);
+            });
           }
         })
         .then(() => {
