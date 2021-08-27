@@ -235,7 +235,7 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport),
+      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
     this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
