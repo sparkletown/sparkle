@@ -15,10 +15,8 @@ import {
   staticLightKeyFramer,
   sunKeyFramer,
 } from "../graphics/shaders/mapLightning";
-import {
-  ShaderDataProvider,
-  staticLightData,
-} from "../graphics/shaders/StaticShaderData";
+import { staticLightData } from "../graphics/shaders/staticLightData";
+import { ShaderDataProvider } from "../graphics/shaders/StaticShaderData";
 import { BarrelNode } from "../nodes/BarrelNode";
 
 export class ViewportBackgroundSystem extends System {
