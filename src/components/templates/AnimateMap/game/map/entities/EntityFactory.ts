@@ -3,17 +3,18 @@ import { Sprite } from "pixi.js";
 
 import {
   PlayerModel,
+  ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles, HALO } from "../../constants/AssetConstants";
+import { avatarCycles, barrels, HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
@@ -45,6 +46,7 @@ import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
 import { KeyboardNode } from "../nodes/KeyboardNode";
@@ -452,7 +454,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(barrel: GameOptionsFirebarrel): Entity {
+  public createBarrel(barrel: ReplicatedFirebarrel): Entity {
     const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 
     const entity: Entity = new Entity();
@@ -506,7 +508,10 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(barrel.iconSrc)
+    // FIXME: ADD BARREL SRC_IMAGE URL
+    // new LoadImage(barrels[barrel.data.iconSrc])
+
+    new LoadImage(barrels[0])
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -525,7 +530,7 @@ export default class EntityFactory {
           );
 
         const sprite: Barrel = new Barrel();
-        sprite.name = barrel.iconSrc;
+        sprite.name = barrel.data.id;
         sprite.barrel = Sprite.from(comm.canvas);
         sprite.barrel.anchor.set(0.5);
         sprite.addChild(sprite.barrel);
@@ -547,6 +552,33 @@ export default class EntityFactory {
 
     return entity;
   }
+
+  public getFirebarrelNode(
+    firebarrel: ReplicatedFirebarrel
+  ): BarrelNode | undefined {
+    const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
+    for (let node = nodes.head; node; node = node.next) {
+      if (node.barrel.model.data.id === firebarrel.data.id) {
+        return node;
+      }
+    }
+    return undefined;
+  }
+
+  public removeBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (node) this.engine.removeEntity(node.entity);
+  }
+
+  public updateBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (!node) {
+      return;
+    }
+
+    // TODO: update image, coords, etc
+  }
+
   public createVenue(venue: ReplicatedVenue): Entity {
     return createVenueEntity(venue, this);
   }

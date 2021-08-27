@@ -1,4 +1,5 @@
 export type Firebarrel = {
+  id: string;
   coordinateX: string;
   coordinateY: string;
   iconSrc: string;

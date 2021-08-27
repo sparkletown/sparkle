@@ -8,10 +8,11 @@ import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
 import { WithVenue } from "utils/venue";
 
+import { useVenueEvents } from "hooks/events";
 import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { useVenueEvents } from "../../../../hooks/events";
+import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
 
@@ -55,7 +56,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
 
   const venueIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
 
-  const { events, isEventsLoading } = useVenueEvents({ venueIds });
+  const { events } = useVenueEvents({ venueIds });
 
   const locationUsers = useRecentLocationsUsers(venues);
 
@@ -94,31 +95,25 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
 
     return {
       ...room,
-      ...{ id: index, isLive: false, countUsers: 0 },
+      ...{ id: index, isLive: !!(room.title.length % 2), countUsers: 0 },
+    };
+  });
+
+  const firebarrels = useFirebarrels({ animateMapId: venue.id });
+
+  const firebarrelsWithUsers = firebarrels?.firebarrels.map((firebarrel) => {
+    return {
+      ...firebarrel,
+      connectedUsers: [],
     };
   });
 
   useEffect(() => {
-    console.log("locationsData", {
-      relatedRooms,
-      isEventsLoading,
-      events,
-      locationUsers,
-      liveEvents,
-      roomsWithFullData,
-    });
-  }, [
-    relatedRooms,
-    events,
-    isEventsLoading,
-    liveEvents,
-    locationUsers,
-    roomsWithFullData,
-  ]);
-
-  useEffect(() => {
-    if (dataProvider) dataProvider.updateRooms(roomsWithFullData);
-  }, [roomsWithFullData, dataProvider]);
+    if (dataProvider) {
+      dataProvider.updateRooms(roomsWithFullData);
+      dataProvider.updateFirebarrels(firebarrelsWithUsers);
+    }
+  }, [roomsWithFullData, firebarrelsWithUsers, dataProvider]);
 
   useEffect(() => {
     if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
@@ -134,7 +129,9 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
         );
         dataProvider.updateRooms(roomsWithFullData);
+        dataProvider.updateFirebarrels(firebarrelsWithUsers);
         dataProvider.updateUsers(worldUsers);
+
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);
       }
