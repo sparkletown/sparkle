@@ -59,7 +59,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({ event }) => {
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+        const selectedRoom = getUrlParamFromString(room.title) === roomUrlParam;
 
         return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
