@@ -74,7 +74,7 @@ export const worldUsersApi = createApi({
         const processQueuedChanges = () => {
           if (queuedChanges.length === 0) return;
           console.log(
-            "[worldUsersApi::processQueuedChanges] queuedChanges.length = ",
+            "worldUsersApi::processQueuedChanges queuedChanges.length = ",
             queuedChanges.length
           );
 
