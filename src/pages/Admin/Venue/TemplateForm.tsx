@@ -23,7 +23,7 @@ const templateImageMap: Record<VenueTemplate, string | undefined> = {
   [VenueTemplate.conversationspace]: undefined,
   [VenueTemplate.firebarrel]: undefined,
   [VenueTemplate.embeddable]: "/venues/venue-art.jpg",
-  [VenueTemplate.auditorium]: undefined,
+  [VenueTemplate.auditorium]: "/venues/venue-performance.jpg",
   [VenueTemplate.posterhall]: undefined,
   [VenueTemplate.posterpage]: undefined,
   [VenueTemplate.screeningroom]: undefined,
