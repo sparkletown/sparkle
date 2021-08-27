@@ -2,6 +2,9 @@ import { Engine, NodeList, System } from "@ash.ts/ash";
 
 import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
+import { CollisionComponent } from "../components/CollisionComponent";
+import { PositionComponent } from "../components/PositionComponent";
+import { BarrelNode } from "../nodes/BarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { VenueNode } from "../nodes/VenueNode";
@@ -10,17 +13,20 @@ export class MotionCollisionSystem extends System {
   private player?: NodeList<PlayerNode>;
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
+  private barrels?: NodeList<BarrelNode>;
 
   addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
+    this.barrels = engine.getNodeList(BarrelNode);
   }
 
   removeFromEngine(engine: Engine) {
     this.player = undefined;
     this.colliders = undefined;
     this.venues = undefined;
+    this.barrels = undefined;
   }
 
   update(time: number) {
@@ -42,13 +48,37 @@ export class MotionCollisionSystem extends System {
         node = node.next
       ) {
         if (
-          this.collideVenue(this.colliders.head, previousX, previousY, node)
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            node.position,
+            node.collision
+          )
         ) {
           GameInstance.instance.eventProvider.emit(
             EventType.ON_VENUE_COLLISION,
             node.venue.model
           );
           break;
+        }
+      }
+
+      for (
+        let barrelNode = this.barrels?.head;
+        barrelNode;
+        barrelNode = barrelNode.next
+      ) {
+        if (
+          this.collideObject(
+            this.colliders.head,
+            previousX,
+            previousY,
+            barrelNode.position,
+            barrelNode.collision
+          )
+        ) {
+          console.log("collide firebarrel");
         }
       }
     }
@@ -89,11 +119,12 @@ export class MotionCollisionSystem extends System {
     return collide;
   }
 
-  public collideVenue(
+  public collideObject(
     player: MotionCollidedNode,
     previousX: number,
     previousY: number,
-    venue: VenueNode
+    position: PositionComponent,
+    collision: CollisionComponent
   ): boolean {
     const bounce = 1;
 
@@ -107,22 +138,22 @@ export class MotionCollisionSystem extends System {
     let adjustSpeed = 0;
     let positionRatio = 0;
     const epsilon = 0.001;
-    const dx = player.position.x - venue.position.x;
-    const dy = player.position.y - venue.position.y;
+    const dx = player.position.x - position.x;
+    const dy = player.position.y - position.y;
     let dotProduct =
       player.movement.velocityX * dx + player.movement.velocityY * dy;
     dotProduct =
       dotProduct > 0 ? -1 * dotProduct : dotProduct === 0 ? -0.001 : dotProduct;
 
-    outerLimit = venue.collision.radius + player.collision.radius;
+    outerLimit = collision.radius + player.collision.radius;
     if (Math.abs(dx) > outerLimit) return false;
     if (Math.abs(dy) > outerLimit) return false;
     distanceSq = dx * dx + dy * dy;
     outerLimitSq = outerLimit * outerLimit;
     if (distanceSq > outerLimitSq) return false;
 
-    pdx = previousX - venue.position.x;
-    pdy = previousY - venue.position.y;
+    pdx = previousX - position.x;
+    pdy = previousY - position.y;
     pDistanceSq = pdx * pdx + pdy * pdy;
     if (pDistanceSq > outerLimitSq) {
       adjustSpeed = ((1 + bounce) * dotProduct) / distanceSq;
@@ -130,8 +161,8 @@ export class MotionCollisionSystem extends System {
       player.movement.velocityY -= adjustSpeed * dy;
       distance = Math.sqrt(distanceSq);
       positionRatio = (2 * outerLimit - distance) / distance + epsilon;
-      player.position.x = venue.position.x + dx * positionRatio;
-      player.position.y = venue.position.y + dy * positionRatio;
+      player.position.x = position.x + dx * positionRatio;
+      player.position.y = position.y + dy * positionRatio;
       return true;
     }
 

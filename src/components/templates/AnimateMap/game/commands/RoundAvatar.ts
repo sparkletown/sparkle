@@ -54,7 +54,7 @@ export class RoundAvatar implements Command {
         const ctx: CanvasRenderingContext2D = canvas.getContext(
           "2d"
         ) as CanvasRenderingContext2D;
-        ctx.fillStyle = "#cc0000";
+        ctx.fillStyle = "#6108e6";
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2, true);
         ctx.closePath();
