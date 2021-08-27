@@ -19,11 +19,14 @@ import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
 import EntityFactory from "./EntityFactory";
 
+const getCollisionRadius = (): number => {
+  return GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
+};
+
 const createTooltip = (entity: Entity) => {
-  const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
-  const tooltip: TooltipComponent = new TooltipComponent(
+  const tooltip = new TooltipComponent(
     `Join to firebarrel`,
-    collisionRadius,
+    getCollisionRadius(),
     "bottom"
   );
   tooltip.textColor = 0xffffff;
@@ -35,16 +38,58 @@ const createTooltip = (entity: Entity) => {
   entity.add(tooltip);
 };
 
+const drawBarrel = (
+  barrel: GameOptionsFirebarrel,
+  spriteComponent: SpriteComponent,
+  positionComponent: PositionComponent
+) => {
+  new LoadImage(barrel.iconSrc)
+    .execute()
+    .then(
+      (comm: LoadImage): Promise<ImageToCanvas> => {
+        if (!comm.image) return Promise.reject();
+
+        // the picture can be very large
+        const scale = ((getCollisionRadius() * 2) / comm.image.width) * 2;
+        return new ImageToCanvas(comm.image).scaleTo(scale).execute();
+      }
+    )
+    .then((comm: ImageToCanvas) => {
+      const scale = (getCollisionRadius() * 2) / comm.canvas.width / 2;
+      positionComponent.scaleX = scale;
+      positionComponent.scaleY = scale;
+
+      const sprite = spriteComponent.view as Barrel;
+      sprite.barrel = Sprite.from(comm.canvas);
+      sprite.barrel.anchor.set(0.5);
+      sprite.addChild(sprite.barrel);
+
+      sprite.halo = Sprite.from(HALO);
+      sprite.halo.anchor.set(0.5);
+      sprite.addChildAt(sprite.halo, 0);
+    })
+    .catch((err) => {
+      // TODO default venue image
+      console.log("err", err);
+    });
+};
+
 export const createFirebarrelEntity = (
   barrel: GameOptionsFirebarrel,
   creator: EntityFactory
 ): Entity => {
-  const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
+  const positionComponent = new PositionComponent(barrel.x, barrel.y);
+  const spriteComponent: SpriteComponent = new SpriteComponent();
+  const barrelVew = new Barrel();
+  spriteComponent.view = barrelVew;
+  spriteComponent.view.zIndex = -1;
 
   const entity: Entity = new Entity();
   entity
     .add(new BarrelComponent(barrel))
-    .add(new CollisionComponent(collisionRadius))
+    .add(new CollisionComponent(getCollisionRadius()))
+    .add(positionComponent)
+    .add(spriteComponent)
     .add(
       new HoverableSpriteComponent(
         () => {
@@ -82,42 +127,7 @@ export const createFirebarrelEntity = (
 
   creator.engine.addEntity(entity);
 
-  new LoadImage(barrel.iconSrc)
-    .execute()
-    .then(
-      (comm: LoadImage): Promise<ImageToCanvas> => {
-        if (!comm.image) return Promise.reject();
-
-        // the picture can be very large
-        const scale = ((collisionRadius * 2) / comm.image.width) * 2;
-        return new ImageToCanvas(comm.image).scaleTo(scale).execute();
-      }
-    )
-    .then((comm: ImageToCanvas) => {
-      const scale = (collisionRadius * 2) / comm.canvas.width / 2;
-      if (barrel)
-        entity.add(new PositionComponent(barrel.x, barrel.y, 0, scale, scale));
-
-      const sprite: Barrel = new Barrel();
-      sprite.name = barrel.iconSrc;
-      sprite.barrel = Sprite.from(comm.canvas);
-      sprite.barrel.anchor.set(0.5);
-      sprite.addChild(sprite.barrel);
-
-      sprite.halo = Sprite.from(HALO);
-      sprite.halo.anchor.set(0.5);
-      sprite.zIndex = -1;
-      sprite.addChildAt(sprite.halo, 0);
-
-      const spriteComponent: SpriteComponent = new SpriteComponent();
-      spriteComponent.view = sprite;
-
-      entity.add(spriteComponent);
-    })
-    .catch((err) => {
-      // TODO default venue image
-      console.log("err", err);
-    });
+  drawBarrel(barrel, spriteComponent, positionComponent);
 
   return entity;
 };
