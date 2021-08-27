@@ -12,6 +12,8 @@
   border-radius: 17px;
   padding: 4px;
   background-color: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(8px);
+  vertical-align: middle;
 
   & input {
     flex: 3 2 10px;
@@ -22,24 +24,25 @@
   & input:hover {
     background: rgba(255, 255, 255, 0.1);
   }
+  & input::placeholder {
+    color: #d3d3d3;
+  }
 
   & div {
-    padding: 0px;
+    padding: 2px;
     margin: 0px;
-    text-decoration: none;
     border: none;
-    background: transparent;
     flex: 0;
     min-width: 25px;
     min-height: 25px;
     text-align: center;
-    vertical-align: middle;
     cursor: pointer;
     width: auto;
     & img {
-      height: 1em;
+      height: 16px;
       margin: 0px;
       opacity: 0.5;
+      vertical-align: middle;
     }
     &:hover img {
       opacity: 0.7;

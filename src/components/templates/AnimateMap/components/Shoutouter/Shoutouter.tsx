@@ -72,6 +72,7 @@ export const Shoutouter: React.FC<ShoutouterProps> = () => {
         onBlur={onBlurCallback}
         onChange={onChangeCallback}
         placeholder="Shout out to the playa..."
+        type="text"
       />
       <div onClick={onSendClick}>
         <img src={arrowImg} alt="send" />
