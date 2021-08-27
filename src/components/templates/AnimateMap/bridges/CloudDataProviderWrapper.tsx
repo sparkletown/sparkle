@@ -94,7 +94,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
 
     return {
       ...room,
-      ...{ id: index, isLive: !!(room.title.length % 2), countUsers: 0 },
+      ...{ id: index, isLive: false, countUsers: 0 },
     };
   });
 
