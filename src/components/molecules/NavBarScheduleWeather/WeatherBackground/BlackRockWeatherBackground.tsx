@@ -7,7 +7,7 @@ import utc from "dayjs/plugin/utc";
 
 import { ContainerClassName } from "types/utility";
 
-import "./WeatherBackground.scss";
+import "./BlackRockWeatherBackground.scss";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -22,12 +22,11 @@ const getCurrentImageName = () => {
   //timezone of Black Rock Desert
   const time = dayjs().tz("America/Los_Angeles");
   const hour = time.hour();
-  console.log("hour", hour);
 
   const partOfDayIndex = Math.floor(hour / PART_OF_DAY_LENGTH);
   const partOfDaySubIndex =
     Math.floor(
-      (partOfDayIndex % PART_OF_DAY_LENGTH) /
+      (hour % PART_OF_DAY_LENGTH) /
         (PART_OF_DAY_LENGTH / IMAGES_PER_PART_OF_DAY)
     ) + 1;
 
@@ -38,7 +37,6 @@ export const BlackRockWeatherBackground: React.FC<
   PropsWithChildren<ContainerClassName>
 > = ({ children, containerClassName }) => {
   const [imageName, setImageName] = useState(getCurrentImageName());
-  console.log("imageName", imageName);
 
   useInterval(() => {
     setImageName(getCurrentImageName());
@@ -47,7 +45,7 @@ export const BlackRockWeatherBackground: React.FC<
   return (
     <div
       className={classNames(
-        `WeatherBackground--${imageName}`,
+        `BlackRockWeatherBackground--${imageName}`,
         containerClassName
       )}
     >

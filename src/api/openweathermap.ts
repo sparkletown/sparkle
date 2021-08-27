@@ -26,9 +26,13 @@ export type WeatherInfo = {
 const fetchBlackRockWeatherDoc = async (): Promise<
   OpenWeatherApiResponse | undefined
 > => {
-  const firestore = firebase.firestore();
-  const docRef = await firestore.collection("weather").doc("blackRock").get();
-  return docRef.data() as OpenWeatherApiResponse;
+  try {
+    const firestore = firebase.firestore();
+    const docRef = await firestore.collection("weather").doc("blackRock").get();
+    return docRef.data() as OpenWeatherApiResponse;
+  } catch {
+    return undefined;
+  }
 };
 
 const convertWindDegreeToWindDirection = (deg: number) => {

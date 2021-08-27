@@ -15,7 +15,7 @@ $images: (
   ("night3", url("/assets/images/BlackRockWeather/night3.png"), 50% 45%)
 );
 
-.WeatherBackground {
+.BlackRockWeatherBackground {
   @each $modifier, $url, $placement in $images {
     &--#{$modifier} {
       background-image: $url;

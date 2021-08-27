@@ -46,11 +46,12 @@ export const NavBarScheduleWeather: React.FC<NavBarScheduleWeatherProps> = ({
               {weather.stateOfSky}
             </h5>
           </div>
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `Humidity <b>${weather.humidityPercents}%</b> — Wind <b>${weather.windSpeedKPH} KPH ${weather.windDirection}</b>`,
-            }}
-          />
+          <div>
+            Humidity <b>{weather.humidityPercents}</b>% — Wind{" "}
+            <b>
+              {weather.windSpeedKPH} KPH {weather.windDirection}
+            </b>
+          </div>
           <div>Black Rock Desert, Nevada, USA</div>
         </BlackRockWeatherBackground>
       )}
