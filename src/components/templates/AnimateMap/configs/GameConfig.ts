@@ -32,7 +32,7 @@ export class GameConfig {
   public static ZOOM_LEVEL_CYCLING = 1;
   public static ZOOM_LEVEL_FLYING = 2;
 
-  public static QA_BOTS_NUMBER = 20; //TODO: remove this
+  public static QA_BOTS_NUMBER = 0; //TODO: remove this
 
   public static VENUE_TEXTURE_DEFAULT_SIZE = 256;
   public static VENUE_DEFAULT_COLLISION_RADIUS = 60;
