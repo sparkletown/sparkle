@@ -19,7 +19,7 @@ export class VenueSystem extends System {
 
   private handleVenueAdded = (node: VenueNode): void => {
     const animate = node.venue.model.data.countUsers >= 25;
-    if (!node.venue.model.data.isEnabled) {
+    if (!node.venue.model.data.isLive) {
       node.venue.fsm.changeState(node.venue.WITHOUT_HALO);
     } else if (animate) {
       node.venue.fsm.changeState(node.venue.HALO_ANIMATED);

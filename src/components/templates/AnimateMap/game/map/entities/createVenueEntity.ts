@@ -35,7 +35,7 @@ const addVenueTooltip = (
   }
 
   const tooltip = new TooltipComponent(text);
-  tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
+  tooltip.borderColor = venue.data.isLive ? 0x7c46fb : 0x655a4d;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
@@ -84,6 +84,7 @@ export const updateVenueEntity = (
     return;
   }
   node.venue.model = venue;
+  node.entity.add(node.venue);
 
   const sprite = node.entity.get(SpriteComponent);
   if (!sprite) {
