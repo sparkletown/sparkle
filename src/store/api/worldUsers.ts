@@ -78,16 +78,16 @@ export const worldUsersApi = createApi({
             queuedChanges.length
           );
 
-          performance.mark("worldUsersUpdateCachedData:start");
+          performance.mark("worldUsers:ProcessQueuedChanges:start");
           updateCachedData((draft) => {
             // We use splice here to remove all elements from the array and return them for processing
             queuedChanges.splice(0).forEach(processUserDocChange(draft));
           });
-          performance.mark("worldUsersUpdateCachedData:end");
+          performance.mark("worldUsers:ProcessQueuedChanges:end");
           performance.measure(
-            "worldUsersUpdateCachedData",
-            "worldUsersUpdateCachedData:start",
-            "worldUsersUpdateCachedData:end"
+            "worldUsers:ProcessQueuedChanges",
+            "worldUsers:ProcessQueuedChanges:start",
+            "worldUsers:ProcessQueuedChanges:end"
           );
         };
 
