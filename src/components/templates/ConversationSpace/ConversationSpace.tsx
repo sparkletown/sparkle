@@ -12,11 +12,9 @@ import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRecentVenueUsers } from "hooks/users";
 import { useShowHide } from "hooks/useShowHide";
 
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
-import InformationCard from "components/molecules/InformationCard";
 import TableComponent from "components/molecules/TableComponent";
 import TableHeader from "components/molecules/TableHeader";
 import { TablesControlBar } from "components/molecules/TablesControlBar";
@@ -62,19 +60,6 @@ export const ConversationSpace: React.FC<ConversationSpaceProps> = ({
 
   return (
     <>
-      <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
-        <InformationCard title="About the venue">
-          <p className="title-sidebar">{venue.name}</p>
-          <p className="short-description-sidebar" style={{ fontSize: 18 }}>
-            {venue.config?.landingPageConfig.subtitle}
-          </p>
-          <div style={{ fontSize: 13 }}>
-            <RenderMarkdown
-              text={venue.config?.landingPageConfig.description}
-            />
-          </div>
-        </InformationCard>
-      </InformationLeftColumn>
       <div className="conversation-space-container">
         {!seatedAtTable && parentVenueId && parentVenue && (
           <BackButton

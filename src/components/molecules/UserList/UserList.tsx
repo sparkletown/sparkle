@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
@@ -14,8 +14,6 @@ import { useShowHide } from "hooks/useShowHide";
 import { UserAvatar } from "components/atoms/UserAvatar";
 
 import "./UserList.scss";
-
-const noop = () => {};
 
 interface UserListProps extends ContainerClassName {
   users: readonly WithId<User>[];
@@ -62,6 +60,24 @@ export const UserList: React.FC<UserListProps> = ({
 
   const { openUserProfileModal } = useProfileModalControls();
 
+  const onClickUserAvatar = useCallback(
+    (e: React.MouseEvent, user: WithId<User>) => {
+      if (!hasClickableAvatars) return;
+
+      e.stopPropagation();
+      openUserProfileModal(user);
+    },
+    [hasClickableAvatars, openUserProfileModal]
+  );
+
+  const onClickShowMore = useCallback(
+    (e: React.MouseEvent) => {
+      e.stopPropagation();
+      toggleExpanded();
+    },
+    [toggleExpanded]
+  );
+
   const renderedUserAvatars = useMemo(
     () =>
       usersToDisplay.map((user) => (
@@ -69,13 +85,11 @@ export const UserList: React.FC<UserListProps> = ({
           <UserAvatar
             user={user}
             containerClassName="UserList__avatar"
-            onClick={
-              hasClickableAvatars ? () => openUserProfileModal(user) : noop
-            }
+            onClick={(e) => onClickUserAvatar(e, user)}
           />
         </div>
       )),
-    [usersToDisplay, cellClasses, hasClickableAvatars, openUserProfileModal]
+    [usersToDisplay, cellClasses, onClickUserAvatar]
   );
 
   if (!showEvenWhenNoUsers && userCount < 1) return null;
@@ -86,7 +100,7 @@ export const UserList: React.FC<UserListProps> = ({
         {showTitle && <p>{label}</p>}
 
         {showMoreUsersToggler && hasExcessiveUserCount && (
-          <p className="UserList__toggler-text" onClick={toggleExpanded}>
+          <p className="UserList__toggler-text" onClick={onClickShowMore}>
             See {isExpanded ? "less" : "all"}
           </p>
         )}

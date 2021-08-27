@@ -1,0 +1,109 @@
+@import "scss/constants";
+
+$InfoTab-position-top: 188px;
+$InfoTab-width: 70px;
+$InfoTab-width-expanded: 464px;
+$InfoTab-body-margin-top: 56px;
+
+$InfoTab-logo-width: 50px;
+$InfoTab-logo-height: $InfoTab-logo-width;
+$InfoTab-logo-width-expanded: 124px;
+$InfoTab-logo-height-expanded: $InfoTab-logo-width-expanded;
+
+.InfoTab {
+  position: fixed;
+  top: $InfoTab-position-top;
+  z-index: z(left-column);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: $InfoTab-width;
+  padding: $spacing--md;
+
+  background: $dark;
+  box-shadow: 0 0 30px $black;
+  border-radius: 0 $border-radius--xl $border-radius--xl 0;
+  cursor: pointer;
+
+  font-family: Rubik, sans-serif;
+
+  &--expanded {
+    align-items: flex-start;
+    width: $InfoTab-width-expanded;
+    padding: $spacing--xl $spacing--xxl $spacing--xxl $spacing--xxl;
+  }
+
+  &__title {
+    font-weight: bold;
+    font-size: $font-size--xxl;
+    line-height: $spacing--xxl;
+    margin: 0 auto;
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: row;
+    margin-top: $InfoTab-body-margin-top;
+
+    font-size: $font-size--md;
+    line-height: $spacing--lg;
+  }
+
+  &__bodyRight {
+    margin: $spacing--xs 0 0 $spacing--xxl;
+  }
+
+  &__subtitle {
+    font-weight: $font-weight--300;
+    font-size: $font-size--xl;
+    line-height: $spacing--xl;
+  }
+
+  &__userList {
+    margin-top: $spacing--md;
+
+    & > .UserList__label {
+      align-items: flex-start;
+
+      & > p {
+        margin-bottom: 0;
+      }
+    }
+
+    & > .UserList__avatars {
+      justify-content: flex-start;
+    }
+  }
+
+  &__description {
+    margin-top: $spacing--xxl;
+  }
+
+  &__chevronWrapper {
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: $spacing--xs;
+  }
+
+  &__chevron {
+    transition: all 0.2s linear;
+
+    &--turned {
+      transform: rotate(-180deg);
+    }
+  }
+
+  &__logo {
+    width: $InfoTab-logo-width !important;
+    height: $InfoTab-logo-height !important;
+    border-radius: $border-radius--max;
+    object-fit: cover;
+
+    &--expanded {
+      width: $InfoTab-logo-width-expanded !important;
+      height: $InfoTab-logo-height-expanded !important;
+      border-radius: $border-radius--lg;
+    }
+  }
+}

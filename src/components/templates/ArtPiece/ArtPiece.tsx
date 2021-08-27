@@ -8,11 +8,8 @@ import { VideoAspectRatio } from "types/VideoAspectRatio";
 import { ConvertToEmbeddableUrl } from "utils/ConvertToEmbeddableUrl";
 import { WithId } from "utils/id";
 
-import { InformationLeftColumn } from "components/organisms/InformationLeftColumn";
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 import Room from "components/organisms/Room";
 
-import InformationCard from "components/molecules/InformationCard";
 import { Loading } from "components/molecules/Loading";
 import SparkleFairiesPopUp from "components/molecules/SparkleFairiesPopUp/SparkleFairiesPopUp";
 
@@ -34,19 +31,6 @@ export const ArtPiece: React.FC<ArtPieceProps> = ({ venue }) => {
   return (
     <>
       <div className="full-page-container art-piece-container">
-        <InformationLeftColumn iconNameOrPath={venue?.host?.icon}>
-          <InformationCard title="About the venue">
-            <p className="title-sidebar">{venue.name}</p>
-            <p className="short-description-sidebar" style={{ fontSize: 18 }}>
-              {venue.config?.landingPageConfig.subtitle}
-            </p>
-            <div style={{ fontSize: 13 }}>
-              <RenderMarkdown
-                text={venue.config?.landingPageConfig.description}
-              />
-            </div>
-          </InformationCard>
-        </InformationLeftColumn>
         <div className="content">
           <div className={aspectContainerClasses}>
             <iframe
