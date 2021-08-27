@@ -121,7 +121,7 @@ export const createVenueEntity = (
     .add(VenueHalo)
     .withMethod(
       (): VenueHalo => {
-        return new VenueHalo(sprite, entity.get(PositionComponent)?.scaleY);
+        return new VenueHalo(sprite);
       }
     );
 
@@ -131,7 +131,7 @@ export const createVenueEntity = (
     .withMethod(
       (): AnimationComponent => {
         return new AnimationComponent(
-          new VenueHaloAnimated(sprite, entity.get(PositionComponent)?.scaleY),
+          new VenueHaloAnimated(sprite),
           Number.MAX_VALUE
         );
       }

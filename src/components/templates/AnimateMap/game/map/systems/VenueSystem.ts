@@ -18,6 +18,11 @@ export class VenueSystem extends System {
   update(time: number) {}
 
   private handleVenueAdded = (node: VenueNode): void => {
+    // if (node.venue.model.data.title == 'viktoryias room') {
+    //   console.log('VICTORIS isLive', node.venue.model.data.isLive)
+    //   node.venue.model.data.countUsers = 100;
+    // }
+
     const animate = node.venue.model.data.countUsers >= 25;
     if (!node.venue.model.data.isLive) {
       node.venue.fsm.changeState(node.venue.WITHOUT_HALO);
