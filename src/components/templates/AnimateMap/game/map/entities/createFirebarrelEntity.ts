@@ -6,7 +6,7 @@ import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { HALO } from "../../constants/AssetConstants";
+import { barrels, HALO } from "../../constants/AssetConstants";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
@@ -91,7 +91,8 @@ const drawBarrel = (
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ) => {
-  new LoadImage(barrel.data.iconSrc)
+  // TODO: fixme src image
+  new LoadImage(barrels[0])
     .execute()
     .then(
       (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -108,6 +109,7 @@ const drawBarrel = (
       positionComponent.scaleY = scale;
 
       const sprite = spriteComponent.view as Barrel;
+      sprite.name = barrel.data.id;
       sprite.barrel = Sprite.from(comm.canvas);
       sprite.barrel.anchor.set(0.5);
       sprite.addChild(sprite.barrel);
@@ -128,8 +130,7 @@ export const createFirebarrelEntity = (
 ): Entity => {
   const positionComponent = new PositionComponent(barrel.x, barrel.y);
   const spriteComponent: SpriteComponent = new SpriteComponent();
-  const barrelVew = new Barrel();
-  spriteComponent.view = barrelVew;
+  spriteComponent.view = new Barrel();
   spriteComponent.view.zIndex = -1;
 
   const entity: Entity = new Entity();
