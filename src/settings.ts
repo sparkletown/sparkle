@@ -302,7 +302,7 @@ export const BURN_VENUE_TEMPLATES: Template[] = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening room",
+    name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
