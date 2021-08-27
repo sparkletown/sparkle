@@ -24,6 +24,10 @@ $denied-shape-size: 96px;
     place-items: center;
   }
 
+  &__move-along-text {
+    margin-top: $spacing--xl;
+  }
+
   &__button {
     text-transform: capitalize;
   }
