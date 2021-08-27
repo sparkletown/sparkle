@@ -1,6 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Box, Point, QuadTree } from "js-quadtree";
-import { Application, BaseTexture, Container, Sprite } from "pixi.js";
+import { Application, BaseTexture, Container, Sprite, Text } from "pixi.js";
 import { Viewport } from "pixi-viewport";
 
 import { GameConfig } from "components/templates/AnimateMap/configs/GameConfig";
@@ -17,10 +17,12 @@ import {
 } from "../graphics/shaders/mapLightning";
 import { staticLightData } from "../graphics/shaders/staticLightData";
 import { ShaderDataProvider } from "../graphics/shaders/StaticShaderData";
+import { ArtcarNode } from "../nodes/ArtcarNode";
 import { BarrelNode } from "../nodes/BarrelNode";
 
 export class ViewportBackgroundSystem extends System {
   private barrels?: NodeList<BarrelNode>;
+  private artCars?: NodeList<ArtcarNode>;
 
   private viewport: Viewport;
   private staticLightManager: ShaderDataProvider;
@@ -40,6 +42,9 @@ export class ViewportBackgroundSystem extends System {
 
   private tree?: QuadTree;
   private currentVisibleTiles: Map<number, Sprite> = new Map();
+
+  private text: Text;
+
   /**
    *
    * @param viewport the app viewport
@@ -48,7 +53,7 @@ export class ViewportBackgroundSystem extends System {
   constructor(
     viewport: Viewport,
     private app: Application,
-    private timeAccelerator: number = 1
+    private timeAccelerator: number = 1200
   ) {
     super();
     this.viewport = viewport;
@@ -58,6 +63,13 @@ export class ViewportBackgroundSystem extends System {
     this.mapLOD_0 = new Sprite();
 
     this.initLighting();
+
+    this.text = new Text("24:00", {
+      align: "center",
+      dropShadow: true,
+      fill: "#ffffff",
+      fontSize: 72,
+    });
     this.staticLightManager = new ShaderDataProvider(staticLightData, this.app);
   }
 
@@ -68,6 +80,7 @@ export class ViewportBackgroundSystem extends System {
 
   addToEngine(engine: Engine) {
     this.barrels = engine.getNodeList(BarrelNode);
+    this.artCars = engine.getNodeList(ArtcarNode);
     this.setup().then(() => {
       this.setupTree();
 
@@ -96,6 +109,8 @@ export class ViewportBackgroundSystem extends System {
       ];
 
       this.initialized = true;
+      this.viewport.parent.addChild(this.text);
+      this.text.y = this.text.y + 30;
 
       this.staticLightManager.sprite.texture.update();
     });
@@ -215,11 +230,16 @@ export class ViewportBackgroundSystem extends System {
   public setDayTime(time: number) {
     time = (time * this.timeAccelerator) % 24;
 
+    //DELETE ME
+    this.text.text =
+      Math.floor(time).toString() +
+      ":" +
+      Math.floor((time - Math.floor(time)) * 60);
+
     const sunLight = this.sunKeyFramer.getFrame(time);
     const moonLight = this.moonKeyFramer.getFrame(time);
     const light = [0, 0, 0];
     // note: what's happen, if sum of elements more than 1?
-    // answer: white desert will happen
     for (let i = 0; i < 3; i++) light[i] = moonLight[i] + sunLight[i];
     this.container.filters[0].uniforms.ambientLight = light;
     this.container.filters[0].uniforms.staticLightAlpha = staticLightKeyFramer.getFrame(
