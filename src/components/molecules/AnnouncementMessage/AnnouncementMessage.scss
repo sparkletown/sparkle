@@ -9,7 +9,7 @@ $message-margin: $spacing + $close-icon-width + 5px;
   z-index: z(announcement);
   position: absolute;
   background: $primary;
-  top: 66px;
+  top: $navbar-height;
   left: 50%;
   width: 500px;
   margin: 0 auto 0 -250px;

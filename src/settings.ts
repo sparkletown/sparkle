@@ -50,14 +50,16 @@ export const PRIVACY_POLICY = IS_BURN
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = defaultMapBackground;
-export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
-export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+export const HELP_CENTER_URL =
+  "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -83,14 +85,16 @@ export const CREATE_EDIT_URL = "/admin";
 export const SPARKLEVERSITY_URL = "https://sparklever.se/sparkleversity";
 export const SPARKLEVERSE_COMMUNITY_URL =
   "https://www.facebook.com/groups/sparkleverse/";
-export const CURRENT_TIME_IN_LOCATION = "Matong State Forest";
+export const CURRENT_TIME_IN_LOCATION = "playa";
+export const CURRENT_TIMEZONE = "America/Los_Angeles";
 
 export const DUST_STORM_TEXT_1 = `A dust storm is ripping across the ${PLAYA_VENUE_NAME}!`;
 export const DUST_STORM_TEXT_2 =
   "Your only option is to seek shelter in a nearby venue!";
 
+export const ONE_MINUTE_MS = 60 * 1000;
 // How often to refresh events schedule
-export const REFETCH_SCHEDULE_MS = 10 * 60 * 1000; // 10 mins
+export const REFETCH_SCHEDULE_MS = 10 * ONE_MINUTE_MS; // 10 mins
 export const SCHEDULE_LONG_EVENT_LENGTH_MIN = 60;
 export const SCHEDULE_MEDIUM_EVENT_LENGTH_MIN = 45;
 export const SCHEDULE_SHORT_EVENT_LENGTH_MIN = 10;
@@ -104,13 +108,16 @@ export const LOCATION_INCREMENT_SECONDS = 10;
 export const LOCATION_INCREMENT_MS = LOCATION_INCREMENT_SECONDS * 1000;
 
 // How often to refresh daypart logic
-export const PLAYA_BG_DAYPART_MS = 60 * 1000; // 1 min
+export const PLAYA_BG_DAYPART_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh current time line in the schedule
-export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
+export const SCHEDULE_CURRENT_TIMELINE_MS = ONE_MINUTE_MS; // 1 min
 
 // How often to refresh event status (passed / happening now / haven't started)
-export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
+export const EVENT_STATUS_REFRESH_MS = ONE_MINUTE_MS; // 1 min
+
+// How often to refresh playa current time
+export const PLAYA_TIME_REFRESH_MS = ONE_MINUTE_MS / 2;
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
 export const MAX_IMAGE_FILE_SIZE_MB = 2;
@@ -206,19 +213,6 @@ export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
-];
-
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const PLACEABLE_VENUE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.zoomroom,
 ];
 
 export const COVERT_ROOM_TYPES: RoomType[] = [
@@ -766,3 +760,20 @@ export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 export const EVENTS_PREVIEW_LIST_LENGTH = 5;
 
 export const BM_PARENT_ID = "playa";
+
+// NOTE: volume numbers are expressed in %, thus between 0 and 100
+export const DEFAULT_AUDIO_VOLUME: number = 10;
+export const DEFAULT_AMBIENT_VOLUME: number = 10;
+export const DEFAULT_INTERACTIONS_VOLUME: number = 50;
+export const DEFAULT_NOTIFICATIONS_VOLUME: number = 100;
+export const MIN_AUDIO_VOLUME: number = 0;
+export const MAX_AUDIO_VOLUME: number = 100;
+
+// @debt There could/should be more direct way of inter-component communication
+// @debt localStorage isn't as reliable on all browsers (e.g. specific Safari versions where it got broken)
+// localStorage keys for syncing volume with AnimateMap's game instance
+export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
+export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";
+
+// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
+export const ALLOW_NO_VENUE: boolean = true;

@@ -4,6 +4,7 @@ import { EventType } from "../../../bridges/EventProvider/EventProvider";
 import { GameInstance } from "../../GameInstance";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { PositionComponent } from "../components/PositionComponent";
+import EntityFactory from "../entities/EntityFactory";
 import { BarrelNode } from "../nodes/BarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
@@ -14,6 +15,13 @@ export class MotionCollisionSystem extends System {
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
   private barrels?: NodeList<BarrelNode>;
+
+  private creator: EntityFactory;
+
+  constructor(creator: EntityFactory) {
+    super();
+    this.creator = creator;
+  }
 
   addToEngine(engine: Engine) {
     this.player = engine.getNodeList(PlayerNode);
@@ -56,6 +64,8 @@ export class MotionCollisionSystem extends System {
             node.collision
           )
         ) {
+          this.creator.createWaitingVenueClick(node.venue.model);
+
           GameInstance.instance.eventProvider.emit(
             EventType.ON_VENUE_COLLISION,
             node.venue.model

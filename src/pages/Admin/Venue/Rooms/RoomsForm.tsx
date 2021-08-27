@@ -33,6 +33,8 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
 
+import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 import { Toggler } from "components/atoms/Toggler";
 
 import RoomDeleteModal from "./RoomDeleteModal";
@@ -89,7 +91,7 @@ export const RoomsForm: React.FC = () => {
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
 
-  if (!venue || !venueId) return null;
+  if (!venue || !venueId) return <NotFound />;
 
   if (!user) {
     return <Login formType="login" venue={withId(venue, venueId)} />;
@@ -97,12 +99,14 @@ export const RoomsForm: React.FC = () => {
 
   return (
     <WithNavigationBar hasBackButton={false}>
-      <RoomInnerForm
-        venueId={venueId}
-        venue={venue}
-        editingRoom={room}
-        editingRoomIndex={queryRoomIndex}
-      />
+      <AdminRestricted>
+        <RoomInnerForm
+          venueId={venueId}
+          venue={venue}
+          editingRoom={room}
+          editingRoomIndex={queryRoomIndex}
+        />
+      </AdminRestricted>
     </WithNavigationBar>
   );
 };

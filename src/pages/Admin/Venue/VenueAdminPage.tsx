@@ -18,6 +18,8 @@ import { BannerAdmin } from "components/organisms/BannerAdmin";
 import { IframeAdmin } from "components/molecules/IframeAdmin";
 import { LoadingPage } from "components/molecules/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 import "./VenueAdminPage.scss";
 
 export const VenueAdminPage: React.FC = () => {
@@ -40,7 +42,7 @@ export const VenueAdminPage: React.FC = () => {
   }
 
   if (!venue) {
-    return <div className="admin-page-title">This venue does not exist</div>;
+    return <NotFound />;
   }
 
   if (!isVenueOwner) {
