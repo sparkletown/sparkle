@@ -1,0 +1,42 @@
+import { Graphics, Sprite, Text, TextStyle } from "pixi.js";
+
+export class VenueTooltipEnter extends Sprite {
+  constructor(public text = "default tooltip", public backgroundColor: number) {
+    super();
+
+    this.drawTooltipElement();
+  }
+
+  private drawTooltipElement(): void {
+    const style = new TextStyle({
+      fill: "#ede8fe",
+      fontSize: 14,
+      fontWeight: "bold",
+    });
+
+    const text1: Text = new Text(this.text, style);
+
+    const txt = "Click Enter to join";
+    const text2: Text = new Text(txt, style);
+
+    text1.position.set(-text1.width / 2, -text1.height / 2);
+    text2.position.set(
+      -text2.width / 2,
+      -text2.height / 2 + text1.position.y + 30
+    );
+    this.addChild(text1);
+    this.addChild(text2);
+
+    const h = Math.max(text1.height * 3, 18);
+    const w = Math.max(text1.width, text2.width) + 2 * text1.height;
+    const r = h / 4;
+
+    const g: Graphics = new Graphics();
+    g.beginFill(this.backgroundColor, 1);
+    g.drawRoundedRect(0, 0, w, h, r);
+
+    g.position.set(-w / 2, -text1.height / 1.2);
+    g.alpha = 0.7;
+    this.addChildAt(g, 0);
+  }
+}

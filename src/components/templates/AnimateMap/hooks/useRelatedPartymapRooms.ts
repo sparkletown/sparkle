@@ -26,7 +26,6 @@ export const useRelatedPartymapRooms: ReactHook<
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-
   const relatedPartymap = findVenueInRelatedVenues(venue.relatedPartymapId);
 
   return useMemo(
