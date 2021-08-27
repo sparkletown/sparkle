@@ -27,12 +27,6 @@ export const createBotEntity = (
   creator: EntityFactory,
   realUser = false
 ) => {
-  let avatarUrlString = user.data.avatarUrlString;
-
-  if (!Array.isArray(avatarUrlString)) {
-    avatarUrlString = [avatarUrlString];
-  }
-
   const point: Point = GameInstance.instance
     .getConfig()
     .playgroundMap.getRandomPointInTheCentralCircle();
@@ -101,6 +95,10 @@ export const createBotEntity = (
   fsm.changeState("moving");
   creator.engine.addEntity(entity);
 
+  let avatarUrlString = user.data.avatarUrlString;
+  if (!Array.isArray(avatarUrlString)) {
+    avatarUrlString = [avatarUrlString];
+  }
   const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
 
   new RoundAvatar(url)

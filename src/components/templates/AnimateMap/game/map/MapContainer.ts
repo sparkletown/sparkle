@@ -301,21 +301,18 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels =
-              GameInstance.instance.dataProvider.firebarrelsData;
-            firebarrels.forEach((firebarrel) => {
-              this.entityFactory?.createBarrel(firebarrel);
-            });
+            GameInstance.instance.dataProvider.firebarrelsData.forEach(
+              (firebarrel) => {
+                this.entityFactory?.createBarrel(firebarrel);
+              }
+            );
           }
         })
         .then(() => {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots: Map<
-              string,
-              ReplicatedUser
-            > = GameInstance.instance.getState().users;
+            const bots = GameInstance.instance.getState().users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {
