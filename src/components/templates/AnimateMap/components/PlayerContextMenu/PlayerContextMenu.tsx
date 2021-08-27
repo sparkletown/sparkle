@@ -28,7 +28,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
     const callback = (
       user: ReplicatedUser,
       viewportX: number,
-      viewportY: number,
+      viewportY: number
     ) => {
       setState({ userId: "", isShown: false, posX: -200, posY: -200 });
       setTimeout(() => {
@@ -52,7 +52,6 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
           posX,
           posY,
         });
-
       }, 20);
     };
 
