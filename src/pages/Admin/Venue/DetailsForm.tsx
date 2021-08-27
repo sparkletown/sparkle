@@ -135,8 +135,8 @@ export const DetailsForm: React.FC<DetailsFormProps> = ({
     },
     defaultValues: {
       ...defaultValues,
-      logoImageUrl: DEFAULT_VENUE_LOGO,
-      bannerImageUrl: DEFAULT_VENUE_BANNER,
+      logoImageUrl: defaultValues?.logoImageUrl ?? DEFAULT_VENUE_LOGO,
+      bannerImageUrl: defaultValues?.bannerImageUrl ?? DEFAULT_VENUE_BANNER,
       parentId: parentIdQuery ?? defaultValues?.parentId ?? "",
     },
   });

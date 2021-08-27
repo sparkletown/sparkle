@@ -23,6 +23,7 @@ import { AnimationSystem } from "./systems/AnimationSysem";
 import { AvatarTuningSystem } from "./systems/AvatarTuningSystem";
 import { BubbleSystem } from "./systems/BubbleSystem";
 import { ClickableSpriteSystem } from "./systems/ClickableSpriteSystem";
+import { DeadSystem } from "./systems/DeadSystem";
 import { DebugSystem } from "./systems/DebugSystem";
 import { FirebarrelSystem } from "./systems/FirebarrelSystem";
 import { FixScaleByViewportZoomSystem } from "./systems/FixScaleByViewportZoomSystem";
@@ -134,6 +135,11 @@ export class MapContainer extends Container {
 
     this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
     this._engine.addSystem(
+      new DeadSystem(this._engine),
+      SystemPriorities.update
+    );
+    this._engine.addSystem(new VenueSystem(), SystemPriorities.update);
+    this._engine.addSystem(
       new MotionControlSwitchSystem(),
       SystemPriorities.update
     );
@@ -189,7 +195,7 @@ export class MapContainer extends Container {
       SystemPriorities.move
     );
     this._engine.addSystem(
-      new MotionCollisionSystem(),
+      new MotionCollisionSystem(this.entityFactory),
       SystemPriorities.resolveCollisions
     );
 
@@ -229,7 +235,7 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport),
+      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
     this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
