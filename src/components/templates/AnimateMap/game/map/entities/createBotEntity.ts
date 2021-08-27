@@ -70,7 +70,7 @@ export const createBotEntity = (
     .add(
       new ClickableSpriteComponent((event) => {
         const replicatedUser = creator.getBotNode(user.data.id)?.bot.data;
-        if (!replicatedUser /*|| !realUser*/) return;
+        if (!replicatedUser || !realUser) return;
         GameInstance.instance.eventProvider.emit(
           EventType.ON_REPLICATED_USER_CLICK,
           replicatedUser,
