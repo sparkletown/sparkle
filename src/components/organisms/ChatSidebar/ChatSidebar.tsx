@@ -159,11 +159,6 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                 </button>
               </div>
             )}
-            {isShownHelpCenter && (
-              <div className="chat-sidebar__help-center-header">
-                Help Center
-              </div>
-            )}
           </>
         )}
       </div>

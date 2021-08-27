@@ -5,6 +5,7 @@ $header-height: 45px;
 // NOTE: mobile factor used is same as iPad 1, 2, Mini and Air at both portrait and landscape orientation
 $media-width--mobile-min: 768px;
 $media-width--mobile-max: 1024px;
+$help-center-background-color: #232225;
 
 .chat-sidebar {
   transform: translateX(100%);
@@ -142,6 +143,7 @@ $media-width--mobile-max: 1024px;
   }
 
   &--wide {
+    background-color: $help-center-background-color;
     width: 60%;
   }
 
