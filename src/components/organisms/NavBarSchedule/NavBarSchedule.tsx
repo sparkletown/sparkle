@@ -318,30 +318,37 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const isNotSovereignVenue = venueId !== sovereignVenue?.id;
+  const breadcrumbSovereignVenueClasses = classNames(
+    "NavBarScheduleBreadcrumb__btn",
+    {
+      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
+    }
+  );
+
+  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
+    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
+  });
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
         <div className="NavBarSchedule__breadcrumb">
+          <label>Events on: </label>
           <button
             onClick={() => setFilterRelatedEvents(false)}
-            className={filterRelatedEvents ? "button--a disabled" : "button--a"}
+            className={breadcrumbSovereignVenueClasses}
           >
             {sovereignVenue?.name}
           </button>
-
-          {venueId !== sovereignVenue?.id && (
-            <>
-              {" "}
-              /{" "}
-              <button
-                onClick={() => setFilterRelatedEvents(true)}
-                className={
-                  !filterRelatedEvents ? "button--a disabled" : "button--a"
-                }
-              >
-                {currentVenue?.name}
-              </button>
-            </>
+          /
+          {isNotSovereignVenue && (
+            <button
+              onClick={() => setFilterRelatedEvents(true)}
+              className={breadcrumbVenueClasses}
+            >
+              {currentVenue?.name}
+            </button>
           )}
         </div>
         {venueId && <ScheduleVenueDescription venueId={venueId} />}

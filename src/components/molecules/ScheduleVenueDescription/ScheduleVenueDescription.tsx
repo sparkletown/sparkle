@@ -1,4 +1,6 @@
 import { FC } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 
 import { DEFAULT_VENUE_LOGO } from "settings";
 
@@ -22,18 +24,22 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     sovereignVenue?.host?.icon,
     DEFAULT_VENUE_LOGO
   );
+  const containerCssVars = useCss({
+    "--venue-picture--background-image": `url(${venueIcon})`,
+  });
+
+  const containerClasses = classNames(
+    "ScheduleVenueDescription",
+    containerCssVars
+  );
 
   const { subtitle, description } =
     sovereignVenue?.config?.landingPageConfig ?? {};
-  console.log(venueIcon);
 
   return (
-    <div className="ScheduleVenueDescription">
+    <div className={containerClasses}>
       <div className="ScheduleVenueDescription__main">
-        <div
-          className="ScheduleVenueDescription__pic"
-          style={{ backgroundImage: `url(${venueIcon})` }}
-        />
+        <div className="ScheduleVenueDescription__pic" />
         <div className="ScheduleVenueDescription__title">
           <h2 className="ScheduleVenueDescription__name">
             {sovereignVenue?.name ?? "Schedule"}
