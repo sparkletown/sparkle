@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
+import { useProfileModalControls } from "hooks/useProfileModalControls";
+
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
@@ -23,6 +25,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
     posX: 0,
     posY: 0,
   } as IPlayerContextMenu);
+  const { openUserProfileModal } = useProfileModalControls();
   const selfRef = useRef<HTMLDivElement>(null);
 
   const onReplicatedUserClickHandler = useCallback(
@@ -66,7 +69,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
     closeMenu();
   };
   const viewProfileHandler = () => {
-    console.log("start video chat", state.userId);
+    openUserProfileModal({ id: state.userId });
     closeMenu();
   };
 
