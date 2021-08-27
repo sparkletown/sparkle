@@ -2,6 +2,7 @@
 
 .PlayaTime {
   &__container {
+    margin-left: $spacing--lg;
     font-size: $font-size--sm;
     line-height: $font-size--md;
     color: opaque-white(0.8);

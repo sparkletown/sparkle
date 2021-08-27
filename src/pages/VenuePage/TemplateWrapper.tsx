@@ -41,6 +41,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   let template;
   // @debt remove backButton from Navbar
   let hasBackButton = true;
+
   switch (venue.template) {
     case VenueTemplate.jazzbar:
       template = (

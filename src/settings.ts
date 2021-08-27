@@ -178,6 +178,7 @@ export const IFRAME_ALLOW =
 export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 export const ENABLE_PLAYA_ADDRESS = false;
+export const IS_SIMPLE_MUTE_BUTTON = true;
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it

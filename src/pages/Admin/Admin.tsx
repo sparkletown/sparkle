@@ -426,7 +426,7 @@ export const Admin: React.FC = () => {
   }
 
   return (
-    <WithNavigationBar hasBackButton={false}>
+    <WithNavigationBar hasBackButton={false} hasSchedule={false}>
       <AdminRestricted>
         <div className="admin-dashboard">
           <div className="page-container page-container_adminview">
