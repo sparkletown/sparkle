@@ -11,7 +11,6 @@ import playerModel from "../../bridges/DataProvider/Structures/PlayerModel";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
-import { GameConfig } from "../../configs/GameConfig";
 import { TimeoutCommand } from "../commands/TimeoutCommand";
 import { artcars, MAP_JSON, sounds } from "../constants/AssetConstants";
 import { GameInstance } from "../GameInstance";
@@ -302,27 +301,11 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels = GameInstance.instance
-              .getConfig()
-              .getFirebarrels();
-
-            if (firebarrels) {
-              for (let i = 0; i < firebarrels.length; i++) {
-                if (GameConfig.DEBUG_MODE_ON) {
-                  if (firebarrels[i].connectedUsers.length === 0) {
-                    const length = Math.random() * 6;
-                    for (let u = 0; u < length; u++) {
-                      const bot = this.entityFactory?.getRandomBot();
-                      if (bot) {
-                        firebarrels[i].connectedUsers.push(bot);
-                      }
-                    }
-                  }
-                }
-
-                this.entityFactory.createBarrel(firebarrels[i]);
+            GameInstance.instance.dataProvider.firebarrelsData.forEach(
+              (firebarrel) => {
+                this.entityFactory?.createBarrel(firebarrel);
               }
-            }
+            );
           }
         })
         .then(() => {

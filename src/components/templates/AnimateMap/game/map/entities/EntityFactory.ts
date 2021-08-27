@@ -3,13 +3,13 @@ import { Sprite } from "pixi.js";
 
 import {
   PlayerModel,
+  ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { GameOptionsFirebarrel } from "../../../configs/GameConfig";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
@@ -37,6 +37,7 @@ import { FSMBase } from "../finalStateMachines/FSMBase";
 import { Avatar } from "../graphics/Avatar";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
 import { KeyboardNode } from "../nodes/KeyboardNode";
@@ -443,7 +444,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(barrel: GameOptionsFirebarrel): Entity {
+  public createBarrel(barrel: ReplicatedFirebarrel): Entity {
     return createFirebarrelEntity(barrel, this);
   }
 
@@ -500,5 +501,31 @@ export default class EntityFactory {
 
     if (!value && playerEntity?.get(ViewportFollowComponent))
       playerEntity?.remove(ViewportFollowComponent);
+  }
+
+  public getFirebarrelNode(
+    firebarrel: ReplicatedFirebarrel
+  ): BarrelNode | undefined {
+    const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
+    for (let node = nodes.head; node; node = node.next) {
+      if (node.barrel.model.data.id === firebarrel.data.id) {
+        return node;
+      }
+    }
+    return undefined;
+  }
+
+  public removeBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (node) this.engine.removeEntity(node.entity);
+  }
+
+  public updateBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (!node) {
+      return;
+    }
+
+    // TODO: update image, coords, etc
   }
 }

@@ -1,7 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { ReplicatedFirebarrel } from "../../../../../../store/reducers/AnimateMap";
+import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
@@ -40,13 +41,13 @@ const createTooltip = (entity: Entity) => {
 };
 
 const drawAvatars = (
-  barrel: GameOptionsFirebarrel,
+  barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent
 ) => {
   const sprite = spriteComponent.view as Barrel;
   const avatars: Array<Promise<RoundAvatar>> = [];
 
-  barrel.connectedUsers.forEach((user) => {
+  barrel.data.connectedUsers.forEach((user) => {
     let avatarUrlString = user.data.avatarUrlString;
     if (!Array.isArray(avatarUrlString)) {
       avatarUrlString = [avatarUrlString];
@@ -86,11 +87,11 @@ const drawAvatars = (
 };
 
 const drawBarrel = (
-  barrel: GameOptionsFirebarrel,
+  barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ) => {
-  new LoadImage(barrel.iconSrc)
+  new LoadImage(barrel.data.iconSrc)
     .execute()
     .then(
       (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -122,7 +123,7 @@ const drawBarrel = (
 };
 
 export const createFirebarrelEntity = (
-  barrel: GameOptionsFirebarrel,
+  barrel: ReplicatedFirebarrel,
   creator: EntityFactory
 ): Entity => {
   const positionComponent = new PositionComponent(barrel.x, barrel.y);
