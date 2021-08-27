@@ -1,9 +1,10 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
+import fs from "fs";
 import { resolve } from "path";
 
-import fs from "fs";
 import admin from "firebase-admin";
+
 import "firebase/firestore";
 
 import { VenueAccessMode } from "../src/types/VenueAcccess";

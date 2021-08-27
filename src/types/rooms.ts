@@ -12,7 +12,7 @@ export interface Room {
   type?: RoomType;
   zIndex?: number;
   title: string;
-  subtitle: string;
+  subtitle?: string;
   url: string;
   about: string;
   x_percent: number;
@@ -23,6 +23,7 @@ export interface Room {
   isLabelHidden?: boolean;
   image_url: string;
   enterSound?: SoundConfigReference;
+  template?: VenueRoomTemplate;
 }
 
 // @debt We should end up with 1 canonical room type
@@ -40,7 +41,7 @@ export interface RoomData_v2 {
   isEnabled?: boolean;
   image_url?: string;
   enterSound?: SoundConfigReference;
-  template?: string;
+  template?: VenueRoomTemplate;
   roomIndex?: number;
 }
 

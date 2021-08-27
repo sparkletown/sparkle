@@ -1,12 +1,12 @@
 import React, { useCallback } from "react";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
-import { InputField } from "components/atoms/InputField";
+import { POSTERHALL_POSTER_IS_LIVE_TEXT } from "settings";
+
 import { Checkbox } from "components/atoms/Checkbox";
+import { InputField } from "components/atoms/InputField";
 
 import "./PosterHallSearch.scss";
-
-import { POSTERHALL_POSTER_IS_LIVE_TEXT } from "settings";
 
 export interface PosterHallSearchProps {
   searchInputValue?: string;

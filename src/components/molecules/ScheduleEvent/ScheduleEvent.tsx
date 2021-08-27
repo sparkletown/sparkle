@@ -1,18 +1,17 @@
 import React, { MouseEventHandler, useCallback } from "react";
-import classNames from "classnames";
 import { useCss } from "react-use";
-import { minutesToHours } from "date-fns";
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBookmark as solidBookmark,
-  faExpandAlt as solidExpand,
-  faCompressAlt as solidCompress,
-} from "@fortawesome/free-solid-svg-icons";
 import {
   faBookmark as regularBookmark,
   faSquare as regularSquare,
 } from "@fortawesome/free-regular-svg-icons";
+import {
+  faBookmark as solidBookmark,
+  faCompressAlt as solidCompress,
+  faExpandAlt as solidExpand,
+} from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import classNames from "classnames";
+import { minutesToHours } from "date-fns";
 
 import {
   SCHEDULE_HOUR_COLUMN_WIDTH_PX,
@@ -26,14 +25,15 @@ import {
   removeEventFromPersonalizedSchedule,
 } from "api/profile";
 
-import { PersonalizedVenueEvent } from "types/venues";
+import { ScheduledVenueEvent } from "types/venues";
 
 import { isEventLive } from "utils/event";
 
-import { useUser } from "hooks/useUser";
 import { useShowHide } from "hooks/useShowHide";
+import { useUser } from "hooks/useUser";
 
 import { EventModal } from "components/organisms/EventModal";
+
 import { calcStartPosition } from "components/molecules/Schedule/utils";
 
 import "./ScheduleEvent.scss";
@@ -41,7 +41,7 @@ import "./ScheduleEvent.scss";
 const ScheduleEventBookmarkClass = "ScheduleEvent__bookmark";
 
 export interface ScheduleEventProps {
-  event: PersonalizedVenueEvent;
+  event: ScheduledVenueEvent;
   scheduleStartHour: number;
   personalizedEvent?: boolean;
 }

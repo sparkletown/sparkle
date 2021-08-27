@@ -1,15 +1,16 @@
-import { useState, useMemo, useCallback } from "react";
-import { VenueTemplate } from "types/venues";
+import { useCallback, useMemo, useState } from "react";
 import Fuse from "fuse.js";
 
 import { DEFAULT_DISPLAYED_POSTER_PREVIEW_COUNT } from "settings";
 
+import { VenueTemplate } from "types/venues";
+
 import { posterVenuesSelector } from "utils/selectors";
 import { tokeniseStringWithQuotesBySpaces } from "utils/text";
 
+import { useDebounceSearch } from "./useDebounceSearch";
 import { isLoaded, useFirestoreConnect } from "./useFirestoreConnect";
 import { useSelector } from "./useSelector";
-import { useDebounceSearch } from "./useDebounceSearch";
 
 export const useConnectPosterVenues = (posterHallId: string) => {
   useFirestoreConnect(() => {

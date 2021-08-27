@@ -1,4 +1,5 @@
 import firebase from "firebase/app";
+
 import { Table } from "types/Table";
 
 export interface UpdateVenueTableProps {

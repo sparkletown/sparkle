@@ -2,7 +2,7 @@
 
 import * as Yup from "yup";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export interface Experience {
   // @debt refactor bartender to be potentially undefined. Or can we remove it entirely?
@@ -48,7 +48,7 @@ export interface BaseUser {
   // [question: string]: string;
 
   // @debt these types are legacy and should be cleaned up across the codebase
-  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, UserProfileModal
+  room?: string; // @debt: is this valid/used anymore? Use in JazzBarTableComponent, ProfileModal
   video?: VideoState; // @debt: is this valid/used anymore? Used in FireBarrel, Playa (Avatar, AvatarLayer, AvatarPartygoers, MyAvatar, Playa, VideoChatLayer
   kidsMode?: boolean; // @debt: is this valid/used anymore? Used in UserInformationContent, Playa
   // @debt these don't appear to be used by anything anymore

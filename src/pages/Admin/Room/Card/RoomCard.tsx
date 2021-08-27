@@ -3,8 +3,6 @@ import { Card } from "react-bootstrap";
 
 import { RoomInput_v2, updateRoom } from "api/admin";
 
-import { RoomCardProps } from "./RoomCard.types";
-
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 
@@ -16,6 +14,7 @@ import Button from "components/atoms/Button";
 import { Checkbox } from "components/atoms/Checkbox";
 
 import * as S from "./RoomCard.styles";
+import { RoomCardProps } from "./RoomCard.types";
 
 const RoomCard: React.FC<RoomCardProps> = ({
   room,
@@ -45,7 +44,7 @@ const RoomCard: React.FC<RoomCardProps> = ({
         setEditedEvent={() => {}}
         setShowCreateEventModal={() => {}}
         setShowDeleteEventModal={() => {}}
-        className="admin-room-list-events"
+        containerClassName="admin-room-list-events"
       />
     ));
   };
@@ -105,7 +104,9 @@ const RoomCard: React.FC<RoomCardProps> = ({
       ) : (
         renderFilteredEvents()
       )}
-      <Button onClick={() => onEventHandler(room!.title!)}>Add an event</Button>
+      <Button onClick={() => room.title && onEventHandler(room.title)}>
+        Add an event
+      </Button>
     </S.Wrapper>
   );
 };

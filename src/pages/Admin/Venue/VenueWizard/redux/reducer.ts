@@ -1,12 +1,11 @@
+import * as ActionTypes from "./actionTypes";
 import {
   SetBannerUrl,
+  SetFormValues,
   SetSquareLogoUrl,
   WizardAction,
   WizardState,
-  SetFormValues,
 } from "./types";
-
-import * as ActionTypes from "./actionTypes";
 
 export const initialState = {
   bannerImageUrl: "",

@@ -1,31 +1,34 @@
-import { createUrlSafeName, VenueInput, PlacementInput } from "api/admin";
 import firebase from "firebase/app";
-import "firebase/functions";
 import * as Yup from "yup";
 
 import {
-  ZOOM_URL_TEMPLATES,
-  IFRAME_TEMPLATES,
-  PLAYA_VENUE_SIZE,
-  MAX_IMAGE_FILE_SIZE_BYTES,
-  GIF_RESIZER_URL,
-  PLAYA_WIDTH,
-  PLAYA_HEIGHT,
-  MAX_IMAGE_FILE_SIZE_TEXT,
   BACKGROUND_IMG_TEMPLATES,
-  MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+  GIF_RESIZER_URL,
+  IFRAME_TEMPLATES,
+  MAX_IMAGE_FILE_SIZE_BYTES,
+  MAX_IMAGE_FILE_SIZE_MB_TEXT,
   MAXIMUM_AUDITORIUM_COLUMNS_COUNT,
-  MINIMUM_AUDITORIUM_ROWS_COUNT,
   MAXIMUM_AUDITORIUM_ROWS_COUNT,
+  MINIMUM_AUDITORIUM_COLUMNS_COUNT,
+  MINIMUM_AUDITORIUM_ROWS_COUNT,
   MINIMUM_PARTYMAP_COLUMNS_COUNT,
+  PLAYA_HEIGHT,
+  PLAYA_VENUE_SIZE,
+  PLAYA_WIDTH,
+  ZOOM_URL_TEMPLATES,
 } from "settings";
 
+import { createUrlSafeName, PlacementInput, VenueInput } from "api/admin";
+
+import { UsernameVisibility } from "types/User";
 import { VenueTemplate } from "types/venues";
+
 import {
   roomTitleSchema,
   urlIfNoFileValidation,
 } from "pages/Admin/Details/ValidationSchema";
-import { UsernameVisibility } from "types/User";
+
+import "firebase/functions";
 
 const initialMapIconPlacement: VenueInput["placement"] = {
   x: (PLAYA_WIDTH - PLAYA_VENUE_SIZE) / 2,
@@ -44,7 +47,7 @@ const createFileSchema = (name: string, required: boolean) =>
     )
     .test(
       name,
-      `File size limit is ${MAX_IMAGE_FILE_SIZE_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
+      `File size limit is ${MAX_IMAGE_FILE_SIZE_MB_TEXT}. You can shrink images at ${GIF_RESIZER_URL}`,
       async (val?: FileList) => {
         if (!val || val.length === 0) return true;
         const file = val[0];
@@ -107,8 +110,6 @@ export const validationSchema = Yup.object()
 
     bannerImageUrl: urlIfNoFileValidation("bannerImageFile"),
     logoImageUrl: urlIfNoFileValidation("logoImageFile"),
-    description: Yup.string().required("Description required"),
-    subtitle: Yup.string().required("Subtitle required"),
     zoomUrl: Yup.string().when(
       "$template.template",
       (template: VenueTemplate, schema: Yup.MixedSchema<FileList>) =>

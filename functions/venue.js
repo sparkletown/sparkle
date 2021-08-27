@@ -21,11 +21,10 @@ const VenueTemplate = {
   friendship: "friendship",
   jazzbar: "jazzbar",
   partymap: "partymap",
+  animatemap: "animatemap",
   performancevenue: "performancevenue",
-  playa: "playa",
   posterhall: "posterhall",
   posterpage: "posterpage",
-  preplaya: "preplaya",
   screeningroom: "screeningroom",
   themecamp: "themecamp",
   zoomroom: "zoomroom",
@@ -34,6 +33,16 @@ const VenueTemplate = {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid: "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya: "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa: "playa",
 };
 
 const DEFAULT_PRIMARY_COLOR = "#bc271a";
@@ -49,6 +58,7 @@ const VALID_CREATE_TEMPLATES = [
   VenueTemplate.friendship,
   VenueTemplate.jazzbar,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
   VenueTemplate.zoomroom,
@@ -211,6 +221,8 @@ const createVenueData = (data, context) => {
     showUserStatus:
       typeof data.showUserStatus === "boolean" ? data.showUserStatus : true,
     radioStations: data.radioStations ? [data.radioStations] : [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (data.mapBackgroundImageUrl) {
@@ -247,6 +259,7 @@ const createVenueData = (data, context) => {
   }
 
   switch (data.template) {
+    case VenueTemplate.animatemap:
     case VenueTemplate.partymap:
     case VenueTemplate.themecamp:
       venueData.rooms = data.rooms;
@@ -287,6 +300,8 @@ const createVenueData_v2 = (data, context) => {
     ...(data.showGrid && { columns: data.columns }),
     template: data.template || VenueTemplate.partymap,
     rooms: [],
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
   };
 
   if (HAS_REACTIONS_TEMPLATES.includes(data.template)) {
@@ -305,12 +320,14 @@ const createVenueData_v2 = (data, context) => {
 };
 
 // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-const createBaseUpdateVenueData = (data, updated) => {
-  if (data.subtitle) {
+const createBaseUpdateVenueData = (data, doc) => {
+  const updated = doc.data();
+
+  if (data.subtitle || data.subtitle === "") {
     updated.config.landingPageConfig.subtitle = data.subtitle;
   }
 
-  if (data.description) {
+  if (data.description || data.description === "") {
     updated.config.landingPageConfig.description = data.description;
   }
 
@@ -396,6 +413,10 @@ const createBaseUpdateVenueData = (data, updated) => {
   if (data.showNametags) {
     updated.showNametags = data.showNametags;
   }
+
+  updated.updatedAt = Date.now();
+
+  return updated;
 };
 
 const dataOrUpdateKey = (data, updated, key) =>
@@ -582,11 +603,7 @@ exports.updateVenue = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue_v2
-  const updated = doc.data();
-
-  // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt this is missing from updateVenue_v2, why is that? Do we need it there/here?
   if (data.bannerImageUrl || data.subtitle || data.description) {
@@ -683,11 +700,8 @@ exports.updateVenue_v2 = functions.https.onCall(async (data, context) => {
     throw new HttpsError("not-found", `Venue ${venueId} not found`);
   }
 
-  // @debt this is exactly the same as in updateVenue
-  const updated = doc.data();
-
   // @debt refactor function so it doesn't mutate the passed in updated object, but efficiently returns an updated one instead
-  createBaseUpdateVenueData(data, updated);
+  const updated = createBaseUpdateVenueData(data, doc);
 
   // @debt in updateVenue we're checking/creating the updated.config object here if needed.
   //   Should we also be doing that here in updateVenue_v2? If not, why don't we need to?

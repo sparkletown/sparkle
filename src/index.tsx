@@ -1,32 +1,20 @@
-import "./wdyr";
-
 import React, { useEffect } from "react";
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 import { render } from "react-dom";
-
+import { Provider as ReduxStoreProvider } from "react-redux";
+import { isLoaded, ReactReduxFirebaseProvider } from "react-redux-firebase";
+import { addToBugsnagEventOnError, BugsnagErrorBoundary } from "bugsnag";
+import firebase from "firebase/app";
 import LogRocket from "logrocket";
 // eslint-disable-next-line no-restricted-imports
 import mixpanel from "mixpanel-browser";
-
-import { Provider as ReduxStoreProvider } from "react-redux";
 import { createFirestoreInstance } from "redux-firestore";
-import { ReactReduxFirebaseProvider, isLoaded } from "react-redux-firebase";
-
-import firebase from "firebase/app";
-import "firebase/analytics";
-import "firebase/auth";
-import "firebase/firestore";
-import "firebase/functions";
-import "firebase/performance";
-
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { ThemeProvider } from "styled-components";
 
 import { BUILD_SHA1, LOGROCKET_APP_ID, MIXPANEL_PROJECT_TOKEN } from "secrets";
-import { FIREBASE_CONFIG } from "settings";
 
-import * as serviceWorker from "./serviceWorker";
-import { activatePolyFills } from "./polyfills";
-import { store } from "./store";
+import { FIREBASE_CONFIG } from "settings";
 
 import { traceReactScheduler } from "utils/performance";
 import { authSelector } from "utils/selectors";
@@ -38,11 +26,20 @@ import { AppRouter } from "components/organisms/AppRouter";
 
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
-import { BugsnagErrorBoundary, addToBugsnagEventOnError } from "bugsnag";
+import "./wdyr";
+import "firebase/analytics";
+import "firebase/auth";
+import "firebase/firestore";
+import "firebase/functions";
+import "firebase/performance";
+
+import { activatePolyFills } from "./polyfills";
+import * as serviceWorker from "./serviceWorker";
+import { store } from "./store";
+
+import { theme } from "theme/theme";
 
 import "scss/global.scss";
-import { ThemeProvider } from "styled-components";
-import { theme } from "theme/theme";
 
 activatePolyFills();
 

@@ -1,15 +1,15 @@
-import React, { useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import React, { useCallback, useEffect } from "react";
 import { useParams } from "react-router";
-import classNames from "classnames";
+import { useHistory } from "react-router-dom";
 import { useCss } from "react-use";
+import classNames from "classnames";
 
 import { AuditoriumVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
-import { useAuditoriumSection, useAuditoriumGrid } from "hooks/auditorium";
+import { useAuditoriumGrid, useAuditoriumSection } from "hooks/auditorium";
 import { useShowHide } from "hooks/useShowHide";
 
 import { ReactionsBar } from "components/molecules/ReactionsBar";
@@ -94,7 +94,7 @@ export const Section: React.FC<SectionProps> = ({ venue }) => {
       <div className="Section__seats">
         <div className="Section__central-screen-overlay">
           <div className={centralScreenClasses}>
-            <IFrame containerClassname="Section__iframe" src={iframeUrl} />
+            <IFrame containerClassName="Section__iframe" src={iframeUrl} />
             <div className="Section__reactions">
               {isUserSeated ? (
                 <ReactionsBar

@@ -24,9 +24,48 @@ cd sparkle
 
 ### Step 2: Install Packages
 
+**Note:** Before you run the next steps, you will need to ensure you have access to the Firebase project you want to use. This access can be set up through the Firebase web UI. The following variables are required to be set up:
+
+```bash
+REACT_APP_PROJECT_ID=
+REACT_APP_API_KEY=
+REACT_APP_APP_ID=
+REACT_APP_MEASUREMENT_ID=
+```
+
 Install the platform dependencies with `npm`:
 
-**Important** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions. Check your current npm version with `npm -v`.
+(**Important** `npm` v7+ is not supported, it will cause issues with our `package-lock.json`, and you may end up with the wrong dependency versions. Check your current npm version with `npm -v`.
+
+```bash
+npm install
+```
+
+Now you're ready to start the server! ✨
+
+```bash
+npm start
+```
+
+Once the server is started, your web browser will be opened at http://localhost:3000 (and then it'll be immediately redirected to https://sparklespaces.com/). You can opt out of this by adding the following line to your `.env.local`:
+
+```bash
+BROWSER=none
+```
+
+To start using the app, navigate to a URL such as http://localhost:3000/v/{venueName} - replacing `{venueName}` with the existing venue you'd like to use.
+
+While you generally won't need to do this while developing locally, you can manually build the platform assets as follows:
+
+```bash
+npm run build
+```
+
+### Firebase functions
+
+**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing your actual deployed environment functions, try that.
+
+In a new terminal, from the directory you cloned the code to, enter the following commands:
 
 ```bash
 npm install
@@ -40,9 +79,22 @@ See [Firebase setup](docs/create-new-environment.md)
 
 ### Step 4: Start Your Engines
 
-See [Start application](docs/getting-started.md)
+First, you need to install the [Stripe CLI](https://stripe.com/docs/stripe-cli).
 
-**Note**: You might need to emulate the firebase functions locally before the server can properly start. If you have issues using/editing your actual deployed environment functions, try that.
+If you use Homebrew, you can install it as follows:
+
+```bash
+brew install stripe/stripe-cli/stripe
+```
+
+Otherwise, follow the installation instructions at https://stripe.com/docs/stripe-cli#install
+
+Make sure that you have a Stripe account setup and know the login credentials, then run the following commands (replacing `TODO-PROJECTID` with your actual Firebase project ID:
+
+```bash
+stripe login
+stripe listen --forward-to http://localhost:5001/TODO-PROJECTID/us-central1/payment-webhooks
+```
 
 ### Step 5: Firebase Emulators
 

@@ -4,18 +4,19 @@ import {
   API_KEY,
   APP_ID,
   AUTH_DOMAIN,
-  MEASUREMENT_ID,
   BUCKET_URL,
-  PROJECT_ID,
   IS_BURN,
+  MEASUREMENT_ID,
+  PROJECT_ID,
 } from "secrets";
-import { VenueTemplate } from "types/venues";
+
 import { RoomType } from "types/rooms";
+import { VenueTemplate } from "types/venues";
 
 import { FIVE_MINUTES_MS } from "utils/time";
 
-import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import defaultMapIcon from "assets/icons/default-map-icon.png";
+import sparkleNavLogo from "assets/icons/sparkle-nav-logo.png";
 import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
@@ -48,8 +49,8 @@ export const PRIVACY_POLICY = IS_BURN
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
-export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
-export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
@@ -111,8 +112,9 @@ export const SCHEDULE_CURRENT_TIMELINE_MS = 60 * 1000; // 1 min
 export const EVENT_STATUS_REFRESH_MS = 60 * 1000; // 1 min
 
 export const ROOM_IMAGE_WIDTH_PX = 300;
-export const MAX_IMAGE_FILE_SIZE_BYTES = 1024 * 2000;
-export const MAX_IMAGE_FILE_SIZE_TEXT = "2MB";
+export const MAX_IMAGE_FILE_SIZE_MB = 2;
+export const MAX_IMAGE_FILE_SIZE_MB_TEXT = `${MAX_IMAGE_FILE_SIZE_MB}MB`;
+export const MAX_IMAGE_FILE_SIZE_BYTES = MAX_IMAGE_FILE_SIZE_MB * 1024 * 1024;
 export const MAX_AVATAR_IMAGE_FILE_SIZE_BYTES = 1024 * 150;
 export const GIF_IMAGE_WIDTH_PX = 300;
 
@@ -164,10 +166,9 @@ export const ACCEPTED_IMAGE_TYPES =
 export const VALID_URL_PROTOCOLS = ["http:", "https:"];
 
 export const IFRAME_ALLOW =
-  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen";
+  "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen;";
+export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
-// @debt I believe this relates to Playa features, which are legacy code that will be removed soon
-export const ENABLE_SUSPECTED_LOCATION = false;
 export const ENABLE_PLAYA_ADDRESS = false;
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
@@ -196,24 +197,14 @@ export const IFRAME_TEMPLATES = [
 export const BACKGROUND_IMG_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
 export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
-];
-
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const PLACEABLE_VENUE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.zoomroom,
+  VenueTemplate.animatemap,
 ];
 
 export const COVERT_ROOM_TYPES: RoomType[] = [
@@ -256,6 +247,13 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
+    description: [
+      "An explorable party map into which you can place all your party rooms.",
+    ],
+  },
+  {
+    template: VenueTemplate.animatemap,
+    name: "Animate Map",
     description: [
       "An explorable party map into which you can place all your party rooms.",
     ],
@@ -398,6 +396,11 @@ export const ALL_VENUE_TEMPLATES: Array<Template> = [
     name: "Theme Camp (legacy)",
     description: ["To be removed asap"],
   },
+  {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
+    description: [""],
+  },
 ];
 
 // @debt Refactor this constant into types/templates or similar?
@@ -425,6 +428,11 @@ export const ALL_VENUE_TEMPLATES_V2: Array<Template_v2> = [
   {
     template: VenueTemplate.partymap,
     name: "Party Map",
+    description: [""],
+  },
+  {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
     description: [""],
   },
 ];
@@ -539,6 +547,19 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
     ],
   },
   {
+    template: VenueTemplate.animatemap,
+    name: "AnimateMap",
+    description: "Add your Animate Map",
+    icon: "/venues/pickspace-thumbnail_camp.png",
+    customInputs: [
+      {
+        name: "bannerMessage",
+        title: "Show an announcement in the venue (or leave blank for none)",
+        type: "text",
+      },
+    ],
+  },
+  {
     template: VenueTemplate.embeddable,
     name: "Embeddable",
     description:
@@ -558,6 +579,7 @@ export const ROOM_TEMPLATES: RoomTemplate[] = [
 export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
   VenueTemplate.playa,
 ];
 
@@ -565,6 +587,7 @@ export const HAS_ROOMS_TEMPLATES: Array<VenueTemplate> = [
 export const HAS_GRID_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
+  VenueTemplate.animatemap,
 ];
 
 // @debt Refactor this constant into types/templates + create an actual custom type grouping for it
@@ -592,6 +615,7 @@ export const ALL_BURN_TEMPLATES: Array<VenueTemplate> = [
   VenueTemplate.artpiece,
   VenueTemplate.audience,
   VenueTemplate.auditorium,
+  VenueTemplate.animatemap,
   VenueTemplate.performancevenue,
   VenueTemplate.themecamp,
 ];
@@ -717,3 +741,10 @@ export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
+
+export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
+
+export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
+
+export const EVENTS_PREVIEW_LIST_LENGTH = 5;

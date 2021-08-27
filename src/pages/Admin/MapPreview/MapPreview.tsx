@@ -1,23 +1,41 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { isEqual } from "lodash";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { useAsyncFn } from "react-use";
+import { isEqual } from "lodash";
 
-import { RoomInput_v2, updateRoom, updateVenue_v2 } from "api/admin";
-
-import { useUser } from "hooks/useUser";
+import { RoomInput_v2, updateRoom } from "api/admin";
 
 import { RoomData_v2 } from "types/rooms";
+
+import { useUser } from "hooks/useUser";
 
 import {
   Container,
   SubVenueIconMap,
 } from "pages/Account/Venue/VenueMapEdition/Container";
+
+import { ButtonNG } from "components/atoms/ButtonNG/ButtonNG";
 import Legend from "components/atoms/Legend";
+
 import { BackgroundSelect } from "../BackgroundSelect";
 
-import { MapPreviewProps } from "./MapPreview.types";
-import * as S from "./MapPreview.styles";
+import "./MapPreview.scss";
+
+export interface MapPreviewProps {
+  venueName: string;
+  mapBackground?: string;
+  rooms: RoomData_v2[];
+  venueId: string;
+  isEditing: boolean;
+  onRoomChange?: (rooms: RoomData_v2[]) => void;
+}
 
 const MapPreview: React.FC<MapPreviewProps> = ({
   venueName,
@@ -25,12 +43,10 @@ const MapPreview: React.FC<MapPreviewProps> = ({
   rooms,
   venueId,
   isEditing,
-  setIsEditing,
   onRoomChange,
 }) => {
   const { user } = useUser();
   const [mapRooms, setMapRooms] = useState<RoomData_v2[]>([]);
-  const [isSaving, setSaving] = useState<boolean>(false);
 
   useEffect(() => {
     if (
@@ -56,80 +72,57 @@ const MapPreview: React.FC<MapPreviewProps> = ({
     }));
   }, [isEditing, mapRooms, rooms]);
 
-  if (!user) return <></>;
+  const updateRoomsPosition = useCallback(
+    (val: SubVenueIconMap) => {
+      if (isEqual(roomRef.current, val)) return;
 
-  const handleOnChange = (val: SubVenueIconMap) => {
-    if (!isEqual(roomRef.current, val)) {
       roomRef.current = val;
-      const normalizeRooms = Object.values(val).map((room, index) => ({
-        ...rooms[index],
-        x_percent: room.left,
-        y_percent: room.top,
-        width_percent: room.width,
-        height_percent: room.height,
-      }));
+      const normalizeRooms = Object.values(val).map(
+        ({ left, top, width, height }, index) => ({
+          ...rooms[index],
+          x_percent: left,
+          y_percent: top,
+          width_percent: width,
+          height_percent: height,
+        })
+      );
       setMapRooms(normalizeRooms);
-      onRoomChange && onRoomChange(normalizeRooms);
-    }
-  };
+      onRoomChange?.(normalizeRooms);
+    },
+    [onRoomChange, rooms]
+  );
 
-  const handleSavePositions = async () => {
-    setSaving(true);
-    const roomArr = Object.values(roomRef.current);
+  const [{ loading: isSaving }, saveRoomPositions] = useAsyncFn(async () => {
+    if (isSaving || !user) return;
 
+    // Why is this using the ref and not mapRooms state?
+    const updatedRooms = Object.values(roomRef.current);
+
+    // Remove after forEach implementation is added.
     let roomIndex = 0;
 
-    for (const r of roomArr) {
+    // Ideally this should be using forEach and promise all to send all of the requests at once, instead of 1 by 1
+    // Using forEach will also allow us to use the index param and get rid of roomIndex and it's incremention
+    for (const { left, top, width, height } of updatedRooms) {
       const room: RoomInput_v2 = {
         ...rooms[roomIndex],
-        x_percent: r.left,
-        y_percent: r.top,
-        width_percent: r.width,
-        height_percent: r.height,
+        x_percent: left,
+        y_percent: top,
+        width_percent: width,
+        height_percent: height,
       };
 
+      // Requests are triggered one by one instead of bulk at once.
       await updateRoom(room, venueId, user, roomIndex);
-      roomIndex++;
+
+      roomIndex += 1;
     }
-
-    setSaving(false);
-    setIsEditing(false);
-  };
-
-  const handleBackgroundRemove = () => {
-    if (!user) return;
-
-    return updateVenue_v2(
-      {
-        name: venueName,
-        mapBackgroundImageUrl: "",
-      },
-      user
-    );
-  };
-
-  const handleEditButton = async () => {
-    if (isEditing) {
-      return await handleSavePositions();
-    }
-
-    return setIsEditing(true);
-  };
-
-  const editButtonText = isEditing ? "Save layout" : "Edit layout";
+  }, [rooms, user, venueId]);
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <S.Wrapper>
+      <div className="MapPreview">
         <Legend text={`${venueName}'s Map`} />
-
-        {!!mapBackground && (
-          <Legend
-            text="Edit background"
-            position="right"
-            onClick={() => handleBackgroundRemove()}
-          />
-        )}
 
         {!isEditing && (
           <BackgroundSelect
@@ -170,9 +163,11 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           <Container
             interactive
             resizable
-            onChange={handleOnChange}
+            onChange={updateRoomsPosition}
             backgroundImage={mapBackground}
             otherIcons={{}}
+            // @debt It probably doesn't work as iconsMap is an array and SubVenueIconMap object is expected
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
             iconsMap={iconsMap}
             coordinatesBoundary={{
@@ -185,10 +180,15 @@ const MapPreview: React.FC<MapPreviewProps> = ({
           />
         )}
 
-        <S.EditButton disabled={isSaving} onClick={handleEditButton}>
-          {isSaving ? <div>Saving...</div> : <div>{editButtonText}</div>}
-        </S.EditButton>
-      </S.Wrapper>
+        <ButtonNG
+          className="MapPreview__save-button"
+          disabled={isSaving}
+          loading={isSaving}
+          onClick={saveRoomPositions}
+        >
+          Save rooms
+        </ButtonNG>
+      </div>
     </DndProvider>
   );
 };

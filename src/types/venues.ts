@@ -4,13 +4,15 @@ import { HAS_ROOMS_TEMPLATES } from "settings";
 
 import { WithVenueId } from "utils/id";
 
+import { GameOptions } from "components/templates/AnimateMap/configs/GameConfig";
+
 import { EntranceStepConfig } from "./EntranceStep";
 import { Poster } from "./posters";
 import { Quotation } from "./Quotation";
 import { Room } from "./rooms";
 import { Table } from "./Table";
 import { UpcomingEvent } from "./UpcomingEvent";
-import { UserStatus, UsernameVisibility } from "./User";
+import { UsernameVisibility, UserStatus } from "./User";
 import { VenueAccessMode } from "./VenueAcccess";
 import { VideoAspectRatio } from "./VideoAspectRatio";
 
@@ -27,11 +29,10 @@ export enum VenueTemplate {
   friendship = "friendship",
   jazzbar = "jazzbar",
   partymap = "partymap",
+  animatemap = "animatemap",
   performancevenue = "performancevenue",
-  playa = "playa",
   posterhall = "posterhall",
   posterpage = "posterpage",
-  preplaya = "preplaya",
   screeningroom = "screeningroom",
   themecamp = "themecamp",
   zoomroom = "zoomroom",
@@ -40,6 +41,16 @@ export enum VenueTemplate {
    * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
    */
   avatargrid = "avatargrid",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  preplaya = "preplaya",
+
+  /**
+   * @deprecated Legacy template removed, perhaps try VenueTemplate.partymap instead?
+   */
+  playa = "playa",
 }
 
 // This type should have entries to exclude anything that has it's own specific type entry in AnyVenue below
@@ -47,6 +58,7 @@ export type GenericVenueTemplates = Exclude<
   VenueTemplate,
   | VenueTemplate.embeddable
   | VenueTemplate.jazzbar
+  | VenueTemplate.animatemap
   | VenueTemplate.partymap
   | VenueTemplate.posterpage
   | VenueTemplate.themecamp
@@ -57,6 +69,7 @@ export type GenericVenueTemplates = Exclude<
 export type AnyVenue =
   | GenericVenue
   | AuditoriumVenue
+  | AnimateMapVenue
   | EmbeddableVenue
   | JazzbarVenue
   | PartyMapVenue
@@ -72,8 +85,8 @@ export interface Venue_v2_Base {
   name: string;
   config: {
     landingPageConfig: {
-      subtitle: string;
-      description: string;
+      subtitle?: string;
+      description?: string;
       coverImageUrl: string;
     };
   };
@@ -178,10 +191,19 @@ export interface BaseVenue {
   showBadges?: boolean;
   showNametags?: UsernameVisibility;
   showUserStatus?: boolean;
+  createdAt?: number;
+  updatedAt?: number;
 }
 
 export interface GenericVenue extends BaseVenue {
   template: GenericVenueTemplates;
+}
+
+export interface AnimateMapVenue extends BaseVenue {
+  id: string;
+  gameOptions: GameOptions;
+  relatedPartymapId: string;
+  template: VenueTemplate.animatemap;
 }
 
 // @debt which of these params are exactly the same as on Venue? Can we simplify this?
@@ -244,6 +266,11 @@ export interface AuditoriumVenue extends BaseVenue {
   title?: string;
 }
 
+export interface AnimateMapVenue extends BaseVenue {
+  template: VenueTemplate.animatemap;
+  playerioGameId: string;
+}
+
 export interface Question {
   name: string;
   text: string;
@@ -280,7 +307,7 @@ export interface VenueConfig {
 //   presentation, checkList
 export interface VenueLandingPageConfig {
   coverImageUrl: string;
-  subtitle: string;
+  subtitle?: string;
   description?: string;
   presentation: string[];
   bannerImageUrl?: string;
@@ -322,6 +349,8 @@ export interface VenueEvent {
   host: string;
   room?: string;
   id?: string;
+  orderPriority?: number;
+  liveAudience?: number;
 }
 
 export interface VenueLocation {
@@ -332,11 +361,13 @@ export interface VenueLocation {
 
 export interface LocationEvents {
   location: VenueLocation;
-  events: PersonalizedVenueEvent[];
+  events: ScheduledVenueEvent[];
 }
 
-export interface PersonalizedVenueEvent extends WithVenueId<VenueEvent> {
+export interface ScheduledVenueEvent extends WithVenueId<VenueEvent> {
   isSaved: boolean;
+  venueIcon: string;
+  liveAudience: number;
 }
 
 export const isVenueWithRooms = (venue: AnyVenue): venue is PartyMapVenue =>

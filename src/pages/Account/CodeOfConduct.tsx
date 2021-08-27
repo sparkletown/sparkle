@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect } from "react";
+import { useForm } from "react-hook-form";
 import { isLoaded } from "react-redux-firebase";
 import { useHistory } from "react-router-dom";
-import { useForm } from "react-hook-form";
 import { useAsyncFn, useSearchParam } from "react-use";
 
 import { IS_BURN } from "secrets";
@@ -16,14 +16,13 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateTheme } from "pages/VenuePage/helpers";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
 import { Loading } from "components/molecules/Loading";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { updateUserProfile } from "./helpers";
 
 // @debt refactor the questions related styles from Account.scss into CodeOfConduct.scss
 import "./Account.scss";
-
 import "./CodeOfConduct.scss";
 
 export interface CodeOfConductFormData {
@@ -70,7 +69,7 @@ export const CodeOfConduct: React.FC = () => {
   const history = useHistory();
   const returnUrl = useSearchParam("returnUrl") ?? undefined;
 
-  const { user, userWithId } = useUser();
+  const { user } = useUser();
 
   const venueId = useVenueId();
 
@@ -79,18 +78,10 @@ export const CodeOfConduct: React.FC = () => {
   useConnectCurrentVenue();
   const venue = useSelector(currentVenueSelectorData);
 
-  const {
-    register,
-    handleSubmit,
-    errors,
-    formState,
-    watch,
-  } = useForm<CodeOfConductFormData>({
+  const { register, handleSubmit, errors, formState, watch } = useForm<
+    CodeOfConductFormData & Record<string, boolean>
+  >({
     mode: "onChange",
-    // @ts-ignore @debt Figure a way to type this properly
-    defaultValues: {
-      ...userWithId,
-    },
   });
 
   const proceed = useCallback(() => {
@@ -154,8 +145,6 @@ export const CodeOfConduct: React.FC = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="form">
             {codeOfConductQuestions.map((question) => (
               <div className="input-group" key={question.name}>
-                {/* @debt we should probably be rendering the question.name here as a label */}
-                {/*<strong>{question.name}</strong>*/}
                 <label
                   htmlFor={question.name}
                   className={`checkbox ${
@@ -178,12 +167,9 @@ export const CodeOfConduct: React.FC = () => {
                     required: true,
                   })}
                 />
-                {
-                  /* @ts-ignore @debt questions should be typed if possible */
-                  errors[question.name]?.type === "required" && (
-                    <span className="input-error">Required</span>
-                  )
-                }
+                {errors[question.name]?.type === "required" && (
+                  <span className="input-error">Required</span>
+                )}
               </div>
             ))}
 

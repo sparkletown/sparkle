@@ -1,8 +1,8 @@
 import { useCallback, useEffect } from "react";
 
-import { AnyVenue } from "types/venues";
-
 import { checkAccess } from "api/auth";
+
+import { AnyVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 import {

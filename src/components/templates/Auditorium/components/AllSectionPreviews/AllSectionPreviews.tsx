@@ -1,13 +1,13 @@
-import React, { useMemo, useCallback } from "react";
-import classNames from "classnames";
+import React, { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
+import classNames from "classnames";
 import { sample } from "lodash";
 
 import { AuditoriumEmptyBlocksCount } from "types/auditorium";
 import { AuditoriumVenue } from "types/venues";
 
-import { WithId } from "utils/id";
 import { chooseAuditoriumSize } from "utils/auditorium";
+import { WithId } from "utils/id";
 import { enterVenue } from "utils/url";
 
 import { useAllAuditoriumSections } from "hooks/auditorium";
@@ -111,7 +111,7 @@ export const AllSectionPreviews: React.FC<SectionPreviewsProps> = ({
         <div className="AllSectionPreviews__main">
           <IFrame
             src={venue.iframeUrl}
-            containerClassname="AllSectionPreviews__iframe-overlay"
+            containerClassName="AllSectionPreviews__iframe-overlay"
             iframeClassname="AllSectionPreviews__iframe"
           />
           <div className="AllSectionPreviews__welcome-text">{venue.title}</div>

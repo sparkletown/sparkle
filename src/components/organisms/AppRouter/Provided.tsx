@@ -1,11 +1,11 @@
 import React from "react";
 
-import { useVenueId } from "hooks/useVenueId";
-import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
 import {
   RelatedVenuesProvider,
   RelatedVenuesProviderProps,
 } from "hooks/useRelatedVenues";
+import { WorldUsersProvider, WorldUsersProviderProps } from "hooks/users";
+import { useVenueId } from "hooks/useVenueId";
 
 export type EmptyProviderProps = Partial<
   RelatedVenuesProviderProps & WorldUsersProviderProps

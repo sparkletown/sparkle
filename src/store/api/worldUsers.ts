@@ -1,8 +1,8 @@
-import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import { MaybeDrafted } from "@reduxjs/toolkit/dist/query/core/buildThunks";
+import { createApi, fakeBaseQuery } from "@reduxjs/toolkit/query/react";
 import firebase from "firebase/app";
-// import { isEqual } from "lodash";
 
+// import { isEqual } from "lodash";
 import {
   extractLocationFromUser,
   User,
@@ -11,7 +11,7 @@ import {
   userWithLocationToUser,
 } from "types/User";
 
-import { withId, WithId } from "utils/id";
+import { WithId, withId } from "utils/id";
 
 export interface WorldUsersApiArgs {
   relatedLocationIds: string[];
@@ -64,10 +64,10 @@ export const worldUsersApi = createApi({
         // error: undefined,
         // meta: undefined,
       }),
-      async onCacheEntryAdded(
+      onCacheEntryAdded: async (
         { relatedLocationIds, currentUserId },
         { updateCachedData, cacheEntryRemoved }
-      ) {
+      ) => {
         // Used to hold the changes queued from the snapshot listener so that we can proces them in batches
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
