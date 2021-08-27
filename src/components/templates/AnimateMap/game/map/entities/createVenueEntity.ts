@@ -77,6 +77,7 @@ export const updateVenueEntity = (
   if (!node) {
     return;
   }
+  node.venue.model = venue;
   const sprite = node.entity.get(SpriteComponent);
   if (!sprite) {
     return;
