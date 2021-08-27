@@ -50,7 +50,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
-      // remove backButton from Navbar
+      // NOTE: Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
@@ -65,7 +65,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
-      // remove backButton from Navbar
+      // @debt Remove the back button, because we don't need it in AnimateMap for now
       hasBackButton = false;
       break;
 
@@ -91,7 +91,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
-      // remove backButton from Navbar
+      // NOTE: Remove the back button, because we need to implement it differently in Section
       hasBackButton = false;
       break;
 

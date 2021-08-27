@@ -109,8 +109,6 @@ const VolumePopover = (
     </Popover.Content>
   </Popover>
 );
-
-const navBarScheduleClassName = "NavBar__schedule-dropdown";
 export interface NavBarPropsType {
   hasBackButton?: boolean;
   hasSchedule?: boolean;
@@ -255,6 +253,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
     "nav-schedule-marged": hasBackButton,
   });
+
+  const navBarScheduleClassName = "NavBar__schedule-dropdown";
 
   const hideEventSchedule = useCallback((e) => {
     if (
