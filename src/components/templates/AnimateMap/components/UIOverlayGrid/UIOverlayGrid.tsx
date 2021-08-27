@@ -10,12 +10,6 @@ import {
 import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
-import { useShowHide } from "hooks/useShowHide";
-
-import { CallARangerButton } from "components/templates/AnimateMap/components/CallARangerButton";
-
-import { CallARangerModal } from "components/organisms/CallARangerModal";
-
 import { RoomModal } from "../../../PartyMap/components";
 import EventProvider, {
   EventType,
@@ -55,12 +49,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({ venue }) => {
     };
   });
 
-  const {
-    isShown: isCallARangerShown,
-    show: showCallARangerModal,
-    hide: hideCallARangerModal,
-  } = useShowHide();
-
   return (
     <>
       <div className="UIOverlay">
@@ -71,11 +59,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({ venue }) => {
             show={hasSelectedRoom}
             onHide={unselectRoom}
           />
-          <div className="UIOverlayGrid__call-a-ranger">
-            <UIContainer>
-              <CallARangerButton onClick={showCallARangerModal} />
-            </UIContainer>
-          </div>
 
           <div className="UIOverlayGrid__zoom">
             <UIContainer>
@@ -102,10 +85,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({ venue }) => {
           </div>
         </div>
       </div>
-      <CallARangerModal
-        show={isCallARangerShown}
-        onHide={hideCallARangerModal}
-      />
     </>
   );
 };
