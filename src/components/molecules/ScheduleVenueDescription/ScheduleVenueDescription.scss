@@ -30,7 +30,6 @@ $name--margin-bottom: 5px;
     cursor: pointer;
     transition: all 400ms $transition-function;
     box-shadow: 0 $spacing--sm $spacing--lg opaque-black(0.3);
-    background-image: var(--venue-picture--background-image);
 
     &:hover {
       transform: scale(1.1);
@@ -43,11 +42,11 @@ $name--margin-bottom: 5px;
   }
 
   &__name {
-    font-style: italic;
     margin-bottom: $name--margin-bottom;
   }
 
   &__subtitle {
     font-weight: $font-weight--400;
+    font-size: $font-size--lg;
   }
 }

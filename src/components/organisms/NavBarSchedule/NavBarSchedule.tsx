@@ -32,6 +32,7 @@ import {
   formatDateRelativeToNow,
   isDateRangeStartWithinToday,
 } from "utils/time";
+import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -40,9 +41,8 @@ import { useShowHide } from "hooks/useShowHide";
 import { useUser } from "hooks/useUser";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-// Disabled as per designs. Up for deletion if confirmied not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -79,9 +79,21 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     relatedVenues,
     relatedVenueIds,
     sovereignVenue,
+    currentVenue,
   } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const venueRoomTitle = useMemo(
+    () =>
+      sovereignVenue?.rooms?.find((room) => {
+        const [roomName] = getLastUrlParam(
+          getUrlWithoutTrailingSlash(room.url)
+        );
+        return roomName === venueId;
+      }),
+    [sovereignVenue, venueId]
+  )?.title;
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -103,15 +115,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const isLoadingSchedule = isLoading || isEventsLoading;
 
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
 
   const {
     isShown: showPersonalisedSchedule,
     toggle: togglePersonalisedSchedule,
   } = useShowHide(false);
-
-  const { currentVenue } = useRelatedVenues({
-    currentVenueId: venueId,
-  });
 
   const liveAndFutureEvents = useMemo(
     () =>
@@ -248,6 +257,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
         ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        : filterRelatedEvents
+        ? eventsFilledWithPriority.filter(
+            (event) => event.room === venueRoomTitle
+          )
         : eventsFilledWithPriority,
     };
   }, [
@@ -255,6 +268,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     showPersonalisedSchedule,
     firstScheduleDate,
+    filterRelatedEvents,
+    venueRoomTitle,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {
@@ -306,8 +321,30 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+        <div className="NavBarSchedule__breadcrumb">
+          <button
+            onClick={() => setFilterRelatedEvents(false)}
+            className={filterRelatedEvents ? "button--a disabled" : "button--a"}
+          >
+            {sovereignVenue?.name}
+          </button>
+
+          {venueId !== sovereignVenue?.id && (
+            <>
+              {" "}
+              /{" "}
+              <button
+                onClick={() => setFilterRelatedEvents(true)}
+                className={
+                  !filterRelatedEvents ? "button--a disabled" : "button--a"
+                }
+              >
+                {currentVenue?.name}
+              </button>
+            </>
+          )}
+        </div>
+        {venueId && <ScheduleVenueDescription venueId={venueId} />}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
