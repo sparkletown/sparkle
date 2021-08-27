@@ -50,7 +50,7 @@ export class ViewportBackgroundSystem extends System {
   constructor(
     viewport: Viewport,
     private app: Application,
-    private timeAccelerator: number = 1
+    private timeAccelerator: number = 2400
   ) {
     super();
     this.viewport = viewport;

@@ -1,7 +1,7 @@
 precision mediump float;
 varying vec2 vTextureCoord;
 
-const int MAX_LIGHTS = 256;
+const int MAX_LIGHTS = 10;
 uniform sampler2D uSampler;
 
 varying vec2 pixelPos;
