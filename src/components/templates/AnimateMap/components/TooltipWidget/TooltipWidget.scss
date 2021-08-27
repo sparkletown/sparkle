@@ -12,10 +12,10 @@
     transform: translateY(30px);
     opacity: 0;
 
-    &_active {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    // &_active {
+    //   transform: translateY(0);
+    //   opacity: 1;
+    // }
 
     &_hide {
       transition: 0.4s;

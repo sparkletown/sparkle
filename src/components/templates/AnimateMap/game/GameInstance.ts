@@ -18,7 +18,6 @@ import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-// import { DataProvider } from "../bridges/DataProvider";
 import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
@@ -250,8 +249,7 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.VENUE_UPDATED,
       (venue: ReplicatedVenue) => {
-        this._mapContainer?.entityFactory?.removeVenue(venue);
-        this._mapContainer?.entityFactory?.createVenue(venue);
+        this._mapContainer?.entityFactory?.updateVenue(venue);
       }
     );
 
