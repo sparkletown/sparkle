@@ -774,3 +774,6 @@ export const MAX_AUDIO_VOLUME: number = 100;
 // localStorage keys for syncing volume with AnimateMap's game instance
 export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
 export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";
+
+// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
+export const ALLOW_NO_VENUE: boolean = true;

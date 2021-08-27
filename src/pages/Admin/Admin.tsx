@@ -48,6 +48,7 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import { Loading } from "components/molecules/Loading";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
+import { NotFound } from "components/atoms/NotFound";
 
 import "firebase/storage";
 
@@ -205,7 +206,7 @@ const VenueDetails: React.FC<VenueDetailsProps> = ({ venueId, roomIndex }) => {
   }, [matchUrl, currentVenue]);
 
   if (!currentVenue) {
-    return <>{"Oops, seems we can't find your venue!"}</>;
+    return <NotFound />;
   }
 
   return (
