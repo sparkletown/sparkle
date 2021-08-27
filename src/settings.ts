@@ -50,14 +50,16 @@ export const PRIVACY_POLICY = IS_BURN
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = defaultMapBackground;
-export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
-export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
 export const DEFAULT_PROFILE_PIC = "/default-profile-pic.png";
 export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
+export const HELP_CENTER_URL =
+  "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -212,19 +214,6 @@ export const SUBVENUE_TEMPLATES = [
   VenueTemplate.themecamp,
   VenueTemplate.partymap,
   VenueTemplate.animatemap,
-];
-
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const PLACEABLE_VENUE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.zoomroom,
 ];
 
 export const COVERT_ROOM_TYPES: RoomType[] = [
@@ -786,3 +775,6 @@ export const MAX_AUDIO_VOLUME: number = 100;
 // localStorage keys for syncing volume with AnimateMap's game instance
 export const LS_KEY_IS_AMBIENT_AUDIO_VOCAL = "LS_KEY_IS_AMBIENT_AUDIO_VOCAL";
 export const LS_KEY_RADIO_VOLUME = "LS_KEY_RADIO_VOLUME";
+
+// NOTE: flag for components that display Not Found screen or use some mitigation when no venueId or no venue exists
+export const ALLOW_NO_VENUE: boolean = true;

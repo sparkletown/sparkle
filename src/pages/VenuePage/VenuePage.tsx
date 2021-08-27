@@ -39,6 +39,8 @@ import { useVenueId } from "hooks/useVenueId";
 import { CountDown } from "components/molecules/CountDown";
 import { LoadingPage } from "components/molecules/LoadingPage/LoadingPage";
 
+import { NotFound } from "components/atoms/NotFound";
+
 // import { AccessDeniedModal } from "components/atoms/AccessDeniedModal/AccessDeniedModal";
 import { updateTheme } from "./helpers";
 
@@ -186,7 +188,7 @@ export const VenuePage: React.FC = () => {
   // useVenueAccess(venue, handleAccessDenied);
 
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return <NotFound />;
   }
 
   if (!venue || !venueId) {

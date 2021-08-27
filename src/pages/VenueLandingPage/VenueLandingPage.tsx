@@ -18,6 +18,7 @@ import { currentVenueSelectorData, venueEventsSelector } from "utils/selectors";
 import { formatTimeLocalised, getTimeBeforeParty } from "utils/time";
 import { venueEntranceUrl, venueInsideUrl } from "utils/url";
 
+import { useValidImage } from "hooks/useCheckImage";
 import useConnectCurrentVenue from "hooks/useConnectCurrentVenue";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
@@ -31,6 +32,8 @@ import WithNavigationBar from "components/organisms/WithNavigationBar";
 import InformationCard from "components/molecules/InformationCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
+
+import { NotFound } from "components/atoms/NotFound";
 
 import "./VenueLandingPage.scss";
 
@@ -67,8 +70,15 @@ export const VenueLandingPage: React.FC = () => {
     updateTheme(venue);
   }, [venue]);
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig.bannerImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+
+  const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
+
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return <NotFound />;
   }
 
   if (!venue) {
@@ -99,20 +109,13 @@ export const VenueLandingPage: React.FC = () => {
             0deg,
             rgba(0, 0, 0, 0.8) 2%,
             rgba(0, 0, 0, 0) 98%
-          ), url(${
-            venue.config?.landingPageConfig.bannerImageUrl ??
-            DEFAULT_VENUE_BANNER
-          }`,
+          ), url(${validBannerImageUrl}`,
             backgroundSize: "cover",
           }}
         >
           <div className="venue-host">
             <div className="host-icon-container">
-              <img
-                className="host-icon"
-                src={!venue.host?.icon ? DEFAULT_VENUE_LOGO : venue.host?.icon}
-                alt="host"
-              />
+              <img className="host-icon" src={validLogoUrl} alt="host" />
             </div>
 
             <div className="title">{venue.name}</div>

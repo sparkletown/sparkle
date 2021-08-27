@@ -6,6 +6,7 @@ import { DEFAULT_SHOW_SCHEDULE } from "settings";
 import { retainAttendance } from "store/actions/Attendance";
 
 import { Room, RoomType } from "types/rooms";
+import { User } from "types/User";
 import { AnyVenue, VenueEvent } from "types/venues";
 
 import { WithId, WithVenueId } from "utils/id";
@@ -100,7 +101,12 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
   const [portalVenueId] = getLastUrlParam(noTrailSlashPortalUrl);
   const portalVenue = findVenueInRelatedVenues(portalVenueId);
 
+  const portalVenueSubtitle = portalVenue?.config?.landingPageConfig?.subtitle;
+  const portalVenueDescription =
+    portalVenue?.config?.landingPageConfig?.description;
+
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const userList = recentRoomUsers as readonly WithId<User>[];
 
   const [_enterRoomWithSound] = useCustomSound(room.enterSound, {
     interrupt: true,
@@ -135,13 +141,15 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
     backgroundImage: room.image_url ? `url(${room.image_url})` : undefined,
   };
 
+  const roomTitle = room.title || portalVenue?.name;
+  const roomSubtitle = room.subtitle || portalVenueSubtitle;
+  const roomDescription = room.about || portalVenueDescription;
+
   return (
     <>
-      <h2>{room.title ?? portalVenue?.name}</h2>
+      <h2>{roomTitle}</h2>
 
-      {room.subtitle && (
-        <div className="room-modal__title">{room.subtitle}</div>
-      )}
+      {roomSubtitle && <div className="room-modal__title">{roomSubtitle}</div>}
 
       <div className="room-modal__main">
         <div className="room-modal__icon" style={iconStyles} />
@@ -164,7 +172,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       <UserList
         containerClassName="room-modal__userlist"
-        users={recentRoomUsers}
+        users={userList}
         limit={11}
         activity="in this room"
         hasClickableAvatars
@@ -172,7 +180,7 @@ export const RoomModalContent: React.FC<RoomModalContentProps> = ({
 
       {room.about && (
         <div className="room-modal__description">
-          <RenderMarkdown text={room.about ?? portalVenue?.description} />
+          <RenderMarkdown text={roomDescription} />
         </div>
       )}
 
