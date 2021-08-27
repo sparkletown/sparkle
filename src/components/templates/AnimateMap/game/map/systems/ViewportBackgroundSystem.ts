@@ -10,7 +10,6 @@ import { tiles } from "../../constants/AssetsMapTilesConstants";
 import { GameInstance } from "../../GameInstance";
 import { KeyFramer } from "../../utils/KeyFramer";
 import {
-  LightSize,
   mapLightningShader,
   moonKeyFramer,
   staticLightKeyFramer,
@@ -34,8 +33,7 @@ export class ViewportBackgroundSystem extends System {
   private readonly mapLOD_0: Sprite;
   private sunKeyFramer: KeyFramer = sunKeyFramer;
   private moonKeyFramer: KeyFramer = moonKeyFramer;
-  private lightsPos = new Float32Array(1024);
-  private time: number = 0;
+  private lightsPos = new Float32Array(512);
   private initialized = false;
   private worldDivision = 0;
   private worldTileWidth = 0;
@@ -80,18 +78,6 @@ export class ViewportBackgroundSystem extends System {
   public initLighting() {
     const backgroundLightning = [mapLightningShader];
     this.container.filters = backgroundLightning;
-    const lightsCol = new Array();
-    const koef = [];
-    const lightSizer = new LightSize();
-    for (let i = 0; i < this.lightsPos.length / 2; i++) {
-      lightsCol[i] = Math.random() * 0xffffff;
-      const size = lightSizer.getFrame(200);
-      koef[i * 2] = size[0]; // linear component
-      koef[i * 2 + 1] = size[1]; // quadratic component
-    }
-
-    this.container.filters[0].uniforms.lightsCol = lightsCol;
-    this.container.filters[0].uniforms.koef = koef;
   }
 
   addToEngine(engine: Engine) {
@@ -220,15 +206,7 @@ export class ViewportBackgroundSystem extends System {
   private _updateFilters() {
     let lightQuantity = 0;
 
-    //note: remove later
-    lightQuantity = 0;
-
     for (let i = this.barrels?.head; i; i = i?.next) {
-      this.lightsPos[lightQuantity * 2] = i.position.x;
-      this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
-      lightQuantity += 1;
-    }
-    for (let i = this.artCars?.head; i; i = i?.next) {
       this.lightsPos[lightQuantity * 2] = i.position.x;
       this.lightsPos[lightQuantity * 2 + 1] = i.position.y;
       lightQuantity += 1;
@@ -236,8 +214,7 @@ export class ViewportBackgroundSystem extends System {
 
     this.container.filters[0].uniforms.lightsPos = this.lightsPos;
     this.container.filters[0].uniforms.lightQuantity = lightQuantity;
-    this.container.filters[0].uniforms.zoom = 2 * (this.viewport.scale.x + 0.3);
-
+    this.container.filters[0].uniforms.zoom = this.viewport.scale.x;
     this.container.filters[0].uniforms.frame = [
       this.viewport.left,
       this.viewport.top,
@@ -252,9 +229,6 @@ export class ViewportBackgroundSystem extends System {
    * @param time in hourse [0;24)
    */
   public setDayTime(time: number) {
-    //const ambientLight = 0.1;
-    //TODO changing
-
     time = (time * this.timeAccelerator) % 24;
 
     //DELETE ME

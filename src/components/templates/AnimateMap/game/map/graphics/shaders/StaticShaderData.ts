@@ -10,8 +10,8 @@ import {
 
 import { LightSize, mapStaticLightningShader } from "./mapLightning";
 
-const BATCH_SIZE = 64;
-const textureSize = 9920;
+const BATCH_SIZE = 32;
+const textureSize = 8128;
 export interface LightData {
   r: number;
   g: number;
@@ -36,20 +36,19 @@ export class ShaderDataProvider {
       const g: number = Math.floor(light.g * 255) << 8;
       const b: number = Math.floor(light.b * 255);
       this.lightsCol[this.lightQuantity] = r + g + b;
-      this.lightsPos[this.lightQuantity << 1] = (light.x / 9920) * 9000;
-      this.lightsPos[(this.lightQuantity << 1) + 1] = (light.y / 9920) * 9000;
+      this.lightsPos[this.lightQuantity << 1] = light.x;
+      this.lightsPos[(this.lightQuantity << 1) + 1] = light.y;
       const koef = new LightSize().getFrame(light.size);
       this.koef[this.lightQuantity << 1] = koef[0];
       this.koef[(this.lightQuantity << 1) + 1] = koef[1];
       this.lightQuantity++;
     });
-    console.log("lights quantity", this.lightQuantity);
     this.renderer = autoDetectRenderer();
     this.baseRenderTexture = new BaseRenderTexture({
       width: textureSize,
       height: textureSize,
       scaleMode: SCALE_MODES.LINEAR,
-      resolution: 1.0,
+      resolution: 0.5,
     });
     this.renderTexture = new RenderTexture(this.baseRenderTexture);
     this.sprite = new Sprite(this.renderTexture);
@@ -63,36 +62,41 @@ export class ShaderDataProvider {
     this.sprite.name = "staticLightBuffer";
     this.sprite.width = textureSize;
     this.sprite.height = textureSize;
-    console.log("static shadering", this);
   }
 
   public renderSprite() {
     this.sprite.filterArea = new Rectangle(0, 0, textureSize, textureSize);
-    while (this.lightsCol.length > 0) {
-      this.sprite.filters[0].uniforms.lightsCol = this.lightsCol.slice(
-        0,
-        BATCH_SIZE
-      );
-      this.sprite.filters[0].uniforms.lightsPos = this.lightsPos.slice(
-        0,
-        BATCH_SIZE << 1
-      );
-      this.sprite.filters[0].uniforms.koef = this.koef.slice(
-        0,
-        BATCH_SIZE << 1
-      );
-      this.sprite.filters[0].uniforms.lightQuantity =
-        this.lightsCol.length > BATCH_SIZE ? BATCH_SIZE : this.lightsCol.length;
-      this.app.renderer.render(this.sprite, this.renderTexture, false);
-      if (this.lightsCol.length < BATCH_SIZE) {
-        this.lightsCol = new Array<number>();
-        this.lightsPos = new Array<number>();
-      } else {
-        this.lightsCol = this.lightsCol.slice(BATCH_SIZE);
-        this.lightsPos = this.lightsPos.slice(BATCH_SIZE * 2);
-        this.koef = this.koef.slice(BATCH_SIZE * 2);
-      }
-    }
+    const render = () => {
+      setTimeout(() => {
+        this.sprite.filters[0].uniforms.lightsCol = this.lightsCol.slice(
+          0,
+          BATCH_SIZE
+        );
+        this.sprite.filters[0].uniforms.lightsPos = this.lightsPos.slice(
+          0,
+          BATCH_SIZE << 1
+        );
+        this.sprite.filters[0].uniforms.koef = this.koef.slice(
+          0,
+          BATCH_SIZE << 1
+        );
+        this.sprite.filters[0].uniforms.lightQuantity =
+          this.lightsCol.length > BATCH_SIZE
+            ? BATCH_SIZE
+            : this.lightsCol.length;
+        this.app.renderer.render(this.sprite, this.renderTexture, false);
+        if (this.lightsCol.length < BATCH_SIZE) {
+          this.lightsCol = new Array<number>();
+          this.lightsPos = new Array<number>();
+        } else {
+          this.lightsCol = this.lightsCol.slice(BATCH_SIZE);
+          this.lightsPos = this.lightsPos.slice(BATCH_SIZE * 2);
+          this.koef = this.koef.slice(BATCH_SIZE * 2);
+          render();
+        }
+      }, 100);
+    };
+    render();
     return this.renderTexture;
   }
 }
@@ -542,14 +546,6 @@ export const staticLightData: LightData[] = [
     r: 0.294,
     g: 0.929,
     b: 0.074,
-    x: 3932.10702624582,
-    y: 4749.114429830172,
-    size: 238.174,
-  },
-  {
-    r: 0.294,
-    g: 0.929,
-    b: 0.074,
     x: 3913.763601679977,
     y: 4655.685254041471,
     size: 238.174,
@@ -624,7 +620,7 @@ export const staticLightData: LightData[] = [
     b: 0.677,
     x: 4525.52479064244,
     y: 5403.318377114934,
-    size: 306.145,
+    size: 200.145,
   },
   {
     r: 1,
@@ -1841,54 +1837,6 @@ export const staticLightData: LightData[] = [
     x: 4608.276265223275,
     y: 5256.900764197222,
     size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 1,
-    b: 1,
-    x: 4084.328443843031,
-    y: 6097.590561220225,
-    size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 1,
-    b: 1,
-    x: 4102.584465493911,
-    y: 6115.846582871105,
-    size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 1,
-    b: 1,
-    x: 4166.48054127199,
-    y: 6111.282577458385,
-    size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 1,
-    b: 1,
-    x: 4079.764438430311,
-    y: 6097.590561220225,
-    size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 0.757,
-    b: 1,
-    x: 4663.957131258458,
-    y: 6197.998680300063,
-    size: 254.034,
-  },
-  {
-    r: 0.334,
-    g: 0.757,
-    b: 1,
-    x: 4107.148470906631,
-    y: 6106.7185720456655,
-    size: 70.511,
   },
   {
     r: 0.334,

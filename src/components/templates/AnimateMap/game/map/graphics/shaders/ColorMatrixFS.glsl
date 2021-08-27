@@ -53,7 +53,6 @@ void main(void) {
             if(i > lightQuantity)
                 break;
         }
-
     }
     gl_FragColor = vec4(light + dynamicLight, 1.0);
 }
