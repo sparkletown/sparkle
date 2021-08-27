@@ -3,23 +3,23 @@ import { Sprite } from "pixi.js";
 
 import {
   PlayerModel,
+  ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
+import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
-import { avatarCycles, HALO } from "../../constants/AssetConstants";
+import { avatarCycles, barrels, HALO } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
-import { BotComponent } from "../components/BotComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
@@ -27,8 +27,6 @@ import { EllipseComponent } from "../components/EllipseComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
-import { MotionBotClickControlComponent } from "../components/MotionBotClickControlComponent";
-import { MotionBotIdleComponent } from "../components/MotionBotIdleComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
 import { MovementComponent } from "../components/MovementComponent";
@@ -48,6 +46,7 @@ import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
 import { VenueTooltipEnter } from "../graphics/VenueTooltipEnter";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
+import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
 import { JoystickNode } from "../nodes/JoystickNode";
 import { KeyboardNode } from "../nodes/KeyboardNode";
@@ -57,7 +56,8 @@ import { VenueNode } from "../nodes/VenueNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 import { WaitingVenueClickNode } from "../nodes/WaitingVenueClickNode";
 
-import { createVenueEntity } from "./createVenueEntity";
+import { createBotEntity } from "./createBotEntity";
+import { createVenueEntity, updateVenueEntity } from "./createVenueEntity";
 
 export default class EntityFactory {
   public engine: Engine;
@@ -95,11 +95,9 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    console.log(
-      "createWaitingVenueClick CREATE",
-      venueNode.position.x,
-      venueNode.position.y
-    );
+    // removeAllTooltip on this venue
+    venueNode.entity.remove(TooltipComponent);
+
     return entity;
   }
 
@@ -392,88 +390,7 @@ export default class EntityFactory {
   }
 
   public createBot(user: ReplicatedUser, realUser = false): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
-
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
-
-    const point: Point = GameInstance.instance
-      .getConfig()
-      .playgroundMap.getRandomPointInTheCentralCircle();
-
-    if (!realUser) {
-      user.x = point.x;
-      user.y = point.y;
-    }
-
-    const scale = 0.2;
-
-    const entity: Entity = new Entity();
-    const fsm: FSMBase = new FSMBase(entity);
-    const bot = new BotComponent(user, fsm, realUser);
-
-    fsm.createState(bot.IMMOBILIZED);
-
-    fsm
-      .createState(bot.IDLE)
-      .add(MotionBotIdleComponent)
-      .withInstance(new MotionBotIdleComponent());
-
-    fsm
-      .createState(bot.MOVING)
-      .add(MotionBotClickControlComponent)
-      .add(MovementComponent)
-      .withInstance(new MovementComponent());
-
-    entity
-      .add(bot)
-      .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(
-        new HoverableSpriteComponent(
-          () => {
-            // add tooltip
-            entity.add(
-              new TooltipComponent(
-                `bot id: ${user.data.id}`.slice(0, 15) + "...",
-                15,
-                "top"
-              )
-            );
-          },
-          () => {
-            // remove tooltip
-            entity.remove(TooltipComponent);
-          }
-        )
-      );
-
-    fsm.changeState("moving");
-    this.engine.addEntity(entity);
-
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
-    const sprite: Avatar = new Avatar();
-
-    new RoundAvatar(url)
-      .execute()
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
-
-        // avatar
-        sprite.avatar = Sprite.from(comm.canvas);
-        sprite.avatar.anchor.set(0.5);
-        sprite.addChild(sprite.avatar);
-        return Promise.resolve(comm);
-      })
-      .then((comm: RoundAvatar) => {
-        if (!comm.canvas) return Promise.reject();
-
-        const spriteComponent: SpriteComponent = new SpriteComponent();
-        spriteComponent.view = sprite;
-        entity.add(spriteComponent);
-      });
-
-    return entity;
+    return createBotEntity(user, this, realUser);
   }
 
   public removeBot(entity: Entity) {
@@ -537,7 +454,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(barrel: GameOptionsFirebarrel): Entity {
+  public createBarrel(barrel: ReplicatedFirebarrel): Entity {
     const collisionRadius = GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 
     const entity: Entity = new Entity();
@@ -591,7 +508,10 @@ export default class EntityFactory {
 
     this.engine.addEntity(entity);
 
-    new LoadImage(barrel.iconSrc)
+    // FIXME: ADD BARREL SRC_IMAGE URL
+    // new LoadImage(barrels[barrel.data.iconSrc])
+
+    new LoadImage(barrels[0])
       .execute()
       .then(
         (comm: LoadImage): Promise<ImageToCanvas> => {
@@ -610,7 +530,7 @@ export default class EntityFactory {
           );
 
         const sprite: Barrel = new Barrel();
-        sprite.name = barrel.iconSrc;
+        sprite.name = barrel.data.id;
         sprite.barrel = Sprite.from(comm.canvas);
         sprite.barrel.anchor.set(0.5);
         sprite.addChild(sprite.barrel);
@@ -632,19 +552,44 @@ export default class EntityFactory {
 
     return entity;
   }
+
+  public getFirebarrelNode(
+    firebarrel: ReplicatedFirebarrel
+  ): BarrelNode | undefined {
+    const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
+    for (let node = nodes.head; node; node = node.next) {
+      if (node.barrel.model.data.id === firebarrel.data.id) {
+        return node;
+      }
+    }
+    return undefined;
+  }
+
+  public removeBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (node) this.engine.removeEntity(node.entity);
+  }
+
+  public updateBarrel(firebarrel: ReplicatedFirebarrel) {
+    const node = this.getFirebarrelNode(firebarrel);
+    if (!node) {
+      return;
+    }
+
+    // TODO: update image, coords, etc
+  }
+
   public createVenue(venue: ReplicatedVenue): Entity {
-    console.log(`create venue ${venue.data.id}`);
     return createVenueEntity(venue, this);
   }
 
   public removeVenue(venue: ReplicatedVenue) {
-    console.log(`Remove venue ${venue.data.id}`);
     const node = this.getVenueNode(venue);
-    // eslint-disable-next-line no-debugger
-    if (!node) console.log("can't find");
     if (node) this.engine.removeEntity(node.entity);
-    // eslint-disable-next-line no-debugger
-    // if (this.getVenueNode(venue)?.entity) debugger;
+  }
+
+  public updateVenue(venue: ReplicatedVenue) {
+    updateVenueEntity(venue, this);
   }
 
   public getVenueNode(venue: ReplicatedVenue): VenueNode | undefined {

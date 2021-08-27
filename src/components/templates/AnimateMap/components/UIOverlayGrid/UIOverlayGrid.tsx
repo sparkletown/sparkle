@@ -15,6 +15,7 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
+import { UIPlayerContextMenu } from "../PlayerContextMenu/PlayerContextMenu";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
@@ -84,6 +85,9 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
           <UIContainer venue={venue} disableInteractive>
             <TooltipWidget />
           </UIContainer>
+        </div>
+        <div className="UIOverlayGrid__contextmenu">
+          <UIPlayerContextMenu />
         </div>
       </div>
     </div>

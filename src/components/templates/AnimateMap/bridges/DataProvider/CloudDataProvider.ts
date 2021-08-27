@@ -3,7 +3,11 @@ import { utils } from "pixi.js";
 
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { ReplicatedUser, ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
 
 import { Room } from "types/rooms";
 
@@ -11,6 +15,7 @@ import { WithVenue } from "utils/venue";
 
 import { WorldUsersData } from "hooks/users/useWorldUsers";
 
+import { Firebarrel } from "../../../../../types/animateMap";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 
@@ -105,6 +110,7 @@ export class CloudDataProvider
   }
 
   public venuesData: ReplicatedVenue[] = [];
+  public firebarrelsData: ReplicatedFirebarrel[] = [];
 
   public updateRooms(
     data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
@@ -114,14 +120,9 @@ export class CloudDataProvider
     const newVenues = data.filter(
       (item) => !this.venuesData.find((venue) => venue.data.id === item.id)
     );
-    console.log("newVenues");
-    console.log(newVenues);
-
     const deprecatedVenues = this.venuesData.filter(
       (item) => !data.find((room) => room.id === item.data.id)
     );
-    console.log("deprecatedVenues");
-    console.log(deprecatedVenues);
     deprecatedVenues.forEach((venue) =>
       this.emit(DataProviderEvent.VENUE_REMOVED, venue)
     );
@@ -158,15 +159,12 @@ export class CloudDataProvider
         } as ReplicatedVenue;
         return vn;
       });
-    console.log("existedVenues");
-    console.log(existedVenues);
     existedVenues.forEach((venue) => {
       this.emit(DataProviderEvent.VENUE_UPDATED, venue);
     });
 
     newVenues.forEach((room) => {
       const countUsers = "countUsers" in room ? room.countUsers : 0;
-      console.log(countUsers);
       const vn = {
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
@@ -221,5 +219,80 @@ export class CloudDataProvider
 
     // todo: add normalization
     this.users.updateUsers(usersData);
+  }
+
+  public updateFirebarrels(data: Firebarrel[] | undefined) {
+    if (!data) return;
+
+    const newFirebarrels = data.filter(
+      (newFirebarrel) =>
+        !this.firebarrelsData.find(
+          (firebarrel) => firebarrel.data.id === newFirebarrel.id
+        )
+    );
+    const deprecatedFirebarrels = this.firebarrelsData.filter(
+      (item) => !data.find((firebarrel) => firebarrel.id === item.data.id)
+    );
+    deprecatedFirebarrels.forEach((firebarrel) =>
+      this.emit(DataProviderEvent.FIREBARREL_REMOVED, firebarrel)
+    );
+
+    this.firebarrelsData = this.firebarrelsData.filter(
+      (firebarrel) =>
+        !deprecatedFirebarrels.find(
+          (deprecatedFirebarrel) =>
+            deprecatedFirebarrel.data.id === firebarrel.data.id
+        )
+    );
+
+    const existFirebarrels = this.firebarrelsData
+      .filter((existFirebarrel) => {
+        const firebarrel = data.find(
+          (firebarrel) => firebarrel.id === existFirebarrel.data.id
+        );
+
+        if (!firebarrel) return false;
+
+        return !(
+          firebarrel.id === existFirebarrel.data.id &&
+          firebarrel.coordinateX === existFirebarrel.data.coordinateX &&
+          firebarrel.coordinateY === existFirebarrel.data.coordinateY &&
+          firebarrel.iconSrc === existFirebarrel.data.iconSrc &&
+          firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
+          firebarrel.isLocked === existFirebarrel.data.isLocked &&
+          firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
+        );
+      })
+      .map((existFirebarrel) => {
+        const firebarrel = data.find(
+          (firebarrel) => firebarrel.id === existFirebarrel.data.id
+        );
+        if (!firebarrel) return existFirebarrel;
+
+        return {
+          x: parseInt(firebarrel.coordinateX),
+          y: parseInt(firebarrel.coordinateY),
+          data: {
+            ...firebarrel,
+          },
+        } as ReplicatedFirebarrel;
+      });
+
+    existFirebarrels.forEach((firebarrel) => {
+      this.emit(DataProviderEvent.FIREBARREL_UPDATED, firebarrel);
+    });
+
+    newFirebarrels.forEach((newFirebbarrel) => {
+      const firebarrel = {
+        x: parseInt(newFirebbarrel.coordinateX),
+        y: parseInt(newFirebbarrel.coordinateY),
+        data: {
+          ...newFirebbarrel,
+        },
+      } as ReplicatedFirebarrel;
+
+      this.firebarrelsData.push(firebarrel);
+      this.emit(DataProviderEvent.FIREBARREL_ADDED, firebarrel);
+    });
   }
 }

@@ -53,7 +53,6 @@ export class SpriteSystem extends ListIteratingSystem<SpriteNode> {
 
   public nodeRemoved = (node: SpriteNode) => {
     const view = node.sprite.view;
-    console.log("REMOVED!!!!!!!!!");
     if (view && this._container?.children.includes(view)) {
       this._container?.removeChild(view);
     }
