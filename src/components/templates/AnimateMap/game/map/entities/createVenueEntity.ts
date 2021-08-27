@@ -1,8 +1,9 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
-import { ReplicatedVenue } from "../../../../../../store/reducers/AnimateMap";
+import { setAnimateMapRoom } from "store/actions/AnimateMap";
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { GameInstance } from "../../GameInstance";

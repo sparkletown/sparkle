@@ -1,8 +1,10 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
-import { Point } from "../../../../../../types/utility";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
+
+import { Point } from "types/utility";
+
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { GameInstance } from "../../GameInstance";
 import { BotComponent } from "../components/BotComponent";
