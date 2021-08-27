@@ -15,8 +15,10 @@ import {
   staticLightKeyFramer,
   sunKeyFramer,
 } from "../graphics/shaders/mapLightning";
-import { staticLightData } from "../graphics/shaders/staticLightData";
-import { ShaderDataProvider } from "../graphics/shaders/StaticShaderData";
+import {
+  ShaderDataProvider,
+  staticLightData,
+} from "../graphics/shaders/StaticShaderData";
 import { BarrelNode } from "../nodes/BarrelNode";
 
 export class ViewportBackgroundSystem extends System {
@@ -62,8 +64,7 @@ export class ViewportBackgroundSystem extends System {
   }
 
   public initLighting() {
-    const backgroundLightning = [mapLightningShader];
-    this.container.filters = backgroundLightning;
+    this.container.filters = [mapLightningShader];
   }
 
   addToEngine(engine: Engine) {
@@ -127,6 +128,7 @@ export class ViewportBackgroundSystem extends System {
       }
       return;
     }
+
     const deltaX = this.worldTileWidth;
     const deltaY = this.worldTileHeight;
     const box: Box = new Box(
