@@ -39,6 +39,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
   const match = useRouteMatch();
 
   let template;
+  // @debt remove backButton from Navbar
   let hasBackButton = true;
 
   switch (venue.template) {
@@ -49,6 +50,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
           <Route render={() => <Jazzbar venue={venue} />} />
         </Switch>
       );
+      // remove backButton from Navbar
       hasBackButton = false;
       break;
 
@@ -63,6 +65,7 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.animatemap:
       template = <AnimateMap venue={venue} />;
+      // remove backButton from Navbar
       hasBackButton = false;
       break;
 
@@ -88,11 +91,13 @@ export const TemplateWrapper: React.FC<TemplateWrapperProps> = ({ venue }) => {
 
     case VenueTemplate.auditorium:
       template = <Auditorium venue={venue} />;
+      // remove backButton from Navbar
       hasBackButton = false;
       break;
 
     case VenueTemplate.conversationspace:
       template = <ConversationSpace venue={venue} />;
+      // Remove the back button, because we don't need it in Table view
       hasBackButton = false;
       break;
 
