@@ -27,7 +27,10 @@ export interface UIOverlayGridProps {
   venue: AnimateMapVenue;
 }
 
-export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({ venue }) => {
+export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
+  venue,
+  children,
+}) => {
   // const eventProvider = useSelector(animateMapEventProviderSelector);
   const eventProvider = EventProvider;
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
@@ -50,41 +53,39 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({ venue }) => {
   });
 
   return (
-    <>
-      <div className="UIOverlay">
-        <div className="UIOverlayGrid">
-          <RoomModal
-            room={selectedRoom}
-            venue={venue}
-            show={hasSelectedRoom}
-            onHide={unselectRoom}
-          />
+    <div className="UIOverlay">
+      <div className="UIOverlayGrid">
+        <RoomModal
+          room={selectedRoom}
+          venue={venue}
+          show={hasSelectedRoom}
+          onHide={unselectRoom}
+        />
 
-          <div className="UIOverlayGrid__zoom">
-            <UIContainer>
-              <ControlPanel />
-            </UIContainer>
-          </div>
+        <div className="UIOverlayGrid__zoom">
+          <UIContainer venue={venue}>
+            <ControlPanel />
+          </UIContainer>
+        </div>
 
-          <div className="UIOverlayGrid__center">
-            <UIContainer>
-              <SingleButton
-                onClick={() =>
-                  eventProvider.emit(EventType.UI_SINGLE_BUTTON_FOLLOW)
-                }
-                icon={CentreIcon}
-                alt="map-icon"
-              />
-            </UIContainer>
-          </div>
+        <div className="UIOverlayGrid__center">
+          <UIContainer venue={venue}>
+            <SingleButton
+              onClick={() =>
+                eventProvider.emit(EventType.UI_SINGLE_BUTTON_FOLLOW)
+              }
+              icon={CentreIcon}
+              alt="map-icon"
+            />
+          </UIContainer>
+        </div>
 
-          <div className="UIOverlayGrid__tooltip">
-            <UIContainer disableInteractive>
-              <TooltipWidget />
-            </UIContainer>
-          </div>
+        <div className="UIOverlayGrid__tooltip">
+          <UIContainer venue={venue} disableInteractive>
+            <TooltipWidget />
+          </UIContainer>
         </div>
       </div>
-    </>
+    </div>
   );
 };
