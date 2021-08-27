@@ -36,6 +36,8 @@ export class GameConfig {
     };
   }
 
+  public static DEBUG_MODE_ON = true;
+
   public static ZOOM_LEVEL_WALKING = 0;
   public static ZOOM_LEVEL_CYCLING = 1;
   public static ZOOM_LEVEL_FLYING = 2;

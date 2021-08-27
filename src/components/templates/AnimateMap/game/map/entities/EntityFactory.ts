@@ -100,6 +100,22 @@ export default class EntityFactory {
     return this.engine.getNodeList(PlayerNode).head;
   }
 
+  public getRandomBot(): ReplicatedUser | undefined {
+    const bots = GameInstance.instance.getState().users;
+    const botIndex = Math.floor(Math.random() * bots.size);
+    if (botIndex > 0) {
+      const itr = bots.values();
+      let count = 0;
+      for (let bot = itr.next().value; bot; bot = itr.next().value) {
+        if (count === botIndex) {
+          return bot;
+        }
+        count++;
+      }
+    }
+    return undefined;
+  }
+
   public getBotNode(id: string): BotNode | null {
     const bots = this.engine.getNodeList(BotNode);
     for (let bot = bots?.head; bot; bot = bot.next) {

@@ -4,6 +4,7 @@ import { Sprite } from "pixi.js";
 import { GameConfig, GameOptionsFirebarrel } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
+import { RoundAvatar } from "../../commands/RoundAvatar";
 import { HALO } from "../../constants/AssetConstants";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
@@ -36,6 +37,52 @@ const createTooltip = (entity: Entity) => {
   tooltip.backgroundColor = 0;
   // add tooltip
   entity.add(tooltip);
+};
+
+const drawAvatars = (
+  barrel: GameOptionsFirebarrel,
+  spriteComponent: SpriteComponent
+) => {
+  const sprite = spriteComponent.view as Barrel;
+  const avatars: Array<Promise<RoundAvatar>> = [];
+
+  barrel.connectedUsers.forEach((user) => {
+    let avatarUrlString = user.data.avatarUrlString;
+    if (!Array.isArray(avatarUrlString)) {
+      avatarUrlString = [avatarUrlString];
+    }
+    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+
+    avatars.push(new RoundAvatar(url).execute());
+  });
+
+  Promise.all(avatars).then((avatars) => {
+    if (sprite.avatars) {
+      sprite.avatars.removeChildren();
+    }
+
+    if (avatars.length > 0 && !sprite.avatars) {
+      sprite.avatars = new Sprite();
+      sprite.avatars.anchor.set(0.5);
+      sprite.addChild(sprite.avatars);
+    }
+
+    if (avatars.length > 0 && sprite.avatars) {
+      const angle = (2 * Math.PI) / avatars.length;
+      const radius = getCollisionRadius() * 4;
+      for (let i = 0; i < avatars.length; i++) {
+        if (!avatars[i].canvas) {
+          continue;
+        }
+        const s = Sprite.from(avatars[i].canvas as HTMLCanvasElement);
+        s.anchor.set(0.5);
+        s.scale.set(0.85);
+        s.x = Math.cos(angle * i) * radius;
+        s.y = Math.sin(angle * i) * radius;
+        sprite.avatars.addChild(s);
+      }
+    }
+  });
 };
 
 const drawBarrel = (
@@ -128,6 +175,7 @@ export const createFirebarrelEntity = (
   creator.engine.addEntity(entity);
 
   drawBarrel(barrel, spriteComponent, positionComponent);
+  drawAvatars(barrel, spriteComponent);
 
   return entity;
 };
