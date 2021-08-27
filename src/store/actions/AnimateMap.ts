@@ -8,7 +8,9 @@ import { Point } from "types/utility";
 
 export enum AnimateMapActionTypes {
   SET_STAGE_OPTIONS = "AnimateMapActionTypes.SET_STAGE_OPTIONS",
-  SET_ZOOM = "AnimateMapActionTypes.SET_ZOOM",
+  SET_ZOOM_LEVEL = "AnimateMapActionTypes.SET_ZOOM_LEVEL",
+  SET_LAST_ZOOM = "AnimateMapActionTypes.SET_LAST_ZOOM",
+  SET_FIRST_ENTRANCE = "AnimateMapActionTypes.SET_FIRST_ENTRANCE",
   SET_EXPECTED_ZOOM = "AnimateMapActionTypes.SET_EXPECTED_ZOOM",
   SET_CAMERA_RECT = "AnimateMapActionTypes.SET_CAMERA_RECT",
   SET_POINTER = "AnimateMapActionTypes.SET_POINTER",
@@ -24,9 +26,23 @@ export enum AnimateMapActionTypes {
 }
 
 export type setAnimateMapZoomAction = ReduxAction<
-  AnimateMapActionTypes.SET_ZOOM,
+  AnimateMapActionTypes.SET_ZOOM_LEVEL,
   {
-    zoom: number;
+    zoomLevel: number;
+  }
+>;
+
+export type setAnimateMapLastZoomAction = ReduxAction<
+  AnimateMapActionTypes.SET_LAST_ZOOM,
+  {
+    lastZoom: number;
+  }
+>;
+
+export type setAnimateMapFirstEntranceAction = ReduxAction<
+  AnimateMapActionTypes.SET_FIRST_ENTRANCE,
+  {
+    firstEntrance: string;
   }
 >;
 
@@ -94,8 +110,22 @@ export type setAnimateMapFireBarrelAction = ReduxAction<
 >;
 
 export const setAnimateMapZoom = (zoom: number): setAnimateMapZoomAction => ({
-  type: AnimateMapActionTypes.SET_ZOOM,
-  payload: { zoom },
+  type: AnimateMapActionTypes.SET_ZOOM_LEVEL,
+  payload: { zoomLevel: zoom },
+});
+
+export const setAnimateMapLastZoom = (
+  lastZoom: number
+): setAnimateMapLastZoomAction => ({
+  type: AnimateMapActionTypes.SET_LAST_ZOOM,
+  payload: { lastZoom },
+});
+
+export const setAnimateMapFirstEntrance = (
+  firstEntrance: string
+): setAnimateMapFirstEntranceAction => ({
+  type: AnimateMapActionTypes.SET_FIRST_ENTRANCE,
+  payload: { firstEntrance },
 });
 
 export const setAnimateMapExpectedZoom = (
@@ -161,7 +191,9 @@ export const setAnimateMapFireBarrel = (
 
 export type AnimateMapActions =
   | setAnimateMapZoomAction
+  | setAnimateMapLastZoomAction
   | setAnimateMapExpectedZoomAction
+  | setAnimateMapFirstEntranceAction
   | setAnimateMapCameraRectAction
   | setAnimateMapPointerAction
   | setAnimateMapRoomAction

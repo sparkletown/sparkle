@@ -13,7 +13,7 @@ export class FirebaseDataProvider extends utils.EventEmitter {
     this._firestore = _firebase.firestore();
   }
 
-  loadVenue() {
-    return this._firestore.collection("venues").orderBy("animatemap").get();
-  }
+  // loadVenue() {
+  //   return this._firestore.collection("venues").orderBy("animatemap").get();
+  // }
 }

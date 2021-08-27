@@ -32,7 +32,13 @@ export const ScheduleEventListNG: React.FC<ScheduleEventListNGProps> = ({
     setAllEvents([...daysEvents]);
   }, [daysEvents, setAllEvents]);
 
-  const liveEvents = useMemo(() => allEvents.filter(isEventLive), [allEvents]);
+  const liveEvents = useMemo(
+    () =>
+      allEvents
+        .filter(isEventLive)
+        .sort((a, b) => b.liveAudience - a.liveAudience),
+    [allEvents]
+  );
   const comingSoonEvents = useMemo(() => allEvents.filter(isEventSoon), [
     allEvents,
   ]);

@@ -34,6 +34,7 @@ jobs:
           # git push origin master:deloitte
 
           # git push origin master:env/demo
+          # git push origin master:env/northwell
 
           # Unused envs
           # git push origin master:env/memrise
