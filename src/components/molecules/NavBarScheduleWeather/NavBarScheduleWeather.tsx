@@ -8,6 +8,8 @@ import { ContainerClassName } from "types/utility";
 
 import { useInterval } from "hooks/useInterval";
 
+import { BlackRockWeatherBackground } from "components/molecules/NavBarScheduleWeather/WeatherBackground";
+
 import "./NavBarScheduleWeather.scss";
 
 export interface NavBarScheduleWeatherProps extends ContainerClassName {}
@@ -32,8 +34,11 @@ export const NavBarScheduleWeather: React.FC<NavBarScheduleWeatherProps> = ({
   return (
     <>
       {weather && (
-        <div
-          className={classNames("NavBarScheduleWeather", containerClassName)}
+        <BlackRockWeatherBackground
+          containerClassName={classNames(
+            "NavBarScheduleWeather",
+            containerClassName
+          )}
         >
           <div className="NavBarScheduleWeather__temp-and-state">
             <h3>{`${weather.temperatureCelsius} °C`}</h3>
@@ -47,7 +52,7 @@ export const NavBarScheduleWeather: React.FC<NavBarScheduleWeatherProps> = ({
             }}
           />
           <div>Black Rock Desert, Nevada, USA</div>
-        </div>
+        </BlackRockWeatherBackground>
       )}
     </>
   );

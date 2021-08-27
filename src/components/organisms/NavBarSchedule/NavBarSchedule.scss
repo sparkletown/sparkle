@@ -66,10 +66,6 @@ $schedule-btn--height: 51px;
   box-shadow: 0 20px 50px 0 rgba(0, 0, 0, 0.33);
   transition: all 400ms $transition-function;
 
-  &__weather {
-    height: 13%;
-  }
-
   &--show {
     pointer-events: all;
     opacity: 1;
