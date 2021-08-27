@@ -22,6 +22,7 @@ import { isEmpty } from "lodash";
 import { IS_BURN } from "secrets";
 
 import {
+  ALLOW_NO_VENUE,
   BM_PARENT_ID,
   DEFAULT_AMBIENT_VOLUME,
   DEFAULT_SHOW_SCHEDULE,
@@ -267,10 +268,16 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
   const handleRadioEnable = useCallback(() => setIsRadioPlaying(true), []);
 
-  if (!venueId || !currentVenue) return null;
+  if (!ALLOW_NO_VENUE && !(venueId && currentVenue)) {
+    console.warn(
+      NavBar.name,
+      `aborted display because of missing id (${venueId}) or venue (${currentVenue})`
+    );
+    return null;
+  }
 
   // TODO: ideally this would find the top most parent of parents and use those details
-  const navbarTitle = parentVenue?.name ?? currentVenue.name;
+  const navbarTitle = parentVenue?.name ?? currentVenue?.name;
 
   const radioStation = hasRadioStations(radioStations) && radioStations[0];
 
@@ -302,7 +309,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
                   aria-label="Schedule"
                   className={scheduleBtnClasses}
                   onClick={toggleEventSchedule}
-                ></div>
+                />
               ) : (
                 <div>{navbarTitle}</div>
               )}
@@ -315,7 +322,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
 
             {user && (
               <div className="navbar-links">
-                <NavSearchBar venueId={venueId} />
+                <NavSearchBar venueId={venueId ?? ""} />
 
                 {hasUpcomingEvents && (
                   <OverlayTrigger
@@ -459,7 +466,7 @@ export const NavBar: React.FC<NavBarPropsType> = ({ hasBackButton = true }) => {
           <div className={navBarScheduleClassName}>
             <NavBarSchedule
               isVisible={isEventScheduleVisible}
-              venueId={venueId}
+              venueId={venueId ?? ""}
             />
           </div>
         </div>

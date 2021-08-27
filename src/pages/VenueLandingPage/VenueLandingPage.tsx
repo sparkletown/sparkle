@@ -33,6 +33,8 @@ import InformationCard from "components/molecules/InformationCard";
 import { LoadingPage } from "components/molecules/LoadingPage";
 import SecretPasswordForm from "components/molecules/SecretPasswordForm";
 
+import { NotFound } from "components/atoms/NotFound";
+
 import "./VenueLandingPage.scss";
 
 export const VenueLandingPage: React.FC = () => {
@@ -76,7 +78,7 @@ export const VenueLandingPage: React.FC = () => {
   const [validLogoUrl] = useValidImage(venue?.host?.icon, DEFAULT_VENUE_LOGO);
 
   if (venueRequestStatus && !venue) {
-    return <>This venue does not exist</>;
+    return <NotFound />;
   }
 
   if (!venue) {
