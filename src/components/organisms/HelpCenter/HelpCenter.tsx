@@ -1,7 +1,5 @@
 import React, { useCallback, useState } from "react";
 
-import { VPLAYA_URL } from "settings";
-
 import { useShowHide } from "hooks/useShowHide";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
@@ -21,16 +19,11 @@ export const HelpCenter: React.FC = () => {
 
   const handleHelpClicked = useCallback(
     (url: string) => {
-      if (url === VPLAYA_URL) {
-        window.open(VPLAYA_URL);
-      } else {
-        startLoading();
-        setUrl(url);
-      }
+      startLoading();
+      setUrl(url);
     },
     [startLoading]
   );
-  console.log(url);
 
   return (
     <>

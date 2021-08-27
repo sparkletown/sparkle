@@ -61,7 +61,7 @@ export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const HELP_CENTER_URL =
   "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
 export const VEST_RANGERS_URL = "https://multiverserangers.org/rangers911";
-export const VPLAYA_URL = "https://burn.sparklever.se/in/playainfo";
+export const VPLAYA_URL = "https://www.vplaya.info";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
