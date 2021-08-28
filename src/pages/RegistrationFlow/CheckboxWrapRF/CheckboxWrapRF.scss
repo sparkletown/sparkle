@@ -1,13 +1,17 @@
 @import "scss/constants";
 @import "../constants-rf";
 
-$icon-size: 30px;
-
 .CheckboxWrapRF {
+  &:focus,
+  &:focus-within {
+    outline: 1px dotted $white;
+  }
+
   &__label {
     flex-grow: 1;
     margin: 0;
     padding: 0;
+    cursor: pointer;
   }
 
   &__error,
@@ -19,18 +23,18 @@ $icon-size: 30px;
   }
 
   input[type="checkbox"] {
-    @include square-size($icon-size);
+    @include square-size($reg-flow-checkbox-size);
     flex-grow: 0;
     flex-shrink: 0;
     display: block;
     cursor: pointer;
 
     &:before {
-      @include square-size($icon-size);
+      @include square-size($reg-flow-checkbox-size);
       content: "";
       position: absolute;
-      margin-left: -$icon-size / 2;
-      border-radius: $icon-size / 2;
+      margin-left: -$reg-flow-checkbox-size / 2;
+      border-radius: $reg-flow-checkbox-size / 2;
       background-color: $reg-flow-color--transparent;
       border-color: $reg-flow-color--transparent;
       box-shadow: box-shadow--input(opaque-white(0.4));
@@ -49,7 +53,7 @@ $icon-size: 30px;
       border: 1px solid $reg-flow-color--transparent;
       box-shadow: box-shadow--input(transparent);
       background-image: url(/assets/icons/checkbox-rf.png);
-      background-size: $icon-size $icon-size;
+      background-size: $reg-flow-checkbox-size $reg-flow-checkbox-size;
     }
   }
 }

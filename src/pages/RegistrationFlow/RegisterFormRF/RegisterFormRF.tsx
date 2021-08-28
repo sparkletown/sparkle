@@ -22,11 +22,11 @@ import { TicketCodeField } from "components/organisms/TicketCodeField";
 
 import { LoadingPage } from "components/molecules/LoadingPage";
 
-import { ConfirmationModal } from "components/atoms/ConfirmationModal/ConfirmationModal";
 import { NotFound } from "components/atoms/NotFound";
 
 import { ButtonRF } from "../ButtonRF";
 import { CheckboxWrapRF } from "../CheckboxWrapRF";
+import { ConfirmationModalRF } from "../ConfirmationModalRF";
 import { DivRF } from "../DivRF";
 import { InputWrapRF } from "../InputWrapRF";
 import { SpanRF } from "../SpanRF";
@@ -96,11 +96,8 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
     clearError("backend");
   };
 
-  if (!venue && !isCurrentVenueLoaded) {
-    return <LoadingPage />;
-  }
   if (!venue) {
-    return <NotFound fullScreen />;
+    return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
   }
 
   const onSubmit = async (data: RegisterFormRfData) => {
@@ -128,7 +125,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
       if (auth.user && venue.requiresDateOfBirth) {
         updateUserPrivate(auth.user.uid, {
           date_of_birth: data.date_of_birth,
-        });
+        }).catch((e) => console.warn(RegisterFormRF.name, "error:", e));
       }
 
       onFinish?.();
@@ -160,8 +157,8 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
   return (
     <DivRF className="RegisterFormRF mod--flex-col">
       {showLoginModal && (
-        <ConfirmationModal
-          header={"This account already exists."}
+        <ConfirmationModalRF
+          title="This account already exists."
           message="Would you like to login with the same credentials?"
           onConfirm={signIn}
         />

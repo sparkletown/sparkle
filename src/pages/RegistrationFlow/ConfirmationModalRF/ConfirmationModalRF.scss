@@ -1,0 +1,12 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.ConfirmationModalRF {
+  .modal-content {
+    background-color: $reg-flow-color--transparent;
+  }
+
+  * {
+    text-align: center;
+  }
+}

@@ -64,11 +64,8 @@ export const LoginFormRF: React.FunctionComponent<LoginFormRfProps> = ({
   );
   const venue = venueFromSelector ?? currentVenue;
 
-  if (!venue && !isCurrentVenueLoaded) {
-    return <LoadingPage />;
-  }
   if (!venue) {
-    return <NotFound fullScreen />;
+    return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
   }
 
   const clearBackendErrors = () => {
