@@ -19,8 +19,6 @@ import { Room } from "types/rooms";
 import { ExtractProps } from "types/utility";
 import { AnyVenue, PartyMapVenue } from "types/venues";
 
-import { withId } from "utils/id";
-
 import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
@@ -94,7 +92,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue || !venueId) return <NotFound />;
 
   if (!user) {
-    return <Login formType="login" venue={withId(venue, venueId)} />;
+    return <Login formType="login" venueId={venueId} />;
   }
 
   return (
