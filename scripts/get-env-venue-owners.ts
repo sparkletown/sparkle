@@ -84,11 +84,7 @@ initFirebaseAdminApp(projectId, {
     const venueData = [
       doc.id,
       doc.data().name,
-      doc
-        .data()
-        .owners?.map(
-          (uid: string) => filteredUsers.find((u) => u.uid === uid)?.email ?? ""
-        ) || [],
+      venueOwners.filter((owner: string) => !!owner),
     ];
 
     const csvFormattedLine = venueData.map((s) => `"${s}"`).join(",");
