@@ -238,7 +238,10 @@ export class MapContainer extends Container {
       new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
-    this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
+    this._engine.addSystem(
+      new FirebarrelSystem(this.entityFactory),
+      SystemPriorities.render
+    );
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

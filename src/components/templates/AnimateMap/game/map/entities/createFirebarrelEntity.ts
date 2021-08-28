@@ -1,14 +1,12 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { setAnimateMapFireBarrel } from "../../../../../../store/actions/AnimateMap";
 import { ReplicatedFirebarrel } from "../../../../../../store/reducers/AnimateMap";
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { barrels, HALO } from "../../constants/AssetConstants";
-import { GameInstance } from "../../GameInstance";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
@@ -135,7 +133,7 @@ export const updateFirebarrelEntity = (
   barrel: ReplicatedFirebarrel,
   creator: EntityFactory
 ) => {
-  const node = creator.getFirebarrelNode(barrel);
+  const node = creator.getFirebarrelNode(barrel.data.id);
   if (!node) {
     return;
   }
@@ -202,13 +200,9 @@ export const createFirebarrelEntity = (
     )
     .add(
       new ClickableSpriteComponent(() => {
-        GameInstance.instance
-          .getStore()
-          .dispatch(
-            setAnimateMapFireBarrel(
-              getCurrentReplicatedFirebarrel(barrelComponent).data.id
-            )
-          );
+        creator.enterFirebarrel(
+          getCurrentReplicatedFirebarrel(barrelComponent).data.id
+        );
       })
     );
 

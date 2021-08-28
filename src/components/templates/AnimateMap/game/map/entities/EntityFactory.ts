@@ -10,11 +10,13 @@ import {
 
 import { Point } from "types/utility";
 
+import { setAnimateMapFireBarrel } from "../../../../../../store/actions/AnimateMap";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
 import { ArtcarComponent } from "../components/ArtcarComponent";
 import { AvatarTuningComponent } from "../components/AvatarTuningComponent";
+import { BarrelComponent } from "../components/BarrelComponent";
 import { BubbleComponent } from "../components/BubbleComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { DeadComponent } from "../components/DeadComponent";
@@ -448,6 +450,46 @@ export default class EntityFactory {
     return createFirebarrelEntity(barrel, this);
   }
 
+  public enterFirebarrel(firebarrelId: string): void {
+    console.log("enterFirebarrel");
+
+    const playerNode = this.getPlayerNode();
+    const firebarrelNode = this.getFirebarrelNode(firebarrelId);
+    if (
+      playerNode &&
+      firebarrelNode &&
+      playerNode.player.fsm.currentStateName !== playerNode.player.IMMOBILIZED
+    ) {
+      GameInstance.instance
+        .getStore()
+        .dispatch(setAnimateMapFireBarrel(firebarrelId));
+
+      playerNode.entity.add(firebarrelNode.barrel);
+      playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);
+
+      // TODO smooth go to firebarrel
+      playerNode.position.x =
+        firebarrelNode.position.x + firebarrelNode.collision.radius * 0.8;
+      playerNode.position.y =
+        firebarrelNode.position.y + firebarrelNode.collision.radius * 0.8;
+
+      // setTimeout(() => {
+      //   this.exitFirebarrel();
+      // }, 10000);
+    }
+  }
+
+  public exitFirebarrel(): void {
+    console.log("exitFirebarrel");
+    const playerNode = this.getPlayerNode();
+    if (!playerNode) {
+      return;
+    }
+    playerNode.entity.remove(BarrelComponent);
+    playerNode.player.fsm.changeState(playerNode.player.FLYING);
+    playerNode.entity.add(playerNode.player);
+  }
+
   public createVenue(venue: ReplicatedVenue): Entity {
     return createVenueEntity(venue, this);
   }
@@ -503,12 +545,10 @@ export default class EntityFactory {
       playerEntity?.remove(ViewportFollowComponent);
   }
 
-  public getFirebarrelNode(
-    firebarrel: ReplicatedFirebarrel
-  ): BarrelNode | undefined {
+  public getFirebarrelNode(id: string): BarrelNode | undefined {
     const nodes: NodeList<BarrelNode> = this.engine.getNodeList(BarrelNode);
     for (let node = nodes.head; node; node = node.next) {
-      if (node.barrel.model.data.id === firebarrel.data.id) {
+      if (node.barrel.model.data.id === id) {
         return node;
       }
     }
@@ -516,12 +556,12 @@ export default class EntityFactory {
   }
 
   public removeBarrel(firebarrel: ReplicatedFirebarrel) {
-    const node = this.getFirebarrelNode(firebarrel);
+    const node = this.getFirebarrelNode(firebarrel.data.id);
     if (node) this.engine.removeEntity(node.entity);
   }
 
   public updateBarrel(firebarrel: ReplicatedFirebarrel) {
-    const node = this.getFirebarrelNode(firebarrel);
+    const node = this.getFirebarrelNode(firebarrel.data.id);
     if (!node) {
       return;
     }
