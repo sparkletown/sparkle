@@ -37,6 +37,8 @@ export const useUploadProfilePictureHandler = (
       }
       const storageRef = firebase.storage().ref();
       if (user?.uid) {
+        // We append a uuid to the filename to ensure every file created has a unique name.
+        // This helps avoiding cache invalidation.
         const profilePictureRef = storageRef.child(
           `/users/${user.uid}/${uuid()}_${file.name}`
         );
