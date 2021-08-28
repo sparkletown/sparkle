@@ -112,6 +112,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
     if (dataProvider) {
       dataProvider.updateRooms(roomsWithFullData);
       dataProvider.updateFirebarrels(firebarrelsWithUsers);
+
+      console.log("firebarrels", firebarrelsWithUsers);
     }
   }, [roomsWithFullData, firebarrelsWithUsers, dataProvider]);
 
@@ -131,6 +133,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);
         dataProvider.updateUsers(worldUsers);
+
+        console.log("firebarrels", firebarrelsWithUsers);
 
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);
