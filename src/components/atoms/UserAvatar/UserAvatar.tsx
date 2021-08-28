@@ -13,7 +13,10 @@ import { useIsOnline } from "hooks/useIsOnline";
 import { useVenueId } from "hooks/useVenueId";
 import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
-import { getFirebaseStorageResizedImage, ImageResizeOptions } from "../../../utils/image";
+import {
+  getFirebaseStorageResizedImage,
+  ImageResizeOptions,
+} from "../../../utils/image";
 
 import "./UserAvatar.scss";
 
@@ -30,11 +33,11 @@ export interface UserAvatarProps extends ContainerClassName {
 
 // @debt The avatar sizes are a duplicate of $avatar-sizes-map inside UserAvatar.scss
 const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
-  "small": 25,
-  "medium": 40,
-  "large": 54,
-  "full": null
-}
+  small: 25,
+  medium: 40,
+  large: 54,
+  full: null,
+};
 
 // @debt the UserProfilePicture component serves a very similar purpose to this, we should unify them as much as possible
 export const _UserAvatar: React.FC<UserAvatarProps> = ({
@@ -68,7 +71,7 @@ export const _UserAvatar: React.FC<UserAvatarProps> = ({
     }
 
     return getFirebaseStorageResizedImage(url, resizeOptions);
-  }, [user, size])
+  }, [user, size]);
 
   const userDisplayName: string = user?.anonMode
     ? DEFAULT_PARTY_NAME
