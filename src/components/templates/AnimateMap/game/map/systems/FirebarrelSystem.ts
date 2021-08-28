@@ -6,8 +6,8 @@ import {
   AnimateMapActionTypes,
   setAnimateMapFireBarrel,
 } from "store/actions/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
 import { GameInstance } from "../../GameInstance";
 import { Barrel } from "../graphics/Barrel";
 import { BarrelNode } from "../nodes/BarrelNode";
@@ -45,7 +45,7 @@ export class FirebarrelSystem extends System {
           if (target instanceof Barrel) {
             GameInstance.instance
               .getStore()
-              .dispatch(setAnimateMapFireBarrel(target.name));
+              .dispatch(setAnimateMapFireBarrel(target.name)); // name === barrel.id
           }
         }
       }
@@ -84,7 +84,7 @@ export class FirebarrelSystem extends System {
         if (nodeBot.bot.fsm.currentStateName !== nodeBot.bot.IMMOBILIZED) {
           count++;
           nodeBot.bot.fsm.changeState(nodeBot.bot.IMMOBILIZED);
-          nodeBarrel.barrel.data.connectedUsers.push(nodeBot.bot.data);
+          nodeBarrel.barrel.model.data.connectedUsers.push(nodeBot.bot.data);
           if (count > 5) {
             return;
           }
@@ -95,16 +95,16 @@ export class FirebarrelSystem extends System {
   }
 
   private barrelNodeDraw(node: BarrelNode): void {
-    console.log("barrelNodeDraw", node.barrel.data.connectedUsers.length);
+    console.log("barrelNodeDraw", node.barrel.model.data.connectedUsers.length);
     // to place bots around barrel
-    if (node.barrel.data.connectedUsers.length === 0) {
+    if (node.barrel.model.data.connectedUsers.length === 0) {
       return;
     }
 
     const radius = 50;
-    const angle = (2 * Math.PI) / node.barrel.data.connectedUsers.length;
-    for (let i = 0; i < node.barrel.data.connectedUsers.length; i++) {
-      const user = node.barrel.data.connectedUsers[i];
+    const angle = (2 * Math.PI) / node.barrel.model.data.connectedUsers.length;
+    for (let i = 0; i < node.barrel.model.data.connectedUsers.length; i++) {
+      const user = node.barrel.model.data.connectedUsers[i];
       const botNode = this.getBot(user);
       if (botNode) {
         botNode.position.x = Math.cos(angle) * radius;
@@ -117,7 +117,7 @@ export class FirebarrelSystem extends System {
   }
 
   private barrelNodeAdded = (node: BarrelNode): void => {
-    node.barrel.data.connectedUsers.forEach((user) => {
+    node.barrel.model.data.connectedUsers.forEach((user) => {
       const botNode = this.getBot(user);
       if (botNode) {
         botNode.bot.fsm.changeState(botNode.bot.IMMOBILIZED);
@@ -132,7 +132,7 @@ export class FirebarrelSystem extends System {
   };
 
   private barrelNodeRemoved = (node: BarrelNode): void => {
-    node.barrel.data.connectedUsers.forEach((user) => {
+    node.barrel.model.data.connectedUsers.forEach((user) => {
       const botNode = this.getBot(user);
       if (botNode) {
         botNode.bot.fsm.changeState(botNode.bot.IDLE);
