@@ -118,7 +118,7 @@ export class BubbleSystem extends System {
       wordWrapWidth: 240,
     });
 
-    const text: Text = new Text(txt, style);
+    const text: Text = new Text(txt.slice(0, 140), style);
 
     const h = text.height;
     const w = text.width;
