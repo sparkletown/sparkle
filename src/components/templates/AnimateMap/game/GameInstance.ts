@@ -262,7 +262,8 @@ export class GameInstance {
     this.dataProvider.on(
       DataProviderEvent.FIREBARREL_ADDED,
       (firebarrel: ReplicatedFirebarrel) => {
-        this._mapContainer?.entityFactory?.createBarrel(firebarrel);
+        console.log("firebarrel", firebarrel);
+        this._mapContainer?.entityFactory?.createFireBarrel(firebarrel);
       }
     );
 

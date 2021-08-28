@@ -303,7 +303,7 @@ export class MapContainer extends Container {
           if (this.entityFactory) {
             GameInstance.instance.dataProvider.firebarrelsData.forEach(
               (firebarrel) => {
-                this.entityFactory?.createBarrel(firebarrel);
+                this.entityFactory?.createFireBarrel(firebarrel);
               }
             );
           }

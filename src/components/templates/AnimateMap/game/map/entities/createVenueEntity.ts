@@ -50,7 +50,7 @@ const updateVenueImage = (
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ) => {
-  new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
+  new CropVenue(replicatedVenue.data.image_url)
     .setUsersCount(replicatedVenue.data.countUsers)
     .setUsersCountColor(
       replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT

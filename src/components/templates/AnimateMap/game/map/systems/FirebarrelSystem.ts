@@ -1,15 +1,16 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
-import { InteractionManager } from "pixi.js";
-import { subscribeActionAfter } from "redux-subscribe-action";
 
-import {
-  AnimateMapActionTypes,
-  setAnimateMapFireBarrel,
-} from "store/actions/AnimateMap";
+// import { InteractionManager } from "pixi.js";
+// import { subscribeActionAfter } from "redux-subscribe-action";
+//
+// import {
+//   AnimateMapActionTypes,
+//   setAnimateMapFireBarrel,
+// } from "store/actions/AnimateMap";
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { GameInstance } from "../../GameInstance";
-import { Barrel } from "../graphics/Barrel";
+// import { GameInstance } from "../../GameInstance";
+// import { Barrel } from "../graphics/Barrel";
 import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
 import { PlayerNode } from "../nodes/PlayerNode";
@@ -19,7 +20,7 @@ export class FirebarrelSystem extends System {
   private player?: NodeList<PlayerNode>;
   private barrels?: NodeList<BarrelNode>;
 
-  private _unsubscribeSetPointer!: () => void;
+  // private _unsubscribeSetPointer!: () => void;
 
   addToEngine(engine: Engine) {
     this.bots = engine.getNodeList(BotNode);
@@ -28,28 +29,28 @@ export class FirebarrelSystem extends System {
     this.barrels?.nodeAdded.add(this.barrelNodeAdded);
     this.barrels?.nodeRemoved.add(this.barrelNodeRemoved);
 
-    this._unsubscribeSetPointer = subscribeActionAfter(
-      AnimateMapActionTypes.SET_POINTER,
-      () => {
-        const renderer = GameInstance.instance.getRenderer();
-        const map = GameInstance.instance.getMapContainer();
-
-        if (renderer && map) {
-          const interaction = renderer.plugins
-            .interaction as InteractionManager;
-          const pointer = interaction.mouse.global;
-          const hitTest = interaction.hitTest(pointer, map);
-
-          const target = Array.isArray(hitTest) ? hitTest[0] : hitTest;
-
-          if (target instanceof Barrel) {
-            GameInstance.instance
-              .getStore()
-              .dispatch(setAnimateMapFireBarrel(target.name)); // name === barrel.id
-          }
-        }
-      }
-    );
+    // this._unsubscribeSetPointer = subscribeActionAfter(
+    //   AnimateMapActionTypes.SET_POINTER,
+    //   () => {
+    //     const renderer = GameInstance.instance.getRenderer();
+    //     const map = GameInstance.instance.getMapContainer();
+    //
+    //     if (renderer && map) {
+    //       const interaction = renderer.plugins
+    //         .interaction as InteractionManager;
+    //       const pointer = interaction.mouse.global;
+    //       const hitTest = interaction.hitTest(pointer, map);
+    //
+    //       const target = Array.isArray(hitTest) ? hitTest[0] : hitTest;
+    //
+    //       if (target instanceof Barrel) {
+    //         GameInstance.instance
+    //           .getStore()
+    //           .dispatch(setAnimateMapFireBarrel(target.name)); // name === barrel.id
+    //       }
+    //     }
+    //   }
+    // );
 
     for (let node = this.barrels?.head; node; node = node.next) {
       this.barrelNodeAdded(node);
@@ -61,7 +62,7 @@ export class FirebarrelSystem extends System {
   }
 
   removeFromEngine(engine: Engine) {
-    this._unsubscribeSetPointer();
+    // this._unsubscribeSetPointer();
 
     this.barrels?.nodeAdded.remove(this.barrelNodeAdded);
     this.barrels?.nodeRemoved.remove(this.barrelNodeRemoved);

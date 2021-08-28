@@ -444,7 +444,7 @@ export default class EntityFactory {
     return entity;
   }
 
-  public createBarrel(barrel: ReplicatedFirebarrel): Entity {
+  public createFireBarrel(barrel: ReplicatedFirebarrel): Entity {
     return createFirebarrelEntity(barrel, this);
   }
 
