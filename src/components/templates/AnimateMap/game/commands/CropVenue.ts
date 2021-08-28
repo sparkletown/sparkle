@@ -1,13 +1,17 @@
 import { GameConfig } from "../../configs/GameConfig";
-import { VENUE_PEOPLE } from "../constants/AssetConstants";
+import { venues } from "../constants/AssetConstants";
 
 import Command from "./Command";
+import { ImageToCanvas } from "./ImageToCanvas";
 import { LoadImage } from "./LoadImage";
 
 export class CropVenue implements Command {
   private resolve?: Function;
   public canvas: HTMLCanvasElement;
   public usersCount = 0;
+
+  private static VENUE_PLATE?: HTMLCanvasElement;
+  private static VENUE_PEOPLE?: HTMLCanvasElement;
 
   constructor(private url: string, private venueIsEnabled = false) {
     this.canvas = document.createElement("canvas");
@@ -21,7 +25,14 @@ export class CropVenue implements Command {
   public execute(): Promise<CropVenue> {
     return new Promise((resolve) => {
       this.resolve = resolve;
-      this.doIt();
+
+      if (!CropVenue.VENUE_PLATE) {
+        this.setup().then(() => {
+          this.doIt();
+        });
+      } else {
+        this.doIt();
+      }
     });
   }
 
@@ -32,50 +43,117 @@ export class CropVenue implements Command {
     }
   }
 
+  private setup(): Promise<void> {
+    const size = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+
+    const plate = new LoadImage(venues.VENUE_PLATE)
+      .execute()
+      .then((comm) => {
+        if (comm.image) {
+          const scale = size / comm.image.width;
+          return new ImageToCanvas(comm.image).scaleTo(scale).execute();
+        } else {
+          return Promise.reject();
+        }
+      })
+      .then((comm) => {
+        CropVenue.VENUE_PLATE = comm.canvas;
+        return Promise.resolve();
+      })
+      .catch((error) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        CropVenue.VENUE_PLATE = canvas;
+        return Promise.resolve();
+      });
+
+    const people = new LoadImage(venues.VENUE_PEOPLE)
+      .execute()
+      .then((comm) => {
+        if (comm.image) {
+          const scale =
+            (GameConfig.VENUE_TEXTURE_DEFAULT_SIZE / comm.image.height) * 0.8;
+          return new ImageToCanvas(comm.image)
+            .scaleTo(scale)
+            .execute()
+            .then((comm) => {
+              CropVenue.VENUE_PEOPLE = comm.canvas;
+            });
+        } else {
+          return Promise.reject();
+        }
+      })
+      .catch((error) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 100;
+        canvas.height = 100;
+        CropVenue.VENUE_PEOPLE = canvas;
+        return Promise.resolve();
+      });
+
+    return Promise.all([plate, people]).then(() => {
+      return Promise.resolve();
+    });
+  }
+
   private doIt() {
     new LoadImage(this.url)
       .execute()
       .then((comm: LoadImage) => {
         if (!comm.image) return console.error();
 
-        const size = Math.min(comm.image.width, comm.image.height);
-        const scale = GameConfig.VENUE_DEFAULT_SIZE / size;
-        this.canvas.width = size * scale;
-        this.canvas.height = size * scale;
+        const border = 1;
+        this.canvas.width =
+          CropVenue.VENUE_PLATE?.width || GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
+        this.canvas.height =
+          CropVenue.VENUE_PLATE?.height ||
+          GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
 
-        const ctx: CanvasRenderingContext2D = this.canvas.getContext(
-          "2d"
-        ) as CanvasRenderingContext2D;
+        const ctx = this.canvas.getContext("2d");
+        if (ctx) {
+          if (CropVenue.VENUE_PLATE) {
+            ctx.drawImage(
+              CropVenue.VENUE_PLATE,
+              0,
+              0,
+              CropVenue.VENUE_PLATE.width,
+              CropVenue.VENUE_PLATE.height,
+              border,
+              border,
+              this.canvas.width - border * 2,
+              this.canvas.height - border * 2
+            );
+          }
 
-        this.drawPath(ctx);
+          this.drawPath(ctx);
 
-        ctx.drawImage(
-          comm.image,
-          Math.ceil((comm.image.width - size) / 2) * scale,
-          Math.ceil((comm.image.height - size) / 2) * scale,
-          comm.image.width,
-          comm.image.height,
-          0,
-          0,
-          this.canvas.width,
-          this.canvas.height
-        );
+          let sx = 0;
+          let sy = 0;
+          if (comm.image.width > comm.image.height) {
+            sx = (comm.image.width - comm.image.height) / 2;
+          } else if (comm.image.width < comm.image.height) {
+            sy = (comm.image.height - comm.image.width) / 2;
+          }
+          ctx.drawImage(
+            comm.image,
+            sx,
+            sy,
+            comm.image.width - sx * 2,
+            comm.image.height - sy * 2,
+            0,
+            0,
+            this.canvas.width,
+            this.canvas.height
+          );
 
-        ctx.restore();
+          ctx.restore();
 
-        // draw frame
-        const frameCanvas = document.createElement("canvas");
-        const frameCtx = frameCanvas.getContext("2d");
-        if (frameCanvas && frameCtx) {
-          frameCanvas.width = this.canvas.width;
-          frameCanvas.height = this.canvas.height;
+          return this.drawUsersCount(ctx);
         }
-        this.drawFrame(ctx);
-        return this.drawUsersCount(ctx);
       })
       .catch((error) => {
-        console.log("CropVenue", error);
-        const size = GameConfig.VENUE_DEFAULT_SIZE;
+        const size = GameConfig.VENUE_TEXTURE_DEFAULT_SIZE;
         this.canvas.width = size;
         this.canvas.height = size;
 
@@ -102,7 +180,7 @@ export class CropVenue implements Command {
     const width = ctx.canvas.width * 0.45;
     const height = (ctx.canvas.height * 0.45) / 3;
     const x = (ctx.canvas.width - width) / 2;
-    const stroke = (ctx.canvas.width * 0.1) / 2;
+    const stroke = (ctx.canvas.width * 0.1) / 3;
     const radius = width / 6;
 
     ctx.save();
@@ -136,33 +214,24 @@ export class CropVenue implements Command {
     ctx.fillText(
       `${this.usersCount}`,
       x + width * 0.45,
-      ctx.canvas.height - stroke * 1.6
+      ctx.canvas.height - stroke * 2
     );
 
-    return new LoadImage(VENUE_PEOPLE)
-      .execute()
-      .then((comm: LoadImage) => {
-        if (comm.image) {
-          const imageScale = (height / comm.image.height) * 0.8;
-          ctx.drawImage(
-            comm.image,
-            0,
-            0,
-            comm.image.width,
-            comm.image.height,
-            x + stroke,
-            ctx.canvas.height - height - stroke / 2,
-            comm.image.width * imageScale,
-            comm.image.height * imageScale
-          );
-        }
-      })
-      .catch((error) => {
-        console.log("drawUsersCount", error);
-      })
-      .finally(() => {
-        return Promise.resolve();
-      });
+    if (CropVenue.VENUE_PEOPLE) {
+      const imageScale = (height / CropVenue.VENUE_PEOPLE.height) * 0.8;
+      ctx.drawImage(
+        CropVenue.VENUE_PEOPLE,
+        0,
+        0,
+        CropVenue.VENUE_PEOPLE.width,
+        CropVenue.VENUE_PEOPLE.height,
+        x + stroke,
+        ctx.canvas.height - height - stroke / 2,
+        CropVenue.VENUE_PEOPLE.width * imageScale,
+        CropVenue.VENUE_PEOPLE.height * imageScale
+      );
+    }
+    return Promise.resolve();
   }
 
   private drawFrame(ctx: CanvasRenderingContext2D): void {
@@ -173,11 +242,12 @@ export class CropVenue implements Command {
   }
 
   private drawPath(ctx: CanvasRenderingContext2D): void {
-    const x = 0;
-    const y = 0;
-    const width = ctx.canvas.width;
-    const height = ctx.canvas.height;
-    const radius = Math.min(width, height) / 3;
+    const border = 8;
+    const x = border;
+    const y = border;
+    const width = ctx.canvas.width - border * 2;
+    const height = ctx.canvas.height - border * 2;
+    const radius = Math.min(width, height) / 2.62;
 
     ctx.save();
     ctx.beginPath();

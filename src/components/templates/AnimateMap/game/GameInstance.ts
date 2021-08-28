@@ -14,11 +14,14 @@ import {
   setAnimateMapFirstEntrance,
   setAnimateMapUsers,
 } from "store/actions/AnimateMap";
-import { AnimateMapState, ReplicatedVenue } from "store/reducers/AnimateMap";
+import {
+  AnimateMapState,
+  ReplicatedFirebarrel,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
 
 import { Point } from "types/utility";
 
-// import { DataProvider } from "../bridges/DataProvider";
 import { CloudDataProvider } from "../bridges/DataProvider/CloudDataProvider";
 import { DataProviderEvent } from "../bridges/DataProvider/Providers/DataProviderEvent";
 import EventProvider, {
@@ -233,10 +236,47 @@ export class GameInstance {
       }
     );
 
+    // Venues
     this.dataProvider.on(
       DataProviderEvent.VENUE_ADDED,
       (venue: ReplicatedVenue) => {
         this._mapContainer?.entityFactory?.createVenue(venue);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_REMOVED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.removeVenue(venue);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.VENUE_UPDATED,
+      (venue: ReplicatedVenue) => {
+        this._mapContainer?.entityFactory?.updateVenue(venue);
+      }
+    );
+
+    // Firebarrels
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_ADDED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.createBarrel(firebarrel);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_REMOVED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.removeBarrel(firebarrel);
+      }
+    );
+
+    this.dataProvider.on(
+      DataProviderEvent.FIREBARREL_UPDATED,
+      (firebarrel: ReplicatedFirebarrel) => {
+        this._mapContainer?.entityFactory?.updateBarrel(firebarrel);
       }
     );
 

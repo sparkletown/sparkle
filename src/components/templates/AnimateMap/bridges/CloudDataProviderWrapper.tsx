@@ -1,25 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 
-import { AnimateMapVenue } from "types/venues";
+import { Room } from "types/rooms";
+import { AnimateMapVenue, AnyVenue } from "types/venues";
 
+import { isEventLive } from "utils/event";
 import { WithId } from "utils/id";
+import { WithVenue } from "utils/venue";
 
+import { useVenueEvents } from "hooks/events";
+import { useWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
-import { useWorldUsers } from "../../../../hooks/users";
-import { useRelatedPartymapRooms } from "../hooks/useRelatedPartymapRooms";
+import { useFirebarrels } from "../hooks/useFirebarrels";
+import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
+import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
 
 import { CloudDataProvider } from "./DataProvider/CloudDataProvider";
 
 export interface CloudDataProviderWrapperProps {
   venue: WithId<AnimateMapVenue>;
   newDataProviderCreate: (dataProvider: CloudDataProvider) => void;
+  relatedRooms: UseRelatedPartymapRoomsData;
 }
+
+export type RoomWithFullData<T> = T & {
+  id: number;
+  isLive?: boolean;
+  countUsers?: number;
+};
+
+const emptyRelatedVenues: WithId<AnyVenue>[] = [];
 
 export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> = ({
   venue,
   newDataProviderCreate,
+  relatedRooms,
 }) => {
   const [dataProvider, setDataProvider] = useState<CloudDataProvider | null>(
     null
@@ -28,11 +44,76 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   const user = useUser();
   const worldUsers = useWorldUsers();
 
-  const rooms = useRelatedPartymapRooms({ venue });
+  const venues: WithId<AnyVenue>[] = useMemo(
+    () =>
+      relatedRooms
+        ? relatedRooms
+            .filter((room) => "venue" in room && "id" in venue)
+            .map((room) => (room as WithVenue<Room>)?.venue as WithId<AnyVenue>)
+        : emptyRelatedVenues,
+    [relatedRooms, venue]
+  );
+
+  const venueIds = useMemo(() => venues.map((venue) => venue.id), [venues]);
+
+  const { events } = useVenueEvents({ venueIds });
+
+  const locationUsers = useRecentLocationsUsers(venues);
+
+  const liveEvents = useMemo(
+    () =>
+      events
+        .filter((event) => isEventLive(event))
+        .map((event) => {
+          return {
+            venueId: event.venueId,
+            name: event.name,
+          };
+        }),
+    [events]
+  );
+
+  const roomsWithFullData:
+    | RoomWithFullData<WithVenue<Room> | Room>[]
+    | undefined = relatedRooms?.map((room, index) => {
+    if ("venue" in room) {
+      const roomWithVenue = room as WithVenue<Room>;
+      const venue = roomWithVenue.venue as WithId<AnyVenue>;
+      const location = locationUsers.find(
+        (location) => location.id === venue.id
+      );
+
+      if (location) {
+        return {
+          ...roomWithVenue,
+          id: index,
+          countUsers: location ? location.users.length : 0,
+          isLive: !!liveEvents.find((event) => event.venueId === location?.id),
+        };
+      }
+    }
+
+    return {
+      ...room,
+      ...{ id: index, isLive: false, countUsers: 0 },
+    };
+  });
+
+  const firebarrels = useFirebarrels({ animateMapId: venue.id });
+
+  const firebarrelsWithUsers = firebarrels?.firebarrels.map((firebarrel) => {
+    return {
+      ...firebarrel,
+      connectedUsers: [],
+    };
+  });
 
   useEffect(() => {
-    if (dataProvider) dataProvider.updateRooms(rooms);
-  }, [rooms, dataProvider]);
+    if (dataProvider) {
+      dataProvider.updateRooms(roomsWithFullData);
+      dataProvider.updateFirebarrels(firebarrelsWithUsers);
+    }
+  }, [roomsWithFullData, firebarrelsWithUsers, dataProvider]);
 
   useEffect(() => {
     if (dataProvider) dataProvider.updateUsersAsync(worldUsers);
@@ -47,8 +128,10 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           firebase,
           venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
         );
-        dataProvider.updateRooms(rooms);
+        dataProvider.updateRooms(roomsWithFullData);
+        dataProvider.updateFirebarrels(firebarrelsWithUsers);
         dataProvider.updateUsers(worldUsers);
+
         setDataProvider(dataProvider);
         newDataProviderCreate(dataProvider);
       }
