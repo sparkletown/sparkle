@@ -26,6 +26,7 @@ export const stubUsersData = () => {
       y,
       data: {
         id: id,
+        name: id,
         messengerId: getIntByHash(id),
         videoUrlString: "",
         avatarUrlString: `/avatars/default-profile-pic-${

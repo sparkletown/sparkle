@@ -207,6 +207,7 @@ export class CloudDataProvider
         y: -1000,
         data: {
           id: user.id,
+          name: user.partyName,
           messengerId: getIntByHash(user.id),
           avatarUrlString: user.pictureUrl ?? "",
           videoUrlString: "",
