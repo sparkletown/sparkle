@@ -18,6 +18,7 @@ import { PositionComponent } from "../components/PositionComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { Barrel } from "../graphics/Barrel";
+import { FirebarrelTooltip } from "../graphics/FirebarrelTooltip";
 import { Venue } from "../graphics/Venue";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
@@ -28,18 +29,9 @@ const getCollisionRadius = (): number => {
   return GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 };
 
-const createTooltip = (entity: Entity) => {
-  const tooltip = new TooltipComponent(
-    `Join to firebarrel`,
-    getCollisionRadius(),
-    "bottom"
-  );
-  tooltip.textColor = 0xffffff;
-  tooltip.textSize = 14;
-  tooltip.borderThikness = 0;
-  tooltip.borderColor = 0;
-  tooltip.backgroundColor = 0;
-  // add tooltip
+const createTooltip = (entity: Entity, text: string = "Join") => {
+  const tooltip = new TooltipComponent("", 0, "center");
+  tooltip.view = new FirebarrelTooltip(text);
   entity.add(tooltip);
 };
 
