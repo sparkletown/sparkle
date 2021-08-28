@@ -747,7 +747,7 @@ export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
-export const EVENTS_PREVIEW_LIST_LENGTH = 5;
+export const EVENTS_PREVIEW_LIST_LENGTH = 50;
 
 // Set these to have images uploaded to Firebase Storage served off of Imgix
 // @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
