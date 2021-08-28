@@ -27,25 +27,19 @@ export const ScheduleEventSubListNG: React.FC<ScheduleEventSubListNGProps> = ({
   } = useShowHide();
 
   const renderEvents = useMemo(() => {
-    if (showMoreEvents) {
-      return events.map((event) => (
-        <ScheduleItemNG
-          key={event.id}
-          event={event}
-          isShowFullInfo={isShowFullInfo}
-        />
-      ));
+    let eventsToRender = events;
+
+    if (!showMoreEvents) {
+      eventsToRender = events.slice(0, EVENTS_PREVIEW_LIST_LENGTH);
     }
 
-    return events
-      .slice(0, EVENTS_PREVIEW_LIST_LENGTH)
-      .map((event) => (
-        <ScheduleItemNG
-          key={event.id}
-          event={event}
-          isShowFullInfo={isShowFullInfo}
-        />
-      ));
+    return eventsToRender.map((event) => (
+      <ScheduleItemNG
+        key={event.id}
+        event={event}
+        isShowFullInfo={isShowFullInfo}
+      />
+    ));
   }, [events, showMoreEvents, isShowFullInfo]);
 
   const hasEvents = events.length > 0;

@@ -26,7 +26,7 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
       (venue) =>
         !!venue?.rooms?.length && (
           <>
-            <span className="EmergencyView_venue">{venue.id}</span>
+            <span className="EmergencyView_venue">{venue.name}</span>
             <div key={venue.id} className="EmergencyView_content">
               {venue?.rooms?.map((room) => {
                 const isRoomLive = isRoomHasLiveEvent(room.title);

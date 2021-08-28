@@ -3,6 +3,8 @@ import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 
+import { DEFAULT_VENUE_BANNER } from "settings";
+
 import {
   eventTimeAndOrderComparator,
   isEventWithinDateAndNotFinished,
@@ -10,13 +12,13 @@ import {
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
 
+import { useValidImage } from "hooks/useCheckImage";
 import { useConnectCurrentVenueNG } from "hooks/useConnectCurrentVenueNG";
 import { useSelector } from "hooks/useSelector";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
-import VenueLandingPageContent from "pages/VenueLandingPage/VenueLandingPageContent";
 import { updateTheme } from "pages/VenuePage/helpers";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
@@ -105,6 +107,11 @@ export const EmergencyViewPage: React.FC = () => {
       .filter((day) => !!day);
   }, [dayDifference, liveAndFutureEvents, firstScheduleDate]);
 
+  const [validBannerImageUrl] = useValidImage(
+    venue?.config?.landingPageConfig.bannerImageUrl,
+    DEFAULT_VENUE_BANNER
+  );
+
   if (venueRequestStatus && !venue && !venueId) {
     return <>This venue does not exist</>;
   }
@@ -115,7 +122,12 @@ export const EmergencyViewPage: React.FC = () => {
 
   return (
     <WithNavigationBar withSchedule={false}>
-      <VenueLandingPageContent venue={venue} withJoinEvent={false} />
+      <div
+        className="EmergencyView__banner"
+        style={{
+          backgroundImage: `url(${validBannerImageUrl})`,
+        }}
+      ></div>
       <div className="EmergencyView">
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div className="EmergencyView_main">

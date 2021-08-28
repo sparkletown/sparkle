@@ -2,8 +2,7 @@
 @import "../VenueLandingPage/VenueLandingPage.scss";
 
 $tab-item-height: 35px;
-$tab-item-image-height: 70px;
-$tab-item-image-width: 100px;
+$tab-item-image-size: 100px;
 $tab-item-room-height: 170px;
 $tab-item-room-width: 180px;
 
@@ -20,6 +19,15 @@ $tab-item-room-width: 180px;
   display: flex;
   flex-direction: column;
   z-index: z(emergency-content);
+  height: 100%;
+
+  &__banner {
+    position: absolute;
+    height: calc(100vh - #{$navbar-height});
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 
   &_main {
     margin-bottom: $spacing--xxl;
@@ -81,11 +89,11 @@ $tab-item-room-width: 180px;
       align-items: center;
       margin: $spacing--lg;
       cursor: default;
+      padding: $spacing--sm;
 
       &_info {
         display: flex;
         width: 90%;
-        margin-top: $spacing--sm;
 
         &_status {
           display: flex;
@@ -121,11 +129,11 @@ $tab-item-room-width: 180px;
         align-items: center;
         cursor: pointer;
         justify-content: space-between;
-        height: 60%;
+        text-align: center;
 
         &_image {
-          width: $tab-item-image-width;
-          height: $tab-item-image-height;
+          max-width: $tab-item-image-size;
+          max-height: $tab-item-image-size;
           padding: $spacing--xs;
         }
       }

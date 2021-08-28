@@ -114,9 +114,8 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     openUserProfileModal(userWithId);
   }, [openUserProfileModal, userWithId]);
 
-  const shouldShowSchedule = !withSchedule
-    ? false
-    : currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+  const shouldShowSchedule =
+    withSchedule && (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
