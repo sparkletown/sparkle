@@ -19,7 +19,7 @@ import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
-export type UserAvatarSize = "small" | "medium" | "large" | "full";
+export type UserAvatarSize = "small" | "medium" | "large" | "xlarge" | "full";
 
 export interface UserAvatarProps extends ContainerClassName {
   user?: WithId<User>;
@@ -35,6 +35,7 @@ const AVATAR_SIZE_MAP: { [key in UserAvatarSize]: number | null } = {
   small: 25,
   medium: 40,
   large: 54,
+  xlarge: 100,
   full: null,
 };
 
