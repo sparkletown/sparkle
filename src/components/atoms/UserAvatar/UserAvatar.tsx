@@ -8,15 +8,14 @@ import { User, UsernameVisibility } from "types/User";
 import { ContainerClassName } from "types/utility";
 
 import { WithId } from "utils/id";
-
-import { useIsOnline } from "hooks/useIsOnline";
-import { useVenueId } from "hooks/useVenueId";
-import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
-
 import {
   getFirebaseStorageResizedImage,
   ImageResizeOptions,
 } from "utils/image";
+
+import { useIsOnline } from "hooks/useIsOnline";
+import { useVenueId } from "hooks/useVenueId";
+import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 
 import "./UserAvatar.scss";
 
