@@ -1,0 +1,31 @@
+@import "scss/constants.scss";
+
+$header-gap: 4rem;
+$margin-top: 5rem;
+$gap: 2rem;
+
+.HelpCenterContent {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: $header-gap;
+  width: 80%;
+  margin: $margin-top auto;
+
+  &__info-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: $gap;
+    justify-items: center;
+    align-items: center;
+    justify-content: center;
+    align-content: center;
+    grid-auto-flow: row;
+    grid-template-areas:
+      ". . ."
+      ". . ."
+      ". . .";
+  }
+}
