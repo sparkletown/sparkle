@@ -24,7 +24,7 @@ export class BubbleSystem extends System {
 
     this.viewport = engine.getNodeList(ViewportNode);
 
-    EventProvider.on(EventType.RECIEVE_MSG, this.recieveMsgCallback);
+    EventProvider.on(EventType.RECEIVE_SHOUT, this.recieveShoutHandler);
   }
 
   removeFromEngine(engine: Engine) {
@@ -43,7 +43,7 @@ export class BubbleSystem extends System {
     }
 
     this.viewport = undefined;
-    EventProvider.off(EventType.RECIEVE_MSG, this.recieveMsgCallback);
+    EventProvider.off(EventType.RECEIVE_SHOUT, this.recieveShoutHandler);
   }
 
   update(time: number) {
@@ -60,7 +60,7 @@ export class BubbleSystem extends System {
       }
     }
   }
-  private recieveMsgCallback = (userId: string, msg: string) => {
+  private recieveShoutHandler = (userId: string, msg: string) => {
     this.creator.createBubble(userId, msg);
   };
   private handleBubbleAdded = (node: BubbleNode) => {

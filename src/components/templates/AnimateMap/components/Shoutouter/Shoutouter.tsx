@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 
 import { useRecentWorldUsers } from "hooks/users";
 
-import arrowImg from "../../../../../assets/images/AnimateMap/UI/icon-send.svg";
 import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ENTER } from "../../game/utils/Keyboard";
 import KeyPoll from "../../game/utils/KeyPollSingleton";
+
+import arrowImg from "assets/images/AnimateMap/UI/icon-send.svg";
 
 import "./Shoutouter.scss";
 export interface ShoutouterProps {}
@@ -47,8 +48,8 @@ export const Shoutouter: React.FC<ShoutouterProps> = () => {
     });
   };
   const onSendClick = () => {
-    EventProvider.emit(EventType.SEND_MSG, state.userId, state.msg);
-    EventProvider.emit(EventType.RECIEVE_MSG, state.userId, state.msg);
+    EventProvider.emit(EventType.SEND_SHOUT, state.msg);
+    EventProvider.emit(EventType.RECEIVE_SHOUT, state.userId, state.msg);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     document.querySelector("." + componentName + " input").value = "";
