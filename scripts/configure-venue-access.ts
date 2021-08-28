@@ -77,7 +77,7 @@ initFirebaseAdminApp(projectId, {
       );
       await accessDocRef.set(
         {
-          emails: emails,
+          emails: admin.firestore.FieldValue.arrayUnion(...emails),
         },
         { merge: true }
       );
@@ -92,7 +92,7 @@ initFirebaseAdminApp(projectId, {
       console.log(`Setting venues/${venueId}/access/${method}...`);
       await accessDocRef.set(
         {
-          codes: codes,
+          codes: admin.firestore.FieldValue.arrayUnion(...codes),
         },
         { merge: true }
       );
