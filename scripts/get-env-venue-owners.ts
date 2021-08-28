@@ -13,11 +13,11 @@ import {
 
 const usage = makeScriptUsage({
   description: "Print venue owners' email addresses.",
-  usageParams: "[CREDENTIAL_PATH]",
+  usageParams: "[CREDENTIAL_PATH] filterArray",
   exampleParams: "[theMatchingAccountServiceKey.json]",
 });
 
-const [credentialPath] = process.argv.slice(2);
+const [credentialPath, ...filterArray] = process.argv.slice(2);
 
 if (!credentialPath) {
   usage();
@@ -61,24 +61,39 @@ initFirebaseAdminApp(projectId, {
     .map((heading) => `"${heading}"`)
     .join(",");
 
-  fs.writeFileSync("./venueOwners.csv", `${headingLine} \n`, { flag: "a" });
+  fs.writeFileSync("./venueOwners.csv", `${headingLine}\n`, { flag: "a" });
+  const filteredUsers = filterArray?.length
+    ? allUsers.filter(
+        (user) =>
+          user?.email?.includes("@") &&
+          !filterArray.some((filterEmail) => user?.email?.includes(filterEmail))
+      )
+    : allUsers;
 
   venues.forEach((doc) => {
     if (!doc.exists) return;
+    const venueOwners = doc
+      .data()
+      .owners?.map(
+        (uid: string) => filteredUsers.find((u) => u.uid === uid)?.email ?? ""
+      );
+    if (!venueOwners?.filter((owner: string) => owner.includes("@")).length) {
+      return;
+    }
 
-    const dto = [
+    const venueData = [
       doc.id,
       doc.data().name,
       doc
         .data()
         .owners?.map(
-          (uid: string) => allUsers.find((u) => u.uid === uid)?.email ?? uid
+          (uid: string) => filteredUsers.find((u) => u.uid === uid)?.email ?? ""
         ) || [],
     ];
 
-    const csvFormattedLine = dto.map((s) => `"${s} "`).join(",");
+    const csvFormattedLine = venueData.map((s) => `"${s}"`).join(",");
 
-    fs.writeFileSync("./venueOwners.csv", `${csvFormattedLine} \n`, {
+    fs.writeFileSync("./venueOwners.csv", `${csvFormattedLine}\n`, {
       flag: "a",
     });
   });

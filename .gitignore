@@ -14,6 +14,9 @@
 # account keys
 /scripts/*.json
 
+# script output files
+/scripts/*.csv
+
 # misc
 .DS_Store
 .env
@@ -43,9 +46,6 @@ reporting/env
 reporting/*.pdf
 reporting/*.txt
 reporting/cookies.json
-
-# script output files
-scripts/venueOwners.csv
 
 #IDEs
 .idea/
