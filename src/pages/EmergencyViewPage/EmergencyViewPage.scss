@@ -1,0 +1,142 @@
+@import "scss/constants.scss";
+@import "../VenueLandingPage/VenueLandingPage.scss";
+
+$tab-item-height: 35px;
+$tab-item-image-size: 100px;
+$tab-item-room-height: 170px;
+$tab-item-room-width: 180px;
+
+// hide landing page content
+.venue-entrance-experience-container {
+  height: 0px;
+}
+
+.EmergencyView {
+  width: 100%;
+  height: auto;
+  background-color: opaque-black(0.8);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  z-index: z(emergency-content);
+  height: 100%;
+
+  &__banner {
+    position: absolute;
+    height: calc(100vh - #{$navbar-height});
+    width: 100%;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
+
+  &_main {
+    margin-bottom: $spacing--xxl;
+  }
+
+  &__weekdays {
+    display: flex;
+    flex-wrap: wrap;
+    margin: $spacing--xxl;
+
+    &__column {
+      width: 33%;
+      display: flex;
+      flex-direction: column;
+      padding-left: $spacing--xxl * 3;
+      cursor: default;
+
+      .ScheduleItemNG {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &_tabs {
+    display: flex;
+    margin: 0 auto;
+    width: 15%;
+    justify-content: space-around;
+    font-size: $font-size--xl;
+    font-weight: 900;
+    margin-top: $spacing--xl;
+    cursor: pointer;
+
+    &_item {
+      height: $tab-item-height;
+
+      &--active {
+        border-bottom: $border-radius--xs solid $primary--live;
+      }
+    }
+  }
+
+  &_venue {
+    margin: $spacing--lg;
+    font-weight: 900;
+    font-size: $font-size--lg;
+  }
+
+  &_content {
+    display: flex;
+
+    &_room {
+      height: $tab-item-room-height;
+      width: $tab-item-room-width;
+      border-radius: $border-radius--md;
+      background-color: opaque-white(0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: $spacing--lg;
+      cursor: default;
+      padding: $spacing--sm;
+
+      &_info {
+        display: flex;
+        width: 90%;
+
+        &_status {
+          display: flex;
+          background-color: $primary--live;
+          border-radius: $border-radius--md;
+          padding: $spacing--sm;
+          width: $spacing--xxl * 2;
+          height: $spacing--xxl;
+          align-items: center;
+          justify-content: center;
+        }
+
+        &_audience {
+          display: flex;
+          background-color: opaque-white(0.2);
+          border-radius: $border-radius--md;
+          padding: $spacing--sm;
+          width: $spacing--xxl * 2;
+          height: $spacing--xxl;
+          justify-content: space-around;
+          margin-left: auto;
+
+          span {
+            font-size: $font-size--sm;
+          }
+        }
+      }
+
+      &_body {
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        justify-content: space-between;
+        text-align: center;
+
+        &_image {
+          max-width: $tab-item-image-size;
+          max-height: $tab-item-image-size;
+          padding: $spacing--xs;
+        }
+      }
+    }
+  }
+}
