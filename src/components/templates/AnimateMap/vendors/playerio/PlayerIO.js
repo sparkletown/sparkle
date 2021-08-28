@@ -2926,7 +2926,7 @@ class PlayerIOWrapper {
         /** The custom data that was passed in when this request was created
          * @type object
          */
-        this.data = wrapper._pio.convertFromKVArray(data);
+        this.model = wrapper._pio.convertFromKVArray(data);
       };
     })(this);
     (function (wrapper) {
@@ -4321,7 +4321,7 @@ class PlayerIOWrapper {
               // scan forward to find newest changeset for each object
               for (var i in save.objects) {
                 for (var f = s + 1; f < queuedSaves.length; f++) {
-                  futureSave = queuedSaves[f];
+                  const futureSave = queuedSaves[f];
                   for (var o = 0; o < futureSave.objects.length; o++) {
                     // it's the same object, but in the future, in a similar save
                     if (
