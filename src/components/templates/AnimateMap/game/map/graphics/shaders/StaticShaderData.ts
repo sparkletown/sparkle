@@ -10,7 +10,7 @@ import {
 
 import { LightSize, mapStaticLightningShader } from "./mapLightning";
 
-const BATCH_SIZE = 32;
+const BATCH_SIZE = 10;
 const textureSize = 8128;
 export interface LightData {
   r: number;

@@ -112,11 +112,13 @@ const VolumePopover = (
 );
 export interface NavBarPropsType {
   hasBackButton?: boolean;
+  withSchedule?: boolean;
   hasSchedule?: boolean;
 }
 
 export const NavBar: React.FC<NavBarPropsType> = ({
   hasBackButton = true,
+  withSchedule = true,
   hasSchedule = true,
 }) => {
   const { user, userWithId } = useUser();
@@ -155,9 +157,10 @@ export const NavBar: React.FC<NavBarPropsType> = ({
     openUserProfileModal(userWithId);
   }, [openUserProfileModal, userWithId]);
 
-  const shouldShowSchedule = !hasSchedule
-    ? false
-    : currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE;
+  const shouldShowSchedule =
+    withSchedule &&
+    hasSchedule &&
+    (currentVenue?.showSchedule ?? DEFAULT_SHOW_SCHEDULE);
 
   const isOnPlaya = pathname.toLowerCase() === venueInsideUrl(PLAYA_VENUE_ID);
 
