@@ -8,10 +8,17 @@ export class FirebarrelTooltip extends Sprite {
 
   private draw(message: string): void {
     const backgroundColor = 0xffffff;
+    const backgroundAlpha = 0.2;
     const style = new TextStyle({
       fill: "#ede8fe",
-      fontSize: 28,
-      fontWeight: "bold",
+      dropShadow: true,
+      dropShadowAlpha: 0.3,
+      dropShadowAngle: 0.8,
+      dropShadowBlur: 6,
+      dropShadowDistance: 2,
+      fontSize: 24,
+      miterLimit: 1,
+      stroke: "#9c9c9c",
     });
 
     const text: Text = new Text(message, style);
@@ -19,16 +26,16 @@ export class FirebarrelTooltip extends Sprite {
 
     this.addChild(text);
 
-    const h = Math.max(text.height * 1.2, 18);
-    const w = Math.max(text.width, text.width) + text.height;
-    const r = h / 2;
+    const h = Math.max(text.height * 1.5, 10);
+    const w = Math.max(text.width, text.width) + text.height * 2;
+    const r = h * 0.7;
 
     const g: Graphics = new Graphics();
-    g.beginFill(backgroundColor, 0.3);
+    g.beginFill(backgroundColor, backgroundAlpha);
     g.drawRoundedRect(0, 0, w, h, r);
 
     g.position.set(-w / 2, -h / 2);
-    g.alpha = 0.5;
+
     this.addChildAt(g, 0);
   }
 }

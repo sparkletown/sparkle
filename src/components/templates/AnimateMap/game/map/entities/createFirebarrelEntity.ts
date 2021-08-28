@@ -33,6 +33,10 @@ const createTooltip = (entity: Entity, text: string = "Join") => {
   entity.add(tooltip);
 };
 
+const removeTooltip = (entity: Entity) => {
+  entity.remove(TooltipComponent);
+};
+
 const drawAvatars = (
   barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent
@@ -183,7 +187,7 @@ export const createFirebarrelEntity = (
         },
         () => {
           // remove tooltip
-          entity.remove(TooltipComponent);
+          removeTooltip(entity);
           // add decrease
           const comm: SpriteComponent | null = entity.get(SpriteComponent);
           const duration = 100;

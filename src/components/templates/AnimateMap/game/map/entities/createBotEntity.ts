@@ -77,13 +77,7 @@ export const createBotEntity = (
       new HoverableSpriteComponent(
         () => {
           // add tooltip
-          entity.add(
-            new TooltipComponent(
-              `bot id: ${user.data.id}`.slice(0, 15) + "...",
-              15,
-              "top"
-            )
-          );
+          entity.add(new TooltipComponent(`${user.data.name}`, 15, "top"));
         },
         () => {
           // remove tooltip
