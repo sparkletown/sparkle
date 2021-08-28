@@ -25,17 +25,22 @@ import { VenueHoverOut } from "../graphics/VenueHoverOut";
 
 import EntityFactory from "./EntityFactory";
 
-const addVenueTooltip = (
-  venue: ReplicatedVenue,
-  entity: Entity,
-  text: string
-) => {
+const TOOLTIP_COLOR_DEFAULT = 0x655a4d;
+const TOOLTIP_COLOR_ISLIVE = 0x8e5ffe;
+const TOOLTIP_TEXT_LENGTH_MAX = 18;
+
+const addVenueTooltip = (venue: ReplicatedVenue, entity: Entity) => {
   if (entity.get(TooltipComponent)) {
     return;
   }
-
+  const text =
+    venue.data.title.length > TOOLTIP_TEXT_LENGTH_MAX
+      ? venue.data.title.slice(0, 15) + "..."
+      : venue.data.title;
   const tooltip = new TooltipComponent(text);
-  tooltip.borderColor = venue.data.isLive ? 0x7c46fb : 0x655a4d;
+  tooltip.borderColor = venue.data.isLive
+    ? TOOLTIP_COLOR_ISLIVE
+    : TOOLTIP_COLOR_DEFAULT;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
 };
@@ -47,6 +52,9 @@ const updateVenueImage = (
 ) => {
   new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
     .setUsersCount(replicatedVenue.data.countUsers)
+    .setUsersCountColor(
+      replicatedVenue.data.isLive ? TOOLTIP_COLOR_ISLIVE : TOOLTIP_COLOR_DEFAULT
+    )
     .execute()
     .then((comm: CropVenue) => {
       const size = GameConfig.VENUE_DEFAULT_SIZE;
@@ -83,6 +91,7 @@ export const updateVenueEntity = (
   if (!node) {
     return;
   }
+
   node.venue.model = venue;
   node.entity.add(node.venue);
 
@@ -152,13 +161,7 @@ export const createVenueEntity = (
           const waiting = creator.getWaitingVenueClick();
           const currentVenue = getCurrentReplicatedVenue(venueComponent);
           if (!waiting || waiting.data.id !== currentVenue.data.id) {
-            addVenueTooltip(
-              currentVenue,
-              entity,
-              currentVenue.data.title.length > 18
-                ? currentVenue.data.title.slice(0, 15) + "..."
-                : currentVenue.data.title
-            );
+            addVenueTooltip(currentVenue, entity);
           }
 
           // add increase
