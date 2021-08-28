@@ -31,7 +31,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
       (action) => {
         const roomId = (action as setAnimateMapFireBarrelAction).payload.roomId;
 
-        onConnectChange(roomId, [], typeof selectedFirebarrel === "string");
+        //onConnectChange(roomId, [], typeof selectedFirebarrel === "string");
         setSelectedFirebarrel(roomId);
       }
     );
@@ -45,9 +45,11 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
       roomName={selectedFirebarrel}
       venueName={venue.name}
       onEnter={(roomId, userList) => {
+        console.log("onEnter", true);
         onConnectChange(roomId, userList, true);
       }}
       onExit={(roomId) => {
+        console.log("onExit", false);
         onConnectChange(roomId, [], false);
       }}
       setUserList={setUserList}

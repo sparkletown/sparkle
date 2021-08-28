@@ -20,7 +20,7 @@ export class FirebarrelSystem extends System {
 
   private creator: EntityFactory;
   private waitingEnterFirebarrelId?: number;
-  private WAITING_ENTER_FIREBARREL_TIMEOUT = 10000;
+  private WAITING_ENTER_FIREBARREL_TIMEOUT = 30000;
 
   // private _unsubscribeSetPointer!: () => void;
   constructor(creator: EntityFactory) {
@@ -38,6 +38,7 @@ export class FirebarrelSystem extends System {
     this._unsubscribeFirebarrelEnter = subscribeActionAfter(
       AnimateMapActionTypes.ENTER_FIREBARREL,
       () => {
+        clearTimeout(this.waitingEnterFirebarrelId);
         // this.creator.enterFirebarrel(barrelId);
       }
     );
@@ -47,6 +48,7 @@ export class FirebarrelSystem extends System {
         this.waitingEnterFirebarrelId = setTimeout(() => {
           if (this.player) {
             this.creator.exitFirebarrel();
+            console.log("exit firebarrel 2");
           }
         }, this.WAITING_ENTER_FIREBARREL_TIMEOUT);
       }
@@ -55,6 +57,7 @@ export class FirebarrelSystem extends System {
       AnimateMapActionTypes.EXIT_FIREBARREL,
       () => {
         this.creator.exitFirebarrel();
+        console.log("exit firebarrel 1");
       }
     );
 

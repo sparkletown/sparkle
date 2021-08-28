@@ -120,13 +120,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           trackPublication.track.stop(); //@debt typing does this work?
         });
         room.disconnect();
-
-        if (onExit) {
-          onExit(roomName);
-        }
       }
     };
-  }, [room, roomName, onExit]);
+  }, [room, roomName]);
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
@@ -197,6 +193,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
+
+        if (onEnter) {
+          onEnter(roomName, [
+            ...participants.map((p) => worldUsersById[p.identity]),
+            worldUsersById[room.localParticipant.identity],
+          ]);
+        }
       })
       .catch((error) => setVideoError(error.message));
 
@@ -208,13 +211,16 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
           trackPublication.track.stop(); //@debt typing does this work?
         });
         localRoom.disconnect();
-
-        if (onExit) {
-          onExit(roomName);
-        }
       }
     };
-  }, [roomName, onExit, token, setParticipantCount]);
+  }, [
+    roomName,
+    token,
+    setParticipantCount,
+    onEnter,
+    participants,
+    worldUsersById,
+  ]);
 
   useEffect(() => {
     if (!room) return;
@@ -358,7 +364,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         onHide={() => setVideoError("")}
         errorMessage={videoError}
         onRetry={connectToVideoRoom}
-        onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
+        onBack={() => {
+          setSeatedAtTable ? leaveSeat() : setVideoError("");
+
+          if (onExit) {
+            onExit(roomName);
+          }
+        }}
       />
     </>
   );
