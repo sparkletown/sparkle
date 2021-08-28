@@ -30,7 +30,8 @@ export const resizeFile = (file: File): Promise<Blob> => {
 };
 
 /**
- * Returns an optimized, resized image url using a Imgix
+ * Generates a resized image URL.
+ * This function does not guarantee a resized image. In some cases the original URL may be returned.
  */
 export const getResizedImage = (
   originBasePath: string,
