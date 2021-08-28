@@ -8,10 +8,13 @@ export class VenueHoverIn implements Animatable {
 
   constructor(venue: Venue, duration: number) {
     if (venue.venue) {
-      this.easing = new Easing(venue.venue.scale.x, 2, duration);
+      this.easing = new Easing(venue.venue.scale.x, 1.1, duration);
       this.easing.onStep = (value: number) => {
         venue.venue?.scale.set(value);
       };
+    }
+    if (venue.halo) {
+      venue.halo.scale.set(venue.halo.scale.y + venue.halo.scale.y / 9);
     }
   }
 

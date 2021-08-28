@@ -49,8 +49,8 @@ export const PRIVACY_POLICY = IS_BURN
 
 export const SPARKLE_ICON = "/sparkle-icon.png";
 export const DEFAULT_MAP_BACKGROUND = "/maps/Sparkle_Field_Background.jpg";
-export const DEFAULT_VENUE_BANNER = "/assets/Sparkle_Banner_Default.jpg";
-export const DEFAULT_VENUE_LOGO = "/assets/Sparkle_SquareLogo_Default.jpg";
+export const DEFAULT_VENUE_BANNER = "/assets/Default_Venue_Banner.png";
+export const DEFAULT_VENUE_LOGO = "/assets/Default_Venue_Logo.png";
 // @debt de-duplicate DEFAULT_PROFILE_IMAGE, DEFAULT_AVATAR_IMAGE, DEFAULT_PROFILE_PIC. Are they all used for the same concept?
 export const DEFAULT_PROFILE_IMAGE = "/anonymous-profile-icon.jpeg";
 export const DEFAULT_AVATAR_IMAGE = sparkleNavLogo;
@@ -207,19 +207,6 @@ export const SUBVENUE_TEMPLATES = [
   VenueTemplate.animatemap,
 ];
 
-// @debt Refactor this constant into types/venues + create an actual custom type grouping for it
-export const PLACEABLE_VENUE_TEMPLATES = [
-  VenueTemplate.artcar,
-  VenueTemplate.artpiece,
-  VenueTemplate.friendship,
-  VenueTemplate.jazzbar,
-  VenueTemplate.partymap,
-  VenueTemplate.animatemap,
-  VenueTemplate.performancevenue,
-  VenueTemplate.themecamp,
-  VenueTemplate.zoomroom,
-];
-
 export const COVERT_ROOM_TYPES: RoomType[] = [
   RoomType.unclickable,
   RoomType.mapFrame,
@@ -311,7 +298,7 @@ export const BURN_VENUE_TEMPLATES: Array<Template> = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening room",
+    name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
@@ -754,6 +741,7 @@ export const DEFAULT_JAZZBAR_TABLES_NUMBER = 12;
 export const DEFAULT_CONVERSATION_SPACE_TABLES_NUMBER = 10;
 
 export const CHATBOX_NEXT_RENDER_SIZE = 50;
+export const PRIVATE_CHAT_NEXT_RENDER_SIZE = 50;
 
 export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 

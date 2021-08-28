@@ -3,14 +3,27 @@ import { utils } from "pixi.js";
 
 import { DEFAULT_AVATAR_IMAGE } from "settings";
 
-import { ReplicatedVenue } from "../../../../../store/reducers/AnimateMap";
-import { UseRelatedPartymapRoomsData } from "../../hooks/useRelatedPartymapRooms";
+import {
+  ReplicatedFirebarrel,
+  ReplicatedUser,
+  ReplicatedVenue,
+} from "store/reducers/AnimateMap";
+
+import { Room } from "types/rooms";
+
+import { WithVenue } from "utils/venue";
+
+import { WorldUsersData } from "hooks/users/useWorldUsers";
+
+import { Firebarrel } from "../../../../../types/animateMap";
+import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
 import { PlayerIOBots } from "./Contructor/PlayerIO/PlayerIOBots";
 import { PlayerIODataProvider } from "./Contructor/PlayerIO/PlayerIODataProvider";
+import { getIntByHash } from "./Contructor/PlayerIO/utils/getIntByHash";
 import { DataProviderEvent } from "./Providers/DataProviderEvent";
 import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
@@ -87,34 +100,199 @@ export class CloudDataProvider
   }
 
   // player provider
-  public async initPlayerPositionAsync(x: number, y: number) {
-    //TODO: REWORK
-    return this.player.initPositionAsync(x, y);
-  }
+  // public async initPlayerPositionAsync(x: number, y: number) {
+  //   //TODO: REWORK
+  //   return this.player.initPositionAsync(x, y);
+  // }
 
   public setPlayerPosition(x: number, y: number) {
     this.player.setPosition(x, y);
   }
 
   public venuesData: ReplicatedVenue[] = [];
+  public firebarrelsData: ReplicatedFirebarrel[] = [];
 
-  public updateRooms(data: UseRelatedPartymapRoomsData) {
+  public updateRooms(
+    data: RoomWithFullData<WithVenue<Room> | Room>[] | undefined
+  ) {
     if (!data) return;
 
     const newVenues = data.filter(
-      (item) => !this.venuesData.find((venue) => venue.data.url === item.url)
+      (item) => !this.venuesData.find((venue) => venue.data.id === item.id)
     );
+    const deprecatedVenues = this.venuesData.filter(
+      (item) => !data.find((room) => room.id === item.data.id)
+    );
+    deprecatedVenues.forEach((venue) =>
+      this.emit(DataProviderEvent.VENUE_REMOVED, venue)
+    );
+    this.venuesData = this.venuesData.filter(
+      (venue) => !deprecatedVenues.find((v) => v.data.id === venue.data.id)
+    );
+
+    const existedVenues = this.venuesData
+      .filter((venue) => {
+        const room = data.find((room) => room.id === venue.data.id);
+
+        if (!room) return false;
+
+        return !(
+          room.url === venue.data.url &&
+          room.title === venue.data.title &&
+          room.subtitle === venue.data.subtitle &&
+          room.image_url === venue.data.image_url &&
+          room.isLive === venue.data.isLive &&
+          room.countUsers === venue.data.countUsers &&
+          room.isEnabled === venue.data.isEnabled
+        );
+      })
+      .map((venue) => {
+        const room = data.find((item) => item.id === venue.data.id);
+        if (!room) return venue;
+        const vn = {
+          x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+          y: (room.y_percent / 100) * 9920 + 50,
+          data: {
+            countUsers: room.countUsers ?? 0,
+            ...room,
+          },
+        } as ReplicatedVenue;
+        return vn;
+      });
+    existedVenues.forEach((venue) => {
+      this.emit(DataProviderEvent.VENUE_UPDATED, venue);
+    });
+
     newVenues.forEach((room) => {
-      console.log("create venue");
+      const countUsers = "countUsers" in room ? room.countUsers : 0;
       const vn = {
-        x: ((room.x_percent / 100) * 9920) / 2.74 + 3180, //TODO: refactor configs and throw data to here
-        y: ((room.y_percent / 100) * 9920) / 2.74 + 3380,
+        x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
+        y: (room.y_percent / 100) * 9920 + 50,
         data: {
+          countUsers: countUsers,
           ...room,
         },
       } as ReplicatedVenue;
       this.venuesData.push(vn);
       this.emit(DataProviderEvent.VENUE_ADDED, vn);
+    });
+    // const fff = this.venuesData.filter(item => item.data.countUsers);
+    // eslint-disable-next-line no-debugger
+    // debugger;
+  }
+
+  // public usersData: ReplicatedUser[] = []
+  private countersForVenue = new Map<string, number>();
+
+  private isUpdateUsersLocked = false;
+
+  public async updateUsersAsync(data: WorldUsersData) {
+    if (this.isUpdateUsersLocked) return;
+
+    this.isUpdateUsersLocked = true;
+    await this.updateUsers(data);
+    this.isUpdateUsersLocked = false;
+  }
+
+  public updateUsers(data: WorldUsersData) {
+    if (!data?.isWorldUsersLoaded) return;
+
+    // new entities scenario
+    const usersData: ReplicatedUser[] = [];
+    data.worldUsers.forEach((user) => {
+      // if (user.lastSeenIn) //todo: add counter
+
+      usersData.push({
+        x: -1000,
+        y: -1000,
+        data: {
+          id: user.id,
+          messengerId: getIntByHash(user.id),
+          avatarUrlString: user.pictureUrl ?? "",
+          videoUrlString: "",
+          dotColor: 0xabfcfb,
+        },
+      });
+    });
+
+    //TODO: update scenario
+
+    // todo: add normalization
+    this.users.updateUsers(usersData);
+  }
+
+  public updateFirebarrels(data: Firebarrel[] | undefined) {
+    if (!data) return;
+
+    const newFirebarrels = data.filter(
+      (newFirebarrel) =>
+        !this.firebarrelsData.find(
+          (firebarrel) => firebarrel.data.id === newFirebarrel.id
+        )
+    );
+    const deprecatedFirebarrels = this.firebarrelsData.filter(
+      (item) => !data.find((firebarrel) => firebarrel.id === item.data.id)
+    );
+    deprecatedFirebarrels.forEach((firebarrel) =>
+      this.emit(DataProviderEvent.FIREBARREL_REMOVED, firebarrel)
+    );
+
+    this.firebarrelsData = this.firebarrelsData.filter(
+      (firebarrel) =>
+        !deprecatedFirebarrels.find(
+          (deprecatedFirebarrel) =>
+            deprecatedFirebarrel.data.id === firebarrel.data.id
+        )
+    );
+
+    const existFirebarrels = this.firebarrelsData
+      .filter((existFirebarrel) => {
+        const firebarrel = data.find(
+          (firebarrel) => firebarrel.id === existFirebarrel.data.id
+        );
+
+        if (!firebarrel) return false;
+
+        return !(
+          firebarrel.id === existFirebarrel.data.id &&
+          firebarrel.coordinateX === existFirebarrel.data.coordinateX &&
+          firebarrel.coordinateY === existFirebarrel.data.coordinateY &&
+          firebarrel.iconSrc === existFirebarrel.data.iconSrc &&
+          firebarrel.trackSrc === existFirebarrel.data.trackSrc &&
+          firebarrel.isLocked === existFirebarrel.data.isLocked &&
+          firebarrel.maxUserCount === existFirebarrel.data.maxUserCount
+        );
+      })
+      .map((existFirebarrel) => {
+        const firebarrel = data.find(
+          (firebarrel) => firebarrel.id === existFirebarrel.data.id
+        );
+        if (!firebarrel) return existFirebarrel;
+
+        return {
+          x: parseInt(firebarrel.coordinateX),
+          y: parseInt(firebarrel.coordinateY),
+          data: {
+            ...firebarrel,
+          },
+        } as ReplicatedFirebarrel;
+      });
+
+    existFirebarrels.forEach((firebarrel) => {
+      this.emit(DataProviderEvent.FIREBARREL_UPDATED, firebarrel);
+    });
+
+    newFirebarrels.forEach((newFirebbarrel) => {
+      const firebarrel = {
+        x: parseInt(newFirebbarrel.coordinateX),
+        y: parseInt(newFirebbarrel.coordinateY),
+        data: {
+          ...newFirebbarrel,
+        },
+      } as ReplicatedFirebarrel;
+
+      this.firebarrelsData.push(firebarrel);
+      this.emit(DataProviderEvent.FIREBARREL_ADDED, firebarrel);
     });
   }
 }

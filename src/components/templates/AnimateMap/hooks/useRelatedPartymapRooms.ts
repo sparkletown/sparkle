@@ -15,7 +15,9 @@ export interface UseRelatedPartymapRoomsProps {
   venue: WithId<AnimateMapVenue>;
 }
 
-export type UseRelatedPartymapRoomsData = WithVenue<Room>[] | undefined;
+export type UseRelatedPartymapRoomsData =
+  | (WithVenue<Room> | Room)[]
+  | undefined;
 
 export const useRelatedPartymapRooms: ReactHook<
   UseRelatedPartymapRoomsProps,
@@ -24,7 +26,6 @@ export const useRelatedPartymapRooms: ReactHook<
   const { findVenueInRelatedVenues } = useRelatedVenues({
     currentVenueId: venue.id,
   });
-
   const relatedPartymap = findVenueInRelatedVenues(venue.relatedPartymapId);
 
   return useMemo(
@@ -35,9 +36,7 @@ export const useRelatedPartymapRooms: ReactHook<
         const [venueId] = getLastUrlParam(noTrailSlashPortalUrl);
         const portalVenue = findVenueInRelatedVenues(venueId);
 
-        if (!portalVenue) return undefined;
-
-        return withVenue(portal, portalVenue);
+        return portalVenue ? withVenue(portal, portalVenue) : portal;
       }),
     [relatedPartymap, findVenueInRelatedVenues]
   )?.filter(isTruthy);

@@ -3,10 +3,13 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 
 import {
   AnimateMapActionTypes,
+  setAnimateMapFireBarrel,
   setAnimateMapFireBarrelAction,
 } from "store/actions/AnimateMap";
 
 import { AnimateMapVenue } from "types/venues";
+
+import { useDispatch } from "hooks/useDispatch";
 
 import { FirebarrelWidget } from "./FirebarrelWidget";
 
@@ -22,6 +25,7 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
   const [selectedFirebarrel, setSelectedFirebarrel] = useState<
     string | undefined
   >();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const unsubscribe = subscribeActionAfter(
@@ -38,11 +42,17 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
     };
   });
 
+  const onExit = () => {
+    dispatch(setAnimateMapFireBarrel(""));
+    onConnectChange(false);
+  };
+
   return selectedFirebarrel ? (
     <FirebarrelWidget
       roomName={selectedFirebarrel}
       venueName={venue.name}
       setUserList={() => {}}
+      onExit={onExit}
       isAudioEffectDisabled={false}
     />
   ) : (

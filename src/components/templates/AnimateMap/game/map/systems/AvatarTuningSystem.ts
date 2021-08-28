@@ -7,7 +7,7 @@ import { avatarCycles, avatarFeets } from "../../constants/AssetConstants";
 import EntityFactory from "../entities/EntityFactory";
 import { Avatar } from "../graphics/Avatar";
 import { AvatarTuningNode } from "../nodes/AvatarTuningNode";
-import { PlayerNode } from "../nodes/PlayerNode";
+import { PlayerMovementNode } from "../nodes/PlayerMovementNode";
 import { ViewportNode } from "../nodes/ViewportNode";
 
 export class AvatarTuningSystem extends System {
@@ -15,7 +15,7 @@ export class AvatarTuningSystem extends System {
 
   private viewport?: NodeList<ViewportNode>;
   private avatars?: NodeList<AvatarTuningNode>;
-  private player?: NodeList<PlayerNode>;
+  private player?: NodeList<PlayerMovementNode>;
   private zoomLevelCurrent = 0;
   private zoomChanged = true;
 
@@ -25,7 +25,7 @@ export class AvatarTuningSystem extends System {
   }
 
   addToEngine(engine: Engine) {
-    this.player = engine.getNodeList(PlayerNode);
+    this.player = engine.getNodeList(PlayerMovementNode);
     this.player.nodeAdded.add(this.handlePlayerAdded);
     this.player.nodeRemoved.add(this.handlePlayerRemoved);
 
@@ -82,11 +82,11 @@ export class AvatarTuningSystem extends System {
     }
   }
 
-  private handlePlayerAdded = (node: PlayerNode) => {
+  private handlePlayerAdded = (node: PlayerMovementNode) => {
     this.creator.updatePlayerTuning(node);
   };
 
-  private handlePlayerRemoved = (node: PlayerNode) => {
+  private handlePlayerRemoved = (node: PlayerMovementNode) => {
     this.creator.removePlayerTuning(node);
   };
 
