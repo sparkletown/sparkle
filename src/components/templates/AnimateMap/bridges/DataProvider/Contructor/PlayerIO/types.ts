@@ -7,6 +7,7 @@ export const PLAYER_OBJECTS_TABLE = "PlayerObjects";
 
 export enum RoomTypes {
   Zone = "Z",
+  SeparatedRoom = "S",
 }
 
 export enum MessagesTypes {

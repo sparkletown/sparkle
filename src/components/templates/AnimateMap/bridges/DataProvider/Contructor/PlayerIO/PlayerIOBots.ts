@@ -14,7 +14,10 @@ const world_width = 9920;
 const world_height = 9920;
 
 export class PlayerIOBots {
-  constructor(readonly playerioGameId: string) {}
+  constructor(
+    readonly playerioGameId: string,
+    readonly playerioAdvancedMode: boolean
+  ) {}
 
   private _bots: Bot[] = [];
 
@@ -23,6 +26,7 @@ export class PlayerIOBots {
       new Bot(
         this.playerioGameId,
         getRandomBotId(28),
+        this.playerioAdvancedMode,
         getRandomInt(world_width),
         getRandomInt(world_height)
       )
@@ -47,6 +51,7 @@ class Bot {
   constructor(
     readonly playerioGameId: string,
     readonly id: string,
+    readonly playerioAdvancedMode: boolean,
     public x: number,
     public y: number
   ) {
@@ -58,6 +63,7 @@ class Bot {
     this._playerio = new PlayerIODataProvider(
       this.playerioGameId,
       id,
+      playerioAdvancedMode,
       (connection) => {
         this._playerioConnection = connection;
         if (this._closed) this.closeConnection();

@@ -9,13 +9,16 @@ import {
   PlayerIOInstance,
 } from "../../../../vendors/playerio/PlayerIO";
 import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/ProxyClient";
+import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
 import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
 import playerModel from "../../Structures/PlayerModel";
 import { RoomInfoType } from "../../Structures/RoomsModel";
 
+import { IPlayerIORoomOperator } from "./RoomOperator/IPlayerIORoomOperator";
+import { PlayerIORoomOperator } from "./RoomOperator/PlayerIORoomOperator";
+import { PlayerIOSeparatedRoomOperator } from "./RoomOperator/PlayerIOSeparatedRoomOperator";
 import { getIntByHash } from "./utils/getIntByHash";
-import { PlayerIORoomOperator } from "./PlayerIORoomOperator";
 import {
   FindMessageTuple,
   MessagesTypes,
@@ -29,12 +32,13 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   public client?: ProxyClient;
   private isReserveTypeOfMove = false;
 
-  private playerIORoomOperator?: PlayerIORoomOperator;
+  private playerIORoomOperator?: IPlayerIORoomOperator;
   private _playerObject?: PlayerObject;
 
   constructor(
     readonly playerioGameId: string,
     readonly playerId: string,
+    readonly playerioAdvancedMode: boolean,
     private _connectionInitCallback: ConnectionSuccessCallback
   ) {
     super();
@@ -62,7 +66,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       return Promise.reject("Connection not ready.");
 
     return this.client.multiplayer.listRooms<RoomInfoType>(
-      RoomTypes.Zone,
+      this.playerioAdvancedMode ? RoomTypes.Zone : RoomTypes.SeparatedRoom,
       null,
       0,
       0
@@ -112,14 +116,8 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     EventProvider.emit(EventType.PLAYER_MODEL_READY, playerModel);
 
-    if (!this.playerIORoomOperator) {
-      console.log("init room operator");
-      this.playerIORoomOperator = new PlayerIORoomOperator(
-        this.client.multiplayer,
-        { x: this._playerObject.x, y: this._playerObject.y },
-        this.playerId
-      );
-    }
+    this.playerIORoomOperator = this._getRoomOperator(this.client, playerModel);
+
     this.playerIORoomOperator.position = {
       x: this._playerObject.x,
       y: this._playerObject.y,
@@ -128,6 +126,25 @@ export class PlayerIODataProvider extends utils.EventEmitter {
 
     return Promise.resolve(this.playerIORoomOperator);
   };
+
+  private _getRoomOperator(client: ProxyClient, playerPosition: Point) {
+    if (this.playerIORoomOperator) return this.playerIORoomOperator;
+
+    console.log(
+      `init ${
+        this.playerioAdvancedMode ? "ADVANCED" : "SEPARATED"
+      } room operator`
+    );
+    const initialParams: [ProxyMultiplayer, Point, string] = [
+      client.multiplayer,
+      { x: playerPosition.x, y: playerPosition.y },
+      this.playerId,
+    ];
+
+    if (this.playerioAdvancedMode)
+      return new PlayerIORoomOperator(...initialParams);
+    else return new PlayerIOSeparatedRoomOperator(...initialParams);
+  }
 
   // public async loadOrCreate(
   //   table: string,

@@ -1,0 +1,8 @@
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\bin\Debug\Player.IO GameLibrary.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\obj\Debug\RoomS.csproj.AssemblyReference.cache
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\obj\Debug\RoomS.csproj.CoreCompileInputs.cache
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\obj\Debug\RoomS.csproj.CopyComplete
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\bin\Debug\BurningManS.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\bin\Debug\BurningManS.pdb
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\obj\Debug\BurningManS.dll
+G:\NordBeaver\sparkle\src\components\templates\AnimateMap\bridges\DataProvider\Contructor\PlayerIO\ServersideDLL\Serverside Code\RoomS\obj\Debug\BurningManS.pdb

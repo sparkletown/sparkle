@@ -128,7 +128,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           user.userId,
           user.profile?.pictureUrl,
           firebase,
-          venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
+          venue.playerioGameId,
+          venue.playerioAdvancedMode
         );
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);

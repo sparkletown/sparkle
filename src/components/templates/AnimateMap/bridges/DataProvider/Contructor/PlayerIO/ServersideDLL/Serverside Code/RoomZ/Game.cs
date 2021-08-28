@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using PlayerIO.GameLibrary;
 using System.Collections.Generic;
 

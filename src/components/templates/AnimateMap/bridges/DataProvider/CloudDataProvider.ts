@@ -63,11 +63,15 @@ export class CloudDataProvider
     readonly playerId: string,
     readonly userAvatarUrl: string | undefined,
     firebase: ExtendedFirebaseInstance,
-    readonly playerioGameId: string
+    readonly playerioGameId: string,
+    readonly playerioAdvancedMode: boolean
   ) {
     super();
 
-    this._testBots = new PlayerIOBots(this.playerioGameId ?? "");
+    this._testBots = new PlayerIOBots(
+      this.playerioGameId,
+      this.playerioAdvancedMode
+    );
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
     playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
@@ -77,6 +81,7 @@ export class CloudDataProvider
       new PlayerIODataProvider(
         playerioGameId ?? "",
         playerId,
+        playerioAdvancedMode,
         (connection) => {}
       ), //TODO: remove callback
       new FirebaseDataProvider(firebase)

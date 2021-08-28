@@ -1,52 +1,67 @@
 import { Point } from "types/utility";
 
-import { ProxyConnection } from "../../../../vendors/playerio/PromissesWrappers/ProxyConnection";
-import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
-import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
-import { initialRoomData } from "../../Structures/RoomsModel";
+import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
+import EventProvider, {
+  EventType,
+} from "../../../../EventProvider/EventProvider";
+import { initialRoomData, RoomInfoType } from "../../../Structures/RoomsModel";
+import { FindMessageTuple, MessagesTypes, RoomTypes } from "../types";
+import { getIntByHash } from "../utils/getIntByHash";
 
-import { NinePartRoomOperator } from "./RoomLogic/NinePartRoomOperator";
-import { getIntByHash } from "./utils/getIntByHash";
-import { FindMessageTuple, MessagesTypes, RoomTypes } from "./types";
+import { IPlayerIORoomOperator } from "./IPlayerIORoomOperator";
+import { ConnectionWrapper } from "./PlayerIORoomOperator";
 
-export interface ConnectionWrapper {
-  id?: string;
-  instance?: ProxyConnection;
+enum IsConnectedStates {
+  false = 0,
+  true,
+  inProgress,
 }
 
-/**
- * Main logic class for working with rooms
- */
-export class PlayerIORoomOperator extends NinePartRoomOperator {
-  public mainConnection: ConnectionWrapper = {};
-  public peripheralConnections: ConnectionWrapper[] = [];
+const MAX_USERS = 80;
+
+export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
+  mainConnection: ConnectionWrapper = {};
+  position: Point;
 
   public constructor(
     public multiplayer: ProxyMultiplayer,
     playerPosition: Point,
     public playerId: string
   ) {
-    super(playerPosition);
+    this.position = playerPosition;
   }
 
-  public onCreate(id: string, isMain: boolean = false) {
-    console.log(this);
-    this.multiplayer
-      .createJoinRoom(id, RoomTypes.Zone, true, initialRoomData, {
-        isMain: isMain,
+  private isConnected: IsConnectedStates = IsConnectedStates.false;
+
+  update(listRooms: RoomInfoType[], hardUpdate?: boolean): void {
+    if (this.position.x < 0 || this.position.y < 0) return; //todo: add checking with bounds ?
+    if (this.isConnected) return;
+
+    this.isConnected = IsConnectedStates.inProgress;
+    console.log("UPDATE ROOM...");
+    const id = listRooms
+      .filter((room) => room.onlineUsers < MAX_USERS)
+      .sort((a, b) => b.onlineUsers - a.onlineUsers)[0]?.id;
+    this.onCreate(id)
+      .then(() => {
+        console.log("SUCCESS CONNECT");
+        this.isConnected = IsConnectedStates.true;
       })
+      .catch(() => {
+        console.warn("FAILURE");
+        this.isConnected = IsConnectedStates.false;
+        this.update(listRooms);
+      });
+  }
+
+  public async onCreate(id: string | undefined) {
+    console.log(this);
+    return this.multiplayer
+      .createJoinRoom(id ?? "", RoomTypes.SeparatedRoom, true, initialRoomData)
       .then((connection) => {
-        if (isMain) {
-          console.log(`Connect to ${id} as main`);
-          this.mainConnection.id = id;
-          this.mainConnection.instance = connection;
-        } else {
-          console.log(`Connect to ${id} as peripheral`);
-          this.peripheralConnections.push({
-            id: id,
-            instance: connection,
-          });
-        }
+        console.log(`Connect to ${id} as main`);
+        this.mainConnection.id = id;
+        this.mainConnection.instance = connection;
 
         connection.addMessageCallback<
           FindMessageTuple<MessagesTypes.newUserJoined>
@@ -98,25 +113,10 @@ export class PlayerIORoomOperator extends NinePartRoomOperator {
         >(MessagesTypes.divideSpeakers, (m) => {
           console.log("DIVIDE!");
           //TODO: check removeMessageCallback needed or not
-          this._divideHandler(id);
+          // this._divideHandler(id);
         });
       });
-  }
 
-  public async onJoin(id: string) {
-    return this.multiplayer
-      .createJoinRoom(id, RoomTypes.Zone, true, initialRoomData)
-      .then((connection) => {
-        console.log("sss Room created");
-        // this._connectionInitCallback(connection);
-        // this.connection = connection;
-      });
-  }
-
-  public async onLeave(id: string) {
-    if (this.mainConnection.id === id) {
-      this.mainConnection.instance?.disconnect();
-      this.mainConnection.instance = undefined;
-    }
+    return Promise.resolve("All handlers added");
   }
 }
