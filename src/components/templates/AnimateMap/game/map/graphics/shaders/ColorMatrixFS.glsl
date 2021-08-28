@@ -1,4 +1,5 @@
-precision mediump float;
+precision highp float;
+precision highp int;
 varying vec2 vTextureCoord;
 
 const int MAX_LIGHTS = 128;
@@ -8,7 +9,7 @@ uniform vec3 ambientLight;
 uniform float staticLightAlpha;
 varying vec2 pixelPos;
 varying vec2 pixelNPos;
-uniform mediump vec2 lightsPos[MAX_LIGHTS];
+uniform vec2 lightsPos[MAX_LIGHTS];
 uniform int lightQuantity;
 uniform float zoom;
 
@@ -30,24 +31,24 @@ vec3 hsv2rgb(vec3 c) {
 
 void main(void) {
     vec4 albedo = texture2D(uSampler, vTextureCoord);
-    lowp vec3 statLight = texture2D(texStaticLights, pixelNPos).rgb;
+    vec3 statLight = texture2D(texStaticLights, pixelNPos).rgb;
     statLight = rgb2hsv(statLight);
     statLight.z = pow(statLight.z, 1.5 * zoom + 0.7);
     statLight.z *= max((1. - zoom * 0.5), 0.5);
     statLight = hsv2rgb(statLight);
     vec3 light = albedo.rgb * (ambientLight + staticLightAlpha * statLight);
-    lowp vec3 dynamicLight = vec3(0.0);
+    vec3 dynamicLight = vec3(0.0);
     for(int i = 0; i < MAX_LIGHTS; i++) {
 
-        mediump float magnX = (pixelPos.x - lightsPos[i].x);
-        mediump float magnY = (pixelPos.y - lightsPos[i].y);
+        float magnX = (pixelPos.x - lightsPos[i].x);
+        float magnY = (pixelPos.y - lightsPos[i].y);
 
         if(!((magnX > 600.0) || (magnY > 600.0))) {
             magnX = pow(magnX, 2.0);
             magnY = pow(magnY, 2.0);
 
-            lowp vec3 rgb = vec3(0.96, 0.58, 0.11);
-            mediump float magnitude = (magnX + magnY);
+            vec3 rgb = vec3(0.96, 0.58, 0.11);
+            float magnitude = (magnX + magnY);
             rgb /= (1.0 + 0.027 * sqrt(magnitude) + 0.0028 * magnitude);
             dynamicLight += rgb;
             if(i > lightQuantity)
