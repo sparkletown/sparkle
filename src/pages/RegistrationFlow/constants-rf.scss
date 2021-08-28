@@ -1,0 +1,31 @@
+@import "scss/constants";
+
+@function box-shadow--input($color) {
+  @return 0 0 0 2px $color;
+}
+
+// colors
+$reg-flow-shadow--large: box-shadow--large(0.34);
+$reg-flow-color--transparent: opaque-white(0.12);
+$reg-flow-color--normal: $white;
+$reg-flow-color--error: #dc3545;
+
+// element widths
+$reg-flow-form-width: 540px;
+$reg-flow-input-width: 367px;
+$reg-flow-button-width: 18em;
+
+// font sizes
+$reg-flow-font-size--normal: 1rem;
+$reg-flow-font-size--info: 0.8em;
+$reg-flow-font-size--error: 0.9em;
+$reg-flow-font-size--page-title: 24px;
+$reg-flow-font-size--page-subtitle: 14px;
+
+// distances
+$reg-flow-element-distance: $spacing--lg;
+$reg-flow-page-padding-top: 111px;
+
+// misc
+$reg-flow-icon-size: 50px;
+$reg-flow-border-radius: $border-radius--xl;

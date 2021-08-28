@@ -1,0 +1,8 @@
+@import "scss/constants.scss";
+@import "../constants-rf";
+
+.SpanRF {
+  &--error {
+    color: $reg-flow-color--error;
+  }
+}

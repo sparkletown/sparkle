@@ -1,0 +1,14 @@
+@import "scss/constants";
+@import "../constants-rf";
+
+.ButtonRF {
+  min-width: $reg-flow-button-width;
+
+  &.ButtonNG__button {
+    text-transform: capitalize;
+  }
+
+  &.ButtonNG__link:focus {
+    outline: 1px dotted $reg-flow-color--normal;
+  }
+}

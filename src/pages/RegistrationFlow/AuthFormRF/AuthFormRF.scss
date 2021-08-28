@@ -1,0 +1,33 @@
+@import "scss/constants.scss";
+@import "../constants-rf";
+
+.AuthFormRF {
+  &__alternative-login {
+    place-content: center;
+
+    &,
+    &:hover {
+      background-color: transparent;
+    }
+
+    &:focus {
+      opacity: 0.8;
+    }
+  }
+
+  &__quick-login-icon {
+    @include square-size($reg-flow-icon-size);
+
+    &:hover {
+      cursor: pointer;
+      opacity: 0.8;
+    }
+  }
+
+  .register-form-title {
+    font-weight: 900;
+    font-style: italic;
+    font-size: 2em;
+    color: $white;
+  }
+}
