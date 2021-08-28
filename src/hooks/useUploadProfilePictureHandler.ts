@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback } from "react";
 import { useFirebase } from "react-redux-firebase";
 import firebase from "firebase/app";
+import { v4 as uuid } from "uuid";
 
 import {
   ACCEPTED_IMAGE_TYPES,
@@ -35,10 +36,9 @@ export const useUploadProfilePictureHandler = (
         file = new File([resizedImage], fileName);
       }
       const storageRef = firebase.storage().ref();
-      // TODO: add rule to forbid other users to edit a user's image
       if (user?.uid) {
         const profilePictureRef = storageRef.child(
-          `/users/${user.uid}/${file.name}`
+          `/users/${user.uid}/${uuid()}_${file.name}`
         );
         const uploadedProfilePicture = await profilePictureRef.put(file);
         return await uploadedProfilePicture.ref.getDownloadURL();
