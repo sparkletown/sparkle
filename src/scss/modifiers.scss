@@ -19,7 +19,8 @@ $spacing-map: (
 // generic placeholder for any element
 // helps to not duplicate .div--text-left, .input--text-left...
 .mod {
-  &--not-implemented {
+  &--not-implemented,
+  &--hidden {
     display: none;
     visibility: hidden;
   }
@@ -30,6 +31,16 @@ $spacing-map: (
 
   &--sixteen-nine {
     aspect-ratio: 16 / 9;
+  }
+
+  &--flex-row {
+    display: flex;
+    flex-direction: row;
+  }
+
+  &--flex-col {
+    display: flex;
+    flex-direction: column;
   }
 
   &--text {
