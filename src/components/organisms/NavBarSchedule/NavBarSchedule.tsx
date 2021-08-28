@@ -90,7 +90,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         const [roomName] = getLastUrlParam(
           getUrlWithoutTrailingSlash(room.url)
         );
-        return roomName === venueId;
+        return roomName.toLowerCase() === venueId;
       }),
     [sovereignVenue, venueId]
   )?.title;
