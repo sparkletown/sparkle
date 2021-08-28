@@ -17,6 +17,7 @@ import {
 import {
   AnimateMapState,
   ReplicatedFirebarrel,
+  ReplicatedUser,
   ReplicatedVenue,
 } from "store/reducers/AnimateMap";
 
@@ -216,25 +217,18 @@ export class GameInstance {
   private _subscribes() {
     //TODO: refactor all subscribes to separate class? An example, rework eventProvider for this.
 
-    EventProvider.on(EventType.USER_JOINED, (userId: number) => {
-      console.log(`- ${userId} join to room`);
+    EventProvider.on(EventType.USER_JOINED, (user: ReplicatedUser) => {
+      console.log(`- ${user} join to room`);
     });
 
-    EventProvider.on(EventType.USER_LEFT, (userId: number) => {
-      console.log(`- ${userId} left from room`);
-      this._mapContainer?.entityFactory?.removeUserById(userId.toString());
+    EventProvider.on(EventType.USER_LEFT, (user: ReplicatedUser) => {
+      console.log(`- ${user} left from room`);
+      this._mapContainer?.entityFactory?.removeUserById(user.toString());
     });
 
-    EventProvider.on(
-      EventType.USER_MOVED,
-      (userId: number, x: number, y: number) => {
-        this._mapContainer?.entityFactory?.updateUserPositionById(
-          userId.toString(),
-          x,
-          y
-        );
-      }
-    );
+    EventProvider.on(EventType.USER_MOVED, (user: ReplicatedUser) => {
+      this._mapContainer?.entityFactory?.updateUserPositionById(user);
+    });
 
     // Venues
     this.dataProvider.on(

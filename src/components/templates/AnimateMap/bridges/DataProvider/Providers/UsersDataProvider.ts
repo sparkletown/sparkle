@@ -22,7 +22,12 @@ export class UsersDataProvider {
 
   public updateUsers(usersData: ReplicatedUser[]) {
     usersData.forEach((user) =>
-      this.users.add(user.data.messengerId, user.data.id)
+      // this.users.add(user.data.messengerId, user.data.id)
+      this.users.addReplicatedUser(user)
     );
+  }
+
+  public getUserByMessengerId(messengerId: number) {
+    return this.users.getUser(messengerId);
   }
 }

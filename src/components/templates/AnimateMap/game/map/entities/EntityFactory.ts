@@ -2,7 +2,6 @@ import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
 import {
-  PlayerModel,
   ReplicatedFirebarrel,
   ReplicatedUser,
   ReplicatedVenue,
@@ -416,18 +415,18 @@ export default class EntityFactory {
     }
   }
 
-  public updateUserPositionById(userId: string, x: number, y: number) {
-    let bot: BotNode | null = this.getBotNode(userId);
+  public updateUserPositionById(user: ReplicatedUser) {
+    let bot: BotNode | null = this.getBotNode(user.data.id);
     if (!bot) {
-      const player: PlayerModel = new PlayerModel(userId, -1, "", x, y);
-      // player.data.id = userId;
+      // const player: PlayerModel = new PlayerModel(user, -1, "", x, y);
+      // player.data.id = user;
       // player.x = x;
       // player.y = y;
-      this.createBot(player, true);
+      this.createBot(user, true);
       bot = this.engine.getNodeList(BotNode).head as BotNode;
       bot.bot.fsm.changeState("idle");
     } else {
-      this.updateBotPosition(bot.bot.data, x, y);
+      this.updateBotPosition(bot.bot.data, user.x, user.y); //TODO: update another field too?
     }
   }
 

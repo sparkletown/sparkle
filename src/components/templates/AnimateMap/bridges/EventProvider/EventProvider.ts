@@ -35,9 +35,9 @@ type OnPlayerClickCallback = (
 ) => void;
 
 // playerio
-type UserJoinedCallback = (playerId: number, x: number, y: number) => void;
-type UserLeftCallback = (playerId: number) => void;
-type UserMovedCallback = (playerId: number, x: number, y: number) => void;
+type UserJoinedCallback = (user: ReplicatedUser) => void;
+type UserLeftCallback = (user: ReplicatedUser) => void;
+type UserMovedCallback = (user: ReplicatedUser) => void;
 
 export declare interface EventProviderSingleton {
   on(type: EventType.ON_ROOMS_CHANGED, callback: OnRoomsChangedCallback): this;

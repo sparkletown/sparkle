@@ -12,6 +12,7 @@ import { ProxyClient } from "../../../../vendors/playerio/PromissesWrappers/Prox
 import { ProxyMultiplayer } from "../../../../vendors/playerio/PromissesWrappers/ProxyMultiplayer";
 import { ProxyPlayerIO } from "../../../../vendors/playerio/PromissesWrappers/ProxyPlayerIO";
 import EventProvider, { EventType } from "../../../EventProvider/EventProvider";
+import { CloudDataProvider } from "../../CloudDataProvider";
 import playerModel from "../../Structures/PlayerModel";
 import { RoomInfoType } from "../../Structures/RoomsModel";
 
@@ -36,6 +37,7 @@ export class PlayerIODataProvider extends utils.EventEmitter {
   private _playerObject?: PlayerObject;
 
   constructor(
+    readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
     readonly playerId: string,
     readonly playerioAdvancedMode: boolean,
@@ -135,7 +137,13 @@ export class PlayerIODataProvider extends utils.EventEmitter {
         this.playerioAdvancedMode ? "ADVANCED" : "SEPARATED"
       } room operator`
     );
-    const initialParams: [ProxyMultiplayer, Point, string] = [
+    const initialParams: [
+      CloudDataProvider,
+      ProxyMultiplayer,
+      Point,
+      string
+    ] = [
+      this.cloudDataProvider,
       client.multiplayer,
       { x: playerPosition.x, y: playerPosition.y },
       this.playerId,

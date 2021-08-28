@@ -5,9 +5,9 @@ import { ProxyMultiplayer } from "../../../../../vendors/playerio/PromissesWrapp
 import EventProvider, {
   EventType,
 } from "../../../../EventProvider/EventProvider";
+import { CloudDataProvider } from "../../../CloudDataProvider";
 import { initialRoomData } from "../../../Structures/RoomsModel";
 import { FindMessageTuple, MessagesTypes, RoomTypes } from "../types";
-import { getIntByHash } from "../utils/getIntByHash";
 
 import { NinePartRoomOperator } from "./RoomLogic/NinePartRoomOperator";
 import { IPlayerIORoomOperator } from "./IPlayerIORoomOperator";
@@ -27,6 +27,7 @@ export class PlayerIORoomOperator
   public peripheralConnections: ConnectionWrapper[] = [];
 
   public constructor(
+    readonly cloudDataProvider: CloudDataProvider,
     public multiplayer: ProxyMultiplayer,
     playerPosition: Point,
     public playerId: string
@@ -60,8 +61,14 @@ export class PlayerIORoomOperator
           const x = m.getUInt(1);
           const y = m.getUInt(2);
           console.log(`User ${userId} joint to ${id} on position (${x},${y})`);
-          if (getIntByHash(this.playerId).toString() !== userId)
-            EventProvider.emit(EventType.USER_JOINED, Number(userId), x, y);
+          const user = this.cloudDataProvider.users.getUserByMessengerId(
+            parseInt(userId)
+          );
+          if (!user || Array.isArray(user)) return console.error("Bad user");
+          user.x = x;
+          user.y = y;
+          if (this.playerId !== user.data.id)
+            EventProvider.emit(EventType.USER_JOINED, user);
         });
 
         connection.addMessageCallback<
@@ -72,8 +79,14 @@ export class PlayerIORoomOperator
           const y = m.getUInt(2);
           // console.log("moved");
           // console.log(innerUserId, x, y);
-          if (getIntByHash(this.playerId) !== innerUserId)
-            EventProvider.emit(EventType.USER_MOVED, innerUserId, x, y);
+          const user = this.cloudDataProvider.users.getUserByMessengerId(
+            innerUserId
+          );
+          if (!user || Array.isArray(user)) return console.error("Bad user");
+          user.x = x;
+          user.y = y;
+          if (this.playerId !== user.data.id)
+            EventProvider.emit(EventType.USER_MOVED, user);
         });
 
         connection.addMessageCallback<
@@ -84,8 +97,14 @@ export class PlayerIORoomOperator
           const y = m.getUInt(2);
           // console.log("moved reserve");
           // console.log(innerUserId, x, y);
-          if (getIntByHash(this.playerId).toString() !== innerUserId)
-            EventProvider.emit(EventType.USER_MOVED, Number(innerUserId), x, y);
+          const user = this.cloudDataProvider.users.getUserByMessengerId(
+            parseInt(innerUserId)
+          );
+          if (!user || Array.isArray(user)) return console.error("Bad user");
+          user.x = x;
+          user.y = y;
+          if (this.playerId !== user.data.id)
+            EventProvider.emit(EventType.USER_MOVED, user);
         });
 
         connection.addMessageCallback<FindMessageTuple<MessagesTypes.userLeft>>(
@@ -93,8 +112,12 @@ export class PlayerIORoomOperator
           (m) => {
             const innerUserId = m.getString(0);
             console.log(`User ${innerUserId} left from ${id}`);
-            if (getIntByHash(this.playerId).toString() !== innerUserId)
-              EventProvider.emit(EventType.USER_LEFT, Number(innerUserId));
+            const user = this.cloudDataProvider.users.getUserByMessengerId(
+              parseInt(innerUserId)
+            );
+            if (!user || Array.isArray(user)) return console.error("Bad user");
+            if (this.playerId !== user.data.id)
+              EventProvider.emit(EventType.USER_LEFT, user);
           }
         );
 
