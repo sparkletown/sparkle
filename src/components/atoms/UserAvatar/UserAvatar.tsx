@@ -16,7 +16,7 @@ import { useVenueUserStatuses } from "hooks/useVenueUserStatuses";
 import {
   getFirebaseStorageResizedImage,
   ImageResizeOptions,
-} from "../../../utils/image";
+} from "utils/image";
 
 import "./UserAvatar.scss";
 
