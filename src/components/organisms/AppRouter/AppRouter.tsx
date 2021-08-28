@@ -68,6 +68,14 @@ const VenuePage = lazy(() =>
   )
 );
 
+const EmergencyViewPage = lazy(() =>
+  tracePromise("AppRouter::lazy-import::EmergencyViewPage", () =>
+    import("pages/EmergencyViewPage").then(({ EmergencyViewPage }) => ({
+      default: EmergencyViewPage,
+    }))
+  )
+);
+
 export const AppRouter: React.FC = () => {
   return (
     <Router basename="/">
@@ -108,6 +116,12 @@ export const AppRouter: React.FC = () => {
               <VenuePage />
             </Provided>
           </Route>
+          <Route path="/m/:venueId">
+            <Provided withWorldUsers withRelatedVenues>
+              <EmergencyViewPage />
+            </Provided>
+          </Route>
+
           <Route path="/version" component={VersionPage} />
 
           <Route

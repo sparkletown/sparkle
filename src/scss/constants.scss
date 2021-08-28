@@ -167,6 +167,7 @@ $z-layer-navbar: 30;
 $z-layer-live-schedule: 20;
 $z-layer-live-schedule-download: 25;
 $z-layer-sidebar: 30;
+$z-layer-emergency-content: 15;
 
 // @debt hack-fix to hide dropdown under navbar (reason: navbar stacking context)
 //       a better solution discussed here https://github.com/sparkletown/sparkle/pull/1350#discussion_r622895298
@@ -192,6 +193,8 @@ $z-layers: (
   user-search-results: 380,
   chat-poll-text: 0,
   chat-poll-text-background: -1,
+  // Emergency Page
+  emergency-content: $z-layer-emergency-content,
   // Nav
   navbar-map-back-button: $z-layer-sidebar,
   navbar-schedule-backdrop: $z-layer-live-schedule,
