@@ -122,53 +122,24 @@ export class AvatarTuningSystem extends System {
       if (view.cycle && view.cycle.parent) {
         view.cycle.parent.removeChild(view.cycle);
       }
-      if (
-        this.player.head.player.fsm.currentStateName !==
-        this.player.head.player.IMMOBILIZED
-      ) {
-        if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
-          view.cycle = Sprite.from(avatarFeets[0]);
-          view.cycle.y = view.avatar.height / 2;
-          view.cycle.anchor.set(0.5);
-          // TODO HARDCODE
-          view.cycle.scale.set(2);
+      if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
+        view.cycle = Sprite.from(avatarFeets[0]);
+        view.cycle.y = view.avatar.height / 2;
+        view.cycle.anchor.set(0.5);
+        // TODO HARDCODE
+        view.cycle.scale.set(2);
 
-          view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-        } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
-          view.cycle = Sprite.from(avatarCycles[0]);
-          view.cycle.y = view.avatar.height / 2;
-          view.cycle.anchor.set(0.5);
-          // TODO HARDCODE
-          view.cycle.scale.set(1.4);
+        view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
+      } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
+        view.cycle = Sprite.from(avatarCycles[0]);
+        view.cycle.y = view.avatar.height / 2;
+        view.cycle.anchor.set(0.5);
+        // TODO HARDCODE
+        view.cycle.scale.set(1.4);
 
-          view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-        }
+        view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
       }
     }
-
-    // // CYCLE
-    // if (
-    //   this.player &&
-    //   this.player.head &&
-    //   this.player.head.player.data.id === node.tuning.user.id &&
-    //   this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
-    //   !view.cycle
-    // ) {
-    //   view.cycle = Sprite.from(avatarCycles[0]);
-    //   view.cycle.y = view.avatar.height / 2;
-    //   view.cycle.anchor.set(0.5);
-    //   // TODO HARDCODE
-    //   view.cycle.scale.set(1.3);
-    //
-    //   view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-    // } else if (
-    //   (!node.tuning.user.data.cycle ||
-    //     this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
-    //   view.cycle
-    // ) {
-    //   view.removeChild(view.cycle);
-    //   view.cycle = null;
-    // }
 
     // HAT
     if (

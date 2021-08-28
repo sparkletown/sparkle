@@ -26,6 +26,7 @@ import { JoystickComponent } from "../components/JoystickComponent";
 import { KeyboardComponent } from "../components/KeyboardComponent";
 import { MotionControlSwitchComponent } from "../components/MotionControlSwitchComponent";
 import { MotionKeyboardControlComponent } from "../components/MotionKeyboardControlComponent";
+import { MotionTeleportComponent } from "../components/MotionTeleportComponent";
 import { MovementComponent } from "../components/MovementComponent";
 import { PlayerComponent } from "../components/PlayerComponent";
 import { PositionComponent } from "../components/PositionComponent";
@@ -467,27 +468,50 @@ export default class EntityFactory {
       playerNode.entity.add(firebarrelNode.barrel);
       playerNode.player.fsm.changeState(playerNode.player.IMMOBILIZED);
 
-      // TODO smooth go to firebarrel
-      playerNode.position.x =
+      const x1 = firebarrelNode.position.x;
+      const y1 = firebarrelNode.position.y;
+      const x2 = playerNode.position.x;
+      const y2 = playerNode.position.y;
+      const d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      const r = firebarrelNode.collision.radius / d;
+
+      const x3 =
+        r * x2 + (1 - r) * x1 ||
         firebarrelNode.position.x + firebarrelNode.collision.radius * 0.8;
-      playerNode.position.y =
+      const y3 =
+        r * y2 + (1 - r) * y1 ||
         firebarrelNode.position.y + firebarrelNode.collision.radius * 0.8;
+
+      playerNode.entity.add(new MotionTeleportComponent(x3, y3));
 
       // setTimeout(() => {
       //   this.exitFirebarrel();
-      // }, 10000);
+      // }, 5000);
     }
   }
 
   public exitFirebarrel(): void {
     console.log("exitFirebarrel");
     const playerNode = this.getPlayerNode();
+
     if (!playerNode) {
       return;
     }
-    playerNode.entity.remove(BarrelComponent);
+    const barrelComponent = playerNode.entity.remove(BarrelComponent);
     playerNode.player.fsm.changeState(playerNode.player.FLYING);
     playerNode.entity.add(playerNode.player);
+
+    if (barrelComponent) {
+      const x1 = barrelComponent.model.x;
+      const y1 = barrelComponent.model.y;
+      const x2 = playerNode.position.x;
+      const y2 = playerNode.position.y;
+
+      const x3 = playerNode.position.x + (x2 - x1) * 2;
+      const y3 = playerNode.position.y + (y2 - y1) * 2;
+
+      playerNode.entity.add(new MotionTeleportComponent(x3, y3));
+    }
   }
 
   public createVenue(venue: ReplicatedVenue): Entity {
