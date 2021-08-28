@@ -5,7 +5,7 @@ import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { checkIsEmailWhitelisted } from "api/auth";
+import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -79,6 +79,8 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError("backend");
   };
 
+  console.log({ errors });
+
   if (!venue) {
     return <>Loading...</>;
   }
@@ -98,6 +100,22 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
             "email",
             "validation",
             "We can't find you! Please use the email from your invitation."
+          );
+          return;
+        }
+      }
+
+      if (venue.access === VenueAccessMode.Codes) {
+        const isCodeValid = await checkIsCodeValid({
+          venueId: venue.id,
+          code: data.code,
+        });
+
+        if (!isCodeValid.data) {
+          setError(
+            "code",
+            "validation",
+            "We can't find you! Please use the code from your invitation."
           );
           return;
         }

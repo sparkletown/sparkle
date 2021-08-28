@@ -14,9 +14,9 @@ import { initFirebaseAdminApp, makeScriptUsage } from "./lib/helpers";
 const usage = makeScriptUsage({
   description: "Configures the venue access with the selected method and value",
   usageParams:
-    "PROJECT_ID VENUE_ID [password|emaillist|codelist] [password | emails file path | codes file path] [CREDENTIAL_PATH]",
+    "PROJECT_ID VENUE_ID [Password|Emails|Codes] [password | emails file path | codes file path] [CREDENTIAL_PATH]",
   exampleParams:
-    "co-reality-map password abc123 [theMatchingAccountServiceKey.json] / co-reality-map emails emails-one-per-line.txt [theMatchingAccountServiceKey.json] / co-reality-map codes ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]",
+    "co-reality-map mypartymap Password abc123 [theMatchingAccountServiceKey.json] / co-reality-map mypartymap Emails emails-one-per-line.txt [theMatchingAccountServiceKey.json] / co-reality-map mypartymap Codes ticket-codes-one-per-line.txt [theMatchingAccountServiceKey.json]",
 });
 
 const [
@@ -57,8 +57,8 @@ initFirebaseAdminApp(projectId, {
   const accessDocRef = admin
     .firestore()
     .doc(`venues/${venueId}/access/${method}`);
-  const accessDoc = await accessDocRef.get();
-  const access = accessDoc.exists ? accessDoc.data() : {};
+  // const accessDoc = await accessDocRef.get();
+  // const access = accessDoc.exists ? accessDoc.data() : {};
 
   switch (method) {
     case VenueAccessMode.Password:
@@ -89,9 +89,8 @@ initFirebaseAdminApp(projectId, {
       const codes = fs
         .readFileSync(accessDetail, "utf-8")
         .split(/\r?\n/)
-        .forEach((line) => {
-          access?.codes?.push(line.trim());
-        });
+        .map((line) => line.trim().toLowerCase());
+
       console.log(`Setting venues/${venueId}/access/${method}...`);
       await accessDocRef.set(
         {
