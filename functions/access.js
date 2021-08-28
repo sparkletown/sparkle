@@ -53,7 +53,6 @@ const getAccessDoc = async (venueId, method) => {
   }
 
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
-  console.log({ venue });
   if (!venue.exists) {
     throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
   }
@@ -90,11 +89,7 @@ const isValidEmail = async (venueId, email) => {
 const isValidCode = async (venueId, code) => {
   if (!venueId || !code) return false;
 
-  console.log({ venueId, code });
-
   const access = await getAccessDoc(venueId, "Codes");
-
-  console.log({ access });
 
   if (!access || !access.exists || !access.data().codes) {
     return false;

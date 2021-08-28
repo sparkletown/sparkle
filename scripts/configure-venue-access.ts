@@ -57,8 +57,6 @@ initFirebaseAdminApp(projectId, {
   const accessDocRef = admin
     .firestore()
     .doc(`venues/${venueId}/access/${method}`);
-  // const accessDoc = await accessDocRef.get();
-  // const access = accessDoc.exists ? accessDoc.data() : {};
 
   switch (method) {
     case VenueAccessMode.Password:

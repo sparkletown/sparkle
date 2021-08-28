@@ -79,8 +79,6 @@ const RegisterForm: React.FunctionComponent<PropsType> = ({
     clearError("backend");
   };
 
-  console.log({ errors });
-
   if (!venue) {
     return <>Loading...</>;
   }
