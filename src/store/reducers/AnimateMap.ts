@@ -21,6 +21,7 @@ export interface AnimateMapEntity {
 
 export interface ReplicatedUserData {
   id: string;
+  name: string | undefined;
   messengerId: number; //playerio messager id
   videoUrlString: string;
   avatarUrlString: string | string[];
@@ -59,6 +60,7 @@ export interface ReplicatedFirebarrel extends AnimateMapEntity {
 export class PlayerModel implements ReplicatedUser {
   public data: ReplicatedUserData = {
     id: "",
+    name: "",
     messengerId: 0,
     videoUrlString: "",
     avatarUrlString: "",
