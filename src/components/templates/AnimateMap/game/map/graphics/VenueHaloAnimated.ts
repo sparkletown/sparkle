@@ -1,5 +1,4 @@
 import { Animatable } from "./Animatable";
-import { Venue } from "./Venue";
 import { VenueHalo } from "./VenueHalo";
 
 export class VenueHaloAnimated extends VenueHalo implements Animatable {
@@ -9,16 +8,12 @@ export class VenueHaloAnimated extends VenueHalo implements Animatable {
   private directionFactorIn = 1;
   private directionFactorOut = 1;
 
-  constructor(view: Venue, scale = 1) {
-    super(view, scale);
-  }
-
   animate(time: number) {
     if (!this.view.halo) {
       return;
     }
 
-    const haloScale = 1 / this.scale;
+    const haloScale = VenueHalo.SCALE;
     this.time +=
       time *
       (this.direction === 1
