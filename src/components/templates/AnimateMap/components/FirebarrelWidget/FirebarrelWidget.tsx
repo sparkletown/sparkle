@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { useFirebase } from "react-redux-firebase";
 import Bugsnag from "@bugsnag/js";
+import { faDoorOpen } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Video from "twilio-video";
 
 import { getTwilioVideoToken } from "api/video";
@@ -21,6 +23,7 @@ const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 export interface FirebarrelWidgetProps {
   roomName: string;
   venueName: string;
+  onExit: () => void;
   setUserList: (val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
@@ -38,9 +41,9 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   roomName,
   venueName,
   setUserList,
+  onExit,
   setParticipantCount,
   setSeatedAtTable,
-  hasChairs = true,
   defaultMute,
   isAudioEffectDisabled,
 }) => {
@@ -313,11 +316,21 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     ) : null;
   }, [meIsBartender, room, profileData, defaultMute, isAudioEffectDisabled]);
 
+  const onExitClick = useCallback(() => {
+    if (!room) return;
+
+    room.disconnect();
+    onExit();
+  }, [room, onExit]);
+
   if (!token) return null;
 
   return (
     <>
       <div className="firebarrel-room__participants">
+        <div className="firebarrel-room__exit-container" onClick={onExitClick}>
+          <FontAwesomeIcon size="lg" icon={faDoorOpen} />
+        </div>
         {myVideo}
         {sidedVideos}
         {otherVideos}
