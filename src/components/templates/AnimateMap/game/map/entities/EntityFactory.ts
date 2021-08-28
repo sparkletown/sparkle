@@ -193,9 +193,13 @@ export default class EntityFactory {
 
   public createBubble(userId: string, text: string): Entity | null {
     const bot = this.getBotNode(userId);
+    const player = this.getPlayerNode();
     if (bot) {
       bot.entity.add(new BubbleComponent(text, bot.bot.data.data.dotColor));
       return bot.entity;
+    }
+    if (player) {
+      player.entity.add(new BubbleComponent(text));
     }
     return null;
   }

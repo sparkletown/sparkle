@@ -114,12 +114,15 @@ export class BubbleSystem extends System {
     const style = new TextStyle({
       fill: textColor,
       fontSize: textSize,
+      wordWrap: true,
+      wordWrapWidth: 120,
     });
 
     const text: Text = new Text(txt, style);
 
     const h = Math.max(text.height * 2, 18);
-    const w = text.width + 2 * text.height;
+    const w =
+      text.width < 120 ? text.width + 2 * text.height : 120 + 2 * text.height;
     const r = 6;
     const borderThikness = 2;
     const borderColor = 0x9178f6;
