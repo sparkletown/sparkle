@@ -43,11 +43,11 @@ $name--margin-bottom: 5px;
   }
 
   &__name {
-    font-style: italic;
     margin-bottom: $name--margin-bottom;
   }
 
   &__subtitle {
     font-weight: $font-weight--400;
+    font-size: $font-size--lg;
   }
 }

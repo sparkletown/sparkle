@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import { useCss } from "react-use";
 import classNames from "classnames";
 
@@ -6,8 +6,6 @@ import { DEFAULT_VENUE_LOGO } from "settings";
 
 import { useValidImage } from "hooks/useCheckImage";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
-
-import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import "./ScheduleVenueDescription.scss";
 
@@ -26,7 +24,6 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
     sovereignVenue?.host?.icon,
     DEFAULT_VENUE_LOGO
   );
-
   const containerCssVars = useCss({
     "--venue-picture--background-image": `url(${venueIcon})`,
   });
@@ -48,10 +45,8 @@ export const ScheduleVenueDescription: FC<ScheduleVenueDescriptionProps> = ({
             {sovereignVenue?.name ?? "Schedule"}
           </h2>
           <h3 className="ScheduleVenueDescription__subtitle">{subtitle}</h3>
+          <p className="ScheduleVenueDescription__desc">{description}</p>
         </div>
-      </div>
-      <div className="ScheduleVenueDescription__desc">
-        <RenderMarkdown text={description} />
       </div>
     </div>
   );

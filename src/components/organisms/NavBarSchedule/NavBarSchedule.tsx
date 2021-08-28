@@ -20,6 +20,7 @@ import {
 } from "utils/event";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
+import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
@@ -28,9 +29,8 @@ import { useUser } from "hooks/useUser";
 import useVenueScheduleEvents from "hooks/useVenueScheduleEvents";
 
 import { ScheduleNG } from "components/molecules/ScheduleNG";
+import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 
-// Disabled as per designs. Up for deletion if confirmied not necessary
-// import { ScheduleVenueDescription } from "components/molecules/ScheduleVenueDescription";
 import { Button } from "components/atoms/Button";
 import { Toggler } from "components/atoms/Toggler";
 
@@ -73,6 +73,17 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     relatedVenues,
   } = useVenueScheduleEvents({ venueId, userEventIds });
 
+  const venueRoomTitle = useMemo(
+    () =>
+      sovereignVenue?.rooms?.find((room) => {
+        const [roomName] = getLastUrlParam(
+          getUrlWithoutTrailingSlash(room.url)
+        );
+        return roomName.toLowerCase() === venueId;
+      }),
+    [sovereignVenue, venueId]
+  )?.title;
+
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
   // @debt: probably will need to be re-calculated based on minDateUtcSeconds instead of startOfDay.Check later
@@ -86,6 +97,9 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   const { currentVenue } = useRelatedVenues({
     currentVenueId: venueId,
   });
+
+  const [filterRelatedEvents, setFilterRelatedEvents] = useState(false);
+
   const hasSavedEvents = !!liveAndFutureEvents.filter((event) => event.isSaved)
     .length;
 
@@ -157,6 +171,10 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
         ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        : filterRelatedEvents
+        ? eventsFilledWithPriority.filter(
+            (event) => event.room === venueRoomTitle
+          )
         : eventsFilledWithPriority,
     };
   }, [
@@ -164,6 +182,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     selectedDayIndex,
     showPersonalisedSchedule,
     firstScheduleDate,
+    filterRelatedEvents,
+    venueRoomTitle,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {
@@ -212,11 +232,40 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     "NavBarSchedule--show": isVisible,
   });
 
+  const isNotSovereignVenue = venueId !== sovereignVenue?.id;
+  const breadcrumbSovereignVenueClasses = classNames(
+    "NavBarScheduleBreadcrumb__btn",
+    {
+      "NavBarScheduleBreadcrumb__btn--disabled": filterRelatedEvents,
+    }
+  );
+
+  const breadcrumbVenueClasses = classNames("NavBarScheduleBreadcrumb__btn", {
+    "NavBarScheduleBreadcrumb__btn--disabled": !filterRelatedEvents,
+  });
+
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
-        {/* Disabled as per designs. Up for deletion if confirmied not necessary */}
-        {/* {venueId && <ScheduleVenueDescription venueId={venueId} />} */}
+        <div className="NavBarSchedule__breadcrumb">
+          <label>Events on: </label>
+          <button
+            onClick={() => setFilterRelatedEvents(false)}
+            className={breadcrumbSovereignVenueClasses}
+          >
+            {sovereignVenue?.name}
+          </button>
+          /
+          {isNotSovereignVenue && (
+            <button
+              onClick={() => setFilterRelatedEvents(true)}
+              className={breadcrumbVenueClasses}
+            >
+              {currentVenue?.name}
+            </button>
+          )}
+        </div>
+        {venueId && <ScheduleVenueDescription venueId={venueId} />}
 
         <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
