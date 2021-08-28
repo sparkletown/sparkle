@@ -14,7 +14,7 @@ import {
 const usage = makeScriptUsage({
   description: "Print venue owners' email addresses.",
   usageParams: "[CREDENTIAL_PATH] filterArray",
-  exampleParams: "[theMatchingAccountServiceKey.json]",
+  exampleParams: "[theMatchingAccountServiceKey.json] gmail.com",
 });
 
 const [credentialPath, ...filterArray] = process.argv.slice(2);
