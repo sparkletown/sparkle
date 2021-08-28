@@ -82,43 +82,51 @@ export const ProfileRF: React.FC = () => {
       <DivRF variant="title">Create your profile</DivRF>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mod--flex-col">
-        <InputWrapRF
-          info={`This is your display name (max ${DISPLAY_NAME_MAX_CHAR_COUNT} characters)`}
-          required={
-            errors?.partyName?.type === "required" && "Display name is required"
-          }
-          error={
-            errors?.partyName?.type === "maxLength" &&
-            `Display name must be ${DISPLAY_NAME_MAX_CHAR_COUNT} characters or less )`
-          }
-        >
-          <input
-            name="partyName"
-            className="input-block input-centered"
-            placeholder="Your display name"
-            ref={register({
-              required: true,
-              maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
-            })}
-            autoComplete="off"
-          />
-        </InputWrapRF>
-        {user && (
-          <ProfilePictureInput
-            {...{ venueId, setValue, user, errors, pictureUrl, register }}
-          />
-        )}
-        <div className="input-group">
-          <ButtonNG
-            variant="primary"
-            type="submit"
-            disabled={!formState.isValid || isUpdating}
+        <DivRF className="mod--flex-col">
+          <InputWrapRF
+            info={`This is your display name (max ${DISPLAY_NAME_MAX_CHAR_COUNT} characters)`}
+            required={
+              errors?.partyName?.type === "required" &&
+              "Display name is required"
+            }
+            error={
+              errors?.partyName?.type === "maxLength" &&
+              `Display name must be ${DISPLAY_NAME_MAX_CHAR_COUNT} characters or less )`
+            }
           >
-            Create my profile
-          </ButtonNG>
-          <Loading displayWhile={isUpdating} />
-          <SpanRF variant="error">{httpError?.message}</SpanRF>
-        </div>
+            <input
+              name="partyName"
+              className="input-block input-centered"
+              placeholder="Your display name"
+              ref={register({
+                required: true,
+                maxLength: DISPLAY_NAME_MAX_CHAR_COUNT,
+              })}
+              autoComplete="off"
+            />
+          </InputWrapRF>
+
+          {user && (
+            <ProfilePictureInput
+              venueId={venueId}
+              setValue={setValue}
+              user={user}
+              errors={errors}
+              pictureUrl={pictureUrl}
+              register={register}
+            />
+          )}
+        </DivRF>
+        <ButtonNG
+          variant="primary"
+          type="submit"
+          disabled={!formState.isValid || isUpdating}
+          loading={isUpdating}
+        >
+          Create my profile
+        </ButtonNG>
+        <Loading displayWhile={isUpdating} />
+        <SpanRF variant="error">{httpError?.message}</SpanRF>
       </form>
     </PaneRF>
   );

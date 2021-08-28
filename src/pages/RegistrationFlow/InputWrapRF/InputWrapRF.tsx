@@ -22,7 +22,6 @@ export const InputWrapRF: React.FC<TextInputProps> = ({
     "InputWrapRF--error": required || error,
     [className]: className,
   });
-  console.log(InputWrapRF.name, componentClasses, { info, required, error });
   return (
     <div className={componentClasses}>
       {children}
