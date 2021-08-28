@@ -1,6 +1,10 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { Container, Graphics, Sprite, Text, TextStyle } from "pixi.js";
 
+import EventProvider, {
+  EventType,
+} from "components/templates/AnimateMap/bridges/EventProvider/EventProvider";
+
 import EntityFactory from "../entities/EntityFactory";
 import { BubbleNode } from "../nodes/BubbleNode";
 import { ViewportNode } from "../nodes/ViewportNode";
@@ -19,6 +23,8 @@ export class BubbleSystem extends System {
     this.bubbles.nodeRemoved.add(this.handleBubbleRemoved);
 
     this.viewport = engine.getNodeList(ViewportNode);
+
+    EventProvider.on(EventType.RECIEVE_MSG, this.recieveMsgCallback);
   }
 
   removeFromEngine(engine: Engine) {
@@ -37,6 +43,7 @@ export class BubbleSystem extends System {
     }
 
     this.viewport = undefined;
+    EventProvider.off(EventType.RECIEVE_MSG, this.recieveMsgCallback);
   }
 
   update(time: number) {
@@ -53,7 +60,9 @@ export class BubbleSystem extends System {
       }
     }
   }
-
+  private recieveMsgCallback = (userId: string, msg: string) => {
+    this.creator.createBubble(userId, msg);
+  };
   private handleBubbleAdded = (node: BubbleNode) => {
     let view = node.bubble.view;
     if (!view) {

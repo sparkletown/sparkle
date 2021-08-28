@@ -48,6 +48,7 @@ export const Shoutouter: React.FC<ShoutouterProps> = () => {
   };
   const onSendClick = () => {
     EventProvider.emit(EventType.SEND_MSG, state.userId, state.msg);
+    EventProvider.emit(EventType.RECIEVE_MSG, state.userId, state.msg);
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     document.querySelector("." + componentName + " input").value = "";
