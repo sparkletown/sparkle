@@ -51,9 +51,10 @@ const getAccessDoc = async (venueId, method) => {
   if (!venueId || !method) {
     return undefined;
   }
+
   const venue = await admin.firestore().collection("venues").doc(venueId).get();
   if (!venue.exists) {
-    throw new HttpsError("not-found", `venue ${venueId} does not exist`);
+    throw new HttpsError("not-found", `Venue ${venueId} does not exist`);
   }
   const accessDoc = await venue.ref.collection("access").doc(method).get();
   return accessDoc;
@@ -88,7 +89,7 @@ const isValidEmail = async (venueId, email) => {
 const isValidCode = async (venueId, code) => {
   if (!venueId || !code) return false;
 
-  const access = getAccessDoc(venueId, "Code");
+  const access = await getAccessDoc(venueId, "Codes");
 
   if (!access || !access.exists || !access.data().codes) {
     return false;
@@ -140,6 +141,10 @@ const createToken = async (venueId, uid, password, email, code) => {
 
 exports.checkIsEmailWhitelisted = functions.https.onCall(async (data) =>
   isValidEmail(data.venueId, data.email)
+);
+
+exports.checkIsCodeValid = functions.https.onCall(async (data) =>
+  isValidCode(data.venueId, data.code)
 );
 
 exports.checkAccess = functions.https.onCall(async (data, context) => {
