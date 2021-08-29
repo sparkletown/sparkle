@@ -1,7 +1,5 @@
 #!/usr/bin/env node -r esm -r ts-node/register
 
-import { ScreeningRoomVideo } from "../src/types/screeningRoom";
-
 import {
   checkFileExists,
   initFirebaseAdminApp,
@@ -14,13 +12,9 @@ const usage = makeScriptUsage({
   exampleParams: `co-reality-sparkle bootstrap fooAccountKey.json`,
 });
 
-const [
-  projectId,
-  venueId,
-  credentialPath,
-] = process.argv.slice(2);
+const [projectId, venueId, credentialPath] = process.argv.slice(2);
 
-if (!projectId || !credentialPath || !venueId ||) {
+if (!projectId || !credentialPath || !venueId) {
   usage();
 }
 
@@ -34,44 +28,29 @@ const app = initFirebaseAdminApp(projectId, { credentialPath });
 const appBatch = app.firestore().batch();
 
 (async () => {
-  const screeningRoomVideosData =
+  Array(5)
+    .fill({
+      coordinateX: 1000,
+      coordinateY: 1000,
+      maxUserCount: 6,
+      isLocked: false,
+      connectedUsers: [],
+      iconSrc: "assets/images/AnimateMap/barrels/barrel.png",
+    })
+    .forEach((firebarrel) => {
+      const screeningVideoRef = app
+        .firestore()
+        .collection("venues")
+        .doc(venueId)
+        .collection("screeningRoomVideos")
+        .doc();
 
-  screeningRoomVideosData.forEach((videoData) => {
-    const screeningVideoRef = app
-      .firestore()
-      .collection("venues")
-      .doc(venueId)
-      .collection("screeningRoomVideos")
-      .doc();
+      console.log(firebarrel);
 
-    const [
-      title,
-      authorName,
-      videoSrc,
-      thumbnailSrc,
-      category,
-      subCategory,
-      introduction,
-    ] = videoData;
-
-    const screeningRoomVideo: ScreeningRoomVideo = {
-      title,
-      authorName,
-      videoSrc,
-      thumbnailSrc,
-      category: category.toLowerCase(),
-      ...(subCategory ? { subCategory: subCategory.toLowerCase() } : {}),
-      ...(introduction ? { introduction } : {}),
-    };
-
-    console.log(screeningRoomVideo);
-
-    appBatch.set(screeningVideoRef, screeningRoomVideo);
-  });
+      appBatch.set(screeningVideoRef, firebarrel);
+    });
 
   await appBatch.commit();
 
-  console.log(
-    `Succesfully added ${screeningRoomVideosData.length} videos to the ${venueId} venue.`
-  );
+  console.log(`Succesfully added firebarrels to the ${venueId} venue.`);
 })();
