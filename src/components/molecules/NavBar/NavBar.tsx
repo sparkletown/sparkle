@@ -10,6 +10,7 @@ import { useHistory } from "react-router-dom";
 import { useLocalStorage } from "react-use";
 import {
   faBars,
+  faExternalLinkAlt,
   faTicketAlt,
   faVolumeUp,
 } from "@fortawesome/free-solid-svg-icons";
@@ -321,15 +322,32 @@ export const NavBar: React.FC<NavBarPropsType> = ({
               ) : (
                 <div>{navbarTitle}</div>
               )}
-              <PlayaTime />
-              <div className="NavBar__separator">-</div>
-              <VenuePartygoers />
+              <div className="NavBar__playa-info">
+                <PlayaTime />
+                <div className="NavBar__separator">-</div>
+                <VenuePartygoers />
+              </div>
             </div>
 
             {!user && <NavBarLogin />}
 
             {user && (
               <div className="navbar-links">
+                <div className="navbar-links__simplified-view">
+                  <a
+                    className="navbar-links__simplified-view-a"
+                    href={`/m/${venueId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <ButtonNG className="navbar-links__simplified-view-button">
+                      <span className="navbar-links__simplified-view-text">
+                        Simplified View &nbsp;
+                      </span>
+                      <FontAwesomeIcon icon={faExternalLinkAlt} />
+                    </ButtonNG>
+                  </a>
+                </div>
                 <NavSearchBar venueId={venueId ?? ""} />
 
                 {hasUpcomingEvents && (
