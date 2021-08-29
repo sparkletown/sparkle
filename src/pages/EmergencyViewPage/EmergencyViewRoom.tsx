@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { faUserFriends } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Room } from "types/rooms";
 
 import { useRoom } from "hooks/useRoom";
+
+import { getFirebaseStorageResizedImage } from "../../utils/image";
 
 type EmergencyViewRoomProps = {
   room: Room;
@@ -18,6 +20,15 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   isLive,
 }) => {
   const { enterRoom, recentRoomUsers } = useRoom({ room, venueName });
+  const roomImage = useMemo(
+    () =>
+      getFirebaseStorageResizedImage(room.image_url, {
+        fit: "crop",
+        width: 100,
+        height: 100,
+      }),
+    [room.image_url]
+  );
 
   return (
     <div className="EmergencyView_content_room">
@@ -33,7 +44,7 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
       <div className="EmergencyView_content_room_body" onClick={enterRoom}>
         <img
           className="EmergencyView_content_room_body_image"
-          src={room.image_url}
+          src={roomImage}
           alt={room.title}
         />
         <span>{room.title}</span>

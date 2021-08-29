@@ -36,6 +36,8 @@ import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
+import { getFirebaseStorageResizedImage } from "../../../utils/image";
+
 import "./ScheduleItemNG.scss";
 
 export interface ScheduleItemNGProps {
@@ -99,6 +101,16 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     }
   }, [enterRoom, event, eventRoom, roomUrlParam]);
 
+  const eventImage = useMemo(
+    () =>
+      getFirebaseStorageResizedImage(eventRoom?.image_url ?? event.venueIcon, {
+        fit: "crop",
+        width: 40,
+        height: 40,
+      }),
+    [eventRoom, event]
+  );
+
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,
   });
@@ -150,7 +162,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       {isShowFullInfo && (
         <img
           className="ScheduleItemNG__icon"
-          src={eventRoom?.image_url ?? event.venueIcon}
+          src={eventImage}
           alt="event location"
         />
       )}
