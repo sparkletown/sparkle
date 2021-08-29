@@ -26,18 +26,15 @@ export const stubUsersData = () => {
       y,
       data: {
         id: id,
-        name: id,
+        partyName: id,
         messengerId: getIntByHash(id),
-        videoUrlString: "",
-        avatarUrlString: `/avatars/default-profile-pic-${
-          getRandomInt(3) + 1
-        }.png`,
+        pictureUrl: `/avatars/default-profile-pic-${getRandomInt(3) + 1}.png`,
         dotColor: Math.floor(Math.random() * 16777215),
         hat: avatarHats[x % avatarHats.length],
         accessories: avatarAccessories[y % avatarAccessories.length],
         cycle: avatarCycles[x % avatarCycles.length],
       },
-    });
+    } as ReplicatedUser);
   }
   return users;
 };

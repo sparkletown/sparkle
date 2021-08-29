@@ -45,11 +45,11 @@ const drawAvatars = (
   const avatars: Array<Promise<RoundAvatar>> = [];
 
   barrel.data.connectedUsers.forEach((user) => {
-    let avatarUrlString = user.data.avatarUrlString;
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+    const pictureUrls = [user.data.pictureUrl]; //todo: refactor
+    // if (!Array.isArray(pictureUrls)) {
+    //   pictureUrls = [pictureUrls];
+    // }
+    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
 
     avatars.push(new RoundAvatar(url).execute());
   });

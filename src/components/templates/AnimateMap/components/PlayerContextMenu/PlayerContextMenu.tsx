@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
+import { useChatSidebarControls } from "hooks/chats/chatSidebar";
 import { useProfileModalControls } from "hooks/useProfileModalControls";
 
 import EventProvider, {
@@ -12,7 +13,7 @@ import "./PlayerContextMenu.scss";
 export interface UIContextMenuProps {}
 
 interface IPlayerContextMenu {
-  userId: string;
+  user?: ReplicatedUser;
   isShown: boolean;
   posX: number;
   posY: number;
@@ -20,7 +21,6 @@ interface IPlayerContextMenu {
 
 export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
   const [state, setState] = useState({
-    userId: "",
     isShown: false,
     posX: 0,
     posY: 0,
@@ -30,7 +30,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
 
   const onReplicatedUserClickHandler = useCallback(
     (user: ReplicatedUser, viewportX: number, viewportY: number) => {
-      setState({ userId: "", isShown: false, posX: -200, posY: -200 });
+      setState({ user: undefined, isShown: false, posX: -200, posY: -200 });
       if (!selfRef.current?.parentElement?.parentElement) return;
 
       const viewportWidth =
@@ -46,7 +46,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
           ? viewportHeight - selfRef.current.clientHeight
           : viewportHeight - viewportY;
       setState({
-        userId: user.data.id,
+        user: user,
         isShown: true,
         posX,
         posY,
@@ -56,22 +56,28 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
   );
 
   const closeMenu = () => {
-    setState({ userId: "", isShown: false, posX: -200, posY: -200 });
+    setState({ user: undefined, isShown: false, posX: -200, posY: -200 });
   };
 
-  const videoChatHandler = () => {
-    console.log("start video chat", state.userId);
-    closeMenu();
-  };
+  // const videoChatHandler = () => {
+  //   console.log("start video chat", state.user);
+  //   closeMenu();
+  // };
 
-  const sendMessageHandler = () => {
-    console.log("start video chat", state.userId);
+  const { selectRecipientChat } = useChatSidebarControls();
+  const { closeUserProfileModal } = useProfileModalControls();
+  const sendMessageHandler = useCallback(() => {
+    if (!state.user?.data.id) return;
+
+    selectRecipientChat(state.user.data.id);
+    closeUserProfileModal();
     closeMenu();
-  };
-  const viewProfileHandler = () => {
-    openUserProfileModal({ id: state.userId });
+  }, [selectRecipientChat, closeUserProfileModal, state]);
+
+  const viewProfileHandler = useCallback(() => {
+    if (state.user) openUserProfileModal(state.user.data);
     closeMenu();
-  };
+  }, [state, openUserProfileModal]);
 
   useEffect(() => {
     EventProvider.on(
@@ -98,7 +104,7 @@ export const UIPlayerContextMenu: React.FC<UIContextMenuProps> = () => {
         animationPlayState: "play",
       }}
     >
-      <div onClick={videoChatHandler}>Video Chat</div>
+      {/*<div onClick={videoChatHandler}>Video Chat</div>*/}
       <div onClick={sendMessageHandler}>Send Message</div>
       <div onClick={viewProfileHandler}>View Profile</div>
     </div>

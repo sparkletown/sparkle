@@ -75,7 +75,7 @@ export class CloudDataProvider
     );
     //window.ADD_IO_BOT = this._testBots.addBot.bind(this._testBots); //TODO: remove later
 
-    playerModel.data.avatarUrlString = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
+    playerModel.data.pictureUrl = userAvatarUrl ?? DEFAULT_AVATAR_IMAGE;
     playerModel.data.id = playerId;
 
     this.commonInterface = new CommonLinker(
@@ -214,10 +214,9 @@ export class CloudDataProvider
         y: -1000,
         data: {
           id: user.id,
-          name: user.partyName,
+          partyName: user.partyName,
           messengerId: getIntByHash(user.id),
-          avatarUrlString: user.pictureUrl ?? "",
-          videoUrlString: "",
+          pictureUrl: user.pictureUrl,
           dotColor: 0xabfcfb,
         },
       });

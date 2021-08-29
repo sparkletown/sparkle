@@ -1,6 +1,7 @@
 import { Engine, Entity, NodeList } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
+import { setAnimateMapFireBarrel } from "store/actions/AnimateMap";
 import {
   ReplicatedFirebarrel,
   ReplicatedUser,
@@ -9,7 +10,6 @@ import {
 
 import { Point } from "types/utility";
 
-import { setAnimateMapFireBarrel } from "../../../../../../store/actions/AnimateMap";
 import { RoundAvatar } from "../../commands/RoundAvatar";
 import { avatarCycles } from "../../constants/AssetConstants";
 import { GameInstance } from "../../GameInstance";
@@ -209,11 +209,11 @@ export default class EntityFactory {
   }
 
   public createPlayer(user: ReplicatedUser): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
+    const pictureUrls = [user.data.pictureUrl];
 
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
+    // if (!Array.isArray(pictureUrls)) {
+    //   pictureUrls = [pictureUrls];
+    // }
 
     // HACK
     user.data.cycle = avatarCycles[0];
@@ -267,7 +267,7 @@ export default class EntityFactory {
     fsm.changeState("flying");
     this.engine.addEntity(entity);
 
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
     const sprite: Avatar = new Avatar();
     new RoundAvatar(url)
       .execute()
@@ -293,11 +293,11 @@ export default class EntityFactory {
   }
 
   public createArtcar(user: ReplicatedUser): Entity {
-    let avatarUrlString = user.data.avatarUrlString;
+    const pictureUrls = [user.data.pictureUrl];
 
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
+    // if (!Array.isArray(pictureUrls)) {
+    //   pictureUrls = [pictureUrls];
+    // }
 
     const scale = 0.3;
 
@@ -359,7 +359,7 @@ export default class EntityFactory {
 
         resolve(true);
       });
-      img.src = avatarUrlString[0];
+      img.src = pictureUrls[0] ?? "";
     }).then(() => {
       const spriteComponent: SpriteComponent = new SpriteComponent();
       spriteComponent.view = Sprite.from(canvas);

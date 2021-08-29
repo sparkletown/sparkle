@@ -6,12 +6,12 @@ import {
   AnimateMapActionTypes,
 } from "store/actions/AnimateMap";
 
+import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
+import { User } from "types/User";
 import { Point } from "types/utility";
 
 import { StartPoint } from "components/templates/AnimateMap/game/utils/Point";
-
-import { Firebarrel } from "../../types/animateMap";
 
 export interface AnimateMapEntity {
   x: number;
@@ -19,12 +19,11 @@ export interface AnimateMapEntity {
   data: ReplicatedUserData | ReplicatedVenueData | ReplicatedFirebarrelData;
 }
 
-export interface ReplicatedUserData {
+export interface ReplicatedUserData extends User {
   id: string;
-  name: string | undefined;
+  partyName?: string;
   messengerId: number; //playerio messager id
-  videoUrlString: string;
-  avatarUrlString: string | string[];
+  pictureUrl?: string;
   dotColor: number; //hex
   hat?: string;
   accessories?: string;
@@ -60,10 +59,9 @@ export interface ReplicatedFirebarrel extends AnimateMapEntity {
 export class PlayerModel implements ReplicatedUser {
   public data: ReplicatedUserData = {
     id: "",
-    name: "",
+    partyName: "",
     messengerId: 0,
-    videoUrlString: "",
-    avatarUrlString: "",
+    pictureUrl: "",
     dotColor: Math.floor(Math.random() * 16777215),
   };
 
@@ -76,7 +74,7 @@ export class PlayerModel implements ReplicatedUser {
   ) {
     this.data.id = id;
     this.data.messengerId = messengerId;
-    this.data.avatarUrlString = avatarUrlString;
+    this.data.pictureUrl = avatarUrlString;
   }
 }
 
