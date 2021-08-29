@@ -82,8 +82,8 @@ $tab-item-room-width: 180px;
   &_content {
     display: flex;
     background-color: opaque-black(0.2);
-    margin: -20px (-$tab-item-height) 0px (-$tab-item-height);
-    padding: 20px 30px $tab-item-height 30px;
+    margin: (-$font-size--xl) (-$tab-item-height) 0px (-$tab-item-height);
+    padding: $font-size--xl $spacing--xxl $tab-item-height $spacing--xxl;
 
     &_room {
       min-height: $tab-item-room-height;

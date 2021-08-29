@@ -119,7 +119,7 @@ export const EmergencyViewPage: React.FC = () => {
   if (!venue) {
     return <LoadingPage />;
   }
-  console.log(validBannerImageUrl);
+
   return (
     <WithNavigationBar withSchedule={false} hasBackButton={false}>
       <div className="EmergencyView">
