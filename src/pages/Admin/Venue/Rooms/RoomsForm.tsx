@@ -23,9 +23,9 @@ import { useQuery } from "hooks/useQuery";
 import { useUser } from "hooks/useUser";
 import { useVenueId } from "hooks/useVenueId";
 
-import Login from "pages/Account/Login";
 import { PartyMapContainer } from "pages/Account/Venue/VenueMapEdition";
 import { SubVenueIconMap } from "pages/Account/Venue/VenueMapEdition/Container";
+import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
@@ -92,7 +92,7 @@ export const RoomsForm: React.FC = () => {
   if (!venue || !venueId) return <NotFound />;
 
   if (!user) {
-    return <Login formType="login" venueId={venueId} />;
+    return <LoginRF formType="login" venueId={venueId} />;
   }
 
   return (
