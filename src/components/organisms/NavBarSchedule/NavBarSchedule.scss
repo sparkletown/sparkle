@@ -16,7 +16,7 @@ $schedule-btn--height: 51px;
 
   &__download-buttons {
     position: fixed;
-    bottom: 0;
+    bottom: $footer-height;
     width: $sidebar-schedule-width;
     z-index: z(navbar-schedule-download);
     display: flex;
@@ -51,10 +51,10 @@ $schedule-btn--height: 51px;
   z-index: z(navbar-schedule);
   top: 0;
   left: 0;
-  height: calc(100% - #{$schedule-btn--height});
+  height: calc(100% - #{$schedule-btn--height} - #{$footer-height});
   width: $sidebar-schedule-width;
 
-  padding-top: $navbar-height;
+  padding: $navbar-height $spacing--md 0;
 
   background-color: opaque-black(0.8);
   overflow: auto;
