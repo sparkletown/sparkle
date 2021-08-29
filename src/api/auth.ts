@@ -15,12 +15,18 @@ export interface CheckIsEmailWhitelisted {
 }
 
 export const checkIsEmailWhitelisted = async (data: CheckIsEmailWhitelisted) =>
-  await firebase.functions().httpsCallable("access-checkIsEmailWhitelisted")(
-    data
-  );
+  firebase.functions().httpsCallable("access-checkIsEmailWhitelisted")(data);
+
+export interface CheckIsCodeValid {
+  venueId: string;
+  code: string;
+}
+
+export const checkIsCodeValid = async (data: CheckIsCodeValid) =>
+  firebase.functions().httpsCallable("access-checkIsCodeValid")(data);
 
 export const checkAccess = async (data: CheckAccessTypes) =>
-  await firebase.functions().httpsCallable("access-checkAccess")(data);
+  firebase.functions().httpsCallable("access-checkAccess")(data);
 
 export interface CustomAuthConfig {
   customAuthName: string;
