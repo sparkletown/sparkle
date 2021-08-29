@@ -14,6 +14,7 @@ $video-participant-optimal-height: 195px;
     justify-content: center;
     justify-self: center;
     max-width: $video-participant-optimal-width;
+    max-width: 15%;
     max-height: $video-participant-optimal-height;
     border-radius: 15px;
 
@@ -71,6 +72,7 @@ $video-participant-optimal-height: 195px;
     flex-direction: row;
     height: 100%;
     padding: 20px;
+    overflow-x: auto;
 
     .firebarrel-room__exit-container {
       position: absolute;
