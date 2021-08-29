@@ -26,7 +26,11 @@ module.exports = {
       const instanceOfMiniCssExtractPlugin = webpackConfig.plugins.find(
         (plugin) => plugin instanceof MiniCssExtractPlugin
       );
-      if (instanceOfMiniCssExtractPlugin?.options) {
+
+      if (
+        instanceOfMiniCssExtractPlugin &&
+        instanceOfMiniCssExtractPlugin.options
+      ) {
         instanceOfMiniCssExtractPlugin.options.ignoreOrder = true;
       }
 
