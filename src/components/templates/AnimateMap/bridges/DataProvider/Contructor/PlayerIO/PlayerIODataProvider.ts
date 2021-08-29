@@ -154,54 +154,6 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     else return new PlayerIOSeparatedRoomOperator(...initialParams);
   }
 
-  // public async loadOrCreate(
-  //   table: string,
-  //   key: string,
-  //   successCallback: (dbObj: dbObj) => void,
-  //   errorCallback: (error: Error) => void
-  // ) {
-  //   if (this.client) {
-  //     return new Promise((resolve, reject) => {
-  //       this.client?.originClient.bigDB.loadOrCreate(
-  //         table,
-  //         key,
-  //         (dbObj: dbObj) => {
-  //           successCallback(dbObj);
-  //           return resolve(dbObj);
-  //         },
-  //         (error: Error) => {
-  //           errorCallback(error);
-  //           return reject(error);
-  //         }
-  //       );
-  //     });
-  //   } else return Promise.reject("Can't load. PlayerIO client is undefined!");
-  // }
-
-  // public async load(
-  //   table: string,
-  //   key: string,
-  //   successCallback: (dbObj: dbObj) => void,
-  //   errorCallback: (error: Error) => void
-  // ) {
-  //   if (this.client) {
-  //     return new Promise((resolve, reject) => {
-  // this.client?.originClient.bigDB.loadOrCreate(
-  //   table,
-  //   key,
-  //   (dbObj: dbObj) => {
-  //     successCallback(dbObj);
-  //     return resolve(dbObj);
-  //   },
-  //   (error: Error) => {
-  //     errorCallback(error);
-  //     return reject(error);
-  //   }
-  // );
-  // });
-  // } else return Promise.reject("Can't load. PlayerIO client is undefined!");
-  // }
-
   public sendPlayerPosition(x: number, y: number) {
     if (!this.playerIORoomOperator?.mainConnection?.instance) {
       console.error("connection not exist");

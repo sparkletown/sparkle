@@ -131,7 +131,6 @@ export const animateMapReducer: AnimateMapReducer = (
 
     case AnimateMapActionTypes.SET_LAST_ZOOM:
       const { lastZoom } = action.payload;
-      console.log("SAVE lastZoom ", lastZoom);
       window.sessionStorage.setItem(
         "AnimateMapState.lastZoom",
         lastZoom.toString()

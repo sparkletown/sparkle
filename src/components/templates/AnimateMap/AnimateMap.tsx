@@ -67,8 +67,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   const relatedRooms = useRelatedPartymapRooms({ venue });
 
-  console.log(showFirebarrelFlag);
-
   return (
     <div className="AnimateMap">
       <div className="AnimateMap__ui-wrapper">
@@ -85,7 +83,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
             <FirebarrelProvider
               venue={venue}
               setUserList={(roomId, userList) => {
-                console.log("userList", roomId, userList);
                 dispatch(updateAnimateMapFireBarrel(roomId, userList));
               }}
               onConnectChange={(roomId, userList, isConnected) => {
@@ -94,8 +91,6 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
                 } else {
                   dispatch(exitAnimateMapFireBarrel(roomId));
                 }
-
-                console.log("setShowFirebarrelFlag", isConnected);
 
                 setShowFirebarrelFlag(isConnected);
               }}

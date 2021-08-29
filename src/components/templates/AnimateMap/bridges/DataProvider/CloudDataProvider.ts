@@ -100,7 +100,6 @@ export class CloudDataProvider
   public update(dt: number) {
     this._updateCounter += dt;
     if (this._updateCounter > this._maxUpdateCounter) {
-      console.log("update pos");
       this._updateCounter -= this._maxUpdateCounter;
       this.player.updatePosition();
       this._testBots.update();
