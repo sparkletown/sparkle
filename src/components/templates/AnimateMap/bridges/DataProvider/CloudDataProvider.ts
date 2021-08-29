@@ -12,11 +12,11 @@ import {
 import { Firebarrel } from "types/animateMap";
 import { Room } from "types/rooms";
 
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { WithVenue } from "utils/venue";
 
 import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
-import { getFirebaseStorageResizedImage } from "../../../../../utils/image";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 import EventProvider, { EventType } from "../EventProvider/EventProvider";
@@ -154,8 +154,8 @@ export class CloudDataProvider
           room.title === venue.data.title &&
           room.subtitle === venue.data.subtitle &&
           getFirebaseStorageResizedImage(room.image_url, {
-            width: 100,
-            height: 100,
+            width: 256,
+            height: 256,
             fit: "crop",
           }) === venue.data.image_url &&
           room.isLive === venue.data.isLive &&
@@ -173,8 +173,8 @@ export class CloudDataProvider
             ...room,
             countUsers: room.countUsers ?? 0,
             image_url: getFirebaseStorageResizedImage(room.image_url, {
-              width: 100,
-              height: 100,
+              width: 256,
+              height: 256,
               fit: "crop",
             }),
           },
@@ -194,8 +194,8 @@ export class CloudDataProvider
           ...room,
           countUsers: countUsers,
           image_url: getFirebaseStorageResizedImage(room.image_url, {
-            width: 100,
-            height: 100,
+            width: 256,
+            height: 256,
             fit: "crop",
           }),
         },
@@ -237,8 +237,8 @@ export class CloudDataProvider
           partyName: user.partyName,
           messengerId: getIntByHash(user.id),
           pictureUrl: getFirebaseStorageResizedImage(user.pictureUrl ?? "", {
-            width: 100,
-            height: 100,
+            width: 64,
+            height: 64,
             fit: "crop",
           }),
           dotColor: 0xabfcfb,
