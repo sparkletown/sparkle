@@ -153,7 +153,11 @@ export class CloudDataProvider
           room.url === venue.data.url &&
           room.title === venue.data.title &&
           room.subtitle === venue.data.subtitle &&
-          room.image_url === venue.data.image_url &&
+          getFirebaseStorageResizedImage(room.image_url, {
+            width: 100,
+            height: 100,
+            fit: "crop",
+          }) === venue.data.image_url &&
           room.isLive === venue.data.isLive &&
           room.countUsers === venue.data.countUsers &&
           room.isEnabled === venue.data.isEnabled
