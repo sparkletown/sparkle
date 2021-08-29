@@ -19,6 +19,7 @@ export const Shoutouter: React.FC<ShoutouterProps> = () => {
     if (!refInput.current) return;
     EventProvider.emit(EventType.SEND_SHOUT, refInput.current.value);
     refInput.current.value = "";
+    refInput.current.blur();
   }, [refInput]);
 
   const onEnterPressed = useCallback(
