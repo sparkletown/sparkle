@@ -165,7 +165,7 @@ $volume-popover-width-without-sliders: 15em;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  top: $navbar-height;
+  top: $navbar-height + 50px;
   left: 0;
   color: $white;
   width: $nav-container-width;

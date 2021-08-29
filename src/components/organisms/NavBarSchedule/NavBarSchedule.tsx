@@ -20,7 +20,6 @@ import {
 } from "utils/event";
 import { range } from "utils/range";
 import { formatDateRelativeToNow } from "utils/time";
-import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useRelatedVenues } from "hooks/useRelatedVenues";
 import { useRoomRecentUsersList } from "hooks/useRoomRecentUsersList";
@@ -72,17 +71,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     sovereignVenue,
     relatedVenues,
   } = useVenueScheduleEvents({ venueId, userEventIds });
-
-  const venueRoomTitle = useMemo(
-    () =>
-      sovereignVenue?.rooms?.find((room) => {
-        const [roomName] = getLastUrlParam(
-          getUrlWithoutTrailingSlash(room.url)
-        );
-        return roomName.toLowerCase() === venueId;
-      }),
-    [sovereignVenue, venueId]
-  )?.title;
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -173,7 +161,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         ? eventsFilledWithPriority.filter((event) => event.isSaved)
         : filterRelatedEvents
         ? eventsFilledWithPriority.filter(
-            (event) => event.room === venueRoomTitle
+            (event) => event.venueId === currentVenue?.id?.toLowerCase()
           )
         : eventsFilledWithPriority,
     };
@@ -183,7 +171,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     showPersonalisedSchedule,
     firstScheduleDate,
     filterRelatedEvents,
-    venueRoomTitle,
+    currentVenue,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {
@@ -247,6 +235,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   return (
     <div className="NavBarWrapper">
       <div className={containerClasses}>
+        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <div className="NavBarSchedule__breadcrumb">
           <label>Events on: </label>
           <button
@@ -267,7 +256,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         </div>
         {venueId && <ScheduleVenueDescription venueId={venueId} />}
 
-        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"

@@ -145,6 +145,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                   className={venueChatTabStyles}
                   onClick={selectVenueChat}
                 >
+                  <FontAwesomeIcon icon={faCommentDots} size="sm" />
                   {venueChatTabTitle}
                 </button>
                 <button
@@ -155,6 +156,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                   className={privateChatTabStyles}
                   onClick={selectPrivateChat}
                 >
+                  <FontAwesomeIcon icon={faEnvelope} size="sm" />
                   {privateChatTabTitle}
                 </button>
               </div>
