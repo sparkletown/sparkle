@@ -15,11 +15,6 @@ module.exports = {
       lodash: path.resolve(__dirname, "node_modules/lodash"),
       "lodash-es": path.resolve(__dirname, "node_modules/lodash"),
     },
-    plugins: [
-      new MiniCssExtractPlugin({
-        ignoreOrder: true,
-      }),
-    ],
     configure: (webpackConfig) => {
       webpackConfig.module.rules
         .find((i) => i.oneOf !== undefined)
@@ -27,6 +22,12 @@ module.exports = {
           test: /\.(glsl)$/,
           loader: "ts-shader-loader",
         });
+
+      const instanceOfMiniCssExtractPlugin = webpackConfig.plugins.find(
+        (plugin) => plugin instanceof MiniCssExtractPlugin
+      );
+      instanceOfMiniCssExtractPlugin.options.ignoreOrder = true;
+
       return webpackConfig;
     },
   },
