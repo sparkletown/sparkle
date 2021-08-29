@@ -158,7 +158,13 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     return {
       scheduleDate: day,
       daysEvents: showPersonalisedSchedule
-        ? eventsFilledWithPriority.filter((event) => event.isSaved)
+        ? filterRelatedEvents
+          ? eventsFilledWithPriority.filter(
+              (event) =>
+                event.isSaved &&
+                event.venueId === currentVenue?.id?.toLowerCase()
+            )
+          : eventsFilledWithPriority.filter((event) => event.isSaved)
         : filterRelatedEvents
         ? eventsFilledWithPriority.filter(
             (event) => event.venueId === currentVenue?.id?.toLowerCase()
