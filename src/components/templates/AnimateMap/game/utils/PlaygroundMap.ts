@@ -4,7 +4,7 @@ import { GameConfig } from "../../configs/GameConfig";
 import { GameInstance } from "../GameInstance";
 
 export class PlaygroundMap {
-  private playgroundBounds: Array<number> = [
+  private static playgroundBounds: Array<number> = [
     5055,
     233,
     9736,
@@ -43,11 +43,10 @@ export class PlaygroundMap {
     return distance <= radius;
   }
 
-  public pointIsOnThePlayground(x: number, y: number): boolean {
-    if (this.pointIsInTheOuterCircle(x, y)) {
-      return true;
-    }
-
+  public pointIsOnThePlayground(x: number, y: number) {
+    return PlaygroundMap.pointIsOnThePlayground(x, y);
+  }
+  public static pointIsOnThePlayground(x: number, y: number): boolean {
     for (let i = 0; i < 9; i += 2) {
       const x1 = this.playgroundBounds[i];
       const y1 = this.playgroundBounds[i + 1];
@@ -76,10 +75,10 @@ export class PlaygroundMap {
     }
 
     for (let i = 0; i < 9; i += 2) {
-      const x3 = this.playgroundBounds[i];
-      const y3 = this.playgroundBounds[i + 1];
-      const x4 = this.playgroundBounds[i + 2];
-      const y4 = this.playgroundBounds[i + 3];
+      const x3 = PlaygroundMap.playgroundBounds[i];
+      const y3 = PlaygroundMap.playgroundBounds[i + 1];
+      const x4 = PlaygroundMap.playgroundBounds[i + 2];
+      const y4 = PlaygroundMap.playgroundBounds[i + 3];
 
       const result = this.checkIntersection(x1, y1, x2, y2, x3, y3, x4, y4);
       if (result) {

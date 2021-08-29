@@ -9,7 +9,7 @@ import { WithId } from "utils/id";
 import { WithVenue } from "utils/venue";
 
 import { useVenueEvents } from "hooks/events";
-import { useWorldUsers } from "hooks/users";
+import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
 import { useFirebarrels } from "../hooks/useFirebarrels";
@@ -42,7 +42,7 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
   );
   const firebase = useFirebase();
   const user = useUser();
-  const worldUsers = useWorldUsers();
+  const worldUsers = useRecentWorldUsers();
 
   const venues: WithId<AnyVenue>[] = useMemo(
     () =>
@@ -126,7 +126,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
           user.userId,
           user.profile?.pictureUrl,
           firebase,
-          venue.playerioGameId ?? "sparkleburn-k1eqbxs6vusie0yujooma"
+          venue.playerioGameId,
+          venue.playerioAdvancedMode
         );
         dataProvider.updateRooms(roomsWithFullData);
         dataProvider.updateFirebarrels(firebarrelsWithUsers);

@@ -1,7 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedFirebarrel } from "../../../../../../store/reducers/AnimateMap";
+import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
@@ -9,12 +10,14 @@ import { RoundAvatar } from "../../commands/RoundAvatar";
 import { barrels, HALO } from "../../constants/AssetConstants";
 import { AnimationComponent } from "../components/AnimationComponent";
 import { BarrelComponent } from "../components/BarrelComponent";
+import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { PositionComponent } from "../components/PositionComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
 import { Barrel } from "../graphics/Barrel";
+import { FirebarrelTooltip } from "../graphics/FirebarrelTooltip";
 import { Venue } from "../graphics/Venue";
 import { VenueHoverIn } from "../graphics/VenueHoverIn";
 import { VenueHoverOut } from "../graphics/VenueHoverOut";
@@ -25,19 +28,14 @@ const getCollisionRadius = (): number => {
   return GameConfig.VENUE_DEFAULT_COLLISION_RADIUS / 2;
 };
 
-const createTooltip = (entity: Entity) => {
-  const tooltip = new TooltipComponent(
-    `Join to firebarrel`,
-    getCollisionRadius(),
-    "bottom"
-  );
-  tooltip.textColor = 0xffffff;
-  tooltip.textSize = 14;
-  tooltip.borderThikness = 0;
-  tooltip.borderColor = 0;
-  tooltip.backgroundColor = 0;
-  // add tooltip
+const createTooltip = (entity: Entity, text: string = "Join") => {
+  const tooltip = new TooltipComponent("", 0, "center");
+  tooltip.view = new FirebarrelTooltip(text);
   entity.add(tooltip);
+};
+
+const removeTooltip = (entity: Entity) => {
+  entity.remove(TooltipComponent);
 };
 
 const drawAvatars = (
@@ -48,11 +46,11 @@ const drawAvatars = (
   const avatars: Array<Promise<RoundAvatar>> = [];
 
   barrel.data.connectedUsers.forEach((user) => {
-    let avatarUrlString = user.data.avatarUrlString;
-    if (!Array.isArray(avatarUrlString)) {
-      avatarUrlString = [avatarUrlString];
-    }
-    const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+    const pictureUrls = [user.data.pictureUrl]; //todo: refactor
+    // if (!Array.isArray(pictureUrls)) {
+    //   pictureUrls = [pictureUrls];
+    // }
+    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
 
     avatars.push(new RoundAvatar(url).execute());
   });
@@ -86,14 +84,22 @@ const drawAvatars = (
   });
 };
 
-const drawBarrel = (
+const getCurrentReplicatedFirebarrel = (
+  firebarrelComponent: BarrelComponent
+): ReplicatedFirebarrel => {
+  return firebarrelComponent.model;
+};
+
+const updateBarrelImage = (
   barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
 ) => {
-  // TODO: fixme src image
-  new LoadImage(barrels[0])
+  new LoadImage(barrel.data.iconSrc)
     .execute()
+    .catch((error) => {
+      return new LoadImage(barrels[0]).execute();
+    })
     .then(
       (comm: LoadImage): Promise<ImageToCanvas> => {
         if (!comm.image) return Promise.reject();
@@ -109,25 +115,49 @@ const drawBarrel = (
       positionComponent.scaleY = scale;
 
       const sprite = spriteComponent.view as Barrel;
-      sprite.name = barrel.data.id;
+      if (sprite.barrel && sprite.barrel.parent) {
+        sprite.barrel.parent.removeChild(sprite.barrel);
+      }
+
       sprite.barrel = Sprite.from(comm.canvas);
       sprite.barrel.anchor.set(0.5);
       sprite.addChild(sprite.barrel);
 
-      sprite.halo = Sprite.from(HALO);
-      sprite.halo.anchor.set(0.5);
-      sprite.addChildAt(sprite.halo, 0);
+      if (!sprite.halo) {
+        sprite.halo = Sprite.from(HALO);
+        sprite.halo.anchor.set(0.5);
+        sprite.addChildAt(sprite.halo, 0);
+      }
     })
     .catch((err) => {
-      // TODO default venue image
       console.log("err", err);
     });
+};
+
+export const updateFirebarrelEntity = (
+  barrel: ReplicatedFirebarrel,
+  creator: EntityFactory
+) => {
+  const node = creator.getFirebarrelNode(barrel.data.id);
+  if (!node) {
+    return;
+  }
+
+  node.barrel.model = barrel;
+  node.entity.add(node.barrel);
+
+  const sprite = node.entity.get(SpriteComponent);
+  if (!sprite) {
+    return;
+  }
+  updateBarrelImage(barrel, sprite, node.position);
 };
 
 export const createFirebarrelEntity = (
   barrel: ReplicatedFirebarrel,
   creator: EntityFactory
 ): Entity => {
+  const barrelComponent = new BarrelComponent(barrel);
   const positionComponent = new PositionComponent(barrel.x, barrel.y);
   const spriteComponent: SpriteComponent = new SpriteComponent();
   spriteComponent.view = new Barrel();
@@ -135,7 +165,7 @@ export const createFirebarrelEntity = (
 
   const entity: Entity = new Entity();
   entity
-    .add(new BarrelComponent(barrel))
+    .add(barrelComponent)
     .add(new CollisionComponent(getCollisionRadius()))
     .add(positionComponent)
     .add(spriteComponent)
@@ -158,7 +188,7 @@ export const createFirebarrelEntity = (
         },
         () => {
           // remove tooltip
-          entity.remove(TooltipComponent);
+          removeTooltip(entity);
           // add decrease
           const comm: SpriteComponent | null = entity.get(SpriteComponent);
           const duration = 100;
@@ -172,11 +202,18 @@ export const createFirebarrelEntity = (
           }
         }
       )
+    )
+    .add(
+      new ClickableSpriteComponent(() => {
+        creator.enterFirebarrel(
+          getCurrentReplicatedFirebarrel(barrelComponent).data.id
+        );
+      })
     );
 
   creator.engine.addEntity(entity);
 
-  drawBarrel(barrel, spriteComponent, positionComponent);
+  updateBarrelImage(barrel, spriteComponent, positionComponent);
   drawAvatars(barrel, spriteComponent);
 
   return entity;

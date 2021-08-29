@@ -5,7 +5,7 @@ export class RoundAvatar implements Command {
   private resolve?: Function;
   public canvas?: HTMLCanvasElement;
 
-  constructor(private url: string) {}
+  constructor(private url?: string) {}
 
   public execute(): Promise<RoundAvatar> {
     return new Promise((resolve) => {

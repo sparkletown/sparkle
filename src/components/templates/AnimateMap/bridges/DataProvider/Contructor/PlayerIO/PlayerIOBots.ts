@@ -3,6 +3,7 @@ import { throttle } from "lodash";
 import { getRandomInt } from "utils/getRandomInt";
 
 import { connection } from "../../../../vendors/playerio/PlayerIO";
+import { CloudDataProvider } from "../../CloudDataProvider";
 
 import { getIntByHash } from "./utils/getIntByHash";
 import { getRandomBotId } from "./utils/getRandomBotId";
@@ -14,15 +15,21 @@ const world_width = 9920;
 const world_height = 9920;
 
 export class PlayerIOBots {
-  constructor(readonly playerioGameId: string) {}
+  constructor(
+    readonly cloudDataProvider: CloudDataProvider,
+    readonly playerioGameId: string,
+    readonly playerioAdvancedMode: boolean
+  ) {}
 
   private _bots: Bot[] = [];
 
   addBot() {
     this._bots.push(
       new Bot(
+        this.cloudDataProvider,
         this.playerioGameId,
         getRandomBotId(28),
+        this.playerioAdvancedMode,
         getRandomInt(world_width),
         getRandomInt(world_height)
       )
@@ -45,8 +52,10 @@ class Bot {
   private _shortId = getIntByHash(this.id);
 
   constructor(
+    readonly cloudDataProvider: CloudDataProvider,
     readonly playerioGameId: string,
     readonly id: string,
+    readonly playerioAdvancedMode: boolean,
     public x: number,
     public y: number
   ) {
@@ -56,8 +65,10 @@ class Bot {
     );
 
     this._playerio = new PlayerIODataProvider(
-      this.playerioGameId,
+      cloudDataProvider,
+      playerioGameId,
       id,
+      playerioAdvancedMode,
       (connection) => {
         this._playerioConnection = connection;
         if (this._closed) this.closeConnection();
