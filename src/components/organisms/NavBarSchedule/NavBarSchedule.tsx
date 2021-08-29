@@ -32,7 +32,6 @@ import {
   formatDateRelativeToNow,
   isDateRangeStartWithinToday,
 } from "utils/time";
-import { getLastUrlParam, getUrlWithoutTrailingSlash } from "utils/url";
 
 import { useVenueEvents } from "hooks/events";
 import { useRelatedVenues } from "hooks/useRelatedVenues";
@@ -83,17 +82,6 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
   } = useRelatedVenues({
     currentVenueId: venueId,
   });
-
-  const venueRoomTitle = useMemo(
-    () =>
-      sovereignVenue?.rooms?.find((room) => {
-        const [roomName] = getLastUrlParam(
-          getUrlWithoutTrailingSlash(room.url)
-        );
-        return roomName.toLowerCase() === venueId;
-      }),
-    [sovereignVenue, venueId]
-  )?.title;
 
   const scheduledStartDate = sovereignVenue?.start_utc_seconds;
 
@@ -259,7 +247,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
         ? eventsFilledWithPriority.filter((event) => event.isSaved)
         : filterRelatedEvents
         ? eventsFilledWithPriority.filter(
-            (event) => event.room === venueRoomTitle
+            (event) => event.venueId === currentVenue?.id?.toLowerCase()
           )
         : eventsFilledWithPriority,
     };
@@ -269,7 +257,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     showPersonalisedSchedule,
     firstScheduleDate,
     filterRelatedEvents,
-    venueRoomTitle,
+    currentVenue,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {
