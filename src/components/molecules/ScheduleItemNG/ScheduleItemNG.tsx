@@ -17,6 +17,7 @@ import { Room } from "types/rooms";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import {
   enterVenue,
@@ -99,6 +100,15 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     }
   }, [enterRoom, event, eventRoom, roomUrlParam]);
 
+  const eventImage = getFirebaseStorageResizedImage(
+    eventRoom?.image_url ?? event.venueIcon,
+    {
+      fit: "crop",
+      width: 40,
+      height: 40,
+    }
+  );
+
   const infoContaier = classNames("ScheduleItemNG__info", {
     "ScheduleItemNG__info--active": isCurrentEventLive,
   });
@@ -150,7 +160,7 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
       {isShowFullInfo && (
         <img
           className="ScheduleItemNG__icon"
-          src={eventRoom?.image_url ?? event.venueIcon}
+          src={eventImage}
           alt="event location"
         />
       )}

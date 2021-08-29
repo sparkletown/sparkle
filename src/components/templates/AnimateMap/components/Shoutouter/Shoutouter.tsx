@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from "react";
-
-import { useRecentWorldUsers } from "hooks/users";
+import React, { useCallback, useEffect, useRef } from "react";
 
 import EventProvider, {
   EventType,
@@ -11,70 +9,41 @@ import KeyPoll from "../../game/utils/KeyPollSingleton";
 import arrowImg from "assets/images/AnimateMap/UI/icon-send.svg";
 
 import "./Shoutouter.scss";
+
 export interface ShoutouterProps {}
-interface IShoutouter {
-  userId: string;
-  msg: string;
-  focused: boolean;
-}
+
 export const Shoutouter: React.FC<ShoutouterProps> = () => {
-  const users = useRecentWorldUsers();
-  const componentName = "UIShoutouter";
-  const [state, setState] = useState({
-    userId: users.recentWorldUsers[0].id,
-    msg: "",
-    focused: false,
-  } as IShoutouter);
+  const refInput = useRef<HTMLInputElement>(null);
 
-  const onChangeCallback = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      userId: state.userId,
-      msg: e.target.value,
-      focused: state.focused,
-    });
-  };
-  const onFocusCallback = () => {
-    setState({
-      userId: state.userId,
-      msg: state.msg,
-      focused: true,
-    });
-  };
-  const onBlurCallback = () => {
-    setState({
-      userId: state.userId,
-      msg: state.msg,
-      focused: false,
-    });
-  };
-  const onSendClick = () => {
-    EventProvider.emit(EventType.SEND_SHOUT, state.msg);
-    EventProvider.emit(EventType.RECEIVE_SHOUT, state.userId, state.msg);
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    document.querySelector("." + componentName + " input").value = "";
-  };
+  const onSendClick = useCallback(() => {
+    if (!refInput.current) return;
+    EventProvider.emit(EventType.SEND_SHOUT, refInput.current.value);
+    refInput.current.value = "";
+  }, [refInput]);
 
-  useEffect(() => {
-    const callback = (type: "down" | "up") => {
-      if (type === "up" && state.focused) {
+  const onEnterPressed = useCallback(
+    (type: "down" | "up") => {
+      if (type === "up" && refInput.current === document.activeElement) {
         onSendClick();
       }
-    };
-    KeyPoll.on(ENTER, callback);
+    },
+    [onSendClick, refInput]
+  );
+
+  useEffect(() => {
+    KeyPoll.on(ENTER, onEnterPressed);
     return () => {
-      KeyPoll.off(ENTER, callback);
+      KeyPoll.off(ENTER, onEnterPressed);
     };
   });
 
   return (
-    <div className={componentName}>
+    <div className="UIShoutouter">
       <input
-        onFocus={onFocusCallback}
-        onBlur={onBlurCallback}
-        onChange={onChangeCallback}
+        ref={refInput}
         placeholder="Shout out to the playa..."
         type="text"
+        maxLength={140}
       />
       <div onClick={onSendClick}>
         <img src={arrowImg} alt="send" />
