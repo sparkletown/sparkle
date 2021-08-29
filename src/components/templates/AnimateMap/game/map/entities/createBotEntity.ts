@@ -36,7 +36,7 @@ export const createBotEntity = (
     user.y = point.y;
   }
 
-  const scale = 0.2;
+  const scale = 0.28;
 
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);

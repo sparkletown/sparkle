@@ -69,11 +69,7 @@ export class AvatarTuningSystem extends System {
     }
     this.zoomChanged = false;
 
-    for (
-      let avatar: AvatarTuningNode | null | undefined = this.avatars?.head;
-      avatar;
-      avatar = avatar.next
-    ) {
+    for (let avatar = this.avatars?.head; avatar; avatar = avatar.next) {
       this.handleAvatarAdded(avatar);
     }
 
