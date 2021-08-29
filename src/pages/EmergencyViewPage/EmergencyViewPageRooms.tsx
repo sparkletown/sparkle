@@ -25,7 +25,7 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
     .map(
       (venue) =>
         !!venue?.rooms?.length && (
-          <>
+          <div key={venue.id}>
             <span className="EmergencyView_venue">{venue.name}</span>
             <div key={venue.id} className="EmergencyView_content">
               {venue?.rooms?.map((room) => {
@@ -41,7 +41,7 @@ const EmergencyViewPageRooms: React.FC<EmergencyViewTabsProps> = ({
                 );
               })}
             </div>
-          </>
+          </div>
         )
     )
     .filter((venue) => !!venue);

@@ -94,7 +94,7 @@ export const EmergencyViewPage: React.FC = () => {
         return (
           <div
             className="EmergencyView__weekdays__column"
-            key={day.toISOString()}
+            key={`${day.toISOString()}${dayIndex}`}
           >
             <ScheduleEventSubListNG
               events={eventsFilledWithPriority}
@@ -119,18 +119,19 @@ export const EmergencyViewPage: React.FC = () => {
   if (!venue) {
     return <LoadingPage />;
   }
-
+  console.log(validBannerImageUrl);
   return (
-    <WithNavigationBar withSchedule={false}>
-      <div
-        className="EmergencyView__banner"
-        style={{
-          backgroundImage: `url(${validBannerImageUrl})`,
-        }}
-      ></div>
+    <WithNavigationBar withSchedule={false} hasBackButton={false}>
       <div className="EmergencyView">
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
-        <div className="EmergencyView_main">
+        <div
+          className="EmergencyView_main"
+          style={{
+            backgroundImage: `url(${validBannerImageUrl})`,
+            backgroundSize: "cover",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           {!selectedTab ? (
             <EmergencyViewPageRooms
               descendantVenues={descendantVenues}

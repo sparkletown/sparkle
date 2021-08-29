@@ -20,23 +20,24 @@ $tab-item-room-width: 180px;
   flex-direction: column;
   z-index: z(emergency-content);
   height: 100%;
-
-  &__banner {
-    position: absolute;
-    height: calc(100vh - #{$navbar-height});
-    width: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-  }
+  position: absolute;
+  height: calc(100vh - #{$navbar-height});
+  width: 100%;
 
   &_main {
-    margin-bottom: $spacing--xxl;
+    margin-bottom: $spacing--xxl * 2;
+    margin-top: -($spacing--xxl * 2);
+    padding: $spacing--xxl * 2 $tab-item-height 0px $tab-item-height;
+    background-size: cover;
+    background-repeat: no-repeat;
   }
 
   &__weekdays {
     display: flex;
     flex-wrap: wrap;
-    margin: $spacing--xxl;
+    background-color: opaque-black(0.2);
+    margin: 0 (-$tab-item-height);
+    padding: $spacing--xxl;
 
     &__column {
       width: 33%;
@@ -53,16 +54,18 @@ $tab-item-room-width: 180px;
 
   &_tabs {
     display: flex;
-    margin: 0 auto;
-    width: 15%;
-    justify-content: space-around;
+    width: 100%;
+    justify-content: center;
     font-size: $font-size--xl;
     font-weight: 900;
-    margin-top: $spacing--xl;
+    margin: 0 auto;
     cursor: pointer;
+    z-index: 15;
+    background-color: opaque-black(0.2);
 
     &_item {
       height: $tab-item-height;
+      margin: $spacing--md;
 
       &--active {
         border-bottom: $border-radius--xs solid $primary--live;
@@ -78,9 +81,12 @@ $tab-item-room-width: 180px;
 
   &_content {
     display: flex;
+    background-color: opaque-black(0.2);
+    margin: -20px (-$tab-item-height) 0px (-$tab-item-height);
+    padding: 20px 30px $tab-item-height 30px;
 
     &_room {
-      height: $tab-item-room-height;
+      min-height: $tab-item-room-height;
       width: $tab-item-room-width;
       border-radius: $border-radius--md;
       background-color: opaque-white(0.2);
