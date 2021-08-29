@@ -11,17 +11,21 @@ namespace BurningMan {
 	}
 	static class MessagesTypesEnum
 	{
-		// users messages
-		public const string move = "z";
-		public const string moveReserve = "x";
 		// server messages
 		public const string processedMove = "a";
-		public const string processedMoveReserve = "b";
+		public const string processedMoveReserve = "ar";
 		public const string divideSpeakers = "d";
-		public const string unitListeners = "u";
 		public const string roomInitResponse = "i";
 		public const string newUserJoined = "j";
 		public const string userLeft = "l";
+		public const string processedShout = "s";
+		public const string processedShoutReserve = "sr";
+		public const string unitListeners = "u";
+		// users messages
+		public const string shout = "y";
+		public const string shoutReserve = "yr";
+		public const string move = "z";
+		public const string moveReserve = "zr";
 	}
 	static class PlayerObjectsFieldsEnum
     {
@@ -158,7 +162,23 @@ namespace BurningMan {
 
 						Broadcast(MessagesTypesEnum.processedMove, player.ConnectUserId, pos.x, pos.y);
 						break;
-                    }
+					}
+				case MessagesTypesEnum.shout:
+					{
+						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+						string text = message.GetString(0);
+
+						Broadcast(MessagesTypesEnum.processedShout, playerInnerId, text);
+						break;
+					}
+				case MessagesTypesEnum.shoutReserve:
+					{
+						ulong playerInnerId = Convert.ToUInt64(player.PlayerObject.GetValue(PlayerObjectsFieldsEnum.innerId));
+						string text = message.GetString(0);
+
+						Broadcast(MessagesTypesEnum.processedShoutReserve, player.ConnectUserId, text);
+						break;
+					}
 				default:
 					break;
 			}

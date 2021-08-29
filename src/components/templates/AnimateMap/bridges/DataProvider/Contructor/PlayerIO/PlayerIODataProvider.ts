@@ -218,6 +218,23 @@ export class PlayerIODataProvider extends utils.EventEmitter {
     this.playerIORoomOperator.mainConnection.instance.sendMessage(m);
   }
 
+  public sendShoutMessage(shout: string) {
+    if (!this.playerIORoomOperator?.mainConnection?.instance) {
+      console.error("connection not exist");
+      return;
+    }
+
+    const m = this.playerIORoomOperator.mainConnection.instance.createMessage<
+      FindMessageTuple<MessagesTypes.shout | MessagesTypes.shoutReserve>
+    >(
+      this.isReserveTypeOfMove
+        ? MessagesTypes.shoutReserve
+        : MessagesTypes.shout
+    );
+    m.addString<0>(shout);
+    this.playerIORoomOperator.mainConnection.instance.sendMessage(m);
+  }
+
   public savePlayerPosition(position: Point) {
     if (!this.playerIORoomOperator)
       return console.error("playerIORoomOperator not exist");

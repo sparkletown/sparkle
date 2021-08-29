@@ -87,8 +87,6 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const innerUserId = m.getULong(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          // console.log("moved");
-          // console.log(innerUserId, x, y);
           const user = this.cloudDataProvider.users.getUserByMessengerId(
             innerUserId
           );
@@ -105,9 +103,8 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           const innerUserId = m.getString(0);
           const x = m.getUInt(1);
           const y = m.getUInt(2);
-          // console.log("moved reserve");
-          // console.log(innerUserId, x, y);
           const user = this.cloudDataProvider.users.getUserByMessengerId(
+            //todo: add getUserById
             parseInt(innerUserId)
           );
           if (!user || Array.isArray(user)) return console.error("Bad user");
@@ -115,6 +112,31 @@ export class PlayerIOSeparatedRoomOperator implements IPlayerIORoomOperator {
           user.y = y;
           if (this.playerId !== user.data.id)
             EventProvider.emit(EventType.USER_MOVED, user);
+        });
+
+        connection.addMessageCallback<
+          FindMessageTuple<MessagesTypes.processedShout>
+        >(MessagesTypes.processedShout, (m) => {
+          const innerUserId = m.getULong(0);
+          const shout: string = m.getString(1);
+          const user = this.cloudDataProvider.users.getUserByMessengerId(
+            innerUserId
+          );
+          if (!user || Array.isArray(user)) return console.error("Bad user");
+          EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
+        });
+
+        connection.addMessageCallback<
+          FindMessageTuple<MessagesTypes.processedShoutReserve>
+        >(MessagesTypes.processedShoutReserve, (m) => {
+          const innerUserId = m.getString(0);
+          const shout = m.getString(1);
+          const user = this.cloudDataProvider.users.getUserByMessengerId(
+            //todo: add getUserById
+            parseInt(innerUserId)
+          );
+          if (!user || Array.isArray(user)) return console.error("Bad user");
+          EventProvider.emit(EventType.RECEIVE_SHOUT, user.data.id, shout);
         });
 
         connection.addMessageCallback<FindMessageTuple<MessagesTypes.userLeft>>(

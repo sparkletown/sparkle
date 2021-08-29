@@ -18,6 +18,7 @@ import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
+import EventProvider, { EventType } from "../EventProvider/EventProvider";
 
 import { CommonInterface, CommonLinker } from "./Contructor/CommonInterface";
 import { FirebaseDataProvider } from "./Contructor/Firebase/FirebaseDataProvider";
@@ -29,7 +30,7 @@ import { PlayerDataProvider } from "./Providers/PlayerDataProvider";
 import { UsersDataProvider } from "./Providers/UsersDataProvider";
 import playerModel from "./Structures/PlayerModel";
 
-const FREQUENCY_UPDATE = 0.02; //per second
+const FREQUENCY_UPDATE = 0.005; //per second
 
 /**
  * Dirty class, for initiating all general data bridge logic
@@ -90,11 +91,16 @@ export class CloudDataProvider
     );
     this.player = new PlayerDataProvider(playerId, this.commonInterface);
     this.users = new UsersDataProvider(this.commonInterface);
+    EventProvider.on(
+      EventType.SEND_SHOUT,
+      this.commonInterface.sendShoutMessage.bind(this.commonInterface)
+    );
   }
 
   public update(dt: number) {
     this._updateCounter += dt;
     if (this._updateCounter > this._maxUpdateCounter) {
+      console.log("update pos");
       this._updateCounter -= this._maxUpdateCounter;
       this.player.updatePosition();
       this._testBots.update();
