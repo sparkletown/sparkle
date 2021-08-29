@@ -37,11 +37,7 @@ export class ClickableSpriteSystem extends System {
   };
 
   private handlePointerDown = (event: InteractionEvent) => {
-    for (
-      let node: ClickableSpriteNode | null | undefined = this.clickables?.head;
-      node;
-      node = node.next
-    ) {
+    for (let node = this.clickables?.head; node; node = node.next) {
       if (event.target === node.sprite.view) {
         if (node.click.click) {
           node.click.click(event);

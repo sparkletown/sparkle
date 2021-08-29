@@ -1,7 +1,11 @@
+import { ReplicatedUser } from "store/reducers/AnimateMap";
+
 type item = string | Set<string>;
+type itemU = ReplicatedUser | ReplicatedUser[];
 
 export class UsersMap {
   private _mapById = new Map<number, item>();
+  private _mapUsersById = new Map<number, itemU>();
   private _hasCollision = false;
 
   constructor() {
@@ -19,8 +23,55 @@ export class UsersMap {
     return result;
   }
 
+  public addReplicatedUser(user: ReplicatedUser) {
+    const result = this._addReplicatedUserLogicTree(user);
+    this._saveMap();
+    return result;
+  }
+
+  private _addReplicatedUserLogicTree(user: ReplicatedUser): boolean {
+    // eslint-disable-next-line no-debugger
+    // debugger;
+    const key = user.data.messengerId;
+    const id = user.data.id;
+    // if (!key) key = this._idToNumber(id);
+
+    if (!this._mapUsersById.has(key)) {
+      // just add
+      this._mapUsersById.set(key, user);
+      return true;
+    } else {
+      // need checking
+      const value = this._mapUsersById.get(key);
+      if (Array.isArray(value)) {
+        // set already exist
+        if (value.find((i) => i.data.id === id)) return false;
+
+        value.push(user);
+
+        return true;
+      } else {
+        // just string
+        if (value && id !== value.data.id) {
+          //collision detected
+          console.warn("UsersMap COLLISION detected!");
+          this._hasCollision = true;
+          this._mapUsersById.set(key, [user]);
+          return true;
+        }
+        //update
+        this._mapUsersById.set(key, user);
+        return false;
+      }
+    }
+  }
+
   public getId(key: number) {
     return this._mapById.get(key);
+  }
+
+  public getUser(key: number) {
+    return this._mapUsersById.get(key);
   }
 
   private _addLogicTree(id: string, key?: number): boolean {
@@ -58,6 +109,7 @@ export class UsersMap {
   }
 
   private _saveMap() {
+    // console.log(this._mapUsersById);
     //TODO: add implementation
   }
 

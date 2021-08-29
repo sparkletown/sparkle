@@ -77,13 +77,7 @@ export const createBotEntity = (
       new HoverableSpriteComponent(
         () => {
           // add tooltip
-          entity.add(
-            new TooltipComponent(
-              `bot id: ${user.data.id}`.slice(0, 15) + "...",
-              15,
-              "top"
-            )
-          );
+          entity.add(new TooltipComponent(`${user.data.partyName}`, 15, "top"));
         },
         () => {
           // remove tooltip
@@ -95,11 +89,11 @@ export const createBotEntity = (
   fsm.changeState("moving");
   creator.engine.addEntity(entity);
 
-  let avatarUrlString = user.data.avatarUrlString;
-  if (!Array.isArray(avatarUrlString)) {
-    avatarUrlString = [avatarUrlString];
-  }
-  const url = avatarUrlString.length > 0 ? avatarUrlString[0] : "";
+  const pictureUrls = [user.data.pictureUrl]; //todo: refactor
+  // if (!Array.isArray(pictureUrls)) {
+  //   pictureUrls = [pictureUrls];
+  // }
+  const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
 
   new RoundAvatar(url)
     .execute()

@@ -6,7 +6,7 @@ export class BubbleComponent {
   public lifeTime: number;
   public view?: Sprite;
 
-  constructor(text: string, backgroudnColor = 0xffffff) {
+  constructor(text: string, backgroudnColor = 0x0) {
     this.text = text;
     this.backgroudnColor = backgroudnColor;
     this.lifeTime = 100;

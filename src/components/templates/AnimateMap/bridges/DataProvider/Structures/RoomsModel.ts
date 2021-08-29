@@ -3,7 +3,10 @@ import { intersection } from "lodash";
 
 import { RoomInfo } from "../../../vendors/playerio/PlayerIO";
 import EventProvider, { EventType } from "../../EventProvider/EventProvider";
-import { RoomMath, Tuple } from "../Contructor/PlayerIO/RoomLogic/RoomMath";
+import {
+  RoomMath,
+  Tuple,
+} from "../Contructor/PlayerIO/RoomOperator/RoomLogic/RoomMath";
 import { RoomTypes } from "../Contructor/PlayerIO/types";
 
 export const ROOM_PREFIX = "Z_";
