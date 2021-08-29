@@ -13,6 +13,10 @@ $subtitle-width: 35em;
     width: $principles-width;
     align-items: flex-start !important;
     text-align: left;
+
+    &-title {
+      margin-bottom: 0 !important;
+    }
   }
 
   .CheckboxWrapRF {
