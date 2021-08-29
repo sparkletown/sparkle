@@ -109,7 +109,7 @@ export class MapContainer extends Container {
   }
 
   private initViewport() {
-    this._viewport = new Viewport({ noTicker: true });
+    this._viewport = new Viewport({ noTicker: true, divWheel: this._app.view });
     this.addChild(this._viewport);
   }
 
