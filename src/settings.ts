@@ -22,7 +22,7 @@ import sparkleverseLogo from "assets/images/sparkleverse-logo.png";
 
 export const SPARKLE_HOMEPAGE_URL = "https://sparklespaces.com/";
 export const SPARKLE_TERMS_AND_CONDITIONS_URL =
-  "https://sparklespaces.com/terms-of-use/";
+  "https://sparklever.se/terms-of-use/";
 export const SPARKLE_PRIVACY_POLICY =
   "https://sparklespaces.com/privacy-policy/";
 
