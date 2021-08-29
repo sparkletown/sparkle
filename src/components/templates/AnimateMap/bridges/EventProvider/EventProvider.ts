@@ -21,6 +21,8 @@ export enum EventType {
   USER_JOINED = "EventProviderType.USER_JOINED",
   USER_LEFT = "EventProviderType.USER_LEFT",
   USER_MOVED = "EventProviderType.USER_MOVED",
+  SEND_SHOUT = "EventProviderType.SEND_SHOUT",
+  RECEIVE_SHOUT = "EventProviderType.RECEIVE_SHOUT",
 }
 
 type OnRoomsChangedCallback = (points: RoomPointNode[]) => void;
@@ -35,9 +37,11 @@ type OnPlayerClickCallback = (
 ) => void;
 
 // playerio
-type UserJoinedCallback = (playerId: number, x: number, y: number) => void;
-type UserLeftCallback = (playerId: number) => void;
-type UserMovedCallback = (playerId: number, x: number, y: number) => void;
+type UserJoinedCallback = (user: ReplicatedUser) => void;
+type UserLeftCallback = (user: ReplicatedUser) => void;
+type UserMovedCallback = (user: ReplicatedUser) => void;
+type SendShoutCallback = (msg: string) => void;
+type ReceiveShoutCallback = (playerId: string, msg: string) => void;
 
 export declare interface EventProviderSingleton {
   on(type: EventType.ON_ROOMS_CHANGED, callback: OnRoomsChangedCallback): this;
@@ -62,6 +66,8 @@ export declare interface EventProviderSingleton {
   on(type: EventType.USER_JOINED, callback: UserJoinedCallback): this;
   on(type: EventType.USER_LEFT, callback: UserLeftCallback): this;
   on(type: EventType.USER_MOVED, callback: UserMovedCallback): this;
+  on(type: EventType.SEND_SHOUT, callback: SendShoutCallback): this;
+  on(type: EventType.RECEIVE_SHOUT, callback: ReceiveShoutCallback): this;
 
   emit(
     type: EventType.ON_ROOMS_CHANGED,
@@ -96,6 +102,14 @@ export declare interface EventProviderSingleton {
   emit(
     type: EventType.USER_MOVED,
     ...params: Parameters<UserMovedCallback>
+  ): boolean;
+  emit(
+    type: EventType.SEND_SHOUT,
+    ...params: Parameters<SendShoutCallback>
+  ): boolean;
+  emit(
+    type: EventType.RECEIVE_SHOUT,
+    ...params: Parameters<ReceiveShoutCallback>
   ): boolean;
 }
 

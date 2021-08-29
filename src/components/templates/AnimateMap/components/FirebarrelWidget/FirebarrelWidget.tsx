@@ -23,8 +23,9 @@ const NUM_OF_SIDED_USERS_MINUS_ONE = 3;
 export interface FirebarrelWidgetProps {
   roomName: string;
   venueName: string;
-  onExit: () => void;
-  setUserList: (val: User[]) => void;
+  onEnter: (roomId: string, val: User[]) => void;
+  onExit: (roomId: string) => void;
+  setUserList: (roomId: string, val: User[]) => void;
   setParticipantCount?: (val: number) => void;
   setSeatedAtTable?: (val: string) => void;
   onBack?: () => void;
@@ -41,6 +42,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
   roomName,
   venueName,
   setUserList,
+  onEnter,
   onExit,
   setParticipantCount,
   setSeatedAtTable,
@@ -95,6 +97,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
       .then((room) => {
         console.log("connect to room", room);
         setRoom(room);
+
+        if (onEnter) {
+          onEnter(roomName, [
+            ...participants.map((p) => worldUsersById[p.identity]),
+            worldUsersById[room.localParticipant.identity],
+          ]);
+        }
       })
       .catch((error) => {
         console.error("error connect to room", error.message);
@@ -113,7 +122,7 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.disconnect();
       }
     };
-  }, [room]);
+  }, [room, roomName]);
 
   const leaveSeat = useCallback(async () => {
     if (!user || !profile) return;
@@ -184,6 +193,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         room.on("participantConnected", participantConnected);
         room.on("participantDisconnected", participantDisconnected);
         room.participants.forEach(participantConnected);
+
+        if (onEnter) {
+          onEnter(roomName, [
+            ...participants.map((p) => worldUsersById[p.identity]),
+            worldUsersById[room.localParticipant.identity],
+          ]);
+        }
       })
       .catch((error) => setVideoError(error.message));
 
@@ -197,16 +213,23 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         localRoom.disconnect();
       }
     };
-  }, [roomName, token, setParticipantCount]);
+  }, [
+    roomName,
+    token,
+    setParticipantCount,
+    onEnter,
+    participants,
+    worldUsersById,
+  ]);
 
   useEffect(() => {
     if (!room) return;
 
-    setUserList([
+    setUserList(roomName, [
       ...participants.map((p) => worldUsersById[p.identity]),
       worldUsersById[room.localParticipant.identity],
     ]);
-  }, [participants, setUserList, worldUsersById, room]);
+  }, [participants, setUserList, worldUsersById, room, roomName]);
 
   const getIsUserBartender = (userIdentity?: string) => {
     if (!userIdentity) return;
@@ -320,8 +343,8 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
     if (!room) return;
 
     room.disconnect();
-    onExit();
-  }, [room, onExit]);
+    onExit(roomName);
+  }, [room, roomName, onExit]);
 
   if (!token) return null;
 
@@ -341,7 +364,13 @@ export const FirebarrelWidget: React.FC<FirebarrelWidgetProps> = ({
         onHide={() => setVideoError("")}
         errorMessage={videoError}
         onRetry={connectToVideoRoom}
-        onBack={() => (setSeatedAtTable ? leaveSeat() : setVideoError(""))}
+        onBack={() => {
+          setSeatedAtTable ? leaveSeat() : setVideoError("");
+
+          if (onExit) {
+            onExit(roomName);
+          }
+        }}
       />
     </>
   );

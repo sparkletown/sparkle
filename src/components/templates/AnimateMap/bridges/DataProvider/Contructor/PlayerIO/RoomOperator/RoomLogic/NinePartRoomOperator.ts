@@ -4,7 +4,7 @@ import {
   RoomInfoType,
   RoomItem,
   RoomsModel,
-} from "../../../Structures/RoomsModel";
+} from "../../../../Structures/RoomsModel";
 
 import { RoomMath } from "./RoomMath";
 
