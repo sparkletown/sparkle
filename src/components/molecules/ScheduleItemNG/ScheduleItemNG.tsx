@@ -17,6 +17,7 @@ import { Room } from "types/rooms";
 import { ScheduledVenueEvent } from "types/venues";
 
 import { eventEndTime, eventStartTime, isEventLive } from "utils/event";
+import { getFirebaseStorageResizedImage } from "utils/image";
 import { formatDateRelativeToNow, formatTimeLocalised } from "utils/time";
 import {
   enterVenue,
@@ -35,8 +36,6 @@ import { useUser } from "hooks/useUser";
 import { RenderMarkdown } from "components/organisms/RenderMarkdown";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
-
-import { getFirebaseStorageResizedImage } from "../../../utils/image";
 
 import "./ScheduleItemNG.scss";
 
@@ -101,14 +100,13 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
     }
   }, [enterRoom, event, eventRoom, roomUrlParam]);
 
-  const eventImage = useMemo(
-    () =>
-      getFirebaseStorageResizedImage(eventRoom?.image_url ?? event.venueIcon, {
-        fit: "crop",
-        width: 40,
-        height: 40,
-      }),
-    [eventRoom, event]
+  const eventImage = getFirebaseStorageResizedImage(
+    eventRoom?.image_url ?? event.venueIcon,
+    {
+      fit: "crop",
+      width: 40,
+      height: 40,
+    }
   );
 
   const infoContaier = classNames("ScheduleItemNG__info", {
