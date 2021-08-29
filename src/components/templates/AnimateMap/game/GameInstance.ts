@@ -129,15 +129,17 @@ export class GameInstance {
       return await this._play();
     } else {
       this.getConfig().firstEntrance = true;
-      return new TimeoutCommand(1000)
-        .execute()
-        .then(() => {
-          return new WaitClickForHeroCreation().execute();
-        })
-        .then(async (command: WaitClickForHeroCreation) => {
-          await this._play(command.clickPoint);
-          this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
-        });
+      return (
+        new TimeoutCommand(1000)
+          .execute()
+          // .then(() => {
+          //   return new WaitClickForHeroCreation().execute();
+          // })
+          .then(async (command: WaitClickForHeroCreation) => {
+            await this._play(command.clickPoint);
+            this.getStore().dispatch(setAnimateMapFirstEntrance("false"));
+          })
+      );
     }
   }
 
