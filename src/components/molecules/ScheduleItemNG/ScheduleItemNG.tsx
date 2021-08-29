@@ -47,22 +47,27 @@ export const ScheduleItemNG: React.FC<ScheduleItemNGProps> = ({
   event,
   isShowFullInfo,
 }) => {
-  const { currentVenue: eventVenue } = useRelatedVenues({
+  const { currentVenue: eventVenue, relatedVenues } = useRelatedVenues({
     currentVenueId: event.venueId,
   });
+
+  const relatedVenuesRooms = relatedVenues
+    ?.flatMap((venue) => venue.rooms ?? [])
+    .filter((room) => room !== undefined);
+
   const eventRoom = useMemo<Room | undefined>(
     () =>
-      eventVenue?.rooms?.find((room) => {
+      relatedVenuesRooms?.find((room) => {
         const { room: eventRoom = "" } = event;
         const noTrailSlashUrl = getUrlWithoutTrailingSlash(room.url);
 
         const [roomName] = getLastUrlParam(noTrailSlashUrl);
         const roomUrlParam = getUrlParamFromString(eventRoom);
-        const selectedRoom = getUrlParamFromString(room.title) === eventRoom;
+        const selectedRoom = getUrlParamFromString(room.title) === roomUrlParam;
 
         return roomUrlParam.endsWith(`${roomName}`) || selectedRoom;
       }),
-    [eventVenue, event]
+    [relatedVenuesRooms, event]
   );
   const { isShown: isEventExpanded, toggle: toggleEventExpand } = useShowHide();
   const { enterRoom } = useRoom({

@@ -2,6 +2,8 @@
 
 import * as Yup from "yup";
 
+import { VenueTemplate } from "types/venues";
+
 import { WithId, withId } from "utils/id";
 
 export interface Experience {
@@ -32,6 +34,11 @@ export interface ProfileLink {
   url: string;
 }
 
+export interface OnboardingData {
+  perTemplate?: Partial<Record<VenueTemplate, number>>;
+  perVenue?: Record<string, number>;
+}
+
 export interface BaseUser {
   partyName?: string;
   pictureUrl?: string;
@@ -42,6 +49,7 @@ export interface BaseUser {
   myPersonalizedSchedule?: MyPersonalizedSchedule;
   profileLinks?: ProfileLink[];
   enteredVenueIds?: string[];
+  onboarded?: OnboardingData;
 
   // @debt typing - user also has a dynamic set of attributes for the question answers
   //   currently not possible to type them properly
@@ -135,6 +143,7 @@ export const UserSchema: Yup.ObjectSchema<User> = Yup.object()
     data: UserExperienceDataSchema,
     myPersonalizedSchedule: MyPersonalizedScheduleSchema,
     enteredVenueIds: Yup.array().of(Yup.string().required()),
+    onboarded: Yup.object().notRequired(),
 
     // Legacy?
     room: Yup.string(),

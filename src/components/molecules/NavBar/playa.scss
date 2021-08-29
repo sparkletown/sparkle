@@ -22,7 +22,7 @@ $sand: #937c63;
   top: 0;
   left: 0;
   width: 100%;
-  height: 66px;
+  height: $navbar-height;
   background-color: rgba($black, 0.2);
   border-bottom: 1px solid rgba($white, 0.2);
   box-shadow: box-shadow--large(0.1);
@@ -71,8 +71,6 @@ $sand: #937c63;
 
       .navbar-link-message,
       .navbar-link-profile,
-      .navbar-link-menu,
-      .navbar-link-radio,
       .navbar-link-schedule,
       .navbar-link-gift {
         display: block;
@@ -90,26 +88,6 @@ $sand: #937c63;
         }
         &.navbar-link-profile {
           background-size: 40px 40px;
-        }
-        &.navbar-link-menu {
-          background-image: url(/assets/icons/navbar-link-menu.png);
-          background-size: 40px 40px;
-          background-color: rgba($black, 0);
-
-          &:hover {
-            background-color: rgba($black, 0.3);
-          }
-        }
-        &.navbar-link-radio {
-          background-image: url(/assets/icons/navbar-link-radio.png);
-          background-size: 80px 40px;
-          animation: radioanim 2s steps(2) infinite;
-
-          &.off {
-            background-image: url(/assets/icons/navbar-link-radio-off.png);
-            background-size: 40px 40px;
-            animation: none;
-          }
         }
         &.navbar-link-schedule {
           width: auto;

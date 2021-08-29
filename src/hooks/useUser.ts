@@ -19,7 +19,7 @@ export interface UseUserResult {
 }
 
 export const useUser = (): UseUserResult => {
-  const auth = useSelector((state: RootState) => {
+  const user = useSelector((state: RootState) => {
     const auth = authSelector(state);
 
     return !auth.isEmpty ? auth : undefined;
@@ -31,7 +31,7 @@ export const useUser = (): UseUserResult => {
     return !profile.isEmpty ? profile : undefined;
   }, isEqual);
 
-  const userId = auth?.uid;
+  const userId = user?.uid;
 
   const userWithId = useMemo(() => {
     if (!userId || !profile) return;
@@ -41,11 +41,11 @@ export const useUser = (): UseUserResult => {
 
   return useMemo(
     () => ({
-      user: auth,
+      user,
       profile,
       userWithId,
       userId,
     }),
-    [auth, profile, userId, userWithId]
+    [user, profile, userId, userWithId]
   );
 };
