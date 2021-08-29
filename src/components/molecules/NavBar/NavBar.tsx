@@ -255,7 +255,6 @@ export const NavBar: React.FC<NavBarPropsType> = ({
   const scheduleBtnClasses = classNames("nav-schedule", {
     "nav-schedule-clicked": isEventScheduleVisible,
     "nav-schedule-triggered": isScheduleTriggered && !isEventScheduleVisible,
-    "nav-schedule-marged": hasBackButton,
   });
 
   const navBarScheduleClassName = "NavBar__schedule-dropdown";
