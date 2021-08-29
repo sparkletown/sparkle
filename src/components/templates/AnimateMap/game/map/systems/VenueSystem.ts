@@ -18,9 +18,13 @@ export class VenueSystem extends System {
   update(time: number) {}
 
   private handleVenueAdded = (node: VenueNode): void => {
-    // TODO debug
-    const animate = Math.random() < 0.2;
-    if (!node.venue.model.data.isEnabled) {
+    // if (node.venue.model.data.title == 'viktoryias room') {
+    //   console.log('VICTORIS isLive', node.venue.model.data.isLive)
+    //   node.venue.model.data.countUsers = 100;
+    // }
+
+    const animate = node.venue.model.data.countUsers >= 25;
+    if (!node.venue.model.data.isLive) {
       node.venue.fsm.changeState(node.venue.WITHOUT_HALO);
     } else if (animate) {
       node.venue.fsm.changeState(node.venue.HALO_ANIMATED);

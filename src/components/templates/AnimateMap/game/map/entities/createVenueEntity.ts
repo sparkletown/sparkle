@@ -1,8 +1,9 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { setAnimateMapRoom } from "../../../../../../store/actions/AnimateMap";
-import { ReplicatedVenue } from "../../../../../../store/reducers/AnimateMap";
+import { setAnimateMapRoom } from "store/actions/AnimateMap";
+import { ReplicatedVenue } from "store/reducers/AnimateMap";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { CropVenue } from "../../commands/CropVenue";
 import { GameInstance } from "../../GameInstance";
@@ -34,9 +35,62 @@ const addVenueTooltip = (
   }
 
   const tooltip = new TooltipComponent(text);
-  tooltip.borderColor = venue.data.isEnabled ? 0x7c46fb : 0x655a4d;
+  tooltip.borderColor = venue.data.isLive ? 0x7c46fb : 0x655a4d;
   tooltip.backgroundColor = tooltip.borderColor;
   entity.add(tooltip);
+};
+
+const updateVenueImage = (
+  replicatedVenue: ReplicatedVenue,
+  spriteComponent: SpriteComponent,
+  positionComponent: PositionComponent
+) => {
+  new CropVenue(replicatedVenue.data.image_url, replicatedVenue.data.isEnabled)
+    .setUsersCount(replicatedVenue.data.countUsers)
+    .execute()
+    .then((comm: CropVenue) => {
+      const size = GameConfig.VENUE_DEFAULT_SIZE;
+      const scale = size / comm.canvas.width;
+      positionComponent.scaleY = scale;
+      positionComponent.scaleX = scale;
+
+      const venueSprite = spriteComponent.view as Venue;
+      if (venueSprite.venue) {
+        venueSprite.venue.parent?.removeChild(venueSprite.venue);
+      }
+
+      venueSprite.venue = Sprite.from(comm.canvas);
+      venueSprite.venue.anchor.set(0.5);
+      venueSprite.addChild(venueSprite.venue);
+      return Promise.resolve();
+    })
+    .catch((err) => {
+      console.log("err", err);
+    });
+};
+
+const getCurrentReplicatedVenue = (
+  venueComponent: VenueComponent
+): ReplicatedVenue => {
+  return venueComponent.model;
+};
+
+export const updateVenueEntity = (
+  venue: ReplicatedVenue,
+  creator: EntityFactory
+) => {
+  const node = creator.getVenueNode(venue);
+  if (!node) {
+    return;
+  }
+  node.venue.model = venue;
+  node.entity.add(node.venue);
+
+  const sprite = node.entity.get(SpriteComponent);
+  if (!sprite) {
+    return;
+  }
+  updateVenueImage(venue, sprite, node.position);
 };
 
 export const createVenueEntity = (
@@ -47,6 +101,7 @@ export const createVenueEntity = (
   const entity: Entity = new Entity();
   const fsm: FSMBase = new FSMBase(entity);
   const venueComponent = new VenueComponent(venue, fsm);
+  const positionComponent = new PositionComponent(venue.x, venue.y, 0, 0, 0);
   const spriteComponent: SpriteComponent = new SpriteComponent();
   const sprite: Venue = new Venue();
   sprite.zIndex = -1;
@@ -66,7 +121,7 @@ export const createVenueEntity = (
     .add(VenueHalo)
     .withMethod(
       (): VenueHalo => {
-        return new VenueHalo(sprite, entity.get(PositionComponent)?.scaleY);
+        return new VenueHalo(sprite);
       }
     );
 
@@ -76,7 +131,7 @@ export const createVenueEntity = (
     .withMethod(
       (): AnimationComponent => {
         return new AnimationComponent(
-          new VenueHaloAnimated(sprite, entity.get(PositionComponent)?.scaleY),
+          new VenueHaloAnimated(sprite),
           Number.MAX_VALUE
         );
       }
@@ -86,20 +141,23 @@ export const createVenueEntity = (
   const hoverEffectDuration = 100;
 
   entity
+    .add(positionComponent)
     .add(venueComponent)
     .add(spriteComponent)
+    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS))
     .add(
       new HoverableSpriteComponent(
         () => {
           // add tooltip
           const waiting = creator.getWaitingVenueClick();
-          if (!waiting || waiting.data.id !== venue.data.id) {
+          const currentVenue = getCurrentReplicatedVenue(venueComponent);
+          if (!waiting || waiting.data.id !== currentVenue.data.id) {
             addVenueTooltip(
-              venue,
+              currentVenue,
               entity,
-              venue.data.title.length > 18
-                ? venue.data.title.slice(0, 15) + "..."
-                : venue.data.title
+              currentVenue.data.title.length > 18
+                ? currentVenue.data.title.slice(0, 15) + "..."
+                : currentVenue.data.title
             );
           }
 
@@ -142,45 +200,27 @@ export const createVenueEntity = (
     )
     .add(
       new ClickableSpriteComponent(() => {
+        const currentVenue = getCurrentReplicatedVenue(venueComponent);
         GameInstance.instance.getStore().dispatch(
           setAnimateMapRoom({
-            title: venue.data.title,
-            subtitle: venue.data.subtitle,
-            url: venue.data.url,
-            about: venue.data.about,
+            title: currentVenue.data.title,
+            subtitle: currentVenue.data.subtitle,
+            url: currentVenue.data.url,
+            about: currentVenue.data.about,
             x_percent: 50,
             y_percent: 50,
             width_percent: 5,
             height_percent: 5,
-            isEnabled: venue.data.isEnabled,
-            image_url: venue.data.image_url,
+            isEnabled: currentVenue.data.isEnabled,
+            image_url: currentVenue.data.image_url,
           })
         );
       })
-    )
-    .add(new CollisionComponent(GameConfig.VENUE_DEFAULT_COLLISION_RADIUS));
+    );
 
-  const position = new PositionComponent(venue.x, venue.y, 0, 0, 0);
-  entity.add(position);
   engine.addEntity(entity);
 
-  new CropVenue(venue.data.image_url, venue.data.isEnabled)
-    .setUsersCount(venue.data.countUsers)
-    .execute()
-    .then((comm: CropVenue) => {
-      const scale =
-        (GameConfig.VENUE_DEFAULT_COLLISION_RADIUS * 2) / comm.canvas.width;
-      position.scaleY = scale;
-      position.scaleX = scale;
-
-      sprite.venue = Sprite.from(comm.canvas);
-      sprite.venue.anchor.set(0.5);
-      sprite.addChild(sprite.venue);
-      return Promise.resolve();
-    })
-    .catch((err) => {
-      console.log("err", err);
-    });
+  updateVenueImage(venue, spriteComponent, positionComponent);
 
   return entity;
 };

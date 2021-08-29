@@ -24,6 +24,14 @@ $spacing-map: (
     visibility: hidden;
   }
 
+  &--anamorphic {
+    aspect-ratio: 2.39;
+  }
+
+  &--sixteen-nine {
+    aspect-ratio: 16 / 9;
+  }
+
   &--text {
     @each $where in $text-align-enum {
       &-#{$where} {

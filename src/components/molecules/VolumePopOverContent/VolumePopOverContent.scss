@@ -1,0 +1,6 @@
+@import "scss/constants.scss";
+
+// @debt hack-fix to update popover sizes
+#volume-popover {
+  margin-top: $spacing--lg;
+}

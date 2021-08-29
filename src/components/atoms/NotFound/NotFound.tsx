@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { ButtonNG } from "components/atoms/ButtonNG";
 import { SparkleLogo } from "components/atoms/SparkleLogo";
 
-import TV_IMAGE from "assets/images/old-tv.png";
+import TV_IMAGE from "assets/images/old-tv-404.png";
 
 import "./NotFound.scss";
 
@@ -21,7 +21,7 @@ export const NotFound: React.FC = ({ children }) => {
           alt="shape indicating denied access"
           src={TV_IMAGE}
         />
-        <p className="NotFound__title">Nothing to see here.</p>
+        <p className="NotFound__move-along-text">Nothing to see here.</p>
         <ButtonNG
           className="NotFound__button"
           variant="primary"

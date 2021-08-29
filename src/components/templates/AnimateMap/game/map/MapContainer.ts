@@ -235,7 +235,7 @@ export class MapContainer extends Container {
       SystemPriorities.render
     );
     this._engine.addSystem(
-      new ViewportBackgroundSystem(this._viewport as Viewport),
+      new ViewportBackgroundSystem(this._viewport as Viewport, this._app),
       SystemPriorities.render
     );
     this._engine.addSystem(new FirebarrelSystem(), SystemPriorities.render);
@@ -301,30 +301,18 @@ export class MapContainer extends Container {
         .execute()
         .then(() => {
           if (this.entityFactory) {
-            const firebarrels = GameInstance.instance
-              .getConfig()
-              .getFirebarrels();
-
-            if (firebarrels) {
-              for (let i = 0; i < firebarrels.length; i++) {
-                this.entityFactory.createBarrel(firebarrels[i]);
-                // this.entityFactory.createBarrel({
-                //   x: firebarrel.x,
-                //   y: firebarrel.y,
-                //   data: { url: firebarrel.id, image_url: barrels[0] },
-                // } as ReplicatedVenue);
+            GameInstance.instance.dataProvider.firebarrelsData.forEach(
+              (firebarrel) => {
+                this.entityFactory?.createBarrel(firebarrel);
               }
-            }
+            );
           }
         })
         .then(() => {
           if (this.entityFactory) {
             const map: PlaygroundMap = GameInstance.instance.getConfig()
               .playgroundMap;
-            const bots: Map<
-              string,
-              ReplicatedUser
-            > = GameInstance.instance.getState().users;
+            const bots = GameInstance.instance.getState().users;
             const itrb: IterableIterator<ReplicatedUser> = bots.values();
             const self: MapContainer = this;
             const loop = async () => {

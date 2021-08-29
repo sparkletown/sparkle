@@ -16,6 +16,7 @@ import { UIOverlay } from "./components/UIOverlay/UIOverlay";
 import { UIOverlayGrid } from "./components/UIOverlayGrid/UIOverlayGrid";
 import { GameConfig } from "./configs/GameConfig";
 import { GameInstance } from "./game/GameInstance";
+import { useRelatedPartymapRooms } from "./hooks/useRelatedPartymapRooms";
 import { configs } from "./configs";
 
 import "./AnimateMap.scss";
@@ -68,6 +69,8 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
 
   const [showFirebarrelFlag, setShowFirebarrelFlag] = useState(false);
 
+  const relatedRooms = useRelatedPartymapRooms({ venue });
+
   return (
     <div className="AnimateMap">
       <AnimateMapOnboardFlow />
@@ -93,6 +96,7 @@ export const AnimateMap: React.FC<AnimateMapProps> = ({ venue }) => {
       <CloudDataProviderWrapper
         venue={venue}
         newDataProviderCreate={setDataProvider}
+        relatedRooms={relatedRooms}
       />
     </div>
   );

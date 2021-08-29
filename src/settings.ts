@@ -60,6 +60,8 @@ export const DEFAULT_MAP_ICON_URL = defaultMapIcon;
 export const SPARKLEVERSE_LOGO_URL = sparkleverseLogo;
 export const HELP_CENTER_URL =
   "https://sparklever.se/faq/#1597682029675-21e837b4-e441";
+export const VEST_RANGERS_URL = "https://multiverserangers.org/rangers911";
+export const VPLAYA_URL = "https://www.vplaya.info";
 
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
@@ -178,6 +180,7 @@ export const IFRAME_ALLOW =
 export const IFRAME_ALLOW_ADVANCED = `${IFRAME_ALLOW} camera; microphone;`;
 
 export const ENABLE_PLAYA_ADDRESS = false;
+export const IS_SIMPLE_MUTE_BUTTON = true;
 
 // These templates use zoomUrl (they should remain alphabetically sorted)
 // @debt Refactor this constant into types/venues + create an actual custom type grouping for it
@@ -301,7 +304,7 @@ export const BURN_VENUE_TEMPLATES: Template[] = [
   },
   {
     template: VenueTemplate.screeningroom,
-    name: "Screening room",
+    name: "Screening Room",
     description: ["Add an screening room with the videos listed inside."],
   },
 ];
@@ -757,7 +760,14 @@ export const PROFILE_MODAL_EDIT_MODE_TURNING_OFF_DELAY = 130;
 
 export const EVENT_STARTING_SOON_TIMEFRAME = 120; // in minutes
 
-export const EVENTS_PREVIEW_LIST_LENGTH = 5;
+export const EVENTS_PREVIEW_LIST_LENGTH = 50;
+
+// Set these to have images uploaded to Firebase Storage served off of Imgix
+// @debt load this from an env variable. This is good enough for Burning Man but we want to have env-specific conf
+export const FIREBASE_STORAGE_IMAGES_ORIGIN =
+  "https://firebasestorage.googleapis.com/v0/b/sparkle-burn.appspot.com/o/";
+export const FIREBASE_STORAGE_IMAGES_IMGIX_URL =
+  "https://sparkle-burn-users.imgix.net/";
 
 export const BM_PARENT_ID = "playa";
 

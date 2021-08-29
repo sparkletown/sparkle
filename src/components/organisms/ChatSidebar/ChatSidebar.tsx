@@ -10,8 +10,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
-import { HELP_CENTER_URL } from "settings";
-
 import { ChatTypes } from "types/chat";
 import { AnyVenue } from "types/venues";
 
@@ -22,7 +20,7 @@ import {
   useChatSidebarInfo,
 } from "hooks/chats/chatSidebar";
 
-import { LoadingPage } from "components/molecules/LoadingPage";
+import { HelpCenter } from "components/organisms/HelpCenter";
 
 import { PrivateChats, VenueChat } from "./components";
 
@@ -46,7 +44,6 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
   const { privateChatTabTitle, venueChatTabTitle } = useChatSidebarInfo(venue);
 
   const [isShownHelpCenter, setShownHelpCenter] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(true);
 
   const isVenueChat = chatSettings.openedChatType === ChatTypes.VENUE_CHAT;
   const isPrivateChat = chatSettings.openedChatType === ChatTypes.PRIVATE_CHAT;
@@ -64,7 +61,6 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
     toggleSidebar();
     if (isShownHelpCenter) {
       setShownHelpCenter(false);
-      setLoading(true);
     }
   }, [isShownHelpCenter, toggleSidebar]);
 
@@ -163,11 +159,6 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
                 </button>
               </div>
             )}
-            {isShownHelpCenter && (
-              <div className="chat-sidebar__help-center-header">
-                Help Center
-              </div>
-            )}
           </>
         )}
       </div>
@@ -177,18 +168,7 @@ export const _ChatSidebar: React.FC<ChatSidebarProps> = ({ venue }) => {
           {!isShownHelpCenter && isPrivateChat && (
             <PrivateChats recipientId={recipientId} />
           )}
-          {isShownHelpCenter && (
-            <div className="chat-sidebar__help-center">
-              {isLoading && <LoadingPage />}
-              <iframe
-                className="chat-sidebar__help-center"
-                onLoad={() => setLoading(false)}
-                frameBorder="0"
-                src={HELP_CENTER_URL}
-                title="Help Center"
-              ></iframe>
-            </div>
-          )}
+          {isShownHelpCenter && <HelpCenter />}
         </div>
       )}
     </div>

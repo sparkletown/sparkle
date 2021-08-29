@@ -44,7 +44,7 @@ export class ClickableSpriteSystem extends System {
     ) {
       if (event.target === node.sprite.view) {
         if (node.click.click) {
-          node.click.click();
+          node.click.click(event);
         }
         break;
       }

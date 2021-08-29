@@ -72,17 +72,21 @@ export const worldUsersApi = createApi({
         const queuedChanges: firebase.firestore.DocumentChange<firebase.firestore.DocumentData>[] = [];
 
         const processQueuedChanges = () => {
+          if (queuedChanges.length === 0) return;
           console.log(
-            "[worldUsersApi::processQueuedChanges] queuedChanges.length = ",
+            "worldUsersApi::processQueuedChanges queuedChanges.length = ",
             queuedChanges.length
           );
 
-          if (queuedChanges.length === 0) return;
-
+          window.performance.mark("worldUsersApi::processQueuedChanges::start");
           updateCachedData((draft) => {
             // We use splice here to remove all elements from the array and return them for processing
             queuedChanges.splice(0).forEach(processUserDocChange(draft));
           });
+          window.performance.measure(
+            "worldUsersApi::processQueuedChanges",
+            "worldUsersApi::processQueuedChanges::start"
+          );
         };
 
         // TODO: move this interval into a proper const/config value somewhere
