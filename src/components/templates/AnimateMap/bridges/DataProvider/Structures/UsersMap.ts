@@ -1,4 +1,4 @@
-import { ReplicatedUser } from "../../../../../../store/reducers/AnimateMap";
+import { ReplicatedUser } from "store/reducers/AnimateMap";
 
 type item = string | Set<string>;
 type itemU = ReplicatedUser | ReplicatedUser[];

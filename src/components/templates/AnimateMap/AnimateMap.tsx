@@ -1,17 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useStore } from "react-redux";
 
+import {
+  enterAnimateMapFireBarrel,
+  exitAnimateMapFireBarrel,
+  updateAnimateMapFireBarrel,
+} from "store/actions/AnimateMap";
+
 import { AnimateMapVenue } from "types/venues";
 
 import { WithId } from "utils/id";
 
 import { useDispatch } from "hooks/useDispatch";
-
-import {
-  enterAnimateMapFireBarrel,
-  exitAnimateMapFireBarrel,
-  updateAnimateMapFireBarrel,
-} from "../../../store/actions/AnimateMap";
 
 import { CloudDataProviderWrapper } from "./bridges/CloudDataProviderWrapper";
 import { CloudDataProvider } from "./bridges/DataProvider/CloudDataProvider";

@@ -1,7 +1,8 @@
 import { Entity } from "@ash.ts/ash";
 import { Sprite } from "pixi.js";
 
-import { ReplicatedFirebarrel } from "../../../../../../store/reducers/AnimateMap";
+import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
+
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";

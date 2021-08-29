@@ -1,9 +1,9 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 import { subscribeActionAfter } from "redux-subscribe-action";
 
+import { AnimateMapActionTypes } from "store/actions/AnimateMap";
 import { ReplicatedUser } from "store/reducers/AnimateMap";
 
-import { AnimateMapActionTypes } from "../../../../../../store/actions/AnimateMap";
 import EntityFactory from "../entities/EntityFactory";
 import { BarrelNode } from "../nodes/BarrelNode";
 import { BotNode } from "../nodes/BotNode";
