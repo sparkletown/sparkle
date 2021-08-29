@@ -221,6 +221,7 @@ export class GameInstance {
 
     EventProvider.on(EventType.USER_JOINED, (user: ReplicatedUser) => {
       console.log(`- ${user} join to room`);
+      this._mapContainer?.entityFactory?.updateUserPositionById(user);
     });
 
     EventProvider.on(EventType.USER_LEFT, (user: ReplicatedUser) => {

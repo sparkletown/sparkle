@@ -9,6 +9,6 @@ export class BubbleComponent {
   constructor(text: string, backgroudnColor = 0x0) {
     this.text = text;
     this.backgroudnColor = backgroudnColor;
-    this.lifeTime = 100;
+    this.lifeTime = 250;
   }
 }
