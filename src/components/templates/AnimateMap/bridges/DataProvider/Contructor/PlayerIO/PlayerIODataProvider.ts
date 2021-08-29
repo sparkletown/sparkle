@@ -4,6 +4,7 @@ import { Point } from "types/utility";
 
 import { getRandomInt } from "utils/getRandomInt";
 
+import { PlaygroundMap } from "../../../../game/utils/PlaygroundMap";
 import {
   ConnectionSuccessCallback,
   PlayerIOInstance,
@@ -99,11 +100,20 @@ export class PlayerIODataProvider extends utils.EventEmitter {
       this._playerObject.y === undefined
     ) {
       needSave = true;
-      // const pos = StartPoint();
-      // playerObject.x = pos.x;
-      // playerObject.y = pos.y;
-      this._playerObject.x = getRandomInt(9920);
-      this._playerObject.y = getRandomInt(9920);
+      do {
+        this._playerObject.x = getRandomInt(9920);
+        this._playerObject.y = getRandomInt(9920);
+        console.log(
+          "CREATE USER in ",
+          this._playerObject.x,
+          this._playerObject.y
+        );
+      } while (
+        !PlaygroundMap.pointIsOnThePlayground(
+          this._playerObject.x,
+          this._playerObject.y
+        )
+      );
       this._playerObject.i = getIntByHash(this.playerId);
     }
 
