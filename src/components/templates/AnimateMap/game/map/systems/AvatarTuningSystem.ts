@@ -141,30 +141,6 @@ export class AvatarTuningSystem extends System {
       }
     }
 
-    // // CYCLE
-    // if (
-    //   this.player &&
-    //   this.player.head &&
-    //   this.player.head.player.data.id === node.tuning.user.id &&
-    //   this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING &&
-    //   !view.cycle
-    // ) {
-    //   view.cycle = Sprite.from(avatarCycles[0]);
-    //   view.cycle.y = view.avatar.height / 2;
-    //   view.cycle.anchor.set(0.5);
-    //   // TODO HARDCODE
-    //   view.cycle.scale.set(1.3);
-    //
-    //   view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
-    // } else if (
-    //   (!node.tuning.user.data.cycle ||
-    //     this.zoomLevelCurrent !== GameConfig.ZOOM_LEVEL_CYCLING) &&
-    //   view.cycle
-    // ) {
-    //   view.removeChild(view.cycle);
-    //   view.cycle = null;
-    // }
-
     // HAT
     if (
       node.tuning.user.data.hat &&

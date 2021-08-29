@@ -3,38 +3,36 @@ import { subscribeActionAfter } from "redux-subscribe-action";
 
 import {
   AnimateMapActionTypes,
-  setAnimateMapFireBarrel,
   setAnimateMapFireBarrelAction,
 } from "store/actions/AnimateMap";
 
+import { User } from "types/User";
 import { AnimateMapVenue } from "types/venues";
-
-import { useDispatch } from "hooks/useDispatch";
 
 import { FirebarrelWidget } from "./FirebarrelWidget";
 
 export interface FirebarrelProviderProps {
   venue: AnimateMapVenue;
-  onConnectChange: (isConnected: boolean) => void;
+  onConnectChange: (roomId: string, val: User[], isConnected: boolean) => void;
+  setUserList: (roomId: string, val: User[]) => void;
 }
 
 export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
   venue,
   onConnectChange,
+  setUserList,
 }) => {
   const [selectedFirebarrel, setSelectedFirebarrel] = useState<
     string | undefined
   >();
-  const dispatch = useDispatch();
-
   useEffect(() => {
     const unsubscribe = subscribeActionAfter(
       AnimateMapActionTypes.SET_FIREBARREL,
       (action) => {
-        onConnectChange(typeof selectedFirebarrel === "string");
-        setSelectedFirebarrel(
-          (action as setAnimateMapFireBarrelAction).payload.roomId
-        );
+        const roomId = (action as setAnimateMapFireBarrelAction).payload.roomId;
+
+        //onConnectChange(roomId, [], typeof selectedFirebarrel === "string");
+        setSelectedFirebarrel(roomId);
       }
     );
     return () => {
@@ -42,17 +40,19 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
     };
   });
 
-  const onExit = () => {
-    dispatch(setAnimateMapFireBarrel(""));
-    onConnectChange(false);
-  };
-
   return selectedFirebarrel ? (
     <FirebarrelWidget
       roomName={selectedFirebarrel}
       venueName={venue.name}
-      setUserList={() => {}}
-      onExit={onExit}
+      onEnter={(roomId, userList) => {
+        console.log("onEnter", true);
+        onConnectChange(roomId, userList, true);
+      }}
+      onExit={(roomId) => {
+        console.log("onExit", false);
+        onConnectChange(roomId, [], false);
+      }}
+      setUserList={setUserList}
       isAudioEffectDisabled={false}
     />
   ) : (
