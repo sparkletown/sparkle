@@ -52,8 +52,8 @@ export interface RegisterFormRfData {
 }
 
 const sparkleTermsAndConditions = {
-  name: `I agree to Sparkle's terms and conditions`,
-  text: `I agree to Sparkle's terms and conditions`,
+  name: `I agree to SparkleVerse Ltd's terms of use and privacy policy.`,
+  text: `I agree to SparkleVerse Ltd's terms of use and privacy policy.`,
   link: SPARKLE_TERMS_AND_CONDITIONS_URL,
 };
 
@@ -126,7 +126,7 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
             setError(
               "code",
               "validation",
-              "We can't find you! Please use the code from your invitation."
+              "We can't find this code! Please use ticket code sent by email."
             );
             return;
           }

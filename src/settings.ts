@@ -667,10 +667,12 @@ export const RANDOM_AVATARS = [
 export const CHAT_MESSAGE_TIMEOUT = 500; // time in ms
 
 export const DEFAULT_AVATARS = [
-  "/avatars/default-profile-pic-1.png",
-  "/avatars/default-profile-pic-2.png",
-  "/avatars/default-profile-pic-3.png",
-  "/avatars/default-profile-pic-4.png",
+  "/avatars/avatar-01.png",
+  "/avatars/avatar-05.png",
+  "/avatars/avatar-07.png",
+  "/avatars/avatar-08.png",
+  "/avatars/avatar-10.png",
+  "/avatars/avatar-12.png",
 ];
 
 export const REACTION_TIMEOUT = 5000; // time in ms
