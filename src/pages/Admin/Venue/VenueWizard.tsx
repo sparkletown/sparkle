@@ -155,5 +155,5 @@ const VenueWizardCreate: React.FC = () => {
     return <Redirect to={venueInsideUrl(DEFAULT_VENUE)} />;
   }
 
-  return <WithNavigationBar>{Page}</WithNavigationBar>;
+  return <WithNavigationBar hasSchedule={false}>{Page}</WithNavigationBar>;
 };
