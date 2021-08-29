@@ -16,6 +16,7 @@ import { WithVenue } from "utils/venue";
 
 import { RecentWorldUsersData } from "hooks/users/useRecentWorldUsers";
 
+import { getFirebaseStorageResizedImage } from "../../../../../utils/image";
 import { RoomWithFullData } from "../CloudDataProviderWrapper";
 import { DataProvider } from "../DataProvider";
 import EventProvider, { EventType } from "../EventProvider/EventProvider";
@@ -165,8 +166,13 @@ export class CloudDataProvider
           x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
           y: (room.y_percent / 100) * 9920 + 50,
           data: {
-            countUsers: room.countUsers ?? 0,
             ...room,
+            countUsers: room.countUsers ?? 0,
+            image_url: getFirebaseStorageResizedImage(room.image_url, {
+              width: 100,
+              height: 100,
+              fit: "crop",
+            }),
           },
         } as ReplicatedVenue;
         return vn;
@@ -181,8 +187,13 @@ export class CloudDataProvider
         x: (room.x_percent / 100) * 9920 + 50, //TODO: refactor configs and throw data to here
         y: (room.y_percent / 100) * 9920 + 50,
         data: {
-          countUsers: countUsers,
           ...room,
+          countUsers: countUsers,
+          image_url: getFirebaseStorageResizedImage(room.image_url, {
+            width: 100,
+            height: 100,
+            fit: "crop",
+          }),
         },
       } as ReplicatedVenue;
       this.venuesData.push(vn);
@@ -221,7 +232,11 @@ export class CloudDataProvider
           id: user.id,
           partyName: user.partyName,
           messengerId: getIntByHash(user.id),
-          pictureUrl: user.pictureUrl,
+          pictureUrl: getFirebaseStorageResizedImage(user.pictureUrl ?? "", {
+            width: 100,
+            height: 100,
+            fit: "crop",
+          }),
           dotColor: 0xabfcfb,
         },
       });
