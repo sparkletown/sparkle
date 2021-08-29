@@ -12,6 +12,7 @@ import { useVenueEvents } from "hooks/events";
 import { useRecentWorldUsers } from "hooks/users";
 import { useUser } from "hooks/useUser";
 
+import { getFirebaseStorageResizedImage } from "../../../../utils/image";
 import { useFirebarrels } from "../hooks/useFirebarrels";
 import { useRecentLocationsUsers } from "../hooks/useRecentLocationsUsers";
 import { UseRelatedPartymapRoomsData } from "../hooks/useRelatedPartymapRooms";
@@ -124,7 +125,11 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
       if (typeof user.userId === "string" && !dataProvider && firebase) {
         const dataProvider = new CloudDataProvider(
           user.userId,
-          user.profile?.pictureUrl,
+          getFirebaseStorageResizedImage(user.profile?.pictureUrl ?? "", {
+            width: 100,
+            height: 100,
+            fit: "crop",
+          }),
           firebase,
           venue.playerioGameId,
           venue.playerioAdvancedMode
