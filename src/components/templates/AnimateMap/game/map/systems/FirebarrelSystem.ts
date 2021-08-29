@@ -20,7 +20,7 @@ export class FirebarrelSystem extends System {
 
   private creator: EntityFactory;
   private waitingEnterFirebarrelId?: number;
-  private WAITING_ENTER_FIREBARREL_TIMEOUT = 30000;
+  private WAITING_ENTER_FIREBARREL_TIMEOUT = 15000;
 
   // private _unsubscribeSetPointer!: () => void;
   constructor(creator: EntityFactory) {
