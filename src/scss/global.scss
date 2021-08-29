@@ -509,8 +509,8 @@ h4 {
 
     .profile-icon {
       position: absolute;
-      bottom: 0;
-      left: 0;
+      bottom: $spacing--sm;
+      left: $spacing--sm;
       border-radius: 188%;
       z-index: z(global-profile-icon);
     }

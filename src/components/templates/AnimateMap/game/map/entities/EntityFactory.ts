@@ -219,7 +219,7 @@ export default class EntityFactory {
     const motionControl = new MotionControlSwitchComponent();
     const collision: CollisionComponent = new CollisionComponent(0);
 
-    const scale = 0.2;
+    const scale = 0.36;
 
     const entity: Entity = new Entity();
     const fsm: FSMBase = new FSMBase(entity);
@@ -261,7 +261,7 @@ export default class EntityFactory {
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
       .add(new ViewportFollowComponent());
 
-    fsm.changeState("flying");
+    fsm.changeState(player.FLYING);
     this.engine.addEntity(entity);
 
     const url = user.data.pictureUrl;
@@ -499,7 +499,7 @@ export default class EntityFactory {
       const x2 = playerNode.position.x;
       const y2 = playerNode.position.y;
       const d = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-      const r = firebarrelNode.collision.radius / d;
+      const r = (firebarrelNode.collision.radius * 1.6) / d;
 
       const x3 =
         r * x2 + (1 - r) * x1 ||
