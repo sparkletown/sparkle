@@ -22,17 +22,18 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
   onConnectChange,
   setUserList,
 }) => {
-  const [selectedFirebarrel, setSelectedFirebarrel] = useState<
-    string | undefined
-  >();
+  const [currentRoomId, setCurrentRoomId] = useState<string | undefined>();
+
   useEffect(() => {
     const unsubscribe = subscribeActionAfter(
       AnimateMapActionTypes.SET_FIREBARREL,
       (action) => {
-        const roomId = (action as setAnimateMapFireBarrelAction).payload.roomId;
-
-        //onConnectChange(roomId, [], typeof selectedFirebarrel === "string");
-        setSelectedFirebarrel(roomId);
+        console.log("------ currentRoomId", currentRoomId, venue);
+        if (!currentRoomId) {
+          setCurrentRoomId(
+            (action as setAnimateMapFireBarrelAction).payload.roomId
+          );
+        }
       }
     );
     return () => {
@@ -40,16 +41,16 @@ export const FirebarrelProvider: React.FC<FirebarrelProviderProps> = ({
     };
   });
 
-  return selectedFirebarrel ? (
+  return currentRoomId ? (
     <FirebarrelWidget
-      roomName={selectedFirebarrel}
-      venueName={venue.name}
+      roomName={currentRoomId}
       onEnter={(roomId, userList) => {
         console.log("onEnter", true);
         onConnectChange(roomId, userList, true);
       }}
       onExit={(roomId) => {
         console.log("onExit", false);
+        setCurrentRoomId(undefined);
         onConnectChange(roomId, [], false);
       }}
       setUserList={setUserList}
