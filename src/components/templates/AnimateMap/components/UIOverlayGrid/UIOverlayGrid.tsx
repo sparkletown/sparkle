@@ -19,8 +19,8 @@ import EventProvider, {
   EventType,
 } from "../../bridges/EventProvider/EventProvider";
 import { ControlPanel } from "../ControlPanel/ControlPanel";
-import { Shoutouter } from "../Shoutouter/Shoutouter";
 import { UIPlayerContextMenu } from "../PlayerContextMenu/PlayerContextMenu";
+import { Shoutouter } from "../Shoutouter/Shoutouter";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
@@ -102,10 +102,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
           <Shoutouter />
         </div>
       </div>
-
-      {/* <div className="UIOverlayGrid__contextmenu">
-        <UIPlayerContextMenu />
-      </div> */}
     </div>
   );
 };
