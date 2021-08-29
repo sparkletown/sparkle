@@ -15,11 +15,12 @@ import { SpanRF } from "pages/RegistrationFlow/SpanRF";
 
 import { Loading } from "components/molecules/Loading";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
 import { NotFound } from "components/atoms/NotFound";
 
+import { ButtonRF } from "../ButtonRF";
 import { CheckboxWrapRF } from "../CheckboxWrapRF";
 import { DivRF } from "../DivRF";
+import { LogoRF } from "../LogoRF";
 import { PaneRF } from "../PaneRF";
 
 import "./CodeOfConductRF.scss";
@@ -96,6 +97,7 @@ export const CodeOfConductRF: React.FC = () => {
 
   return (
     <PaneRF className="CodeOfConductRF">
+      <LogoRF />
       <DivRF variant="title">10 principles of Burning Man</DivRF>
       <DivRF variant="subtitle">
         They are the community’s ethos and culture as it had organically
@@ -120,14 +122,14 @@ export const CodeOfConductRF: React.FC = () => {
           ))}
         </DivRF>
         <DivRF className="mod--flex-col mod--width-100pp">
-          <ButtonNG
+          <ButtonRF
             variant="primary"
             type="submit"
             disabled={!formState.isValid || isUpdating}
             loading={isUpdating}
           >
             Next
-          </ButtonNG>
+          </ButtonRF>
           <Loading displayWhile={isUpdating} />
           <SpanRF variant="error">{httpError?.message}</SpanRF>
         </DivRF>

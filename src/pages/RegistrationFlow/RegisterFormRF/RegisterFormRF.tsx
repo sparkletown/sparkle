@@ -32,7 +32,7 @@ import { validateDateOfBirth } from "../utils-rf";
 
 import "./RegisterFormRF.scss";
 
-// NOTE: temporary switches for development only, should be removed
+// @debt temporary switches for development only, should be removed
 const ALWAYS_REQUIRE_CODES = false;
 const ALWAYS_REQUIRE_BIRTH = false;
 

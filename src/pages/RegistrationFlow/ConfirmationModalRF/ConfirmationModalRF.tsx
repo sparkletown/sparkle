@@ -1,8 +1,7 @@
 import React, { FC, useCallback, useState } from "react";
 import { Modal } from "react-bootstrap";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
+import { ButtonRF } from "../ButtonRF";
 import { DivRF } from "../DivRF";
 
 import "./ConfirmationModalRF.scss";
@@ -52,10 +51,10 @@ export const ConfirmationModalRF: FC<ConfirmationModalRfProps> = ({
       </Modal.Body>
       <Modal.Footer>
         <DivRF className="mod--flex-row mod--width-100pp">
-          <ButtonNG onClick={cancel}>No</ButtonNG>
-          <ButtonNG variant="primary" onClick={confirm}>
+          <ButtonRF onClick={cancel}>No</ButtonRF>
+          <ButtonRF variant="primary" onClick={confirm}>
             Yes
-          </ButtonNG>
+          </ButtonRF>
         </DivRF>
       </Modal.Footer>
     </Modal>

@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import firebase from "firebase/app";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import { ButtonRF } from "../ButtonRF";
 import { DivRF } from "../DivRF";
 import { InputWrapRF } from "../InputWrapRF";
@@ -61,18 +59,17 @@ export const PasswordResetFormRF: React.FunctionComponent<PasswordResetFormRfPro
           >
             <input
               name="email"
-              className="input-block input-centered"
               placeholder="Your email"
               ref={register({ required: true })}
             />
           </InputWrapRF>
-          <ButtonNG
+          <ButtonRF
             variant="primary"
             type="submit"
             disabled={!formState.isValid}
           >
             Send Email
-          </ButtonNG>
+          </ButtonRF>
         </form>
       )}
       <DivRF variant="secondary">

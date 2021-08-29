@@ -2,6 +2,11 @@
 @import "../constants-rf";
 
 .ProfileRF {
+  .ProfilePictureUploadForm {
+    width: $reg-flow-button-width--max;
+    max-width: $reg-flow-button-width--max;
+  }
+
   .ProfilePicturePreviewContainer__image {
     border: none;
   }

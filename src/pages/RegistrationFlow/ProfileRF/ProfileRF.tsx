@@ -12,19 +12,24 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserProfile } from "pages/Account/helpers";
 
+import { ProfileModalEditBasicInfo } from "components/organisms/NewProfileModal/components/header/ProfileModalEditBasicInfo";
+
 import { Loading } from "components/molecules/Loading";
 import { ProfilePictureInput } from "components/molecules/ProfilePictureInput";
 
-import { ButtonNG } from "components/atoms/ButtonNG";
-
 import "firebase/storage";
 
+import { ButtonRF } from "../ButtonRF";
 import { DivRF } from "../DivRF";
 import { InputWrapRF } from "../InputWrapRF";
+import { LogoRF } from "../LogoRF";
 import { PaneRF } from "../PaneRF";
 import { SpanRF } from "../SpanRF";
 
 import "./ProfileRF.scss";
+
+// @debt remove the unnecessary avatar input
+const USE_NEW_AVATAR_INPUT = false;
 
 export interface ProfileFormRfData {
   partyName: string;
@@ -79,6 +84,7 @@ export const ProfileRF: React.FC = () => {
 
   return (
     <PaneRF className="ProfileRF">
+      <LogoRF />
       <DivRF variant="title">Create your profile</DivRF>
 
       <form onSubmit={handleSubmit(onSubmit)} className="mod--flex-col">
@@ -96,7 +102,6 @@ export const ProfileRF: React.FC = () => {
           >
             <input
               name="partyName"
-              className="input-block input-centered"
               placeholder="Your display name"
               ref={register({
                 required: true,
@@ -106,25 +111,35 @@ export const ProfileRF: React.FC = () => {
             />
           </InputWrapRF>
 
-          {user && (
-            <ProfilePictureInput
-              venueId={venueId}
-              setValue={setValue}
-              user={user}
-              errors={errors}
-              pictureUrl={pictureUrl}
-              register={register}
-            />
-          )}
+          {USE_NEW_AVATAR_INPUT
+            ? userWithId && (
+                <ProfileModalEditBasicInfo
+                  user={userWithId}
+                  register={register}
+                  setValue={setValue}
+                  venueId={venueId}
+                  watch={watch}
+                />
+              )
+            : user && (
+                <ProfilePictureInput
+                  venueId={venueId}
+                  setValue={setValue}
+                  user={user}
+                  errors={errors}
+                  pictureUrl={pictureUrl}
+                  register={register}
+                />
+              )}
         </DivRF>
-        <ButtonNG
+        <ButtonRF
           variant="primary"
           type="submit"
           disabled={!formState.isValid || isUpdating}
           loading={isUpdating}
         >
           Create my profile
-        </ButtonNG>
+        </ButtonRF>
         <Loading displayWhile={isUpdating} />
         <SpanRF variant="error">{httpError?.message}</SpanRF>
       </form>
