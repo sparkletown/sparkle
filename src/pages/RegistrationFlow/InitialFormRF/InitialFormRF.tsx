@@ -20,7 +20,9 @@ export const InitialFormRF: FC<InitialFormRFProps> = ({
       <ButtonRF onClick={onRegister} variant="primary">
         Create account
       </ButtonRF>
-      <SpanRF className="InitialFormRF__separator">or</SpanRF>
+      <SpanRF variant="dim" className="InitialFormRF__separator">
+        or
+      </SpanRF>
       <ButtonRF onClick={onLogin} variant="seethrough">
         Log In
       </ButtonRF>

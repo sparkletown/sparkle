@@ -10,11 +10,18 @@ $reg-flow-color--transparent: opaque-white(0.12);
 $reg-flow-color--normal: $white;
 $reg-flow-color--error: #dc3545;
 
+// blurs
+$reg-flow-blur--xs: blur(1px);
+$reg-flow-blur--sm: blur(2px);
+$reg-flow-blur--md: blur(5px);
+$reg-flow-blur--xl: blur(10px);
+
 // element widths
 $reg-flow-form-width: 540px;
 $reg-flow-input-width: 367px;
-$reg-flow-button-width: 18em;
 $reg-flow-checkbox-size: 30px;
+$reg-flow-button-width--min: 18em;
+$reg-flow-button-width--max: 275px;
 
 // font sizes
 $reg-flow-font-size--normal: 1rem;

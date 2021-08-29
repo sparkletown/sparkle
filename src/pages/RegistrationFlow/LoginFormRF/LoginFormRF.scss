@@ -2,12 +2,15 @@
 @import "../constants-rf";
 
 .LoginFormRF {
-  &__forgot.ButtonNG__link {
+  &__forgot {
     place-self: flex-start;
-    padding: 0;
-    margin-left: -4 * $reg-flow-element-distance + $spacing--md;
     margin-top: -$reg-flow-element-distance + $spacing--sm;
-    //margin-bottom: 2 * $reg-flow-element-distance !important;
-    opacity: 0.5;
+    margin-left: $spacing--sm;
+
+    &:hover,
+    &:focus,
+    &:focus-within {
+      opacity: 1;
+    }
   }
 }

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 import { useAsyncFn, useSearchParam } from "react-use";
@@ -54,18 +54,17 @@ export const CodeOfConductRF: React.FC = () => {
     [history, returnUrl, venueId]
   );
 
-  const codeOfConductQuestions =
-    // venue?.code_of_conduct_questions?.length
-    // ? venue?.code_of_conduct_questions
-    // :
-    TEN_PRINCIPLES_OF_BURNING_MAN;
+  // const codeOfConductQuestions = venue?.code_of_conduct_questions?.length
+  // ? venue?.code_of_conduct_questions
+  // : TEN_PRINCIPLES_OF_BURNING_MAN;
+  const codeOfConductQuestions = TEN_PRINCIPLES_OF_BURNING_MAN;
 
-  useEffect(() => {
-    // Skip this screen if there are no code of conduct questions for the venue
-    if (!codeOfConductQuestions?.length) {
-      proceed();
-    }
-  }, [proceed, codeOfConductQuestions]);
+  // useEffect(() => {
+  //   // Skip this screen if there are no code of conduct questions for the venue
+  //   if (!codeOfConductQuestions?.length) {
+  //     proceed();
+  //   }
+  // }, [proceed, codeOfConductQuestions]);
 
   const [{ loading: isUpdating, error: httpError }, onSubmit] = useAsyncFn(
     async (data) => {

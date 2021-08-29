@@ -138,9 +138,11 @@ export const LoginFormRF: React.FunctionComponent<LoginFormRfProps> = ({
               required: true,
             })}
           />
-          <ButtonRF className="LoginFormRF__forgot" isLink onClick={onReset}>
-            Forgot my password
-          </ButtonRF>
+          <SpanRF variant="dim" className="LoginFormRF__forgot">
+            <ButtonRF isLink onClick={onReset}>
+              Forgot my password
+            </ButtonRF>
+          </SpanRF>
         </InputWrapRF>
 
         {venue.access === VenueAccessMode.Codes && (
@@ -154,7 +156,7 @@ export const LoginFormRF: React.FunctionComponent<LoginFormRfProps> = ({
         </ButtonRF>
       </form>
 
-      <DivRF>
+      <DivRF variant="secondary">
         Don&apos;t have an account?
         <br />
         <ButtonRF className="LoginFormRF__register" isLink onClick={onRegister}>

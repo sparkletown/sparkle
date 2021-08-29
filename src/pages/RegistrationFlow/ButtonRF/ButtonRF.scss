@@ -2,7 +2,7 @@
 @import "../constants-rf";
 
 .ButtonRF {
-  min-width: $reg-flow-button-width;
+  min-width: $reg-flow-button-width--min;
 
   &.ButtonNG__button {
     text-transform: capitalize;

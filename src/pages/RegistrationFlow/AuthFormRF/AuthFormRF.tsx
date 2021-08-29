@@ -99,10 +99,7 @@ export const AuthFormRF: React.FC<AuthFormRfProps> = ({
         />
       )}
       {formToDisplay === "reset" && (
-        <PasswordResetFormRF
-          onLogin={displayLogin}
-          onFinish={redirectAfterLogin}
-        />
+        <PasswordResetFormRF onLogin={displayLogin} onFinish={displayLogin} />
       )}
     </PaneRF>
   );

@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import "./SpanRF.scss";
 
-export type SpanRfVariants = "error";
+export type SpanRfVariants = "error" | "secondary" | "dim";
 
 export interface SpanRfProps
   extends React.DetailedHTMLProps<

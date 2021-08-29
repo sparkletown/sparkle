@@ -3,7 +3,7 @@ import classNames from "classnames";
 
 import "./DivRF.scss";
 
-export type DivRfVariants = "title" | "subtitle";
+export type DivRfVariants = "title" | "subtitle" | "secondary" | "dim";
 
 export interface DivRfProps
   extends React.DetailedHTMLProps<

@@ -5,4 +5,12 @@
   &--error {
     color: $reg-flow-color--error;
   }
+
+  &--dim {
+    opacity: 0.5;
+  }
+
+  &--secondary {
+    opacity: 0.8;
+  }
 }

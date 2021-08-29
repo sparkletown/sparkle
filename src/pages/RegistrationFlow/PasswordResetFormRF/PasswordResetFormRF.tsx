@@ -4,6 +4,12 @@ import firebase from "firebase/app";
 
 import { ButtonNG } from "components/atoms/ButtonNG";
 
+import { ButtonRF } from "../ButtonRF";
+import { DivRF } from "../DivRF";
+import { InputWrapRF } from "../InputWrapRF";
+
+import "./PasswordResetFormRF.scss";
+
 interface PasswordResetFormRfProps {
   onLogin: () => void;
   onFinish: () => void;
@@ -44,29 +50,22 @@ export const PasswordResetFormRF: React.FunctionComponent<PasswordResetFormRfPro
     }
   };
 
-  const onClose = () => {
-    onFinish();
-  };
-
   return (
-    <div className="form-container">
-      <h2>Reset Password</h2>
+    <DivRF className="PasswordResetFormRF">
+      <DivRF variant="title">Reset Password</DivRF>
       {!emailSentTo && (
         <form onSubmit={handleSubmit(onSubmit)} className="form">
-          <div className="input-group">
+          <InputWrapRF
+            required={errors?.email?.type === "required" && "Email is required"}
+            error={errors?.email?.type === "firebase" && errors?.email?.message}
+          >
             <input
               name="email"
               className="input-block input-centered"
               placeholder="Your email"
               ref={register({ required: true })}
             />
-            {errors.email && errors.email.type === "required" && (
-              <span className="input-error">Email is required</span>
-            )}
-            {errors.email && errors.email.type === "firebase" && (
-              <span className="input-error">{errors.email.message}</span>
-            )}
-          </div>
+          </InputWrapRF>
           <ButtonNG
             variant="primary"
             type="submit"
@@ -76,27 +75,25 @@ export const PasswordResetFormRF: React.FunctionComponent<PasswordResetFormRfPro
           </ButtonNG>
         </form>
       )}
-      <div className="secondary-action">
-        {`Finished resetting your password?`}
+      <DivRF variant="secondary">
+        Finished resetting your password?
         <br />
-        <span className="link" onClick={onLogin}>
+        <ButtonRF isLink onClick={onLogin}>
           Log in!
-        </span>
-      </div>
+        </ButtonRF>
+      </DivRF>
       {emailSentTo && (
-        <form onSubmit={handleSubmit(onClose)} className="form">
-          <div className="input-group">
-            <span className="info">
-              Password reset email sent. Please check your {emailSentTo} inbox.
-            </span>
-          </div>
-          <input
-            className="btn btn-primary btn-block btn-centered"
-            type="submit"
-            value="Close"
-          />
+        <DivRF className="PasswordResetFormRF__info">
+          Password reset email sent. Please check your {emailSentTo} inbox.
+        </DivRF>
+      )}
+      {emailSentTo && (
+        <form onSubmit={handleSubmit(onFinish)}>
+          <ButtonRF variant="primary" type="submit">
+            Close
+          </ButtonRF>
         </form>
       )}
-    </div>
+    </DivRF>
   );
 };

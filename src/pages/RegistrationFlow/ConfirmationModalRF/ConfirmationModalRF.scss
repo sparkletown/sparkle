@@ -4,6 +4,7 @@
 .ConfirmationModalRF {
   .modal-content {
     background-color: $reg-flow-color--transparent;
+    backdrop-filter: $reg-flow-blur--md;
   }
 
   * {

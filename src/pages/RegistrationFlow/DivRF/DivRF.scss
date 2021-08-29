@@ -18,4 +18,12 @@
     line-height: $reg-flow-font-size--page-subtitle + $spacing--xs;
     font-size: $reg-flow-font-size--page-subtitle;
   }
+
+  &--dim {
+    opacity: 0.5;
+  }
+
+  &--secondary {
+    opacity: 0.8;
+  }
 }

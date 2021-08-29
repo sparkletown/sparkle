@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
+import { useAsyncFn } from "react-use";
 import firebase from "firebase/app";
 
 import { SPARKLE_TERMS_AND_CONDITIONS_URL } from "settings";
 
-import { checkIsEmailWhitelisted } from "api/auth";
+import { checkIsCodeValid, checkIsEmailWhitelisted } from "api/auth";
 
 import { VenueAccessMode } from "types/VenueAcccess";
 
@@ -17,9 +18,6 @@ import { useVenueId } from "hooks/useVenueId";
 
 import { updateUserPrivate } from "pages/Account/helpers";
 
-import { DateOfBirthField } from "components/organisms/DateOfBirthField";
-import { TicketCodeField } from "components/organisms/TicketCodeField";
-
 import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { NotFound } from "components/atoms/NotFound";
@@ -30,8 +28,13 @@ import { ConfirmationModalRF } from "../ConfirmationModalRF";
 import { DivRF } from "../DivRF";
 import { InputWrapRF } from "../InputWrapRF";
 import { SpanRF } from "../SpanRF";
+import { validateDateOfBirth } from "../utils-rf";
 
 import "./RegisterFormRF.scss";
+
+// NOTE: temporary switches for development only, should be removed
+const ALWAYS_REQUIRE_CODES = false;
+const ALWAYS_REQUIRE_BIRTH = false;
 
 export interface RegisterFormRfProps {
   onLogin: () => void;
@@ -46,10 +49,6 @@ export interface RegisterFormRfData {
   code: string;
   date_of_birth: string;
   backend?: string;
-}
-
-export interface RegisterData {
-  date_of_birth: string;
 }
 
 const sparkleTermsAndConditions = {
@@ -85,74 +84,96 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
     formState,
     setError,
     clearError,
-    // watch,
     getValues,
   } = useForm<RegisterFormRfData & Record<string, string>>({
     mode: "onChange",
     reValidateMode: "onChange",
   });
 
-  const clearBackendErrors = () => {
-    clearError("backend");
-  };
+  const [{ loading }, onSubmit] = useAsyncFn(
+    async (data: RegisterFormRfData) => {
+      if (!venue) return;
+
+      const { code, email, date_of_birth } = data;
+      const { access, id: venueId, requiresDateOfBirth, ticketUrl } = venue;
+
+      try {
+        setShowLoginModal(false);
+
+        if (access === VenueAccessMode.Emails) {
+          const { data: isEmailWhitelisted } = await checkIsEmailWhitelisted({
+            venueId,
+            email,
+          });
+
+          if (!isEmailWhitelisted) {
+            setError(
+              "email",
+              "validation",
+              "We can't find you! Please use the email from your invitation."
+            );
+            return;
+          }
+        }
+
+        if (access === VenueAccessMode.Codes || ALWAYS_REQUIRE_CODES) {
+          const { data: isCodeValid } = await checkIsCodeValid({
+            venueId,
+            code,
+          });
+
+          if (!isCodeValid) {
+            setError(
+              "code",
+              "validation",
+              "We can't find you! Please use the code from your invitation."
+            );
+            return;
+          }
+        }
+        const { user } = await signUp(data);
+
+        if (user && (requiresDateOfBirth || ALWAYS_REQUIRE_BIRTH)) {
+          updateUserPrivate(user.uid, { date_of_birth }).catch((e) =>
+            console.error(RegisterFormRF.name, "error:", e)
+          );
+        }
+
+        onFinish?.();
+        onClose();
+        history.push(`/account/profile${venueId ? `?venueId=${venueId}` : ""}`);
+      } catch ({ code, message, response }) {
+        if (code === "auth/email-already-in-use") {
+          setShowLoginModal(true);
+        }
+        if (response?.status === 404) {
+          setError(
+            "email",
+            "validation",
+            `Email ${email} does not have a ticket; get your ticket at ${ticketUrl}`
+          );
+        } else if (response?.status >= 500) {
+          setError("email", "validation", `Error checking ticket: ${message}`);
+        } else {
+          setError("backend", "firebase", message);
+        }
+      }
+    },
+    [history, onClose, onFinish, setError, venue]
+  );
+
+  const clearBackendErrors = useCallback(() => clearError("backend"), [
+    clearError,
+  ]);
+
+  const [, signIn] = useAsyncFn(async () => {
+    const { email, password } = getValues();
+    await firebase.auth().signInWithEmailAndPassword(email, password);
+  }, [getValues]);
 
   if (!venue) {
     return isCurrentVenueLoaded ? <NotFound fullScreen /> : <LoadingPage />;
   }
-
-  const onSubmit = async (data: RegisterFormRfData) => {
-    try {
-      setShowLoginModal(false);
-
-      if (venue.access === VenueAccessMode.Emails) {
-        const isEmailWhitelisted = await checkIsEmailWhitelisted({
-          venueId: venue.id,
-          email: data.email,
-        });
-
-        if (!isEmailWhitelisted.data) {
-          setError(
-            "email",
-            "validation",
-            "We can't find you! Please use the email from your invitation."
-          );
-          return;
-        }
-      }
-
-      const auth = await signUp(data);
-
-      if (auth.user && venue.requiresDateOfBirth) {
-        updateUserPrivate(auth.user.uid, {
-          date_of_birth: data.date_of_birth,
-        }).catch((e) => console.warn(RegisterFormRF.name, "error:", e));
-      }
-
-      onFinish?.();
-      onClose();
-      history.push(`/account/profile${venue.id ? `?venueId=${venue.id}` : ""}`);
-    } catch ({ code, message, response }) {
-      if (code === "auth/email-already-in-use") {
-        setShowLoginModal(true);
-      }
-      if (response?.status === 404) {
-        setError(
-          "email",
-          "validation",
-          `Email ${data.email} does not have a ticket; get your ticket at ${venue.ticketUrl}`
-        );
-      } else if (response?.status >= 500) {
-        setError("email", "validation", `Error checking ticket: ${message}`);
-      } else {
-        setError("backend", "firebase", message);
-      }
-    }
-  };
-
-  const signIn = async () => {
-    const { email, password } = getValues();
-    await firebase.auth().signInWithEmailAndPassword(email, password);
-  };
 
   return (
     <DivRF className="RegisterFormRF mod--flex-col">
@@ -216,12 +237,56 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
           />
         </InputWrapRF>
 
-        {venue.access === VenueAccessMode.Codes && (
-          <TicketCodeField register={register} error={errors?.code} />
+        {(venue.access === VenueAccessMode.Codes || ALWAYS_REQUIRE_CODES) && (
+          <InputWrapRF
+            error={
+              errors?.code?.type === "required"
+                ? "Enter the ticket code from your email. The code is required."
+                : errors?.code?.message
+            }
+          >
+            <input
+              name="code"
+              type="code"
+              placeholder="Ticket Code From Your Email"
+              ref={register({
+                required: true,
+              })}
+            />
+          </InputWrapRF>
         )}
 
-        {venue.requiresDateOfBirth && (
-          <DateOfBirthField register={register} error={errors?.date_of_birth} />
+        {(venue.requiresDateOfBirth || ALWAYS_REQUIRE_BIRTH) && (
+          <InputWrapRF
+            info={
+              <>
+                You need to be 18 years old to attend this event.
+                <br />
+                Please confirm your age.
+              </>
+            }
+            error={
+              errors?.date_of_birth && (
+                <>
+                  <SpanRF>
+                    {errors?.date_of_birth.type === "required" &&
+                      "Date of birth is required"}
+                  </SpanRF>
+                  <SpanRF>
+                    {errors?.date_of_birth.type === "validate" &&
+                      "You need to be at least 18 years of age."}
+                  </SpanRF>
+                </>
+              )
+            }
+          >
+            <input
+              className="RegisterFormRF__date-of-birth"
+              name="date_of_birth"
+              type="date"
+              ref={register({ required: true, validate: validateDateOfBirth })}
+            />
+          </InputWrapRF>
         )}
 
         <SpanRF variant="error">{errors?.backend?.message}</SpanRF>
@@ -261,18 +326,23 @@ export const RegisterFormRF: React.FunctionComponent<RegisterFormRfProps> = ({
             />
           </CheckboxWrapRF>
         ))}
-        <ButtonRF type="submit" disabled={!formState.isValid} variant="primary">
+        <ButtonRF
+          type="submit"
+          disabled={!formState.isValid || loading}
+          variant="primary"
+          loading={loading}
+        >
           Create account
         </ButtonRF>
       </form>
 
-      <div className="secondary-action">
+      <DivRF variant="secondary">
         Already have an account?
         <br />
         <ButtonRF className="LoginFormRF__login" isLink onClick={onLogin}>
           Login
         </ButtonRF>
-      </div>
+      </DivRF>
     </DivRF>
   );
 };
