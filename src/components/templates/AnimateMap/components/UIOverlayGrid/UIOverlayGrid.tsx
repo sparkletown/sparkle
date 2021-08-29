@@ -10,10 +10,6 @@ import {
 import { Room } from "types/rooms";
 import { AnimateMapVenue } from "types/venues";
 
-import { animateMapFirstEntranceSelector } from "utils/selectors";
-
-import { useSelector } from "hooks/useSelector";
-
 import { RoomModal } from "../../../PartyMap/components";
 import EventProvider, {
   EventType,
@@ -24,7 +20,6 @@ import { Shoutouter } from "../Shoutouter/Shoutouter";
 import { SingleButton } from "../SingleButton/SingleButton";
 import { TooltipWidget } from "../TooltipWidget/TooltipWidget";
 import { UIContainer } from "../UIContainer/UIContainer";
-import { WelcomePopUp } from "../WelcomePopUp/WelcomePopUp";
 
 import CentreIcon from "assets/images/AnimateMap/UI/icon-aim.svg";
 
@@ -38,11 +33,9 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
   venue,
   children,
 }) => {
-  // const eventProvider = useSelector(animateMapEventProviderSelector);
   const eventProvider = EventProvider;
   const [selectedRoom, setSelectedRoom] = useState<Room | undefined>();
   const hasSelectedRoom = !!selectedRoom;
-  const firstEntrance = useSelector(animateMapFirstEntranceSelector);
 
   const unselectRoom = useCallback(() => {
     setSelectedRoom(undefined);
@@ -63,8 +56,6 @@ export const UIOverlayGrid: React.FC<UIOverlayGridProps> = ({
   return (
     <div className="UIOverlay">
       <div className="UIOverlayGrid">
-        {firstEntrance !== "false" && <WelcomePopUp />}
-
         <RoomModal
           room={selectedRoom}
           venue={venue}
