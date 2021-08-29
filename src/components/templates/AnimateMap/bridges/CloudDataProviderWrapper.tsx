@@ -126,8 +126,8 @@ export const CloudDataProviderWrapper: React.FC<CloudDataProviderWrapperProps> =
         const dataProvider = new CloudDataProvider(
           user.userId,
           getFirebaseStorageResizedImage(user.profile?.pictureUrl ?? "", {
-            width: 100,
-            height: 100,
+            width: 64,
+            height: 64,
             fit: "crop",
           }),
           firebase,
