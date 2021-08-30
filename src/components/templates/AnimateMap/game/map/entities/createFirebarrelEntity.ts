@@ -6,21 +6,24 @@ import { ReplicatedFirebarrel } from "store/reducers/AnimateMap";
 import { GameConfig } from "../../../configs/GameConfig";
 import { ImageToCanvas } from "../../commands/ImageToCanvas";
 import { LoadImage } from "../../commands/LoadImage";
-import { RoundAvatar } from "../../commands/RoundAvatar";
-import { barrels, HALO } from "../../constants/AssetConstants";
+import { barrels } from "../../constants/AssetConstants";
 import { AnimationComponent } from "../components/AnimationComponent";
-import { BarrelComponent } from "../components/BarrelComponent";
 import { ClickableSpriteComponent } from "../components/ClickableSpriteComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
+import { FirebarrelComponent } from "../components/FirebarrelComponent";
 import { HoverableSpriteComponent } from "../components/HoverableSpriteComponent";
 import { PositionComponent } from "../components/PositionComponent";
 import { SpriteComponent } from "../components/SpriteComponent";
 import { TooltipComponent } from "../components/TooltipComponent";
-import { Barrel } from "../graphics/Barrel";
+import { FSMBase } from "../finalStateMachines/FSMBase";
+import { Firebarrel } from "../graphics/Firebarrel";
+import { FirebarrelHalo } from "../graphics/FirebarrelHalo";
+import { FirebarrelHaloAnimated } from "../graphics/FirebarrelHaloAnimated";
+import { FirebarrelHaloEmpty } from "../graphics/FirebarrelHaloEmpty";
 import { FirebarrelTooltip } from "../graphics/FirebarrelTooltip";
-import { Venue } from "../graphics/Venue";
-import { VenueHoverIn } from "../graphics/VenueHoverIn";
-import { VenueHoverOut } from "../graphics/VenueHoverOut";
+import { Hoverable } from "../graphics/Hoverable";
+import { HoverIn } from "../graphics/HoverIn";
+import { HoverOut } from "../graphics/HoverOut";
 
 import EntityFactory from "./EntityFactory";
 
@@ -38,54 +41,8 @@ const removeTooltip = (entity: Entity) => {
   entity.remove(TooltipComponent);
 };
 
-const drawAvatars = (
-  barrel: ReplicatedFirebarrel,
-  spriteComponent: SpriteComponent
-) => {
-  const sprite = spriteComponent.view as Barrel;
-  const avatars: Array<Promise<RoundAvatar>> = [];
-
-  barrel.data.connectedUsers.forEach((user) => {
-    const pictureUrls = [user.data.pictureUrl]; //todo: refactor
-    // if (!Array.isArray(pictureUrls)) {
-    //   pictureUrls = [pictureUrls];
-    // }
-    const url = pictureUrls.length > 0 ? pictureUrls[0] : "";
-
-    avatars.push(new RoundAvatar(url).execute());
-  });
-
-  Promise.all(avatars).then((avatars) => {
-    if (sprite.avatars) {
-      sprite.avatars.removeChildren();
-    }
-
-    if (avatars.length > 0 && !sprite.avatars) {
-      sprite.avatars = new Sprite();
-      sprite.avatars.anchor.set(0.5);
-      sprite.addChild(sprite.avatars);
-    }
-
-    if (avatars.length > 0 && sprite.avatars) {
-      const angle = (2 * Math.PI) / avatars.length;
-      const radius = getCollisionRadius() * 4;
-      for (let i = 0; i < avatars.length; i++) {
-        if (!avatars[i].canvas) {
-          continue;
-        }
-        const s = Sprite.from(avatars[i].canvas as HTMLCanvasElement);
-        s.anchor.set(0.5);
-        s.scale.set(0.85);
-        s.x = Math.cos(angle * i) * radius;
-        s.y = Math.sin(angle * i) * radius;
-        sprite.avatars.addChild(s);
-      }
-    }
-  });
-};
-
 const getCurrentReplicatedFirebarrel = (
-  firebarrelComponent: BarrelComponent
+  firebarrelComponent: FirebarrelComponent
 ): ReplicatedFirebarrel => {
   return firebarrelComponent.model;
 };
@@ -94,8 +51,8 @@ const updateBarrelImage = (
   barrel: ReplicatedFirebarrel,
   spriteComponent: SpriteComponent,
   positionComponent: PositionComponent
-) => {
-  new LoadImage(barrel.data.iconSrc)
+): Promise<void> => {
+  return new LoadImage(barrel.data.iconSrc)
     .execute()
     .catch((error) => {
       return new LoadImage(barrels[0]).execute();
@@ -114,23 +71,21 @@ const updateBarrelImage = (
       positionComponent.scaleX = scale;
       positionComponent.scaleY = scale;
 
-      const sprite = spriteComponent.view as Barrel;
-      if (sprite.barrel && sprite.barrel.parent) {
-        sprite.barrel.parent.removeChild(sprite.barrel);
+      const sprite = spriteComponent.view as Firebarrel;
+      if (sprite.main && sprite.main.parent) {
+        sprite.main.parent.removeChild(sprite.main);
       }
 
-      sprite.barrel = Sprite.from(comm.canvas);
-      sprite.barrel.anchor.set(0.5);
-      sprite.addChild(sprite.barrel);
-
-      if (!sprite.halo) {
-        sprite.halo = Sprite.from(HALO);
-        sprite.halo.anchor.set(0.5);
-        sprite.addChildAt(sprite.halo, 0);
-      }
+      sprite.main = Sprite.from(comm.canvas);
+      sprite.main.anchor.set(0.5);
+      sprite.addChild(sprite.main);
+      return Promise.resolve();
     })
     .catch((err) => {
       console.log("err", err);
+    })
+    .finally(() => {
+      return Promise.resolve();
     });
 };
 
@@ -143,27 +98,60 @@ export const updateFirebarrelEntity = (
     return;
   }
 
-  node.barrel.model = barrel;
-  node.entity.add(node.barrel);
+  node.firebarrel.model = barrel;
+  node.entity.add(node.firebarrel);
 
-  const sprite = node.entity.get(SpriteComponent);
-  if (!sprite) {
+  const spriteComponent = node.entity.get(SpriteComponent);
+  if (!spriteComponent) {
     return;
   }
-  updateBarrelImage(barrel, sprite, node.position);
+
+  updateBarrelImage(barrel, spriteComponent, node.position);
 };
 
 export const createFirebarrelEntity = (
   barrel: ReplicatedFirebarrel,
   creator: EntityFactory
 ): Entity => {
-  const barrelComponent = new BarrelComponent(barrel);
+  const entity: Entity = new Entity();
+  const fsm: FSMBase = new FSMBase(entity);
+
+  const barrelComponent = new FirebarrelComponent(barrel, fsm);
   const positionComponent = new PositionComponent(barrel.x, barrel.y);
-  const spriteComponent: SpriteComponent = new SpriteComponent();
-  spriteComponent.view = new Barrel();
+  const spriteComponent = new SpriteComponent();
+  const sprite = new Firebarrel();
+  spriteComponent.view = sprite;
   spriteComponent.view.zIndex = -1;
 
-  const entity: Entity = new Entity();
+  fsm
+    .createState(barrelComponent.WITHOUT_HALO)
+    .add(FirebarrelHaloEmpty)
+    .withMethod(
+      (): FirebarrelHaloEmpty => {
+        return new FirebarrelHaloEmpty(sprite);
+      }
+    );
+  fsm
+    .createState(barrelComponent.HALO)
+    .add(FirebarrelHalo)
+    .withMethod(
+      (): FirebarrelHalo => {
+        return new FirebarrelHalo(sprite);
+      }
+    );
+
+  fsm
+    .createState(barrelComponent.HALO_ANIMATED)
+    .add(AnimationComponent)
+    .withMethod(
+      (): AnimationComponent => {
+        return new AnimationComponent(
+          new FirebarrelHaloAnimated(sprite),
+          Number.MAX_VALUE
+        );
+      }
+    );
+
   entity
     .add(barrelComponent)
     .add(new CollisionComponent(getCollisionRadius()))
@@ -175,12 +163,12 @@ export const createFirebarrelEntity = (
           createTooltip(entity);
 
           // add increase
-          const comm: SpriteComponent | null = entity.get(SpriteComponent);
+          const comm = entity.get(SpriteComponent);
           const duration = 100;
           if (comm) {
             entity.add(
               new AnimationComponent(
-                new VenueHoverIn(comm.view as Venue, duration),
+                new HoverIn(comm.view as Hoverable, duration),
                 duration
               )
             );
@@ -195,7 +183,7 @@ export const createFirebarrelEntity = (
           if (comm) {
             entity.add(
               new AnimationComponent(
-                new VenueHoverOut(comm.view as Venue, duration),
+                new HoverOut(comm.view as Hoverable, duration),
                 duration
               )
             );
@@ -211,10 +199,15 @@ export const createFirebarrelEntity = (
       })
     );
 
+  fsm.changeState(barrelComponent.HALO);
   creator.engine.addEntity(entity);
 
-  updateBarrelImage(barrel, spriteComponent, positionComponent);
-  drawAvatars(barrel, spriteComponent);
+  spriteComponent.view.visible = false;
+  updateBarrelImage(barrel, spriteComponent, positionComponent).finally(() => {
+    if (spriteComponent && spriteComponent.view) {
+      spriteComponent.view.visible = true;
+    }
+  });
 
   return entity;
 };

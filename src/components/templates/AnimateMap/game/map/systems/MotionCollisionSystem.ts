@@ -6,7 +6,7 @@ import { CollisionComponent } from "../components/CollisionComponent";
 import { MovementComponent } from "../components/MovementComponent";
 import { PositionComponent } from "../components/PositionComponent";
 import EntityFactory from "../entities/EntityFactory";
-import { BarrelNode } from "../nodes/BarrelNode";
+import { FirebarrelNode } from "../nodes/FirebarrelNode";
 import { MotionCollidedNode } from "../nodes/MotionCollidedNode";
 import { PlayerNode } from "../nodes/PlayerNode";
 import { VenueNode } from "../nodes/VenueNode";
@@ -15,7 +15,7 @@ export class MotionCollisionSystem extends System {
   private player?: NodeList<PlayerNode>;
   private colliders?: NodeList<MotionCollidedNode>;
   private venues?: NodeList<VenueNode>;
-  private barrels?: NodeList<BarrelNode>;
+  private barrels?: NodeList<FirebarrelNode>;
 
   private creator: EntityFactory;
 
@@ -28,7 +28,7 @@ export class MotionCollisionSystem extends System {
     this.player = engine.getNodeList(PlayerNode);
     this.colliders = engine.getNodeList(MotionCollidedNode);
     this.venues = engine.getNodeList(VenueNode);
-    this.barrels = engine.getNodeList(BarrelNode);
+    this.barrels = engine.getNodeList(FirebarrelNode);
   }
 
   removeFromEngine(engine: Engine) {

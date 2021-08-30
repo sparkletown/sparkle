@@ -1,11 +1,11 @@
 import { defineNode } from "@ash.ts/ash";
 
-import { BarrelComponent } from "../components/BarrelComponent";
 import { CollisionComponent } from "../components/CollisionComponent";
+import { FirebarrelComponent } from "../components/FirebarrelComponent";
 import { PositionComponent } from "../components/PositionComponent";
 
-export class BarrelNode extends defineNode({
-  barrel: BarrelComponent,
+export class FirebarrelNode extends defineNode({
+  firebarrel: FirebarrelComponent,
   position: PositionComponent,
   collision: CollisionComponent,
 }) {}
