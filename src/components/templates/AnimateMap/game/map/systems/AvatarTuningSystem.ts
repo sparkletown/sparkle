@@ -120,18 +120,18 @@ export class AvatarTuningSystem extends System {
       }
       if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_WALKING) {
         view.cycle = Sprite.from(avatarFeets[0]);
-        view.cycle.y = view.avatar.height / 2;
+        view.cycle.y = view.avatar.height * 0.55;
         view.cycle.anchor.set(0.5);
         // TODO HARDCODE
-        view.cycle.scale.set(2);
+        view.cycle.scale.set(1);
 
         view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
       } else if (this.zoomLevelCurrent === GameConfig.ZOOM_LEVEL_CYCLING) {
         view.cycle = Sprite.from(avatarCycles[0]);
-        view.cycle.y = view.avatar.height / 2;
+        view.cycle.y = view.avatar.height * 0.46;
         view.cycle.anchor.set(0.5);
         // TODO HARDCODE
-        view.cycle.scale.set(1.4);
+        view.cycle.scale.set(1.1);
 
         view.addChildAt(view.cycle, view.getChildIndex(view.avatar));
       }
