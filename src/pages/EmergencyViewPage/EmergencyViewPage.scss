@@ -2,7 +2,7 @@
 @import "../VenueLandingPage/VenueLandingPage.scss";
 
 $tab-item-height: 35px;
-$tab-item-image-size: 100px;
+$tab-item-image-size: 80px;
 $tab-item-room-height: 170px;
 $tab-item-room-width: 180px;
 
@@ -91,6 +91,7 @@ $tab-item-room-width: 180px;
       border-radius: $border-radius--md;
       background-color: opaque-white(0.2);
       display: flex;
+      flex-wrap: wrap;
       flex-direction: column;
       align-items: center;
       margin: $spacing--lg;
