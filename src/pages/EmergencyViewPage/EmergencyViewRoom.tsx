@@ -27,19 +27,19 @@ const EmergencyViewRoom: React.FC<EmergencyViewRoomProps> = ({
   });
 
   return (
-    <div className="EmergencyView_content_room">
-      <div className="EmergencyView_content_room_info">
+    <div className="EmergencyView__content-room">
+      <div className="EmergencyView__content-room-info">
         {isLive && (
-          <span className="EmergencyView_content_room_info_status">Live</span>
+          <span className="EmergencyView__content-room-info-status">Live</span>
         )}
-        <div className="EmergencyView_content_room_info_audience">
+        <div className="EmergencyView__content-room-info-audience">
           <FontAwesomeIcon icon={faUserFriends} size="sm" />
           <span>{recentRoomUsers.length}</span>
         </div>
       </div>
-      <div className="EmergencyView_content_room_body" onClick={enterRoom}>
+      <div className="EmergencyView__content-room-body" onClick={enterRoom}>
         <img
-          className="EmergencyView_content_room_body_image"
+          className="EmergencyView__content-room-body-image"
           src={roomImage}
           alt={room.title}
         />

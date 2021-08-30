@@ -91,7 +91,7 @@ export const EmergencyViewPage: React.FC = () => {
           return null;
         }
         return (
-          <div className="EmergencyView__weekdays__column" key={day.getTime()}>
+          <div className="EmergencyView__weekdays-column" key={day.getTime()}>
             <ScheduleEventSubListNG
               events={eventsFilledWithPriority}
               title={`Events on ${formatDateRelativeToNow(day)}`}

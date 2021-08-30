@@ -39,7 +39,7 @@ $tab-item-room-width: 180px;
     margin: 0 (-$tab-item-height);
     padding: $spacing--xxl;
 
-    &__column {
+    &-column {
       width: 33%;
       display: flex;
       flex-direction: column;
@@ -52,7 +52,7 @@ $tab-item-room-width: 180px;
     }
   }
 
-  &_tabs {
+  &__tabs {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -63,7 +63,7 @@ $tab-item-room-width: 180px;
     z-index: 15;
     background-color: opaque-black(0.2);
 
-    &_item {
+    &-item {
       height: $tab-item-height;
       margin: $spacing--md;
 
@@ -73,19 +73,19 @@ $tab-item-room-width: 180px;
     }
   }
 
-  &_venue {
+  &__venue {
     margin: $spacing--lg;
     font-weight: 900;
     font-size: $font-size--lg;
   }
 
-  &_content {
+  &__content {
     display: flex;
     background-color: opaque-black(0.2);
     margin: (-$font-size--xl) (-$tab-item-height) 0px (-$tab-item-height);
     padding: $font-size--xl $spacing--xxl $tab-item-height $spacing--xxl;
 
-    &_room {
+    &-room {
       min-height: $tab-item-room-height;
       width: $tab-item-room-width;
       border-radius: $border-radius--md;
@@ -97,11 +97,11 @@ $tab-item-room-width: 180px;
       cursor: default;
       padding: $spacing--sm;
 
-      &_info {
+      &-info {
         display: flex;
         width: 90%;
 
-        &_status {
+        &-status {
           display: flex;
           background-color: $primary--live;
           border-radius: $border-radius--md;
@@ -112,7 +112,7 @@ $tab-item-room-width: 180px;
           justify-content: center;
         }
 
-        &_audience {
+        &-audience {
           display: flex;
           background-color: opaque-white(0.2);
           border-radius: $border-radius--md;
@@ -128,7 +128,7 @@ $tab-item-room-width: 180px;
         }
       }
 
-      &_body {
+      &-body {
         margin: auto;
         display: flex;
         flex-direction: column;
@@ -137,7 +137,7 @@ $tab-item-room-width: 180px;
         justify-content: space-between;
         text-align: center;
 
-        &_image {
+        &-image {
           max-width: $tab-item-image-size;
           max-height: $tab-item-image-size;
           padding: $spacing--xs;
