@@ -90,12 +90,8 @@ export const EmergencyViewPage: React.FC = () => {
         if (!dailyEvents.length) {
           return null;
         }
-
         return (
-          <div
-            className="EmergencyView__weekdays__column"
-            key={`${day.toISOString()}${dayIndex}`}
-          >
+          <div className="EmergencyView__weekdays__column" key={day.getTime()}>
             <ScheduleEventSubListNG
               events={eventsFilledWithPriority}
               title={`Events on ${formatDateRelativeToNow(day)}`}
@@ -125,7 +121,7 @@ export const EmergencyViewPage: React.FC = () => {
       <div className="EmergencyView">
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
         <div
-          className="EmergencyView_main"
+          className="EmergencyView__main"
           style={{
             backgroundImage: `url(${validBannerImageUrl})`,
             backgroundSize: "cover",
