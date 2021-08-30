@@ -5,6 +5,7 @@ $tab-item-height: 35px;
 $tab-item-image-size: 100px;
 $tab-item-room-height: 170px;
 $tab-item-room-width: 180px;
+$bg-image: var(--background-image);
 
 // hide landing page content
 .venue-entrance-experience-container {
@@ -28,8 +29,7 @@ $tab-item-room-width: 180px;
     margin-bottom: $spacing--xxl * 2;
     margin-top: -($spacing--xxl * 2);
     padding: $spacing--xxl * 2 $tab-item-height 0px $tab-item-height;
-    background-size: cover;
-    background-repeat: no-repeat;
+    background-image: $bg-image;
   }
 
   &__weekdays {

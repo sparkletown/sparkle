@@ -1,4 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
+import { useCss } from "react-use";
+import classNames from "classnames";
 import { addDays } from "date-fns";
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
@@ -108,6 +110,12 @@ export const EmergencyViewPage: React.FC = () => {
     DEFAULT_VENUE_BANNER
   );
 
+  const containerVars = useCss({
+    "--background-image": `url(${validBannerImageUrl})`,
+  });
+
+  const emergencyViewClasses = classNames("EmergencyView__main", containerVars);
+
   if (venueRequestStatus && !venue && !venueId) {
     return <>This venue does not exist</>;
   }
@@ -120,14 +128,7 @@ export const EmergencyViewPage: React.FC = () => {
     <WithNavigationBar withSchedule={false} hasBackButton={false}>
       <div className="EmergencyView">
         <EmergencyViewTabs updateTab={updateTab} selectedTab={selectedTab} />
-        <div
-          className="EmergencyView__main"
-          style={{
-            backgroundImage: `url(${validBannerImageUrl})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
+        <div className={emergencyViewClasses}>
           {!selectedTab ? (
             <EmergencyViewPageRooms
               descendantVenues={descendantVenues}
