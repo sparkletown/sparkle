@@ -322,6 +322,7 @@ $simplified-view-button--padding: 0 10px;
 
   &__sparkle {
     &-logo {
+      cursor: pointer;
       margin-right: $spacing--lg;
       @include square-size($logo-size);
       background-image: url(/assets/icons/sparkle-nav-logo.png);
