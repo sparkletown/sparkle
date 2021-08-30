@@ -11,12 +11,15 @@ const fetchWeather = async () => {
   try {
     response = await fetch(url);
   } catch (e) {
-    console.log("OpenWeatherMap: error fetching weather. Error:", e);
+    console.error("OpenWeatherMap: error fetching weather. Error:", e);
     return undefined;
   }
 
   if (!response.ok) {
-    console.log("OpenWeatherMap: error fetching weather. Response: ", response);
+    console.error(
+      "OpenWeatherMap: error fetching weather. Response: ",
+      response
+    );
     return undefined;
   }
 

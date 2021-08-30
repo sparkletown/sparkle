@@ -1,5 +1,4 @@
 import firebase from "firebase/app";
-import { capitalize } from "lodash";
 
 type OpenWeatherApiResponse = {
   main: {
@@ -45,8 +44,6 @@ const convertWindDegreeToWindDirection = (deg: number) => {
 
 const convertMpsToKph = (mps: number) => mps * 3.6;
 
-const capitalizeWords = (s: string) => s.split(" ").map(capitalize).join(" ");
-
 export const getBlackRockWeatherInfo = async (): Promise<
   WeatherInfo | undefined
 > => {
@@ -56,7 +53,7 @@ export const getBlackRockWeatherInfo = async (): Promise<
 
   return {
     temperatureCelsius: Math.round(openWeatherApiResponse.main.temp),
-    stateOfSky: capitalizeWords(openWeatherApiResponse.weather[0].description),
+    stateOfSky: openWeatherApiResponse.weather[0].description,
     windSpeedKPH: Math.round(
       convertMpsToKph(openWeatherApiResponse.wind.speed)
     ),
