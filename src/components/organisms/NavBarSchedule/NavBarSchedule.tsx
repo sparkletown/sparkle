@@ -156,8 +156,8 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     );
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      (event) =>
-        event.isSaved && event.venueId === currentVenue?.id?.toLowerCase()
+      ({ isSaved, venueId }) =>
+        isSaved && venueId?.toLowerCase() === currentVenueId
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
