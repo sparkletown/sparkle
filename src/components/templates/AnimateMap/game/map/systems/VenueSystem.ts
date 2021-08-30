@@ -1,5 +1,6 @@
 import { Engine, NodeList, System } from "@ash.ts/ash";
 
+import { GameConfig } from "../../../configs/GameConfig";
 import { VenueNode } from "../nodes/VenueNode";
 
 export class VenueSystem extends System {
@@ -20,7 +21,10 @@ export class VenueSystem extends System {
   private handleVenueAdded = (node: VenueNode): void => {
     if (node.venue.model.data.isLive) {
       node.venue.fsm.changeState(node.venue.HALO_ANIMATED);
-    } else if (node.venue.model.data.countUsers > 10) {
+    } else if (
+      node.venue.model.data.countUsers >=
+      GameConfig.VENUE_MIN_PEOPLE_COUNT_FOR_STATIC_HALO
+    ) {
       node.venue.fsm.changeState(node.venue.HALO);
     } else {
       node.venue.fsm.changeState(node.venue.WITHOUT_HALO);
