@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import classNames from "classnames";
 import { isEqual } from "lodash";
 
+import { ONE_MINUTE_MS } from "settings";
+
 import { getBlackRockWeatherInfo, WeatherInfo } from "api/openweathermap";
 
 import { ContainerClassName } from "types/utility";
@@ -12,11 +14,9 @@ import { BlackRockWeatherBackground } from "components/molecules/NavBarScheduleW
 
 import "./NavBarScheduleWeather.scss";
 
-export interface NavBarScheduleWeatherProps extends ContainerClassName {}
+const UPDATE_INTERVAL = ONE_MINUTE_MS / 2;
 
-const UPDATE_INTERVAL = 30 * 1000;
-
-export const NavBarScheduleWeather: React.FC<NavBarScheduleWeatherProps> = ({
+export const NavBarScheduleWeather: React.FC<ContainerClassName> = ({
   containerClassName,
 }) => {
   const [weather, setWeather] = useState<WeatherInfo>();
