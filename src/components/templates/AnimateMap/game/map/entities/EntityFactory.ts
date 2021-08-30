@@ -356,7 +356,7 @@ export default class EntityFactory {
     entity
       .add(new ArtcarComponent(user, fsm))
       .add(new PositionComponent(user.x, user.y, 0, scale, scale))
-      .add(new HoverableSpriteComponent(undefined, undefined, true));
+      .add(new HoverableSpriteComponent());
 
     fsm.changeState("moving");
     this.engine.addEntity(entity);

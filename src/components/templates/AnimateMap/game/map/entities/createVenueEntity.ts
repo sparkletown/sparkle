@@ -198,8 +198,7 @@ export const createVenueEntity = (
             );
             engine.addEntity(hoverEffectEntity);
           }
-        },
-        true
+        }
       )
     )
     .add(

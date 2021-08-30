@@ -82,8 +82,7 @@ export const createBotEntity = (
         () => {
           // remove tooltip
           entity.remove(TooltipComponent);
-        },
-        true
+        }
       )
     );
 
