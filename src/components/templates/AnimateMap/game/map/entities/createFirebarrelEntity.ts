@@ -200,7 +200,8 @@ export const createFirebarrelEntity = (
               )
             );
           }
-        }
+        },
+        true
       )
     )
     .add(

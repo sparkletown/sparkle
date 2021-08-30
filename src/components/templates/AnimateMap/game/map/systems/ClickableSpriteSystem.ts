@@ -21,6 +21,7 @@ export class ClickableSpriteSystem extends System {
     this.players = engine.getNodeList(PlayerMovementNode);
 
     this.container.on("pointerdown", this.handlePointerDown, this);
+    this.container.on("pointerdown", this.handlePointerDown, this);
   }
 
   removeFromEngine(engine: Engine) {
