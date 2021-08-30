@@ -156,12 +156,12 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     );
 
     const currentVenueBookMarkEvents = eventsFilledWithPriority.filter(
-      ({ isSaved, venueId }) =>
-        isSaved && venueId?.toLowerCase() === currentVenueId
+      ({ isSaved, venueId: eventVenueId }) =>
+        isSaved && eventVenueId?.toLowerCase() === venueId
     );
 
     const currentVenueEvents = eventsFilledWithPriority.filter(
-      (event) => event.venueId === currentVenue?.id?.toLowerCase()
+      (event) => event.venueId === venueId?.toLowerCase()
     );
 
     const personalisedSchedule = filterRelatedEvents
@@ -182,7 +182,7 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
     showPersonalisedSchedule,
     firstScheduleDate,
     filterRelatedEvents,
-    currentVenue,
+    venueId,
   ]);
 
   const roomList = scheduleNG.daysEvents.map((el) => {

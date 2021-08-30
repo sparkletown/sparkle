@@ -20,6 +20,11 @@ $help-center-background-color: #232225;
   background-color: $saturated-black;
   z-index: z(sidebar);
 
+  .ButtonNG__button {
+    border-radius: 0;
+    border: none;
+  }
+
   &--expanded {
     transform: translateX(0);
     transition: transform 0.3s;
@@ -59,6 +64,10 @@ $help-center-background-color: #232225;
     &--selected {
       border-bottom: $white 2px solid;
       color: $white;
+
+      &.ButtonNG__button {
+        border-bottom: $white 2px solid;
+      }
 
       &:focus,
       &:hover {

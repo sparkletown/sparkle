@@ -61,6 +61,7 @@ export const HELP_CENTER_URL =
 export const VEST_RANGERS_URL = "https://multiverserangers.org/rangers911";
 export const VPLAYA_URL = "https://www.vplaya.info";
 
+export const DEFAULT_SCHEDULE_NAME = "Schedule";
 export const DEFAULT_PARTY_NAME = "Anon";
 export const DISPLAY_NAME_MAX_CHAR_COUNT = 40;
 export const VENUE_CHAT_AGE_DAYS = 30;
