@@ -1,0 +1,80 @@
+@import "scss/constants.scss";
+
+$emoji-button-diameter: $submit-button-diameter - $spacing--md;
+
+.Jukebox {
+  &__container {
+    width: 100%;
+    height: 100%;
+    margin: 50px;
+  }
+  &__chat {
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    max-height: 100px;
+    background-color: opaque-white(0.12);
+    height: 100%;
+    width: 100%;
+    border-top-left-radius: 22px;
+    border-top-right-radius: 22px;
+
+    &-messages {
+      padding: 4px 12px;
+    }
+  }
+
+  &--question {
+    background-color: $dark-green;
+  }
+
+  &__form {
+    padding: $spacing--md 0px;
+    display: flex;
+  }
+
+  &__inputs {
+    display: flex;
+    align-items: center;
+    place-content: center;
+    flex-grow: 1;
+    margin-right: $spacing--lg;
+  }
+
+  &__input-container {
+    flex-grow: 1;
+    display: flex;
+
+    > div {
+      width: 100%;
+      margin: auto;
+    }
+  }
+
+  &__input {
+    padding-right: $submit-button-diameter;
+    // NOTE: this removes screen artefacts of the embedded <input> inside InputField being as wide as the parent
+    height: 32px;
+  }
+
+  &__buttons {
+    display: flex;
+    flex-grow: 0;
+
+    &-submit {
+      width: 64px;
+      height: 32px;
+      cursor: pointer;
+
+      & .Jukebox__buttons-submit {
+        background: url("/assets/icons/arrow-send-msg.svg") no-repeat center
+          opaque-white(0.1);
+      }
+    }
+  }
+
+  &__input {
+    text-align: left;
+    padding-left: $spacing--lg;
+  }
+}
