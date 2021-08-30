@@ -1,11 +1,14 @@
 import React, { ChangeEvent, useCallback, useMemo } from "react";
 import { FieldError, useForm } from "react-hook-form";
+import classNames from "classnames";
 
 import { ACCEPTED_IMAGE_TYPES } from "settings";
 
 import { ContainerClassName } from "types/utility";
 
 import { useImageInputCompression } from "hooks/useImageInputCompression";
+
+import { ImageOverlay } from "components/atoms/ImageOverlay";
 
 import "firebase/functions";
 
@@ -66,7 +69,15 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
 
     return (
       <>
-        <div className={`image-input default-container ${containerClassName}`}>
+        <div
+          className={classNames(
+            `image-input default-container`,
+            containerClassName,
+            {
+              disabled: loading,
+            }
+          )}
+        >
           {imageUrl ? (
             <img
               className={`default-image ${imageClassName}`}
@@ -87,6 +98,7 @@ export const ImageInput = React.forwardRef<HTMLInputElement, ImageInputProps>(
             onChange={handleFileInputChangeWrapper}
             className="default-input"
           />
+          {loading && <ImageOverlay>processing...</ImageOverlay>}
           {remoteUrlInputName && (
             <input
               type="hidden"
