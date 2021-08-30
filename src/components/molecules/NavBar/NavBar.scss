@@ -9,7 +9,6 @@ $menu-item-size: $spacing--lg * 2;
 $logo-size: $spacing--xxl + $spacing--md;
 $volume-popover-width-with-sliders: 30em;
 $volume-popover-width-without-sliders: 15em;
-$back-button-space: 50px;
 $simplified-view-button--height: 32px;
 $simplified-view-button--padding: 0 10px;
 
@@ -192,7 +191,7 @@ $simplified-view-button--padding: 0 10px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  top: $navbar-height + $back-button-space;
+  top: $navbar-height;
   left: 0;
   color: $white;
   width: $nav-container-width;
