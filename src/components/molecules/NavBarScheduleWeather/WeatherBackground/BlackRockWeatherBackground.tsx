@@ -1,16 +1,12 @@
-import React, { PropsWithChildren, useState } from "react";
+import React, { PropsWithChildren, useCallback, useState } from "react";
 import useInterval from "react-use/lib/useInterval";
 import classNames from "classnames";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 
 import { ContainerClassName } from "types/utility";
 
-import "./BlackRockWeatherBackground.scss";
+import { usePlayaTime } from "components/molecules/PlayaTime/usePlayaTime";
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+import "./BlackRockWeatherBackground.scss";
 
 const PART_OF_DAY = ["night", "morning", "day", "evening"];
 const PART_OF_DAY_LENGTH = 24 / PART_OF_DAY.length;
@@ -18,15 +14,11 @@ const IMAGES_PER_PART_OF_DAY = 3;
 
 const IMAGE_UPDATE_INTERVAL = 60 * 1000;
 
-const getCurrentImageName = () => {
-  //timezone of Black Rock Desert
-  const time = dayjs().tz("America/Los_Angeles");
-  const hour = time.hour();
-
-  const partOfDayIndex = Math.floor(hour / PART_OF_DAY_LENGTH);
+const getCurrentImageName = (playaTimeHour: number) => {
+  const partOfDayIndex = Math.floor(playaTimeHour / PART_OF_DAY_LENGTH);
   const partOfDaySubIndex =
     Math.floor(
-      (hour % PART_OF_DAY_LENGTH) /
+      (playaTimeHour % PART_OF_DAY_LENGTH) /
         (PART_OF_DAY_LENGTH / IMAGES_PER_PART_OF_DAY)
     ) + 1;
 
@@ -36,11 +28,16 @@ const getCurrentImageName = () => {
 export const BlackRockWeatherBackground: React.FC<
   PropsWithChildren<ContainerClassName>
 > = ({ children, containerClassName }) => {
-  const [imageName, setImageName] = useState(getCurrentImageName());
+  const playaTime = usePlayaTime();
+  const setCurrentImage = useCallback(() => {
+    setImageName(getCurrentImageName(playaTime.hour()));
+  }, [playaTime]);
 
-  useInterval(() => {
-    setImageName(getCurrentImageName());
-  }, IMAGE_UPDATE_INTERVAL);
+  const [imageName, setImageName] = useState(
+    getCurrentImageName(playaTime.hour())
+  );
+
+  useInterval(setCurrentImage, IMAGE_UPDATE_INTERVAL);
 
   return (
     <div
