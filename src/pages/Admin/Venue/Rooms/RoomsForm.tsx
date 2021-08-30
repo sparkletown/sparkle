@@ -30,6 +30,7 @@ import { LoginRF } from "pages/RegistrationFlow/LoginRF";
 import WithNavigationBar from "components/organisms/WithNavigationBar";
 
 import { ImageInput } from "components/molecules/ImageInput";
+import { LoadingPage } from "components/molecules/LoadingPage";
 
 import { AdminRestricted } from "components/atoms/AdminRestricted";
 import { NotFound } from "components/atoms/NotFound";
@@ -46,6 +47,7 @@ export const RoomsForm: React.FC = () => {
   const { user } = useUser();
   const firestore = useFirestore();
   const [venue, setVenue] = useState<PartyMapVenue>();
+  const [isLoading, setIsLoading] = useState(false);
   const queryParams = useQuery();
   const queryRoomIndexString = queryParams.get("roomIndex");
   const queryRoomIndex = queryRoomIndexString
@@ -56,10 +58,12 @@ export const RoomsForm: React.FC = () => {
     if (!venueId) return history.replace("/admin");
 
     const fetchVenueFromAPI = async () => {
+      setIsLoading(true);
       const venueSnapshot = await firestore
         .collection("venues")
         .doc(venueId)
         .get();
+      setIsLoading(false);
 
       if (!venueSnapshot.exists) return history.replace("/admin");
 
@@ -88,6 +92,8 @@ export const RoomsForm: React.FC = () => {
 
     return venue.rooms[queryRoomIndex];
   }, [queryRoomIndex, venue]);
+
+  if (isLoading) return <LoadingPage />;
 
   if (!venue || !venueId) return <NotFound />;
 
