@@ -266,10 +266,11 @@ export const NavBarSchedule: React.FC<NavBarScheduleProps> = ({
             </button>
           )}
         </div>
+        <NavBarScheduleWeather containerClassName="NavBarSchedule--end-to-end" />
+        <ul className="NavBarSchedule__weekdays NavBarSchedule--end-to-end">
+          {weekdays}
+        </ul>
         {venueId && <ScheduleVenueDescription venueId={venueId} />}
-
-        <NavBarScheduleWeather />
-        <ul className="NavBarSchedule__weekdays">{weekdays}</ul>
         <Toggler
           containerClassName="NavBarSchedule__bookmarked-toggle"
           name="bookmarked-toggle"
